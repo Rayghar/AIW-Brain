@@ -1,0 +1,71 @@
+{
+  "releaseId": "AIW-0.9.7",
+  "sprint": "8.0.4-hardening",
+  "title": "Intelligence Trust, Global Readiness and Product Hardening",
+  "version": "0.9.7",
+  "baseline": "AIW-0.9.6",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "capabilities": [
+    "role-focused progressive disclosure",
+    "knowledge depth scoring and retrieval eligibility",
+    "critical Pattern DNA editorial enrichment",
+    "honest expert calibration workflow",
+    "approved empirical simulation calibration",
+    "platform acceptance evidence reporting",
+    "core i18n and RTL",
+    "accessible canvas outline",
+    "installable deterministic offline shell"
+  ],
+  "verification": {
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "automatedTests": {
+      "engine": 87,
+      "artifacts": 2,
+      "api": 81,
+      "total": 170
+    },
+    "intelligenceGate": "8/8",
+    "integratedJourneyGate": "13/13",
+    "reconciliationGate": "16/16",
+    "hardeningGate": "12/12",
+    "knowledgeProductionGate": "328/200",
+    "securityScan": "passed",
+    "architectureGate": "passed",
+    "e2eSmoke": "passed",
+    "npmAuditHigh": "0 vulnerabilities"
+  },
+  "knowledgeDepth": {
+    "records": 328,
+    "productionDeep": 10,
+    "productionSupporting": 130,
+    "needsEnrichment": 188,
+    "averageScore": 49,
+    "policy": "needs-enrichment records cannot enter unanchored production grounding"
+  },
+  "calibrationBoundary": {
+    "productionAttributes": 8,
+    "draftAttributes": 12,
+    "draftCanScore": false
+  },
+  "simulationBoundary": "Default results are comparative and not capacity guarantees; only approved empirical profiles can adjust outcomes.",
+  "externalAcceptanceBoundary": [
+    "expert calibration approval",
+    "credentialed external integration acceptance",
+    "complete professional translation",
+    "WCAG 2.2 AA audit",
+    "project-specific empirical evidence"
+  ],
+  "keyFileSha256": {
+    "package.json": "6f7a170ec873bf914ab57c716a42abad5b61e4c4b9a07dbbada0cfa7ab3ef600",
+    "apps/api/src/app.ts": "81eb37ed2e9e0bd3150f07300fee92ba3b939a0b969762d80066aa3a8bf3b976",
+    "apps/web/src/App.tsx": "71bb4b09ad85a64776c2908db6336337a8e43225ac692016f71d6ef04f889b09",
+    "packages/engine/src/knowledgeQuality.ts": "5d112196d5d16591ee56fdc93b308925f1875747daa0dac18bb0d8e11b47c0dc",
+    "packages/engine/src/knowledgeRetrieval.ts": "2896dcaa54224794423d3ec42fb963b8486053b6a148d7293cf7d5d4fb5d65d0",
+    "packages/engine/src/architectureSynthesis.ts": "68a9d237e64a1f2d7595f40e03579404fc7e4f3ca84e06e0af937ad37582cedf",
+    "packages/domain/src/patternIntelligence.ts": "a7dd4b302fb4a26dd1e2d0134cff94ff78d3239d2131a182a21196ff7fa1ffa4",
+    "scripts/verify-hardening.mjs": "0b684f8a037d97519510176d783c62962325b3bec9e5034392f3e5fd9da7fd29",
+    "docs/WEAKNESS_CLOSURE_AUDIT_v0.9.7.md": "7141bbaf341f9673a3a08182f2eadf867c337b50a2c9d8894fba3c4bb03fd484"
+  },
+  "generatedAt": "2026-07-03T07:42:00.000Z"
+}

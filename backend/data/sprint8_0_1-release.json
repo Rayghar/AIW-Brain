@@ -1,0 +1,23 @@
+{
+  "releaseId": "AIW-0.9.1",
+  "version": "0.9.1",
+  "sprint": "8.0.1",
+  "title": "Intelligence Core Hardening and Embedded Co-Architect",
+  "status": "implemented",
+  "knowledgeReleaseId": "AKR-0.8.9",
+  "authorityBoundary": "Approved knowledge, stable identifiers, deterministic eligibility and scoring, and human approval decide. The LLM explains, questions and proposes reversible evidence-linked changes.",
+  "capabilities": {
+    "stableIdTraitScoring": true,
+    "applicabilityGating": true,
+    "calibratedQualityControls": true,
+    "pendingDriverProtection": true,
+    "providerNeutralEmbeddedCoArchitect": true,
+    "reversibleEvidenceBoundedProposals": true,
+    "contextualVisualKnowledgeGuide": true,
+    "deterministicFallback": true,
+    "recommendationRegressionGate": true
+  },
+  "calibratedQualityAttributes": 8,
+  "pendingQualityAttributes": 12,
+  "previousRelease": "AIW-0.9.0"
+}

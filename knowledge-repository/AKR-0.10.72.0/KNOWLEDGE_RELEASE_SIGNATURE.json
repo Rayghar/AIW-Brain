@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0",
+  "provider": "offline-ed25519-independent-release-key",
+  "enterpriseKms": false,
+  "keyId": "d955159dd09817d5ca39fe51",
+  "algorithm": "Ed25519",
+  "manifestSha256": "58d21525449ed06fd79c43c52787cd13bb67dee66b3b91887e8301e6a83c1fc3",
+  "signatureBase64": "uB5dJG724J/SGSss+J+mIAm49qVlyG/+maIjHuq5Mb2ljK/mT6AfXH0cxBFDx60YBR5GGbIBmbtu5t+zpLgXCw==",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEADh7C0xt22H9iDF9b8tv8ChW4wP8KsuiveBkaRdwpP9I=\n-----END PUBLIC KEY-----\n",
+  "signedAt": "2026-07-13T13:17:11.417Z",
+  "signedBy": "AIW independent release validation",
+  "verified": true,
+  "privateKeyRetained": false
+}

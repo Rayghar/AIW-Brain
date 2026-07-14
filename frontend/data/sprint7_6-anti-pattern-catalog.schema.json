@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiw.local/schemas/anti-pattern-catalog-v0.8.6.json",
+  "title": "AIW Architecture Anti-pattern Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["catalogId", "version", "records"],
+  "properties": {
+    "catalogId": { "const": "AIW-ANTI-PATTERNS" },
+    "version": { "type": "string", "minLength": 1 },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "category", "description", "signals", "risks", "mitigations", "evidenceSourceIds"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^ANTI-" },
+          "name": { "type": "string", "minLength": 3 },
+          "category": { "type": "string", "minLength": 2 },
+          "description": { "type": "string", "minLength": 20 },
+          "signals": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 2 } },
+          "risks": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 2 } },
+          "mitigations": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 2 } },
+          "evidenceSourceIds": { "type": "array", "minItems": 1, "items": { "type": "string", "pattern": "^SRC-" }, "uniqueItems": true }
+        }
+      }
+    }
+  }
+}

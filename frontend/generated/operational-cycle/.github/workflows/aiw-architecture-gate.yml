@@ -1,0 +1,16 @@
+name: AIW Architecture Policy Gate
+on:
+  pull_request:
+    paths:
+      - 'architecture/**'
+  workflow_dispatch:
+jobs:
+  architecture-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run architecture:gate -- --project architecture/manifest.json --inventory architecture/runtime-inventory.json --gate architecture/policy-gate.json

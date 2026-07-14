@@ -1,0 +1,11 @@
+{
+  "id": "gate-ci-reference",
+  "name": "Sprint 5 CI reference gate",
+  "enabled": true,
+  "hardFindingThreshold": 20,
+  "significantFindingThreshold": 50,
+  "advisoryFindingThreshold": 100,
+  "maxMissingResources": 10,
+  "maxUnmanagedResources": 10,
+  "requiredApprovedStages": []
+}

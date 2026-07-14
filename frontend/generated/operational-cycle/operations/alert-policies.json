@@ -1,0 +1,15 @@
+[
+  {
+    "id": "alert-order-availability",
+    "sloId": "slo-order-availability",
+    "name": "Order availability burn alert",
+    "channels": [
+      "email",
+      "chat"
+    ],
+    "severity": "critical",
+    "burnRateThreshold": 2,
+    "evaluationWindowMinutes": 60,
+    "enabled": true
+  }
+]

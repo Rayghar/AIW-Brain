@@ -1,0 +1,32 @@
+{
+  "release": "0.10.0-rc.10.71.0",
+  "name": "Sol Architecture Genesis",
+  "generatedAtUtc": "2026-07-13T09:42:00Z",
+  "packagePolicy": "lean-current-release-evidence-source-and-compiled-output",
+  "fileCount": 2988,
+  "sizeBytes": 73354334,
+  "currentReleaseEvidenceFiles": 10,
+  "compiledOutputFiles": 1134,
+  "sourceAndConfigurationFiles": 2553,
+  "excluded": {
+    "installedNodeModules": 0,
+    "testResultsDirectories": 0,
+    "playwrightReportDirectories": 0,
+    "credentialFiles": 0,
+    "debugLogs": 0,
+    "historicalRc10701Reports": 0,
+    "historicalRc10701EvidenceDirectories": 0
+  },
+  "includedEvidence": [
+    "AIW_RC10_71_RELEASE_REPORT.md",
+    "AIW_RC10_71_ARCHITECTURE_GENESIS_DESIGN.md",
+    "AIW_RC10_71_REQUIREMENTS_TRACEABILITY.md",
+    "AIW_RC10_71_TEST_EVIDENCE.json",
+    "AIW_RC10_71_KNOWN_LIMITATIONS.md",
+    "frontend/release-evidence/rc10.71/acceptance-contact-sheet.png",
+    "frontend/release-evidence/rc10.71/screenshots/"
+  ],
+  "securitySourceScan": "passed-frontend-and-backend",
+  "productionDependencyAudit": "zero-known-vulnerabilities-frontend-and-backend",
+  "productionAccepted": false
+}

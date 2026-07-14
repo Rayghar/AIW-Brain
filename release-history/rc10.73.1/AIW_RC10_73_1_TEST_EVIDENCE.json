@@ -1,0 +1,113 @@
+{
+  "release": "0.10.0-rc.10.73.1",
+  "releaseLine": "rc.10.73.1",
+  "generatedAt": "2026-07-14T15:08:30Z",
+  "verificationStatus": "source-build-focused-behaviour-release-integrity-security-and-compiled-output-gates-passed",
+  "passed": {
+    "backendFullBuild": true,
+    "backendFocusedTestFiles": 4,
+    "backendFocusedTests": 11,
+    "backendFocusedTestsPassed": true,
+    "canonicalGraphStateMigrationReleaseGate": {
+      "passed": 24,
+      "total": 24
+    },
+    "backendInternalDependencyGate": true,
+    "backendReleaseIntegrityGate": true,
+    "backendSecuritySourceScan": true,
+    "frontendFullPackageBuild": true,
+    "frontendFreshViteProductionBundle": true,
+    "frontendModulesTransformed": 2275,
+    "frontendCanonicalGraphStateMigrationGate": {
+      "passed": 24,
+      "total": 24
+    },
+    "frontendInternalDependencyGate": true,
+    "frontendReleaseIntegrityGate": true,
+    "frontendSecuritySourceScan": true,
+    "frontendRegressionTestFiles": 2,
+    "frontendRegressionTests": 12,
+    "frontendRegressionTestsPassed": true,
+    "compiledSolChunkSyntax": true,
+    "compiledSolMigrationActionAndRoute": true,
+    "backendFrontendDomainMirrorMatch": true,
+    "backendFrontendBrainContractMirrorMatch": true,
+    "backendFrontendIntelligenceOrchestratorMirrorMatch": true
+  },
+  "warnings": {
+    "frontendBundleSize": {
+      "status": "non-blocking-warning",
+      "details": "Vite reported chunks larger than 650 kB after minification. The largest retained architecture-artifact chunk is approximately 1.63 MB and the product-shell chunk is approximately 650.65 kB. Additional code splitting remains an open performance task."
+    }
+  },
+  "notExecutedOrBlocked": {
+    "browserEndToEndAcceptance": {
+      "status": "not-executed",
+      "reason": "The release validates the API flow through Fastify injection tests and validates the compiled Sol action through the production bundle, but no Playwright full-browser click-through is claimed."
+    },
+    "managedPostgresqlRlsAcceptance": {
+      "status": "blocked",
+      "reason": "No organisation-managed PostgreSQL/RLS environment was available for production acceptance."
+    },
+    "mongodbAtlasLiveAcceptance": {
+      "status": "not-claimed",
+      "reason": "The MongoDB repository path compiles and is covered by repository-boundary source enforcement; no live Atlas environment acceptance is claimed."
+    },
+    "liveLlmProviderAcceptance": {
+      "status": "blocked",
+      "reason": "No configured live-provider credential or externally accepted provider run was available."
+    },
+    "externalHumanExpertValidation": {
+      "status": "blocked",
+      "reason": "The blinded external expert panel has not been completed."
+    },
+    "productionAcceptance": {
+      "status": "false",
+      "reason": "Whole-product graph-primary migration, managed infrastructure, enterprise KMS, independent expert scoring and controlled enterprise-pilot gates remain open."
+    }
+  },
+  "behaviouralCoverage": [
+    "explicit materialised-graph to graph-primary state migration",
+    "requirements evidence interfaces decisions findings and risk-domain authority marker",
+    "complete canonical domain values stored on graph records",
+    "compatibility fields reconstructed from graph records",
+    "revision and fingerprint-pinned graph-native state command",
+    "explicit replacement with empty canonical aggregate",
+    "stale graph-native command rejection",
+    "compatibility adapter translation and write counting",
+    "repository-boundary graph-state synchronisation",
+    "Brain manifest and proposal receipt state-authority disclosure",
+    "Sol graph-primary promotion action in source and compiled output",
+    "rc.10.73.0 canonical Design Graph regression",
+    "rc.10.72.3 deterministic Sol calibration regression",
+    "rc.10.72.2 product-recovery Brain regression",
+    "smart canvas layout and lifecycle-status frontend regression"
+  ],
+  "logs": [
+    "release-evidence/rc10.73.1/logs/backend-rc10-73-1-verify.log",
+    "release-evidence/rc10.73.1/logs/backend-release-integrity-gate.log",
+    "release-evidence/rc10.73.1/logs/backend-security-check.log",
+    "release-evidence/rc10.73.1/logs/frontend-rc10-73-1-verify.log",
+    "release-evidence/rc10.73.1/logs/frontend-security-check.log",
+    "release-evidence/rc10.73.1/logs/frontend-regression-tests.log",
+    "release-evidence/rc10.73.1/logs/frontend-compiled-sol-gate.log"
+  ],
+  "acceptance": {
+    "canonicalDesignGraphFoundationImplemented": true,
+    "canonicalDesignGraphStateMigrationImplemented": true,
+    "canonicalDesignGraphStateAuthorityMode": "graph-primary",
+    "canonicalStateKinds": [
+      "requirements",
+      "evidence",
+      "interfaces",
+      "decisions",
+      "findings",
+      "risks"
+    ],
+    "nativeStateCommandImplemented": true,
+    "compatibilityAdapterImplemented": true,
+    "wholeProductGraphPrimaryMigrationComplete": false,
+    "legacyCompatibilityProjectionRetained": true,
+    "productionAccepted": false
+  }
+}

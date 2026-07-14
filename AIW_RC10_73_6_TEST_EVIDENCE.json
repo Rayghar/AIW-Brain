@@ -1,0 +1,60 @@
+{
+  "release": "0.10.0-rc.10.73.6",
+  "generatedAt": "2026-07-14T20:10:00Z",
+  "passed": true,
+  "results": [
+    {
+      "command": "node scripts/rc10-73-6-test-live-acquisition.mjs",
+      "exitCode": 0,
+      "stdout": "{\n  \"release\": \"rc.10.73.6\",\n  \"passed\": true,\n  \"total\": 19,\n  \"checks\": [\n    {\n      \"id\": \"glob-double-star\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"glob-file-name\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"allow-deny\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"deny-precedence\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"secret-quarantine\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"prompt-quarantine-warning\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"deterministic-claim\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"exact-lineage\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"truncated-tree-recovery\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"batch-size-not-total-cap\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"all-files-attempted\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"secret-file-rejected\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"accepted-file-count\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"coverage-honest\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"candidate-claims-created\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"license-evidence\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"immutable-commit\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"manifest-object-verification\",\n      \"ok\": true\n    },\n    {\n      \"id\": \"checkpoint-resume\",\n      \"ok\": true\n    }\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "command": "node scripts/gates/rc10-73-6-live-github-acquisition-gate.mjs",
+      "exitCode": 0,
+      "stdout": "{\n  \"release\": \"rc.10.73.6\",\n  \"passed\": true,\n  \"total\": 20,\n  \"passedCount\": 20,\n  \"failedCount\": 0,\n  \"checks\": [\n    {\n      \"id\": \"backend-version\",\n      \"ok\": true,\n      \"detail\": \"Backend version is rc.10.73.6.\"\n    },\n    {\n      \"id\": \"release-version\",\n      \"ok\": true,\n      \"detail\": \"Product release is rc.10.73.6.\"\n    },\n    {\n      \"id\": \"api-version-current\",\n      \"ok\": true,\n      \"detail\": \"GitHub REST API version is configurable and defaults to the current supported 2026-03-10 version.\"\n    },\n    {\n      \"id\": \"all-approved-default\",\n      \"ok\": true,\n      \"detail\": \"The operational runner selects every approved repository by default.\"\n    },\n    {\n      \"id\": \"no-twenty-file-cap\",\n      \"ok\": true,\n      \"detail\": \"The former twenty-file extraction cap is absent; policy limits are batching controls.\"\n    },\n    {\n      \"id\": \"truncated-tree-recovery\",\n      \"ok\": true,\n      \"detail\": \"Truncated recursive trees are recovered by bounded non-recursive traversal.\"\n    },\n    {\n      \"id\": \"allowed-denied-globs\",\n      \"ok\": true,\n      \"detail\": \"Allow and deny globs are applied with deny precedence.\"\n    },\n    {\n      \"id\": \"immutable-commit\",\n      \"ok\": true,\n      \"detail\": \"Snapshots are pinned to immutable commit SHAs.\"\n    },\n    {\n      \"id\": \"git-blob-verification\",\n      \"ok\": true,\n      \"detail\": \"Blob integrity is independently verified.\"\n    },\n    {\n      \"id\": \"resume-checkpoints\",\n      \"ok\": true,\n      \"detail\": \"Acquisition is resumable and checkpointed.\"\n    },\n    {\n      \"id\": \"rate-limit-handling\",\n      \"ok\": true,\n      \"detail\": \"Primary and secondary rate-limit responses are handled.\"\n    },\n    {\n      \"id\": \"quarantine\",\n      \"ok\": true,\n      \"detail\": \"Security and prompt-injection quarantine is enforced.\"\n    },\n    {\n      \"id\": \"license-evidence\",\n      \"ok\": true,\n      \"detail\": \"Repository license evidence is collected without false legal approval.\"\n    },\n    {\n      \"id\": \"claim-lineage\",\n      \"ok\": true,\n      \"detail\": \"Candidate claims preserve exact source lineage.\"\n    },\n    {\n      \"id\": \"candidate-only\",\n      \"ok\": true,\n      \"detail\": \"Extracted knowledge remains candidate-only.\"\n    },\n    {\n      \"id\": \"coverage-honesty\",\n      \"ok\": true,\n      \"detail\": \"Coverage is measured rather than inferred.\"\n    },\n    {\n      \"id\": \"manifest-verification\",\n      \"ok\": true,\n      \"detail\": \"Persisted objects can be reverified.\"\n    },\n    {\n      \"id\": \"connectivity-preflight\",\n      \"ok\": true,\n      \"detail\": \"All repositories have a connectivity preflight.\"\n    },\n    {\n      \"id\": \"production-not-accepted\",\n      \"ok\": true,\n      \"detail\": \"Production remains blocked until live and human gates pass.\"\n    },\n    {\n      \"id\": \"live-acquisition-script\",\n      \"ok\": true,\n      \"detail\": \"Live acquisition runner is distributed.\"\n    }\n  ]\n}",
+      "stderr": ""
+    },
+    {
+      "command": "node scripts/verify-internal-deps.mjs",
+      "exitCode": 0,
+      "stdout": "PASS internal-deps: all @aiw/* dependencies resolve to the canonical workspace release",
+      "stderr": ""
+    },
+    {
+      "command": "node scripts/verify-release-integrity.mjs",
+      "exitCode": 0,
+      "stdout": "Release integrity verified: 0.10.0-rc.10.73.6 across backend.",
+      "stderr": ""
+    },
+    {
+      "command": "node scripts/security-check.mjs",
+      "exitCode": 0,
+      "stdout": "Security source scan passed: no credential-shaped values found.",
+      "stderr": ""
+    },
+    {
+      "command": "node scripts/verify-internal-deps.mjs",
+      "exitCode": 0,
+      "stdout": "PASS internal-deps: all @aiw/* dependencies resolve to the canonical workspace release",
+      "stderr": ""
+    },
+    {
+      "command": "node scripts/verify-release-integrity.mjs",
+      "exitCode": 0,
+      "stdout": "Release integrity verified: 0.10.0-rc.10.73.6 across frontend.",
+      "stderr": ""
+    },
+    {
+      "command": "node scripts/security-check.mjs",
+      "exitCode": 0,
+      "stdout": "Security source scan passed: no credential-shaped values found.",
+      "stderr": ""
+    }
+  ],
+  "connectivityPreflight": {
+    "reachable": 0,
+    "total": 30,
+    "accepted": false
+  }
+}

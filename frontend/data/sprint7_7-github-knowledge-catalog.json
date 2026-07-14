@@ -1,0 +1,2837 @@
+{
+  "generatedAt": "2026-07-02T16:47:20.544Z",
+  "connectors": [
+    {
+      "id": "GH-FINOS-CALM",
+      "name": "FINOS Common Architecture Language Model (CALM)",
+      "owner": "FINOS",
+      "repository": "finos/architecture-as-code",
+      "url": "https://github.com/finos/architecture-as-code",
+      "defaultBranch": "main",
+      "categories": [
+        "modeling-language",
+        "pattern-library",
+        "architecture-conformance"
+      ],
+      "sourceFamilyIds": [
+        "SRC-ISO-42010",
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Governed, machine-readable architecture-as-code specification and toolchain with patterns, controls and validation for regulated environments.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "calm/**",
+        "calm-models/**",
+        "docs/calm/**",
+        "docs/docs/**",
+        "calm-ai/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**"
+      ],
+      "maxFilesPerRefresh": 180,
+      "maxFileBytes": 750000,
+      "refreshCadenceDays": 14,
+      "contentUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "architecture-test-generation"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Verify per-path licensing and CALM schema terms before redistributing source-derived content."
+      },
+      "aiwLeverage": [
+        "CALM import/export adapter",
+        "pattern and control interchange",
+        "regulated architecture-as-code compatibility",
+        "schema-conformance regression fixtures"
+      ],
+      "limitations": [
+        "CALM is an interoperability source, not AIW\u2019s canonical model",
+        "schema versions must be pinned",
+        "AI-generated CALM must be validated before use"
+      ],
+      "tags": [
+        "calm",
+        "architecture-as-code",
+        "controls",
+        "patterns",
+        "financial-services"
+      ]
+    },
+    {
+      "id": "GH-MICROSOFT-ARCH-CENTER",
+      "name": "Microsoft Azure Architecture Center",
+      "owner": "Microsoft",
+      "repository": "MicrosoftDocs/architecture-center",
+      "url": "https://github.com/MicrosoftDocs/architecture-center",
+      "defaultBranch": "main",
+      "categories": [
+        "pattern-library",
+        "anti-pattern-library",
+        "reference-architecture",
+        "component-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-AZURE-AAC"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official Microsoft repository containing cloud design patterns, performance anti-patterns, technology-choice guidance and reference architectures.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "docs/patterns/**",
+        "docs/antipatterns/**",
+        "docs/best-practices/**",
+        "docs/reference-architectures/**",
+        "docs/guide/**",
+        "docs/data-guide/**"
+      ],
+      "deniedPaths": [
+        "**/media/**",
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.svg"
+      ],
+      "maxFilesPerRefresh": 240,
+      "maxFileBytes": 900000,
+      "refreshCadenceDays": 14,
+      "contentUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "anti-pattern-extraction",
+        "component-taxonomy",
+        "reference-example",
+        "quality-attribute-calibration"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Ingest atomic claims and links; do not republish documentation wholesale."
+      },
+      "aiwLeverage": [
+        "Pattern/anti-pattern claim extraction",
+        "condition and consequence calibration",
+        "Azure topology templates",
+        "technology decision guides"
+      ],
+      "limitations": [
+        "Vendor-specific advice must be labelled Azure-specific",
+        "some patterns are general but examples are product-bound"
+      ],
+      "tags": [
+        "azure",
+        "cloud-patterns",
+        "anti-patterns",
+        "reference-architectures"
+      ]
+    },
+    {
+      "id": "GH-AWS-SERVERLESS-PATTERNS",
+      "name": "AWS Serverless Patterns Collection",
+      "owner": "AWS Samples",
+      "repository": "aws-samples/serverless-patterns",
+      "url": "https://github.com/aws-samples/serverless-patterns",
+      "defaultBranch": "main",
+      "categories": [
+        "pattern-library",
+        "component-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-AWS-WAF"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official executable integration patterns backed by infrastructure-as-code and Serverless Land metadata.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "**/README.md",
+        "**/template.yaml",
+        "**/template.yml",
+        "**/*.json",
+        "**/*.tf",
+        "**/*.ts",
+        "**/*.py",
+        "_pattern-model/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/.aws-sam/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 220,
+      "maxFileBytes": 600000,
+      "refreshCadenceDays": 14,
+      "contentUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Treat patterns as provider-specific examples; preserve source and license metadata."
+      },
+      "aiwLeverage": [
+        "Executable serverless topology templates",
+        "AWS service relationship mappings",
+        "IaC generation test fixtures",
+        "pattern parameter inference"
+      ],
+      "limitations": [
+        "AWS-specific",
+        "community submissions vary in depth",
+        "deployment success is not proof of architectural suitability"
+      ],
+      "tags": [
+        "aws",
+        "serverless",
+        "iac",
+        "integration-patterns"
+      ]
+    },
+    {
+      "id": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "name": "AWS Solutions Constructs",
+      "owner": "AWS Labs",
+      "repository": "awslabs/aws-solutions-constructs",
+      "url": "https://github.com/awslabs/aws-solutions-constructs",
+      "defaultBranch": "main",
+      "categories": [
+        "component-library",
+        "pattern-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-AWS-WAF"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official multi-service CDK constructs that encode repeatable well-architected defaults and service integrations.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "source/patterns/**/README.adoc",
+        "source/patterns/**/index.ts",
+        "source/patterns/**/lib/**",
+        "source/use_cases/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/coverage/**"
+      ],
+      "maxFilesPerRefresh": 200,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve attribution; generated AIW templates remain independent representations."
+      },
+      "aiwLeverage": [
+        "AWS component-pair templates",
+        "default security/observability obligations",
+        "CDK scaffold adapters",
+        "provider-specific realization suggestions"
+      ],
+      "limitations": [
+        "Provider-specific",
+        "construct defaults still require workload review"
+      ],
+      "tags": [
+        "aws",
+        "cdk",
+        "constructs",
+        "well-architected"
+      ]
+    },
+    {
+      "id": "GH-AZURE-RESOURCE-MODULES",
+      "name": "Azure Common Resource Modules / Verified Modules",
+      "owner": "Azure",
+      "repository": "Azure/ResourceModules",
+      "url": "https://github.com/Azure/ResourceModules",
+      "defaultBranch": "main",
+      "categories": [
+        "component-library",
+        "reference-architecture",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-AZURE-AAC"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Microsoft-maintained curated Bicep modules with CI validation and versioned publishing.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "avm/res/**",
+        "avm/ptn/**",
+        "modules/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/tests/**/outputs/**",
+        "**/.terraform/**"
+      ],
+      "maxFilesPerRefresh": 180,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use module metadata and interfaces; validate licensing before embedding module source."
+      },
+      "aiwLeverage": [
+        "Azure physical component palette",
+        "Bicep module binding",
+        "required parameter/diagnostic attributes",
+        "deployment scaffold generation"
+      ],
+      "limitations": [
+        "Infrastructure modules do not encode complete software design rationale",
+        "Azure-specific"
+      ],
+      "tags": [
+        "azure",
+        "bicep",
+        "verified-modules",
+        "components"
+      ]
+    },
+    {
+      "id": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "name": "Google Cloud Foundation Fabric",
+      "owner": "Google Cloud Platform",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "url": "https://github.com/GoogleCloudPlatform/cloud-foundation-fabric",
+      "defaultBranch": "master",
+      "categories": [
+        "component-library",
+        "reference-architecture",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-GCP-WAF"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Google-maintained Terraform modules and end-to-end blueprints for cloud foundations and application infrastructure.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "modules/**",
+        "blueprints/**",
+        "fast/**",
+        "samples/**"
+      ],
+      "deniedPaths": [
+        "**/.terraform/**",
+        "**/generated/**"
+      ],
+      "maxFilesPerRefresh": 200,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use interfaces and metadata; do not copy module implementations without license review."
+      },
+      "aiwLeverage": [
+        "GCP physical component palette",
+        "Terraform module binding",
+        "landing-zone templates",
+        "provider-specific realization suggestions"
+      ],
+      "limitations": [
+        "GCP-specific",
+        "infrastructure blueprints do not replace application architecture reasoning"
+      ],
+      "tags": [
+        "gcp",
+        "terraform",
+        "cloud-foundation",
+        "blueprints"
+      ]
+    },
+    {
+      "id": "GH-DDD-CREW",
+      "name": "Domain-Driven Design Crew Methods",
+      "owner": "DDD Crew",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "url": "https://github.com/ddd-crew/ddd-starter-modelling-process",
+      "defaultBranch": "master",
+      "categories": [
+        "architecture-method",
+        "pattern-library",
+        "documentation-framework"
+      ],
+      "sourceFamilyIds": [
+        "SRC-SEI-QAW",
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Practitioner-maintained, structured DDD modelling methods that connect event storming, domain message flow, bounded contexts and aggregates.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "README.md",
+        "resources/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "maxFilesPerRefresh": 80,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "CC-BY-SA-4.0",
+        "reviewStatus": "verified",
+        "usePolicy": "derive-claims-only",
+        "note": "Preserve attribution and share-alike obligations for any adapted canvas content."
+      },
+      "aiwLeverage": [
+        "Adaptive DDD interview questions",
+        "bounded-context design canvas",
+        "domain message-flow modelling",
+        "aggregate design workflow",
+        "context-map relationship types"
+      ],
+      "limitations": [
+        "Methods require facilitation and judgement",
+        "not a universal architecture pattern authority"
+      ],
+      "tags": [
+        "ddd",
+        "bounded-context",
+        "event-storming",
+        "aggregate"
+      ]
+    },
+    {
+      "id": "GH-APACHE-CAMEL",
+      "name": "Apache Camel Enterprise Integration Patterns",
+      "owner": "Apache Software Foundation",
+      "repository": "apache/camel",
+      "url": "https://github.com/apache/camel",
+      "defaultBranch": "main",
+      "categories": [
+        "pattern-library",
+        "component-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Mature open-source integration framework organized around known Enterprise Integration Patterns and a large component catalog.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "core/camel-core-model/src/main/java/**",
+        "core/camel-core-model/src/generated/**",
+        "components/**/src/main/docs/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/generated-test-resources/**"
+      ],
+      "maxFilesPerRefresh": 220,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use pattern/component metadata with attribution; avoid coupling AIW to Camel runtime types."
+      },
+      "aiwLeverage": [
+        "Enterprise integration pattern taxonomy",
+        "message-router topology templates",
+        "connector/component attribute enrichment",
+        "integration anti-pattern checks"
+      ],
+      "limitations": [
+        "Runtime-specific implementation details must be separated from general EIP concepts"
+      ],
+      "tags": [
+        "integration",
+        "eip",
+        "messaging",
+        "connectors"
+      ]
+    },
+    {
+      "id": "GH-ASYNCAPI",
+      "name": "AsyncAPI Specification and Tooling",
+      "owner": "AsyncAPI Initiative",
+      "repository": "asyncapi/spec",
+      "url": "https://github.com/asyncapi/spec",
+      "defaultBranch": "master",
+      "categories": [
+        "contract-specification",
+        "modeling-language",
+        "component-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-OPENAPI",
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Linux Foundation specification and tooling ecosystem for event-driven API contracts.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "spec/**",
+        "examples/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 750000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "claim-evidence",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve specification attribution and version pinning."
+      },
+      "aiwLeverage": [
+        "AsyncAPI import/export",
+        "event/channel/message entities",
+        "schema compatibility obligations",
+        "contract validation and generation"
+      ],
+      "limitations": [
+        "Defines contracts, not complete architecture suitability",
+        "protocol bindings require version-aware handling"
+      ],
+      "tags": [
+        "asyncapi",
+        "eda",
+        "events",
+        "contracts"
+      ]
+    },
+    {
+      "id": "GH-OAM-SPEC",
+      "name": "Open Application Model",
+      "owner": "OAM Dev",
+      "repository": "oam-dev/spec",
+      "url": "https://github.com/oam-dev/spec",
+      "defaultBranch": "master",
+      "categories": [
+        "modeling-language",
+        "component-library",
+        "architecture-method"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Open model for higher-level cloud-native application components, traits, policies and workflows across hybrid and multi-cloud environments.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "core/**",
+        "schemas/**",
+        "*.md"
+      ],
+      "deniedPaths": [
+        "**/vendor/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 90,
+      "contentUses": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "license": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use model concepts and schema mappings with attribution."
+      },
+      "aiwLeverage": [
+        "Component/trait/policy mapping",
+        "KubeVela interoperability",
+        "deployment abstraction research",
+        "separation-of-concerns rules"
+      ],
+      "limitations": [
+        "Specification evolution is slower than active implementations",
+        "cloud-native focus"
+      ],
+      "tags": [
+        "oam",
+        "components",
+        "traits",
+        "policies",
+        "workflows"
+      ]
+    },
+    {
+      "id": "GH-K8S-PATTERNS",
+      "name": "Kubernetes Patterns Examples",
+      "owner": "Kubernetes Patterns",
+      "repository": "k8spatterns/examples",
+      "url": "https://github.com/k8spatterns/examples",
+      "defaultBranch": "main",
+      "categories": [
+        "pattern-library",
+        "implementation-example",
+        "component-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Executable examples accompanying a recognized cloud-native pattern language.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "**/README.md",
+        "**/*.yaml",
+        "**/*.yml",
+        "**/*.json",
+        "**/*.sh"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/node_modules/**"
+      ],
+      "maxFilesPerRefresh": 140,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 90,
+      "contentUses": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Examples correspond to a published book; preserve repository licensing and avoid reproducing book text."
+      },
+      "aiwLeverage": [
+        "Cloud-native workload patterns",
+        "Kubernetes topology templates",
+        "operational obligation chains",
+        "deployment pattern depictions"
+      ],
+      "limitations": [
+        "Examples alone do not capture all pattern forces and trade-offs"
+      ],
+      "tags": [
+        "kubernetes",
+        "cloud-native",
+        "patterns"
+      ]
+    },
+    {
+      "id": "GH-SERVICE-MESH-PATTERNS",
+      "name": "Service Mesh Patterns",
+      "owner": "Service Mesh Patterns / Layer5",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "url": "https://github.com/service-mesh-patterns/service-mesh-patterns",
+      "defaultBranch": "master",
+      "categories": [
+        "pattern-library",
+        "component-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Declarative YAML patterns for service-mesh and cloud-native configurations, designed for use with Meshery.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "samples/**",
+        "patterns/**",
+        "*.md",
+        "**/*.yaml",
+        "**/*.yml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**"
+      ],
+      "maxFilesPerRefresh": 140,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve attribution and source pattern identifiers."
+      },
+      "aiwLeverage": [
+        "Service-mesh topology templates",
+        "traffic/security/observability pattern import",
+        "Meshery design interoperability"
+      ],
+      "limitations": [
+        "Configuration validity does not guarantee workload suitability",
+        "mesh-specific"
+      ],
+      "tags": [
+        "service-mesh",
+        "meshery",
+        "cloud-native",
+        "yaml"
+      ]
+    },
+    {
+      "id": "GH-LIKEC4",
+      "name": "LikeC4",
+      "owner": "LikeC4",
+      "repository": "likec4/likec4",
+      "url": "https://github.com/likec4/likec4",
+      "defaultBranch": "main",
+      "categories": [
+        "modeling-language",
+        "documentation-framework"
+      ],
+      "sourceFamilyIds": [
+        "SRC-C4",
+        "SRC-ISO-42010"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Active software architecture modeling language with custom notation, custom element types, arbitrary nesting and generated views.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "packages/**",
+        "docs/**",
+        "examples/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 80,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "interoperability-adapter",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Implement syntax/model adapters; do not copy implementation code into AIW."
+      },
+      "aiwLeverage": [
+        "LikeC4 import/export",
+        "custom viewpoint DSL research",
+        "nested scope mapping",
+        "view generation regression fixtures"
+      ],
+      "limitations": [
+        "External notation must map to AIW semantics without loss",
+        "not a pattern authority"
+      ],
+      "tags": [
+        "likec4",
+        "c4",
+        "dsl",
+        "views"
+      ]
+    },
+    {
+      "id": "GH-STRUCTURIZR-JAVA",
+      "name": "Structurizr DSL and Java Model",
+      "owner": "Structurizr",
+      "repository": "structurizr/java",
+      "url": "https://github.com/structurizr/java",
+      "defaultBranch": "master",
+      "categories": [
+        "modeling-language",
+        "documentation-framework"
+      ],
+      "sourceFamilyIds": [
+        "SRC-C4",
+        "SRC-ISO-42010"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Reference implementation and active home of the Structurizr DSL for C4 architecture models and views.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "structurizr-dsl/**",
+        "structurizr-core/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/target/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 700000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "interoperability-adapter",
+        "reference-example",
+        "architecture-test-generation"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use public language semantics and generated fixtures; verify module licensing before code reuse."
+      },
+      "aiwLeverage": [
+        "Structurizr DSL import/export",
+        "C4 view mapping",
+        "architecture repository interoperability",
+        "view filtering semantics"
+      ],
+      "limitations": [
+        "C4 abstraction levels are narrower than AIW\u2019s full metamodel",
+        "older structurizr/dsl repository is archived"
+      ],
+      "tags": [
+        "structurizr",
+        "c4",
+        "dsl",
+        "architecture-as-code"
+      ]
+    },
+    {
+      "id": "GH-C4-PLANTUML",
+      "name": "C4-PlantUML",
+      "owner": "PlantUML Standard Library",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "url": "https://github.com/plantuml-stdlib/C4-PlantUML",
+      "defaultBranch": "master",
+      "categories": [
+        "modeling-language",
+        "documentation-framework"
+      ],
+      "sourceFamilyIds": [
+        "SRC-C4"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Widely used open-source C4 notation library for PlantUML and diagram-as-code workflows.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "*.puml",
+        "themes/**",
+        "samples/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.svg"
+      ],
+      "maxFilesPerRefresh": 80,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 90,
+      "contentUses": [
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Generate C4-PlantUML output without bundling third-party source by default."
+      },
+      "aiwLeverage": [
+        "C4-PlantUML export",
+        "diagram regression fixtures",
+        "theme mapping"
+      ],
+      "limitations": [
+        "Rendering notation is not a semantic knowledge source",
+        "sequence semantics require separate support"
+      ],
+      "tags": [
+        "c4",
+        "plantuml",
+        "diagrams-as-code"
+      ]
+    },
+    {
+      "id": "GH-ARC42",
+      "name": "arc42 Architecture Documentation Template",
+      "owner": "arc42",
+      "repository": "arc42/arc42-template",
+      "url": "https://github.com/arc42/arc42-template",
+      "defaultBranch": "master",
+      "categories": [
+        "documentation-framework",
+        "architecture-method"
+      ],
+      "sourceFamilyIds": [
+        "SRC-ISO-42010",
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Mature open-source structure for practical software architecture documentation and communication.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "EN/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/build/**",
+        "**/*.pdf"
+      ],
+      "maxFilesPerRefresh": 80,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 90,
+      "contentUses": [
+        "claim-evidence",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Respect attribution/share terms for adapted template content."
+      },
+      "aiwLeverage": [
+        "arc42 documentation export",
+        "completeness prompts",
+        "stakeholder-oriented architecture package structure"
+      ],
+      "limitations": [
+        "Documentation structure is not a design rule set"
+      ],
+      "tags": [
+        "arc42",
+        "documentation",
+        "architecture-communication"
+      ]
+    },
+    {
+      "id": "GH-ARCHUNIT",
+      "name": "ArchUnit",
+      "owner": "TNG Technology Consulting",
+      "repository": "TNG/ArchUnit",
+      "url": "https://github.com/TNG/ArchUnit",
+      "defaultBranch": "main",
+      "categories": [
+        "architecture-conformance",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Established Java architecture-test library for package, layer, slice, dependency and cycle rules.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "archunit/src/main/**",
+        "archunit-example/**",
+        "docs/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/build/**",
+        "**/target/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 600000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Generate independent ArchUnit tests; do not copy source implementation."
+      },
+      "aiwLeverage": [
+        "Generate Java architecture fitness functions",
+        "map approved dependencies to tests",
+        "cycle/layer rule templates"
+      ],
+      "limitations": [
+        "Java bytecode scope",
+        "cannot validate runtime topology or business rationale"
+      ],
+      "tags": [
+        "archunit",
+        "architecture-tests",
+        "java",
+        "fitness-functions"
+      ]
+    },
+    {
+      "id": "GH-JQASSISTANT",
+      "name": "jQAssistant",
+      "owner": "jQAssistant",
+      "repository": "jQAssistant/jqassistant",
+      "url": "https://github.com/jQAssistant/jqassistant",
+      "defaultBranch": "master",
+      "categories": [
+        "architecture-conformance",
+        "component-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Graph-based software analysis and architecture constraint framework with extensible scanners and rules.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "core/**",
+        "plugin/**",
+        "docs/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 600000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "architecture-test-generation",
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "GPL-3.0",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Keep integration process-boundary based unless legal review approves deeper linkage."
+      },
+      "aiwLeverage": [
+        "Import code-derived dependency graphs",
+        "generate Cypher architecture constraints",
+        "brownfield reverse engineering",
+        "architecture drift evidence"
+      ],
+      "limitations": [
+        "GPL integration boundary must be managed",
+        "scanner coverage varies by language/plugin"
+      ],
+      "tags": [
+        "jqassistant",
+        "graph-analysis",
+        "neo4j",
+        "architecture-conformance"
+      ]
+    },
+    {
+      "id": "GH-BACKSTAGE",
+      "name": "Backstage Software Catalog",
+      "owner": "Backstage / CNCF",
+      "repository": "backstage/backstage",
+      "url": "https://github.com/backstage/backstage",
+      "defaultBranch": "master",
+      "categories": [
+        "component-library",
+        "reference-architecture",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "CNCF developer-portal framework with a mature software catalog for components, systems, domains, APIs, resources and ownership.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "docs/features/software-catalog/**",
+        "packages/catalog-model/**",
+        "plugins/catalog/**",
+        "docs/features/software-templates/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 700000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Use catalog schemas and API integration; preserve AIW as the architecture source of truth."
+      },
+      "aiwLeverage": [
+        "Backstage catalog import/export",
+        "ownership/lifecycle synchronization",
+        "software-template handoff",
+        "developer portal links"
+      ],
+      "limitations": [
+        "Backstage catalog is not a dynamic architecture source of truth",
+        "catalog entity semantics are coarser than AIW"
+      ],
+      "tags": [
+        "backstage",
+        "software-catalog",
+        "ownership",
+        "developer-portal"
+      ]
+    },
+    {
+      "id": "GH-FINOS-AI-RA",
+      "name": "FINOS AI Reference Architecture Library",
+      "owner": "FINOS",
+      "repository": "finos/ai-reference-architecture-library",
+      "url": "https://github.com/finos/ai-reference-architecture-library",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "pattern-library",
+        "component-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-NIST-SSDF"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Curated financial-services AI reference architectures developed by FSIs, integrators and technology providers with expert validation.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "**/*.json",
+        "**/*.yaml",
+        "**/*.yml",
+        "**/*.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 120,
+      "maxFileBytes": 700000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "claim-evidence",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Verify architecture-specific licenses and attribution before template adaptation."
+      },
+      "aiwLeverage": [
+        "FSI AI topology templates",
+        "AI governance/control mapping",
+        "threat-model obligations",
+        "regulated-industry scenarios"
+      ],
+      "limitations": [
+        "Domain-specific to financial services and AI",
+        "reference architectures require contextual tailoring"
+      ],
+      "tags": [
+        "finos",
+        "financial-services",
+        "ai",
+        "reference-architecture"
+      ]
+    },
+    {
+      "id": "GH-SAP-ARCH-CENTER",
+      "name": "SAP Architecture Center",
+      "owner": "SAP",
+      "repository": "SAP/architecture-center",
+      "url": "https://github.com/SAP/architecture-center",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "component-library",
+        "pattern-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official SAP repository of solution reference architectures and reusable product/service-level architecture guidance.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "docs/**",
+        "content/**",
+        "src/**/architectures/**",
+        "**/*.md",
+        "**/*.json"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/public/**/images/**"
+      ],
+      "maxFilesPerRefresh": 150,
+      "maxFileBytes": 700000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use source-specific attribution and do not treat SAP product guidance as vendor-neutral."
+      },
+      "aiwLeverage": [
+        "SAP component palette",
+        "enterprise integration reference topologies",
+        "product-specific realization guidance"
+      ],
+      "limitations": [
+        "Vendor-specific",
+        "architecture suitability depends on SAP landscape context"
+      ],
+      "tags": [
+        "sap",
+        "reference-architecture",
+        "enterprise-applications"
+      ]
+    },
+    {
+      "id": "GH-CNCF-TAG-SECURITY",
+      "name": "CNCF TAG Security Reference Architectures",
+      "owner": "CNCF",
+      "repository": "cncf/tag-security",
+      "url": "https://github.com/cncf/tag-security",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "quality-model",
+        "pattern-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-NIST-SSDF",
+        "SRC-OWASP-ASVS"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "CNCF community security papers and reference architectures covering cloud-native security and software supply chain concerns.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "community/resources/**",
+        "community/working-groups/**",
+        "security-assessments/**"
+      ],
+      "deniedPaths": [
+        "**/*.pdf",
+        "**/vendor/**"
+      ],
+      "maxFilesPerRefresh": 120,
+      "maxFileBytes": 800000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "quality-attribute-calibration",
+        "topology-template"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Preserve CNCF attribution and source document links."
+      },
+      "aiwLeverage": [
+        "Cloud-native security controls",
+        "software supply-chain reference architecture",
+        "threat-model prompts",
+        "security obligation chains"
+      ],
+      "limitations": [
+        "Some papers are broad guidance, not machine-verifiable requirements"
+      ],
+      "tags": [
+        "cncf",
+        "security",
+        "supply-chain",
+        "cloud-native"
+      ]
+    },
+    {
+      "id": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+      "name": "IBM Cloud-Native Patterns",
+      "owner": "IBM",
+      "repository": "IBM/cloud-native-patterns",
+      "url": "https://github.com/IBM/cloud-native-patterns",
+      "defaultBranch": "master",
+      "categories": [
+        "pattern-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "IBM-authored collection of cloud-native control-loop and stateful-streaming patterns.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "README.md",
+        "docs/**",
+        "**/*.md",
+        "**/*.yaml",
+        "**/*.yml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/target/**"
+      ],
+      "maxFilesPerRefresh": 80,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Candidate source pending deeper maintenance and license review."
+      },
+      "aiwLeverage": [
+        "Controller/conductor pattern records",
+        "streaming orchestration examples",
+        "cloud-native pattern expansion"
+      ],
+      "limitations": [
+        "Narrow scope",
+        "maintenance cadence requires review"
+      ],
+      "tags": [
+        "ibm",
+        "cloud-native",
+        "controller",
+        "streaming"
+      ]
+    },
+    {
+      "id": "GH-CNA-QUALITY-MODEL",
+      "name": "Cloud-Native Architecture Quality Model",
+      "owner": "Research project",
+      "repository": "r0light/cna-quality-model",
+      "url": "https://github.com/r0light/cna-quality-model",
+      "defaultBranch": "master",
+      "categories": [
+        "quality-model",
+        "architecture-method"
+      ],
+      "sourceFamilyIds": [
+        "SRC-SEI-QAW"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Research-backed quality model focused on design-time evaluation of cloud-native software architectures and validated through survey work.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "quality-model.md",
+        "README.md",
+        "**/*.json",
+        "**/*.csv"
+      ],
+      "deniedPaths": [
+        "**/*.pdf"
+      ],
+      "maxFilesPerRefresh": 50,
+      "maxFileBytes": 800000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "quality-attribute-calibration",
+        "claim-evidence",
+        "anti-pattern-extraction"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use as research evidence; retain paper/repository provenance."
+      },
+      "aiwLeverage": [
+        "Cloud-native quality attribute taxonomy",
+        "quality measure candidates",
+        "recommendation calibration datasets"
+      ],
+      "limitations": [
+        "Research model requires expert calibration before production scoring"
+      ],
+      "tags": [
+        "quality-model",
+        "cloud-native",
+        "research"
+      ]
+    },
+    {
+      "id": "GH-OTEL-DEMO",
+      "name": "OpenTelemetry Astronomy Shop Demo",
+      "owner": "OpenTelemetry",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "url": "https://github.com/open-telemetry/opentelemetry-demo",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "implementation-example",
+        "component-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-OTEL"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official near-real-world microservice demo showing OpenTelemetry instrumentation, collectors and observability topology.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "src/**",
+        "kubernetes/**",
+        "helm-chart/**",
+        "docs/**",
+        "docker-compose*.yml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/vendor/**"
+      ],
+      "maxFilesPerRefresh": 150,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use architecture metadata and test fixtures; verify code license for any reuse."
+      },
+      "aiwLeverage": [
+        "Observability reference topology",
+        "telemetry relationship inference fixtures",
+        "failure scenario simulation",
+        "OTel component attributes"
+      ],
+      "limitations": [
+        "Demonstration architecture intentionally includes failure scenarios and is not a universal production blueprint"
+      ],
+      "tags": [
+        "opentelemetry",
+        "observability",
+        "microservices",
+        "demo"
+      ]
+    },
+    {
+      "id": "GH-GCP-MICROSERVICES-DEMO",
+      "name": "Google Cloud Microservices Demo",
+      "owner": "Google Cloud Platform",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "url": "https://github.com/GoogleCloudPlatform/microservices-demo",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "implementation-example",
+        "component-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-GCP-WAF",
+        "SRC-OTEL"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official cloud-first sample application with multiple microservices, Kubernetes, Istio and gRPC.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "src/**",
+        "kubernetes-manifests/**",
+        "helm-chart/**",
+        "docs/**",
+        "skaffold.yaml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/vendor/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 140,
+      "maxFileBytes": 600000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "license": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use architecture metadata and test fixtures with attribution."
+      },
+      "aiwLeverage": [
+        "Microservice topology fixtures",
+        "gRPC/service-mesh examples",
+        "reverse-engineering test corpus",
+        "deployment template calibration"
+      ],
+      "limitations": [
+        "Sample architecture is educational, not a universal recommendation"
+      ],
+      "tags": [
+        "gcp",
+        "microservices",
+        "kubernetes",
+        "grpc",
+        "istio"
+      ]
+    },
+    {
+      "id": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "name": "Google Cloud Software Delivery Blueprint",
+      "owner": "Google Cloud Platform",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "url": "https://github.com/GoogleCloudPlatform/software-delivery-blueprint",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "component-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-GCP-WAF",
+        "SRC-NIST-SSDF"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official blueprint for application infrastructure, self-service landing zones and software delivery practices.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "docs/**",
+        "terraform/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/.terraform/**",
+        "**/generated/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use architecture claims and metadata; review Terraform module licenses separately."
+      },
+      "aiwLeverage": [
+        "Software delivery reference architecture",
+        "platform/self-service component model",
+        "secure delivery obligations"
+      ],
+      "limitations": [
+        "GCP implementation context",
+        "platform architecture rather than application design"
+      ],
+      "tags": [
+        "gcp",
+        "software-delivery",
+        "platform-engineering"
+      ]
+    },
+    {
+      "id": "GH-AWS-SAAS-EKS",
+      "name": "AWS SaaS Factory EKS Reference Architecture",
+      "owner": "AWS Samples",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "url": "https://github.com/aws-samples/aws-saas-factory-eks-reference-architecture",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "implementation-example",
+        "component-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-AWS-WAF"
+      ],
+      "trustTier": 1,
+      "authorityRationale": "Official end-to-end multi-tenant SaaS reference architecture for EKS with identity, isolation, routing and deployment guidance.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "GUIDE.md",
+        "docs/**",
+        "src/**",
+        "cdk/**",
+        "deployment/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/cdk.out/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 120,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 90,
+      "contentUses": [
+        "reference-example",
+        "topology-template",
+        "component-taxonomy",
+        "claim-evidence"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Provider-specific reference content; preserve source and version."
+      },
+      "aiwLeverage": [
+        "Multi-tenant SaaS topology templates",
+        "tenant-isolation design questions",
+        "EKS realization guidance"
+      ],
+      "limitations": [
+        "AWS/EKS-specific",
+        "sample does not replace tenancy threat modeling"
+      ],
+      "tags": [
+        "aws",
+        "saas",
+        "eks",
+        "multi-tenancy"
+      ]
+    },
+    {
+      "id": "GH-MICROSOFT-AGENT-SKILLS",
+      "name": "Microsoft Agent Skills \u2014 Azure Architecture",
+      "owner": "Microsoft Docs",
+      "repository": "MicrosoftDocs/agent-skills",
+      "url": "https://github.com/MicrosoftDocs/agent-skills",
+      "defaultBranch": "main",
+      "categories": [
+        "architecture-method",
+        "pattern-library",
+        "discovery-index"
+      ],
+      "sourceFamilyIds": [
+        "SRC-AZURE-AAC"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Microsoft-maintained LLM skill corpus that packages Azure architecture guidance for AI assistants.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "metadata-only",
+      "allowedPaths": [
+        "skills/azure-architecture/**",
+        "docs/CATALOG.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 60,
+      "maxFileBytes": 400000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "reference-example",
+        "discovery-only"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use to study AI skill packaging and source links; do not treat prompts as independent architecture authority."
+      },
+      "aiwLeverage": [
+        "LLM skill packaging patterns",
+        "source-routing hints",
+        "agent prompt regression comparisons"
+      ],
+      "limitations": [
+        "Skill prompts may simplify or lag underlying guidance",
+        "must resolve claims to primary sources"
+      ],
+      "tags": [
+        "llm",
+        "agent-skills",
+        "azure",
+        "prompts"
+      ]
+    },
+    {
+      "id": "GH-JAVA-DESIGN-PATTERNS",
+      "name": "Java Design Patterns",
+      "owner": "Open-source community",
+      "repository": "iluwatar/java-design-patterns",
+      "url": "https://github.com/iluwatar/java-design-patterns",
+      "defaultBranch": "master",
+      "categories": [
+        "pattern-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 3,
+      "authorityRationale": "Large, actively maintained collection of well-commented pattern implementations developed by community practitioners.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "**/README.md",
+        "**/src/main/java/**",
+        "localization/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/generated/**"
+      ],
+      "maxFilesPerRefresh": 120,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 90,
+      "contentUses": [
+        "pattern-extraction",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use as secondary implementation evidence; corroborate architecture claims with stronger sources."
+      },
+      "aiwLeverage": [
+        "Implementation examples",
+        "pattern aliases",
+        "code skeleton inspiration",
+        "pattern education panels"
+      ],
+      "limitations": [
+        "Java-centric",
+        "community examples are not normative architecture guidance"
+      ],
+      "tags": [
+        "design-patterns",
+        "java",
+        "examples"
+      ]
+    },
+    {
+      "id": "GH-AWESOME-DESIGN-PATTERNS",
+      "name": "Awesome Software and Architectural Design Patterns",
+      "owner": "Community curator",
+      "repository": "DovAmir/awesome-design-patterns",
+      "url": "https://github.com/DovAmir/awesome-design-patterns",
+      "defaultBranch": "master",
+      "categories": [
+        "discovery-index",
+        "pattern-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "Broad curated index useful for discovery of additional pattern sources.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [],
+      "maxFilesPerRefresh": 5,
+      "maxFileBytes": 700000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "discovery-only"
+      ],
+      "license": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use links for candidate-source discovery only."
+      },
+      "aiwLeverage": [
+        "Source discovery queue",
+        "taxonomy gap detection"
+      ],
+      "limitations": [
+        "Curated links vary in authority and freshness",
+        "must never directly change production rules"
+      ],
+      "tags": [
+        "awesome-list",
+        "patterns",
+        "discovery"
+      ]
+    },
+    {
+      "id": "GH-AWESOME-SOFTWARE-ARCH",
+      "name": "Awesome Software Architecture",
+      "owner": "Community curator",
+      "repository": "mehdihadeli/awesome-software-architecture",
+      "url": "https://github.com/mehdihadeli/awesome-software-architecture",
+      "defaultBranch": "main",
+      "categories": [
+        "discovery-index",
+        "pattern-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "Continuously curated index of software architecture resources, patterns and practices.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md",
+        "docs/**"
+      ],
+      "deniedPaths": [],
+      "maxFilesPerRefresh": 20,
+      "maxFileBytes": 800000,
+      "refreshCadenceDays": 90,
+      "contentUses": [
+        "discovery-only"
+      ],
+      "license": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use only to discover primary sources and emerging topics."
+      },
+      "aiwLeverage": [
+        "Emerging-topic discovery",
+        "candidate source nominations",
+        "coverage gap analysis"
+      ],
+      "limitations": [
+        "Not an authoritative source",
+        "linked material has mixed licensing and quality"
+      ],
+      "tags": [
+        "awesome-list",
+        "software-architecture",
+        "discovery"
+      ]
+    },
+    {
+      "id": "GH-AWESOME-ANTIPATTERN",
+      "name": "Awesome Anti-Pattern Index",
+      "owner": "Community curator",
+      "repository": "fauzisho/awesome-antipattern",
+      "url": "https://github.com/fauzisho/awesome-antipattern",
+      "defaultBranch": "master",
+      "categories": [
+        "discovery-index",
+        "anti-pattern-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "Curated survey and resource index for software and architecture anti-patterns.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [],
+      "maxFilesPerRefresh": 5,
+      "maxFileBytes": 600000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "discovery-only"
+      ],
+      "license": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use as a research index; claims require primary-source corroboration."
+      },
+      "aiwLeverage": [
+        "Anti-pattern research backlog",
+        "academic source discovery",
+        "taxonomy gap detection"
+      ],
+      "limitations": [
+        "Mixed source quality",
+        "not suitable for direct rule generation"
+      ],
+      "tags": [
+        "anti-patterns",
+        "research-index",
+        "discovery"
+      ]
+    },
+    {
+      "id": "GH-SYSTEM-DESIGN-PRIMER",
+      "name": "System Design Primer",
+      "owner": "Community",
+      "repository": "donnemartin/system-design-primer",
+      "url": "https://github.com/donnemartin/system-design-primer",
+      "defaultBranch": "master",
+      "categories": [
+        "discovery-index",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "Popular educational system-design repository with broad concept coverage and worked examples.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md",
+        "solutions/**"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "maxFilesPerRefresh": 30,
+      "maxFileBytes": 900000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use as educational discovery material, never as a hard-rule authority."
+      },
+      "aiwLeverage": [
+        "Junior architect explanations",
+        "candidate scenario discovery",
+        "educational examples"
+      ],
+      "limitations": [
+        "Interview-oriented",
+        "simplifications and unverified diagrams require caution"
+      ],
+      "tags": [
+        "system-design",
+        "education",
+        "discovery"
+      ]
+    },
+    {
+      "id": "GH-JMOLECULES",
+      "name": "jMolecules Architectural Abstractions",
+      "owner": "xMolecules",
+      "repository": "xmolecules/jmolecules",
+      "url": "https://github.com/xmolecules/jmolecules",
+      "defaultBranch": "main",
+      "categories": [
+        "component-library",
+        "pattern-library",
+        "architecture-conformance",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Mature code-level abstractions for DDD building blocks, events and architectural styles, with ArchUnit and jQAssistant verification integrations.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "README.adoc",
+        "jmolecules-ddd/**",
+        "jmolecules-architecture/**",
+        "jmolecules-events/**",
+        "jmolecules-integrations/**",
+        "jmolecules-examples/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/.gradle/**"
+      ],
+      "maxFilesPerRefresh": 180,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use public abstractions and metadata to derive AIW mappings; verify module-level licenses before code reuse."
+      },
+      "aiwLeverage": [
+        "Map DDD entities, value objects, aggregates and events to AIW component types",
+        "Generate ArchUnit/jQAssistant conformance rules",
+        "Reverse-map code annotations into intended architecture",
+        "Provide code-level realizations of layered, onion and hexagonal styles"
+      ],
+      "limitations": [
+        "Java/Kotlin oriented",
+        "annotations express intent but do not prove runtime behavior",
+        "AIW must not require jMolecules in generated systems"
+      ],
+      "tags": [
+        "ddd",
+        "architecture-tests",
+        "java",
+        "hexagonal",
+        "onion",
+        "layered"
+      ]
+    },
+    {
+      "id": "GH-SPRING-MODULITH",
+      "name": "Spring Modulith",
+      "owner": "Spring Projects",
+      "repository": "spring-projects/spring-modulith",
+      "url": "https://github.com/spring-projects/spring-modulith",
+      "defaultBranch": "main",
+      "categories": [
+        "architecture-conformance",
+        "component-library",
+        "documentation-framework",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Official Spring project for domain-driven application modules, module-boundary verification, module-level testing, observability and documentation.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "README.adoc",
+        "src/docs/**",
+        "spring-modulith-core/**",
+        "spring-modulith-docs/**",
+        "spring-modulith-test/**",
+        "spring-modulith-actuator/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/generated/**"
+      ],
+      "maxFilesPerRefresh": 180,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter",
+        "claim-evidence"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use module-model concepts and adapter metadata; verify license before copying implementation code or documentation."
+      },
+      "aiwLeverage": [
+        "Generate modular-monolith verification tests",
+        "Import discovered application modules and dependencies",
+        "Compare intended module boundaries with implementation",
+        "Generate module documentation and observability mappings"
+      ],
+      "limitations": [
+        "Spring Boot specific",
+        "module conformance does not validate business boundaries by itself",
+        "not a universal modular-monolith definition"
+      ],
+      "tags": [
+        "spring",
+        "modular-monolith",
+        "modules",
+        "architecture-tests",
+        "documentation"
+      ]
+    },
+    {
+      "id": "GH-CONTEXT-MAPPER-DSL",
+      "name": "Context Mapper DSL",
+      "owner": "Context Mapper",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "url": "https://github.com/ContextMapper/context-mapper-dsl",
+      "defaultBranch": "master",
+      "categories": [
+        "modeling-language",
+        "pattern-library",
+        "architecture-conformance",
+        "documentation-framework"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Open-source DSL grounded in Domain-Driven Design patterns for strategic context mapping and service decomposition.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "README.md",
+        "org.contextmapper.dsl/**",
+        "org.contextmapper.generator/**",
+        "org.contextmapper.dsl.ui/samples/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/generated/**"
+      ],
+      "maxFilesPerRefresh": 180,
+      "maxFileBytes": 700000,
+      "refreshCadenceDays": 45,
+      "contentUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Prioritize an import/export adapter and claim extraction; verify license and generator-template terms before redistribution."
+      },
+      "aiwLeverage": [
+        "Import/export bounded contexts, domains and context-map relationships",
+        "Map strategic DDD patterns into AIW relationship semantics",
+        "Generate context-map views from the canonical graph",
+        "Use examples as regression fixtures"
+      ],
+      "limitations": [
+        "Strategic DDD scope is narrower than the full AIW metamodel",
+        "some generators and integrations have separate constraints"
+      ],
+      "tags": [
+        "ddd",
+        "context-map",
+        "bounded-context",
+        "service-decomposition",
+        "dsl"
+      ]
+    },
+    {
+      "id": "GH-CONTEXT-MAP-DISCOVERY",
+      "name": "Context Mapper Discovery Library",
+      "owner": "Context Mapper",
+      "repository": "ContextMapper/context-map-discovery",
+      "url": "https://github.com/ContextMapper/context-map-discovery",
+      "defaultBranch": "master",
+      "categories": [
+        "architecture-conformance",
+        "implementation-example",
+        "modeling-language"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Extensible reverse-engineering library that derives Context Mapper models from source-code evidence.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "README.md",
+        "src/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 550000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use as a design reference for pluggable discovery strategies; verify license before integrating code."
+      },
+      "aiwLeverage": [
+        "Prototype bounded-context discovery adapters",
+        "Compare reverse-engineered context maps with intended AIW models",
+        "Create plug-in discovery contracts for multiple languages"
+      ],
+      "limitations": [
+        "Discovered boundaries are hypotheses requiring architect confirmation",
+        "coverage depends on language/framework adapters"
+      ],
+      "tags": [
+        "reverse-engineering",
+        "ddd",
+        "context-map",
+        "source-analysis"
+      ]
+    },
+    {
+      "id": "GH-CNCF-LANDSCAPE-GRAPH",
+      "name": "CNCF Landscape Graph",
+      "owner": "CNCF",
+      "repository": "cncf/landscape-graph",
+      "url": "https://github.com/cncf/landscape-graph",
+      "defaultBranch": "main",
+      "categories": [
+        "component-library",
+        "discovery-index"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "CNCF-maintained graph and data model for navigating the cloud-native technology landscape and relationships.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "metadata-only",
+      "allowedPaths": [
+        "README.md",
+        "schema/**",
+        "data/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**"
+      ],
+      "maxFilesPerRefresh": 120,
+      "maxFileBytes": 900000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "discovery-only",
+        "interoperability-adapter"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use project/category metadata for taxonomy discovery; do not infer architectural suitability from landscape membership."
+      },
+      "aiwLeverage": [
+        "Expand cloud-native component taxonomy",
+        "Map projects to capabilities and ecosystems",
+        "Identify technology aliases and lifecycle metadata",
+        "Improve library search and discovery"
+      ],
+      "limitations": [
+        "Landscape inclusion is not endorsement or design guidance",
+        "technology metadata must not become a recommendation score without separate evidence"
+      ],
+      "tags": [
+        "cncf",
+        "cloud-native",
+        "taxonomy",
+        "technology-landscape"
+      ]
+    },
+    {
+      "id": "GH-MESHERY",
+      "name": "Meshery Models and Design Templates",
+      "owner": "Layer5 / CNCF",
+      "repository": "meshery/meshery",
+      "url": "https://github.com/meshery/meshery",
+      "defaultBranch": "master",
+      "categories": [
+        "component-library",
+        "reference-architecture",
+        "modeling-language",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 2,
+      "authorityRationale": "Cloud-native visual design platform with schema-driven components, typed relationships and reusable infrastructure/application design templates.",
+      "lifecycleStatus": "approved",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "README.md",
+        "server/meshmodel/**",
+        "models/**",
+        "docs/**",
+        "mesheryctl/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/vendor/**",
+        "**/dist/**",
+        "**/build/**"
+      ],
+      "maxFilesPerRefresh": 180,
+      "maxFileBytes": 850000,
+      "refreshCadenceDays": 30,
+      "contentUses": [
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Build a model/template adapter and retain attribution; do not copy UI or template content without license review."
+      },
+      "aiwLeverage": [
+        "Import cloud-native component models and relationships",
+        "Exchange reusable topology templates",
+        "Compare AIW deployment designs with Meshery models",
+        "Learn schema-driven component depiction and relationship validation"
+      ],
+      "limitations": [
+        "Primarily cloud-native/Kubernetes focused",
+        "valid deployable templates are not automatically good application architecture",
+        "AIW remains the software-design source of truth"
+      ],
+      "tags": [
+        "meshery",
+        "cloud-native",
+        "components",
+        "relationships",
+        "templates",
+        "visual-design"
+      ]
+    },
+    {
+      "id": "GH-ARCHITECTURE-CATALOG",
+      "name": "Git-native Architecture Catalog",
+      "owner": "EA Toolkit",
+      "repository": "ea-toolkit/architecture-catalog",
+      "url": "https://github.com/ea-toolkit/architecture-catalog",
+      "defaultBranch": "main",
+      "categories": [
+        "documentation-framework",
+        "component-library",
+        "modeling-language"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 3,
+      "authorityRationale": "Schema-driven Git-native architecture catalog useful as an interoperability and authoring reference.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "adapter-only",
+      "allowedPaths": [
+        "README.md",
+        "src/**",
+        "schemas/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "license": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Use public schemas and file conventions only through an explicit adapter."
+      },
+      "aiwLeverage": [
+        "Git-native catalog import/export",
+        "Schema-driven knowledge authoring comparison",
+        "Markdown registry synchronization"
+      ],
+      "limitations": [
+        "Early-stage community project",
+        "not an authoritative architecture method or pattern source"
+      ],
+      "tags": [
+        "catalog",
+        "git-native",
+        "architecture-as-code",
+        "schema-driven"
+      ]
+    },
+    {
+      "id": "GH-ITATM-REFARCH",
+      "name": "it@M Reference Architecture Components",
+      "owner": "City of Munich / it@M",
+      "repository": "it-at-m/refarch",
+      "url": "https://github.com/it-at-m/refarch",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "component-library",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 3,
+      "authorityRationale": "Public-sector collection of reusable reference-architecture components, libraries and configurations.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "README.md",
+        "docs/**",
+        "refarch-*/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/node_modules/**"
+      ],
+      "maxFilesPerRefresh": 100,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "component-taxonomy",
+        "reference-example",
+        "topology-template"
+      ],
+      "license": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use as contextual implementation evidence and preserve attribution."
+      },
+      "aiwLeverage": [
+        "Reference-architecture component examples",
+        "Reusable configuration patterns",
+        "Public-sector implementation scenario library"
+      ],
+      "limitations": [
+        "Organization- and stack-specific",
+        "small adoption footprint means claims require corroboration"
+      ],
+      "tags": [
+        "reference-architecture",
+        "components",
+        "public-sector",
+        "implementation"
+      ]
+    },
+    {
+      "id": "GH-ARDALIS-CLEAN-ARCH",
+      "name": "Ardalis Clean Architecture Template",
+      "owner": "Ardalis",
+      "repository": "ardalis/CleanArchitecture",
+      "url": "https://github.com/ardalis/CleanArchitecture",
+      "defaultBranch": "main",
+      "categories": [
+        "reference-architecture",
+        "implementation-example",
+        "pattern-library"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 3,
+      "authorityRationale": "Widely used .NET implementation template for dependency-inverted clean/hexagonal/onion architecture.",
+      "lifecycleStatus": "candidate",
+      "ingestionMode": "content-reviewed",
+      "allowedPaths": [
+        "README.md",
+        "src/**",
+        "tests/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/bin/**",
+        "**/obj/**",
+        "**/artifacts/**"
+      ],
+      "maxFilesPerRefresh": 120,
+      "maxFileBytes": 650000,
+      "refreshCadenceDays": 60,
+      "contentUses": [
+        "reference-example",
+        "pattern-extraction",
+        "architecture-test-generation"
+      ],
+      "license": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use as a .NET realization example, not as a universal clean-architecture prescription."
+      },
+      "aiwLeverage": [
+        "Generate .NET realization examples",
+        "Compare dependency direction with intended design",
+        "Provide code scaffolding and architecture-test fixtures"
+      ],
+      "limitations": [
+        ".NET-specific",
+        "template choices are contextual and should not become universal hard rules"
+      ],
+      "tags": [
+        "dotnet",
+        "clean-architecture",
+        "hexagonal",
+        "onion",
+        "template"
+      ]
+    },
+    {
+      "id": "GH-DEVELOPER-ROADMAP",
+      "name": "Developer Roadmap",
+      "owner": "Community",
+      "repository": "nilbuild/developer-roadmap",
+      "url": "https://github.com/nilbuild/developer-roadmap",
+      "defaultBranch": "master",
+      "categories": [
+        "discovery-index",
+        "architecture-method"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "Educational roadmap and learning-path collection; useful for terminology, onboarding and knowledge-gap discovery, not architectural authority.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md",
+        "src/data/roadmaps/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "maxFilesPerRefresh": 80,
+      "maxFileBytes": 750000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Index titles, links and terminology only; do not promote roadmap advice as production guidance."
+      },
+      "aiwLeverage": [
+        "architect learning journeys",
+        "search synonyms",
+        "candidate topic discovery",
+        "onboarding prompts"
+      ],
+      "limitations": [
+        "Educational source",
+        "No production recommendation authority",
+        "Repository ownership and licence must be revalidated at refresh"
+      ],
+      "tags": [
+        "roadmap",
+        "education",
+        "discovery"
+      ]
+    },
+    {
+      "id": "GH-SYSTEM-DESIGN-101",
+      "name": "System Design 101",
+      "owner": "ByteByteGo",
+      "repository": "ByteByteGoHq/system-design-101",
+      "url": "https://github.com/ByteByteGoHq/system-design-101",
+      "defaultBranch": "main",
+      "categories": [
+        "discovery-index",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "Visual system-design learning material useful for communication benchmarks and candidate architecture scenarios.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.gif",
+        "**/*.pdf"
+      ],
+      "maxFilesPerRefresh": 10,
+      "maxFileBytes": 500000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "restricted",
+        "usePolicy": "metadata-only",
+        "note": "Non-commercial/no-derivatives posture requires link-and-metadata-only use unless separate permission is obtained."
+      },
+      "aiwLeverage": [
+        "visual explanation benchmark",
+        "candidate design questions",
+        "plain-language education"
+      ],
+      "limitations": [
+        "Educational simplification",
+        "No adaptation or redistribution",
+        "No production recommendation authority"
+      ],
+      "tags": [
+        "visual-design",
+        "education",
+        "discovery",
+        "restricted-license"
+      ]
+    },
+    {
+      "id": "GH-AWESOME-SCALABILITY",
+      "name": "Awesome Scalability",
+      "owner": "Community",
+      "repository": "binhnguyennus/awesome-scalability",
+      "url": "https://github.com/binhnguyennus/awesome-scalability",
+      "defaultBranch": "master",
+      "categories": [
+        "discovery-index",
+        "reference-architecture"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "Curated reading list and case-study index that helps AIW discover primary sources and empirical scalability evidence.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "maxFilesPerRefresh": 10,
+      "maxFileBytes": 900000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Treat as an index. Review and ingest underlying primary sources separately."
+      },
+      "aiwLeverage": [
+        "case-study discovery",
+        "scalability terminology",
+        "benchmark scenario discovery"
+      ],
+      "limitations": [
+        "Index is not primary evidence",
+        "Links may age",
+        "No production recommendation authority"
+      ],
+      "tags": [
+        "scalability",
+        "case-studies",
+        "discovery"
+      ]
+    },
+    {
+      "id": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+      "name": "Awesome System Design Resources",
+      "owner": "Community",
+      "repository": "ashishps1/awesome-system-design-resources",
+      "url": "https://github.com/ashishps1/awesome-system-design-resources",
+      "defaultBranch": "main",
+      "categories": [
+        "discovery-index",
+        "implementation-example"
+      ],
+      "sourceFamilyIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ],
+      "trustTier": 4,
+      "authorityRationale": "System-design learning and paper index useful for source discovery and benchmark prompts.",
+      "lifecycleStatus": "discovery-only",
+      "ingestionMode": "discovery-only",
+      "allowedPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.pdf"
+      ],
+      "maxFilesPerRefresh": 10,
+      "maxFileBytes": 750000,
+      "refreshCadenceDays": 180,
+      "contentUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "license": {
+        "reviewStatus": "restricted",
+        "usePolicy": "metadata-only",
+        "note": "GPLv3 repository: index metadata and links only pending legal approval; do not merge content into proprietary packs."
+      },
+      "aiwLeverage": [
+        "paper discovery",
+        "distributed-systems topic gaps",
+        "learning prompts"
+      ],
+      "limitations": [
+        "GPL boundary",
+        "Interview-learning orientation",
+        "No production recommendation authority"
+      ],
+      "tags": [
+        "system-design",
+        "papers",
+        "discovery",
+        "gpl"
+      ]
+    }
+  ],
+  "coverage": {
+    "generatedAt": "2026-07-11T00:00:00.000Z",
+    "connectors": 47,
+    "approvedConnectors": 30,
+    "discoveryOnlyConnectors": 8,
+    "categories": {
+      "modeling-language": 10,
+      "pattern-library": 19,
+      "architecture-conformance": 7,
+      "anti-pattern-library": 2,
+      "reference-architecture": 15,
+      "component-library": 24,
+      "implementation-example": 25,
+      "architecture-method": 6,
+      "documentation-framework": 8,
+      "contract-specification": 1,
+      "quality-model": 2,
+      "discovery-index": 10
+    },
+    "uses": {
+      "claim-evidence": 13,
+      "pattern-extraction": 14,
+      "component-taxonomy": 28,
+      "topology-template": 21,
+      "interoperability-adapter": 19,
+      "architecture-test-generation": 11,
+      "anti-pattern-extraction": 2,
+      "reference-example": 39,
+      "quality-attribute-calibration": 3,
+      "discovery-only": 10
+    },
+    "trustTiers": {
+      "tier-1": 19,
+      "tier-2": 16,
+      "tier-3": 4,
+      "tier-4": 8
+    },
+    "sourceFamilies": {
+      "SRC-ISO-42010": 4,
+      "SRC-INTERNAL-PRINCIPLES": 32,
+      "SRC-AZURE-AAC": 3,
+      "SRC-AWS-WAF": 3,
+      "SRC-GCP-WAF": 3,
+      "SRC-SEI-QAW": 2,
+      "SRC-OPENAPI": 1,
+      "SRC-C4": 3,
+      "SRC-NIST-SSDF": 3,
+      "SRC-OWASP-ASVS": 1,
+      "SRC-OTEL": 2
+    },
+    "licenseReviewRequired": 47,
+    "refreshDue": [
+      "GH-AWS-SERVERLESS-PATTERNS",
+      "GH-FINOS-CALM",
+      "GH-MICROSOFT-ARCH-CENTER"
+    ]
+  }
+}

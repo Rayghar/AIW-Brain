@@ -1,0 +1,1190 @@
+{
+  "version": "0.10.0-rc.10.54.0",
+  "policies": [
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "repository": "finos/architecture-as-code",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 14,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 180,
+      "maxFileBytes": 750000
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 14,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 240,
+      "maxFileBytes": 900000
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 14,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 220,
+      "maxFileBytes": 600000
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [],
+      "refreshCadenceDays": 30,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 200,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 180,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 200,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 80,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [],
+      "refreshCadenceDays": 30,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 220,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [],
+      "refreshCadenceDays": 30,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 750000
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [],
+      "refreshCadenceDays": 90,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 90,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 140,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [],
+      "refreshCadenceDays": 60,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 140,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 80,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 700000
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 90,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 80,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 90,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 80,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 600000
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 600000
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 700000
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 120,
+      "maxFileBytes": 700000
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 150,
+      "maxFileBytes": 700000
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 120,
+      "maxFileBytes": 800000
+    },
+    {
+      "connectorId": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+      "repository": "IBM/cloud-native-patterns",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 80,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 50,
+      "maxFileBytes": 800000
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 150,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [],
+      "refreshCadenceDays": 60,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 140,
+      "maxFileBytes": 600000
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 90,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 120,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-MICROSOFT-AGENT-SKILLS",
+      "repository": "MicrosoftDocs/agent-skills",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 60,
+      "maxFileBytes": 400000
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 90,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 120,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+      "repository": "DovAmir/awesome-design-patterns",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "metadata-only",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 5,
+      "maxFileBytes": 700000
+    },
+    {
+      "connectorId": "GH-AWESOME-SOFTWARE-ARCH",
+      "repository": "mehdihadeli/awesome-software-architecture",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 90,
+      "licenseGate": "metadata-only",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 20,
+      "maxFileBytes": 800000
+    },
+    {
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "metadata-only",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 5,
+      "maxFileBytes": 600000
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+      "repository": "donnemartin/system-design-primer",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 30,
+      "maxFileBytes": 900000
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "repository": "xmolecules/jmolecules",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 180,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 180,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": true,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "recommend",
+        "generate-template"
+      ],
+      "prohibitedOperations": [
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 45,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 180,
+      "maxFileBytes": 700000
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAP-DISCOVERY",
+      "repository": "ContextMapper/context-map-discovery",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 550000
+    },
+    {
+      "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+      "repository": "cncf/landscape-graph",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 120,
+      "maxFileBytes": 900000
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 30,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 180,
+      "maxFileBytes": 850000
+    },
+    {
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "repository": "ea-toolkit/architecture-catalog",
+      "acquisitionMode": "selected-files",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot"
+      ],
+      "prohibitedOperations": [
+        "extract-claims",
+        "recommend",
+        "generate-template",
+        "reuse-code"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "generate-template"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 100,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+      "repository": "ardalis/CleanArchitecture",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "extract-claims",
+        "reuse-code"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "generate-template"
+      ],
+      "refreshCadenceDays": 60,
+      "licenseGate": "verified",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 120,
+      "maxFileBytes": 650000
+    },
+    {
+      "connectorId": "GH-DEVELOPER-ROADMAP",
+      "repository": "nilbuild/developer-roadmap",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "discover-topics",
+        "index-metadata"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "score",
+        "generate-blocker",
+        "generate-obligation",
+        "reuse-code",
+        "redistribute-content"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 80,
+      "maxFileBytes": 750000
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-101",
+      "repository": "ByteByteGoHq/system-design-101",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "discover-topics",
+        "index-metadata"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "score",
+        "generate-blocker",
+        "generate-obligation",
+        "reuse-code",
+        "redistribute-content"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 10,
+      "maxFileBytes": 500000
+    },
+    {
+      "connectorId": "GH-AWESOME-SCALABILITY",
+      "repository": "binhnguyennus/awesome-scalability",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "discover-topics",
+        "index-metadata"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "score",
+        "generate-blocker",
+        "generate-obligation",
+        "reuse-code",
+        "redistribute-content"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 10,
+      "maxFileBytes": 900000
+    },
+    {
+      "connectorId": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+      "repository": "ashishps1/awesome-system-design-resources",
+      "acquisitionMode": "commit-archive",
+      "monitoringMode": "scheduled-poll",
+      "immutableSnapshotRequired": true,
+      "quarantineRequired": true,
+      "humanApprovalRequired": true,
+      "productionRecommendationAllowed": false,
+      "permittedOperations": [
+        "monitor",
+        "snapshot",
+        "discover-topics",
+        "index-metadata"
+      ],
+      "prohibitedOperations": [
+        "recommend",
+        "score",
+        "generate-blocker",
+        "generate-obligation",
+        "reuse-code",
+        "redistribute-content"
+      ],
+      "refreshCadenceDays": 180,
+      "licenseGate": "legal-review",
+      "promptInjectionBoundary": "treat-as-untrusted-data",
+      "maxFiles": 10,
+      "maxFileBytes": 750000
+    }
+  ]
+}

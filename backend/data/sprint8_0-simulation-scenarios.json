@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "scenarios": [
+    { "id": "SIM-BASELINE", "type": "baseline", "purpose": "Validate nominal service, cost and operating posture." },
+    { "id": "SIM-LOAD-SPIKE", "type": "load-spike", "purpose": "Compare elasticity, buffering, back-pressure and rate-limiting behavior." },
+    { "id": "SIM-DEPENDENCY-FAILURE", "type": "dependency-failure", "purpose": "Compare isolation, timeout, retry, fallback and recovery behavior." },
+    { "id": "SIM-REGION-FAILURE", "type": "region-failure", "purpose": "Expose failure-domain, replication and failover assumptions." },
+    { "id": "SIM-CONNECTIVITY-LOSS", "type": "connectivity-loss", "purpose": "Evaluate offline, synchronization and idempotency posture." },
+    { "id": "SIM-SECURITY-INCIDENT", "type": "security-incident", "purpose": "Evaluate hostile traffic, identity, audit and detection posture." },
+    { "id": "SIM-TEAM-REDUCTION", "type": "team-capacity-reduction", "purpose": "Evaluate architecture fit against reduced delivery and operations capacity." },
+    { "id": "SIM-COST-PRESSURE", "type": "cost-pressure", "purpose": "Evaluate resilience and service targets under reduced budgets." },
+    { "id": "SIM-MODEL-OUTAGE", "type": "model-provider-outage", "purpose": "Evaluate configurable LLM routing, fallback and local-model continuity." }
+  ],
+  "limitation": "Comparative deterministic simulation is decision support, not a capacity, cost, security or availability guarantee. Calibrate with measured production evidence."
+}

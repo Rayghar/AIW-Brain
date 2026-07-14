@@ -1,0 +1,1044 @@
+{
+  "generatedAt": "2026-07-02T16:47:20.544Z",
+  "coverage": {
+    "generatedAt": "2026-07-02T16:47:20.544Z",
+    "connectors": 43,
+    "approvedConnectors": 30,
+    "discoveryOnlyConnectors": 4,
+    "categories": {
+      "modeling-language": 10,
+      "pattern-library": 19,
+      "architecture-conformance": 7,
+      "anti-pattern-library": 2,
+      "reference-architecture": 14,
+      "component-library": 24,
+      "implementation-example": 23,
+      "architecture-method": 5,
+      "documentation-framework": 8,
+      "contract-specification": 1,
+      "quality-model": 2,
+      "discovery-index": 6
+    },
+    "uses": {
+      "claim-evidence": 13,
+      "pattern-extraction": 14,
+      "component-taxonomy": 28,
+      "topology-template": 21,
+      "interoperability-adapter": 19,
+      "architecture-test-generation": 11,
+      "anti-pattern-extraction": 2,
+      "reference-example": 35,
+      "quality-attribute-calibration": 3,
+      "discovery-only": 6
+    },
+    "trustTiers": {
+      "tier-1": 19,
+      "tier-2": 16,
+      "tier-3": 4,
+      "tier-4": 4
+    },
+    "sourceFamilies": {
+      "SRC-ISO-42010": 4,
+      "SRC-INTERNAL-PRINCIPLES": 28,
+      "SRC-AZURE-AAC": 3,
+      "SRC-AWS-WAF": 3,
+      "SRC-GCP-WAF": 3,
+      "SRC-SEI-QAW": 2,
+      "SRC-OPENAPI": 1,
+      "SRC-C4": 3,
+      "SRC-NIST-SSDF": 3,
+      "SRC-OWASP-ASVS": 1,
+      "SRC-OTEL": 2
+    },
+    "licenseReviewRequired": 27,
+    "refreshDue": [
+      "GH-AWS-SERVERLESS-PATTERNS",
+      "GH-FINOS-CALM",
+      "GH-MICROSOFT-ARCH-CENTER"
+    ]
+  },
+  "sourcePolicy": {
+    "trustTiers": {
+      "1": "Official standards, specifications, vendor architecture centres and governed foundations.",
+      "2": "Mature architecture methods, modelling tools, conformance tools and component ecosystems.",
+      "3": "Useful implementation examples and emerging catalogs requiring corroboration.",
+      "4": "Discovery indexes only; never direct production evidence."
+    },
+    "publicationFlow": [
+      "retrieve",
+      "quarantine",
+      "extract candidate claims",
+      "validate",
+      "detect contradictions",
+      "expert review",
+      "regression test",
+      "publish versioned release"
+    ]
+  },
+  "extractionContract": {
+    "version": "km-claim-extraction-v1",
+    "instructions": [
+      "Extract only claims explicitly supported by the supplied source text.",
+      "Produce atomic claims with one subject, predicate and object.",
+      "Capture conditions and limitations; never convert contextual guidance into a universal rule.",
+      "Preserve provider or framework specificity in context tags.",
+      "Do not infer compliance, suitability or numerical quality impact unless the source explicitly supports it.",
+      "Do not quote long passages; store a source location and excerpt hash instead.",
+      "Return candidates only. Publication requires deterministic validation and human approval."
+    ],
+    "requiredFields": [
+      "subjectId",
+      "subjectName",
+      "claimType",
+      "predicate",
+      "object",
+      "statement",
+      "polarity",
+      "conditions",
+      "limitations",
+      "contextTags"
+    ]
+  },
+  "contradictions": [],
+  "retrievalExamples": [
+    {
+      "generatedAt": "2026-07-02T16:47:20.553Z",
+      "query": "modular monolith module boundary verification",
+      "approved": [
+        {
+          "claim": {
+            "id": "KCLM-SPRING-MODULITH",
+            "subjectId": "STYLE-MODULAR-MONOLITH",
+            "subjectName": "Modular Monolith Verification",
+            "claimType": "applicability",
+            "predicate": "can-verify",
+            "object": "domain-driven application module boundaries",
+            "statement": "Spring Modulith can discover and verify application modules, test them independently, observe module interactions and generate documentation from the implemented module arrangement.",
+            "polarity": "supports",
+            "conditions": [
+              "application uses Spring Boot and a compatible module-detection strategy"
+            ],
+            "limitations": [
+              "Tool-detected modules do not replace domain modelling or architecture review"
+            ],
+            "contextTags": [
+              "spring",
+              "modular-monolith",
+              "modules",
+              "architecture-tests"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-SPRING-MODULITH",
+                "repository": "spring-projects/spring-modulith",
+                "revision": "seed-2026-07-02",
+                "path": "README.adoc",
+                "heading": "Spring Modulith",
+                "excerptHash": "seed-spring-modulith"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 95,
+            "corroborationScore": 88,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 92,
+          "matchReasons": [
+            "term match: modular, monolith, module, verification",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 2,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-JQA-GRAPH",
+            "subjectId": "CAP-CODE-ARCH-DISCOVERY",
+            "subjectName": "Code Architecture Discovery",
+            "claimType": "applicability",
+            "predicate": "can-produce",
+            "object": "graph-based code dependency evidence",
+            "statement": "jQAssistant can scan software artifacts into a graph and evaluate architecture constraints, making it useful for intended-versus-implemented architecture comparison.",
+            "polarity": "supports",
+            "conditions": [
+              "appropriate scanner plugins exist",
+              "license boundary is respected"
+            ],
+            "limitations": [
+              "Language and framework coverage depends on available plugins"
+            ],
+            "contextTags": [
+              "reverse-engineering",
+              "architecture-conformance",
+              "graph"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-JQASSISTANT",
+                "repository": "jQAssistant/jqassistant",
+                "revision": "seed-2026-07-02",
+                "path": "README.adoc",
+                "heading": "jQAssistant",
+                "excerptHash": "seed-jqa"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 95,
+            "corroborationScore": 88,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 71,
+          "matchReasons": [
+            "term match: boundary",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-ARCHUNIT-RULES",
+            "subjectId": "CAP-ARCH-FITNESS-FUNCTION",
+            "subjectName": "Architecture Fitness Function",
+            "claimType": "applicability",
+            "predicate": "can-enforce",
+            "object": "Java package, layer, dependency and cycle rules",
+            "statement": "ArchUnit can turn approved Java architecture dependency and layering decisions into executable unit-test rules.",
+            "polarity": "supports",
+            "conditions": [
+              "implementation is available as Java bytecode"
+            ],
+            "limitations": [
+              "It does not validate runtime topology or business rationale"
+            ],
+            "contextTags": [
+              "architecture-tests",
+              "java",
+              "fitness-functions"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-ARCHUNIT",
+                "repository": "TNG/ArchUnit",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "What is ArchUnit?",
+                "excerptHash": "seed-archunit"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 96,
+            "corroborationScore": 90,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 63,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-CALM-PATTERNS",
+            "subjectId": "INTEROP-CALM",
+            "subjectName": "CALM Patterns",
+            "claimType": "interoperability-mapping",
+            "predicate": "supports",
+            "object": "reusable architecture pattern validation",
+            "statement": "CALM represents architecture patterns as reusable machine-readable constraints that can be validated against concrete architectures.",
+            "polarity": "supports",
+            "conditions": [
+              "CALM schema version is pinned",
+              "architecture documents validate against referenced schemas"
+            ],
+            "limitations": [
+              "CALM pattern semantics must be mapped to AIW without replacing AIW canonical IDs"
+            ],
+            "contextTags": [
+              "architecture-as-code",
+              "regulated",
+              "patterns"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-FINOS-CALM",
+                "repository": "finos/architecture-as-code",
+                "revision": "seed-2026-07-02",
+                "path": "AGENTS.md",
+                "heading": "Project Overview",
+                "excerptHash": "seed-calm-patterns"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 95,
+            "corroborationScore": 90,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 63,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-AZURE-EVENT-SOURCING",
+            "subjectId": "PAT-EVENT-SOURCING",
+            "subjectName": "Event Sourcing",
+            "claimType": "tradeoff",
+            "predicate": "creates-tension-with",
+            "object": "personal-data-erasure",
+            "statement": "Immutable event stores can conflict with data-erasure obligations, so sensitive personal data should be separated or protected with a deliberate deletion strategy.",
+            "polarity": "limits",
+            "conditions": [
+              "events are append-only",
+              "personal data is stored in event payloads"
+            ],
+            "limitations": [
+              "The exact regulatory solution depends on jurisdiction and legal interpretation"
+            ],
+            "contextTags": [
+              "event-sourcing",
+              "privacy",
+              "data-protection"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+                "repository": "MicrosoftDocs/architecture-center",
+                "revision": "seed-2026-07-02",
+                "path": "docs/patterns/event-sourcing.md",
+                "heading": "Issues and considerations",
+                "excerptHash": "seed-event-sourcing-privacy"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 94,
+            "corroborationScore": 80,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 62,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-BACKSTAGE-CACHE",
+            "subjectId": "COMP-SOFTWARE-CATALOG",
+            "subjectName": "Software Catalog",
+            "claimType": "tradeoff",
+            "predicate": "should-not-be",
+            "object": "ultimate architecture source of truth",
+            "statement": "A developer portal catalog should be treated as a synchronized discovery and caching layer rather than the ultimate architecture source of truth.",
+            "polarity": "limits",
+            "conditions": [
+              "catalog data is aggregated from multiple systems"
+            ],
+            "limitations": [
+              "Some organizations may designate the catalog as authoritative for selected ownership metadata"
+            ],
+            "contextTags": [
+              "catalog",
+              "ownership",
+              "backstage"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-BACKSTAGE",
+                "repository": "backstage/backstage",
+                "revision": "seed-2026-07-02",
+                "path": "docs/features/software-catalog/creating-the-catalog-graph.md",
+                "heading": "Creating the Catalog Graph",
+                "excerptHash": "seed-backstage-cache"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 93,
+            "corroborationScore": 85,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 62,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        }
+      ],
+      "candidate": [],
+      "warnings": []
+    },
+    {
+      "generatedAt": "2026-07-02T16:47:20.553Z",
+      "query": "bounded context context map service decomposition",
+      "approved": [
+        {
+          "claim": {
+            "id": "KCLM-CONTEXT-MAPPER",
+            "subjectId": "METHOD-STRATEGIC-DDD",
+            "subjectName": "Strategic DDD Context Mapping",
+            "claimType": "interoperability-mapping",
+            "predicate": "can-represent",
+            "object": "bounded contexts, domains and context-map relationships",
+            "statement": "Context Mapper DSL provides a machine-readable representation of strategic DDD context maps and service-decomposition models that can be imported into and exported from AIW.",
+            "polarity": "supports",
+            "conditions": [
+              "CML constructs are mapped to stable AIW semantic identities"
+            ],
+            "limitations": [
+              "Context maps cover strategic domain boundaries and do not replace application, technology or deployment views"
+            ],
+            "contextTags": [
+              "ddd",
+              "context-map",
+              "bounded-context",
+              "interoperability"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-CONTEXT-MAPPER-DSL",
+                "repository": "ContextMapper/context-mapper-dsl",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "Context Mapper DSL",
+                "excerptHash": "seed-context-mapper"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 92,
+            "corroborationScore": 84,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 75,
+          "matchReasons": [
+            "term match: bounded, context",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 2,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-DDD-MODELLING",
+            "subjectId": "METHOD-DDD-COLLABORATIVE",
+            "subjectName": "DDD Starter Modelling Process",
+            "claimType": "applicability",
+            "predicate": "connects",
+            "object": "event storming, message flow, bounded contexts and aggregates",
+            "statement": "The DDD starter modelling process combines several collaborative techniques to validate domain boundaries and message flows iteratively.",
+            "polarity": "supports",
+            "conditions": [
+              "domain experts and technical participants collaborate"
+            ],
+            "limitations": [
+              "Outputs require facilitation and are hypotheses until validated against delivery/runtime evidence"
+            ],
+            "contextTags": [
+              "ddd",
+              "bounded-context",
+              "collaborative-modelling"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-DDD-CREW",
+                "repository": "ddd-crew/ddd-starter-modelling-process",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "How to Adapt the Process?",
+                "excerptHash": "seed-ddd-process"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 90,
+            "corroborationScore": 82,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 66,
+          "matchReasons": [
+            "term match: bounded",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 2,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-MESH-PATTERN",
+            "subjectId": "PAT-SERVICE-MESH-TRAFFIC-POLICY",
+            "subjectName": "Service Mesh Traffic Policy",
+            "claimType": "reference-topology",
+            "predicate": "can-be-represented-as",
+            "object": "declarative YAML pattern",
+            "statement": "Service-mesh configurations can be captured as reusable declarative patterns and imported as topology plus policy metadata.",
+            "polarity": "supports",
+            "conditions": [
+              "pattern schema and target mesh capabilities are compatible"
+            ],
+            "limitations": [
+              "Configuration validity is not proof that a mesh is needed"
+            ],
+            "contextTags": [
+              "service-mesh",
+              "meshery",
+              "patterns"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-SERVICE-MESH-PATTERNS",
+                "repository": "service-mesh-patterns/service-mesh-patterns",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "Pattern Repository",
+                "excerptHash": "seed-mesh-patterns"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 88,
+            "corroborationScore": 75,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 65,
+          "matchReasons": [
+            "term match: service",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 2,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-ARCHUNIT-RULES",
+            "subjectId": "CAP-ARCH-FITNESS-FUNCTION",
+            "subjectName": "Architecture Fitness Function",
+            "claimType": "applicability",
+            "predicate": "can-enforce",
+            "object": "Java package, layer, dependency and cycle rules",
+            "statement": "ArchUnit can turn approved Java architecture dependency and layering decisions into executable unit-test rules.",
+            "polarity": "supports",
+            "conditions": [
+              "implementation is available as Java bytecode"
+            ],
+            "limitations": [
+              "It does not validate runtime topology or business rationale"
+            ],
+            "contextTags": [
+              "architecture-tests",
+              "java",
+              "fitness-functions"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-ARCHUNIT",
+                "repository": "TNG/ArchUnit",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "What is ArchUnit?",
+                "excerptHash": "seed-archunit"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 96,
+            "corroborationScore": 90,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 63,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-CALM-PATTERNS",
+            "subjectId": "INTEROP-CALM",
+            "subjectName": "CALM Patterns",
+            "claimType": "interoperability-mapping",
+            "predicate": "supports",
+            "object": "reusable architecture pattern validation",
+            "statement": "CALM represents architecture patterns as reusable machine-readable constraints that can be validated against concrete architectures.",
+            "polarity": "supports",
+            "conditions": [
+              "CALM schema version is pinned",
+              "architecture documents validate against referenced schemas"
+            ],
+            "limitations": [
+              "CALM pattern semantics must be mapped to AIW without replacing AIW canonical IDs"
+            ],
+            "contextTags": [
+              "architecture-as-code",
+              "regulated",
+              "patterns"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-FINOS-CALM",
+                "repository": "finos/architecture-as-code",
+                "revision": "seed-2026-07-02",
+                "path": "AGENTS.md",
+                "heading": "Project Overview",
+                "excerptHash": "seed-calm-patterns"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 95,
+            "corroborationScore": 90,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 63,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-JQA-GRAPH",
+            "subjectId": "CAP-CODE-ARCH-DISCOVERY",
+            "subjectName": "Code Architecture Discovery",
+            "claimType": "applicability",
+            "predicate": "can-produce",
+            "object": "graph-based code dependency evidence",
+            "statement": "jQAssistant can scan software artifacts into a graph and evaluate architecture constraints, making it useful for intended-versus-implemented architecture comparison.",
+            "polarity": "supports",
+            "conditions": [
+              "appropriate scanner plugins exist",
+              "license boundary is respected"
+            ],
+            "limitations": [
+              "Language and framework coverage depends on available plugins"
+            ],
+            "contextTags": [
+              "reverse-engineering",
+              "architecture-conformance",
+              "graph"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-JQASSISTANT",
+                "repository": "jQAssistant/jqassistant",
+                "revision": "seed-2026-07-02",
+                "path": "README.adoc",
+                "heading": "jQAssistant",
+                "excerptHash": "seed-jqa"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 95,
+            "corroborationScore": 88,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 63,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        }
+      ],
+      "candidate": [],
+      "warnings": []
+    },
+    {
+      "generatedAt": "2026-07-02T16:47:20.553Z",
+      "query": "cloud native component relationships topology template",
+      "approved": [
+        {
+          "claim": {
+            "id": "KCLM-MESHERY-MODELS",
+            "subjectId": "CAP-CLOUD-NATIVE-MODEL-INTEROP",
+            "subjectName": "Cloud-Native Component Model Interoperability",
+            "claimType": "interoperability-mapping",
+            "predicate": "can-exchange",
+            "object": "typed components, relationships and reusable cloud-native designs",
+            "statement": "Meshery models and design templates can provide component, relationship and topology metadata for an AIW deployment-view adapter.",
+            "polarity": "supports",
+            "conditions": [
+              "schema versions and component identifiers are mapped explicitly",
+              "template licenses are reviewed"
+            ],
+            "limitations": [
+              "Meshery topology validity does not establish application-architecture suitability"
+            ],
+            "contextTags": [
+              "meshery",
+              "cloud-native",
+              "components",
+              "topology"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-MESHERY",
+                "repository": "meshery/meshery",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "Visually and collaboratively manage your infrastructure",
+                "excerptHash": "seed-meshery-models"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 90,
+            "corroborationScore": 78,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 90,
+          "matchReasons": [
+            "term match: component, relationships, topology, template",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 2,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-ARCHUNIT-RULES",
+            "subjectId": "CAP-ARCH-FITNESS-FUNCTION",
+            "subjectName": "Architecture Fitness Function",
+            "claimType": "applicability",
+            "predicate": "can-enforce",
+            "object": "Java package, layer, dependency and cycle rules",
+            "statement": "ArchUnit can turn approved Java architecture dependency and layering decisions into executable unit-test rules.",
+            "polarity": "supports",
+            "conditions": [
+              "implementation is available as Java bytecode"
+            ],
+            "limitations": [
+              "It does not validate runtime topology or business rationale"
+            ],
+            "contextTags": [
+              "architecture-tests",
+              "java",
+              "fitness-functions"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-ARCHUNIT",
+                "repository": "TNG/ArchUnit",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "What is ArchUnit?",
+                "excerptHash": "seed-archunit"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 96,
+            "corroborationScore": 90,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 71,
+          "matchReasons": [
+            "term match: topology",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-OTEL-DEMO",
+            "subjectId": "TEMPLATE-OBSERVABLE-MICROSERVICES",
+            "subjectName": "Observable Microservices Reference Topology",
+            "claimType": "reference-topology",
+            "predicate": "demonstrates",
+            "object": "distributed telemetry across a near-real-world microservice system",
+            "statement": "The OpenTelemetry demo provides a useful test corpus for observability topology, telemetry dependencies and failure-simulation scenarios.",
+            "polarity": "supports",
+            "conditions": [
+              "used as a reference fixture, not a universal blueprint"
+            ],
+            "limitations": [
+              "The demo intentionally contains teaching scenarios and optional failure modes"
+            ],
+            "contextTags": [
+              "opentelemetry",
+              "observability",
+              "microservices"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-OTEL-DEMO",
+                "repository": "open-telemetry/opentelemetry-demo",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "Welcome to the OpenTelemetry Astronomy Shop Demo",
+                "excerptHash": "seed-otel-demo"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 92,
+            "corroborationScore": 84,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 70,
+          "matchReasons": [
+            "term match: topology",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-CONTEXT-MAPPER",
+            "subjectId": "METHOD-STRATEGIC-DDD",
+            "subjectName": "Strategic DDD Context Mapping",
+            "claimType": "interoperability-mapping",
+            "predicate": "can-represent",
+            "object": "bounded contexts, domains and context-map relationships",
+            "statement": "Context Mapper DSL provides a machine-readable representation of strategic DDD context maps and service-decomposition models that can be imported into and exported from AIW.",
+            "polarity": "supports",
+            "conditions": [
+              "CML constructs are mapped to stable AIW semantic identities"
+            ],
+            "limitations": [
+              "Context maps cover strategic domain boundaries and do not replace application, technology or deployment views"
+            ],
+            "contextTags": [
+              "ddd",
+              "context-map",
+              "bounded-context",
+              "interoperability"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-CONTEXT-MAPPER-DSL",
+                "repository": "ContextMapper/context-mapper-dsl",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "Context Mapper DSL",
+                "excerptHash": "seed-context-mapper"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 92,
+            "corroborationScore": 84,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 67,
+          "matchReasons": [
+            "term match: relationships",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 2,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-MESH-PATTERN",
+            "subjectId": "PAT-SERVICE-MESH-TRAFFIC-POLICY",
+            "subjectName": "Service Mesh Traffic Policy",
+            "claimType": "reference-topology",
+            "predicate": "can-be-represented-as",
+            "object": "declarative YAML pattern",
+            "statement": "Service-mesh configurations can be captured as reusable declarative patterns and imported as topology plus policy metadata.",
+            "polarity": "supports",
+            "conditions": [
+              "pattern schema and target mesh capabilities are compatible"
+            ],
+            "limitations": [
+              "Configuration validity is not proof that a mesh is needed"
+            ],
+            "contextTags": [
+              "service-mesh",
+              "meshery",
+              "patterns"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-SERVICE-MESH-PATTERNS",
+                "repository": "service-mesh-patterns/service-mesh-patterns",
+                "revision": "seed-2026-07-02",
+                "path": "README.md",
+                "heading": "Pattern Repository",
+                "excerptHash": "seed-mesh-patterns"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 88,
+            "corroborationScore": 75,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 65,
+          "matchReasons": [
+            "term match: topology",
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 2,
+          "releaseStatus": "approved"
+        },
+        {
+          "claim": {
+            "id": "KCLM-CALM-PATTERNS",
+            "subjectId": "INTEROP-CALM",
+            "subjectName": "CALM Patterns",
+            "claimType": "interoperability-mapping",
+            "predicate": "supports",
+            "object": "reusable architecture pattern validation",
+            "statement": "CALM represents architecture patterns as reusable machine-readable constraints that can be validated against concrete architectures.",
+            "polarity": "supports",
+            "conditions": [
+              "CALM schema version is pinned",
+              "architecture documents validate against referenced schemas"
+            ],
+            "limitations": [
+              "CALM pattern semantics must be mapped to AIW without replacing AIW canonical IDs"
+            ],
+            "contextTags": [
+              "architecture-as-code",
+              "regulated",
+              "patterns"
+            ],
+            "sourceLocations": [
+              {
+                "connectorId": "GH-FINOS-CALM",
+                "repository": "finos/architecture-as-code",
+                "revision": "seed-2026-07-02",
+                "path": "AGENTS.md",
+                "heading": "Project Overview",
+                "excerptHash": "seed-calm-patterns"
+              }
+            ],
+            "extraction": {
+              "mode": "human",
+              "extractedAt": "2026-07-02T00:00:00.000Z"
+            },
+            "sourceConfidence": 95,
+            "corroborationScore": 90,
+            "reviewStatus": "verified",
+            "reviewedBy": "Architecture Knowledge Council",
+            "reviewedAt": "2026-07-02T00:00:00.000Z"
+          },
+          "score": 63,
+          "matchReasons": [
+            "expert-verified claim"
+          ],
+          "sourceTrustTier": 1,
+          "releaseStatus": "approved"
+        }
+      ],
+      "candidate": [],
+      "warnings": []
+    }
+  ],
+  "currentRelease": {
+    "id": "KREL-SEED-5b68d5eae03c",
+    "version": "0.8.7-seed",
+    "createdAt": "2026-07-02T16:47:20.544Z",
+    "createdBy": "Architecture Knowledge Council",
+    "status": "approved",
+    "claimIds": [
+      "KCLM-ARCHUNIT-RULES",
+      "KCLM-AZURE-EVENT-SOURCING",
+      "KCLM-BACKSTAGE-CACHE",
+      "KCLM-CALM-PATTERNS",
+      "KCLM-CNCF-LANDSCAPE",
+      "KCLM-CONTEXT-MAPPER",
+      "KCLM-DDD-MODELLING",
+      "KCLM-JMOLECULES-ARCH",
+      "KCLM-JQA-GRAPH",
+      "KCLM-MESH-PATTERN",
+      "KCLM-MESHERY-MODELS",
+      "KCLM-OAM-SEPARATION",
+      "KCLM-OTEL-DEMO",
+      "KCLM-SPRING-MODULITH"
+    ],
+    "sourceSnapshotIds": [],
+    "proposalIds": [],
+    "checksum": "sha256:5b68d5eae03ce17ae0bde7d36583bbc4efd8f89ad6fb5f15f8312bcbcf8947bd",
+    "notes": [
+      "Human-reviewed seed claims only.",
+      "GitHub refreshes and LLM extractions remain quarantined candidates until expert review and regression testing."
+    ]
+  }
+}

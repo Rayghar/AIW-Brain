@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-07-02T16:00:26.687Z",
+  "projectNodes": 1488,
+  "libraryRecords": 68,
+  "contextualLibrary": {
+    "averageMs": 0.531,
+    "p95Ms": 0.823,
+    "maxMs": 9.72
+  },
+  "dropPreflight": {
+    "averageMs": 0.278,
+    "p95Ms": 0.533,
+    "maxMs": 5.493
+  },
+  "semanticConnections": {
+    "averageMs": 0.002,
+    "p95Ms": 0.001,
+    "maxMs": 0.291
+  },
+  "complianceCoverage": {
+    "averageMs": 0.363,
+    "p95Ms": 1.038,
+    "maxMs": 4.339
+  }
+}

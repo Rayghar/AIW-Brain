@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: aiw-github-knowledge-acquisition
+spec:
+  schedule: "15 2 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: acquisition
+              image: aiw/backend:0.10.0-rc.10.73.6
+              command: ["node", "scripts/rc10-73-6-run-live-github-acquisition.mjs"]
+              env:
+                - name: AIW_ENABLE_GITHUB_KNOWLEDGE
+                  value: "true"
+                - name: AIW_GITHUB_API_VERSION
+                  value: "2026-03-10"
+                - name: AIW_GITHUB_FETCH_CONCURRENCY
+                  value: "4"
+                - name: AIW_GITHUB_RESUME
+                  value: "true"
+                - name: AIW_GITHUB_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: aiw-github-knowledge
+                      key: token
+                - name: AIW_GITHUB_SNAPSHOT_ROOT
+                  value: /var/lib/aiw/knowledge/AKR-0.10.73.6/github-live
+                - name: AIW_GITHUB_ACQUISITION_SUMMARY
+                  value: /var/lib/aiw/evidence/rc10.73.6/LIVE_GITHUB_ACQUISITION_SUMMARY.json
+              volumeMounts:
+                - name: knowledge-store
+                  mountPath: /var/lib/aiw
+              resources:
+                requests:
+                  cpu: "500m"
+                  memory: "1Gi"
+                limits:
+                  cpu: "2"
+                  memory: "4Gi"
+          volumes:
+            - name: knowledge-store
+              persistentVolumeClaim:
+                claimName: aiw-knowledge-store

@@ -1,0 +1,135 @@
+{
+  "release": "0.10.0-rc.10.61.0",
+  "knowledgeRelease": "AKR-0.10.60",
+  "generatedAt": "2026-07-11T16:20:00Z",
+  "capabilities": [
+    {
+      "id": "governed-stage-transitions",
+      "backendCapability": "Reviewable logical-to-realisation, realisation-to-capability and capability-to-physical transition proposals with lineage and duplicate protection",
+      "apiOrModule": "@aiw/modelling canonical transition engine",
+      "frontEndSurface": "Architecture Studio > Transition",
+      "primaryRoles": ["solution-architect", "platform-architect"],
+      "state": "first-class-surface"
+    },
+    {
+      "id": "semantic-viewbook",
+      "backendCapability": "Ten query-driven architecture viewpoints from one canonical graph",
+      "apiOrModule": "@aiw/modelling Architecture Viewbook",
+      "frontEndSurface": "Architecture Studio > Viewbook and Review presentation",
+      "primaryRoles": ["solution-architect", "enterprise-architect", "platform-architect", "architecture-reviewer"],
+      "state": "first-class-surface"
+    },
+    {
+      "id": "architecture-exchange",
+      "backendCapability": "Structurizr DSL, CALM JSON and LikeC4 import, validation, conflict analysis, merge and round-trip fidelity",
+      "apiOrModule": "@aiw/modelling architectureInteroperability",
+      "frontEndSurface": "Delivery Room / Architecture Exchange",
+      "primaryRoles": ["solution-architect", "platform-architect"],
+      "state": "routed-existing-workspace"
+    },
+    {
+      "id": "accessible-delivery",
+      "backendCapability": "Paginated, bookmarked, tagged SDD PDF profile plus complete delivery-pack assembly",
+      "apiOrModule": "@aiw/artifacts accessible PDF and delivery pack",
+      "frontEndSurface": "Delivery Room > Preview and Generate",
+      "primaryRoles": ["solution-architect", "architecture-reviewer"],
+      "state": "routed-existing-workspace"
+    },
+    {
+      "id": "provider-product-intelligence",
+      "backendCapability": "Provider-neutral capability to portable, AWS, Azure, GCP and on-premises product mappings",
+      "apiOrModule": "provider product catalogue PPC-0.10.60",
+      "frontEndSurface": "Platform Architecture Command Surface > Provider mapping",
+      "primaryRoles": ["platform-architect", "solution-architect"],
+      "state": "routed-existing-workspace"
+    },
+    {
+      "id": "portfolio-intelligence",
+      "backendCapability": "Cross-project risk, standards impact, dependency, reuse and cost concentration analysis",
+      "apiOrModule": "portfolio and governance services",
+      "frontEndSurface": "Portfolio Intelligence Studio",
+      "primaryRoles": ["enterprise-architect"],
+      "state": "role-centred-surface"
+    },
+    {
+      "id": "observed-architecture",
+      "backendCapability": "Runtime inventory, collector results and inferred topology",
+      "apiOrModule": "runtime inventory and operational intelligence services",
+      "frontEndSurface": "Platform Architecture Command Surface > Observed architecture",
+      "primaryRoles": ["platform-architect"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "drift-remediation",
+      "backendCapability": "Intended-versus-observed comparison and reviewable remediation change sets",
+      "apiOrModule": "drift and conformance services",
+      "frontEndSurface": "Platform Architecture Command Surface > Drift and remediation",
+      "primaryRoles": ["platform-architect", "architecture-reviewer"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "assurance-evidence",
+      "backendCapability": "Findings, evidence, ADRs, fitness tests, waivers, dispositions and approval readiness",
+      "apiOrModule": "review, governance and evidence services",
+      "frontEndSurface": "Architecture Assurance Studio",
+      "primaryRoles": ["architecture-reviewer", "enterprise-architect"],
+      "state": "first-class-role-surface"
+    },
+    {
+      "id": "atomic-provenance",
+      "backendCapability": "Atomic claim receipts, repository lineage, corroboration and contradiction records",
+      "apiOrModule": "Knowledge Fabric AKR-0.10.60",
+      "frontEndSurface": "Knowledge Studio and recommendation evidence drawers",
+      "primaryRoles": ["knowledge-curator", "architecture-reviewer", "solution-architect"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "knowledge-release-governance",
+      "backendCapability": "Candidate quarantine, four-eyes promotion, release pinning and non-scoring enforcement",
+      "apiOrModule": "Mind Factory and knowledge release services",
+      "frontEndSurface": "Knowledge Studio > Claims, conflicts and release impact",
+      "primaryRoles": ["knowledge-curator", "administrator"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "source-connectors",
+      "backendCapability": "GitHub App, GitLab and Azure DevOps source refresh adapters with governed jobs",
+      "apiOrModule": "source connector and Mind Factory services",
+      "frontEndSurface": "AIW Control Plane > Source connectors",
+      "primaryRoles": ["administrator", "knowledge-curator"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "worker-operations",
+      "backendCapability": "Durable workers, heartbeats, retries, backoff, cancellation and dead-letter queues",
+      "apiOrModule": "production worker and queue services",
+      "frontEndSurface": "AIW Control Plane > Worker operations",
+      "primaryRoles": ["administrator"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "evidence-trust",
+      "backendCapability": "Evidence checksums, expiry, object storage, managed signing and independent verification adapters",
+      "apiOrModule": "evidence and signing services",
+      "frontEndSurface": "AIW Control Plane > Evidence and trust; Assurance Studio > Evidence",
+      "primaryRoles": ["administrator", "architecture-reviewer"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "production-promotion",
+      "backendCapability": "Environment promotion gates and production-acceptance evidence evaluation",
+      "apiOrModule": "production acceptance service",
+      "frontEndSurface": "AIW Control Plane > Production promotion",
+      "primaryRoles": ["administrator"],
+      "state": "role-centred-route"
+    },
+    {
+      "id": "brain-evaluation",
+      "backendCapability": "Deterministic benchmarks, calibration proposals and architecture-intelligence evaluation",
+      "apiOrModule": "intelligence benchmark and calibration services",
+      "frontEndSurface": "Knowledge Studio / AIW Control Plane evaluation routes",
+      "primaryRoles": ["knowledge-curator", "administrator"],
+      "state": "surfaced-route-not-full-dedicated-lab"
+    }
+  ]
+}

@@ -1,0 +1,353 @@
+{
+  "schemaVersion": "1.0",
+  "release": "0.10.0-rc.10.71.1",
+  "generatedAt": "2026-07-13T12:05:50.693Z",
+  "controllingPrinciple": "One Brain, one canonical model, one governed knowledge manifest, one proposal receipt and many interaction surfaces.",
+  "current": {
+    "directLlmUses": [
+      {
+        "file": "backend/apps/api/src/architectureBrainOrchestrator.ts",
+        "count": 1,
+        "category": "architecture-runtime",
+        "allowed": true,
+        "reason": "The single project Architecture Brain gateway owner."
+      },
+      {
+        "file": "backend/apps/api/src/knowledgeExtraction.ts",
+        "count": 1,
+        "category": "knowledge-supply-chain",
+        "allowed": true,
+        "reason": "Mind Factory extraction adapter."
+      },
+      {
+        "file": "backend/apps/api/src/llmRuntimeStore.ts",
+        "count": 1,
+        "category": "platform-infrastructure",
+        "allowed": true,
+        "reason": "Constructs governed provider gateway; does not perform a task."
+      },
+      {
+        "file": "backend/apps/api/src/platformKnowledgeApplicationRoutes.ts",
+        "count": 4,
+        "category": "knowledge-supply-chain",
+        "allowed": true,
+        "reason": "Knowledge extraction, review and promotion assistance."
+      },
+      {
+        "file": "backend/apps/api/src/routes/healthRoutes.ts",
+        "count": 2,
+        "category": "operational-control",
+        "allowed": true,
+        "reason": "Provider health and active probe only."
+      },
+      {
+        "file": "backend/apps/api/src/routes/knowledgeOpsRoutes.ts",
+        "count": 1,
+        "category": "knowledge-supply-chain",
+        "allowed": true,
+        "reason": "Creates candidate knowledge records; no project architecture mutation."
+      },
+      {
+        "file": "backend/apps/api/src/server.ts",
+        "count": 1,
+        "category": "operational-control",
+        "allowed": true,
+        "reason": "Startup/runtime acceptance probe only."
+      }
+    ],
+    "unclassifiedDirectLlmUses": [],
+    "architectureRouteDirectLlmUses": [],
+    "frontendLocalArchitectureLogic": [],
+    "retiredSignalModulesStillPresent": [],
+    "orchestratorPresent": true,
+    "orchestratedMethods": [
+      "workspaceProjection",
+      "analyseBrief",
+      "distillRequirements",
+      "systemContextCandidate",
+      "stageCoAuthor",
+      "livingCanvasActions",
+      "explainRanking",
+      "stageAdvice",
+      "askSol",
+      "synthesize",
+      "assistedAudit"
+    ],
+    "brainReceiptReferenceCount": 60,
+    "contextGraph": {
+      "present": true,
+      "nodeKindCount": 15,
+      "edgeKindCount": 16,
+      "semanticChangeDetection": true,
+      "semanticStaleness": true,
+      "stageSlices": true
+    },
+    "legacyMigration": {
+      "present": true,
+      "canonicalAuthorityReceipt": true,
+      "legacyProjectionExplicit": true
+    }
+  },
+  "baseline": {
+    "directLlmUses": [
+      {
+        "file": "backend/apps/api/src/aiAudit.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/architectureSynthesisService.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/coArchitect.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/designBriefAssistant.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/knowledgeExtraction.ts",
+        "count": 1,
+        "category": "knowledge-supply-chain",
+        "allowed": true,
+        "reason": "Mind Factory extraction adapter."
+      },
+      {
+        "file": "backend/apps/api/src/livingCanvasApplicationRoutes.ts",
+        "count": 2,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/llmRuntimeStore.ts",
+        "count": 1,
+        "category": "platform-infrastructure",
+        "allowed": true,
+        "reason": "Constructs governed provider gateway; does not perform a task."
+      },
+      {
+        "file": "backend/apps/api/src/platformKnowledgeApplicationRoutes.ts",
+        "count": 4,
+        "category": "knowledge-supply-chain",
+        "allowed": true,
+        "reason": "Knowledge extraction, review and promotion assistance."
+      },
+      {
+        "file": "backend/apps/api/src/projectIdentityApplicationRoutes.ts",
+        "count": 5,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/requirementsGenesisApplicationRoutes.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/routes/healthRoutes.ts",
+        "count": 2,
+        "category": "operational-control",
+        "allowed": true,
+        "reason": "Provider health and active probe only."
+      },
+      {
+        "file": "backend/apps/api/src/routes/knowledgeOpsRoutes.ts",
+        "count": 1,
+        "category": "knowledge-supply-chain",
+        "allowed": true,
+        "reason": "Creates candidate knowledge records; no project architecture mutation."
+      },
+      {
+        "file": "backend/apps/api/src/server.ts",
+        "count": 1,
+        "category": "operational-control",
+        "allowed": true,
+        "reason": "Startup/runtime acceptance probe only."
+      },
+      {
+        "file": "backend/apps/api/src/synthesisApplicationRoutes.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      }
+    ],
+    "unclassifiedDirectLlmUses": [
+      {
+        "file": "backend/apps/api/src/aiAudit.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/architectureSynthesisService.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/coArchitect.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/designBriefAssistant.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/livingCanvasApplicationRoutes.ts",
+        "count": 2,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/projectIdentityApplicationRoutes.ts",
+        "count": 5,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/requirementsGenesisApplicationRoutes.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/synthesisApplicationRoutes.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      }
+    ],
+    "architectureRouteDirectLlmUses": [
+      {
+        "file": "backend/apps/api/src/livingCanvasApplicationRoutes.ts",
+        "count": 2,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/projectIdentityApplicationRoutes.ts",
+        "count": 5,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/requirementsGenesisApplicationRoutes.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      },
+      {
+        "file": "backend/apps/api/src/synthesisApplicationRoutes.ts",
+        "count": 1,
+        "category": "unknown",
+        "allowed": false,
+        "reason": "Unclassified direct LLM gateway use."
+      }
+    ],
+    "frontendLocalArchitectureLogic": [
+      {
+        "file": "frontend/apps/web/src/components/ArchitectureSynthesisWorkspace.tsx",
+        "symbols": [
+          "synthesizeArchitectureAlternatives",
+          "runArchitectureSimulationSuite",
+          "applyArchitectureAlternative"
+        ]
+      },
+      {
+        "file": "frontend/apps/web/src/components/DesignBriefStudio.tsx",
+        "symbols": [
+          "distillRequirementsDeterministically",
+          "mergeRequirementsProposal"
+        ]
+      },
+      {
+        "file": "frontend/apps/web/src/store/workspaceStore.ts",
+        "symbols": [
+          "recommendArchitectureStyles",
+          "recommendInContext",
+          "evaluateArchitectureEvent",
+          "runDeterministicAudit",
+          "orchestrateDeterministicDesignActions"
+        ]
+      }
+    ],
+    "retiredSignalModulesStillPresent": [
+      "frontend/packages/brain-runtime/src/brainSignalEngine.ts",
+      "frontend/packages/brain-runtime/src/driverWeightSignals.ts",
+      "frontend/packages/brain-runtime/src/interfaceCritiqueSignals.ts",
+      "frontend/packages/brain-runtime/src/llmTaskContracts.ts",
+      "frontend/packages/brain-runtime/src/mindFactorySignals.ts",
+      "frontend/packages/brain-runtime/src/patternObligationSignals.ts",
+      "frontend/packages/brain-runtime/src/signalFactory.ts",
+      "frontend/packages/brain-runtime/src/styleConstraintSignals.ts"
+    ],
+    "orchestratorPresent": false,
+    "orchestratedMethods": [],
+    "brainReceiptReferenceCount": 0,
+    "contextGraph": {
+      "present": false,
+      "nodeKindCount": 0,
+      "edgeKindCount": 0,
+      "semanticChangeDetection": false,
+      "semanticStaleness": false,
+      "stageSlices": false
+    },
+    "legacyMigration": {
+      "present": false,
+      "canonicalAuthorityReceipt": false,
+      "legacyProjectionExplicit": false
+    }
+  },
+  "parity": {
+    "checkedPairs": 8,
+    "differences": [],
+    "exactParity": true
+  },
+  "acceptance": {
+    "oneArchitectureGatewayOwner": true,
+    "browserProjectionOnly": true,
+    "legacySignalEnginesRetired": true,
+    "typedContextGraph": true,
+    "semanticStaleness": true,
+    "legacyMigrationControlled": true,
+    "sharedPackageParity": true
+  },
+  "summary": {
+    "passed": 7,
+    "total": 7,
+    "status": "pass"
+  }
+}

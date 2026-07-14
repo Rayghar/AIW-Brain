@@ -1,0 +1,2917 @@
+{
+  "generatedAt": "2026-07-14T20:30:00.000Z",
+  "metrics": {
+    "approvedRepositoryCount": 30,
+    "compositionReadyPatternCount": 328,
+    "conformanceReadyPatternCount": 1,
+    "conversionRegistryCount": 30,
+    "directSourceClaimCoveragePercent": 0.3,
+    "editorialClaimObjectCount": 984,
+    "licenceReviewDistribution": {
+      "requires-review": 20,
+      "verified": 10
+    },
+    "liveRefreshBlockedCount": 30,
+    "liveRefreshCompletedCount": 0,
+    "patternClaimLineageCoveragePercent": 100,
+    "patternObjectCount": 328,
+    "reasoningReadyPatternCount": 1,
+    "scoringCalibratedPatternCount": 0,
+    "sourceClaimObjectCount": 14,
+    "sourceLifecycleDistribution": {
+      "approved": 30,
+      "candidate": 9,
+      "discovery-only": 8
+    },
+    "totalKnowledgeObjectCount": 1326,
+    "unresolvedContradictionCount": 0
+  },
+  "releaseId": "AKR-0.10.73.5",
+  "repositories": [
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-FINOS-CALM",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 91,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 91,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-AI-WITHOUT-EVALUATION",
+          "ANTI-CHATTY-SERVICES",
+          "ANTI-CIRCULAR-DEPENDENCIES",
+          "ANTI-COPY-PASTE-ARCHITECTURE",
+          "ANTI-GOD-SERVICE",
+          "ANTI-MAGIC-INTEGRATION",
+          "ANTI-MISSING-IDEMPOTENCY",
+          "ANTI-SINGLE-POINT-OF-FAILURE",
+          "ANTI-SNOWFLAKE-SERVER",
+          "ANTI-SYNCHRONOUS-CHAIN",
+          "ANTI-UNBOUNDED-QUEUE",
+          "ANTI-VENDOR-LOCK-IN-BY-ACCIDENT",
+          "ARCH-CACHE-CAPABILITY",
+          "ARCH-CI-CD-ORCHESTRATOR-CAPABILITY",
+          "ARCH-MESSAGE-BROKER-CAPABILITY",
+          "ARCH-OBJECT-STORAGE-CAPABILITY",
+          "ARCH-OBSERVABILITY-COLLECTOR-CAPABILITY",
+          "ARCH-RELATIONAL-DATA-CAPABILITY",
+          "ARCH-SCHEMA-REGISTRY-CAPABILITY",
+          "ARCH-SECRETS-MANAGER-CAPABILITY",
+          "PAT-API-AUTHORIZATION",
+          "PAT-ARCHITECTURE-DECISION-RECORD",
+          "PAT-ARCHITECTURE-DRIFT-DETECTION",
+          "PAT-ARCHITECTURE-FITNESS-FUNCTION",
+          "PAT-ARCHITECTURE-REVIEW-BOARD",
+          "PAT-AUDIT-TRAIL",
+          "PAT-BITEMPORAL-DATA",
+          "PAT-CACHE-ASIDE",
+          "PAT-CLAIM-LEVEL-PROVENANCE",
+          "PAT-CONSISTENT-HASHING",
+          "PAT-CQRS",
+          "PAT-DATA-CONTRACT",
+          "PAT-DATA-ENCRYPTION-AT-REST",
+          "PAT-DATA-ENCRYPTION-IN-TRANSIT",
+          "PAT-DATA-FABRIC",
+          "PAT-DATA-LAKEHOUSE",
+          "PAT-DATA-MASKING",
+          "PAT-DATA-MESH",
+          "PAT-DATA-PARTITIONING",
+          "PAT-DATA-QUALITY-GATE",
+          "PAT-DATABASE-PER-SERVICE",
+          "PAT-DEFENSE-IN-DEPTH",
+          "PAT-DESIGN-TIME-COMPLIANCE",
+          "PAT-DOCUMENT-STORE",
+          "PAT-EVENT-SOURCING",
+          "PAT-EVIDENCE-BASED-RECOMMENDATION",
+          "PAT-EXCEPTION-WITH-EXPIRY",
+          "PAT-FEDERATED-IDENTITY",
+          "PAT-GRAPH-STORE",
+          "PAT-IDENTITY-AWARE-PROXY",
+          "PAT-IMMUTABLE-LOG",
+          "PAT-KEY-ROTATION",
+          "PAT-KNOWLEDGE-RELEASE",
+          "PAT-LEAST-PRIVILEGE",
+          "PAT-MATERIALIZED-VIEW",
+          "PAT-MUTUAL-TLS",
+          "PAT-NETWORK-SEGMENTATION",
+          "PAT-POLICY-ENFORCEMENT-POINT",
+          "PAT-POLICY-GATE",
+          "PAT-POLYGLOT-PERSISTENCE",
+          "PAT-PRIVACY-BY-DESIGN",
+          "PAT-PRIVATE-ENDPOINT",
+          "PAT-READ-REPLICA",
+          "PAT-READ-THROUGH-CACHE",
+          "PAT-REFERENCE-ARCHITECTURE",
+          "PAT-RUNTIME-CONFORMANCE",
+          "PAT-SCHEMA-REGISTRY",
+          "PAT-SECRETS-MANAGEMENT",
+          "PAT-SECURE-DEFAULTS",
+          "PAT-SECURITY-TOKEN-SERVICE",
+          "PAT-SHARDING",
+          "PAT-SHARED-DATABASE",
+          "PAT-SOFT-DELETE",
+          "PAT-SOFTWARE-SUPPLY-CHAIN-CONTROLS",
+          "PAT-TAMPER-EVIDENT-LOG",
+          "PAT-TENANT-ISOLATION",
+          "PAT-THREAT-MODELING",
+          "PAT-TIME-SERIES-STORE",
+          "PAT-TOKEN-EXCHANGE",
+          "PAT-TOKENIZATION",
+          "PAT-WEB-APPLICATION-FIREWALL",
+          "PAT-WRITE-BEHIND-CACHE",
+          "PAT-WRITE-THROUGH-CACHE",
+          "PAT-ZERO-TRUST",
+          "STYLE-MICROKERNEL",
+          "STYLE-MODULAR-MONOLITH",
+          "STYLE-SERVERLESS",
+          "TPL-ASYNCAPI-EVENT-MESH",
+          "TPL-EDGE-PROCESSING-TOPOLOGY",
+          "TPL-SECURE-API-SERVICE",
+          "TPL-ZERO-TRUST-SERVICE-BOUNDARY"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "interoperability adapter",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:1873acb4ee22bdd53b421d44c0798689bdf8ddf7a0f5f90c1765957649787041",
+      "ingestion": {
+        "allowedPaths": [
+          "calm/**",
+          "calm-models/**",
+          "docs/calm/**",
+          "docs/docs/**",
+          "calm-ai/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/build/**",
+          "**/coverage/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 750000,
+        "maxFilesPerRefresh": 180,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "FINOS Common Architecture Language Model (CALM)",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "finos/architecture-as-code",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 215,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 215,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-AI-WITHOUT-EVALUATION",
+          "ANTI-BIG-BALL-OF-MUD",
+          "ANTI-CACHE-STAMPEDE",
+          "ANTI-CHATTY-SERVICES",
+          "ANTI-CIRCULAR-DEPENDENCIES",
+          "ANTI-COPY-PASTE-ARCHITECTURE",
+          "ANTI-DATA-SWAMP",
+          "ANTI-DISTRIBUTED-MONOLITH",
+          "ANTI-GOD-SERVICE",
+          "ANTI-GOLDEN-HAMMER",
+          "ANTI-LONG-LIVED-FEATURE-BRANCH",
+          "ANTI-MAGIC-INTEGRATION",
+          "ANTI-MANUAL-CONFIGURATION-DRIFT",
+          "ANTI-MISSING-IDEMPOTENCY",
+          "ANTI-NANO-SERVICES",
+          "ANTI-OBSERVABILITY-AS-AFTERTHOUGHT",
+          "ANTI-PREMATURE-MICROSERVICES",
+          "ANTI-RETRY-STORM",
+          "ANTI-SCHEMA-ON-WISH",
+          "ANTI-SECRETS-IN-SOURCE",
+          "ANTI-SECURITY-BY-PERIMETER-ONLY",
+          "ANTI-SHARED-DATABASE-COUPLING",
+          "ANTI-SHARED-MUTABLE-STATE",
+          "ANTI-SINGLE-POINT-OF-FAILURE",
+          "ANTI-SNOWFLAKE-SERVER",
+          "ANTI-SYNCHRONOUS-CHAIN",
+          "ANTI-THUNDERING-HERD",
+          "ANTI-UNBOUNDED-QUEUE",
+          "ANTI-UNVERSIONED-API",
+          "ANTI-VENDOR-LOCK-IN-BY-ACCIDENT",
+          "ARCH-API-GATEWAY-CAPABILITY",
+          "ARCH-CACHE-CAPABILITY",
+          "ARCH-CI-CD-ORCHESTRATOR-CAPABILITY",
+          "ARCH-DOCUMENT-DATA-CAPABILITY",
+          "ARCH-EVENT-ROUTER-CAPABILITY",
+          "ARCH-FEATURE-STORE-CAPABILITY",
+          "ARCH-IDENTITY-PROVIDER-CAPABILITY",
+          "ARCH-MESSAGE-BROKER-CAPABILITY",
+          "ARCH-OBJECT-STORAGE-CAPABILITY",
+          "ARCH-OBSERVABILITY-COLLECTOR-CAPABILITY",
+          "ARCH-POLICY-ENGINE-CAPABILITY",
+          "ARCH-RELATIONAL-DATA-CAPABILITY",
+          "ARCH-SCHEMA-REGISTRY-CAPABILITY",
+          "ARCH-SECRETS-MANAGER-CAPABILITY",
+          "ARCH-SERVICE-MESH-CAPABILITY",
+          "ARCH-WORKFLOW-ENGINE-CAPABILITY",
+          "PAT-ACTIVE-ACTIVE",
+          "PAT-ACTIVE-PASSIVE",
+          "PAT-ADAPTER",
+          "PAT-AMBASSADOR",
+          "PAT-ANTI-CORRUPTION-LAYER",
+          "PAT-API-AUTHORIZATION",
+          "PAT-API-COMPOSITION",
+          "PAT-API-GATEWAY",
+          "PAT-AUDIT-OBSERVABILITY",
+          "PAT-AUDIT-TRAIL",
+          "PAT-BACKEND-FOR-FRONTEND",
+          "PAT-BACKUP-AND-RESTORE",
+          "PAT-BITEMPORAL-DATA",
+          "PAT-BRANCH-BY-ABSTRACTION",
+          "PAT-BROWNOUT",
+          "PAT-BULKHEAD",
+          "PAT-BUSINESS-KPI-MONITORING",
+          "PAT-CACHE-ASIDE",
+          "PAT-CANONICAL-DATA-MODEL",
+          "PAT-CELL-BASED-ARCHITECTURE",
+          "PAT-CHANGE-DATA-CAPTURE",
+          "PAT-CHAOS-ENGINEERING",
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-CIRCUIT-MEDIATED-INTEGRATION",
+          "PAT-CLAIM-CHECK",
+          "PAT-CLEAN-ARCHITECTURE",
+          "PAT-CLIENT-SIDE-RENDERING",
+          "PAT-COMMAND-PATTERN",
+          "PAT-COMPETING-CONSUMERS",
+          "PAT-CONSISTENT-HASHING",
+          "PAT-CONTENT-BASED-ROUTER",
+          "PAT-CONTINUOUS-PROFILING",
+          "PAT-CORRELATION-ID",
+          "PAT-CORRELATION-IDENTIFIER",
+          "PAT-CQRS",
+          "PAT-DATA-CONTRACT",
+          "PAT-DATA-ENCRYPTION-AT-REST",
+          "PAT-DATA-ENCRYPTION-IN-TRANSIT",
+          "PAT-DATA-FABRIC",
+          "PAT-DATA-LAKEHOUSE",
+          "PAT-DATA-MASKING",
+          "PAT-DATA-MESH",
+          "PAT-DATA-PARTITIONING",
+          "PAT-DATA-QUALITY-GATE",
+          "PAT-DATABASE-PER-SERVICE",
+          "PAT-DEAD-LETTER-CHANNEL",
+          "PAT-DEFENSE-IN-DEPTH",
+          "PAT-DEPENDENCY-INJECTION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-DISTRIBUTED-TRACING",
+          "PAT-DOCUMENT-STORE",
+          "PAT-ERROR-BUDGET",
+          "PAT-EVENT-CARRIED-STATE-TRANSFER",
+          "PAT-EVENT-DRIVEN-ARCHITECTURE",
+          "PAT-EVENT-NOTIFICATION",
+          "PAT-EVENT-SOURCING",
+          "PAT-FACADE",
+          "PAT-FAILOVER",
+          "PAT-FALLBACK",
+          "PAT-FAULT-ISOLATION",
+          "PAT-FEDERATED-IDENTITY",
+          "PAT-FIRE-AND-FORGET",
+          "PAT-GATEWAY-AGGREGATION",
+          "PAT-GATEWAY-OFFLOADING",
+          "PAT-GEO-REDUNDANCY",
+          "PAT-GRACEFUL-DEGRADATION",
+          "PAT-GRAPH-STORE",
+          "PAT-HEALTH-ENDPOINT-MONITORING",
+          "PAT-HEALTH-PROBES",
+          "PAT-HEDGED-REQUESTS",
+          "PAT-HEXAGONAL-ARCHITECTURE",
+          "PAT-IDEMPOTENT-CONSUMER",
+          "PAT-IDENTITY-AWARE-PROXY",
+          "PAT-IMMUTABLE-LOG",
+          "PAT-INBOX-PATTERN",
+          "PAT-KEY-ROTATION",
+          "PAT-LAYERED-ARCHITECTURE",
+          "PAT-LEADER-ELECTION",
+          "PAT-LEAST-PRIVILEGE",
+          "PAT-LOAD-SHEDDING",
+          "PAT-LOG-AGGREGATION",
+          "PAT-MATERIALIZED-VIEW",
+          "PAT-MESSAGE-BROKER",
+          "PAT-MESSAGE-ROUTER",
+          "PAT-MESSAGE-TRANSLATOR",
+          "PAT-METRICS-AND-ALERTING",
+          "PAT-MICROKERNEL-ARCHITECTURE",
+          "PAT-MODULAR-MONOLITH",
+          "PAT-MUTUAL-TLS",
+          "PAT-NETWORK-SEGMENTATION",
+          "PAT-ONION-ARCHITECTURE",
+          "PAT-OPENTELEMETRY-INSTRUMENTATION",
+          "PAT-PLUGIN-ARCHITECTURE",
+          "PAT-POLICY-ENFORCEMENT-POINT",
+          "PAT-POLLING-PUBLISHER",
+          "PAT-POLYGLOT-PERSISTENCE",
+          "PAT-PRIORITY-QUEUE",
+          "PAT-PRIVACY-BY-DESIGN",
+          "PAT-PRIVATE-ENDPOINT",
+          "PAT-PROTOCOL-BRIDGE",
+          "PAT-PUBLISH-SUBSCRIBE",
+          "PAT-QUEUE-BASED-LOAD-LEVELING",
+          "PAT-QUORUM",
+          "PAT-RATE-LIMITING",
+          "PAT-READ-REPLICA",
+          "PAT-READ-THROUGH-CACHE",
+          "PAT-REAL-USER-MONITORING",
+          "PAT-REPOSITORY-PATTERN",
+          "PAT-REQUEST-REPLY",
+          "PAT-RESEQUENCER",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-SCATTER-GATHER",
+          "PAT-SCHEMA-REGISTRY",
+          "PAT-SECRETS-MANAGEMENT",
+          "PAT-SECURE-DEFAULTS",
+          "PAT-SECURITY-TOKEN-SERVICE",
+          "PAT-SERVER-SIDE-RENDERING",
+          "PAT-SERVICE-DEPENDENCY-MAP",
+          "PAT-SERVICE-LAYER",
+          "PAT-SERVICE-MESH",
+          "PAT-SHARDING",
+          "PAT-SHARED-DATABASE",
+          "PAT-SIDECAR",
+          "PAT-SLO-BASED-OPERATIONS",
+          "PAT-SOFT-DELETE",
+          "PAT-SOFTWARE-SUPPLY-CHAIN-CONTROLS",
+          "PAT-SPECIFICATION-PATTERN",
+          "PAT-STRANGLER-FIG",
+          "PAT-STRATEGY-PATTERN",
+          "PAT-STRUCTURED-LOGGING",
+          "PAT-SYNTHETIC-MONITORING",
+          "PAT-TAMPER-EVIDENT-LOG",
+          "PAT-TENANT-ISOLATION",
+          "PAT-THREAT-MODELING",
+          "PAT-THROTTLING",
+          "PAT-TIME-SERIES-STORE",
+          "PAT-TIMEOUT",
+          "PAT-TOKEN-EXCHANGE",
+          "PAT-TOKENIZATION",
+          "PAT-TRANSACTIONAL-OUTBOX",
+          "PAT-UNIT-OF-WORK",
+          "PAT-VERTICAL-SLICE-ARCHITECTURE",
+          "PAT-WEB-APPLICATION-FIREWALL",
+          "PAT-WRITE-BEHIND-CACHE",
+          "PAT-WRITE-THROUGH-CACHE",
+          "PAT-ZERO-TRUST",
+          "STYLE-DATA-MESH",
+          "STYLE-EVENT-DRIVEN",
+          "STYLE-HEXAGONAL",
+          "STYLE-LAYERED",
+          "STYLE-MICROKERNEL",
+          "STYLE-MICROSERVICES",
+          "STYLE-MODULAR-MONOLITH",
+          "STYLE-PIPE-AND-FILTER",
+          "STYLE-PLATFORM-CENTRIC",
+          "STYLE-SERVERLESS",
+          "STYLE-SPACE-BASED",
+          "TPL-ASYNCAPI-EVENT-MESH",
+          "TPL-EDGE-PROCESSING-TOPOLOGY",
+          "TPL-EVENT-DRIVEN-SERVICE",
+          "TPL-HYBRID-INTEGRATION-HUB",
+          "TPL-MODULAR-MONOLITH-STARTER",
+          "TPL-OBSERVABLE-MICROSERVICE",
+          "TPL-PAYMENT-PROCESSING-CELL",
+          "TPL-PLATFORM-GOLDEN-PATH",
+          "TPL-SECURE-API-SERVICE",
+          "TPL-SERVICE-MESH-BASELINE",
+          "TPL-TRANSACTIONAL-OUTBOX-TOPOLOGY",
+          "TPL-ZERO-TRUST-SERVICE-BOUNDARY"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "obligation",
+          "risk"
+        ]
+      },
+      "fingerprint": "sha256:96869157ce5a5bab04df27ff7c3dee83740886cfba462304dc0a7786677a6883",
+      "ingestion": {
+        "allowedPaths": [
+          "docs/patterns/**",
+          "docs/antipatterns/**",
+          "docs/best-practices/**",
+          "docs/reference-architectures/**",
+          "docs/guide/**",
+          "docs/data-guide/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/media/**",
+          "**/*.png",
+          "**/*.jpg",
+          "**/*.svg"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 900000,
+        "maxFilesPerRefresh": 240,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Microsoft Azure Architecture Center",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "MicrosoftDocs/architecture-center",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 0,
+        "status": "catalogued-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:eab5e62f24a782b4e1e912c20319fabbb1ee863607aa3045fba8d5885904d13f",
+      "ingestion": {
+        "allowedPaths": [
+          "**/README.md",
+          "**/template.yaml",
+          "**/template.yml",
+          "**/*.json",
+          "**/*.tf",
+          "**/*.ts",
+          "**/*.py",
+          "_pattern-model/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/.aws-sam/**",
+          "**/dist/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 600000,
+        "maxFilesPerRefresh": 220,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "AWS Serverless Patterns Collection",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "aws-samples/serverless-patterns",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 35,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 35,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-GOLDEN-HAMMER",
+          "ANTI-LONG-LIVED-FEATURE-BRANCH",
+          "ANTI-OBSERVABILITY-AS-AFTERTHOUGHT",
+          "ANTI-SECURITY-BY-PERIMETER-ONLY",
+          "ANTI-SHARED-DATABASE-COUPLING",
+          "ANTI-THUNDERING-HERD",
+          "PAT-ACTIVE-ACTIVE",
+          "PAT-ACTIVE-PASSIVE",
+          "PAT-BACKUP-AND-RESTORE",
+          "PAT-BROWNOUT",
+          "PAT-BULKHEAD",
+          "PAT-CELL-BASED-ARCHITECTURE",
+          "PAT-CHAOS-ENGINEERING",
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-FAILOVER",
+          "PAT-FALLBACK",
+          "PAT-FAULT-ISOLATION",
+          "PAT-GEO-REDUNDANCY",
+          "PAT-GRACEFUL-DEGRADATION",
+          "PAT-HEALTH-ENDPOINT-MONITORING",
+          "PAT-HEDGED-REQUESTS",
+          "PAT-LEADER-ELECTION",
+          "PAT-LOAD-SHEDDING",
+          "PAT-PRIORITY-QUEUE",
+          "PAT-QUEUE-BASED-LOAD-LEVELING",
+          "PAT-QUORUM",
+          "PAT-RATE-LIMITING",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-THROTTLING",
+          "PAT-TIMEOUT",
+          "TPL-MODULAR-MONOLITH-STARTER",
+          "TPL-PAYMENT-PROCESSING-CELL",
+          "TPL-PLATFORM-GOLDEN-PATH",
+          "TPL-TRANSACTIONAL-OUTBOX-TOPOLOGY"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:3342e1d56cb978b0c3652075889617257298057e047b7a2e2d586d21b7eef685",
+      "ingestion": {
+        "allowedPaths": [
+          "source/patterns/**/README.adoc",
+          "source/patterns/**/index.ts",
+          "source/patterns/**/lib/**",
+          "source/use_cases/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/coverage/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 500000,
+        "maxFilesPerRefresh": 200,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution"
+      },
+      "lifecycleStatus": "approved",
+      "name": "AWS Solutions Constructs",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "awslabs/aws-solutions-constructs",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 24,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 24,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-A-B-DEPLOYMENT",
+          "PAT-AVAILABILITY-ZONE-DISTRIBUTION",
+          "PAT-BLUE-GREEN-DEPLOYMENT",
+          "PAT-CANARY-RELEASE",
+          "PAT-CONTAINERIZATION",
+          "PAT-DEPLOYMENT-STAMP",
+          "PAT-EDGE-DEPLOYMENT",
+          "PAT-ENVIRONMENT-PROMOTION",
+          "PAT-FUNCTION-AS-A-SERVICE",
+          "PAT-HYBRID-CLOUD",
+          "PAT-IMMUTABLE-INFRASTRUCTURE",
+          "PAT-LANDING-ZONE",
+          "PAT-MULTI-CLOUD",
+          "PAT-MULTI-REGION-DEPLOYMENT",
+          "PAT-PROGRESSIVE-DELIVERY",
+          "PAT-RECREATE-DEPLOYMENT",
+          "PAT-RELEASE-TRAIN",
+          "PAT-ROLLING-DEPLOYMENT",
+          "PAT-SERVERLESS-ARCHITECTURE",
+          "PAT-SHADOW-DEPLOYMENT",
+          "TPL-AGENTIC-WORKFLOW-WITH-APPROVAL",
+          "TPL-AI-MODEL-GATEWAY",
+          "TPL-MULTI-REGION-ACTIVE-ACTIVE",
+          "TPL-MULTI-TENANT-SAAS"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:5a7073759fcdb5631ee316969dce28848d4c984646ee50fbe0ff241535665c9a",
+      "ingestion": {
+        "allowedPaths": [
+          "avm/res/**",
+          "avm/ptn/**",
+          "modules/**",
+          "docs/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/tests/**/outputs/**",
+          "**/.terraform/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 180,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Azure Common Resource Modules / Verified Modules",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "Azure/ResourceModules",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 39,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 39,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-AI-WITHOUT-EVALUATION",
+          "ANTI-CIRCULAR-DEPENDENCIES",
+          "ANTI-GOD-SERVICE",
+          "ANTI-MISSING-IDEMPOTENCY",
+          "ANTI-SNOWFLAKE-SERVER",
+          "ANTI-SYNCHRONOUS-CHAIN",
+          "ARCH-MESSAGE-BROKER-CAPABILITY",
+          "ARCH-OBJECT-STORAGE-CAPABILITY",
+          "ARCH-SCHEMA-REGISTRY-CAPABILITY",
+          "ARCH-SECRETS-MANAGER-CAPABILITY",
+          "PAT-BITEMPORAL-DATA",
+          "PAT-CACHE-ASIDE",
+          "PAT-CONSISTENT-HASHING",
+          "PAT-CQRS",
+          "PAT-DATA-CONTRACT",
+          "PAT-DATA-FABRIC",
+          "PAT-DATA-LAKEHOUSE",
+          "PAT-DATA-MESH",
+          "PAT-DATA-PARTITIONING",
+          "PAT-DATA-QUALITY-GATE",
+          "PAT-DATABASE-PER-SERVICE",
+          "PAT-DOCUMENT-STORE",
+          "PAT-EVENT-SOURCING",
+          "PAT-GRAPH-STORE",
+          "PAT-IMMUTABLE-LOG",
+          "PAT-MATERIALIZED-VIEW",
+          "PAT-POLYGLOT-PERSISTENCE",
+          "PAT-READ-REPLICA",
+          "PAT-READ-THROUGH-CACHE",
+          "PAT-SCHEMA-REGISTRY",
+          "PAT-SHARDING",
+          "PAT-SHARED-DATABASE",
+          "PAT-SOFT-DELETE",
+          "PAT-TIME-SERIES-STORE",
+          "PAT-WRITE-BEHIND-CACHE",
+          "PAT-WRITE-THROUGH-CACHE",
+          "STYLE-MICROKERNEL",
+          "STYLE-MODULAR-MONOLITH",
+          "STYLE-SERVERLESS"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:ebde8363d36aa00dfc2b16dbdb29852238a47b34bea2fb7b9aa22185007afc3d",
+      "ingestion": {
+        "allowedPaths": [
+          "modules/**",
+          "blueprints/**",
+          "fast/**",
+          "samples/**"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/.terraform/**",
+          "**/generated/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 200,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Google Cloud Foundation Fabric",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-DDD-CREW",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 18,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 18,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-AGGREGATE",
+          "PAT-APPLICATION-SERVICE",
+          "PAT-BOUNDED-CONTEXT",
+          "PAT-CONFORMIST-CONTEXT",
+          "PAT-CONTEXT-MAP",
+          "PAT-CUSTOMER-SUPPLIER-CONTEXT",
+          "PAT-DOMAIN-EVENT",
+          "PAT-DOMAIN-SERVICE",
+          "PAT-DOMAIN-STORYTELLING",
+          "PAT-ENTITY",
+          "PAT-EVENT-STORMING",
+          "PAT-EXAMPLE-MAPPING",
+          "PAT-OPEN-HOST-SERVICE",
+          "PAT-PUBLISHED-LANGUAGE",
+          "PAT-SAGA-BOUNDARY",
+          "PAT-SEPARATE-WAYS",
+          "PAT-SHARED-KERNEL",
+          "PAT-VALUE-OBJECT"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "evidence",
+          "fitness test",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:cd8ab37706af9a468a87c9a842a91a3f4743afec97021acf7c6fd83080447541",
+      "ingestion": {
+        "allowedPaths": [
+          "README.md",
+          "resources/**",
+          "docs/**"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.jpg"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 500000,
+        "maxFilesPerRefresh": 80,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Domain-Driven Design Crew Methods",
+      "recommendedPosture": "Adapt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-APACHE-CAMEL",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 48,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 48,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-BIG-BALL-OF-MUD",
+          "ANTI-MANUAL-CONFIGURATION-DRIFT",
+          "ANTI-NANO-SERVICES",
+          "ANTI-RETRY-STORM",
+          "ANTI-SCHEMA-ON-WISH",
+          "ANTI-SHARED-MUTABLE-STATE",
+          "ARCH-API-GATEWAY-CAPABILITY",
+          "ARCH-FEATURE-STORE-CAPABILITY",
+          "ARCH-IDENTITY-PROVIDER-CAPABILITY",
+          "ARCH-WORKFLOW-ENGINE-CAPABILITY",
+          "PAT-AMBASSADOR",
+          "PAT-API-GATEWAY",
+          "PAT-CANONICAL-DATA-MODEL",
+          "PAT-CHANGE-DATA-CAPTURE",
+          "PAT-CIRCUIT-MEDIATED-INTEGRATION",
+          "PAT-CLAIM-CHECK",
+          "PAT-COMPETING-CONSUMERS",
+          "PAT-CONTENT-BASED-ROUTER",
+          "PAT-CORRELATION-IDENTIFIER",
+          "PAT-DEAD-LETTER-CHANNEL",
+          "PAT-EVENT-CARRIED-STATE-TRANSFER",
+          "PAT-EVENT-DRIVEN-ARCHITECTURE",
+          "PAT-EVENT-NOTIFICATION",
+          "PAT-FIRE-AND-FORGET",
+          "PAT-GATEWAY-AGGREGATION",
+          "PAT-GATEWAY-OFFLOADING",
+          "PAT-IDEMPOTENT-CONSUMER",
+          "PAT-INBOX-PATTERN",
+          "PAT-MESSAGE-BROKER",
+          "PAT-MESSAGE-ROUTER",
+          "PAT-MESSAGE-TRANSLATOR",
+          "PAT-POLLING-PUBLISHER",
+          "PAT-PROTOCOL-BRIDGE",
+          "PAT-PUBLISH-SUBSCRIBE",
+          "PAT-REQUEST-REPLY",
+          "PAT-RESEQUENCER",
+          "PAT-SCATTER-GATHER",
+          "PAT-SERVICE-MESH",
+          "PAT-SIDECAR",
+          "PAT-TRANSACTIONAL-OUTBOX",
+          "STYLE-EVENT-DRIVEN",
+          "STYLE-HEXAGONAL",
+          "STYLE-PLATFORM-CENTRIC",
+          "STYLE-SPACE-BASED",
+          "TPL-EVENT-DRIVEN-SERVICE",
+          "TPL-HYBRID-INTEGRATION-HUB",
+          "TPL-OBSERVABLE-MICROSERVICE",
+          "TPL-SERVICE-MESH-BASELINE"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:7797efb348b52473720fd771057fb000fc7be104406d028d8e290a24ddbdabea",
+      "ingestion": {
+        "allowedPaths": [
+          "core/camel-core-model/src/main/java/**",
+          "core/camel-core-model/src/generated/**",
+          "components/**/src/main/docs/**",
+          "docs/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/target/**",
+          "**/generated-test-resources/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 220,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Apache Camel Enterprise Integration Patterns",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "apache/camel",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-ASYNCAPI",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 48,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 48,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-BIG-BALL-OF-MUD",
+          "ANTI-MANUAL-CONFIGURATION-DRIFT",
+          "ANTI-NANO-SERVICES",
+          "ANTI-RETRY-STORM",
+          "ANTI-SCHEMA-ON-WISH",
+          "ANTI-SHARED-MUTABLE-STATE",
+          "ARCH-API-GATEWAY-CAPABILITY",
+          "ARCH-FEATURE-STORE-CAPABILITY",
+          "ARCH-IDENTITY-PROVIDER-CAPABILITY",
+          "ARCH-WORKFLOW-ENGINE-CAPABILITY",
+          "PAT-AMBASSADOR",
+          "PAT-API-GATEWAY",
+          "PAT-CANONICAL-DATA-MODEL",
+          "PAT-CHANGE-DATA-CAPTURE",
+          "PAT-CIRCUIT-MEDIATED-INTEGRATION",
+          "PAT-CLAIM-CHECK",
+          "PAT-COMPETING-CONSUMERS",
+          "PAT-CONTENT-BASED-ROUTER",
+          "PAT-CORRELATION-IDENTIFIER",
+          "PAT-DEAD-LETTER-CHANNEL",
+          "PAT-EVENT-CARRIED-STATE-TRANSFER",
+          "PAT-EVENT-DRIVEN-ARCHITECTURE",
+          "PAT-EVENT-NOTIFICATION",
+          "PAT-FIRE-AND-FORGET",
+          "PAT-GATEWAY-AGGREGATION",
+          "PAT-GATEWAY-OFFLOADING",
+          "PAT-IDEMPOTENT-CONSUMER",
+          "PAT-INBOX-PATTERN",
+          "PAT-MESSAGE-BROKER",
+          "PAT-MESSAGE-ROUTER",
+          "PAT-MESSAGE-TRANSLATOR",
+          "PAT-POLLING-PUBLISHER",
+          "PAT-PROTOCOL-BRIDGE",
+          "PAT-PUBLISH-SUBSCRIBE",
+          "PAT-REQUEST-REPLY",
+          "PAT-RESEQUENCER",
+          "PAT-SCATTER-GATHER",
+          "PAT-SERVICE-MESH",
+          "PAT-SIDECAR",
+          "PAT-TRANSACTIONAL-OUTBOX",
+          "STYLE-EVENT-DRIVEN",
+          "STYLE-HEXAGONAL",
+          "STYLE-PLATFORM-CENTRIC",
+          "STYLE-SPACE-BASED",
+          "TPL-EVENT-DRIVEN-SERVICE",
+          "TPL-HYBRID-INTEGRATION-HUB",
+          "TPL-OBSERVABLE-MICROSERVICE",
+          "TPL-SERVICE-MESH-BASELINE"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:23c6594719370004c9e85fb3f2b46d2bb54124720227368ebd7f237f1cac46f7",
+      "ingestion": {
+        "allowedPaths": [
+          "spec/**",
+          "examples/**",
+          "README.md"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 750000,
+        "maxFilesPerRefresh": 100,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution"
+      },
+      "lifecycleStatus": "approved",
+      "name": "AsyncAPI Specification and Tooling",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "asyncapi/spec",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-OAM-SPEC",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 35,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 35,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ARCH-DISTRIBUTED-LOCK-CAPABILITY",
+          "ARCH-MODEL-GATEWAY-CAPABILITY",
+          "ARCH-SERVICE-CATALOG-CAPABILITY",
+          "ARCH-VECTOR-SEARCH-CAPABILITY",
+          "PAT-AUTOSCALING",
+          "PAT-CENTRALIZED-CONFIGURATION",
+          "PAT-CONFIGURATION-AS-CODE",
+          "PAT-CONTROL-PLANE",
+          "PAT-DECLARATIVE-CONFIGURATION",
+          "PAT-EPHEMERAL-ENVIRONMENT",
+          "PAT-EXTERNALIZED-CONFIGURATION",
+          "PAT-FEATURE-FLAG",
+          "PAT-GITOPS",
+          "PAT-GOLDEN-PATH",
+          "PAT-INFRASTRUCTURE-AS-CODE",
+          "PAT-INTERNAL-DEVELOPER-PLATFORM",
+          "PAT-MULTI-TENANCY",
+          "PAT-NAMESPACE-ISOLATION",
+          "PAT-OPERATOR-PATTERN",
+          "PAT-PLATFORM-ENGINEERING",
+          "PAT-POLICY-AS-CODE",
+          "PAT-RECONCILIATION-LOOP",
+          "PAT-RESOURCE-QUOTA",
+          "PAT-SELF-SERVICE-PROVISIONING",
+          "PAT-SERVICE-DISCOVERY",
+          "PAT-SERVICE-TEMPLATE",
+          "PAT-SOFTWARE-CATALOG",
+          "PAT-WORKLOAD-IDENTITY",
+          "STYLE-CELL-BASED",
+          "STYLE-CLEAN",
+          "STYLE-SERVICE-ORIENTED",
+          "TPL-CQRS-SERVICE",
+          "TPL-DATA-LAKEHOUSE-PLATFORM",
+          "TPL-GITOPS-DELIVERY-PIPELINE",
+          "TPL-LOW-CONNECTIVITY-SYNC"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:d3f559cd7a22b87086f649703c8ce50491b26a9a26f4591fa5ad969b53975f87",
+      "ingestion": {
+        "allowedPaths": [
+          "core/**",
+          "schemas/**",
+          "*.md"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/vendor/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 500000,
+        "maxFilesPerRefresh": 100,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Open Application Model",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "oam-dev/spec",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-K8S-PATTERNS",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 78,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 78,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ARCH-DISTRIBUTED-LOCK-CAPABILITY",
+          "ARCH-DOCUMENT-DATA-CAPABILITY",
+          "ARCH-EVENT-ROUTER-CAPABILITY",
+          "ARCH-MODEL-GATEWAY-CAPABILITY",
+          "ARCH-POLICY-ENGINE-CAPABILITY",
+          "ARCH-SERVICE-CATALOG-CAPABILITY",
+          "ARCH-SERVICE-MESH-CAPABILITY",
+          "ARCH-VECTOR-SEARCH-CAPABILITY",
+          "PAT-A-B-DEPLOYMENT",
+          "PAT-AUDIT-OBSERVABILITY",
+          "PAT-AUTOSCALING",
+          "PAT-AVAILABILITY-ZONE-DISTRIBUTION",
+          "PAT-BLUE-GREEN-DEPLOYMENT",
+          "PAT-BUSINESS-KPI-MONITORING",
+          "PAT-CANARY-RELEASE",
+          "PAT-CENTRALIZED-CONFIGURATION",
+          "PAT-CONFIGURATION-AS-CODE",
+          "PAT-CONTAINERIZATION",
+          "PAT-CONTINUOUS-PROFILING",
+          "PAT-CONTROL-PLANE",
+          "PAT-CORRELATION-ID",
+          "PAT-DECLARATIVE-CONFIGURATION",
+          "PAT-DEPLOYMENT-STAMP",
+          "PAT-DISTRIBUTED-TRACING",
+          "PAT-EDGE-DEPLOYMENT",
+          "PAT-ENVIRONMENT-PROMOTION",
+          "PAT-EPHEMERAL-ENVIRONMENT",
+          "PAT-ERROR-BUDGET",
+          "PAT-EXTERNALIZED-CONFIGURATION",
+          "PAT-FEATURE-FLAG",
+          "PAT-FUNCTION-AS-A-SERVICE",
+          "PAT-GITOPS",
+          "PAT-GOLDEN-PATH",
+          "PAT-HEALTH-PROBES",
+          "PAT-HYBRID-CLOUD",
+          "PAT-IMMUTABLE-INFRASTRUCTURE",
+          "PAT-INFRASTRUCTURE-AS-CODE",
+          "PAT-INTERNAL-DEVELOPER-PLATFORM",
+          "PAT-LANDING-ZONE",
+          "PAT-LOG-AGGREGATION",
+          "PAT-METRICS-AND-ALERTING",
+          "PAT-MULTI-CLOUD",
+          "PAT-MULTI-REGION-DEPLOYMENT",
+          "PAT-MULTI-TENANCY",
+          "PAT-NAMESPACE-ISOLATION",
+          "PAT-OPENTELEMETRY-INSTRUMENTATION",
+          "PAT-OPERATOR-PATTERN",
+          "PAT-PLATFORM-ENGINEERING",
+          "PAT-POLICY-AS-CODE",
+          "PAT-PROGRESSIVE-DELIVERY",
+          "PAT-REAL-USER-MONITORING",
+          "PAT-RECONCILIATION-LOOP",
+          "PAT-RECREATE-DEPLOYMENT",
+          "PAT-RELEASE-TRAIN",
+          "PAT-RESOURCE-QUOTA",
+          "PAT-ROLLING-DEPLOYMENT",
+          "PAT-SELF-SERVICE-PROVISIONING",
+          "PAT-SERVERLESS-ARCHITECTURE",
+          "PAT-SERVICE-DEPENDENCY-MAP",
+          "PAT-SERVICE-DISCOVERY",
+          "PAT-SERVICE-TEMPLATE",
+          "PAT-SHADOW-DEPLOYMENT",
+          "PAT-SLO-BASED-OPERATIONS",
+          "PAT-SOFTWARE-CATALOG",
+          "PAT-STRUCTURED-LOGGING",
+          "PAT-SYNTHETIC-MONITORING",
+          "PAT-WORKLOAD-IDENTITY",
+          "STYLE-CELL-BASED",
+          "STYLE-CLEAN",
+          "STYLE-SERVICE-ORIENTED",
+          "TPL-AGENTIC-WORKFLOW-WITH-APPROVAL",
+          "TPL-AI-MODEL-GATEWAY",
+          "TPL-CQRS-SERVICE",
+          "TPL-DATA-LAKEHOUSE-PLATFORM",
+          "TPL-GITOPS-DELIVERY-PIPELINE",
+          "TPL-LOW-CONNECTIVITY-SYNC",
+          "TPL-MULTI-REGION-ACTIVE-ACTIVE",
+          "TPL-MULTI-TENANT-SAAS"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:8a9e8a4b16bbe7b70b395941c83cf0862807ed32c7823cc0655e147b31293ca6",
+      "ingestion": {
+        "allowedPaths": [
+          "**/README.md",
+          "**/*.yaml",
+          "**/*.yml",
+          "**/*.json",
+          "**/*.sh"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/target/**",
+          "**/node_modules/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 500000,
+        "maxFilesPerRefresh": 140,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Kubernetes Patterns Examples",
+      "recommendedPosture": "Adapt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "k8spatterns/examples",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:daa2208b7d0f71e5e0da310ed1bf45b3565db39225f4c60ceba9911b00b6c612",
+      "ingestion": {
+        "allowedPaths": [
+          "samples/**",
+          "patterns/**",
+          "*.md",
+          "**/*.yaml",
+          "**/*.yml"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/node_modules/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 500000,
+        "maxFilesPerRefresh": 140,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Service Mesh Patterns",
+      "recommendedPosture": "Adapt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-LIKEC4",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 0,
+        "status": "catalogued-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:e7b69eadee76ce6d134cc403d1f74e379a8a0e8c664b10ee033d5ff1a7974124",
+      "ingestion": {
+        "allowedPaths": [
+          "packages/**",
+          "docs/**",
+          "examples/**",
+          "README.md"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 80,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "LikeC4",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "likec4/likec4",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 0,
+        "status": "catalogued-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "evidence",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:59ac8cc08a308b30a41f49a08f583e05215a991404f107ed053f41c8b35cc15d",
+      "ingestion": {
+        "allowedPaths": [
+          "structurizr-dsl/**",
+          "structurizr-core/**",
+          "docs/**"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/target/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 700000,
+        "maxFilesPerRefresh": 100,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Structurizr DSL and Java Model",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "structurizr/java",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-C4-PLANTUML",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 0,
+        "status": "catalogued-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "evidence",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:e9c2008ead6ba8ca59d6a664a62f0710f0c8e1e185a3bb9797b38e08ddf7145a",
+      "ingestion": {
+        "allowedPaths": [
+          "*.puml",
+          "themes/**",
+          "samples/**",
+          "README.md"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.svg"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 500000,
+        "maxFilesPerRefresh": 80,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "C4-PlantUML",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-ARC42",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 34,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 34,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-CACHE-STAMPEDE",
+          "ANTI-DATA-SWAMP",
+          "ANTI-DISTRIBUTED-MONOLITH",
+          "ANTI-PREMATURE-MICROSERVICES",
+          "ANTI-SECRETS-IN-SOURCE",
+          "ANTI-UNVERSIONED-API",
+          "PAT-ADAPTER",
+          "PAT-ANTI-CORRUPTION-LAYER",
+          "PAT-API-COMPOSITION",
+          "PAT-BACKEND-FOR-FRONTEND",
+          "PAT-BRANCH-BY-ABSTRACTION",
+          "PAT-CLEAN-ARCHITECTURE",
+          "PAT-CLIENT-SIDE-RENDERING",
+          "PAT-COMMAND-PATTERN",
+          "PAT-DEPENDENCY-INJECTION",
+          "PAT-FACADE",
+          "PAT-HEXAGONAL-ARCHITECTURE",
+          "PAT-LAYERED-ARCHITECTURE",
+          "PAT-MICROKERNEL-ARCHITECTURE",
+          "PAT-MODULAR-MONOLITH",
+          "PAT-ONION-ARCHITECTURE",
+          "PAT-PLUGIN-ARCHITECTURE",
+          "PAT-REPOSITORY-PATTERN",
+          "PAT-SERVER-SIDE-RENDERING",
+          "PAT-SERVICE-LAYER",
+          "PAT-SPECIFICATION-PATTERN",
+          "PAT-STRANGLER-FIG",
+          "PAT-STRATEGY-PATTERN",
+          "PAT-UNIT-OF-WORK",
+          "PAT-VERTICAL-SLICE-ARCHITECTURE",
+          "STYLE-DATA-MESH",
+          "STYLE-LAYERED",
+          "STYLE-MICROSERVICES",
+          "STYLE-PIPE-AND-FILTER"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "evidence",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:82e76c3b98db2f5b430b08f3b96cc2e2356d8bacda1c8221a50b26c6dfad610f",
+      "ingestion": {
+        "allowedPaths": [
+          "EN/**",
+          "README.md"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/build/**",
+          "**/*.pdf"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 80,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "arc42 Architecture Documentation Template",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "arc42/arc42-template",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-ARCHUNIT",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 12,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 12,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-ARCHITECTURE-DECISION-RECORD",
+          "PAT-ARCHITECTURE-DRIFT-DETECTION",
+          "PAT-ARCHITECTURE-FITNESS-FUNCTION",
+          "PAT-ARCHITECTURE-REVIEW-BOARD",
+          "PAT-CLAIM-LEVEL-PROVENANCE",
+          "PAT-DESIGN-TIME-COMPLIANCE",
+          "PAT-EVIDENCE-BASED-RECOMMENDATION",
+          "PAT-EXCEPTION-WITH-EXPIRY",
+          "PAT-KNOWLEDGE-RELEASE",
+          "PAT-POLICY-GATE",
+          "PAT-REFERENCE-ARCHITECTURE",
+          "PAT-RUNTIME-CONFORMANCE"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "evidence",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:e13fce196a35e35f726d7f2a1562babe5d43c0400b0bb41311bb82b2663f2cd7",
+      "ingestion": {
+        "allowedPaths": [
+          "archunit/src/main/**",
+          "archunit-example/**",
+          "docs/**",
+          "README.md"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/build/**",
+          "**/target/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 600000,
+        "maxFilesPerRefresh": 100,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "ArchUnit",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "TNG/ArchUnit",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-JQASSISTANT",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 12,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 12,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-ARCHITECTURE-DECISION-RECORD",
+          "PAT-ARCHITECTURE-DRIFT-DETECTION",
+          "PAT-ARCHITECTURE-FITNESS-FUNCTION",
+          "PAT-ARCHITECTURE-REVIEW-BOARD",
+          "PAT-CLAIM-LEVEL-PROVENANCE",
+          "PAT-DESIGN-TIME-COMPLIANCE",
+          "PAT-EVIDENCE-BASED-RECOMMENDATION",
+          "PAT-EXCEPTION-WITH-EXPIRY",
+          "PAT-KNOWLEDGE-RELEASE",
+          "PAT-POLICY-GATE",
+          "PAT-REFERENCE-ARCHITECTURE",
+          "PAT-RUNTIME-CONFORMANCE"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:72b3c5752e633f8e17f8e40bd4fd39dec79c06b830d05383dbdf4430189823c9",
+      "ingestion": {
+        "allowedPaths": [
+          "core/**",
+          "plugin/**",
+          "docs/**",
+          "README.md"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 600000,
+        "maxFilesPerRefresh": 100,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "jQAssistant",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "jQAssistant/jqassistant",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-BACKSTAGE",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:8b95d5f92c8f7ef77763e2a70c88db1ed2e1fe06a79d5ee7cf8e9b06040bf943",
+      "ingestion": {
+        "allowedPaths": [
+          "docs/features/software-catalog/**",
+          "packages/catalog-model/**",
+          "plugins/catalog/**",
+          "docs/features/software-templates/**"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 700000,
+        "maxFilesPerRefresh": 100,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Backstage Software Catalog",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "backstage/backstage",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-FINOS-AI-RA",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 24,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 24,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-AGENTIC-WORKFLOW",
+          "PAT-AI-EVALUATION-HARNESS",
+          "PAT-AI-FALLBACK-STRATEGY",
+          "PAT-AI-GUARDRAILS",
+          "PAT-DATA-LINEAGE-FOR-AI",
+          "PAT-FEATURE-STORE",
+          "PAT-GROUNDED-GENERATION",
+          "PAT-HUMAN-IN-THE-LOOP-AI",
+          "PAT-MODEL-GATEWAY",
+          "PAT-MODEL-MONITORING",
+          "PAT-MODEL-REGISTRY",
+          "PAT-MULTI-AGENT-ORCHESTRATION",
+          "PAT-PII-REDACTION-PIPELINE",
+          "PAT-PROMPT-INJECTION-BOUNDARY",
+          "PAT-PROMPT-REGISTRY",
+          "PAT-RESPONSIBLE-AI-CONTROL-PLANE",
+          "PAT-RETRIEVAL-AUGMENTED-GENERATION",
+          "PAT-SEMANTIC-CACHE",
+          "PAT-TOOL-USE-MEDIATION",
+          "PAT-VECTOR-STORE",
+          "TPL-CELL-BASED-WORKLOAD",
+          "TPL-RAG-APPLICATION",
+          "TPL-RESILIENT-EXTERNAL-CALL",
+          "TPL-SECURE-DATA-EXCHANGE"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:456360446123bf55104acb89d1d59e20b2176b5ccea32bc1928260d995e5f591",
+      "ingestion": {
+        "allowedPaths": [
+          "**/*.json",
+          "**/*.yaml",
+          "**/*.yml",
+          "**/*.md"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 700000,
+        "maxFilesPerRefresh": 120,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "FINOS AI Reference Architecture Library",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "finos/ai-reference-architecture-library",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 0,
+        "status": "catalogued-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:803b8a748e04e1ea00a486112b594fd6e6f3f57c56aa8388d776bd91b9b46237",
+      "ingestion": {
+        "allowedPaths": [
+          "docs/**",
+          "content/**",
+          "src/**/architectures/**",
+          "**/*.md",
+          "**/*.json"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/public/**/images/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 700000,
+        "maxFilesPerRefresh": 150,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "SAP Architecture Center",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "SAP/architecture-center",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 64,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 64,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-CHATTY-SERVICES",
+          "ANTI-COPY-PASTE-ARCHITECTURE",
+          "ANTI-MAGIC-INTEGRATION",
+          "ANTI-SINGLE-POINT-OF-FAILURE",
+          "ANTI-UNBOUNDED-QUEUE",
+          "ANTI-VENDOR-LOCK-IN-BY-ACCIDENT",
+          "ARCH-CACHE-CAPABILITY",
+          "ARCH-CI-CD-ORCHESTRATOR-CAPABILITY",
+          "ARCH-OBSERVABILITY-COLLECTOR-CAPABILITY",
+          "ARCH-RELATIONAL-DATA-CAPABILITY",
+          "PAT-AGENTIC-WORKFLOW",
+          "PAT-AI-EVALUATION-HARNESS",
+          "PAT-AI-FALLBACK-STRATEGY",
+          "PAT-AI-GUARDRAILS",
+          "PAT-API-AUTHORIZATION",
+          "PAT-AUDIT-TRAIL",
+          "PAT-DATA-ENCRYPTION-AT-REST",
+          "PAT-DATA-ENCRYPTION-IN-TRANSIT",
+          "PAT-DATA-LINEAGE-FOR-AI",
+          "PAT-DATA-MASKING",
+          "PAT-DEFENSE-IN-DEPTH",
+          "PAT-FEATURE-STORE",
+          "PAT-FEDERATED-IDENTITY",
+          "PAT-GROUNDED-GENERATION",
+          "PAT-HUMAN-IN-THE-LOOP-AI",
+          "PAT-IDENTITY-AWARE-PROXY",
+          "PAT-KEY-ROTATION",
+          "PAT-LEAST-PRIVILEGE",
+          "PAT-MODEL-GATEWAY",
+          "PAT-MODEL-MONITORING",
+          "PAT-MODEL-REGISTRY",
+          "PAT-MULTI-AGENT-ORCHESTRATION",
+          "PAT-MUTUAL-TLS",
+          "PAT-NETWORK-SEGMENTATION",
+          "PAT-PII-REDACTION-PIPELINE",
+          "PAT-POLICY-ENFORCEMENT-POINT",
+          "PAT-PRIVACY-BY-DESIGN",
+          "PAT-PRIVATE-ENDPOINT",
+          "PAT-PROMPT-INJECTION-BOUNDARY",
+          "PAT-PROMPT-REGISTRY",
+          "PAT-RESPONSIBLE-AI-CONTROL-PLANE",
+          "PAT-RETRIEVAL-AUGMENTED-GENERATION",
+          "PAT-SECRETS-MANAGEMENT",
+          "PAT-SECURE-DEFAULTS",
+          "PAT-SECURITY-TOKEN-SERVICE",
+          "PAT-SEMANTIC-CACHE",
+          "PAT-SOFTWARE-SUPPLY-CHAIN-CONTROLS",
+          "PAT-TAMPER-EVIDENT-LOG",
+          "PAT-TENANT-ISOLATION",
+          "PAT-THREAT-MODELING",
+          "PAT-TOKEN-EXCHANGE",
+          "PAT-TOKENIZATION",
+          "PAT-TOOL-USE-MEDIATION",
+          "PAT-VECTOR-STORE",
+          "PAT-WEB-APPLICATION-FIREWALL",
+          "PAT-ZERO-TRUST",
+          "TPL-ASYNCAPI-EVENT-MESH",
+          "TPL-CELL-BASED-WORKLOAD",
+          "TPL-EDGE-PROCESSING-TOPOLOGY",
+          "TPL-RAG-APPLICATION",
+          "TPL-RESILIENT-EXTERNAL-CALL",
+          "TPL-SECURE-API-SERVICE",
+          "TPL-SECURE-DATA-EXCHANGE",
+          "TPL-ZERO-TRUST-SERVICE-BOUNDARY"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "evidence",
+          "fitness test",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:06c5c285e595b11fc27da9a63fb334d5772bfb4b8c770cad9c2d3f0061d518bc",
+      "ingestion": {
+        "allowedPaths": [
+          "community/resources/**",
+          "community/working-groups/**",
+          "security-assessments/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/*.pdf",
+          "**/vendor/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 800000,
+        "maxFilesPerRefresh": 120,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "CNCF TAG Security Reference Architectures",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "cncf/tag-security",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-OTEL-DEMO",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 19,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 19,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ARCH-DOCUMENT-DATA-CAPABILITY",
+          "ARCH-EVENT-ROUTER-CAPABILITY",
+          "ARCH-POLICY-ENGINE-CAPABILITY",
+          "ARCH-SERVICE-MESH-CAPABILITY",
+          "PAT-AUDIT-OBSERVABILITY",
+          "PAT-BUSINESS-KPI-MONITORING",
+          "PAT-CONTINUOUS-PROFILING",
+          "PAT-CORRELATION-ID",
+          "PAT-DISTRIBUTED-TRACING",
+          "PAT-ERROR-BUDGET",
+          "PAT-HEALTH-PROBES",
+          "PAT-LOG-AGGREGATION",
+          "PAT-METRICS-AND-ALERTING",
+          "PAT-OPENTELEMETRY-INSTRUMENTATION",
+          "PAT-REAL-USER-MONITORING",
+          "PAT-SERVICE-DEPENDENCY-MAP",
+          "PAT-SLO-BASED-OPERATIONS",
+          "PAT-STRUCTURED-LOGGING",
+          "PAT-SYNTHETIC-MONITORING"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:836e40d9a0567dd6a5be9ba52e1d01f7da88e3b161fc000e1bf3eab3775dc536",
+      "ingestion": {
+        "allowedPaths": [
+          "src/**",
+          "kubernetes/**",
+          "helm-chart/**",
+          "docs/**",
+          "docker-compose*.yml"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/vendor/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 150,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "OpenTelemetry Astronomy Shop Demo",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 35,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 35,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ANTI-GOLDEN-HAMMER",
+          "ANTI-LONG-LIVED-FEATURE-BRANCH",
+          "ANTI-OBSERVABILITY-AS-AFTERTHOUGHT",
+          "ANTI-SECURITY-BY-PERIMETER-ONLY",
+          "ANTI-SHARED-DATABASE-COUPLING",
+          "ANTI-THUNDERING-HERD",
+          "PAT-ACTIVE-ACTIVE",
+          "PAT-ACTIVE-PASSIVE",
+          "PAT-BACKUP-AND-RESTORE",
+          "PAT-BROWNOUT",
+          "PAT-BULKHEAD",
+          "PAT-CELL-BASED-ARCHITECTURE",
+          "PAT-CHAOS-ENGINEERING",
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-FAILOVER",
+          "PAT-FALLBACK",
+          "PAT-FAULT-ISOLATION",
+          "PAT-GEO-REDUNDANCY",
+          "PAT-GRACEFUL-DEGRADATION",
+          "PAT-HEALTH-ENDPOINT-MONITORING",
+          "PAT-HEDGED-REQUESTS",
+          "PAT-LEADER-ELECTION",
+          "PAT-LOAD-SHEDDING",
+          "PAT-PRIORITY-QUEUE",
+          "PAT-QUEUE-BASED-LOAD-LEVELING",
+          "PAT-QUORUM",
+          "PAT-RATE-LIMITING",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-THROTTLING",
+          "PAT-TIMEOUT",
+          "TPL-MODULAR-MONOLITH-STARTER",
+          "TPL-PAYMENT-PROCESSING-CELL",
+          "TPL-PLATFORM-GOLDEN-PATH",
+          "TPL-TRANSACTIONAL-OUTBOX-TOPOLOGY"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:b40c07add709846c18fcfcbf176692e0eade6175e08a83ad89bc3b6455397403",
+      "ingestion": {
+        "allowedPaths": [
+          "src/**",
+          "kubernetes-manifests/**",
+          "helm-chart/**",
+          "docs/**",
+          "skaffold.yaml"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/vendor/**",
+          "**/dist/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 600000,
+        "maxFilesPerRefresh": 140,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": true,
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Google Cloud Microservices Demo",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 24,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 24,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-A-B-DEPLOYMENT",
+          "PAT-AVAILABILITY-ZONE-DISTRIBUTION",
+          "PAT-BLUE-GREEN-DEPLOYMENT",
+          "PAT-CANARY-RELEASE",
+          "PAT-CONTAINERIZATION",
+          "PAT-DEPLOYMENT-STAMP",
+          "PAT-EDGE-DEPLOYMENT",
+          "PAT-ENVIRONMENT-PROMOTION",
+          "PAT-FUNCTION-AS-A-SERVICE",
+          "PAT-HYBRID-CLOUD",
+          "PAT-IMMUTABLE-INFRASTRUCTURE",
+          "PAT-LANDING-ZONE",
+          "PAT-MULTI-CLOUD",
+          "PAT-MULTI-REGION-DEPLOYMENT",
+          "PAT-PROGRESSIVE-DELIVERY",
+          "PAT-RECREATE-DEPLOYMENT",
+          "PAT-RELEASE-TRAIN",
+          "PAT-ROLLING-DEPLOYMENT",
+          "PAT-SERVERLESS-ARCHITECTURE",
+          "PAT-SHADOW-DEPLOYMENT",
+          "TPL-AGENTIC-WORKFLOW-WITH-APPROVAL",
+          "TPL-AI-MODEL-GATEWAY",
+          "TPL-MULTI-REGION-ACTIVE-ACTIVE",
+          "TPL-MULTI-TENANT-SAAS"
+        ],
+        "sourceClaimCount": 0,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:c263ac28a11b39bb8109c5a0227176e424d17419094caa51f19a7c4def769b32",
+      "ingestion": {
+        "allowedPaths": [
+          "docs/**",
+          "terraform/**",
+          "README.md"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/.terraform/**",
+          "**/generated/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 100,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Google Cloud Software Delivery Blueprint",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 0,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 0,
+        "status": "catalogued-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:dc57b19052f0015a49247949ebb90bb52dabec98a03710d11c918e4d75bda43a",
+      "ingestion": {
+        "allowedPaths": [
+          "GUIDE.md",
+          "docs/**",
+          "src/**",
+          "cdk/**",
+          "deployment/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/cdk.out/**",
+          "**/dist/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 120,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "AWS SaaS Factory EKS Reference Architecture",
+      "recommendedPosture": "Adopt",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "trustTier": 1
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-JMOLECULES",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 18,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 18,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-AGGREGATE",
+          "PAT-APPLICATION-SERVICE",
+          "PAT-BOUNDED-CONTEXT",
+          "PAT-CONFORMIST-CONTEXT",
+          "PAT-CONTEXT-MAP",
+          "PAT-CUSTOMER-SUPPLIER-CONTEXT",
+          "PAT-DOMAIN-EVENT",
+          "PAT-DOMAIN-SERVICE",
+          "PAT-DOMAIN-STORYTELLING",
+          "PAT-ENTITY",
+          "PAT-EVENT-STORMING",
+          "PAT-EXAMPLE-MAPPING",
+          "PAT-OPEN-HOST-SERVICE",
+          "PAT-PUBLISHED-LANGUAGE",
+          "PAT-SAGA-BOUNDARY",
+          "PAT-SEPARATE-WAYS",
+          "PAT-SHARED-KERNEL",
+          "PAT-VALUE-OBJECT"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "interoperability adapter",
+          "obligation",
+          "risk"
+        ]
+      },
+      "fingerprint": "sha256:5513919f75e96c7af9735a725d92d028729c096b84166756f4a60a33add69da7",
+      "ingestion": {
+        "allowedPaths": [
+          "README.adoc",
+          "jmolecules-ddd/**",
+          "jmolecules-architecture/**",
+          "jmolecules-events/**",
+          "jmolecules-integrations/**",
+          "jmolecules-examples/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**",
+          "**/.gradle/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 180,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "jMolecules Architectural Abstractions",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "xmolecules/jmolecules",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-SPRING-MODULITH",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 0,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 0,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter"
+        ]
+      },
+      "fingerprint": "sha256:a743d5f21a164062c7c8df925618147db35285b53874a03468a3c5e4e196156f",
+      "ingestion": {
+        "allowedPaths": [
+          "README.adoc",
+          "src/docs/**",
+          "spring-modulith-core/**",
+          "spring-modulith-docs/**",
+          "spring-modulith-test/**",
+          "spring-modulith-actuator/**"
+        ],
+        "defaultBranch": "main",
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**",
+          "**/generated/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 650000,
+        "maxFilesPerRefresh": 180,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Spring Modulith",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "spring-projects/spring-modulith",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 18,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 18,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "PAT-AGGREGATE",
+          "PAT-APPLICATION-SERVICE",
+          "PAT-BOUNDED-CONTEXT",
+          "PAT-CONFORMIST-CONTEXT",
+          "PAT-CONTEXT-MAP",
+          "PAT-CUSTOMER-SUPPLIER-CONTEXT",
+          "PAT-DOMAIN-EVENT",
+          "PAT-DOMAIN-SERVICE",
+          "PAT-DOMAIN-STORYTELLING",
+          "PAT-ENTITY",
+          "PAT-EVENT-STORMING",
+          "PAT-EXAMPLE-MAPPING",
+          "PAT-OPEN-HOST-SERVICE",
+          "PAT-PUBLISHED-LANGUAGE",
+          "PAT-SAGA-BOUNDARY",
+          "PAT-SEPARATE-WAYS",
+          "PAT-SHARED-KERNEL",
+          "PAT-VALUE-OBJECT"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "Pattern DNA",
+          "claim",
+          "component archetype",
+          "evidence",
+          "fitness test",
+          "interface kit",
+          "interoperability adapter",
+          "named view",
+          "obligation",
+          "risk",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:235faba96aaa6a5a49ef0bf352bb5ef3c9e76bd76d82ed0ee8260fc52b52dcc5",
+      "ingestion": {
+        "allowedPaths": [
+          "README.md",
+          "org.contextmapper.dsl/**",
+          "org.contextmapper.generator/**",
+          "org.contextmapper.dsl.ui/samples/**"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**",
+          "**/generated/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 700000,
+        "maxFilesPerRefresh": 180,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Context Mapper DSL",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "trustTier": 2
+    },
+    {
+      "activation": {
+        "candidateInfluenceBlocked": true,
+        "discoveryOnlyInfluenceBlocked": true,
+        "permittedAuthority": [
+          "descriptive",
+          "controlled-pilot-reasoning"
+        ],
+        "productionScoringEligible": false,
+        "reason": "Repository has not been live-refreshed in this distribution. Seed and editorial knowledge is controlled-pilot only and cannot become a scoring rule.",
+        "requiresIndependentPromotion": true
+      },
+      "connectorId": "GH-MESHERY",
+      "conversion": {
+        "currentRevision": null,
+        "editorialSynthesisClaimCount": 35,
+        "exactSourceLocationCount": 1,
+        "immutableLiveSourceLocationCount": 0,
+        "linkedPatternRecordCount": 35,
+        "liveRefreshPerformed": false,
+        "patternRecordIds": [
+          "ARCH-DISTRIBUTED-LOCK-CAPABILITY",
+          "ARCH-MODEL-GATEWAY-CAPABILITY",
+          "ARCH-SERVICE-CATALOG-CAPABILITY",
+          "ARCH-VECTOR-SEARCH-CAPABILITY",
+          "PAT-AUTOSCALING",
+          "PAT-CENTRALIZED-CONFIGURATION",
+          "PAT-CONFIGURATION-AS-CODE",
+          "PAT-CONTROL-PLANE",
+          "PAT-DECLARATIVE-CONFIGURATION",
+          "PAT-EPHEMERAL-ENVIRONMENT",
+          "PAT-EXTERNALIZED-CONFIGURATION",
+          "PAT-FEATURE-FLAG",
+          "PAT-GITOPS",
+          "PAT-GOLDEN-PATH",
+          "PAT-INFRASTRUCTURE-AS-CODE",
+          "PAT-INTERNAL-DEVELOPER-PLATFORM",
+          "PAT-MULTI-TENANCY",
+          "PAT-NAMESPACE-ISOLATION",
+          "PAT-OPERATOR-PATTERN",
+          "PAT-PLATFORM-ENGINEERING",
+          "PAT-POLICY-AS-CODE",
+          "PAT-RECONCILIATION-LOOP",
+          "PAT-RESOURCE-QUOTA",
+          "PAT-SELF-SERVICE-PROVISIONING",
+          "PAT-SERVICE-DISCOVERY",
+          "PAT-SERVICE-TEMPLATE",
+          "PAT-SOFTWARE-CATALOG",
+          "PAT-WORKLOAD-IDENTITY",
+          "STYLE-CELL-BASED",
+          "STYLE-CLEAN",
+          "STYLE-SERVICE-ORIENTED",
+          "TPL-CQRS-SERVICE",
+          "TPL-DATA-LAKEHOUSE-PLATFORM",
+          "TPL-GITOPS-DELIVERY-PIPELINE",
+          "TPL-LOW-CONNECTIVITY-SYNC"
+        ],
+        "sourceClaimCount": 1,
+        "status": "catalogue-and-seed-knowledge-linked-live-refresh-required",
+        "targetKnowledgeObjectClasses": [
+          "claim",
+          "component archetype",
+          "evidence",
+          "interface kit",
+          "interoperability adapter",
+          "named view",
+          "topology template"
+        ]
+      },
+      "fingerprint": "sha256:6cc3349d446bc41801c60c7ece220a85a11b16971ca8ad4e22de81b35f6f371c",
+      "ingestion": {
+        "allowedPaths": [
+          "README.md",
+          "server/meshmodel/**",
+          "models/**",
+          "docs/**",
+          "mesheryctl/**"
+        ],
+        "defaultBranch": "master",
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/vendor/**",
+          "**/dist/**",
+          "**/build/**"
+        ],
+        "executionPolicy": "source-content-is-untrusted-and-never-executed",
+        "immutableRevisionRequired": true,
+        "maxFileBytes": 850000,
+        "maxFilesPerRefresh": 180,
+        "quarantineRequired": false
+      },
+      "licence": {
+        "redistributionPermitted": false,
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only"
+      },
+      "lifecycleStatus": "approved",
+      "name": "Meshery Models and Design Templates",
+      "recommendedPosture": "Adapter",
+      "refreshBlocker": "NETWORK_AND_CREDENTIALLED_GITHUB_REFRESH_NOT_EXECUTED_IN_BUILD_ENVIRONMENT",
+      "repository": "meshery/meshery",
+      "trustTier": 2
+    }
+  ],
+  "schemaVersion": "1.0"
+}

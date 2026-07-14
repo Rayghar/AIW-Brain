@@ -1,0 +1,37 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
+const root = process.cwd();
+const failures = [];
+const exists = (p) => fs.existsSync(path.join(root, p));
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+const check = (label, ok) => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}`); if (!ok) failures.push(label); };
+
+check('durable Knowledge Ops repository exists', exists('apps/api/src/repositories/knowledgeOpsDurableRepository.ts'));
+check('release manager API route module exists', exists('apps/api/src/routes/knowledgeReleaseRoutes.ts'));
+check('release manager migration exists', exists('database/migrations/012_sprint8_8_3_knowledge_release_manager.sql'));
+const knowledge = read('packages/knowledge/src/index.ts');
+for (const token of ['KnowledgeReleaseCandidateRecord','KnowledgeReleaseManifest','KnowledgeOpsRepositoryPort','createKnowledgeReleaseCandidate','validateKnowledgeReleaseCandidate','promoteKnowledgeReleaseCandidate','rollbackKnowledgeReleaseCandidate','pinKnowledgeRelease','buildKnowledgeOpsEvent']) check(`@aiw/knowledge exposes ${token}`, knowledge.includes(token));
+const route = read('apps/api/src/routes/knowledgeReleaseRoutes.ts');
+for (const endpoint of ['/api/knowledge-releases','/api/knowledge-releases/released','/api/knowledge-releases/pins','/api/knowledge-releases/events','/api/knowledge-ops/durable-snapshot','/api/knowledge-releases/candidate','/api/knowledge-releases/:candidateId/diff','/api/knowledge-releases/:candidateId/validate','/api/knowledge-releases/:candidateId/approve','/api/knowledge-releases/:candidateId/promote','/api/knowledge-releases/:candidateId/rollback','/api/knowledge-releases/pin','/api/knowledge-releases/:candidateId/manifest']) check(`API endpoint ${endpoint} exists`, route.includes(endpoint));
+check('release routes use durable repository', /knowledgeOpsDurableRepository/.test(route));
+check('release routes do not use old engine release manager helpers', !/diffKnowledge|createCandidate\(|promoteCandidate\(|rollbackRelease\(|pinRelease\(/.test(route));
+const pattern = read('apps/api/src/routes/patternDnaRoutes.ts');
+check('Pattern DNA materializes candidates through @aiw/knowledge', /createKnowledgeReleaseCandidate/.test(pattern));
+check('Pattern DNA no longer writes adminRepositories.releaseCandidates', !/adminRepositories\.releaseCandidates/.test(pattern));
+const adminRepo = read('apps/api/src/repositories/adminRepositories.ts');
+check('Admin repository no longer owns releaseCandidates side-store', !/releaseCandidates/.test(adminRepo));
+const adminPkg = read('packages/admin/src/index.ts');
+check('@aiw/admin store no longer declares releaseCandidates side-store', !/releaseCandidates/.test(adminPkg));
+const ui = read('apps/web/src/features/admin/AdminControlPlaneWorkspace.tsx');
+check('Admin UI exposes Releases tab', /label: 'Releases'/.test(ui));
+check('Admin UI exposes validation/promotion/rollback/pinning actions', /validateRelease|promoteRelease|rollbackRelease|pinRelease/.test(ui));
+check('Admin UI uses no window.prompt in release manager', !/window\.prompt/.test(ui));
+const migration = read('database/migrations/012_sprint8_8_3_knowledge_release_manager.sql');
+for (const table of ['knowledge_release_candidates_v2','knowledge_release_manifests_v2','knowledge_release_pins_v2','knowledge_ops_events_v2']) check(`migration creates ${table}`, migration.includes(table));
+check('migration enables RLS for release manager tables', /ENABLE ROW LEVEL SECURITY/.test(migration));
+const coverage = JSON.parse(read('generated/route-permission-coverage.json'));
+check('route-permission coverage has no unguarded Admin/Knowledge mutations', coverage.adminKnowledgeMutationsUnguarded === 0);
+check('candidate-to-production leakage doctrine encoded', /Candidate knowledge remains isolated|Candidate knowledge is isolated/i.test(route) && /candidateKnowledgeInfluence: 'blocked-until-promotion'/.test(knowledge));
+console.log(failures.length ? `\nSPRINT 8.8.3 GATE: ${failures.length} violation(s)` : '\nSPRINT 8.8.3 GATE: PASSED');
+process.exit(failures.length ? 1 : 0);

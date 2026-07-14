@@ -1,0 +1,69 @@
+{
+  "releaseId": "AKR-0.10.55",
+  "generatedAt": "2026-07-11T00:00:00.000Z",
+  "patternDna2": {
+    "generatedAt": "2026-07-11T00:00:00.000Z",
+    "releaseId": "AKR-0.10.55",
+    "totalRecords": 328,
+    "approvedRecords": 328,
+    "antiPatterns": 30,
+    "topologyTemplates": 24,
+    "categories": {
+      "application": 34,
+      "integration": 48,
+      "platform": 35,
+      "data": 39,
+      "domain": 18,
+      "resilience": 35,
+      "security": 40,
+      "deployment": 24,
+      "observability": 19,
+      "ai": 24,
+      "governance": 12
+    },
+    "evidenceCoverage": 100,
+    "conformanceCoverage": 100,
+    "recordsWithTopology": 154,
+    "recordsWithObligations": 328,
+    "reviewCoverage": 100,
+    "deepEditorialRecords": 50,
+    "patternDna2Coverage": 100,
+    "componentKitCoverage": 100,
+    "interfaceKitCoverage": 100,
+    "generationCoverage": 100,
+    "counterfactualCoverage": 100
+  },
+  "sourceMap": {
+    "repositories": 47,
+    "approved": 30,
+    "candidate": 9,
+    "discovery": 8,
+    "postures": {
+      "Adopt": 11,
+      "Adapt": 3,
+      "Adapter": 19,
+      "Reference": 6,
+      "Benchmark": 0,
+      "Discovery": 8,
+      "Exclude": 0
+    }
+  },
+  "cambridgePack": {
+    "reasoningStages": 8,
+    "reviewRules": 6,
+    "sddSections": 15
+  },
+  "stageKits": {
+    "count": 8,
+    "allHavePatterns": true,
+    "allHaveEvidence": true
+  },
+  "acceptance": {
+    "top50DeepEditorial": true,
+    "noRecordWithoutProvenance": true,
+    "noExtractionOnlyPromotion": true,
+    "generationContractCoverage": true,
+    "sourceLifecycleMapping": true,
+    "conflictsRemainVisible": true
+  }
+}

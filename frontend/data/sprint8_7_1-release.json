@@ -1,0 +1,93 @@
+{
+  "releaseId": "AIW-0.10.0-alpha.1",
+  "version": "0.10.0-alpha.1",
+  "sprint": "8.7.1-full-journey-kernel-migration",
+  "status": "implemented-alpha",
+  "generatedAt": "2026-07-03T16:58:54.002695Z",
+  "basedOn": "AIW-0.9.9",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "modellingBoundary": {
+    "primarySurface": "interactive visual node-and-relationship modelling",
+    "renderer": "React Flow",
+    "canonicalSource": "structured ArchitectureProject plus IntelligenceResponse",
+    "textRole": "supporting labels, properties, rationale, evidence and governance",
+    "staticBitmapOnly": false
+  },
+  "capabilities": {
+    "unifiedWorkspaceContext": true,
+    "workspaceEnteredSemanticEvent": true,
+    "sharedVisualIntelligenceModel": true,
+    "designBriefVisualMap": true,
+    "qualityTradeoffVisualMap": true,
+    "synthesisVisualMap": true,
+    "patternCompositionVisualMap": true,
+    "governanceVisualMap": true,
+    "realizationReadinessVisualMap": true,
+    "editableCanonicalDesignCanvasRetained": true,
+    "evidenceAndHealthProjected": true,
+    "humanApprovalRequired": true,
+    "candidateKnowledgeExcluded": true,
+    "deterministicOfflineMode": true
+  },
+  "verification": {
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "engine": 105,
+      "artifacts": 2,
+      "api": 84,
+      "total": 191
+    },
+    "gates": {
+      "intelligence": "13/13",
+      "integratedJourney": "13/13",
+      "sprint8_7_1": "12/12",
+      "hardening": "12/12",
+      "reconciliation": "16/16",
+      "p0": "6/6",
+      "knowledgeProduction": "release allowed; Pattern DNA 328/200",
+      "security": "passed",
+      "architecturePolicy": "passed",
+      "e2e": "passed"
+    },
+    "npmAudit": "0 vulnerabilities",
+    "browserPerformance": {
+      "status": "blocked_by_environment",
+      "modelNodes": 1500,
+      "modelEdges": 1499,
+      "reason": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:4173/\nCall log:\n  - navigating to \"http://127.0.0.1:4173/\", waiting until \"networkidle\"\n",
+      "harnessAvailable": true,
+      "runCommand": "npm run browser:perf",
+      "note": "The browser benchmark harness is complete, but this execution environment blocked local Chromium navigation. Run it in a normal development or CI environment with an available Playwright Chromium binary."
+    }
+  },
+  "files": {
+    "package.json": "68cf6e68335abeaf6213d1d27b89453890a7dc475a01d795366734539c073916",
+    "package-lock.json": "398ec8ff825b46de57ee98a59fcbf1aac04377459b0667cf5bd012546311d0e1",
+    "README.md": "b26626b2084932ac363dbbe8c6f03ff20189e51185c9edf71384e0652d1f30ee",
+    "SHIP_NOTES.md": "44f3a80f88e390a3f3811de1e7d19380078746b2776dfee26a5ce4bbd95b2b26",
+    "CHANGE_SUMMARY_v0.10.0-alpha.1.md": "bbe216dcc8c9b556f7ab90797754a59d8c8f5152260e7fa260de9ae5f8c12606",
+    "docs/SPRINT8_7_1_FULL_JOURNEY_VISUAL_INTELLIGENCE.md": "4e63e128477496ef5586aa8cdf277051a4fa72334ca5f6470067e7efd012a750",
+    "packages/engine/src/intelligenceKernel.ts": "a9670386beec63a8ff2782a3482c9d9cf180a85607a78e5fe85b9ac54925ab16",
+    "apps/web/src/store/workspaceStore.ts": "2d448245de15d0b6b7182078da71fb8454d535d613702f3ae7532a1a29a7d2e0",
+    "apps/web/src/components/WorkspaceIntelligenceMap.tsx": "5679ca1717af2c8458faa6aeeb3e943e851579a54d2451d16c5c5ffe3bd9ffb0",
+    "apps/web/src/components/DesignBriefStudio.tsx": "1cb7bc7e8e22d976257ce5b81fc984e38b3a12f7031cf635edebce41d4c863a5",
+    "apps/web/src/components/QualityAttributeStudio.tsx": "2d57f11a470b2ee45ddbec828ba6a1e92f39ae21774b547acd2063abcab67847",
+    "apps/web/src/components/ArchitectureSynthesisWorkspace.tsx": "9320d9dee565a897689de7e1c3111ef5b3f2659b4af3640d6999ba6b384e475e",
+    "apps/web/src/components/PatternIntelligenceWorkspace.tsx": "015c6723a567ed5c5428af61b901d6d52106104e9a8b5a9a99b4cec1539f2b21",
+    "apps/web/src/components/GovernanceWorkspace.tsx": "afc717522739f821349907604c5f2b150702f611ee9fe62cc6c0d57abc8064c4",
+    "apps/web/src/components/ReviewWorkspace.tsx": "2d76de27c360a226c201563752e47e9ef9e6626aa7e6385c582238c2767dc241",
+    "apps/api/src/app.ts": "735a91f725f0dfe3fb8229bf5a8797f95d8fa2fb554de0994b026a0eb353a501",
+    "scripts/verify-sprint8_7_1.mjs": "f4a04b963223819d850ae764594620ec4770fc2261bcfd5e55666b7f4a937002",
+    "packages/engine/test/embeddedIntelligence.test.ts": "04f7bbebab20225f24a8adb0c8370e1d6d0aceb8f243e1fa01085e494571a3e6",
+    "apps/api/test/embeddedIntelligence.test.ts": "601c8bbff1e37fb4f22410661c418d0fb8ac9f1d4e585d76ab145af50d85bb68",
+    "BROWSER_PERFORMANCE.json": "55795da6004560282d4db7facc5f9f76117e79e729e7c983850dda3665dd5fc1"
+  },
+  "boundaries": [
+    "This is v0.10.0-alpha.1, not the final v0.10.0 enterprise release.",
+    "Credentialed PostgreSQL/pgvector, OIDC, GitHub, object storage, CI and external-model acceptance remain Sprint 8.7.2.",
+    "The approved knowledge release remains AKR-0.8.8.",
+    "Twelve draft quality matrices remain excluded from production scoring pending independent review.",
+    "The local browser performance run was blocked by administrator policy; the harness remains included for target-environment execution."
+  ]
+}

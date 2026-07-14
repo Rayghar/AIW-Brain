@@ -1,0 +1,21 @@
+/* Sprint 8.8.2 — Knowledge Ops Workbench */
+.knowledge-ops-workbench { position: relative; }
+.knowledge-ops-hero { background: linear-gradient(135deg, rgba(20,184,166,.14), rgba(245,158,11,.10)); }
+.knowledge-review-drawer { display: grid; gap: .75rem; padding: 1rem; border: 1px solid var(--aiw-border, rgba(148,163,184,.26)); border-radius: 18px; background: var(--aiw-surface, rgba(15,23,42,.74)); box-shadow: var(--aiw-shadow-soft, 0 18px 50px rgba(15,23,42,.2)); margin: 1rem 0; }
+.knowledge-review-drawer h3 { margin: 0; font-size: .95rem; }
+.knowledge-review-drawer label { display: grid; gap: .35rem; font-size: .78rem; color: var(--aiw-muted, #94a3b8); }
+.knowledge-review-drawer input, .knowledge-review-drawer select, .knowledge-review-drawer textarea { width: 100%; border-radius: 12px; border: 1px solid var(--aiw-border, rgba(148,163,184,.26)); background: rgba(15,23,42,.55); color: var(--aiw-text, #e5eefb); padding: .65rem .75rem; }
+.knowledge-review-drawer textarea { min-height: 72px; resize: vertical; }
+.knowledge-ops-grid .admin-metric-card svg { opacity: .84; }
+.knowledge-two-pane { display: grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: 1rem; align-items: start; }
+.knowledge-list { max-height: 670px; overflow: auto; }
+.knowledge-list button { width: 100%; display: grid; gap: .2rem; text-align: left; padding: .78rem .85rem; border: 1px solid transparent; border-radius: 14px; background: transparent; color: inherit; cursor: pointer; }
+.knowledge-list button:hover, .knowledge-list button.active { border-color: rgba(20,184,166,.45); background: rgba(20,184,166,.10); }
+.knowledge-list button strong { font-size: .86rem; }
+.knowledge-list button span { font-size: .75rem; color: var(--aiw-muted, #94a3b8); }
+.knowledge-detail { min-height: 440px; }
+.knowledge-detail dl { display: grid; grid-template-columns: 150px 1fr; gap: .6rem .8rem; margin: 1rem 0; }
+.knowledge-detail dt { color: var(--aiw-muted, #94a3b8); font-size: .78rem; }
+.knowledge-detail dd { margin: 0; font-size: .85rem; }
+@media (min-width: 920px) { .knowledge-review-drawer { grid-template-columns: 1.1fr 1fr 1fr 2fr 2fr; align-items: end; } .knowledge-review-drawer h3 { grid-column: 1 / -1; } }
+@media (max-width: 900px) { .knowledge-two-pane { grid-template-columns: 1fr; } }

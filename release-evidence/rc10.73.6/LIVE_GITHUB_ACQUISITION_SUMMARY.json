@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "aiw-github-acquisition-summary-v1",
+  "generatedAt": "2026-07-14T20:02:10.077Z",
+  "apiVersion": "2026-03-10",
+  "authenticated": false,
+  "requested": 30,
+  "completed": 0,
+  "reviewRequired": 0,
+  "failed": 30,
+  "allApprovedRepositoriesSelected": true,
+  "productionAccepted": false,
+  "blocker": "Execution container could not reach GitHub; no repository content was falsely marked refreshed.",
+  "results": [
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "repository": "finos/architecture-as-code",
+      "status": "blocked-connectivity",
+      "error": "fetch failed"
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "status": "blocked-connectivity",
+      "error": "fetch failed"
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "status": "blocked-connectivity",
+      "error": "fetch failed"
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "repository": "xmolecules/jmolecules",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "status": "blocked-connectivity",
+      "error": "The operation was aborted due to timeout"
+    }
+  ]
+}

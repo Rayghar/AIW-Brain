@@ -1,0 +1,11 @@
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { GitHubRestClient, DEFAULT_GITHUB_API_VERSION } from './rc10-73-6-github-acquisition-core.mjs';
+const here = dirname(fileURLToPath(import.meta.url)); const backend = resolve(here, '..'); const product = resolve(backend, '..');
+const sourceMap = JSON.parse(await readFile(resolve(backend, 'data/rc10_55-global-architecture-intelligence-source-map.json'), 'utf8'));
+const approved = sourceMap.dossiers.filter((item) => item.sourceAuthority?.lifecycleStatus === 'approved');
+const client = new GitHubRestClient({ token: process.env.AIW_GITHUB_TOKEN, apiBase: process.env.AIW_GITHUB_API_BASE, apiVersion: process.env.AIW_GITHUB_API_VERSION || DEFAULT_GITHUB_API_VERSION, maxRetries: 0, requestTimeoutMs: Number(process.env.AIW_GITHUB_PREFLIGHT_TIMEOUT_MS || 5000) });
+const results=[]; let cursor=0; const workers=Array.from({length:Math.min(8,approved.length)},async()=>{while(true){const index=cursor++; if(index>=approved.length)return; const dossier=approved[index]; try { const repo=await client.repository(dossier.repository); results[index]={connectorId:dossier.connectorId,repository:dossier.repository,status:'reachable',defaultBranch:repo.body.default_branch,archived:Boolean(repo.body.archived),disabled:Boolean(repo.body.disabled),visibility:repo.body.visibility,rateLimitRemaining:repo.headers['x-ratelimit-remaining']??null}; } catch(error){ results[index]={connectorId:dossier.connectorId,repository:dossier.repository,status:'unreachable',error:error instanceof Error?error.message:String(error)}; }}}); await Promise.all(workers);
+const report={generatedAt:new Date().toISOString(),apiVersion:client.apiVersion,authenticated:Boolean(process.env.AIW_GITHUB_TOKEN),reachable:results.filter((r)=>r.status==='reachable').length,total:results.length,results};
+const out=resolve(product,'release-evidence','rc10.73.6','GITHUB_CONNECTIVITY_PREFLIGHT.json'); await mkdir(dirname(out),{recursive:true}); await writeFile(out,`${JSON.stringify(report,null,2)}\n`); console.log(JSON.stringify(report,null,2)); process.exit(report.reachable===report.total?0:2);

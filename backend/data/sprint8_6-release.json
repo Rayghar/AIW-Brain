@@ -1,0 +1,101 @@
+{
+  "releaseId": "AIW-0.9.9",
+  "version": "0.9.9",
+  "sprint": "8.6-embedded-intelligence",
+  "status": "implemented",
+  "generatedAt": "2026-07-03T13:38:47.425Z",
+  "basedOn": "AIW-0.9.7",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "calibration": {
+    "production": 8,
+    "draftAiPendingIndependentReview": 12,
+    "draftAffectsProductionScoring": false
+  },
+  "capabilities": {
+    "unifiedArchitectureEventModel": true,
+    "canonicalIntelligenceContext": true,
+    "unifiedIntelligenceResponse": true,
+    "releaseBoundKnowledgeRetrieval": true,
+    "adaptiveComponentRanking": true,
+    "intelligenceReviewedConnections": true,
+    "attributeConsequenceAnalysis": true,
+    "continuousArchitectureCritique": true,
+    "rankedNextBestActions": true,
+    "evidenceAndTrace": true,
+    "reversibleHumanApprovedChangeSets": true,
+    "tenantValidatedEvaluationApi": true,
+    "candidateKnowledgeExcluded": true,
+    "deterministicOfflineMode": true,
+    "claimLevelKnowledgeAssembly": true
+  },
+  "verification": {
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": {
+      "engine": 103,
+      "artifacts": 2,
+      "api": 84,
+      "total": 189
+    },
+    "gates": {
+      "intelligence": "12/12",
+      "p0": "6/6",
+      "integration": "13/13",
+      "knowledgeProduction": "328/200",
+      "reconciliation": "16/16",
+      "hardening": "12/12",
+      "security": "passed",
+      "architecturePolicy": "passed",
+      "e2e": "passed"
+    },
+    "npmAudit": "0 vulnerabilities",
+    "benchmark": {
+      "iterations": 120,
+      "averageMs": 9.514,
+      "p50Ms": 8.924,
+      "p95Ms": 11.2,
+      "maxMs": 49.03,
+      "boundary": "These timings measure local deterministic kernel execution only. They exclude browser rendering, network, PostgreSQL, vector retrieval and external model latency."
+    }
+  },
+  "files": {
+    "package.json": "ca458d0bd3b9b312a909c1651733288b90e9259ef3ce61658d07062e57f0c80b",
+    "package-lock.json": "3b9048958b3886440436dd153956d9a2fc4f60181f0ccf8f5bf2f31379dc0e3c",
+    "README.md": "c72ccf493f70488f4051398afcd8496f646067fbbe8cd80c56b94263ec126fc5",
+    "SHIP_NOTES.md": "4e67e1fbcbb4de7edecc78454d585b930a047d0ad1f0a96db751e8c1715da752",
+    "CHANGE_SUMMARY_v0.9.9.md": "845e7497d08c952d4f1cf5b10b72c11de92cfa0b1b82940f6ba0a0eba9e428f2",
+    "BUILD_VERIFICATION_v0.9.9.txt": "da7bbc3544dca75730174dbd3b734024959603ca32129361777b5b246ae46b15",
+    "packages/engine/src/intelligenceKernel.ts": "d5380b9331aedd81d0a916315efc1d4eddb334e45dd51e8535bed0963a1d9ee0",
+    "packages/engine/src/claimAssembly.ts": "9adebdaae571cdb83e91dc123b1f8ce37416cf3c53570d5acae30557feef8625",
+    "packages/engine/src/knowledgeRetrieval.ts": "2896dcaa54224794423d3ec42fb963b8486053b6a148d7293cf7d5d4fb5d65d0",
+    "packages/engine/src/recommendation.ts": "5e97348dca4fa04c6651b97ab8f00239bcd4d92ef69edf78c1c4275bdb6c8dda",
+    "apps/web/src/store/workspaceStore.ts": "b6ff73778c2ba94b2bc6277bcb0e4a7c2f6c5abea98b48dfe8299967ebc5bd86",
+    "apps/web/src/components/CanvasWorkbench.tsx": "1bf9704243a9f2428af6f21f9fa5eeea768a9c7fcd4ff919a85939e5e4a51a70",
+    "apps/web/src/components/EmbeddedIntelligencePanel.tsx": "c101fb149feebbe72834671bbe03cd68a59c69440298f7c83d5cfa75d23bdb97",
+    "apps/web/src/components/ConnectionIntelligenceReview.tsx": "c8b8029ef57f0ece4628992cbefae74a1352e4bee4d0768cedb8fea269dca8e0",
+    "apps/web/src/components/ArchitectureLibrary.tsx": "816714cb42f6505eb0ae3b7ed7ff3105fd581a256ac3ad7e3e81a4855a46faab",
+    "apps/web/src/styles.css": "981fe8f92e8bf4649ebfb7cc6f57cf26578be7bd0856c151121cb448439c9bfa",
+    "apps/api/src/app.ts": "30175fbc2aeeab2401442dade95cebcb9c1950f1e6bfc70533bf4d6dcae8142b",
+    "apps/api/src/platformAcceptance.ts": "6cbcedc3cf79abdbb71c576f133cfbe7325f12a818d107a9045f596e6c0a9750",
+    "data/knowledge-library.json": "d708ba8297f2e6549f98ee9bd87a77df7c31aab772e33d58f25822090f21f6f7",
+    "data/knowledge-release-manifest.json": "1674aeecf2421f5a206c4e193b1dd9ffc75d85010e42f74a97628fb308f52049",
+    "packages/engine/test/embeddedIntelligence.test.ts": "f9793a27923e6b77b595a021c62202662f459f925c3c68f681ada9b5fef44d97",
+    "apps/api/test/embeddedIntelligence.test.ts": "3d37edfdf38cbba3eddbeaff7b9ebef8d976c9868a2697a544364764e70eb14d",
+    "packages/engine/test/constitution.invariants.test.ts": "16693cf6a1c0833287ad9c835b2ab5e8b305bd90366bd592fc16ce3dad9acfa4",
+    "scripts/verify-intelligence-core.mjs": "08ceb14bd929629df1921ad5ffd814315b6dcdb2acd0250618c4183467c27b66",
+    "scripts/verify-p0.mjs": "27fa834c54c4c43f8d25b884ed1f6a0db210320f57d2b1373126f565f54ecad6",
+    "scripts/verify-knowledge.mjs": "1bfe3d4b6027ad39b1fe691dc2c277fd977480f3aff644ae7fcf5522fb241ac9",
+    "scripts/embedded-intelligence-benchmark.mjs": "8746a6dfe86c598990a135aeb65c1addc082f93d9451cc0718280e915341969b",
+    "scripts/verify-sprint8_6-release.mjs": "19ab3164b65f7e2a530ad6092aa1360451a0d8ca8ff30e608c92852f2182353b",
+    "docs/IMPLEMENTATION_AUDIT_v0.9.9.md": "e5f85992d8295826b8f3dffe0f7b682f4f495f602c5ac10947a078e1c3fabb45",
+    "docs/CALIBRATION_WORKSHEET.md": "2d638cdacc28e99e255fc200f0739baf9f24b072f229eee8b88906e035d9188a",
+    "docs/SPRINT8_6_INTELLIGENCE_KERNEL.md": "67591f0d05acd864a22055fe75a5956764f4694be09971497029f7f10ee89657",
+    "EMBEDDED_INTELLIGENCE_BENCHMARK.json": "5611a6d29ba9ccf389f10b70fd20aaeadf230a7af390515acb0e290c3a71276e"
+  },
+  "boundaries": [
+    "The approved Pattern DNA release remains AKR-0.8.8.",
+    "Twelve AI-drafted quality matrices remain excluded until independent expert review.",
+    "Live enterprise integrations require credentialed acceptance in the target environment.",
+    "Secondary workspaces are not all migrated to the kernel in this increment."
+  ]
+}

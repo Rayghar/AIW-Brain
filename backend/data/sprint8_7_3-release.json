@@ -1,0 +1,15 @@
+{
+  "releaseId": "AIW-0.10.0-alpha.3",
+  "version": "0.10.0-alpha.3",
+  "sprint": "8.7.3-realization-continuous-conformance",
+  "status": "implemented-alpha",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "basedOn": "AIW-0.10.0-alpha.2",
+  "boundaries": {
+    "missingEvidencePasses": false,
+    "automaticArchitectureMutation": false,
+    "automaticRepositoryMutation": false,
+    "humanApprovalRequired": true,
+    "productionEnvironmentAccepted": false
+  }
+}

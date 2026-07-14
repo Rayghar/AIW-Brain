@@ -1,0 +1,39 @@
+name: AIW governed knowledge refresh
+on:
+  schedule:
+    - cron: '17 2 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build:packages
+      - name: Refresh approved architecture sources into quarantine
+        env:
+          AIW_ENABLE_GITHUB_KNOWLEDGE: 'true'
+          AIW_GITHUB_TOKEN: ${{ secrets.AIW_GITHUB_TOKEN }}
+          DATABASE_URL: ${{ secrets.AIW_DATABASE_URL }}
+          AIW_KNOWLEDGE_OBJECT_STORE: s3
+          AIW_KNOWLEDGE_S3_BUCKET: ${{ secrets.AIW_KNOWLEDGE_S3_BUCKET }}
+          AIW_KNOWLEDGE_S3_ENDPOINT: ${{ secrets.AIW_KNOWLEDGE_S3_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AIW_KNOWLEDGE_S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AIW_KNOWLEDGE_S3_SECRET_KEY }}
+          AWS_REGION: ${{ vars.AIW_KNOWLEDGE_S3_REGION }}
+          AIW_REFRESH_CONNECTORS: ${{ vars.AIW_REFRESH_CONNECTORS }}
+          AIW_ENABLE_LLM_EXTRACTION: ${{ vars.AIW_ENABLE_LLM_EXTRACTION }}
+          AIW_EXTRACTION_MAX_FILES_PER_REFRESH: ${{ vars.AIW_EXTRACTION_MAX_FILES_PER_REFRESH }}
+          AIW_LLM_CONFIG_JSON: ${{ secrets.AIW_LLM_CONFIG_JSON }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: npx tsx scripts/knowledge-refresh-worker.ts

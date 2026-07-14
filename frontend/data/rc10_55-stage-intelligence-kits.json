@@ -1,0 +1,359 @@
+{
+  "version": "1.0.0",
+  "releaseId": "AKR-0.10.55",
+  "generatedAt": "2026-07-11T00:00:00.000Z",
+  "stages": [
+    {
+      "stage": "designIntent",
+      "objective": "Frame the problem, intended benefit, stakeholders, scope and constraints.",
+      "preferredStyles": [],
+      "patternEmphasis": [
+        "PAT-EVENT-STORMING",
+        "PAT-DOMAIN-STORYTELLING",
+        "PAT-EXAMPLE-MAPPING"
+      ],
+      "componentFamilies": [
+        "Actor",
+        "Business Domain",
+        "External System"
+      ],
+      "interfaceFocus": [
+        "system boundary",
+        "external dependency"
+      ],
+      "requiredEvidence": [
+        "stakeholder concerns",
+        "scope decision",
+        "assumption register"
+      ],
+      "obligations": [
+        "named sponsor",
+        "measurable outcomes",
+        "explicit exclusions"
+      ],
+      "handoffArtifacts": [
+        "design brief",
+        "context view",
+        "driver candidate register"
+      ],
+      "cambridgeQuestions": [
+        "What business outcome and intended benefit justify the architecture work?",
+        "Who uses, funds, operates, governs and is affected by the solution?",
+        "What motivations, wishes and concerns must the architecture address?",
+        "What is explicitly in and out of scope?",
+        "Which assumptions require validation before synthesis?"
+      ]
+    },
+    {
+      "stage": "qualityDrivers",
+      "objective": "Convert outcomes and constraints into measurable ASRs and trade-offs.",
+      "preferredStyles": [],
+      "patternEmphasis": [
+        "PAT-ARCHITECTURE-DECISION-RECORD",
+        "PAT-ARCHITECTURE-FITNESS-FUNCTION"
+      ],
+      "componentFamilies": [
+        "Quality Scenario",
+        "Constraint",
+        "Decision"
+      ],
+      "interfaceFocus": [
+        "response measure",
+        "validation method"
+      ],
+      "requiredEvidence": [
+        "quality scenarios",
+        "priority weights",
+        "conflict decisions"
+      ],
+      "obligations": [
+        "measurable response",
+        "owner",
+        "validation method"
+      ],
+      "handoffArtifacts": [
+        "quality driver register",
+        "trade-off map"
+      ],
+      "cambridgeQuestions": [
+        "Which requirements are architecturally significant?",
+        "Can each quality requirement be written as source, stimulus, environment, artifact, response and response measure?",
+        "Which quality drivers conflict, and which trade-off authority decides?",
+        "What baseline and measurable target will prove success?"
+      ]
+    },
+    {
+      "stage": "logicalApplication",
+      "objective": "Define vendor-neutral responsibilities, boundaries, data ownership and interactions.",
+      "preferredStyles": [
+        "STYLE-MODULAR-MONOLITH",
+        "STYLE-MICROSERVICES",
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "patternEmphasis": [
+        "PAT-BOUNDED-CONTEXT",
+        "PAT-HEXAGONAL-ARCHITECTURE",
+        "PAT-CLEAN-ARCHITECTURE",
+        "PAT-ANTI-CORRUPTION-LAYER"
+      ],
+      "componentFamilies": [
+        "Business Domain",
+        "Logical Service",
+        "Actor",
+        "External System"
+      ],
+      "interfaceFocus": [
+        "domain command",
+        "domain event",
+        "published language"
+      ],
+      "requiredEvidence": [
+        "responsibility model",
+        "boundary rationale",
+        "data ownership"
+      ],
+      "obligations": [
+        "high cohesion",
+        "controlled coupling",
+        "named owners"
+      ],
+      "handoffArtifacts": [
+        "logical application view",
+        "component responsibility register"
+      ],
+      "cambridgeQuestions": [
+        "Which business capabilities and bounded responsibilities belong together?",
+        "Where should cohesion be high and coupling low?",
+        "Which components own behaviour and data?",
+        "What abstractions prevent ripple effects and preserve information hiding?"
+      ]
+    },
+    {
+      "stage": "applicationRealization",
+      "objective": "Realize logical responsibilities as deployable components and explicit contracts.",
+      "preferredStyles": [
+        "STYLE-MODULAR-MONOLITH",
+        "STYLE-MICROSERVICES",
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "patternEmphasis": [
+        "PAT-API-GATEWAY",
+        "PAT-BACKEND-FOR-FRONTEND",
+        "PAT-TRANSACTIONAL-OUTBOX",
+        "PAT-IDEMPOTENT-CONSUMER",
+        "PAT-SAGA-BOUNDARY"
+      ],
+      "componentFamilies": [
+        "Deployable Unit",
+        "Module",
+        "Worker",
+        "API",
+        "Event"
+      ],
+      "interfaceFocus": [
+        "OpenAPI",
+        "AsyncAPI",
+        "batch/data contract",
+        "failure policy"
+      ],
+      "requiredEvidence": [
+        "component-interface traceability",
+        "pattern obligations",
+        "deployment independence"
+      ],
+      "obligations": [
+        "provider and consumer",
+        "versioned contract",
+        "timeout/retry/idempotency"
+      ],
+      "handoffArtifacts": [
+        "application realization view",
+        "interface register",
+        "event flow"
+      ],
+      "cambridgeQuestions": [
+        "Which deployable units realize each logical responsibility?",
+        "Which interfaces are required by each consumer and provider?",
+        "Which communication patterns are synchronous, asynchronous or batch, and why?",
+        "Which pattern obligations become tests or review controls?"
+      ]
+    },
+    {
+      "stage": "logicalTechnology",
+      "objective": "Select provider-neutral platform, data, security, integration and observability capabilities.",
+      "preferredStyles": [
+        "STYLE-PLATFORM-CENTRIC",
+        "STYLE-CELL-BASED",
+        "STYLE-SERVERLESS"
+      ],
+      "patternEmphasis": [
+        "PAT-PLATFORM-ENGINEERING",
+        "PAT-INTERNAL-DEVELOPER-PLATFORM",
+        "PAT-SERVICE-MESH",
+        "PAT-ZERO-TRUST",
+        "PAT-DISTRIBUTED-TRACING"
+      ],
+      "componentFamilies": [
+        "Logical Technology Capability",
+        "Control",
+        "Platform Service"
+      ],
+      "interfaceFocus": [
+        "capability contract",
+        "identity assertion",
+        "telemetry envelope"
+      ],
+      "requiredEvidence": [
+        "capability rationale",
+        "quality fit",
+        "operating model fit"
+      ],
+      "obligations": [
+        "vendor neutrality",
+        "support ownership",
+        "service levels"
+      ],
+      "handoffArtifacts": [
+        "logical technology view",
+        "capability-to-requirement matrix"
+      ],
+      "cambridgeQuestions": [
+        "Which vendor-neutral capabilities are required?",
+        "Which capabilities are mandatory, optional or prohibited by constraints?",
+        "What platform, security, data and observability services support the design?"
+      ]
+    },
+    {
+      "stage": "physicalTechnology",
+      "objective": "Map neutral capabilities to products, topology, trust zones and recovery paths.",
+      "preferredStyles": [
+        "STYLE-CELL-BASED",
+        "STYLE-SERVERLESS"
+      ],
+      "patternEmphasis": [
+        "PAT-CANARY-RELEASE",
+        "PAT-GITOPS",
+        "PAT-DISASTER-RECOVERY",
+        "PAT-MUTUAL-TLS",
+        "PAT-SECRETS-MANAGEMENT"
+      ],
+      "componentFamilies": [
+        "Region",
+        "Network Zone",
+        "Deployment Node",
+        "Runtime",
+        "Data Store"
+      ],
+      "interfaceFocus": [
+        "network protocol",
+        "trust boundary",
+        "deployment manifest"
+      ],
+      "requiredEvidence": [
+        "provider mapping",
+        "capacity assumptions",
+        "recovery design",
+        "cost assumptions"
+      ],
+      "obligations": [
+        "logical-to-physical lineage",
+        "no vendor override of neutral design",
+        "rollback path"
+      ],
+      "handoffArtifacts": [
+        "physical deployment view",
+        "security view",
+        "resilience view"
+      ],
+      "cambridgeQuestions": [
+        "Which products or managed services realize each accepted capability?",
+        "What deployment zones, trust boundaries, scaling units and recovery paths are required?",
+        "What provider-specific limits or costs alter the neutral design?"
+      ]
+    },
+    {
+      "stage": "validationRealization",
+      "objective": "Review completeness, risks, decisions, conformance and readiness.",
+      "preferredStyles": [],
+      "patternEmphasis": [
+        "PAT-THREAT-MODELING",
+        "PAT-POLICY-AS-CODE",
+        "PAT-SLO-BASED-OPERATIONS",
+        "PAT-ARCHITECTURE-FITNESS-FUNCTION"
+      ],
+      "componentFamilies": [
+        "Finding",
+        "ADR",
+        "Fitness Test",
+        "Evidence"
+      ],
+      "interfaceFocus": [
+        "evidence envelope",
+        "governance decision"
+      ],
+      "requiredEvidence": [
+        "decision record",
+        "fitness result",
+        "risk disposition",
+        "counterfactual"
+      ],
+      "obligations": [
+        "no hidden blockers",
+        "waiver expiry",
+        "evidence provenance"
+      ],
+      "handoffArtifacts": [
+        "review pack",
+        "ADR set",
+        "fitness-test pack",
+        "acceptance disposition"
+      ],
+      "cambridgeQuestions": [
+        "Which decisions address which drivers?",
+        "What alternatives were rejected and under what counterfactual conditions would they become preferable?",
+        "What risks, assumptions and failure modes remain?",
+        "Which fitness tests and evidence demonstrate readiness?"
+      ]
+    },
+    {
+      "stage": "sddPack",
+      "objective": "Assemble a coherent, audience-specific and traceable architecture delivery pack.",
+      "preferredStyles": [],
+      "patternEmphasis": [
+        "PAT-ARCHITECTURE-DECISION-RECORD",
+        "PAT-CLAIM-LEVEL-PROVENANCE"
+      ],
+      "componentFamilies": [
+        "Artifact",
+        "Diagram",
+        "Traceability Link"
+      ],
+      "interfaceFocus": [
+        "document-to-model reference",
+        "artifact manifest"
+      ],
+      "requiredEvidence": [
+        "pinned knowledge release",
+        "diagram/model consistency",
+        "section completeness"
+      ],
+      "obligations": [
+        "rendered diagrams",
+        "requirements traceability",
+        "known limitations"
+      ],
+      "handoffArtifacts": [
+        "SDD",
+        "diagram pack",
+        "CALM/JSON model",
+        "evidence manifest"
+      ],
+      "cambridgeQuestions": [
+        "Which audience needs which viewpoint and level of detail?",
+        "Does every significant requirement trace to decisions, components, interfaces and tests?",
+        "Are diagrams generated from the same canonical model as the narrative?",
+        "What is incomplete, externally dependent or awaiting acceptance?"
+      ]
+    }
+  ]
+}

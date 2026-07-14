@@ -1,0 +1,27 @@
+{
+  "release": "0.10.0-rc.10.73.2",
+  "releaseLine": "rc.10.73.2",
+  "generatedAt": "2026-07-14T15:35:39Z",
+  "scope": "Thin Brain Orchestrator and Parallel Architecture Runtime Authority Retirement",
+  "accepted": {
+    "dedicatedArchitectureBrainRuntime": true,
+    "orchestratorDomainJudgementImportsRemoved": true,
+    "legacyRecommendationValidationAuditRoutesDelegated": true,
+    "legacyIntelligenceEvaluationDelegated": true,
+    "governanceAndPolicyGateEvaluationDelegated": true,
+    "synthesisAssessmentDelegated": true,
+    "reviewStudioDelegated": true,
+    "compatibilityAliasesExplicitlyDeprecated": true,
+    "authorityAuditReportsSingleRuntimeOwner": true
+  },
+  "notAccepted": {
+    "parallelStateStoreRetirement": false,
+    "wholeProductGraphPrimaryMigration": false,
+    "durableReasoningRunAndReviewRepository": false,
+    "liveProviderAcceptance": false,
+    "externalHumanExpertValidation": false,
+    "managedInfrastructureProductionAcceptance": false,
+    "productionAcceptance": false
+  },
+  "governance": "The single Brain authority is enforced for the migrated architecture-runtime surfaces. Compatibility routes remain callable only as explicit deprecated aliases and do not retain independent architecture judgement."
+}

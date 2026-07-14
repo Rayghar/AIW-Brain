@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "description": "Experience configuration (strategy doc's third logic class): how much intelligence is SHOWN is configuration; what is TRUE stays in knowledge and code.",
+  "maxProminentInterventions": 3,
+  "maxNextBestActions": 5,
+  "maxSuggestedComponents": 5,
+  "toneWeights": { "warning": 1.0, "next-step": 0.9, "suggestion": 0.7, "insight": 0.5 },
+  "roleAdjustments": {
+    "junior": { "insightBoost": 8, "detailLevel": "full" },
+    "senior": { "insightBoost": -6, "detailLevel": "compact" },
+    "reviewer": { "warningBoost": 10, "detailLevel": "evidence-first" }
+  },
+  "maturityAdjustments": { "lowMaturityOperationalBoost": 8 }
+}

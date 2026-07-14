@@ -1,0 +1,60 @@
+{
+  "release": "0.10.0-rc.10.72.3",
+  "fileCountBeforeManifest": 3164,
+  "uncompressedBytesBeforeManifest": 85497042,
+  "uncompressedMiBBeforeManifest": 81.54,
+  "categories": {
+    "other": {
+      "files": 50,
+      "bytes": 1082887,
+      "mib": 1.03
+    },
+    "current-release-reports": {
+      "files": 10,
+      "bytes": 852103,
+      "mib": 0.81
+    },
+    "backend": {
+      "files": 1643,
+      "bytes": 33564087,
+      "mib": 32.01
+    },
+    "frontend": {
+      "files": 1382,
+      "bytes": 40139527,
+      "mib": 38.28
+    },
+    "release-evidence": {
+      "files": 9,
+      "bytes": 447578,
+      "mib": 0.43
+    },
+    "release-history": {
+      "files": 55,
+      "bytes": 4162439,
+      "mib": 3.97
+    },
+    "knowledge-repository": {
+      "files": 15,
+      "bytes": 5248421,
+      "mib": 5.01
+    }
+  },
+  "excluded": [
+    "backend/node_modules",
+    "frontend/node_modules",
+    "test-results",
+    "playwright-report",
+    "blob-report",
+    ".git",
+    "raw debug logs",
+    "historical screenshots outside release history"
+  ],
+  "currentEvidence": {
+    "solReceiptScreenshots": 2,
+    "cleanLifecycleScreenshots": 10,
+    "contactSheet": 1,
+    "calibrationScenarios": 9
+  },
+  "productionAccepted": false
+}

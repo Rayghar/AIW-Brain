@@ -1,0 +1,45 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--aiw-text);
+  background: #06101a;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 0; min-height: 100vh; background: #06101a; }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+
+/* Sprint 8.8.1 Admin Control Plane feature styles */
+.admin-control-plane { display: grid; gap: 1rem; }
+.admin-command-strip { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; padding: .85rem; border: 1px solid var(--aiw-border, rgba(148,163,184,.22)); border-radius: 18px; background: var(--aiw-surface-soft, rgba(15,23,42,.58)); }
+.admin-command-strip button, .admin-row-actions button, .admin-form-card button { display: inline-flex; gap: .4rem; align-items: center; border: 1px solid rgba(45,212,191,.35); background: rgba(20,184,166,.13); color: var(--aiw-text, #e5eefc); border-radius: 999px; padding: .5rem .75rem; font-weight: 700; cursor: pointer; }
+.admin-command-strip button:disabled { opacity: .65; cursor: wait; }
+.admin-pill { display: inline-flex; gap: .35rem; align-items: center; border: 1px solid rgba(148,163,184,.28); border-radius: 999px; padding: .45rem .7rem; font-size: .82rem; color: var(--aiw-muted, #94a3b8); }
+.admin-pill--ok { border-color: rgba(45,212,191,.38); color: #99f6e4; background: rgba(20,184,166,.1); }
+.admin-overview-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .85rem; }
+.admin-metric-card, .admin-wide-card, .admin-form-card, .admin-table-card { border: 1px solid var(--aiw-border, rgba(148,163,184,.22)); border-radius: 20px; background: linear-gradient(180deg, rgba(15,23,42,.78), rgba(15,23,42,.48)); box-shadow: var(--aiw-shadow-soft, 0 18px 40px rgba(0,0,0,.24)); }
+.admin-metric-card { min-height: 120px; padding: 1rem; display: grid; align-content: space-between; }
+.admin-metric-card svg { color: #2dd4bf; }
+.admin-metric-card span { color: var(--aiw-muted, #94a3b8); font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; }
+.admin-metric-card strong { font-size: 1.8rem; }
+.admin-wide-card { grid-column: span 5; padding: 1rem; }
+.admin-wide-card h3, .admin-form-card h3, .admin-table-card h3 { display: flex; gap: .45rem; align-items: center; margin: 0 0 .85rem; }
+.admin-check-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; margin: 0; padding: 0; list-style: none; }
+.admin-check-list li { display: flex; gap: .45rem; color: var(--aiw-muted, #94a3b8); }
+.admin-mini-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .75rem; }
+.admin-mini-grid span { padding: .85rem; border-radius: 16px; border: 1px solid rgba(148,163,184,.18); background: rgba(15,23,42,.5); color: var(--aiw-muted, #94a3b8); }
+.admin-mini-grid strong { display: block; font-size: 1.3rem; color: var(--aiw-text, #e5eefc); }
+.admin-section-stack { display: grid; gap: 1rem; }
+.admin-form-card, .admin-table-card { padding: 1rem; }
+.admin-form-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; margin-bottom: .85rem; }
+.admin-field { display: grid; gap: .35rem; }
+.admin-field span { color: var(--aiw-muted, #94a3b8); font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+.admin-field input, .admin-field select { width: 100%; border-radius: 14px; border: 1px solid rgba(148,163,184,.28); background: rgba(2,6,23,.54); color: var(--aiw-text, #e5eefc); padding: .7rem .8rem; }
+.admin-table { overflow-x: auto; border-radius: 16px; border: 1px solid rgba(148,163,184,.16); }
+.admin-table table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.admin-table td { padding: .7rem .8rem; border-bottom: 1px solid rgba(148,163,184,.12); vertical-align: middle; }
+.admin-row-actions { white-space: nowrap; text-align: right; }
+.admin-row-actions button { margin-left: .35rem; padding: .38rem .55rem; font-size: .78rem; }
+.admin-tabs span { margin-left: .35rem; border-radius: 999px; background: rgba(45,212,191,.14); padding: .1rem .45rem; font-size: .72rem; }
+@media (max-width: 1100px) { .admin-overview-grid, .admin-check-list, .admin-mini-grid, .admin-form-grid { grid-template-columns: 1fr; } .admin-wide-card { grid-column: span 1; } }

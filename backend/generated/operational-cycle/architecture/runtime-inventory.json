@@ -1,0 +1,32 @@
+{
+  "id": "inventory-7cb453ac-80a0-4d34-bfb5-22d4fe22e127",
+  "tenantId": "tenant-reference",
+  "projectId": "project-order-to-payment",
+  "branchId": "branch-main",
+  "name": "Reference Kubernetes collector inventory",
+  "sourceType": "aws",
+  "capturedAt": "2026-07-02T18:36:29.669Z",
+  "sourceRevision": "reference-cycle",
+  "rawFingerprint": "fnv1a-cbe21d1b",
+  "resources": [
+    {
+      "id": "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537",
+      "sourceType": "aws",
+      "externalId": "arn:aws:rds:reference",
+      "resourceType": "aws_db_instance",
+      "name": "Managed PostgreSQL",
+      "provider": "aws",
+      "region": "eu-west-1",
+      "properties": {
+        "monthlyCost": 850,
+        "replicas": 1,
+        "availabilityZones": 1
+      },
+      "labels": {
+        "aiw.node-id": "physical-postgres"
+      },
+      "discoveredAt": "2026-07-02T18:36:29.669Z"
+    }
+  ],
+  "relationships": []
+}

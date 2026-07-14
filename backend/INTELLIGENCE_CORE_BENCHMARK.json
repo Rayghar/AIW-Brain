@@ -1,0 +1,48 @@
+{
+  "release": "AIW-0.9.1",
+  "sprint": "8.0.1",
+  "generatedAt": "2026-07-02T23:12:03.747Z",
+  "calibratedQualityAttributes": [
+    "availability",
+    "performance",
+    "scalability",
+    "faultTolerance",
+    "modifiability",
+    "deployability",
+    "costEfficiency",
+    "simplicity"
+  ],
+  "pendingQualityAttributes": [
+    "elasticity",
+    "reliability",
+    "consistency",
+    "security",
+    "privacy",
+    "testability",
+    "observability",
+    "interoperability",
+    "portability",
+    "recoverability",
+    "deliverySpeed",
+    "sustainability"
+  ],
+  "safeguards": {
+    "stableIdAndTraitScoring": true,
+    "applicabilityGating": true,
+    "prohibitedTechnologyRealizationCheck": true,
+    "pendingDriversExcludedFromScoring": true,
+    "providerNeutralEmbeddedCoArchitect": true,
+    "reversibleAuditProposals": true,
+    "contextualKnowledgeGuidance": true,
+    "contextualGuidancePlacements": [
+      "brief",
+      "quality",
+      "canvas",
+      "inspector",
+      "review",
+      "global"
+    ],
+    "semanticGateChecks": 8,
+    "deterministicFallback": true
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "release": "0.10.0-rc.10.73.0",
+  "releaseLine": "rc.10.73.0",
+  "generatedAt": "2026-07-14T14:21:55Z",
+  "verificationStatus": "focused-source-build-and-release-gates-passed-full-web-rebundle-blocked-by-unavailable-dependencies",
+  "passed": {
+    "backendFullBuild": true,
+    "backendFocusedTestFiles": 3,
+    "backendFocusedTests": 8,
+    "backendFocusedTestsPassed": true,
+    "canonicalDesignGraphReleaseGate": {
+      "passed": 19,
+      "total": 19
+    },
+    "backendInternalDependencyGate": true,
+    "backendReleaseIntegrityGate": true,
+    "backendSecuritySourceScan": true,
+    "frontendDomainBuild": true,
+    "frontendIntelligenceBuild": true,
+    "frontendBrainRuntimeBuild": true,
+    "frontendInternalDependencyGate": true,
+    "frontendReleaseIntegrityGate": true,
+    "frontendSecuritySourceScan": true,
+    "coArchitectPanelSourceSyntaxTransform": true,
+    "distributedSolLazyChunkSyntax": true
+  },
+  "notExecutedOrBlocked": {
+    "freshFrontendWebRebundle": {
+      "status": "blocked",
+      "reason": "The delivery environment did not contain the React, lucide-react and Vite plugin packages needed by the web workspace. The explicit build attempt failed at TypeScript module resolution before Vite bundling. The packaged source was syntax-transformed with esbuild, the existing isolated Sol lazy chunk was updated, node --check passed, and the compiled-output release gate passed.",
+      "log": "release-evidence/rc10.73.0/logs/frontend-web-build.log"
+    },
+    "browserEndToEndAcceptance": {
+      "status": "not-executed",
+      "reason": "No claim is made for Playwright/browser end-to-end acceptance in rc.10.73.0. This release verifies the Design Graph foundation, governed materialisation API and distributed Sol governance surface through focused tests and gates."
+    },
+    "liveLlmProviderAcceptance": {
+      "status": "blocked",
+      "reason": "No configured live-provider credential or externally accepted provider run was available."
+    },
+    "productionAcceptance": {
+      "status": "false",
+      "reason": "Managed infrastructure, enterprise KMS, independent expert scoring and controlled enterprise pilot gates remain open."
+    }
+  },
+  "behaviouralCoverage": [
+    "deterministic graph projection and fingerprinting",
+    "repository persistence synchronisation",
+    "Brain manifest and proposal receipt graph pinning",
+    "fresh preview plus explicit architect-authorised materialisation",
+    "project revision increment",
+    "stale preview rejection",
+    "semantic fingerprint change",
+    "dangling relationship integrity failure",
+    "rc.10.72.2 Brain recovery regression",
+    "rc.10.72.3 Sol intelligence calibration regression"
+  ],
+  "logs": [
+    "release-evidence/rc10.73.0/logs/backend-build.log",
+    "release-evidence/rc10.73.0/logs/backend-rc10-73-tests.log",
+    "release-evidence/rc10.73.0/logs/backend-rc10-73-gate.log",
+    "release-evidence/rc10.73.0/logs/backend-internal-deps-gate.log",
+    "release-evidence/rc10.73.0/logs/backend-release-integrity-gate.log",
+    "release-evidence/rc10.73.0/logs/backend-security-check.log",
+    "release-evidence/rc10.73.0/logs/frontend-domain-build.log",
+    "release-evidence/rc10.73.0/logs/frontend-intelligence-build.log",
+    "release-evidence/rc10.73.0/logs/frontend-brain-runtime-build.log",
+    "release-evidence/rc10.73.0/logs/frontend-rc10-73-gate.log",
+    "release-evidence/rc10.73.0/logs/frontend-internal-deps-gate.log",
+    "release-evidence/rc10.73.0/logs/frontend-release-integrity-gate.log",
+    "release-evidence/rc10.73.0/logs/frontend-security-check.log",
+    "release-evidence/rc10.73.0/logs/frontend-coarchitect-source-syntax.log",
+    "release-evidence/rc10.73.0/logs/frontend-web-build.log"
+  ],
+  "acceptance": {
+    "canonicalDesignGraphFoundationImplemented": true,
+    "canonicalDesignGraphMigrationComplete": false,
+    "legacyProjectProjectionRetained": true,
+    "productionAccepted": false
+  }
+}

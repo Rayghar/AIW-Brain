@@ -1,0 +1,72 @@
+{
+  "candidates": [],
+  "stagedPatternEdits": [],
+  "releasedManifests": [],
+  "pins": [],
+  "events": [
+    {
+      "eventId": "KOE-mrhi9hnz-79wmyd",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "knowledge.read",
+      "at": "2026-07-12T08:02:14.063Z",
+      "detail": "roles: platform-architect"
+    },
+    {
+      "eventId": "KOE-mrhi9hnz-lvccld",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "release.read",
+      "at": "2026-07-12T08:02:14.063Z",
+      "detail": "roles: platform-architect"
+    },
+    {
+      "eventId": "KOE-mrhi9hny-8xe48k",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "release.read",
+      "at": "2026-07-12T08:02:14.062Z",
+      "detail": "roles: platform-architect"
+    },
+    {
+      "eventId": "KOE-mrhi9hnx-66qy11",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "release.read",
+      "at": "2026-07-12T08:02:14.061Z",
+      "detail": "roles: platform-architect"
+    },
+    {
+      "eventId": "KOE-mrhi8737-63rgau",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "knowledge.read",
+      "at": "2026-07-12T08:01:13.699Z",
+      "detail": "roles: platform-architect"
+    },
+    {
+      "eventId": "KOE-mrhi8736-5qr0w0",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "release.read",
+      "at": "2026-07-12T08:01:13.698Z",
+      "detail": "roles: platform-architect"
+    },
+    {
+      "eventId": "KOE-mrhi8736-bvwo6u",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "release.read",
+      "at": "2026-07-12T08:01:13.698Z",
+      "detail": "roles: platform-architect"
+    },
+    {
+      "eventId": "KOE-mrhi8733-40mk0o",
+      "actor": "unknown-actor",
+      "action": "rbac.denied",
+      "subject": "release.read",
+      "at": "2026-07-12T08:01:13.695Z",
+      "detail": "roles: platform-architect"
+    }
+  ]
+}

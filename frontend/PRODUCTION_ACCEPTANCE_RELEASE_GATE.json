@@ -1,0 +1,70 @@
+{
+  "releaseId": "AIW-0.10.0-rc.2",
+  "targetReleaseId": "AIW-0.10.0",
+  "sprint": "8.7.6",
+  "generatedAt": "2026-07-04T02:53:33.129Z",
+  "passed": 11,
+  "total": 12,
+  "checks": [
+    {
+      "id": "876-01-version",
+      "passed": false,
+      "detail": "root and all workspaces are versioned 0.10.0-rc.2"
+    },
+    {
+      "id": "876-02-target-release",
+      "passed": true,
+      "detail": "the package targets AIW v0.10.0 final declaration"
+    },
+    {
+      "id": "876-03-evidence-taxonomy",
+      "passed": true,
+      "detail": "all required target-environment evidence categories are encoded"
+    },
+    {
+      "id": "876-04-no-fabricated-final",
+      "passed": true,
+      "detail": "final declaration is impossible without all gates and is never automatic"
+    },
+    {
+      "id": "876-05-visual-acceptance",
+      "passed": true,
+      "detail": "production acceptance is represented as a visual node-and-relationship model"
+    },
+    {
+      "id": "876-06-gates",
+      "passed": true,
+      "detail": "acceptance gates expose missing and failed evidence"
+    },
+    {
+      "id": "876-07-engine-export",
+      "passed": true,
+      "detail": "production acceptance engine exports are available through @aiw/engine"
+    },
+    {
+      "id": "876-08-api-routes",
+      "passed": true,
+      "detail": "release, requirements and assessment APIs are exposed"
+    },
+    {
+      "id": "876-09-tenancy",
+      "passed": true,
+      "detail": "production evidence is tenant-bound"
+    },
+    {
+      "id": "876-10-tests",
+      "passed": true,
+      "detail": "engine and API tests cover final declaration, visual modelling and tenancy"
+    },
+    {
+      "id": "876-11-docs",
+      "passed": true,
+      "detail": "release docs describe the target acceptance finalization boundary"
+    },
+    {
+      "id": "876-12-final-honesty",
+      "passed": true,
+      "detail": "governance boundary prevents false production acceptance"
+    }
+  ]
+}

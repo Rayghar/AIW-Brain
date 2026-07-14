@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "release": "0.10.0-rc.10.73.3",
+  "assessment": "source-build-and-in-memory-executable-acceptance",
+  "acceptedCapabilities": [
+    "automatic-governed-receipt-recording",
+    "idempotent-brain-proposal-transaction",
+    "append-only-hash-chained-events",
+    "optimistic-concurrency",
+    "independent-reviewer-assignment-and-disposition",
+    "mandatory-review-rationale",
+    "first-class-architecture-rule-waiver",
+    "postgresql-rls-adapter-source-and-build",
+    "mongodb-transactional-adapter-source-and-build"
+  ],
+  "notAccepted": [
+    "managed-postgresql-runtime",
+    "mongodb-atlas-runtime",
+    "cross-repository-physical-atomicity",
+    "dedicated-browser-transaction-review-workflow",
+    "production-acceptance"
+  ],
+  "productionAccepted": false
+}

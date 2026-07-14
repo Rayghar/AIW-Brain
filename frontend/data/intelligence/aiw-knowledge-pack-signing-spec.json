@@ -1,0 +1,36 @@
+{
+  "version": "0.10.0-rc.10.17",
+  "packFiles": [
+    "manifest.json",
+    "knowledge-release.json",
+    "claims.ndjson",
+    "pattern-dna.json",
+    "quality-attributes.json",
+    "tactics.json",
+    "scenario-templates.json",
+    "sdd-reasoning-grammar.json",
+    "fitness-test-seeds.json",
+    "source-provenance.json",
+    "license-manifest.json",
+    "checksums.sha256",
+    "signature.json"
+  ],
+  "activationRules": [
+    "manifest-schema-valid",
+    "all-files-present",
+    "checksums-match",
+    "signature-valid",
+    "release-status-approved-or-released",
+    "kernel-compatible",
+    "tenant-or-project-pin-allows-release"
+  ],
+  "rejectionRules": [
+    "unsigned",
+    "checksum-mismatch",
+    "expired",
+    "candidate-only",
+    "blocked-or-deprecated-without-override",
+    "missing-provenance",
+    "missing-license-manifest"
+  ]
+}

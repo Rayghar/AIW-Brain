@@ -1,0 +1,69 @@
+{
+  "releaseId": "AIW-0.10.0-alpha.4",
+  "sprint": "8.7.4",
+  "generatedAt": "2026-07-03T20:07:57.973Z",
+  "passed": 12,
+  "total": 12,
+  "checks": [
+    {
+      "id": "874-01-version",
+      "passed": true,
+      "detail": "root and all workspaces retain the 8.7.4 lineage or a verified descendant"
+    },
+    {
+      "id": "874-02-impact-engine",
+      "passed": true,
+      "detail": "enterprise standards blast-radius engine exists"
+    },
+    {
+      "id": "874-03-visual-model",
+      "passed": true,
+      "detail": "portfolio visual model is canonical and release-bound"
+    },
+    {
+      "id": "874-04-migration-waves",
+      "passed": true,
+      "detail": "migration waves require human approval and prohibit silent mutation"
+    },
+    {
+      "id": "874-05-release-boundary",
+      "passed": true,
+      "detail": "8.7.4 release boundary preserves 8.7.3 lineage"
+    },
+    {
+      "id": "874-06-engine-export",
+      "passed": true,
+      "detail": "portfolio engine exports are available through @aiw/engine"
+    },
+    {
+      "id": "874-07-api-routes",
+      "passed": true,
+      "detail": "portfolio visual, standards-impact and release APIs are exposed"
+    },
+    {
+      "id": "874-08-active-release",
+      "passed": true,
+      "detail": "active API release points to the portfolio-intelligence platform"
+    },
+    {
+      "id": "874-09-ui",
+      "passed": true,
+      "detail": "interactive portfolio and standards impact UI is implemented"
+    },
+    {
+      "id": "874-10-tests",
+      "passed": true,
+      "detail": "engine and API tests cover visual modelling, blast radius, governance and tenancy"
+    },
+    {
+      "id": "874-11-docs",
+      "passed": true,
+      "detail": "release documentation describes Sprint 8.7.4"
+    },
+    {
+      "id": "874-12-no-text-only",
+      "passed": true,
+      "detail": "portfolio intelligence remains visual modelling, not text-only analysis"
+    }
+  ]
+}

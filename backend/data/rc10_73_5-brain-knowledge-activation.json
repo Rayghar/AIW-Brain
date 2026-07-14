@@ -1,0 +1,45 @@
+{
+  "activeKnowledgeRelease": "AKR-0.10.73.5",
+  "brainUse": {
+    "candidateKnowledge": "discovery-only",
+    "composition": "enabled-with-human-preview-and-approval",
+    "conformance": "blocked-unless-a-rule-has-direct-source-lineage-and-independent-approval",
+    "controlledPilotReasoning": "enabled-for-verified-seed-claims-with-citation-receipts",
+    "descriptiveKnowledge": "enabled",
+    "discoveryKnowledge": "discovery-only",
+    "scoring": "blocked-for-repository-derived-claims-until-live-immutable-refresh-licence-clearance-and-expert-calibration"
+  },
+  "generatedAt": "2026-07-14T20:30:00.000Z",
+  "metrics": {
+    "approvedRepositoryCount": 30,
+    "compositionReadyPatternCount": 328,
+    "conformanceReadyPatternCount": 1,
+    "conversionRegistryCount": 30,
+    "directSourceClaimCoveragePercent": 0.3,
+    "editorialClaimObjectCount": 984,
+    "licenceReviewDistribution": {
+      "requires-review": 20,
+      "verified": 10
+    },
+    "liveRefreshBlockedCount": 30,
+    "liveRefreshCompletedCount": 0,
+    "patternClaimLineageCoveragePercent": 100,
+    "patternObjectCount": 328,
+    "reasoningReadyPatternCount": 1,
+    "scoringCalibratedPatternCount": 0,
+    "sourceClaimObjectCount": 14,
+    "sourceLifecycleDistribution": {
+      "approved": 30,
+      "candidate": 9,
+      "discovery-only": 8
+    },
+    "totalKnowledgeObjectCount": 1326,
+    "unresolvedContradictionCount": 0
+  },
+  "releaseBoundary": {
+    "liveGithubRefreshCompleted": false,
+    "productionAccepted": false,
+    "reason": "The build environment has no outbound GitHub network access or enterprise GitHub credentials. The release implements and executes deterministic conversion of the governed catalogue and existing approved claims, repairs claim lineage, and blocks false scoring authority. Live source snapshots remain a production-acceptance action."
+  },
+  "releaseId": "AKR-0.10.73.5"
+}

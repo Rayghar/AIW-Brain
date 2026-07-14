@@ -1,0 +1,12 @@
+{
+  "name": "Architecture Intelligence Workbench",
+  "short_name": "AIW",
+  "description": "Evidence-backed architecture design, decision intelligence and conformance workbench.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07131f",
+  "theme_color": "#07131f",
+  "lang": "en",
+  "dir": "auto",
+  "categories": ["productivity", "business", "developer tools"]
+}

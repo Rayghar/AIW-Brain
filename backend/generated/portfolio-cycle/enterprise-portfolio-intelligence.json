@@ -1,0 +1,356 @@
+{
+  "generatedAt": "2026-07-02T16:51:26.992Z",
+  "portfolioId": "portfolio-digital-channels",
+  "dependencyGraph": {
+    "projects": [
+      {
+        "id": "project-order-to-payment",
+        "name": "Order-to-Payment Reference Design",
+        "criticality": "mission-critical",
+        "owner": "Amina Okafor"
+      },
+      {
+        "id": "project-customer-identity",
+        "name": "Customer Identity Platform",
+        "criticality": "mission-critical",
+        "owner": "Identity Engineering"
+      },
+      {
+        "id": "project-commerce-analytics",
+        "name": "Commerce Analytics Platform",
+        "criticality": "high",
+        "owner": "Data Products"
+      }
+    ],
+    "dependencies": [
+      {
+        "id": "dependency-order-identity",
+        "sourceProjectId": "project-order-to-payment",
+        "targetProjectId": "project-customer-identity",
+        "kind": "api",
+        "criticality": "high",
+        "interfaceName": "Customer Identity API",
+        "dataClassification": "confidential",
+        "status": "active"
+      },
+      {
+        "id": "dependency-order-analytics",
+        "sourceProjectId": "project-order-to-payment",
+        "targetProjectId": "project-commerce-analytics",
+        "kind": "event",
+        "criticality": "medium",
+        "interfaceName": "Order Events",
+        "dataClassification": "internal",
+        "status": "active"
+      },
+      {
+        "id": "dependency-analytics-identity",
+        "sourceProjectId": "project-commerce-analytics",
+        "targetProjectId": "project-customer-identity",
+        "kind": "api",
+        "criticality": "low",
+        "interfaceName": "Analyst Access Federation",
+        "dataClassification": "internal",
+        "status": "active"
+      }
+    ],
+    "centrality": [
+      {
+        "projectId": "project-customer-identity",
+        "inbound": 2,
+        "outbound": 0,
+        "score": 4
+      },
+      {
+        "projectId": "project-commerce-analytics",
+        "inbound": 1,
+        "outbound": 1,
+        "score": 3
+      },
+      {
+        "projectId": "project-order-to-payment",
+        "inbound": 0,
+        "outbound": 2,
+        "score": 2
+      }
+    ],
+    "singlePointsOfDependency": [
+      "project-customer-identity"
+    ]
+  },
+  "standardization": {
+    "score": 88.5,
+    "classified": 8,
+    "unclassified": 0,
+    "preferred": 2,
+    "restricted": 1,
+    "prohibited": 0,
+    "deprecated": 1,
+    "fragmentationByCategory": [
+      {
+        "category": "relational-database",
+        "technologies": [
+          "MySQL 5.x",
+          "PostgreSQL"
+        ],
+        "count": 2
+      },
+      {
+        "category": "application-runtime",
+        "technologies": [
+          "Node.js"
+        ],
+        "count": 1
+      },
+      {
+        "category": "message-broker",
+        "technologies": [
+          "RabbitMQ"
+        ],
+        "count": 1
+      }
+    ],
+    "findings": [
+      {
+        "id": "std-project-commerce-analytics-analytics-mysql",
+        "projectId": "project-commerce-analytics",
+        "nodeId": "analytics-mysql",
+        "technology": "MySQL 5 Reporting Store MySQL 5.7",
+        "standardId": "STD-RDBMS-MYSQL-LEGACY",
+        "status": "deprecated",
+        "severity": "SIGNIFICANT",
+        "recommendation": "Migrate to PostgreSQL."
+      },
+      {
+        "id": "std-project-commerce-analytics-analytics-rabbit",
+        "projectId": "project-commerce-analytics",
+        "nodeId": "analytics-rabbit",
+        "technology": "RabbitMQ Broker RabbitMQ",
+        "standardId": "STD-MQ-RABBIT-RESTRICTED",
+        "status": "restricted",
+        "severity": "ADVISORY",
+        "recommendation": "Migrate to Kafka or managed queue based on workload."
+      }
+    ]
+  },
+  "riskHeatmap": [
+    {
+      "projectId": "project-commerce-analytics",
+      "projectName": "Commerce Analytics Platform",
+      "criticality": "high",
+      "riskScore": 43,
+      "technicalDebtScore": 52.666666666666664,
+      "governanceScore": 54,
+      "operationalScore": 0,
+      "dependencyScore": 25,
+      "riskBand": "high",
+      "drivers": [
+        "2 material technical-debt item(s)",
+        "6 architecture stages remain unapproved"
+      ]
+    },
+    {
+      "projectId": "project-customer-identity",
+      "projectName": "Customer Identity Platform",
+      "criticality": "mission-critical",
+      "riskScore": 34,
+      "technicalDebtScore": 15.333333333333334,
+      "governanceScore": 54,
+      "operationalScore": 0,
+      "dependencyScore": 36,
+      "riskBand": "moderate",
+      "drivers": [
+        "6 architecture stages remain unapproved",
+        "High inbound dependency centrality"
+      ]
+    },
+    {
+      "projectId": "project-order-to-payment",
+      "projectName": "Order-to-Payment Reference Design",
+      "criticality": "mission-critical",
+      "riskScore": 32,
+      "technicalDebtScore": 20.333333333333332,
+      "governanceScore": 54,
+      "operationalScore": 0,
+      "dependencyScore": 14,
+      "riskBand": "moderate",
+      "drivers": [
+        "6 architecture stages remain unapproved"
+      ]
+    }
+  ],
+  "costs": {
+    "currency": "USD",
+    "expectedMonthlyCost": 4150,
+    "actualMonthlyCost": 4150,
+    "monthlyVariance": 0,
+    "annualTechnicalDebtImpact": 129000,
+    "byProject": [
+      {
+        "projectId": "project-order-to-payment",
+        "expectedMonthlyCost": 1200,
+        "actualMonthlyCost": 1200,
+        "variance": 0
+      },
+      {
+        "projectId": "project-customer-identity",
+        "expectedMonthlyCost": 1400,
+        "actualMonthlyCost": 1400,
+        "variance": 0
+      },
+      {
+        "projectId": "project-commerce-analytics",
+        "expectedMonthlyCost": 1550,
+        "actualMonthlyCost": 1550,
+        "variance": 0
+      }
+    ]
+  },
+  "compliance": [
+    {
+      "projectId": "project-order-to-payment",
+      "referenceArchitectureId": "REF-DIGITAL-TRANSACTION-PLATFORM",
+      "score": 45,
+      "compliant": false,
+      "missingStyles": [],
+      "missingPatterns": [
+        "PAT-OUTBOX",
+        "PAT-CIRCUIT-BREAKER"
+      ],
+      "missingNodeKinds": [
+        "DataStore"
+      ],
+      "prohibitedTechnologies": [],
+      "missingDecisions": [
+        "recovery",
+        "data ownership"
+      ],
+      "approvalGap": 3
+    },
+    {
+      "projectId": "project-customer-identity",
+      "referenceArchitectureId": "REF-DIGITAL-TRANSACTION-PLATFORM",
+      "score": 27,
+      "compliant": false,
+      "missingStyles": [
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "missingPatterns": [
+        "PAT-OUTBOX",
+        "PAT-CIRCUIT-BREAKER"
+      ],
+      "missingNodeKinds": [
+        "LogicalService",
+        "DataStore"
+      ],
+      "prohibitedTechnologies": [],
+      "missingDecisions": [
+        "recovery",
+        "data ownership"
+      ],
+      "approvalGap": 3
+    }
+  ],
+  "reuse": {
+    "usages": [
+      {
+        "buildingBlockId": "ABB-SECURE-API-SERVICE",
+        "projectIds": [
+          "project-order-to-payment",
+          "project-customer-identity"
+        ],
+        "adoptionCount": 2
+      },
+      {
+        "buildingBlockId": "ABB-EVENT-PROCESSOR",
+        "projectIds": [],
+        "adoptionCount": 0
+      }
+    ],
+    "duplicateCandidates": [
+      {
+        "signature": "DeployableUnit:worker:node js",
+        "projectIds": [
+          "project-order-to-payment",
+          "project-commerce-analytics"
+        ],
+        "labels": [
+          "Payment Worker",
+          "Analytics Ingestion Worker"
+        ],
+        "recommendation": "Review these similar components and promote a governed reusable architecture building block."
+      }
+    ],
+    "reuseScore": 50
+  },
+  "roadmap": [
+    {
+      "id": "investment-risk-project-commerce-analytics",
+      "title": "Reduce architecture risk in Commerce Analytics Platform",
+      "category": "risk-reduction",
+      "priority": "now",
+      "projectIds": [
+        "project-commerce-analytics"
+      ],
+      "rationale": "2 material technical-debt item(s); 6 architecture stages remain unapproved",
+      "estimatedEffortDays": 22,
+      "estimatedAnnualBenefit": 64500,
+      "dependencies": []
+    },
+    {
+      "id": "investment-standardization",
+      "title": "Consolidate deprecated and restricted technology platforms",
+      "category": "standardization",
+      "priority": "now",
+      "projectIds": [
+        "project-commerce-analytics"
+      ],
+      "rationale": "2 technology-standard exceptions require portfolio treatment.",
+      "estimatedEffortDays": 20,
+      "estimatedAnnualBenefit": 40000,
+      "dependencies": [
+        "Approve target technology migration waves"
+      ]
+    },
+    {
+      "id": "investment-reference-compliance",
+      "title": "Close enterprise reference-architecture gaps",
+      "category": "modernization",
+      "priority": "next",
+      "projectIds": [
+        "project-order-to-payment",
+        "project-customer-identity"
+      ],
+      "rationale": "2 project/reference assignments remain non-compliant.",
+      "estimatedEffortDays": 24,
+      "estimatedAnnualBenefit": 24000,
+      "dependencies": [
+        "Confirm applicability and approve waivers where necessary"
+      ]
+    },
+    {
+      "id": "investment-reuse",
+      "title": "Productize repeated solution components as architecture building blocks",
+      "category": "reuse",
+      "priority": "next",
+      "projectIds": [
+        "project-order-to-payment",
+        "project-commerce-analytics"
+      ],
+      "rationale": "1 repeated component signatures were detected across projects.",
+      "estimatedEffortDays": 8,
+      "estimatedAnnualBenefit": 20000,
+      "dependencies": [
+        "Assign building-block product owners"
+      ]
+    }
+  ],
+  "summary": {
+    "projects": 3,
+    "highRiskProjects": 1,
+    "totalDependencies": 3,
+    "standardizationScore": 89,
+    "complianceScore": 36,
+    "monthlyCostVariance": 0
+  }
+}

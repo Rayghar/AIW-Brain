@@ -1,0 +1,47 @@
+.synthesis-blueprint-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.synthesis-blueprint-layout > .panel-card:first-child,
+.synthesis-blueprint-layout > .panel-card:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.synthesis-blueprint-layout .metric-grid {
+  margin: 16px 0;
+}
+
+.synthesis-blueprint-layout .metric-grid article {
+  min-height: 88px;
+}
+
+.synthesis-blueprint-layout .table-scroll {
+  max-height: 460px;
+  overflow: auto;
+}
+
+.synthesis-blueprint-layout table td small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-muted);
+}
+
+.synthesis-blueprint-layout .handoff-steps {
+  max-height: 560px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+@media (max-width: 1180px) {
+  .synthesis-blueprint-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .synthesis-blueprint-layout > .panel-card:first-child,
+  .synthesis-blueprint-layout > .panel-card:nth-child(3) {
+    grid-column: auto;
+  }
+}

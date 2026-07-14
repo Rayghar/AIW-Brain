@@ -1,0 +1,300 @@
+{
+  "catalogId": "AIW-ANTI-PATTERNS",
+  "version": "0.8.6",
+  "records": [
+    {
+      "id": "ANTI-DISTRIBUTED-MONOLITH",
+      "name": "Distributed Monolith",
+      "category": "service-boundaries",
+      "description": "Separately deployed services remain tightly coupled through synchronous chains, shared release coordination or shared data ownership.",
+      "signals": [
+        "dense synchronous service graph",
+        "coordinated deployment",
+        "shared database across independent services"
+      ],
+      "risks": [
+        "cascading failure",
+        "slow delivery",
+        "poor autonomy"
+      ],
+      "mitigations": [
+        "revisit bounded contexts",
+        "reduce chatty calls",
+        "clarify data ownership",
+        "consider a modular monolith where independence is not real"
+      ],
+      "evidenceSourceIds": [
+        "SRC-AZURE-AAC",
+        "SRC-AWS-WAF",
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "ANTI-CHATTER",
+      "name": "Chatty Service Interface",
+      "category": "integration",
+      "description": "A user operation requires many small remote calls, amplifying latency and partial-failure risk.",
+      "signals": [
+        "long synchronous call chains",
+        "many fine-grained remote calls"
+      ],
+      "risks": [
+        "latency amplification",
+        "cascading failure"
+      ],
+      "mitigations": [
+        "coarsen service interfaces",
+        "aggregate calls",
+        "use asynchronous workflow where appropriate"
+      ],
+      "evidenceSourceIds": [
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "ANTI-SHARED-DATABASE-COUPLING",
+      "name": "Shared Database Coupling",
+      "category": "data",
+      "description": "Multiple independently changing deployables depend directly on the same schema without explicit ownership boundaries.",
+      "signals": [
+        "multiple deployables write same tables",
+        "schema changes require coordinated release"
+      ],
+      "risks": [
+        "deployment coupling",
+        "data ownership ambiguity"
+      ],
+      "mitigations": [
+        "assign schema ownership",
+        "introduce contracts or anti-corruption layers",
+        "use staged extraction"
+      ],
+      "evidenceSourceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AZURE-AAC"
+      ]
+    },
+    {
+      "id": "ANTI-RETRY-STORM",
+      "name": "Retry Storm",
+      "category": "resilience",
+      "description": "Unbounded or synchronized retries increase load on an already failing dependency.",
+      "signals": [
+        "retry without jitter",
+        "unbounded attempts",
+        "no retry budget"
+      ],
+      "risks": [
+        "resource exhaustion",
+        "extended outage"
+      ],
+      "mitigations": [
+        "exponential backoff with jitter",
+        "retry budgets",
+        "circuit breaker",
+        "load shedding"
+      ],
+      "evidenceSourceIds": [
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "ANTI-SINGLE-FAILURE-DOMAIN",
+      "name": "Single Failure Domain for Critical Workload",
+      "category": "deployment",
+      "description": "A critical component and its dependencies are concentrated in one failure domain.",
+      "signals": [
+        "single zone",
+        "single instance",
+        "single region without recovery plan"
+      ],
+      "risks": [
+        "availability loss",
+        "recovery delay"
+      ],
+      "mitigations": [
+        "multi-zone placement",
+        "tested failover",
+        "backup and recovery objectives"
+      ],
+      "evidenceSourceIds": [
+        "SRC-AWS-WAF",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "ANTI-UNVERSIONED-CONTRACT",
+      "name": "Unversioned Interface Contract",
+      "category": "integration",
+      "description": "API or event contracts evolve without compatibility or consumer-management rules.",
+      "signals": [
+        "no API versioning",
+        "no event schema ownership",
+        "breaking changes"
+      ],
+      "risks": [
+        "consumer outages",
+        "release coupling"
+      ],
+      "mitigations": [
+        "explicit compatibility policy",
+        "contract testing",
+        "schema registry",
+        "deprecation window"
+      ],
+      "evidenceSourceIds": [
+        "SRC-OPENAPI",
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "ANTI-OBSERVABILITY-AFTERTHOUGHT",
+      "name": "Observability as an Afterthought",
+      "category": "operations",
+      "description": "The architecture lacks trace, metric and log responsibilities for important flows.",
+      "signals": [
+        "no correlation identifiers",
+        "no service-level indicators",
+        "no failure telemetry"
+      ],
+      "risks": [
+        "slow diagnosis",
+        "unknown reliability posture"
+      ],
+      "mitigations": [
+        "define telemetry at design time",
+        "distributed tracing",
+        "service-level objectives"
+      ],
+      "evidenceSourceIds": [
+        "SRC-OTEL",
+        "SRC-AWS-WAF",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "ANTI-GOD-SERVICE",
+      "name": "God Service",
+      "category": "application-structure",
+      "description": "One service owns unrelated responsibilities and becomes the change and scaling bottleneck.",
+      "signals": [
+        "many unrelated capabilities",
+        "high fan-in and fan-out",
+        "frequent unrelated changes"
+      ],
+      "risks": [
+        "low modifiability",
+        "team contention"
+      ],
+      "mitigations": [
+        "decompose by cohesive responsibility",
+        "use bounded-context analysis"
+      ],
+      "evidenceSourceIds": [
+        "SRC-SEI-QAW",
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "ANTI-PREMATURE-DISTRIBUTION",
+      "name": "Premature Distribution",
+      "category": "architecture-style",
+      "description": "Distributed deployment is selected before independent scaling, ownership or release needs justify the operational cost.",
+      "signals": [
+        "small team",
+        "short delivery horizon",
+        "low operational maturity",
+        "many services with little autonomy"
+      ],
+      "risks": [
+        "excess complexity",
+        "higher cost",
+        "slower delivery"
+      ],
+      "mitigations": [
+        "modular monolith",
+        "service-based architecture",
+        "extract only proven boundaries"
+      ],
+      "evidenceSourceIds": [
+        "SRC-SEI-QAW",
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "ANTI-SECURITY-BOLTON",
+      "name": "Security Bolt-On",
+      "category": "security",
+      "description": "Trust boundaries, identity, data protection and abuse cases are deferred until implementation or review.",
+      "signals": [
+        "no trust boundaries",
+        "public API without auth design",
+        "sensitive data without control mapping"
+      ],
+      "risks": [
+        "design rework",
+        "control gaps",
+        "attack exposure"
+      ],
+      "mitigations": [
+        "secure-by-design review",
+        "threat modeling",
+        "map controls to components and data flows"
+      ],
+      "evidenceSourceIds": [
+        "SRC-OWASP-ASVS",
+        "SRC-NIST-SSDF"
+      ]
+    },
+    {
+      "id": "ANTI-TECHNOLOGY-FIRST",
+      "name": "Technology-First Architecture",
+      "category": "decision-quality",
+      "description": "Products are selected before logical requirements and quality scenarios are established.",
+      "signals": [
+        "vendor product in logical view",
+        "no measurable quality scenarios",
+        "requirements copied from product features"
+      ],
+      "risks": [
+        "vendor lock-in",
+        "poor requirement fit"
+      ],
+      "mitigations": [
+        "separate logical capability from physical product",
+        "record decision drivers"
+      ],
+      "evidenceSourceIds": [
+        "SRC-ISO-42010",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "ANTI-IMPLICIT-OWNERSHIP",
+      "name": "Implicit Ownership",
+      "category": "governance",
+      "description": "Components, data, interfaces or operational responsibilities lack an accountable owner.",
+      "signals": [
+        "missing owner",
+        "unclear on-call responsibility",
+        "shared data with no steward"
+      ],
+      "risks": [
+        "slow incident response",
+        "unmanaged change"
+      ],
+      "mitigations": [
+        "record owning team",
+        "define data and interface stewardship",
+        "include ownership in ADRs"
+      ],
+      "evidenceSourceIds": [
+        "SRC-AWS-WAF",
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    }
+  ]
+}

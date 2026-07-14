@@ -1,0 +1,93 @@
+{
+  "releaseId": "AIW-0.10.0-alpha.3",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "generatedAt": "2026-07-03T18:26:51.283Z",
+  "planSummary": {
+    "total": 11,
+    "executable": 8,
+    "modelControls": 3,
+    "coveredObjects": 8,
+    "coveredDecisions": 0
+  },
+  "assessmentSummary": {
+    "passed": 4,
+    "failed": 4,
+    "unverified": 3,
+    "critical": 4,
+    "high": 0,
+    "warning": 0,
+    "coveragePercent": 73,
+    "healthScore": 0
+  },
+  "gate": {
+    "passed": false,
+    "reasons": [
+      "4 critical conformance finding(s) remain open.",
+      "3 control(s) have no execution evidence."
+    ]
+  },
+  "evidenceSources": [
+    "archunit",
+    "kubernetes"
+  ],
+  "remediation": {
+    "id": "CSET-5d4cf12c-5261e85a",
+    "assessmentId": "CASS-0f9c694e-fa222b3e",
+    "projectId": "project-order-to-payment",
+    "createdAt": "2026-07-03T18:26:51.283Z",
+    "status": "draft",
+    "actions": [
+      {
+        "id": "CACT-52336a3f-28c76437",
+        "findingId": "CONF-18f45acc-88579b96",
+        "actionType": "implementation-change",
+        "title": "Review the affected architecture decision and either correct the implementation or record a time-bound waiver.",
+        "description": "Reference module boundary violation.",
+        "targetIds": [],
+        "risk": "high",
+        "status": "proposed",
+        "automaticMutationAllowed": false
+      },
+      {
+        "id": "CACT-72b585a0-8b598550",
+        "findingId": "CONF-140e9617-350e28a7",
+        "actionType": "architecture-change",
+        "title": "Complete independent review and approve an immutable stage baseline before enforcing implementation conformance.",
+        "description": "The logicalApplication stage does not have a current approved baseline.",
+        "targetIds": [],
+        "risk": "high",
+        "status": "proposed",
+        "automaticMutationAllowed": false
+      },
+      {
+        "id": "CACT-05a15357-412d167f",
+        "findingId": "CONF-754292ba-06d41b22",
+        "actionType": "architecture-change",
+        "title": "Complete independent review and approve an immutable stage baseline before enforcing implementation conformance.",
+        "description": "The applicationRealization stage does not have a current approved baseline.",
+        "targetIds": [],
+        "risk": "high",
+        "status": "proposed",
+        "automaticMutationAllowed": false
+      },
+      {
+        "id": "CACT-e5802e49-3e5b35b9",
+        "findingId": "CONF-30efa4dd-ff144e15",
+        "actionType": "architecture-change",
+        "title": "Complete independent review and approve an immutable stage baseline before enforcing implementation conformance.",
+        "description": "The logicalTechnology stage does not have a current approved baseline.",
+        "targetIds": [],
+        "risk": "high",
+        "status": "proposed",
+        "automaticMutationAllowed": false
+      }
+    ],
+    "humanApprovalRequired": true,
+    "rollbackRequired": true
+  },
+  "visualSummary": {
+    "nodes": 19,
+    "edges": 15
+  },
+  "honestBoundary": "Reference evidence validates the workflow only; it is not production-environment acceptance."
+}

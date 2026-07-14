@@ -1,0 +1,2908 @@
+{
+  "releaseId": "AKR-0.10.59",
+  "generatedAt": "2026-07-11T13:27:06.760Z",
+  "summary": {
+    "totalKnowledgeRecords": 328,
+    "recordsByType": {
+      "anti-pattern": 30,
+      "component-archetype": 20,
+      "pattern": 240,
+      "style": 14,
+      "topology-template": 24
+    },
+    "repositoryDossiers": 47,
+    "activeDesignSources": 23,
+    "unusedOrAdapterOnlySources": 24,
+    "approvedAtomicClaims": 14,
+    "recordsWithAtomicClaimLinks": 0,
+    "componentKitItems": 984,
+    "interfaceKitItems": 656,
+    "topologyGenerativeRecords": 154,
+    "meaningfulGenerationContracts": 328,
+    "lifecycleCoverage": {
+      "applicationRealization": 238,
+      "logicalTechnology": 298,
+      "physicalTechnology": 78,
+      "logicalApplication": 18,
+      "designIntent": 12,
+      "validationRealization": 12
+    },
+    "interactionTypes": {
+      "request-response": 405,
+      "event": 78,
+      "stream": 113,
+      "control": 24,
+      "batch": 36
+    },
+    "contractTypes": {
+      "OpenAPI or typed command": 34,
+      "provider-neutral port": 34,
+      "OpenAPI/AsyncAPI": 48,
+      "AsyncAPI schema": 66,
+      "declarative API": 35,
+      "status/event schema": 35,
+      "command/schema": 39,
+      "query/data contract": 39,
+      "typed command": 18,
+      "service contract": 35,
+      "metrics/health schema": 35,
+      "OIDC/SPIFFE/JWT": 40,
+      "policy decision contract": 40,
+      "deployment manifest": 24,
+      "metrics/events": 24,
+      "OpenTelemetry": 19,
+      "query API": 19,
+      "model API": 24,
+      "evaluation schema": 24,
+      "evidence envelope": 12,
+      "decision record": 12
+    }
+  },
+  "sourceDossiers": [
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "repository": "finos/architecture-as-code",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Verify per-path licensing and CALM schema terms before redistributing source-derived content."
+      },
+      "permittedUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "architecture-test-generation"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 91,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Ingest atomic claims and links; do not republish documentation wholesale."
+      },
+      "permittedUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "anti-pattern-extraction",
+        "component-taxonomy",
+        "reference-example",
+        "quality-attribute-calibration"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "anti-pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "quality-attribute-calibration",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 215,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Treat patterns as provider-specific examples; preserve source and license metadata."
+      },
+      "permittedUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve attribution; generated AIW templates remain independent representations."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 35,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use module metadata and interfaces; validate licensing before embedding module source."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 24,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use interfaces and metadata; do not copy module implementations without license review."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 39,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "posture": "Adapt",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "spdx": "CC-BY-SA-4.0",
+        "reviewStatus": "verified",
+        "usePolicy": "derive-claims-only",
+        "note": "Preserve attribution and share-alike obligations for any adapted canvas content."
+      },
+      "permittedUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 18,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use pattern/component metadata with attribution; avoid coupling AIW to Camel runtime types."
+      },
+      "permittedUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 48,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve specification attribution and version pinning."
+      },
+      "permittedUses": [
+        "claim-evidence",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 48,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use model concepts and schema mappings with attribution."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 35,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "posture": "Adapt",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Examples correspond to a published book; preserve repository licensing and avoid reproducing book text."
+      },
+      "permittedUses": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 78,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "posture": "Adapt",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve attribution and source pattern identifiers."
+      },
+      "permittedUses": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Implement syntax/model adapters; do not copy implementation code into AIW."
+      },
+      "permittedUses": [
+        "interoperability-adapter",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use public language semantics and generated fixtures; verify module licensing before code reuse."
+      },
+      "permittedUses": [
+        "interoperability-adapter",
+        "reference-example",
+        "architecture-test-generation"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Generate C4-PlantUML output without bundling third-party source by default."
+      },
+      "permittedUses": [
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Respect attribution/share terms for adapted template content."
+      },
+      "permittedUses": [
+        "claim-evidence",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 34,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Generate independent ArchUnit tests; do not copy source implementation."
+      },
+      "permittedUses": [
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 12,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "spdx": "GPL-3.0",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Keep integration process-boundary based unless legal review approves deeper linkage."
+      },
+      "permittedUses": [
+        "architecture-test-generation",
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 12,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Use catalog schemas and API integration; preserve AIW as the architecture source of truth."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Verify architecture-specific licenses and attribution before template adaptation."
+      },
+      "permittedUses": [
+        "claim-evidence",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 24,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use source-specific attribution and do not treat SAP product guidance as vendor-neutral."
+      },
+      "permittedUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Preserve CNCF attribution and source document links."
+      },
+      "permittedUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "quality-attribute-calibration",
+        "topology-template"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "quality-attribute-calibration",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 64,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+      "repository": "IBM/cloud-native-patterns",
+      "posture": "Reference",
+      "lifecycleStatus": "candidate",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Candidate source pending deeper maintenance and license review."
+      },
+      "permittedUses": [
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "posture": "Reference",
+      "lifecycleStatus": "candidate",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use as research evidence; retain paper/repository provenance."
+      },
+      "permittedUses": [
+        "quality-attribute-calibration",
+        "claim-evidence",
+        "anti-pattern-extraction"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "quality-attribute-calibration",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "anti-pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use architecture metadata and test fixtures; verify code license for any reuse."
+      },
+      "permittedUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 19,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use architecture metadata and test fixtures with attribution."
+      },
+      "permittedUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 35,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use architecture claims and metadata; review Terraform module licenses separately."
+      },
+      "permittedUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 24,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "posture": "Adopt",
+      "lifecycleStatus": "approved",
+      "trustTier": 1,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Provider-specific reference content; preserve source and version."
+      },
+      "permittedUses": [
+        "reference-example",
+        "topology-template",
+        "component-taxonomy",
+        "claim-evidence"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Architecture Knowledge Council + domain specialist",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-MICROSOFT-AGENT-SKILLS",
+      "repository": "MicrosoftDocs/agent-skills",
+      "posture": "Reference",
+      "lifecycleStatus": "candidate",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use to study AI skill packaging and source links; do not treat prompts as independent architecture authority."
+      },
+      "permittedUses": [
+        "reference-example",
+        "discovery-only"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 24,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "posture": "Reference",
+      "lifecycleStatus": "candidate",
+      "trustTier": 3,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use as secondary implementation evidence; corroborate architecture claims with stronger sources."
+      },
+      "permittedUses": [
+        "pattern-extraction",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+      "repository": "DovAmir/awesome-design-patterns",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use links for candidate-source discovery only."
+      },
+      "permittedUses": [
+        "discovery-only"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-AWESOME-SOFTWARE-ARCH",
+      "repository": "mehdihadeli/awesome-software-architecture",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use only to discover primary sources and emerging topics."
+      },
+      "permittedUses": [
+        "discovery-only"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use as a research index; claims require primary-source corroboration."
+      },
+      "permittedUses": [
+        "discovery-only"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+      "repository": "donnemartin/system-design-primer",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use as educational discovery material, never as a hard-rule authority."
+      },
+      "permittedUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "repository": "xmolecules/jmolecules",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use public abstractions and metadata to derive AIW mappings; verify module-level licenses before code reuse."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 18,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use module-model concepts and adapter metadata; verify license before copying implementation code or documentation."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter",
+        "claim-evidence"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Prioritize an import/export adapter and claim extraction; verify license and generator-template terms before redistribution."
+      },
+      "permittedUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 18,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAP-DISCOVERY",
+      "repository": "ContextMapper/context-map-discovery",
+      "posture": "Adapter",
+      "lifecycleStatus": "candidate",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use as a design reference for pluggable discovery strategies; verify license before integrating code."
+      },
+      "permittedUses": [
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+      "repository": "cncf/landscape-graph",
+      "posture": "Adapter",
+      "lifecycleStatus": "candidate",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use project/category metadata for taxonomy discovery; do not infer architectural suitability from landscape membership."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "discovery-only",
+        "interoperability-adapter"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "posture": "Adapter",
+      "lifecycleStatus": "approved",
+      "trustTier": 2,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Build a model/template adapter and retain attribution; do not copy UI or template content without license review."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 35,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "repository": "ea-toolkit/architecture-catalog",
+      "posture": "Adapter",
+      "lifecycleStatus": "candidate",
+      "trustTier": 3,
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Use public schemas and file conventions only through an explicit adapter."
+      },
+      "permittedUses": [
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "posture": "Reference",
+      "lifecycleStatus": "candidate",
+      "trustTier": 3,
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use as contextual implementation evidence and preserve attribution."
+      },
+      "permittedUses": [
+        "component-taxonomy",
+        "reference-example",
+        "topology-template"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+      "repository": "ardalis/CleanArchitecture",
+      "posture": "Reference",
+      "lifecycleStatus": "candidate",
+      "trustTier": 3,
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use as a .NET realization example, not as a universal clean-architecture prescription."
+      },
+      "permittedUses": [
+        "reference-example",
+        "pattern-extraction",
+        "architecture-test-generation"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 34,
+      "linkedClaimCount": 0,
+      "activeDesignSource": true
+    },
+    {
+      "connectorId": "GH-DEVELOPER-ROADMAP",
+      "repository": "nilbuild/developer-roadmap",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Index titles, links and terminology only; do not promote roadmap advice as production guidance."
+      },
+      "permittedUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-101",
+      "repository": "ByteByteGoHq/system-design-101",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "restricted",
+        "usePolicy": "metadata-only",
+        "note": "Non-commercial/no-derivatives posture requires link-and-metadata-only use unless separate permission is obtained."
+      },
+      "permittedUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-AWESOME-SCALABILITY",
+      "repository": "binhnguyennus/awesome-scalability",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Treat as an index. Review and ingest underlying primary sources separately."
+      },
+      "permittedUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    },
+    {
+      "connectorId": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+      "repository": "ashishps1/awesome-system-design-resources",
+      "posture": "Discovery",
+      "lifecycleStatus": "discovery-only",
+      "trustTier": 4,
+      "licence": {
+        "reviewStatus": "restricted",
+        "usePolicy": "metadata-only",
+        "note": "GPLv3 repository: index metadata and links only pending legal approval; do not merge content into proprietary packs."
+      },
+      "permittedUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ],
+      "lifecycleStages": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "canonicalMappings": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "reviewer": "Knowledge Curator + Architecture Reviewer",
+      "usedByRecordCount": 0,
+      "linkedClaimCount": 0,
+      "activeDesignSource": false
+    }
+  ]
+}

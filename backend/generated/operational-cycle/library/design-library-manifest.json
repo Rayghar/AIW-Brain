@@ -1,0 +1,7178 @@
+{
+  "libraryId": "AIW-SEED-KNOWLEDGE",
+  "version": "0.3.0",
+  "generatedAt": "2026-07-02T18:36:29.675Z",
+  "records": [
+    {
+      "id": "COMP-ACTOR",
+      "recordType": "component",
+      "name": "Actor",
+      "category": "application",
+      "description": "A person, role or persona that interacts with the system.",
+      "applicableStages": [
+        "logicalApplication"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "actor",
+        "external"
+      ],
+      "depiction": {
+        "renderer": "ActorRenderer",
+        "icon": "user",
+        "shape": "actor",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "c4": "Actor",
+          "archimate": "Actor",
+          "custom": "Actor"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4"
+      ],
+      "componentKind": "Actor",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-EXTERNAL-SYSTEM",
+      "recordType": "component",
+      "name": "External System",
+      "category": "integration",
+      "description": "A system outside the design boundary.",
+      "applicableStages": [
+        "logicalApplication"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "external",
+        "integration"
+      ],
+      "depiction": {
+        "renderer": "ExternalSystemRenderer",
+        "icon": "external-link",
+        "shape": "card",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "integration",
+        "notationMappings": {
+          "c4": "ExternalSystem",
+          "archimate": "ExternalSystem",
+          "custom": "ExternalSystem"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "ExternalSystem",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-DOMAIN",
+      "recordType": "component",
+      "name": "Business Domain",
+      "category": "application",
+      "description": "A cohesive business area containing related capabilities and services.",
+      "applicableStages": [
+        "logicalApplication"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "domain",
+        "boundary"
+      ],
+      "depiction": {
+        "renderer": "DomainRenderer",
+        "icon": "layers",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 340,
+          "height": 220
+        },
+        "canContainChildren": true,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "c4": "Domain",
+          "archimate": "Domain",
+          "custom": "Domain"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4"
+      ],
+      "componentKind": "Domain",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-LOGICAL-SERVICE",
+      "recordType": "component",
+      "name": "Logical Service",
+      "category": "application",
+      "description": "A technology-neutral business or application responsibility.",
+      "applicableStages": [
+        "logicalApplication"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "service",
+        "logical"
+      ],
+      "depiction": {
+        "renderer": "LogicalServiceRenderer",
+        "icon": "boxes",
+        "shape": "card",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "c4": "LogicalService",
+          "archimate": "LogicalService",
+          "custom": "LogicalService"
+        }
+      },
+      "properties": [
+        {
+          "key": "responsibility",
+          "label": "Primary responsibility",
+          "type": "multiline",
+          "description": "The business or application responsibility owned by this service.",
+          "required": true
+        },
+        {
+          "key": "criticality",
+          "label": "Criticality",
+          "type": "enum",
+          "description": "Business importance of the capability.",
+          "defaultValue": "medium",
+          "options": [
+            {
+              "label": "Low",
+              "value": "low"
+            },
+            {
+              "label": "Medium",
+              "value": "medium"
+            },
+            {
+              "label": "High",
+              "value": "high"
+            },
+            {
+              "label": "Mission critical",
+              "value": "mission-critical"
+            }
+          ]
+        },
+        {
+          "key": "changeFrequency",
+          "label": "Change frequency",
+          "type": "enum",
+          "description": "Expected independent rate of change.",
+          "defaultValue": "monthly",
+          "options": [
+            {
+              "label": "Daily",
+              "value": "daily"
+            },
+            {
+              "label": "Weekly",
+              "value": "weekly"
+            },
+            {
+              "label": "Monthly",
+              "value": "monthly"
+            },
+            {
+              "label": "Rare",
+              "value": "rare"
+            }
+          ]
+        }
+      ],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4"
+      ],
+      "componentKind": "LogicalService",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-EVENT",
+      "recordType": "component",
+      "name": "Domain Event",
+      "category": "integration",
+      "description": "A fact published by one responsibility and consumed by others.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "event",
+        "async"
+      ],
+      "depiction": {
+        "renderer": "EventRenderer",
+        "icon": "radio",
+        "shape": "event",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "publisher",
+            "label": "Publisher",
+            "direction": "input",
+            "relationshipKinds": [
+              "publishes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "subscriber",
+            "label": "Subscriber",
+            "direction": "output",
+            "relationshipKinds": [
+              "subscribes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "integration",
+        "notationMappings": {
+          "c4": "Event",
+          "archimate": "Event",
+          "custom": "Event"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "Event",
+      "defaultProperties": {
+        "deliveryGuarantee": "at-least-once",
+        "schemaVersion": "1.0"
+      }
+    },
+    {
+      "id": "COMP-DEPLOYABLE",
+      "recordType": "component",
+      "name": "Deployable Unit",
+      "category": "application",
+      "description": "An independently buildable and deployable application unit.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "deployable",
+        "runtime"
+      ],
+      "depiction": {
+        "renderer": "DeployableUnitRenderer",
+        "icon": "package",
+        "shape": "card",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "c4": "DeployableUnit",
+          "archimate": "DeployableUnit",
+          "custom": "DeployableUnit"
+        }
+      },
+      "properties": [
+        {
+          "key": "runtime",
+          "label": "Runtime",
+          "type": "text",
+          "description": "Runtime technology or execution model.",
+          "required": true,
+          "defaultValue": "TBD"
+        },
+        {
+          "key": "stateless",
+          "label": "Stateless",
+          "type": "boolean",
+          "description": "Whether runtime instances can be replaced without local state loss.",
+          "defaultValue": true
+        },
+        {
+          "key": "independentDeployment",
+          "label": "Independent deployment",
+          "type": "boolean",
+          "description": "Whether this unit can be deployed without coordinated release.",
+          "defaultValue": true
+        }
+      ],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4"
+      ],
+      "componentKind": "DeployableUnit",
+      "defaultProperties": {
+        "runtime": "TBD",
+        "stateless": true
+      }
+    },
+    {
+      "id": "COMP-API",
+      "recordType": "component",
+      "name": "Application API",
+      "category": "integration",
+      "description": "A synchronous or asynchronous application interface.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "api",
+        "interface"
+      ],
+      "depiction": {
+        "renderer": "APIRenderer",
+        "icon": "plug-zap",
+        "shape": "card",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "integration",
+        "notationMappings": {
+          "c4": "API",
+          "archimate": "API",
+          "custom": "API"
+        }
+      },
+      "properties": [
+        {
+          "key": "protocol",
+          "label": "Protocol",
+          "type": "enum",
+          "description": "Primary interface protocol.",
+          "defaultValue": "REST",
+          "options": [
+            {
+              "label": "REST",
+              "value": "REST"
+            },
+            {
+              "label": "GraphQL",
+              "value": "GraphQL"
+            },
+            {
+              "label": "gRPC",
+              "value": "gRPC"
+            },
+            {
+              "label": "WebSocket",
+              "value": "WebSocket"
+            }
+          ]
+        },
+        {
+          "key": "public",
+          "label": "Publicly exposed",
+          "type": "boolean",
+          "description": "Whether the interface is reachable outside the trusted boundary.",
+          "defaultValue": false
+        },
+        {
+          "key": "versioningStrategy",
+          "label": "Versioning strategy",
+          "type": "text",
+          "description": "How compatibility changes are managed.",
+          "defaultValue": "URI versioning"
+        }
+      ],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-OPENAPI",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "API",
+      "defaultProperties": {
+        "public": false,
+        "protocol": "REST"
+      }
+    },
+    {
+      "id": "COMP-MODULE",
+      "recordType": "component",
+      "name": "Application Module",
+      "category": "application",
+      "description": "A cohesive internal module within a deployable application.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "module",
+        "internal"
+      ],
+      "depiction": {
+        "renderer": "ModuleRenderer",
+        "icon": "component",
+        "shape": "card",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "c4": "Module",
+          "archimate": "Module",
+          "custom": "Module"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4"
+      ],
+      "componentKind": "Module",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-WORKER",
+      "recordType": "component",
+      "name": "Worker Component",
+      "category": "application",
+      "description": "A background processor, consumer or scheduled application component.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "worker",
+        "processor"
+      ],
+      "depiction": {
+        "renderer": "ApplicationComponentRenderer",
+        "icon": "cog",
+        "shape": "card",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "c4": "ApplicationComponent",
+          "archimate": "ApplicationComponent",
+          "custom": "ApplicationComponent"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4"
+      ],
+      "componentKind": "ApplicationComponent",
+      "defaultProperties": {
+        "processingMode": "asynchronous"
+      }
+    },
+    {
+      "id": "COMP-IAM-CONTROL",
+      "recordType": "component",
+      "name": "Identity & Access Control",
+      "category": "security",
+      "description": "Authentication and authorization responsibility.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "security",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "security",
+        "identity"
+      ],
+      "depiction": {
+        "renderer": "ControlRenderer",
+        "icon": "shield-check",
+        "shape": "control",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "security",
+        "notationMappings": {
+          "c4": "Control",
+          "archimate": "Control",
+          "custom": "Control"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-OWASP-ASVS",
+        "SRC-NIST-SSDF"
+      ],
+      "componentKind": "Control",
+      "defaultProperties": {
+        "authentication": true,
+        "authorization": true
+      }
+    },
+    {
+      "id": "COMP-MESSAGE-BROKER",
+      "recordType": "component",
+      "name": "Message Broker Capability",
+      "category": "integration",
+      "description": "Vendor-neutral reliable message transport and routing capability.",
+      "applicableStages": [
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "messaging",
+        "async"
+      ],
+      "depiction": {
+        "renderer": "LogicalTechnologyCapabilityRenderer",
+        "icon": "messages-square",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "publisher",
+            "label": "Publisher",
+            "direction": "input",
+            "relationshipKinds": [
+              "publishes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "subscriber",
+            "label": "Subscriber",
+            "direction": "output",
+            "relationshipKinds": [
+              "subscribes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "integration",
+        "notationMappings": {
+          "c4": "LogicalTechnologyCapability",
+          "archimate": "LogicalTechnologyCapability",
+          "custom": "LogicalTechnologyCapability"
+        }
+      },
+      "properties": [
+        {
+          "key": "deliveryGuarantee",
+          "label": "Delivery guarantee",
+          "type": "enum",
+          "description": "Required message-delivery semantics.",
+          "defaultValue": "at-least-once",
+          "options": [
+            {
+              "label": "At most once",
+              "value": "at-most-once"
+            },
+            {
+              "label": "At least once",
+              "value": "at-least-once"
+            },
+            {
+              "label": "Effectively once",
+              "value": "effectively-once"
+            }
+          ]
+        },
+        {
+          "key": "orderingRequired",
+          "label": "Ordering required",
+          "type": "boolean",
+          "description": "Whether consumers require deterministic ordering.",
+          "defaultValue": false
+        },
+        {
+          "key": "retentionHours",
+          "label": "Retention hours",
+          "type": "number",
+          "description": "Minimum replay and retention window.",
+          "defaultValue": 24,
+          "min": 1,
+          "max": 8760
+        },
+        {
+          "key": "containsSensitiveData",
+          "label": "Sensitive payloads",
+          "type": "boolean",
+          "description": "Whether messages may contain confidential or restricted data.",
+          "defaultValue": false
+        }
+      ],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "LogicalTechnologyCapability",
+      "defaultProperties": {
+        "deliveryGuarantee": "at-least-once",
+        "orderingRequired": false,
+        "retentionHours": 24
+      }
+    },
+    {
+      "id": "COMP-RELATIONAL-DATA",
+      "recordType": "component",
+      "name": "Relational Data Service",
+      "category": "data",
+      "description": "Vendor-neutral relational persistence capability.",
+      "applicableStages": [
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "data",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "data",
+        "relational"
+      ],
+      "depiction": {
+        "renderer": "LogicalTechnologyCapabilityRenderer",
+        "icon": "database",
+        "shape": "cylinder",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "read",
+            "label": "Read",
+            "direction": "input",
+            "relationshipKinds": [
+              "reads",
+              "stores"
+            ],
+            "semanticTypes": [
+              "query",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "write",
+            "label": "Write",
+            "direction": "input",
+            "relationshipKinds": [
+              "writes",
+              "stores"
+            ],
+            "semanticTypes": [
+              "command",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "c4": "LogicalTechnologyCapability",
+          "archimate": "LogicalTechnologyCapability",
+          "custom": "LogicalTechnologyCapability"
+        }
+      },
+      "properties": [
+        {
+          "key": "consistency",
+          "label": "Consistency",
+          "type": "enum",
+          "description": "Required consistency guarantee.",
+          "defaultValue": "strong",
+          "options": [
+            {
+              "label": "Strong",
+              "value": "strong"
+            },
+            {
+              "label": "Session",
+              "value": "session"
+            },
+            {
+              "label": "Eventual",
+              "value": "eventual"
+            }
+          ]
+        },
+        {
+          "key": "transactional",
+          "label": "Transactional",
+          "type": "boolean",
+          "description": "Whether multi-record ACID transactions are required.",
+          "defaultValue": true
+        },
+        {
+          "key": "dataClassification",
+          "label": "Data classification",
+          "type": "enum",
+          "description": "Highest classification stored.",
+          "defaultValue": "internal",
+          "options": [
+            {
+              "label": "Public",
+              "value": "public"
+            },
+            {
+              "label": "Internal",
+              "value": "internal"
+            },
+            {
+              "label": "Confidential",
+              "value": "confidential"
+            },
+            {
+              "label": "Restricted",
+              "value": "restricted"
+            }
+          ]
+        }
+      ],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "LogicalTechnologyCapability",
+      "defaultProperties": {
+        "consistency": "strong",
+        "transactional": true
+      }
+    },
+    {
+      "id": "COMP-DOCUMENT-DATA",
+      "recordType": "component",
+      "name": "Document Data Service",
+      "category": "data",
+      "description": "Vendor-neutral document-oriented persistence capability.",
+      "applicableStages": [
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "data",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "data",
+        "document"
+      ],
+      "depiction": {
+        "renderer": "LogicalTechnologyCapabilityRenderer",
+        "icon": "database-zap",
+        "shape": "cylinder",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "read",
+            "label": "Read",
+            "direction": "input",
+            "relationshipKinds": [
+              "reads",
+              "stores"
+            ],
+            "semanticTypes": [
+              "query",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "write",
+            "label": "Write",
+            "direction": "input",
+            "relationshipKinds": [
+              "writes",
+              "stores"
+            ],
+            "semanticTypes": [
+              "command",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "c4": "LogicalTechnologyCapability",
+          "archimate": "LogicalTechnologyCapability",
+          "custom": "LogicalTechnologyCapability"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "LogicalTechnologyCapability",
+      "defaultProperties": {
+        "consistency": "tunable"
+      }
+    },
+    {
+      "id": "COMP-CACHE",
+      "recordType": "component",
+      "name": "Distributed Cache Capability",
+      "category": "data",
+      "description": "Low-latency distributed cache capability.",
+      "applicableStages": [
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "data",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "cache",
+        "performance"
+      ],
+      "depiction": {
+        "renderer": "LogicalTechnologyCapabilityRenderer",
+        "icon": "timer-reset",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "read",
+            "label": "Read",
+            "direction": "input",
+            "relationshipKinds": [
+              "reads",
+              "stores"
+            ],
+            "semanticTypes": [
+              "query",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "write",
+            "label": "Write",
+            "direction": "input",
+            "relationshipKinds": [
+              "writes",
+              "stores"
+            ],
+            "semanticTypes": [
+              "command",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "c4": "LogicalTechnologyCapability",
+          "archimate": "LogicalTechnologyCapability",
+          "custom": "LogicalTechnologyCapability"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "LogicalTechnologyCapability",
+      "defaultProperties": {
+        "evictionPolicy": "LRU"
+      }
+    },
+    {
+      "id": "COMP-API-MANAGEMENT",
+      "recordType": "component",
+      "name": "API Management Capability",
+      "category": "integration",
+      "description": "Gateway, policy and lifecycle management capability for APIs.",
+      "applicableStages": [
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "api",
+        "gateway"
+      ],
+      "depiction": {
+        "renderer": "LogicalTechnologyCapabilityRenderer",
+        "icon": "route",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "integration",
+        "notationMappings": {
+          "c4": "LogicalTechnologyCapability",
+          "archimate": "LogicalTechnologyCapability",
+          "custom": "LogicalTechnologyCapability"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-OPENAPI",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "LogicalTechnologyCapability",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-OBSERVABILITY",
+      "recordType": "component",
+      "name": "Observability Capability",
+      "category": "operations",
+      "description": "Metrics, logs, traces and alerting capability.",
+      "applicableStages": [
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "operations",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "observability",
+        "operations"
+      ],
+      "depiction": {
+        "renderer": "LogicalTechnologyCapabilityRenderer",
+        "icon": "activity",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "operations",
+        "notationMappings": {
+          "c4": "LogicalTechnologyCapability",
+          "archimate": "LogicalTechnologyCapability",
+          "custom": "LogicalTechnologyCapability"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-OTEL",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "LogicalTechnologyCapability",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-TECH-PRODUCT",
+      "recordType": "component",
+      "name": "Technology Product",
+      "category": "technology",
+      "description": "A specific vendor product or managed service.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "technology",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "product",
+        "vendor"
+      ],
+      "depiction": {
+        "renderer": "TechnologyProductRenderer",
+        "icon": "box",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "technology",
+        "notationMappings": {
+          "c4": "TechnologyProduct",
+          "archimate": "TechnologyProduct",
+          "custom": "TechnologyProduct"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4"
+      ],
+      "componentKind": "TechnologyProduct",
+      "defaultProperties": {
+        "vendor": "TBD",
+        "version": "TBD"
+      }
+    },
+    {
+      "id": "COMP-RUNTIME",
+      "recordType": "component",
+      "name": "Runtime",
+      "category": "deployment",
+      "description": "A process, container, function or execution runtime.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "runtime",
+        "compute"
+      ],
+      "depiction": {
+        "renderer": "RuntimeRenderer",
+        "icon": "cpu",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "deployment",
+        "notationMappings": {
+          "c4": "Runtime",
+          "archimate": "Runtime",
+          "custom": "Runtime"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "Runtime",
+      "defaultProperties": {
+        "orchestrated": true
+      }
+    },
+    {
+      "id": "COMP-DEPLOYMENT-NODE",
+      "recordType": "component",
+      "name": "Deployment Node",
+      "category": "deployment",
+      "description": "A physical or virtual execution node.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "compute",
+        "deployment"
+      ],
+      "depiction": {
+        "renderer": "DeploymentNodeRenderer",
+        "icon": "server",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "deployment",
+        "notationMappings": {
+          "c4": "DeploymentNode",
+          "archimate": "DeploymentNode",
+          "custom": "DeploymentNode"
+        }
+      },
+      "properties": [
+        {
+          "key": "replicas",
+          "label": "Replicas",
+          "type": "number",
+          "description": "Number of runtime instances.",
+          "defaultValue": 2,
+          "min": 1,
+          "max": 1000
+        },
+        {
+          "key": "availabilityZones",
+          "label": "Availability zones",
+          "type": "number",
+          "description": "Independent failure domains used.",
+          "defaultValue": 2,
+          "min": 1,
+          "max": 10
+        },
+        {
+          "key": "autoscaling",
+          "label": "Autoscaling",
+          "type": "boolean",
+          "description": "Whether capacity adjusts automatically.",
+          "defaultValue": true
+        }
+      ],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "DeploymentNode",
+      "defaultProperties": {
+        "replicas": 2,
+        "availabilityZones": 2
+      }
+    },
+    {
+      "id": "COMP-REGION",
+      "recordType": "component",
+      "name": "Region",
+      "category": "deployment",
+      "description": "A cloud or data-centre region boundary.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "region",
+        "boundary"
+      ],
+      "depiction": {
+        "renderer": "RegionRenderer",
+        "icon": "globe-2",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 340,
+          "height": 220
+        },
+        "canContainChildren": true,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "deployment",
+        "notationMappings": {
+          "c4": "Region",
+          "archimate": "Region",
+          "custom": "Region"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "Region",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-AVAILABILITY-ZONE",
+      "recordType": "component",
+      "name": "Availability Zone",
+      "category": "deployment",
+      "description": "An isolated failure domain within a region.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "zone",
+        "failure-domain"
+      ],
+      "depiction": {
+        "renderer": "AvailabilityZoneRenderer",
+        "icon": "map-pin",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 340,
+          "height": 220
+        },
+        "canContainChildren": true,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "deployment",
+        "notationMappings": {
+          "c4": "AvailabilityZone",
+          "archimate": "AvailabilityZone",
+          "custom": "AvailabilityZone"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "AvailabilityZone",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-NETWORK-ZONE",
+      "recordType": "component",
+      "name": "Network Zone",
+      "category": "security",
+      "description": "A network or trust boundary.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "security",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "network",
+        "security"
+      ],
+      "depiction": {
+        "renderer": "NetworkZoneRenderer",
+        "icon": "network",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 340,
+          "height": 220
+        },
+        "canContainChildren": true,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "security",
+        "notationMappings": {
+          "c4": "NetworkZone",
+          "archimate": "NetworkZone",
+          "custom": "NetworkZone"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-OWASP-ASVS",
+        "SRC-NIST-SSDF"
+      ],
+      "componentKind": "NetworkZone",
+      "defaultProperties": {}
+    },
+    {
+      "id": "COMP-DATA-STORE",
+      "recordType": "component",
+      "name": "Managed Data Store",
+      "category": "data",
+      "description": "A concrete database or managed persistence product.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "data",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "database",
+        "managed"
+      ],
+      "depiction": {
+        "renderer": "TechnologyProductRenderer",
+        "icon": "database",
+        "shape": "cylinder",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "read",
+            "label": "Read",
+            "direction": "input",
+            "relationshipKinds": [
+              "reads",
+              "stores"
+            ],
+            "semanticTypes": [
+              "query",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "write",
+            "label": "Write",
+            "direction": "input",
+            "relationshipKinds": [
+              "writes",
+              "stores"
+            ],
+            "semanticTypes": [
+              "command",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "c4": "TechnologyProduct",
+          "archimate": "TechnologyProduct",
+          "custom": "TechnologyProduct"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "TechnologyProduct",
+      "defaultProperties": {
+        "vendor": "generic",
+        "replicas": 2,
+        "availabilityZones": 2
+      }
+    },
+    {
+      "id": "COMP-STREAMING-PRODUCT",
+      "recordType": "component",
+      "name": "Managed Event Streaming",
+      "category": "integration",
+      "description": "A concrete managed event-streaming product.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "application"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "messaging",
+        "managed"
+      ],
+      "depiction": {
+        "renderer": "TechnologyProductRenderer",
+        "icon": "radio-tower",
+        "shape": "infrastructure",
+        "defaultSize": {
+          "width": 230,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "publisher",
+            "label": "Publisher",
+            "direction": "input",
+            "relationshipKinds": [
+              "publishes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "subscriber",
+            "label": "Subscriber",
+            "direction": "output",
+            "relationshipKinds": [
+              "subscribes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "integration",
+        "notationMappings": {
+          "c4": "TechnologyProduct",
+          "archimate": "TechnologyProduct",
+          "custom": "TechnologyProduct"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-ISO-42010",
+        "SRC-C4",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "componentKind": "TechnologyProduct",
+      "defaultProperties": {
+        "vendor": "generic",
+        "replicas": 3
+      }
+    },
+    {
+      "id": "PAT-API-GATEWAY",
+      "recordType": "pattern",
+      "name": "API Gateway",
+      "category": "integration",
+      "description": "Reusable integration pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "integration"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "integration",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "route",
+        "shape": "card",
+        "defaultSize": {
+          "width": 250,
+          "height": 128
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "client-gateway-services",
+        "notationMappings": {
+          "custom": "topology"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the API Gateway problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-MICROSERVICES",
+        "STYLE-SERVICE-BASED"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Authentication",
+        "Routing",
+        "Rate limiting"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-OPENAPI",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "gateway",
+          "kind": "ApplicationComponent",
+          "stage": "applicationRealization",
+          "label": "API Gateway",
+          "description": "Central entry point and policy enforcement.",
+          "properties": {
+            "responsibility": "routing-auth-rate-limit"
+          },
+          "tags": [
+            "gateway",
+            "pattern"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": []
+    },
+    {
+      "id": "PAT-BFF",
+      "recordType": "pattern",
+      "name": "Backend for Frontend",
+      "category": "application",
+      "description": "Reusable application pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "application",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Backend for Frontend problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "PAT-API-GATEWAY"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Per-channel ownership"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "PAT-HEXAGONAL",
+      "recordType": "pattern",
+      "name": "Hexagonal Architecture",
+      "category": "application",
+      "description": "Reusable application pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "application",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Hexagonal Architecture problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Ports",
+        "Adapters",
+        "Dependency inversion"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "PAT-CLEAN",
+      "recordType": "pattern",
+      "name": "Clean Architecture",
+      "category": "application",
+      "description": "Reusable application pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "application",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "application",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Clean Architecture problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Dependency rule",
+        "Use-case boundary"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "PAT-STRANGLER",
+      "recordType": "pattern",
+      "name": "Strangler Fig",
+      "category": "modernization",
+      "description": "Reusable modernization pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "modernization"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "modernization",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "modernization",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Strangler Fig problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Routing seam",
+        "Migration increments"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "id": "PAT-ANTI-CORRUPTION",
+      "recordType": "pattern",
+      "name": "Anti-Corruption Layer",
+      "category": "integration",
+      "description": "Reusable integration pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "integration"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "integration",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "integration",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Anti-Corruption Layer problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Translation model",
+        "Boundary ownership"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-SAGA",
+      "recordType": "pattern",
+      "name": "Saga",
+      "category": "data consistency",
+      "description": "Reusable data consistency pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "data consistency"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "data consistency",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data consistency",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Saga problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-MICROSERVICES",
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "conflictsWith": [
+        "PAT-TWO-PHASE-COMMIT"
+      ],
+      "obligations": [
+        "Compensation",
+        "State tracking",
+        "Idempotency"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-OUTBOX",
+      "recordType": "pattern",
+      "name": "Transactional Outbox",
+      "category": "integration",
+      "description": "Reusable integration pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "integration"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "integration",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "send",
+        "shape": "card",
+        "defaultSize": {
+          "width": 250,
+          "height": 128
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "publisher",
+            "label": "Publisher",
+            "direction": "input",
+            "relationshipKinds": [
+              "publishes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "subscriber",
+            "label": "Subscriber",
+            "direction": "output",
+            "relationshipKinds": [
+              "subscribes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "service-outbox-publisher",
+        "notationMappings": {
+          "custom": "topology"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Transactional Outbox problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Outbox store",
+        "Publisher",
+        "Retention"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "outbox",
+          "kind": "ApplicationComponent",
+          "stage": "applicationRealization",
+          "label": "Transactional Outbox",
+          "description": "Persists pending integration events in the local transaction.",
+          "properties": {
+            "atomicWithBusinessData": true
+          },
+          "tags": [
+            "outbox",
+            "pattern"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "key": "publisher",
+          "kind": "ApplicationComponent",
+          "stage": "applicationRealization",
+          "label": "Outbox Publisher",
+          "description": "Publishes persisted events reliably.",
+          "properties": {
+            "idempotent": true
+          },
+          "tags": [
+            "publisher",
+            "pattern"
+          ],
+          "offset": {
+            "x": 270,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": [
+        {
+          "sourceKey": "outbox",
+          "targetKey": "publisher",
+          "kind": "publishes",
+          "stage": "applicationRealization",
+          "label": "Publishes pending events",
+          "properties": {
+            "protocolStyle": "asynchronous"
+          }
+        }
+      ]
+    },
+    {
+      "id": "PAT-CQRS",
+      "recordType": "pattern",
+      "name": "CQRS",
+      "category": "data",
+      "description": "Reusable data pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "data"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "data",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the CQRS problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Read/write ownership",
+        "Projection rebuild"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-EVENT-SOURCING",
+      "recordType": "pattern",
+      "name": "Event Sourcing",
+      "category": "data",
+      "description": "Reusable data pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "data"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "data",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Event Sourcing problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "PAT-CQRS"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Immutable store",
+        "Snapshots",
+        "Schema evolution"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-IDEMPOTENT",
+      "recordType": "pattern",
+      "name": "Idempotent Consumer",
+      "category": "messaging",
+      "description": "Reusable messaging pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "messaging"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "messaging",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "messaging",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Idempotent Consumer problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Deduplication"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-DLQ",
+      "recordType": "pattern",
+      "name": "Dead Letter Channel",
+      "category": "messaging",
+      "description": "Reusable messaging pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "messaging"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "messaging",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "inbox",
+        "shape": "card",
+        "defaultSize": {
+          "width": 250,
+          "height": 128
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "publisher",
+            "label": "Publisher",
+            "direction": "input",
+            "relationshipKinds": [
+              "publishes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "subscriber",
+            "label": "Subscriber",
+            "direction": "output",
+            "relationshipKinds": [
+              "subscribes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "consumer-dead-letter",
+        "notationMappings": {
+          "custom": "topology"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Dead Letter Channel problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-EVENT-DRIVEN"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Retry policy",
+        "Operational handling"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "dlq",
+          "kind": "LogicalTechnologyCapability",
+          "stage": "logicalTechnology",
+          "label": "Dead Letter Channel",
+          "description": "Isolates messages that cannot be processed.",
+          "properties": {
+            "retentionHours": 168
+          },
+          "tags": [
+            "messaging",
+            "failure-handling",
+            "pattern"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": []
+    },
+    {
+      "id": "PAT-CIRCUIT-BREAKER",
+      "recordType": "pattern",
+      "name": "Circuit Breaker",
+      "category": "resilience",
+      "description": "Reusable resilience pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "resilience"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "resilience",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "shield-alert",
+        "shape": "card",
+        "defaultSize": {
+          "width": 250,
+          "height": 128
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "caller-breaker-dependency",
+        "notationMappings": {
+          "custom": "edge-pattern"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Circuit Breaker problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Threshold",
+        "Fallback"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "breaker",
+          "kind": "ApplicationComponent",
+          "stage": "applicationRealization",
+          "label": "Circuit Breaker",
+          "description": "Fails fast and protects a remote dependency.",
+          "properties": {
+            "timeoutMs": 3000,
+            "failureThresholdPercent": 50
+          },
+          "tags": [
+            "resilience",
+            "pattern"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": []
+    },
+    {
+      "id": "PAT-RETRY",
+      "recordType": "pattern",
+      "name": "Retry with Backoff",
+      "category": "resilience",
+      "description": "Reusable resilience pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "resilience"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "resilience",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "resilience",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Retry with Backoff problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Budget",
+        "Jitter",
+        "Idempotency"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-BULKHEAD",
+      "recordType": "pattern",
+      "name": "Bulkhead",
+      "category": "resilience",
+      "description": "Reusable resilience pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "resilience"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "resilience",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "resilience",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Bulkhead problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Resource isolation"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-RATE-LIMITER",
+      "recordType": "pattern",
+      "name": "Rate Limiter",
+      "category": "resilience",
+      "description": "Reusable resilience pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "resilience"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "resilience",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "resilience",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Rate Limiter problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Quota policy",
+        "Client feedback"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-CACHE-ASIDE",
+      "recordType": "pattern",
+      "name": "Cache-Aside",
+      "category": "data",
+      "description": "Reusable data pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "data"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "data",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Cache-Aside problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Invalidation",
+        "Staleness tolerance"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-DB-PER-SERVICE",
+      "recordType": "pattern",
+      "name": "Database per Service",
+      "category": "data",
+      "description": "Reusable data pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "data"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "data",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Database per Service problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-MICROSERVICES"
+      ],
+      "conflictsWith": [
+        "PAT-SHARED-DB"
+      ],
+      "obligations": [
+        "Data ownership",
+        "Integration events"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-SHARED-DB",
+      "recordType": "pattern",
+      "name": "Shared Database",
+      "category": "data",
+      "description": "Reusable data pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "data"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "data",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "data",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Shared Database problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-LAYERED",
+        "STYLE-SERVICE-BASED"
+      ],
+      "conflictsWith": [
+        "PAT-DB-PER-SERVICE"
+      ],
+      "obligations": [
+        "Schema governance"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-SIDECAR",
+      "recordType": "pattern",
+      "name": "Sidecar",
+      "category": "deployment",
+      "description": "Reusable deployment pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "deployment",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "panel-right",
+        "shape": "card",
+        "defaultSize": {
+          "width": 250,
+          "height": 128
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "workload-sidecar",
+        "notationMappings": {
+          "custom": "contained-pattern"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Sidecar problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Lifecycle coupling",
+        "Resource budget"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "sidecar",
+          "kind": "TechnologyComponent",
+          "stage": "physicalTechnology",
+          "label": "Sidecar",
+          "description": "Auxiliary runtime deployed alongside the workload.",
+          "properties": {
+            "lifecycleCoupled": true
+          },
+          "tags": [
+            "sidecar",
+            "pattern"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": []
+    },
+    {
+      "id": "PAT-AMBASSADOR",
+      "recordType": "pattern",
+      "name": "Ambassador",
+      "category": "deployment",
+      "description": "Reusable deployment pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "deployment",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "deployment",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Ambassador problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Outbound proxy ownership"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-SERVICE-MESH",
+      "recordType": "pattern",
+      "name": "Service Mesh",
+      "category": "deployment",
+      "description": "Reusable deployment pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "deployment",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "deployment",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Service Mesh problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [
+        "STYLE-MICROSERVICES"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Control plane",
+        "mTLS",
+        "Telemetry"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-BLUE-GREEN",
+      "recordType": "pattern",
+      "name": "Blue-Green Deployment",
+      "category": "deployment",
+      "description": "Reusable deployment pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "deployment",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "copy",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 310,
+          "height": 170
+        },
+        "canContainChildren": true,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "blue-green-environments",
+        "notationMappings": {
+          "custom": "deployment-topology"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Blue-Green Deployment problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Environment parity",
+        "Traffic switch"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "blue",
+          "kind": "Environment",
+          "stage": "physicalTechnology",
+          "label": "Blue Environment",
+          "description": "Current production environment.",
+          "properties": {
+            "active": true
+          },
+          "tags": [
+            "blue",
+            "deployment",
+            "pattern"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "key": "green",
+          "kind": "Environment",
+          "stage": "physicalTechnology",
+          "label": "Green Environment",
+          "description": "Candidate production environment.",
+          "properties": {
+            "active": false
+          },
+          "tags": [
+            "green",
+            "deployment",
+            "pattern"
+          ],
+          "offset": {
+            "x": 300,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": []
+    },
+    {
+      "id": "PAT-CANARY",
+      "recordType": "pattern",
+      "name": "Canary Release",
+      "category": "deployment",
+      "description": "Reusable deployment pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "deployment",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "deployment",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Canary Release problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Progressive traffic",
+        "Success metrics",
+        "Rollback"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-CELL-BASED",
+      "recordType": "pattern",
+      "name": "Cell-Based Architecture",
+      "category": "resilience",
+      "description": "Reusable resilience pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "resilience"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "resilience",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "resilience",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Cell-Based Architecture problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Cell partitioning",
+        "Routing",
+        "Blast radius"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-ACTIVE-ACTIVE",
+      "recordType": "pattern",
+      "name": "Active-Active",
+      "category": "resilience",
+      "description": "Reusable resilience pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "resilience"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "resilience",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "resilience",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Active-Active problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Conflict handling",
+        "Global routing"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-ACTIVE-PASSIVE",
+      "recordType": "pattern",
+      "name": "Active-Passive",
+      "category": "resilience",
+      "description": "Reusable resilience pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "resilience"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "resilience",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "resilience",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Active-Passive problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Failover detection",
+        "Replication"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "PAT-ZERO-TRUST",
+      "recordType": "pattern",
+      "name": "Zero Trust Access",
+      "category": "security",
+      "description": "Reusable security pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "security"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "security",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "security",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Zero Trust Access problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Strong identity",
+        "Continuous authorization",
+        "Segmentation"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-OWASP-ASVS",
+        "SRC-NIST-SSDF"
+      ]
+    },
+    {
+      "id": "PAT-SECRETS",
+      "recordType": "pattern",
+      "name": "Centralized Secrets Management",
+      "category": "security",
+      "description": "Reusable security pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "security"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "security",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "security",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Centralized Secrets Management problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Rotation",
+        "Audit",
+        "Workload identity"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-OWASP-ASVS",
+        "SRC-NIST-SSDF"
+      ]
+    },
+    {
+      "id": "PAT-OBSERVABILITY",
+      "recordType": "pattern",
+      "name": "Three-Pillar Observability",
+      "category": "operations",
+      "description": "Reusable operations pattern with explicit prerequisites, risks and design obligations.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "operations"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "operations",
+        "pattern"
+      ],
+      "depiction": {
+        "renderer": "PatternBadge",
+        "icon": "puzzle",
+        "shape": "card",
+        "defaultSize": {
+          "width": 240,
+          "height": 118
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "operations",
+        "notationMappings": {
+          "custom": "pattern-badge"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {},
+      "whenToUse": [
+        "Use when the Three-Pillar Observability problem is present."
+      ],
+      "whenToQuestion": [],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [
+        "Logs",
+        "Metrics",
+        "Traces",
+        "Correlation"
+      ],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-OTEL",
+        "SRC-AWS-WAF",
+        "SRC-AZURE-AAC",
+        "SRC-GCP-WAF"
+      ]
+    },
+    {
+      "id": "STYLE-LAYERED",
+      "recordType": "style",
+      "name": "Layered Monolith",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "simplicity",
+        "costEfficiency",
+        "performance"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 2,
+        "performance": 3,
+        "availability": 2,
+        "modifiability": 3,
+        "deployability": 2,
+        "simplicity": 5,
+        "costEfficiency": 5,
+        "faultTolerance": 2
+      },
+      "whenToUse": [
+        "Small/medium system",
+        "Simple team"
+      ],
+      "whenToQuestion": [
+        "Independent scaling"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-MODULAR-MONOLITH",
+      "recordType": "style",
+      "name": "Modular Monolith",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "costEfficiency",
+        "performance",
+        "modifiability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 3,
+        "performance": 4,
+        "availability": 3,
+        "modifiability": 4,
+        "deployability": 3,
+        "simplicity": 4,
+        "costEfficiency": 5,
+        "faultTolerance": 3
+      },
+      "whenToUse": [
+        "Strong boundaries",
+        "Moderate scale"
+      ],
+      "whenToQuestion": [
+        "Independent module failure isolation"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-PIPELINE",
+      "recordType": "style",
+      "name": "Pipeline / Pipes and Filters",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "scalability",
+        "performance",
+        "modifiability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 4,
+        "performance": 4,
+        "availability": 3,
+        "modifiability": 4,
+        "deployability": 3,
+        "simplicity": 3,
+        "costEfficiency": 4,
+        "faultTolerance": 3
+      },
+      "whenToUse": [
+        "Transformations",
+        "Sequential processing"
+      ],
+      "whenToQuestion": [
+        "Highly interactive workflows"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-MICROKERNEL",
+      "recordType": "style",
+      "name": "Microkernel",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "modifiability",
+        "deployability",
+        "costEfficiency"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 3,
+        "performance": 3,
+        "availability": 3,
+        "modifiability": 5,
+        "deployability": 4,
+        "simplicity": 3,
+        "costEfficiency": 4,
+        "faultTolerance": 3
+      },
+      "whenToUse": [
+        "Extensible product",
+        "Stable core/plugins"
+      ],
+      "whenToQuestion": [
+        "Uniform product without extensions"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-SERVICE-BASED",
+      "recordType": "style",
+      "name": "Service-Based",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "scalability",
+        "performance",
+        "availability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 4,
+        "performance": 4,
+        "availability": 4,
+        "modifiability": 4,
+        "deployability": 4,
+        "simplicity": 3,
+        "costEfficiency": 4,
+        "faultTolerance": 4
+      },
+      "whenToUse": [
+        "Coarse domain services",
+        "Moderate autonomy"
+      ],
+      "whenToQuestion": [
+        "Very fine independent release"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-EVENT-DRIVEN",
+      "recordType": "style",
+      "name": "Event-Driven",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "scalability",
+        "performance",
+        "availability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 5,
+        "performance": 4,
+        "availability": 4,
+        "modifiability": 4,
+        "deployability": 4,
+        "simplicity": 2,
+        "costEfficiency": 3,
+        "faultTolerance": 4
+      },
+      "whenToUse": [
+        "Async workflows",
+        "Loose temporal coupling"
+      ],
+      "whenToQuestion": [
+        "Immediate global consistency"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-MICROSERVICES",
+      "recordType": "style",
+      "name": "Microservices",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "scalability",
+        "availability",
+        "modifiability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 5,
+        "performance": 4,
+        "availability": 5,
+        "modifiability": 5,
+        "deployability": 5,
+        "simplicity": 1,
+        "costEfficiency": 2,
+        "faultTolerance": 5
+      },
+      "whenToUse": [
+        "Large domain/multiple teams",
+        "Independent scaling/release"
+      ],
+      "whenToQuestion": [
+        "Small team",
+        "Low operational maturity"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-SPACE-BASED",
+      "recordType": "style",
+      "name": "Space-Based",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "scalability",
+        "performance",
+        "availability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 5,
+        "performance": 5,
+        "availability": 5,
+        "modifiability": 3,
+        "deployability": 3,
+        "simplicity": 1,
+        "costEfficiency": 1,
+        "faultTolerance": 5
+      },
+      "whenToUse": [
+        "Extreme variable load",
+        "Avoid central bottleneck"
+      ],
+      "whenToQuestion": [
+        "Simple low-volume system"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-SERVERLESS",
+      "recordType": "style",
+      "name": "Serverless / FaaS",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "scalability",
+        "deployability",
+        "availability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 5,
+        "performance": 3,
+        "availability": 4,
+        "modifiability": 4,
+        "deployability": 5,
+        "simplicity": 3,
+        "costEfficiency": 4,
+        "faultTolerance": 3
+      },
+      "whenToUse": [
+        "Bursty workloads",
+        "Event triggers"
+      ],
+      "whenToQuestion": [
+        "Sustained high utilization",
+        "Strict cold-start need"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "STYLE-SOA",
+      "recordType": "style",
+      "name": "Service-Oriented Architecture",
+      "category": "architecture-style",
+      "description": "Scoped architecture style evaluated against quality drivers, context and existing design choices.",
+      "applicableStages": [
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "integration",
+        "deployment"
+      ],
+      "maturity": "established",
+      "approvalStatus": "draft",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.1.0",
+      "tags": [
+        "style",
+        "scalability",
+        "availability",
+        "modifiability"
+      ],
+      "depiction": {
+        "renderer": "StyleScope",
+        "icon": "layers-3",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 320,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [],
+        "previewKind": "style-scope",
+        "notationMappings": {
+          "custom": "scope-overlay"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "scalability": 4,
+        "performance": 3,
+        "availability": 4,
+        "modifiability": 4,
+        "deployability": 3,
+        "simplicity": 2,
+        "costEfficiency": 3,
+        "faultTolerance": 4
+      },
+      "whenToUse": [
+        "Enterprise integration",
+        "Heterogeneous systems"
+      ],
+      "whenToQuestion": [
+        "Small greenfield application"
+      ],
+      "requires": [],
+      "recommends": [],
+      "pairsWellWith": [],
+      "conflictsWith": [],
+      "obligations": [],
+      "risks": [],
+      "mitigations": [],
+      "evidenceIds": [
+        "SRC-INTERNAL-PRINCIPLES",
+        "SRC-SEI-QAW"
+      ]
+    },
+    {
+      "id": "TPL-SECURE-API-SERVICE",
+      "recordType": "template",
+      "name": "Secure API Service",
+      "category": "application",
+      "description": "Deployable API, access-control responsibility and service boundary starter.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "application",
+        "security",
+        "integration"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "api",
+        "security",
+        "starter"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "shield-check",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 340,
+          "height": 190
+        },
+        "canContainChildren": true,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "client-api-auth-service",
+        "notationMappings": {
+          "custom": "topology-template"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "security": 4,
+        "modifiability": 2
+      },
+      "whenToUse": [
+        "Starting an externally or internally exposed application service."
+      ],
+      "whenToQuestion": [
+        "Pure event-consumer workloads with no request interface."
+      ],
+      "requires": [],
+      "recommends": [
+        "PAT-API-GATEWAY",
+        "PAT-ZERO-TRUST"
+      ],
+      "pairsWellWith": [
+        "PAT-CIRCUIT-BREAKER",
+        "PAT-OBSERVABILITY"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Define authentication and authorization policy",
+        "Define API lifecycle and versioning",
+        "Define telemetry and rate limits"
+      ],
+      "risks": [
+        "Gateway or identity dependency concentration"
+      ],
+      "mitigations": [
+        "High availability and cached policy decisions"
+      ],
+      "evidenceIds": [
+        "EVID-INTERNAL-ARCH-PRINCIPLES"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "api",
+          "kind": "API",
+          "stage": "applicationRealization",
+          "label": "Service API",
+          "description": "Typed request interface.",
+          "properties": {
+            "public": false,
+            "protocol": "REST"
+          },
+          "tags": [
+            "api",
+            "template"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "key": "control",
+          "kind": "Control",
+          "stage": "applicationRealization",
+          "label": "Identity & Access Control",
+          "description": "Authentication and authorization.",
+          "properties": {
+            "authentication": true,
+            "authorization": true
+          },
+          "tags": [
+            "security",
+            "template"
+          ],
+          "offset": {
+            "x": 260,
+            "y": 0
+          }
+        },
+        {
+          "key": "service",
+          "kind": "DeployableUnit",
+          "stage": "applicationRealization",
+          "label": "Application Service",
+          "description": "Deployable business responsibility.",
+          "properties": {
+            "stateless": true
+          },
+          "tags": [
+            "deployable",
+            "template"
+          ],
+          "offset": {
+            "x": 520,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": [
+        {
+          "sourceKey": "api",
+          "targetKey": "control",
+          "kind": "communicatesWith",
+          "stage": "applicationRealization",
+          "label": "Authenticates",
+          "properties": {
+            "protocolStyle": "synchronous"
+          }
+        },
+        {
+          "sourceKey": "control",
+          "targetKey": "service",
+          "kind": "communicatesWith",
+          "stage": "applicationRealization",
+          "label": "Authorizes request",
+          "properties": {
+            "protocolStyle": "synchronous"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TPL-EVENT-PROCESSING",
+      "recordType": "template",
+      "name": "Reliable Event Processing",
+      "category": "integration",
+      "description": "Producer, event broker and consumer starter with failure-handling obligations.",
+      "applicableStages": [
+        "logicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "resilience",
+        "operations"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "event",
+        "messaging",
+        "starter"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "radio-tower",
+        "shape": "card",
+        "defaultSize": {
+          "width": 330,
+          "height": 170
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "publisher",
+            "label": "Publisher",
+            "direction": "input",
+            "relationshipKinds": [
+              "publishes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "subscriber",
+            "label": "Subscriber",
+            "direction": "output",
+            "relationshipKinds": [
+              "subscribes"
+            ],
+            "semanticTypes": [
+              "event"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "producer-broker-consumer-dlq",
+        "notationMappings": {
+          "custom": "topology-template"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "reliability": 4,
+        "scalability": 4,
+        "operationalComplexity": -2
+      },
+      "whenToUse": [
+        "Decoupled processing and independently scalable consumers."
+      ],
+      "whenToQuestion": [
+        "Simple request-response operations requiring immediate consistency."
+      ],
+      "requires": [],
+      "recommends": [
+        "PAT-IDEMPOTENT",
+        "PAT-DLQ",
+        "PAT-OBSERVABILITY"
+      ],
+      "pairsWellWith": [
+        "STYLE-EVENT-DRIVEN",
+        "PAT-OUTBOX"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Define delivery semantics",
+        "Define schema ownership and versioning",
+        "Define retry, dead-letter and replay strategy"
+      ],
+      "risks": [
+        "Duplicate delivery",
+        "Ordering constraints",
+        "Operational complexity"
+      ],
+      "mitigations": [
+        "Idempotency keys",
+        "Partition strategy",
+        "Consumer lag monitoring"
+      ],
+      "evidenceIds": [
+        "EVID-INTERNAL-ARCH-PRINCIPLES"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "broker",
+          "kind": "LogicalTechnologyCapability",
+          "stage": "logicalTechnology",
+          "label": "Message Broker Capability",
+          "description": "Reliable message transport.",
+          "properties": {
+            "deliveryGuarantee": "at-least-once"
+          },
+          "tags": [
+            "messaging",
+            "template"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "key": "dlq",
+          "kind": "LogicalTechnologyCapability",
+          "stage": "logicalTechnology",
+          "label": "Dead Letter Channel",
+          "description": "Isolates failed messages.",
+          "properties": {
+            "retentionHours": 168
+          },
+          "tags": [
+            "failure-handling",
+            "template"
+          ],
+          "offset": {
+            "x": 290,
+            "y": 150
+          }
+        },
+        {
+          "key": "observability",
+          "kind": "LogicalTechnologyCapability",
+          "stage": "logicalTechnology",
+          "label": "Messaging Observability",
+          "description": "Lag, error and replay visibility.",
+          "properties": {},
+          "tags": [
+            "observability",
+            "template"
+          ],
+          "offset": {
+            "x": 290,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": [
+        {
+          "sourceKey": "broker",
+          "targetKey": "dlq",
+          "kind": "publishes",
+          "stage": "logicalTechnology",
+          "label": "Failed messages",
+          "properties": {
+            "protocolStyle": "asynchronous"
+          }
+        },
+        {
+          "sourceKey": "broker",
+          "targetKey": "observability",
+          "kind": "supports",
+          "stage": "logicalTechnology",
+          "label": "Telemetry",
+          "properties": {}
+        }
+      ]
+    },
+    {
+      "id": "TPL-RESILIENT-EXTERNAL",
+      "recordType": "template",
+      "name": "Resilient External Integration",
+      "category": "resilience",
+      "description": "Gateway and resilience controls for a remote third-party dependency.",
+      "applicableStages": [
+        "applicationRealization"
+      ],
+      "applicableViewpoints": [
+        "integration",
+        "resilience"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "external",
+        "resilience",
+        "starter"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "shield-alert",
+        "shape": "card",
+        "defaultSize": {
+          "width": 330,
+          "height": 160
+        },
+        "canContainChildren": false,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "service-breaker-external",
+        "notationMappings": {
+          "custom": "topology-template"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "availability": 4,
+        "faultTolerance": 4,
+        "latency": -1
+      },
+      "whenToUse": [
+        "Any important synchronous external dependency."
+      ],
+      "whenToQuestion": [
+        "Fire-and-forget interactions better modelled asynchronously."
+      ],
+      "requires": [],
+      "recommends": [
+        "PAT-CIRCUIT-BREAKER",
+        "PAT-RETRY",
+        "PAT-BULKHEAD"
+      ],
+      "pairsWellWith": [
+        "PAT-OBSERVABILITY"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Define timeout budget",
+        "Define retry safety and idempotency",
+        "Define fallback or degradation behaviour"
+      ],
+      "risks": [
+        "Retry storms",
+        "Hidden partial failure"
+      ],
+      "mitigations": [
+        "Retry budgets",
+        "Bulkhead isolation",
+        "Dependency SLOs"
+      ],
+      "evidenceIds": [
+        "EVID-INTERNAL-ARCH-PRINCIPLES"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "adapter",
+          "kind": "ApplicationComponent",
+          "stage": "applicationRealization",
+          "label": "External Service Adapter",
+          "description": "Isolates third-party contract and translation.",
+          "properties": {},
+          "tags": [
+            "adapter",
+            "template"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "key": "breaker",
+          "kind": "ApplicationComponent",
+          "stage": "applicationRealization",
+          "label": "Circuit Breaker",
+          "description": "Fails fast and protects the caller.",
+          "properties": {
+            "timeoutMs": 3000,
+            "failureThresholdPercent": 50
+          },
+          "tags": [
+            "resilience",
+            "template"
+          ],
+          "offset": {
+            "x": 270,
+            "y": 0
+          }
+        },
+        {
+          "key": "external",
+          "kind": "ExternalSystem",
+          "stage": "applicationRealization",
+          "label": "External Provider",
+          "description": "Third-party dependency.",
+          "properties": {},
+          "tags": [
+            "external",
+            "template"
+          ],
+          "offset": {
+            "x": 540,
+            "y": 0
+          }
+        }
+      ],
+      "edgeTemplate": [
+        {
+          "sourceKey": "adapter",
+          "targetKey": "breaker",
+          "kind": "communicatesWith",
+          "stage": "applicationRealization",
+          "label": "Protected call",
+          "properties": {
+            "protocolStyle": "synchronous"
+          }
+        },
+        {
+          "sourceKey": "breaker",
+          "targetKey": "external",
+          "kind": "communicatesWith",
+          "stage": "applicationRealization",
+          "label": "Remote request",
+          "properties": {
+            "protocolStyle": "synchronous"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TPL-MULTI-ZONE-DEPLOYMENT",
+      "recordType": "template",
+      "name": "Multi-Zone Deployment",
+      "category": "deployment",
+      "description": "Region, availability-zone and replicated deployment starter.",
+      "applicableStages": [
+        "physicalTechnology"
+      ],
+      "applicableViewpoints": [
+        "deployment",
+        "resilience"
+      ],
+      "maturity": "mature",
+      "approvalStatus": "approved",
+      "owner": "Architecture Knowledge Council",
+      "version": "0.8.6",
+      "tags": [
+        "ha",
+        "deployment",
+        "starter"
+      ],
+      "depiction": {
+        "renderer": "PatternTopology",
+        "icon": "server-cog",
+        "shape": "boundary",
+        "defaultSize": {
+          "width": 360,
+          "height": 210
+        },
+        "canContainChildren": true,
+        "ports": [
+          {
+            "id": "in",
+            "label": "Input",
+            "direction": "input",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "subscribes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "request",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "left"
+          },
+          {
+            "id": "out",
+            "label": "Output",
+            "direction": "output",
+            "relationshipKinds": [
+              "communicatesWith",
+              "dependsOn",
+              "publishes",
+              "reads",
+              "writes"
+            ],
+            "semanticTypes": [
+              "response",
+              "command",
+              "event",
+              "data"
+            ],
+            "position": "right"
+          }
+        ],
+        "previewKind": "region-two-zones-replicas",
+        "notationMappings": {
+          "custom": "deployment-template"
+        }
+      },
+      "properties": [],
+      "qualityAttributeImpact": {
+        "availability": 4,
+        "resilience": 4,
+        "costEfficiency": -2
+      },
+      "whenToUse": [
+        "Critical services with explicit availability and recovery objectives."
+      ],
+      "whenToQuestion": [
+        "Non-critical workloads where added cost is not justified."
+      ],
+      "requires": [],
+      "recommends": [
+        "PAT-ACTIVE-ACTIVE",
+        "PAT-OBSERVABILITY"
+      ],
+      "pairsWellWith": [
+        "PAT-BLUE-GREEN"
+      ],
+      "conflictsWith": [],
+      "obligations": [
+        "Define failure-domain independence",
+        "Define data replication and recovery semantics",
+        "Test zone-failure behaviour"
+      ],
+      "risks": [
+        "Cross-zone cost",
+        "Correlated dependencies"
+      ],
+      "mitigations": [
+        "Dependency mapping",
+        "Failure injection testing"
+      ],
+      "evidenceIds": [
+        "EVID-INTERNAL-ARCH-PRINCIPLES"
+      ],
+      "nodeTemplate": [
+        {
+          "key": "region",
+          "kind": "Region",
+          "stage": "physicalTechnology",
+          "label": "Primary Region",
+          "description": "Regional deployment boundary.",
+          "properties": {},
+          "tags": [
+            "region",
+            "template"
+          ],
+          "offset": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "key": "zone-a",
+          "kind": "AvailabilityZone",
+          "stage": "physicalTechnology",
+          "label": "Availability Zone A",
+          "description": "Failure domain A.",
+          "properties": {},
+          "tags": [
+            "zone",
+            "template"
+          ],
+          "offset": {
+            "x": 40,
+            "y": 70
+          }
+        },
+        {
+          "key": "zone-b",
+          "kind": "AvailabilityZone",
+          "stage": "physicalTechnology",
+          "label": "Availability Zone B",
+          "description": "Failure domain B.",
+          "properties": {},
+          "tags": [
+            "zone",
+            "template"
+          ],
+          "offset": {
+            "x": 340,
+            "y": 70
+          }
+        },
+        {
+          "key": "node-a",
+          "kind": "DeploymentNode",
+          "stage": "physicalTechnology",
+          "label": "Service Replica A",
+          "description": "Replica in zone A.",
+          "properties": {
+            "replicas": 1,
+            "availabilityZones": 1
+          },
+          "tags": [
+            "compute",
+            "template"
+          ],
+          "offset": {
+            "x": 70,
+            "y": 150
+          }
+        },
+        {
+          "key": "node-b",
+          "kind": "DeploymentNode",
+          "stage": "physicalTechnology",
+          "label": "Service Replica B",
+          "description": "Replica in zone B.",
+          "properties": {
+            "replicas": 1,
+            "availabilityZones": 1
+          },
+          "tags": [
+            "compute",
+            "template"
+          ],
+          "offset": {
+            "x": 370,
+            "y": 150
+          }
+        }
+      ],
+      "edgeTemplate": [
+        {
+          "sourceKey": "region",
+          "targetKey": "zone-a",
+          "kind": "contains",
+          "stage": "physicalTechnology",
+          "properties": {}
+        },
+        {
+          "sourceKey": "region",
+          "targetKey": "zone-b",
+          "kind": "contains",
+          "stage": "physicalTechnology",
+          "properties": {}
+        },
+        {
+          "sourceKey": "zone-a",
+          "targetKey": "node-a",
+          "kind": "contains",
+          "stage": "physicalTechnology",
+          "properties": {}
+        },
+        {
+          "sourceKey": "zone-b",
+          "targetKey": "node-b",
+          "kind": "contains",
+          "stage": "physicalTechnology",
+          "properties": {}
+        }
+      ]
+    }
+  ]
+}

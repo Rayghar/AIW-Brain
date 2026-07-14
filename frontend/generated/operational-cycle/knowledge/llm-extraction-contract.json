@@ -1,0 +1,24 @@
+{
+  "version": "km-claim-extraction-v1",
+  "instructions": [
+    "Extract only claims explicitly supported by the supplied source text.",
+    "Produce atomic claims with one subject, predicate and object.",
+    "Capture conditions and limitations; never convert contextual guidance into a universal rule.",
+    "Preserve provider or framework specificity in context tags.",
+    "Do not infer compliance, suitability or numerical quality impact unless the source explicitly supports it.",
+    "Do not quote long passages; store a source location and excerpt hash instead.",
+    "Return candidates only. Publication requires deterministic validation and human approval."
+  ],
+  "requiredFields": [
+    "subjectId",
+    "subjectName",
+    "claimType",
+    "predicate",
+    "object",
+    "statement",
+    "polarity",
+    "conditions",
+    "limitations",
+    "contextTags"
+  ]
+}

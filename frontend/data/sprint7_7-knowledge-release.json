@@ -1,0 +1,30 @@
+{
+  "id": "KREL-SEED-5b68d5eae03c",
+  "version": "0.8.7-seed",
+  "createdAt": "2026-07-02T16:47:20.544Z",
+  "createdBy": "Architecture Knowledge Council",
+  "status": "approved",
+  "claimIds": [
+    "KCLM-ARCHUNIT-RULES",
+    "KCLM-AZURE-EVENT-SOURCING",
+    "KCLM-BACKSTAGE-CACHE",
+    "KCLM-CALM-PATTERNS",
+    "KCLM-CNCF-LANDSCAPE",
+    "KCLM-CONTEXT-MAPPER",
+    "KCLM-DDD-MODELLING",
+    "KCLM-JMOLECULES-ARCH",
+    "KCLM-JQA-GRAPH",
+    "KCLM-MESH-PATTERN",
+    "KCLM-MESHERY-MODELS",
+    "KCLM-OAM-SEPARATION",
+    "KCLM-OTEL-DEMO",
+    "KCLM-SPRING-MODULITH"
+  ],
+  "sourceSnapshotIds": [],
+  "proposalIds": [],
+  "checksum": "sha256:5b68d5eae03ce17ae0bde7d36583bbc4efd8f89ad6fb5f15f8312bcbcf8947bd",
+  "notes": [
+    "Human-reviewed seed claims only.",
+    "GitHub refreshes and LLM extractions remain quarantined candidates until expert review and regression testing."
+  ]
+}

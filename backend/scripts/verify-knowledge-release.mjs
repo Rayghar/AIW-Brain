@@ -1,0 +1,12 @@
+import { readFile } from 'node:fs/promises';
+import { createHash, createPublicKey, verify } from 'node:crypto';
+const [releasePath, signaturePath] = process.argv.slice(2);
+if (!releasePath || !signaturePath) throw new Error('Usage: node scripts/verify-knowledge-release.mjs <release.json> <signature.json>');
+const release = JSON.parse(await readFile(releasePath, 'utf8'));
+const signature = JSON.parse(await readFile(signaturePath, 'utf8'));
+const canonical = (value) => Array.isArray(value) ? `[${value.map(canonical).join(',')}]` : value && typeof value === 'object' ? `{${Object.entries(value).sort(([a],[b]) => a.localeCompare(b)).map(([key,item]) => `${JSON.stringify(key)}:${canonical(item)}`).join(',')}}` : JSON.stringify(value);
+const payload = Buffer.from(canonical(release));
+const checksum = createHash('sha256').update(payload).digest('hex');
+const valid = checksum === signature.checksumSha256 && verify(null, payload, createPublicKey(signature.publicKeyPem), Buffer.from(signature.signatureBase64, 'base64'));
+console.log(JSON.stringify({ valid, releaseId: signature.releaseId, checksum, expectedChecksum: signature.checksumSha256, publicKeyId: signature.publicKeyId }, null, 2));
+if (!valid) process.exitCode = 1;

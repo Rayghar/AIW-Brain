@@ -1,0 +1,69 @@
+{
+  "releaseId": "AIW-0.10.0-alpha.2",
+  "sprint": "8.7.2",
+  "generatedAt": "2026-07-03T20:07:57.451Z",
+  "passed": 12,
+  "total": 12,
+  "checks": [
+    {
+      "id": "872-01-version",
+      "passed": true,
+      "detail": "root and all workspaces retain the 8.7.2 lineage or a verified descendant"
+    },
+    {
+      "id": "872-02-active-probes",
+      "passed": true,
+      "detail": "all enterprise boundaries have explicit acceptance checks"
+    },
+    {
+      "id": "872-03-no-config-placebo",
+      "passed": true,
+      "detail": "production acceptance requires verified required checks rather than configured flags"
+    },
+    {
+      "id": "872-04-evidence-api",
+      "passed": true,
+      "detail": "active probes are authorized and evidence is retrievable"
+    },
+    {
+      "id": "872-05-evidence-persistence",
+      "passed": true,
+      "detail": "acceptance evidence is tenant-scoped in PostgreSQL with memory fallback"
+    },
+    {
+      "id": "872-06-rls-migration",
+      "passed": true,
+      "detail": "acceptance evidence migration enforces RLS"
+    },
+    {
+      "id": "872-07-object-roundtrip",
+      "passed": true,
+      "detail": "object-store acceptance proves write/read/digest/delete"
+    },
+    {
+      "id": "872-08-startup-enforcement",
+      "passed": true,
+      "detail": "startup can fail closed on required runtime controls"
+    },
+    {
+      "id": "872-09-runtime-workspace",
+      "passed": true,
+      "detail": "operators have a dedicated runtime acceptance workspace"
+    },
+    {
+      "id": "872-10-local-enterprise-profile",
+      "passed": true,
+      "detail": "local enterprise profile includes OIDC and OTLP infrastructure"
+    },
+    {
+      "id": "872-11-runtime-policy",
+      "passed": true,
+      "detail": "environment contract exposes enforcement, requirements and operators"
+    },
+    {
+      "id": "872-12-operational-guide",
+      "passed": true,
+      "detail": "operational guide documents truthful acceptance semantics and execution"
+    }
+  ]
+}

@@ -1,0 +1,771 @@
+{
+  "schemaVersion": "0.8.0",
+  "tenantId": "tenant-reference",
+  "id": "project-order-to-payment",
+  "name": "Order-to-Payment Reference Design",
+  "description": "A reference project demonstrating scoped styles, lineage, validation and proposed architecture changes.",
+  "activeStage": "logicalApplication",
+  "objectives": [
+    "Process customer orders reliably",
+    "Protect payment processing from dependency failures",
+    "Support measurable availability and latency objectives"
+  ],
+  "constraints": [
+    "Cloud agnostic logical design",
+    "No direct storage of payment card data"
+  ],
+  "assumptions": [
+    "Initial team size is eight engineers",
+    "Peak volume is 250 orders per second"
+  ],
+  "qualityPriorities": [
+    {
+      "attributeId": "availability",
+      "weight": 5,
+      "rationale": "Revenue-critical order processing"
+    },
+    {
+      "attributeId": "faultTolerance",
+      "weight": 5,
+      "rationale": "External payment providers can fail"
+    },
+    {
+      "attributeId": "scalability",
+      "weight": 4
+    },
+    {
+      "attributeId": "modifiability",
+      "weight": 4
+    },
+    {
+      "attributeId": "simplicity",
+      "weight": 3
+    },
+    {
+      "attributeId": "costEfficiency",
+      "weight": 3
+    }
+  ],
+  "qualityScenarios": [
+    {
+      "id": "qs-payment-provider-latency",
+      "attributeId": "availability",
+      "source": "External payment provider",
+      "stimulus": "Provider becomes unavailable or exceeds timeout",
+      "environment": "Peak production traffic",
+      "artifact": "Payment integration boundary",
+      "response": "Isolate the failure and preserve order status for safe retry",
+      "responseMeasure": "No confirmed order is lost; checkout degrades within 3 seconds",
+      "weight": 5
+    }
+  ],
+  "styleDecisions": [
+    {
+      "id": "style-decision-orders",
+      "styleId": "STYLE-EVENT-DRIVEN",
+      "scopeNodeId": "logical-order-domain",
+      "stage": "logicalApplication",
+      "rationale": "Decouple order progression from payment provider availability while preserving explicit synchronous query paths where justified.",
+      "status": "accepted"
+    }
+  ],
+  "patternSelections": [
+    {
+      "id": "pattern-selection-outbox",
+      "patternId": "PAT-OUTBOX",
+      "scopeNodeId": "logical-order-domain",
+      "stage": "applicationRealization",
+      "rationale": "Reliably publish order events after local state changes.",
+      "status": "considering",
+      "obligationsAcknowledged": []
+    }
+  ],
+  "nodes": [
+    {
+      "id": "actor-customer",
+      "kind": "Actor",
+      "stage": "logicalApplication",
+      "label": "Customer",
+      "properties": {},
+      "lineageFrom": [],
+      "positions": {
+        "logicalApplication": {
+          "x": 40,
+          "y": 160
+        }
+      },
+      "tags": [
+        "external"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-order-domain",
+      "kind": "Domain",
+      "stage": "logicalApplication",
+      "label": "Order Domain",
+      "properties": {
+        "owner": "Commerce Team"
+      },
+      "lineageFrom": [],
+      "positions": {
+        "logicalApplication": {
+          "x": 280,
+          "y": 100
+        }
+      },
+      "tags": [
+        "core-domain"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-order-service",
+      "kind": "LogicalService",
+      "stage": "logicalApplication",
+      "label": "Order Service",
+      "properties": {
+        "communicationPreference": "mixed"
+      },
+      "lineageFrom": [],
+      "parentId": "logical-order-domain",
+      "positions": {
+        "logicalApplication": {
+          "x": 310,
+          "y": 200
+        }
+      },
+      "tags": [
+        "business-service"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-payment-service",
+      "kind": "LogicalService",
+      "stage": "logicalApplication",
+      "label": "Payment Service",
+      "properties": {
+        "dataClassification": "confidential"
+      },
+      "lineageFrom": [],
+      "parentId": "logical-order-domain",
+      "positions": {
+        "logicalApplication": {
+          "x": 580,
+          "y": 200
+        }
+      },
+      "tags": [
+        "business-service"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "deployable-order-api",
+      "kind": "DeployableUnit",
+      "stage": "applicationRealization",
+      "label": "Order API",
+      "properties": {
+        "runtime": "Node.js",
+        "public": true,
+        "expectedMonthlyCost": 420
+      },
+      "lineageFrom": [
+        "logical-order-service"
+      ],
+      "positions": {
+        "applicationRealization": {
+          "x": 220,
+          "y": 170
+        }
+      },
+      "tags": [
+        "api"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "deployable-payment-worker",
+      "kind": "DeployableUnit",
+      "stage": "applicationRealization",
+      "label": "Payment Worker",
+      "properties": {
+        "runtime": "Node.js",
+        "expectedMonthlyCost": 280
+      },
+      "lineageFrom": [
+        "logical-payment-service"
+      ],
+      "positions": {
+        "applicationRealization": {
+          "x": 560,
+          "y": 170
+        }
+      },
+      "tags": [
+        "worker"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-relational-store",
+      "kind": "LogicalTechnologyCapability",
+      "stage": "logicalTechnology",
+      "label": "Relational Data Service",
+      "properties": {
+        "consistency": "strong"
+      },
+      "lineageFrom": [
+        "deployable-order-api"
+      ],
+      "positions": {
+        "logicalTechnology": {
+          "x": 300,
+          "y": 220
+        }
+      },
+      "tags": [
+        "data"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "physical-postgres",
+      "kind": "TechnologyProduct",
+      "stage": "physicalTechnology",
+      "label": "Managed PostgreSQL",
+      "properties": {
+        "vendor": "generic",
+        "product": "PostgreSQL",
+        "version": "15",
+        "replicas": 2,
+        "availabilityZones": 2,
+        "encryptedAtRest": true,
+        "expectedMonthlyCost": 500
+      },
+      "lineageFrom": [
+        "logical-relational-store"
+      ],
+      "positions": {
+        "physicalTechnology": {
+          "x": 360,
+          "y": 220
+        }
+      },
+      "tags": [
+        "database",
+        "critical"
+      ],
+      "status": "draft"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-customer-order",
+      "sourceId": "actor-customer",
+      "targetId": "logical-order-service",
+      "kind": "communicatesWith",
+      "stage": "logicalApplication",
+      "label": "Places order",
+      "properties": {
+        "protocolStyle": "synchronous"
+      }
+    },
+    {
+      "id": "edge-order-payment-event",
+      "sourceId": "logical-order-service",
+      "targetId": "logical-payment-service",
+      "kind": "publishes",
+      "stage": "logicalApplication",
+      "label": "Order submitted",
+      "properties": {
+        "delivery": "at-least-once"
+      }
+    },
+    {
+      "id": "edge-order-api-realizes",
+      "sourceId": "deployable-order-api",
+      "targetId": "logical-order-service",
+      "kind": "realizes",
+      "stage": "applicationRealization",
+      "properties": {}
+    },
+    {
+      "id": "edge-payment-worker-realizes",
+      "sourceId": "deployable-payment-worker",
+      "targetId": "logical-payment-service",
+      "kind": "realizes",
+      "stage": "applicationRealization",
+      "properties": {}
+    },
+    {
+      "id": "edge-postgres-maps",
+      "sourceId": "physical-postgres",
+      "targetId": "logical-relational-store",
+      "kind": "mapsTo",
+      "stage": "physicalTechnology",
+      "properties": {}
+    }
+  ],
+  "decisions": [],
+  "findings": [],
+  "context": {
+    "teamSize": 8,
+    "deliveryHorizonMonths": 6,
+    "operationalMaturity": 3,
+    "budgetSensitivity": 3,
+    "regulatoryExposure": "high"
+  },
+  "branch": {
+    "id": "branch-main",
+    "name": "Main architecture",
+    "description": "Primary governed architecture baseline.",
+    "baseRevision": 1,
+    "status": "active",
+    "createdAt": "2026-07-02T18:36:29.662Z"
+  },
+  "stageApprovals": [],
+  "activeRulePackIds": [
+    "RULEPACK-ENTERPRISE-BASELINE"
+  ],
+  "members": [
+    {
+      "id": "user-owner",
+      "displayName": "Amina Okafor",
+      "email": "amina@example.com",
+      "role": "owner",
+      "status": "active",
+      "joinedAt": "2026-07-02T18:36:29.662Z"
+    },
+    {
+      "id": "user-architect",
+      "displayName": "Daniel Mensah",
+      "email": "daniel@example.com",
+      "role": "architect",
+      "status": "active",
+      "joinedAt": "2026-07-02T18:36:29.662Z"
+    },
+    {
+      "id": "user-reviewer",
+      "displayName": "Lena Adeyemi",
+      "email": "lena@example.com",
+      "role": "reviewer",
+      "status": "active",
+      "joinedAt": "2026-07-02T18:36:29.662Z"
+    },
+    {
+      "id": "user-governance",
+      "displayName": "Architecture Review Board",
+      "email": "arb@example.com",
+      "role": "governance",
+      "status": "active",
+      "joinedAt": "2026-07-02T18:36:29.662Z"
+    }
+  ],
+  "reviewAssignments": [],
+  "discussionThreads": [],
+  "notifications": [],
+  "collaborationSettings": {
+    "approvalValidityDays": 90,
+    "reviewDueDays": 5,
+    "requireIndependentReviewer": true,
+    "maxConcurrentEditors": 12,
+    "presenceTtlSeconds": 45,
+    "operationRetryLimit": 3
+  },
+  "securitySettings": {
+    "requireSso": false,
+    "allowedIdentityProviderIds": [
+      "idp-reference-development"
+    ],
+    "allowDevelopmentAuth": true,
+    "sessionMaxAgeMinutes": 480,
+    "auditRetentionDays": 365,
+    "encryptionKeyReference": "env://AIW_DATA_ENCRYPTION_KEY"
+  },
+  "identityProviders": [
+    {
+      "id": "idp-reference-development",
+      "tenantId": "tenant-reference",
+      "type": "development",
+      "name": "Reference development identity provider",
+      "issuer": "aiw://development",
+      "clientId": "aiw-reference-client",
+      "scopes": [
+        "openid",
+        "profile",
+        "email"
+      ],
+      "enabled": true
+    }
+  ],
+  "secretReferences": [
+    {
+      "id": "secret-ai-provider",
+      "provider": "environment",
+      "locator": "env://OPENAI_API_KEY",
+      "purpose": "Optional AI-assisted architecture audit"
+    },
+    {
+      "id": "secret-data-key",
+      "provider": "environment",
+      "locator": "env://AIW_DATA_ENCRYPTION_KEY",
+      "purpose": "Application-level encryption key reference"
+    }
+  ],
+  "observabilitySettings": {
+    "serviceName": "aiw-reference-workbench",
+    "tracesEnabled": true,
+    "metricsEnabled": true,
+    "logsEnabled": true,
+    "samplingRatio": 0.2,
+    "otlpEndpointReference": "env://OTEL_EXPORTER_OTLP_ENDPOINT",
+    "targetAvailabilityPercent": 99.9,
+    "targetP95LatencyMs": 500
+  },
+  "repositoryBindings": [
+    {
+      "id": "repo-reference-local",
+      "provider": "local",
+      "repositoryUrl": "file://architecture-reference",
+      "defaultBranch": "main",
+      "architecturePath": "architecture/aiw-project.json",
+      "runtimeInventoryPath": "architecture/runtime-inventory.json",
+      "policyGatePath": "architecture/policy-gate.json",
+      "status": "configured"
+    }
+  ],
+  "runtimeInventories": [
+    {
+      "id": "inventory-7cb453ac-80a0-4d34-bfb5-22d4fe22e127",
+      "tenantId": "tenant-reference",
+      "projectId": "project-order-to-payment",
+      "branchId": "branch-main",
+      "name": "Reference Kubernetes collector inventory",
+      "sourceType": "aws",
+      "capturedAt": "2026-07-02T18:36:29.669Z",
+      "sourceRevision": "reference-cycle",
+      "rawFingerprint": "fnv1a-cbe21d1b",
+      "resources": [
+        {
+          "id": "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537",
+          "sourceType": "aws",
+          "externalId": "arn:aws:rds:reference",
+          "resourceType": "aws_db_instance",
+          "name": "Managed PostgreSQL",
+          "provider": "aws",
+          "region": "eu-west-1",
+          "properties": {
+            "monthlyCost": 850,
+            "replicas": 1,
+            "availabilityZones": 1
+          },
+          "labels": {
+            "aiw.node-id": "physical-postgres"
+          },
+          "discoveredAt": "2026-07-02T18:36:29.669Z"
+        }
+      ],
+      "relationships": []
+    }
+  ],
+  "driftReports": [],
+  "policyGates": [
+    {
+      "id": "gate-reference",
+      "name": "Reference architecture gate",
+      "enabled": true,
+      "hardFindingThreshold": 0,
+      "significantFindingThreshold": 5,
+      "advisoryFindingThreshold": 25,
+      "maxMissingResources": 0,
+      "maxUnmanagedResources": 3,
+      "requiredApprovedStages": [
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ]
+    }
+  ],
+  "inventoryCollectors": [
+    {
+      "id": "collector-k8s-reference",
+      "name": "Reference Kubernetes collector",
+      "provider": "aws",
+      "enabled": true,
+      "schedule": "0 */6 * * *",
+      "scope": {
+        "account": "reference"
+      },
+      "secretReferenceIds": [],
+      "status": "healthy",
+      "lastRunAt": "2026-07-02T18:36:29.670Z",
+      "nextRunAt": "2026-07-03T00:36:29.670Z"
+    }
+  ],
+  "collectorRuns": [
+    {
+      "id": "collector-run-7b1cbf4f-3033-42d2-b0dc-610bbd8fce44",
+      "collectorId": "collector-k8s-reference",
+      "startedAt": "2026-07-02T18:36:29.668Z",
+      "completedAt": "2026-07-02T18:36:29.670Z",
+      "status": "completed",
+      "inventoryId": "inventory-7cb453ac-80a0-4d34-bfb5-22d4fe22e127",
+      "resourceCount": 1,
+      "relationshipCount": 0,
+      "message": "Collected 1 resources from aws."
+    }
+  ],
+  "operationalDriftReports": [
+    {
+      "id": "operational-drift-6c797833-7c45-440d-bf9d-df8434b0b0a1",
+      "inventoryId": "inventory-7cb453ac-80a0-4d34-bfb5-22d4fe22e127",
+      "generatedAt": "2026-07-02T18:36:29.670Z",
+      "projectRevision": 1,
+      "summary": {
+        "cost": 1,
+        "capacity": 1,
+        "resilience": 1,
+        "estimatedMonthlyImpact": 350
+      },
+      "findings": [
+        {
+          "id": "op-drift-30a12eef-dd33-4689-a7e9-3b625c7534b4",
+          "category": "cost",
+          "severity": "SIGNIFICANT",
+          "title": "Cost drift for Managed PostgreSQL",
+          "message": "Observed monthly cost 850 exceeds expected 500.",
+          "intendedNodeId": "physical-postgres",
+          "actualResourceId": "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537",
+          "expectedValue": 500,
+          "actualValue": 850,
+          "estimatedMonthlyImpact": 350,
+          "recommendation": "Review sizing, reservations, lifecycle policies and workload placement.",
+          "status": "open"
+        },
+        {
+          "id": "op-drift-e91685f9-4bc5-4e5e-90c5-6ee8e99fe83a",
+          "category": "capacity",
+          "severity": "SIGNIFICANT",
+          "title": "Capacity shortfall for Managed PostgreSQL",
+          "message": "Observed replicas 1 are below intended 2.",
+          "intendedNodeId": "physical-postgres",
+          "actualResourceId": "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537",
+          "expectedValue": 2,
+          "actualValue": 1,
+          "recommendation": "Restore intended replica count or approve a revised capacity decision.",
+          "status": "open"
+        },
+        {
+          "id": "op-drift-92545d50-4b6a-4a9a-8b4e-7b04fca52d3d",
+          "category": "resilience",
+          "severity": "HARD",
+          "title": "Resilience drift for Managed PostgreSQL",
+          "message": "Observed failure-domain coverage 1 is below intended 2.",
+          "intendedNodeId": "physical-postgres",
+          "actualResourceId": "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537",
+          "expectedValue": 2,
+          "actualValue": 1,
+          "recommendation": "Distribute the runtime across the approved number of failure domains before production approval.",
+          "status": "open"
+        }
+      ]
+    }
+  ],
+  "driftWaivers": [],
+  "remediationPlans": [
+    {
+      "id": "remediation-aebd38cb-1283-49a7-ba78-d1ff8856f3a1",
+      "name": "Remediation for operational-drift-6c797833-7c45-440d-bf9d-df8434b0b0a1",
+      "sourceReportId": "operational-drift-6c797833-7c45-440d-bf9d-df8434b0b0a1",
+      "createdAt": "2026-07-02T18:36:29.670Z",
+      "createdBy": "scheduled-architecture-agent",
+      "status": "draft",
+      "actions": [
+        {
+          "id": "remediation-action-acdbd654-43d9-4363-a44a-d0326dc59a31",
+          "findingId": "op-drift-30a12eef-dd33-4689-a7e9-3b625c7534b4",
+          "actionType": "runtime-change",
+          "title": "Review sizing, reservations, lifecycle policies and workload placement.",
+          "description": "Observed monthly cost 850 exceeds expected 500.",
+          "targetIds": [
+            "physical-postgres",
+            "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537"
+          ],
+          "risk": "medium",
+          "automation": "scaffolded",
+          "status": "proposed"
+        },
+        {
+          "id": "remediation-action-04ea51e2-149a-4f74-9ee8-7e806589b820",
+          "findingId": "op-drift-e91685f9-4bc5-4e5e-90c5-6ee8e99fe83a",
+          "actionType": "runtime-change",
+          "title": "Restore intended replica count or approve a revised capacity decision.",
+          "description": "Observed replicas 1 are below intended 2.",
+          "targetIds": [
+            "physical-postgres",
+            "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537"
+          ],
+          "risk": "medium",
+          "automation": "scaffolded",
+          "status": "proposed"
+        },
+        {
+          "id": "remediation-action-701abd78-7078-4d4e-96cd-ad14ffdb3752",
+          "findingId": "op-drift-92545d50-4b6a-4a9a-8b4e-7b04fca52d3d",
+          "actionType": "architecture-change",
+          "title": "Distribute the runtime across the approved number of failure domains before production approval.",
+          "description": "Observed failure-domain coverage 1 is below intended 2.",
+          "targetIds": [
+            "physical-postgres",
+            "runtime-9fe094b6-17f3-4d51-8f7d-2868e5fe5537"
+          ],
+          "risk": "high",
+          "automation": "provider-preview",
+          "status": "proposed"
+        }
+      ]
+    }
+  ],
+  "serviceLevelObjectives": [
+    {
+      "id": "slo-order-availability",
+      "name": "Order API availability",
+      "targetNodeId": "deployable-order-api",
+      "indicator": "availability",
+      "target": 99.9,
+      "window": "30d",
+      "warningThreshold": 99.95,
+      "criticalThreshold": 99.9,
+      "enabled": true
+    },
+    {
+      "id": "slo-order-latency",
+      "name": "Order API p95 latency",
+      "targetNodeId": "deployable-order-api",
+      "indicator": "latency-p95",
+      "target": 500,
+      "window": "24h",
+      "warningThreshold": 450,
+      "criticalThreshold": 500,
+      "enabled": true
+    }
+  ],
+  "alertPolicies": [
+    {
+      "id": "alert-order-availability",
+      "sloId": "slo-order-availability",
+      "name": "Order availability burn alert",
+      "channels": [
+        "email",
+        "chat"
+      ],
+      "severity": "critical",
+      "burnRateThreshold": 2,
+      "evaluationWindowMinutes": 60,
+      "enabled": true
+    }
+  ],
+  "repositoryPullRequests": [],
+  "eventBrokerSettings": {
+    "adapter": "memory",
+    "topic": "aiw.architecture.events",
+    "maxAttempts": 5,
+    "retryDelayMs": 1000,
+    "deadLetterEnabled": true
+  },
+  "deploymentProfiles": [
+    {
+      "id": "deploy-profile-reference",
+      "name": "Reference production profile",
+      "environment": "production",
+      "replicas": 2,
+      "cpuRequest": "500m",
+      "memoryRequest": "512Mi",
+      "publicIngress": true,
+      "autoscaling": true,
+      "minReplicas": 2,
+      "maxReplicas": 8
+    }
+  ],
+  "portfolio": {
+    "portfolioId": "portfolio-digital-channels",
+    "businessUnit": "Digital Commerce",
+    "owner": "Amina Okafor",
+    "criticality": "mission-critical",
+    "lifecycle": "invest",
+    "annualChangeBudget": 1200000,
+    "currency": "USD"
+  },
+  "projectDependencies": [
+    {
+      "id": "dependency-order-identity",
+      "sourceProjectId": "project-order-to-payment",
+      "targetProjectId": "project-customer-identity",
+      "kind": "api",
+      "criticality": "high",
+      "interfaceName": "Customer Identity API",
+      "dataClassification": "confidential",
+      "status": "active"
+    },
+    {
+      "id": "dependency-order-analytics",
+      "sourceProjectId": "project-order-to-payment",
+      "targetProjectId": "project-commerce-analytics",
+      "kind": "event",
+      "criticality": "medium",
+      "interfaceName": "Order Events",
+      "dataClassification": "internal",
+      "status": "active"
+    }
+  ],
+  "technologyStandardExceptions": [],
+  "technicalDebtItems": [
+    {
+      "id": "debt-single-zone-db",
+      "title": "Database remains single-zone",
+      "category": "operations",
+      "severity": "SIGNIFICANT",
+      "description": "The current physical database topology does not yet meet the target failure-domain requirement.",
+      "linkedNodeIds": [
+        "physical-postgres"
+      ],
+      "estimatedEffortDays": 8,
+      "annualCostImpact": 18000,
+      "status": "planned"
+    },
+    {
+      "id": "debt-manual-contract-tests",
+      "title": "Integration contracts are validated manually",
+      "category": "delivery",
+      "severity": "ADVISORY",
+      "description": "Consumer-driven contract testing has not been automated.",
+      "linkedNodeIds": [
+        "deployable-order-api"
+      ],
+      "estimatedEffortDays": 5,
+      "annualCostImpact": 9000,
+      "status": "open"
+    }
+  ],
+  "buildingBlockUsages": [
+    {
+      "id": "usage-secure-api",
+      "buildingBlockId": "ABB-SECURE-API-SERVICE",
+      "version": "1.0.0",
+      "scopeNodeId": "deployable-order-api",
+      "status": "adopted"
+    }
+  ],
+  "referenceArchitectureAssignments": [
+    {
+      "id": "assignment-digital-transaction",
+      "referenceArchitectureId": "REF-DIGITAL-TRANSACTION-PLATFORM",
+      "version": "1.0.0",
+      "status": "applicable"
+    }
+  ],
+  "revision": 1,
+  "updatedAt": "2026-07-02T18:36:29.662Z"
+}

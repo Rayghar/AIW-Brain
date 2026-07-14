@@ -1,0 +1,81 @@
+{
+  "release": "0.10.0-rc.10.72.2",
+  "reason": "These executable browser contracts asserted superseded user-interface identities and states (Stage Co-Author drawer, separate Architecture Brain launcher, Outputs/Work area labels, and rc.10.70/71 navigation class names). Keeping them active would force compatibility patches that reintroduce the fragmentation this recovery release removes.",
+  "retired": [
+    {
+      "test": "rc10-70-1-integrated-design-flow.spec.ts",
+      "replacement": [
+        "rc10-72-2-product-recovery.spec.ts",
+        "rc10-72-2-unified-sol-experience.spec.ts"
+      ],
+      "preservedIntent": [
+        "stable navigation",
+        "actual outputs",
+        "design rationale",
+        "responsive layout"
+      ]
+    },
+    {
+      "test": "rc10-71-architecture-genesis.spec.ts",
+      "replacement": [
+        "rc10-72-2-clean-project-lifecycle.spec.ts"
+      ],
+      "preservedIntent": [
+        "idea-to-requirements",
+        "journey atlas",
+        "system context",
+        "governed acceptance"
+      ]
+    },
+    {
+      "test": "rc10-71-1-brain-authority.spec.ts",
+      "replacement": [
+        "rc10-72-2-unified-sol-experience.spec.ts",
+        "rc10_72_2_product_recovery_brain.test.ts"
+      ],
+      "preservedIntent": [
+        "one brain authority",
+        "non-mutating reasoning",
+        "stage-correct context"
+      ]
+    },
+    {
+      "test": "rc10-72-1-product-truth-canvas-navigation.spec.ts",
+      "replacement": [
+        "rc10-72-2-product-recovery.spec.ts"
+      ],
+      "preservedIntent": [
+        "navigation stability",
+        "smart layout",
+        "viewbook routing",
+        "layout undo"
+      ]
+    },
+    {
+      "test": "rc10-66-living-canvas.spec.ts",
+      "replacement": [
+        "rc10-72-2-clean-project-lifecycle.spec.ts",
+        "rc10-72-2-product-recovery.spec.ts"
+      ],
+      "preservedIntent": [
+        "governed design proposal",
+        "preview",
+        "acceptance",
+        "layout"
+      ]
+    },
+    {
+      "test": "rc10-67-stage-co-creation.spec.ts",
+      "replacement": [
+        "rc10-72-2-clean-project-lifecycle.spec.ts",
+        "rc10-72-2-unified-sol-experience.spec.ts"
+      ],
+      "preservedIntent": [
+        "scope-aware co-creation",
+        "component decomposition",
+        "human acceptance"
+      ]
+    }
+  ],
+  "policy": "Retired tests are retained in release-history for auditability but are excluded from the active acceptance suite."
+}

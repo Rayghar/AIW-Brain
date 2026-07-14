@@ -1,0 +1,72 @@
+{
+  "release": "0.10.0-rc.10.73.3",
+  "generatedAt": "2026-07-14T16:17:30Z",
+  "distribution": "full-source-and-compiled-output-without-installed-dependencies",
+  "rootDirectory": "AIW_v0.10.0-rc.10.73.3_Canonical_Brain_Conformance_Closure_Durable_Brain_Transactions_Review_Authority_and_State_Store_Consolidation_FULLDIST",
+  "sections": {
+    "backend": {
+      "fileCount": 1673,
+      "bytes": 33733460
+    },
+    "frontend": {
+      "fileCount": 1384,
+      "bytes": 40056213
+    },
+    "knowledge-repository": {
+      "fileCount": 15,
+      "bytes": 5248421
+    },
+    "release-evidence": {
+      "fileCount": 46,
+      "bytes": 3026635
+    },
+    "release-history": {
+      "fileCount": 81,
+      "bytes": 5822474
+    },
+    "docs": {
+      "fileCount": 17,
+      "bytes": 97783
+    },
+    "data": {
+      "fileCount": 7,
+      "bytes": 838159
+    },
+    "benchmarks": {
+      "fileCount": 1,
+      "bytes": 2730
+    },
+    "deploy": {
+      "fileCount": 6,
+      "bytes": 12351
+    },
+    "scripts": {
+      "fileCount": 9,
+      "bytes": 113826
+    },
+    "tests": {
+      "fileCount": 3,
+      "bytes": 4656
+    }
+  },
+  "exclusions": [
+    "backend/node_modules",
+    "frontend/node_modules",
+    "coverage",
+    "test-results",
+    "playwright-report",
+    ".git",
+    "private keys",
+    "local environment secrets"
+  ],
+  "verificationArtifacts": [
+    "AIW_RC10_73_3_RELEASE_REPORT.md",
+    "AIW_RC10_73_3_IMPLEMENTATION_TRACEABILITY.md",
+    "AIW_RC10_73_3_TEST_EVIDENCE.json",
+    "AIW_RC10_73_3_KNOWN_LIMITATIONS.md",
+    "release-evidence/rc10.73.3/DURABLE_BRAIN_TRANSACTIONS_ACCEPTANCE.json",
+    "release-evidence/rc10.73.3/ARCHITECTURE_BRAIN_AUTHORITY_AUDIT.json"
+  ],
+  "checksumEntryCount": 3255,
+  "packageBytesBeforeZip": 89376261
+}

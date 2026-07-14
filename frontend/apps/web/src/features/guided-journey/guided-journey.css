@@ -1,0 +1,37 @@
+.guided-journey { display: grid; gap: 18px; }
+.guided-journey__hero { background: linear-gradient(135deg, rgba(20,184,166,.15), rgba(245,158,11,.10)); }
+.guided-journey__score { min-width: 220px; border: 1px solid var(--border); border-radius: 18px; padding: 18px; background: var(--surface); display: grid; gap: 6px; box-shadow: var(--shadow-sm); }
+.guided-journey__score span, .guided-journey__score small { color: var(--text-muted); font-size: 12px; }
+.guided-journey__score strong { font-size: 42px; line-height: 1; color: var(--accent); }
+.guided-journey__steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.guided-step { display: grid; grid-template-columns: 24px 1fr; gap: 8px; text-align: left; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: inherit; padding: 12px; align-items: center; }
+.guided-step strong { font-size: 13px; }
+.guided-step small { color: var(--text-muted); font-size: 11px; }
+.guided-step.is-done { border-color: rgba(20,184,166,.45); background: rgba(20,184,166,.08); }
+.guided-step.is-ready { border-color: rgba(245,158,11,.45); background: rgba(245,158,11,.07); }
+.guided-step__dot { width: 14px; height: 14px; border-radius: 999px; border: 2px solid var(--border-strong); display: inline-block; }
+.guided-journey__tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.guided-journey__tabs button { border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: inherit; padding: 9px 13px; }
+.guided-journey__tabs button.active { background: var(--accent); color: #061313; border-color: transparent; font-weight: 800; }
+.guided-journey__grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); gap: 16px; align-items: start; }
+.guided-panel { border: 1px solid var(--border); border-radius: 20px; background: var(--surface); padding: 18px; box-shadow: var(--shadow-sm); display: grid; gap: 14px; }
+.guided-panel--wide { min-height: 320px; }
+.guided-panel header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.guided-panel h3, .guided-panel h4 { margin: 0; }
+.guided-panel p, .guided-panel li, .guided-panel small { color: var(--text-muted); }
+.guided-panel textarea { width: 100%; resize: vertical; border: 1px solid var(--border); border-radius: 14px; padding: 14px; background: var(--surface-soft); color: inherit; font: inherit; line-height: 1.45; }
+.template-matrix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.template-matrix button { display: grid; gap: 5px; text-align: left; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-soft); color: inherit; padding: 12px; }
+.template-matrix button.selected { outline: 2px solid var(--accent); background: rgba(20,184,166,.08); }
+.tag-row, .driver-list { display: flex; flex-wrap: wrap; gap: 7px; }
+.tag-row span, .driver-list span { border: 1px solid var(--border); border-radius: 999px; background: var(--surface-soft); padding: 5px 9px; font-size: 11px; color: var(--text-muted); }
+.guided-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.guided-notice { border: 1px solid rgba(20,184,166,.35); background: rgba(20,184,166,.08); border-radius: 12px; padding: 10px; }
+.recommendation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.recommendation-grid section { border: 1px solid var(--border); border-radius: 14px; padding: 12px; background: var(--surface-soft); display: grid; gap: 8px; }
+.recommendation-grid div { display: grid; gap: 2px; }
+.pack-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.pack-preview div { border: 1px solid var(--border); border-radius: 12px; background: var(--surface-soft); padding: 10px; }
+.pack-preview dt { color: var(--text-muted); font-size: 11px; }
+.pack-preview dd { margin: 0; font-size: 22px; font-weight: 800; }
+@media (max-width: 1100px) { .guided-journey__grid, .guided-journey__steps { grid-template-columns: 1fr; } .template-matrix, .recommendation-grid { grid-template-columns: 1fr; } }

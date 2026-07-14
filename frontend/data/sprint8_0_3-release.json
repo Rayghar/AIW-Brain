@@ -1,0 +1,80 @@
+{
+  "releaseId": "AIW-0.9.6",
+  "sprint": "8.0.3",
+  "title": "Reconciled Intelligent Workbench",
+  "version": "0.9.6",
+  "baseline": "AIW-0.9.2",
+  "selectiveSource": "AIW-0.9.5",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "knowledgeRecords": {
+    "approved": 328,
+    "productionMinimum": 200,
+    "pendingCalibrationAttributes": 12,
+    "productionCalibratedAttributes": 8
+  },
+  "mergePolicy": "v0.9.2 remains the integration trunk; only independently verified and governed v0.9.5 intelligence is selectively ported.",
+  "retainedCapabilities": [
+    "Project Hub",
+    "server-authoritative autosave",
+    "optimistic concurrency",
+    "persistent Co-Architect",
+    "collaboration runtime",
+    "tenant LLM policy administration",
+    "web/API production deployment",
+    "stage gates",
+    "undo/redo",
+    "quality scenarios"
+  ],
+  "mergedCapabilities": [
+    "structured enterprise brief",
+    "release-bound stage advisor",
+    "selected-object AI guidance",
+    "deterministic citation resolver",
+    "candidate knowledge drafting",
+    "human-gated promotion",
+    "knowledge governance profiles",
+    "semantic regression tests"
+  ],
+  "excludedRegressions": [
+    "browser-local project authority",
+    "static ungoverned corpus grounding",
+    "AI-draft calibration promoted to production",
+    "preview-only provider configuration",
+    "stale checksums and release identity",
+    "API-only production deployment"
+  ],
+  "verification": {
+    "typecheck": "passed",
+    "productionBuild": "passed",
+    "automatedTests": {
+      "engine": 83,
+      "artifacts": 2,
+      "api": 78,
+      "total": 163
+    },
+    "intelligenceGate": "8/8",
+    "integratedJourneyGate": "13/13",
+    "knowledgeProductionGate": "328/200",
+    "reconciliationGate": "16/16",
+    "securityScan": "passed",
+    "architectureGate": "passed",
+    "e2eSmoke": "passed",
+    "npmAuditHigh": "0 vulnerabilities",
+    "legacyRegression": {
+      "sprint7_9": "10/10",
+      "sprint8_0": "12/12",
+      "sprint8_0_1": "8/8",
+      "sprint8_0_2": "13/13"
+    }
+  },
+  "externalAcceptanceBoundary": [
+    "live LLM provider credentials",
+    "live GitHub App refresh",
+    "enterprise PostgreSQL/pgvector",
+    "S3/MinIO",
+    "writable external CI repository",
+    "runtime telemetry",
+    "enterprise signing trust store"
+  ],
+  "generatedAt": "2026-07-02T23:15:00Z"
+}

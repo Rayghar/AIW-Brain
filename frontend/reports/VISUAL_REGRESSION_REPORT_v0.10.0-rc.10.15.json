@@ -1,0 +1,36 @@
+{
+  "release": "0.10.0-rc.10.15",
+  "sprint": "8.9.3",
+  "generatedAt": "2026-07-04T21:04:08.532Z",
+  "contracts": [
+    {
+      "id": "app-navigation-shell",
+      "selector": ".app-shell .app-nav .topbar .workspace-layout .workspace-content",
+      "fingerprint": "8e924e751a0ab2cd20ac21a364a3fd5b2d6b2968f796ca909c31763ec8c1936b"
+    },
+    {
+      "id": "review-studio-layout",
+      "selector": ".review-studio-page .review-scorecard-grid .review-studio-layout .review-output-grid",
+      "fingerprint": "c75099a00eeceeb2435dea95ea398df4a3cb022d782f1d46d4349c3ac97fce11"
+    },
+    {
+      "id": "admin-control-plane-layout",
+      "selector": ".admin-control-plane .admin-tabs .admin-overview-grid .admin-table-card",
+      "fingerprint": "b475726143432b3d3899a5380b53e54900ae6d27e9c7167f7752075c23cb34f5"
+    },
+    {
+      "id": "pilot-readiness-visual-model",
+      "selector": ".pilot-evaluation-page .pilot-visual-canvas .portfolio-summary-grid .runtime-history",
+      "fingerprint": "5c75dfd00d9f2862f20433d8d127c1a204f89062fba4fb5e08d3ead3eebb5d0d"
+    },
+    {
+      "id": "focus-and-skip-link",
+      "selector": ".skip-link :focus-visible #aiw-main",
+      "fingerprint": "129b2069be15e37daab743ba8272c42aaff292829585af7057f263598191a090"
+    }
+  ],
+  "summary": {
+    "total": 5,
+    "passed": 5
+  }
+}

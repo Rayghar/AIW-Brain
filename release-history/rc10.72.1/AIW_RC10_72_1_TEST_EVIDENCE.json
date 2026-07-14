@@ -1,0 +1,86 @@
+{
+  "release": "0.10.0-rc.10.72.1",
+  "generatedAt": "2026-07-13T16:49:44Z",
+  "builds": {
+    "backend": "passed",
+    "frontendPackages": "passed",
+    "frontendProductionBundle": "passed"
+  },
+  "unitTests": {
+    "smartCanvasAndLifecycle": {
+      "passed": 12,
+      "failed": 0
+    }
+  },
+  "gates": {
+    "rc10_72_1": {
+      "passed": 36,
+      "failed": 0
+    },
+    "brainAuthority": {
+      "passed": 39,
+      "failed": 0
+    },
+    "rc10_72": {
+      "passed": 34,
+      "failed": 0
+    },
+    "frontendInternalDependencies": "passed",
+    "backendInternalDependencies": "passed",
+    "frontendReleaseIntegrity": "passed",
+    "backendReleaseIntegrity": "passed"
+  },
+  "backendRegression": {
+    "passed": 30,
+    "failed": 0
+  },
+  "browser": {
+    "focusedRc10_72_1": {
+      "desktop": 1,
+      "laptop": 1,
+      "passed": 2,
+      "failed": 0
+    },
+    "rc10_70_1IntegratedFlow": {
+      "desktop": 1,
+      "laptop": 1,
+      "passed": 2,
+      "failed": 0
+    },
+    "architectureGenesis": {
+      "desktop": 1,
+      "laptop": 1,
+      "passed": 2,
+      "failed": 0,
+      "execution": "per viewport due aggregate harness non-termination"
+    },
+    "brainAuthority": {
+      "desktop": 1,
+      "laptop": 1,
+      "passed": 2,
+      "failed": 0,
+      "execution": "per viewport due aggregate harness non-termination"
+    },
+    "livingCanvasAndC4Desktop": {
+      "passed": 4,
+      "failed": 0
+    },
+    "inheritedLaptopCanvas": {
+      "status": "not-completed",
+      "reason": "rc10.66/rc10.67 laptop files did not terminate under this environment; new focused laptop acceptance passed"
+    }
+  },
+  "layoutAcceptance": {
+    "horizontalOverflowPx": 0,
+    "hoverGeometryMovementPx": 0,
+    "railWorkspaceGapPx": 0,
+    "leftAlignedNavigation": true,
+    "undoPassed": true,
+    "viewbookRoutingPassed": true
+  },
+  "security": {
+    "frontendProductionVulnerabilities": 0,
+    "backendProductionVulnerabilities": 0
+  },
+  "productionAccepted": false
+}

@@ -1,0 +1,34 @@
+{
+  "version": "0.10.0-rc.10.17",
+  "tiers": [
+    {
+      "id": "essential",
+      "label": "Essential",
+      "promise": "Governed architecture judgment that works offline.",
+      "included": ["deterministic-kernel", "pinned-knowledge-release", "guided-journey", "review-studio", "sdd-handoff-export", "local-project-storage"],
+      "excludedByDefault": ["hosted-llm", "live-repository-ingestion", "tenant-admin", "release-promotion"]
+    },
+    {
+      "id": "professional",
+      "label": "Professional",
+      "promise": "The same governed judgment with language assistance.",
+      "included": ["essential", "brief-extraction", "stage-advisor", "explain-ranking", "adr-narrative-drafting"],
+      "excludedByDefault": ["enterprise-release-governance", "multi-route-model-policy", "tenant-wide-audit"]
+    },
+    {
+      "id": "enterprise",
+      "label": "Enterprise",
+      "promise": "Architecture intelligence the organization can govern, audit and connect to evidence.",
+      "included": ["professional", "admin-control-plane", "knowledge-ops", "release-manager", "repo-conformance", "rbac-oidc", "audit-export", "ci-fitness-loop"],
+      "excludedByDefault": ["air-gapped-zero-egress"]
+    },
+    {
+      "id": "sovereign",
+      "label": "Sovereign",
+      "promise": "Enterprise intelligence with no data leaving the environment.",
+      "included": ["enterprise", "zero-egress", "local-llm-route", "local-embeddings", "air-gapped-knowledge-pack", "customer-controlled-keys"],
+      "excludedByDefault": ["hosted-telemetry", "hosted-model-routes"]
+    }
+  ],
+  "nonForkingRule": "All tiers share the same deterministic kernel, knowledge-release format, evidence model and approval semantics."
+}

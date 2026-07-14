@@ -1,0 +1,24 @@
+{
+  "name": "@aiw/worker",
+  "version": "0.10.0-rc.10.73.6",
+  "private": true,
+  "type": "module",
+  "main": "dist/worker.js",
+  "types": "dist/worker.d.ts",
+  "scripts": {
+    "build": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json",
+    "typecheck": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+    "start": "node scripts/start-worker.mjs",
+    "start:compiled": "node dist/worker.js",
+    "dev": "tsx src/worker.ts"
+  },
+  "dependencies": {
+    "@aiw/domain": "0.10.0-rc.10.73.6",
+    "@aiw/knowledge": "0.10.0-rc.10.73.6",
+    "@aiw/integrations": "0.10.0-rc.10.73.6",
+    "pg": "8.16.3"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}

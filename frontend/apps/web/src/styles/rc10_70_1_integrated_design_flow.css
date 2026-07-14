@@ -1,0 +1,200 @@
+/* rc.10.70.1 — one coherent design flow: stable role rail, visible co-author, actual outputs and usable Architecture Brain. */
+
+/* Navigation implementation retired in rc.10.72.1; see rc10_72_1_signature_canvas_navigation.css. */
+
+/* Discoverable Stage Co-Author drawer. */
+.stage-co-author-drawer-layer { position: fixed; inset: 0; z-index: 220; pointer-events: none; }
+.stage-co-author-drawer__backdrop { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 0; background: rgba(1, 8, 13, .68); backdrop-filter: blur(2px); pointer-events: auto; }
+.stage-co-author-drawer { position: absolute; inset: 0 0 0 auto; display: grid; grid-template-rows: auto minmax(0, 1fr); width: min(780px, 92vw); min-width: 0; border-left: 1px solid rgba(128, 174, 190, .22); background: linear-gradient(180deg, #091823 0%, #06111a 100%); box-shadow: -30px 0 70px rgba(0, 0, 0, .42); pointer-events: auto; }
+.stage-co-author-drawer__header { display: flex; justify-content: space-between; gap: 16px; align-items: center; min-height: 66px; padding: 12px 16px; border-bottom: 1px solid rgba(128, 174, 190, .16); }
+.stage-co-author-drawer__header div { min-width: 0; }
+.stage-co-author-drawer__header span, .stage-co-author-drawer__header strong { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stage-co-author-drawer__header span { color: var(--aiw-teal, #2dd4bf); font-size: .62rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; }
+.stage-co-author-drawer__header strong { margin-top: 3px; color: var(--aiw-text, #e6f0f5); font-size: .9rem; }
+.stage-co-author-drawer__header button { display: grid; place-items: center; width: 34px; height: 34px; padding: 0; border: 1px solid rgba(128, 174, 190, .17); border-radius: 10px; background: rgba(111, 137, 151, .08); color: #b4c5cd; }
+.stage-co-author-drawer__body { min-width: 0; min-height: 0; overflow: auto; padding: 16px; }
+.stage-co-author--workspace { margin: 0; }
+.guided-next-action__actions, .canvas-os-task-strip__actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.guided-next-action__actions button, .canvas-os-task-strip__actions button { display: inline-flex; gap: 7px; align-items: center; justify-content: center; }
+
+/* Outputs are the actual stage model first, then rationale and evidence gates. */
+.guided-output-view { min-width: 0; }
+.guided-output-grid--summary { margin-bottom: 14px; }
+.guided-actual-output, .guided-design-rationale { min-width: 0; margin: 14px 0; padding: 15px; border: 1px solid rgba(128, 174, 190, .18); border-radius: 14px; background: linear-gradient(180deg, rgba(12, 29, 40, .88), rgba(7, 20, 29, .9)); }
+.guided-actual-output__heading { display: flex; justify-content: space-between; gap: 14px; align-items: end; padding-bottom: 11px; border-bottom: 1px solid rgba(128, 174, 190, .14); }
+.guided-actual-output__heading h3, .guided-design-rationale__intro h3 { margin: 3px 0 0; color: var(--aiw-text, #e6f0f5); }
+.guided-actual-output__heading > span { color: var(--aiw-muted, #8da4af); font-size: .68rem; }
+.guided-actual-output__statement { margin-top: 13px; padding: 13px; border-left: 3px solid var(--aiw-teal, #2dd4bf); border-radius: 0 10px 10px 0; background: rgba(45, 212, 191, .055); }
+.guided-actual-output__statement span { color: #70d8ca; font-size: .62rem; font-weight: 760; letter-spacing: .06em; text-transform: uppercase; }
+.guided-actual-output__statement p { margin: 6px 0 0; color: #c7d8df; line-height: 1.55; }
+.guided-actual-output__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 11px; }
+.guided-actual-output__columns--compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.guided-actual-output__block { min-width: 0; max-height: 260px; overflow: auto; padding: 11px; border: 1px solid rgba(128, 174, 190, .15); border-radius: 10px; background: rgba(7, 20, 29, .58); }
+.guided-actual-output__block h4 { margin: 0 0 7px; color: #dbe8ed; font-size: .76rem; }
+.guided-actual-output__block ul { margin: 0; padding-left: 17px; color: #9fb3bd; font-size: .72rem; line-height: 1.5; }
+.guided-actual-output__empty { margin: 0; color: #758e9a; font-size: .72rem; font-style: italic; }
+.guided-actual-output__priority-list, .guided-actual-output__scenario-list, .guided-actual-output__catalog { margin-top: 12px; }
+.guided-actual-output__priority-list > h4, .guided-actual-output__scenario-list > h4 { margin: 0 0 8px; }
+.guided-actual-output__priority-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 9px; }
+.guided-actual-output__priority-list > h4 { grid-column: 1 / -1; }
+.guided-actual-output__priority-list article { padding: 10px; border: 1px solid rgba(128, 174, 190, .15); border-radius: 10px; background: rgba(7, 20, 29, .62); }
+.guided-actual-output__priority-list article div { display: flex; justify-content: space-between; gap: 10px; }
+.guided-actual-output__priority-list article span { color: var(--aiw-teal, #2dd4bf); font-size: .68rem; font-weight: 760; }
+.guided-actual-output__priority-list article p { margin: 6px 0 0; color: #91a8b3; font-size: .7rem; line-height: 1.45; }
+.guided-actual-output__scenario-list { display: grid; gap: 9px; }
+.guided-actual-output__scenario-list article { padding: 11px; border: 1px solid rgba(128, 174, 190, .15); border-radius: 10px; background: rgba(7, 20, 29, .62); }
+.guided-actual-output__scenario-list article header { display: flex; justify-content: space-between; gap: 10px; }
+.guided-actual-output__scenario-list article header span { color: #85a0ac; font-size: .64rem; }
+.guided-actual-output__scenario-list dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 9px 0 0; }
+.guided-actual-output__scenario-list dl div { min-width: 0; padding: 8px; border-radius: 8px; background: rgba(111, 137, 151, .06); }
+.guided-actual-output__scenario-list dt { color: #6f8995; font-size: .59rem; font-weight: 760; text-transform: uppercase; }
+.guided-actual-output__scenario-list dd { margin: 4px 0 0; color: #b9cbd3; font-size: .69rem; line-height: 1.4; overflow-wrap: anywhere; }
+.guided-actual-output__catalog > header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
+.guided-actual-output__catalog > header div { display: flex; align-items: center; gap: 8px; }
+.guided-actual-output__catalog > header h4 { margin: 0; }
+.guided-actual-output__catalog > header > span { min-width: 28px; padding: 4px 8px; border-radius: 999px; background: rgba(45, 212, 191, .09); color: #72dacb; text-align: center; font-size: .65rem; }
+.guided-actual-output__table-wrap { max-height: 420px; overflow: auto; border: 1px solid rgba(128, 174, 190, .13); border-radius: 10px; }
+.guided-actual-output__table-wrap table { width: 100%; min-width: 720px; border-collapse: collapse; background: rgba(5, 16, 24, .54); }
+.guided-actual-output__table-wrap th { position: sticky; top: 0; z-index: 1; padding: 9px; background: #0b202d; color: #7e98a4; font-size: .6rem; letter-spacing: .05em; text-align: left; text-transform: uppercase; }
+.guided-actual-output__table-wrap td { padding: 9px; border-top: 1px solid rgba(128, 174, 190, .1); color: #a9bdc6; font-size: .68rem; vertical-align: top; }
+.guided-actual-output__table-wrap td strong, .guided-actual-output__table-wrap td small { display: block; }
+.guided-actual-output__table-wrap td strong { color: #d6e4e9; }
+.guided-actual-output__table-wrap td small { margin-top: 2px; color: #637e8b; }
+.guided-actual-output__review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 9px; max-height: 420px; overflow: auto; }
+.guided-actual-output__review-grid article { padding: 11px; border: 1px solid rgba(128, 174, 190, .15); border-radius: 10px; background: rgba(7, 20, 29, .62); }
+.guided-actual-output__review-grid article header { display: flex; justify-content: space-between; gap: 10px; }
+.guided-actual-output__review-grid article header span { font-size: .6rem; font-weight: 760; }
+.guided-actual-output__review-grid article p { margin: 7px 0; color: #a6bac4; font-size: .72rem; }
+.guided-actual-output__review-grid article small { color: #7e98a4; }
+.guided-actual-output__review-grid .severity-hard { border-color: rgba(248, 113, 113, .32); }
+.guided-actual-output__review-grid .severity-significant { border-color: rgba(217, 165, 82, .32); }
+.guided-actual-output__baseline { display: flex; gap: 11px; align-items: flex-start; margin-top: 12px; padding: 13px; border: 1px solid rgba(128, 174, 190, .17); border-radius: 10px; }
+.guided-actual-output__baseline.is-approved { border-color: rgba(45, 212, 191, .25); background: rgba(45, 212, 191, .06); color: #b9ebe4; }
+.guided-actual-output__baseline.is-blocked { border-color: rgba(217, 165, 82, .28); background: rgba(217, 165, 82, .07); color: #edcf9d; }
+.guided-actual-output__baseline p { margin: 4px 0 0; color: inherit; opacity: .78; font-size: .73rem; }
+.guided-design-rationale__intro { margin-bottom: 10px; }
+.guided-design-rationale__intro p { margin: 5px 0 0; color: var(--aiw-muted, #94a9b5); font-size: .75rem; }
+
+/* Architecture Brain: generous width, clear hierarchy, one current answer and a separate history. */
+.coarchitect-panel.sol-brain-panel,
+.coarchitect-panel.sol-brain-panel.is-open {
+  position: fixed !important;
+  inset: auto 18px 74px auto !important;
+  z-index: 205 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: none;
+  transform: none !important;
+}
+.sol-brain-launcher { display: grid !important; place-items: center; width: 48px !important; height: 48px !important; padding: 0 !important; border: 1px solid rgba(45, 212, 191, .3) !important; border-radius: 15px !important; background: linear-gradient(145deg, #103347, #09202e) !important; color: #75e5d6 !important; box-shadow: 0 14px 34px rgba(0, 0, 0, .35) !important; pointer-events: auto; }
+.sol-brain-shell { display: grid; grid-template-rows: auto auto auto minmax(0, 1fr) auto auto; width: min(520px, calc(100vw - 36px)); height: min(720px, calc(100vh - 112px)); min-width: 420px; min-height: 480px; overflow: hidden; border: 1px solid rgba(128, 174, 190, .24); border-radius: 17px; background: linear-gradient(180deg, #0a1b27, #06121b); box-shadow: 0 28px 80px rgba(0, 0, 0, .48); pointer-events: auto; }
+.sol-brain-header { display: flex; justify-content: space-between; gap: 12px; align-items: center; min-width: 0; padding: 13px 14px; border-bottom: 1px solid rgba(128, 174, 190, .15); }
+.sol-brain-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.sol-brain-title > span { display: grid; place-items: center; flex: 0 0 35px; width: 35px; height: 35px; border-radius: 11px; background: rgba(45, 212, 191, .12); color: #69ddce; }
+.sol-brain-title div { min-width: 0; }
+.sol-brain-title strong, .sol-brain-title small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sol-brain-title strong { color: #e0edf2; font-size: .86rem; }
+.sol-brain-title small { margin-top: 2px; color: #78919d; font-size: .63rem; }
+.sol-brain-close { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; padding: 0; border: 1px solid rgba(128, 174, 190, .16); border-radius: 9px; background: rgba(111, 137, 151, .07); color: #a9bbc4; }
+.sol-brain-context { display: flex; gap: 7px; align-items: center; min-width: 0; padding: 8px 14px; border-bottom: 1px solid rgba(128, 174, 190, .1); color: #8ca4af; font-size: .68rem; }
+.sol-brain-context span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sol-brain-tabs { display: flex; gap: 4px; padding: 7px 10px; border-bottom: 1px solid rgba(128, 174, 190, .12); }
+.sol-brain-tabs button { display: inline-flex; gap: 6px; align-items: center; min-height: 32px; padding: 6px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: #8098a4; font-size: .68rem; }
+.sol-brain-tabs button.is-active { border-color: rgba(45, 212, 191, .2); background: rgba(45, 212, 191, .08); color: #75dfd1; }
+.sol-brain-tabs button span { padding: 1px 5px; border-radius: 999px; background: rgba(111, 137, 151, .11); font-size: .57rem; }
+.sol-brain-body { min-width: 0; min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 12px; }
+.sol-brain-prompt-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-bottom: 10px; }
+.sol-brain-prompt-grid button { min-width: 0; min-height: 48px; padding: 9px; border: 1px solid rgba(128, 174, 190, .14); border-radius: 9px; background: rgba(111, 137, 151, .055); color: #afc1c9; font-size: .67rem; line-height: 1.35; text-align: left; }
+.sol-brain-prompt-grid button:hover { border-color: rgba(45, 212, 191, .22); background: rgba(45, 212, 191, .06); color: #d6e8ed; }
+.sol-brain-response { min-width: 0; padding: 12px; border: 1px solid rgba(45, 212, 191, .17); border-radius: 11px; background: rgba(45, 212, 191, .045); }
+.sol-brain-response > header { display: flex; gap: 7px; align-items: center; color: #73dfd1; font-size: .7rem; }
+.sol-brain-response > p { margin: 9px 0 0; color: #c0d1d8; font-size: .74rem; line-height: 1.58; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sol-brain-loading, .sol-brain-empty { margin-top: 9px; color: #88a0ab; font-size: .72rem; line-height: 1.5; }
+.sol-brain-loading { display: flex; gap: 8px; align-items: center; }
+.sol-brain-actions { display: grid !important; gap: 7px !important; margin-top: 10px !important; }
+.sol-brain-actions > header { color: #839aa5; font-size: .65rem; }
+.sol-brain-actions button { display: flex !important; justify-content: space-between !important; gap: 10px !important; align-items: center !important; width: 100% !important; min-width: 0 !important; padding: 9px 10px !important; border: 1px solid rgba(128, 174, 190, .14) !important; border-radius: 9px !important; background: rgba(111, 137, 151, .055) !important; text-align: left !important; }
+.sol-brain-actions button span { min-width: 0; }
+.sol-brain-actions button strong, .sol-brain-actions button small { display: block; }
+.sol-brain-actions button strong { color: #d2e1e6; font-size: .7rem; }
+.sol-brain-actions button small { margin-top: 3px; color: #849da8; font-size: .63rem; line-height: 1.35; }
+.sol-brain-history { display: grid; gap: 8px; }
+.sol-brain-history .coarchitect-message { min-width: 0; padding: 10px; border: 1px solid rgba(128, 174, 190, .13); border-radius: 10px; background: rgba(111, 137, 151, .05); }
+.sol-brain-history .coarchitect-message.assistant { border-color: rgba(45, 212, 191, .15); background: rgba(45, 212, 191, .04); }
+.sol-brain-history .coarchitect-message strong { color: #d1e1e7; font-size: .66rem; }
+.sol-brain-history .coarchitect-message p { margin: 5px 0 0; color: #9db1bb; font-size: .7rem; line-height: 1.48; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sol-brain-error { margin: 0 12px 8px !important; }
+.sol-brain-composer { padding: 10px 12px 11px; border-top: 1px solid rgba(128, 174, 190, .14); background: rgba(5, 15, 23, .88); }
+.sol-brain-composer .coarchitect-input { display: grid !important; grid-template-columns: minmax(0, 1fr) 38px !important; gap: 7px !important; align-items: end !important; min-width: 0 !important; }
+.sol-brain-composer textarea { width: 100% !important; min-width: 0 !important; max-height: 110px !important; resize: vertical !important; padding: 9px 10px !important; border: 1px solid rgba(128, 174, 190, .2) !important; border-radius: 10px !important; background: rgba(3, 13, 20, .72) !important; color: #d4e3e8 !important; font-size: .72rem !important; line-height: 1.4 !important; }
+.sol-brain-composer .coarchitect-input button { display: grid !important; place-items: center !important; width: 38px !important; height: 38px !important; padding: 0 !important; border: 1px solid rgba(45, 212, 191, .26) !important; border-radius: 10px !important; background: rgba(45, 212, 191, .12) !important; color: #72dfd0 !important; }
+.sol-brain-composer .coarchitect-boundary { display: block; margin-top: 7px; color: #6f8793; font-size: .59rem; line-height: 1.35; }
+.coarchitect-citations { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px; }
+.coarchitect-citations span { max-width: 100%; padding: 3px 6px; border-radius: 999px; background: rgba(111, 137, 151, .09); color: #839ca7; font-size: .57rem; overflow: hidden; text-overflow: ellipsis; }
+
+@media (max-width: 900px) {
+  .guided-actual-output__columns, .guided-actual-output__columns--compact { grid-template-columns: 1fr; }
+  .guided-actual-output__scenario-list dl { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .guided-next-action__actions { width: 100%; }
+}
+
+@media (max-width: 760px) {
+  .stage-co-author-drawer { width: 100vw; }
+  .sol-brain-shell { width: calc(100vw - 20px); min-width: 0; height: calc(100vh - 86px); }
+  .coarchitect-panel.sol-brain-panel, .coarchitect-panel.sol-brain-panel.is-open { inset: auto 10px 66px auto !important; }
+  .sol-brain-prompt-grid { grid-template-columns: 1fr; }
+  .guided-actual-output__scenario-list dl { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-co-author-drawer *, .sol-brain-panel * { scroll-behavior: auto !important; transition: none !important; animation-duration: .01ms !important; }
+}
+
+/* Legacy navigation cascade locks retired in rc.10.72.1. */
+.sol-brain-prompt-grid button {
+  white-space: normal !important;
+  overflow: hidden !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.35 !important;
+}
+.sol-brain-stage-snapshot { display: grid; gap: 10px; margin-top: 9px; }
+.sol-brain-stage-snapshot > strong { color: #d7e6eb; font-size: .72rem; line-height: 1.45; }
+.sol-brain-stage-snapshot dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 0; }
+.sol-brain-stage-snapshot dl div { min-width: 0; padding: 8px; border: 1px solid rgba(128, 174, 190, .12); border-radius: 8px; background: rgba(4, 17, 25, .48); }
+.sol-brain-stage-snapshot dt { color: #76909c; font-size: .56rem; line-height: 1.25; text-transform: uppercase; }
+.sol-brain-stage-snapshot dd { margin: 4px 0 0; color: #72dfd0; font-size: .9rem; font-weight: 760; }
+.sol-brain-stage-snapshot p { margin: 0; color: #8fa7b2; font-size: .68rem; line-height: 1.5; }
+@media (max-width: 760px) { .sol-brain-stage-snapshot dl { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* rc.10.71.1 — Architecture Brain receipt is deliberately compact and subordinate
+   to the answer. It exposes authority without turning the primary flow into an
+   administrative control plane. */
+.sol-brain-receipt { margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(128, 174, 190, .12); }
+.sol-brain-receipt summary { cursor: pointer; color: #82a0aa; font-size: .63rem; font-weight: 700; }
+.sol-brain-receipt dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin: 9px 0 0; }
+.sol-brain-receipt dl div { min-width: 0; padding: 7px 8px; border: 1px solid rgba(128, 174, 190, .1); border-radius: 8px; background: rgba(4, 17, 25, .42); }
+.sol-brain-receipt dt { color: #728b96; font-size: .53rem; text-transform: uppercase; }
+.sol-brain-receipt dd { margin: 3px 0 0; color: #b8ccd3; font-size: .62rem; overflow-wrap: anywhere; }
+.sol-brain-receipt > p { margin: 8px 0 0; color: #6f8994; font-size: .58rem; line-height: 1.4; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .sol-brain-receipt dl { grid-template-columns: 1fr; } }
+
+/* rc.10.71.1 — synthesis consumes the same Architecture Brain authority chain. */
+.synthesis-authority-error { display:flex; align-items:flex-start; gap:9px; margin:10px 0; padding:10px 12px; border:1px solid rgba(251,146,60,.28); border-radius:10px; background:rgba(124,45,18,.16); color:#fdba74; font-size:.72rem; line-height:1.45; }
+.synthesis-authority-error svg { flex:0 0 auto; margin-top:1px; }
+.synthesis-brain-receipt { margin:10px 0; padding:9px 11px; border:1px solid rgba(45,212,191,.17); border-radius:10px; background:rgba(45,212,191,.04); }
+.synthesis-brain-receipt summary { cursor:pointer; color:#77ded1; font-size:.68rem; font-weight:750; }
+.synthesis-brain-receipt > div { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:7px; margin-top:9px; }
+.synthesis-brain-receipt span { min-width:0; padding:7px 8px; border:1px solid rgba(128,174,190,.1); border-radius:8px; color:#78919d; font-size:.57rem; }
+.synthesis-brain-receipt strong { display:block; margin-top:3px; color:#c2d5db; font-size:.62rem; overflow-wrap:anywhere; }
+.synthesis-brain-receipt p { margin:8px 0 0; color:#6e8792; font-size:.58rem; }
+@media (max-width:900px) { .synthesis-brain-receipt > div { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:560px) { .synthesis-brain-receipt > div { grid-template-columns:1fr; } }

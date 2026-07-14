@@ -1,0 +1,345 @@
+{
+  "release": "0.10.0-rc.10.73.6",
+  "releaseLine": "rc.10.73.6",
+  "knowledgeRelease": "AKR-0.10.73.5",
+  "requirementsKnowledgeRelease": "CAMBRIDGE-SA-1.0",
+  "patternDnaRelease": "PDNA-2.1",
+  "kernelVersion": "AIW-KERNEL-2.0",
+  "productRecovery": {
+    "experience": "one-sol-draft-design-ask",
+    "stageGrammar": "work-output-validate-stage-plan",
+    "navigation": "single-left-aligned-explicit-state-owner",
+    "review": "summary-findings-decisions-evidence-governance",
+    "legacyUiContracts": "retired-with-replacement-evidence"
+  },
+  "capabilities": [
+    {
+      "id": "approved-knowledge-claim-grounding",
+      "state": "verified-actual-approved-record-and-atomic-claim-statements-with-release-trust-and-source-fingerprint"
+    },
+    {
+      "id": "cognitive-json-schema-post-validation",
+      "state": "verified-mandatory-runtime-validation-beyond-provider-structured-output"
+    },
+    {
+      "id": "insufficient-grounding-contract",
+      "state": "verified-explicit-schema-compatible-fallback-instead-of-invention"
+    },
+    {
+      "id": "cognitive-citation-allowlist",
+      "state": "verified-only-supplied-approved-or-project-reference-identifiers-accepted"
+    },
+    {
+      "id": "deterministic-evidence-entailment",
+      "state": "verified-conservative-lexical-support-and-unsupported-specificity-guards-semantic-nli-open"
+    },
+    {
+      "id": "provider-bound-data-redaction",
+      "state": "verified-secret-pii-and-financial-identifier-redaction-with-non-sensitive-receipt"
+    },
+    {
+      "id": "co-architect-grounding",
+      "state": "verified-claim-bearing-approved-knowledge-plus-project-evidence"
+    },
+    {
+      "id": "stage-advisor-grounding",
+      "state": "verified-claim-bearing-context-with-record-level-citations"
+    },
+    {
+      "id": "architecture-audit-grounding",
+      "state": "verified-approved-claim-context-and-citation-entailment"
+    },
+    {
+      "id": "durable-brain-transaction-ledger",
+      "state": "verified-auto-recorded-versioned-and-hash-chained"
+    },
+    {
+      "id": "independent-brain-review-authority",
+      "state": "verified-assignment-disposition-rationale-and-separation-of-duties"
+    },
+    {
+      "id": "architecture-rule-waiver",
+      "state": "verified-first-class-expiring-revocable-and-separate-from-operational-drift-waiver"
+    },
+    {
+      "id": "brain-transaction-persistence-adapters",
+      "state": "implemented-memory-postgresql-rls-and-mongodb-transactional-live-managed-acceptance-open"
+    },
+    {
+      "id": "thin-brain-orchestrator",
+      "state": "verified-coordination-manifest-receipt-and-human-governance-only"
+    },
+    {
+      "id": "architecture-brain-runtime-boundary",
+      "state": "verified-deterministic-judgement-and-bounded-cognitive-execution"
+    },
+    {
+      "id": "legacy-intelligence-route-retirement",
+      "state": "verified-deprecated-aliases-delegate-to-one-brain-runtime"
+    },
+    {
+      "id": "review-studio-authority",
+      "state": "verified-review-generation-routed-through-the-brain"
+    },
+    {
+      "id": "brain-authority-audit-v1-4",
+      "state": "verified-all-architecture-runtime-paths-consolidated-no-migration-required-paths"
+    },
+    {
+      "id": "canonical-architecture-design-graph",
+      "state": "verified-deterministic-record-relationship-projection-fingerprint-and-integrity"
+    },
+    {
+      "id": "canonical-graph-state-authority",
+      "state": "verified-graph-primary-requirements-evidence-interfaces-decisions-findings-and-risk-bearing-requirements"
+    },
+    {
+      "id": "canonical-graph-state-migration",
+      "state": "verified-explicit-human-approved-revision-and-fingerprint-pinned-migration"
+    },
+    {
+      "id": "graph-native-state-command",
+      "state": "verified-schema-validated-stale-resistant-audited-and-receipted"
+    },
+    {
+      "id": "compatibility-state-adapter",
+      "state": "verified-legacy-canonical-field-writes-translated-to-graph-and-counted"
+    },
+    {
+      "id": "canonical-value-reconstruction",
+      "state": "verified-requirements-evidence-interfaces-decisions-and-findings-reconstructed-from-graph-records"
+    },
+    {
+      "id": "design-graph-human-materialization",
+      "state": "verified-fresh-preview-revision-check-and-explicit-architect-authorised-commit"
+    },
+    {
+      "id": "design-graph-persistence-boundary",
+      "state": "verified-memory-postgresql-mongodb-project-and-snapshot-synchronisation"
+    },
+    {
+      "id": "brain-graph-pinning",
+      "state": "verified-manifest-and-proposal-receipt-pin-graph-revision-fingerprint-mode-integrity-and-state-authority"
+    },
+    {
+      "id": "architecture-brain-authority",
+      "state": "verified-one-server-orchestrator-one-governed-receipt"
+    },
+    {
+      "id": "exact-lifecycle-semantics",
+      "state": "verified-requirements-quality-system-context-and-design-stages-preserved"
+    },
+    {
+      "id": "stage-specific-sol-context",
+      "state": "verified-compact-evidence-package-project-stage-scope-revision"
+    },
+    {
+      "id": "unified-sol-experience",
+      "state": "verified-draft-design-ask-one-visible-entry-point"
+    },
+    {
+      "id": "browser-intelligence-authority",
+      "state": "verified-projection-only-no-competing-local-architecture-generator"
+    },
+    {
+      "id": "requirements-genesis",
+      "state": "verified-idea-to-requirements-journeys-system-context-governed-acceptance"
+    },
+    {
+      "id": "signature-canvas-layout",
+      "state": "verified-smart-tree-radial-grid-and-single-step-undo"
+    },
+    {
+      "id": "canvas-decluttering",
+      "state": "implemented-stage-scoped-projection-compound-containment-and-hidden-spatial-containment-edges"
+    },
+    {
+      "id": "review-workbench-v2",
+      "state": "verified-queue-detail-task-lenses"
+    },
+    {
+      "id": "quality-authority-gate",
+      "state": "verified-no-authoritative-style-before-priorities-and-measurable-scenarios"
+    },
+    {
+      "id": "viewbook-routing",
+      "state": "verified-distinct-interactive-viewbook-workspace"
+    },
+    {
+      "id": "architecture-context-graph",
+      "state": "retained-31-node-kinds-28-edge-kinds"
+    },
+    {
+      "id": "requirements-evidence-matrix",
+      "state": "396-of-396-catalogued-360-evidence-reconciliation-required-36-external-blocked"
+    },
+    {
+      "id": "cambridge-promotion",
+      "state": "retained-promoted-118-atomic-claims-in-akr-0-10-72-0"
+    },
+    {
+      "id": "knowledge-release-signing",
+      "state": "retained-offline-signature-and-checksums-verified"
+    },
+    {
+      "id": "agency-banking-golden-benchmark",
+      "state": "retained-controlled-internal-benchmark-completed"
+    },
+    {
+      "id": "sol-response-quality-gate",
+      "state": "verified-eight-dimensions-critical-claim-and-stage-guards"
+    },
+    {
+      "id": "sol-context-receipt",
+      "state": "verified-exact-stage-scope-revision-included-and-missing-records"
+    },
+    {
+      "id": "sol-reasoning-receipt",
+      "state": "verified-deterministic-knowledge-llm-contribution-separated"
+    },
+    {
+      "id": "sol-lineage-receipt",
+      "state": "verified-requirement-journey-model-decision-finding-paths"
+    },
+    {
+      "id": "sol-nine-stage-calibration",
+      "state": "verified-9-of-9-deterministic-average-91-6"
+    },
+    {
+      "id": "sol-live-provider-calibration",
+      "state": "blocked-no-configured-provider-credential"
+    },
+    {
+      "id": "sol-external-expert-validation",
+      "state": "blocked-protocol-and-blinded-pack-prepared"
+    }
+  ],
+  "openBoundaries": [
+    "not-all-cognitive-routes-yet-use-claim-bearing-approved-knowledge-grounding",
+    "deterministic-entailment-is-conservative-lexical-support-not-semantic-nli",
+    "provider-native-schema-support-varies-and-live-provider-acceptance-remains",
+    "redaction-does-not-replace-upstream-data-minimisation-or-enterprise-dlp",
+    "managed-postgresql-rls-and-mongodb-transactional-brain-ledger-acceptance-remains",
+    "project-compatibility-review-projection-and-durable-ledger-are-not-one-cross-repository-physical-transaction",
+    "legacy-project-review-fields-remain-a-compatibility-projection",
+    "synthesis-alternatives-and-other-specialist-state-stores-remain-to-consolidate",
+    "dedicated-browser-transaction-review-waiver-workflow-acceptance-remains",
+    "graph-primary-authority-currently-limited-to-requirements-evidence-interfaces-decisions-findings-and-risk-bearing-requirements",
+    "canvas-nodes-edges-quality-drivers-styles-patterns-stage-approvals-review-synthesis-reasoning-runs-and-sdd-projections-remain-to-migrate",
+    "compatibility-adapter-is-transitional-and-must-be-retired-after-feature-command-migration",
+    "orchestrator-receipt-and-run-coordination-remains-a-large-module-and-can-be-further-decomposed-without-reintroducing-domain-judgement",
+    "live-llm-provider-production-acceptance-remains",
+    "obstacle-aware-edge-routing-and-large-model-layout-acceptance-remain",
+    "full-accessibility-edge-firefox-webkit-and-200-percent-zoom-acceptance-remain",
+    "enterprise-kms-live-signature-requires-organization-owned-key-and-credentials",
+    "remote-github-checkin-requires-approved-protected-repository-and-credential",
+    "396-requirement-row-level-evidence-reconciliation-remains",
+    "managed-enterprise-infrastructure-and-controlled-enterprise-pilot-remain",
+    "external-human-blinded-panel-and-conventional-time-baseline-remain",
+    "product-shell-and-artifact-generation-bundle-splitting-remains",
+    "live-llm-provider-quality-comparison-remains",
+    "Immutable live GitHub refresh remains unexecuted for 30/30 approved repositories in this offline build environment.",
+    "Twenty approved repositories still require licence disposition before redistributed source-derived content or production authority.",
+    "Direct source-claim lineage covers only 0.3% of Pattern DNA records; editorial synthesis is explicitly non-scoring."
+  ],
+  "productionAccepted": false,
+  "solIntelligenceCalibration": {
+    "qualityEvaluator": "SOL-QUALITY-1.1-rc10.72.3",
+    "scenarioCount": 9,
+    "passedScenarios": 9,
+    "deterministicAverage": 91.6,
+    "stageAlignmentRate": 100,
+    "unsupportedClaimCount": 0,
+    "liveProviderAccepted": false,
+    "externalHumanExpertAccepted": false
+  },
+  "canonicalDesignGraph": {
+    "schemaVersion": "1.0",
+    "foundation": "implemented-and-verified",
+    "stateAuthorityMode": "graph-primary",
+    "canonicalStateKinds": [
+      "requirements",
+      "evidence",
+      "interfaces",
+      "decisions",
+      "findings",
+      "risks"
+    ],
+    "projectionModes": [
+      "legacy-project-projection",
+      "materialized-canonical"
+    ],
+    "persistenceBoundary": "memory-postgresql-mongodb-project-and-snapshot-writes-synchronised",
+    "brainReceiptPinning": "graph-revision-fingerprint-projection-mode-integrity-state-authority-canonical-kinds-and-last-write-path",
+    "materialization": "fresh-preview-plus-explicit-project-edit-authority",
+    "stateMigration": "explicit-revision-and-fingerprint-pinned-project-edit-authority",
+    "nativeStateCommand": "schema-validated-revision-and-fingerprint-pinned-audited",
+    "compatibilityAdapter": "legacy-state-write-translated-and-counted",
+    "fullGraphPrimaryMigration": "not-complete"
+  },
+  "brainOrchestration": {
+    "orchestrator": "thin-coordination-and-governance-receipt-boundary",
+    "runtimeBoundary": "implemented",
+    "runtimeBoundaryVersion": "0.10.0-rc.10.73.6",
+    "architectureJudgementLocation": "ArchitectureBrainRuntime",
+    "legacyRouteAliases": "deprecated-and-delegated",
+    "reviewStudio": "brain-orchestrated",
+    "directArchitectureRuntimeRouteCalls": "none-detected-in-migrated-route-modules",
+    "parallelArchitectureRuntimeAuthority": "retired",
+    "parallelStateStores": "partially-consolidated-brain-proposal-review-and-waiver-ledger",
+    "humanApprovalBoundary": "retained"
+  },
+  "brainTransactions": {
+    "appendOnlyLedger": "implemented",
+    "automaticReceiptRecording": "implemented",
+    "hashChain": "sha256-implemented",
+    "optimisticConcurrency": "implemented",
+    "independentReview": "implemented",
+    "reviewRationale": "mandatory",
+    "architectureRuleWaiver": "first-class-and-separate-from-drift-waiver",
+    "postgresRlsAdapter": "implemented-not-live-accepted",
+    "mongoTransactionalAdapter": "implemented-not-live-accepted",
+    "liveManagedPersistenceAccepted": false,
+    "crossRepositoryProjectLedgerAtomicity": "not-complete"
+  },
+  "cognitiveBoundary": {
+    "doctrineVersion": "doctrine-1.1.0-rc10.73.4",
+    "approvedKnowledgeGrounding": "record-and-atomic-claim-bearing",
+    "schemaEnforcement": "provider-schema-plus-aiw-runtime-post-validation",
+    "insufficientGrounding": "explicit-contract",
+    "citationPolicy": "allowlist-plus-deterministic-entailment",
+    "entailmentDepth": "conservative-lexical-not-semantic-nli",
+    "providerDataProtection": "classification-aware-redaction-with-receipt",
+    "claimGroundedPaths": [
+      "co-architect",
+      "stage-advisor",
+      "architecture-audit"
+    ],
+    "allCognitivePathsClaimGrounded": false,
+    "liveProviderAccepted": false
+  },
+  "githubKnowledgeConversion": {
+    "state": "live-acquisition-plane-implemented-runtime-connectivity-blocked",
+    "approvedRepositoriesRegistered": 30,
+    "immutableLiveSnapshotsCompleted": 0,
+    "typedKnowledgeObjects": 1326,
+    "patternRecordsWithClaimLineage": 328,
+    "directSourceClaimCoveragePercent": 0.3,
+    "productionScoringEligibleRecords": 0,
+    "candidateAndDiscoveryInfluence": "blocked",
+    "licenceVerifiedRepositories": 10,
+    "licenceReviewOpenRepositories": 20,
+    "brainActivation": "descriptive, controlled-pilot reasoning and human-approved composition enabled; production scoring and conformance remain gated",
+    "liveAcquisitionRunner": "implemented-all-30-approved-by-default",
+    "githubApiVersion": "2026-03-10",
+    "truncatedTreeRecovery": "implemented",
+    "completeGovernedScopeBatching": "implemented-no-fixed-twenty-file-cap",
+    "checkpointResume": "implemented",
+    "gitBlobIntegrity": "implemented",
+    "expandedQuarantine": "implemented",
+    "licenseEvidenceCollection": "implemented-human-approval-open",
+    "deterministicCandidateClaimLineage": "implemented-candidate-only",
+    "runtimeConnectivity": "blocked-execution-container-cannot-reach-github",
+    "productionAcceptance": false
+  }
+}

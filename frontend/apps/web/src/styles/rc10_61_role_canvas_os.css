@@ -1,0 +1,289 @@
+/* rc.10.61 — Role-Centred Product Experience & Canvas Operating System
+   The canonical model is the product centre. Guidance, role navigation and specialist
+   tools remain available without taking permanent space from the active task. */
+
+.role-product-bar {
+  position: sticky;
+  top: 64px;
+  z-index: 44;
+  min-height: 64px;
+  display: grid;
+  grid-template-columns: minmax(230px, .85fr) minmax(500px, 2.4fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(148,174,194,.15);
+  background: rgba(6,16,26,.93);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 32px rgba(0,0,0,.18);
+}
+.role-product-bar__identity { min-width: 0; display: flex; gap: 10px; align-items: center; }
+.role-product-bar__identity > span { width: 34px; height: 34px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid rgba(83,215,200,.30); border-radius: 11px; color: #8bf0e4; background: rgba(83,215,200,.07); }
+.role-product-bar__identity strong, .role-product-bar__identity small { display: block; }
+.role-product-bar__identity strong { color: #eef7f8; font-size: 12px; }
+.role-product-bar__identity small { max-width: 390px; margin-top: 2px; overflow: hidden; color: #8099a6; font-size: 9px; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.role-product-bar__lenses { min-width: 0; display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 5px; }
+.role-product-bar__lenses button { min-width: 0; min-height: 44px; display: grid; align-content: center; gap: 2px; padding: 6px 9px; border: 1px solid transparent; border-radius: 10px; color: #8ca3af; background: transparent; text-align: left; cursor: pointer; }
+.role-product-bar__lenses button:hover { border-color: rgba(148,174,194,.18); color: #dbe7eb; background: rgba(255,255,255,.025); }
+.role-product-bar__lenses button.is-active { border-color: rgba(83,215,200,.34); color: #effcfa; background: linear-gradient(135deg,rgba(83,215,200,.12),rgba(83,215,200,.035)); }
+.role-product-bar__lenses strong, .role-product-bar__lenses small { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.role-product-bar__lenses strong { font-size: 10px; }
+.role-product-bar__lenses small { color: #6e8794; font-size: 8px; }
+.role-product-bar__command { height: 38px; display: inline-flex; align-items: center; gap: 6px; padding: 0 11px; border: 1px solid rgba(148,174,194,.18); border-radius: 10px; color: #a9c2cd; background: rgba(255,255,255,.025); cursor: pointer; }
+.role-product-bar__command:hover { border-color: rgba(83,215,200,.32); color: #eafafa; }
+.role-product-bar--reviewer .role-product-bar__identity > span { border-color: rgba(138,184,255,.34); color: #a9c9ff; background: rgba(138,184,255,.07); }
+.role-product-bar--knowledge-curator .role-product-bar__identity > span { border-color: rgba(230,173,85,.34); color: #f0cb8e; background: rgba(230,173,85,.07); }
+.role-product-bar--administrator .role-product-bar__identity > span { border-color: rgba(190,153,255,.34); color: #cfb4ff; background: rgba(190,153,255,.07); }
+.role-task-banner--compact { margin: 8px 14px 0 !important; min-height: 40px !important; padding: 6px 10px !important; }
+
+/* Role-specific command surfaces replace the generic project cockpit for specialist roles. */
+.role-command-surface { min-height: calc(100vh - 148px); padding: clamp(18px,2.5vw,34px); color: #edf5f7; background: radial-gradient(circle at 8% 0%,rgba(83,215,200,.07),transparent 26%); }
+.role-command-surface__hero { display: flex; justify-content: space-between; gap: 28px; align-items: flex-end; padding: 8px 0 24px; border-bottom: 1px solid rgba(148,174,194,.14); }
+.role-command-surface__hero h1 { margin: 7px 0 7px; font-size: clamp(25px,3vw,42px); letter-spacing: -.045em; }
+.role-command-surface__hero p { max-width: 760px; margin: 0; color: #94aab5; font-size: 13px; line-height: 1.55; }
+.role-command-surface__metrics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 9px; margin: 18px 0; }
+.role-command-surface__metrics article { min-height: 112px; display: grid; align-content: center; gap: 4px; padding: 15px; border: 1px solid rgba(148,174,194,.15); border-radius: 14px; background: linear-gradient(160deg,rgba(15,31,46,.82),rgba(9,20,31,.90)); }
+.role-command-surface__metrics article.tone-good { border-color: rgba(125,217,168,.22); }
+.role-command-surface__metrics article.tone-warn { border-color: rgba(230,173,85,.28); }
+.role-command-surface__metrics article.tone-risk { border-color: rgba(240,139,143,.30); }
+.role-command-surface__metrics span { color: #8198a4; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
+.role-command-surface__metrics strong { font-size: 25px; letter-spacing: -.035em; overflow-wrap: anywhere; }
+.role-command-surface__metrics small { color: #78909c; font-size: 9px; }
+.role-command-surface__now { padding: 20px; border: 1px solid rgba(148,174,194,.15); border-radius: 18px; background: linear-gradient(180deg,rgba(12,27,41,.88),rgba(8,18,29,.92)); box-shadow: 0 24px 70px rgba(0,0,0,.18); }
+.role-command-surface__section-heading { display: flex; justify-content: space-between; gap: 20px; align-items: flex-end; margin-bottom: 14px; }
+.role-command-surface__section-heading h2 { margin: 5px 0 0; font-size: 20px; }
+.role-command-surface__section-heading > small { color: #728a96; font-size: 9px; }
+.role-command-surface__actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+.role-command-surface__actions > button { min-height: 126px; display: grid; grid-template-columns: 42px minmax(0,1fr) 18px; gap: 12px; align-items: center; padding: 15px; border: 1px solid rgba(148,174,194,.14); border-radius: 14px; color: #dbe7eb; background: rgba(255,255,255,.018); text-align: left; cursor: pointer; }
+.role-command-surface__actions > button:hover { transform: translateY(-1px); border-color: rgba(83,215,200,.30); background: rgba(83,215,200,.035); }
+.role-command-surface__actions > button.tone-warn { border-color: rgba(230,173,85,.24); }
+.role-command-surface__actions > button.tone-risk { border-color: rgba(240,139,143,.26); }
+.role-command-surface__action-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; color: #77e5d8; background: rgba(83,215,200,.08); }
+.role-command-surface__actions strong, .role-command-surface__actions small, .role-command-surface__actions b { display: block; }
+.role-command-surface__actions strong { font-size: 13px; }
+.role-command-surface__actions small { margin-top: 4px; color: #8fa5b0; font-size: 10px; line-height: 1.45; }
+.role-command-surface__actions b { margin-top: 8px; color: #6f8895; font-size: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; }
+.role-command-surface__model-strip { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 8px; margin-top: 13px; }
+.role-command-surface__model-strip > div { display: flex; gap: 9px; align-items: center; padding: 11px 13px; border: 1px solid rgba(148,174,194,.12); border-radius: 12px; color: #77dcd1; background: rgba(255,255,255,.015); }
+.role-command-surface__model-strip strong, .role-command-surface__model-strip small { display: block; }
+.role-command-surface__model-strip strong { color: #dce8eb; font-size: 13px; }
+.role-command-surface__model-strip small { color: #748c98; font-size: 8px; }
+
+/* Reviewer: queue, model and evidence are synchronized in one assurance product. */
+.assurance-studio { min-height: calc(100vh - 148px); padding: 18px; color: #edf5f7; background: radial-gradient(circle at 80% 0%,rgba(138,184,255,.07),transparent 28%); }
+.assurance-studio__header { display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; padding: 6px 2px 18px; }
+.assurance-studio__header h1 { margin: 6px 0; font-size: clamp(24px,2.8vw,38px); letter-spacing: -.04em; }
+.assurance-studio__header p { max-width: 780px; margin: 0; color: #92a8b3; font-size: 12px; line-height: 1.5; }
+.assurance-studio__header-actions { display: flex; gap: 7px; }
+.assurance-studio__header-actions button { min-height: 36px; display: inline-flex; align-items: center; gap: 6px; padding: 0 11px; border: 1px solid rgba(138,184,255,.24); border-radius: 10px; color: #b8d1ff; background: rgba(138,184,255,.045); cursor: pointer; }
+.assurance-studio__status-strip { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 7px; margin-bottom: 10px; }
+.assurance-studio__status-strip > div { padding: 10px 12px; border: 1px solid rgba(148,174,194,.13); border-radius: 11px; background: rgba(255,255,255,.018); }
+.assurance-studio__status-strip span,.assurance-studio__status-strip strong,.assurance-studio__status-strip small { display: block; }
+.assurance-studio__status-strip span { color: #738c98; font-size: 8px; text-transform: uppercase; letter-spacing: .08em; }
+.assurance-studio__status-strip strong { margin-top: 3px; font-size: 16px; }
+.assurance-studio__status-strip small { margin-top: 2px; color: #7d96a1; font-size: 8px; }
+.assurance-studio__layout { min-height: 610px; display: grid; grid-template-columns: minmax(210px,.72fr) minmax(480px,2fr) minmax(260px,.85fr); border: 1px solid rgba(148,174,194,.15); border-radius: 18px; overflow: hidden; background: rgba(8,19,30,.92); box-shadow: 0 24px 70px rgba(0,0,0,.22); }
+.assurance-queue,.assurance-disposition { padding: 13px; background: rgba(12,28,42,.72); }
+.assurance-queue { border-right: 1px solid rgba(148,174,194,.13); }
+.assurance-disposition { border-left: 1px solid rgba(148,174,194,.13); }
+.assurance-model { min-width: 0; padding: 13px; }
+.assurance-pane-heading { min-height: 32px; display: flex; justify-content: space-between; gap: 10px; align-items: center; margin-bottom: 9px; color: #7f99a5; font-size: 9px; text-transform: uppercase; letter-spacing: .08em; }
+.assurance-pane-heading button { border: 0; color: #9dcaff; background: transparent; font-size: 9px; cursor: pointer; }
+.assurance-queue > button { width: 100%; display: grid; grid-template-columns: 26px minmax(0,1fr) 14px; gap: 8px; align-items: center; margin-bottom: 6px; padding: 10px 8px; border: 1px solid transparent; border-radius: 10px; color: #a9bdc6; background: transparent; text-align: left; cursor: pointer; }
+.assurance-queue > button.is-active { border-color: rgba(138,184,255,.30); color: #edf5ff; background: rgba(138,184,255,.07); }
+.assurance-queue strong,.assurance-queue small,.assurance-queue b { display:block; }
+.assurance-queue strong { font-size: 10px; text-transform: capitalize; }
+.assurance-queue small { margin-top:2px; color:#738c98; font-size:8px; }
+.assurance-queue b { margin-top:4px; color:#8ca5b1; font-size:7px; text-transform:uppercase; }
+.assurance-view-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; }
+.assurance-view-grid button { min-height: 78px; display: grid; align-content: center; gap: 3px; padding: 9px; border: 1px solid rgba(148,174,194,.13); border-radius: 10px; color: #aebfc7; background: rgba(255,255,255,.018); text-align: left; cursor: pointer; }
+.assurance-view-grid button:hover { border-color: rgba(138,184,255,.28); background: rgba(138,184,255,.035); }
+.assurance-view-grid span { font-size: 8px; }
+.assurance-view-grid strong { color: #dce8f7; font-size: 17px; }
+.assurance-view-grid small { color: #718a96; font-size: 7px; }
+.assurance-findings { margin-top: 10px; padding: 10px; border: 1px solid rgba(148,174,194,.12); border-radius: 12px; background: rgba(2,10,18,.28); }
+.assurance-findings__heading { display:flex; justify-content:space-between; gap:12px; margin-bottom:7px; }
+.assurance-findings__heading strong { font-size:10px; }
+.assurance-findings__heading small { color:#718996; font-size:8px; }
+.assurance-findings article { display:grid; grid-template-columns:24px minmax(0,1fr); gap:7px; margin-top:5px; padding:8px; border:1px solid rgba(148,174,194,.10); border-radius:9px; }
+.assurance-findings article.tone-risk { border-color:rgba(240,139,143,.24); background:rgba(240,139,143,.03); }
+.assurance-findings article.tone-warn { border-color:rgba(230,173,85,.22); }
+.assurance-findings article strong { font-size:9px; }
+.assurance-findings article p { margin:3px 0; color:#91a6b0; font-size:8px; line-height:1.4; }
+.assurance-findings article small { color:#6e8793; font-size:7px; }
+.assurance-evidence-list { display:grid; gap:6px; }
+.assurance-evidence-list > div { display:flex; gap:8px; align-items:flex-start; padding:9px; border:1px solid rgba(148,174,194,.11); border-radius:9px; color:#8ab8ff; background:rgba(255,255,255,.015); }
+.assurance-evidence-list strong,.assurance-evidence-list small { display:block; }
+.assurance-evidence-list strong { color:#cddce2; font-size:9px; }
+.assurance-evidence-list small { margin-top:2px; color:#728b97; font-size:7px; }
+.assurance-comment { display:grid; gap:5px; margin-top:10px; color:#849ca8; font-size:8px; }
+.assurance-comment textarea { resize:vertical; min-height:100px; border:1px solid rgba(148,174,194,.16); border-radius:10px; padding:9px; color:#e2edf0; background:#07141f; font:inherit; line-height:1.45; }
+.assurance-disposition__actions { display:grid; gap:6px; margin-top:9px; }
+.assurance-disposition__actions button { min-height:34px; display:flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,174,194,.15); border-radius:9px; color:#b6c7ce; background:rgba(255,255,255,.02); cursor:pointer; }
+.assurance-disposition__actions button.is-approve { border-color:rgba(125,217,168,.28); color:#aee9c8; }
+.assurance-disposition__actions button.is-change { border-color:rgba(230,173,85,.28); color:#ebc785; }
+.assurance-disposition__actions button.is-reject { border-color:rgba(240,139,143,.28); color:#f0a4a8; }
+.assurance-disposition__actions button:disabled { opacity:.35; cursor:not-allowed; }
+.assurance-boundary { margin:10px 0 0; padding:8px; border-left:2px solid rgba(138,184,255,.45); color:#78929e; font-size:7px; line-height:1.45; }
+.assurance-empty { display:grid; justify-items:center; gap:5px; padding:25px 10px; color:#78919d; text-align:center; }
+.assurance-empty strong { color:#b7c8cf; font-size:10px; }
+.assurance-empty p { margin:0; font-size:8px; line-height:1.45; }
+.assurance-empty--good { color:#7dd9a8; }
+
+/* Canvas OS: modelling opens on the diagram, while plan/evidence are deliberate modes. */
+.app-shell.guided-delivery-active .role-product-bar { top: 64px; }
+.guided-delivery--canvas-os { grid-template-columns: 202px minmax(0,1fr); min-height: calc(100vh - 128px); }
+.guided-delivery--canvas-os.is-rail-collapsed { grid-template-columns: 70px minmax(0,1fr); }
+.guided-delivery--canvas-os .guided-delivery__rail { top: 128px; height: calc(100vh - 128px); padding: 10px 9px; }
+.guided-rail-toggle { margin-left:auto; width:28px; height:28px; display:grid; place-items:center; border:1px solid rgba(148,174,194,.14); border-radius:8px; color:#88a2ad; background:transparent; cursor:pointer; }
+.guided-delivery--canvas-os.is-rail-collapsed .guided-delivery__brand > div,
+.guided-delivery--canvas-os.is-rail-collapsed .guided-delivery__rail nav button > span:nth-child(2),
+.guided-delivery--canvas-os.is-rail-collapsed .guided-delivery__rail nav button > svg,
+.guided-delivery--canvas-os.is-rail-collapsed .guided-delivery__rail-note { display:none; }
+.guided-delivery--canvas-os.is-rail-collapsed .guided-delivery__brand { padding:3px 5px 12px; justify-content:center; flex-wrap:wrap; }
+.guided-delivery--canvas-os.is-rail-collapsed .guided-delivery__brand > span { width:30px; height:30px; }
+.guided-delivery--canvas-os.is-rail-collapsed .guided-rail-toggle { margin:0; }
+.guided-delivery--canvas-os.is-rail-collapsed .guided-delivery__rail nav button { grid-template-columns:1fr; justify-items:center; min-height:42px; padding:5px; }
+.guided-delivery--canvas-os .guided-delivery__main { padding: 8px 12px 64px; }
+.canvas-os-stagebar { min-height: 58px; display:grid; grid-template-columns:minmax(0,1fr) 190px auto; gap:14px; align-items:center; padding:7px 10px; border:1px solid rgba(148,174,194,.13); border-radius:13px; background:rgba(10,24,37,.76); outline:none; }
+.canvas-os-stagebar__identity { min-width:0; display:flex; gap:12px; align-items:center; }
+.canvas-os-stagebar__identity .guided-kicker { flex:0 0 auto; }
+.canvas-os-stagebar__identity h1 { margin:0; font-size:15px; letter-spacing:-.02em; }
+.canvas-os-stagebar__identity p { max-width:720px; margin:2px 0 0; overflow:hidden; color:#8097a3; font-size:8px; text-overflow:ellipsis; white-space:nowrap; }
+.canvas-os-stagebar__readiness { display:grid; grid-template-columns:auto auto; gap:2px 8px; align-items:center; }
+.canvas-os-stagebar__readiness > strong { justify-self:end; font-size:16px; }
+.canvas-os-stagebar__readiness > small { grid-column:1 / -1; color:#768e9a; font-size:7px; }
+.canvas-os-stagebar__readiness .guided-progress { grid-column:1 / -1; max-width:none; }
+.canvas-os-assistant { min-height:34px; display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(83,215,200,.25); border-radius:9px; color:#9ceae1; background:rgba(83,215,200,.05); cursor:pointer; }
+.guided-delivery--canvas-os .guided-pane-tabs.canvas-os-modes { margin:6px 0; }
+.guided-delivery--canvas-os .guided-delivery-workarea { border:0; border-radius:0; background:transparent; box-shadow:none; overflow:visible; }
+.canvas-os-task-strip { min-height:42px; display:grid; grid-template-columns:minmax(220px,.85fr) minmax(300px,1.4fr) auto; gap:10px; align-items:center; margin-bottom:6px; padding:6px 9px; border:1px solid rgba(148,174,194,.12); border-radius:11px; background:rgba(255,255,255,.014); }
+.canvas-os-task-strip span,.canvas-os-task-strip strong,.canvas-os-task-strip small { display:block; }
+.canvas-os-task-strip span { color:#728b97; font-size:7px; text-transform:uppercase; letter-spacing:.08em; }
+.canvas-os-task-strip strong { font-size:9px; }
+.canvas-os-task-strip small { margin-top:2px; overflow:hidden; color:#78919d; font-size:7px; text-overflow:ellipsis; white-space:nowrap; }
+.canvas-os-task-strip__checks { display:flex; gap:4px; overflow:hidden; }
+.canvas-os-task-strip__checks b { flex:0 1 auto; overflow:hidden; padding:4px 6px; border:1px solid rgba(148,174,194,.13); border-radius:999px; color:#7d96a2; font-size:6px; text-overflow:ellipsis; white-space:nowrap; }
+.canvas-os-task-strip__checks b.is-done { border-color:rgba(125,217,168,.22); color:#9eddb9; }
+.canvas-os-task-strip__checks b.is-open { border-color:rgba(230,173,85,.22); color:#d9b876; }
+.canvas-os-task-strip > button { min-height:29px; display:inline-flex; align-items:center; gap:5px; border:0; color:#90b8c7; background:transparent; font-size:8px; cursor:pointer; }
+.guided-delivery--canvas-os .canvas-page { padding:0 !important; }
+.guided-delivery--canvas-os .canvas-toolbar { display:none !important; }
+.guided-delivery--canvas-os .stage-studio-ribbon { min-height:54px; margin:0 0 5px !important; padding:5px 7px !important; }
+.guided-delivery--canvas-os .stage-studio-ribbon__summary small { display:none !important; }
+.guided-delivery--canvas-os .stage-studio-ribbon__summary strong { max-width:440px; overflow:hidden; font-size:9px; text-overflow:ellipsis; white-space:nowrap; }
+.guided-delivery--canvas-os .stage-studio-ribbon__badge { font-size:7px; }
+.guided-delivery--canvas-os .canvas-shell,
+.guided-delivery--canvas-os .flow-container { min-height: max(500px, calc(100vh - 340px)) !important; }
+.guided-delivery--canvas-os .canvas-shell { margin-top:4px !important; }
+.guided-delivery--canvas-os .guided-stage-footer { left:202px; min-height:54px; padding:7px 14px; }
+.guided-delivery--canvas-os.is-rail-collapsed .guided-stage-footer { left:70px; }
+.guided-delivery--canvas-os .guided-stage-footer > div { display:none; }
+.guided-delivery--canvas-os .guided-stage-footer { grid-template-columns:auto minmax(0,1fr) auto; }
+.guided-delivery--canvas-os .guided-stage-footer > button:last-child { grid-column:3; }
+
+/* Role pages no longer inherit a permanently open contextual inspector. */
+.app-shell.role-centred-experience .workspace-layout.with-inspector { grid-template-columns:minmax(0,1fr) !important; }
+.app-shell.role-centred-experience .workspace-layout.with-inspector > .workspace-content { min-width:0; }
+
+@media (max-width: 1280px) {
+  .role-product-bar { grid-template-columns:200px minmax(0,1fr) auto; }
+  .role-product-bar__identity small { display:none; }
+  .role-product-bar__lenses small { display:none; }
+  .role-product-bar__lenses button { min-height:36px; text-align:center; }
+  .assurance-studio__layout { grid-template-columns:190px minmax(420px,1fr) 245px; }
+}
+@media (max-width: 1020px) {
+  .role-product-bar { position:relative; top:auto; grid-template-columns:minmax(0,1fr) auto; }
+  .role-product-bar__lenses { grid-column:1 / -1; overflow-x:auto; display:flex; }
+  .role-product-bar__lenses button { min-width:110px; }
+  .role-command-surface__metrics,.role-command-surface__model-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .assurance-studio__layout { display:block; }
+  .assurance-queue,.assurance-disposition { border:0; border-bottom:1px solid rgba(148,174,194,.13); }
+  .guided-delivery--canvas-os { grid-template-columns:70px minmax(0,1fr); }
+  .guided-delivery--canvas-os .guided-delivery__rail { top:64px; height:calc(100vh - 64px); }
+  .guided-delivery--canvas-os .guided-delivery__brand > div,.guided-delivery--canvas-os .guided-delivery__rail nav button > span:nth-child(2),.guided-delivery--canvas-os .guided-delivery__rail-note { display:none; }
+  .guided-delivery--canvas-os .guided-stage-footer { left:70px; }
+}
+@media (max-width: 760px) {
+  .role-command-surface__hero,.assurance-studio__header { align-items:flex-start; flex-direction:column; }
+  .role-command-surface__actions { grid-template-columns:1fr; }
+  .role-command-surface__metrics,.role-command-surface__model-strip,.assurance-studio__status-strip { grid-template-columns:1fr 1fr; }
+  .assurance-view-grid { grid-template-columns:1fr 1fr; }
+  .guided-delivery--canvas-os { display:block; }
+  .guided-delivery--canvas-os .guided-delivery__rail { position:static; width:auto; height:auto; display:block; }
+  .guided-delivery--canvas-os .guided-delivery__rail nav { display:flex; overflow-x:auto; }
+  .guided-delivery--canvas-os .guided-delivery__rail nav button { min-width:48px; }
+  .canvas-os-stagebar { grid-template-columns:1fr auto; }
+  .canvas-os-stagebar__readiness { display:none; }
+  .canvas-os-task-strip { grid-template-columns:1fr auto; }
+  .canvas-os-task-strip__checks { display:none; }
+  .guided-delivery--canvas-os .guided-stage-footer { left:0; }
+}
+
+/* Legacy sidebar replacement retired in rc.10.72.1. */
+
+/* Curator queue-first refinement: remove the training-page stack from routine review. */
+.role-knowledge-curator .knowledge-ops-workbench { padding:12px 14px 24px !important; }
+.role-knowledge-curator .knowledge-ops-workbench > .workspace-hero,
+.role-knowledge-curator .knowledge-ops-workbench > .admin-command-strip,
+.role-knowledge-curator .knowledge-ops-workbench > .studio-pipeline-board,
+.role-knowledge-curator .knowledge-ops-workbench > .studio-operator-checklist,
+.role-knowledge-curator .knowledge-ops-workbench > .studio-action-strip { display:none !important; }
+.role-knowledge-curator .knowledge-ops-workbench > .admin-tabs { position:sticky; top:128px; z-index:20; margin:0 0 8px !important; background:rgba(7,17,28,.96); backdrop-filter:blur(16px); }
+.role-knowledge-curator .knowledge-review-drawer { position:sticky; top:178px; float:right; width:min(290px,28vw); max-height:calc(100vh - 196px); overflow:auto; margin:0 0 10px 10px; padding:12px !important; }
+.role-knowledge-curator .knowledge-two-pane { min-height:calc(100vh - 230px); grid-template-columns:minmax(260px,.72fr) minmax(420px,1.7fr) !important; gap:8px !important; }
+.role-knowledge-curator .knowledge-list { max-height:calc(100vh - 230px); overflow:auto; }
+.role-knowledge-curator .studio-workflow-panel { min-height:calc(100vh - 230px); }
+
+/* Administrator tasks are segmented by the role bar; the local page shows the requested domain first. */
+.role-administrator .admin-control-plane { padding:12px 14px 26px !important; }
+.role-administrator .admin-control-plane > .admin-command-strip { display:none !important; }
+.role-administrator .admin-control-plane .admin-task-header { margin:0 0 8px !important; padding:10px 12px !important; border:1px solid rgba(148,174,194,.13); border-radius:12px; background:rgba(12,27,41,.72); }
+.role-administrator .admin-tabs--sticky { top:128px !important; z-index:20; }
+.role-administrator .admin-section-stack { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px !important; }
+.role-administrator .admin-section-stack > .admin-wide-card,
+.role-administrator .admin-section-stack > .admin-table-card { grid-column:1 / -1; }
+.role-administrator .production-readiness-card { min-height:0 !important; }
+
+/* Enterprise and platform specialist pages use full width beneath their command surfaces. */
+.role-enterprise-architect .enterprise-workspace,
+.role-platform-architect .enterprise-workspace,
+.role-reviewer .enterprise-workspace { max-width:none !important; padding-left:16px !important; padding-right:16px !important; }
+
+
+/* rc.10.61 removes the second universal navigation spine and prevents closed overlays
+   from contributing to the document scroll width. */
+.app-shell.role-centred-experience .topbar-flow-menu { display:none !important; }
+.app-shell.role-centred-experience .info-center:not(.is-open) { display:none !important; }
+.app-shell.role-centred-experience .info-center.is-open { max-width:calc(100vw - 36px); right:18px; }
+
+/* Closed intelligence drawers do not exist in the layout or scroll geometry. */
+.info-center:not(.is-open) { display:none !important; }
+.info-center.is-open { right:18px !important; width:min(420px,calc(100vw - 36px)) !important; }
+
+/* Laptop acceptance: the model must be visible without scrolling. */
+@media (max-width: 1200px) {
+  .guided-delivery--canvas-os { grid-template-columns:70px minmax(0,1fr); }
+  .guided-delivery--canvas-os .guided-delivery__brand > div,
+  .guided-delivery--canvas-os .guided-delivery__rail nav button > span:nth-child(2),
+  .guided-delivery--canvas-os .guided-delivery__rail nav button > svg,
+  .guided-delivery--canvas-os .guided-delivery__rail-note { display:none !important; }
+  .guided-delivery--canvas-os .guided-delivery__brand { padding:3px 5px 9px; justify-content:center; flex-wrap:wrap; }
+  .guided-delivery--canvas-os .guided-rail-toggle { margin:0; }
+  .guided-delivery--canvas-os .guided-delivery__rail nav button { grid-template-columns:1fr; justify-items:center; min-height:38px; padding:4px; }
+  .guided-delivery--canvas-os .guided-stage-footer { left:70px; }
+  .canvas-os-stagebar { min-height:48px !important; grid-template-columns:minmax(0,1fr) auto !important; gap:8px !important; padding:4px 8px !important; }
+  .canvas-os-stagebar__identity { gap:8px !important; }
+  .canvas-os-stagebar__identity h1 { max-width:540px; overflow:hidden; font-size:14px !important; line-height:1.15 !important; text-overflow:ellipsis; white-space:nowrap; }
+  .canvas-os-stagebar__identity p,
+  .canvas-os-stagebar__readiness { display:none !important; }
+  .canvas-os-assistant { min-height:30px; padding:0 8px; font-size:8px; }
+  .guided-delivery--canvas-os .guided-pane-tabs.canvas-os-modes { min-height:34px !important; margin:4px 0 !important; padding:2px !important; }
+  .guided-delivery--canvas-os .guided-pane-tabs.canvas-os-modes button { min-height:30px !important; padding:4px 10px !important; }
+  .guided-delivery--canvas-os .canvas-os-task-strip { display:none !important; }
+  .guided-delivery--canvas-os .stage-studio-ribbon { min-height:44px !important; margin-bottom:3px !important; padding:3px 6px !important; }
+  .guided-delivery--canvas-os .stage-studio-ribbon__summary strong { max-width:340px; }
+  .guided-delivery--canvas-os .canvas-shell,
+  .guided-delivery--canvas-os .flow-container { min-height:max(430px,calc(100vh - 274px)) !important; }
+}

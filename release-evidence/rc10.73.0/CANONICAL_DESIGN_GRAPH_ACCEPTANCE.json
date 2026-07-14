@@ -1,0 +1,44 @@
+{
+  "release": "0.10.0-rc.10.73.0",
+  "releaseLine": "rc.10.73.0",
+  "capability": "canonical-architecture-design-graph-foundation",
+  "status": "implemented-and-focused-verification-passed",
+  "authority": {
+    "brainDirectMutationAllowed": false,
+    "humanMaterializationRequired": true,
+    "requiredPermission": "project.edit",
+    "revisionCheckRequired": true,
+    "freshPreviewFingerprintRequired": true
+  },
+  "graph": {
+    "schemaVersion": "1.0",
+    "projectionModes": [
+      "legacy-project-projection",
+      "materialized-canonical"
+    ],
+    "integrityChecks": [
+      "duplicate-record-identifiers",
+      "duplicate-relationship-identifiers",
+      "dangling-relationships",
+      "graph-fingerprint"
+    ],
+    "persistenceAdapters": [
+      "memory",
+      "postgresql",
+      "mongodb"
+    ],
+    "brainPinning": [
+      "graph-revision",
+      "graph-fingerprint",
+      "projection-mode",
+      "integrity-posture"
+    ]
+  },
+  "migrationBoundary": {
+    "graphFoundationImplemented": true,
+    "graphPrimaryMutationComplete": false,
+    "legacyProjectProjectionRetained": true,
+    "parallelAuthorityRetirementComplete": false
+  },
+  "productionAccepted": false
+}

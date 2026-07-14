@@ -1,0 +1,68 @@
+{
+  "release": "0.10.0-rc.10.15",
+  "sprint": "8.9.3",
+  "generatedAt": "2026-07-05T01:05:50.668Z",
+  "palette": {
+    "surface": "#07131f",
+    "raised": "#0b1d2b",
+    "text": "#dce8f2",
+    "accent": "#25b6a6",
+    "warning": "#d9a552"
+  },
+  "checks": [
+    {
+      "id": "text-on-surface-aa",
+      "label": "Primary text meets AA contrast on main surface",
+      "ratio": 15.03,
+      "pass": true
+    },
+    {
+      "id": "text-on-raised-aa",
+      "label": "Primary text meets AA contrast on raised surface",
+      "ratio": 13.77,
+      "pass": true
+    },
+    {
+      "id": "accent-on-surface-aa-large-ui",
+      "label": "Accent affordances are visible on main surface",
+      "ratio": 7.42,
+      "pass": true
+    },
+    {
+      "id": "warning-on-surface-aa-large-ui",
+      "label": "Warning affordances are visible on main surface",
+      "ratio": 8.43,
+      "pass": true
+    },
+    {
+      "id": "skip-link-present",
+      "label": "Skip link is present for keyboard users",
+      "pass": true
+    },
+    {
+      "id": "main-focus-target",
+      "label": "Main content is keyboard-focusable after skip navigation",
+      "pass": true
+    },
+    {
+      "id": "global-focus-visible",
+      "label": "Global focus-visible treatment exists",
+      "pass": true
+    },
+    {
+      "id": "review-categories-labelled",
+      "label": "Review category rail has an accessible label",
+      "pass": true
+    },
+    {
+      "id": "admin-controls-labelled",
+      "label": "Admin control plane contains user-facing tab labels",
+      "pass": true
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  }
+}

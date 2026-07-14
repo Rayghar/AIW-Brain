@@ -1,0 +1,107 @@
+{
+  "release": "0.10.0-rc.10.72.3",
+  "codename": "Sol Proven Intelligence",
+  "productionAccepted": false,
+  "builds": {
+    "backendPackagesApiWorker": "passed",
+    "frontendPackages": "passed",
+    "frontendProductionBundle": "passed",
+    "bundleWarnings": {
+      "productShellBytes": 650655,
+      "artifactCoreBytes": 1618426
+    }
+  },
+  "automatedTests": [
+    {
+      "name": "focused backend Brain/governance/calibration regression",
+      "result": "passed",
+      "tests": 21,
+      "files": 6
+    },
+    {
+      "name": "backend rc.10.72.3 calibration gate",
+      "result": "passed",
+      "checks": 25
+    },
+    {
+      "name": "backend intelligence authority gate",
+      "result": "passed",
+      "checks": 39
+    },
+    {
+      "name": "frontend rc.10.72.3 UI contract gate",
+      "result": "passed",
+      "checks": 12
+    },
+    {
+      "name": "frontend product recovery gate",
+      "result": "passed",
+      "checks": 20
+    },
+    {
+      "name": "Sol receipt browser acceptance",
+      "result": "passed",
+      "tests": 2,
+      "viewports": [
+        "desktop",
+        "laptop"
+      ]
+    },
+    {
+      "name": "clean-project lifecycle laptop",
+      "result": "passed",
+      "tests": 1
+    },
+    {
+      "name": "clean-project lifecycle desktop",
+      "result": "passed-before-final-rerun; final rerun inconclusive",
+      "detail": "A full desktop run produced complete stage screenshots through SDD earlier in the final-source worktree. A later rerun repeatedly stalled after Logical Technology waiting for notice settlement and was terminated by the execution window; no product exception or failed request was reported."
+    }
+  ],
+  "calibration": {
+    "scenarioCount": 9,
+    "passedScenarios": 9,
+    "deterministicAverage": 91.6,
+    "governedLlmAverage": null,
+    "stageAlignmentRate": 100,
+    "unsupportedClaimCount": 0,
+    "llmRegressionCount": 0,
+    "qualityGatePassRate": 100
+  },
+  "providerAcceptance": {
+    "schemaVersion": "1.0",
+    "releaseId": "AIW-0.10.0-rc.10.72.3",
+    "generatedAt": "2026-07-14T10:27:29.999Z",
+    "tenantId": "tenant-reference",
+    "status": "blocked",
+    "productionAccepted": false,
+    "liveProviderUsed": false,
+    "routes": [
+      {
+        "routeId": "architecture-reasoning:openai:gpt-4.1-mini",
+        "providerId": "openai",
+        "model": "gpt-4.1-mini",
+        "configured": false,
+        "circuit": "closed",
+        "baseUrl": "https://api.openai.com/v1"
+      }
+    ],
+    "blocker": "No configured architecture-reasoning route has a resolvable provider credential. Secrets were not displayed or inferred."
+  },
+  "integrity": {
+    "backendInternalDependencies": "passed",
+    "frontendInternalDependencies": "passed",
+    "backendReleaseIntegrity": "passed",
+    "frontendReleaseIntegrity": "passed",
+    "backendSecurityScan": "passed",
+    "frontendSecurityScan": "passed",
+    "backendProductionVulnerabilities": 0,
+    "frontendProductionVulnerabilities": 0
+  },
+  "externalBoundaries": {
+    "liveProvider": false,
+    "externalHumanExpertPanel": false,
+    "managedEnterpriseInfrastructure": false,
+    "productionAccepted": false
+  }
+}

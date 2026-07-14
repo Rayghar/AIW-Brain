@@ -1,0 +1,141 @@
+name: aiw-rc1065-pilot
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: aiw
+      POSTGRES_USER: aiw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aiw-pilot-change-me}
+    volumes:
+      - aiw_pilot_postgres:/var/lib/postgresql/data
+      - ../backend/database/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiw -d aiw"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  minio:
+    image: minio/minio:RELEASE.2025-05-24T17-08-30Z
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-aiwpilot}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-aiw-pilot-change-me}
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [aiw_pilot_object_store:/data]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  minio-init:
+    image: minio/mc:RELEASE.2025-05-21T01-59-54Z
+    depends_on:
+      minio: { condition: service_healthy }
+    entrypoint: ["/bin/sh", "-c"]
+    command: >-
+      mc alias set aiw http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" &&
+      mc mb --ignore-existing aiw/aiw-knowledge &&
+      mc anonymous set none aiw/aiw-knowledge
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-aiwpilot}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-aiw-pilot-change-me}
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-aiw-pilot-change-me}
+    ports: ["8080:8080"]
+    volumes:
+      - ../backend/deploy/keycloak/aiw-realm.json:/opt/keycloak/data/import/aiw-realm.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && printf 'GET /realms/aiw/.well-known/openid-configuration HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '200 OK' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.129.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ../backend/deploy/otel/collector-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports: ["4317:4317", "4318:4318"]
+
+  migrate:
+    build:
+      context: ../backend
+      target: api
+    command: npm run migrate:db
+    environment:
+      DATABASE_URL: postgresql://aiw:${POSTGRES_PASSWORD:-aiw-pilot-change-me}@postgres:5432/aiw
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    build:
+      context: ../backend
+      target: api
+    command: node apps/api/dist/server.js
+    ports: ["4100:4100"]
+    environment:
+      NODE_ENV: production
+      PORT: 4100
+      HOST: 0.0.0.0
+      DATABASE_URL: postgresql://aiw:${POSTGRES_PASSWORD:-aiw-pilot-change-me}@postgres:5432/aiw
+      AIW_ALLOW_DEV_AUTH: "false"
+      AIW_OIDC_ISSUER: http://keycloak:8080/realms/aiw
+      AIW_OIDC_AUDIENCE: aiw-api
+      AIW_JOB_QUEUE_ADAPTER: postgres
+      AIW_KNOWLEDGE_OBJECT_STORE: s3
+      AIW_KNOWLEDGE_S3_ENDPOINT: http://minio:9000
+      AIW_KNOWLEDGE_S3_BUCKET: aiw-knowledge
+      AIW_KNOWLEDGE_S3_FORCE_PATH_STYLE: "true"
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-aiwpilot}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-aiw-pilot-change-me}
+      AWS_REGION: us-east-1
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      AIW_RUNTIME_ACCEPTANCE_MODE: report
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      minio-init: { condition: service_completed_successfully }
+      keycloak: { condition: service_healthy }
+      otel-collector: { condition: service_started }
+
+  worker:
+    build:
+      context: ../backend
+      target: api
+    command: node apps/worker/dist/index.js
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://aiw:${POSTGRES_PASSWORD:-aiw-pilot-change-me}@postgres:5432/aiw
+      AIW_JOB_QUEUE_ADAPTER: postgres
+      AIW_WORKER_HEARTBEAT_FILE: /var/run/aiw/worker-heartbeat.json
+      AIW_KNOWLEDGE_OBJECT_STORE: s3
+      AIW_KNOWLEDGE_S3_ENDPOINT: http://minio:9000
+      AIW_KNOWLEDGE_S3_BUCKET: aiw-knowledge
+      AIW_KNOWLEDGE_S3_FORCE_PATH_STYLE: "true"
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-aiwpilot}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-aiw-pilot-change-me}
+      AWS_REGION: us-east-1
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+    volumes: [aiw_pilot_runtime:/var/run/aiw]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      minio-init: { condition: service_completed_successfully }
+
+  web:
+    build:
+      context: ../frontend
+      target: web
+    ports: ["4173:80"]
+    depends_on:
+      api: { condition: service_started }
+
+volumes:
+  aiw_pilot_postgres:
+  aiw_pilot_object_store:
+  aiw_pilot_runtime:

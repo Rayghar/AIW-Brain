@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: aiw
+      POSTGRES_USER: aiw
+      POSTGRES_PASSWORD: ${AIW_ACCEPTANCE_POSTGRES_PASSWORD:-change-me}
+    ports: ["55432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiw -d aiw"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: ${AIW_ACCEPTANCE_MINIO_USER:-aiwadmin}
+      MINIO_ROOT_PASSWORD: ${AIW_ACCEPTANCE_MINIO_PASSWORD:-change-me-now}
+    ports: ["59000:9000", "59001:9001"]
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: ${AIW_ACCEPTANCE_KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${AIW_ACCEPTANCE_KEYCLOAK_PASSWORD:-change-me}
+    ports: ["58080:8080"]
+  nats:
+    image: nats:2-alpine
+    command: ["-js", "-m", "8222"]
+    ports: ["54222:4222", "58222:8222"]
+  vault:
+    image: hashicorp/vault:latest
+    cap_add: ["IPC_LOCK"]
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${AIW_ACCEPTANCE_VAULT_TOKEN:-acceptance-only-token}
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+    ports: ["58200:8200"]
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otelcol/config.yaml:ro
+    ports: ["54317:4317", "54318:4318"]

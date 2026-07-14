@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiw-api
+  labels:
+    app: aiw-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aiw-api
+  template:
+    metadata:
+      labels:
+        app: aiw-api
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/example/aiw-api:0.8.0
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+          envFrom:
+            - secretRef:
+                name: aiw-runtime-secrets

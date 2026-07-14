@@ -1,0 +1,107 @@
+{
+  "releaseId": "AIW-0.10.0-rc.10.72.3",
+  "projectId": "project-order-to-payment",
+  "projectRevision": 1,
+  "providerConfigured": false,
+  "liveProviderUsed": false,
+  "summary": {
+    "scenarioCount": 9,
+    "passedScenarios": 9,
+    "deterministicAverage": 91.6,
+    "governedLlmAverage": null,
+    "stageAlignmentRate": 100,
+    "unsupportedClaimCount": 0,
+    "llmRegressionCount": 0,
+    "qualityGatePassRate": 100
+  },
+  "governance": {
+    "productionAcceptanceClaimed": false,
+    "humanExpertValidationCompleted": false,
+    "liveProviderAcceptanceCompleted": false,
+    "directModelMutationAllowed": false,
+    "boundary": "No live governed LLM route was used. Hybrid variants resolved through deterministic fallback; provider acceptance and human expert scoring remain blocked."
+  },
+  "scenarioStatus": [
+    {
+      "scenarioId": "SOL-CAL-REQ-01",
+      "lifecycleStage": "requirements",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 86,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-QUA-01",
+      "lifecycleStage": "quality",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 83,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-CTX-01",
+      "lifecycleStage": "context",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 90,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-LOG-01",
+      "lifecycleStage": "logical",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 97,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-REA-01",
+      "lifecycleStage": "realization",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 97,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-LTE-01",
+      "lifecycleStage": "logicalTechnology",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 93,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-PTE-01",
+      "lifecycleStage": "physicalTechnology",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 97,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-REV-01",
+      "lifecycleStage": "review",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 89,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    },
+    {
+      "scenarioId": "SOL-CAL-SDD-01",
+      "lifecycleStage": "sdd",
+      "passed": true,
+      "failures": [],
+      "deterministicScore": 92,
+      "governedLlmScore": null,
+      "hybridEffectiveMode": "deterministic-fallback"
+    }
+  ]
+}

@@ -1,0 +1,315 @@
+{
+  "schemaVersion": "0.2.0",
+  "id": "project-order-to-payment",
+  "name": "Order-to-Payment Reference Design",
+  "description": "A reference project demonstrating scoped styles, lineage, validation and proposed architecture changes.",
+  "activeStage": "logicalApplication",
+  "objectives": [
+    "Process customer orders reliably",
+    "Protect payment processing from dependency failures",
+    "Support measurable availability and latency objectives"
+  ],
+  "constraints": [
+    "Cloud agnostic logical design",
+    "No direct storage of payment card data"
+  ],
+  "assumptions": [
+    "Initial team size is eight engineers",
+    "Peak volume is 250 orders per second"
+  ],
+  "qualityPriorities": [
+    {
+      "attributeId": "availability",
+      "weight": 5,
+      "rationale": "Revenue-critical order processing"
+    },
+    {
+      "attributeId": "faultTolerance",
+      "weight": 5,
+      "rationale": "External payment providers can fail"
+    },
+    {
+      "attributeId": "scalability",
+      "weight": 4
+    },
+    {
+      "attributeId": "modifiability",
+      "weight": 4
+    },
+    {
+      "attributeId": "simplicity",
+      "weight": 3
+    },
+    {
+      "attributeId": "costEfficiency",
+      "weight": 3
+    }
+  ],
+  "qualityScenarios": [
+    {
+      "id": "qs-payment-provider-latency",
+      "attributeId": "availability",
+      "source": "External payment provider",
+      "stimulus": "Provider becomes unavailable or exceeds timeout",
+      "environment": "Peak production traffic",
+      "artifact": "Payment integration boundary",
+      "response": "Isolate the failure and preserve order status for safe retry",
+      "responseMeasure": "No confirmed order is lost; checkout degrades within 3 seconds",
+      "weight": 5
+    }
+  ],
+  "styleDecisions": [
+    {
+      "id": "style-decision-orders",
+      "styleId": "STYLE-EVENT-DRIVEN",
+      "scopeNodeId": "logical-order-domain",
+      "stage": "logicalApplication",
+      "rationale": "Decouple order progression from payment provider availability while preserving explicit synchronous query paths where justified.",
+      "status": "accepted"
+    }
+  ],
+  "patternSelections": [
+    {
+      "id": "pattern-selection-outbox",
+      "patternId": "PAT-OUTBOX",
+      "scopeNodeId": "logical-order-domain",
+      "stage": "applicationRealization",
+      "rationale": "Reliably publish order events after local state changes.",
+      "status": "considering",
+      "obligationsAcknowledged": []
+    }
+  ],
+  "nodes": [
+    {
+      "id": "actor-customer",
+      "kind": "Actor",
+      "stage": "logicalApplication",
+      "label": "Customer",
+      "properties": {},
+      "lineageFrom": [],
+      "positions": {
+        "logicalApplication": {
+          "x": 40,
+          "y": 160
+        }
+      },
+      "tags": [
+        "external"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-order-domain",
+      "kind": "Domain",
+      "stage": "logicalApplication",
+      "label": "Order Domain",
+      "properties": {
+        "owner": "Commerce Team"
+      },
+      "lineageFrom": [],
+      "positions": {
+        "logicalApplication": {
+          "x": 280,
+          "y": 100
+        }
+      },
+      "tags": [
+        "core-domain"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-order-service",
+      "kind": "LogicalService",
+      "stage": "logicalApplication",
+      "label": "Order Service",
+      "properties": {
+        "communicationPreference": "mixed"
+      },
+      "lineageFrom": [],
+      "parentId": "logical-order-domain",
+      "positions": {
+        "logicalApplication": {
+          "x": 310,
+          "y": 200
+        }
+      },
+      "tags": [
+        "business-service"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-payment-service",
+      "kind": "LogicalService",
+      "stage": "logicalApplication",
+      "label": "Payment Service",
+      "properties": {
+        "dataClassification": "confidential"
+      },
+      "lineageFrom": [],
+      "parentId": "logical-order-domain",
+      "positions": {
+        "logicalApplication": {
+          "x": 580,
+          "y": 200
+        }
+      },
+      "tags": [
+        "business-service"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "deployable-order-api",
+      "kind": "DeployableUnit",
+      "stage": "applicationRealization",
+      "label": "Order API",
+      "properties": {
+        "runtime": "Node.js",
+        "public": true
+      },
+      "lineageFrom": [
+        "logical-order-service"
+      ],
+      "positions": {
+        "applicationRealization": {
+          "x": 220,
+          "y": 170
+        }
+      },
+      "tags": [
+        "api"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "deployable-payment-worker",
+      "kind": "DeployableUnit",
+      "stage": "applicationRealization",
+      "label": "Payment Worker",
+      "properties": {
+        "runtime": "Node.js"
+      },
+      "lineageFrom": [
+        "logical-payment-service"
+      ],
+      "positions": {
+        "applicationRealization": {
+          "x": 560,
+          "y": 170
+        }
+      },
+      "tags": [
+        "worker"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "logical-relational-store",
+      "kind": "LogicalTechnologyCapability",
+      "stage": "logicalTechnology",
+      "label": "Relational Data Service",
+      "properties": {
+        "consistency": "strong"
+      },
+      "lineageFrom": [
+        "deployable-order-api"
+      ],
+      "positions": {
+        "logicalTechnology": {
+          "x": 300,
+          "y": 220
+        }
+      },
+      "tags": [
+        "data"
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "physical-postgres",
+      "kind": "TechnologyProduct",
+      "stage": "physicalTechnology",
+      "label": "Managed PostgreSQL",
+      "properties": {
+        "vendor": "generic",
+        "replicas": 1,
+        "availabilityZones": 1,
+        "encryptedAtRest": true
+      },
+      "lineageFrom": [
+        "logical-relational-store"
+      ],
+      "positions": {
+        "physicalTechnology": {
+          "x": 360,
+          "y": 220
+        }
+      },
+      "tags": [
+        "database"
+      ],
+      "status": "draft"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-customer-order",
+      "sourceId": "actor-customer",
+      "targetId": "logical-order-service",
+      "kind": "communicatesWith",
+      "stage": "logicalApplication",
+      "label": "Places order",
+      "properties": {
+        "protocolStyle": "synchronous"
+      }
+    },
+    {
+      "id": "edge-order-payment-event",
+      "sourceId": "logical-order-service",
+      "targetId": "logical-payment-service",
+      "kind": "publishes",
+      "stage": "logicalApplication",
+      "label": "Order submitted",
+      "properties": {
+        "delivery": "at-least-once"
+      }
+    },
+    {
+      "id": "edge-order-api-realizes",
+      "sourceId": "deployable-order-api",
+      "targetId": "logical-order-service",
+      "kind": "realizes",
+      "stage": "applicationRealization",
+      "properties": {}
+    },
+    {
+      "id": "edge-payment-worker-realizes",
+      "sourceId": "deployable-payment-worker",
+      "targetId": "logical-payment-service",
+      "kind": "realizes",
+      "stage": "applicationRealization",
+      "properties": {}
+    },
+    {
+      "id": "edge-postgres-maps",
+      "sourceId": "physical-postgres",
+      "targetId": "logical-relational-store",
+      "kind": "mapsTo",
+      "stage": "physicalTechnology",
+      "properties": {}
+    }
+  ],
+  "decisions": [],
+  "findings": [],
+  "context": {
+    "teamSize": 8,
+    "deliveryHorizonMonths": 6,
+    "operationalMaturity": 3,
+    "budgetSensitivity": 3,
+    "regulatoryExposure": "high"
+  },
+  "revision": 1,
+  "updatedAt": "2026-07-02T07:03:02.159Z"
+}

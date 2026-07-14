@@ -1,0 +1,53 @@
+{
+  "releaseId": "AIW-0.9.7",
+  "sprint": "8.0.4-hardening",
+  "generatedAt": "2026-07-03T07:36:00.000Z",
+  "tests": {
+    "engine": 87,
+    "artifacts": 2,
+    "api": 81,
+    "total": 170
+  },
+  "gates": {
+    "intelligenceCore": "8/8",
+    "integratedJourney": "13/13",
+    "reconciledRelease": "16/16",
+    "hardening": "12/12",
+    "productionKnowledge": "328/200",
+    "securitySourceScan": "passed",
+    "architecturePolicy": "passed",
+    "e2eSmoke": "passed",
+    "npmAuditHigh": "0 vulnerabilities"
+  },
+  "knowledgeDepth": {
+    "releaseId": "AKR-0.8.8",
+    "records": 328,
+    "averageScore": 49,
+    "productionDeep": 10,
+    "productionSupporting": 130,
+    "needsEnrichment": 188,
+    "primaryRecommendationPolicy": "production-deep only"
+  },
+  "calibration": {
+    "productionAttributes": 8,
+    "draftAttributes": 12,
+    "draftAttributesInfluenceScoring": false
+  },
+  "simulation": {
+    "defaultMode": "comparative",
+    "empiricalAdjustmentRequires": "approved calibration profile",
+    "draftEvidenceCanChangeOutcome": false
+  },
+  "globalFoundation": {
+    "coreLocales": [
+      "en",
+      "fr",
+      "pt",
+      "ar"
+    ],
+    "rtl": true,
+    "accessibleCanvasOutline": true,
+    "installableOfflineShell": true
+  },
+  "externalAcceptanceStillRequired": true
+}

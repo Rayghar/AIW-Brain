@@ -1,0 +1,26 @@
+{
+  "benchmarkId": "AGENCY-BANKING-GOLDEN-1.0",
+  "title": "Agency Banking Architecture Golden Benchmark",
+  "generationInputPolicy": "The completed Agency Banking SDD is excluded from architecture generation and is used only as a post-generation comparison reference.",
+  "businessProblem": "Enable a regulated financial institution to operate a secure agency banking channel through approved agents, supporting customer onboarding, identity verification, cash-in, cash-out, transfers, balance enquiries, reversals, settlement, reconciliation and operational support while integrating with existing core banking and payment infrastructure.",
+  "stakeholders": [
+    "Retail customer", "Agency banking agent", "Agent supervisor", "Operations", "Customer support", "Fraud and risk", "Compliance", "Information security", "Finance and reconciliation", "Core banking team", "Platform/SRE", "Product owner"
+  ],
+  "knownConstraints": [
+    "Existing core banking remains the system of record for customer accounts and financial posting.",
+    "External identity/KYC and payment-switch services may be unavailable or slow.",
+    "Every financial operation must be auditable and support controlled investigation and reversal.",
+    "Sensitive personal and financial data must be protected and access must be least-privilege.",
+    "The design must remain provider-neutral until physical technology selection.",
+    "Architecture changes require human approval and traceability."
+  ],
+  "candidateTargetsRequiringConfirmation": [
+    {"target":"99.9% availability","status":"unconfirmed-candidate","requiredEvidence":"business criticality, maintenance policy and service tier"},
+    {"target":"under 200 ms response time","status":"unconfirmed-candidate","requiredEvidence":"journey boundary, percentile, load, network and external dependency assumptions"},
+    {"target":"1,000 transactions per second","status":"unconfirmed-candidate","requiredEvidence":"current and forecast workload profile"},
+    {"target":"RTO and RPO","status":"clarification-required","requiredEvidence":"business impact assessment and recovery tier"}
+  ],
+  "functionalNeeds": [
+    "Register, verify and approve agents.", "Authenticate agents and authorize permitted operations.", "Onboard customers and verify identity.", "Perform cash deposit and withdrawal.", "Perform transfers and balance enquiries.", "Enforce limits, fees, liquidity and fraud policies.", "Protect against duplicate financial processing.", "Handle timeout, uncertainty, reversal and compensation.", "Generate receipts and notifications.", "Settle and reconcile transactions.", "Manage disputes and operational interventions.", "Provide immutable audit and observability evidence."
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "generatedAt": "2026-07-11T22:20:04.364Z",
+  "platformVersion": "0.10.0-rc.10.65.0",
+  "environment": "development",
+  "productionAccepted": false,
+  "verified": 0,
+  "configured": 0,
+  "open": 9,
+  "checks": [
+    {
+      "id": "ACC-POSTGRES",
+      "name": "PostgreSQL and row-level security",
+      "category": "data",
+      "status": "reference-only",
+      "detail": "The application is using the memory/reference repository.",
+      "remediation": "Configure DATABASE_URL for durable multi-user operation.",
+      "activeProbe": false,
+      "probeMode": "passive",
+      "durationMs": 0,
+      "evidence": []
+    },
+    {
+      "id": "ACC-OBJECT-STORE",
+      "name": "Immutable snapshot object storage",
+      "category": "knowledge",
+      "status": "reference-only",
+      "detail": "Write/read/delete round trip succeeded through file storage.",
+      "remediation": "Configure S3 or MinIO for production snapshot durability.",
+      "activeProbe": true,
+      "probeMode": "active",
+      "durationMs": 3,
+      "evidence": [
+        "storage-adapter:file",
+        "sha256:97da62521e23d3f5d4e3a2e65a9330c71a49ecd1cff01c2a5531d74e1b13b28e",
+        "bytes:83"
+      ]
+    },
+    {
+      "id": "ACC-VECTOR",
+      "name": "Approved knowledge vector retrieval",
+      "category": "knowledge",
+      "status": "not-configured",
+      "detail": "DATABASE_URL is required for pgvector retrieval.",
+      "remediation": "Run the active vector probe and index only approved release records.",
+      "activeProbe": false,
+      "probeMode": "passive",
+      "durationMs": 0,
+      "evidence": []
+    },
+    {
+      "id": "ACC-LLM",
+      "name": "Configurable LLM brain",
+      "category": "ai",
+      "status": "not-configured",
+      "detail": "No external or local model route is configured; deterministic mode remains available.",
+      "remediation": "Configure one approved provider or local OpenAI-compatible route.",
+      "activeProbe": false,
+      "probeMode": "passive",
+      "durationMs": 0,
+      "evidence": []
+    },
+    {
+      "id": "ACC-GITHUB",
+      "name": "GitHub knowledge refresh",
+      "category": "knowledge",
+      "status": "not-configured",
+      "detail": "Live GitHub retrieval is disabled.",
+      "remediation": "Configure a read-only credential and an acceptance repository, then execute the active probe.",
+      "activeProbe": false,
+      "probeMode": "passive",
+      "durationMs": 0,
+      "evidence": []
+    },
+    {
+      "id": "ACC-CI",
+      "name": "External fitness-function CI loop",
+      "category": "delivery",
+      "status": "not-configured",
+      "detail": "No writable fitness-test target repository is configured.",
+      "remediation": "Open a generated pull request in a non-production acceptance repository, execute CI and return conformance evidence to AIW.",
+      "activeProbe": false,
+      "probeMode": "passive",
+      "evidence": [],
+      "durationMs": 0
+    },
+    {
+      "id": "ACC-OIDC",
+      "name": "Enterprise OIDC identity",
+      "category": "identity",
+      "status": "not-configured",
+      "detail": "Development identity mode is active or enterprise OIDC is incomplete.",
+      "remediation": "Configure issuer and audience, run discovery/JWKS acceptance, then complete real sign-in and role-mapping tests.",
+      "activeProbe": false,
+      "probeMode": "passive",
+      "durationMs": 0,
+      "evidence": []
+    },
+    {
+      "id": "ACC-OTEL",
+      "name": "Runtime telemetry and conformance feed",
+      "category": "observability",
+      "status": "not-configured",
+      "detail": "No external telemetry endpoint is configured.",
+      "remediation": "Connect an OTLP collector and run an active synthetic-span export.",
+      "activeProbe": false,
+      "probeMode": "passive",
+      "durationMs": 0,
+      "evidence": []
+    },
+    {
+      "id": "ACC-SIGNING",
+      "name": "Enterprise release signing trust",
+      "category": "trust",
+      "status": "not-configured",
+      "detail": "No enterprise release signing key is configured.",
+      "remediation": "Use a protected enterprise key or KMS-backed signer and independently verify the packaged release.",
+      "activeProbe": false,
+      "probeMode": "active",
+      "durationMs": 0,
+      "evidence": []
+    }
+  ],
+  "requiredChecks": [
+    "ACC-POSTGRES",
+    "ACC-OBJECT-STORE",
+    "ACC-VECTOR",
+    "ACC-OIDC",
+    "ACC-OTEL",
+    "ACC-SIGNING"
+  ],
+  "boundary": "Configured means a code path and secret reference exist. Verified means this runtime completed the named active probe. Production accepted means every required check is verified; accountable environment sign-off and retained evidence are still required."
+}

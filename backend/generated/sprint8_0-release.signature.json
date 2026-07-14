@@ -1,0 +1,11 @@
+{
+  "releaseId": "AIW-8.0",
+  "checksumSha256": "6be1147b197075269ddc83f4573ca19662a170d9988a3ed9ea12c0d0df6b2867",
+  "signatureAlgorithm": "Ed25519",
+  "publicKeyId": "2900519038195c323cee9043",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAIxjpOu/SESNR6L+S3NMcpQEAopyvzRfnHNdWtKDDzHE=\n-----END PUBLIC KEY-----\n",
+  "signatureBase64": "uAExB70mruQE336sIiNrDZsUCgzVrz4JAqujMtfjNlbXbSWdu98szJG58Ig+saDz3MaTtOJ/Tv+N231kQYmQCA==",
+  "signedBy": "AIW Sprint 8.0 Release Authority",
+  "signedAt": "2026-07-02T19:57:26.469Z",
+  "verificationStatus": "valid"
+}

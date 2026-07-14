@@ -1,0 +1,19 @@
+[
+  {
+    "id": "physical-postgres",
+    "label": "Managed PostgreSQL",
+    "kind": "TechnologyProduct",
+    "properties": {
+      "vendor": "generic",
+      "product": "PostgreSQL",
+      "version": "15",
+      "replicas": 2,
+      "availabilityZones": 2,
+      "encryptedAtRest": true,
+      "expectedMonthlyCost": 500
+    },
+    "lineageFrom": [
+      "logical-relational-store"
+    ]
+  }
+]

@@ -1,0 +1,435 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiw.example/schemas/project-0.6.0.json",
+  "title": "Architecture Intelligence Workbench Project v0.6.0",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "tenantId",
+    "id",
+    "name",
+    "activeStage",
+    "nodes",
+    "edges",
+    "branch",
+    "members",
+    "collaborationSettings",
+    "securitySettings",
+    "identityProviders",
+    "secretReferences",
+    "observabilitySettings",
+    "repositoryBindings",
+    "runtimeInventories",
+    "driftReports",
+    "policyGates",
+    "revision",
+    "updatedAt"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.6.0"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "activeStage": {
+      "enum": [
+        "designIntent",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology",
+        "validationRealization"
+      ]
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "branch": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "baseRevision",
+        "status",
+        "createdAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "baseRevision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "enum": [
+            "active",
+            "candidate",
+            "merged",
+            "archived"
+          ]
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      }
+    },
+    "members": {
+      "type": "array"
+    },
+    "collaborationSettings": {
+      "type": "object",
+      "required": [
+        "approvalValidityDays",
+        "reviewDueDays",
+        "requireIndependentReviewer",
+        "maxConcurrentEditors",
+        "presenceTtlSeconds",
+        "operationRetryLimit"
+      ]
+    },
+    "securitySettings": {
+      "type": "object",
+      "required": [
+        "requireSso",
+        "allowedIdentityProviderIds",
+        "allowDevelopmentAuth",
+        "sessionMaxAgeMinutes",
+        "auditRetentionDays",
+        "encryptionKeyReference"
+      ],
+      "properties": {
+        "requireSso": {
+          "type": "boolean"
+        },
+        "allowedIdentityProviderIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowDevelopmentAuth": {
+          "type": "boolean"
+        },
+        "sessionMaxAgeMinutes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "auditRetentionDays": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "encryptionKeyReference": {
+          "type": "string",
+          "pattern": "^[a-z-]+://"
+        }
+      }
+    },
+    "identityProviders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identityProvider"
+      }
+    },
+    "secretReferences": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/secretReference"
+      }
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "observabilitySettings": {
+      "type": "object",
+      "required": [
+        "serviceName",
+        "tracesEnabled",
+        "metricsEnabled",
+        "logsEnabled",
+        "samplingRatio",
+        "targetAvailabilityPercent",
+        "targetP95LatencyMs"
+      ],
+      "properties": {
+        "serviceName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tracesEnabled": {
+          "type": "boolean"
+        },
+        "metricsEnabled": {
+          "type": "boolean"
+        },
+        "logsEnabled": {
+          "type": "boolean"
+        },
+        "samplingRatio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "otlpEndpointReference": {
+          "type": "string"
+        },
+        "targetAvailabilityPercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "targetP95LatencyMs": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "repositoryBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "provider",
+          "repositoryUrl",
+          "defaultBranch",
+          "architecturePath",
+          "runtimeInventoryPath",
+          "policyGatePath",
+          "status"
+        ],
+        "properties": {
+          "provider": {
+            "enum": [
+              "local",
+              "github",
+              "gitlab",
+              "azure-devops"
+            ]
+          },
+          "status": {
+            "enum": [
+              "configured",
+              "connected",
+              "error"
+            ]
+          }
+        }
+      }
+    },
+    "runtimeInventories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/runtimeInventory"
+      }
+    },
+    "driftReports": {
+      "type": "array"
+    },
+    "policyGates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "enabled",
+          "hardFindingThreshold",
+          "significantFindingThreshold",
+          "advisoryFindingThreshold",
+          "maxMissingResources",
+          "maxUnmanagedResources",
+          "requiredApprovedStages"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "stage",
+        "label",
+        "properties",
+        "lineageFrom",
+        "positions",
+        "tags",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object"
+        },
+        "lineageFrom": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "positions": {
+          "type": "object"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": [
+        "id",
+        "sourceId",
+        "targetId",
+        "kind",
+        "stage",
+        "properties"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "targetId": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object"
+        }
+      }
+    },
+    "identityProvider": {
+      "type": "object",
+      "required": [
+        "id",
+        "tenantId",
+        "type",
+        "name",
+        "issuer",
+        "clientId",
+        "scopes",
+        "enabled"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "oidc",
+            "saml",
+            "development"
+          ]
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      }
+    },
+    "secretReference": {
+      "type": "object",
+      "required": [
+        "id",
+        "provider",
+        "locator",
+        "purpose"
+      ],
+      "properties": {
+        "provider": {
+          "enum": [
+            "environment",
+            "vault",
+            "aws-secrets-manager",
+            "azure-key-vault",
+            "gcp-secret-manager"
+          ]
+        },
+        "locator": {
+          "type": "string",
+          "pattern": "^[a-z-]+://"
+        }
+      }
+    },
+    "runtimeInventory": {
+      "type": "object",
+      "required": [
+        "id",
+        "tenantId",
+        "projectId",
+        "branchId",
+        "name",
+        "sourceType",
+        "capturedAt",
+        "rawFingerprint",
+        "resources",
+        "relationships"
+      ],
+      "properties": {
+        "sourceType": {
+          "enum": [
+            "kubernetes",
+            "terraform-state",
+            "openapi",
+            "manual"
+          ]
+        },
+        "resources": {
+          "type": "array"
+        },
+        "relationships": {
+          "type": "array"
+        }
+      }
+    }
+  }
+}

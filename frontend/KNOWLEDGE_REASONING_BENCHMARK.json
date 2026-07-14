@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-07-02T16:06:08.233Z",
+  "libraryRecords": 68,
+  "sourceRecords": 11,
+  "antiPatternRecords": 12,
+  "integrityAssessment": {
+    "iterations": 100,
+    "averageMs": 0.806,
+    "p95Ms": 2.075,
+    "maxMs": 4.643
+  },
+  "antiPatternDetection": {
+    "iterations": 500,
+    "averageMs": 0.015,
+    "p95Ms": 0.02,
+    "maxMs": 1.063
+  },
+  "adaptiveInterview": {
+    "iterations": 500,
+    "averageMs": 0.008,
+    "p95Ms": 0.009,
+    "maxMs": 0.63
+  }
+}

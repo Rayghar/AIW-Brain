@@ -1,0 +1,9 @@
+{
+  "status": "blocked_by_environment",
+  "modelNodes": 1500,
+  "modelEdges": 1499,
+  "reason": "Page.goto: net::ERR_BLOCKED_BY_ADMINISTRATOR at http://127.0.0.1:4173/\nCall log:\n  - navigating to \"http://127.0.0.1:4173/\", waiting until \"networkidle\"\n",
+  "harnessAvailable": true,
+  "runCommand": "npm run browser:perf",
+  "note": "The browser benchmark harness is complete, but this execution environment blocked local Chromium navigation. Run it in a normal development or CI environment with an available Playwright Chromium binary."
+}

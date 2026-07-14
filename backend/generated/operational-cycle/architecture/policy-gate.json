@@ -1,0 +1,15 @@
+{
+  "id": "gate-reference",
+  "name": "Reference architecture gate",
+  "enabled": true,
+  "hardFindingThreshold": 0,
+  "significantFindingThreshold": 5,
+  "advisoryFindingThreshold": 25,
+  "maxMissingResources": 0,
+  "maxUnmanagedResources": 3,
+  "requiredApprovedStages": [
+    "logicalApplication",
+    "applicationRealization",
+    "logicalTechnology"
+  ]
+}

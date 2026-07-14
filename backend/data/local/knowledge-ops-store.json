@@ -1,0 +1,96 @@
+{
+  "candidates": [],
+  "stagedPatternEdits": [],
+  "releasedManifests": [],
+  "pins": [],
+  "events": [
+    {
+      "eventId": "event-mind-feedback-2e807e0b-166a-4f5b-b0b0-ee970ddce9ca-1783961110268",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-2e807e0b-166a-4f5b-b0b0-ee970ddce9ca",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T16:45:10.268Z"
+    },
+    {
+      "eventId": "event-mind-feedback-2c8d5745-3320-48e3-beee-5fcbef1696cc-1783949174383",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-2c8d5745-3320-48e3-beee-5fcbef1696cc",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T13:26:14.382Z"
+    },
+    {
+      "eventId": "event-mind-feedback-05ec794c-26d4-4db7-a1a7-a7d3265a7fa2-1783949113902",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-05ec794c-26d4-4db7-a1a7-a7d3265a7fa2",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T13:25:13.901Z"
+    },
+    {
+      "eventId": "event-mind-feedback-5e9740ca-cb22-4589-8700-1140a468a353-1783948969496",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-5e9740ca-cb22-4589-8700-1140a468a353",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T13:22:49.496Z"
+    },
+    {
+      "eventId": "event-mind-feedback-56e26958-bee5-45f4-b36b-b1a587ce5b62-1783944228900",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-56e26958-bee5-45f4-b36b-b1a587ce5b62",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T12:03:48.900Z"
+    },
+    {
+      "eventId": "event-mind-feedback-120f65f9-c09e-465c-a421-c0de761f0bbf-1783943914083",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-120f65f9-c09e-465c-a421-c0de761f0bbf",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T11:58:34.083Z"
+    },
+    {
+      "eventId": "event-mind-feedback-91ca5e7a-638d-4b4e-adca-ff52f2b93887-1783943770460",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-91ca5e7a-638d-4b4e-adca-ff52f2b93887",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T11:56:10.460Z"
+    },
+    {
+      "eventId": "event-mind-feedback-6c5f9b04-ca52-4740-a743-d5d357b83fc2-1783943621572",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-6c5f9b04-ca52-4740-a743-d5d357b83fc2",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-13T11:53:41.571Z"
+    },
+    {
+      "eventId": "event-mind-feedback-cc56feba-dfad-400a-b170-63af8a9dc19a-1783895514846",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-cc56feba-dfad-400a-b170-63af8a9dc19a",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-12T22:31:54.845Z"
+    },
+    {
+      "eventId": "event-mind-feedback-4bf2f84c-7017-47e0-8235-1dc12cc57d39-1783870327712",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-4bf2f84c-7017-47e0-8235-1dc12cc57d39",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-12T15:32:07.711Z"
+    },
+    {
+      "eventId": "event-mind-feedback-06241ba9-16cc-45f5-b51f-bda1556160c7-1783870178355",
+      "actor": "reference-knowledge-curator",
+      "action": "living-canvas-feedback.candidate-staged",
+      "subject": "mind-feedback-06241ba9-16cc-45f5-b51f-bda1556160c7",
+      "detail": "Stage this as a non-scoring candidate for independent evidence review.",
+      "at": "2026-07-12T15:29:38.355Z"
+    }
+  ]
+}

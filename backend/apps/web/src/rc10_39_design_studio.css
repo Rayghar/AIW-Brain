@@ -1,0 +1,328 @@
+/* Sprint 8.9.22 / rc.10.39 — Concept 2 Design Studio pages
+   Converts lifecycle and architecture-workbench surfaces into the approved Concept 2 pattern while preserving the existing AIW dark theme. */
+:root {
+  --aiw-rc39-surface: rgba(9, 24, 38, .94);
+  --aiw-rc39-surface-2: rgba(13, 34, 53, .92);
+  --aiw-rc39-border: rgba(148, 163, 184, .16);
+  --aiw-rc39-blue: #60a5fa;
+  --aiw-rc39-cyan: #22d3ee;
+  --aiw-rc39-teal: #2dd4bf;
+  --aiw-rc39-purple: #8b5cf6;
+  --aiw-rc39-green: #34d399;
+  --aiw-rc39-amber: #f59e0b;
+  --aiw-rc39-red: #fb7185;
+}
+
+/* Shared Concept 2 workbench foundation */
+.concept2-design-page {
+  display: grid;
+  gap: 16px;
+}
+.concept2-design-page .page-heading,
+.concept2-design-page .workspace-hero,
+.concept2-design-page .canvas-toolbar,
+.concept2-design-page .synthesis-hero,
+.concept2-design-page .pattern-hero,
+.concept2-design-page .review-studio-hero,
+.concept2-design-page .guided-journey__hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px !important;
+  border: 1px solid rgba(96, 165, 250, .26) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(45, 212, 191, .13), transparent 34%),
+    radial-gradient(circle at 12% 0%, rgba(96, 165, 250, .16), transparent 34%),
+    linear-gradient(145deg, rgba(14, 38, 60, .98), rgba(7, 19, 31, .95)) !important;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, .32) !important;
+}
+.concept2-design-page .page-heading::after,
+.concept2-design-page .workspace-hero::after,
+.concept2-design-page .canvas-toolbar::after {
+  content: '';
+  position: absolute;
+  inset: auto -80px -100px auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: rgba(96, 165, 250, .08);
+  pointer-events: none;
+}
+.concept2-design-page .page-heading h2,
+.concept2-design-page .workspace-hero h1,
+.concept2-design-page .canvas-toolbar h2 {
+  color: #f8fdff;
+  letter-spacing: -.04em;
+}
+.concept2-design-page .page-heading p,
+.concept2-design-page .workspace-hero p,
+.concept2-design-page .canvas-toolbar p {
+  color: #b7cbd6;
+  font-size: 14.5px;
+  max-width: 880px;
+}
+
+.concept2-stage-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.concept2-stage-board article {
+  min-height: 126px;
+  padding: 17px;
+  border-radius: 22px;
+  border: 1px solid var(--aiw-rc39-border);
+  background:
+    linear-gradient(180deg, rgba(14, 36, 55, .96), rgba(6, 18, 31, .90));
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .22);
+  overflow: hidden;
+}
+.concept2-stage-board span {
+  display: block;
+  color: #9eb9c8;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: 11.5px;
+  font-weight: 900;
+}
+.concept2-stage-board strong {
+  display: block;
+  margin-top: 8px;
+  color: #f8fdff;
+  font-size: clamp(22px, 2.4vw, 31px);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.concept2-stage-board small {
+  display: block;
+  margin-top: 8px;
+  color: #8ea9ba;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.concept2-stage-board article:nth-child(1) { border-color: rgba(96, 165, 250, .24); }
+.concept2-stage-board article:nth-child(2) { border-color: rgba(45, 212, 191, .22); }
+.concept2-stage-board article:nth-child(3) { border-color: rgba(139, 92, 246, .24); }
+.concept2-stage-board article:nth-child(4) { border-color: rgba(245, 158, 11, .22); }
+
+/* Design brief and quality studio */
+.design-brief-concept2 .brief-intake-card,
+.design-brief-concept2 .enterprise-context-card,
+.design-brief-concept2 .form-grid,
+.quality-concept2 .calibration-governance,
+.quality-concept2 .quality-layout,
+.quality-concept2 .recommendation-preview,
+.quality-concept2 .scenario-card,
+.quality-concept2 .explanation-card,
+.quality-concept2 .workbench-disclosure,
+.concept2-design-page .workbench-disclosure,
+.concept2-design-page .panel-card,
+.concept2-design-page .guided-panel,
+.concept2-design-page .studio-marketplace-panel,
+.concept2-design-page .studio-operator-checklist {
+  border-radius: 22px !important;
+  border: 1px solid rgba(148, 163, 184, .16) !important;
+  background: linear-gradient(180deg, rgba(14, 36, 54, .94), rgba(7, 19, 31, .88)) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.20) !important;
+}
+.concept2-design-page .workbench-disclosure > summary {
+  min-height: 56px;
+  padding: 15px 18px;
+  border-radius: 20px;
+  color: #f4fbff;
+}
+.concept2-design-page .workbench-disclosure > summary small { color: #91adbc; }
+.design-brief-concept2 textarea,
+.design-brief-concept2 input,
+.quality-concept2 textarea,
+.quality-concept2 input,
+.quality-concept2 select,
+.synthesis-concept2 textarea,
+.synthesis-concept2 input,
+.synthesis-concept2 select,
+.pattern-concept2 input,
+.pattern-concept2 select {
+  border-radius: 14px !important;
+  border-color: rgba(148, 163, 184, .18) !important;
+  background: rgba(4, 14, 25, .56) !important;
+  color: #f2fbff !important;
+}
+.design-brief-concept2 .field span,
+.quality-concept2 .field span { color: #b7d0dc; font-weight: 800; }
+
+/* Concept 2 canvas/workbench layout */
+.canvas-concept2 .canvas-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+.canvas-concept2 .canvas-toolbar-actions {
+  justify-content: flex-end;
+}
+.canvas-concept2 .pro-view-system-panel,
+.canvas-concept2 .canvas-layer-comment-system > article,
+.canvas-concept2 .canvas-control-dock,
+.canvas-concept2 .canvas-model-tree-board > article,
+.canvas-concept2 .architecture-outline,
+.canvas-concept2 .canvas-lineage-drawer {
+  border-radius: 22px !important;
+  border: 1px solid rgba(148, 163, 184, .16) !important;
+  background: linear-gradient(180deg, rgba(14, 36, 54, .94), rgba(7, 19, 31, .88)) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.20) !important;
+}
+.canvas-concept2 .canvas-shell--intelligent {
+  grid-template-columns: 86px minmax(240px, 300px) minmax(0, 1fr) minmax(260px, 320px) minmax(260px, 320px);
+  gap: 12px;
+}
+.canvas-concept2 .flow-container {
+  border-radius: 24px !important;
+  border: 1px solid rgba(96, 165, 250, .22) !important;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(96, 165, 250, .08), transparent 30%),
+    rgba(3, 10, 20, .78) !important;
+  min-height: 620px;
+}
+.canvas-concept2 .canvas-tool-rail,
+.canvas-concept2 .architecture-library,
+.canvas-concept2 .embedded-intelligence-panel,
+.canvas-concept2 .canvas-inspector {
+  border-radius: 22px !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  background: linear-gradient(180deg, rgba(14, 36, 54, .94), rgba(7, 19, 31, .90)) !important;
+}
+.canvas-concept2 .canvas-tool-rail button.active,
+.canvas-concept2 .canvas-model-tree-board button.active {
+  border-color: rgba(45, 212, 191, .44) !important;
+  background: linear-gradient(135deg, rgba(45, 212, 191, .20), rgba(96, 165, 250, .09)) !important;
+}
+.canvas-concept2 .canvas-mode-banner {
+  border-radius: 18px;
+  border: 1px solid rgba(45, 212, 191, .18);
+  background: rgba(7, 19, 31, .62);
+}
+
+/* Pattern marketplace and synthesis */
+.pattern-concept2 .workspace-hero,
+.synthesis-concept2 .workspace-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 300px);
+  gap: 18px;
+  align-items: center;
+}
+.pattern-concept2 .hero-badge,
+.synthesis-concept2 .hero-badge {
+  border-radius: 22px !important;
+  border: 1px solid rgba(45, 212, 191, .22) !important;
+  background: rgba(4, 14, 25, .46) !important;
+  padding: 18px !important;
+}
+.pattern-concept2 .metric-grid article,
+.synthesis-concept2 .metric-grid article {
+  border-radius: 20px !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  background: linear-gradient(180deg, rgba(14, 36, 54, .94), rgba(7, 19, 31, .88)) !important;
+}
+.pattern-concept2 .pattern-tabs,
+.synthesis-concept2 .synthesis-tabs {
+  position: sticky;
+  top: 76px;
+  z-index: 20;
+  border-radius: 20px;
+  background: rgba(7, 19, 31, .82);
+  backdrop-filter: blur(14px);
+}
+.pattern-concept2 .pattern-tabs button.active,
+.synthesis-concept2 .synthesis-tabs button.active {
+  background: linear-gradient(135deg, var(--aiw-rc39-blue), var(--aiw-rc39-teal)) !important;
+  color: #04131a !important;
+  border-color: transparent !important;
+}
+.pattern-concept2 .pattern-library-grid,
+.pattern-concept2 .recommendation-grid,
+.pattern-concept2 .fitness-grid,
+.synthesis-concept2 .alternative-grid,
+.synthesis-concept2 .simulation-results,
+.synthesis-concept2 .decision-package-grid {
+  gap: 12px !important;
+}
+.pattern-concept2 .pattern-library-grid article,
+.pattern-concept2 .recommendation-grid article,
+.synthesis-concept2 .alternative-card,
+.synthesis-concept2 .brief-gap,
+.synthesis-concept2 .scenario-card,
+.synthesis-concept2 .simulation-card,
+.synthesis-concept2 .decision-card {
+  border-radius: 20px !important;
+  border-color: rgba(148, 163, 184, .16) !important;
+  background: linear-gradient(180deg, rgba(14, 36, 54, .94), rgba(7, 19, 31, .88)) !important;
+}
+.synthesis-concept2 .alternative-card.selected,
+.pattern-concept2 .pattern-library-grid article.selected {
+  border-color: rgba(45, 212, 191, .48) !important;
+  box-shadow: 0 0 0 1px rgba(45, 212, 191, .18), 0 22px 52px rgba(0,0,0,.24) !important;
+}
+.synthesis-concept2 .topology-preview {
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, .14);
+  background: rgba(4, 14, 25, .42);
+}
+
+/* Review & Realize harmonization */
+.review-realize-concept2 .audit-section,
+.review-realize-concept2 .artifact-section,
+.review-realize-concept2 .snapshot-section,
+.review-realize-concept2 .selection-summary-section,
+.review-realize-concept2 .review-column {
+  border-radius: 22px !important;
+  border: 1px solid rgba(148, 163, 184, .16) !important;
+  background: linear-gradient(180deg, rgba(14, 36, 54, .94), rgba(7, 19, 31, .88)) !important;
+  box-shadow: 0 18px 46px rgba(0,0,0,.20) !important;
+}
+.review-realize-concept2 .review-actions {
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, .13);
+  background: rgba(4, 14, 25, .42);
+  padding: 12px;
+}
+
+/* Universal Concept 2 readability and alignment */
+.concept2-design-page h2,
+.concept2-design-page h3,
+.concept2-design-page strong { color: #f7fdff; }
+.concept2-design-page p { color: #b7cbd6; line-height: 1.55; }
+.concept2-design-page small { color: #8faabc; line-height: 1.45; }
+.concept2-design-page .button--ai,
+.concept2-design-page .button--primary {
+  background: linear-gradient(135deg, #93c5fd, #2dd4bf) !important;
+  color: #04131a !important;
+  border-color: transparent !important;
+  font-weight: 900 !important;
+}
+.concept2-design-page .status-pill,
+.concept2-design-page .status-chip {
+  border-radius: 999px !important;
+  border: 1px solid rgba(148, 163, 184, .16) !important;
+}
+
+@media (max-width: 1500px) {
+  .concept2-stage-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .canvas-concept2 .canvas-shell--intelligent { grid-template-columns: 76px minmax(230px, 280px) minmax(0, 1fr); }
+  .canvas-concept2 .embedded-intelligence-panel,
+  .canvas-concept2 .canvas-inspector { grid-column: span 1; }
+}
+@media (max-width: 1100px) {
+  .concept2-stage-board,
+  .pattern-concept2 .workspace-hero,
+  .synthesis-concept2 .workspace-hero,
+  .canvas-concept2 .canvas-toolbar { grid-template-columns: 1fr; }
+  .canvas-concept2 .canvas-shell--intelligent { grid-template-columns: 1fr; }
+  .pattern-concept2 .pattern-tabs,
+  .synthesis-concept2 .synthesis-tabs { position: static; }
+}
+@media (max-width: 720px) {
+  .concept2-stage-board { grid-template-columns: 1fr; }
+  .concept2-stage-board article { min-height: 104px; }
+}

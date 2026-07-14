@@ -1,0 +1,27 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const root = process.cwd();
+const read = (path) => readFileSync(resolve(root, path), 'utf8');
+const app = read('apps/api/src/app.ts');
+const production = read('apps/api/src/productionOperations.ts');
+const interoperability = read('apps/api/src/routes/interoperabilityRoutes.ts');
+const sample = read('packages/domain/src/sample.ts');
+const pkg = JSON.parse(read('package.json'));
+const release = read('packages/domain/src/release.ts');
+const results = [];
+const check = (name, pass, detail = undefined) => results.push({ name, pass: Boolean(pass), detail });
+check('release.version', pkg.version === '0.10.0-rc.10.61.0', pkg.version);
+check('release.constant', release.includes("version: '0.10.0-rc.10.61.0'") && release.includes("releaseLine: 'rc.10.61'"));
+check('api.runtime-inventory', /runtime|inventory/i.test(app));
+check('api.drift-conformance', /drift/i.test(app) && /conformance|policy.gate/i.test(app));
+check('api.knowledge-provenance', /knowledge|claim|evidence/i.test(app));
+check('api.interoperability', /interoperability\/(export|validate|import|merge|round-trip)/.test(interoperability) && interoperability.includes('architectureExchangeFormats'));
+check('api.production-acceptance', /productionAccepted|blockers/i.test(production));
+check('api.queue-worker-operations', /queue|worker|dead.letter|retry/i.test(app));
+check('reference.progressive-model', ['realization-api-gateway','logical-container-runtime','physical-container-platform'].every((value) => sample.includes(value)));
+check('reference.interfaces', ['if-customer-order-api','if-order-submitted-event','if-payment-provider'].every((value) => sample.includes(value)));
+for (const result of results) console.log(`${result.pass ? 'PASS' : 'FAIL'} ${result.name}${result.detail === undefined ? '' : ` :: ${result.detail}`}`);
+const failed = results.filter((result) => !result.pass);
+console.log(`\nAIW rc.10.61 backend capability-surface gate: ${results.length - failed.length}/${results.length} passed.`);
+if (failed.length) process.exit(1);

@@ -1,0 +1,362 @@
+/* Sprint 8.9.23 / rc.10.40 — Governance/admin/operations command-center redesign.
+   AIW rc.10.40 — Concept 3 governance/admin/operations command-center redesign. */
+.command-center-page {
+  --cc-border: rgba(148, 163, 184, 0.18);
+  --cc-border-strong: rgba(45, 212, 191, 0.24);
+  --cc-panel: rgba(15, 23, 42, 0.78);
+  --cc-panel-strong: rgba(15, 23, 42, 0.94);
+  --cc-panel-soft: rgba(30, 41, 59, 0.56);
+  --cc-text: rgba(248, 250, 252, 0.94);
+  --cc-muted: rgba(203, 213, 225, 0.72);
+  --cc-faint: rgba(148, 163, 184, 0.52);
+  --cc-teal: #2dd4bf;
+  --cc-blue: #60a5fa;
+  --cc-purple: #a78bfa;
+  --cc-amber: #fbbf24;
+  --cc-red: #fb7185;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.command-center-page .studio-hero,
+.command-center-page .workspace-hero,
+.command-center-page .admin-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 6% 14%, rgba(45, 212, 191, 0.22), transparent 32%),
+    radial-gradient(circle at 84% 4%, rgba(167, 139, 250, 0.2), transparent 34%),
+    linear-gradient(135deg, rgba(2, 6, 23, 0.98), rgba(15, 23, 42, 0.94) 48%, rgba(30, 41, 59, 0.9));
+  box-shadow: 0 28px 80px rgba(2, 6, 23, 0.36), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.command-center-page .studio-hero::after,
+.command-center-page .workspace-hero::after,
+.command-center-page .admin-hero::after {
+  content: '';
+  position: absolute;
+  inset: auto 28px 0 28px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.8), rgba(167, 139, 250, 0.6), transparent);
+}
+
+.command-center-page .studio-hero h1,
+.command-center-page .workspace-hero h2,
+.command-center-page .admin-hero h2 {
+  color: var(--cc-text);
+  letter-spacing: -0.04em;
+}
+
+.command-center-page .studio-hero p,
+.command-center-page .workspace-hero p,
+.command-center-page .admin-hero p,
+.command-center-page .panel-intro,
+.command-center-page .card-note {
+  color: var(--cc-muted);
+  line-height: 1.65;
+}
+
+.command-center-page .eyebrow {
+  color: var(--cc-teal);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.command-center-page .hero-metric,
+.command-center-page .activation-score-card {
+  border: 1px solid rgba(45, 212, 191, 0.26);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(8, 47, 73, 0.44));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 18px 42px rgba(2, 6, 23, 0.24);
+}
+
+.command-center-page .hero-metric strong,
+.command-center-page .activation-score-card strong {
+  color: var(--cc-text);
+}
+
+.command-center-page .hero-metric small,
+.command-center-page .activation-score-card small {
+  color: var(--cc-muted);
+}
+
+.command-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.command-kpi-row article {
+  min-height: 116px;
+  border: 1px solid var(--cc-border);
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.68)),
+    radial-gradient(circle at 18% 0%, rgba(96, 165, 250, 0.13), transparent 40%);
+  box-shadow: 0 18px 48px rgba(2, 6, 23, 0.24), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.command-kpi-row article:nth-child(2) {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.68)),
+    radial-gradient(circle at 18% 0%, rgba(45, 212, 191, 0.14), transparent 40%);
+}
+
+.command-kpi-row article:nth-child(3) {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.68)),
+    radial-gradient(circle at 18% 0%, rgba(251, 191, 36, 0.14), transparent 42%);
+}
+
+.command-kpi-row article:nth-child(4) {
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.68)),
+    radial-gradient(circle at 18% 0%, rgba(167, 139, 250, 0.14), transparent 42%);
+}
+
+.command-kpi-row span {
+  display: block;
+  color: var(--cc-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.command-kpi-row strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--cc-text);
+  font-size: clamp(22px, 2.2vw, 32px);
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.command-kpi-row small {
+  display: block;
+  margin-top: 9px;
+  color: var(--cc-faint);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.command-center-page .governance-grid,
+.command-center-page .runtime-summary-grid,
+.command-center-page .admin-overview-grid,
+.command-center-page .admin-readiness-grid,
+.command-center-page .runtime-check-grid {
+  gap: 16px;
+}
+
+.command-center-page .governance-card,
+.command-center-page .panel-card,
+.command-center-page .admin-wide-card,
+.command-center-page .admin-readiness-item,
+.command-center-page .runtime-check-card,
+.command-center-page .runtime-control-panel,
+.command-center-page .runtime-history,
+.command-center-page .conformance-map-panel,
+.command-center-page .production-readiness-card,
+.command-center-page .admin-section-stack > article,
+.command-center-page .admin-section-stack > section,
+.command-center-page .admin-table-card,
+.command-center-page .table-card {
+  border: 1px solid var(--cc-border);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.66));
+  box-shadow: 0 20px 48px rgba(2, 6, 23, 0.22), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.command-center-page .governance-card:hover,
+.command-center-page .admin-readiness-item:hover,
+.command-center-page .runtime-check-card:hover,
+.command-center-page .panel-card:hover {
+  border-color: rgba(45, 212, 191, 0.28);
+  transform: translateY(-1px);
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.command-center-page .card-title,
+.command-center-page .panel-heading,
+.command-center-page .admin-wide-card h3,
+.command-center-page .runtime-check-card header {
+  color: var(--cc-text);
+}
+
+.command-center-page .card-title svg,
+.command-center-page .panel-heading svg,
+.command-center-page .admin-wide-card h3 svg,
+.command-center-page .runtime-check-card header svg {
+  color: var(--cc-teal);
+}
+
+.command-center-page .detail-list dt,
+.command-center-page .detail-list small,
+.command-center-page .list-row small,
+.command-center-page .stack-list small,
+.command-center-page .admin-readiness-item small,
+.command-center-page .runtime-check-card small,
+.command-center-page .runtime-check-card footer,
+.command-center-page .runtime-boundary {
+  color: var(--cc-muted);
+}
+
+.command-center-page .detail-list dd,
+.command-center-page .list-row strong,
+.command-center-page .stack-list strong,
+.command-center-page .admin-readiness-item h3,
+.command-center-page .runtime-check-card strong {
+  color: var(--cc-text);
+}
+
+.command-center-page .admin-tabs,
+.command-center-page .conformance-action-strip,
+.command-center-page .admin-command-strip,
+.command-center-page .runtime-actions,
+.command-center-page .button-row {
+  border: 1px solid var(--cc-border);
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(18px);
+}
+
+.command-center-page .admin-tabs button,
+.command-center-page .conformance-action-strip button,
+.command-center-page .admin-command-strip button,
+.command-center-page .button,
+.command-center-page .primary-action,
+.command-center-page .secondary-action {
+  min-height: 38px;
+  border-radius: 14px;
+  font-weight: 800;
+}
+
+.command-center-page .admin-tabs button.active,
+.command-center-page .primary-action,
+.command-center-page .button--primary {
+  border-color: rgba(45, 212, 191, 0.42);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.92), rgba(37, 99, 235, 0.78));
+  color: #ecfeff;
+  box-shadow: 0 14px 32px rgba(20, 184, 166, 0.16);
+}
+
+.command-center-page .secondary-action,
+.command-center-page .button--secondary,
+.command-center-page .admin-command-strip button {
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(30, 41, 59, 0.62);
+  color: var(--cc-text);
+}
+
+.command-center-page .status-pill,
+.command-center-page .admin-pill,
+.command-center-page .severity {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.command-center-page .status-pill--approved,
+.command-center-page .admin-pill--ok,
+.command-center-page .runtime-check-card--verified header span,
+.command-center-page .verified > strong {
+  color: #86efac;
+}
+
+.command-center-page .pending > strong,
+.command-center-page .configured > strong,
+.command-center-page .runtime-check-card--configured header span {
+  color: var(--cc-amber);
+}
+
+.command-center-page .failed > strong,
+.command-center-page .runtime-check-card--failed header span,
+.command-center-page .blocked > strong {
+  color: var(--cc-red);
+}
+
+.command-center-page .finding-card,
+.command-center-page .list-row {
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.56);
+}
+
+.command-center-page .empty-card {
+  border: 1px dashed rgba(148, 163, 184, 0.28);
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.54);
+  color: var(--cc-muted);
+}
+
+.command-center-page .conformance-canvas,
+.command-center-page .runtime-probe-groups article,
+.command-center-page .runtime-evidence code,
+.command-center-page .admin-mini-grid span,
+.command-center-page .admin-check-list li {
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(15, 23, 42, 0.56);
+  border-radius: 18px;
+}
+
+.command-center-page .admin-readiness-item.verified {
+  border-color: rgba(34, 197, 94, 0.24);
+}
+.command-center-page .admin-readiness-item.configured {
+  border-color: rgba(251, 191, 36, 0.24);
+}
+.command-center-page .admin-readiness-item.pending,
+.command-center-page .admin-readiness-item.failed {
+  border-color: rgba(251, 113, 133, 0.24);
+}
+
+.command-center-page table {
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.command-center-page th {
+  color: var(--cc-faint);
+  font-size: 12px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.command-center-page td {
+  background: rgba(15, 23, 42, 0.56);
+  color: var(--cc-muted);
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.command-center-page td:first-child {
+  border-left: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 12px 0 0 12px;
+}
+
+.command-center-page td:last-child {
+  border-right: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 0 12px 12px 0;
+}
+
+@media (max-width: 1180px) {
+  .command-kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .command-kpi-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-command-kpi-row {
+  margin-top: 2px;
+}

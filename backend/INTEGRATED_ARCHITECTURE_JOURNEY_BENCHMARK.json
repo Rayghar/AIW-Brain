@@ -1,0 +1,25 @@
+{
+  "release": "AIW-0.9.2",
+  "sprint": "8.0.2",
+  "generatedAt": "2026-07-02T23:12:03.899Z",
+  "packageVersion": "0.9.6",
+  "checks": {
+    "governedProjectHub": true,
+    "serverAuthoritativeAutosave": true,
+    "durableSnapshots": true,
+    "measurableQualityScenarios": true,
+    "aiAssistedBriefStructuring": true,
+    "fullPatternDnaWorkbenchRetrieval": true,
+    "nodeAnchoredVisualGuidance": true,
+    "durableCoArchitectTrace": true,
+    "realtimeCollaborationRuntime": true,
+    "tenantConfigurableLlmRoutes": true,
+    "postgresBackedLlmPolicy": true,
+    "productionWebAndApiTargets": true,
+    "persistedSynthesisRecovery": true,
+    "responsiveAndRtlFoundation": true,
+    "tenantRlsMigration": true,
+    "semanticGateChecks": 13
+  },
+  "operatingBoundary": "External providers, enterprise OIDC, production object storage, live GitHub and external CI still require approved deployment credentials and endpoints."
+}

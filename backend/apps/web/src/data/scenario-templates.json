@@ -1,0 +1,808 @@
+{
+  "version": "1.0.0",
+  "authoredBy": "fable \u2014 AIW Architect-Advisor (supersedable; template content is advisory seed material, not governed knowledge)",
+  "templates": [
+    {
+      "id": "TPL-DIGITAL-BANKING",
+      "name": "Digital banking platform",
+      "sector": "Financial services",
+      "brief": "Retail banking platform serving mobile and web channels: accounts, transfers, cards, statements. Regulated, audited, and expected to stay available through partner outages.",
+      "drivers": {
+        "availability": 5,
+        "security": 5,
+        "faultTolerance": 4,
+        "performance": 4,
+        "modifiability": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "availability",
+          "stimulus": "Core banking partner API degrades during business hours",
+          "response": "Customer-facing balance and history remain served",
+          "responseMeasure": "99.95% monthly availability; partner outage adds < 2s p99"
+        },
+        {
+          "attributeId": "performance",
+          "stimulus": "Payday concurrent login surge",
+          "response": "Login and balance views stay responsive",
+          "responseMeasure": "p99 < 800ms at 3x average load"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "Actor",
+          "label": "Retail Customer"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Channel Gateway",
+          "description": "AuthN/Z, rate limits, session"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Accounts Service"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Payments Orchestrator"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Core Banking System"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Customer Profile Store"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-API-GATEWAY",
+        "PAT-CIRCUIT-BREAKER",
+        "PAT-OUTBOX",
+        "PAT-IDEMPOTENT"
+      ],
+      "risks": [
+        "Synchronous coupling to the core exposes every channel to its outages",
+        "Dual-write between ledger and notifications loses events",
+        "Session token misuse across trust boundaries"
+      ],
+      "governanceChecklist": [
+        "Data residency per jurisdiction recorded",
+        "PCI scope boundary drawn on canvas",
+        "Waivers time-boxed with owners",
+        "ADR per accepted style/pattern"
+      ]
+    },
+    {
+      "id": "TPL-PAYMENTS",
+      "name": "Payment processing service",
+      "sector": "Payments",
+      "brief": "Card and transfer processing with strict loss-prevention: authorize, capture, settle, reconcile. Every message matters; duplicates are as dangerous as losses.",
+      "drivers": {
+        "faultTolerance": 5,
+        "consistency": 4,
+        "performance": 5,
+        "availability": 4,
+        "observability": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "faultTolerance",
+          "stimulus": "Processor timeout mid-authorization",
+          "response": "No double-charge; transaction resolves deterministically",
+          "responseMeasure": "0 duplicate captures across 1M transactions; automatic reversal < 5 min"
+        },
+        {
+          "attributeId": "performance",
+          "stimulus": "Peak checkout burst",
+          "response": "Authorization completes in budget",
+          "responseMeasure": "p99 < 300ms at 2x peak"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "LogicalService",
+          "label": "Authorization Service"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Capture & Settlement"
+        },
+        {
+          "kind": "Event",
+          "label": "PaymentAuthorized"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Card Network"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Transaction Ledger"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-OUTBOX",
+        "PAT-IDEMPOTENT",
+        "PAT-SAGA",
+        "PAT-DLQ",
+        "PAT-CIRCUIT-BREAKER"
+      ],
+      "risks": [
+        "At-least-once delivery without idempotency duplicates money movement",
+        "Reconciliation drift between ledger and processor",
+        "Retry storms amplifying processor incidents"
+      ],
+      "governanceChecklist": [
+        "Idempotency keys specified per operation",
+        "DLQ drain runbook owned",
+        "Chargeback data retention policy recorded",
+        "PCI-DSS obligations acknowledged"
+      ]
+    },
+    {
+      "id": "TPL-ECOMMERCE",
+      "name": "E-commerce marketplace",
+      "sector": "Retail",
+      "brief": "Catalog, cart, checkout, orders and fulfilment for a growing marketplace with independent seller onboarding and seasonal traffic spikes.",
+      "drivers": {
+        "scalability": 5,
+        "availability": 4,
+        "deployability": 4,
+        "modifiability": 4,
+        "costEfficiency": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "scalability",
+          "stimulus": "Flash-sale traffic at 10x baseline",
+          "response": "Browse and checkout degrade gracefully, never fail hard",
+          "responseMeasure": "Checkout success > 99% at 10x; browse p99 < 1s"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "Actor",
+          "label": "Shopper"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Catalog Service"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Cart & Checkout"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Order Service"
+        },
+        {
+          "kind": "Event",
+          "label": "OrderPlaced"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Catalog Store"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-CQRS",
+        "PAT-OUTBOX",
+        "PAT-API-GATEWAY",
+        "PAT-DB-PER-SERVICE"
+      ],
+      "risks": [
+        "Inventory oversell under concurrency",
+        "Cart-to-order dual writes",
+        "Catalog search coupling to transactional store"
+      ],
+      "governanceChecklist": [
+        "Per-service data ownership recorded",
+        "Read-model staleness tolerance stated",
+        "Peak-load test evidence attached"
+      ]
+    },
+    {
+      "id": "TPL-B2B-SAAS",
+      "name": "B2B SaaS platform",
+      "sector": "Software",
+      "brief": "Multi-tenant workflow SaaS with tenant-scoped data, per-plan features, and enterprise SSO expectations.",
+      "drivers": {
+        "security": 5,
+        "modifiability": 4,
+        "deployability": 4,
+        "costEfficiency": 4,
+        "privacy": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "security",
+          "stimulus": "One tenant attempts cross-tenant access",
+          "response": "Isolation holds at every layer",
+          "responseMeasure": "0 cross-tenant reads in isolation test suite; audit event per denial"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "LogicalService",
+          "label": "Tenant Gateway"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Workflow Engine"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Billing & Plans"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Tenant Data Store"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Enterprise IdP (OIDC)"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-API-GATEWAY",
+        "PAT-DB-PER-SERVICE",
+        "PAT-STRANGLER"
+      ],
+      "risks": [
+        "Tenant bleed through shared caches",
+        "Plan-gated features leaking via API",
+        "Noisy-neighbor workloads"
+      ],
+      "governanceChecklist": [
+        "Tenant isolation test evidence",
+        "Data processing agreements mapped to flows",
+        "Feature-flag audit trail"
+      ]
+    },
+    {
+      "id": "TPL-DATA-PLATFORM",
+      "name": "Analytics data platform",
+      "sector": "Data",
+      "brief": "Ingest operational events, transform into governed datasets, and serve analytics and ML features with lineage.",
+      "drivers": {
+        "scalability": 4,
+        "modifiability": 4,
+        "observability": 4,
+        "costEfficiency": 4,
+        "recoverability": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "recoverability",
+          "stimulus": "Bad transform corrupts a day of derived data",
+          "response": "Replay rebuilds affected datasets",
+          "responseMeasure": "RTO 4h for any derived dataset via replay"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "LogicalService",
+          "label": "Ingestion Gateway"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Stream Processor"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Raw Event Lake"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Curated Warehouse"
+        },
+        {
+          "kind": "Event",
+          "label": "DatasetPublished"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-EVENT-SOURCING",
+        "PAT-CQRS",
+        "PAT-DLQ"
+      ],
+      "risks": [
+        "Schema drift breaking downstream silently",
+        "Reprocessing cost surprises",
+        "PII propagating into derived sets"
+      ],
+      "governanceChecklist": [
+        "Lineage recorded per dataset",
+        "PII classification at ingestion",
+        "Replay procedure tested"
+      ]
+    },
+    {
+      "id": "TPL-LOGISTICS",
+      "name": "Logistics & tracking",
+      "sector": "Logistics",
+      "brief": "Shipment orchestration across unreliable partner webhooks: booking, tracking events, exceptions, customer notifications.",
+      "drivers": {
+        "faultTolerance": 5,
+        "scalability": 4,
+        "modifiability": 4,
+        "observability": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "faultTolerance",
+          "stimulus": "Partner webhook floods duplicates then goes silent",
+          "response": "Tracking state stays correct; gaps detected",
+          "responseMeasure": "Duplicate events deduplicated 100%; silence alarm < 15 min"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "LogicalService",
+          "label": "Booking Service"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Tracking Aggregator"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Carrier Webhooks"
+        },
+        {
+          "kind": "Event",
+          "label": "ShipmentStatusChanged"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Shipment Store"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-IDEMPOTENT",
+        "PAT-DLQ",
+        "PAT-OUTBOX",
+        "PAT-CIRCUIT-BREAKER"
+      ],
+      "risks": [
+        "Carrier retries duplicating status transitions",
+        "Ordering assumptions across webhook sources",
+        "Notification storms on bulk updates"
+      ],
+      "governanceChecklist": [
+        "Per-carrier idempotency strategy",
+        "Event ordering policy documented",
+        "Exception SLA owners named"
+      ]
+    },
+    {
+      "id": "TPL-HEALTHCARE",
+      "name": "Healthcare records service",
+      "sector": "Healthcare",
+      "brief": "Clinical records access and exchange with strict privacy, auditability, and integration to hospital systems.",
+      "drivers": {
+        "privacy": 5,
+        "security": 5,
+        "reliability": 4,
+        "interoperability": 4,
+        "availability": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "privacy",
+          "stimulus": "Clinician queries a record outside their care relationship",
+          "response": "Access denied and audited",
+          "responseMeasure": "100% break-glass events audited with reason within 1 min"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "Actor",
+          "label": "Clinician"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Records API"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Consent & Access Control"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Hospital EHR (HL7/FHIR)"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Clinical Record Store"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-ZERO-TRUST",
+        "PAT-API-GATEWAY",
+        "PAT-EVENT-SOURCING"
+      ],
+      "risks": [
+        "PHI in logs and traces",
+        "Consent state race conditions",
+        "Integration retries duplicating clinical events"
+      ],
+      "governanceChecklist": [
+        "PHI stores marked with audit logging",
+        "Business-associate boundaries documented",
+        "Break-glass procedure ratified"
+      ]
+    },
+    {
+      "id": "TPL-LEGACY-MOD",
+      "name": "Legacy modernization",
+      "sector": "Cross-industry",
+      "brief": "Incrementally replace a monolithic core while the business keeps running: carve capabilities, route traffic progressively, retire safely.",
+      "drivers": {
+        "modifiability": 5,
+        "availability": 4,
+        "deliverySpeed": 4,
+        "costEfficiency": 3,
+        "simplicity": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "availability",
+          "stimulus": "Cutover of one capability to the new service",
+          "response": "No customer-visible interruption; instant rollback available",
+          "responseMeasure": "Error budget burn < 1% during cutover; rollback < 5 min"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "ExternalSystem",
+          "label": "Legacy Monolith"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Strangler Facade"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Extracted Capability A"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Capability A Store"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-STRANGLER",
+        "PAT-API-GATEWAY",
+        "PAT-DB-PER-SERVICE"
+      ],
+      "risks": [
+        "Dual-run data divergence",
+        "Facade becoming a second monolith",
+        "Retirement never funded"
+      ],
+      "governanceChecklist": [
+        "Capability retirement dates owned",
+        "Dual-run reconciliation reports",
+        "Rollback rehearsed per cutover"
+      ]
+    },
+    {
+      "id": "TPL-LENDING",
+      "name": "Digital lending platform",
+      "sector": "Financial services / lending",
+      "brief": "Originate, score, approve, disburse and service digital loans with explainable credit decisions, repayment tracking, partner integrations and strict auditability.",
+      "drivers": {
+        "reliability": 5,
+        "auditability": 4,
+        "security": 5,
+        "interoperability": 4,
+        "modifiability": 4
+      },
+      "scenarios": [
+        {
+          "attributeId": "reliability",
+          "stimulus": "Repayment event arrives late or duplicated",
+          "response": "Loan balance remains correct and reconciliation identifies discrepancies",
+          "responseMeasure": "0 balance corruption; reconciliation exception surfaced within 10 minutes"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "Actor",
+          "label": "Borrower"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Loan Origination"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Credit Decisioning"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Repayment Service"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Loan Ledger"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Credit Bureau"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-API-GATEWAY",
+        "PAT-OUTBOX",
+        "PAT-IDEMPOTENT",
+        "PAT-SAGA"
+      ],
+      "risks": [
+        "Opaque score changes without auditability",
+        "Repayment duplication corrupting balances",
+        "Partner downtime blocking disbursement"
+      ],
+      "governanceChecklist": [
+        "Explainability evidence recorded",
+        "Repayment idempotency tested",
+        "Credit policy changes linked to approved decision records"
+      ]
+    },
+    {
+      "id": "TPL-AI-AGENTIC",
+      "name": "AI / agentic platform",
+      "sector": "AI platform",
+      "brief": "Enterprise AI assistant and agent platform with model routing, tool governance, knowledge provenance, audit trails, evaluation gates and human approval for high-risk actions.",
+      "drivers": {
+        "security": 5,
+        "auditability": 5,
+        "modifiability": 4,
+        "observability": 4,
+        "costEfficiency": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "auditability",
+          "stimulus": "Agent proposes a production-affecting action",
+          "response": "Action is blocked until human approval and evidence trace are recorded",
+          "responseMeasure": "100% high-risk actions require approval and trace id"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "Actor",
+          "label": "Enterprise User"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Agent Orchestrator"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Model Route Gateway"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Tool Policy Engine"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Knowledge Evidence Store"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "LLM Provider"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-ZERO-TRUST",
+        "PAT-API-GATEWAY",
+        "PAT-OBSERVABILITY",
+        "PAT-RATE-LIMITER"
+      ],
+      "risks": [
+        "Prompt injection through untrusted content",
+        "Model cost runaway",
+        "Tool execution without governance"
+      ],
+      "governanceChecklist": [
+        "Tool permissions policy reviewed",
+        "Model route data-sensitivity policy set",
+        "Evaluation gates and audit trace enabled"
+      ]
+    },
+    {
+      "id": "TPL-PUBLIC-SECTOR",
+      "name": "Public-sector citizen platform",
+      "sector": "Public sector",
+      "brief": "Citizen digital services platform for applications, case handling, payments, notifications and inter-agency integrations with accessibility, privacy and audit obligations.",
+      "drivers": {
+        "availability": 4,
+        "privacy": 5,
+        "interoperability": 5,
+        "auditability": 4,
+        "simplicity": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "privacy",
+          "stimulus": "Agency user attempts unauthorized access to a citizen case",
+          "response": "Access is denied and the attempt is audited",
+          "responseMeasure": "100% denied access attempts audited within 1 minute"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "Actor",
+          "label": "Citizen"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Citizen Portal"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Case Management"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Notification Service"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Citizen Case Store"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Agency Registry"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-API-GATEWAY",
+        "PAT-ZERO-TRUST",
+        "PAT-OUTBOX",
+        "PAT-ANTI-CORRUPTION"
+      ],
+      "risks": [
+        "Data sharing without consent basis",
+        "Legacy registry inconsistency",
+        "Accessibility requirements discovered too late"
+      ],
+      "governanceChecklist": [
+        "Consent/data-sharing basis mapped",
+        "Accessibility requirements tested",
+        "Inter-agency API contracts versioned"
+      ]
+    },
+    {
+      "id": "TPL-IOT-EDGE",
+      "name": "IoT / edge platform",
+      "sector": "IoT and edge",
+      "brief": "Collect telemetry and commands from intermittently connected edge devices, process locally where needed, synchronize safely and manage device lifecycle at scale.",
+      "drivers": {
+        "faultTolerance": 5,
+        "scalability": 4,
+        "observability": 4,
+        "security": 5,
+        "recoverability": 4
+      },
+      "scenarios": [
+        {
+          "attributeId": "faultTolerance",
+          "stimulus": "Edge site loses connectivity for six hours",
+          "response": "Critical local processing continues and synchronizes when connectivity returns",
+          "responseMeasure": "No critical command lost; sync completes within 30 minutes of reconnection"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "DeploymentNode",
+          "label": "Edge Gateway"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Device Command Service"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Telemetry Ingestion"
+        },
+        {
+          "kind": "Event",
+          "label": "DeviceTelemetryReceived"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Edge Buffer Store"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Device Fleet"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-OUTBOX",
+        "PAT-DLQ",
+        "PAT-CIRCUIT-BREAKER",
+        "PAT-OBSERVABILITY"
+      ],
+      "risks": [
+        "Unsafe command replay after reconnect",
+        "Unpatched device credentials",
+        "Telemetry flood overwhelming central services"
+      ],
+      "governanceChecklist": [
+        "Device identity lifecycle defined",
+        "Offline buffering limits tested",
+        "Command replay policy approved"
+      ]
+    },
+    {
+      "id": "TPL-LOW-CONNECTIVITY",
+      "name": "Low-connectivity field operations",
+      "sector": "Emerging-market field operations",
+      "brief": "Field workforce application that must work offline, synchronize when networks return, prevent duplicate operations and provide auditability across low-connectivity regions.",
+      "drivers": {
+        "recoverability": 5,
+        "reliability": 5,
+        "simplicity": 4,
+        "security": 4,
+        "interoperability": 3
+      },
+      "scenarios": [
+        {
+          "attributeId": "recoverability",
+          "stimulus": "Mobile app remains offline for a full workday",
+          "response": "Users continue core tasks and sync without duplicates when online",
+          "responseMeasure": "100% locally accepted transactions sync or raise exception; duplicate rate 0"
+        }
+      ],
+      "seedNodes": [
+        {
+          "kind": "Actor",
+          "label": "Field Agent"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Offline Mobile App"
+        },
+        {
+          "kind": "DataStore",
+          "label": "Local Encrypted Store"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Sync Gateway"
+        },
+        {
+          "kind": "LogicalService",
+          "label": "Conflict Resolution Service"
+        },
+        {
+          "kind": "ExternalSystem",
+          "label": "Central Operations System"
+        }
+      ],
+      "suggestedPatterns": [
+        "PAT-IDEMPOTENT",
+        "PAT-OUTBOX",
+        "PAT-RETRY",
+        "PAT-CIRCUIT-BREAKER"
+      ],
+      "risks": [
+        "Duplicate submissions after reconnect",
+        "Local data exposure on lost device",
+        "Conflict policy not understood by business"
+      ],
+      "governanceChecklist": [
+        "Offline acceptance rules documented",
+        "Conflict resolution ownership assigned",
+        "Lost-device controls verified"
+      ]
+    }
+  ]
+}

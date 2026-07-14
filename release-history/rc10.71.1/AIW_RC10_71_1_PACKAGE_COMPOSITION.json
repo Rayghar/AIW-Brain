@@ -1,0 +1,47 @@
+{
+  "release": "0.10.0-rc.10.71.1",
+  "name": "Intelligence Authority Consolidation and Requirements Reconciliation",
+  "codename": "Sol One Brain",
+  "generatedAtUtc": "2026-07-13T12:08:19Z",
+  "packagePolicy": "lean-current-release-evidence-source-and-compiled-output",
+  "fileCount": 3035,
+  "sizeBytes": 71520580,
+  "manifestPolicy": "AIW_RC10_71_1_FILE_MANIFEST.sha256 hashes every packaged file except itself",
+  "manifestedFiles": 3034,
+  "currentReleaseEvidenceFiles": 5,
+  "compiledOutputFiles": 1167,
+  "historicalReleaseReportFiles": 7,
+  "historicalScreenshotsIncluded": 0,
+  "excluded": {
+    "installedNodeModules": 0,
+    "testResultsDirectories": 0,
+    "playwrightReportDirectories": 0,
+    "credentialFiles": 0,
+    "debugOrVerificationLogs": 0,
+    "historicalScreenshotDirectories": 0
+  },
+  "includedEvidence": [
+    "AIW_RC10_71_1_RELEASE_REPORT.md",
+    "AIW_RC10_71_1_ARCHITECTURE_AND_AUTHORITY_DESIGN.md",
+    "AIW_RC10_71_1_INTELLIGENCE_AUTHORITY_AUDIT.json",
+    "AIW_RC10_71_1_INTELLIGENCE_AUTHORITY_AUDIT.md",
+    "AIW_RC10_71_1_SELF_AUDIT_COMPARISON.md",
+    "AIW_RC10_71_1_REQUIREMENTS_TRACEABILITY.md",
+    "AIW_RC10_71_1_TEST_EVIDENCE.json",
+    "AIW_RC10_71_1_RETIRED_PATHS.json",
+    "AIW_RC10_71_1_KNOWN_LIMITATIONS.md",
+    "frontend/release-evidence/rc10.71.1/acceptance-contact-sheet.png",
+    "frontend/release-evidence/rc10.71.1/screenshots/"
+  ],
+  "verification": {
+    "backendBuildAndFocusedRegression": "passed-30-of-30",
+    "frontendProductionBuild": "passed",
+    "structuralAuthorityGate": "passed-39-of-39",
+    "staticAuthorityAudit": "passed-7-of-7",
+    "chromiumDesktopLaptop": "passed-2-of-2",
+    "sharedSourceParity": "passed-8-of-8",
+    "securitySourceScan": "passed-frontend-and-backend",
+    "productionDependencyAudit": "zero-known-vulnerabilities-frontend-and-backend"
+  },
+  "productionAccepted": false
+}

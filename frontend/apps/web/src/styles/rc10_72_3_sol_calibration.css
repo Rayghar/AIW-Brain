@@ -1,0 +1,43 @@
+/* rc.10.72.3 — Sol intelligence quality and reasoning receipts. */
+.sol-brain-answer__heading { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.sol-brain-answer__heading > span:first-child { color:var(--text-muted,#9ca9b7); font-size:11px; font-weight:750; letter-spacing:.08em; text-transform:uppercase; }
+.sol-quality-badge { flex:0 0 auto; display:inline-flex; align-items:center; min-height:25px; padding:3px 8px; border:1px solid rgba(142,163,180,.25); border-radius:999px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+.sol-quality-badge.is-passed { color:#85e4bd; border-color:rgba(53,201,144,.35); background:rgba(27,126,91,.14); }
+.sol-quality-badge.is-conditional { color:#f0ce7d; border-color:rgba(227,177,68,.35); background:rgba(140,99,18,.15); }
+.sol-quality-badge.is-failed { color:#ff9eaa; border-color:rgba(226,74,91,.38); background:rgba(134,30,47,.16); }
+.sol-quality-rejection { display:block; margin-top:5px; padding:6px 8px; color:#f0ce7d !important; border-left:2px solid rgba(227,177,68,.65); background:rgba(140,99,18,.1); line-height:1.45; }
+.sol-quality-detail { margin-top:10px; border:1px solid rgba(128,174,190,.13); border-radius:10px; background:rgba(4,17,25,.32); overflow:hidden; }
+.sol-quality-detail > summary { cursor:pointer; list-style:none; padding:9px 10px; color:#acc3cc; font-size:11px; font-weight:750; }
+.sol-quality-detail > summary::-webkit-details-marker { display:none; }
+.sol-quality-detail > summary::after { content:'+'; float:right; color:#75909a; }
+.sol-quality-detail[open] > summary::after { content:'−'; }
+.sol-quality-detail[open] > summary { border-bottom:1px solid rgba(128,174,190,.1); }
+.sol-quality-gates { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; padding:9px; }
+.sol-quality-gates article { min-width:0; padding:8px; border:1px solid rgba(128,174,190,.1); border-radius:8px; background:rgba(2,14,22,.36); }
+.sol-quality-gates article > div { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.sol-quality-gates article strong { color:#c8d8de; font-size:10px; text-transform:capitalize; }
+.sol-quality-gates article span { color:#8fa7b0; font-size:10px; font-variant-numeric:tabular-nums; }
+.sol-quality-gates article p { margin:5px 0 0; color:#78919b; font-size:10px; line-height:1.4; }
+.sol-quality-gates article.is-passed { border-color:rgba(53,201,144,.18); }
+.sol-quality-gates article.is-warning { border-color:rgba(227,177,68,.22); }
+.sol-quality-gates article.is-failed { border-color:rgba(226,74,91,.25); }
+.sol-quality-issues,.sol-context-missing,.sol-lineage-list { margin:0 9px 9px; padding:8px 9px; border-radius:8px; background:rgba(140,99,18,.08); color:#b6c8ce; font-size:10px; }
+.sol-quality-issues ul,.sol-context-missing ul { margin:5px 0 0; padding-left:16px; }
+.sol-reasoning-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; padding:9px; }
+.sol-reasoning-grid section { min-width:0; padding:8px; border:1px solid rgba(128,174,190,.1); border-radius:8px; background:rgba(2,14,22,.34); }
+.sol-reasoning-grid strong,.sol-lineage-list > strong,.sol-context-missing > strong,.sol-quality-issues > strong { color:#bfd2d9; font-size:10px; }
+.sol-reasoning-grid p { margin:5px 0 0; color:#78919b; font-size:10px; line-height:1.45; overflow-wrap:anywhere; }
+.sol-lineage-list { background:rgba(2,14,22,.28); }
+.sol-lineage-list > div { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-top:6px; padding-top:6px; border-top:1px solid rgba(128,174,190,.08); }
+.sol-lineage-list > div span { color:#a9bec6; line-height:1.4; }
+.sol-lineage-list > div small { flex:0 0 auto; color:#7f999f; }
+.sol-lineage-list > div.is-incomplete small { color:#e4b963; }
+.sol-brain-answer .recommendation-outcome-capture { margin-top:10px; }
+@media (max-width:560px) { .sol-quality-gates,.sol-reasoning-grid { grid-template-columns:1fr; } }
+/* rc.10.73.1 — canonical Architecture Design Graph authority receipt. */
+.sol-brain-receipt dd[title] { max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sol-graph-materialize { width:100%; margin-top:8px; min-height:34px; border:1px solid rgba(80,185,165,.32); border-radius:8px; background:rgba(32,125,108,.16); color:#9fe5d1; font-weight:750; cursor:pointer; }
+.sol-graph-materialize:hover:not(:disabled) { background:rgba(32,125,108,.24); }
+.sol-graph-materialize:disabled { opacity:.62; cursor:wait; }
+.sol-graph-canonical { margin-top:8px !important; padding:7px 8px; border-left:2px solid rgba(53,201,144,.5); background:rgba(27,126,91,.1); color:#91d9c1 !important; }
+.sol-graph-notice { margin:8px 12px 0; padding:8px 10px; border:1px solid rgba(80,185,165,.2); border-radius:8px; background:rgba(7,35,38,.7); color:#abd8ce; font-size:11px; line-height:1.45; }

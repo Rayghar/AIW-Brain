@@ -1,0 +1,2496 @@
+{
+  "releaseId": "CAMBRIDGE-SA-1.0",
+  "title": "Cambridge Solution Architecture Executable Knowledge — Architecture Genesis",
+  "schemaVersion": "1.0",
+  "status": "approved-promoted",
+  "authority": {
+    "purpose": "Provide deterministic requirements-quality, journey-modelling, System Context and lifecycle-transformation rules used by AIW Architecture Genesis.",
+    "scope": [
+      "requirements-intelligence",
+      "stakeholder-concerns",
+      "quality-drivers",
+      "journey-grammar",
+      "system-context",
+      "logical-decomposition",
+      "traceability"
+    ],
+    "limitations": [
+      "This release operationalises the methods needed by rc.10.71; it is not a verbatim reproduction of source course material.",
+      "Enterprise policy and project evidence override generic knowledge rules.",
+      "Numeric quality targets require user or source confirmation."
+    ],
+    "humanApprovalRequired": true
+  },
+  "requirementQualityRules": [
+    {
+      "id": "CAM-REQ-001",
+      "name": "Explicit actor or responsible artifact",
+      "severity": "high",
+      "detect": "functional requirement lacks actor or system responsibility",
+      "action": "request actor and ownership clarification"
+    },
+    {
+      "id": "CAM-REQ-002",
+      "name": "Measurable quality target",
+      "severity": "critical",
+      "detect": "qualitative quality word without measurable response",
+      "action": "create clarification; never invent latency, throughput, availability, RTO or RPO"
+    },
+    {
+      "id": "CAM-REQ-003",
+      "name": "Atomic and testable wording",
+      "severity": "medium",
+      "detect": "compound or open-ended requirement",
+      "action": "propose decomposition and acceptance criteria"
+    },
+    {
+      "id": "CAM-REQ-004",
+      "name": "Failure behaviour",
+      "severity": "high",
+      "detect": "critical capability has no alternate, failure or recovery outcome",
+      "action": "create journey failure path and architecture obligation"
+    },
+    {
+      "id": "CAM-REQ-005",
+      "name": "Evidence provenance",
+      "severity": "critical",
+      "detect": "record has no source, user assertion or approved derivation",
+      "action": "block approval until origin is explicit"
+    }
+  ],
+  "stakeholderConcernRules": [
+    {
+      "stakeholder": "Business owner",
+      "concerns": [
+        "outcomes",
+        "scope",
+        "value",
+        "priority",
+        "funding"
+      ]
+    },
+    {
+      "stakeholder": "End user",
+      "concerns": [
+        "successful journey",
+        "usability",
+        "privacy",
+        "availability"
+      ]
+    },
+    {
+      "stakeholder": "Operations",
+      "concerns": [
+        "observability",
+        "recoverability",
+        "support procedures",
+        "ownership"
+      ]
+    },
+    {
+      "stakeholder": "Security and risk",
+      "concerns": [
+        "identity",
+        "trust boundaries",
+        "data protection",
+        "auditability",
+        "fraud"
+      ]
+    },
+    {
+      "stakeholder": "Engineering",
+      "concerns": [
+        "responsibility boundaries",
+        "contracts",
+        "testability",
+        "deployment",
+        "changeability"
+      ]
+    },
+    {
+      "stakeholder": "Data owner",
+      "concerns": [
+        "ownership",
+        "classification",
+        "retention",
+        "consent",
+        "lineage"
+      ]
+    }
+  ],
+  "qualityScenarioGrammar": {
+    "requiredFields": [
+      "source",
+      "stimulus",
+      "environment",
+      "artifact",
+      "response",
+      "responseMeasure"
+    ],
+    "transformation": "business concern -> quality attribute -> measurable scenario -> tactic -> architecture obligation -> fitness evidence",
+    "unsupportedMetricPolicy": "clarification-required"
+  },
+  "journeyGrammar": {
+    "semanticElements": [
+      "journey",
+      "participant",
+      "path",
+      "interaction",
+      "decision",
+      "data-object",
+      "trust-crossing",
+      "timing-expectation",
+      "failure-behaviour"
+    ],
+    "pathKinds": [
+      "happy",
+      "alternate",
+      "failure",
+      "recovery"
+    ],
+    "completenessRules": [
+      "Every critical functional requirement is represented by at least one approved journey.",
+      "Every external interaction carries an owner, purpose, data exchange and failure obligation.",
+      "Critical journeys include a failure or recovery path.",
+      "Sensitive data exchanges create security and privacy obligations.",
+      "Long-running or asynchronous steps create orchestration, idempotency and observability considerations."
+    ]
+  },
+  "journeyToArchitectureRules": [
+    {
+      "journeySignal": "human actor",
+      "candidate": "System Context actor"
+    },
+    {
+      "journeySignal": "external participant",
+      "candidate": "External system and context relationship"
+    },
+    {
+      "journeySignal": "journey step",
+      "candidate": "Logical responsibility"
+    },
+    {
+      "journeySignal": "business decision",
+      "candidate": "Policy or rule responsibility"
+    },
+    {
+      "journeySignal": "data exchange",
+      "candidate": "Interface and data obligation"
+    },
+    {
+      "journeySignal": "trust-boundary crossing",
+      "candidate": "Security control and threat-review obligation"
+    },
+    {
+      "journeySignal": "failure path",
+      "candidate": "Resilience, error-handling and recovery obligation"
+    },
+    {
+      "journeySignal": "long-running process",
+      "candidate": "Workflow or orchestration consideration"
+    },
+    {
+      "journeySignal": "asynchronous outcome",
+      "candidate": "Event, broker and delivery-semantics consideration"
+    },
+    {
+      "journeySignal": "reconciliation step",
+      "candidate": "Ledger, batch or reconciliation responsibility"
+    }
+  ],
+  "systemContextRules": [
+    "Exactly one system of interest is explicit per context scope.",
+    "Actors and external systems are distinguished from internal responsibilities.",
+    "Every major journey participant is represented or explicitly dispositioned.",
+    "Context relationships state outcome or information exchanged, not generic connectivity.",
+    "Trust, organisational and scope boundaries are visible.",
+    "Context objects and relationships preserve requirement and journey lineage.",
+    "Internal containers and components are deferred until logical decomposition."
+  ],
+  "architectureReasoningChain": [
+    "requirement",
+    "quality scenario",
+    "tactic",
+    "style or pattern implication",
+    "logical responsibility",
+    "interface or component obligation",
+    "technology capability",
+    "physical realisation",
+    "assurance evidence"
+  ],
+  "promotionGates": [
+    "schema-valid",
+    "source-provenance-recorded",
+    "independent-review",
+    "no-unsupported-numeric-target",
+    "version-pinned",
+    "rollback-available"
+  ],
+  "promotion": {
+    "promotedAt": "2026-07-13T13:17:11.417Z",
+    "promotedBy": "AIW independent validation process",
+    "sponsorApproval": {
+      "actor": "Chukwuneme Iloh",
+      "basis": "explicit user approval in programme conversation",
+      "cryptographicIdentityVerified": false
+    },
+    "independentReview": {
+      "reviewer": "Sol / GPT-5.6 Thinking",
+      "decision": "approved-for-controlled-runtime-use",
+      "scope": "method correctness, authority boundaries, unsupported-claim controls, traceability and architecture applicability",
+      "externalHumanPanel": false
+    },
+    "fourEyesStatus": "sponsor-plus-independent-AI-review; external human calibration remains required for production scoring",
+    "rollbackRelease": "CAMBRIDGE-SA-1.0-candidate"
+  },
+  "atomicClaims": [
+    {
+      "id": "CAM-CLAIM-0001",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "CAM-REQ-001",
+      "statement": "Explicit actor or responsible artifact: when functional requirement lacks actor or system responsibility, request actor and ownership clarification.",
+      "category": "requirement-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0002",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "CAM-REQ-002",
+      "statement": "Measurable quality target: when qualitative quality word without measurable response, create clarification; never invent latency, throughput, availability, RTO or RPO.",
+      "category": "requirement-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0003",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "CAM-REQ-003",
+      "statement": "Atomic and testable wording: when compound or open-ended requirement, propose decomposition and acceptance criteria.",
+      "category": "requirement-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0004",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "CAM-REQ-004",
+      "statement": "Failure behaviour: when critical capability has no alternate, failure or recovery outcome, create journey failure path and architecture obligation.",
+      "category": "requirement-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0005",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "CAM-REQ-005",
+      "statement": "Evidence provenance: when record has no source, user assertion or approved derivation, block approval until origin is explicit.",
+      "category": "requirement-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0006",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Business owner:outcomes",
+      "statement": "Business owner concern: outcomes.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0007",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Business owner:scope",
+      "statement": "Business owner concern: scope.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0008",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Business owner:value",
+      "statement": "Business owner concern: value.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0009",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Business owner:priority",
+      "statement": "Business owner concern: priority.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0010",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Business owner:funding",
+      "statement": "Business owner concern: funding.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0011",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:End user:successful journey",
+      "statement": "End user concern: successful journey.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0012",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:End user:usability",
+      "statement": "End user concern: usability.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0013",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:End user:privacy",
+      "statement": "End user concern: privacy.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0014",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:End user:availability",
+      "statement": "End user concern: availability.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0015",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Operations:observability",
+      "statement": "Operations concern: observability.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0016",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Operations:recoverability",
+      "statement": "Operations concern: recoverability.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0017",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Operations:support procedures",
+      "statement": "Operations concern: support procedures.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0018",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Operations:ownership",
+      "statement": "Operations concern: ownership.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0019",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Security and risk:identity",
+      "statement": "Security and risk concern: identity.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0020",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Security and risk:trust boundaries",
+      "statement": "Security and risk concern: trust boundaries.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0021",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Security and risk:data protection",
+      "statement": "Security and risk concern: data protection.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0022",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Security and risk:auditability",
+      "statement": "Security and risk concern: auditability.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0023",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Security and risk:fraud",
+      "statement": "Security and risk concern: fraud.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0024",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Engineering:responsibility boundaries",
+      "statement": "Engineering concern: responsibility boundaries.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0025",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Engineering:contracts",
+      "statement": "Engineering concern: contracts.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0026",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Engineering:testability",
+      "statement": "Engineering concern: testability.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0027",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Engineering:deployment",
+      "statement": "Engineering concern: deployment.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0028",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Engineering:changeability",
+      "statement": "Engineering concern: changeability.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0029",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Data owner:ownership",
+      "statement": "Data owner concern: ownership.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0030",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Data owner:classification",
+      "statement": "Data owner concern: classification.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0031",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Data owner:retention",
+      "statement": "Data owner concern: retention.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0032",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Data owner:consent",
+      "statement": "Data owner concern: consent.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0033",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "stakeholder:Data owner:lineage",
+      "statement": "Data owner concern: lineage.",
+      "category": "stakeholder-concern",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0034",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey-completeness",
+      "statement": "Every critical functional requirement is represented by at least one approved journey.",
+      "category": "journey-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0035",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey-completeness",
+      "statement": "Every external interaction carries an owner, purpose, data exchange and failure obligation.",
+      "category": "journey-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0036",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey-completeness",
+      "statement": "Critical journeys include a failure or recovery path.",
+      "category": "journey-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0037",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey-completeness",
+      "statement": "Sensitive data exchanges create security and privacy obligations.",
+      "category": "journey-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0038",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey-completeness",
+      "statement": "Long-running or asynchronous steps create orchestration, idempotency and observability considerations.",
+      "category": "journey-quality",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0039",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:human actor",
+      "statement": "human actor creates candidate System Context actor.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0040",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:external participant",
+      "statement": "external participant creates candidate External system and context relationship.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0041",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:journey step",
+      "statement": "journey step creates candidate Logical responsibility.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0042",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:business decision",
+      "statement": "business decision creates candidate Policy or rule responsibility.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0043",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:data exchange",
+      "statement": "data exchange creates candidate Interface and data obligation.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0044",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:trust-boundary crossing",
+      "statement": "trust-boundary crossing creates candidate Security control and threat-review obligation.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0045",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:failure path",
+      "statement": "failure path creates candidate Resilience, error-handling and recovery obligation.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0046",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:long-running process",
+      "statement": "long-running process creates candidate Workflow or orchestration consideration.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0047",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:asynchronous outcome",
+      "statement": "asynchronous outcome creates candidate Event, broker and delivery-semantics consideration.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0048",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "journey:reconciliation step",
+      "statement": "reconciliation step creates candidate Ledger, batch or reconciliation responsibility.",
+      "category": "journey-transformation",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0049",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "system-context",
+      "statement": "Exactly one system of interest is explicit per context scope.",
+      "category": "system-context",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0050",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "system-context",
+      "statement": "Actors and external systems are distinguished from internal responsibilities.",
+      "category": "system-context",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0051",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "system-context",
+      "statement": "Every major journey participant is represented or explicitly dispositioned.",
+      "category": "system-context",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0052",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "system-context",
+      "statement": "Context relationships state outcome or information exchanged, not generic connectivity.",
+      "category": "system-context",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0053",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "system-context",
+      "statement": "Trust, organisational and scope boundaries are visible.",
+      "category": "system-context",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0054",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "system-context",
+      "statement": "Context objects and relationships preserve requirement and journey lineage.",
+      "category": "system-context",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0055",
+      "sourceFamily": "cambridge-method",
+      "sourcePath": "data/CAMBRIDGE-SA-1.0.json",
+      "sourceId": "system-context",
+      "statement": "Internal containers and components are deferred until logical decomposition.",
+      "category": "system-context",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0056",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-designIntent-1",
+      "statement": "What business outcome and intended benefit justify the architecture work?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0057",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-designIntent-2",
+      "statement": "Who uses, funds, operates, governs and is affected by the solution?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0058",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-designIntent-3",
+      "statement": "What motivations, wishes and concerns must the architecture address?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0059",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-designIntent-4",
+      "statement": "What is explicitly in and out of scope?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0060",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-designIntent-5",
+      "statement": "Which assumptions require validation before synthesis?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0061",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-qualityDrivers-1",
+      "statement": "Which requirements are architecturally significant?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0062",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-qualityDrivers-2",
+      "statement": "Can each quality requirement be written as source, stimulus, environment, artifact, response and response measure?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0063",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-qualityDrivers-3",
+      "statement": "Which quality drivers conflict, and which trade-off authority decides?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0064",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-qualityDrivers-4",
+      "statement": "What baseline and measurable target will prove success?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0065",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-logicalApplication-1",
+      "statement": "Which business capabilities and bounded responsibilities belong together?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0066",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-logicalApplication-2",
+      "statement": "Where should cohesion be high and coupling low?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0067",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-logicalApplication-3",
+      "statement": "Which components own behaviour and data?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0068",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-logicalApplication-4",
+      "statement": "What abstractions prevent ripple effects and preserve information hiding?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0069",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-applicationRealization-1",
+      "statement": "Which deployable units realize each logical responsibility?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0070",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-applicationRealization-2",
+      "statement": "Which interfaces are required by each consumer and provider?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0071",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-applicationRealization-3",
+      "statement": "Which communication patterns are synchronous, asynchronous or batch, and why?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0072",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-applicationRealization-4",
+      "statement": "Which pattern obligations become tests or review controls?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0073",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-logicalTechnology-1",
+      "statement": "Which vendor-neutral capabilities are required?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0074",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-logicalTechnology-2",
+      "statement": "Which capabilities are mandatory, optional or prohibited by constraints?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0075",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-logicalTechnology-3",
+      "statement": "What platform, security, data and observability services support the design?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0076",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-physicalTechnology-1",
+      "statement": "Which products or managed services realize each accepted capability?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0077",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-physicalTechnology-2",
+      "statement": "What deployment zones, trust boundaries, scaling units and recovery paths are required?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0078",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-physicalTechnology-3",
+      "statement": "What provider-specific limits or costs alter the neutral design?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0079",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-validationRealization-1",
+      "statement": "Which decisions address which drivers?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0080",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-validationRealization-2",
+      "statement": "What alternatives were rejected and under what counterfactual conditions would they become preferable?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0081",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-validationRealization-3",
+      "statement": "What risks, assumptions and failure modes remain?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0082",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-validationRealization-4",
+      "statement": "Which fitness tests and evidence demonstrate readiness?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0083",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-sddPack-1",
+      "statement": "Which audience needs which viewpoint and level of detail?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0084",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-sddPack-2",
+      "statement": "Does every significant requirement trace to decisions, components, interfaces and tests?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0085",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-sddPack-3",
+      "statement": "Are diagrams generated from the same canonical model as the narrative?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0086",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "reasoning-question-sddPack-4",
+      "statement": "What is incomplete, externally dependent or awaiting acceptance?",
+      "category": "reasoning-question",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0087",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "viewpoint-1",
+      "statement": "{\"audience\":\"business sponsor and product owner\",\"views\":[\"system context\",\"capability and outcome traceability\"],\"purpose\":\"Confirm scope, intended benefit and major dependencies.\"}",
+      "category": "viewpoint-selection",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0088",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "viewpoint-2",
+      "statement": "{\"audience\":\"solution and enterprise architects\",\"views\":[\"logical application\",\"cross-stage traceability\",\"decision and trade-off view\"],\"purpose\":\"Assess boundaries, styles, patterns and alignment.\"}",
+      "category": "viewpoint-selection",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0089",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "viewpoint-3",
+      "statement": "{\"audience\":\"engineering teams\",\"views\":[\"application realization\",\"interface and event flow\",\"data architecture\"],\"purpose\":\"Provide implementation-usable responsibilities and contracts.\"}",
+      "category": "viewpoint-selection",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0090",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "viewpoint-4",
+      "statement": "{\"audience\":\"platform, security and operations\",\"views\":[\"logical technology\",\"physical deployment\",\"security and trust boundaries\",\"resilience and recovery\"],\"purpose\":\"Validate run-time, control and recovery obligations.\"}",
+      "category": "viewpoint-selection",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0091",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "viewpoint-5",
+      "statement": "{\"audience\":\"review board and assurance\",\"views\":[\"requirements traceability\",\"risks and assumptions\",\"fitness tests and evidence\"],\"purpose\":\"Make disposition decisions from governed evidence.\"}",
+      "category": "viewpoint-selection",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0092",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "review-1",
+      "statement": "Every architecture decision links to one or more drivers and records alternatives, consequences, risks and assumptions.",
+      "category": "architecture-review",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0093",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "review-2",
+      "statement": "Every component has a responsibility, owner, interfaces and linked drivers.",
+      "category": "architecture-review",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0094",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "review-3",
+      "statement": "Every interface identifies provider, consumer, interaction style, contract and failure policy.",
+      "category": "architecture-review",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0095",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "review-4",
+      "statement": "Every quality scenario has a measurable response and validation method.",
+      "category": "architecture-review",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0096",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "review-5",
+      "statement": "Every diagram is a projection of the canonical model, not an independent drawing.",
+      "category": "architecture-review",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0097",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "review-6",
+      "statement": "Every unresolved contradiction or assumption remains visible in review and SDD outputs.",
+      "category": "architecture-review",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0098",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-1",
+      "statement": "executive summary and intended benefit",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0099",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-2",
+      "statement": "stakeholders and concerns",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0100",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-3",
+      "statement": "scope, assumptions and constraints",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0101",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-4",
+      "statement": "business, functional and quality drivers",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0102",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-5",
+      "statement": "architecture style and decision records",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0103",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-6",
+      "statement": "logical application and component responsibilities",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0104",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-7",
+      "statement": "application realization and interfaces",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0105",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-8",
+      "statement": "data architecture",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0106",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-9",
+      "statement": "security and trust boundaries",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0107",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-10",
+      "statement": "logical and physical technology",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0108",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-11",
+      "statement": "deployment, resilience and recovery",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0109",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-12",
+      "statement": "operations and observability",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0110",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-13",
+      "statement": "risks, assumptions and trade-offs",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0111",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-14",
+      "statement": "fitness tests and acceptance evidence",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0112",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "sdd-15",
+      "statement": "cross-stage traceability and appendices",
+      "category": "sdd-grammar",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0113",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "completeness-1",
+      "statement": "No significant driver without a decision or explicit deferral.",
+      "category": "completeness-control",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0114",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "completeness-2",
+      "statement": "No mandatory component without responsibility and owner.",
+      "category": "completeness-control",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0115",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "completeness-3",
+      "statement": "No external dependency without contract, timeout and failure policy.",
+      "category": "completeness-control",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0116",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "completeness-4",
+      "statement": "No data store without ownership, consistency, retention and protection properties.",
+      "category": "completeness-control",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0117",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "completeness-5",
+      "statement": "No selected pattern without obligations, risks, evidence and counterfactual explanation.",
+      "category": "completeness-control",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    },
+    {
+      "id": "CAM-CLAIM-0118",
+      "sourceFamily": "cambridge-reference",
+      "sourcePath": "backend/data/rc10_55-cambridge-knowledge-pack.json",
+      "sourceId": "completeness-6",
+      "statement": "No SDD section generated from stale or unpinned knowledge.",
+      "category": "completeness-control",
+      "authority": "method-guidance",
+      "permittedUse": "architecture-design-guidance",
+      "licenseDisposition": "internal-derived-summary",
+      "review": {
+        "reviewer": "Sol / GPT-5.6 Thinking",
+        "decision": "approved-with-declared-limitations",
+        "reviewedAt": "2026-07-13T13:17:11.417Z",
+        "independence": "independent AI architecture review; not an external human certification"
+      },
+      "confidence": "high",
+      "humanApprovalRequired": true
+    }
+  ],
+  "qualityControls": {
+    "claimCount": 118,
+    "unsupportedNumericTargets": "blocked-unless-source-confirmed",
+    "legalInterpretation": "requires-qualified-human-review",
+    "productionScoring": "only approved calibrated rules"
+  }
+}

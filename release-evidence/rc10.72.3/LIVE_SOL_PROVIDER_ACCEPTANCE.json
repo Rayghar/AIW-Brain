@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "releaseId": "AIW-0.10.0-rc.10.72.3",
+  "generatedAt": "2026-07-14T10:27:29.999Z",
+  "tenantId": "tenant-reference",
+  "status": "blocked",
+  "productionAccepted": false,
+  "liveProviderUsed": false,
+  "routes": [
+    {
+      "routeId": "architecture-reasoning:openai:gpt-4.1-mini",
+      "providerId": "openai",
+      "model": "gpt-4.1-mini",
+      "configured": false,
+      "circuit": "closed",
+      "baseUrl": "https://api.openai.com/v1"
+    }
+  ],
+  "blocker": "No configured architecture-reasoning route has a resolvable provider credential. Secrets were not displayed or inferred."
+}

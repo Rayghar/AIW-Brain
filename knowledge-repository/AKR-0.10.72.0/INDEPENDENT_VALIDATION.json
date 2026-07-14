@@ -1,0 +1,7 @@
+{
+  "manifestSignatureVerified": true,
+  "artifactChecksums": true,
+  "gitCommitVerified": true,
+  "gitTagVerified": true,
+  "privateKeyRetained": false
+}

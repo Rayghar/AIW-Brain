@@ -1,0 +1,34 @@
+{
+  "version": "0.10.0-rc.10.21",
+  "pipeline": [
+    "register-source",
+    "capture-pinned-snapshot",
+    "quarantine",
+    "extract-candidate-claims",
+    "normalize-duplicates-synonyms",
+    "detect-contradictions",
+    "calculate-corroboration",
+    "release-impact-preview",
+    "signed-knowledge-pack-export",
+    "tenant-project-pinning"
+  ],
+  "hardRules": [
+    "candidate-claims-are-non-scoring",
+    "llm-extraction-cannot-approve-or-weigh",
+    "source-snapshots-must-be-quarantined-before-review",
+    "release-impact-preview-required-before-promotion",
+    "unsigned-knowledge-packs-cannot-activate",
+    "stage-intelligence-must-show-knowledge-receipts"
+  ],
+  "adminEndpoints": [
+    "/api/admin/mind-factory",
+    "/api/admin/mind-factory/sources/:sourceId/snapshot",
+    "/api/admin/mind-factory/snapshots/:snapshotId/extract-claims",
+    "/api/admin/mind-factory/claims/normalize",
+    "/api/admin/mind-factory/release-impact-preview",
+    "/api/admin/mind-factory/stage-traceability",
+    "/api/admin/mind-factory/knowledge-pack/export",
+    "/api/admin/mind-factory/knowledge-pack/import"
+  ],
+  "stageTraceability": ["brief", "quality-drivers", "patterns-and-tactics", "canvas-modelling", "review-studio", "repository-conformance", "architecture-handoff"]
+}

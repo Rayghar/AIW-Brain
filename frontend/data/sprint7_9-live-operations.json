@@ -1,0 +1,109 @@
+{
+  "version": "0.8.9",
+  "releaseId": "AKR-0.8.9",
+  "implementationStatus": "complete",
+  "externalAcceptanceStatus": "credentials-required",
+  "capabilities": [
+    {
+      "id": "github-live-retrieval",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "approved GitHub credential and network required",
+      "controls": [
+        "commit pinning",
+        "path allowlist",
+        "tree truncation recovery",
+        "quarantine"
+      ]
+    },
+    {
+      "id": "scheduled-refresh",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "enable operations workflow",
+      "controls": [
+        "approved connector set",
+        "fail-fast option",
+        "audit job"
+      ]
+    },
+    {
+      "id": "llm-live-extraction",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "approved provider key/model required",
+      "controls": [
+        "schema validation",
+        "candidate-only",
+        "prompt isolation",
+        "provider audit"
+      ]
+    },
+    {
+      "id": "postgres-rls",
+      "implemented": true,
+      "locallyVerified": false,
+      "externalAcceptance": "production PostgreSQL/pgvector deployment required",
+      "controls": [
+        "tenant transaction context",
+        "RLS policies",
+        "additive migration"
+      ]
+    },
+    {
+      "id": "object-storage",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "production S3 bucket policy required",
+      "controls": [
+        "safe keys",
+        "SHA-256",
+        "immutable manifest"
+      ]
+    },
+    {
+      "id": "vector-retrieval",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "approved release reindex against pgvector required",
+      "controls": [
+        "approved-only table",
+        "release pinning",
+        "tenant RLS"
+      ]
+    },
+    {
+      "id": "fitness-ci-delivery",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "writable controlled repository and CI token required",
+      "controls": [
+        "PR only",
+        "writes disabled by default",
+        "review required"
+      ]
+    },
+    {
+      "id": "conformance-adapters",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "connect representative code/deployment/runtime evidence",
+      "controls": [
+        "evidence hash",
+        "normalized findings",
+        "architecture traceability"
+      ]
+    },
+    {
+      "id": "release-signing",
+      "implemented": true,
+      "locallyVerified": true,
+      "externalAcceptance": "independent host/trust store required",
+      "controls": [
+        "Ed25519",
+        "canonical payload",
+        "tamper rejection"
+      ]
+    }
+  ]
+}

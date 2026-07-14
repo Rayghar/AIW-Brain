@@ -1,0 +1,2367 @@
+{
+  "generatedAt": "2026-07-05T22:07:53.282Z",
+  "totalEndpoints": 260,
+  "mutatingEndpoints": 160,
+  "adminKnowledgeMutations": 56,
+  "adminKnowledgeMutationsGuarded": 56,
+  "adminKnowledgeMutationsUnguarded": 0,
+  "unguarded": [],
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/ready",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/platform/acceptance",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/platform/acceptance/probe",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/platform/acceptance/history",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/metrics",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/observability/summary",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/observability/export",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/library",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge/releases/active",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge/sources",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge/anti-patterns",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge/integrity",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge/depth",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/llm-brain/providers",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/llm-brain/config",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/llm-brain/config",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-mesh/connectors",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-mesh/claims",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-mesh/releases/current",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-mesh/retrieve",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-mesh/contradictions",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-mesh/proposals/preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-mesh/github/refresh-preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-mesh/github/refresh",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-mesh/extract",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-vector/health",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-vector/reindex",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-vector/search",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/synthesis/scenarios",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/synthesis/assess",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/synthesis/runs",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/synthesis/runs/:runId",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/synthesis/projects/:projectId/runs",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/synthesis/runs/:runId/simulate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/synthesis/runs/:runId/simulations",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/synthesis/runs/:runId/comparison",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/synthesis/runs/:runId/apply-preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/synthesis/runs/:runId/decision",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/synthesis/runs/:runId/artifacts",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/synthesis/runs/:runId/conformance-handoff",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/pattern-intelligence/corpus",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/pattern-intelligence/metrics",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/pattern-intelligence/recommend",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/pattern-composition/preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/pattern-composition/apply-preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/fitness-functions/generate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/fitness-functions/deliver",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/conformance/evidence",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/conformance/plan",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/conformance/assess",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/conformance/remediation-preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/repository-governance/policies",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/repository-governance/evaluate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases/7.8",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases/7.9",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.0",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.0.1",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.0.2",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.0.3",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.0.4",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.6",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.1",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.2",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.3",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.4",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.5",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.6",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.8",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/8.7.9",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/releases/10.0.0",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/7.9/sign",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "audit.read"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/verify",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "audit.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/pattern-intelligence/benchmarks",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/pattern-intelligence/benchmarks/run",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design/interview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design/anti-patterns",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/design-library",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design/drop-preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design/connection-options",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design/compliance",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/pilot/scenarios",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/pilot/evaluate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/pilot/release-readiness",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/production-acceptance/requirements",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/production-acceptance/assess",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/portfolio/catalog",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/portfolio/projects",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/analyze",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/dependencies",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/standards",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/risk",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/costs",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/compliance",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/reuse",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/visual-model",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/portfolio/standards-impact",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects/demo",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/development-token",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/oidc/verify",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects/:projectId/branches/:branchId",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "PUT",
+      "path": "/api/projects/:projectId/branches/:branchId",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects/:projectId/branches/:branchId/operations",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/roles/:role/permissions",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/security/posture/:projectId/:branchId",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/presence/heartbeat",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/presence/:branchId",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/activity",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/events",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/audit",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/audit/purge",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/recommendations",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/recommendations/contextual",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/validate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/audits/deterministic",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/audits/assisted",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design-brief/analyse",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design/explain-ranking",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/design/stage-advice",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge/governance",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/co-architect/ask",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/governance/rule-packs",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/governance/evaluate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/governance/approval-readiness",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/governance/expire",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/reviews/assign",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/reviews/:assignmentId/complete",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/discussions",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/discussions/:threadId/comments",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/discussions/:threadId/resolve",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/impact",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/branches/compare",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/branches/merge-plan",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/branches/merge-plan/resolve",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/branches/merge-plan/apply",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/runtime-inventories/import",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/drift/analyse",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/policy-gates/evaluate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/durable-events/pending",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/durable-events/dispatch",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/collectors/health",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/collectors/run",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/topology/from-telemetry",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/operational-drift/analyse",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/drift-waivers",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/drift-waivers/expire",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/remediation-plans",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/remediation-plans/submit",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/remediation-plans/decide",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/slos/evaluate",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/repositories/pull-request-preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/repositories/pull-request",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/repositories/sync-preview",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/artifacts",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/projects/:projectId/snapshots",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects/:projectId/snapshots",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/projects/:projectId/snapshots/:snapshotId",
+      "file": "apps/api/src/app.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/authorize",
+      "file": "apps/api/src/app.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/configuration-summary",
+      "file": "apps/api/src/routes/adminConfigurationRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/control-plane",
+      "file": "apps/api/src/routes/adminConfigurationRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/control-plane/snapshot",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "source.register",
+        "source.posture"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/knowledge-sources",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "source.register",
+        "source.posture"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/knowledge-sources",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "source.register",
+        "source.posture"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/knowledge-sources/:sourceId/posture",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "source.posture",
+        "connector.register"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/repository-connectors",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "connector.register"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repository-connectors",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "connector.register"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repository-connectors/:id/test",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "tenant.settings"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/tenant-settings",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "tenant.settings",
+        "feature-flags.write"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/tenant-settings",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "tenant.settings",
+        "feature-flags.write"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/feature-flags",
+      "file": "apps/api/src/routes/adminControlPlaneRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "feature-flags.write"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/sdd/compose",
+      "file": "apps/api/src/routes/artifactRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/security/roles",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.posture.read",
+        "security.role-admin",
+        "security.role-admin"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/security/role-assignments",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.role-admin",
+        "security.role-admin"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/security/role-mapping-rules",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.role-admin",
+        "security.posture.read",
+        "security.tenant-policy"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/security/tenant-policies",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.posture.read",
+        "security.tenant-policy",
+        "security.posture.read"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/security/tenant-policies",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.tenant-policy",
+        "security.posture.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/security/posture",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.posture.read",
+        "security.posture.read"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/security/rls-acceptance",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.posture.read",
+        "audit.export"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit/export/v2",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "audit.export",
+        "security.posture.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/security/performance-checks",
+      "file": "apps/api/src/routes/enterpriseSecurityRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "security.posture.read"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/llm-brain/health",
+      "file": "apps/api/src/routes/healthRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/llm-brain/active-probe",
+      "file": "apps/api/src/routes/healthRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/intelligence/evaluate",
+      "file": "apps/api/src/routes/intelligenceRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-ops/queues",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "claims.decide",
+        "contradictions.triage"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/claims/decide",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "claims.decide",
+        "contradictions.triage"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/contradictions/triage",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "contradictions.triage"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/summary",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "audit.export",
+        "model-route.write"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit/export",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "audit.export",
+        "model-route.write"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/audit",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "model-route.write",
+        "model-route.write"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/model-routes",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "model-route.write",
+        "model-route.write"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/model-routes",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "model-route.write",
+        "model-route.write"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/api/admin/model-routes/:id",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "model-route.write",
+        "model-route.write",
+        "model-route.test"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/model-routes/:id",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "model-route.write",
+        "model-route.test"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/model-routes/:id/test",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "model-route.test"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/draft-record",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/promotion-check",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge/promote",
+      "file": "apps/api/src/routes/knowledgeOpsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-ops/workbench",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-ops/claims/:claimId",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "claims.assign"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/claims/:claimId/assign",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "claims.assign",
+        "knowledge-ops.comment"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/items/:itemType/:itemId/comment",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-ops.comment",
+        "knowledge-ops.escalate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/items/:itemType/:itemId/escalate",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-ops.escalate",
+        "source.refresh"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/sources/:sourceId/refresh/request",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "source.refresh",
+        "duplicates.resolve"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/duplicates/resolve",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "duplicates.resolve",
+        "synonyms.resolve"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/synonyms/resolve",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "synonyms.resolve",
+        "corroboration.analyse"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-ops/corroboration/analyse",
+      "file": "apps/api/src/routes/knowledgeOpsWorkbenchRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "corroboration.analyse"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.candidate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases/released",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.candidate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases/pins",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.candidate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases/events",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.candidate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-ops/durable-snapshot",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.candidate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/candidate",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.candidate"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases/:candidateId/diff",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/:candidateId/validate",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/:candidateId/approve",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "release.promote"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/:candidateId/promote",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.promote",
+        "release.rollback"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/:candidateId/rollback",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.rollback",
+        "release.pin"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/knowledge-releases/pin",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.pin"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/knowledge-releases/:candidateId/manifest",
+      "file": "apps/api/src/routes/knowledgeReleaseRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/jobs/source-refresh",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.worker",
+        "mind-factory.worker",
+        "knowledge-pack.kpack"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/jobs/claim-extraction",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.worker",
+        "knowledge-pack.kpack"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/aiw-kpack/export",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.kpack",
+        "knowledge-pack.kpack"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/aiw-kpack/import",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.kpack",
+        "mind-factory.execute",
+        "repository-source.execute"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/jobs/execute-next",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.execute",
+        "repository-source.execute"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/repository-sources/:connectorId/execute-refresh",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "repository-source.execute",
+        "mind-factory.snapshot"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/sources/:sourceId/snapshot",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.snapshot",
+        "mind-factory.extract"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/snapshots/:snapshotId/extract-claims",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.extract",
+        "mind-factory.normalize"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/claims/normalize",
+      "file": "apps/api/src/routes/mindFactoryJobsRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.normalize"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/mind-factory",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/mind-factory/activation",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "repository-source.bind"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/mind-factory/audit-timeline",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "repository-source.bind"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/mind-factory/provider-bindings",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "repository-source.bind"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/provider-bindings/repository/fetch-plan",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "repository-source.bind",
+        "knowledge-pack.kms-guide"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/provider-bindings/kms/guide",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.kms-guide",
+        "mind-factory.persistence"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/mind-factory/release-activation-screen",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.persistence"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/mind-factory/persistence",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.persistence",
+        "knowledge-pack.sign"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/persistence/pin-activation",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.persistence",
+        "knowledge-pack.sign"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/kms/sign",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.sign",
+        "mind-factory.release-impact"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/release-impact-preview",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "mind-factory.release-impact",
+        "knowledge-pack.export"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/mind-factory/stage-traceability",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.export",
+        "knowledge-pack.activate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/knowledge-pack/export",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.export",
+        "knowledge-pack.activate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/knowledge-pack/activate",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.activate",
+        "knowledge-pack.import"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/mind-factory/knowledge-pack/import",
+      "file": "apps/api/src/routes/mindFactoryRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "knowledge-pack.import"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/pattern-dna",
+      "file": "apps/api/src/routes/patternDnaRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "pattern-dna.stage"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/pattern-dna/pattern/:patternId",
+      "file": "apps/api/src/routes/patternDnaRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "pattern-dna.stage",
+        "pattern-dna.stage"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/pattern-dna/:patternId/stage",
+      "file": "apps/api/src/routes/patternDnaRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "pattern-dna.stage",
+        "pattern-dna.stage",
+        "release.candidate"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/admin/pattern-dna/staged/:editId",
+      "file": "apps/api/src/routes/patternDnaRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "pattern-dna.stage",
+        "release.candidate",
+        "calibration.ratify"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/pattern-dna/candidate",
+      "file": "apps/api/src/routes/patternDnaRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "release.candidate",
+        "calibration.ratify"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/calibration/:attributeId/ratify",
+      "file": "apps/api/src/routes/patternDnaRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "calibration.ratify"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/admin/repository-conformance/pilot",
+      "file": "apps/api/src/routes/repositoryConformancePilotRoutes.ts",
+      "mutating": false,
+      "permissionGuarded": true,
+      "permissions": [
+        "connector.scan",
+        "conformance.generate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repository-conformance/connectors/:connectorId/scan",
+      "file": "apps/api/src/routes/repositoryConformancePilotRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "connector.scan",
+        "conformance.generate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repository-conformance/connectors/:connectorId/generate-controls",
+      "file": "apps/api/src/routes/repositoryConformancePilotRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "conformance.generate",
+        "fitness-loop.generate"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repository-conformance/connectors/:connectorId/fitness-loop",
+      "file": "apps/api/src/routes/repositoryConformancePilotRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "fitness-loop.generate",
+        "runtime-evidence.plan"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/admin/repository-conformance/connectors/:connectorId/runtime-ingestion",
+      "file": "apps/api/src/routes/repositoryConformancePilotRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": true,
+      "permissions": [
+        "runtime-evidence.plan"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/review-studio/run",
+      "file": "apps/api/src/routes/reviewStudioRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/review-studio/handoff-pack",
+      "file": "apps/api/src/routes/reviewStudioRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/review-studio/handoff-pack.zip",
+      "file": "apps/api/src/routes/reviewStudioRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    },
+    {
+      "method": "POST",
+      "path": "/api/review-studio/generated-adrs",
+      "file": "apps/api/src/routes/reviewStudioRoutes.ts",
+      "mutating": true,
+      "permissionGuarded": false,
+      "permissions": []
+    }
+  ]
+}

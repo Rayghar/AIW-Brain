@@ -1,0 +1,2 @@
+-- Placeholder RLS policy target for rc.10.2 clinical refactor foundation.
+-- Production migration must bind current_setting('aiw.tenant_id') to tenant-scoped tables.

@@ -1,0 +1,17 @@
+{
+  "release": "0.10.0-rc.10.72.1",
+  "generatedAt": "2026-07-13T16:51:25Z",
+  "packagedFilesBeforeManifest": 3207,
+  "totalBytesBeforeManifest": 102929882,
+  "sourceFiles": 1179,
+  "compiledOutputFiles": 1167,
+  "currentVisualEvidenceFiles": 28,
+  "installedDependencyFiles": 0,
+  "testResultFiles": 0,
+  "gitMetadataFiles": 0,
+  "privateKeyFiles": 0,
+  "debugLogFiles": 0,
+  "knowledgeReleaseId": "AKR-0.10.72.0",
+  "historicalFrontendEvidenceIncluded": false,
+  "productionAccepted": false
+}

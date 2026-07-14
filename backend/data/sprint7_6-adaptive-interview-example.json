@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-07-02T15:54:29.711Z",
+  "stage": "logicalApplication",
+  "completeness": 60,
+  "uncertaintyAreas": [
+    "faultTolerance scenario",
+    "scalability scenario",
+    "modifiability scenario",
+    "consistency needs"
+  ],
+  "questions": [
+    {
+      "id": "Q-SCENARIO-faultTolerance",
+      "stage": "designIntent",
+      "question": "What measurable scenario defines acceptable faultTolerance?",
+      "whyItMatters": "A quality attribute without stimulus, environment and response measure cannot be tested or used reliably in recommendations.",
+      "answerType": "text",
+      "priority": "critical",
+      "linkedQualityAttributes": [
+        "faultTolerance"
+      ],
+      "creates": [
+        "quality-scenario"
+      ]
+    },
+    {
+      "id": "Q-SCENARIO-scalability",
+      "stage": "designIntent",
+      "question": "What measurable scenario defines acceptable scalability?",
+      "whyItMatters": "A quality attribute without stimulus, environment and response measure cannot be tested or used reliably in recommendations.",
+      "answerType": "text",
+      "priority": "critical",
+      "linkedQualityAttributes": [
+        "scalability"
+      ],
+      "creates": [
+        "quality-scenario"
+      ]
+    },
+    {
+      "id": "Q-SCENARIO-modifiability",
+      "stage": "designIntent",
+      "question": "What measurable scenario defines acceptable modifiability?",
+      "whyItMatters": "A quality attribute without stimulus, environment and response measure cannot be tested or used reliably in recommendations.",
+      "answerType": "text",
+      "priority": "critical",
+      "linkedQualityAttributes": [
+        "modifiability"
+      ],
+      "creates": [
+        "quality-scenario"
+      ]
+    },
+    {
+      "id": "Q-CONSISTENCY",
+      "stage": "logicalApplication",
+      "question": "Which business operations require immediate consistency, and where is delayed convergence acceptable?",
+      "whyItMatters": "Consistency scope strongly influences boundaries, interaction style and data patterns.",
+      "answerType": "text",
+      "priority": "critical",
+      "linkedQualityAttributes": [
+        "consistency",
+        "availability",
+        "latency"
+      ],
+      "creates": [
+        "constraint",
+        "decision"
+      ]
+    }
+  ]
+}

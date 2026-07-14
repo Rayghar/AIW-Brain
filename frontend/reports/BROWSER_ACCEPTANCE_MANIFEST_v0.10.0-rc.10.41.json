@@ -1,0 +1,20 @@
+{
+  "release": "0.10.0-rc.10.42",
+  "sprint": "8.9.24",
+  "generatedAt": "2026-07-07T10:34:49.231Z",
+  "navigationModel": [
+    "Project Cockpit",
+    "Guided Journey",
+    "Design Lifecycle: Brief → Quality Drivers → Logical Application → Application Realization → Logical Technology → Physical Technology → Review & Realize",
+    "Specialist Workspaces",
+    "Admin & Knowledge Ops"
+  ],
+  "browserAcceptanceChecklist": [
+    "Every left-nav item opens a workspace without a blank screen.",
+    "The browser console contains no uncaught TypeError, hook-order warning, or DataCloneError during click-through.",
+    "Quality Drivers appears as part of the lifecycle journey, not only as an advanced/specialist page.",
+    "Admin deep links activate only the selected Admin & Knowledge Ops item.",
+    "Studio Inspector has safe no-selection, missing-data and recommendation fallbacks.",
+    "Tables, cards, inspector and bottom rail use the same readability and spacing rules."
+  ]
+}

@@ -1,0 +1,5538 @@
+{
+  "version": "1.0.0",
+  "releaseId": "AKR-0.10.55",
+  "generatedAt": "2026-07-11T00:00:00.000Z",
+  "title": "AIW Global Architecture Intelligence Source Map",
+  "classificationDimensions": {
+    "lifecycleState": "discovery → candidate → approved → deprecated/retired",
+    "usagePosture": [
+      "Adopt",
+      "Adapt",
+      "Adapter",
+      "Reference",
+      "Benchmark",
+      "Discovery",
+      "Exclude"
+    ]
+  },
+  "summary": {
+    "repositories": 47,
+    "approved": 30,
+    "candidate": 9,
+    "discovery": 8,
+    "postures": {
+      "Adopt": 11,
+      "Adapt": 3,
+      "Adapter": 19,
+      "Reference": 6,
+      "Benchmark": 0,
+      "Discovery": 8,
+      "Exclude": 0
+    }
+  },
+  "dossiers": [
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "repository": "finos/architecture-as-code",
+      "identity": {
+        "name": "FINOS Common Architecture Language Model (CALM)",
+        "owner": "FINOS",
+        "url": "https://github.com/finos/architecture-as-code",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Verify per-path licensing and CALM schema terms before redistributing source-derived content."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Governed, machine-readable architecture-as-code specification and toolchain with patterns, controls and validation for regulated environments."
+      },
+      "technicalScope": [
+        "modeling-language",
+        "pattern-library",
+        "architecture-conformance"
+      ],
+      "usefulPaths": [
+        "calm/**",
+        "calm-models/**",
+        "docs/calm/**",
+        "docs/docs/**",
+        "calm-ai/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**",
+        "**/coverage/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "claim-evidence",
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "architecture-test-generation"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "CALM is an interoperability source, not AIW’s canonical model",
+        "schema versions must be pinned",
+        "AI-generated CALM must be validated before use",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "calm/**",
+          "calm-models/**",
+          "docs/calm/**",
+          "docs/docs/**",
+          "calm-ai/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/build/**",
+          "**/coverage/**"
+        ],
+        "maxFilesPerRefresh": 180,
+        "maxFileBytes": 750000,
+        "refreshCadenceDays": 14,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "architecture-test-generation"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "identity": {
+        "name": "Microsoft Azure Architecture Center",
+        "owner": "Microsoft",
+        "url": "https://github.com/MicrosoftDocs/architecture-center",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Ingest atomic claims and links; do not republish documentation wholesale."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official Microsoft repository containing cloud design patterns, performance anti-patterns, technology-choice guidance and reference architectures."
+      },
+      "technicalScope": [
+        "pattern-library",
+        "anti-pattern-library",
+        "reference-architecture",
+        "component-library"
+      ],
+      "usefulPaths": [
+        "docs/patterns/**",
+        "docs/antipatterns/**",
+        "docs/best-practices/**",
+        "docs/reference-architectures/**",
+        "docs/guide/**",
+        "docs/data-guide/**"
+      ],
+      "deniedPaths": [
+        "**/media/**",
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.svg"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "claim-evidence",
+        "pattern-extraction",
+        "anti-pattern-extraction",
+        "component-taxonomy",
+        "reference-example",
+        "quality-attribute-calibration"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "anti-pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "quality-attribute-calibration",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Vendor-specific advice must be labelled Azure-specific",
+        "some patterns are general but examples are product-bound",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "docs/patterns/**",
+          "docs/antipatterns/**",
+          "docs/best-practices/**",
+          "docs/reference-architectures/**",
+          "docs/guide/**",
+          "docs/data-guide/**"
+        ],
+        "deniedPaths": [
+          "**/media/**",
+          "**/*.png",
+          "**/*.jpg",
+          "**/*.svg"
+        ],
+        "maxFilesPerRefresh": 240,
+        "maxFileBytes": 900000,
+        "refreshCadenceDays": 14,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "anti-pattern-extraction",
+        "component-taxonomy",
+        "reference-example",
+        "quality-attribute-calibration"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "identity": {
+        "name": "AWS Serverless Patterns Collection",
+        "owner": "AWS Samples",
+        "url": "https://github.com/aws-samples/serverless-patterns",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Treat patterns as provider-specific examples; preserve source and license metadata."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official executable integration patterns backed by infrastructure-as-code and Serverless Land metadata."
+      },
+      "technicalScope": [
+        "pattern-library",
+        "component-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "**/README.md",
+        "**/template.yaml",
+        "**/template.yml",
+        "**/*.json",
+        "**/*.tf",
+        "**/*.ts",
+        "**/*.py",
+        "_pattern-model/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/.aws-sam/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "AWS-specific",
+        "community submissions vary in depth",
+        "deployment success is not proof of architectural suitability",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "**/README.md",
+          "**/template.yaml",
+          "**/template.yml",
+          "**/*.json",
+          "**/*.tf",
+          "**/*.ts",
+          "**/*.py",
+          "_pattern-model/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/.aws-sam/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 220,
+        "maxFileBytes": 600000,
+        "refreshCadenceDays": 14,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "identity": {
+        "name": "AWS Solutions Constructs",
+        "owner": "AWS Labs",
+        "url": "https://github.com/awslabs/aws-solutions-constructs",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve attribution; generated AIW templates remain independent representations."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official multi-service CDK constructs that encode repeatable well-architected defaults and service integrations."
+      },
+      "technicalScope": [
+        "component-library",
+        "pattern-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "source/patterns/**/README.adoc",
+        "source/patterns/**/index.ts",
+        "source/patterns/**/lib/**",
+        "source/use_cases/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/coverage/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Provider-specific",
+        "construct defaults still require workload review",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "source/patterns/**/README.adoc",
+          "source/patterns/**/index.ts",
+          "source/patterns/**/lib/**",
+          "source/use_cases/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/coverage/**"
+        ],
+        "maxFilesPerRefresh": 200,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "identity": {
+        "name": "Azure Common Resource Modules / Verified Modules",
+        "owner": "Azure",
+        "url": "https://github.com/Azure/ResourceModules",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use module metadata and interfaces; validate licensing before embedding module source."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Microsoft-maintained curated Bicep modules with CI validation and versioned publishing."
+      },
+      "technicalScope": [
+        "component-library",
+        "reference-architecture",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "avm/res/**",
+        "avm/ptn/**",
+        "modules/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/tests/**/outputs/**",
+        "**/.terraform/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Infrastructure modules do not encode complete software design rationale",
+        "Azure-specific",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "avm/res/**",
+          "avm/ptn/**",
+          "modules/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/tests/**/outputs/**",
+          "**/.terraform/**"
+        ],
+        "maxFilesPerRefresh": 180,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "identity": {
+        "name": "Google Cloud Foundation Fabric",
+        "owner": "Google Cloud Platform",
+        "url": "https://github.com/GoogleCloudPlatform/cloud-foundation-fabric",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use interfaces and metadata; do not copy module implementations without license review."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Google-maintained Terraform modules and end-to-end blueprints for cloud foundations and application infrastructure."
+      },
+      "technicalScope": [
+        "component-library",
+        "reference-architecture",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "modules/**",
+        "blueprints/**",
+        "fast/**",
+        "samples/**"
+      ],
+      "deniedPaths": [
+        "**/.terraform/**",
+        "**/generated/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "GCP-specific",
+        "infrastructure blueprints do not replace application architecture reasoning",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "modules/**",
+          "blueprints/**",
+          "fast/**",
+          "samples/**"
+        ],
+        "deniedPaths": [
+          "**/.terraform/**",
+          "**/generated/**"
+        ],
+        "maxFilesPerRefresh": 200,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "topology-template",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "identity": {
+        "name": "Domain-Driven Design Crew Methods",
+        "owner": "DDD Crew",
+        "url": "https://github.com/ddd-crew/ddd-starter-modelling-process",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "CC-BY-SA-4.0",
+        "reviewStatus": "verified",
+        "usePolicy": "derive-claims-only",
+        "note": "Preserve attribution and share-alike obligations for any adapted canvas content."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Practitioner-maintained, structured DDD modelling methods that connect event storming, domain message flow, bounded contexts and aggregates."
+      },
+      "technicalScope": [
+        "architecture-method",
+        "pattern-library",
+        "documentation-framework"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "resources/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "claim-evidence",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Methods require facilitation and judgement",
+        "not a universal architecture pattern authority",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "README.md",
+          "resources/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.jpg"
+        ],
+        "maxFilesPerRefresh": 80,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "identity": {
+        "name": "Apache Camel Enterprise Integration Patterns",
+        "owner": "Apache Software Foundation",
+        "url": "https://github.com/apache/camel",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use pattern/component metadata with attribution; avoid coupling AIW to Camel runtime types."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Mature open-source integration framework organized around known Enterprise Integration Patterns and a large component catalog."
+      },
+      "technicalScope": [
+        "pattern-library",
+        "component-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "core/camel-core-model/src/main/java/**",
+        "core/camel-core-model/src/generated/**",
+        "components/**/src/main/docs/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/generated-test-resources/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Runtime-specific implementation details must be separated from general EIP concepts",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "core/camel-core-model/src/main/java/**",
+          "core/camel-core-model/src/generated/**",
+          "components/**/src/main/docs/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/generated-test-resources/**"
+        ],
+        "maxFilesPerRefresh": 220,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "identity": {
+        "name": "AsyncAPI Specification and Tooling",
+        "owner": "AsyncAPI Initiative",
+        "url": "https://github.com/asyncapi/spec",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve specification attribution and version pinning."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Linux Foundation specification and tooling ecosystem for event-driven API contracts."
+      },
+      "technicalScope": [
+        "contract-specification",
+        "modeling-language",
+        "component-library"
+      ],
+      "usefulPaths": [
+        "spec/**",
+        "examples/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "claim-evidence",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Defines contracts, not complete architecture suitability",
+        "protocol bindings require version-aware handling",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "spec/**",
+          "examples/**",
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 750000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "claim-evidence",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "identity": {
+        "name": "Open Application Model",
+        "owner": "OAM Dev",
+        "url": "https://github.com/oam-dev/spec",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use model concepts and schema mappings with attribution."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Open model for higher-level cloud-native application components, traits, policies and workflows across hybrid and multi-cloud environments."
+      },
+      "technicalScope": [
+        "modeling-language",
+        "component-library",
+        "architecture-method"
+      ],
+      "usefulPaths": [
+        "core/**",
+        "schemas/**",
+        "*.md"
+      ],
+      "deniedPaths": [
+        "**/vendor/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Specification evolution is slower than active implementations",
+        "cloud-native focus",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "core/**",
+          "schemas/**",
+          "*.md"
+        ],
+        "deniedPaths": [
+          "**/vendor/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 90,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "identity": {
+        "name": "Kubernetes Patterns Examples",
+        "owner": "Kubernetes Patterns",
+        "url": "https://github.com/k8spatterns/examples",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Examples correspond to a published book; preserve repository licensing and avoid reproducing book text."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Executable examples accompanying a recognized cloud-native pattern language."
+      },
+      "technicalScope": [
+        "pattern-library",
+        "implementation-example",
+        "component-library"
+      ],
+      "usefulPaths": [
+        "**/README.md",
+        "**/*.yaml",
+        "**/*.yml",
+        "**/*.json",
+        "**/*.sh"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/node_modules/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Examples alone do not capture all pattern forces and trade-offs",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "**/README.md",
+          "**/*.yaml",
+          "**/*.yml",
+          "**/*.json",
+          "**/*.sh"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/node_modules/**"
+        ],
+        "maxFilesPerRefresh": 140,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 90,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "identity": {
+        "name": "Service Mesh Patterns",
+        "owner": "Service Mesh Patterns / Layer5",
+        "url": "https://github.com/service-mesh-patterns/service-mesh-patterns",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Preserve attribution and source pattern identifiers."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Declarative YAML patterns for service-mesh and cloud-native configurations, designed for use with Meshery."
+      },
+      "technicalScope": [
+        "pattern-library",
+        "component-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "samples/**",
+        "patterns/**",
+        "*.md",
+        "**/*.yaml",
+        "**/*.yml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Configuration validity does not guarantee workload suitability",
+        "mesh-specific",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "samples/**",
+          "patterns/**",
+          "*.md",
+          "**/*.yaml",
+          "**/*.yml"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**"
+        ],
+        "maxFilesPerRefresh": 140,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "pattern-extraction",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "identity": {
+        "name": "LikeC4",
+        "owner": "LikeC4",
+        "url": "https://github.com/likec4/likec4",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Implement syntax/model adapters; do not copy implementation code into AIW."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Active software architecture modeling language with custom notation, custom element types, arbitrary nesting and generated views."
+      },
+      "technicalScope": [
+        "modeling-language",
+        "documentation-framework"
+      ],
+      "usefulPaths": [
+        "packages/**",
+        "docs/**",
+        "examples/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "interoperability-adapter",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "External notation must map to AIW semantics without loss",
+        "not a pattern authority",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "packages/**",
+          "docs/**",
+          "examples/**",
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 80,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "interoperability-adapter",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "identity": {
+        "name": "Structurizr DSL and Java Model",
+        "owner": "Structurizr",
+        "url": "https://github.com/structurizr/java",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use public language semantics and generated fixtures; verify module licensing before code reuse."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Reference implementation and active home of the Structurizr DSL for C4 architecture models and views."
+      },
+      "technicalScope": [
+        "modeling-language",
+        "documentation-framework"
+      ],
+      "usefulPaths": [
+        "structurizr-dsl/**",
+        "structurizr-core/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/target/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "interoperability-adapter",
+        "reference-example",
+        "architecture-test-generation"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "C4 abstraction levels are narrower than AIW’s full metamodel",
+        "older structurizr/dsl repository is archived",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "structurizr-dsl/**",
+          "structurizr-core/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/target/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 700000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "interoperability-adapter",
+        "reference-example",
+        "architecture-test-generation"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "identity": {
+        "name": "C4-PlantUML",
+        "owner": "PlantUML Standard Library",
+        "url": "https://github.com/plantuml-stdlib/C4-PlantUML",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Generate C4-PlantUML output without bundling third-party source by default."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Widely used open-source C4 notation library for PlantUML and diagram-as-code workflows."
+      },
+      "technicalScope": [
+        "modeling-language",
+        "documentation-framework"
+      ],
+      "usefulPaths": [
+        "*.puml",
+        "themes/**",
+        "samples/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.svg"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Rendering notation is not a semantic knowledge source",
+        "sequence semantics require separate support",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "*.puml",
+          "themes/**",
+          "samples/**",
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.svg"
+        ],
+        "maxFilesPerRefresh": 80,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 90,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "identity": {
+        "name": "arc42 Architecture Documentation Template",
+        "owner": "arc42",
+        "url": "https://github.com/arc42/arc42-template",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Respect attribution/share terms for adapted template content."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Mature open-source structure for practical software architecture documentation and communication."
+      },
+      "technicalScope": [
+        "documentation-framework",
+        "architecture-method"
+      ],
+      "usefulPaths": [
+        "EN/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/build/**",
+        "**/*.pdf"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "claim-evidence",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Documentation structure is not a design rule set",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "EN/**",
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/build/**",
+          "**/*.pdf"
+        ],
+        "maxFilesPerRefresh": 80,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 90,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "claim-evidence",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "identity": {
+        "name": "ArchUnit",
+        "owner": "TNG Technology Consulting",
+        "url": "https://github.com/TNG/ArchUnit",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Generate independent ArchUnit tests; do not copy source implementation."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Established Java architecture-test library for package, layer, slice, dependency and cycle rules."
+      },
+      "technicalScope": [
+        "architecture-conformance",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "archunit/src/main/**",
+        "archunit-example/**",
+        "docs/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/build/**",
+        "**/target/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Java bytecode scope",
+        "cannot validate runtime topology or business rationale",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "archunit/src/main/**",
+          "archunit-example/**",
+          "docs/**",
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/build/**",
+          "**/target/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 600000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "identity": {
+        "name": "jQAssistant",
+        "owner": "jQAssistant",
+        "url": "https://github.com/jQAssistant/jqassistant",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "GPL-3.0",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Keep integration process-boundary based unless legal review approves deeper linkage."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Graph-based software analysis and architecture constraint framework with extensible scanners and rules."
+      },
+      "technicalScope": [
+        "architecture-conformance",
+        "component-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "core/**",
+        "plugin/**",
+        "docs/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "architecture-test-generation",
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "GPL integration boundary must be managed",
+        "scanner coverage varies by language/plugin",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "core/**",
+          "plugin/**",
+          "docs/**",
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 600000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "architecture-test-generation",
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "identity": {
+        "name": "Backstage Software Catalog",
+        "owner": "Backstage / CNCF",
+        "url": "https://github.com/backstage/backstage",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Use catalog schemas and API integration; preserve AIW as the architecture source of truth."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "CNCF developer-portal framework with a mature software catalog for components, systems, domains, APIs, resources and ownership."
+      },
+      "technicalScope": [
+        "component-library",
+        "reference-architecture",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "docs/features/software-catalog/**",
+        "packages/catalog-model/**",
+        "plugins/catalog/**",
+        "docs/features/software-templates/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Backstage catalog is not a dynamic architecture source of truth",
+        "catalog entity semantics are coarser than AIW",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "docs/features/software-catalog/**",
+          "packages/catalog-model/**",
+          "plugins/catalog/**",
+          "docs/features/software-templates/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 700000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "identity": {
+        "name": "FINOS AI Reference Architecture Library",
+        "owner": "FINOS",
+        "url": "https://github.com/finos/ai-reference-architecture-library",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Verify architecture-specific licenses and attribution before template adaptation."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Curated financial-services AI reference architectures developed by FSIs, integrators and technology providers with expert validation."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "pattern-library",
+        "component-library"
+      ],
+      "usefulPaths": [
+        "**/*.json",
+        "**/*.yaml",
+        "**/*.yml",
+        "**/*.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "claim-evidence",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Domain-specific to financial services and AI",
+        "reference architectures require contextual tailoring",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "**/*.json",
+          "**/*.yaml",
+          "**/*.yml",
+          "**/*.md"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 120,
+        "maxFileBytes": 700000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "claim-evidence",
+        "topology-template",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "identity": {
+        "name": "SAP Architecture Center",
+        "owner": "SAP",
+        "url": "https://github.com/SAP/architecture-center",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use source-specific attribution and do not treat SAP product guidance as vendor-neutral."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official SAP repository of solution reference architectures and reusable product/service-level architecture guidance."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "component-library",
+        "pattern-library"
+      ],
+      "usefulPaths": [
+        "docs/**",
+        "content/**",
+        "src/**/architectures/**",
+        "**/*.md",
+        "**/*.json"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/public/**/images/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Vendor-specific",
+        "architecture suitability depends on SAP landscape context",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "docs/**",
+          "content/**",
+          "src/**/architectures/**",
+          "**/*.md",
+          "**/*.json"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/public/**/images/**"
+        ],
+        "maxFilesPerRefresh": 150,
+        "maxFileBytes": 700000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "identity": {
+        "name": "CNCF TAG Security Reference Architectures",
+        "owner": "CNCF",
+        "url": "https://github.com/cncf/tag-security",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Preserve CNCF attribution and source document links."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "CNCF community security papers and reference architectures covering cloud-native security and software supply chain concerns."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "quality-model",
+        "pattern-library"
+      ],
+      "usefulPaths": [
+        "community/resources/**",
+        "community/working-groups/**",
+        "security-assessments/**"
+      ],
+      "deniedPaths": [
+        "**/*.pdf",
+        "**/vendor/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "claim-evidence",
+        "pattern-extraction",
+        "quality-attribute-calibration",
+        "topology-template"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "quality-attribute-calibration",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Some papers are broad guidance, not machine-verifiable requirements",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "community/resources/**",
+          "community/working-groups/**",
+          "security-assessments/**"
+        ],
+        "deniedPaths": [
+          "**/*.pdf",
+          "**/vendor/**"
+        ],
+        "maxFilesPerRefresh": 120,
+        "maxFileBytes": 800000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "claim-evidence",
+        "pattern-extraction",
+        "quality-attribute-calibration",
+        "topology-template"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+      "repository": "IBM/cloud-native-patterns",
+      "identity": {
+        "name": "IBM Cloud-Native Patterns",
+        "owner": "IBM",
+        "url": "https://github.com/IBM/cloud-native-patterns",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Candidate source pending deeper maintenance and license review."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "candidate",
+        "rationale": "IBM-authored collection of cloud-native control-loop and stateful-streaming patterns."
+      },
+      "technicalScope": [
+        "pattern-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "docs/**",
+        "**/*.md",
+        "**/*.yaml",
+        "**/*.yml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/target/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Narrow scope",
+        "maintenance cadence requires review",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Reference",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "README.md",
+          "docs/**",
+          "**/*.md",
+          "**/*.yaml",
+          "**/*.yml"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/target/**"
+        ],
+        "maxFilesPerRefresh": 80,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "pattern-extraction",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "identity": {
+        "name": "Cloud-Native Architecture Quality Model",
+        "owner": "Research project",
+        "url": "https://github.com/r0light/cna-quality-model",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use as research evidence; retain paper/repository provenance."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "candidate",
+        "rationale": "Research-backed quality model focused on design-time evaluation of cloud-native software architectures and validated through survey work."
+      },
+      "technicalScope": [
+        "quality-model",
+        "architecture-method"
+      ],
+      "usefulPaths": [
+        "quality-model.md",
+        "README.md",
+        "**/*.json",
+        "**/*.csv"
+      ],
+      "deniedPaths": [
+        "**/*.pdf"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "quality-attribute-calibration",
+        "claim-evidence",
+        "anti-pattern-extraction"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "quality-attribute-calibration",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "anti-pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Research model requires expert calibration before production scoring",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Reference",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "quality-model.md",
+          "README.md",
+          "**/*.json",
+          "**/*.csv"
+        ],
+        "deniedPaths": [
+          "**/*.pdf"
+        ],
+        "maxFilesPerRefresh": 50,
+        "maxFileBytes": 800000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "quality-attribute-calibration",
+        "claim-evidence",
+        "anti-pattern-extraction"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "identity": {
+        "name": "OpenTelemetry Astronomy Shop Demo",
+        "owner": "OpenTelemetry",
+        "url": "https://github.com/open-telemetry/opentelemetry-demo",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use architecture metadata and test fixtures; verify code license for any reuse."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official near-real-world microservice demo showing OpenTelemetry instrumentation, collectors and observability topology."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "implementation-example",
+        "component-library"
+      ],
+      "usefulPaths": [
+        "src/**",
+        "kubernetes/**",
+        "helm-chart/**",
+        "docs/**",
+        "docker-compose*.yml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/vendor/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Demonstration architecture intentionally includes failure scenarios and is not a universal production blueprint",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "src/**",
+          "kubernetes/**",
+          "helm-chart/**",
+          "docs/**",
+          "docker-compose*.yml"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/vendor/**"
+        ],
+        "maxFilesPerRefresh": 150,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "identity": {
+        "name": "Google Cloud Microservices Demo",
+        "owner": "Google Cloud Platform",
+        "url": "https://github.com/GoogleCloudPlatform/microservices-demo",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "Apache-2.0",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use architecture metadata and test fixtures with attribution."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official cloud-first sample application with multiple microservices, Kubernetes, Istio and gRPC."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "implementation-example",
+        "component-library"
+      ],
+      "usefulPaths": [
+        "src/**",
+        "kubernetes-manifests/**",
+        "helm-chart/**",
+        "docs/**",
+        "skaffold.yaml"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/vendor/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Sample architecture is educational, not a universal recommendation",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "src/**",
+          "kubernetes-manifests/**",
+          "helm-chart/**",
+          "docs/**",
+          "skaffold.yaml"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/vendor/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 140,
+        "maxFileBytes": 600000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "architecture-test-generation"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "identity": {
+        "name": "Google Cloud Software Delivery Blueprint",
+        "owner": "Google Cloud Platform",
+        "url": "https://github.com/GoogleCloudPlatform/software-delivery-blueprint",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use architecture claims and metadata; review Terraform module licenses separately."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official blueprint for application infrastructure, self-service landing zones and software delivery practices."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "component-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "docs/**",
+        "terraform/**",
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/.terraform/**",
+        "**/generated/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "GCP implementation context",
+        "platform architecture rather than application design",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "docs/**",
+          "terraform/**",
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/.terraform/**",
+          "**/generated/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "reference-example",
+        "component-taxonomy",
+        "topology-template",
+        "claim-evidence"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "identity": {
+        "name": "AWS SaaS Factory EKS Reference Architecture",
+        "owner": "AWS Samples",
+        "url": "https://github.com/aws-samples/aws-saas-factory-eks-reference-architecture",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Provider-specific reference content; preserve source and version."
+      },
+      "sourceAuthority": {
+        "trustTier": 1,
+        "lifecycleStatus": "approved",
+        "rationale": "Official end-to-end multi-tenant SaaS reference architecture for EKS with identity, isolation, routing and deployment guidance."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "implementation-example",
+        "component-library"
+      ],
+      "usefulPaths": [
+        "GUIDE.md",
+        "docs/**",
+        "src/**",
+        "cdk/**",
+        "deployment/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/cdk.out/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "reference-example",
+        "topology-template",
+        "component-taxonomy",
+        "claim-evidence"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "AWS/EKS-specific",
+        "sample does not replace tenancy threat modeling",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adopt",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "GUIDE.md",
+          "docs/**",
+          "src/**",
+          "cdk/**",
+          "deployment/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/cdk.out/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 120,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 90,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Architecture Knowledge Council + domain specialist",
+      "permittedAiwUses": [
+        "reference-example",
+        "topology-template",
+        "component-taxonomy",
+        "claim-evidence"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-MICROSOFT-AGENT-SKILLS",
+      "repository": "MicrosoftDocs/agent-skills",
+      "identity": {
+        "name": "Microsoft Agent Skills — Azure Architecture",
+        "owner": "Microsoft Docs",
+        "url": "https://github.com/MicrosoftDocs/agent-skills",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use to study AI skill packaging and source links; do not treat prompts as independent architecture authority."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "candidate",
+        "rationale": "Microsoft-maintained LLM skill corpus that packages Azure architecture guidance for AI assistants."
+      },
+      "technicalScope": [
+        "architecture-method",
+        "pattern-library",
+        "discovery-index"
+      ],
+      "usefulPaths": [
+        "skills/azure-architecture/**",
+        "docs/CATALOG.md"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "reference-example",
+        "discovery-only"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Skill prompts may simplify or lag underlying guidance",
+        "must resolve claims to primary sources",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Reference",
+      "exactIngestionConfiguration": {
+        "mode": "metadata-only",
+        "allowedPaths": [
+          "skills/azure-architecture/**",
+          "docs/CATALOG.md"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 60,
+        "maxFileBytes": 400000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "reference-example",
+        "discovery-only"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "identity": {
+        "name": "Java Design Patterns",
+        "owner": "Open-source community",
+        "url": "https://github.com/iluwatar/java-design-patterns",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use as secondary implementation evidence; corroborate architecture claims with stronger sources."
+      },
+      "sourceAuthority": {
+        "trustTier": 3,
+        "lifecycleStatus": "candidate",
+        "rationale": "Large, actively maintained collection of well-commented pattern implementations developed by community practitioners."
+      },
+      "technicalScope": [
+        "pattern-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "**/README.md",
+        "**/src/main/java/**",
+        "localization/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/generated/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "pattern-extraction",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Java-centric",
+        "community examples are not normative architecture guidance",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Reference",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "**/README.md",
+          "**/src/main/java/**",
+          "localization/**"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/generated/**"
+        ],
+        "maxFilesPerRefresh": 120,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 90,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "pattern-extraction",
+        "reference-example",
+        "component-taxonomy"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+      "repository": "DovAmir/awesome-design-patterns",
+      "identity": {
+        "name": "Awesome Software and Architectural Design Patterns",
+        "owner": "Community curator",
+        "url": "https://github.com/DovAmir/awesome-design-patterns",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use links for candidate-source discovery only."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "Broad curated index useful for discovery of additional pattern sources."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "pattern-library"
+      ],
+      "usefulPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Curated links vary in authority and freshness",
+        "must never directly change production rules",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md"
+        ],
+        "deniedPaths": [],
+        "maxFilesPerRefresh": 5,
+        "maxFileBytes": 700000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWESOME-SOFTWARE-ARCH",
+      "repository": "mehdihadeli/awesome-software-architecture",
+      "identity": {
+        "name": "Awesome Software Architecture",
+        "owner": "Community curator",
+        "url": "https://github.com/mehdihadeli/awesome-software-architecture",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use only to discover primary sources and emerging topics."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "Continuously curated index of software architecture resources, patterns and practices."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "pattern-library"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "docs/**"
+      ],
+      "deniedPaths": [],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Not an authoritative source",
+        "linked material has mixed licensing and quality",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md",
+          "docs/**"
+        ],
+        "deniedPaths": [],
+        "maxFilesPerRefresh": 20,
+        "maxFileBytes": 800000,
+        "refreshCadenceDays": 90,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "identity": {
+        "name": "Awesome Anti-Pattern Index",
+        "owner": "Community curator",
+        "url": "https://github.com/fauzisho/awesome-antipattern",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "metadata-only",
+        "usePolicy": "metadata-only",
+        "note": "Use as a research index; claims require primary-source corroboration."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "Curated survey and resource index for software and architecture anti-patterns."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "anti-pattern-library"
+      ],
+      "usefulPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Mixed source quality",
+        "not suitable for direct rule generation",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md"
+        ],
+        "deniedPaths": [],
+        "maxFilesPerRefresh": 5,
+        "maxFileBytes": 600000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+      "repository": "donnemartin/system-design-primer",
+      "identity": {
+        "name": "System Design Primer",
+        "owner": "Community",
+        "url": "https://github.com/donnemartin/system-design-primer",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use as educational discovery material, never as a hard-rule authority."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "Popular educational system-design repository with broad concept coverage and worked examples."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "solutions/**"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Interview-oriented",
+        "simplifications and unverified diagrams require caution",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md",
+          "solutions/**"
+        ],
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.jpg"
+        ],
+        "maxFilesPerRefresh": 30,
+        "maxFileBytes": 900000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "repository": "xmolecules/jmolecules",
+      "identity": {
+        "name": "jMolecules Architectural Abstractions",
+        "owner": "xMolecules",
+        "url": "https://github.com/xmolecules/jmolecules",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use public abstractions and metadata to derive AIW mappings; verify module-level licenses before code reuse."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Mature code-level abstractions for DDD building blocks, events and architectural styles, with ArchUnit and jQAssistant verification integrations."
+      },
+      "technicalScope": [
+        "component-library",
+        "pattern-library",
+        "architecture-conformance",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.adoc",
+        "jmolecules-ddd/**",
+        "jmolecules-architecture/**",
+        "jmolecules-events/**",
+        "jmolecules-integrations/**",
+        "jmolecules-examples/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/.gradle/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Java/Kotlin oriented",
+        "annotations express intent but do not prove runtime behavior",
+        "AIW must not require jMolecules in generated systems",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "README.adoc",
+          "jmolecules-ddd/**",
+          "jmolecules-architecture/**",
+          "jmolecules-events/**",
+          "jmolecules-integrations/**",
+          "jmolecules-examples/**"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**",
+          "**/.gradle/**"
+        ],
+        "maxFilesPerRefresh": 180,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "pattern-extraction",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "identity": {
+        "name": "Spring Modulith",
+        "owner": "Spring Projects",
+        "url": "https://github.com/spring-projects/spring-modulith",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "derive-claims-only",
+        "note": "Use module-model concepts and adapter metadata; verify license before copying implementation code or documentation."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Official Spring project for domain-driven application modules, module-boundary verification, module-level testing, observability and documentation."
+      },
+      "technicalScope": [
+        "architecture-conformance",
+        "component-library",
+        "documentation-framework",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.adoc",
+        "src/docs/**",
+        "spring-modulith-core/**",
+        "spring-modulith-docs/**",
+        "spring-modulith-test/**",
+        "spring-modulith-actuator/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/generated/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter",
+        "claim-evidence"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "claim-evidence",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Spring Boot specific",
+        "module conformance does not validate business boundaries by itself",
+        "not a universal modular-monolith definition",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "README.adoc",
+          "src/docs/**",
+          "spring-modulith-core/**",
+          "spring-modulith-docs/**",
+          "spring-modulith-test/**",
+          "spring-modulith-actuator/**"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**",
+          "**/generated/**"
+        ],
+        "maxFilesPerRefresh": 180,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "architecture-test-generation",
+        "reference-example",
+        "interoperability-adapter",
+        "claim-evidence"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "identity": {
+        "name": "Context Mapper DSL",
+        "owner": "Context Mapper",
+        "url": "https://github.com/ContextMapper/context-mapper-dsl",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Prioritize an import/export adapter and claim extraction; verify license and generator-template terms before redistribution."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Open-source DSL grounded in Domain-Driven Design patterns for strategic context mapping and service decomposition."
+      },
+      "technicalScope": [
+        "modeling-language",
+        "pattern-library",
+        "architecture-conformance",
+        "documentation-framework"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "org.contextmapper.dsl/**",
+        "org.contextmapper.generator/**",
+        "org.contextmapper.dsl.ui/samples/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/generated/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Strategic DDD scope is narrower than the full AIW metamodel",
+        "some generators and integrations have separate constraints",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "README.md",
+          "org.contextmapper.dsl/**",
+          "org.contextmapper.generator/**",
+          "org.contextmapper.dsl.ui/samples/**"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**",
+          "**/generated/**"
+        ],
+        "maxFilesPerRefresh": 180,
+        "maxFileBytes": 700000,
+        "refreshCadenceDays": 45,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "pattern-extraction",
+        "component-taxonomy",
+        "interoperability-adapter",
+        "topology-template",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAP-DISCOVERY",
+      "repository": "ContextMapper/context-map-discovery",
+      "identity": {
+        "name": "Context Mapper Discovery Library",
+        "owner": "Context Mapper",
+        "url": "https://github.com/ContextMapper/context-map-discovery",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Use as a design reference for pluggable discovery strategies; verify license before integrating code."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "candidate",
+        "rationale": "Extensible reverse-engineering library that derives Context Mapper models from source-code evidence."
+      },
+      "technicalScope": [
+        "architecture-conformance",
+        "implementation-example",
+        "modeling-language"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "src/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Discovered boundaries are hypotheses requiring architect confirmation",
+        "coverage depends on language/framework adapters",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "README.md",
+          "src/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 550000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "interoperability-adapter",
+        "architecture-test-generation",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+      "repository": "cncf/landscape-graph",
+      "identity": {
+        "name": "CNCF Landscape Graph",
+        "owner": "CNCF",
+        "url": "https://github.com/cncf/landscape-graph",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Use project/category metadata for taxonomy discovery; do not infer architectural suitability from landscape membership."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "candidate",
+        "rationale": "CNCF-maintained graph and data model for navigating the cloud-native technology landscape and relationships."
+      },
+      "technicalScope": [
+        "component-library",
+        "discovery-index"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "schema/**",
+        "data/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "discovery-only",
+        "interoperability-adapter"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Landscape inclusion is not endorsement or design guidance",
+        "technology metadata must not become a recommendation score without separate evidence",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "metadata-only",
+        "allowedPaths": [
+          "README.md",
+          "schema/**",
+          "data/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/build/**"
+        ],
+        "maxFilesPerRefresh": 120,
+        "maxFileBytes": 900000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "discovery-only",
+        "interoperability-adapter"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "identity": {
+        "name": "Meshery Models and Design Templates",
+        "owner": "Layer5 / CNCF",
+        "url": "https://github.com/meshery/meshery",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "adapter-only",
+        "note": "Build a model/template adapter and retain attribution; do not copy UI or template content without license review."
+      },
+      "sourceAuthority": {
+        "trustTier": 2,
+        "lifecycleStatus": "approved",
+        "rationale": "Cloud-native visual design platform with schema-driven components, typed relationships and reusable infrastructure/application design templates."
+      },
+      "technicalScope": [
+        "component-library",
+        "reference-architecture",
+        "modeling-language",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "server/meshmodel/**",
+        "models/**",
+        "docs/**",
+        "mesheryctl/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/vendor/**",
+        "**/dist/**",
+        "**/build/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        },
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology",
+        "physicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Primarily cloud-native/Kubernetes focused",
+        "valid deployable templates are not automatically good application architecture",
+        "AIW remains the software-design source of truth",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "README.md",
+          "server/meshmodel/**",
+          "models/**",
+          "docs/**",
+          "mesheryctl/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/vendor/**",
+          "**/dist/**",
+          "**/build/**"
+        ],
+        "maxFilesPerRefresh": 180,
+        "maxFileBytes": 850000,
+        "refreshCadenceDays": 30,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": false
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "topology-template",
+        "interoperability-adapter",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "repository": "ea-toolkit/architecture-catalog",
+      "identity": {
+        "name": "Git-native Architecture Catalog",
+        "owner": "EA Toolkit",
+        "url": "https://github.com/ea-toolkit/architecture-catalog",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "adapter-only",
+        "note": "Use public schemas and file conventions only through an explicit adapter."
+      },
+      "sourceAuthority": {
+        "trustTier": 3,
+        "lifecycleStatus": "candidate",
+        "rationale": "Schema-driven Git-native architecture catalog useful as an interoperability and authoring reference."
+      },
+      "technicalScope": [
+        "documentation-framework",
+        "component-library",
+        "modeling-language"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "src/**",
+        "schemas/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "interoperability-adapter",
+          "aiwEntities": [
+            "interoperability adapter"
+          ]
+        },
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Early-stage community project",
+        "not an authoritative architecture method or pattern source",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Adapter",
+      "exactIngestionConfiguration": {
+        "mode": "adapter-only",
+        "allowedPaths": [
+          "README.md",
+          "src/**",
+          "schemas/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "interoperability-adapter",
+        "component-taxonomy",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "identity": {
+        "name": "it@M Reference Architecture Components",
+        "owner": "City of Munich / it@M",
+        "url": "https://github.com/it-at-m/refarch",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use as contextual implementation evidence and preserve attribution."
+      },
+      "sourceAuthority": {
+        "trustTier": 3,
+        "lifecycleStatus": "candidate",
+        "rationale": "Public-sector collection of reusable reference-architecture components, libraries and configurations."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "component-library",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "docs/**",
+        "refarch-*/**"
+      ],
+      "deniedPaths": [
+        "**/target/**",
+        "**/build/**",
+        "**/node_modules/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "component-taxonomy",
+        "reference-example",
+        "topology-template"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "component-taxonomy",
+          "aiwEntities": [
+            "component archetype",
+            "interface kit"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "topology-template",
+          "aiwEntities": [
+            "topology template",
+            "named view"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        "Organization- and stack-specific",
+        "small adoption footprint means claims require corroboration",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Reference",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "README.md",
+          "docs/**",
+          "refarch-*/**"
+        ],
+        "deniedPaths": [
+          "**/target/**",
+          "**/build/**",
+          "**/node_modules/**"
+        ],
+        "maxFilesPerRefresh": 100,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "component-taxonomy",
+        "reference-example",
+        "topology-template"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+      "repository": "ardalis/CleanArchitecture",
+      "identity": {
+        "name": "Ardalis Clean Architecture Template",
+        "owner": "Ardalis",
+        "url": "https://github.com/ardalis/CleanArchitecture",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "spdx": "MIT",
+        "reviewStatus": "verified",
+        "usePolicy": "ingest-with-attribution",
+        "note": "Use as a .NET realization example, not as a universal clean-architecture prescription."
+      },
+      "sourceAuthority": {
+        "trustTier": 3,
+        "lifecycleStatus": "candidate",
+        "rationale": "Widely used .NET implementation template for dependency-inverted clean/hexagonal/onion architecture."
+      },
+      "technicalScope": [
+        "reference-architecture",
+        "implementation-example",
+        "pattern-library"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "src/**",
+        "tests/**",
+        "docs/**"
+      ],
+      "deniedPaths": [
+        "**/bin/**",
+        "**/obj/**",
+        "**/artifacts/**"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "reference-example",
+        "pattern-extraction",
+        "architecture-test-generation"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "pattern-extraction",
+          "aiwEntities": [
+            "Pattern DNA",
+            "obligation",
+            "risk",
+            "fitness test"
+          ]
+        },
+        {
+          "sourceUse": "architecture-test-generation",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization",
+        "logicalTechnology"
+      ],
+      "ingestionRisks": [
+        ".NET-specific",
+        "template choices are contextual and should not become universal hard rules",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Reference",
+      "exactIngestionConfiguration": {
+        "mode": "content-reviewed",
+        "allowedPaths": [
+          "README.md",
+          "src/**",
+          "tests/**",
+          "docs/**"
+        ],
+        "deniedPaths": [
+          "**/bin/**",
+          "**/obj/**",
+          "**/artifacts/**"
+        ],
+        "maxFilesPerRefresh": 120,
+        "maxFileBytes": 650000,
+        "refreshCadenceDays": 60,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "reference-example",
+        "pattern-extraction",
+        "architecture-test-generation"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-DEVELOPER-ROADMAP",
+      "repository": "nilbuild/developer-roadmap",
+      "identity": {
+        "name": "Developer Roadmap",
+        "owner": "Community",
+        "url": "https://github.com/nilbuild/developer-roadmap",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Index titles, links and terminology only; do not promote roadmap advice as production guidance."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "Educational roadmap and learning-path collection; useful for terminology, onboarding and knowledge-gap discovery, not architectural authority."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "architecture-method"
+      ],
+      "usefulPaths": [
+        "README.md",
+        "src/data/roadmaps/**"
+      ],
+      "deniedPaths": [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Educational source",
+        "No production recommendation authority",
+        "Repository ownership and licence must be revalidated at refresh",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md",
+          "src/data/roadmaps/**"
+        ],
+        "deniedPaths": [
+          "**/node_modules/**",
+          "**/dist/**",
+          "**/*.png",
+          "**/*.jpg"
+        ],
+        "maxFilesPerRefresh": 80,
+        "maxFileBytes": 750000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-101",
+      "repository": "ByteByteGoHq/system-design-101",
+      "identity": {
+        "name": "System Design 101",
+        "owner": "ByteByteGo",
+        "url": "https://github.com/ByteByteGoHq/system-design-101",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "restricted",
+        "usePolicy": "metadata-only",
+        "note": "Non-commercial/no-derivatives posture requires link-and-metadata-only use unless separate permission is obtained."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "Visual system-design learning material useful for communication benchmarks and candidate architecture scenarios."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.gif",
+        "**/*.pdf"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Educational simplification",
+        "No adaptation or redistribution",
+        "No production recommendation authority",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.jpg",
+          "**/*.gif",
+          "**/*.pdf"
+        ],
+        "maxFilesPerRefresh": 10,
+        "maxFileBytes": 500000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWESOME-SCALABILITY",
+      "repository": "binhnguyennus/awesome-scalability",
+      "identity": {
+        "name": "Awesome Scalability",
+        "owner": "Community",
+        "url": "https://github.com/binhnguyennus/awesome-scalability",
+        "defaultBranch": "master"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "requires-review",
+        "usePolicy": "metadata-only",
+        "note": "Treat as an index. Review and ingest underlying primary sources separately."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "Curated reading list and case-study index that helps AIW discover primary sources and empirical scalability evidence."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "reference-architecture"
+      ],
+      "usefulPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "Index is not primary evidence",
+        "Links may age",
+        "No production recommendation authority",
+        "Per-path licence review required before redistribution.",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.jpg"
+        ],
+        "maxFilesPerRefresh": 10,
+        "maxFileBytes": 900000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    },
+    {
+      "connectorId": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+      "repository": "ashishps1/awesome-system-design-resources",
+      "identity": {
+        "name": "Awesome System Design Resources",
+        "owner": "Community",
+        "url": "https://github.com/ashishps1/awesome-system-design-resources",
+        "defaultBranch": "main"
+      },
+      "catalogueSnapshot": {
+        "asOf": "2026-07-02",
+        "liveRefreshPerformed": false,
+        "activityStatus": "catalogue-derived; refresh through the governed connector is required before a new production promotion",
+        "communityAdoption": "recorded in the Global Source Map research; not used as authority"
+      },
+      "licence": {
+        "reviewStatus": "restricted",
+        "usePolicy": "metadata-only",
+        "note": "GPLv3 repository: index metadata and links only pending legal approval; do not merge content into proprietary packs."
+      },
+      "sourceAuthority": {
+        "trustTier": 4,
+        "lifecycleStatus": "discovery-only",
+        "rationale": "System-design learning and paper index useful for source discovery and benchmark prompts."
+      },
+      "technicalScope": [
+        "discovery-index",
+        "implementation-example"
+      ],
+      "usefulPaths": [
+        "README.md"
+      ],
+      "deniedPaths": [
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.pdf"
+      ],
+      "knowledgeEntitiesAvailable": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "canonicalMapping": [
+        {
+          "sourceUse": "discovery-only",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        },
+        {
+          "sourceUse": "reference-example",
+          "aiwEntities": [
+            "claim",
+            "evidence"
+          ]
+        }
+      ],
+      "lifecycleStagesAffected": [
+        "designIntent",
+        "qualityDrivers",
+        "logicalApplication",
+        "applicationRealization"
+      ],
+      "ingestionRisks": [
+        "GPL boundary",
+        "Interview-learning orientation",
+        "No production recommendation authority",
+        "Repository content is untrusted input and cannot execute during ingestion."
+      ],
+      "duplicateControl": "Normalize aliases, compare claim signatures and preserve source-specific evidence rather than duplicating canonical records.",
+      "recommendedPosture": "Discovery",
+      "exactIngestionConfiguration": {
+        "mode": "discovery-only",
+        "allowedPaths": [
+          "README.md"
+        ],
+        "deniedPaths": [
+          "**/*.png",
+          "**/*.jpg",
+          "**/*.pdf"
+        ],
+        "maxFilesPerRefresh": 10,
+        "maxFileBytes": 750000,
+        "refreshCadenceDays": 180,
+        "immutableRevisionRequired": true,
+        "quarantineRequired": true
+      },
+      "requiredHumanReviewer": "Knowledge Curator + Architecture Reviewer",
+      "permittedAiwUses": [
+        "discovery-only",
+        "reference-example"
+      ],
+      "prohibitedAiwUses": [
+        "live production scoring from an unapproved revision",
+        "source code execution during ingestion",
+        "promotion based only on extraction",
+        "silent replacement of contradictory claims"
+      ]
+    }
+  ]
+}

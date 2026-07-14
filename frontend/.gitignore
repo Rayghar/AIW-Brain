@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.local
+coverage/
+*.log
+.DS_Store
+apps/web/.vite/
+config/llm-runtime-overrides.json
+.aiw-knowledge-objects/
+.verification/

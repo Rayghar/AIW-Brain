@@ -1,0 +1,59 @@
+{
+  "release": "0.10.0-rc.10.15",
+  "sprint": "8.9.3",
+  "generatedAt": "2026-07-05T01:05:50.398Z",
+  "mode": "static-browser-smoke",
+  "note": "This smoke gate validates the production browser bundle and critical user-click paths without adding a heavyweight browser dependency to the reference package.",
+  "checks": [
+    {
+      "id": "app-shell-renders-main-landmark",
+      "label": "App shell exposes skip link and focusable main landmark",
+      "pass": true
+    },
+    {
+      "id": "command-palette-browser-dialog",
+      "label": "Command palette is accessible as a modal browser dialog",
+      "pass": true
+    },
+    {
+      "id": "review-studio-lazy-route",
+      "label": "Review Studio is lazy-loaded through the design lifecycle route",
+      "pass": true
+    },
+    {
+      "id": "review-export-click-through",
+      "label": "Review Studio exposes click-through export actions",
+      "pass": true
+    },
+    {
+      "id": "browser-zip-export-path",
+      "label": "Browser handoff ZIP path is triggered by user action only",
+      "pass": true
+    },
+    {
+      "id": "admin-critical-journey-tabs",
+      "label": "Admin browser journey exposes control-plane tabs",
+      "pass": true
+    },
+    {
+      "id": "pilot-readiness-workspace-active",
+      "label": "Pilot workspace remains active for controlled enterprise readiness review",
+      "pass": true
+    },
+    {
+      "id": "dist-bundle-includes-review-studio",
+      "label": "Built browser bundle contains Review Studio export surface",
+      "pass": true
+    },
+    {
+      "id": "dist-bundle-includes-admin-rbac",
+      "label": "Built browser bundle contains Security & RBAC admin surface",
+      "pass": true
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0
+  }
+}

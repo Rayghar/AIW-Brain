@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0",
+  "releaseId": "AKR-0.10.72.0",
+  "offlineIndependentSignature": {
+    "status": "verified",
+    "provider": "offline-ed25519-independent-release-key",
+    "keyId": "d955159dd09817d5ca39fe51",
+    "privateKeyRetained": false
+  },
+  "enterpriseKms": {
+    "aws": {
+      "status": "blocked-no-credentials"
+    },
+    "azure": {
+      "status": "blocked-no-credentials"
+    },
+    "gcp": {
+      "status": "blocked-no-credentials"
+    },
+    "vault": {
+      "status": "blocked-no-credentials"
+    }
+  },
+  "productionAccepted": false,
+  "truthBoundary": "Offline cryptographic signing and local signed Git check-in are verified. They are not represented as enterprise KMS or remote GitHub acceptance.",
+  "generatedAt": "2026-07-13T13:17:11.417Z"
+}

@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+// Recommendation-correctness and calibration-authority gate. Exit 1 on failure.
+import fs from 'node:fs'; import path from 'node:path';
+const root=path.resolve(process.argv[2]??'.');
+const read=(p)=>fs.readFileSync(path.join(root,p),'utf8');
+const results=[]; const check=(n,fn)=>{try{results.push({n,ok:true,d:fn()})}catch(e){results.push({n,ok:false,d:e.message})}};
+check('KB: no legacy QA-xx ids',()=>{const kb=JSON.parse(read('data/knowledge-library.json')); const bad=kb.qualityAttributes.filter(q=>/^QA-\d+$/.test(q.id)); if(bad.length)throw new Error(String(bad.length)); return `${kb.qualityAttributes.length} canonical ids`;});
+check('KB: every rating key resolves',()=>{const kb=JSON.parse(read('data/knowledge-library.json')); const ids=new Set(kb.qualityAttributes.map(q=>q.id)); const rated=new Set(); kb.architectureStyles.forEach(s=>Object.keys(s.qualityAttributeRatings).forEach(k=>rated.add(k))); const miss=[...rated].filter(k=>!ids.has(k)); if(miss.length)throw new Error(miss.join(',')); return `${rated.size} keys`;});
+check('Engine: no display-name matching',()=>{const src=read('packages/engine/src/recommendation.ts'); if(/styleName\.includes\(|name\.toLowerCase\(\)\.includes\(/.test(src))throw new Error('name matching present'); return 'id/trait-based';});
+check('Calibration: 8 production and 12 independent-review drafts',()=>{const kb=JSON.parse(read('data/knowledge-library.json')); const prod=kb.qualityAttributes.filter(q=>q.calibrated===true); const draft=kb.qualityAttributes.filter(q=>q.calibrated!==true); if(prod.length!==8||draft.length!==12)throw new Error(`production=${prod.length}, draft=${draft.length}`); if(draft.some(q=>q.calibrationStatus!=='draft-ai'||!/independent expert review/i.test(q.calibrationOwner??'')))throw new Error('draft authority metadata is not honest'); return '8 production / 12 draft';});
+check('Behaviour: production-calibrated drivers are substantive',()=>{const kb=JSON.parse(read('data/knowledge-library.json')); const prod=new Set(kb.qualityAttributes.filter(q=>q.calibrated===true).map(q=>q.id)); const inert=[]; for(const id of prod){const vals=kb.architectureStyles.map(s=>s.qualityAttributeRatings[id]).filter(v=>Number.isFinite(v)); if(new Set(vals).size<2) inert.push(id);} if(inert.length)throw new Error('inert: '+inert.join(',')); return `${prod.size} calibrated drivers have cross-style variance`;});
+check('Engine: draft attributes are excluded from scoring',()=>{const src=read('packages/engine/src/recommendation.ts'); if(!/requested\.filter\(\(priority\) => isCalibrated/.test(src)||!/Pending calibration and excluded from scoring/.test(src))throw new Error('draft exclusion not found'); return 'drafts visible but non-scoring';});
+let fail=0; for(const r of results){console.log(`${r.ok?'PASS':'FAIL'}  ${r.n} — ${r.d}`); if(!r.ok)fail++;}
+console.log(`\n${results.length-fail}/${results.length} checks passed`); process.exit(fail?1:0);

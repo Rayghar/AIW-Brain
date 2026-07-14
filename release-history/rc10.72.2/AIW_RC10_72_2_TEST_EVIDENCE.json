@@ -1,0 +1,110 @@
+{
+  "release": "0.10.0-rc.10.72.2",
+  "generatedAt": "2026-07-13T22:00:00Z",
+  "productionAccepted": false,
+  "builds": {
+    "backendApi": "passed",
+    "backendWorker": "passed",
+    "frontendPackages": "passed",
+    "frontendProductionBundle": "passed",
+    "bundleWarnings": {
+      "productShellKb": 650.65,
+      "artifactCoreKb": 1615.06,
+      "largeChunkWarning": true
+    }
+  },
+  "tests": {
+    "backendRecovery": {
+      "passed": 3,
+      "failed": 0,
+      "finalRun": true
+    },
+    "frontendLayoutLifecycle": {
+      "passed": 12,
+      "failed": 0,
+      "finalRun": true
+    },
+    "productRecoveryGate": {
+      "passed": 20,
+      "failed": 0
+    },
+    "intelligenceAuthorityGate": {
+      "passed": 39,
+      "failed": 0
+    },
+    "rc1072EvidenceTrustGate": {
+      "passed": 34,
+      "failed": 0
+    },
+    "activeBrowserSuite": {
+      "passed": 8,
+      "failed": 0,
+      "projects": [
+        "chromium-desktop",
+        "chromium-laptop"
+      ],
+      "duration": "3.2m"
+    },
+    "postReceiptCorrectionUiSol": {
+      "passed": 6,
+      "failed": 0,
+      "projects": [
+        "chromium-desktop",
+        "chromium-laptop"
+      ],
+      "duration": "1.4m"
+    },
+    "priorRecoveryWorktreeIntelligenceRegression": {
+      "passed": 30,
+      "failed": 0,
+      "finalRerunCompleted": false,
+      "note": "A later aggregate rerun did not terminate cleanly; no second complete run is claimed."
+    }
+  },
+  "journey": {
+    "createdFromScratch": true,
+    "stages": [
+      "Requirements",
+      "Journey Atlas",
+      "System Context",
+      "Logical Application",
+      "Application Realisation",
+      "Logical Technology",
+      "Physical Technology",
+      "Review",
+      "SDD"
+    ],
+    "acceptedChanges": [
+      "Payment Domain and Payment Processing Service",
+      "Payment Domain Worker",
+      "Messaging and Event Streaming Capability",
+      "Provider-neutral product class and deployment topology"
+    ],
+    "sddLockedUntilReviewBaseline": true,
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "failedRequests": 0,
+    "horizontalOverflowPx": 0
+  },
+  "gates": {
+    "frontendInternalDependencies": "passed",
+    "backendInternalDependencies": "passed",
+    "frontendReleaseIntegrity": "passed",
+    "backendReleaseIntegrity": "passed"
+  },
+  "security": {
+    "frontendProductionVulnerabilities": 0,
+    "backendProductionVulnerabilities": 0
+  },
+  "evidenceDirectories": [
+    "frontend/release-evidence/rc10.72.2/clean-project",
+    "frontend/release-evidence/rc10.72.2/product-recovery",
+    "frontend/release-evidence/rc10.72.2/unified-sol"
+  ],
+  "honestyBoundary": [
+    "No live LLM provider rerun in final package environment",
+    "No external human expert panel",
+    "No managed enterprise production acceptance",
+    "Clean model is lifecycle proof, not complete production architecture"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "nodes": 1500,
+  "edges": 1496,
+  "runs": 20,
+  "validation": {
+    "averageMs": 4.34,
+    "p95Ms": 8.54,
+    "maxMs": 13.66
+  },
+  "contextualRecommendation": {
+    "averageMs": 1.8,
+    "p95Ms": 1.64,
+    "maxMs": 20.06
+  },
+  "impactAnalysis": {
+    "averageMs": 7.37,
+    "p95Ms": 10.63,
+    "maxMs": 21.69
+  },
+  "branchComparison": {
+    "averageMs": 11.98,
+    "p95Ms": 16.79,
+    "maxMs": 18.33
+  },
+  "mergePlan": {
+    "averageMs": 24.3,
+    "p95Ms": 37.32,
+    "maxMs": 48.79
+  },
+  "driftAnalysis": {
+    "averageMs": 248,
+    "p95Ms": 308.63,
+    "maxMs": 311.16
+  },
+  "policyGate": {
+    "averageMs": 0.09,
+    "p95Ms": 0.29,
+    "maxMs": 0.29
+  },
+  "operationalDrift": {
+    "averageMs": 3.17,
+    "p95Ms": 5.56,
+    "maxMs": 6.68
+  },
+  "telemetryTopology": {
+    "averageMs": 9.18,
+    "p95Ms": 11.59,
+    "maxMs": 14.65
+  },
+  "remediationPlan": {
+    "averageMs": 0.05,
+    "p95Ms": 0.14,
+    "maxMs": 0.14
+  },
+  "portfolioIntelligence": {
+    "averageMs": 0.75,
+    "p95Ms": 1.24,
+    "maxMs": 4.23
+  }
+}

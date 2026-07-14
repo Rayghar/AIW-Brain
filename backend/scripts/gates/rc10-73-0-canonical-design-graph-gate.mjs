@@ -1,0 +1,51 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const backendRoot = path.resolve(here, '../..');
+const releaseRoot = path.resolve(backendRoot, '..');
+const frontendRoot = path.join(releaseRoot, 'frontend');
+const read = (...segments) => fs.readFileSync(path.join(releaseRoot, ...segments), 'utf8');
+const exists = (...segments) => fs.existsSync(path.join(releaseRoot, ...segments));
+const checks = [];
+const check = (id, passed, detail) => checks.push({ id, passed: Boolean(passed), detail });
+
+const manifest = JSON.parse(read('RELEASE_MANIFEST.json'));
+const capability = JSON.parse(read('CAPABILITY_STATE.json'));
+const graph = read('backend/packages/domain/src/architectureDesignGraph.ts');
+const types = read('backend/packages/domain/src/types.ts');
+const schemas = read('backend/packages/domain/src/schemas.ts');
+const brainContracts = read('backend/packages/domain/src/architectureBrain.ts');
+const orchestrator = read('backend/packages/intelligence/src/orchestrator/index.ts');
+const apiOrchestrator = read('backend/apps/api/src/architectureBrainOrchestrator.ts');
+const routes = read('backend/apps/api/src/architectureBrainApplicationRoutes.ts');
+const repository = read('backend/apps/api/src/repository.ts');
+const ui = read('frontend/apps/web/src/components/CoArchitectPanel.tsx');
+const test = read('backend/apps/api/test/rc10_73_0_canonical_design_graph.test.ts');
+const compiledSolChunk = read('frontend/apps/web/dist/assets/CoArchitectPanel-__yAh6wt.js');
+const compiledCss = read('frontend/apps/web/dist/assets/index-B3la1ceH.css');
+
+check('release-notation', manifest.version === '0.10.0-rc.10.73.1' && manifest.releaseLine === 'rc.10.73.1', `${manifest.version} / ${manifest.releaseLine}`);
+check('no-bf-product-release-notation', !/^BF\./i.test(manifest.releaseLine) && !/^BF\./i.test(manifest.version), 'Product release remains on rc.xx.xx notation');
+check('capability-release-aligned', capability.release === manifest.version && capability.releaseLine === manifest.releaseLine, `${capability.release} / ${capability.releaseLine}`);
+check('graph-contract', graph.includes('export interface ArchitectureDesignGraph') && graph.includes("schemaVersion: '1.0'") && graph.includes('ArchitectureDesignGraphRecord') && graph.includes('ArchitectureDesignGraphRelationship'), 'Typed graph contract present');
+check('graph-integrity', graph.includes('validateArchitectureDesignGraph') && graph.includes('danglingRelationshipIds') && graph.includes('fingerprintValid'), 'Integrity and fingerprint controls present');
+check('graph-freshness', graph.includes('isArchitectureDesignGraphFresh') && graph.includes('synchronizeArchitectureProjectDesignGraph'), 'Freshness and persistence synchronisation present');
+check('human-materialization', graph.includes('materializeArchitectureProjectDesignGraph') && graph.includes("humanApprovalRequired: true") && graph.includes("sourceAuthority: 'architect'"), 'Explicit architect materialisation receipt present');
+check('project-schema', types.includes('designGraph?:') && schemas.includes('architectureDesignGraphSchema') && schemas.includes('designGraph: architectureDesignGraphSchema.optional()'), 'Project type and schema preserve graph');
+check('brain-contract-pinning', brainContracts.includes('designGraphRevision') && brainContracts.includes('designGraphFingerprint') && brainContracts.includes('legacyProjectionUsed'), 'Brain contract includes graph pin');
+check('brain-orchestrator-pinning', orchestrator.includes('designGraphFingerprint') && orchestrator.includes('designGraphIntegrityHealthy') && orchestrator.includes('1.2.0-rc10.73.1'), 'Orchestrator emits graph-pinned manifests and receipts');
+check('api-preview', apiOrchestrator.includes('designGraphPreview') && routes.includes('/design-graph/preview'), 'Preview route exists');
+check('api-materialize', apiOrchestrator.includes('materializeDesignGraph') && routes.includes('/design-graph/materialize') && routes.includes('STALE_DESIGN_GRAPH_PREVIEW'), 'Governed materialisation and stale-preview rejection exist');
+check('audit-event', routes.includes('materialize-design-graph') && routes.includes('materializedFingerprint'), 'Materialisation audit evidence exists');
+check('repository-boundary', (repository.match(/synchronizeArchitectureProjectDesignGraph/g) ?? []).length >= 7, 'Memory, PostgreSQL and MongoDB project/snapshot boundaries synchronise graph');
+check('ui-governance', ui.includes('Materialize canonical Design Graph') && ui.includes('projectionMode') && ui.includes('graph.fingerprint'), 'Sol governance receipt exposes graph posture and action');
+check('compiled-ui-governance', compiledSolChunk.includes('Materialize canonical Design Graph') && compiledSolChunk.includes('design-graph/materialize') && compiledCss.includes('sol-graph-materialize'), 'Distributed lazy Sol chunk and compiled CSS expose graph governance');
+check('focused-test', test.includes('deterministic, integrity-checked graph') && test.includes('STALE_DESIGN_GRAPH_PREVIEW') && test.includes('dangling lineage'), 'Focused behavioural tests present');
+check('release-evidence', exists('AIW_RC10_73_0_RELEASE_REPORT.md') && exists('AIW_RC10_73_0_IMPLEMENTATION_TRACEABILITY.md') && exists('AIW_RC10_73_0_KNOWN_LIMITATIONS.md') && exists('release-evidence/rc10.73.1/CANONICAL_DESIGN_GRAPH_ACCEPTANCE.json'), 'Current release evidence present');
+check('honest-boundary', manifest.canonicalDesignGraphFoundationImplemented === true && manifest.canonicalDesignGraphMigrationComplete === false && manifest.productionAccepted === false, 'Foundation claimed without overstating migration or production acceptance');
+
+const failed = checks.filter((item) => !item.passed);
+console.log(JSON.stringify({ release: manifest.version, passed: checks.length - failed.length, total: checks.length, checks }, null, 2));
+if (failed.length) process.exit(1);

@@ -1,0 +1,70 @@
+{
+  "version": "0.10.0-rc.10.17",
+  "sprint": "8.9.4",
+  "constitution": "docs/intelligence/AIW_INTELLIGENCE_CONSTITUTION.md",
+  "stages": [
+    {
+      "id": "brief",
+      "label": "Brief",
+      "kernelResponsibilities": ["extract-candidate-drivers", "surface-assumptions", "detect-missing-context"],
+      "knowledgeDependencies": ["stakeholder-concern-grammar", "driver-taxonomy", "measurable-scenario-grammar"],
+      "uiExpression": ["driver-cards", "assumption-panel", "missing-information-prompts"],
+      "approval": "user-accepts-or-rejects-draft-extractions",
+      "offline": true
+    },
+    {
+      "id": "quality-drivers",
+      "label": "Quality Drivers",
+      "kernelResponsibilities": ["rank-drivers", "detect-conflicting-qualities", "map-drivers-to-tactics"],
+      "knowledgeDependencies": ["quality-attributes", "tactic-catalog", "benchmark-scenarios"],
+      "uiExpression": ["weighted-driver-matrix", "scenario-sliders", "tradeoff-receipts"],
+      "approval": "accepted-drivers-become-review-inputs",
+      "offline": true
+    },
+    {
+      "id": "patterns-and-tactics",
+      "label": "Patterns and Tactics",
+      "kernelResponsibilities": ["recommend-patterns", "arm-obligations", "identify-tradeoffs"],
+      "knowledgeDependencies": ["pattern-dna", "pattern-quality-matrix", "architecture-tactics"],
+      "uiExpression": ["adaptive-pattern-radar", "obligation-panel", "decision-preview"],
+      "approval": "accepted-patterns-create-review-obligations",
+      "offline": true
+    },
+    {
+      "id": "canvas-modelling",
+      "label": "Canvas Modelling",
+      "kernelResponsibilities": ["check-cohesion", "check-coupling", "validate-boundaries", "interrogate-edges"],
+      "knowledgeDependencies": ["component-grammar", "integration-tactics", "general-architecture-practices"],
+      "uiExpression": ["semantic-inspector", "edge-precommit-review", "obligation-badges"],
+      "approval": "model-changes-remain-previewable-and-reversible",
+      "offline": true
+    },
+    {
+      "id": "review-studio",
+      "label": "Review Studio",
+      "kernelResponsibilities": ["score-delivery-readiness", "generate-findings", "generate-recommendations", "draft-adrs", "generate-fitness-tests"],
+      "knowledgeDependencies": ["active-knowledge-release", "pattern-dna", "accepted-obligations", "sdd-grammar"],
+      "uiExpression": ["scorecard", "findings", "recommendation-panel", "adr-and-test-pack"],
+      "approval": "generated-decisions-and-tests-require-human-acceptance",
+      "offline": true
+    },
+    {
+      "id": "repository-conformance",
+      "label": "Repository Conformance",
+      "kernelResponsibilities": ["map-assets", "score-evidence-coverage", "plan-ci-fitness-loop"],
+      "knowledgeDependencies": ["repo-asset-types", "conformance-control-catalog", "fitness-test-seeds"],
+      "uiExpression": ["evidence-coverage", "drift-report", "ci-plan"],
+      "approval": "repository-writes-disabled-until-explicit-approval",
+      "offline": false
+    },
+    {
+      "id": "handoff",
+      "label": "Architecture Handoff",
+      "kernelResponsibilities": ["compose-sdd", "assemble-adr-pack", "compose-risk-register", "compose-backlog"],
+      "knowledgeDependencies": ["sdd-reasoning-grammar", "review-output", "canonical-architecture-model"],
+      "uiExpression": ["artifact-browser", "zip-export", "traceability-manifest"],
+      "approval": "export-is-user-triggered-and-traceable",
+      "offline": true
+    }
+  ]
+}

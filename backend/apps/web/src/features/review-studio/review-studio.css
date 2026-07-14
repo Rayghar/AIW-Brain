@@ -1,0 +1,66 @@
+.review-studio-page { gap: 20px; }
+.review-studio-hero { align-items: flex-start; }
+.review-pipeline { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.review-pipeline span { border: 1px solid var(--border); border-radius: 999px; padding: 6px 10px; background: rgba(15, 23, 42, 0.04); font-size: 0.78rem; color: var(--muted); }
+.review-authority-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; border: 1px solid rgba(20, 184, 166, 0.28); background: linear-gradient(135deg, rgba(20,184,166,.10), rgba(245,158,11,.08)); border-radius: 20px; padding: 16px 18px; }
+.review-authority-card p { margin: 3px 0 0; color: var(--muted); }
+.review-authority-card > span { border-radius: 999px; padding: 7px 10px; background: rgba(20,184,166,.16); color: #0f766e; font-weight: 800; font-size: .78rem; }
+.review-scorecard-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.review-scorecard-card { border: 1px solid var(--border); background: var(--surface); border-radius: 18px; padding: 14px; min-height: 152px; }
+.review-scorecard-card div { display: flex; gap: 8px; align-items: center; color: var(--muted); }
+.review-scorecard-card b { display: block; font-size: 2.05rem; line-height: 1; margin: 12px 0 8px; }
+.review-scorecard-card p { margin: 0 0 8px; color: var(--text); font-size: .88rem; }
+.review-scorecard-card small { color: var(--muted); }
+.review-scorecard-card.status-strong { border-color: rgba(20, 184, 166, .32); }
+.review-scorecard-card.status-watch { border-color: rgba(245, 158, 11, .35); }
+.review-scorecard-card.status-weak { border-color: rgba(239, 68, 68, .33); }
+.review-studio-layout { display: grid; grid-template-columns: 230px minmax(0, 1.2fr) minmax(320px, .85fr); gap: 14px; align-items: start; }
+.review-category-rail { border: 1px solid var(--border); border-radius: 20px; background: var(--surface); padding: 10px; display: grid; gap: 8px; position: sticky; top: 12px; }
+.review-category-rail button { border: 0; border-radius: 14px; padding: 10px 12px; background: transparent; display: flex; align-items: center; justify-content: space-between; text-align: left; cursor: pointer; color: var(--text); }
+.review-category-rail button:hover, .review-category-rail button.active { background: rgba(245, 158, 11, .13); }
+.review-category-rail b { border-radius: 999px; background: rgba(15, 23, 42, .08); padding: 2px 8px; font-size: .76rem; }
+.review-findings-column, .review-decision-column { display: grid; gap: 12px; }
+.section-heading-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.section-heading-row h3 { margin: 2px 0 0; }
+.review-finding-card, .review-recommendation-card { border: 1px solid var(--border); border-radius: 18px; padding: 14px; background: var(--surface); display: grid; gap: 8px; }
+.review-finding-card header, .review-recommendation-card header { display: flex; gap: 8px; align-items: center; }
+.review-finding-card header span, .review-recommendation-card header span { margin-left: auto; border-radius: 999px; padding: 4px 8px; background: rgba(15, 23, 42, .07); font-size: .74rem; text-transform: uppercase; font-weight: 800; }
+.review-finding-card p, .review-recommendation-card p { margin: 0; }
+.review-finding-card small { color: var(--muted); display: block; }
+.review-evidence-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.review-evidence-row span { border-radius: 999px; background: rgba(14, 165, 233, .11); color: #0369a1; padding: 4px 8px; font-size: .72rem; font-weight: 800; }
+.review-finding-card.severity-critical { border-color: rgba(185, 28, 28, .42); box-shadow: inset 4px 0 0 rgba(185, 28, 28, .7); }
+.review-finding-card.severity-high { border-color: rgba(239, 68, 68, .35); box-shadow: inset 4px 0 0 rgba(239, 68, 68, .62); }
+.review-finding-card.severity-medium { border-color: rgba(245, 158, 11, .34); box-shadow: inset 4px 0 0 rgba(245, 158, 11, .64); }
+.review-finding-card.severity-low { border-color: rgba(20, 184, 166, .32); box-shadow: inset 4px 0 0 rgba(20, 184, 166, .54); }
+.review-recommendation-card ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.review-output-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.review-output-grid article { border: 1px solid var(--border); background: var(--surface); border-radius: 20px; padding: 15px; display: grid; gap: 10px; align-content: start; }
+.review-output-grid article > div { display: flex; align-items: center; gap: 8px; }
+.review-output-grid article > div span { margin-left: auto; font-weight: 900; }
+.review-output-grid p { margin: 0; display: grid; gap: 3px; }
+.review-output-grid small { color: var(--muted); }
+.review-output-grid button { border: 1px solid var(--border); background: rgba(15,23,42,.03); border-radius: 13px; padding: 10px; display: flex; align-items: center; gap: 8px; cursor: pointer; text-align: left; }
+.review-output-grid button:hover { background: rgba(245,158,11,.12); }
+.review-snapshot-strip { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; border: 1px solid rgba(245,158,11,.28); background: rgba(245,158,11,.08); border-radius: 18px; padding: 14px; }
+.review-snapshot-strip p { margin: 2px 0 0; color: var(--muted); }
+@media (max-width: 1180px) { .review-scorecard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .review-studio-layout, .review-output-grid { grid-template-columns: 1fr; } .review-category-rail { position: static; } }
+
+.handoff-export-status {
+  margin: 0.25rem 0 0.65rem;
+  color: var(--muted-text, #64748b);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.review-output-grid button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+/* rc.10.50 governed review closure */
+.review-baseline-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
+.review-output-grid article > small { color: var(--muted, #8ca5b4); line-height: 1.45; }
+@media (max-width: 900px) {
+  .review-baseline-actions { width: 100%; justify-content: flex-start; }
+}

@@ -1,0 +1,114 @@
+{
+  "release": "0.10.0-rc.10.73.3",
+  "releaseLine": "rc.10.73.3",
+  "generatedAt": "2026-07-14T16:17:30Z",
+  "verificationStatus": "backend-and-frontend-full-build-durable-transaction-regression-conformance-authority-release-integrity-internal-dependency-security-and-production-bundle-gates-passed",
+  "passed": {
+    "backendFullBuild": true,
+    "backendFocusedTestFiles": 4,
+    "backendFocusedTests": 11,
+    "backendFocusedTestsPassed": true,
+    "durableBrainTransactionReleaseGate": {
+      "passed": 34,
+      "total": 34
+    },
+    "backendInternalDependencyGate": true,
+    "backendReleaseIntegrityGate": true,
+    "backendSecuritySourceScan": true,
+    "frontendFullPackageBuild": true,
+    "frontendFreshViteProductionBundle": true,
+    "frontendModulesTransformed": 2276,
+    "frontendDurableBrainTransactionGate": {
+      "passed": 34,
+      "total": 34
+    },
+    "frontendInternalDependencyGate": true,
+    "frontendReleaseIntegrityGate": true,
+    "frontendSecuritySourceScan": true,
+    "frontendRegressionTestFiles": 2,
+    "frontendRegressionTests": 12,
+    "frontendRegressionTestsPassed": true,
+    "backendFrontendDomainMirrorMatch": true,
+    "backendFrontendIntelligenceOrchestratorMirrorMatch": true,
+    "authorityAudit": {
+      "totalPaths": 18,
+      "consolidatedPaths": 15,
+      "isolatedByDesignPaths": 3,
+      "migrationRequiredPaths": 0,
+      "blockedPaths": 0
+    }
+  },
+  "behaviouralCoverage": [
+    "automatic recording of successful governed Brain receipts",
+    "idempotent proposal recording",
+    "append-only SHA-256 event hash chain",
+    "optimistic expected-version enforcement",
+    "independent named reviewer assignment",
+    "proposal-author disposition rejection",
+    "assigned reviewer identity enforcement",
+    "mandatory review rationale and evidence references",
+    "approve and commit lifecycle",
+    "project and branch binding before commit",
+    "semantic Design Graph fingerprint freshness with revision counters pinned separately",
+    "first-class expiring architecture-rule waiver",
+    "architecture-rule waiver separation from operational drift waivers",
+    "PostgreSQL RLS migration and repository source conformance",
+    "MongoDB transactional repository source conformance",
+    "rc.10.73.2 thin Brain authority regression",
+    "rc.10.73.1 graph-primary state regression",
+    "rc.10.73.0 canonical Design Graph regression",
+    "smart canvas layout and lifecycle status frontend regression"
+  ],
+  "warnings": {
+    "frontendBundleSize": {
+      "status": "non-blocking-warning",
+      "details": "Vite reported chunks larger than 650 kB after minification. The product-shell chunk is approximately 650.65 kB and the architecture-artifact chunk is approximately 1.636 MB. Additional code splitting remains open."
+    },
+    "crossRepositoryAtomicity": {
+      "status": "tracked-boundary",
+      "details": "Durable ledger events and legacy project review compatibility fields are not one physical transaction when separate repositories are configured."
+    }
+  },
+  "notExecutedOrBlocked": {
+    "managedPostgresqlRlsAcceptance": {
+      "status": "not-executed",
+      "reason": "No organisation-managed PostgreSQL/RLS environment was available."
+    },
+    "mongoAtlasTransactionalAcceptance": {
+      "status": "not-executed",
+      "reason": "No organisation-managed MongoDB Atlas transaction environment was available."
+    },
+    "dedicatedBrowserBrainTransactionWorkflow": {
+      "status": "not-executed",
+      "reason": "Canonical APIs and legacy compatibility routes are implemented, but no dedicated new browser ledger/review/waiver workspace is claimed."
+    },
+    "liveLlmProviderAcceptance": {
+      "status": "blocked",
+      "reason": "No configured live-provider credential or externally accepted provider run was available."
+    },
+    "externalHumanExpertValidation": {
+      "status": "blocked",
+      "reason": "The blinded external expert panel has not been completed."
+    },
+    "productionAcceptance": {
+      "status": "false",
+      "reason": "Managed durable storage, cross-repository atomicity, remaining state-store consolidation, enterprise KMS, independent expert scoring and controlled enterprise-pilot gates remain open."
+    }
+  },
+  "logs": [
+    "release-evidence/rc10.73.3/logs/backend-rc10-73-3-verify.log",
+    "release-evidence/rc10.73.3/logs/frontend-npm-ci.log",
+    "release-evidence/rc10.73.3/logs/frontend-rc10-73-3-verify.log",
+    "release-evidence/rc10.73.3/logs/frontend-regression-tests.log"
+  ],
+  "acceptance": {
+    "durableBrainTransactionsImplemented": true,
+    "appendOnlyHashChainedEventsImplemented": true,
+    "independentReviewAuthorityImplemented": true,
+    "architectureRuleWaiverImplemented": true,
+    "managedPersistenceAccepted": false,
+    "crossRepositoryAtomicityComplete": false,
+    "wholeProductStateStoreConsolidationComplete": false,
+    "productionAccepted": false
+  }
+}

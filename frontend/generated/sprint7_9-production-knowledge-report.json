@@ -1,0 +1,114 @@
+{
+  "version": "0.8.9",
+  "releaseId": "AKR-0.8.9",
+  "startedAt": "2026-07-02T23:12:02.544Z",
+  "completedAt": "2026-07-02T23:12:02.578Z",
+  "total": 10,
+  "passed": 10,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Commit-pinned GitHub retrieval",
+      "passed": true,
+      "detail": {
+        "revision": "verification-commit",
+        "objects": 2
+      }
+    },
+    {
+      "name": "Quarantine and prompt-injection isolation",
+      "passed": true,
+      "detail": {
+        "passed": true,
+        "findings": [
+          {
+            "path": "docs/patterns/reliable-events.md",
+            "severity": "warning",
+            "code": "PROMPT_INJECTION_TEXT",
+            "detail": "Instruction-shaped text is retained only as untrusted evidence and cannot control AIW prompts."
+          }
+        ]
+      }
+    },
+    {
+      "name": "Configurable LLM route and fallback",
+      "passed": true,
+      "detail": {
+        "provider": "deepseek",
+        "route": "fallback",
+        "fallbackUsed": true
+      }
+    },
+    {
+      "name": "Provider-neutral catalog",
+      "passed": true,
+      "detail": {
+        "providers": [
+          "openai",
+          "xai",
+          "gemini",
+          "qwen",
+          "deepseek",
+          "custom-openai",
+          "local-openai"
+        ]
+      }
+    },
+    {
+      "name": "Live structured extraction remains candidate-only",
+      "passed": true,
+      "detail": {
+        "claims": 1,
+        "provider": "deepseek",
+        "publicationStatus": "candidate-only"
+      }
+    },
+    {
+      "name": "Approved-knowledge embedding path",
+      "passed": true,
+      "detail": {
+        "provider": "deterministic-local",
+        "dimensions": 1536
+      }
+    },
+    {
+      "name": "PostgreSQL pgvector and RLS migration contract",
+      "passed": true,
+      "detail": {
+        "tables": 9,
+        "pgvector": true
+      }
+    },
+    {
+      "name": "Deployment conformance adapter",
+      "passed": true,
+      "detail": {
+        "findings": [
+          {
+            "ruleId": "k8s:traceability:Service:public-api",
+            "severity": "warning"
+          },
+          {
+            "ruleId": "k8s:public-ingress:public-api",
+            "severity": "critical"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fitness-function CI delivery bundle",
+      "passed": true,
+      "detail": {
+        "files": 5
+      }
+    },
+    {
+      "name": "External Ed25519 release verification",
+      "passed": true,
+      "detail": {
+        "publicKeyId": "d6e6be36eed4a6dca102eb4d",
+        "checksum": "24bb492cc6efc7ed239308de8d53af610de9cde6190642dd2cd895d9e0bc862a"
+      }
+    }
+  ]
+}

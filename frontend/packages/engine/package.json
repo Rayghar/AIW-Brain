@@ -1,0 +1,26 @@
+{
+  "name": "@aiw/engine",
+  "version": "0.10.0-rc.10.73.6",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json",
+    "typecheck": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --pool=threads --maxWorkers=1 --no-file-parallelism"
+  },
+  "dependencies": {
+    "@aiw/domain": "0.10.0-rc.10.73.6"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  }
+}

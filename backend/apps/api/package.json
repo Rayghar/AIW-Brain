@@ -1,0 +1,40 @@
+{
+  "name": "@aiw/api",
+  "version": "0.10.0-rc.10.73.6",
+  "private": true,
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "node --watch --env-file-if-exists=../../.env --import=tsx src/server.ts",
+    "build": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json",
+    "typecheck": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+    "start": "node --env-file-if-exists=../../.env dist/server.js",
+    "test": "vitest run --pool=threads --maxWorkers=1 --no-file-parallelism"
+  },
+  "dependencies": {
+    "@aiw/admin": "0.10.0-rc.10.73.6",
+    "@aiw/artifacts": "0.10.0-rc.10.73.6",
+    "@aiw/domain": "0.10.0-rc.10.73.6",
+    "@aiw/engine": "0.10.0-rc.10.73.6",
+    "@aiw/integrations": "0.10.0-rc.10.73.6",
+    "@aiw/intelligence": "0.10.0-rc.10.73.6",
+    "@aiw/knowledge": "0.10.0-rc.10.73.6",
+    "@aws-sdk/client-s3": "^3.1078.0",
+    "@fastify/cors": "11.2.0",
+    "fastify": "5.9.0",
+    "mammoth": "1.12.0",
+    "mongodb": "^6.12.0",
+    "openai": "6.45.0",
+    "pdf-parse": "1.1.1",
+    "pg": "8.16.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/pdf-parse": "1.1.5",
+    "@types/pg": "8.15.5",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  }
+}

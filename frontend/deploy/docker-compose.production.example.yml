@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  aiw-api:
+    image: aiw/api:${AIW_VERSION:-rc.10.47.3}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      OBJECT_STORAGE_BUCKET: ${OBJECT_STORAGE_BUCKET}
+      LLM_DEFAULT_PROVIDER: ${LLM_DEFAULT_PROVIDER:-openai}
+      LLM_LOW_COST_MODEL: ${LLM_LOW_COST_MODEL}
+      LLM_HIGH_REASONING_MODEL: ${LLM_HIGH_REASONING_MODEL}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      AIW_AUDIT_PROMPT_STORAGE: ${AIW_AUDIT_PROMPT_STORAGE:-metadata-only}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - postgres
+
+  aiw-worker:
+    image: aiw/worker:${AIW_VERSION:-rc.10.47.3}
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      OBJECT_STORAGE_BUCKET: ${OBJECT_STORAGE_BUCKET}
+      LLM_DEFAULT_PROVIDER: ${LLM_DEFAULT_PROVIDER:-openai}
+      LLM_LOW_COST_MODEL: ${LLM_LOW_COST_MODEL}
+      LLM_HIGH_REASONING_MODEL: ${LLM_HIGH_REASONING_MODEL}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    depends_on:
+      - redis
+      - postgres
+
+  aiw-web:
+    image: aiw/web:${AIW_VERSION:-rc.10.47.3}
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    depends_on:
+      - aiw-api
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aiw
+      POSTGRES_USER: aiw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - aiw_pg_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - aiw_redis_data:/data
+    ports:
+      - "6379:6379"
+
+volumes:
+  aiw_pg_data:
+  aiw_redis_data:

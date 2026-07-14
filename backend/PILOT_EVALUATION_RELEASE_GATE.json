@@ -1,0 +1,69 @@
+{
+  "releaseId": "AIW-0.10.0-rc.1",
+  "sprint": "8.7.5",
+  "generatedAt": "2026-07-03T20:07:58.242Z",
+  "passed": 12,
+  "total": 12,
+  "checks": [
+    {
+      "id": "875-01-version",
+      "passed": true,
+      "detail": "root and all workspaces retain the 8.7.5 lineage or a verified descendant"
+    },
+    {
+      "id": "875-02-scenario-suite",
+      "passed": true,
+      "detail": "reference pilot scenarios cover enterprise contexts and low-connectivity operation"
+    },
+    {
+      "id": "875-03-benchmark-scoring",
+      "passed": true,
+      "detail": "pilot evaluation scoring and release gate exist"
+    },
+    {
+      "id": "875-04-visual-model",
+      "passed": true,
+      "detail": "pilot readiness is represented as a visual model"
+    },
+    {
+      "id": "875-05-honest-acceptance",
+      "passed": true,
+      "detail": "production acceptance cannot be fabricated from reference pilots"
+    },
+    {
+      "id": "875-06-release-boundary",
+      "passed": true,
+      "detail": "8.7.5 release boundary preserves 8.7.4 lineage"
+    },
+    {
+      "id": "875-07-engine-export",
+      "passed": true,
+      "detail": "pilot evaluation engine exports are available through @aiw/engine"
+    },
+    {
+      "id": "875-08-api-routes",
+      "passed": true,
+      "detail": "pilot scenario, evaluation, readiness and release APIs are exposed"
+    },
+    {
+      "id": "875-09-ui",
+      "passed": true,
+      "detail": "interactive pilot evaluation UI is implemented"
+    },
+    {
+      "id": "875-10-tests",
+      "passed": true,
+      "detail": "engine and API tests cover visual modelling, acceptance honesty and tenancy"
+    },
+    {
+      "id": "875-11-docs",
+      "passed": true,
+      "detail": "release notes document pilot hardening and honest acceptance boundary"
+    },
+    {
+      "id": "875-12-no-text-only",
+      "passed": true,
+      "detail": "pilot evaluation remains visual modelling, not text-only reporting"
+    }
+  ]
+}

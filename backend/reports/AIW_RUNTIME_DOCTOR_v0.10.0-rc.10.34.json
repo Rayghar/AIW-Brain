@@ -1,0 +1,75 @@
+{
+  "release": "0.10.0-rc.10.34",
+  "generatedAt": "2026-07-06T09:11:25.778Z",
+  "invocationRoot": "/mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/backend",
+  "candidateRoots": [
+    "/mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/backend",
+    "/mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime",
+    "/mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/frontend",
+    "/mnt/data/work_rc1034"
+  ],
+  "checks": [
+    {
+      "id": "node-version",
+      "ok": true,
+      "detail": "Node 22.16.0",
+      "remediation": "Install Node.js 22 LTS or newer."
+    },
+    {
+      "id": "package-json",
+      "ok": true,
+      "detail": "Found /mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/backend/package.json",
+      "remediation": "Run doctor from the project root, backend root, or frontend root."
+    },
+    {
+      "id": "package-version",
+      "ok": true,
+      "detail": "Package version 0.10.0-rc.10.34",
+      "remediation": "Use the latest rc.10.34 package."
+    },
+    {
+      "id": "structure-gate-script",
+      "ok": true,
+      "detail": "structure:gate script present",
+      "remediation": "Restore structure:gate script."
+    },
+    {
+      "id": "api-source",
+      "ok": true,
+      "detail": "API source found at /mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/backend/apps/api/src/app.ts",
+      "remediation": "Use backend root or flat source package."
+    },
+    {
+      "id": "web-source",
+      "ok": true,
+      "detail": "Web source found at /mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/frontend/apps/web/src/App.tsx",
+      "remediation": "Use frontend root or flat source package."
+    },
+    {
+      "id": "worker-source",
+      "ok": true,
+      "detail": "Worker source found at /mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/backend/apps/worker/src/worker.ts",
+      "remediation": "Use backend root or flat source package."
+    },
+    {
+      "id": "env-example",
+      "ok": true,
+      "detail": ".env.example found at /mnt/data/work_rc1034/AIW_v0.10.0-rc.10.34_Studio_Navigation_Visual_Polish_Hook_Fix_Separated_Runtime/backend/.env.example",
+      "remediation": "Restore .env.example."
+    },
+    {
+      "id": "env-file",
+      "ok": true,
+      "detail": ".env not found; dev defaults will run, but create one before production-like testing.",
+      "remediation": "Run: copy .env.example .env"
+    },
+    {
+      "id": "structure-gate",
+      "ok": true,
+      "detail": "structure:gate passed.",
+      "remediation": "Run npm run structure:gate from backend and frontend after installing dependencies."
+    }
+  ],
+  "passed": 10,
+  "failed": 0
+}

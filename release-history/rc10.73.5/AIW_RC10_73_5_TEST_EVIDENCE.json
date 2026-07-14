@@ -1,0 +1,268 @@
+{
+  "release": "0.10.0-rc.10.73.5",
+  "knowledgeRelease": "AKR-0.10.73.5",
+  "generatedAt": "2026-07-14T20:45:00Z",
+  "result": "passed-controlled-pilot-boundary",
+  "build": {
+    "releaseId": "AKR-0.10.73.5",
+    "metrics": {
+      "approvedRepositoryCount": 30,
+      "conversionRegistryCount": 30,
+      "liveRefreshCompletedCount": 0,
+      "liveRefreshBlockedCount": 30,
+      "sourceClaimObjectCount": 14,
+      "editorialClaimObjectCount": 984,
+      "patternObjectCount": 328,
+      "totalKnowledgeObjectCount": 1326,
+      "patternClaimLineageCoveragePercent": 100,
+      "directSourceClaimCoveragePercent": 0.3,
+      "reasoningReadyPatternCount": 1,
+      "compositionReadyPatternCount": 328,
+      "scoringCalibratedPatternCount": 0,
+      "conformanceReadyPatternCount": 1,
+      "unresolvedContradictionCount": 0,
+      "sourceLifecycleDistribution": {
+        "approved": 30,
+        "candidate": 9,
+        "discovery-only": 8
+      },
+      "licenceReviewDistribution": {
+        "requires-review": 20,
+        "verified": 10
+      }
+    },
+    "artifacts": 7,
+    "outputRepo": "knowledge-repository/AKR-0.10.73.5"
+  },
+  "tests": {
+    "passed": true,
+    "tests": 10,
+    "assessment": {
+      "allowedForControlledPilot": true,
+      "productionAccepted": false,
+      "checks": [
+        {
+          "id": "approved-source-registry-complete",
+          "ok": true,
+          "severity": "blocker",
+          "detail": "30/30 approved repositories are represented by conversion records."
+        },
+        {
+          "id": "claim-lineage-complete",
+          "ok": true,
+          "severity": "blocker",
+          "detail": "328/328 Pattern DNA records have explicit claim lineage."
+        },
+        {
+          "id": "candidate-and-discovery-scoring-blocked",
+          "ok": true,
+          "severity": "blocker",
+          "detail": "Non-approved source postures cannot score, constrain or create conformance rules."
+        },
+        {
+          "id": "false-scoring-authority-blocked",
+          "ok": true,
+          "severity": "blocker",
+          "detail": "Repositories without immutable live snapshots cannot become production scoring authority."
+        },
+        {
+          "id": "immutable-live-refresh",
+          "ok": false,
+          "severity": "warning",
+          "detail": "0/30 repositories have an immutable live snapshot in this distribution."
+        },
+        {
+          "id": "licence-clearance",
+          "ok": false,
+          "severity": "warning",
+          "detail": "10/30 repositories have verified licence disposition."
+        }
+      ],
+      "metrics": {
+        "approvedRepositories": 30,
+        "registeredRepositories": 30,
+        "liveRefreshedRepositories": 0,
+        "licenceVerifiedRepositories": 10,
+        "patternRecords": 328,
+        "recordsWithClaimLineage": 328,
+        "scoringCalibratedRecords": 0
+      }
+    }
+  },
+  "gate": {
+    "release": "rc.10.73.5",
+    "passed": true,
+    "total": 30,
+    "passedCount": 30,
+    "failedCount": 0,
+    "checks": [
+      {
+        "id": "release-id",
+        "ok": true,
+        "detail": "Knowledge release is AKR-0.10.73.5."
+      },
+      {
+        "id": "backend-version",
+        "ok": true,
+        "detail": "Backend version uses rc.10.73.5."
+      },
+      {
+        "id": "frontend-version",
+        "ok": true,
+        "detail": "Frontend version uses rc.10.73.5."
+      },
+      {
+        "id": "product-version",
+        "ok": true,
+        "detail": "Product manifest uses rc.10.73.5."
+      },
+      {
+        "id": "approved-repository-registry",
+        "ok": true,
+        "detail": "All 30 approved repositories have a conversion record."
+      },
+      {
+        "id": "repository-fingerprints",
+        "ok": true,
+        "detail": "All conversion records are deterministically fingerprinted."
+      },
+      {
+        "id": "immutable-revision-policy",
+        "ok": true,
+        "detail": "All repository refreshes require immutable revisions."
+      },
+      {
+        "id": "source-execution-blocked",
+        "ok": true,
+        "detail": "Repository content cannot execute during ingestion."
+      },
+      {
+        "id": "candidate-discovery-blocked",
+        "ok": true,
+        "detail": "Candidate and discovery sources cannot influence authoritative reasoning."
+      },
+      {
+        "id": "false-scoring-blocked",
+        "ok": true,
+        "detail": "Unrefreshed repositories cannot score."
+      },
+      {
+        "id": "live-refresh-honesty",
+        "ok": true,
+        "detail": "The release explicitly records that 30 live refreshes remain blocked."
+      },
+      {
+        "id": "licence-honesty",
+        "ok": true,
+        "detail": "Licence review status is preserved rather than flattened."
+      },
+      {
+        "id": "knowledge-object-count",
+        "ok": true,
+        "detail": "The governed corpus contains 1,326 typed knowledge objects."
+      },
+      {
+        "id": "source-claim-count",
+        "ok": true,
+        "detail": "Fourteen approved source claims are represented."
+      },
+      {
+        "id": "editorial-claim-count",
+        "ok": true,
+        "detail": "Nine hundred and eighty-four editorial claims are explicitly classified."
+      },
+      {
+        "id": "editorial-non-scoring",
+        "ok": true,
+        "detail": "Editorial synthesis cannot masquerade as source-backed scoring evidence."
+      },
+      {
+        "id": "pattern-count",
+        "ok": true,
+        "detail": "All 328 Pattern DNA records are retained."
+      },
+      {
+        "id": "claim-lineage-coverage",
+        "ok": true,
+        "detail": "All Pattern DNA records have explicit claim lineage."
+      },
+      {
+        "id": "direct-source-coverage-honesty",
+        "ok": true,
+        "detail": "Direct source-claim coverage remains visibly limited."
+      },
+      {
+        "id": "scoring-calibration-blocked",
+        "ok": true,
+        "detail": "No repository-derived Pattern DNA record receives false production scoring authority."
+      },
+      {
+        "id": "composition-classified",
+        "ok": true,
+        "detail": "Composition readiness is independently classified."
+      },
+      {
+        "id": "contradiction-register",
+        "ok": true,
+        "detail": "Contradictions are preserved in a first-class register."
+      },
+      {
+        "id": "withdrawal-impact",
+        "ok": true,
+        "detail": "Every approved source has withdrawal and rollback impact evidence."
+      },
+      {
+        "id": "brain-activation-policy",
+        "ok": true,
+        "detail": "Brain activation separates controlled reasoning from production scoring."
+      },
+      {
+        "id": "api-conversion-route",
+        "ok": true,
+        "detail": "Conversion and knowledge-object APIs are exposed."
+      },
+      {
+        "id": "api-lineage-route",
+        "ok": true,
+        "detail": "Claim lineage is queryable."
+      },
+      {
+        "id": "grounding-activation",
+        "ok": true,
+        "detail": "The cognitive grounding pack can use direct approved source claims."
+      },
+      {
+        "id": "authority-module",
+        "ok": true,
+        "detail": "A shared authority-policy module governs repository-derived knowledge use."
+      },
+      {
+        "id": "knowledge-pin",
+        "ok": true,
+        "detail": "The Brain defaults to the new knowledge release."
+      },
+      {
+        "id": "production-not-accepted",
+        "ok": true,
+        "detail": "Production and live-GitHub acceptance remain false."
+      }
+    ]
+  },
+  "additionalVerification": {
+    "backendInternalDependencyGate": "passed",
+    "backendReleaseIntegrityGate": "passed",
+    "backendSecuritySourceScan": "passed",
+    "frontendInternalDependencyGate": "passed",
+    "frontendReleaseIntegrityGate": "passed",
+    "frontendSecuritySourceScan": "passed",
+    "compiledJavaScriptSyntaxChecks": "passed",
+    "typescriptWorkspaceBuild": "not-executed-installed-dependencies-absent",
+    "liveGithubRefresh": "not-executed-network-and-credentials-unavailable"
+  },
+  "acceptanceBoundary": {
+    "controlledPilotAccepted": true,
+    "liveGithubAccepted": false,
+    "productionScoringAccepted": false,
+    "productionAccepted": false
+  }
+}

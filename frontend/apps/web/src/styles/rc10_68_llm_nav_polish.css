@@ -1,0 +1,52 @@
+/* rc.10.68 retained intelligence-surface polish. Legacy navigation rules were retired in rc.10.72.1. */
+
+/* Compact, readable intelligence status surfaces introduced in rc.10.68. */
+.generative-cursor__authority-strip {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+  padding: 8px 9px;
+  border: 1px solid rgba(94,234,212,.16);
+  border-radius: 10px;
+  background: rgba(13,35,48,.72);
+}
+.generative-cursor__authority-strip strong,
+.generative-cursor__authority-strip small { display:block; }
+.generative-cursor__authority-strip strong { color:#dffbf7; font-size:.69rem; }
+.generative-cursor__authority-strip small { color:#82a5b2; font-size:.58rem; margin-top:2px; }
+.generative-cursor__authority-strip button {
+  min-height: 30px;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border:1px solid rgba(167,139,250,.3);
+  border-radius:8px;
+  background:rgba(124,58,237,.12);
+  color:#e9ddff;
+  padding:0 8px;
+  cursor:pointer;
+}
+.generative-cursor__authority-strip button:disabled { opacity:.55; cursor:wait; }
+.generative-cursor__clarifications { display:grid; gap:6px; margin:8px 0; }
+.generative-cursor__clarifications details { border:1px solid rgba(245,158,11,.18); border-radius:9px; background:rgba(120,53,15,.08); padding:7px 8px; }
+.generative-cursor__clarifications summary { cursor:pointer; color:#f7d38b; font-size:.64rem; font-weight:750; }
+.generative-cursor__clarifications p { margin:6px 0 0; color:#aebfc7; font-size:.6rem; line-height:1.4; }
+.generative-preview-tray__model-trace { display:grid; gap:3px; margin-top:8px; padding:7px 8px; border-radius:8px; background:rgba(124,58,237,.09); color:#c4b5fd; font-size:.57rem; }
+.generative-preview-tray__authority--hybrid { color:#c4b5fd !important; }
+
+/* General polish: reduce unused vertical space and improve canvas ownership. */
+.role-product-bar--context { min-height: 46px !important; }
+.guided-delivery--canvas-os .guided-stage-hero { padding-bottom: 6px !important; }
+.guided-delivery--canvas-os .guided-active-task-contract { margin-bottom: 8px !important; }
+.stage-workspace-focus { scroll-margin-top: 116px; }
+@media (prefers-reduced-motion: reduce) {
+  .app-shell.role-centred-experience .guided-stage-footer { transition: none !important; }
+}
+.generative-cursor__knowledge-gaps { display:grid; gap:6px; margin:8px 0; }
+.generative-cursor__knowledge-gaps details { border:1px solid rgba(56,189,248,.2); border-radius:9px; background:rgba(3,105,161,.08); padding:7px 8px; }
+.generative-cursor__knowledge-gaps summary { cursor:pointer; color:#a5e5ff; font-size:.64rem; font-weight:750; }
+.generative-cursor__knowledge-gaps p { display:grid; gap:2px; margin:6px 0 0; color:#b8cbd4; font-size:.6rem; line-height:1.4; }
+.generative-cursor__knowledge-gaps small { color:#7ea7b8; font-size:.56rem; }
+.knowledge-ops-workbench .studio-data-table td:nth-child(5) { min-width: 240px; white-space: normal; }

@@ -1,0 +1,21 @@
+{
+  "collectorRun": {
+    "id": "collector-run-7b1cbf4f-3033-42d2-b0dc-610bbd8fce44",
+    "collectorId": "collector-k8s-reference",
+    "startedAt": "2026-07-02T18:36:29.668Z",
+    "completedAt": "2026-07-02T18:36:29.670Z",
+    "status": "completed",
+    "inventoryId": "inventory-7cb453ac-80a0-4d34-bfb5-22d4fe22e127",
+    "resourceCount": 1,
+    "relationshipCount": 0,
+    "message": "Collected 1 resources from aws."
+  },
+  "operationalDrift": {
+    "cost": 1,
+    "capacity": 1,
+    "resilience": 1,
+    "estimatedMonthlyImpact": 350
+  },
+  "remediationActions": 3,
+  "artifacts": 48
+}

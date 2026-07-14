@@ -1,0 +1,921 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://architecture-intelligence.example/schemas/aiw-canonical-metamodel-v0.1.json",
+  "title": "AIW Canonical Architecture Model",
+  "description": "Framework-neutral source-of-truth model for architecture projects, snapshots, graph objects, decisions, rules and traceability.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "project",
+    "snapshot",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1.0"
+    },
+    "project": {
+      "$ref": "#/$defs/project"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/snapshot"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "views": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/view"
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "obligations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/obligation"
+      }
+    },
+    "recommendationRuns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recommendationRun"
+      }
+    },
+    "changeSets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/changeSet"
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "lifecycleState"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "classification": {
+          "type": "string"
+        },
+        "lifecycleState": {
+          "enum": [
+            "draft",
+            "inDesign",
+            "underReview",
+            "approved",
+            "implemented",
+            "superseded",
+            "retired"
+          ]
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "snapshot": {
+      "type": "object",
+      "required": [
+        "id",
+        "version",
+        "createdAt",
+        "knowledgePackVersion",
+        "rulePackVersion"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "version": {
+          "type": "string"
+        },
+        "parentSnapshotId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "branchId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "knowledgePackVersion": {
+          "type": "string"
+        },
+        "rulePackVersion": {
+          "type": "string"
+        },
+        "contentHash": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "name",
+        "lifecycleState",
+        "properties"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "externalKey": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "API",
+            "Actor",
+            "Alternative",
+            "AntiPattern",
+            "ApplicationComponent",
+            "Approval",
+            "ArchitectureStyle",
+            "Artifact",
+            "Assumption",
+            "Branch",
+            "Capability",
+            "ChangeSet",
+            "Comment",
+            "Concern",
+            "Constraint",
+            "Control",
+            "DataClassification",
+            "DataContract",
+            "DataDomain",
+            "DataEntity",
+            "DataFlow",
+            "DataProduct",
+            "DataStore",
+            "Decision",
+            "DeployableUnit",
+            "DeploymentNode",
+            "Domain",
+            "DriverSet",
+            "Environment",
+            "Event",
+            "EvidenceSource",
+            "Exception",
+            "ExternalSystem",
+            "Finding",
+            "Interface",
+            "KnowledgeRelease",
+            "Location",
+            "LogicalService",
+            "Model",
+            "ModelVersion",
+            "Mutation",
+            "NetworkZone",
+            "Objective",
+            "Obligation",
+            "Pattern",
+            "Policy",
+            "Principle",
+            "Process",
+            "Project",
+            "QualityAttribute",
+            "QualityScenario",
+            "RecommendationRun",
+            "ReferenceArchitecture",
+            "Requirement",
+            "Review",
+            "Risk",
+            "Rule",
+            "Runtime",
+            "Stakeholder",
+            "System",
+            "Tactic",
+            "TechnologyCapability",
+            "TechnologyComponent",
+            "TechnologyProduct",
+            "Workspace"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "lifecycleState": {
+          "enum": [
+            "proposed",
+            "selected",
+            "approved",
+            "deprecated",
+            "retired"
+          ]
+        },
+        "stage": {
+          "enum": [
+            "designIntent",
+            "logicalApplication",
+            "applicationRealization",
+            "logicalTechnology",
+            "physicalTechnology",
+            "crossCutting"
+          ]
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source": {
+          "$ref": "#/$defs/provenance"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "additionalProperties": false
+    },
+    "edge": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "sourceId",
+        "targetId",
+        "properties"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "type": {
+          "enum": [
+            "applies",
+            "commentsOn",
+            "communicatesWith",
+            "composes",
+            "constrains",
+            "consumes",
+            "contains",
+            "containsMutation",
+            "decides",
+            "dependsOn",
+            "deployedOn",
+            "evidencedBy",
+            "excludes",
+            "exposes",
+            "flowsTo",
+            "generatedFrom",
+            "hasConcern",
+            "hasStakeholder",
+            "introduces",
+            "locatedIn",
+            "mapsTo",
+            "mitigates",
+            "motivates",
+            "pairsWith",
+            "publishes",
+            "reads",
+            "realizes",
+            "requires",
+            "satisfies",
+            "subscribesTo",
+            "supersedes",
+            "supports",
+            "tensionWith",
+            "weakens",
+            "writes"
+          ]
+        },
+        "sourceId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "targetId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "label": {
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "directed",
+            "bidirectional",
+            "undirected"
+          ]
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "source": {
+          "$ref": "#/$defs/provenance"
+        }
+      },
+      "additionalProperties": false
+    },
+    "view": {
+      "type": "object",
+      "required": [
+        "id",
+        "viewpointId",
+        "name",
+        "nodeIds",
+        "edgeIds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "viewpointId": {
+          "enum": [
+            "VP-01",
+            "VP-02",
+            "VP-03",
+            "VP-04",
+            "VP-05",
+            "VP-06",
+            "VP-07",
+            "VP-08",
+            "VP-09",
+            "VP-10",
+            "VP-11"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "rootNodeId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "nodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "edgeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "layout": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "filters": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "status",
+        "context",
+        "decision",
+        "consequences"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "accepted",
+            "rejected",
+            "superseded",
+            "deprecated"
+          ]
+        },
+        "context": {
+          "type": "string"
+        },
+        "decision": {
+          "type": "string"
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "consequences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "relatedNodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "driverNodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "decidedAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "additionalProperties": false
+    },
+    "finding": {
+      "type": "object",
+      "required": [
+        "id",
+        "severity",
+        "status",
+        "ruleId",
+        "message"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "critical",
+            "high",
+            "medium",
+            "low",
+            "info"
+          ]
+        },
+        "classification": {
+          "enum": [
+            "hardConstraint",
+            "significantIncompatibility",
+            "advisory",
+            "completeness",
+            "policy",
+            "security",
+            "quality"
+          ]
+        },
+        "status": {
+          "enum": [
+            "open",
+            "mitigated",
+            "accepted",
+            "waived",
+            "resolved",
+            "falsePositive"
+          ]
+        },
+        "ruleId": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "relatedNodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "relatedEdgeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "mitigationOptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "dueStage": {
+          "type": "string"
+        },
+        "decisionId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "obligation": {
+      "type": "object",
+      "required": [
+        "id",
+        "sourceKnowledgeId",
+        "statement",
+        "status",
+        "satisfactionCondition"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "sourceKnowledgeId": {
+          "type": "string"
+        },
+        "statement": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "satisfied",
+            "waived",
+            "notApplicable"
+          ]
+        },
+        "dueStage": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "relatedNodeIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "satisfactionCondition": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decisionId": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "recommendationRun": {
+      "type": "object",
+      "required": [
+        "id",
+        "runAt",
+        "candidateType",
+        "inputs",
+        "candidates",
+        "engineVersion"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "runAt": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "candidateType": {
+          "enum": [
+            "style",
+            "pattern",
+            "technologyCapability",
+            "technologyProduct",
+            "deploymentOption"
+          ]
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scoredCandidate"
+          }
+        },
+        "engineVersion": {
+          "type": "string"
+        },
+        "knowledgePackVersion": {
+          "type": "string"
+        },
+        "rulePackVersion": {
+          "type": "string"
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "scoredCandidate": {
+      "type": "object",
+      "required": [
+        "knowledgeId",
+        "eligible",
+        "score",
+        "rank",
+        "explanation"
+      ],
+      "properties": {
+        "knowledgeId": {
+          "type": "string"
+        },
+        "eligible": {
+          "type": "boolean"
+        },
+        "score": {
+          "type": "number"
+        },
+        "rank": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "contributions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "adjustments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "obligations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "explanation": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "changeSet": {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "source",
+        "operations"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "partiallyAccepted",
+            "accepted",
+            "rejected",
+            "committed",
+            "rolledBack"
+          ]
+        },
+        "source": {
+          "enum": [
+            "user",
+            "ruleEngine",
+            "aiAudit",
+            "import",
+            "synchronization"
+          ]
+        },
+        "baseSnapshotId": {
+          "$ref": "#/$defs/uuid"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/changeOperation"
+          }
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "additionalProperties": false
+    },
+    "changeOperation": {
+      "type": "object",
+      "required": [
+        "operation",
+        "objectKind",
+        "objectId"
+      ],
+      "properties": {
+        "operation": {
+          "enum": [
+            "add",
+            "update",
+            "remove",
+            "move",
+            "map",
+            "unmap"
+          ]
+        },
+        "objectKind": {
+          "enum": [
+            "node",
+            "edge",
+            "view",
+            "decision",
+            "finding",
+            "obligation"
+          ]
+        },
+        "objectId": {
+          "type": "string"
+        },
+        "before": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "after": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "accepted": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "rationale": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "origin": {
+          "enum": [
+            "user",
+            "import",
+            "knowledgePack",
+            "ruleEngine",
+            "aiProposal",
+            "generated"
+          ]
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceVersion": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

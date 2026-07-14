@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "0.1.0",
+  "project": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "name": "Order Platform Example",
+    "description": "Minimal model demonstrating logical-to-realization lineage.",
+    "ownerId": "user-001",
+    "classification": "internal",
+    "lifecycleState": "draft",
+    "createdAt": "2026-07-01T00:00:00Z",
+    "updatedAt": "2026-07-01T00:00:00Z",
+    "tags": [
+      "example"
+    ]
+  },
+  "snapshot": {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "version": "0.1",
+    "parentSnapshotId": null,
+    "branchId": "main",
+    "createdAt": "2026-07-01T00:00:00Z",
+    "createdBy": "user-001",
+    "message": "Initial example",
+    "knowledgePackVersion": "0.1.0",
+    "rulePackVersion": "0.1.0",
+    "contentHash": "example-not-cryptographic"
+  },
+  "nodes": [
+    {
+      "id": "33333333-3333-4333-8333-333333333333",
+      "externalKey": "LAS-ORDER",
+      "type": "LogicalService",
+      "name": "Order Management",
+      "description": "Owns the order lifecycle.",
+      "lifecycleState": "selected",
+      "stage": "logicalApplication",
+      "properties": {
+        "criticality": "high"
+      },
+      "tags": [
+        "domain:orders"
+      ],
+      "source": {
+        "origin": "user",
+        "sourceId": "brief-001",
+        "sourceVersion": "1",
+        "createdBy": "user-001",
+        "createdAt": "2026-07-01T00:00:00Z"
+      },
+      "createdAt": "2026-07-01T00:00:00Z",
+      "updatedAt": "2026-07-01T00:00:00Z"
+    },
+    {
+      "id": "44444444-4444-4444-8444-444444444444",
+      "externalKey": "DEP-ORDER-API",
+      "type": "DeployableUnit",
+      "name": "Order API",
+      "description": "Stateless API deployable realizing order commands and queries.",
+      "lifecycleState": "selected",
+      "stage": "applicationRealization",
+      "properties": {
+        "statefulness": "stateless",
+        "packageType": "container"
+      },
+      "tags": [
+        "deployable"
+      ],
+      "source": {
+        "origin": "user",
+        "sourceId": "canvas",
+        "sourceVersion": "1",
+        "createdBy": "user-001",
+        "createdAt": "2026-07-01T00:00:00Z"
+      },
+      "createdAt": "2026-07-01T00:00:00Z",
+      "updatedAt": "2026-07-01T00:00:00Z"
+    }
+  ],
+  "edges": [
+    {
+      "id": "55555555-5555-4555-8555-555555555555",
+      "type": "realizes",
+      "sourceId": "44444444-4444-4444-8444-444444444444",
+      "targetId": "33333333-3333-4333-8333-333333333333",
+      "label": "realizes",
+      "direction": "directed",
+      "properties": {
+        "coverage": 1.0,
+        "responsibility": "order lifecycle"
+      },
+      "source": {
+        "origin": "user",
+        "sourceId": "mapping",
+        "sourceVersion": "1",
+        "createdBy": "user-001",
+        "createdAt": "2026-07-01T00:00:00Z"
+      }
+    }
+  ],
+  "views": [],
+  "decisions": [],
+  "findings": [],
+  "obligations": [],
+  "recommendationRuns": [],
+  "changeSets": [],
+  "extensions": {}
+}

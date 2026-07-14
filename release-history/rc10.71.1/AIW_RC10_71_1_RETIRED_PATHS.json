@@ -1,0 +1,31 @@
+{
+  "release": "0.10.0-rc.10.71.1",
+  "generatedAt": "2026-07-13T12:00:45Z",
+  "deletedBrowserModules": [
+    "frontend/packages/brain-runtime/src/brainSignalEngine.ts",
+    "frontend/packages/brain-runtime/src/driverWeightSignals.ts",
+    "frontend/packages/brain-runtime/src/interfaceCritiqueSignals.ts",
+    "frontend/packages/brain-runtime/src/llmTaskContracts.ts",
+    "frontend/packages/brain-runtime/src/mindFactorySignals.ts",
+    "frontend/packages/brain-runtime/src/patternObligationSignals.ts",
+    "frontend/packages/brain-runtime/src/signalFactory.ts",
+    "frontend/packages/brain-runtime/src/styleConstraintSignals.ts"
+  ],
+  "removedLocalAuthorities": [
+    "browser style recommendation",
+    "browser contextual recommendation",
+    "browser architecture event evaluation",
+    "browser deterministic audit",
+    "browser deterministic Living Canvas orchestration",
+    "browser synthesis generation/simulation/apply fallback"
+  ],
+  "retainedAsInternalAdapters": [
+    "designBriefAssistant",
+    "stageCoAuthorAssistant",
+    "livingCanvasLlmAssistant",
+    "coArchitect",
+    "architectureSynthesisService",
+    "aiAudit"
+  ],
+  "adapterBoundary": "Retained adapters accept injected dependencies and are called by the Architecture Brain Orchestrator; they no longer own route-level gateway construction or canonical context loading."
+}

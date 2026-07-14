@@ -1,0 +1,11 @@
+{
+  "releaseId": "AKR-0.8.9",
+  "checksumSha256": "e660e7bcd5ecdc1972c5a56ea25aac66fdc391752d3d4acd0660bf1377ddf6ed",
+  "signatureAlgorithm": "Ed25519",
+  "publicKeyId": "ca7009224c664243ac18fdf2",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAvWdmHBw83qaQBCd203WrNE/vumMPARyLpTklkXua1qY=\n-----END PUBLIC KEY-----\n",
+  "signatureBase64": "BfVWeYGbxEbrdLHAqKGn4DCsdQgXfT388ImWEoVEt7Ec6LQJ/yAOp8HJQsusXPhqUozYzlrxMxtD142qJqUDDA==",
+  "signedBy": "AIW Sprint 7.9 reference release authority",
+  "signedAt": "2026-07-02T19:19:12.325Z",
+  "verificationStatus": "valid"
+}

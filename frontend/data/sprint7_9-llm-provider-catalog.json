@@ -1,0 +1,110 @@
+{
+  "version": "0.8.9",
+  "providers": [
+    {
+      "id": "openai",
+      "name": "OpenAI",
+      "defaultBaseUrl": "https://api.openai.com/v1",
+      "apiKeyEnvironmentVariable": "OPENAI_API_KEY",
+      "protocols": [
+        "responses",
+        "chat-completions",
+        "embeddings"
+      ],
+      "supportsJsonSchema": true,
+      "supportsEmbeddings": true,
+      "dataBoundaryNote": "Use the approved OpenAI account, region and enterprise data controls for the tenant.",
+      "configurationNote": "Set OPENAI_API_KEY and choose an enabled model through AIW_LLM_* configuration."
+    },
+    {
+      "id": "xai",
+      "name": "xAI Grok",
+      "defaultBaseUrl": "https://api.x.ai/v1",
+      "apiKeyEnvironmentVariable": "XAI_API_KEY",
+      "protocols": [
+        "responses",
+        "chat-completions"
+      ],
+      "supportsJsonSchema": false,
+      "supportsEmbeddings": false,
+      "dataBoundaryNote": "Confirm the organization data policy and region before routing confidential architecture material.",
+      "configurationNote": "xAI exposes an OpenAI-compatible endpoint. Set XAI_API_KEY and an explicit model."
+    },
+    {
+      "id": "gemini",
+      "name": "Google Gemini",
+      "defaultBaseUrl": "https://generativelanguage.googleapis.com/v1beta/openai",
+      "apiKeyEnvironmentVariable": "GEMINI_API_KEY",
+      "protocols": [
+        "chat-completions",
+        "embeddings"
+      ],
+      "supportsJsonSchema": true,
+      "supportsEmbeddings": true,
+      "dataBoundaryNote": "Select the approved Google AI or Vertex AI tenancy and region for enterprise workloads.",
+      "configurationNote": "Gemini supports OpenAI-compatible access; use a model enabled in the configured Google account."
+    },
+    {
+      "id": "qwen",
+      "name": "Alibaba Qwen",
+      "apiKeyEnvironmentVariable": "DASHSCOPE_API_KEY",
+      "protocols": [
+        "responses",
+        "chat-completions",
+        "embeddings"
+      ],
+      "supportsJsonSchema": false,
+      "supportsEmbeddings": true,
+      "dataBoundaryNote": "The endpoint is region-specific. Choose the approved Model Studio workspace and deployment region.",
+      "configurationNote": "Set AIW_LLM_QWEN_BASE_URL because Model Studio endpoints vary by region and workspace."
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "defaultBaseUrl": "https://api.deepseek.com",
+      "apiKeyEnvironmentVariable": "DEEPSEEK_API_KEY",
+      "protocols": [
+        "chat-completions"
+      ],
+      "supportsJsonSchema": false,
+      "supportsEmbeddings": false,
+      "dataBoundaryNote": "Confirm enterprise data-processing and regional requirements before sending non-public material.",
+      "configurationNote": "DeepSeek provides an OpenAI-compatible API. Set DEEPSEEK_API_KEY and an explicit current model."
+    },
+    {
+      "id": "custom-openai",
+      "name": "Custom OpenAI-compatible service",
+      "apiKeyEnvironmentVariable": "AIW_CUSTOM_LLM_API_KEY",
+      "protocols": [
+        "responses",
+        "chat-completions",
+        "embeddings"
+      ],
+      "supportsJsonSchema": false,
+      "supportsEmbeddings": true,
+      "dataBoundaryNote": "Governance depends on the configured service owner, hosting model and network boundary.",
+      "configurationNote": "AIW_CUSTOM_LLM_BASE_URL and model are mandatory. Secrets must remain outside project data."
+    },
+    {
+      "id": "local-openai",
+      "name": "Local OpenAI-compatible service",
+      "defaultBaseUrl": "http://localhost:11434/v1",
+      "apiKeyEnvironmentVariable": "AIW_LOCAL_LLM_API_KEY",
+      "protocols": [
+        "chat-completions",
+        "embeddings"
+      ],
+      "supportsJsonSchema": false,
+      "supportsEmbeddings": true,
+      "dataBoundaryNote": "Suitable for private deployment when the local model and infrastructure have been approved.",
+      "configurationNote": "Use an OpenAI-compatible local endpoint such as an internally operated model gateway."
+    }
+  ],
+  "governance": {
+    "secretValuesExposed": false,
+    "perPurposeRouting": true,
+    "dataClassificationGates": true,
+    "fallbacks": true,
+    "candidateOnlyExtraction": true
+  }
+}

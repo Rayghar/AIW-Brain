@@ -1,0 +1,50 @@
+{
+  "releaseId": "AIW-0.10.0-alpha.2",
+  "version": "0.10.0-alpha.2",
+  "sprint": "8.7.2-enterprise-runtime-activation",
+  "generatedAt": "2026-07-03T17:40:09Z",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "basedOn": "AIW-0.10.0-alpha.1",
+  "status": "implemented-alpha",
+  "capabilities": {
+    "activePostgresRlsProbe": true,
+    "objectStoreRoundTripProbe": true,
+    "pgvectorExtensionProbe": true,
+    "oidcDiscoveryAndJwksProbe": true,
+    "githubCredentialedRepositoryProbe": true,
+    "governedLlmStructuredOutputProbe": true,
+    "otlpSyntheticSpanProbe": true,
+    "releaseSigningKeyProbe": true,
+    "tenantScopedAcceptanceEvidence": true,
+    "enforceableStartupAcceptancePolicy": true,
+    "enterpriseRuntimeWorkspace": true,
+    "deterministicOfflineFallback": true
+  },
+  "verification": {
+    "build": "passed",
+    "typecheck": "passed",
+    "tests": { "passed": 194, "total": 194, "engine": 105, "artifacts": 2, "api": 87 },
+    "intelligenceGate": "13/13",
+    "integratedJourneyGate": "13/13",
+    "reconciliationGate": "16/16",
+    "hardeningGate": "12/12",
+    "p0Gate": "6/6",
+    "sprint8_7_1Gate": "12/12",
+    "sprint8_7_2Gate": "12/12",
+    "security": "passed",
+    "architecturePolicy": "passed",
+    "e2e": "passed",
+    "npmVulnerabilities": 0
+  },
+  "environmentAcceptance": {
+    "productionAccepted": false,
+    "reason": "No target enterprise credentials or external services were supplied to the packaging environment. Active acceptance must be executed in the target environment."
+  },
+  "boundaries": [
+    "Configured does not mean verified.",
+    "External models do not own architecture scoring, policy or mutation.",
+    "Candidate knowledge cannot influence production recommendations.",
+    "Architecture mutations remain reviewable and human-approved.",
+    "The twelve draft quality matrices remain excluded from production scoring."
+  ]
+}

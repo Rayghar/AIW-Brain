@@ -1,0 +1,169 @@
+{
+  "viewId": "cross-stage-traceability",
+  "nodeCount": 8,
+  "routeCount": 5,
+  "clusters": [
+    {
+      "id": "cluster-1",
+      "label": "applicationRealization",
+      "nodeIds": [
+        "deployable-order-api",
+        "deployable-payment-worker"
+      ],
+      "bounds": {
+        "x": 32,
+        "y": 52,
+        "width": 360,
+        "height": 418
+      }
+    },
+    {
+      "id": "cluster-2",
+      "label": "logical-order-domain",
+      "nodeIds": [
+        "logical-order-service",
+        "logical-payment-service"
+      ],
+      "bounds": {
+        "x": 552,
+        "y": 52,
+        "width": 1028,
+        "height": 248
+      }
+    },
+    {
+      "id": "cluster-3",
+      "label": "logicalApplication",
+      "nodeIds": [
+        "actor-customer",
+        "logical-order-domain"
+      ],
+      "bounds": {
+        "x": 1740,
+        "y": 52,
+        "width": 360,
+        "height": 418
+      }
+    },
+    {
+      "id": "cluster-4",
+      "label": "logicalTechnology",
+      "nodeIds": [
+        "logical-relational-store"
+      ],
+      "bounds": {
+        "x": 2260,
+        "y": 52,
+        "width": 688,
+        "height": 248
+      }
+    },
+    {
+      "id": "cluster-5",
+      "label": "physicalTechnology",
+      "nodeIds": [
+        "physical-postgres"
+      ],
+      "bounds": {
+        "x": 3108,
+        "y": 52,
+        "width": 360,
+        "height": 248
+      }
+    }
+  ],
+  "positions": {},
+  "routes": {
+    "edge-customer-order": [
+      {
+        "x": 2008,
+        "y": 148
+      },
+      {
+        "x": 1526,
+        "y": 148
+      },
+      {
+        "x": 1526,
+        "y": 148
+      },
+      {
+        "x": 940,
+        "y": 148
+      }
+    ],
+    "edge-order-payment-event": [
+      {
+        "x": 1160,
+        "y": 148
+      },
+      {
+        "x": 1220,
+        "y": 148
+      },
+      {
+        "x": 1220,
+        "y": 148
+      },
+      {
+        "x": 1280,
+        "y": 148
+      }
+    ],
+    "edge-order-api-realizes": [
+      {
+        "x": 300,
+        "y": 148
+      },
+      {
+        "x": 620,
+        "y": 148
+      },
+      {
+        "x": 620,
+        "y": 148
+      },
+      {
+        "x": 940,
+        "y": 148
+      }
+    ],
+    "edge-payment-worker-realizes": [
+      {
+        "x": 300,
+        "y": 318
+      },
+      {
+        "x": 790,
+        "y": 318
+      },
+      {
+        "x": 790,
+        "y": 148
+      },
+      {
+        "x": 1280,
+        "y": 148
+      }
+    ],
+    "edge-postgres-maps": [
+      {
+        "x": 3376,
+        "y": 148
+      },
+      {
+        "x": 3012,
+        "y": 148
+      },
+      {
+        "x": 3012,
+        "y": 148
+      },
+      {
+        "x": 2648,
+        "y": 148
+      }
+    ]
+  },
+  "warnings": []
+}

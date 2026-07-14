@@ -1,0 +1,86 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const backend = resolve(here, '../..');
+const root = resolve(backend, '..');
+const frontend = resolve(root, 'frontend');
+const read = (path) => readFileSync(path, 'utf8');
+const checks = [];
+function check(id, passed, detail) {
+  checks.push({ id, passed: Boolean(passed), detail });
+  console.log(`${passed ? 'PASS' : 'FAIL'} ${id}: ${detail}`);
+}
+
+const domainPath = resolve(backend, 'packages/domain/src/brainTransactions.ts');
+const frontendDomainPath = resolve(frontend, 'packages/domain/src/brainTransactions.ts');
+const repositoryPath = resolve(backend, 'apps/api/src/brainTransactionRepository.ts');
+const routesPath = resolve(backend, 'apps/api/src/brainTransactionApplicationRoutes.ts');
+const recordingPath = resolve(backend, 'apps/api/src/brainTransactionRecording.ts');
+const migrationPath = resolve(backend, 'database/migrations/019_rc10_73_3_brain_transactions.sql');
+const appPath = resolve(backend, 'apps/api/src/app.ts');
+const registerPath = resolve(backend, 'apps/api/src/registerApplicationRoutes.ts');
+const contextPath = resolve(backend, 'apps/api/src/applicationRouteContext.ts');
+const orchestratorPath = resolve(backend, 'apps/api/src/architectureBrainOrchestrator.ts');
+const governancePath = resolve(backend, 'apps/api/src/governanceCollaborationApplicationRoutes.ts');
+const authorityPath = resolve(backend, 'packages/intelligence/src/orchestrator/index.ts');
+const frontendAuthorityPath = resolve(frontend, 'packages/intelligence/src/orchestrator/index.ts');
+
+const domain = existsSync(domainPath) ? read(domainPath) : '';
+const frontendDomain = existsSync(frontendDomainPath) ? read(frontendDomainPath) : '';
+const repository = existsSync(repositoryPath) ? read(repositoryPath) : '';
+const routes = existsSync(routesPath) ? read(routesPath) : '';
+const recording = existsSync(recordingPath) ? read(recordingPath) : '';
+const migration = existsSync(migrationPath) ? read(migrationPath) : '';
+const app = read(appPath);
+const register = read(registerPath);
+const context = read(contextPath);
+const orchestrator = read(orchestratorPath);
+const designGraph = read(resolve(backend, 'packages/domain/src/architectureDesignGraph.ts'));
+const governance = read(governancePath);
+const authority = read(authorityPath);
+const frontendAuthority = read(frontendAuthorityPath);
+const backendPackage = JSON.parse(read(resolve(backend, 'package.json')));
+const frontendPackage = JSON.parse(read(resolve(frontend, 'package.json')));
+const manifest = JSON.parse(read(resolve(root, 'RELEASE_MANIFEST.json')));
+const capability = JSON.parse(read(resolve(root, 'CAPABILITY_STATE.json')));
+
+check('domain-contract', domain.includes('ArchitectureBrainTransaction') && domain.includes('ArchitectureBrainTransactionEvent') && domain.includes('ArchitectureRuleWaiver'), 'Brain transaction, event and first-class architecture waiver contracts exist');
+check('domain-mirror', domain === frontendDomain, 'Backend and frontend Brain transaction contracts match');
+check('transaction-state-machine', ['proposed','verified','review-pending','approved','approved-with-waiver','changes-requested','rejected','committed','superseded'].every((item) => domain.includes(`'${item}'`)), 'Transaction lifecycle states are explicit');
+check('append-only-event-contract', ['proposal-recorded','deterministic-verified','review-assigned','review-approved','review-rejected','waiver-granted','waiver-revoked','committed'].every((item) => domain.includes(`'${item}'`)), 'Append-only event vocabulary covers proposal through commit');
+check('repository-contract', repository.includes('export interface BrainTransactionRepository') && repository.includes('recordProposal(') && repository.includes('appendEvent('), 'Durable repository contract supports idempotent proposal recording and versioned event append');
+check('hash-chain', repository.includes("createHash('sha256')") && repository.includes('previousHash') && repository.includes('eventHash'), 'Events are SHA-256 hash chained');
+check('optimistic-concurrency', repository.includes('BrainTransactionVersionConflict') && repository.includes('expectedVersion'), 'Optimistic version control protects concurrent dispositions');
+check('independent-reviewer', repository.includes('INDEPENDENT_REVIEWER_REQUIRED') && repository.includes('ASSIGNED_REVIEWER_MISMATCH') && repository.includes('REVIEW_RATIONALE_REQUIRED'), 'Independent reviewer, assignment and rationale controls are enforced');
+check('persistence-adapters', repository.includes('InMemoryBrainTransactionRepository') && repository.includes('PostgresBrainTransactionRepository') && repository.includes('MongoAtlasBrainTransactionRepository'), 'Memory, PostgreSQL and MongoDB adapters are implemented');
+check('persistence-selection', repository.includes('createBrainTransactionRepository') && repository.includes('databaseProvider'), 'Runtime repository selection follows configured database provider');
+check('migration-tables', ['architecture_brain_transactions','architecture_brain_transaction_events','architecture_rule_waivers'].every((item) => migration.includes(item)), 'PostgreSQL migration defines transaction, event and waiver tables');
+check('migration-rls', (migration.match(/ENABLE ROW LEVEL SECURITY/g) ?? []).length === 3 && migration.includes("current_setting('aiw.tenant_id'"), 'All new PostgreSQL tables are tenant isolated with RLS');
+check('migration-integrity', migration.includes('UNIQUE (tenant_id, transaction_id, sequence)') && migration.includes('CHECK (owner_id <> approved_by)') && migration.includes('ON DELETE RESTRICT'), 'Migration protects sequence, waiver separation and append-only references');
+check('automatic-recording', app.includes('findArchitectureBrainReceipt') && app.includes('brainTransactions.recordProposal') && app.includes('app.addHook("onSend"'), 'Every successful response containing a Brain receipt is durably recorded');
+check('transaction-response-headers', ['x-aiw-brain-transaction-id','x-aiw-brain-transaction-version','x-aiw-brain-transaction-status'].every((item) => app.includes(item)), 'Responses disclose their transaction identity and posture');
+check('repository-lifecycle', app.includes('createBrainTransactionRepository') && app.includes('await brainTransactions.close()'), 'Repository is composed and closed by the application lifecycle');
+check('route-context', context.includes('brainTransactions: BrainTransactionRepository') && register.includes('registerBrainTransactionApplicationRoutes'), 'Canonical transaction routes receive the single repository through application context');
+check('canonical-transaction-routes', ['/brain-transactions\'','/verify\'','/review/assign\'','/review/disposition\'','/commit\''].every((item) => routes.includes(item)), 'Canonical list, detail, verify, review and commit routes are registered');
+check('architecture-waiver-routes', routes.includes('/architecture-waivers') && routes.includes('driftWaiversAreSeparate: true'), 'Architecture rule waivers are first-class and explicitly separate from operational drift waivers');
+check('freshness-before-verification', routes.includes('STALE_BRAIN_TRANSACTION') && routes.includes('designGraphPreview'), 'Verification rejects stale project revision or graph fingerprint');
+check('semantic-graph-fingerprint', !/function graphPayload[\s\S]*?projectRevision: graph\.projectRevision/.test(designGraph) && !/attributes: \{[\s\S]*?revision: project\.revision/.test(designGraph), 'Design Graph content fingerprint excludes revision counters; revision freshness is pinned separately');
+check('review-permissions', routes.includes("hasPermission(principal, 'review.disposition')") && routes.includes("canPerform(project, principal.subject, 'review.decide')"), 'Review disposition requires enterprise and project authority');
+check('legacy-review-compatibility', governance.includes('brain-transactions/{transactionId}/review/assign') && governance.includes('brain-transactions/{transactionId}/review/disposition'), 'Legacy review endpoints are compatibility projections to canonical transaction review');
+check('review-receipt', orchestrator.includes('task: "architecture-review"') && orchestrator.includes('createArchitectureBrainProposalReceipt'), 'Architecture Review emits a governed Brain receipt');
+check('response-receipt-discovery', recording.includes('findArchitectureBrainReceipt') && recording.includes('summarizeArchitectureBrainResponse') && recording.includes("'architecture-review'"), 'Generic response recorder finds and summarizes governed receipts');
+check('authority-contract-version', authority.includes('1.5.0-rc10.73.3') && authority.includes('0.10.0-rc.10.73.3'), 'Authority contract is versioned for rc.10.73.3');
+check('authority-audit-ledger', authority.includes('id: "durable-brain-transactions"') && authority.includes('owner: "AIW Brain Orchestrator"'), 'Authority audit names the durable transaction and review ledger');
+check('authority-mirror', authority === frontendAuthority, 'Frontend/backend intelligence authority contracts match');
+check('backend-version', backendPackage.version === '0.10.0-rc.10.73.3', 'Backend release identity is rc.10.73.3');
+check('frontend-version', frontendPackage.version === '0.10.0-rc.10.73.3', 'Frontend release identity is rc.10.73.3');
+check('release-manifest', manifest.version === '0.10.0-rc.10.73.3' && manifest.durableBrainTransactionsImplemented === true && manifest.independentReviewAuthorityImplemented === true && manifest.productionAccepted === false, 'Release manifest declares durable governance without production overclaim');
+check('capability-state', capability.release === manifest.version && capability.brainTransactions?.appendOnlyLedger === 'implemented' && capability.brainTransactions?.liveManagedPersistenceAccepted === false, 'Capability register exposes implemented ledger and honest live-persistence boundary');
+check('release-evidence', existsSync(resolve(root, 'AIW_RC10_73_3_RELEASE_REPORT.md')) && existsSync(resolve(root, 'AIW_RC10_73_3_IMPLEMENTATION_TRACEABILITY.md')) && existsSync(resolve(root, 'AIW_RC10_73_3_KNOWN_LIMITATIONS.md')) && existsSync(resolve(root, 'release-evidence/rc10.73.3/DURABLE_BRAIN_TRANSACTIONS_ACCEPTANCE.json')), 'Current release evidence is included');
+check('api-test', existsSync(resolve(backend, 'apps/api/test/rc10_73_3_durable_brain_transactions.test.ts')), 'Executable transaction, review and waiver tests are included');
+
+const failed = checks.filter((item) => !item.passed);
+console.log(JSON.stringify({ release: '0.10.0-rc.10.73.3', passed: checks.length - failed.length, total: checks.length, failed: failed.map((item) => item.id) }, null, 2));
+if (failed.length) process.exit(1);

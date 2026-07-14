@@ -1,0 +1,11 @@
+groups:
+  - name: aiw-slo-alerts
+    rules:
+      - alert: Orderavailabilityburnalert
+        expr: aiw_slo_burn_rate{slo_id="slo-order-availability"} > 2
+        for: 60m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Order availability burn alert"
+          description: "SLO Order API availability is consuming error budget too quickly."

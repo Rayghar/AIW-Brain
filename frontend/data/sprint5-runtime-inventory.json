@@ -1,0 +1,64 @@
+{
+  "id": "inventory-bd99d273-2da1-4afe-9d53-4d6613d52fb5",
+  "tenantId": "tenant-reference",
+  "projectId": "project-order-to-payment",
+  "branchId": "branch-main",
+  "name": "Sprint 5 reference runtime",
+  "sourceType": "manual",
+  "capturedAt": "2026-07-02T08:35:22.085Z",
+  "sourceRevision": "runtime-reference-1",
+  "rawFingerprint": "fnv1a-770947e1",
+  "resources": [
+    {
+      "id": "runtime-order-api",
+      "sourceType": "manual",
+      "externalId": "k8s:commerce:Deployment:order-api",
+      "resourceType": "Deployment",
+      "name": "Order API",
+      "provider": "kubernetes",
+      "version": "1.3.0",
+      "properties": {
+        "runtime": "Node.js",
+        "replicas": 3,
+        "version": "1.3.0"
+      },
+      "labels": {
+        "aiw.node-id": "deployable-order-api"
+      },
+      "discoveredAt": "2026-07-02T08:35:22.085Z"
+    },
+    {
+      "id": "runtime-postgres",
+      "sourceType": "manual",
+      "externalId": "terraform:aws_rds_cluster.order",
+      "resourceType": "aws_rds_cluster",
+      "name": "Managed PostgreSQL",
+      "provider": "generic",
+      "version": "16.2",
+      "properties": {
+        "replicas": 2,
+        "availabilityZones": 2,
+        "encryptedAtRest": true,
+        "version": "16.2"
+      },
+      "labels": {
+        "aiw.node-id": "physical-postgres"
+      },
+      "discoveredAt": "2026-07-02T08:35:22.085Z"
+    },
+    {
+      "id": "runtime-debug-pod",
+      "sourceType": "manual",
+      "externalId": "k8s:commerce:Pod:debug-shell",
+      "resourceType": "Pod",
+      "name": "Debug Shell",
+      "provider": "kubernetes",
+      "properties": {
+        "image": "busybox:latest"
+      },
+      "labels": {},
+      "discoveredAt": "2026-07-02T08:35:22.085Z"
+    }
+  ],
+  "relationships": []
+}

@@ -1,0 +1,1475 @@
+{
+  "releaseId": "PPC-0.10.60",
+  "providerNeutralFirst": true,
+  "entryCount": 45,
+  "entries": [
+    {
+      "id": "PPC-PORTABLE-API-GATEWAY",
+      "neutralCapability": "API management",
+      "capabilityAliases": [
+        "api gateway",
+        "api management",
+        "ingress api"
+      ],
+      "provider": "portable",
+      "productName": "OpenAPI-compatible API gateway capability",
+      "productFamily": "API management",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "OpenAPI support",
+        "policy enforcement",
+        "rate limiting",
+        "workload identity"
+      ],
+      "architectureConsequences": [
+        "Preserves contract portability",
+        "Requires an implementation selection before deployment"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-API-GATEWAY",
+      "neutralCapability": "API management",
+      "capabilityAliases": [
+        "api gateway",
+        "api management",
+        "ingress api"
+      ],
+      "provider": "aws",
+      "productName": "Amazon API Gateway",
+      "productFamily": "API management",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "OpenAPI integration",
+        "IAM/OIDC integration",
+        "regional availability"
+      ],
+      "architectureConsequences": [
+        "Managed control plane and provider-native identity integration"
+      ],
+      "portabilityRisks": [
+        "Provider-specific policy and extension semantics"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-API-MANAGEMENT",
+      "neutralCapability": "API management",
+      "capabilityAliases": [
+        "api gateway",
+        "api management",
+        "ingress api"
+      ],
+      "provider": "azure",
+      "productName": "Azure API Management",
+      "productFamily": "API management",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "OpenAPI integration",
+        "Entra integration",
+        "policy enforcement"
+      ],
+      "architectureConsequences": [
+        "Managed gateway with Azure policy and identity integration"
+      ],
+      "portabilityRisks": [
+        "Policy language and operational model are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-API-GATEWAY",
+      "neutralCapability": "API management",
+      "capabilityAliases": [
+        "api gateway",
+        "api management",
+        "ingress api"
+      ],
+      "provider": "gcp",
+      "productName": "Google Cloud API Gateway / Apigee",
+      "productFamily": "API management",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "OpenAPI integration",
+        "IAM integration",
+        "traffic policy"
+      ],
+      "architectureConsequences": [
+        "Managed API lifecycle and traffic governance"
+      ],
+      "portabilityRisks": [
+        "Product choice and policy semantics affect portability"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-KONG",
+      "neutralCapability": "API management",
+      "capabilityAliases": [
+        "api gateway",
+        "api management",
+        "ingress api"
+      ],
+      "provider": "on-premises",
+      "productName": "Kong or approved enterprise API gateway",
+      "productFamily": "API management",
+      "serviceModel": "enterprise-platform",
+      "requiredCharacteristics": [
+        "OpenAPI support",
+        "OIDC integration",
+        "rate limiting",
+        "high availability"
+      ],
+      "architectureConsequences": [
+        "Enterprise-operated gateway with local control"
+      ],
+      "portabilityRisks": [
+        "Operations, patching and scaling remain enterprise responsibilities"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-EVENT",
+      "neutralCapability": "Event and messaging",
+      "capabilityAliases": [
+        "event broker",
+        "message broker",
+        "queue",
+        "streaming"
+      ],
+      "provider": "portable",
+      "productName": "AsyncAPI/CloudEvents-compatible messaging capability",
+      "productFamily": "Event and messaging",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "AsyncAPI contracts",
+        "CloudEvents compatibility",
+        "retry and dead-letter semantics"
+      ],
+      "architectureConsequences": [
+        "Preserves event contract and delivery semantics across implementations"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-EVENT",
+      "neutralCapability": "Event and messaging",
+      "capabilityAliases": [
+        "event broker",
+        "message broker",
+        "queue",
+        "streaming"
+      ],
+      "provider": "aws",
+      "productName": "Amazon EventBridge / MSK / SQS",
+      "productFamily": "Event and messaging",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "At-least-once delivery options",
+        "dead-letter handling",
+        "regional availability"
+      ],
+      "architectureConsequences": [
+        "Provider-managed event routing, streaming and queuing options"
+      ],
+      "portabilityRisks": [
+        "Semantics differ across EventBridge, MSK and SQS"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-EVENT",
+      "neutralCapability": "Event and messaging",
+      "capabilityAliases": [
+        "event broker",
+        "message broker",
+        "queue",
+        "streaming"
+      ],
+      "provider": "azure",
+      "productName": "Azure Event Grid / Service Bus / Event Hubs",
+      "productFamily": "Event and messaging",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Topics and queues",
+        "dead-letter handling",
+        "streaming option"
+      ],
+      "architectureConsequences": [
+        "Provider-managed event and messaging services"
+      ],
+      "portabilityRisks": [
+        "Feature selection affects portability and ordering semantics"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-EVENT",
+      "neutralCapability": "Event and messaging",
+      "capabilityAliases": [
+        "event broker",
+        "message broker",
+        "queue",
+        "streaming"
+      ],
+      "provider": "gcp",
+      "productName": "Google Pub/Sub",
+      "productFamily": "Event and messaging",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "At-least-once delivery",
+        "dead-letter topics",
+        "regional controls"
+      ],
+      "architectureConsequences": [
+        "Managed publish/subscribe messaging"
+      ],
+      "portabilityRisks": [
+        "Subscription and ordering semantics require explicit mapping"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-KAFKA",
+      "neutralCapability": "Event and messaging",
+      "capabilityAliases": [
+        "event broker",
+        "message broker",
+        "queue",
+        "streaming"
+      ],
+      "provider": "on-premises",
+      "productName": "Apache Kafka / approved enterprise broker",
+      "productFamily": "Event and messaging",
+      "serviceModel": "self-managed",
+      "requiredCharacteristics": [
+        "Schema governance",
+        "replication",
+        "dead-letter strategy",
+        "operational monitoring"
+      ],
+      "architectureConsequences": [
+        "Portable event-streaming foundation"
+      ],
+      "portabilityRisks": [
+        "Enterprise assumes broker operations and lifecycle management"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-RUNTIME",
+      "neutralCapability": "Container runtime",
+      "capabilityAliases": [
+        "runtime",
+        "compute",
+        "container platform",
+        "orchestration"
+      ],
+      "provider": "portable",
+      "productName": "OCI/Kubernetes-compatible runtime capability",
+      "productFamily": "Compute runtime",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "OCI images",
+        "declarative deployment",
+        "health and scaling contracts"
+      ],
+      "architectureConsequences": [
+        "Supports portable workload packaging"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-RUNTIME",
+      "neutralCapability": "Container runtime",
+      "capabilityAliases": [
+        "runtime",
+        "compute",
+        "container platform",
+        "orchestration"
+      ],
+      "provider": "aws",
+      "productName": "Amazon EKS / ECS / Lambda",
+      "productFamily": "Compute runtime",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Workload isolation",
+        "autoscaling",
+        "identity integration"
+      ],
+      "architectureConsequences": [
+        "Provider-managed orchestration or functions"
+      ],
+      "portabilityRisks": [
+        "Runtime-specific deployment and scaling semantics"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-RUNTIME",
+      "neutralCapability": "Container runtime",
+      "capabilityAliases": [
+        "runtime",
+        "compute",
+        "container platform",
+        "orchestration"
+      ],
+      "provider": "azure",
+      "productName": "Azure Kubernetes Service / Container Apps / Functions",
+      "productFamily": "Compute runtime",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Workload identity",
+        "autoscaling",
+        "availability-zone support"
+      ],
+      "architectureConsequences": [
+        "Provider-managed orchestration and serverless runtime"
+      ],
+      "portabilityRisks": [
+        "Runtime-specific networking and scaling semantics"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-RUNTIME",
+      "neutralCapability": "Container runtime",
+      "capabilityAliases": [
+        "runtime",
+        "compute",
+        "container platform",
+        "orchestration"
+      ],
+      "provider": "gcp",
+      "productName": "Google Kubernetes Engine / Cloud Run / Functions",
+      "productFamily": "Compute runtime",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Workload identity",
+        "autoscaling",
+        "regional availability"
+      ],
+      "architectureConsequences": [
+        "Provider-managed container and serverless runtime"
+      ],
+      "portabilityRisks": [
+        "Runtime-specific request and execution semantics"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-RUNTIME",
+      "neutralCapability": "Container runtime",
+      "capabilityAliases": [
+        "runtime",
+        "compute",
+        "container platform",
+        "orchestration"
+      ],
+      "provider": "on-premises",
+      "productName": "Kubernetes / approved virtualisation platform",
+      "productFamily": "Compute runtime",
+      "serviceModel": "enterprise-platform",
+      "requiredCharacteristics": [
+        "OCI support",
+        "autoscaling",
+        "patching",
+        "multi-zone operations"
+      ],
+      "architectureConsequences": [
+        "Enterprise-controlled runtime platform"
+      ],
+      "portabilityRisks": [
+        "Platform operations and upgrades are enterprise responsibilities"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-RELATIONAL",
+      "neutralCapability": "Relational data",
+      "capabilityAliases": [
+        "relational database",
+        "sql data",
+        "transactional store"
+      ],
+      "provider": "portable",
+      "productName": "PostgreSQL-compatible relational capability",
+      "productFamily": "Data platform",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "ACID transactions",
+        "backup and restore",
+        "encryption",
+        "replication"
+      ],
+      "architectureConsequences": [
+        "Preserves SQL and transactional semantics"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-RELATIONAL",
+      "neutralCapability": "Relational data",
+      "capabilityAliases": [
+        "relational database",
+        "sql data",
+        "transactional store"
+      ],
+      "provider": "aws",
+      "productName": "Amazon Aurora / RDS",
+      "productFamily": "Data platform",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Multi-zone support",
+        "backup and restore",
+        "encryption"
+      ],
+      "architectureConsequences": [
+        "Managed relational database operations"
+      ],
+      "portabilityRisks": [
+        "Engine extensions and operational APIs are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-RELATIONAL",
+      "neutralCapability": "Relational data",
+      "capabilityAliases": [
+        "relational database",
+        "sql data",
+        "transactional store"
+      ],
+      "provider": "azure",
+      "productName": "Azure SQL / Azure Database for PostgreSQL",
+      "productFamily": "Data platform",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "High availability",
+        "backup and restore",
+        "private networking"
+      ],
+      "architectureConsequences": [
+        "Managed relational database capability"
+      ],
+      "portabilityRisks": [
+        "Tiering and platform extensions affect portability"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-RELATIONAL",
+      "neutralCapability": "Relational data",
+      "capabilityAliases": [
+        "relational database",
+        "sql data",
+        "transactional store"
+      ],
+      "provider": "gcp",
+      "productName": "Cloud SQL / AlloyDB / Spanner",
+      "productFamily": "Data platform",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "High availability",
+        "backup and restore",
+        "regional controls"
+      ],
+      "architectureConsequences": [
+        "Managed relational and globally distributed database options"
+      ],
+      "portabilityRisks": [
+        "Spanner semantics differ from conventional relational engines"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-RELATIONAL",
+      "neutralCapability": "Relational data",
+      "capabilityAliases": [
+        "relational database",
+        "sql data",
+        "transactional store"
+      ],
+      "provider": "on-premises",
+      "productName": "PostgreSQL / approved enterprise relational database",
+      "productFamily": "Data platform",
+      "serviceModel": "self-managed",
+      "requiredCharacteristics": [
+        "Replication",
+        "backup and restore",
+        "encryption",
+        "operational monitoring"
+      ],
+      "architectureConsequences": [
+        "Enterprise-controlled relational platform"
+      ],
+      "portabilityRisks": [
+        "Database operations and capacity planning remain enterprise responsibilities"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-OBJECT",
+      "neutralCapability": "Object storage",
+      "capabilityAliases": [
+        "object storage",
+        "blob storage",
+        "archive store"
+      ],
+      "provider": "portable",
+      "productName": "S3-compatible object storage capability",
+      "productFamily": "Object storage",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "Versioning",
+        "retention",
+        "encryption",
+        "lifecycle policy"
+      ],
+      "architectureConsequences": [
+        "Portable object-storage contract"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-OBJECT",
+      "neutralCapability": "Object storage",
+      "capabilityAliases": [
+        "object storage",
+        "blob storage",
+        "archive store"
+      ],
+      "provider": "aws",
+      "productName": "Amazon S3",
+      "productFamily": "Object storage",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Versioning",
+        "retention",
+        "encryption",
+        "regional replication"
+      ],
+      "architectureConsequences": [
+        "Provider-managed durable object storage"
+      ],
+      "portabilityRisks": [
+        "Event and policy integrations are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-OBJECT",
+      "neutralCapability": "Object storage",
+      "capabilityAliases": [
+        "object storage",
+        "blob storage",
+        "archive store"
+      ],
+      "provider": "azure",
+      "productName": "Azure Blob Storage",
+      "productFamily": "Object storage",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Versioning",
+        "immutability",
+        "encryption",
+        "replication"
+      ],
+      "architectureConsequences": [
+        "Provider-managed blob and archive storage"
+      ],
+      "portabilityRisks": [
+        "Access tiers and policy model are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-OBJECT",
+      "neutralCapability": "Object storage",
+      "capabilityAliases": [
+        "object storage",
+        "blob storage",
+        "archive store"
+      ],
+      "provider": "gcp",
+      "productName": "Google Cloud Storage",
+      "productFamily": "Object storage",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Versioning",
+        "retention",
+        "encryption",
+        "dual-region options"
+      ],
+      "architectureConsequences": [
+        "Provider-managed object storage"
+      ],
+      "portabilityRisks": [
+        "Lifecycle and event integrations are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-OBJECT",
+      "neutralCapability": "Object storage",
+      "capabilityAliases": [
+        "object storage",
+        "blob storage",
+        "archive store"
+      ],
+      "provider": "on-premises",
+      "productName": "MinIO / approved enterprise object store",
+      "productFamily": "Object storage",
+      "serviceModel": "self-managed",
+      "requiredCharacteristics": [
+        "S3 compatibility",
+        "replication",
+        "retention",
+        "encryption"
+      ],
+      "architectureConsequences": [
+        "Enterprise-controlled object storage"
+      ],
+      "portabilityRisks": [
+        "Durability and operations depend on enterprise deployment"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-IDENTITY",
+      "neutralCapability": "Identity and access",
+      "capabilityAliases": [
+        "identity provider",
+        "iam",
+        "authentication",
+        "authorization"
+      ],
+      "provider": "portable",
+      "productName": "OIDC/OAuth 2.0 and workload-identity capability",
+      "productFamily": "Identity",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "OIDC",
+        "OAuth 2.0",
+        "workload identity",
+        "policy decision integration"
+      ],
+      "architectureConsequences": [
+        "Separates identity contracts from provider products"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-IDENTITY",
+      "neutralCapability": "Identity and access",
+      "capabilityAliases": [
+        "identity provider",
+        "iam",
+        "authentication",
+        "authorization"
+      ],
+      "provider": "aws",
+      "productName": "AWS IAM / Cognito / IAM Identity Center",
+      "productFamily": "Identity",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Federation",
+        "workload roles",
+        "policy enforcement"
+      ],
+      "architectureConsequences": [
+        "Provider-native identity and access controls"
+      ],
+      "portabilityRisks": [
+        "Policy model and role semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-IDENTITY",
+      "neutralCapability": "Identity and access",
+      "capabilityAliases": [
+        "identity provider",
+        "iam",
+        "authentication",
+        "authorization"
+      ],
+      "provider": "azure",
+      "productName": "Microsoft Entra ID / Managed Identities",
+      "productFamily": "Identity",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "OIDC federation",
+        "managed workload identity",
+        "conditional access"
+      ],
+      "architectureConsequences": [
+        "Provider-native enterprise identity integration"
+      ],
+      "portabilityRisks": [
+        "Tenant and conditional-access semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-IDENTITY",
+      "neutralCapability": "Identity and access",
+      "capabilityAliases": [
+        "identity provider",
+        "iam",
+        "authentication",
+        "authorization"
+      ],
+      "provider": "gcp",
+      "productName": "Google Cloud IAM / Identity Platform",
+      "productFamily": "Identity",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Federation",
+        "workload identity",
+        "policy controls"
+      ],
+      "architectureConsequences": [
+        "Provider-native identity and access"
+      ],
+      "portabilityRisks": [
+        "Role and policy semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-IDENTITY",
+      "neutralCapability": "Identity and access",
+      "capabilityAliases": [
+        "identity provider",
+        "iam",
+        "authentication",
+        "authorization"
+      ],
+      "provider": "on-premises",
+      "productName": "Enterprise IdP / Keycloak / approved IAM platform",
+      "productFamily": "Identity",
+      "serviceModel": "enterprise-platform",
+      "requiredCharacteristics": [
+        "OIDC",
+        "SAML",
+        "workload identity integration",
+        "high availability"
+      ],
+      "architectureConsequences": [
+        "Enterprise-controlled identity platform"
+      ],
+      "portabilityRisks": [
+        "Operations and integration ownership remain with the enterprise"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-SECRETS",
+      "neutralCapability": "Secrets and key management",
+      "capabilityAliases": [
+        "secrets manager",
+        "kms",
+        "key vault",
+        "hsm"
+      ],
+      "provider": "portable",
+      "productName": "Secret-manager and KMS abstraction",
+      "productFamily": "Secrets and key management",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "envelope encryption",
+        "rotation",
+        "audit",
+        "external key custody"
+      ],
+      "architectureConsequences": [
+        "Separates key and secret contracts from providers"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-SECRETS",
+      "neutralCapability": "Secrets and key management",
+      "capabilityAliases": [
+        "secrets manager",
+        "kms",
+        "key vault",
+        "hsm"
+      ],
+      "provider": "aws",
+      "productName": "AWS Secrets Manager / KMS / CloudHSM",
+      "productFamily": "Secrets and key management",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Rotation",
+        "audit",
+        "managed keys",
+        "HSM option"
+      ],
+      "architectureConsequences": [
+        "Provider-managed secrets and cryptographic keys"
+      ],
+      "portabilityRisks": [
+        "Key policy and API semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-SECRETS",
+      "neutralCapability": "Secrets and key management",
+      "capabilityAliases": [
+        "secrets manager",
+        "kms",
+        "key vault",
+        "hsm"
+      ],
+      "provider": "azure",
+      "productName": "Azure Key Vault / Managed HSM",
+      "productFamily": "Secrets and key management",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Rotation",
+        "audit",
+        "managed HSM",
+        "private endpoints"
+      ],
+      "architectureConsequences": [
+        "Provider-managed secrets and key custody"
+      ],
+      "portabilityRisks": [
+        "Vault and access-policy semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-SECRETS",
+      "neutralCapability": "Secrets and key management",
+      "capabilityAliases": [
+        "secrets manager",
+        "kms",
+        "key vault",
+        "hsm"
+      ],
+      "provider": "gcp",
+      "productName": "Secret Manager / Cloud KMS / Cloud HSM",
+      "productFamily": "Secrets and key management",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "Rotation",
+        "audit",
+        "HSM protection",
+        "regional keys"
+      ],
+      "architectureConsequences": [
+        "Provider-managed secrets and keys"
+      ],
+      "portabilityRisks": [
+        "Key hierarchy and API semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-SECRETS",
+      "neutralCapability": "Secrets and key management",
+      "capabilityAliases": [
+        "secrets manager",
+        "kms",
+        "key vault",
+        "hsm"
+      ],
+      "provider": "on-premises",
+      "productName": "HashiCorp Vault / enterprise HSM",
+      "productFamily": "Secrets and key management",
+      "serviceModel": "enterprise-platform",
+      "requiredCharacteristics": [
+        "Rotation",
+        "audit",
+        "HSM integration",
+        "high availability"
+      ],
+      "architectureConsequences": [
+        "Enterprise-controlled key and secret platform"
+      ],
+      "portabilityRisks": [
+        "Operations, unseal and disaster recovery require enterprise ownership"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-OBSERVABILITY",
+      "neutralCapability": "Observability",
+      "capabilityAliases": [
+        "telemetry",
+        "monitoring",
+        "logging",
+        "tracing",
+        "metrics"
+      ],
+      "provider": "portable",
+      "productName": "OpenTelemetry-compatible observability capability",
+      "productFamily": "Observability",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "OTLP",
+        "metrics",
+        "logs",
+        "traces",
+        "SLO integration"
+      ],
+      "architectureConsequences": [
+        "Portable telemetry collection and semantic conventions"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-OBSERVABILITY",
+      "neutralCapability": "Observability",
+      "capabilityAliases": [
+        "telemetry",
+        "monitoring",
+        "logging",
+        "tracing",
+        "metrics"
+      ],
+      "provider": "aws",
+      "productName": "Amazon CloudWatch / X-Ray / Managed Prometheus",
+      "productFamily": "Observability",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "OTLP integration",
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "architectureConsequences": [
+        "Provider-managed telemetry and monitoring"
+      ],
+      "portabilityRisks": [
+        "Query language and retention configuration are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-OBSERVABILITY",
+      "neutralCapability": "Observability",
+      "capabilityAliases": [
+        "telemetry",
+        "monitoring",
+        "logging",
+        "tracing",
+        "metrics"
+      ],
+      "provider": "azure",
+      "productName": "Azure Monitor / Application Insights",
+      "productFamily": "Observability",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "OTLP integration",
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "architectureConsequences": [
+        "Provider-managed application and platform monitoring"
+      ],
+      "portabilityRisks": [
+        "Query and workspace semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-OBSERVABILITY",
+      "neutralCapability": "Observability",
+      "capabilityAliases": [
+        "telemetry",
+        "monitoring",
+        "logging",
+        "tracing",
+        "metrics"
+      ],
+      "provider": "gcp",
+      "productName": "Google Cloud Operations",
+      "productFamily": "Observability",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "OTLP integration",
+        "metrics",
+        "logs",
+        "traces"
+      ],
+      "architectureConsequences": [
+        "Provider-managed cloud operations telemetry"
+      ],
+      "portabilityRisks": [
+        "Query and retention semantics are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-OBSERVABILITY",
+      "neutralCapability": "Observability",
+      "capabilityAliases": [
+        "telemetry",
+        "monitoring",
+        "logging",
+        "tracing",
+        "metrics"
+      ],
+      "provider": "on-premises",
+      "productName": "OpenTelemetry / Prometheus / Grafana / approved SIEM",
+      "productFamily": "Observability",
+      "serviceModel": "self-managed",
+      "requiredCharacteristics": [
+        "OTLP",
+        "metrics",
+        "logs",
+        "traces",
+        "retention governance"
+      ],
+      "architectureConsequences": [
+        "Enterprise-controlled observability stack"
+      ],
+      "portabilityRisks": [
+        "Capacity, retention and upgrades are enterprise responsibilities"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-PORTABLE-NETWORK",
+      "neutralCapability": "Network and traffic management",
+      "capabilityAliases": [
+        "network",
+        "load balancer",
+        "firewall",
+        "dns",
+        "service mesh"
+      ],
+      "provider": "portable",
+      "productName": "Standards-based network and policy capability",
+      "productFamily": "Networking",
+      "serviceModel": "portable-standard",
+      "requiredCharacteristics": [
+        "segmentation",
+        "ingress/egress control",
+        "DNS",
+        "TLS",
+        "policy enforcement"
+      ],
+      "architectureConsequences": [
+        "Preserves network and trust-boundary requirements"
+      ],
+      "portabilityRisks": [],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-ASYNCAPI-SPEC",
+        "GH-OTEL"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AWS-NETWORK",
+      "neutralCapability": "Network and traffic management",
+      "capabilityAliases": [
+        "network",
+        "load balancer",
+        "firewall",
+        "dns",
+        "service mesh"
+      ],
+      "provider": "aws",
+      "productName": "Amazon VPC / ELB / Network Firewall / Route 53",
+      "productFamily": "Networking",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "segmentation",
+        "load balancing",
+        "firewall policy",
+        "DNS"
+      ],
+      "architectureConsequences": [
+        "Provider-managed network and traffic controls"
+      ],
+      "portabilityRisks": [
+        "Network constructs and policy APIs are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "GH-AWS-SERVERLESS-PATTERNS"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-AZURE-NETWORK",
+      "neutralCapability": "Network and traffic management",
+      "capabilityAliases": [
+        "network",
+        "load balancer",
+        "firewall",
+        "dns",
+        "service mesh"
+      ],
+      "provider": "azure",
+      "productName": "Azure Virtual Network / Application Gateway / Firewall / DNS",
+      "productFamily": "Networking",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "segmentation",
+        "load balancing",
+        "firewall policy",
+        "DNS"
+      ],
+      "architectureConsequences": [
+        "Provider-managed network and traffic controls"
+      ],
+      "portabilityRisks": [
+        "Network constructs and policy APIs are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-MICROSOFT-ARCH-CENTER",
+        "GH-AZURE-RESOURCE-MODULES"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-GCP-NETWORK",
+      "neutralCapability": "Network and traffic management",
+      "capabilityAliases": [
+        "network",
+        "load balancer",
+        "firewall",
+        "dns",
+        "service mesh"
+      ],
+      "provider": "gcp",
+      "productName": "Google VPC / Cloud Load Balancing / Firewall / Cloud DNS",
+      "productFamily": "Networking",
+      "serviceModel": "managed",
+      "requiredCharacteristics": [
+        "segmentation",
+        "load balancing",
+        "firewall policy",
+        "DNS"
+      ],
+      "architectureConsequences": [
+        "Provider-managed network and traffic controls"
+      ],
+      "portabilityRisks": [
+        "Network constructs and policy APIs are provider-specific"
+      ],
+      "sourceConnectorIds": [
+        "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    },
+    {
+      "id": "PPC-ONPREM-NETWORK",
+      "neutralCapability": "Network and traffic management",
+      "capabilityAliases": [
+        "network",
+        "load balancer",
+        "firewall",
+        "dns",
+        "service mesh"
+      ],
+      "provider": "on-premises",
+      "productName": "Enterprise network / load balancer / firewall / DNS platform",
+      "productFamily": "Networking",
+      "serviceModel": "enterprise-platform",
+      "requiredCharacteristics": [
+        "segmentation",
+        "load balancing",
+        "firewall policy",
+        "DNS",
+        "high availability"
+      ],
+      "architectureConsequences": [
+        "Enterprise-controlled network platform"
+      ],
+      "portabilityRisks": [
+        "Operations and policy lifecycle remain enterprise responsibilities"
+      ],
+      "sourceConnectorIds": [
+        "GH-CNCF-LANDSCAPE-GRAPH",
+        "GH-APACHE-CAMEL",
+        "GH-BACKSTAGE"
+      ],
+      "status": "approved-advisory",
+      "reviewedAt": "2026-07-11T00:00:00.000Z",
+      "reviewOwner": "AIW Provider Mapping Council"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "receipts": [
+    {
+      "id": "mind-feedback-2c8d5745-3320-48e3-beee-5fcbef1696cc",
+      "tenantId": "tenant-reference",
+      "projectId": "project-order-to-payment",
+      "branchId": "branch-main",
+      "stage": "applicationRealization",
+      "feedbackKind": "proposal-outcome",
+      "actionSemanticKey": "llm-governed:acceptance-signal",
+      "actionLabel": "Governed co-creation acceptance signal",
+      "authorityClass": "llm-proposed",
+      "outcome": "deferred",
+      "reason": "Requires curator review before it can influence future recommendations.",
+      "citedRecordIds": [],
+      "knowledgeReleaseId": "AKR-0.10.64-REFERENCE",
+      "modelTrace": {
+        "providerId": "local-openai",
+        "model": "acceptance-private-model",
+        "routeId": "architecture-reasoning:local-openai",
+        "requestFingerprint": "rc1068-api-test",
+        "latencyMs": 4,
+        "fallbackUsed": false,
+        "activeKnowledgeReleaseId": "AKR-0.10.64-REFERENCE"
+      },
+      "status": "converted-to-candidate",
+      "createdAt": "2026-07-13T13:26:14.316Z",
+      "curator": "reference-knowledge-curator",
+      "curationNote": "Stage this as a non-scoring candidate for independent evidence review.",
+      "reviewedAt": "2026-07-13T13:26:14.382Z"
+    }
+  ]
+}

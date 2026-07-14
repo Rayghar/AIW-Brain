@@ -1,0 +1,436 @@
+{
+  "version": "0.9.0",
+  "releaseId": "AIW-8.0",
+  "knowledgeReleaseId": "AKR-0.8.9",
+  "startedAt": "2026-07-02T23:12:02.801Z",
+  "completedAt": "2026-07-02T23:12:03.570Z",
+  "total": 12,
+  "passed": 12,
+  "failed": 0,
+  "selectedAlternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+  "alternatives": [
+    {
+      "id": "ALT-BALANCED-c4540889",
+      "name": "Balanced governed architecture · Service Layer",
+      "strategyId": "balanced",
+      "scorecard": {
+        "overall": 65.1,
+        "contextFit": 89.6,
+        "qualityFit": 39.2,
+        "resilience": 87,
+        "security": 53,
+        "simplicity": 53,
+        "operability": 78.5,
+        "deliveryFeasibility": 38.3,
+        "costEfficiency": 55,
+        "evidenceConfidence": 88.6
+      },
+      "patternIds": [
+        "PAT-SERVICE-LAYER",
+        "PAT-BOUNDED-CONTEXT",
+        "PAT-API-GATEWAY",
+        "TPL-TRANSACTIONAL-OUTBOX-TOPOLOGY",
+        "PAT-TRANSACTIONAL-OUTBOX"
+      ]
+    },
+    {
+      "id": "ALT-SIMPLICITY-FIRST-fe778375",
+      "name": "Simplicity and delivery first · Modular Monolith",
+      "strategyId": "simplicity-first",
+      "scorecard": {
+        "overall": 72.5,
+        "contextFit": 95,
+        "qualityFit": 58.8,
+        "resilience": 87,
+        "security": 53,
+        "simplicity": 87,
+        "operability": 79.5,
+        "deliveryFeasibility": 49.7,
+        "costEfficiency": 63,
+        "evidenceConfidence": 84
+      },
+      "patternIds": [
+        "PAT-MODULAR-MONOLITH",
+        "PAT-CLEAN-ARCHITECTURE",
+        "PAT-HEXAGONAL-ARCHITECTURE",
+        "TPL-MODULAR-MONOLITH-STARTER",
+        "PAT-SERVICE-LAYER"
+      ]
+    },
+    {
+      "id": "ALT-RESILIENCE-FIRST-9f091c75",
+      "name": "Resilience and continuity first · Circuit Breaker",
+      "strategyId": "resilience-first",
+      "scorecard": {
+        "overall": 78.9,
+        "contextFit": 98.2,
+        "qualityFit": 70,
+        "resilience": 100,
+        "security": 67,
+        "simplicity": 61,
+        "operability": 79.5,
+        "deliveryFeasibility": 41,
+        "costEfficiency": 55,
+        "evidenceConfidence": 84
+      },
+      "patternIds": [
+        "PAT-CIRCUIT-BREAKER",
+        "PAT-FAULT-ISOLATION",
+        "PAT-DISASTER-RECOVERY",
+        "PAT-RETRY-WITH-BACKOFF",
+        "PAT-CELL-BASED-ARCHITECTURE"
+      ]
+    },
+    {
+      "id": "ALT-SECURITY-FIRST-af677a84",
+      "name": "Security and regulatory control first · Zero-Trust Service Boundary",
+      "strategyId": "security-first",
+      "scorecard": {
+        "overall": 69.9,
+        "contextFit": 92.8,
+        "qualityFit": 0,
+        "resilience": 48,
+        "security": 100,
+        "simplicity": 60,
+        "operability": 79.5,
+        "deliveryFeasibility": 40.7,
+        "costEfficiency": 63,
+        "evidenceConfidence": 100
+      },
+      "patternIds": [
+        "TPL-ZERO-TRUST-SERVICE-BOUNDARY",
+        "PAT-ZERO-TRUST",
+        "PAT-LEAST-PRIVILEGE",
+        "PAT-SECURE-DEFAULTS",
+        "PAT-AUDIT-TRAIL"
+      ]
+    },
+    {
+      "id": "ALT-COST-FIRST-109cabd1",
+      "name": "Cost-efficient architecture · Serverless Architecture",
+      "strategyId": "cost-first",
+      "scorecard": {
+        "overall": 65.6,
+        "contextFit": 70.8,
+        "qualityFit": 42,
+        "resilience": 100,
+        "security": 53,
+        "simplicity": 63,
+        "operability": 79.5,
+        "deliveryFeasibility": 41.7,
+        "costEfficiency": 70,
+        "evidenceConfidence": 78.6
+      },
+      "patternIds": [
+        "PAT-SERVERLESS-ARCHITECTURE",
+        "PAT-AUTOSCALING",
+        "PAT-FUNCTION-AS-A-SERVICE",
+        "PAT-RATE-LIMITING",
+        "PAT-SERVICE-LAYER"
+      ]
+    }
+  ],
+  "simulations": [
+    {
+      "id": "SIMR-6bac4ed9",
+      "scenario": "Nominal operating load",
+      "type": "baseline",
+      "outcome": {
+        "availabilityPercent": 99.83,
+        "p95LatencyMs": 45,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 7847,
+        "operationalLoadScore": 27.3,
+        "securityExposureScore": 23.8,
+        "deliveryRiskScore": 41.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-3c35ab29",
+      "scenario": "Five-times demand spike",
+      "type": "load-spike",
+      "outcome": {
+        "availabilityPercent": 98.744,
+        "p95LatencyMs": 228,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 18833,
+        "operationalLoadScore": 42.7,
+        "securityExposureScore": 23.8,
+        "deliveryRiskScore": 41.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-b3f86510",
+      "scenario": "Critical dependency degradation",
+      "type": "dependency-failure",
+      "outcome": {
+        "availabilityPercent": 92.366,
+        "p95LatencyMs": 92,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 9220,
+        "operationalLoadScore": 27.3,
+        "securityExposureScore": 23.8,
+        "deliveryRiskScore": 41.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-e8c9ee41",
+      "scenario": "Primary-region outage",
+      "type": "region-failure",
+      "outcome": {
+        "availabilityPercent": 90.029,
+        "p95LatencyMs": 50,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 7847,
+        "operationalLoadScore": 47.3,
+        "securityExposureScore": 23.8,
+        "deliveryRiskScore": 41.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-5a16fd6f",
+      "scenario": "Intermittent connectivity",
+      "type": "connectivity-loss",
+      "outcome": {
+        "availabilityPercent": 57.207,
+        "p95LatencyMs": 36,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 7298,
+        "operationalLoadScore": 27.3,
+        "securityExposureScore": 23.8,
+        "deliveryRiskScore": 41.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-9eb03ecd",
+      "scenario": "Elevated hostile traffic",
+      "type": "security-incident",
+      "outcome": {
+        "availabilityPercent": 99.83,
+        "p95LatencyMs": 116,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 10593,
+        "operationalLoadScore": 27.3,
+        "securityExposureScore": 37.5,
+        "deliveryRiskScore": 41.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-26797613",
+      "scenario": "Reduced engineering capacity",
+      "type": "team-capacity-reduction",
+      "outcome": {
+        "availabilityPercent": 99.83,
+        "p95LatencyMs": 45,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 7847,
+        "operationalLoadScore": 52.1,
+        "securityExposureScore": 23.8,
+        "deliveryRiskScore": 68.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-cf0e32d9",
+      "scenario": "Thirty-percent budget reduction",
+      "type": "cost-pressure",
+      "outcome": {
+        "availabilityPercent": 99.83,
+        "p95LatencyMs": 45,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 7494,
+        "operationalLoadScore": 27.3,
+        "securityExposureScore": 23.8,
+        "deliveryRiskScore": 51.8
+      },
+      "confidence": 76,
+      "findingCount": 1
+    },
+    {
+      "id": "SIMR-74392cc9",
+      "scenario": "Primary AI model provider outage",
+      "type": "model-provider-outage",
+      "outcome": {
+        "availabilityPercent": 4.992,
+        "p95LatencyMs": 45,
+        "recoveryTimeMinutes": 1,
+        "recoveryPointMinutes": 0,
+        "throughputCapacityMultiplier": 3.1,
+        "estimatedMonthlyCost": 7847,
+        "operationalLoadScore": 27.3,
+        "securityExposureScore": 38.8,
+        "deliveryRiskScore": 41.3
+      },
+      "confidence": 76,
+      "findingCount": 1
+    }
+  ],
+  "artifactCount": 13,
+  "checks": [
+    {
+      "name": "Design-brief readiness and explicit gaps",
+      "passed": true,
+      "detail": {
+        "completenessScore": 100,
+        "synthesisReady": true,
+        "gaps": 0,
+        "contradictions": 0
+      }
+    },
+    {
+      "name": "Governed multi-alternative synthesis",
+      "passed": true,
+      "detail": {
+        "alternatives": 5,
+        "distinctPatternSets": 5,
+        "mode": "deterministic",
+        "knowledgeReleaseId": "AKR-0.8.9"
+      }
+    },
+    {
+      "name": "Discovery-only evidence excluded from synthesis authority",
+      "passed": true,
+      "detail": {
+        "evidenceConnectorIds": 17,
+        "discoveryLeakage": []
+      }
+    },
+    {
+      "name": "Pareto comparison and decision questions",
+      "passed": true,
+      "detail": {
+        "pareto": [
+          "ALT-BALANCED-c4540889",
+          "ALT-SIMPLICITY-FIRST-fe778375",
+          "ALT-RESILIENCE-FIRST-9f091c75",
+          "ALT-SECURITY-FIRST-af677a84",
+          "ALT-COST-FIRST-109cabd1"
+        ],
+        "dominated": [],
+        "dimensions": 10
+      }
+    },
+    {
+      "name": "Deterministic scenario simulation coverage",
+      "passed": true,
+      "detail": {
+        "scenarios": 9,
+        "modelVersions": [
+          "aiw-simulation-1.0"
+        ],
+        "confidenceRange": [
+          76,
+          76
+        ]
+      }
+    },
+    {
+      "name": "Simulation repeatability",
+      "passed": true,
+      "detail": {
+        "repeatable": true
+      }
+    },
+    {
+      "name": "Canonical-model application and lineage",
+      "passed": true,
+      "detail": {
+        "originalRevision": 1,
+        "appliedRevision": 2,
+        "selectedPatterns": 5,
+        "decisions": 1
+      }
+    },
+    {
+      "name": "Governed decision and conformance handoff",
+      "passed": true,
+      "detail": {
+        "status": "accepted",
+        "simulations": 9,
+        "conformanceTargets": [
+          "generic"
+        ],
+        "artifactPaths": [
+          "synthesis/decision-package.json",
+          "synthesis/alternative-project.json",
+          "docs/adr/synthesis-decision.md",
+          "docs/simulation-report.md",
+          "diagrams/synthesis-alternative.mmd",
+          "architecture/calm.json",
+          "simulation/results.json"
+        ]
+      }
+    },
+    {
+      "name": "Complete synthesis artifact package",
+      "passed": true,
+      "detail": {
+        "files": 13,
+        "requiredArtifacts": [
+          "synthesis/run.json",
+          "synthesis/alternative-project.json",
+          "synthesis/decision-package.json",
+          "docs/adr/synthesis-decision.md",
+          "docs/simulation-report.md",
+          "diagrams/synthesis-alternative.mmd",
+          "architecture/calm.json",
+          "simulation/results.json"
+        ],
+        "missing": [],
+        "checksums": 13
+      }
+    },
+    {
+      "name": "PostgreSQL persistence and tenant RLS contract",
+      "passed": true,
+      "detail": {
+        "tables": 5,
+        "rowLevelSecurity": true
+      }
+    },
+    {
+      "name": "Configurable LLM remains an explanation boundary",
+      "passed": true,
+      "detail": {
+        "providerNeutralGateway": true,
+        "structuralAuthority": "deterministic engine"
+      }
+    },
+    {
+      "name": "Sprint 8.0 API and conformance handoff surface",
+      "passed": true,
+      "detail": {
+        "routes": 5
+      }
+    }
+  ]
+}

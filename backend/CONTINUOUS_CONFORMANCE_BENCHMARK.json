@@ -1,0 +1,69 @@
+{
+  "releaseId": "AIW-0.10.0-alpha.3",
+  "sprint": "8.7.3",
+  "generatedAt": "2026-07-03T20:07:57.701Z",
+  "passed": 12,
+  "total": 12,
+  "checks": [
+    {
+      "id": "873-01-version",
+      "passed": true,
+      "detail": "root and all workspaces retain the 8.7.3 lineage or a verified descendant"
+    },
+    {
+      "id": "873-02-plan",
+      "passed": true,
+      "detail": "project-scoped, release-bound conformance plan exists"
+    },
+    {
+      "id": "873-03-fitness",
+      "passed": true,
+      "detail": "pattern, traceability and topology controls generate reviewable fitness artifacts"
+    },
+    {
+      "id": "873-04-unverified",
+      "passed": true,
+      "detail": "missing execution evidence is explicit and cannot be treated as pass"
+    },
+    {
+      "id": "873-05-assessment",
+      "passed": true,
+      "detail": "CI evidence and runtime drift are reconciled into one assessment"
+    },
+    {
+      "id": "873-06-visual",
+      "passed": true,
+      "detail": "interactive visual intended-versus-actual conformance graph is implemented"
+    },
+    {
+      "id": "873-07-remediation",
+      "passed": true,
+      "detail": "remediation is reviewable and cannot silently mutate architecture or repositories"
+    },
+    {
+      "id": "873-08-api",
+      "passed": true,
+      "detail": "conformance and release APIs are exposed"
+    },
+    {
+      "id": "873-09-store",
+      "passed": true,
+      "detail": "offline-capable workbench state and actions are wired"
+    },
+    {
+      "id": "873-10-navigation",
+      "passed": true,
+      "detail": "role-focused navigation exposes the conformance workspace"
+    },
+    {
+      "id": "873-11-tests",
+      "passed": true,
+      "detail": "engine and API regression tests cover truthful evidence, visual modelling and human approval"
+    },
+    {
+      "id": "873-12-lineage",
+      "passed": true,
+      "detail": "approved knowledge and 8.7.2 enterprise-runtime lineage are preserved"
+    }
+  ]
+}

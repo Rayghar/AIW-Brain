@@ -1,0 +1,14 @@
+flowchart LR
+  actor-customer["Customer"]
+  logical-order-domain["Order Domain"]
+  logical-order-service["Order Service"]
+  logical-payment-service["Payment Service"]
+  deployable-order-api["Order API"]
+  deployable-payment-worker["Payment Worker"]
+  logical-relational-store["Relational Data Service"]
+  physical-postgres["Managed PostgreSQL"]
+  actor-customer -->|Places order| logical-order-service
+  logical-order-service -->|Order submitted| logical-payment-service
+  deployable-order-api -->|realizes| logical-order-service
+  deployable-payment-worker -->|realizes| logical-payment-service
+  physical-postgres -->|mapsTo| logical-relational-store

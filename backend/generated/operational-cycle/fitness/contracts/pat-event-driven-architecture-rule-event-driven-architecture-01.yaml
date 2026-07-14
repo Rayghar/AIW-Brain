@@ -1,0 +1,7 @@
+# Conformance for Event-Driven Architecture: Preserve the accepted Event-Driven Architecture intent in implementation and deployment evidence.
+kind: asyncapi
+pattern: PAT-EVENT-DRIVEN-ARCHITECTURE
+checks:
+  - require-versioned-contract
+  - require-owner
+  - require-observability

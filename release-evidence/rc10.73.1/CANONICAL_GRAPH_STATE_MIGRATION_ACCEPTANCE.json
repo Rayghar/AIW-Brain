@@ -1,0 +1,47 @@
+{
+  "release": "0.10.0-rc.10.73.1",
+  "releaseLine": "rc.10.73.1",
+  "capability": "canonical-graph-primary-state-migration",
+  "status": "implemented-and-focused-verification-passed",
+  "authority": {
+    "brainDirectMutationAllowed": false,
+    "humanMigrationRequired": true,
+    "requiredPermission": "project.edit",
+    "revisionCheckRequired": true,
+    "freshGraphFingerprintRequired": true,
+    "stateAuthorityMode": "graph-primary"
+  },
+  "canonicalState": {
+    "kinds": [
+      "requirements",
+      "evidence",
+      "interfaces",
+      "decisions",
+      "findings",
+      "risks"
+    ],
+    "completeCanonicalValuesStored": true,
+    "compatibilityProjectionReconstructedFromGraph": true,
+    "nativeStateCommandImplemented": true,
+    "emptyAggregateReplacementSupported": true,
+    "staleCommandRejected": true
+  },
+  "compatibility": {
+    "legacyWriteAdapterImplemented": true,
+    "legacyWriteCountRecorded": true,
+    "parallelAuthorityAllowed": false,
+    "adapterRetirementComplete": false
+  },
+  "persistenceAdapters": [
+    "memory",
+    "postgresql",
+    "mongodb"
+  ],
+  "migrationBoundary": {
+    "canonicalStateMigrationImplemented": true,
+    "wholeProductGraphPrimaryMigrationComplete": false,
+    "legacyCompatibilityProjectionRetained": true,
+    "parallelAuthorityRetirementComplete": false
+  },
+  "productionAccepted": false
+}

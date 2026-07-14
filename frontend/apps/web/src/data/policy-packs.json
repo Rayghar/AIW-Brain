@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "description": "Jurisdiction policy packs (D3) as governed overlays. Matching regulatoryJurisdictions in project context surfaces pack obligations through the kernel. Content status: candidate — legal review supersedes.",
+  "packs": [
+    { "id": "PACK-GDPR", "match": ["gdpr", "eu"], "obligations": ["Record lawful basis per personal-data flow", "Design data-subject erasure paths per store", "Pin EU residency or document transfer mechanism per binding"], "evidence": ["SRC-INTERNAL-POLICY-GDPR"] },
+    { "id": "PACK-NDPR", "match": ["ndpr", "nigeria", "ng"], "obligations": ["Register processing purposes per NDPR", "Verify in-country residency or NITDA-compliant transfer per binding", "Appoint data-protection contact in the decision record"], "evidence": ["SRC-INTERNAL-POLICY-NDPR"] },
+    { "id": "PACK-POPIA", "match": ["popia", "south africa", "za"], "obligations": ["Document processing conditions per POPIA section 11", "Cross-border transfer justification per binding"], "evidence": ["SRC-INTERNAL-POLICY-POPIA"] },
+    { "id": "PACK-PCI", "match": ["pci", "pci-dss", "card"], "obligations": ["Segment cardholder-data environment explicitly on the canvas", "No prohibited storage of sensitive authentication data — model the tokenization boundary", "Annotate every CDE-crossing edge with encryption in transit"], "evidence": ["SRC-INTERNAL-POLICY-PCI"] },
+    { "id": "PACK-HIPAA", "match": ["hipaa", "phi", "health"], "obligations": ["Mark PHI stores and require audit logging capability", "Business-associate boundary documented per external binding"], "evidence": ["SRC-INTERNAL-POLICY-HIPAA"] }
+  ]
+}

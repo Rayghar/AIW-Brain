@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
+const root = process.cwd();
+const failures = [];
+const exists = (p) => fs.existsSync(path.join(root, p));
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+const check = (label, ok) => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}`); if (!ok) failures.push(label); };
+check('new Admin Control Plane feature workspace exists', exists('apps/web/src/features/admin/AdminControlPlaneWorkspace.tsx'));
+const app = read('apps/web/src/App.tsx');
+check('App routes admin to feature workspace', /AdminControlPlaneWorkspace/.test(app));
+check('App no longer imports old admin components folder', !/components\/admin|AdminConsoleWorkspace|AdminControlCenter/.test(app));
+check('old AdminConsoleWorkspace component removed', !exists('apps/web/src/components/AdminConsoleWorkspace.tsx'));
+check('old AdminControlCenter component removed', !exists('apps/web/src/components/AdminControlCenter.tsx'));
+check('old components/admin folder removed', !exists('apps/web/src/components/admin'));
+const adminFeature = read('apps/web/src/features/admin/AdminControlPlaneWorkspace.tsx');
+check('Admin feature avoids window.prompt patch workflow', !/window\.prompt/.test(adminFeature));
+check('Admin feature supports model route CRUD/test', /deleteRoute|testRoute|registerRoute|toggleRoute/.test(adminFeature));
+check('Admin feature supports repository connector governance', /registerConnector|testConnector|writeEnabled/.test(adminFeature));
+check('Admin feature supports knowledge source governance', /registerSource|changeSourcePosture/.test(adminFeature));
+check('@aiw/admin package has typed control-plane store', /createAdminControlPlaneStore|ModelRoute|KnowledgeSourceRegistration|RepositoryConnectorRegistration/.test(read('packages/admin/src/index.ts')));
+check('API exposes extracted admin configuration routes', exists('apps/api/src/routes/adminConfigurationRoutes.ts'));
+check('app.ts no longer owns configuration-summary route', !/app\.get\('\/api\/admin\/configuration-summary'/.test(read('apps/api/src/app.ts')));
+check('Admin routes expose control-plane snapshot', /control-plane/.test(read('apps/api/src/routes/adminConfigurationRoutes.ts')) || /control-plane\/snapshot/.test(read('apps/api/src/routes/adminControlPlaneRoutes.ts')));
+check('route permission coverage report script still exists', exists('scripts/route-permission-coverage.mjs'));
+console.log(failures.length ? `\nSPRINT 8.8.1 GATE: ${failures.length} violation(s)` : '\nSPRINT 8.8.1 GATE: PASSED');
+process.exit(failures.length ? 1 : 0);

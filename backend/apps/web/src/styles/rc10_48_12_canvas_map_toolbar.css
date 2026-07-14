@@ -1,0 +1,202 @@
+/* rc.10.48.12 — compact studio map header and non-stretch map actions */
+.journey-intelligence-map {
+  overflow: hidden;
+  border-radius: 18px !important;
+}
+.journey-intelligence-map__toolbar {
+  display: grid !important;
+  grid-template-columns: minmax(260px, 1fr) minmax(420px, auto) !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 14px 16px !important;
+  min-height: unset !important;
+}
+.journey-intelligence-map__title {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.journey-intelligence-map__title h3 {
+  margin: 0 !important;
+  font-size: clamp(1.02rem, .92rem + .28vw, 1.3rem) !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.02em;
+}
+.journey-intelligence-map__title p {
+  margin: 0 !important;
+  max-width: 760px !important;
+  color: #93adbb !important;
+  font-size: .78rem !important;
+  line-height: 1.45 !important;
+}
+.journey-intelligence-map__controls {
+  justify-self: end;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+.journey-intelligence-map__metrics {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.journey-intelligence-map__metrics span,
+.journey-intelligence-map__metrics small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(148, 163, 184, .16);
+  background: rgba(2, 8, 23, .5);
+  color: #c7dfea;
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: .72rem;
+  white-space: nowrap;
+}
+.journey-intelligence-map__metrics strong { color: #e8fffb; }
+.journey-intelligence-map__metrics small {
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #78a7a2;
+}
+.journey-intelligence-map__actions,
+.journey-intelligence-static-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  max-width: min(780px, 100%);
+}
+.map-action,
+.journey-intelligence-map__status button {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: max-content !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  border-radius: 999px !important;
+  padding: 7px 10px !important;
+  border: 1px solid rgba(125, 211, 252, .22) !important;
+  background: rgba(5, 18, 31, .72) !important;
+  color: #cdeffa !important;
+  font-size: .72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .01em !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+}
+.map-action:hover:not(:disabled) {
+  border-color: rgba(94, 234, 212, .45) !important;
+  color: #ecfffb !important;
+  background: rgba(13, 49, 63, .86) !important;
+  transform: translateY(-1px);
+}
+.map-action--primary {
+  border-color: rgba(94, 234, 212, .45) !important;
+  background: linear-gradient(135deg, rgba(20, 184, 166, .32), rgba(14, 116, 144, .22)) !important;
+  color: #e8fffb !important;
+}
+.map-action.is-on {
+  border-color: rgba(94, 234, 212, .55) !important;
+  background: rgba(20, 184, 166, .22) !important;
+  color: #bafff2 !important;
+}
+.map-action:disabled {
+  opacity: .42 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+.journey-intelligence-map__canvas {
+  border-top: 1px solid rgba(94, 234, 212, .14);
+  min-height: 230px !important;
+}
+.journey-intelligence-map.is-compact .journey-intelligence-map__canvas {
+  height: clamp(180px, 24vh, 300px) !important;
+}
+.journey-intelligence-map.is-expanded .journey-intelligence-map__canvas {
+  height: clamp(380px, 52vh, 660px) !important;
+}
+.journey-intelligence-static-preview {
+  min-height: 100%;
+  display: grid !important;
+  grid-template-columns: minmax(220px, .9fr) minmax(320px, 1.45fr) auto !important;
+  gap: 14px !important;
+  align-items: center !important;
+  padding: 16px 18px !important;
+}
+.journey-intelligence-static-preview > div:first-child {
+  min-width: 0;
+  border: 1px solid rgba(94, 234, 212, .12);
+  border-radius: 16px;
+  background: rgba(2, 12, 23, .42);
+  padding: 12px 13px;
+}
+.journey-intelligence-static-preview > div:first-child strong { color: #f1fffb; }
+.journey-intelligence-static-preview > div:first-child p { margin: 5px 0 0; color: #9db6c2; font-size: .78rem; line-height: 1.45; }
+.journey-intelligence-static-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+  gap: 8px !important;
+  min-width: 0;
+}
+.journey-intelligence-static-grid button {
+  min-width: 0 !important;
+  padding: 9px 10px !important;
+  border-radius: 14px !important;
+  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+}
+.journey-intelligence-static-grid button span { min-width: 0; }
+.journey-intelligence-static-grid button strong,
+.journey-intelligence-static-grid button small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.journey-intelligence-static-actions {
+  justify-content: flex-start;
+  align-self: center;
+  min-width: 145px;
+}
+.journey-intelligence-map > footer {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 8px !important;
+  padding: 9px 14px !important;
+}
+.journey-intelligence-map > footer span {
+  border: 1px solid rgba(148, 163, 184, .12);
+  background: rgba(2, 8, 23, .38);
+  border-radius: 999px;
+  padding: 5px 8px;
+}
+.page-heading,
+.canvas-toolbar {
+  border-radius: 18px !important;
+  padding: 15px 18px !important;
+  min-height: unset !important;
+}
+.page-heading > div:first-child,
+.canvas-toolbar > div:first-child { min-width: 0; }
+.page-heading h2,
+.canvas-toolbar h2 { font-size: clamp(1.25rem, 1.05rem + .45vw, 1.72rem) !important; }
+.page-heading p,
+.canvas-toolbar p { max-width: 780px !important; }
+@media (max-width: 1180px) {
+  .journey-intelligence-map__toolbar { grid-template-columns: 1fr !important; }
+  .journey-intelligence-map__controls { justify-self: stretch; justify-items: start; }
+  .journey-intelligence-map__metrics,
+  .journey-intelligence-map__actions { justify-content: flex-start; }
+  .journey-intelligence-static-preview { grid-template-columns: 1fr !important; }
+  .journey-intelligence-static-actions { min-width: 0; }
+}

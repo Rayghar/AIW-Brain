@@ -1,0 +1,16 @@
+{
+  "version": "0.10.0-rc.10.42",
+  "generatedAt": "2026-07-07T14:03:40.693Z",
+  "checks": {
+    "qualityDriversDeduplicated": true,
+    "dedicatedWorkersTab": true,
+    "dedicatedKnowledgeGovernanceTab": true,
+    "tableSearchFilterSortExport": true,
+    "browserAcceptanceSpec": true
+  },
+  "browserAcceptance": {
+    "runnableFrom": "frontend/apps/web",
+    "command": "npx playwright test tests/aiw-browser-acceptance.spec.ts",
+    "prerequisite": "Run npm install -D @playwright/test && npx playwright install chromium if Playwright is not already installed in your local environment."
+  }
+}

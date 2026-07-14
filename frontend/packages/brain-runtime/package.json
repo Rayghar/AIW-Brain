@@ -1,0 +1,16 @@
+{
+  "name": "@aiw/brain-runtime",
+  "version": "0.10.0-rc.10.73.6",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json",
+    "typecheck": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "*"
+  }
+}

@@ -1,0 +1,2 @@
+# Conformance for Retrieval-Augmented Generation: Preserve the accepted Retrieval-Augmented Generation intent in implementation and deployment evidence.
+# Parameters: {"pattern":"Retrieval-Augmented Generation","property":"architectureIntent","expected":"RETRIEVAL-AUGMENTED-GENERATION"}

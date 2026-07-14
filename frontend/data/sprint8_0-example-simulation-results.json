@@ -1,0 +1,588 @@
+[
+  {
+    "id": "SIMR-6bac4ed9",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-BASELINE",
+      "name": "Nominal operating load",
+      "type": "baseline",
+      "description": "Expected production demand and normal dependency health.",
+      "parameters": {
+        "trafficMultiplier": 1,
+        "dependencyAvailabilityPercent": 99.9,
+        "networkAvailabilityPercent": 99.9,
+        "teamCapacityPercent": 100
+      },
+      "requiredCapabilities": [
+        "observability",
+        "capacity-management"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.561Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 99.83,
+      "p95LatencyMs": 45,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 7847,
+      "operationalLoadScore": 27.3,
+      "securityExposureScore": 23.8,
+      "deliveryRiskScore": 41.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": 0,
+      "p95LatencyMs": 0,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": 0,
+      "operationalLoadScore": 0,
+      "securityExposureScore": 0,
+      "deliveryRiskScore": 0
+    },
+    "findings": [
+      {
+        "id": "SIMF-f80392e7",
+        "severity": "info",
+        "category": "availability",
+        "message": "No critical threshold was breached in this deterministic scenario.",
+        "mitigation": "Validate the result through workload tests, chaos experiments and provider-specific cost modelling.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-3c35ab29",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-LOAD-SPIKE",
+      "name": "Five-times demand spike",
+      "type": "load-spike",
+      "description": "A sudden demand increase tests elasticity, buffering and back-pressure.",
+      "parameters": {
+        "trafficMultiplier": 5,
+        "dependencyAvailabilityPercent": 99.5
+      },
+      "requiredCapabilities": [
+        "autoscaling",
+        "load-leveling",
+        "rate-limiting"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.561Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 98.744,
+      "p95LatencyMs": 228,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 18833,
+      "operationalLoadScore": 42.7,
+      "securityExposureScore": 23.8,
+      "deliveryRiskScore": 41.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": -1.086,
+      "p95LatencyMs": 183,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": 10986,
+      "operationalLoadScore": 15.4,
+      "securityExposureScore": 0,
+      "deliveryRiskScore": 0
+    },
+    "findings": [
+      {
+        "id": "SIMF-b09876f9",
+        "severity": "warning",
+        "category": "availability",
+        "message": "Projected availability falls to 98.744%.",
+        "mitigation": "Introduce or strengthen isolation, failover, replication, timeout and recovery mechanisms.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-b3f86510",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-DEPENDENCY-FAILURE",
+      "name": "Critical dependency degradation",
+      "type": "dependency-failure",
+      "description": "A downstream dependency becomes slow and intermittently unavailable.",
+      "parameters": {
+        "trafficMultiplier": 1.5,
+        "dependencyAvailabilityPercent": 70
+      },
+      "requiredCapabilities": [
+        "circuit-breaker",
+        "timeout",
+        "retry",
+        "fallback"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.562Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 92.366,
+      "p95LatencyMs": 92,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 9220,
+      "operationalLoadScore": 27.3,
+      "securityExposureScore": 23.8,
+      "deliveryRiskScore": 41.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": -7.464,
+      "p95LatencyMs": 47,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": 1373,
+      "operationalLoadScore": 0,
+      "securityExposureScore": 0,
+      "deliveryRiskScore": 0
+    },
+    "findings": [
+      {
+        "id": "SIMF-81bf8d72",
+        "severity": "critical",
+        "category": "availability",
+        "message": "Projected availability falls to 92.366%.",
+        "mitigation": "Introduce or strengthen isolation, failover, replication, timeout and recovery mechanisms.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-e8c9ee41",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-REGION-FAILURE",
+      "name": "Primary-region outage",
+      "type": "region-failure",
+      "description": "The primary hosting region is unavailable.",
+      "parameters": {
+        "regionLossPercent": 100,
+        "dependencyAvailabilityPercent": 92
+      },
+      "requiredCapabilities": [
+        "multi-region",
+        "replication",
+        "failover"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.562Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 90.029,
+      "p95LatencyMs": 50,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 7847,
+      "operationalLoadScore": 47.3,
+      "securityExposureScore": 23.8,
+      "deliveryRiskScore": 41.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": -9.801,
+      "p95LatencyMs": 5,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": 0,
+      "operationalLoadScore": 20,
+      "securityExposureScore": 0,
+      "deliveryRiskScore": 0
+    },
+    "findings": [
+      {
+        "id": "SIMF-72ed5ef1",
+        "severity": "critical",
+        "category": "availability",
+        "message": "Projected availability falls to 90.029%.",
+        "mitigation": "Introduce or strengthen isolation, failover, replication, timeout and recovery mechanisms.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-5a16fd6f",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-CONNECTIVITY-LOSS",
+      "name": "Intermittent connectivity",
+      "type": "connectivity-loss",
+      "description": "Network availability drops for mobile, edge or field users.",
+      "parameters": {
+        "networkAvailabilityPercent": 55,
+        "trafficMultiplier": 0.8
+      },
+      "requiredCapabilities": [
+        "offline-first",
+        "synchronization",
+        "idempotency"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.562Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 57.207,
+      "p95LatencyMs": 36,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 7298,
+      "operationalLoadScore": 27.3,
+      "securityExposureScore": 23.8,
+      "deliveryRiskScore": 41.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": -42.623,
+      "p95LatencyMs": -9,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": -549,
+      "operationalLoadScore": 0,
+      "securityExposureScore": 0,
+      "deliveryRiskScore": 0
+    },
+    "findings": [
+      {
+        "id": "SIMF-341b6f10",
+        "severity": "critical",
+        "category": "availability",
+        "message": "Projected availability falls to 57.207%.",
+        "mitigation": "Introduce or strengthen isolation, failover, replication, timeout and recovery mechanisms.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-9eb03ecd",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-SECURITY-INCIDENT",
+      "name": "Elevated hostile traffic",
+      "type": "security-incident",
+      "description": "Hostile requests and credential abuse increase sharply.",
+      "parameters": {
+        "maliciousRequestPercent": 25,
+        "trafficMultiplier": 2
+      },
+      "requiredCapabilities": [
+        "zero-trust",
+        "rate-limiting",
+        "audit",
+        "threat-detection"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.562Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 99.83,
+      "p95LatencyMs": 116,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 10593,
+      "operationalLoadScore": 27.3,
+      "securityExposureScore": 37.5,
+      "deliveryRiskScore": 41.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": 0,
+      "p95LatencyMs": 71,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": 2746,
+      "operationalLoadScore": 0,
+      "securityExposureScore": 13.7,
+      "deliveryRiskScore": 0
+    },
+    "findings": [
+      {
+        "id": "SIMF-8554890b",
+        "severity": "info",
+        "category": "availability",
+        "message": "No critical threshold was breached in this deterministic scenario.",
+        "mitigation": "Validate the result through workload tests, chaos experiments and provider-specific cost modelling.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-26797613",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-TEAM-REDUCTION",
+      "name": "Reduced engineering capacity",
+      "type": "team-capacity-reduction",
+      "description": "Delivery and operations capacity falls during a critical change period.",
+      "parameters": {
+        "teamCapacityPercent": 55
+      },
+      "requiredCapabilities": [
+        "automation",
+        "platform-engineering",
+        "simplicity"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.562Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 99.83,
+      "p95LatencyMs": 45,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 7847,
+      "operationalLoadScore": 52.1,
+      "securityExposureScore": 23.8,
+      "deliveryRiskScore": 68.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": 0,
+      "p95LatencyMs": 0,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": 0,
+      "operationalLoadScore": 24.8,
+      "securityExposureScore": 0,
+      "deliveryRiskScore": 27
+    },
+    "findings": [
+      {
+        "id": "SIMF-d5d7fe98",
+        "severity": "warning",
+        "category": "delivery",
+        "message": "Delivery risk score reaches 68.3.",
+        "mitigation": "Adopt a transition architecture and stage the highest-risk capabilities.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-cf0e32d9",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-COST-PRESSURE",
+      "name": "Thirty-percent budget reduction",
+      "type": "cost-pressure",
+      "description": "The run-cost envelope is reduced while service targets remain unchanged.",
+      "parameters": {
+        "budgetReductionPercent": 30
+      },
+      "requiredCapabilities": [
+        "cost-allocation",
+        "autoscaling",
+        "rightsizing"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.562Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 99.83,
+      "p95LatencyMs": 45,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 7494,
+      "operationalLoadScore": 27.3,
+      "securityExposureScore": 23.8,
+      "deliveryRiskScore": 51.8
+    },
+    "baselineDelta": {
+      "availabilityPercent": 0,
+      "p95LatencyMs": 0,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": -353,
+      "operationalLoadScore": 0,
+      "securityExposureScore": 0,
+      "deliveryRiskScore": 10.5
+    },
+    "findings": [
+      {
+        "id": "SIMF-ef8737b3",
+        "severity": "info",
+        "category": "availability",
+        "message": "No critical threshold was breached in this deterministic scenario.",
+        "mitigation": "Validate the result through workload tests, chaos experiments and provider-specific cost modelling.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  },
+  {
+    "id": "SIMR-74392cc9",
+    "runId": "SYN-68ea6634",
+    "alternativeId": "ALT-RESILIENCE-FIRST-9f091c75",
+    "scenario": {
+      "id": "SIM-MODEL-OUTAGE",
+      "name": "Primary AI model provider outage",
+      "type": "model-provider-outage",
+      "description": "The primary model provider is unavailable or prohibited for the workload.",
+      "parameters": {
+        "providerAvailabilityPercent": 0
+      },
+      "requiredCapabilities": [
+        "model-routing",
+        "fallback",
+        "local-model",
+        "data-classification"
+      ]
+    },
+    "simulatedAt": "2026-07-02T23:12:03.562Z",
+    "deterministicModelVersion": "aiw-simulation-1.0",
+    "outcome": {
+      "availabilityPercent": 4.992,
+      "p95LatencyMs": 45,
+      "recoveryTimeMinutes": 1,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 3.1,
+      "estimatedMonthlyCost": 7847,
+      "operationalLoadScore": 27.3,
+      "securityExposureScore": 38.8,
+      "deliveryRiskScore": 41.3
+    },
+    "baselineDelta": {
+      "availabilityPercent": -94.838,
+      "p95LatencyMs": 0,
+      "recoveryTimeMinutes": 0,
+      "recoveryPointMinutes": 0,
+      "throughputCapacityMultiplier": 0,
+      "estimatedMonthlyCost": 0,
+      "operationalLoadScore": 0,
+      "securityExposureScore": 15,
+      "deliveryRiskScore": 0
+    },
+    "findings": [
+      {
+        "id": "SIMF-389e7fcd",
+        "severity": "critical",
+        "category": "availability",
+        "message": "Projected availability falls to 4.992%.",
+        "mitigation": "Introduce or strengthen isolation, failover, replication, timeout and recovery mechanisms.",
+        "relatedPatternIds": [
+          "PAT-CIRCUIT-BREAKER",
+          "PAT-FAULT-ISOLATION",
+          "PAT-DISASTER-RECOVERY",
+          "PAT-RETRY-WITH-BACKOFF",
+          "PAT-CELL-BASED-ARCHITECTURE"
+        ]
+      }
+    ],
+    "assumptions": [
+      "This is a deterministic comparative model, not a capacity guarantee.",
+      "Provider topology, workload distributions and empirical benchmarks should replace default coefficients before final approval."
+    ],
+    "confidence": 76
+  }
+]

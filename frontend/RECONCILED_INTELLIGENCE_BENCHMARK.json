@@ -1,0 +1,47 @@
+{
+  "releaseId": "AIW-0.9.6",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "baseline": "AIW-0.9.2",
+  "selectiveSource": "AIW-0.9.5",
+  "checks": {
+    "integratedJourneyRetained": true,
+    "serverAuthoritativeProjectsRetained": true,
+    "persistentCoArchitectRetained": true,
+    "collaborationRuntimeRetained": true,
+    "tenantModelAdministrationRetained": true,
+    "structuredEnterpriseBriefMerged": true,
+    "selectedObjectStageAdvisorMerged": true,
+    "releaseBoundRetrieval": true,
+    "unknownCitationRejection": true,
+    "humanGatedKnowledgePromotion": true,
+    "productionKnowledgeTargetEnforced": true,
+    "pendingCalibrationProtected": true,
+    "productionWebDeploymentRetained": true,
+    "durableKnowledgeCuration": true,
+    "releaseIdentityCoherent": true,
+    "legacyRegressionSuitesPassed": true
+  },
+  "expectedGateResult": "16/16",
+  "verification": {
+    "automatedTests": {
+      "engine": 83,
+      "artifacts": 2,
+      "api": 78,
+      "total": 163
+    },
+    "intelligenceGate": "8/8",
+    "integratedJourneyGate": "13/13",
+    "reconciliationGate": "16/16",
+    "knowledgeProductionGate": {
+      "approved": 328,
+      "target": 200,
+      "violations": 0
+    },
+    "legacyRegression": {
+      "sprint7_9": "10/10",
+      "sprint8_0": "12/12",
+      "sprint8_0_1": "8/8",
+      "sprint8_0_2": "13/13"
+    }
+  }
+}

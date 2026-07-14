@@ -1,0 +1,216 @@
+{
+  "registryId": "AIW-TRUSTED-SOURCES",
+  "version": "0.8.6",
+  "sources": [
+    {
+      "id": "SRC-C4",
+      "title": "C4 model for visualising software architecture",
+      "publisher": "C4 Model / Simon Brown",
+      "sourceType": "official-method",
+      "authorityLevel": 5,
+      "url": "https://c4model.com/",
+      "scopeTags": [
+        "viewpoints",
+        "software-system",
+        "container",
+        "component",
+        "deployment"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 180,
+      "ingestionMode": "manual-reviewed"
+    },
+    {
+      "id": "SRC-ISO-42010",
+      "title": "ISO/IEC/IEEE 42010:2022 Architecture Description",
+      "publisher": "ISO/IEC/IEEE",
+      "sourceType": "standard",
+      "authorityLevel": 5,
+      "url": "https://www.iso.org/standard/74393.html",
+      "scopeTags": [
+        "architecture-description",
+        "stakeholder",
+        "concern",
+        "viewpoint",
+        "model-kind"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 365,
+      "ingestionMode": "manual-reviewed"
+    },
+    {
+      "id": "SRC-SEI-QAW",
+      "title": "SEI Quality Attribute Workshop",
+      "publisher": "Carnegie Mellon Software Engineering Institute",
+      "sourceType": "research-method",
+      "authorityLevel": 5,
+      "url": "https://www.sei.cmu.edu/library/the-sei-quality-attribute-workshop/",
+      "scopeTags": [
+        "quality-attributes",
+        "scenarios",
+        "stakeholders",
+        "design-drivers"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 365,
+      "ingestionMode": "manual-reviewed"
+    },
+    {
+      "id": "SRC-AWS-WAF",
+      "title": "AWS Well-Architected Framework",
+      "publisher": "Amazon Web Services",
+      "sourceType": "vendor-guidance",
+      "authorityLevel": 4,
+      "url": "https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html",
+      "scopeTags": [
+        "reliability",
+        "security",
+        "performance",
+        "cost",
+        "operations",
+        "sustainability",
+        "cloud"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 90,
+      "ingestionMode": "allowlisted-refresh"
+    },
+    {
+      "id": "SRC-AZURE-AAC",
+      "title": "Azure Architecture Center and Cloud Design Patterns",
+      "publisher": "Microsoft",
+      "sourceType": "vendor-guidance",
+      "authorityLevel": 4,
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/",
+      "scopeTags": [
+        "patterns",
+        "anti-patterns",
+        "reliability",
+        "integration",
+        "data",
+        "cloud"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 90,
+      "ingestionMode": "allowlisted-refresh"
+    },
+    {
+      "id": "SRC-GCP-WAF",
+      "title": "Google Cloud Well-Architected Framework",
+      "publisher": "Google Cloud",
+      "sourceType": "vendor-guidance",
+      "authorityLevel": 4,
+      "url": "https://docs.cloud.google.com/architecture/framework",
+      "scopeTags": [
+        "reliability",
+        "security",
+        "performance",
+        "cost",
+        "operations",
+        "sustainability",
+        "cloud"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 90,
+      "ingestionMode": "allowlisted-refresh"
+    },
+    {
+      "id": "SRC-OWASP-ASVS",
+      "title": "OWASP Application Security Verification Standard",
+      "publisher": "OWASP Foundation",
+      "sourceType": "open-standard",
+      "authorityLevel": 5,
+      "url": "https://owasp.org/www-project-application-security-verification-standard/",
+      "scopeTags": [
+        "security",
+        "authentication",
+        "authorization",
+        "data-protection",
+        "application-security"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 180,
+      "ingestionMode": "allowlisted-refresh"
+    },
+    {
+      "id": "SRC-NIST-SSDF",
+      "title": "NIST Secure Software Development Framework SP 800-218",
+      "publisher": "National Institute of Standards and Technology",
+      "sourceType": "standard",
+      "authorityLevel": 5,
+      "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+      "scopeTags": [
+        "secure-development",
+        "governance",
+        "supply-chain",
+        "verification"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 180,
+      "ingestionMode": "manual-reviewed"
+    },
+    {
+      "id": "SRC-OPENAPI",
+      "title": "OpenAPI Specification",
+      "publisher": "OpenAPI Initiative / Linux Foundation",
+      "sourceType": "specification",
+      "authorityLevel": 5,
+      "url": "https://spec.openapis.org/oas/",
+      "scopeTags": [
+        "api",
+        "http",
+        "interface-contract",
+        "versioning"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 90,
+      "ingestionMode": "allowlisted-refresh"
+    },
+    {
+      "id": "SRC-OTEL",
+      "title": "OpenTelemetry Specification",
+      "publisher": "Cloud Native Computing Foundation",
+      "sourceType": "specification",
+      "authorityLevel": 5,
+      "url": "https://opentelemetry.io/docs/specs/",
+      "scopeTags": [
+        "observability",
+        "tracing",
+        "metrics",
+        "logs",
+        "telemetry"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 90,
+      "ingestionMode": "allowlisted-refresh"
+    },
+    {
+      "id": "SRC-INTERNAL-PRINCIPLES",
+      "title": "AIW Architecture Principles Baseline",
+      "publisher": "Architecture Knowledge Council",
+      "sourceType": "internal-standard",
+      "authorityLevel": 4,
+      "url": "internal://architecture-principles",
+      "scopeTags": [
+        "traceability",
+        "governance",
+        "hybrid-architecture",
+        "human-approval"
+      ],
+      "status": "approved",
+      "reviewedAt": "2026-07-02",
+      "refreshCadenceDays": 180,
+      "ingestionMode": "manual-reviewed"
+    }
+  ]
+}

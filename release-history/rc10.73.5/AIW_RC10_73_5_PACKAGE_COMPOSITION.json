@@ -1,0 +1,110 @@
+{
+  "release": "0.10.0-rc.10.73.5",
+  "knowledgeRelease": "AKR-0.10.73.5",
+  "generatedAt": "2026-07-14T21:00:00Z",
+  "totalFiles": 3330,
+  "totalBytes": 112498593,
+  "topLevel": {
+    ".gitignore": {
+      "files": 1,
+      "bytes": 176
+    },
+    "AIW_RC10_73_5_IMPLEMENTATION_TRACEABILITY.md": {
+      "files": 1,
+      "bytes": 1404
+    },
+    "AIW_RC10_73_5_KNOWN_LIMITATIONS.md": {
+      "files": 1,
+      "bytes": 1793
+    },
+    "AIW_RC10_73_5_RELEASE_REPORT.md": {
+      "files": 1,
+      "bytes": 2915
+    },
+    "AIW_RC10_73_5_TEST_EVIDENCE.json": {
+      "files": 1,
+      "bytes": 8258
+    },
+    "CAPABILITY_STATE.json": {
+      "files": 1,
+      "bytes": 13827
+    },
+    "README.md": {
+      "files": 1,
+      "bytes": 1387
+    },
+    "RELEASE_MANIFEST.json": {
+      "files": 1,
+      "bytes": 6484
+    },
+    "RUN_WINDOWS.md": {
+      "files": 1,
+      "bytes": 943
+    },
+    "backend": {
+      "files": 1712,
+      "bytes": 47759746
+    },
+    "benchmarks": {
+      "files": 1,
+      "bytes": 2730
+    },
+    "data": {
+      "files": 7,
+      "bytes": 838159
+    },
+    "deploy": {
+      "files": 6,
+      "bytes": 12351
+    },
+    "docs": {
+      "files": 17,
+      "bytes": 97783
+    },
+    "frontend": {
+      "files": 1394,
+      "bytes": 40327496
+    },
+    "knowledge-repository": {
+      "files": 23,
+      "bytes": 14015064
+    },
+    "release-evidence": {
+      "files": 59,
+      "bytes": 3066551
+    },
+    "release-history": {
+      "files": 88,
+      "bytes": 6222723
+    },
+    "run-backend.ps1": {
+      "files": 1,
+      "bytes": 156
+    },
+    "run-frontend.ps1": {
+      "files": 1,
+      "bytes": 165
+    },
+    "scripts": {
+      "files": 9,
+      "bytes": 113826
+    },
+    "tests": {
+      "files": 3,
+      "bytes": 4656
+    }
+  },
+  "excluded": [
+    "node_modules",
+    "git metadata",
+    "private keys",
+    "transient caches",
+    "live repository snapshots not produced"
+  ],
+  "acceptanceBoundary": {
+    "controlledPilot": true,
+    "liveGithubRefresh": false,
+    "productionScoring": false,
+    "production": false
+  }
+}

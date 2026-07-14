@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "1.0",
+  "release": "0.10.0-rc.10.71.1",
+  "generatedAt": "2026-07-13T12:08:11Z",
+  "baselineComparison": {
+    "baseline": "0.10.0-rc.10.71.0",
+    "baselineFiles": 1844,
+    "currentFiles": 1860,
+    "addedFiles": 31,
+    "removedFiles": 15,
+    "changedFiles": 96
+  },
+  "builds": {
+    "backendPackagesApiWorker": "passed",
+    "frontendPackagesProductionBundle": "passed",
+    "bundleWarning": "product-shell and artifact core remain above the configured warning threshold"
+  },
+  "tests": {
+    "backend": {
+      "files": 7,
+      "tests": 30,
+      "passed": 30
+    },
+    "browser": {
+      "projects": [
+        "chromium-desktop",
+        "chromium-laptop"
+      ],
+      "tests": 2,
+      "passed": 2,
+      "horizontalOverflowPx": 0,
+      "meaningfulErrors": 0
+    }
+  },
+  "gates": {
+    "authorityStructural": {
+      "passed": 39,
+      "total": 39
+    },
+    "authorityStatic": {
+      "passed": 7,
+      "total": 7
+    },
+    "sharedSourceParity": {
+      "passed": 8,
+      "total": 8
+    },
+    "backendInternalDependencies": "passed",
+    "frontendInternalDependencies": "passed",
+    "backendReleaseIntegrity": "passed",
+    "frontendReleaseIntegrity": "passed",
+    "backendCredentialScan": "passed",
+    "frontendCredentialScan": "passed"
+  },
+  "productionDependencyAudit": {
+    "backend": {
+      "total": 0
+    },
+    "frontend": {
+      "total": 0
+    }
+  },
+  "authorityMetrics": {
+    "baselineArchitectureRouteDirectGatewayCalls": 9,
+    "currentArchitectureRouteDirectGatewayCalls": 0,
+    "baselineUnclassifiedGatewayFiles": 8,
+    "currentUnclassifiedGatewayFiles": 0,
+    "baselineFrontendLocalLogicFiles": 3,
+    "currentFrontendLocalLogicFiles": 0,
+    "baselineLegacySignalModules": 8,
+    "currentLegacySignalModules": 0,
+    "orchestratedMethods": [
+      "workspaceProjection",
+      "analyseBrief",
+      "distillRequirements",
+      "systemContextCandidate",
+      "stageCoAuthor",
+      "livingCanvasActions",
+      "explainRanking",
+      "stageAdvice",
+      "askSol",
+      "synthesize",
+      "assistedAudit"
+    ],
+    "brainReceiptReferences": 60,
+    "contextGraphNodeKinds": 15,
+    "contextGraphEdgeKinds": 16
+  },
+  "evidenceFiles": [
+    "AIW_RC10_71_1_INTELLIGENCE_AUTHORITY_AUDIT.json",
+    "AIW_RC10_71_1_INTELLIGENCE_AUTHORITY_AUDIT.md",
+    "frontend/release-evidence/rc10.71.1/acceptance-contact-sheet.png"
+  ],
+  "notProven": [
+    "live provider invocation in packaging environment",
+    "enterprise KMS signing",
+    "complete 396-requirement matrix",
+    "independent expert superiority",
+    "controlled enterprise pilot"
+  ],
+  "finalVerification": {
+    "backendCombinedVerify": "passed",
+    "frontendBuild": "passed",
+    "frontendAuthorityGate": "passed-39-of-39",
+    "frontendChromiumAcceptance": "passed-2-of-2",
+    "frontendInternalDependencies": "passed",
+    "frontendReleaseIntegrity": "passed",
+    "packageCleanup": "installed-dependencies-test-results-playwright-reports-logs-and-historical-screenshots-removed"
+  }
+}

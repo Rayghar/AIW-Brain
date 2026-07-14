@@ -1,0 +1,1957 @@
+{
+  "report": {
+    "id": "pilot-evaluation-v0.10.0-rc.1",
+    "releaseId": "AIW-0.10.0-rc.1",
+    "version": "0.10.0-rc.1",
+    "sprint": "8.7.5-pilot-evaluation-release-hardening",
+    "generatedAt": "2026-07-03T19:18:08.770Z",
+    "portfolioId": "portfolio-digital-channels",
+    "scenarios": [
+      {
+        "scenarioId": "pilot-digital-banking",
+        "name": "Digital banking architecture journey",
+        "kind": "digital-banking",
+        "projectIds": [
+          "project-order-to-payment"
+        ],
+        "score": 80,
+        "threshold": 84,
+        "readiness": "conditional",
+        "metricScores": [
+          {
+            "id": "scenario-coverage",
+            "label": "Scenario project coverage",
+            "score": 100,
+            "threshold": 100,
+            "status": "passed",
+            "rationale": "The pilot scenario resolves to tenant-scoped architecture project(s).",
+            "evidence": [
+              "project-order-to-payment"
+            ]
+          },
+          {
+            "id": "traceability",
+            "label": "Architecture traceability",
+            "score": 100,
+            "threshold": 72,
+            "status": "passed",
+            "rationale": "Objectives, drivers, decisions, nodes and relationships provide a navigable reasoning chain.",
+            "evidence": [
+              "ArchitectureProject.nodes",
+              "ArchitectureProject.edges",
+              "qualityPriorities",
+              "decisions"
+            ]
+          },
+          {
+            "id": "visual-modelling",
+            "label": "Interactive visual modelling coverage",
+            "score": 100,
+            "threshold": 76,
+            "status": "passed",
+            "rationale": "The pilot maps to node-and-relationship visual models rather than text-only assessment.",
+            "evidence": [
+              "portfolio-visual-portfolio-digital-channels",
+              "React Flow workspace projection"
+            ]
+          },
+          {
+            "id": "governance-readiness",
+            "label": "Governance readiness",
+            "score": 0,
+            "threshold": 58,
+            "status": "failed",
+            "rationale": "Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          },
+          {
+            "id": "standards-and-portfolio",
+            "label": "Enterprise standards and portfolio posture",
+            "score": 89,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Standards, risk and compliance are assessed across the portfolio.",
+            "evidence": [
+              "technology standardization",
+              "risk heatmap",
+              "reference compliance"
+            ]
+          },
+          {
+            "id": "continuous-conformance",
+            "label": "Realization and conformance controls",
+            "score": 100,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Conformance controls can be generated; controls remain unverified until evidence arrives.",
+            "evidence": [
+              "CTRL-94f1a151-78848e21",
+              "CTRL-18244077-c87e2f67",
+              "CTRL-634c901d-377a2f55",
+              "CTRL-57ecc3b1-017f275d",
+              "CTRL-ce6ece49-ec440b21"
+            ]
+          },
+          {
+            "id": "offline-determinism",
+            "label": "Offline deterministic operation",
+            "score": 96,
+            "threshold": 90,
+            "status": "passed",
+            "rationale": "The reference pilot can execute without external model or cloud service authority.",
+            "evidence": [
+              "AKR-0.8.8",
+              "deterministic engine"
+            ]
+          },
+          {
+            "id": "criticality-sensitivity",
+            "label": "Criticality-sensitive pilot pressure",
+            "score": 83,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Mission-critical scenarios are scored more strictly than low-risk pilots.",
+            "evidence": [
+              "mission-critical"
+            ]
+          }
+        ],
+        "blockers": [
+          "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+        ],
+        "followUpActions": [
+          "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "Run target-environment CI/runtime evidence before production acceptance."
+        ],
+        "evidence": [
+          "intelligence trace",
+          "architecture health",
+          "stage approvals",
+          "project-order-to-payment",
+          "ArchitectureProject.nodes",
+          "ArchitectureProject.edges",
+          "qualityPriorities",
+          "decisions",
+          "portfolio-visual-portfolio-digital-channels",
+          "React Flow workspace projection",
+          "stageApprovals",
+          "architecture decisions",
+          "technology standardization",
+          "risk heatmap",
+          "reference compliance",
+          "CTRL-94f1a151-78848e21",
+          "CTRL-18244077-c87e2f67",
+          "CTRL-634c901d-377a2f55",
+          "CTRL-57ecc3b1-017f275d",
+          "CTRL-ce6ece49-ec440b21",
+          "AKR-0.8.8",
+          "deterministic engine",
+          "mission-critical"
+        ]
+      },
+      {
+        "scenarioId": "pilot-payments",
+        "name": "Payment processing resilience and controls",
+        "kind": "payment-processing",
+        "projectIds": [
+          "project-order-to-payment"
+        ],
+        "score": 80,
+        "threshold": 86,
+        "readiness": "conditional",
+        "metricScores": [
+          {
+            "id": "scenario-coverage",
+            "label": "Scenario project coverage",
+            "score": 100,
+            "threshold": 100,
+            "status": "passed",
+            "rationale": "The pilot scenario resolves to tenant-scoped architecture project(s).",
+            "evidence": [
+              "project-order-to-payment"
+            ]
+          },
+          {
+            "id": "traceability",
+            "label": "Architecture traceability",
+            "score": 100,
+            "threshold": 72,
+            "status": "passed",
+            "rationale": "Objectives, drivers, decisions, nodes and relationships provide a navigable reasoning chain.",
+            "evidence": [
+              "ArchitectureProject.nodes",
+              "ArchitectureProject.edges",
+              "qualityPriorities",
+              "decisions"
+            ]
+          },
+          {
+            "id": "visual-modelling",
+            "label": "Interactive visual modelling coverage",
+            "score": 100,
+            "threshold": 76,
+            "status": "passed",
+            "rationale": "The pilot maps to node-and-relationship visual models rather than text-only assessment.",
+            "evidence": [
+              "portfolio-visual-portfolio-digital-channels",
+              "React Flow workspace projection"
+            ]
+          },
+          {
+            "id": "governance-readiness",
+            "label": "Governance readiness",
+            "score": 0,
+            "threshold": 58,
+            "status": "failed",
+            "rationale": "Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          },
+          {
+            "id": "standards-and-portfolio",
+            "label": "Enterprise standards and portfolio posture",
+            "score": 89,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Standards, risk and compliance are assessed across the portfolio.",
+            "evidence": [
+              "technology standardization",
+              "risk heatmap",
+              "reference compliance"
+            ]
+          },
+          {
+            "id": "continuous-conformance",
+            "label": "Realization and conformance controls",
+            "score": 100,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Conformance controls can be generated; controls remain unverified until evidence arrives.",
+            "evidence": [
+              "CTRL-94f1a151-78848e21",
+              "CTRL-18244077-c87e2f67",
+              "CTRL-634c901d-377a2f55",
+              "CTRL-57ecc3b1-017f275d",
+              "CTRL-ce6ece49-ec440b21"
+            ]
+          },
+          {
+            "id": "offline-determinism",
+            "label": "Offline deterministic operation",
+            "score": 96,
+            "threshold": 90,
+            "status": "passed",
+            "rationale": "The reference pilot can execute without external model or cloud service authority.",
+            "evidence": [
+              "AKR-0.8.8",
+              "deterministic engine"
+            ]
+          },
+          {
+            "id": "criticality-sensitivity",
+            "label": "Criticality-sensitive pilot pressure",
+            "score": 83,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Mission-critical scenarios are scored more strictly than low-risk pilots.",
+            "evidence": [
+              "mission-critical"
+            ]
+          }
+        ],
+        "blockers": [
+          "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+        ],
+        "followUpActions": [
+          "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "Run target-environment CI/runtime evidence before production acceptance."
+        ],
+        "evidence": [
+          "conformance plan",
+          "unverified-state honesty",
+          "remediation preview",
+          "project-order-to-payment",
+          "ArchitectureProject.nodes",
+          "ArchitectureProject.edges",
+          "qualityPriorities",
+          "decisions",
+          "portfolio-visual-portfolio-digital-channels",
+          "React Flow workspace projection",
+          "stageApprovals",
+          "architecture decisions",
+          "technology standardization",
+          "risk heatmap",
+          "reference compliance",
+          "CTRL-94f1a151-78848e21",
+          "CTRL-18244077-c87e2f67",
+          "CTRL-634c901d-377a2f55",
+          "CTRL-57ecc3b1-017f275d",
+          "CTRL-ce6ece49-ec440b21",
+          "AKR-0.8.8",
+          "deterministic engine",
+          "mission-critical"
+        ]
+      },
+      {
+        "scenarioId": "pilot-commerce",
+        "name": "Commerce and partner API modernization",
+        "kind": "ecommerce",
+        "projectIds": [
+          "project-order-to-payment",
+          "project-customer-identity"
+        ],
+        "score": 82,
+        "threshold": 80,
+        "readiness": "conditional",
+        "metricScores": [
+          {
+            "id": "scenario-coverage",
+            "label": "Scenario project coverage",
+            "score": 100,
+            "threshold": 100,
+            "status": "passed",
+            "rationale": "The pilot scenario resolves to tenant-scoped architecture project(s).",
+            "evidence": [
+              "project-order-to-payment",
+              "project-customer-identity"
+            ]
+          },
+          {
+            "id": "traceability",
+            "label": "Architecture traceability",
+            "score": 100,
+            "threshold": 72,
+            "status": "passed",
+            "rationale": "Objectives, drivers, decisions, nodes and relationships provide a navigable reasoning chain.",
+            "evidence": [
+              "ArchitectureProject.nodes",
+              "ArchitectureProject.edges",
+              "qualityPriorities",
+              "decisions"
+            ]
+          },
+          {
+            "id": "visual-modelling",
+            "label": "Interactive visual modelling coverage",
+            "score": 100,
+            "threshold": 76,
+            "status": "passed",
+            "rationale": "The pilot maps to node-and-relationship visual models rather than text-only assessment.",
+            "evidence": [
+              "portfolio-visual-portfolio-digital-channels",
+              "React Flow workspace projection"
+            ]
+          },
+          {
+            "id": "governance-readiness",
+            "label": "Governance readiness",
+            "score": 0,
+            "threshold": 58,
+            "status": "failed",
+            "rationale": "Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          },
+          {
+            "id": "standards-and-portfolio",
+            "label": "Enterprise standards and portfolio posture",
+            "score": 89,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Standards, risk and compliance are assessed across the portfolio.",
+            "evidence": [
+              "technology standardization",
+              "risk heatmap",
+              "reference compliance"
+            ]
+          },
+          {
+            "id": "continuous-conformance",
+            "label": "Realization and conformance controls",
+            "score": 100,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Conformance controls can be generated; controls remain unverified until evidence arrives.",
+            "evidence": [
+              "CTRL-94f1a151-78848e21",
+              "CTRL-18244077-c87e2f67",
+              "CTRL-634c901d-377a2f55",
+              "CTRL-57ecc3b1-017f275d",
+              "CTRL-ce6ece49-ec440b21"
+            ]
+          },
+          {
+            "id": "offline-determinism",
+            "label": "Offline deterministic operation",
+            "score": 96,
+            "threshold": 90,
+            "status": "passed",
+            "rationale": "The reference pilot can execute without external model or cloud service authority.",
+            "evidence": [
+              "AKR-0.8.8",
+              "deterministic engine"
+            ]
+          },
+          {
+            "id": "criticality-sensitivity",
+            "label": "Criticality-sensitive pilot pressure",
+            "score": 83,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Mission-critical scenarios are scored more strictly than low-risk pilots.",
+            "evidence": [
+              "high"
+            ]
+          }
+        ],
+        "blockers": [
+          "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+        ],
+        "followUpActions": [
+          "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "Run target-environment CI/runtime evidence before production acceptance."
+        ],
+        "evidence": [
+          "portfolio visual model",
+          "standards report",
+          "migration waves",
+          "project-order-to-payment",
+          "project-customer-identity",
+          "ArchitectureProject.nodes",
+          "ArchitectureProject.edges",
+          "qualityPriorities",
+          "decisions",
+          "portfolio-visual-portfolio-digital-channels",
+          "React Flow workspace projection",
+          "stageApprovals",
+          "architecture decisions",
+          "technology standardization",
+          "risk heatmap",
+          "reference compliance",
+          "CTRL-94f1a151-78848e21",
+          "CTRL-18244077-c87e2f67",
+          "CTRL-634c901d-377a2f55",
+          "CTRL-57ecc3b1-017f275d",
+          "CTRL-ce6ece49-ec440b21",
+          "AKR-0.8.8",
+          "deterministic engine",
+          "high"
+        ]
+      },
+      {
+        "scenarioId": "pilot-saas",
+        "name": "SaaS platform tenant isolation",
+        "kind": "saas-platform",
+        "projectIds": [
+          "project-order-to-payment"
+        ],
+        "score": 82,
+        "threshold": 82,
+        "readiness": "conditional",
+        "metricScores": [
+          {
+            "id": "scenario-coverage",
+            "label": "Scenario project coverage",
+            "score": 100,
+            "threshold": 100,
+            "status": "passed",
+            "rationale": "The pilot scenario resolves to tenant-scoped architecture project(s).",
+            "evidence": [
+              "project-order-to-payment"
+            ]
+          },
+          {
+            "id": "traceability",
+            "label": "Architecture traceability",
+            "score": 100,
+            "threshold": 72,
+            "status": "passed",
+            "rationale": "Objectives, drivers, decisions, nodes and relationships provide a navigable reasoning chain.",
+            "evidence": [
+              "ArchitectureProject.nodes",
+              "ArchitectureProject.edges",
+              "qualityPriorities",
+              "decisions"
+            ]
+          },
+          {
+            "id": "visual-modelling",
+            "label": "Interactive visual modelling coverage",
+            "score": 100,
+            "threshold": 76,
+            "status": "passed",
+            "rationale": "The pilot maps to node-and-relationship visual models rather than text-only assessment.",
+            "evidence": [
+              "portfolio-visual-portfolio-digital-channels",
+              "React Flow workspace projection"
+            ]
+          },
+          {
+            "id": "governance-readiness",
+            "label": "Governance readiness",
+            "score": 0,
+            "threshold": 58,
+            "status": "failed",
+            "rationale": "Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          },
+          {
+            "id": "standards-and-portfolio",
+            "label": "Enterprise standards and portfolio posture",
+            "score": 89,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Standards, risk and compliance are assessed across the portfolio.",
+            "evidence": [
+              "technology standardization",
+              "risk heatmap",
+              "reference compliance"
+            ]
+          },
+          {
+            "id": "continuous-conformance",
+            "label": "Realization and conformance controls",
+            "score": 100,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Conformance controls can be generated; controls remain unverified until evidence arrives.",
+            "evidence": [
+              "CTRL-94f1a151-78848e21",
+              "CTRL-18244077-c87e2f67",
+              "CTRL-634c901d-377a2f55",
+              "CTRL-57ecc3b1-017f275d",
+              "CTRL-ce6ece49-ec440b21"
+            ]
+          },
+          {
+            "id": "offline-determinism",
+            "label": "Offline deterministic operation",
+            "score": 96,
+            "threshold": 90,
+            "status": "passed",
+            "rationale": "The reference pilot can execute without external model or cloud service authority.",
+            "evidence": [
+              "AKR-0.8.8",
+              "deterministic engine"
+            ]
+          },
+          {
+            "id": "criticality-sensitivity",
+            "label": "Criticality-sensitive pilot pressure",
+            "score": 83,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Mission-critical scenarios are scored more strictly than low-risk pilots.",
+            "evidence": [
+              "high"
+            ]
+          }
+        ],
+        "blockers": [
+          "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+        ],
+        "followUpActions": [
+          "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "Run target-environment CI/runtime evidence before production acceptance."
+        ],
+        "evidence": [
+          "runtime acceptance report",
+          "security findings",
+          "audit trace",
+          "project-order-to-payment",
+          "ArchitectureProject.nodes",
+          "ArchitectureProject.edges",
+          "qualityPriorities",
+          "decisions",
+          "portfolio-visual-portfolio-digital-channels",
+          "React Flow workspace projection",
+          "stageApprovals",
+          "architecture decisions",
+          "technology standardization",
+          "risk heatmap",
+          "reference compliance",
+          "CTRL-94f1a151-78848e21",
+          "CTRL-18244077-c87e2f67",
+          "CTRL-634c901d-377a2f55",
+          "CTRL-57ecc3b1-017f275d",
+          "CTRL-ce6ece49-ec440b21",
+          "AKR-0.8.8",
+          "deterministic engine",
+          "high"
+        ]
+      },
+      {
+        "scenarioId": "pilot-data-platform",
+        "name": "Data platform and analytics modernization",
+        "kind": "data-platform",
+        "projectIds": [
+          "project-commerce-analytics"
+        ],
+        "score": 74,
+        "threshold": 78,
+        "readiness": "conditional",
+        "metricScores": [
+          {
+            "id": "scenario-coverage",
+            "label": "Scenario project coverage",
+            "score": 100,
+            "threshold": 100,
+            "status": "passed",
+            "rationale": "The pilot scenario resolves to tenant-scoped architecture project(s).",
+            "evidence": [
+              "project-commerce-analytics"
+            ]
+          },
+          {
+            "id": "traceability",
+            "label": "Architecture traceability",
+            "score": 65,
+            "threshold": 72,
+            "status": "warning",
+            "rationale": "Objectives, drivers, decisions, nodes and relationships provide a navigable reasoning chain.",
+            "evidence": [
+              "ArchitectureProject.nodes",
+              "ArchitectureProject.edges",
+              "qualityPriorities",
+              "decisions"
+            ]
+          },
+          {
+            "id": "visual-modelling",
+            "label": "Interactive visual modelling coverage",
+            "score": 100,
+            "threshold": 76,
+            "status": "passed",
+            "rationale": "The pilot maps to node-and-relationship visual models rather than text-only assessment.",
+            "evidence": [
+              "portfolio-visual-portfolio-digital-channels",
+              "React Flow workspace projection"
+            ]
+          },
+          {
+            "id": "governance-readiness",
+            "label": "Governance readiness",
+            "score": 0,
+            "threshold": 58,
+            "status": "failed",
+            "rationale": "Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          },
+          {
+            "id": "standards-and-portfolio",
+            "label": "Enterprise standards and portfolio posture",
+            "score": 84,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Standards, risk and compliance are assessed across the portfolio.",
+            "evidence": [
+              "technology standardization",
+              "risk heatmap",
+              "reference compliance"
+            ]
+          },
+          {
+            "id": "continuous-conformance",
+            "label": "Realization and conformance controls",
+            "score": 68,
+            "threshold": 70,
+            "status": "warning",
+            "rationale": "Conformance controls can be generated; controls remain unverified until evidence arrives.",
+            "evidence": [
+              "CTRL-5dc016c7-559f27c7",
+              "CTRL-e8c3004d-2f8e68ed",
+              "CTRL-33c79db5-7054a8f1",
+              "CTRL-16e80a10-ce8dd026",
+              "CTRL-ae3c947d-b22f9981"
+            ]
+          },
+          {
+            "id": "offline-determinism",
+            "label": "Offline deterministic operation",
+            "score": 96,
+            "threshold": 90,
+            "status": "passed",
+            "rationale": "The reference pilot can execute without external model or cloud service authority.",
+            "evidence": [
+              "AKR-0.8.8",
+              "deterministic engine"
+            ]
+          },
+          {
+            "id": "criticality-sensitivity",
+            "label": "Criticality-sensitive pilot pressure",
+            "score": 91,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Mission-critical scenarios are scored more strictly than low-risk pilots.",
+            "evidence": [
+              "high"
+            ]
+          }
+        ],
+        "blockers": [
+          "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+        ],
+        "followUpActions": [
+          "Improve architecture traceability before production pilot.",
+          "Improve realization and conformance controls before production pilot.",
+          "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "Run target-environment CI/runtime evidence before production acceptance."
+        ],
+        "evidence": [
+          "standards findings",
+          "compliance report",
+          "reuse candidates",
+          "project-commerce-analytics",
+          "ArchitectureProject.nodes",
+          "ArchitectureProject.edges",
+          "qualityPriorities",
+          "decisions",
+          "portfolio-visual-portfolio-digital-channels",
+          "React Flow workspace projection",
+          "stageApprovals",
+          "architecture decisions",
+          "technology standardization",
+          "risk heatmap",
+          "reference compliance",
+          "CTRL-5dc016c7-559f27c7",
+          "CTRL-e8c3004d-2f8e68ed",
+          "CTRL-33c79db5-7054a8f1",
+          "CTRL-16e80a10-ce8dd026",
+          "CTRL-ae3c947d-b22f9981",
+          "AKR-0.8.8",
+          "deterministic engine",
+          "high"
+        ]
+      },
+      {
+        "scenarioId": "pilot-low-connectivity",
+        "name": "Low-connectivity deterministic operation",
+        "kind": "low-connectivity",
+        "projectIds": [
+          "project-order-to-payment",
+          "project-customer-identity",
+          "project-commerce-analytics"
+        ],
+        "score": 81,
+        "threshold": 80,
+        "readiness": "conditional",
+        "metricScores": [
+          {
+            "id": "scenario-coverage",
+            "label": "Scenario project coverage",
+            "score": 100,
+            "threshold": 100,
+            "status": "passed",
+            "rationale": "The pilot scenario resolves to tenant-scoped architecture project(s).",
+            "evidence": [
+              "project-order-to-payment",
+              "project-customer-identity",
+              "project-commerce-analytics"
+            ]
+          },
+          {
+            "id": "traceability",
+            "label": "Architecture traceability",
+            "score": 100,
+            "threshold": 72,
+            "status": "passed",
+            "rationale": "Objectives, drivers, decisions, nodes and relationships provide a navigable reasoning chain.",
+            "evidence": [
+              "ArchitectureProject.nodes",
+              "ArchitectureProject.edges",
+              "qualityPriorities",
+              "decisions"
+            ]
+          },
+          {
+            "id": "visual-modelling",
+            "label": "Interactive visual modelling coverage",
+            "score": 100,
+            "threshold": 76,
+            "status": "passed",
+            "rationale": "The pilot maps to node-and-relationship visual models rather than text-only assessment.",
+            "evidence": [
+              "portfolio-visual-portfolio-digital-channels",
+              "React Flow workspace projection"
+            ]
+          },
+          {
+            "id": "governance-readiness",
+            "label": "Governance readiness",
+            "score": 0,
+            "threshold": 58,
+            "status": "failed",
+            "rationale": "Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          },
+          {
+            "id": "standards-and-portfolio",
+            "label": "Enterprise standards and portfolio posture",
+            "score": 84,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Standards, risk and compliance are assessed across the portfolio.",
+            "evidence": [
+              "technology standardization",
+              "risk heatmap",
+              "reference compliance"
+            ]
+          },
+          {
+            "id": "continuous-conformance",
+            "label": "Realization and conformance controls",
+            "score": 100,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Conformance controls can be generated; controls remain unverified until evidence arrives.",
+            "evidence": [
+              "CTRL-94f1a151-78848e21",
+              "CTRL-18244077-c87e2f67",
+              "CTRL-634c901d-377a2f55",
+              "CTRL-57ecc3b1-017f275d",
+              "CTRL-ce6ece49-ec440b21"
+            ]
+          },
+          {
+            "id": "offline-determinism",
+            "label": "Offline deterministic operation",
+            "score": 96,
+            "threshold": 90,
+            "status": "passed",
+            "rationale": "The reference pilot can execute without external model or cloud service authority.",
+            "evidence": [
+              "AKR-0.8.8",
+              "deterministic engine"
+            ]
+          },
+          {
+            "id": "criticality-sensitivity",
+            "label": "Criticality-sensitive pilot pressure",
+            "score": 86,
+            "threshold": 70,
+            "status": "passed",
+            "rationale": "Mission-critical scenarios are scored more strictly than low-risk pilots.",
+            "evidence": [
+              "medium"
+            ]
+          }
+        ],
+        "blockers": [
+          "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+        ],
+        "followUpActions": [
+          "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "Run target-environment CI/runtime evidence before production acceptance."
+        ],
+        "evidence": [
+          "offline mode",
+          "knowledge release pin",
+          "release verification output",
+          "project-order-to-payment",
+          "project-customer-identity",
+          "project-commerce-analytics",
+          "ArchitectureProject.nodes",
+          "ArchitectureProject.edges",
+          "qualityPriorities",
+          "decisions",
+          "portfolio-visual-portfolio-digital-channels",
+          "React Flow workspace projection",
+          "stageApprovals",
+          "architecture decisions",
+          "technology standardization",
+          "risk heatmap",
+          "reference compliance",
+          "CTRL-94f1a151-78848e21",
+          "CTRL-18244077-c87e2f67",
+          "CTRL-634c901d-377a2f55",
+          "CTRL-57ecc3b1-017f275d",
+          "CTRL-ce6ece49-ec440b21",
+          "AKR-0.8.8",
+          "deterministic engine",
+          "medium"
+        ]
+      }
+    ],
+    "visualModel": {
+      "id": "pilot-visual-v0.10.0-rc.1",
+      "title": "Pilot evaluation and v0.10.0 release-readiness model",
+      "description": "Interactive node-and-relationship model of pilot scenarios, metrics, blockers, actions and release-candidate gates.",
+      "generatedAt": "2026-07-03T19:18:08.770Z",
+      "knowledgeReleaseId": "AKR-0.8.8",
+      "nodes": [
+        {
+          "id": "pilot-v10-rc1",
+          "kind": "pilot",
+          "label": "v0.10.0 pilot evaluation",
+          "summary": "6 pilot scenario(s), 0 ready, 6 conditional.",
+          "x": 40,
+          "y": 180,
+          "score": 80,
+          "readiness": "conditional",
+          "metadata": {
+            "releaseId": "AIW-0.10.0-rc.1"
+          }
+        },
+        {
+          "id": "release-gate-v10",
+          "kind": "release-gate",
+          "label": "Release candidate gate",
+          "summary": "Conditional candidate; target evidence required.",
+          "x": 900,
+          "y": 180,
+          "score": 80,
+          "readiness": "conditional",
+          "metadata": {
+            "minimumScenarioScore": 74
+          }
+        },
+        {
+          "id": "scenario-pilot-digital-banking",
+          "kind": "scenario",
+          "label": "Digital banking architecture journey",
+          "summary": "digital-banking · conditional · score 80/84",
+          "x": 300,
+          "y": 40,
+          "score": 80,
+          "readiness": "conditional",
+          "metadata": {
+            "kind": "digital-banking",
+            "projectIds": [
+              "project-order-to-payment"
+            ]
+          }
+        },
+        {
+          "id": "project-pilot-digital-banking-project-order-to-payment",
+          "kind": "project",
+          "label": "project-order-to-payment",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 40,
+          "metadata": {
+            "projectId": "project-order-to-payment"
+          }
+        },
+        {
+          "id": "metric-pilot-digital-banking-governance-readiness",
+          "kind": "metric",
+          "label": "Governance readiness",
+          "summary": "failed · 0/58",
+          "x": 700,
+          "y": 40,
+          "score": 0,
+          "readiness": "not-ready",
+          "metadata": {
+            "metricId": "governance-readiness",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          }
+        },
+        {
+          "id": "blocker-pilot-digital-banking-0",
+          "kind": "blocker",
+          "label": "Pilot blocker",
+          "summary": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 900,
+          "y": 70,
+          "readiness": "not-ready",
+          "metadata": {
+            "blocker": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+          }
+        },
+        {
+          "id": "action-pilot-digital-banking-0",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 1110,
+          "y": 70,
+          "metadata": {
+            "action": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "action-pilot-digital-banking-1",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Run target-environment CI/runtime evidence before production acceptance.",
+          "x": 1110,
+          "y": 112,
+          "metadata": {
+            "action": "Run target-environment CI/runtime evidence before production acceptance.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "scenario-pilot-payments",
+          "kind": "scenario",
+          "label": "Payment processing resilience and controls",
+          "summary": "payment-processing · conditional · score 80/86",
+          "x": 300,
+          "y": 190,
+          "score": 80,
+          "readiness": "conditional",
+          "metadata": {
+            "kind": "payment-processing",
+            "projectIds": [
+              "project-order-to-payment"
+            ]
+          }
+        },
+        {
+          "id": "project-pilot-payments-project-order-to-payment",
+          "kind": "project",
+          "label": "project-order-to-payment",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 190,
+          "metadata": {
+            "projectId": "project-order-to-payment"
+          }
+        },
+        {
+          "id": "metric-pilot-payments-governance-readiness",
+          "kind": "metric",
+          "label": "Governance readiness",
+          "summary": "failed · 0/58",
+          "x": 700,
+          "y": 190,
+          "score": 0,
+          "readiness": "not-ready",
+          "metadata": {
+            "metricId": "governance-readiness",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          }
+        },
+        {
+          "id": "blocker-pilot-payments-0",
+          "kind": "blocker",
+          "label": "Pilot blocker",
+          "summary": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 900,
+          "y": 220,
+          "readiness": "not-ready",
+          "metadata": {
+            "blocker": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+          }
+        },
+        {
+          "id": "action-pilot-payments-0",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 1110,
+          "y": 220,
+          "metadata": {
+            "action": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "action-pilot-payments-1",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Run target-environment CI/runtime evidence before production acceptance.",
+          "x": 1110,
+          "y": 262,
+          "metadata": {
+            "action": "Run target-environment CI/runtime evidence before production acceptance.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "scenario-pilot-commerce",
+          "kind": "scenario",
+          "label": "Commerce and partner API modernization",
+          "summary": "ecommerce · conditional · score 82/80",
+          "x": 300,
+          "y": 340,
+          "score": 82,
+          "readiness": "conditional",
+          "metadata": {
+            "kind": "ecommerce",
+            "projectIds": [
+              "project-order-to-payment",
+              "project-customer-identity"
+            ]
+          }
+        },
+        {
+          "id": "project-pilot-commerce-project-order-to-payment",
+          "kind": "project",
+          "label": "project-order-to-payment",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 340,
+          "metadata": {
+            "projectId": "project-order-to-payment"
+          }
+        },
+        {
+          "id": "project-pilot-commerce-project-customer-identity",
+          "kind": "project",
+          "label": "project-customer-identity",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 382,
+          "metadata": {
+            "projectId": "project-customer-identity"
+          }
+        },
+        {
+          "id": "metric-pilot-commerce-governance-readiness",
+          "kind": "metric",
+          "label": "Governance readiness",
+          "summary": "failed · 0/58",
+          "x": 700,
+          "y": 340,
+          "score": 0,
+          "readiness": "not-ready",
+          "metadata": {
+            "metricId": "governance-readiness",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          }
+        },
+        {
+          "id": "blocker-pilot-commerce-0",
+          "kind": "blocker",
+          "label": "Pilot blocker",
+          "summary": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 900,
+          "y": 370,
+          "readiness": "not-ready",
+          "metadata": {
+            "blocker": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+          }
+        },
+        {
+          "id": "action-pilot-commerce-0",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 1110,
+          "y": 370,
+          "metadata": {
+            "action": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "action-pilot-commerce-1",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Run target-environment CI/runtime evidence before production acceptance.",
+          "x": 1110,
+          "y": 412,
+          "metadata": {
+            "action": "Run target-environment CI/runtime evidence before production acceptance.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "scenario-pilot-saas",
+          "kind": "scenario",
+          "label": "SaaS platform tenant isolation",
+          "summary": "saas-platform · conditional · score 82/82",
+          "x": 300,
+          "y": 490,
+          "score": 82,
+          "readiness": "conditional",
+          "metadata": {
+            "kind": "saas-platform",
+            "projectIds": [
+              "project-order-to-payment"
+            ]
+          }
+        },
+        {
+          "id": "project-pilot-saas-project-order-to-payment",
+          "kind": "project",
+          "label": "project-order-to-payment",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 490,
+          "metadata": {
+            "projectId": "project-order-to-payment"
+          }
+        },
+        {
+          "id": "metric-pilot-saas-governance-readiness",
+          "kind": "metric",
+          "label": "Governance readiness",
+          "summary": "failed · 0/58",
+          "x": 700,
+          "y": 490,
+          "score": 0,
+          "readiness": "not-ready",
+          "metadata": {
+            "metricId": "governance-readiness",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          }
+        },
+        {
+          "id": "blocker-pilot-saas-0",
+          "kind": "blocker",
+          "label": "Pilot blocker",
+          "summary": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 900,
+          "y": 520,
+          "readiness": "not-ready",
+          "metadata": {
+            "blocker": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+          }
+        },
+        {
+          "id": "action-pilot-saas-0",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 1110,
+          "y": 520,
+          "metadata": {
+            "action": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "action-pilot-saas-1",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Run target-environment CI/runtime evidence before production acceptance.",
+          "x": 1110,
+          "y": 562,
+          "metadata": {
+            "action": "Run target-environment CI/runtime evidence before production acceptance.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "scenario-pilot-data-platform",
+          "kind": "scenario",
+          "label": "Data platform and analytics modernization",
+          "summary": "data-platform · conditional · score 74/78",
+          "x": 300,
+          "y": 640,
+          "score": 74,
+          "readiness": "conditional",
+          "metadata": {
+            "kind": "data-platform",
+            "projectIds": [
+              "project-commerce-analytics"
+            ]
+          }
+        },
+        {
+          "id": "project-pilot-data-platform-project-commerce-analytics",
+          "kind": "project",
+          "label": "project-commerce-analytics",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 640,
+          "metadata": {
+            "projectId": "project-commerce-analytics"
+          }
+        },
+        {
+          "id": "metric-pilot-data-platform-traceability",
+          "kind": "metric",
+          "label": "Architecture traceability",
+          "summary": "warning · 65/72",
+          "x": 700,
+          "y": 640,
+          "score": 65,
+          "readiness": "conditional",
+          "metadata": {
+            "metricId": "traceability",
+            "evidence": [
+              "ArchitectureProject.nodes",
+              "ArchitectureProject.edges",
+              "qualityPriorities",
+              "decisions"
+            ]
+          }
+        },
+        {
+          "id": "metric-pilot-data-platform-governance-readiness",
+          "kind": "metric",
+          "label": "Governance readiness",
+          "summary": "failed · 0/58",
+          "x": 700,
+          "y": 680,
+          "score": 0,
+          "readiness": "not-ready",
+          "metadata": {
+            "metricId": "governance-readiness",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          }
+        },
+        {
+          "id": "metric-pilot-data-platform-continuous-conformance",
+          "kind": "metric",
+          "label": "Realization and conformance controls",
+          "summary": "warning · 68/70",
+          "x": 700,
+          "y": 720,
+          "score": 68,
+          "readiness": "conditional",
+          "metadata": {
+            "metricId": "continuous-conformance",
+            "evidence": [
+              "CTRL-5dc016c7-559f27c7",
+              "CTRL-e8c3004d-2f8e68ed",
+              "CTRL-33c79db5-7054a8f1",
+              "CTRL-16e80a10-ce8dd026",
+              "CTRL-ae3c947d-b22f9981"
+            ]
+          }
+        },
+        {
+          "id": "blocker-pilot-data-platform-0",
+          "kind": "blocker",
+          "label": "Pilot blocker",
+          "summary": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 900,
+          "y": 670,
+          "readiness": "not-ready",
+          "metadata": {
+            "blocker": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+          }
+        },
+        {
+          "id": "action-pilot-data-platform-0",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Improve architecture traceability before production pilot.",
+          "x": 1110,
+          "y": 670,
+          "metadata": {
+            "action": "Improve architecture traceability before production pilot.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "action-pilot-data-platform-1",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Improve realization and conformance controls before production pilot.",
+          "x": 1110,
+          "y": 712,
+          "metadata": {
+            "action": "Improve realization and conformance controls before production pilot.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "scenario-pilot-low-connectivity",
+          "kind": "scenario",
+          "label": "Low-connectivity deterministic operation",
+          "summary": "low-connectivity · conditional · score 81/80",
+          "x": 300,
+          "y": 790,
+          "score": 81,
+          "readiness": "conditional",
+          "metadata": {
+            "kind": "low-connectivity",
+            "projectIds": [
+              "project-order-to-payment",
+              "project-customer-identity",
+              "project-commerce-analytics"
+            ]
+          }
+        },
+        {
+          "id": "project-pilot-low-connectivity-project-order-to-payment",
+          "kind": "project",
+          "label": "project-order-to-payment",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 790,
+          "metadata": {
+            "projectId": "project-order-to-payment"
+          }
+        },
+        {
+          "id": "project-pilot-low-connectivity-project-customer-identity",
+          "kind": "project",
+          "label": "project-customer-identity",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 832,
+          "metadata": {
+            "projectId": "project-customer-identity"
+          }
+        },
+        {
+          "id": "project-pilot-low-connectivity-project-commerce-analytics",
+          "kind": "project",
+          "label": "project-commerce-analytics",
+          "summary": "Pilot scenario project scope.",
+          "x": 560,
+          "y": 874,
+          "metadata": {
+            "projectId": "project-commerce-analytics"
+          }
+        },
+        {
+          "id": "metric-pilot-low-connectivity-governance-readiness",
+          "kind": "metric",
+          "label": "Governance readiness",
+          "summary": "failed · 0/58",
+          "x": 700,
+          "y": 790,
+          "score": 0,
+          "readiness": "not-ready",
+          "metadata": {
+            "metricId": "governance-readiness",
+            "evidence": [
+              "stageApprovals",
+              "architecture decisions"
+            ]
+          }
+        },
+        {
+          "id": "blocker-pilot-low-connectivity-0",
+          "kind": "blocker",
+          "label": "Pilot blocker",
+          "summary": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 900,
+          "y": 820,
+          "readiness": "not-ready",
+          "metadata": {
+            "blocker": "Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps."
+          }
+        },
+        {
+          "id": "action-pilot-low-connectivity-0",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+          "x": 1110,
+          "y": 820,
+          "metadata": {
+            "action": "Close blocker — Governance readiness: Stage approvals and accepted decisions are present or explicitly visible as gaps.",
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "action-pilot-low-connectivity-1",
+          "kind": "action",
+          "label": "Hardening action",
+          "summary": "Run target-environment CI/runtime evidence before production acceptance.",
+          "x": 1110,
+          "y": 862,
+          "metadata": {
+            "action": "Run target-environment CI/runtime evidence before production acceptance.",
+            "humanApprovalRequired": true
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "edge-pilot-release-gate",
+          "sourceId": "pilot-v10-rc1",
+          "targetId": "release-gate-v10",
+          "kind": "rolls-up-to",
+          "label": "rolls up to",
+          "metadata": {}
+        },
+        {
+          "id": "edge-pilot-scenario-pilot-digital-banking",
+          "sourceId": "pilot-v10-rc1",
+          "targetId": "scenario-pilot-digital-banking",
+          "kind": "contains",
+          "label": "contains",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-digital-banking-project-pilot-digital-banking-project-order-to-payment",
+          "sourceId": "scenario-pilot-digital-banking",
+          "targetId": "project-pilot-digital-banking-project-order-to-payment",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-digital-banking-metric-pilot-digital-banking-governance-readiness",
+          "sourceId": "scenario-pilot-digital-banking",
+          "targetId": "metric-pilot-digital-banking-governance-readiness",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-digital-banking-blocker-pilot-digital-banking-0",
+          "sourceId": "scenario-pilot-digital-banking",
+          "targetId": "blocker-pilot-digital-banking-0",
+          "kind": "blocked-by",
+          "label": "blocked by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-digital-banking-action-pilot-digital-banking-0",
+          "sourceId": "scenario-pilot-digital-banking",
+          "targetId": "action-pilot-digital-banking-0",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-scenario-pilot-digital-banking-action-pilot-digital-banking-1",
+          "sourceId": "scenario-pilot-digital-banking",
+          "targetId": "action-pilot-digital-banking-1",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-pilot-scenario-pilot-payments",
+          "sourceId": "pilot-v10-rc1",
+          "targetId": "scenario-pilot-payments",
+          "kind": "contains",
+          "label": "contains",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-payments-project-pilot-payments-project-order-to-payment",
+          "sourceId": "scenario-pilot-payments",
+          "targetId": "project-pilot-payments-project-order-to-payment",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-payments-metric-pilot-payments-governance-readiness",
+          "sourceId": "scenario-pilot-payments",
+          "targetId": "metric-pilot-payments-governance-readiness",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-payments-blocker-pilot-payments-0",
+          "sourceId": "scenario-pilot-payments",
+          "targetId": "blocker-pilot-payments-0",
+          "kind": "blocked-by",
+          "label": "blocked by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-payments-action-pilot-payments-0",
+          "sourceId": "scenario-pilot-payments",
+          "targetId": "action-pilot-payments-0",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-scenario-pilot-payments-action-pilot-payments-1",
+          "sourceId": "scenario-pilot-payments",
+          "targetId": "action-pilot-payments-1",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-pilot-scenario-pilot-commerce",
+          "sourceId": "pilot-v10-rc1",
+          "targetId": "scenario-pilot-commerce",
+          "kind": "contains",
+          "label": "contains",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-commerce-project-pilot-commerce-project-order-to-payment",
+          "sourceId": "scenario-pilot-commerce",
+          "targetId": "project-pilot-commerce-project-order-to-payment",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-commerce-project-pilot-commerce-project-customer-identity",
+          "sourceId": "scenario-pilot-commerce",
+          "targetId": "project-pilot-commerce-project-customer-identity",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-commerce-metric-pilot-commerce-governance-readiness",
+          "sourceId": "scenario-pilot-commerce",
+          "targetId": "metric-pilot-commerce-governance-readiness",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-commerce-blocker-pilot-commerce-0",
+          "sourceId": "scenario-pilot-commerce",
+          "targetId": "blocker-pilot-commerce-0",
+          "kind": "blocked-by",
+          "label": "blocked by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-commerce-action-pilot-commerce-0",
+          "sourceId": "scenario-pilot-commerce",
+          "targetId": "action-pilot-commerce-0",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-scenario-pilot-commerce-action-pilot-commerce-1",
+          "sourceId": "scenario-pilot-commerce",
+          "targetId": "action-pilot-commerce-1",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-pilot-scenario-pilot-saas",
+          "sourceId": "pilot-v10-rc1",
+          "targetId": "scenario-pilot-saas",
+          "kind": "contains",
+          "label": "contains",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-saas-project-pilot-saas-project-order-to-payment",
+          "sourceId": "scenario-pilot-saas",
+          "targetId": "project-pilot-saas-project-order-to-payment",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-saas-metric-pilot-saas-governance-readiness",
+          "sourceId": "scenario-pilot-saas",
+          "targetId": "metric-pilot-saas-governance-readiness",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-saas-blocker-pilot-saas-0",
+          "sourceId": "scenario-pilot-saas",
+          "targetId": "blocker-pilot-saas-0",
+          "kind": "blocked-by",
+          "label": "blocked by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-saas-action-pilot-saas-0",
+          "sourceId": "scenario-pilot-saas",
+          "targetId": "action-pilot-saas-0",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-scenario-pilot-saas-action-pilot-saas-1",
+          "sourceId": "scenario-pilot-saas",
+          "targetId": "action-pilot-saas-1",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-pilot-scenario-pilot-data-platform",
+          "sourceId": "pilot-v10-rc1",
+          "targetId": "scenario-pilot-data-platform",
+          "kind": "contains",
+          "label": "contains",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-data-platform-project-pilot-data-platform-project-commerce-analytics",
+          "sourceId": "scenario-pilot-data-platform",
+          "targetId": "project-pilot-data-platform-project-commerce-analytics",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-data-platform-metric-pilot-data-platform-traceability",
+          "sourceId": "scenario-pilot-data-platform",
+          "targetId": "metric-pilot-data-platform-traceability",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-data-platform-metric-pilot-data-platform-governance-readiness",
+          "sourceId": "scenario-pilot-data-platform",
+          "targetId": "metric-pilot-data-platform-governance-readiness",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-data-platform-metric-pilot-data-platform-continuous-conformance",
+          "sourceId": "scenario-pilot-data-platform",
+          "targetId": "metric-pilot-data-platform-continuous-conformance",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-data-platform-blocker-pilot-data-platform-0",
+          "sourceId": "scenario-pilot-data-platform",
+          "targetId": "blocker-pilot-data-platform-0",
+          "kind": "blocked-by",
+          "label": "blocked by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-data-platform-action-pilot-data-platform-0",
+          "sourceId": "scenario-pilot-data-platform",
+          "targetId": "action-pilot-data-platform-0",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-scenario-pilot-data-platform-action-pilot-data-platform-1",
+          "sourceId": "scenario-pilot-data-platform",
+          "targetId": "action-pilot-data-platform-1",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-pilot-scenario-pilot-low-connectivity",
+          "sourceId": "pilot-v10-rc1",
+          "targetId": "scenario-pilot-low-connectivity",
+          "kind": "contains",
+          "label": "contains",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-low-connectivity-project-pilot-low-connectivity-project-order-to-payment",
+          "sourceId": "scenario-pilot-low-connectivity",
+          "targetId": "project-pilot-low-connectivity-project-order-to-payment",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-low-connectivity-project-pilot-low-connectivity-project-customer-identity",
+          "sourceId": "scenario-pilot-low-connectivity",
+          "targetId": "project-pilot-low-connectivity-project-customer-identity",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-low-connectivity-project-pilot-low-connectivity-project-commerce-analytics",
+          "sourceId": "scenario-pilot-low-connectivity",
+          "targetId": "project-pilot-low-connectivity-project-commerce-analytics",
+          "kind": "evaluates",
+          "label": "evaluates",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-low-connectivity-metric-pilot-low-connectivity-governance-readiness",
+          "sourceId": "scenario-pilot-low-connectivity",
+          "targetId": "metric-pilot-low-connectivity-governance-readiness",
+          "kind": "measured-by",
+          "label": "measured by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-low-connectivity-blocker-pilot-low-connectivity-0",
+          "sourceId": "scenario-pilot-low-connectivity",
+          "targetId": "blocker-pilot-low-connectivity-0",
+          "kind": "blocked-by",
+          "label": "blocked by",
+          "metadata": {}
+        },
+        {
+          "id": "edge-scenario-pilot-low-connectivity-action-pilot-low-connectivity-0",
+          "sourceId": "scenario-pilot-low-connectivity",
+          "targetId": "action-pilot-low-connectivity-0",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        },
+        {
+          "id": "edge-scenario-pilot-low-connectivity-action-pilot-low-connectivity-1",
+          "sourceId": "scenario-pilot-low-connectivity",
+          "targetId": "action-pilot-low-connectivity-1",
+          "kind": "requires-action",
+          "label": "requires action",
+          "metadata": {
+            "humanApprovalRequired": true
+          }
+        }
+      ],
+      "focusNodeIds": [
+        "scenario-pilot-digital-banking",
+        "scenario-pilot-payments",
+        "scenario-pilot-commerce",
+        "scenario-pilot-saas",
+        "scenario-pilot-data-platform",
+        "scenario-pilot-low-connectivity"
+      ],
+      "summary": {
+        "scenarios": 6,
+        "ready": 0,
+        "conditional": 6,
+        "notReady": 0,
+        "averageScore": 80
+      }
+    },
+    "summary": {
+      "scenarios": 6,
+      "ready": 0,
+      "conditional": 6,
+      "notReady": 0,
+      "averageScore": 80,
+      "blockers": 6,
+      "followUpActions": 14
+    },
+    "releaseGate": {
+      "status": "conditional-candidate",
+      "minimumScenarioScore": 74,
+      "requiredScenarioCoverage": 6,
+      "passedScenarioCoverage": 6,
+      "rationale": [
+        "6/6 pilot scenarios are at least conditional.",
+        "Minimum scenario score is 74.",
+        "6 blocker(s) remain open.",
+        "Target-environment acceptance remains required before production declaration."
+      ]
+    },
+    "governance": {
+      "referencePilot": true,
+      "targetEnvironmentAcceptanceRequired": true,
+      "automaticMutationAllowed": false,
+      "candidateKnowledgeExcluded": true,
+      "knowledgeReleaseId": "AKR-0.8.8"
+    }
+  },
+  "readiness": {
+    "releaseId": "AIW-0.10.0-rc.1",
+    "version": "0.10.0-rc.1",
+    "status": "conditional-candidate",
+    "generatedAt": "2026-07-03T19:18:08.782Z",
+    "score": 82,
+    "gates": [
+      {
+        "id": "gate-pilot-coverage",
+        "label": "Pilot scenario coverage",
+        "passed": true,
+        "evidence": [
+          "6/6 scenarios"
+        ]
+      },
+      {
+        "id": "gate-min-score",
+        "label": "Minimum scenario score",
+        "passed": false,
+        "evidence": [
+          "minimum=74"
+        ]
+      },
+      {
+        "id": "gate-visual",
+        "label": "Visual pilot readiness model",
+        "passed": true,
+        "evidence": [
+          "pilot-visual-v0.10.0-rc.1"
+        ]
+      },
+      {
+        "id": "gate-no-silent-mutation",
+        "label": "No silent mutation",
+        "passed": true,
+        "evidence": [
+          "human approval required"
+        ]
+      },
+      {
+        "id": "gate-candidate-knowledge",
+        "label": "Candidate knowledge excluded",
+        "passed": true,
+        "evidence": [
+          "AKR-0.8.8"
+        ]
+      },
+      {
+        "id": "gate-production-honesty",
+        "label": "Production acceptance honesty",
+        "passed": true,
+        "evidence": [
+          "target-environment evidence required"
+        ]
+      }
+    ],
+    "productionAcceptance": {
+      "accepted": false,
+      "reason": "This package contains reference pilot evidence only. Production acceptance requires authorized target repositories, CI pipelines, runtime telemetry, identity provider, persistence, object store and approved model routes.",
+      "requiredEvidence": [
+        "credentialed enterprise-runtime probes",
+        "repository conformance runs",
+        "runtime telemetry evidence",
+        "pilot user acceptance sign-off",
+        "architecture-board release approval"
+      ]
+    },
+    "governanceBoundary": "Sprint 8.7.5 can nominate a release candidate from reference pilots, but it cannot declare production acceptance without target-environment evidence and human governance approval."
+  }
+}

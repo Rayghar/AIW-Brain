@@ -1,0 +1,209 @@
+{
+  "version": "0.8.8",
+  "scenarios": [
+    {
+      "id": "BENCH-PAYMENTS-01",
+      "name": "High-volume payment processing",
+      "domain": "payments",
+      "query": "high-volume resilient payment processing with auditable events",
+      "objectives": [
+        "Scale payment authorization and preserve auditability."
+      ],
+      "constraints": [
+        "No duplicate financial posting."
+      ],
+      "qualityPriorities": [
+        {
+          "attributeId": "availability",
+          "weight": 5
+        },
+        {
+          "attributeId": "data-integrity",
+          "weight": 5
+        }
+      ],
+      "expectedCandidateIds": [
+        "PAT-TRANSACTIONAL-OUTBOX",
+        "PAT-IDEMPOTENT-CONSUMER",
+        "PAT-CELL-BASED-ARCHITECTURE"
+      ],
+      "expectedExcludedIds": [
+        "ANTI-MISSING-IDEMPOTENCY"
+      ],
+      "requiredObligationCategories": [
+        "data",
+        "reliability"
+      ]
+    },
+    {
+      "id": "BENCH-SAAS-01",
+      "name": "Multi-tenant SaaS platform",
+      "domain": "saas",
+      "query": "multi-tenant SaaS platform with strong tenant isolation and self-service delivery",
+      "objectives": [
+        "Enable safe tenant growth."
+      ],
+      "constraints": [
+        "Strict tenant data isolation."
+      ],
+      "qualityPriorities": [
+        {
+          "attributeId": "security",
+          "weight": 5
+        },
+        {
+          "attributeId": "deployability",
+          "weight": 4
+        }
+      ],
+      "expectedCandidateIds": [
+        "PAT-MULTI-TENANCY",
+        "PAT-TENANT-ISOLATION",
+        "PAT-INTERNAL-DEVELOPER-PLATFORM"
+      ],
+      "expectedExcludedIds": [
+        "ANTI-SHARED-MUTABLE-STATE"
+      ],
+      "requiredObligationCategories": [
+        "security",
+        "operations"
+      ]
+    },
+    {
+      "id": "BENCH-AI-01",
+      "name": "Governed enterprise RAG",
+      "domain": "ai-system",
+      "query": "governed retrieval augmented generation with citations guardrails and human approval",
+      "objectives": [
+        "Ground model output in approved enterprise evidence."
+      ],
+      "constraints": [
+        "No unrestricted model access to sensitive sources."
+      ],
+      "qualityPriorities": [
+        {
+          "attributeId": "security",
+          "weight": 5
+        },
+        {
+          "attributeId": "intelligence-quality",
+          "weight": 5
+        }
+      ],
+      "expectedCandidateIds": [
+        "PAT-RETRIEVAL-AUGMENTED-GENERATION",
+        "PAT-AI-GUARDRAILS",
+        "PAT-HUMAN-IN-THE-LOOP-AI"
+      ],
+      "expectedExcludedIds": [
+        "ANTI-AI-WITHOUT-EVALUATION"
+      ],
+      "requiredObligationCategories": [
+        "governance",
+        "security"
+      ]
+    },
+    {
+      "id": "BENCH-LOW-CONNECTIVITY-01",
+      "name": "Low-connectivity field service",
+      "domain": "low-connectivity",
+      "query": "offline-capable field service synchronization with eventual consistency",
+      "objectives": [
+        "Continue operations without reliable connectivity."
+      ],
+      "constraints": [
+        "Intermittent network access."
+      ],
+      "qualityPriorities": [
+        {
+          "attributeId": "availability",
+          "weight": 5
+        },
+        {
+          "attributeId": "data-integrity",
+          "weight": 4
+        }
+      ],
+      "expectedCandidateIds": [
+        "PAT-EVENT-CARRIED-STATE-TRANSFER",
+        "PAT-RETRY-WITH-BACKOFF",
+        "TPL-LOW-CONNECTIVITY-SYNC"
+      ],
+      "expectedExcludedIds": [
+        "ANTI-SYNCHRONOUS-CHAIN"
+      ],
+      "requiredObligationCategories": [
+        "data",
+        "reliability"
+      ]
+    },
+    {
+      "id": "BENCH-LEGACY-01",
+      "name": "Legacy modernization",
+      "domain": "legacy-modernization",
+      "query": "incremental legacy modernization while preserving service continuity",
+      "objectives": [
+        "Reduce legacy coupling safely."
+      ],
+      "constraints": [
+        "No big-bang replacement."
+      ],
+      "qualityPriorities": [
+        {
+          "attributeId": "modifiability",
+          "weight": 5
+        },
+        {
+          "attributeId": "availability",
+          "weight": 4
+        }
+      ],
+      "expectedCandidateIds": [
+        "PAT-STRANGLER-FIG",
+        "PAT-ANTI-CORRUPTION-LAYER",
+        "PAT-BRANCH-BY-ABSTRACTION"
+      ],
+      "expectedExcludedIds": [
+        "ANTI-BIG-BALL-OF-MUD"
+      ],
+      "requiredObligationCategories": [
+        "delivery",
+        "governance"
+      ]
+    },
+    {
+      "id": "BENCH-IOT-01",
+      "name": "IoT telemetry platform",
+      "domain": "iot",
+      "query": "high-volume device telemetry ingestion with buffering and time-series analysis",
+      "objectives": [
+        "Ingest bursty telemetry reliably."
+      ],
+      "constraints": [
+        "Devices may reconnect after long outages."
+      ],
+      "qualityPriorities": [
+        {
+          "attributeId": "scalability",
+          "weight": 5
+        },
+        {
+          "attributeId": "reliability",
+          "weight": 5
+        }
+      ],
+      "expectedCandidateIds": [
+        "PAT-QUEUE-BASED-LOAD-LEVELING",
+        "PAT-TIME-SERIES-STORE",
+        "PAT-PUBLISH-SUBSCRIBE"
+      ],
+      "expectedExcludedIds": [
+        "ANTI-UNBOUNDED-QUEUE"
+      ],
+      "requiredObligationCategories": [
+        "operations",
+        "reliability"
+      ]
+    }
+  ]
+}

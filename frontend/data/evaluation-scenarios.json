@@ -1,0 +1,32 @@
+{
+  "version": "0.1.0",
+  "description": "Evaluation programme seed (C1): 24 expert-authored reference scenarios toward the 100-scenario benchmark. Each carries expected leader SETS (any member passing = pass) on PRODUCTION-calibrated attributes only. expertAcceptance is populated per release by the review panel.",
+  "authoredBy": "fable — AIW Architect-Advisor (supersedable)",
+  "scenarios": [
+    {"id":"EV-01","name":"Departmental workflow app","drivers":{"simplicity":5,"costEfficiency":5,"modifiability":2},"expectedLeaders":["STYLE-LAYERED","STYLE-MODULAR-MONOLITH"],"rationale":"Small scope, cost-first: cohesive deployables win."},
+    {"id":"EV-02","name":"High-volume payments","drivers":{"scalability":5,"faultTolerance":5,"availability":4,"performance":4},"expectedLeaders":["STYLE-SPACE-BASED","STYLE-MICROSERVICES","STYLE-EVENT-DRIVEN"],"rationale":"Extreme concurrent load with isolation needs."},
+    {"id":"EV-03","name":"Startup MVP, 3 engineers","drivers":{"costEfficiency":5,"simplicity":5,"modifiability":4},"expectedLeaders":["STYLE-MODULAR-MONOLITH","STYLE-LAYERED"],"rationale":"Speed and later extraction beat premature distribution."},
+    {"id":"EV-04","name":"HA core banking service","drivers":{"availability":5,"faultTolerance":5,"scalability":4},"expectedLeaders":["STYLE-MICROSERVICES","STYLE-SPACE-BASED","STYLE-EVENT-DRIVEN"],"rationale":"Blast-radius isolation and redundancy dominate."},
+    {"id":"EV-05","name":"Order processing with spikes","drivers":{"scalability":5,"faultTolerance":4,"deployability":4,"modifiability":4},"expectedLeaders":["STYLE-MICROSERVICES","STYLE-EVENT-DRIVEN"],"rationale":"Decoupled bursts, independent deploys."},
+    {"id":"EV-06","name":"Multi-region consumer platform","drivers":{"scalability":5,"availability":5,"deployability":4},"expectedLeaders":["STYLE-MICROSERVICES","STYLE-SERVERLESS","STYLE-SPACE-BASED"],"rationale":"Region-parallel scale and rollout."},
+    {"id":"EV-07","name":"ETL analytics backbone","drivers":{"performance":4,"modifiability":4,"costEfficiency":4},"context":{"problemShapes":["dataPipeline"]},"expectedLeaders":["STYLE-PIPELINE"],"rationale":"Declared pipeline shape lets the special-purpose style lead."},
+    {"id":"EV-08","name":"IDE-like plugin platform","drivers":{"modifiability":5,"deployability":4},"context":{"problemShapes":["pluginPlatform"]},"expectedLeaders":["STYLE-MICROKERNEL"],"rationale":"Stable core, independent extensions."},
+    {"id":"EV-09","name":"Legacy insurer modernization start","drivers":{"modifiability":4,"costEfficiency":4,"simplicity":3},"expectedLeaders":["STYLE-MODULAR-MONOLITH","STYLE-SERVICE-BASED"],"rationale":"Boundary discipline before distribution."},
+    {"id":"EV-10","name":"B2B integration hub across ERPs","drivers":{"modifiability":3,"availability":4,"scalability":3},"expectedLeaders":["STYLE-SERVICE-BASED","STYLE-SOA","STYLE-MICROSERVICES","STYLE-EVENT-DRIVEN"],"rationale":"Heterogeneous integration favors service/bus discipline."},
+    {"id":"EV-11","name":"Ticketing flash-sale bursts","drivers":{"scalability":5,"performance":5,"availability":4},"expectedLeaders":["STYLE-SPACE-BASED","STYLE-MICROSERVICES"],"rationale":"DB-bottleneck relief under stampede load."},
+    {"id":"EV-12","name":"Intermittent batch jobs, tiny team","drivers":{"costEfficiency":5,"scalability":4,"deployability":4},"expectedLeaders":["STYLE-SERVERLESS","STYLE-MODULAR-MONOLITH"],"rationale":"Scale-to-zero economics."},
+    {"id":"EV-13","name":"IoT telemetry ingestion","drivers":{"scalability":5,"faultTolerance":4,"performance":4},"expectedLeaders":["STYLE-EVENT-DRIVEN","STYLE-MICROSERVICES","STYLE-SPACE-BASED"],"rationale":"Streamed decoupled ingestion."},
+    {"id":"EV-14","name":"Internal admin console","drivers":{"simplicity":5,"deployability":3,"costEfficiency":4},"expectedLeaders":["STYLE-LAYERED","STYLE-MODULAR-MONOLITH"],"rationale":"Low ceremony wins."},
+    {"id":"EV-15","name":"Marketplace with independent teams","drivers":{"deployability":5,"modifiability":5,"scalability":4},"expectedLeaders":["STYLE-MICROSERVICES"],"rationale":"Team-autonomy is the driver microservices actually serves."},
+    {"id":"EV-16","name":"Media transcoding farm","drivers":{"scalability":5,"costEfficiency":4,"performance":4},"context":{"problemShapes":["dataPipeline"]},"expectedLeaders":["STYLE-PIPELINE","STYLE-SERVERLESS"],"rationale":"Staged transforms; burst economics."},
+    {"id":"EV-17","name":"Gov records system, strict budget","drivers":{"costEfficiency":5,"availability":4,"simplicity":4},"expectedLeaders":["STYLE-MODULAR-MONOLITH","STYLE-LAYERED","STYLE-SERVICE-BASED"],"rationale":"Operable within constrained ops maturity."},
+    {"id":"EV-18","name":"Real-time collaboration backend","drivers":{"performance":5,"scalability":4,"faultTolerance":4},"expectedLeaders":["STYLE-SPACE-BASED","STYLE-EVENT-DRIVEN","STYLE-MICROSERVICES"],"rationale":"Low-latency shared state."},
+    {"id":"EV-19","name":"Quarterly-release enterprise suite","drivers":{"modifiability":4,"simplicity":3,"costEfficiency":4},"expectedLeaders":["STYLE-MODULAR-MONOLITH","STYLE-SERVICE-BASED"],"rationale":"Release cadence doesn't justify distribution cost."},
+    {"id":"EV-20","name":"Fraud scoring in transaction path","drivers":{"performance":5,"availability":5,"faultTolerance":4},"expectedLeaders":["STYLE-SPACE-BASED","STYLE-MICROSERVICES"],"rationale":"Millisecond path with isolation."},
+    {"id":"EV-21","name":"Content site, editorial team","drivers":{"simplicity":4,"costEfficiency":5,"availability":3},"expectedLeaders":["STYLE-LAYERED","STYLE-MODULAR-MONOLITH","STYLE-SERVERLESS"],"rationale":"Mostly-read workload, minimal ops."},
+    {"id":"EV-22","name":"Logistics tracking, partner webhooks","drivers":{"faultTolerance":5,"scalability":4,"modifiability":4},"expectedLeaders":["STYLE-EVENT-DRIVEN","STYLE-MICROSERVICES"],"rationale":"Unreliable partners demand async isolation."},
+    {"id":"EV-23","name":"Data-product platform, many domains","drivers":{"modifiability":5,"scalability":4,"deployability":4},"expectedLeaders":["STYLE-MICROSERVICES","STYLE-EVENT-DRIVEN"],"rationale":"Domain-aligned ownership."},
+    {"id":"EV-24","name":"Disaster-recovery-critical registry","drivers":{"availability":5,"faultTolerance":5,"costEfficiency":3},"expectedLeaders":["STYLE-MICROSERVICES","STYLE-SPACE-BASED","STYLE-EVENT-DRIVEN"],"rationale":"Redundancy-first posture."}
+  ],
+  "expertAcceptance": { "targetTop3AcceptanceRate": 0.85, "records": [] }
+}

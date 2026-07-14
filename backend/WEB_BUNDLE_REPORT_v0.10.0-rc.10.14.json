@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-07-04T21:04:07.748Z",
+  "policy": {
+    "reviewStudioLazyLoaded": true,
+    "artifactsChunkLazyLoaded": true,
+    "maxSingleChunkKb": 650,
+    "note": "The artifact generator may remain a large lazy chunk, but it must not be loaded on the initial Review Studio render path."
+  },
+  "jsAssets": [
+    {
+      "file": "aiw-artifacts-DvSMPApA.js",
+      "bytes": 520389,
+      "kb": 508.2
+    },
+    {
+      "file": "index-BUlZwivS.js",
+      "bytes": 423105,
+      "kb": 413.2
+    },
+    {
+      "file": "canvas-J_L3fCZq.js",
+      "bytes": 189835,
+      "kb": 185.4
+    },
+    {
+      "file": "react-Bl1F9FdE.js",
+      "bytes": 178316,
+      "kb": 174.1
+    },
+    {
+      "file": "icons-CrQco-8N.js",
+      "bytes": 37873,
+      "kb": 37
+    },
+    {
+      "file": "PatternIntelligenceWorkspace-BQz3OGN3.js",
+      "bytes": 21049,
+      "kb": 20.6
+    },
+    {
+      "file": "ArchitectureSynthesisWorkspace-B4PWsEyX.js",
+      "bytes": 20936,
+      "kb": 20.4
+    },
+    {
+      "file": "state-BQ56cn4P.js",
+      "bytes": 12063,
+      "kb": 11.8
+    },
+    {
+      "file": "review-studio-DgxTIo6Q.js",
+      "bytes": 10914,
+      "kb": 10.7
+    },
+    {
+      "file": "rolldown-runtime-QTnfLwEv.js",
+      "bytes": 694,
+      "kb": 0.7
+    }
+  ],
+  "largestChunkKb": 508.2,
+  "artifactChunks": [
+    {
+      "file": "aiw-artifacts-DvSMPApA.js",
+      "bytes": 520389,
+      "kb": 508.2
+    }
+  ]
+}

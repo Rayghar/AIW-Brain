@@ -1,0 +1,24 @@
+[
+  {
+    "id": "slo-order-availability",
+    "name": "Order API availability",
+    "targetNodeId": "deployable-order-api",
+    "indicator": "availability",
+    "target": 99.9,
+    "window": "30d",
+    "warningThreshold": 99.95,
+    "criticalThreshold": 99.9,
+    "enabled": true
+  },
+  {
+    "id": "slo-order-latency",
+    "name": "Order API p95 latency",
+    "targetNodeId": "deployable-order-api",
+    "indicator": "latency-p95",
+    "target": 500,
+    "window": "24h",
+    "warningThreshold": 450,
+    "criticalThreshold": 500,
+    "enabled": true
+  }
+]

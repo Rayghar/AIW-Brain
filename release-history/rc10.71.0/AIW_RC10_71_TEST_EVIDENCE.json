@@ -1,0 +1,71 @@
+{
+  "release": "0.10.0-rc.10.71.0",
+  "codename": "Sol Architecture Genesis",
+  "executedAtUtc": "2026-07-13T09:37:07Z",
+  "result": "passed-focused-acceptance",
+  "frontend": {
+    "strictPackageBuilds": "passed",
+    "productionBundle": "passed",
+    "architectureGenesisGate": {"passed": 23, "failed": 0},
+    "browser": {
+      "engine": "Chromium",
+      "projects": [
+        {"name": "chromium-desktop", "viewport": "1600x900", "result": "passed"},
+        {"name": "chromium-laptop", "viewport": "1100x760", "result": "passed"}
+      ],
+      "journey": "idea to governed requirements to Journey Atlas to System Context preview, acceptance and output",
+      "passed": 2,
+      "failed": 0,
+      "consolePageRequestErrors": 0,
+      "measuredHorizontalOverflowPx": 0
+    },
+    "internalDependencies": "passed",
+    "productionAudit": {"info":0,"low":0,"moderate":0,"high":0,"critical":0,"total":0},
+    "bundle": {
+      "systemContextStudioMinifiedKb": 9.33,
+      "designBriefStudioMinifiedKb": 20.84,
+      "productShellMinifiedKb": 655.51,
+      "artifactCoreMinifiedKb": 1751.78,
+      "largeChunkWarning": true
+    }
+  },
+  "backend": {
+    "packageBuilds": "passed",
+    "apiBuild": "passed",
+    "workerBuild": "passed",
+    "focusedTests": {"filesPassed":2,"testsPassed":5,"failed":0},
+    "testedCapabilities": [
+      "deterministic source distillation",
+      "source evidence and semantic journeys",
+      "stage context compilation",
+      "unsupported numeric target clarification",
+      "atomic reviewed proposal merge",
+      "stale revision protection",
+      "text source extraction",
+      "DOCX extraction",
+      "non-mutating distillation",
+      "governed project apply and read"
+    ],
+    "internalDependencies": "passed",
+    "releaseIntegrity": "passed",
+    "productionAudit": {"info":0,"low":0,"moderate":0,"high":0,"critical":0,"total":0}
+  },
+  "visualEvidence": [
+    "frontend/release-evidence/rc10.71/screenshots/requirements-proposal-chromium-desktop.png",
+    "frontend/release-evidence/rc10.71/screenshots/requirements-proposal-chromium-laptop.png",
+    "frontend/release-evidence/rc10.71/screenshots/journey-atlas-chromium-desktop.png",
+    "frontend/release-evidence/rc10.71/screenshots/journey-atlas-chromium-laptop.png",
+    "frontend/release-evidence/rc10.71/screenshots/system-context-preview-chromium-desktop.png",
+    "frontend/release-evidence/rc10.71/screenshots/system-context-preview-chromium-laptop.png",
+    "frontend/release-evidence/rc10.71/screenshots/system-context-output-chromium-desktop.png",
+    "frontend/release-evidence/rc10.71/screenshots/system-context-output-chromium-laptop.png",
+    "frontend/release-evidence/rc10.71/acceptance-contact-sheet.png"
+  ],
+  "acceptanceBoundary": {
+    "productionAccepted": false,
+    "expertOutcomeValidated": false,
+    "controlledEnterprisePilotCompleted": false,
+    "liveProviderRerunInPackagingEnvironment": false,
+    "agencyBankingGoldenBenchmarkCompleted": false
+  }
+}

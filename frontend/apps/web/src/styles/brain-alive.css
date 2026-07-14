@@ -1,0 +1,155 @@
+.aiw-stage-health-chips,
+.aiw-library-signal-chips,
+.aiw-canvas-brain-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.aiw-stage-health-chip,
+.aiw-bottom-brain-signal,
+.aiw-canvas-brain-badge {
+  border: 1px solid rgba(120, 120, 120, 0.22);
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.aiw-stage-health-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  font-size: 12px;
+  max-width: 180px;
+}
+
+.aiw-stage-health-chip span:last-child,
+.aiw-bottom-brain-signal span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aiw-library-signal-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 120, 120, 0.22);
+  font-size: 11px;
+  line-height: 1;
+}
+
+.aiw-canvas-brain-badges {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+.aiw-canvas-brain-badge {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+}
+
+.aiw-bottom-brain-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  max-width: 360px;
+  font-size: 12px;
+}
+
+.aiw-info-center {
+  position: fixed;
+  right: 24px;
+  top: 84px;
+  bottom: 72px;
+  width: min(420px, calc(100vw - 48px));
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  border: 1px solid rgba(120, 120, 120, 0.2);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+}
+
+.aiw-info-center__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid rgba(120, 120, 120, 0.14);
+}
+
+.aiw-info-center__header p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.72;
+}
+
+.aiw-info-center__list {
+  padding: 12px;
+  overflow: auto;
+}
+
+.aiw-info-card {
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(120, 120, 120, 0.16);
+  margin-bottom: 10px;
+}
+
+.aiw-info-card__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  opacity: 0.7;
+  text-transform: capitalize;
+}
+
+.aiw-info-card h4 {
+  margin: 8px 0 6px;
+  font-size: 14px;
+}
+
+.aiw-info-card p,
+.aiw-info-card__action {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.aiw-causal-pulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: min(420px, 36vw);
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(45, 212, 191, 0.28);
+  background: rgba(15, 23, 42, 0.78);
+  color: #ecfeff;
+  font-size: 12px;
+  cursor: pointer;
+  animation: aiwBrainPulse 4.2s ease both;
+}
+
+.aiw-causal-pulse span { font-weight: 800; white-space: nowrap; }
+.aiw-causal-pulse small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .82; }
+
+@keyframes aiwBrainPulse {
+  0% { transform: translateY(-3px); opacity: 0; box-shadow: 0 0 0 rgba(45, 212, 191, 0); }
+  14% { transform: translateY(0); opacity: 1; box-shadow: 0 0 0 5px rgba(45, 212, 191, .08); }
+  82% { opacity: 1; }
+  100% { opacity: 0; }
+}

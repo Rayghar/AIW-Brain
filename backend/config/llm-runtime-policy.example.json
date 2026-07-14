@@ -1,0 +1,72 @@
+{
+  "routes": [
+    {
+      "id": "extract-openai-primary",
+      "purpose": "knowledge-extraction",
+      "providerId": "openai",
+      "model": "gpt-4.1-mini",
+      "baseUrl": "https://api.openai.com/v1",
+      "apiKeyEnvironmentVariable": "OPENAI_API_KEY",
+      "protocol": "responses",
+      "timeoutMs": 120000,
+      "maxOutputTokens": 12000,
+      "temperature": 0,
+      "enabled": true,
+      "fallbackRouteIds": ["extract-gemini-fallback"],
+      "dataClassificationAllowlist": ["public", "internal", "confidential"]
+    },
+    {
+      "id": "extract-gemini-fallback",
+      "purpose": "knowledge-extraction",
+      "providerId": "gemini",
+      "model": "gemini-2.5-flash",
+      "baseUrl": "https://generativelanguage.googleapis.com/v1beta/openai",
+      "apiKeyEnvironmentVariable": "GEMINI_API_KEY",
+      "protocol": "chat-completions",
+      "timeoutMs": 120000,
+      "maxOutputTokens": 12000,
+      "temperature": 0,
+      "enabled": true,
+      "fallbackRouteIds": [],
+      "dataClassificationAllowlist": ["public", "internal"]
+    },
+    {
+      "id": "reason-qwen-private",
+      "purpose": "architecture-reasoning",
+      "providerId": "qwen",
+      "model": "qwen-plus",
+      "baseUrl": "https://YOUR_WORKSPACE.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1",
+      "apiKeyEnvironmentVariable": "DASHSCOPE_API_KEY",
+      "protocol": "responses",
+      "timeoutMs": 180000,
+      "maxOutputTokens": 16000,
+      "temperature": 0.1,
+      "enabled": false,
+      "fallbackRouteIds": [],
+      "dataClassificationAllowlist": ["public", "internal"]
+    },
+    {
+      "id": "embedding-openai",
+      "purpose": "embedding",
+      "providerId": "openai",
+      "model": "text-embedding-3-small",
+      "baseUrl": "https://api.openai.com/v1",
+      "apiKeyEnvironmentVariable": "OPENAI_API_KEY",
+      "protocol": "embeddings",
+      "timeoutMs": 120000,
+      "maxOutputTokens": 1,
+      "temperature": 0,
+      "enabled": true,
+      "fallbackRouteIds": [],
+      "dataClassificationAllowlist": ["public", "internal", "confidential"]
+    }
+  ],
+  "allowFallback": true,
+  "requireStructuredOutput": true,
+  "redactSecrets": true,
+  "logPrompts": false,
+  "retainProviderContent": false,
+  "maxRetries": 1,
+  "circuitBreakerFailures": 3,
+  "circuitBreakerResetSeconds": 120
+}

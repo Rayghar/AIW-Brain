@@ -1,0 +1,33 @@
+{
+  "generatedAt": "2026-07-02T18:36:32.763Z",
+  "dataset": {
+    "connectors": 43,
+    "seedClaims": 14
+  },
+  "operations": {
+    "evidenceRetrieval": {
+      "iterations": 2500,
+      "averageMs": 0.1831,
+      "p95Ms": 0.2883,
+      "maxMs": 7.085
+    },
+    "contradictionDetection": {
+      "iterations": 2500,
+      "averageMs": 0.0049,
+      "p95Ms": 0.0078,
+      "maxMs": 0.4021
+    },
+    "coverageAssessment": {
+      "iterations": 1500,
+      "averageMs": 0.0163,
+      "p95Ms": 0.0266,
+      "maxMs": 0.5981
+    },
+    "candidateValidation": {
+      "iterations": 2500,
+      "averageMs": 0.008,
+      "p95Ms": 0.0134,
+      "maxMs": 0.5895
+    }
+  }
+}

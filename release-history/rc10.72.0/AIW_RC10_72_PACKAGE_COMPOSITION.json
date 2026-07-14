@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "release": "0.10.0-rc.10.72.0",
+  "generatedAt": "2026-07-13T13:46:25.308368+00:00",
+  "packagedFilesBeforeManifest": 3162,
+  "totalBytesBeforeManifest": 90818236,
+  "compiledOutputFiles": 1167,
+  "currentReleaseEvidenceFiles": 91,
+  "knowledgeReleaseFiles": 15,
+  "agencyBenchmarkFiles": 64,
+  "installedDependencyDirectories": 0,
+  "gitMetadataDirectories": 0,
+  "privateKeyMaterialRetained": false,
+  "productionAccepted": false,
+  "packagingPolicy": "source, compiled output and current acceptance evidence retained; dependencies, transient test output, debug logs, private keys and git metadata excluded",
+  "packagedFilesFinal": 3165,
+  "internalManifestEntries": 3164
+}

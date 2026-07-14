@@ -1,0 +1,77 @@
+{
+  "release": "0.10.0-rc.10.15",
+  "sprint": "8.9.3",
+  "generatedAt": "2026-07-05T00:26:39.554Z",
+  "readiness": "pilot-ready",
+  "score": 100,
+  "gates": [
+    {
+      "id": "browser-smoke",
+      "label": "Browser smoke coverage passed",
+      "passed": true,
+      "evidence": "9/9 browser smoke checks"
+    },
+    {
+      "id": "visual-regression",
+      "label": "Visual regression contracts captured",
+      "passed": true,
+      "evidence": "5 visual contracts"
+    },
+    {
+      "id": "accessibility-contrast",
+      "label": "Accessibility and contrast gate passed",
+      "passed": true,
+      "evidence": "9/9 accessibility checks"
+    },
+    {
+      "id": "bundle-budget",
+      "label": "Web bundle budget gate passed",
+      "passed": true,
+      "evidence": "largest chunk 508.2KB / 650KB budget"
+    },
+    {
+      "id": "review-export-click-through",
+      "label": "Review Studio export click-through exists",
+      "passed": true,
+      "evidence": "Review report, JSON and ZIP actions available"
+    },
+    {
+      "id": "admin-journey",
+      "label": "Admin/Knowledge/Security pilot journey exists",
+      "passed": true,
+      "evidence": "Admin control plane tabs are present"
+    },
+    {
+      "id": "pilot-workspace-evidence",
+      "label": "Pilot workspace exposes readiness evidence",
+      "passed": true,
+      "evidence": "Pilot workspace shows release/pilot confidence layer"
+    },
+    {
+      "id": "one-command-demo",
+      "label": "One-command verification script registered",
+      "passed": true,
+      "evidence": "npm run sprint8_9_3:verify"
+    }
+  ],
+  "reports": [
+    {
+      "file": "BROWSER_E2E_SMOKE_REPORT_v0.10.0-rc.10.15.json",
+      "exists": true
+    },
+    {
+      "file": "VISUAL_REGRESSION_REPORT_v0.10.0-rc.10.15.json",
+      "exists": true
+    },
+    {
+      "file": "ACCESSIBILITY_CONTRAST_REPORT_v0.10.0-rc.10.15.json",
+      "exists": true
+    },
+    {
+      "file": "WEB_BUNDLE_REPORT_v0.10.0-rc.10.14.json",
+      "exists": true
+    }
+  ],
+  "recommendation": "Ready for controlled enterprise pilot with target-environment execution evidence still required before production acceptance.",
+  "honestyBoundary": "This gate validates reference-package and browser confidence. It does not fabricate customer-environment production acceptance."
+}

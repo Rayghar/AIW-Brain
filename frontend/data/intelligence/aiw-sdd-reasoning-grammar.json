@@ -1,0 +1,23 @@
+{
+  "version": "0.10.0-rc.10.17",
+  "sections": [
+    "introduction-and-motivation",
+    "stakeholder-personas-and-concerns",
+    "architectural-drivers",
+    "visual-modelling-purpose-and-audience",
+    "solution-domain-model",
+    "architectural-decisions",
+    "architecture-solutions",
+    "components-interfaces-properties-composition",
+    "architecture-views-and-models",
+    "refinements-risks-appendix"
+  ],
+  "records": {
+    "stakeholderPersona": ["stakeholder", "role", "motivations", "wishes", "concerns", "waysOfUse", "expectedBenefits"],
+    "driver": ["driverId", "name", "category", "description", "impactOnArchitecture", "priority", "sourceConcern"],
+    "decision": ["decisionId", "name", "description", "rationale", "addressedDrivers", "assumptions", "risks", "scalingFactors", "tradeoffs", "alternatives", "obligations", "fitnessTests"],
+    "architectureSolution": ["solutionId", "name", "addressedDrivers", "steps", "acceptedDecisions", "discardedDecisions", "rationale", "assumptionsAndRisks", "scalingFactors", "tradeoffs"],
+    "component": ["componentName", "responsibilities", "properties", "technologies", "interfaces", "dependencies", "architecturalSolution", "architecturalDrivers"]
+  },
+  "documentationRule": "Document architecturally significant, long-lived, cross-team, quality-impacting, risk-bearing, expensive-to-reverse or governance-relevant choices."
+}

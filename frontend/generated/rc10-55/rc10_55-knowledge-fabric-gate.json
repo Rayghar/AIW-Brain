@@ -1,0 +1,212 @@
+{
+  "releaseVersion": "0.10.0-rc.10.55.0",
+  "releaseId": "AKR-0.10.55",
+  "runtime": "frontend",
+  "generatedAt": "2026-07-11T08:40:46.173Z",
+  "summary": {
+    "checks": 28,
+    "passed": 28,
+    "failed": 0
+  },
+  "metrics": {
+    "patterns": 328,
+    "deepEditorialPatterns": 50,
+    "topologyGenerativePatterns": 154,
+    "sourceDossiers": 47,
+    "cambridgeReasoningStages": 11,
+    "stageKits": 8
+  },
+  "checks": [
+    {
+      "id": "release.package-version",
+      "passed": true,
+      "actual": "0.10.0-rc.10.55.0",
+      "expected": "0.10.0-rc.10.55.0"
+    },
+    {
+      "id": "release.manifest-version",
+      "passed": true,
+      "actual": "0.10.0-rc.10.55.0",
+      "expected": "0.10.0-rc.10.55.0"
+    },
+    {
+      "id": "release.knowledge-release-id",
+      "passed": true,
+      "actual": "AKR-0.10.55",
+      "expected": "AKR-0.10.55"
+    },
+    {
+      "id": "corpus.minimum-records",
+      "passed": true,
+      "actual": 328,
+      "expected": ">=328"
+    },
+    {
+      "id": "corpus.pattern-dna-2",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "corpus.top-50-deep-editorial",
+      "passed": true,
+      "actual": 50,
+      "expected": 50
+    },
+    {
+      "id": "corpus.provenance",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "corpus.no-extraction-only-promotion",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "id": "corpus.component-kit",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "corpus.interface-kit",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "corpus.generation-contract",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "corpus.counterfactuals",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "corpus.lifecycle-use",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "corpus.conflicts-visible",
+      "passed": true,
+      "actual": 328,
+      "expected": 328
+    },
+    {
+      "id": "source-map.repository-dossiers",
+      "passed": true,
+      "actual": 47,
+      "expected": 47
+    },
+    {
+      "id": "source-map.classification-two-dimensional",
+      "passed": true,
+      "actual": {
+        "lifecycleState": "discovery → candidate → approved → deprecated/retired",
+        "usagePosture": [
+          "Adopt",
+          "Adapt",
+          "Adapter",
+          "Reference",
+          "Benchmark",
+          "Discovery",
+          "Exclude"
+        ]
+      },
+      "expected": "knowledge lifecycle + AIW usage posture"
+    },
+    {
+      "id": "source-map.required-reviewers",
+      "passed": true,
+      "actual": 47,
+      "expected": 47
+    },
+    {
+      "id": "source-map.exact-ingestion-config",
+      "passed": true,
+      "actual": 47,
+      "expected": 47
+    },
+    {
+      "id": "source-map.lifecycle-mapping",
+      "passed": true,
+      "actual": 47,
+      "expected": 47
+    },
+    {
+      "id": "source-map.non-scoring-boundary",
+      "passed": true,
+      "actual": 17,
+      "expected": "all candidate/discovery dossiers explicitly prohibit scoring, blockers or recommendations"
+    },
+    {
+      "id": "cambridge.approved-pack",
+      "passed": true,
+      "actual": "approved-reference-pack",
+      "expected": "approved-reference-pack"
+    },
+    {
+      "id": "cambridge.reasoning-stages",
+      "passed": true,
+      "actual": 11,
+      "expected": ">=8"
+    },
+    {
+      "id": "cambridge.reasoning-questions",
+      "passed": true,
+      "actual": 8,
+      "expected": ">=8 stage question sets"
+    },
+    {
+      "id": "cambridge.review-rules",
+      "passed": true,
+      "actual": 6,
+      "expected": ">=6"
+    },
+    {
+      "id": "cambridge.sdd-grammar",
+      "passed": true,
+      "actual": 15,
+      "expected": ">=15"
+    },
+    {
+      "id": "stage-kits.complete",
+      "passed": true,
+      "actual": 8,
+      "expected": 8
+    },
+    {
+      "id": "stage-kits.patterns-and-evidence",
+      "passed": true,
+      "actual": 8,
+      "expected": 8
+    },
+    {
+      "id": "generated-report.acceptance",
+      "passed": true,
+      "actual": {
+        "top50DeepEditorial": true,
+        "noRecordWithoutProvenance": true,
+        "noExtractionOnlyPromotion": true,
+        "generationContractCoverage": true,
+        "sourceLifecycleMapping": true,
+        "conflictsRemainVisible": true
+      },
+      "expected": "all true"
+    }
+  ],
+  "limitations": [
+    "Repository activity and licence data are based on the governed catalogue snapshot; live connector refresh is not claimed in this local acceptance.",
+    "Production worker, durable queue, enterprise identity, KMS signing, object storage and cross-tenant infrastructure acceptance remain in rc.10.58.",
+    "Deep editorial status is encoded and gate-checked; independent enterprise acceptance remains a human governance event."
+  ]
+}

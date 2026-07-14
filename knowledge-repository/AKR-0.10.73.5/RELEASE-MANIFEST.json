@@ -1,0 +1,91 @@
+{
+  "activation": {
+    "liveGithubRefreshAccepted": false,
+    "permittedEnvironment": [
+      "local",
+      "controlled-pilot"
+    ],
+    "productionAccepted": false,
+    "requiresImpactPreview": true,
+    "requiresRollback": true,
+    "requiresStepUpAuthorization": true
+  },
+  "artifacts": [
+    {
+      "bytes": 102452,
+      "name": "GITHUB-CONVERSION-REGISTRY.json",
+      "sha256": "32901c08312d0daf90227257afc0910edd3986026c05dda1347a2ead9165cc71"
+    },
+    {
+      "bytes": 2997762,
+      "name": "KNOWLEDGE-OBJECTS.json",
+      "sha256": "68b03987ec4d161e67df84cfcb3201a7268d43d8a387fb714473a727742f96d0"
+    },
+    {
+      "bytes": 4785188,
+      "name": "PATTERN-DNA-2.1.json",
+      "sha256": "bdfb8975f8e1fad42ef30133c56413dfe3c9b385b49e7101b82555927ea919d6"
+    },
+    {
+      "bytes": 831600,
+      "name": "CLAIM-LINEAGE-INDEX.json",
+      "sha256": "22cac4caf03ca46467c0f32ad9020776312a9c8a243ea76ca83dee2c88dd5c03"
+    },
+    {
+      "bytes": 154,
+      "name": "CONTRADICTION-REGISTER.json",
+      "sha256": "60ccafd41a11686080d080f164064256e0209e02efe0de710c8dd262132184b9"
+    },
+    {
+      "bytes": 44030,
+      "name": "SOURCE-WITHDRAWAL-IMPACT.json",
+      "sha256": "06d1d61e8e29125991ad692f49c5860ab4daace445e082ed8ca5b346b9f249fb"
+    },
+    {
+      "bytes": 1891,
+      "name": "BRAIN-KNOWLEDGE-ACTIVATION.json",
+      "sha256": "2566ab183a84d5832d2e007dcaf0402d242e5a74d98f1944793e3db515396d17"
+    }
+  ],
+  "authority": {
+    "candidateAndDiscoveryInfluence": "blocked from scoring, constraints and conformance",
+    "mutationAuthority": "none; human approval required",
+    "productionScoring": "blocked for repository-derived knowledge pending immutable live refresh, licence clearance and expert calibration",
+    "runtimeUse": "governed descriptive knowledge, controlled-pilot reasoning and human-approved composition"
+  },
+  "generatedAt": "2026-07-14T20:30:00.000Z",
+  "limitations": [
+    "Outbound GitHub access and enterprise credentials were unavailable in the build environment; 30 immutable live snapshots remain unexecuted.",
+    "Seed claims preserve exact catalogue locations but use seed revisions and therefore cannot become production scoring rules.",
+    "Editorial Pattern DNA claim receipts now have explicit lineage but remain editorial synthesis unless backed by a direct source passage.",
+    "Licence review is still open for repositories marked requires-review."
+  ],
+  "pins": {
+    "cambridge": "CAMBRIDGE-SA-1.0",
+    "claimLineageSha256": "22cac4caf03ca46467c0f32ad9020776312a9c8a243ea76ca83dee2c88dd5c03",
+    "githubCatalogueSha256": "dae2c7650364c5a455bcb5620f1c3ef783dc48b16cae9a7c75a64d089614e92a",
+    "kernel": "AIW-KERNEL-2.0",
+    "knowledgeObjectCorpusSha256": "68b03987ec4d161e67df84cfcb3201a7268d43d8a387fb714473a727742f96d0",
+    "lifecycleGrammar": "LIFECYCLE-GRAMMAR-1.1",
+    "llmAuthorityPolicy": "LLM-AUTHORITY-1.0",
+    "patternDna": "PDNA-2.1",
+    "previousKnowledgeRelease": "AKR-0.10.72.0"
+  },
+  "promotion": {
+    "approvedRepositories": 30,
+    "directSourceClaimCoveragePercent": 0.3,
+    "editorialClaimObjects": 984,
+    "externalHumanPanel": false,
+    "independentAIReview": true,
+    "liveRepositorySnapshots": 0,
+    "patternRecords": 328,
+    "patternRecordsWithClaimLineage": 328,
+    "scoringCalibratedPatternRecords": 0,
+    "sourceClaimObjects": 14,
+    "sponsorApproved": true
+  },
+  "releaseId": "AKR-0.10.73.5",
+  "schemaVersion": "2.1",
+  "status": "approved-for-controlled-pilot",
+  "title": "AIW Governed GitHub Knowledge Conversion and Brain Activation"
+}

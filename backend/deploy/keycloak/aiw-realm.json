@@ -1,0 +1,36 @@
+{
+  "realm": "aiw",
+  "enabled": true,
+  "displayName": "AIW Enterprise Acceptance",
+  "roles": {
+    "realm": [
+      {
+        "name": "aiw-admin"
+      },
+      {
+        "name": "aiw-architect"
+      },
+      {
+        "name": "aiw-reviewer"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "aiw-api",
+      "name": "AIW API",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:4173/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4173"
+      ],
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true
+    }
+  ],
+  "users": []
+}

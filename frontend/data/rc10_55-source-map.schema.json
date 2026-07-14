@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiw.local/schemas/rc10_55-source-map.schema.json",
+  "title": "AIW Global Architecture Intelligence Source Map",
+  "type": "object",
+  "required": [
+    "releaseId",
+    "dossiers"
+  ],
+  "properties": {
+    "releaseId": {
+      "const": "AKR-0.10.55"
+    },
+    "dossiers": {
+      "type": "array",
+      "minItems": 40,
+      "items": {
+        "type": "object",
+        "required": [
+          "connectorId",
+          "identity",
+          "licence",
+          "sourceAuthority",
+          "technicalScope",
+          "usefulPaths",
+          "knowledgeEntitiesAvailable",
+          "canonicalMapping",
+          "lifecycleStagesAffected",
+          "ingestionRisks",
+          "recommendedPosture",
+          "exactIngestionConfiguration",
+          "requiredHumanReviewer"
+        ]
+      }
+    }
+  }
+}

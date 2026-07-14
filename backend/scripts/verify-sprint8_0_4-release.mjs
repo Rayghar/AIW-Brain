@@ -1,0 +1,12 @@
+import { readFile } from 'node:fs/promises';
+import { createHash, createPublicKey, verify } from 'node:crypto';
+const releasePath = new URL('../data/sprint8_0_4-release.json', import.meta.url);
+const signaturePath = new URL('../generated/sprint8_0_4-release.signature.json', import.meta.url);
+const payload = await readFile(releasePath);
+const record = JSON.parse(await readFile(signaturePath, 'utf8'));
+const checksum = createHash('sha256').update(payload).digest('hex');
+if (checksum !== record.checksumSha256) throw new Error('Release checksum does not match signed record');
+const signature = Buffer.from(record.signatureBase64, 'base64');
+if (!verify(null, payload, createPublicKey(record.publicKeyPem), signature)) throw new Error('Release signature invalid');
+if (verify(null, Buffer.concat([payload, Buffer.from('\n')]), createPublicKey(record.publicKeyPem), signature)) throw new Error('Tamper rejection failed');
+console.log(JSON.stringify({ releaseId: record.releaseId, checksum, verification: 'valid', tamperTest: 'rejected' }, null, 2));

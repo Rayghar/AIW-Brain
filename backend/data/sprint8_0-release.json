@@ -1,0 +1,29 @@
+{
+  "releaseId": "AIW-8.0",
+  "version": "0.9.0",
+  "name": "Architecture Synthesis and Simulation",
+  "status": "implemented",
+  "knowledgeReleaseBoundary": "AKR-0.8.9",
+  "capabilities": {
+    "designBriefAssessment": true,
+    "contradictionDetection": true,
+    "diverseAlternativeSynthesis": true,
+    "paretoComparison": true,
+    "deterministicStressSimulation": true,
+    "configurableLlmNarrativeEnrichment": true,
+    "canonicalModelApplication": true,
+    "adrAndCalmGeneration": true,
+    "fitnessFunctionHandoff": true,
+    "codeDeploymentRuntimeConformanceHandoff": true,
+    "tenantScopedPersistence": true,
+    "lazyLoadedSynthesisWorkspace": true
+  },
+  "governanceBoundary": {
+    "llmMayExplain": true,
+    "llmMayDraft": true,
+    "llmMayInventPatterns": false,
+    "llmMayChangeScores": false,
+    "llmMayMutateCanonicalModelDirectly": false,
+    "humanApprovalRequired": true
+  }
+}

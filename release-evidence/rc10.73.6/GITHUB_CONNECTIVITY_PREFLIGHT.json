@@ -1,0 +1,189 @@
+{
+  "generatedAt": "2026-07-14T20:02:10.077Z",
+  "apiVersion": "2026-03-10",
+  "authenticated": false,
+  "reachable": 0,
+  "total": 30,
+  "results": [
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "repository": "finos/architecture-as-code",
+      "status": "unreachable",
+      "error": "fetch failed"
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "status": "unreachable",
+      "error": "fetch failed"
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "status": "unreachable",
+      "error": "fetch failed"
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "repository": "xmolecules/jmolecules",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "status": "unreachable",
+      "error": "The operation was aborted due to timeout"
+    }
+  ]
+}

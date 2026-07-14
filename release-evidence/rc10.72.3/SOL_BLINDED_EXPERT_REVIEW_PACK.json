@@ -1,0 +1,417 @@
+{
+  "id": "SOL-EXPERT-PACK-project-order-to-payment-1",
+  "generatedAt": "2026-07-14T10:58:12.701Z",
+  "blindedVariants": [
+    {
+      "anonymousVariantId": "VAR-0C2DFFCC2098",
+      "scenarioId": "SOL-CAL-LTE-01",
+      "lifecycleStage": "logicalTechnology",
+      "recommendation": "Add a provider-neutral resilience and recovery capability. Quality scenario qs-payment-provider-latency requires “Isolate the failure and preserve order status for safe retry”, but the logical technology model has no explicit backup, recovery, failover or continuity capability to own that obligation.",
+      "observations": [
+        "The accepted response measure is: “No confirmed order is lost; checkout degrades within 3 seconds”.",
+        "7 provider-neutral capability object(s) exist, but none is classified for recovery or continuity.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question.",
+        "7 current-stage architecture object(s) are in scope."
+      ],
+      "tradeOffs": [
+        "A broader shared capability may improve reuse but can increase coupling, blast radius and governance overhead.",
+        "A provider-neutral capability should remain separate from product selection until constraints and quality tactics justify the binding."
+      ],
+      "clarifyingQuestions": [
+        "Which provider-neutral recovery capabilities and accountable operational owner will verify scenario qs-payment-provider-latency before product selection?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-274CF29AF265",
+      "scenarioId": "SOL-CAL-REA-01",
+      "lifecycleStage": "realization",
+      "recommendation": "Add an explicit reconciliation or compensation responsibility around deployable-payment-worker (“Payment Worker”) for exhausted retries and uncertain outcomes on interface if-payment-provider (“Payment Provider Contract”). The accepted asynchronous boundary otherwise has no visible owner for exception resolution.",
+      "observations": [
+        "Payment Provider Contract uses request-response with retry policy “bounded exponential with circuit breaker” and dead-letter/exception policy “manual exception queue”.",
+        "Payment Worker is the current deployable consumer/processor in this scope.",
+        "Decision adr-event-driven-order-progression records the accepted alternative and consequences.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Choosing Modular Monolith constrains deployable boundaries, ownership and operational coupling.",
+        "Payment Processing Cell is useful only when interface, state and failure obligations are accepted."
+      ],
+      "clarifyingQuestions": [
+        "Which component and team own reconciliation, compensation and manual disposition after retries on “Payment Provider Contract” are exhausted?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-2FB2E5D7DEA2",
+      "scenarioId": "SOL-CAL-LOG-01",
+      "lifecycleStage": "logical",
+      "recommendation": "The next boundary decision is ownership between logical-order-service (“Order Service”) and logical-payment-service (“Payment Service”). Assign one owner for the journey state and failure/compensation policy; otherwise their coupling remains ambiguous before further decomposition.",
+      "observations": [
+        "Order Service currently represents an accepted logical responsibility.",
+        "Payment Service is the nearest competing or collaborating responsibility in the current logical scope.",
+        "Accepted decision adr-event-driven-order-progression constrains this boundary: Use synchronous commands for order capture and asynchronous events for payment progression, with an outbox at the order boundary.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Choosing Service-Based constrains later decomposition and operational obligations; compare at least one credible alternative.",
+        "Saga Boundary may improve fit only when its prerequisites and failure obligations are accepted."
+      ],
+      "clarifyingQuestions": [
+        "Which responsibility owns the authoritative state and compensation outcome when “Order Service” and “Payment Service” collaborate?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-327E6BE645E8",
+      "scenarioId": "SOL-CAL-REV-01",
+      "lifecycleStage": "review",
+      "recommendation": "Architecture approval should remain blocked by finding-development-identity (“Development authentication is enabled”, severity HARD). Disposition it as changes required, attach the mitigation evidence, and only then request re-review.",
+      "observations": [
+        "Production acceptance is blocked while development authentication remains enabled and enterprise SSO is not required.",
+        "Role selection in the UI is not a substitute for authenticated enterprise authorization.",
+        "Require enterprise OIDC.",
+        "Disable development authentication.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available."
+      ],
+      "tradeOffs": [
+        "Waiving a finding accelerates approval but transfers an explicit risk and evidence obligation to an accountable owner.",
+        "Adding more documentation cannot compensate for an unresolved critical security, resilience or interface omission."
+      ],
+      "clarifyingQuestions": [
+        "Who owns remediation of “Development authentication is enabled”, what evidence will prove closure, and which reviewer must accept it?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-32924A69AB84",
+      "scenarioId": "SOL-CAL-PTE-01",
+      "lifecycleStage": "physicalTechnology",
+      "recommendation": "The highest-impact deployment decision is finding-single-zone-postgres (“Critical order database remains single-zone”). The physical database currently records one availability zone and does not meet the intended failure-domain posture. Keep the physical stage unapproved until the failure-domain choice is corrected or an accountable risk disposition is recorded.",
+      "observations": [
+        "A zone failure could interrupt order recovery and violate availability objectives.",
+        "Affected topology object: physical-postgres (“Managed PostgreSQL”).",
+        "Configure multi-zone failover.",
+        "Run backup restore and regional recovery exercises.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available."
+      ],
+      "tradeOffs": [
+        "Higher redundancy improves resilience but increases cost, operational complexity and consistency concerns.",
+        "A product mapping that ignores regions, zones, identity and observability creates a deployable diagram without an operable system."
+      ],
+      "clarifyingQuestions": [
+        "Which zone/region failover design and verification evidence will replace the current configuration of “Managed PostgreSQL”?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-50B7F7582BCA",
+      "scenarioId": "SOL-CAL-QUA-01",
+      "lifecycleStage": "quality",
+      "recommendation": "Quality scenario qs-payment-provider-latency is the weakest measurable constraint because its response measure (“No confirmed order is lost; checkout degrades within 3 seconds”) has no recorded observation window, verification source or accountable test owner. Until that evidence is supplied, tactics derived from this scenario must remain provisional.",
+      "observations": [
+        "Stimulus: Provider becomes unavailable or exceeds timeout.",
+        "Environment: Peak production traffic.",
+        "Response: Isolate the failure and preserve order status for safe retry.",
+        "Response measure: No confirmed order is lost; checkout degrades within 3 seconds.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available."
+      ],
+      "tradeOffs": [
+        "Increasing one quality priority usually raises cost or constrains another; preserve the measurable scenario and accepted trade-off.",
+        "A quality label without a response measure cannot authoritatively select tactics, patterns or technology."
+      ],
+      "clarifyingQuestions": [
+        "Over what measurement window, using which evidence source and test owner, will “No confirmed order is lost; checkout degrades within 3 seconds” be verified?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-5565AA13ECD6",
+      "scenarioId": "SOL-CAL-PTE-01",
+      "lifecycleStage": "physicalTechnology",
+      "recommendation": "The highest-impact deployment decision is finding-single-zone-postgres (“Critical order database remains single-zone”). The physical database currently records one availability zone and does not meet the intended failure-domain posture. Keep the physical stage unapproved until the failure-domain choice is corrected or an accountable risk disposition is recorded.",
+      "observations": [
+        "A zone failure could interrupt order recovery and violate availability objectives.",
+        "Affected topology object: physical-postgres (“Managed PostgreSQL”).",
+        "Configure multi-zone failover.",
+        "Run backup restore and regional recovery exercises.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available."
+      ],
+      "tradeOffs": [
+        "Higher redundancy improves resilience but increases cost, operational complexity and consistency concerns.",
+        "A product mapping that ignores regions, zones, identity and observability creates a deployable diagram without an operable system."
+      ],
+      "clarifyingQuestions": [
+        "Which zone/region failover design and verification evidence will replace the current configuration of “Managed PostgreSQL”?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-56FE3D72BC6F",
+      "scenarioId": "SOL-CAL-LTE-01",
+      "lifecycleStage": "logicalTechnology",
+      "recommendation": "Add a provider-neutral resilience and recovery capability. Quality scenario qs-payment-provider-latency requires “Isolate the failure and preserve order status for safe retry”, but the logical technology model has no explicit backup, recovery, failover or continuity capability to own that obligation.",
+      "observations": [
+        "The accepted response measure is: “No confirmed order is lost; checkout degrades within 3 seconds”.",
+        "7 provider-neutral capability object(s) exist, but none is classified for recovery or continuity.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question.",
+        "7 current-stage architecture object(s) are in scope."
+      ],
+      "tradeOffs": [
+        "A broader shared capability may improve reuse but can increase coupling, blast radius and governance overhead.",
+        "A provider-neutral capability should remain separate from product selection until constraints and quality tactics justify the binding."
+      ],
+      "clarifyingQuestions": [
+        "Which provider-neutral recovery capabilities and accountable operational owner will verify scenario qs-payment-provider-latency before product selection?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-742D7F593CCB",
+      "scenarioId": "SOL-CAL-SDD-01",
+      "lifecycleStage": "sdd",
+      "recommendation": "The SDD is not implementation-ready because finding-development-identity (“Development authentication is enabled”) remains unresolved and approval approval-physical is still changes-requested. Mark the affected security/deployment and assurance sections as blocked or stale, attach corrective evidence, and regenerate only after reapproval.",
+      "observations": [
+        "Production acceptance is blocked while development authentication remains enabled and enterprise SSO is not required.",
+        "Role selection in the UI is not a substitute for authenticated enterprise authorization.",
+        "Approval approval-physical for physicalTechnology has status changes-requested.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Generating a draft early supports review, but it must remain visibly unapproved and preserve evidence gaps.",
+        "Freezing the delivery pack improves control but requires downstream change-impact and reapproval when canonical design changes."
+      ],
+      "clarifyingQuestions": [
+        "Which SDD section owns the unresolved finding, and what evidence and approval will make that section implementation-ready?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-758FBB9D962D",
+      "scenarioId": "SOL-CAL-REA-01",
+      "lifecycleStage": "realization",
+      "recommendation": "Add an explicit reconciliation or compensation responsibility around deployable-payment-worker (“Payment Worker”) for exhausted retries and uncertain outcomes on interface if-payment-provider (“Payment Provider Contract”). The accepted asynchronous boundary otherwise has no visible owner for exception resolution.",
+      "observations": [
+        "Payment Provider Contract uses request-response with retry policy “bounded exponential with circuit breaker” and dead-letter/exception policy “manual exception queue”.",
+        "Payment Worker is the current deployable consumer/processor in this scope.",
+        "Decision adr-event-driven-order-progression records the accepted alternative and consequences.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Choosing Modular Monolith constrains deployable boundaries, ownership and operational coupling.",
+        "Payment Processing Cell is useful only when interface, state and failure obligations are accepted."
+      ],
+      "clarifyingQuestions": [
+        "Which component and team own reconciliation, compensation and manual disposition after retries on “Payment Provider Contract” are exhausted?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-7D4CF4F71BD1",
+      "scenarioId": "SOL-CAL-REQ-01",
+      "lifecycleStage": "requirements",
+      "recommendation": "Requirement legacy-objective-3 (“Business objective 3”) is the most architecture-significant ambiguity because no accountable stakeholder is linked and no observable acceptance criterion is recorded. Resolve this before treating the requirements baseline as architecture-ready.",
+      "observations": [
+        "The accepted statement is: “Support measurable availability and latency objectives”",
+        "7 project stakeholder(s) exist, but this requirement has 0 explicit stakeholder link(s).",
+        "0 acceptance criterion/criteria are attached to the requirement.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Adding inferred scope can make the specification appear complete while hiding unconfirmed business assumptions.",
+        "Deferring clarification preserves speed now but increases the chance of rework in every downstream model."
+      ],
+      "clarifyingQuestions": [
+        "Who is accountable for approving “Business objective 3”, and what observable acceptance evidence will show that the outcome has been achieved?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-8BDF9FB3BB1C",
+      "scenarioId": "SOL-CAL-REV-01",
+      "lifecycleStage": "review",
+      "recommendation": "Architecture approval should remain blocked by finding-development-identity (“Development authentication is enabled”, severity HARD). Disposition it as changes required, attach the mitigation evidence, and only then request re-review.",
+      "observations": [
+        "Production acceptance is blocked while development authentication remains enabled and enterprise SSO is not required.",
+        "Role selection in the UI is not a substitute for authenticated enterprise authorization.",
+        "Require enterprise OIDC.",
+        "Disable development authentication.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available."
+      ],
+      "tradeOffs": [
+        "Waiving a finding accelerates approval but transfers an explicit risk and evidence obligation to an accountable owner.",
+        "Adding more documentation cannot compensate for an unresolved critical security, resilience or interface omission."
+      ],
+      "clarifyingQuestions": [
+        "Who owns remediation of “Development authentication is enabled”, what evidence will prove closure, and which reviewer must accept it?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-936FC1670242",
+      "scenarioId": "SOL-CAL-REQ-01",
+      "lifecycleStage": "requirements",
+      "recommendation": "Requirement legacy-objective-3 (“Business objective 3”) is the most architecture-significant ambiguity because no accountable stakeholder is linked and no observable acceptance criterion is recorded. Resolve this before treating the requirements baseline as architecture-ready.",
+      "observations": [
+        "The accepted statement is: “Support measurable availability and latency objectives”",
+        "7 project stakeholder(s) exist, but this requirement has 0 explicit stakeholder link(s).",
+        "0 acceptance criterion/criteria are attached to the requirement.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Adding inferred scope can make the specification appear complete while hiding unconfirmed business assumptions.",
+        "Deferring clarification preserves speed now but increases the chance of rework in every downstream model."
+      ],
+      "clarifyingQuestions": [
+        "Who is accountable for approving “Business objective 3”, and what observable acceptance evidence will show that the outcome has been achieved?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-955E4C61094C",
+      "scenarioId": "SOL-CAL-QUA-01",
+      "lifecycleStage": "quality",
+      "recommendation": "Quality scenario qs-payment-provider-latency is the weakest measurable constraint because its response measure (“No confirmed order is lost; checkout degrades within 3 seconds”) has no recorded observation window, verification source or accountable test owner. Until that evidence is supplied, tactics derived from this scenario must remain provisional.",
+      "observations": [
+        "Stimulus: Provider becomes unavailable or exceeds timeout.",
+        "Environment: Peak production traffic.",
+        "Response: Isolate the failure and preserve order status for safe retry.",
+        "Response measure: No confirmed order is lost; checkout degrades within 3 seconds.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available."
+      ],
+      "tradeOffs": [
+        "Increasing one quality priority usually raises cost or constrains another; preserve the measurable scenario and accepted trade-off.",
+        "A quality label without a response measure cannot authoritatively select tactics, patterns or technology."
+      ],
+      "clarifyingQuestions": [
+        "Over what measurement window, using which evidence source and test owner, will “No confirmed order is lost; checkout degrades within 3 seconds” be verified?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-9D7016C2E184",
+      "scenarioId": "SOL-CAL-SDD-01",
+      "lifecycleStage": "sdd",
+      "recommendation": "The SDD is not implementation-ready because finding-development-identity (“Development authentication is enabled”) remains unresolved and approval approval-physical is still changes-requested. Mark the affected security/deployment and assurance sections as blocked or stale, attach corrective evidence, and regenerate only after reapproval.",
+      "observations": [
+        "Production acceptance is blocked while development authentication remains enabled and enterprise SSO is not required.",
+        "Role selection in the UI is not a substitute for authenticated enterprise authorization.",
+        "Approval approval-physical for physicalTechnology has status changes-requested.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Generating a draft early supports review, but it must remain visibly unapproved and preserve evidence gaps.",
+        "Freezing the delivery pack improves control but requires downstream change-impact and reapproval when canonical design changes."
+      ],
+      "clarifyingQuestions": [
+        "Which SDD section owns the unresolved finding, and what evidence and approval will make that section implementation-ready?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-AD7A13C339D1",
+      "scenarioId": "SOL-CAL-CTX-01",
+      "lifecycleStage": "context",
+      "recommendation": "No canonical System Context is accepted. Use journey legacy-journey-1 (“Process customer orders reliably”) to establish the system boundary, then explicitly disposition its actors, the known external systems (Core ledger, Enterprise identity provider, Commerce analytics platform), trust-boundary crossings and interactions.",
+      "observations": [
+        "3 accepted or compatibility-projected journey(s) are available.",
+        "3 known existing system(s) may create external dependency obligations.",
+        "Zero canonical System Context participants and interactions are currently accepted.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Including a participant inside the system boundary assigns responsibility; leaving it external creates an interface and dependency obligation.",
+        "Collapsing multiple journeys into one interaction simplifies the view but may hide different trust, data or failure semantics."
+      ],
+      "clarifyingQuestions": [
+        "For journey “Process customer orders reliably”, which participants are inside the system of interest and which must remain external?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-D2E6428C89FB",
+      "scenarioId": "SOL-CAL-CTX-01",
+      "lifecycleStage": "context",
+      "recommendation": "No canonical System Context is accepted. Use journey legacy-journey-1 (“Process customer orders reliably”) to establish the system boundary, then explicitly disposition its actors, the known external systems (Core ledger, Enterprise identity provider, Commerce analytics platform), trust-boundary crossings and interactions.",
+      "observations": [
+        "3 accepted or compatibility-projected journey(s) are available.",
+        "3 known existing system(s) may create external dependency obligations.",
+        "Zero canonical System Context participants and interactions are currently accepted.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Including a participant inside the system boundary assigns responsibility; leaving it external creates an interface and dependency obligation.",
+        "Collapsing multiple journeys into one interaction simplifies the view but may hide different trust, data or failure semantics."
+      ],
+      "clarifyingQuestions": [
+        "For journey “Process customer orders reliably”, which participants are inside the system of interest and which must remain external?"
+      ]
+    },
+    {
+      "anonymousVariantId": "VAR-DC5B35B4C1F4",
+      "scenarioId": "SOL-CAL-LOG-01",
+      "lifecycleStage": "logical",
+      "recommendation": "The next boundary decision is ownership between logical-order-service (“Order Service”) and logical-payment-service (“Payment Service”). Assign one owner for the journey state and failure/compensation policy; otherwise their coupling remains ambiguous before further decomposition.",
+      "observations": [
+        "Order Service currently represents an accepted logical responsibility.",
+        "Payment Service is the nearest competing or collaborating responsibility in the current logical scope.",
+        "Accepted decision adr-event-driven-order-progression constrains this boundary: Use synchronous commands for order capture and asynchronous events for payment progression, with an outbox at the order boundary.",
+        "Sol is using an explicit read-only compatibility projection from architect-confirmed objectives and constraints because canonical Requirements Intelligence records are not yet available.",
+        "5 relevant accepted requirement(s) ground this question."
+      ],
+      "tradeOffs": [
+        "Choosing Service-Based constrains later decomposition and operational obligations; compare at least one credible alternative.",
+        "Saga Boundary may improve fit only when its prerequisites and failure obligations are accepted."
+      ],
+      "clarifyingQuestions": [
+        "Which responsibility owns the authoritative state and compensation outcome when “Order Service” and “Payment Service” collaborate?"
+      ]
+    }
+  ],
+  "rubric": [
+    {
+      "dimension": "correctness",
+      "question": "Is the reasoning architecturally correct and free of unsupported claims?",
+      "weight": 20,
+      "critical": true
+    },
+    {
+      "dimension": "stage-relevance",
+      "question": "Does the answer address the exact lifecycle stage and selected scope?",
+      "weight": 15,
+      "critical": true
+    },
+    {
+      "dimension": "evidence",
+      "question": "Is the answer grounded in traceable project or governed-knowledge evidence?",
+      "weight": 15,
+      "critical": true
+    },
+    {
+      "dimension": "specificity",
+      "question": "Is the response specific enough to guide this project rather than any project?",
+      "weight": 10,
+      "critical": false
+    },
+    {
+      "dimension": "trade-offs",
+      "question": "Are alternatives and material consequences explained?",
+      "weight": 10,
+      "critical": false
+    },
+    {
+      "dimension": "actionability",
+      "question": "Can the architect take a concrete, reviewable next step?",
+      "weight": 10,
+      "critical": false
+    },
+    {
+      "dimension": "governance",
+      "question": "Are authority, uncertainty, evidence and human-decision boundaries clear?",
+      "weight": 10,
+      "critical": true
+    },
+    {
+      "dimension": "trust",
+      "question": "Would an experienced architect trust this answer after reviewing its receipt?",
+      "weight": 10,
+      "critical": false
+    }
+  ],
+  "disclosure": "Variant identities are blinded. This pack does not reveal deterministic or governed-LLM mode and does not claim human expert validation until reviewers submit scores independently."
+}

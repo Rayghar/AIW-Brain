@@ -1,0 +1,188 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: aiw
+      POSTGRES_USER: aiw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aiw}
+    ports:
+      - "5432:5432"
+    volumes:
+      - aiw_postgres:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/001-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiw -d aiw"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-aiwminio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-aiwminio-change-me}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - aiw_minio:/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command: >-
+      mc alias set aiw http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" &&
+      mc mb --ignore-existing aiw/aiw-knowledge &&
+      mc anonymous set none aiw/aiw-knowledge
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-aiwminio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-aiwminio-change-me}
+
+  migrate:
+    build:
+      context: .
+      target: api
+    command: npm run migrate:db
+    environment:
+      DATABASE_URL: postgresql://aiw:${POSTGRES_PASSWORD:-aiw}@postgres:5432/aiw
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    build:
+      context: .
+      target: api
+    ports:
+      - "4100:4100"
+    environment:
+      PORT: 4100
+      HOST: 0.0.0.0
+      DATABASE_URL: postgresql://aiw:${POSTGRES_PASSWORD:-aiw}@postgres:5432/aiw
+      AIW_ALLOW_DEV_AUTH: ${AIW_ALLOW_DEV_AUTH:-true}
+      AIW_DEV_TOKEN_SECRET: ${AIW_DEV_TOKEN_SECRET:-replace-this-in-production}
+      AIW_ENABLE_GITHUB_KNOWLEDGE: ${AIW_ENABLE_GITHUB_KNOWLEDGE:-false}
+      AIW_GITHUB_TOKEN: ${AIW_GITHUB_TOKEN:-}
+      AIW_ENABLE_LLM_EXTRACTION: ${AIW_ENABLE_LLM_EXTRACTION:-false}
+      AIW_EXTRACTION_MAX_FILES_PER_REFRESH: ${AIW_EXTRACTION_MAX_FILES_PER_REFRESH:-20}
+      AIW_KNOWLEDGE_OBJECT_STORE: s3
+      AIW_KNOWLEDGE_S3_ENDPOINT: http://minio:9000
+      AIW_KNOWLEDGE_S3_BUCKET: aiw-knowledge
+      AIW_KNOWLEDGE_S3_FORCE_PATH_STYLE: "true"
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-aiwminio}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-aiwminio-change-me}
+      AWS_REGION: us-east-1
+      AIW_ENABLE_VECTOR_INDEXING: ${AIW_ENABLE_VECTOR_INDEXING:-false}
+      AIW_VECTOR_EMBEDDING_MODE: ${AIW_VECTOR_EMBEDDING_MODE:-deterministic}
+      AIW_LLM_PROVIDER: ${AIW_LLM_PROVIDER:-openai}
+      AIW_LLM_RUNTIME_CONFIG_PATH: /var/lib/aiw/config/llm-runtime-overrides.json
+      AIW_LLM_MODEL: ${AIW_LLM_MODEL:-gpt-4.1-mini}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      DASHSCOPE_API_KEY: ${DASHSCOPE_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      AIW_LLM_QWEN_BASE_URL: ${AIW_LLM_QWEN_BASE_URL:-}
+      AIW_ENABLE_REPOSITORY_WRITES: ${AIW_ENABLE_REPOSITORY_WRITES:-false}
+      AIW_REPOSITORY_TOKEN: ${AIW_REPOSITORY_TOKEN:-}
+      AIW_ENABLE_RELEASE_SIGNING: ${AIW_ENABLE_RELEASE_SIGNING:-false}
+      AIW_RELEASE_PRIVATE_KEY_PATH: ${AIW_RELEASE_PRIVATE_KEY_PATH:-}
+      AIW_RUNTIME_ACCEPTANCE_MODE: ${AIW_RUNTIME_ACCEPTANCE_MODE:-report}
+      AIW_RUNTIME_REQUIRED_CHECKS: ${AIW_RUNTIME_REQUIRED_CHECKS:-ACC-POSTGRES,ACC-OBJECT-STORE,ACC-VECTOR,ACC-OIDC,ACC-OTEL,ACC-SIGNING}
+      AIW_RUNTIME_ACCEPTANCE_OPERATORS: ${AIW_RUNTIME_ACCEPTANCE_OPERATORS:-user-owner}
+      AIW_RUNTIME_ACCEPTANCE_TENANT: ${AIW_RUNTIME_ACCEPTANCE_TENANT:-tenant-reference}
+      AIW_OIDC_ISSUER: ${AIW_OIDC_ISSUER:-}
+      AIW_OIDC_AUDIENCE: ${AIW_OIDC_AUDIENCE:-aiw-api}
+      AIW_GITHUB_ACCEPTANCE_REPOSITORY: ${AIW_GITHUB_ACCEPTANCE_REPOSITORY:-}
+      AIW_FITNESS_TARGET_REPOSITORY: ${AIW_FITNESS_TARGET_REPOSITORY:-}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+    volumes:
+      - ${AIW_RELEASE_KEY_DIRECTORY:-./secrets}:/run/aiw-secrets:ro
+      - aiw_runtime_config:/var/lib/aiw/config
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio-init:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: .
+      target: web
+    ports:
+      - "4173:80"
+    depends_on:
+      api:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+
+  knowledge-refresh-worker:
+    build:
+      context: .
+      target: api
+    profiles: ["operations"]
+    command: npx tsx scripts/knowledge-refresh-worker.ts
+    environment:
+      DATABASE_URL: postgresql://aiw:${POSTGRES_PASSWORD:-aiw}@postgres:5432/aiw
+      AIW_ENABLE_GITHUB_KNOWLEDGE: "true"
+      AIW_GITHUB_TOKEN: ${AIW_GITHUB_TOKEN:-}
+      AIW_REFRESH_CONNECTORS: ${AIW_REFRESH_CONNECTORS:-GH-FINOS-CALM,GH-MICROSOFT-ARCH-CENTER,GH-ASYNCAPI,GH-APACHE-CAMEL,GH-CONTEXT-MAPPER,GH-ARCHUNIT}
+      AIW_KNOWLEDGE_OBJECT_STORE: s3
+      AIW_KNOWLEDGE_S3_ENDPOINT: http://minio:9000
+      AIW_KNOWLEDGE_S3_BUCKET: aiw-knowledge
+      AIW_KNOWLEDGE_S3_FORCE_PATH_STYLE: "true"
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-aiwminio}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-aiwminio-change-me}
+      AWS_REGION: us-east-1
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      minio-init:
+        condition: service_completed_successfully
+
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    profiles: ["enterprise"]
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?Set KEYCLOAK_ADMIN_PASSWORD for the enterprise profile}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./deploy/keycloak/aiw-realm.json:/opt/keycloak/data/import/aiw-realm.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && printf 'GET /realms/aiw/.well-known/openid-configuration HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && grep -q '200 OK' <&3"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    profiles: ["enterprise"]
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./deploy/otel/collector-config.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+
+volumes:
+  aiw_postgres:
+  aiw_minio:
+  aiw_runtime_config:

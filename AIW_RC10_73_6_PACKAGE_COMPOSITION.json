@@ -1,0 +1,225 @@
+{
+  "release": "0.10.0-rc.10.73.6",
+  "generatedAt": "2026-07-14T20:08:08.813348+00:00",
+  "rootDirectory": "AIW_v0.10.0-rc.10.73.6_Governed_GitHub_Live_Acquisition_and_100_Percent_Conversion_Readiness_FULLDIST",
+  "fileCount": 3348,
+  "directoryCount": 353,
+  "totalBytes": 112973421,
+  "topLevel": {
+    "(root)": {
+      "files": 12,
+      "bytes": 37330
+    },
+    "backend": {
+      "files": 1719,
+      "bytes": 47800592
+    },
+    "benchmarks": {
+      "files": 1,
+      "bytes": 2730
+    },
+    "data": {
+      "files": 7,
+      "bytes": 838159
+    },
+    "deploy": {
+      "files": 6,
+      "bytes": 12351
+    },
+    "docs": {
+      "files": 18,
+      "bytes": 99878
+    },
+    "frontend": {
+      "files": 1394,
+      "bytes": 40327465
+    },
+    "knowledge-repository": {
+      "files": 23,
+      "bytes": 14015064
+    },
+    "release-evidence": {
+      "files": 61,
+      "bytes": 3078958
+    },
+    "release-history": {
+      "files": 95,
+      "bytes": 6642412
+    },
+    "scripts": {
+      "files": 9,
+      "bytes": 113826
+    },
+    "tests": {
+      "files": 3,
+      "bytes": 4656
+    }
+  },
+  "extensions": [
+    {
+      "extension": ".ts",
+      "files": 1077,
+      "bytes": 10179144
+    },
+    {
+      "extension": ".json",
+      "files": 458,
+      "bytes": 65253573
+    },
+    {
+      "extension": ".js",
+      "files": 439,
+      "bytes": 10661427
+    },
+    {
+      "extension": ".map",
+      "files": 382,
+      "bytes": 4999920
+    },
+    {
+      "extension": ".mjs",
+      "files": 309,
+      "bytes": 1107597
+    },
+    {
+      "extension": ".md",
+      "files": 224,
+      "bytes": 585235
+    },
+    {
+      "extension": ".tsx",
+      "files": 170,
+      "bytes": 2197888
+    },
+    {
+      "extension": ".css",
+      "files": 66,
+      "bytes": 2234160
+    },
+    {
+      "extension": ".log",
+      "files": 41,
+      "bytes": 2576647
+    },
+    {
+      "extension": ".sql",
+      "files": 41,
+      "bytes": 238680
+    },
+    {
+      "extension": ".yml",
+      "files": 24,
+      "bytes": 47140
+    },
+    {
+      "extension": ".tsbuildinfo",
+      "files": 21,
+      "bytes": 603071
+    },
+    {
+      "extension": ".png",
+      "files": 15,
+      "bytes": 7555466
+    },
+    {
+      "extension": ".pem",
+      "files": 15,
+      "bytes": 1695
+    },
+    {
+      "extension": "(none)",
+      "files": 12,
+      "bytes": 3286
+    },
+    {
+      "extension": ".sha256",
+      "files": 9,
+      "bytes": 3432160
+    },
+    {
+      "extension": ".ps1",
+      "files": 5,
+      "bytes": 1691
+    },
+    {
+      "extension": ".yaml",
+      "files": 5,
+      "bytes": 1460
+    },
+    {
+      "extension": ".docx",
+      "files": 5,
+      "bytes": 960094
+    },
+    {
+      "extension": ".example",
+      "files": 4,
+      "bytes": 9796
+    },
+    {
+      "extension": ".py",
+      "files": 4,
+      "bytes": 79527
+    },
+    {
+      "extension": ".conf",
+      "files": 2,
+      "bytes": 1162
+    },
+    {
+      "extension": ".mmd",
+      "files": 2,
+      "bytes": 1304
+    },
+    {
+      "extension": ".txt",
+      "files": 2,
+      "bytes": 574
+    },
+    {
+      "extension": ".tf",
+      "files": 2,
+      "bytes": 1354
+    },
+    {
+      "extension": ".java",
+      "files": 2,
+      "bytes": 714
+    },
+    {
+      "extension": ".rego",
+      "files": 2,
+      "bytes": 518
+    },
+    {
+      "extension": ".html",
+      "files": 2,
+      "bytes": 2207
+    },
+    {
+      "extension": ".svg",
+      "files": 2,
+      "bytes": 1180
+    },
+    {
+      "extension": ".webmanifest",
+      "files": 2,
+      "bytes": 774
+    },
+    {
+      "extension": ".mts",
+      "files": 2,
+      "bytes": 5909
+    },
+    {
+      "extension": ".bundle",
+      "files": 1,
+      "bytes": 226733
+    },
+    {
+      "extension": ".asc",
+      "files": 1,
+      "bytes": 1335
+    }
+  ]
+}

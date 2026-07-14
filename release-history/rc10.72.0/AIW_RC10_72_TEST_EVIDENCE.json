@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0",
+  "release": "0.10.0-rc.10.72.0",
+  "generatedAt": "2026-07-13T13:41:37.466103+00:00",
+  "builds": {
+    "backend": "passed",
+    "frontendPackages": "passed",
+    "frontendProductionBundle": "passed",
+    "bundleAdvisory": "aiw-artifacts-core and product-shell exceed warning threshold"
+  },
+  "focusedTests": {
+    "files": 5,
+    "tests": 21,
+    "passed": 21
+  },
+  "gates": {
+    "authorityStructural": "39/39 passed",
+    "authorityStatic": "7/7 passed",
+    "brainArchitectureBackend": "passed",
+    "brainArchitectureFrontend": "passed",
+    "brainRuntimeResolution": "passed",
+    "rc10_72Release": "34/34 passed",
+    "backendInternalDependencies": "passed",
+    "frontendInternalDependencies": "passed",
+    "backendReleaseIntegrity": "passed",
+    "frontendReleaseIntegrity": "passed"
+  },
+  "browser": {
+    "projects": [
+      "chromium-desktop",
+      "chromium-laptop"
+    ],
+    "tests": 2,
+    "passed": 2,
+    "meaningfulErrors": 0,
+    "horizontalOverflowPx": 0
+  },
+  "security": {
+    "backendProductionVulnerabilities": 0,
+    "frontendProductionVulnerabilities": 0
+  },
+  "documents": {
+    "agencyBankingSddPages": 20,
+    "docxRendered": true,
+    "pdfRendered": true,
+    "visualInspection": "passed-no-clipping-or-overlap-observed"
+  },
+  "cryptography": {
+    "manifestDigestVerified": true,
+    "offlineEd25519Verified": true,
+    "privateKeyRetained": false,
+    "gitCommitVerified": true,
+    "gitTagVerified": true,
+    "gitBundleVerified": true,
+    "enterpriseKmsProductionAccepted": false
+  },
+  "structureGate": {
+    "backend": "failed-7-inherited-violations",
+    "frontend": "failed-7-inherited-violations",
+    "regression": "not introduced as a new gate family; workspaceStore remains above budget and target directories remain absent"
+  },
+  "fullInheritedSuite": {
+    "status": "not-completed",
+    "reason": "aggregate run did not terminate within available execution windows",
+    "claim": "No full-suite pass claimed"
+  },
+  "productionAccepted": false
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0",
+  "releaseId": "AKR-0.10.72.0",
+  "localSignedCheckin": {
+    "commit": "82eff5868ee41f1a80706a9359532a5fa86cb18a",
+    "tag": "AKR-0.10.72.0",
+    "signingFingerprint": "E659049EAA1D9337808A7FFFA1ACFBF42E8A97F0",
+    "commitVerified": true,
+    "tagVerified": true,
+    "bundleVerified": true,
+    "commitVerification": "",
+    "tagVerification": ""
+  },
+  "remoteGithub": {
+    "configured": false,
+    "pushed": false,
+    "status": "blocked-no-github-remote-or-credential",
+    "requiredAction": "Configure an approved GitHub remote, branch protection and credential, then push the verified signed commit and tag."
+  },
+  "generatedAt": "2026-07-13T13:17:11.417Z"
+}

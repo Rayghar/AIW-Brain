@@ -1,0 +1,331 @@
+{
+  "releaseVersion": "0.10.0-rc.10.56.0",
+  "knowledgeReleaseId": "AKR-0.10.55",
+  "runtime": "frontend",
+  "generatedAt": "2026-07-11T09:38:15.426Z",
+  "summary": {
+    "checks": 33,
+    "passed": 33,
+    "failed": 0
+  },
+  "runtimeAcceptance": {
+    "stagePlans": [
+      {
+        "stage": "logicalApplication",
+        "patternId": "PAT-SAGA-BOUNDARY",
+        "eligible": true,
+        "nodes": 2,
+        "edges": 1,
+        "interfaces": 2,
+        "views": 1,
+        "obligations": 2,
+        "canonicalChecksPassed": true
+      },
+      {
+        "stage": "applicationRealization",
+        "patternId": "STYLE-MICROSERVICES",
+        "eligible": true,
+        "nodes": 2,
+        "edges": 1,
+        "interfaces": 2,
+        "views": 1,
+        "obligations": 2,
+        "canonicalChecksPassed": true
+      },
+      {
+        "stage": "logicalTechnology",
+        "patternId": "STYLE-MICROSERVICES",
+        "eligible": true,
+        "nodes": 2,
+        "edges": 1,
+        "interfaces": 2,
+        "views": 1,
+        "obligations": 2,
+        "canonicalChecksPassed": true
+      },
+      {
+        "stage": "physicalTechnology",
+        "patternId": "PAT-PLATFORM-ENGINEERING",
+        "eligible": true,
+        "nodes": 3,
+        "edges": 3,
+        "interfaces": 2,
+        "views": 1,
+        "obligations": 1,
+        "canonicalChecksPassed": true
+      }
+    ],
+    "idempotency": {
+      "duplicateSkips": 10,
+      "nodeCountStable": true,
+      "edgeCountStable": true,
+      "interfaceCountStable": true
+    },
+    "rollback": {
+      "baselineNodesRestored": true,
+      "baselineEdgesRestored": true,
+      "generatedInterfacesRemoved": true,
+      "generatedViewsRemoved": true
+    }
+  },
+  "checks": [
+    {
+      "id": "release.package-version",
+      "passed": true,
+      "actual": "0.10.0-rc.10.56.0",
+      "expected": "0.10.0-rc.10.56.0"
+    },
+    {
+      "id": "release.manifest-version",
+      "passed": true,
+      "actual": "0.10.0-rc.10.56.0",
+      "expected": "0.10.0-rc.10.56.0"
+    },
+    {
+      "id": "release.line",
+      "passed": true,
+      "actual": "rc.10.56",
+      "expected": "rc.10.56"
+    },
+    {
+      "id": "knowledge.pinned-approved-release",
+      "passed": true,
+      "actual": "AKR-0.10.55",
+      "expected": "AKR-0.10.55"
+    },
+    {
+      "id": "ui.studio-surface",
+      "passed": true,
+      "actual": "Visual Architecture Composition Studio",
+      "expected": "present"
+    },
+    {
+      "id": "ui.core-workflow",
+      "passed": true,
+      "actual": "workflow labels",
+      "expected": "all eight workflow stages"
+    },
+    {
+      "id": "ui.search-across-dna",
+      "passed": true,
+      "actual": "aliases + component kit + interface kit + tags",
+      "expected": "all searchable"
+    },
+    {
+      "id": "ui.facets",
+      "passed": true,
+      "actual": "record type + category + stage",
+      "expected": "faceted filters"
+    },
+    {
+      "id": "ui.compare",
+      "passed": true,
+      "actual": "comparison state",
+      "expected": "side-by-side comparison"
+    },
+    {
+      "id": "ui.topology-preview",
+      "passed": true,
+      "actual": "SVG preview",
+      "expected": "rendered topology before apply"
+    },
+    {
+      "id": "ui.before-after",
+      "passed": true,
+      "actual": "before/after metrics",
+      "expected": "present"
+    },
+    {
+      "id": "ui.evidence-drawer",
+      "passed": true,
+      "actual": "evidence drawer",
+      "expected": "present"
+    },
+    {
+      "id": "ui.canonical-validation",
+      "passed": true,
+      "actual": "canonical checks",
+      "expected": "visible"
+    },
+    {
+      "id": "ui.apply-and-rollback",
+      "passed": true,
+      "actual": "apply + rollback",
+      "expected": "both present"
+    },
+    {
+      "id": "ui.canvas-entry",
+      "passed": true,
+      "actual": "Open canvas",
+      "expected": "present"
+    },
+    {
+      "id": "ui.responsive",
+      "passed": true,
+      "actual": "@media responsive rules",
+      "expected": "present"
+    },
+    {
+      "id": "ui.pattern-studio-default",
+      "passed": true,
+      "actual": "compose is default",
+      "expected": "true"
+    },
+    {
+      "id": "store.composition-history",
+      "passed": true,
+      "actual": "composition history",
+      "expected": "present"
+    },
+    {
+      "id": "store.safe-apply",
+      "passed": true,
+      "actual": "governed apply",
+      "expected": "present"
+    },
+    {
+      "id": "store.safe-rollback",
+      "passed": true,
+      "actual": "governed rollback",
+      "expected": "present"
+    },
+    {
+      "id": "domain.mutation-completeness",
+      "passed": true,
+      "actual": "objects + relationships + interfaces + views",
+      "expected": "all model mutation types"
+    },
+    {
+      "id": "domain.rollback-completeness",
+      "passed": true,
+      "actual": "rollback identifiers",
+      "expected": "all generated model items"
+    },
+    {
+      "id": "domain.idempotency-contract",
+      "passed": true,
+      "actual": "application key + duplicate skips + canonical checks",
+      "expected": "present"
+    },
+    {
+      "id": "engine.trust-boundaries",
+      "passed": true,
+      "actual": "network zone + containment",
+      "expected": "generated trust boundary"
+    },
+    {
+      "id": "engine.interface-generation",
+      "passed": true,
+      "actual": "Pattern DNA interface generation",
+      "expected": "present"
+    },
+    {
+      "id": "engine.named-stage-view",
+      "passed": true,
+      "actual": "persistent named architecture view",
+      "expected": "present"
+    },
+    {
+      "id": "engine.obligation-generation",
+      "passed": true,
+      "actual": "pattern obligations",
+      "expected": "generated"
+    },
+    {
+      "id": "engine.duplicate-protection",
+      "passed": true,
+      "actual": "duplicate checks",
+      "expected": "present"
+    },
+    {
+      "id": "engine.authority-boundary",
+      "passed": true,
+      "actual": "approved-only eligibility",
+      "expected": "present"
+    },
+    {
+      "id": "test.targeted-engine",
+      "passed": true,
+      "actual": "targeted engine test",
+      "expected": "present"
+    },
+    {
+      "id": "runtime.all-modelling-stages-preview",
+      "passed": true,
+      "actual": [
+        {
+          "stage": "logicalApplication",
+          "patternId": "PAT-SAGA-BOUNDARY",
+          "eligible": true,
+          "nodes": 2,
+          "edges": 1,
+          "interfaces": 2,
+          "views": 1,
+          "obligations": 2,
+          "canonicalChecksPassed": true
+        },
+        {
+          "stage": "applicationRealization",
+          "patternId": "STYLE-MICROSERVICES",
+          "eligible": true,
+          "nodes": 2,
+          "edges": 1,
+          "interfaces": 2,
+          "views": 1,
+          "obligations": 2,
+          "canonicalChecksPassed": true
+        },
+        {
+          "stage": "logicalTechnology",
+          "patternId": "STYLE-MICROSERVICES",
+          "eligible": true,
+          "nodes": 2,
+          "edges": 1,
+          "interfaces": 2,
+          "views": 1,
+          "obligations": 2,
+          "canonicalChecksPassed": true
+        },
+        {
+          "stage": "physicalTechnology",
+          "patternId": "PAT-PLATFORM-ENGINEERING",
+          "eligible": true,
+          "nodes": 3,
+          "edges": 3,
+          "interfaces": 2,
+          "views": 1,
+          "obligations": 1,
+          "canonicalChecksPassed": true
+        }
+      ],
+      "expected": "4 eligible canvas-stage previews with canonical topology, interfaces, obligations and named view"
+    },
+    {
+      "id": "runtime.idempotent-application",
+      "passed": true,
+      "actual": {
+        "duplicateSkips": 10,
+        "nodeCountStable": true,
+        "edgeCountStable": true,
+        "interfaceCountStable": true
+      },
+      "expected": "duplicate-safe repeated application"
+    },
+    {
+      "id": "runtime.safe-rollback",
+      "passed": true,
+      "actual": {
+        "baselineNodesRestored": true,
+        "baselineEdgesRestored": true,
+        "generatedInterfacesRemoved": true,
+        "generatedViewsRemoved": true
+      },
+      "expected": "baseline restored"
+    }
+  ],
+  "limitations": [
+    "The studio consumes the approved rc.10.55 knowledge release; it does not perform live repository refresh.",
+    "External identity, durable queues, KMS signing, object storage and production connector acceptance remain rc.10.58 scope.",
+    "Provider-specific deployment products remain overlays and cannot override the provider-neutral composition model."
+  ]
+}

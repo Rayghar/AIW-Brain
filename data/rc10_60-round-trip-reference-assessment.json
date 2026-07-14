@@ -1,0 +1,53 @@
+{
+  "projectId": "project-order-to-payment",
+  "formats": [
+    "structurizr-dsl",
+    "calm-json",
+    "likec4"
+  ],
+  "reports": [
+    {
+      "format": "structurizr-dsl",
+      "exportedFingerprint": "structurizr-4c24b1c3",
+      "importedFingerprint": "aiw-753d3503",
+      "nodeIdentityPercent": 100,
+      "edgeIdentityPercent": 100,
+      "interfaceIdentityPercent": 100,
+      "propertyFidelityPercent": 100,
+      "overallFidelityPercent": 100,
+      "lostNodeIds": [],
+      "lostEdgeIds": [],
+      "issues": [],
+      "passed": true
+    },
+    {
+      "format": "calm-json",
+      "exportedFingerprint": "calm-79595325",
+      "importedFingerprint": "aiw-753d3503",
+      "nodeIdentityPercent": 100,
+      "edgeIdentityPercent": 100,
+      "interfaceIdentityPercent": 100,
+      "propertyFidelityPercent": 100,
+      "overallFidelityPercent": 100,
+      "lostNodeIds": [],
+      "lostEdgeIds": [],
+      "issues": [],
+      "passed": true
+    },
+    {
+      "format": "likec4",
+      "exportedFingerprint": "likec4-0c619888",
+      "importedFingerprint": "aiw-753d3503",
+      "nodeIdentityPercent": 100,
+      "edgeIdentityPercent": 100,
+      "interfaceIdentityPercent": 100,
+      "propertyFidelityPercent": 100,
+      "overallFidelityPercent": 100,
+      "lostNodeIds": [],
+      "lostEdgeIds": [],
+      "issues": [],
+      "passed": true
+    }
+  ],
+  "passed": true
+}

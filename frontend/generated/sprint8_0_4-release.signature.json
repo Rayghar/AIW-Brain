@@ -1,0 +1,13 @@
+{
+  "releaseId": "AIW-0.9.7",
+  "checksumSha256": "33b95aa53be214f8254e493ba1f60ee43259a1e95f940631341e20762c2d04f5",
+  "signatureAlgorithm": "Ed25519",
+  "publicKeyId": "c3b7b88d326ac81b2cc80dc3",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAfCmrIOVEhwXO+QzBcu98NN5nPueUt9YBemHp7zILStU=\n-----END PUBLIC KEY-----\n",
+  "signatureBase64": "o3qLY04M2TjjKYyL2m3Fb7NRsXWNbhMH5iijwCQPVaP++rJaPjxAQhbQBmHahuYqsIbCfRvVHy+YAMWpuiKJCw==",
+  "signedBy": "AIW Sprint 8.0.4 Hardening Reference Release Authority",
+  "signedAt": "2026-07-03T07:41:26.448Z",
+  "verificationStatus": "valid",
+  "tamperTest": "rejected",
+  "note": "Reference release signature. Production promotion should use an enterprise KMS/HSM-backed trust root."
+}

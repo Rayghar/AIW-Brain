@@ -1,0 +1,97 @@
+{
+  "generatedAt": "2026-07-02T15:54:29.711Z",
+  "findings": [
+    {
+      "antiPatternId": "ANTI-SECURITY-BOLTON",
+      "name": "Security Bolt-On",
+      "severity": "HARD",
+      "confidence": 96,
+      "explanation": "1 public API(s) exist without an explicit identity and access-control responsibility.",
+      "affectedNodeIds": [
+        "deployable-order-api"
+      ],
+      "affectedEdgeIds": [],
+      "signals": [
+        "no trust boundaries",
+        "public API without auth design",
+        "sensitive data without control mapping"
+      ],
+      "risks": [
+        "design rework",
+        "control gaps",
+        "attack exposure"
+      ],
+      "mitigations": [
+        "secure-by-design review",
+        "threat modeling",
+        "map controls to components and data flows"
+      ],
+      "evidenceSourceIds": [
+        "SRC-OWASP-ASVS",
+        "SRC-NIST-SSDF"
+      ]
+    },
+    {
+      "antiPatternId": "ANTI-UNVERSIONED-CONTRACT",
+      "name": "Unversioned Interface Contract",
+      "severity": "ADVISORY",
+      "confidence": 80,
+      "explanation": "Order API has no interface versioning or compatibility strategy.",
+      "affectedNodeIds": [
+        "deployable-order-api"
+      ],
+      "affectedEdgeIds": [],
+      "signals": [
+        "no API versioning",
+        "no event schema ownership",
+        "breaking changes"
+      ],
+      "risks": [
+        "consumer outages",
+        "release coupling"
+      ],
+      "mitigations": [
+        "explicit compatibility policy",
+        "contract testing",
+        "schema registry",
+        "deprecation window"
+      ],
+      "evidenceSourceIds": [
+        "SRC-OPENAPI",
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    },
+    {
+      "antiPatternId": "ANTI-IMPLICIT-OWNERSHIP",
+      "name": "Implicit Ownership",
+      "severity": "ADVISORY",
+      "confidence": 75,
+      "explanation": "4 important architecture elements have no explicit owner.",
+      "affectedNodeIds": [
+        "logical-order-service",
+        "logical-payment-service",
+        "deployable-order-api",
+        "deployable-payment-worker"
+      ],
+      "affectedEdgeIds": [],
+      "signals": [
+        "missing owner",
+        "unclear on-call responsibility",
+        "shared data with no steward"
+      ],
+      "risks": [
+        "slow incident response",
+        "unmanaged change"
+      ],
+      "mitigations": [
+        "record owning team",
+        "define data and interface stewardship",
+        "include ownership in ADRs"
+      ],
+      "evidenceSourceIds": [
+        "SRC-AWS-WAF",
+        "SRC-INTERNAL-PRINCIPLES"
+      ]
+    }
+  ]
+}

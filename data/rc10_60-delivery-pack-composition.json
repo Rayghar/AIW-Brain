@@ -1,0 +1,267 @@
+{
+  "fileCount": 43,
+  "files": [
+    {
+      "path": "handoff/manifest.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/document-control.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/executive-summary.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/system-design-description.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/system-design-description-accessible.pdf",
+      "mediaType": "application/pdf",
+      "encoding": "base64",
+      "accessibility": {
+        "tagged": true,
+        "language": "en-GB",
+        "alternativeText": "Paginated System Design Description with a ten-view Architecture Viewbook and textual alternatives for every diagram."
+      }
+    },
+    {
+      "path": "handoff/system-design-description-accessibility.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/solution-architecture-document.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/interface-register.csv",
+      "mediaType": "text/csv",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/model-traceability.csv",
+      "mediaType": "text/csv",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/data-architecture.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/security-architecture.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/resilience-and-operations.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/migration-and-transition.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/diagrams/cross-stage-lineage.mmd",
+      "mediaType": "text/plain",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/diagrams/data-and-integration-flow.mmd",
+      "mediaType": "text/plain",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/diagrams/logical-application-architecture.svg",
+      "mediaType": "image/svg+xml",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/diagrams/application-realization-architecture.svg",
+      "mediaType": "image/svg+xml",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/diagrams/logical-technology-architecture.svg",
+      "mediaType": "image/svg+xml",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/diagrams/physical-deployment-architecture.svg",
+      "mediaType": "image/svg+xml",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/adr-pack.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/c4/c4-context-view.mmd",
+      "mediaType": "text/plain",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/c4/c4-container-view.mmd",
+      "mediaType": "text/plain",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/c4/c4-component-view.mmd",
+      "mediaType": "text/plain",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/deployment-view.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/integration-catalogue.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/risk-register.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/fitness-tests.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/fitness-tests.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": ".github/workflows/aiw-review-fitness.yml",
+      "mediaType": "text/yaml",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/implementation-backlog.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/implementation-backlog.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/review-scorecard.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/evidence-traceability.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/handoff-checklist.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/architecture-review.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/architecture-as-code/workspace.dsl",
+      "mediaType": "text/vnd.structurizr.dsl",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/architecture-as-code/architecture.calm.json",
+      "mediaType": "application/vnd.finos.calm+json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/architecture-as-code/architecture.c4",
+      "mediaType": "text/vnd.likec4",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/architecture-as-code/round-trip-validation.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/architecture-as-code/README.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/provider-product-catalog.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/provider-product-mapping.md",
+      "mediaType": "text/markdown",
+      "encoding": "utf8",
+      "accessibility": null
+    },
+    {
+      "path": "handoff/canonical-architecture.json",
+      "mediaType": "application/json",
+      "encoding": "utf8",
+      "accessibility": null
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "repo-reference-local",
+  "provider": "local",
+  "repositoryUrl": "file://architecture-reference",
+  "defaultBranch": "main",
+  "architecturePath": "architecture/aiw-project.json",
+  "runtimeInventoryPath": "architecture/runtime-inventory.json",
+  "policyGatePath": "architecture/policy-gate.json",
+  "status": "configured"
+}

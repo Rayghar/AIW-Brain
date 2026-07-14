@@ -1,0 +1,178 @@
+{
+  "packId": "KPACK-CAMBRIDGE-SA-2.0",
+  "version": "2.0.0",
+  "releaseId": "AKR-0.10.55",
+  "status": "approved-reference-pack",
+  "provenance": {
+    "sourceFamily": "SRC-INTERNAL-CAMBRIDGE-PLAYBOOK",
+    "materials": [
+      "FPA_MSA_NEME.docx",
+      "SA Playbook_v2(2).xlsx",
+      "UCA MSA Study Companion.xlsx",
+      "Architecture Pattern Usecases.docx",
+      "Architecture Tactics_.docx",
+      "EA- Quality Requirements.docx",
+      "EA SSP - Architecture v4.docx",
+      "EA SSP - Drivers and Decisisons v 0.5.docx",
+      "EA SSP - Refined components v 2.0.1.docx",
+      "General Architecture Practices.docx",
+      "Table Analysis_Architectural Patterns and Quality Properties.docx",
+      "Agency Banking Solution SDD-Ver0.1.pdf"
+    ],
+    "usePolicy": "Internal licensed reference. Derive structured guidance; do not redistribute source text.",
+    "reviewOwner": "AIW Architecture Knowledge Council"
+  },
+  "reasoningFlow": [
+    "problem and intended benefit",
+    "stakeholders, motivations, wishes and concerns",
+    "business, functional, quality and constraint drivers",
+    "architecturally significant requirements",
+    "viewpoints and architecture views",
+    "candidate styles, tactics and patterns",
+    "decisions, alternatives and trade-offs",
+    "components, responsibilities and interfaces",
+    "technology capabilities and provider mappings",
+    "risks, assumptions and validation",
+    "traceability and SDD handoff"
+  ],
+  "reasoningQuestions": {
+    "designIntent": [
+      "What business outcome and intended benefit justify the architecture work?",
+      "Who uses, funds, operates, governs and is affected by the solution?",
+      "What motivations, wishes and concerns must the architecture address?",
+      "What is explicitly in and out of scope?",
+      "Which assumptions require validation before synthesis?"
+    ],
+    "qualityDrivers": [
+      "Which requirements are architecturally significant?",
+      "Can each quality requirement be written as source, stimulus, environment, artifact, response and response measure?",
+      "Which quality drivers conflict, and which trade-off authority decides?",
+      "What baseline and measurable target will prove success?"
+    ],
+    "logicalApplication": [
+      "Which business capabilities and bounded responsibilities belong together?",
+      "Where should cohesion be high and coupling low?",
+      "Which components own behaviour and data?",
+      "What abstractions prevent ripple effects and preserve information hiding?"
+    ],
+    "applicationRealization": [
+      "Which deployable units realize each logical responsibility?",
+      "Which interfaces are required by each consumer and provider?",
+      "Which communication patterns are synchronous, asynchronous or batch, and why?",
+      "Which pattern obligations become tests or review controls?"
+    ],
+    "logicalTechnology": [
+      "Which vendor-neutral capabilities are required?",
+      "Which capabilities are mandatory, optional or prohibited by constraints?",
+      "What platform, security, data and observability services support the design?"
+    ],
+    "physicalTechnology": [
+      "Which products or managed services realize each accepted capability?",
+      "What deployment zones, trust boundaries, scaling units and recovery paths are required?",
+      "What provider-specific limits or costs alter the neutral design?"
+    ],
+    "validationRealization": [
+      "Which decisions address which drivers?",
+      "What alternatives were rejected and under what counterfactual conditions would they become preferable?",
+      "What risks, assumptions and failure modes remain?",
+      "Which fitness tests and evidence demonstrate readiness?"
+    ],
+    "sddPack": [
+      "Which audience needs which viewpoint and level of detail?",
+      "Does every significant requirement trace to decisions, components, interfaces and tests?",
+      "Are diagrams generated from the same canonical model as the narrative?",
+      "What is incomplete, externally dependent or awaiting acceptance?"
+    ]
+  },
+  "qualityScenarioGrammar": {
+    "fields": [
+      "source",
+      "stimulus",
+      "environment",
+      "artifact",
+      "response",
+      "responseMeasure"
+    ],
+    "rule": "A quality scenario is incomplete until the response measure is measurable and linked to an owner and validation method."
+  },
+  "viewpointLogic": [
+    {
+      "audience": "business sponsor and product owner",
+      "views": [
+        "system context",
+        "capability and outcome traceability"
+      ],
+      "purpose": "Confirm scope, intended benefit and major dependencies."
+    },
+    {
+      "audience": "solution and enterprise architects",
+      "views": [
+        "logical application",
+        "cross-stage traceability",
+        "decision and trade-off view"
+      ],
+      "purpose": "Assess boundaries, styles, patterns and alignment."
+    },
+    {
+      "audience": "engineering teams",
+      "views": [
+        "application realization",
+        "interface and event flow",
+        "data architecture"
+      ],
+      "purpose": "Provide implementation-usable responsibilities and contracts."
+    },
+    {
+      "audience": "platform, security and operations",
+      "views": [
+        "logical technology",
+        "physical deployment",
+        "security and trust boundaries",
+        "resilience and recovery"
+      ],
+      "purpose": "Validate run-time, control and recovery obligations."
+    },
+    {
+      "audience": "review board and assurance",
+      "views": [
+        "requirements traceability",
+        "risks and assumptions",
+        "fitness tests and evidence"
+      ],
+      "purpose": "Make disposition decisions from governed evidence."
+    }
+  ],
+  "reviewRules": [
+    "Every architecture decision links to one or more drivers and records alternatives, consequences, risks and assumptions.",
+    "Every component has a responsibility, owner, interfaces and linked drivers.",
+    "Every interface identifies provider, consumer, interaction style, contract and failure policy.",
+    "Every quality scenario has a measurable response and validation method.",
+    "Every diagram is a projection of the canonical model, not an independent drawing.",
+    "Every unresolved contradiction or assumption remains visible in review and SDD outputs."
+  ],
+  "sddGrammar": [
+    "executive summary and intended benefit",
+    "stakeholders and concerns",
+    "scope, assumptions and constraints",
+    "business, functional and quality drivers",
+    "architecture style and decision records",
+    "logical application and component responsibilities",
+    "application realization and interfaces",
+    "data architecture",
+    "security and trust boundaries",
+    "logical and physical technology",
+    "deployment, resilience and recovery",
+    "operations and observability",
+    "risks, assumptions and trade-offs",
+    "fitness tests and acceptance evidence",
+    "cross-stage traceability and appendices"
+  ],
+  "completenessControls": [
+    "No significant driver without a decision or explicit deferral.",
+    "No mandatory component without responsibility and owner.",
+    "No external dependency without contract, timeout and failure policy.",
+    "No data store without ownership, consistency, retention and protection properties.",
+    "No selected pattern without obligations, risks, evidence and counterfactual explanation.",
+    "No SDD section generated from stale or unpinned knowledge."
+  ]
+}

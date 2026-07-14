@@ -1,0 +1,493 @@
+{
+  "id": "v10-production-acceptance-target-environment-not-specified",
+  "releaseId": "AIW-0.10.0",
+  "packageVersion": "0.10.0-rc.2",
+  "targetVersion": "0.10.0",
+  "sprint": "8.7.6-target-acceptance-finalization",
+  "generatedAt": "2026-07-03T20:08:38.124Z",
+  "tenantId": "tenant-reference",
+  "environmentId": "target-environment-not-specified",
+  "status": "acceptance-pending",
+  "productionAccepted": false,
+  "finalDeclarationAllowed": false,
+  "gates": [
+    {
+      "id": "gate-reference-pilot",
+      "label": "Reference pilot candidate evidence",
+      "required": true,
+      "passed": true,
+      "status": "passed",
+      "evidenceIds": [
+        "pilot-evaluation-v0.10.0-rc.1"
+      ],
+      "rationale": "Reference pilot suite nominated a release candidate or conditional candidate."
+    },
+    {
+      "id": "gate-enterprise-runtime",
+      "label": "Enterprise runtime probes",
+      "required": true,
+      "passed": false,
+      "status": "missing",
+      "evidenceIds": [],
+      "rationale": "Enterprise runtime probes has not been verified for target-environment-not-specified; required controls: PostgreSQL connectivity, pgvector retrieval, object storage round trip, OIDC/JWKS, OpenTelemetry export, release signing key."
+    },
+    {
+      "id": "gate-repository-conformance",
+      "label": "Repository conformance runs",
+      "required": true,
+      "passed": false,
+      "status": "missing",
+      "evidenceIds": [],
+      "rationale": "Repository conformance runs has not been verified for target-environment-not-specified; required controls: fitness functions executed, API/event contracts checked, repository topology assessed."
+    },
+    {
+      "id": "gate-runtime-telemetry",
+      "label": "Runtime telemetry evidence",
+      "required": true,
+      "passed": false,
+      "status": "missing",
+      "evidenceIds": [],
+      "rationale": "Runtime telemetry evidence has not been verified for target-environment-not-specified; required controls: service topology observed, critical spans exported, runtime resources mapped to intended architecture."
+    },
+    {
+      "id": "gate-identity-access",
+      "label": "Identity and authorization acceptance",
+      "required": true,
+      "passed": false,
+      "status": "missing",
+      "evidenceIds": [],
+      "rationale": "Identity and authorization acceptance has not been verified for target-environment-not-specified; required controls: tenant isolation verified, role boundaries verified, operator privileges reviewed."
+    },
+    {
+      "id": "gate-model-routing",
+      "label": "Approved model routing",
+      "required": true,
+      "passed": false,
+      "status": "missing",
+      "evidenceIds": [],
+      "rationale": "Approved model routing has not been verified for target-environment-not-specified; required controls: deterministic fallback available, external model route governed, structured output validated."
+    },
+    {
+      "id": "gate-pilot-signoff",
+      "label": "Pilot user sign-off",
+      "required": true,
+      "passed": false,
+      "status": "missing",
+      "evidenceIds": [],
+      "rationale": "Pilot user sign-off has not been verified for target-environment-not-specified; required controls: pilot users completed scenarios, critical blockers accepted or closed, usage feedback reviewed."
+    },
+    {
+      "id": "gate-architecture-board-approval",
+      "label": "Architecture-board release approval",
+      "required": true,
+      "passed": false,
+      "status": "missing",
+      "evidenceIds": [],
+      "rationale": "Architecture-board release approval has not been verified for target-environment-not-specified; required controls: decision recorded, production boundary accepted, exceptions time-boxed."
+    }
+  ],
+  "missingEvidenceKinds": [
+    "enterprise-runtime",
+    "repository-conformance",
+    "runtime-telemetry",
+    "identity-access",
+    "model-routing",
+    "pilot-signoff",
+    "architecture-board-approval"
+  ],
+  "failedEvidenceKinds": [],
+  "evidence": [],
+  "visualModel": {
+    "id": "visual-v10-production-acceptance",
+    "title": "v0.10.0 production acceptance map",
+    "description": "Interactive acceptance graph linking final declaration gates to target-environment evidence and blockers.",
+    "generatedAt": "2026-07-03T20:08:38.124Z",
+    "nodes": [
+      {
+        "id": "release-aiw-0.10.0",
+        "kind": "release",
+        "label": "AIW v0.10.0 final declaration",
+        "summary": "Final release declaration is allowed only when all target-environment evidence and board approval gates pass.",
+        "x": 80,
+        "y": 80,
+        "status": "pending",
+        "metadata": {
+          "releaseId": "AIW-0.10.0"
+        }
+      },
+      {
+        "id": "environment-target-environment-not-specified",
+        "kind": "environment",
+        "label": "target-environment-not-specified",
+        "summary": "Target environment under acceptance assessment.",
+        "x": 80,
+        "y": 250,
+        "status": "pending",
+        "metadata": {
+          "environmentId": "target-environment-not-specified"
+        }
+      },
+      {
+        "id": "gate-reference-pilot",
+        "kind": "gate",
+        "label": "Reference pilot candidate evidence",
+        "summary": "Reference pilot suite nominated a release candidate or conditional candidate.",
+        "x": 430,
+        "y": 40,
+        "status": "passed",
+        "metadata": {
+          "required": true,
+          "evidenceIds": [
+            "pilot-evaluation-v0.10.0-rc.1"
+          ]
+        }
+      },
+      {
+        "id": "gate-enterprise-runtime",
+        "kind": "gate",
+        "label": "Enterprise runtime probes",
+        "summary": "Enterprise runtime probes has not been verified for target-environment-not-specified; required controls: PostgreSQL connectivity, pgvector retrieval, object storage round trip, OIDC/JWKS, OpenTelemetry export, release signing key.",
+        "x": 750,
+        "y": 40,
+        "status": "missing",
+        "metadata": {
+          "required": true,
+          "evidenceIds": []
+        }
+      },
+      {
+        "id": "gate-repository-conformance",
+        "kind": "gate",
+        "label": "Repository conformance runs",
+        "summary": "Repository conformance runs has not been verified for target-environment-not-specified; required controls: fitness functions executed, API/event contracts checked, repository topology assessed.",
+        "x": 430,
+        "y": 170,
+        "status": "missing",
+        "metadata": {
+          "required": true,
+          "evidenceIds": []
+        }
+      },
+      {
+        "id": "gate-runtime-telemetry",
+        "kind": "gate",
+        "label": "Runtime telemetry evidence",
+        "summary": "Runtime telemetry evidence has not been verified for target-environment-not-specified; required controls: service topology observed, critical spans exported, runtime resources mapped to intended architecture.",
+        "x": 750,
+        "y": 170,
+        "status": "missing",
+        "metadata": {
+          "required": true,
+          "evidenceIds": []
+        }
+      },
+      {
+        "id": "gate-identity-access",
+        "kind": "gate",
+        "label": "Identity and authorization acceptance",
+        "summary": "Identity and authorization acceptance has not been verified for target-environment-not-specified; required controls: tenant isolation verified, role boundaries verified, operator privileges reviewed.",
+        "x": 430,
+        "y": 300,
+        "status": "missing",
+        "metadata": {
+          "required": true,
+          "evidenceIds": []
+        }
+      },
+      {
+        "id": "gate-model-routing",
+        "kind": "gate",
+        "label": "Approved model routing",
+        "summary": "Approved model routing has not been verified for target-environment-not-specified; required controls: deterministic fallback available, external model route governed, structured output validated.",
+        "x": 750,
+        "y": 300,
+        "status": "missing",
+        "metadata": {
+          "required": true,
+          "evidenceIds": []
+        }
+      },
+      {
+        "id": "gate-pilot-signoff",
+        "kind": "gate",
+        "label": "Pilot user sign-off",
+        "summary": "Pilot user sign-off has not been verified for target-environment-not-specified; required controls: pilot users completed scenarios, critical blockers accepted or closed, usage feedback reviewed.",
+        "x": 430,
+        "y": 430,
+        "status": "missing",
+        "metadata": {
+          "required": true,
+          "evidenceIds": []
+        }
+      },
+      {
+        "id": "gate-architecture-board-approval",
+        "kind": "approval",
+        "label": "Architecture-board release approval",
+        "summary": "Architecture-board release approval has not been verified for target-environment-not-specified; required controls: decision recorded, production boundary accepted, exceptions time-boxed.",
+        "x": 750,
+        "y": 430,
+        "status": "missing",
+        "metadata": {
+          "required": true,
+          "evidenceIds": []
+        }
+      },
+      {
+        "id": "blocker-gate-enterprise-runtime",
+        "kind": "blocker",
+        "label": "Missing: Enterprise runtime probes",
+        "summary": "Enterprise runtime probes has not been verified for target-environment-not-specified; required controls: PostgreSQL connectivity, pgvector retrieval, object storage round trip, OIDC/JWKS, OpenTelemetry export, release signing key.",
+        "x": 430,
+        "y": 560,
+        "status": "missing",
+        "metadata": {
+          "gateId": "gate-enterprise-runtime"
+        }
+      },
+      {
+        "id": "blocker-gate-repository-conformance",
+        "kind": "blocker",
+        "label": "Missing: Repository conformance runs",
+        "summary": "Repository conformance runs has not been verified for target-environment-not-specified; required controls: fitness functions executed, API/event contracts checked, repository topology assessed.",
+        "x": 750,
+        "y": 560,
+        "status": "missing",
+        "metadata": {
+          "gateId": "gate-repository-conformance"
+        }
+      },
+      {
+        "id": "blocker-gate-runtime-telemetry",
+        "kind": "blocker",
+        "label": "Missing: Runtime telemetry evidence",
+        "summary": "Runtime telemetry evidence has not been verified for target-environment-not-specified; required controls: service topology observed, critical spans exported, runtime resources mapped to intended architecture.",
+        "x": 430,
+        "y": 660,
+        "status": "missing",
+        "metadata": {
+          "gateId": "gate-runtime-telemetry"
+        }
+      },
+      {
+        "id": "blocker-gate-identity-access",
+        "kind": "blocker",
+        "label": "Missing: Identity and authorization acceptance",
+        "summary": "Identity and authorization acceptance has not been verified for target-environment-not-specified; required controls: tenant isolation verified, role boundaries verified, operator privileges reviewed.",
+        "x": 750,
+        "y": 660,
+        "status": "missing",
+        "metadata": {
+          "gateId": "gate-identity-access"
+        }
+      },
+      {
+        "id": "blocker-gate-model-routing",
+        "kind": "blocker",
+        "label": "Missing: Approved model routing",
+        "summary": "Approved model routing has not been verified for target-environment-not-specified; required controls: deterministic fallback available, external model route governed, structured output validated.",
+        "x": 430,
+        "y": 760,
+        "status": "missing",
+        "metadata": {
+          "gateId": "gate-model-routing"
+        }
+      },
+      {
+        "id": "blocker-gate-pilot-signoff",
+        "kind": "blocker",
+        "label": "Missing: Pilot user sign-off",
+        "summary": "Pilot user sign-off has not been verified for target-environment-not-specified; required controls: pilot users completed scenarios, critical blockers accepted or closed, usage feedback reviewed.",
+        "x": 750,
+        "y": 760,
+        "status": "missing",
+        "metadata": {
+          "gateId": "gate-pilot-signoff"
+        }
+      },
+      {
+        "id": "blocker-gate-architecture-board-approval",
+        "kind": "blocker",
+        "label": "Missing: Architecture-board release approval",
+        "summary": "Architecture-board release approval has not been verified for target-environment-not-specified; required controls: decision recorded, production boundary accepted, exceptions time-boxed.",
+        "x": 430,
+        "y": 860,
+        "status": "missing",
+        "metadata": {
+          "gateId": "gate-architecture-board-approval"
+        }
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge-release-environment",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "environment-target-environment-not-specified",
+        "kind": "targets",
+        "label": "assessed against",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-reference-pilot",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-reference-pilot",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-enterprise-runtime",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-enterprise-runtime",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-repository-conformance",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-repository-conformance",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-runtime-telemetry",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-runtime-telemetry",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-identity-access",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-identity-access",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-model-routing",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-model-routing",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-pilot-signoff",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-pilot-signoff",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-release-gate-architecture-board-approval",
+        "sourceId": "release-aiw-0.10.0",
+        "targetId": "gate-architecture-board-approval",
+        "kind": "requires",
+        "label": "requires gate",
+        "metadata": {}
+      },
+      {
+        "id": "edge-gate-enterprise-runtime-blocker",
+        "sourceId": "gate-enterprise-runtime",
+        "targetId": "blocker-gate-enterprise-runtime",
+        "kind": "blocked-by",
+        "label": "blocked by",
+        "metadata": {}
+      },
+      {
+        "id": "edge-gate-repository-conformance-blocker",
+        "sourceId": "gate-repository-conformance",
+        "targetId": "blocker-gate-repository-conformance",
+        "kind": "blocked-by",
+        "label": "blocked by",
+        "metadata": {}
+      },
+      {
+        "id": "edge-gate-runtime-telemetry-blocker",
+        "sourceId": "gate-runtime-telemetry",
+        "targetId": "blocker-gate-runtime-telemetry",
+        "kind": "blocked-by",
+        "label": "blocked by",
+        "metadata": {}
+      },
+      {
+        "id": "edge-gate-identity-access-blocker",
+        "sourceId": "gate-identity-access",
+        "targetId": "blocker-gate-identity-access",
+        "kind": "blocked-by",
+        "label": "blocked by",
+        "metadata": {}
+      },
+      {
+        "id": "edge-gate-model-routing-blocker",
+        "sourceId": "gate-model-routing",
+        "targetId": "blocker-gate-model-routing",
+        "kind": "blocked-by",
+        "label": "blocked by",
+        "metadata": {}
+      },
+      {
+        "id": "edge-gate-pilot-signoff-blocker",
+        "sourceId": "gate-pilot-signoff",
+        "targetId": "blocker-gate-pilot-signoff",
+        "kind": "blocked-by",
+        "label": "blocked by",
+        "metadata": {}
+      },
+      {
+        "id": "edge-gate-architecture-board-approval-blocker",
+        "sourceId": "gate-architecture-board-approval",
+        "targetId": "blocker-gate-architecture-board-approval",
+        "kind": "blocked-by",
+        "label": "blocked by",
+        "metadata": {}
+      }
+    ],
+    "focusNodeIds": [
+      "release-aiw-0.10.0",
+      "gate-enterprise-runtime",
+      "gate-repository-conformance",
+      "gate-runtime-telemetry",
+      "gate-identity-access",
+      "gate-model-routing",
+      "gate-pilot-signoff",
+      "gate-architecture-board-approval"
+    ],
+    "summary": {
+      "gates": 8,
+      "passed": 1,
+      "missing": 7,
+      "failed": 0,
+      "evidenceRecords": 0
+    }
+  },
+  "releaseDecision": {
+    "recommendation": "hold-for-evidence",
+    "rationale": [
+      "v0.10.0 cannot be declared final until every required evidence class is verified in the target environment.",
+      "7 evidence classes remain missing."
+    ],
+    "requiredNextActions": [
+      "Collect verified target-environment evidence for enterprise-runtime.",
+      "Collect verified target-environment evidence for repository-conformance.",
+      "Collect verified target-environment evidence for runtime-telemetry.",
+      "Collect verified target-environment evidence for identity-access.",
+      "Collect verified target-environment evidence for model-routing.",
+      "Collect verified target-environment evidence for pilot-signoff.",
+      "Collect verified target-environment evidence for architecture-board-approval."
+    ]
+  },
+  "governance": {
+    "referencePilotAccepted": true,
+    "targetEvidenceRequired": true,
+    "architectureBoardApprovalRequired": true,
+    "automaticProductionDeclarationAllowed": false,
+    "candidateKnowledgeExcluded": true,
+    "knowledgeReleaseId": "AKR-0.8.8"
+  }
+}

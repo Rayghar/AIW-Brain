@@ -1,0 +1,113 @@
+{
+  "version": "2.0.0",
+  "description": "AIW knowledge constitution. Enforced by packages/engine (knowledgeGovernance, claimAssembly) and scripts/verify-knowledge.mjs as a release-blocking gate.",
+  "lifecycle": [
+    "discovered",
+    "quarantined",
+    "candidate",
+    "draftContent",
+    "draftCalibration",
+    "reviewed",
+    "approved",
+    "deprecated"
+  ],
+  "approvedStatuses": [
+    "approved"
+  ],
+  "reviewedStatuses": [
+    "reviewed",
+    "approved"
+  ],
+  "countingPredicate": "A 'reviewed record' for any production gate is one where: status in reviewedStatuses AND required fields complete AND >=1 approved-posture evidence AND named owner AND reviewedAt date. Status strings alone never satisfy a gate.",
+  "requiredFieldsByType": {
+    "architectureStyle": [
+      "whenToConsider",
+      "whenToAvoidOrQuestion",
+      "qualityAttributeRatings",
+      "obligations",
+      "evidence",
+      "owner",
+      "version"
+    ],
+    "pattern": [
+      "category",
+      "qualityAttributeImpact",
+      "obligations",
+      "evidence",
+      "owner",
+      "version"
+    ],
+    "default": [
+      "evidence",
+      "owner",
+      "version"
+    ]
+  },
+  "minEvidenceForApproval": 1,
+  "corroboration": {
+    "ratingBearingAssertions": "Claims that set or alter quality ratings, prohibitions or hard applicability boundaries require >=2 independent approved-posture sources OR one internal expert ratification (accountable, dated, supersedable).",
+    "internalExpertPrefix": "EVID-INTERNAL-EXPERT"
+  },
+  "contradictionPolicy": "Same subject+predicate with opposite polarity and no distinguishing conditions is a contradiction. Resolution is a CONTEXT SPLIT (conditions attached to each claim); silent winners are prohibited. Unresolved contradictions block promotion of the affected records only.",
+  "sourceSchema": {
+    "dimensions": "sourceClass defines permitted uses; trustTier scales evidence weight. They are independent.",
+    "classes": [
+      "authority",
+      "reference-implementation",
+      "interoperability",
+      "conformance",
+      "discovery"
+    ],
+    "tiers": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "popularityRule": "Stars/forks/popularity may appear only in discovery triage. They never enter governance surfaces, evidence weight, or recommendation scores."
+  },
+  "licencePolicy": {
+    "defaults": {
+      "allowMetadataIndexing": true,
+      "allowFactExtraction": true,
+      "allowShortQuotation": false,
+      "allowCodeReuse": false,
+      "requireAttribution": true
+    },
+    "rules": [
+      {
+        "match": "GPL",
+        "posture": "discovery",
+        "note": "fact-discovery only; no content or code enters approved records"
+      }
+    ],
+    "licenceFileHashChange": "auto-suspend connector pending review",
+    "finalAuthority": "legal counsel, not the ingestion engine"
+  },
+  "releasePins": {
+    "required": [
+      "knowledgeReleaseId",
+      "knowledgeLibrarySha256",
+      "embeddingModel"
+    ],
+    "rule": "A knowledge release is reproducible only if library hash, claims hash and embedding-model version are pinned in data/knowledge-release-manifest.json and verified by the gate."
+  },
+  "kernelInvariants": [
+    "No network I/O inside the intelligence kernel; production recommendations answer from the governed release.",
+    "Source renames, corroboration changes or retrieval reordering must never alter recommendation semantics (tested in constitution.invariants.test.ts).",
+    "Discovery-posture evidence may corroborate, never solely justify (blocker DISCOVERY_ONLY_EVIDENCE)."
+  ],
+  "approvedEvidencePrefixes": [
+    "EVID-",
+    "SRC-"
+  ],
+  "discoveryEvidencePrefixes": [
+    "DISC-"
+  ],
+  "reviewCadenceDays": 180,
+  "productionGate": {
+    "target": 200,
+    "measuredBy": "countingPredicate"
+  },
+  "schemaMappingNote": "Field names reconciled to merged-line schema on 2026-07-03: style obligations field='obligations', pattern category='category', pattern quality impact='qualityAttributeImpact'."
+}

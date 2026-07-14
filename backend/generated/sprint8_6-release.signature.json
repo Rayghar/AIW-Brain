@@ -1,0 +1,11 @@
+{
+  "releaseId": "AIW-0.9.9",
+  "manifestSha256": "ea83e07fa801df74e7f1e64c9403ec5c86e1bb2f5a596bd3649ba9967256e686",
+  "signatureAlgorithm": "Ed25519",
+  "publicKeyId": "ea8aa4c965c69cabb8f9f7f6",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAnjTKCChkoBQqdw+U1rnJqVOVjXe6ougO3TKzRS0JEJs=\n-----END PUBLIC KEY-----\n",
+  "signatureBase64": "tZ7aOp9Az2Qv+pP01k4HImRTo2EspC7gpsBxZxQsh3sHtzuYZMKlkOjBxPPQRFLwhEDNVHWJ8j2wbZWiSDjgAA==",
+  "signedBy": "AIW v0.9.9 reference release signer",
+  "signedAt": "2026-07-03T13:38:47.432Z",
+  "trustBoundary": "Reference package-integrity signature only. Enterprise promotion should use an approved KMS/HSM-backed authority."
+}

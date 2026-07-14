@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "2.0",
+  "releaseId": "AKR-0.10.72.0",
+  "title": "AIW Architecture Knowledge Release 0.10.72",
+  "generatedAt": "2026-07-13T13:17:11.417Z",
+  "status": "approved-for-controlled-pilot",
+  "authority": {
+    "runtimeUse": "governed architecture recommendations",
+    "mutationAuthority": "none; human approval required",
+    "knowledgeSources": [
+      "Cambridge/SA method",
+      "Pattern DNA",
+      "approved GitHub-derived source catalog",
+      "approved claims",
+      "enterprise knowledge governance"
+    ],
+    "limitations": [
+      "Remote GitHub check-in requires a configured remote and credentials.",
+      "Cloud KMS production signing requires a configured enterprise key and credentials.",
+      "Independent external human calibration remains required before claims of expert superiority."
+    ]
+  },
+  "pins": {
+    "kernel": "KERNEL-2.0",
+    "lifecycleGrammar": "LIFECYCLE-GRAMMAR-1.1",
+    "patternDna": "AKR-0.10.55",
+    "cambridge": "CAMBRIDGE-SA-1.0",
+    "githubCatalogSha256": "e1da9f479233a9c7eeae83ae0a9619f13ffc07248f3b73a4a0e07a4a024d023e",
+    "approvedClaimsSha256": "ced9805d72a8825a71c2d9884c7c97ff2f95ce501f869ac6532f4e9418116ddc",
+    "llmAuthorityPolicy": "LLM-AUTHORITY-1.0"
+  },
+  "artifacts": [
+    {
+      "name": "CAMBRIDGE-SA-1.0.promoted.json",
+      "sha256": "d1706687d7a06dcd961acc796924826b2edfeebff15d5a8cf4238c99ad9c48b5",
+      "bytes": 104180
+    },
+    {
+      "name": "PATTERN-DNA-2.0.json",
+      "sha256": "8a99c40b7fe2098857dff8f055ffa82447707f69d86da6a35f6c05a57c698f4b",
+      "bytes": 4120708
+    },
+    {
+      "name": "GITHUB-KNOWLEDGE-CATALOG.json",
+      "sha256": "26ed2ee3610f3c73f9a67b34e6f324de035eed1214a787c7b24f9b7c0acb7e9d",
+      "bytes": 86684
+    },
+    {
+      "name": "APPROVED-CLAIMS.json",
+      "sha256": "ced9805d72a8825a71c2d9884c7c97ff2f95ce501f869ac6532f4e9418116ddc",
+      "bytes": 20494
+    },
+    {
+      "name": "PATTERN-ATOMIC-CLAIMS.json",
+      "sha256": "d91e7db2b64b439799d531b3252724a9ab0eb118aa6e618df4a789c30fb32953",
+      "bytes": 678294
+    },
+    {
+      "name": "KNOWLEDGE-GOVERNANCE.json",
+      "sha256": "54b93bcc7e1a4510c7118e7c3559c19159b2ecac23268eea0a1c7f098a4f7ef8",
+      "bytes": 4003
+    }
+  ],
+  "promotion": {
+    "cambridgeAtomicClaims": 118,
+    "patternRecords": 328,
+    "patternAtomicClaims": 984,
+    "approvedGithubClaims": 14,
+    "githubConnectors": 47,
+    "sponsorApproved": true,
+    "independentAIReview": true,
+    "externalHumanPanel": false
+  },
+  "activation": {
+    "requiresStepUpAuthorization": true,
+    "requiresImpactPreview": true,
+    "requiresRollback": true,
+    "permittedEnvironment": [
+      "local",
+      "controlled-pilot"
+    ],
+    "productionAccepted": false
+  }
+}

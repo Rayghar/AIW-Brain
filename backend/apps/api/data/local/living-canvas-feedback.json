@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "receipts": [
+    {
+      "id": "mind-feedback-09f37a67-58cc-4841-b635-c1a7e9c2e5b2",
+      "tenantId": "tenant-reference",
+      "projectId": "project-92016e13-92f2-468d-aa5b-69df9928d9a9",
+      "branchId": "branch-main",
+      "stage": "applicationRealization",
+      "feedbackKind": "proposal-outcome",
+      "actionSemanticKey": "llm-governed:acceptance-signal",
+      "actionLabel": "Governed co-creation acceptance signal",
+      "authorityClass": "llm-proposed",
+      "outcome": "deferred",
+      "reason": "Requires curator review before it can influence future recommendations.",
+      "citedRecordIds": [],
+      "knowledgeReleaseId": "AKR-0.10.64-REFERENCE",
+      "modelTrace": {
+        "providerId": "local-openai",
+        "model": "acceptance-private-model",
+        "routeId": "architecture-reasoning:local-openai",
+        "requestFingerprint": "rc1068-e2e",
+        "latencyMs": 4,
+        "fallbackUsed": false,
+        "activeKnowledgeReleaseId": "AKR-0.10.64-REFERENCE"
+      },
+      "status": "queued-for-curation",
+      "createdAt": "2026-07-12T15:23:46.116Z"
+    }
+  ]
+}

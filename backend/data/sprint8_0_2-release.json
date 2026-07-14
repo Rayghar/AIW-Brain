@@ -1,0 +1,35 @@
+{
+  "releaseId": "AIW-0.9.2",
+  "version": "0.9.2",
+  "sprint": "8.0.2",
+  "title": "Integrated Architecture Journey and Knowledge Unification",
+  "status": "implemented",
+  "knowledgeReleaseId": "AKR-0.8.9",
+  "authorityBoundary": "Approved knowledge, deterministic rules and human approval decide. Configurable LLMs extract, explain and propose reversible evidence-linked changes.",
+  "capabilities": {
+    "governedProjectHub": true,
+    "serverAuthoritativeProjects": true,
+    "optimisticConcurrency": true,
+    "durableSnapshots": true,
+    "measurableQualityScenarios": true,
+    "aiAssistedBriefStructuring": true,
+    "fullPatternDnaWorkbenchRetrieval": true,
+    "nodeAnchoredVisualGuidance": true,
+    "durableCoArchitectTrace": true,
+    "realtimeCollaborationRuntime": true,
+    "tenantConfigurableLlmRoutes": true,
+    "postgresBackedLlmPolicy": true,
+    "persistedSynthesisRecovery": true,
+    "stageGatesUndoRedo": true,
+    "responsiveRtlFoundation": true,
+    "productionWebAndApiTargets": true
+  },
+  "verification": {
+    "automatedTests": 156,
+    "intelligenceGate": "8/8",
+    "integratedJourneyGate": "13/13",
+    "securityScan": "passed",
+    "npmAuditHigh": 0
+  },
+  "previousRelease": "AIW-0.9.1"
+}

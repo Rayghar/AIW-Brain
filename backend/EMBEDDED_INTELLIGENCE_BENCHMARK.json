@@ -1,0 +1,39 @@
+{
+  "releaseId": "AIW-0.9.9",
+  "knowledgeReleaseId": "AKR-0.8.8",
+  "generatedAt": "2026-07-03T13:29:41.132Z",
+  "environment": {
+    "node": "v22.16.0",
+    "mode": "deterministic-offline",
+    "externalNetwork": false,
+    "externalLlm": false
+  },
+  "iterations": 120,
+  "averageMs": 9.514,
+  "p50Ms": 8.924,
+  "p95Ms": 11.2,
+  "maxMs": 49.03,
+  "byEvent": {
+    "state-recomputed": {
+      "count": 30,
+      "averageMs": 10.319,
+      "p95Ms": 10.736
+    },
+    "selection-changed": {
+      "count": 30,
+      "averageMs": 9.312,
+      "p95Ms": 11.2
+    },
+    "connection-intent": {
+      "count": 30,
+      "averageMs": 9.286,
+      "p95Ms": 10.732
+    },
+    "attribute-changed": {
+      "count": 30,
+      "averageMs": 9.137,
+      "p95Ms": 10.505
+    }
+  },
+  "boundary": "These timings measure local deterministic kernel execution only. They exclude browser rendering, network, PostgreSQL, vector retrieval and external model latency."
+}

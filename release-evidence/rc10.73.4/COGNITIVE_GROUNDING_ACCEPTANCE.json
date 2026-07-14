@@ -1,0 +1,24 @@
+{
+  "release": "0.10.0-rc.10.73.4",
+  "status": "verified-local-build-tests-and-gates-passed",
+  "controls": {
+    "approvedClaimGrounding": true,
+    "runtimeSchemaPostValidation": true,
+    "insufficientGroundingContract": true,
+    "citationAllowlist": true,
+    "deterministicEvidenceEntailment": true,
+    "providerPromptRedaction": true,
+    "liveProviderAccepted": false,
+    "semanticNliImplemented": false,
+    "productionAccepted": false
+  },
+  "verification": {
+    "backendTestFiles": 4,
+    "backendTests": 17,
+    "frontendRegressionFiles": 2,
+    "frontendRegressionTests": 12,
+    "releaseGatePassed": 30,
+    "releaseGateTotal": 30,
+    "frontendModulesTransformed": 2276
+  }
+}
