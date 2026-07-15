@@ -10,4 +10,22 @@ frontend/playwright-report/
 .env
 backend/.env
 frontend/.env
+knowledge-repository/AKR-0.10.73.7/github-live/
+
+# Local immutable evidence vaults and rebuildable vault-derived indexes.
+knowledge-repository/AKR-*/github-live/
+release-evidence/rc10.73.7/WHOLE_ARCHITECTURE_ARTEFACT_INDEX.part-*.json
+release-evidence/rc10.73.7/*_SOURCE_INVENTORY.json
+release-evidence/rc10.73.7/MACHINE_READABLE_MODEL_INVENTORY.json
+release-evidence/rc10.73.7/CROSS_FILE_ARCHITECTURE_GROUPS.json
+release-evidence/rc10.73.7/*_FULLDIST.zip
+
+# Local dependency, package-manager and browser caches.
+.npm/
+**/.npm/
+.pnpm-store/
+**/.pnpm-store/
+.yarn/cache/
+**/.cache/ms-playwright/
+**/ms-playwright/
 .DS_Store

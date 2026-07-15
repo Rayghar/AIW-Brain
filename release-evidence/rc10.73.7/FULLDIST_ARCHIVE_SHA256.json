@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "aiw-rc10-73-7-fulldist-archive-sha256-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T14:25:15.988Z",
+  "archive": "release-evidence/rc10.73.7/AIW_v0.10.0-rc.10.73.7_All_Source_Governed_Acquisition_and_Sol_Semantic_Transformation_Foundation_FULLDIST.zip",
+  "archiveBytes": 40415289,
+  "sha256": "6eae9de3b7fa894d9ed04e76b281553a4830361304adff998c80c634ae49bde6",
+  "rawRepositoryContentIncluded": false,
+  "quarantineContentIncluded": false,
+  "redistributionApproved": false,
+  "productionAccepted": false
+}

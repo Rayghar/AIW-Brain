@@ -1,6 +1,6 @@
 {
   "schemaVersion": "aiw-pre-acquisition-gate-results-v1",
-  "generatedAt": "2026-07-15T09:10:02.557Z",
+  "generatedAt": "2026-07-15T12:53:50.477Z",
   "deterministicFixtureTimestamp": "2026-07-15T00:00:00.000Z",
   "baseline": "AIW v0.10.0-rc.10.73.6",
   "networkAccess": false,

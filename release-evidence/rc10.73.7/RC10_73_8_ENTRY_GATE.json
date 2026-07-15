@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "aiw-rc10-73-8-entry-gate-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T18:51:52.811Z",
+  "status": "limited-entry-only",
+  "productionAccepted": false,
+  "backup": {
+    "backupCompleted": false,
+    "backupStatus": "deferred-by-product-owner",
+    "backupRiskAccepted": true,
+    "backupRiskAcceptedAt": "2026-07-15T18:51:52.811Z",
+    "backupRiskScope": "loss or corruption of the local raw acquisition vault",
+    "gatePassed": false
+  },
+  "storageCapacity": {
+    "lastObservedFreeBytes": 14404763648,
+    "minimumFreeBytes": 8589934592,
+    "control": "backend/scripts/rc10-73-8-storage-capacity-gate.mjs",
+    "requiredBeforeEveryMajorStage": true,
+    "automaticEvidenceDeletionAllowed": false,
+    "gate6APlanningEnvelope": {
+      "observedAt": "2026-07-15T19:42:00.785Z",
+      "projectedTemporaryBytes": 536870912,
+      "projectedPermanentBytes": 268435456,
+      "projectedFreeBytesAtPeak": 13599457280,
+      "decision": "proceed",
+      "note": "Planning envelope only; rerun immediately before Gate 6A."
+    }
+  },
+  "permitted": [
+    {
+      "stage": "gate-6a-corpus-analysis-and-workload-planning",
+      "permission": "permitted",
+      "conditions": [
+        "run a fresh capacity gate before execution",
+        "record projected temporary and permanent storage",
+        "perform analysis and workload planning only",
+        "do not execute semantic transformation"
+      ]
+    },
+    {
+      "stage": "gate-6b-representative-pilot",
+      "permission": "conditional-after-explicit-product-owner-approval",
+      "conditions": [
+        "Gate 6A completed",
+        "representative pilot scope and workload approved",
+        "fresh capacity gate projects at least 8 GiB free at peak",
+        "all output remains candidate-only"
+      ]
+    }
+  ],
+  "prohibited": [
+    {
+      "stage": "gate-6c-full-semantic-transformation",
+      "permission": "blocked",
+      "requiredToReconsider": [
+        "new storage-capacity assessment",
+        "projected temporary and permanent output size",
+        "projected token count",
+        "projected model workload",
+        "explicit product-owner approval"
+      ]
+    }
+  ],
+  "runtimePerformanceEvidence": "release-evidence/rc10.73.7/KNOWLEDGE_RUNTIME_PERFORMANCE_RESULTS.json",
+  "unresolvedGates": [
+    "independent knowledge-vault backup is deferred and not passed",
+    "final rc.10.73.7 release commit is awaiting product-owner approval",
+    "product-runtime Sol remains unconfigured and unexecuted"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-safe-storage-compaction-receipt-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T18:51:52.811Z",
+  "status": "deferred-no-independently-verified-backup",
+  "compactionPerformed": false,
+  "successfulCompactionReceipt": false,
+  "removedCount": 0,
+  "removedBytes": 0,
+  "removals": [],
+  "backupCompleted": false,
+  "backupStatus": "deferred-by-product-owner",
+  "supersededApacheCamelSnapshot": {
+    "snapshotId": "KSNAP-GH-APACHE-CAMEL-5334c7647ca3",
+    "immutableCommit": "5334c7647ca368e6fef6ffcb87de4d7fc86eae77",
+    "physicalManifestFileSha256": "bb053f5cae5759ae61311d51eeb69278b24eb42422516ff8bdf37f6a2b00fa6c",
+    "authority": "non-authoritative-superseded-snapshot",
+    "disposition": "preserved-eligible-for-future-backup-first-compaction"
+  },
+  "automaticEvidenceDeletionAllowed": false,
+  "productionAccepted": false
+}

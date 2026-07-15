@@ -1,0 +1,858 @@
+{
+  "schemaVersion": "aiw-licence-evidence-register-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T14:18:41.716Z",
+  "productionAccepted": false,
+  "knowledgeAuthority": "candidate",
+  "count": 47,
+  "legalApprovalGranted": false,
+  "redistributionApproved": false,
+  "repositories": [
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE.txt",
+        "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+        "htmlUrl": "https://github.com/apache/camel/blob/main/LICENSE.txt"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "immutableCommit": "8dff0d9b1f9640684df8c3bbcdc2ee45f989ca0f",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE.txt",
+        "sha": "08d811d9b3abfeb079413424d85f1aa9409213ba",
+        "htmlUrl": "https://github.com/arc42/arc42-template/blob/master/LICENSE.txt"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "repository": "ea-toolkit/architecture-catalog",
+      "immutableCommit": "1efa7ea08a8139dc07bcef1834d6964b5fcfd1dc",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "path": "LICENSE",
+        "sha": "982c8df6273a0983296cf77260519de7cc8ad0b6",
+        "htmlUrl": "https://github.com/ea-toolkit/architecture-catalog/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+        "htmlUrl": "https://github.com/TNG/ArchUnit/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+      "repository": "ardalis/CleanArchitecture",
+      "immutableCommit": "a064d0b369b719ba03da71da1560d208d7e02e03",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "path": "LICENSE",
+        "sha": "12acccd2be922055d8ae4a93486c4bcdce6635b8",
+        "htmlUrl": "https://github.com/ardalis/CleanArchitecture/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "immutableCommit": "e59928aee75a566a3f96d8cad78a9a92ea96f829",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "f49a4e16e68b128803cc2dcea614603632b04eac",
+        "htmlUrl": "https://github.com/asyncapi/spec/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "immutableCommit": "562dbf4d0206d91630fae0a56ff05db9027fac8c",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE.md",
+        "sha": "86e47661ab0dbcaf8b7866412a50364a0a1edbab",
+        "htmlUrl": "https://github.com/fauzisho/awesome-antipattern/blob/master/LICENSE.md"
+      },
+      "dossierReviewStatus": "metadata-only",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+      "repository": "DovAmir/awesome-design-patterns",
+      "immutableCommit": "9006287f27e720000cc8763ae4cd150789b8571d",
+      "repositoryApi": {
+        "detected": false,
+        "spdxId": null,
+        "name": null,
+        "path": null,
+        "sha": null,
+        "htmlUrl": null
+      },
+      "dossierReviewStatus": "metadata-only",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWESOME-SCALABILITY",
+      "repository": "binhnguyennus/awesome-scalability",
+      "immutableCommit": "c9ca9f248d4dbbde63a8460188f6324f00f34ddd",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "path": "LICENSE",
+        "sha": "f0cd439ad325a3dfa33a92e1d63283c269437bf5",
+        "htmlUrl": "https://github.com/binhnguyennus/awesome-scalability/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWESOME-SOFTWARE-ARCH",
+      "repository": "mehdihadeli/awesome-software-architecture",
+      "immutableCommit": "3b79c49e3f00460d1205918b2eff309a6b38b06b",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "CC0-1.0",
+        "name": "Creative Commons Zero v1.0 Universal",
+        "path": "LICENSE",
+        "sha": "0e259d42c996742e9e3cba14c677129b2c1b6311",
+        "htmlUrl": "https://github.com/mehdihadeli/awesome-software-architecture/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "metadata-only",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+      "repository": "ashishps1/awesome-system-design-resources",
+      "immutableCommit": "25724090f7dd7746129b7194b55504f9d06f86ed",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "GPL-3.0",
+        "name": "GNU General Public License v3.0",
+        "path": "LICENSE",
+        "sha": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+        "htmlUrl": "https://github.com/ashishps1/awesome-system-design-resources/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "restricted",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "immutableCommit": "add9bd7c5b252a37b6b359013eaf42c56a574dc0",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT-0",
+        "name": "MIT No Attribution",
+        "path": "LICENSE",
+        "sha": "1bb4f21e5d8b5b21b6952c0b9bf2e6220d9a56be",
+        "htmlUrl": "https://github.com/aws-samples/aws-saas-factory-eks-reference-architecture/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE",
+        "sha": "1bb4f21e5d8b5b21b6952c0b9bf2e6220d9a56be",
+        "htmlUrl": "https://github.com/aws-samples/serverless-patterns/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "immutableCommit": "76b8fdd90033b30f040ca99708b31e75d7433a0e",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE.txt",
+        "sha": "19dc35b2433851a0e8fd866a5d323b2ba18c12ed",
+        "htmlUrl": "https://github.com/awslabs/aws-solutions-constructs/blob/main/LICENSE.txt"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "path": "LICENSE",
+        "sha": "9e841e7a26e4eb057b24511e7b92d42b257a80e5",
+        "htmlUrl": "https://github.com/Azure/ResourceModules/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "immutableCommit": "1109abcbdc53cf171a21dce4b4710b3e4ac363bd",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "72ea3a85b0ee807370d34ff9bef32e0f2c7e0c92",
+        "htmlUrl": "https://github.com/backstage/backstage/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "immutableCommit": "1edfb8a878baaa821e54cf423a070c792e8677c6",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "path": "LICENSE",
+        "sha": "c04065aae41989e8926e0c9d6c1a09e6e1ba7ec6",
+        "htmlUrl": "https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "immutableCommit": "8f9d5cb7cc884d35644b9a2995d3dff9d25bdf12",
+      "repositoryApi": {
+        "detected": false,
+        "spdxId": null,
+        "name": null,
+        "path": null,
+        "sha": null,
+        "htmlUrl": null
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+      "repository": "cncf/landscape-graph",
+      "immutableCommit": "dbe77e1d56ec1b9cf0816026c58ccbf149dcbbd0",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE",
+        "sha": "041bd361e1244f6518f0f687b0814e31ac7ed89f",
+        "htmlUrl": "https://github.com/cncf/landscape-graph/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "immutableCommit": "5fb87f474808e02e7786d7c5548e65ffc1a6e29e",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE.md",
+        "sha": "99e03dd6907d2a4b299b0e786536da5232850fb3",
+        "htmlUrl": "https://github.com/cncf/tag-security/blob/main/LICENSE.md"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAP-DISCOVERY",
+      "repository": "ContextMapper/context-map-discovery",
+      "immutableCommit": "623b7ab6bf33d04e470a3ffc6c77882a8d11caf8",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/ContextMapper/context-map-discovery/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "immutableCommit": "995f486a9cdecb6946257d5c7b6d98ada2978124",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/ContextMapper/context-mapper-dsl/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "immutableCommit": "722a000cc6618d40b818c95cf853be8aea5e8652",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "CC-BY-SA-4.0",
+        "name": "Creative Commons Attribution Share Alike 4.0 International",
+        "path": "LICENCE.md",
+        "sha": "4827855fbec11c1480bbddffb8fd0faa8788c22d",
+        "htmlUrl": "https://github.com/ddd-crew/ddd-starter-modelling-process/blob/master/LICENCE.md"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-DEVELOPER-ROADMAP",
+      "repository": "nilbuild/developer-roadmap",
+      "immutableCommit": "a01f6c44797056d22d22a8874bfb3e7e1ff2832f",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "license",
+        "sha": "e90d2561bfa4eb31d9a09080edeca0606ab95479",
+        "htmlUrl": "https://github.com/nilbuild/developer-roadmap/blob/master/license"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "immutableCommit": "bb8ed13f69ec42842e598cbe57b95ba3476f5384",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "8dada3edaf50dbc082c9a125058f25def75e625a",
+        "htmlUrl": "https://github.com/finos/ai-reference-architecture-library/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "repository": "finos/architecture-as-code",
+      "immutableCommit": "b3e50665ec543f12614557d8db520c5531d656c2",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "f24de98ce747e0ad8264491113b12444772b0f6b",
+        "htmlUrl": "https://github.com/finos/architecture-as-code/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "immutableCommit": "9a4616e77f0f9cbcbecaf27d711c38890dda1404",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+        "htmlUrl": "https://github.com/GoogleCloudPlatform/microservices-demo/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "immutableCommit": "4d29c4e3c67e76ad1c5edfdf1b607cf0419c6a8f",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+        "htmlUrl": "https://github.com/GoogleCloudPlatform/software-delivery-blueprint/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+      "repository": "IBM/cloud-native-patterns",
+      "immutableCommit": "e0b6292292623da1a812d1aa9c040776e7a0185a",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/IBM/cloud-native-patterns/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "immutableCommit": "ad98664690b0bb60920432451e68390ac73d9610",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "path": "LICENSE",
+        "sha": "133127903a4f620f5d2377007bd8efb1c1d71e36",
+        "htmlUrl": "https://github.com/it-at-m/refarch/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "immutableCommit": "b55fc2bcb5f8e1c4b884bca0a38d402d19fe467c",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE.md",
+        "sha": "bcae7daadee982a10f5f9497f493eb4d70cd517f",
+        "htmlUrl": "https://github.com/iluwatar/java-design-patterns/blob/master/LICENSE.md"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "repository": "xmolecules/jmolecules",
+      "immutableCommit": "20d2636beba2e3cb8f0a9b62c07e3606c49da84f",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/xmolecules/jmolecules/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "GPL-3.0",
+        "name": "GNU General Public License v3.0",
+        "path": "LICENSE",
+        "sha": "70566f2d0e526993b58e746bb8a2747c81668f3f",
+        "htmlUrl": "https://github.com/jQAssistant/jqassistant/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "immutableCommit": "cf7c93f70878d6067a52f12eee7fb397e8987736",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE",
+        "sha": "4aee8d7c646e5cde028ef6266e69be404e78568d",
+        "htmlUrl": "https://github.com/k8spatterns/examples/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "immutableCommit": "5152f62edf2b1af2f5f3dcfc515b88678a48af08",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "path": "LICENSE",
+        "sha": "f23c8479ed9886e5362780c359ec135eab8ec165",
+        "htmlUrl": "https://github.com/likec4/likec4/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "69020cd8e4d19afd58f3bb4b81ad43a32664a76a",
+        "htmlUrl": "https://github.com/meshery/meshery/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-MICROSOFT-AGENT-SKILLS",
+      "repository": "MicrosoftDocs/agent-skills",
+      "immutableCommit": "e03d6ea0dab78954ca902bad9f6556cafe772515",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "CC-BY-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "path": "LICENSE",
+        "sha": "e056e7c3ec54533985dfb3a4c6ef70dab8ca2e42",
+        "htmlUrl": "https://github.com/MicrosoftDocs/Agent-Skills/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "CC-BY-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "path": "LICENSE",
+        "sha": "e056e7c3ec54533985dfb3a4c6ef70dab8ca2e42",
+        "htmlUrl": "https://github.com/MicrosoftDocs/architecture-center/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "immutableCommit": "a64696e70e24bd4d0ad26705c8338c51a19f5163",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE",
+        "sha": "b584f06a02d503aa8b9c758e4ad0fc0723d3dda2",
+        "htmlUrl": "https://github.com/oam-dev/spec/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/open-telemetry/opentelemetry-demo/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "immutableCommit": "4635f734f2f82c6497bc53d5cf972b5cbfec5e52",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/SAP/architecture-center/blob/dev/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "immutableCommit": "b7f2477177c2a04d931195cf29a33dcd094efc4e",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "8b6dabe992d7dfd88affe7bb984e415dc10dcb7d",
+        "htmlUrl": "https://github.com/service-mesh-patterns/service-mesh-patterns/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "verified",
+      "dossierUsePolicy": "ingest-with-attribution",
+      "finalDisposition": "technically-verified-pending-release-approval",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "immutableCommit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "261eeb9e9f8b2b4b0d119366dda99c6fd7d35c64",
+        "htmlUrl": "https://github.com/spring-projects/spring-modulith/blob/main/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "derive-claims-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "immutableCommit": "5783db719d701978e3a833bd5596736e69545121",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "path": "LICENSE",
+        "sha": "ad410e11302107da9aa47ce3d46bd5ad011c4c43",
+        "htmlUrl": "https://github.com/structurizr/java/blob/master/LICENSE"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "adapter-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-101",
+      "repository": "ByteByteGoHq/system-design-101",
+      "immutableCommit": "b28380a4710c5ec9638ec037d4168e288f334cba",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE.md",
+        "sha": "25ba80770e90ee8ae6178efda900f57a190e4447",
+        "htmlUrl": "https://github.com/ByteByteGoHq/system-design-101/blob/main/LICENSE.md"
+      },
+      "dossierReviewStatus": "restricted",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+      "repository": "donnemartin/system-design-primer",
+      "immutableCommit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+      "repositoryApi": {
+        "detected": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "path": "LICENSE.txt",
+        "sha": "5a04d642d61db37868f7485fa0fbcc96d8916919",
+        "htmlUrl": "https://github.com/donnemartin/system-design-primer/blob/master/LICENSE.txt"
+      },
+      "dossierReviewStatus": "requires-review",
+      "dossierUsePolicy": "metadata-only",
+      "finalDisposition": "requires-human-licence-review",
+      "legalApprovalGranted": false,
+      "redistributionApproved": false
+    }
+  ]
+}

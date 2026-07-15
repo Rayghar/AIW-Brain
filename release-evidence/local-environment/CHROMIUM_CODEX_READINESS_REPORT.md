@@ -2,7 +2,8 @@
 
 Generated: 2026-07-15T01:56:36+01:00  
 Repository baseline: AIW v0.10.0-rc.10.73.6  
-Branch: `codex/rc-10-73-7-live-acquisition`  
+Branch at assessment: `codex/rc-10-73-7-live-acquisition`
+Current governed-acquisition branch: `codex/rc-10-73-7-all-source-acquisition`
 Assessment: **Ready for local Windows Playwright Chromium use**
 
 This assessment is limited to Playwright discovery and focused Chromium smoke coverage. Chromium actually launched in both headless and headed modes. No production-acceptance claim is made.

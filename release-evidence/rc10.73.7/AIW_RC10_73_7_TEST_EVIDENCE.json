@@ -1,0 +1,195 @@
+{
+  "schemaVersion": "aiw-rc10-73-7-test-evidence-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T14:07:24.631Z",
+  "timestampSemantics": {
+    "generatedAt": "Actual wall-clock time when this receipt was written.",
+    "actualExecutionEvidence": "Timestamps originating from acquisition, verifier, test, browser, or build artefacts are actual execution observations.",
+    "deterministicFixtureTimestamp": "A fixed replay input used only by deterministic no-network tests; it is not an execution timestamp.",
+    "deterministicFixtureTimestampValue": "2026-07-15T00:00:00.000Z"
+  },
+  "overallDisposition": "passed-with-documented-legacy-version-drift",
+  "acquisitionComplete": true,
+  "snapshotVerificationPassed": true,
+  "currentReleaseGatesPassed": true,
+  "legacyGateDriftUnresolved": true,
+  "productRuntimeSolTransformationExecuted": false,
+  "knowledgeAuthority": "candidate",
+  "designGraphMutationPerformed": false,
+  "automaticPromotionPerformed": false,
+  "productionAccepted": false,
+  "commands": [
+    {
+      "id": "all-47-live-acquisition-final-retry",
+      "command": "npm.cmd run rc10_73_7:acquire",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "selectedThisRun": 2,
+        "completed": 47,
+        "failed": 0,
+        "controlledStops": 0,
+        "generatedAt": "2026-07-15T12:15:04.137Z"
+      }
+    },
+    {
+      "id": "snapshot-and-manifest-verification",
+      "command": "npm.cmd run rc10_73_7:verify-snapshots",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "verifiedRepositories": 47,
+        "verifiedContentAddressedObjects": 106096,
+        "denominatorFiles": 186219,
+        "generatedAt": "2026-07-15T12:39:09.220Z"
+      }
+    },
+    {
+      "id": "backend-npm-ci",
+      "command": "npm.cmd ci --offline",
+      "exitCode": 0,
+      "result": "passed",
+      "observedWallTimeSeconds": 249.7,
+      "evidence": {
+        "packagesAdded": 197,
+        "vulnerabilitiesReported": 0,
+        "installScriptExceptionGranted": false
+      }
+    },
+    {
+      "id": "backend-build",
+      "command": "npm.cmd run build",
+      "exitCode": 0,
+      "result": "passed",
+      "observedWallTimeSeconds": 130,
+      "evidence": {
+        "artifactObservedAt": "2026-07-15T12:48:15.148Z",
+        "artifact": "backend/apps/api/dist/app.js"
+      }
+    },
+    {
+      "id": "frontend-npm-ci",
+      "command": "npm.cmd ci --offline",
+      "exitCode": 0,
+      "result": "passed",
+      "observedWallTimeSeconds": 169.6,
+      "evidence": {
+        "packagesAdded": 108,
+        "vulnerabilitiesReported": 0,
+        "installScriptExceptionGranted": false
+      }
+    },
+    {
+      "id": "frontend-build",
+      "command": "npm.cmd run build",
+      "exitCode": 0,
+      "result": "passed",
+      "observedWallTimeSeconds": 114.4,
+      "evidence": {
+        "artifactObservedAt": "2026-07-15T12:53:28.374Z",
+        "artifact": "frontend/apps/web/dist/index.html"
+      }
+    },
+    {
+      "id": "rc10-73-7-tests",
+      "command": "npm.cmd run rc10_73_7:test",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "preAcquisitionChecks": 16,
+        "liveAcquisitionChecks": 25,
+        "candidateAuthorityIsolationTests": 1,
+        "generatedAt": "2026-07-15T12:53:50.477Z"
+      }
+    },
+    {
+      "id": "rc10-73-7-gate",
+      "command": "npm.cmd run rc10_73_7:gate",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "governedRepositories": 47,
+        "acquisitionSelected": 47,
+        "authorityClasses": 5,
+        "generatedKnowledgeAuthority": "candidate"
+      }
+    },
+    {
+      "id": "rc10-73-5-conversion-tests",
+      "command": "npm.cmd run rc10_73_5:test",
+      "exitCode": 0,
+      "result": "passed-with-warnings",
+      "evidence": {
+        "tests": 10,
+        "productionAccepted": false,
+        "warning": "The legacy AKR-0.10.73.5 conversion corpus predates the new rc.10.73.7 snapshot root."
+      }
+    },
+    {
+      "id": "rc10-73-5-legacy-gate",
+      "command": "npm.cmd run rc10_73_5:gate",
+      "exitCode": 1,
+      "result": "known-baseline-version-drift",
+      "evidence": {
+        "passedChecks": 27,
+        "failedChecks": 3,
+        "failures": [
+          "backend-version-expects-rc.10.73.5",
+          "frontend-version-expects-rc.10.73.5",
+          "product-version-expects-rc.10.73.5"
+        ],
+        "sourceWithdrawalCheckPassed": true,
+        "authorityIsolationChecksPassed": true,
+        "reconciliation": "KNOWLEDGE_MANIFEST_DRIFT_RECONCILIATION.md"
+      }
+    },
+    {
+      "id": "cognitive-grounding-regressions",
+      "command": "npm.cmd run rc10_73_4:test",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "testFiles": 4,
+        "tests": 17
+      }
+    },
+    {
+      "id": "internal-dependencies",
+      "command": "npm.cmd run internal-deps:gate",
+      "exitCode": 0,
+      "result": "passed"
+    },
+    {
+      "id": "release-integrity",
+      "command": "npm.cmd run release:integrity:gate",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "backendVersion": "0.10.0-rc.10.73.6"
+      }
+    },
+    {
+      "id": "security-source-scan",
+      "command": "npm.cmd run security:check",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "credentialShapedValuesFound": false
+      }
+    },
+    {
+      "id": "playwright-acquisition-posture",
+      "command": "npx.cmd playwright test tests/e2e/rc10-73-7-acquisition-posture.spec.ts --project=chromium-desktop",
+      "exitCode": 0,
+      "result": "passed",
+      "evidence": {
+        "executedAt": "2026-07-15T12:57:42.642Z",
+        "browserVersion": "149.0.7827.55",
+        "browserSource": "Playwright-managed Chromium",
+        "httpStatus": 200,
+        "consoleErrors": 0,
+        "failedRequests": 0
+      }
+    }
+  ]
+}

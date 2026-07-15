@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-playwright-acquisition-posture-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "executedAt": "2026-07-15T12:57:42.642Z",
+  "project": "chromium-desktop",
+  "browserVersion": "149.0.7827.55",
+  "browserSource": "Playwright-managed Chromium",
+  "testUrl": "http://127.0.0.1:4173/",
+  "httpStatus": 200,
+  "pageTitle": "Architecture Intelligence Workbench",
+  "selectedRepositories": 47,
+  "completedRepositories": 47,
+  "failedRepositories": 0,
+  "controlledStops": 0,
+  "completeAcquisitionFinished": true,
+  "knowledgeAuthority": "candidate",
+  "productionAccepted": false,
+  "consoleErrors": [],
+  "failedRequests": [],
+  "screenshot": "playwright-acquisition-posture/acquisition-posture.png",
+  "tracePolicy": "retain-on-failure"
+}

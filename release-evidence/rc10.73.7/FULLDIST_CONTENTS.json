@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-rc10-73-7-fulldist-contents-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T14:23:27.320Z",
+  "archiveName": "AIW_v0.10.0-rc.10.73.7_All_Source_Governed_Acquisition_and_Sol_Semantic_Transformation_Foundation_FULLDIST.zip",
+  "sourceFileCount": 2150,
+  "sourceBytes": 304697746,
+  "exclusions": [
+    "Raw acquired repository files, content-addressed objects and quarantine objects: redistribution not approved.",
+    "Acquisition checkpoints: local resumability intermediates, not release payload.",
+    "Dependency trees, build outputs, test outputs and Playwright reports: reproducible local intermediates.",
+    "Actual .env files and archive files: secret and recursive-archive protection."
+  ],
+  "includedEvidence": "release-evidence/rc10.73.7/",
+  "snapshotVerificationReceipt": "release-evidence/rc10.73.7/SNAPSHOT_AND_MANIFEST_VERIFICATION.json",
+  "contentSnapshotManifestIndex": "release-evidence/rc10.73.7/CONTENT_SNAPSHOT_MANIFEST_INDEX.json",
+  "rawRepositoryContentIncluded": false,
+  "quarantineContentIncluded": false,
+  "redistributionApproved": false,
+  "knowledgeAuthority": "candidate",
+  "productionAccepted": false
+}

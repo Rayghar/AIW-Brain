@@ -1,0 +1,4640 @@
+{
+  "schemaVersion": "aiw-quarantine-and-security-report-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T14:18:41.716Z",
+  "productionAccepted": false,
+  "knowledgeAuthority": "candidate",
+  "executionOfRepositoryContent": false,
+  "quarantinedFileCount": 294,
+  "instructionShapedFileCount": 6,
+  "quarantined": [
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ai/camel-a2a/src/main/docs/a2a-consumer.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ai/camel-a2a/src/main/docs/a2a-producer.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ai/camel-langchain4j-agent/src/main/docs/langchain4j-agent-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ai/camel-langchain4j-agent/src/main/docs/langchain4j-agent-guardrails.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ai/camel-langchain4j-chat/src/main/docs/langchain4j-chat-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ai/camel-langchain4j-embeddings/src/main/docs/langchain4j-embeddings-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ai/camel-openai/src/main/docs/openai-providers.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-asterisk/src/main/docs/asterisk-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-cometd/src/main/docs/cometd-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-couchbase/src/main/docs/couchbase-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-crypto/src/main/docs/crypto-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-cxf/camel-cxf-soap/src/main/docs/cxf-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-cyberark-vault/src/main/docs/cyberark-vault-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-dhis2/camel-dhis2-component/src/main/docs/dhis2-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-dropbox/src/main/docs/dropbox-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ftp/src/main/docs/ftp-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ftp/src/main/docs/sftp-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-hashicorp-vault/src/main/docs/hashicorp-vault-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-http/src/main/docs/http-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "INSTRUCTION_SHAPED_CONTENT",
+          "detail": "Instruction-shaped text is treated only as untrusted evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-cos/src/main/docs/ibm-cos-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-watson-discovery/src/main/docs/ibm-watson-discovery-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-watson-language/src/main/docs/ibm-watson-language-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-watson-speech-to-text/src/main/docs/ibm-watson-speech-to-text-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-watson-text-to-speech/src/main/docs/ibm-watson-text-to-speech-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-watsonx-ai/src/main/docs/ibm-watsonx-ai-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-watsonx-ai/src/main/docs/ibm-watsonx-ai-examples.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ibm/camel-ibm-watsonx-data/src/main/docs/ibm-watsonx-data-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-irc/src/main/docs/irc-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-jasypt/src/main/docs/jasypt.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-jetty/src/main/docs/jetty-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-kafka/src/main/docs/kafka-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-keycloak/src/main/docs/keycloak-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-keycloak/src/main/docs/keycloak-security.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-kubernetes/src/main/docs/kubernetes-secrets-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-ldap/src/main/docs/ldap-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-mail/src/main/docs/mail-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-milo/src/main/docs/milo-client-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-mina-sftp/src/main/docs/mina-sftp-authentication.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-mina-sftp/src/main/docs/mina-sftp-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-mina-sftp/src/main/docs/mina-sftp-security.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-netty/src/main/docs/netty-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-oauth/src/main/docs/oauth.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-pg-replication-slot/src/main/docs/pg-replication-slot-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-pqc/src/main/docs/pqc-key-lifecycle.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-servicenow/camel-servicenow-component/src/main/docs/servicenow-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-smpp/src/main/docs/smpp-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-splunk/src/main/docs/splunk-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-spring-parent/camel-spring-security/src/main/docs/spring-security.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-stripe/src/main/docs/stripe-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-xchange/src/main/docs/xchange-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-xmpp/src/main/docs/xmpp-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "core/camel-core-model/src/main/java/org/apache/camel/model/dataformat/PGPDataFormat.java",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/DroidSerif-Bold.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/DroidSerif-BoldItalic.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/DroidSerif-Italic.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/DroidSerif-Regular.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-Bold.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-BoldItalic.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-ExtraBold.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-ExtraBoldItalic.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-Italic.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-Light.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-LightItalic.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-Regular.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-SemiBold.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/theme/fonts/OpenSans-SemiBoldItalic.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/camel-4x-upgrade-guide-4_9.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/camel-jbang-kubernetes.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/Endpoint-dsl.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/endpoint.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/langchain4j-spring-boot-integration.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/property-placeholder-functions.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/security.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "docs/user-manual/modules/ROOT/pages/using-propertyplaceholder.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/assets/fonts/fontawesome-webfont.eot",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/assets/fonts/fontawesome-webfont.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/assets/fonts/fontawesome-webfont.woff",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/assets/fonts/fontawesome-webfont.woff2",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/assets/fonts/FontAwesome.otf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/assets/js/main.min.js",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/assets/js/vendor/jquery/jquery-3.2.1.min.js",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "immutableCommit": "e59928aee75a566a3f96d8cad78a9a92ea96f829",
+      "path": "examples/adeo-kafka-request-reply-asyncapi.yml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "activemq-lambda/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "amazonmq-rabbitmq-msg-replication/config.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "amazonmq-rabbitmq-msg-replication/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "amazonmq-rabbitmq-msg-replication/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-appsync-dynamodb-sam/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-bedrock-cognito-cdk/src/auth/auth.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-cognito-certificate-bound-access-token/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-dynamodb-python-cdk/apigw_dynamodb_python_cdk/api_key_usage_plan_construct.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-dynamodb-python-cdk/src/lambda_function.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-dynamodb-python-cdk/tests/test_apigw_dynamodb_python_stack.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-http-api-cognito-lambda-cdk/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-http-lambda-documentdb-cdk/lambda/app.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "CREDENTIAL_BEARING_DATABASE_URL",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-lambda-sagemaker-jumpstartendpoint-cdk-python/stack/ApigwLambdaSagemakerJumpstartendpointStack.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-rest-sagemaker/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-secretsmanager-apikey-cdk/example-pattern.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-secretsmanager-apikey-cdk/lib/apigw-secretsmanager-apikey-stack.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-secretsmanager-apikey-cdk/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-sns-filter-policy-lambda-sls-py/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-sqs-lambda-ddb-cdk/lambda/authorizer/index.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "apigw-websocket-api-lambda-authorizer/Readme.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "appsync-dynamodb/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "appsync-events-bedrock-cdk/lib/appsync-events-bedrock-cdk-stack.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "appsync-events-bedrock-cdk/src/chat.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "appsync-events-bedrock-cdk/test/appsync-events-bedrock-cdk.test.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "appsync-lambda-bedrock-async-stream-subscription-cdk/test/test.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "appsync-mongodb/cdk/bin/cdk.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "appsync-ws-lambda-bedrock-sam/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "aurora-serverless-global-db-cdk/lib/aurora-regional-cluster-stack.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "cloudfront-lambda-edge-s3-cdk/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "cloudfront-s3-signed-cookies-cognito/lambda/Login/lambda_handler.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "cloudfront-s3-signed-cookies-cognito/lambda/Register/lambda_handler.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "cognito-lambda-dynamodb/cdk/__tests__/steps/given.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-api-destinations/11-oauth-api/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-api-destinations/12-oauth-api-cmk-encryption/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-lambda-fsx-openzfs-periodic-replication/dependencies/python/botocore/data/iam/2010-05-08/examples-1.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "PRIVATE_KEY_MATERIAL",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-lambda-fsx-openzfs-periodic-replication/dependencies/python/botocore/data/secretsmanager/2017-10-17/examples-1.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-lambda-fsx-openzfs-periodic-replication/dependencies/python/botocore/data/sts/2011-06-15/examples-1.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-lambda-fsx-openzfs-periodic-replication/dependencies/python/botocore/httpsession.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-lambda-fsx-openzfs-periodic-replication/dependencies/python/urllib3/contrib/_securetransport/low_level.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-lambda-fsx-openzfs-periodic-replication/dependencies/python/urllib3/contrib/pyopenssl.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-pipes-amazonmq-to-eventbridge-sam/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-schedule-secret-rotation-cdk/cdk/eventbridge_schedule_secret_rotation_stack.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-schema-notifications/cdk/lib/notify-consumers-of-schema-changes-stack.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-schema-notifications/cdk/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-webhooks/1-stripe/src/app.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-webhooks/2-github/src/app.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "eventbridge-webhooks/3-twilio/src/app.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "fargate-secretsmanager/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "fargate-secretsmanager/src/fargate_secretsmanager_stack.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/events/2015-10-07/service-2.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/iam/2010-05-08/examples-1.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "PRIVATE_KEY_MATERIAL",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/kinesisvideo/2017-09-30/service-2.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/lambda/2015-03-31/service-2.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/lookoutmetrics/2017-07-25/service-2.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/pipes/2015-10-07/service-2.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/secretsmanager/2017-10-17/examples-1.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/sts/2011-06-15/examples-1.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/data/sts/2011-06-15/service-2.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/botocore/httpsession.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/urllib3/contrib/_securetransport/low_level.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-bedrock-cdk/lambda-layer/resources/layers/bedrock-layer/python/urllib3/contrib/pyopenssl.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-durable-webhook-sam-python/tests/test_webhook_processor.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-endusermessaging/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-endusermessaging/simple_sms_messaging/constants.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-esm-rabbitmq-filters-sam/dependencies/python/requests/adapters.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-esm-rabbitmq-filters-sam/dependencies/python/requests/auth.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-esm-rabbitmq-filters-sam/dependencies/python/requests/sessions.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-esm-rabbitmq-filters-sam/dependencies/python/urllib3/contrib/_securetransport/low_level.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-esm-rabbitmq-filters-sam/dependencies/python/urllib3/contrib/pyopenssl.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-esm-rabbitmq-filters-sam/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-layer/dependencies/python/pymysql/connections.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-microvm-dta-terraform/src/microvm/app/collectors/canary.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-microvms-kiro-code-reviewer/src/microvm-app/app.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-microvms-kiro-code-reviewer/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-powertools-secretsmanager-cdk/src/app.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-powertools-secretsmanager-cdk/src/lambda/handler.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-secrets-manager-extension-python/hello_world/app.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-streaming-large-sam/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-streaming-ttfb-pipeline-sam/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-streaming-ttfb-write-sam-with-bedrock-streaming/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-streaming-ttfb-write-sam-with-dynamodb/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "lambda-streaming-ttfb-write-sam/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "msk-cfn-sasl-lambda/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "parallel-e2e-pipeline-cdk/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "rabbitmq-lambda-tf/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "rabbitmq-lambda/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "stepfunctions-eventbridge-onpremise-tf/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "stepfunctions-httpendpoint-sam/template.yaml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "strands-agentcore-lambda/create_cognito_user.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "terraform-lambda-aurora-serverless/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "terraform-lambda-aurora-serverless/src/function/app.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "terraform-lambda-aurora-serverless/variables.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "waf-cloudfront-websocket-apigw-cdk-python/my_websocket_api/my_websocket_api_stack.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "immutableCommit": "76b8fdd90033b30f040ca99708b31e75d7433a0e",
+      "path": "source/patterns/@aws-solutions-constructs/aws-fargate-secretsmanager/lib/index.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "immutableCommit": "76b8fdd90033b30f040ca99708b31e75d7433a0e",
+      "path": "source/patterns/@aws-solutions-constructs/aws-lambda-secretsmanager/lib/index.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "immutableCommit": "76b8fdd90033b30f040ca99708b31e75d7433a0e",
+      "path": "source/patterns/@aws-solutions-constructs/core/lib/secretsmanager-helper.ts",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+      "path": "modules/.shared/.scripts/Set-PfxCertificateInKeyVault.ps1",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "immutableCommit": "5fb87f474808e02e7786d7c5548e65ffc1a6e29e",
+      "path": "community/working-groups/commons/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "immutableCommit": "5fb87f474808e02e7786d7c5548e65ffc1a6e29e",
+      "path": "community/working-groups/compliance/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "immutableCommit": "995f486a9cdecb6946257d5c7b6d98ada2978124",
+      "path": "org.contextmapper.dsl/build.gradle",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "immutableCommit": "995f486a9cdecb6946257d5c7b6d98ada2978124",
+      "path": "README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "immutableCommit": "bb8ed13f69ec42842e598cbe57b95ba3476f5384",
+      "path": ".github/ISSUE_TEMPLATE/Meeting_minutes.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "fast/addons/2-networking-ngfw/diagram.excalidraw.gz",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "ARCHIVE_CONTAINER_REQUIRES_REVIEW",
+          "detail": "Nested archive content is quarantined and is never expanded or executed automatically."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "fast/addons/2-networking-swp/diagram.excalidraw.gz",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "ARCHIVE_CONTAINER_REQUIRES_REVIEW",
+          "detail": "Nested archive content is quarantined and is never expanded or executed automatically."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "fast/stages/0-org-setup/datasets/hardened/assets/diagram.excalidraw.gz",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "ARCHIVE_CONTAINER_REQUIRES_REVIEW",
+          "detail": "Nested archive content is quarantined and is never expanded or executed automatically."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "fast/stages/diagrams.excalidraw.gz",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "ARCHIVE_CONTAINER_REQUIRES_REVIEW",
+          "detail": "Nested archive content is quarantined and is never expanded or executed automatically."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/__experimental_deprecated/alloydb-instance/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/__experimental_deprecated/alloydb-instance/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/agent-engine/agent-managed.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/agent-engine/agent-unmanaged.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/alloydb/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/alloydb/variables.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/bigquery-connection/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/billing-account/budgets.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/billing-account/variables.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-config-container/bindplane/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-config-container/mysql/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-function-v1/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-function-v1/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-function-v2/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-function-v2/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/job-managed.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/job-unmanaged.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/service-managed.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/service-unmanaged.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/variables.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/workerpool-managed.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloud-run-v2/workerpool-unmanaged.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloudsql-instance/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloudsql-instance/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/cloudsql-instance/variables.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/net-ipsec-over-interconnect/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/net-vlan-attachment/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/net-vpn-dynamic/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/net-vpn-ha/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/net-vpn-static/main.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/project-factory/variables-billing.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/project/notification-channels.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/project/variables-observability.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/secret-manager/global.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "immutableCommit": "276623922f0b511d1625e0e1783e12efb94edfc0",
+      "path": "modules/secret-manager/regional.tf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "immutableCommit": "9a4616e77f0f9cbcbecaf27d711c38890dda1404",
+      "path": "src/adservice/gradle/wrapper/gradle-wrapper.jar",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "EXECUTABLE_CONTENT_PROHIBITED",
+          "detail": "Executable or compiled repository content cannot enter the safe acquisition snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "immutableCommit": "9a4616e77f0f9cbcbecaf27d711c38890dda1404",
+      "path": "src/frontend/static/favicon-cymbal.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "immutableCommit": "9a4616e77f0f9cbcbecaf27d711c38890dda1404",
+      "path": "src/frontend/static/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "immutableCommit": "9a4616e77f0f9cbcbecaf27d711c38890dda1404",
+      "path": "src/shoppingassistantservice/shoppingassistantservice.py",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "immutableCommit": "ad98664690b0bb60920432451e68390ac73d9610",
+      "path": "docs/integrations/cosys.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "immutableCommit": "ad98664690b0bb60920432451e68390ac73d9610",
+      "path": "refarch-gateway/src/main/resources/application-local.yml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "immutableCommit": "ad98664690b0bb60920432451e68390ac73d9610",
+      "path": "refarch-integrations/refarch-cosys-integration/refarch-cosys-integration-example/src/main/resources/application-local.yml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "immutableCommit": "ad98664690b0bb60920432451e68390ac73d9610",
+      "path": "refarch-integrations/refarch-email-integration/refarch-email-integration-core/src/test/resources/files/test-word.docx",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "immutableCommit": "b55fc2bcb5f8e1c4b884bca0a38d402d19fe467c",
+      "path": "monolithic-architecture/README.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "immutableCommit": "b55fc2bcb5f8e1c4b884bca0a38d402d19fe467c",
+      "path": "monolithic-architecture/src/main/java/com/iluwatar/monolithic/EcommerceApp.java",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "path": "plugin/json/src/test/resources/json_parsing_test_suite/i_string_UTF-16LE_with_BOM.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "path": "plugin/json/src/test/resources/json_parsing_test_suite/i_string_utf16BE_no_BOM.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "path": "plugin/json/src/test/resources/json_parsing_test_suite/i_string_utf16LE_no_BOM.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "path": "plugin/json/src/test/resources/json_parsing_test_suite/n_multidigit_number_then_00.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "path": "plugin/json/src/test/resources/json_parsing_test_suite/n_string_backslash_00.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "path": "plugin/json/src/test/resources/json_parsing_test_suite/n_string_unescaped_crtl_char.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "immutableCommit": "07912d0eb3d23720490357c8a05b28195377d8ff",
+      "path": "plugin/json/src/test/resources/json_parsing_test_suite/n_structure_null-byte-outside-string.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "immutableCommit": "5152f62edf2b1af2f5f3dcfc515b88678a48af08",
+      "path": "packages/likec4-spa/public/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/data/catalog/5275aa84-91e0-4df1-883d-8df61397f951/0.0.1/design.yml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "CREDENTIAL_BEARING_DATABASE_URL",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/data/catalog/df7815d8-10dd-4001-90b9-c37e79136133/0.0.1/design.yml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "CREDENTIAL_BEARING_DATABASE_URL",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/favicons/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/fonts/qanelas-soft/QanelasSoftRegular.otf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.8/assets/favicons/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.8/assets/fonts/qanelas-soft/QanelasSoftRegular.otf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.8/assets/img/adapters/meshery-ui-setup.mp4",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.8/assets/js/jquery-3.3.1/jquery-3.3.1.min.js",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/favicons/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/fonts/qanelas-soft/QanelasSoftRegular.otf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-brands-400.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-brands-400.woff2",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-regular-400.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-regular-400.woff2",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-solid-900.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-solid-900.woff2",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-v4compatibility.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "docs/static/v0.9/webfonts/fa-v4compatibility.woff2",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "mesheryctl/pkg/utils/scripts.go",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "mesheryctl/tests/e2e/002-model/fixtures/model-import/non-oci-model-archive.tar",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "mesheryctl/tests/e2e/002-model/fixtures/model-import/test-model.zip",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "ARCHIVE_CONTAINER_REQUIRES_REVIEW",
+          "detail": "Nested archive content is quarantined and is never expanded or executed automatically."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "mesheryctl/tests/e2e/002-model/fixtures/model-import/valid-oci-model-archive.tar",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/apache-shardingsphere-operator-charts/0.3.0/v1.0.0/components/ComputeNode.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/apache-shardingsphere-operator-charts/0.3.0/v1.0.0/components/ShardingSphereProxyServerConfig.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/aws-ecr-controller/v1.6.1/v1.0.0/components/PullThroughCacheRule.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/aws-ecr-controller/v1.6.2/v1.0.0/components/PullThroughCacheRule.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/aws-ecr-controller/v1.6.3/v1.0.0/components/PullThroughCacheRule.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/enterprise-operator/1.33.0/v1.0.0/components/MongoDBMulti.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/kiali-operator/2.15.0/v1.0.0/components/Kiali.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/kiali-operator/2.16.0/v1.0.0/components/Kiali.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/kiali-operator/2.17.0/v1.0.0/components/Kiali.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/kiali-operator/2.18.0/v1.0.0/components/Kiali.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/kiali-operator/2.19.0/v1.0.0/components/Kiali.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/kiali-operator/2.20.0/v1.0.0/components/Kiali.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "POSSIBLE_GENERATED_OR_MINIFIED_CONTENT",
+          "detail": "Very long lines reduce extraction quality and require review."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/kubeform-provider-aws/2023.11.1/v1.0.0/components/DBInstanceAutomatedBackupsReplication.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/stackgres-operator/1.18.6/v1.0.0/components/SGObjectStorage.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/stackgres-operator/1.18.7/v1.0.0/components/SGObjectStorage.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/stackgres-operator/1.18.8/v1.0.0/components/SGObjectStorage.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/stackgres-operator/1.19.0-rc1/v1.0.0/components/SGObjectStorage.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/stackgres-operator/1.19.0-rc2/v1.0.0/components/SGObjectStorage.json",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "AWS_ACCESS_KEY_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/guide/iot/how-to-connect-databricks-to-solution.md",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/ad/gradle/wrapper/gradle-wrapper.jar",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "EXECUTABLE_CONTENT_PROHIBITED",
+          "detail": "Executable or compiled repository content cannot enter the safe acquisition snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/flagd-ui/config/runtime.exs",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/flagd-ui/priv/static/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/fraud-detection/gradle/wrapper/gradle-wrapper.jar",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "EXECUTABLE_CONTENT_PROHIBITED",
+          "detail": "Executable or compiled repository content cannot enter the safe acquisition snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/frontend/public/favicon.ico",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/grafana/grafana.ini",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "blocking",
+          "code": "CREDENTIAL_BEARING_DATABASE_URL",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/otel-collector/otelcol-config.yml",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/react-native-app/assets/fonts/SpaceMono-Regular.ttf",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "immutableCommit": "4635f734f2f82c6497bc53d5cf972b5cbfec5e52",
+      "path": "docs/ref-arch/RA0007/6-mt-tco/_SaaS-TCO.xlsx",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "immutableCommit": "5783db719d701978e3a833bd5596736e69545121",
+      "path": "structurizr-dsl/src/test/resources/dsl/plugins/structurizr-dsl-plugin-1.0.0.jar",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "BINARY_OR_MALFORMED_TEXT",
+          "detail": "NUL bytes are not accepted as text evidence."
+        },
+        {
+          "severity": "blocking",
+          "code": "EXECUTABLE_CONTENT_PROHIBITED",
+          "detail": "Executable or compiled repository content cannot enter the safe acquisition snapshot."
+        }
+      ]
+    }
+  ],
+  "instructionShaped": [
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-http/src/main/docs/http-component.adoc",
+      "status": "quarantined",
+      "securityDisposition": "quarantined-blocking-findings",
+      "findings": [
+        {
+          "severity": "blocking",
+          "code": "INLINE_CREDENTIAL_SHAPE",
+          "detail": "Credential-shaped source content cannot enter the safe knowledge snapshot."
+        },
+        {
+          "severity": "warning",
+          "code": "INSTRUCTION_SHAPED_CONTENT",
+          "detail": "Instruction-shaped text is treated only as untrusted evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "immutableCommit": "1109abcbdc53cf171a21dce4b4710b3e4ac363bd",
+      "path": "plugins/catalog/CHANGELOG.md",
+      "status": "accepted",
+      "securityDisposition": "safe-bounded-parser-input",
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "INSTRUCTION_SHAPED_CONTENT",
+          "detail": "Instruction-shaped text is treated only as untrusted evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "immutableCommit": "5fb87f474808e02e7786d7c5548e65ffc1a6e29e",
+      "path": "community/resources/security-lexicon/cloud-native-security-lexicon.md",
+      "status": "accepted",
+      "securityDisposition": "safe-bounded-parser-input",
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "INSTRUCTION_SHAPED_CONTENT",
+          "detail": "Instruction-shaped text is treated only as untrusted evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "immutableCommit": "bb8ed13f69ec42842e598cbe57b95ba3476f5384",
+      "path": "Library/reference_architecture/agentic_ai/multi_agent/tm/tm_ma_ref_arch_apr_2026.md",
+      "status": "accepted",
+      "securityDisposition": "safe-bounded-parser-input",
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "INSTRUCTION_SHAPED_CONTENT",
+          "detail": "Instruction-shaped text is treated only as untrusted evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/k8s-config-connector/v1.137.0/v1.0.0/components/ComputeTargetHTTPSProxy.json",
+      "status": "accepted",
+      "securityDisposition": "safe-bounded-parser-input",
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "INSTRUCTION_SHAPED_CONTENT",
+          "detail": "Instruction-shaped text is treated only as untrusted evidence."
+        }
+      ]
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "immutableCommit": "dffea472483e8f34a998928f81f3e91d274eb3a5",
+      "path": "models/k8s-config-connector/v1.137.0/v1.0.0/components/MetastoreService.json",
+      "status": "accepted",
+      "securityDisposition": "safe-bounded-parser-input",
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "INSTRUCTION_SHAPED_CONTENT",
+          "detail": "Instruction-shaped text is treated only as untrusted evidence."
+        }
+      ]
+    }
+  ],
+  "rawQuarantineIncludedInReleaseDistribution": false
+}

@@ -150,11 +150,20 @@
     "rc10_73_6:verify": "npm run rc10_73_6:test && npm run rc10_73_6:gate && npm run internal-deps:gate && npm run release:integrity:gate && npm run security:check",
     "rc10_73_7:build-governance": "node scripts/rc10-73-7-build-pre-acquisition-governance.mjs",
     "rc10_73_7:dry-run": "node scripts/rc10-73-7-acquisition-selection.mjs",
-    "rc10_73_7:test": "node scripts/rc10-73-7-test-pre-acquisition.mjs && vitest run packages/engine/test/rc10_73_7_candidate_authority_isolation.test.ts --pool=threads --maxWorkers=1 --no-file-parallelism",
+    "rc10_73_7:test": "node scripts/rc10-73-7-test-pre-acquisition.mjs && node scripts/rc10-73-6-test-live-acquisition.mjs && vitest run packages/engine/test/rc10_73_7_candidate_authority_isolation.test.ts --pool=threads --maxWorkers=1 --no-file-parallelism",
     "rc10_73_7:gate": "node scripts/gates/rc10-73-7-pre-acquisition-gate.mjs",
     "rc10_73_7:verify": "npm run rc10_73_7:build-governance && npm run rc10_73_7:dry-run && npm run rc10_73_7:test && npm run rc10_73_7:gate",
     "sol:execution-channels:verify": "tsx scripts/rc10-73-8/verify-sol-execution-channels.mts",
-    "rc10_73_7:preflight-review": "node scripts/rc10-73-7-build-github-preflight-review.mjs"
+    "rc10_73_7:preflight-review": "node scripts/rc10-73-7-build-github-preflight-review.mjs",
+    "rc10_73_7:acquire": "node scripts/rc10-73-6-run-live-github-acquisition.mjs",
+    "rc10_73_7:build-acquisition-evidence": "node scripts/rc10-73-7-build-acquisition-release-evidence.mjs",
+    "rc10_73_7:build-test-evidence": "node scripts/rc10-73-7-build-test-evidence.mjs",
+    "rc10_73_7:build-distribution-manifest": "node scripts/rc10-73-7-build-distribution-manifest.mjs",
+    "rc10_73_7:record-distribution-archive": "node scripts/rc10-73-7-build-distribution-manifest.mjs --record-archive",
+    "rc10_73_7:prebackup-closure": "node scripts/rc10-73-7-release-closure-prebackup.mjs",
+    "rc10_73_7:runtime-storage-acceptance": "node scripts/rc10-73-7-runtime-storage-acceptance.mjs",
+    "rc10_73_8:capacity-gate": "node scripts/rc10-73-8-storage-capacity-gate.mjs",
+    "rc10_73_7:verify-snapshots": "node scripts/rc10-73-7-verify-acquisition-snapshots.mjs"
   },
   "engines": {
     "node": ">=22 <25",

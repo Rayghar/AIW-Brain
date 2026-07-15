@@ -26,3 +26,9 @@ The drift is reconciled by an explicit role boundary, not by relabelling or copy
 - this reconciliation grants no new production, promotion, scoring, or mutation authority.
 
 The source-authority migration evidence now records this disposition explicitly. Altering the frontend release ID alone would create false provenance and was therefore rejected.
+
+## rc.10.73.7 execution reconciliation
+
+The legacy `npm.cmd run rc10_73_5:gate` command was rerun independently during the rc.10.73.7 acquisition release verification. It exited `1` with 27/30 checks passing. The only failures were its three intentional equality checks requiring the backend, frontend and product package versions to be rc.10.73.5; the controlling product baseline is rc.10.73.6 and was not relabelled to make a historical gate pass.
+
+The same legacy gate passed its source-withdrawal, rollback, candidate/discovery isolation, scoring-block, licence-honesty, immutable-revision and production-not-accepted checks. The current rc.10.73.7 governance gate, backend release-integrity gate and both product builds passed. The new AKR-0.10.73.7 acquisition snapshot root is candidate-only and does not replace or promote the canonical AKR-0.10.73.5 runtime knowledge release.

@@ -1,0 +1,540 @@
+{
+  "schemaVersion": "aiw-rc10-73-7-prebackup-closure-v1",
+  "generatedAt": "2026-07-15T17:29:14.274Z",
+  "actor": "Codex GPT-5.6 Sol",
+  "branch": "codex/rc-10-73-7-all-source-acquisition",
+  "head": "10a065c439f7354705a283110c0c37270e6c7a73",
+  "checkpoint": "10a065c439f7354705a283110c0c37270e6c7a73",
+  "vault": {
+    "path": "knowledge-repository/AKR-0.10.73.7/github-live",
+    "bytes": 5367402297,
+    "fileCount": 285542,
+    "folderCount": 88031
+  },
+  "vaultCategories": {
+    "safeCas": {
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/objects/sha256",
+      "bytes": 1706842680,
+      "fileCount": 72567,
+      "folderCount": 5631
+    },
+    "quarantineCas": {
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/quarantine/sha256",
+      "bytes": 15938540,
+      "fileCount": 358,
+      "folderCount": 331
+    },
+    "snapshots": {
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/files",
+      "bytes": 2535581987,
+      "fileCount": 212500,
+      "folderCount": 46048
+    },
+    "manifests": {
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/manifest.json",
+      "bytes": 953657943,
+      "fileCount": 48,
+      "folderCount": 48
+    },
+    "checkpoints": {
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/checkpoints/*.json",
+      "bytes": 46173376,
+      "fileCount": 47,
+      "folderCount": 1
+    },
+    "journals": {
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/checkpoints/*.ndjson",
+      "bytes": 109207771,
+      "fileCount": 22,
+      "folderCount": 1
+    },
+    "other": {
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live (unclassified)",
+      "bytes": 0,
+      "fileCount": 0,
+      "folderCount": 0
+    }
+  },
+  "categoryRows": [
+    {
+      "name": "safe CAS",
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/objects/sha256",
+      "bytes": 1706842680,
+      "fileCount": 72567,
+      "folderCount": 5631,
+      "retentionClass": "immutable-source-evidence",
+      "rebuildability": "reacquirable only with external source availability; preserve",
+      "authority": "candidate evidence",
+      "backupRequirement": "mandatory before compaction",
+      "compactionEligibility": "not eligible",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "quarantine CAS",
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/quarantine/sha256",
+      "bytes": 15938540,
+      "fileCount": 358,
+      "folderCount": 331,
+      "retentionClass": "restricted-immutable-security-evidence",
+      "rebuildability": "not relied upon; preserve exact bytes and disposition",
+      "authority": "quarantined data only",
+      "backupRequirement": "mandatory encrypted restricted backup",
+      "compactionEligibility": "not eligible",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "materialized snapshots",
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/files",
+      "bytes": 2535581987,
+      "fileCount": 212500,
+      "folderCount": 46048,
+      "retentionClass": "immutable-source-view",
+      "rebuildability": "rebuildable from verified CAS plus manifests",
+      "authority": "candidate evidence view",
+      "backupRequirement": "manifest-backed; include in first complete backup",
+      "compactionEligibility": "eligible only after verified backup and restore proof",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "manifests",
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/manifest.json",
+      "bytes": 953657943,
+      "fileCount": 48,
+      "folderCount": 48,
+      "retentionClass": "immutable-provenance-and-denominator",
+      "rebuildability": "not safely rebuildable without full acquisition replay",
+      "authority": "candidate provenance",
+      "backupRequirement": "mandatory",
+      "compactionEligibility": "not eligible",
+      "gitDisposition": "compact indexes only",
+      "fullDistDisposition": "compact manifest index and verification receipt only"
+    },
+    {
+      "name": "checkpoints",
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/checkpoints/*.json",
+      "bytes": 46173376,
+      "fileCount": 47,
+      "folderCount": 1,
+      "retentionClass": "resumability-intermediate",
+      "rebuildability": "rebuildable from complete manifests and journals",
+      "authority": "non-authoritative operational state",
+      "backupRequirement": "include until compaction approved",
+      "compactionEligibility": "potentially eligible after backup",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "journals",
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/checkpoints/*.ndjson",
+      "bytes": 109207771,
+      "fileCount": 22,
+      "folderCount": 1,
+      "retentionClass": "append-only-acquisition-history",
+      "rebuildability": "superseded by complete verified manifests only after reviewed compaction",
+      "authority": "non-authoritative audit support",
+      "backupRequirement": "include before any compaction",
+      "compactionEligibility": "review required",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "bounded evidence",
+      "path": "embedded in immutable snapshot manifests",
+      "bytes": 953657943,
+      "fileCount": 48,
+      "folderCount": 48,
+      "logicalRecordCount": 147239,
+      "physicalStorageOverlap": "manifest bytes; do not add to vault total",
+      "retentionClass": "candidate-bounded-evidence",
+      "rebuildability": "deterministically rebuildable from safe CAS and parser version",
+      "authority": "candidate only",
+      "backupRequirement": "covered by manifests and CAS",
+      "compactionEligibility": "indexes rebuildable; provenance not removable",
+      "gitDisposition": "summary only",
+      "fullDistDisposition": "summary only"
+    },
+    {
+      "name": "parser outputs",
+      "path": "embedded in immutable snapshot manifests",
+      "bytes": 953657943,
+      "fileCount": 48,
+      "folderCount": 48,
+      "logicalRecordCount": 105802,
+      "physicalStorageOverlap": "manifest bytes; do not add to vault total",
+      "retentionClass": "deterministic-parser-metadata",
+      "rebuildability": "rebuildable from safe CAS with pinned parser",
+      "authority": "candidate only",
+      "backupRequirement": "covered by manifests and CAS",
+      "compactionEligibility": "derived indexes eligible after backup",
+      "gitDisposition": "summary only",
+      "fullDistDisposition": "summary only"
+    },
+    {
+      "name": "candidate indexes",
+      "path": "release-evidence/rc10.73.7 (vault-derived candidate indexes)",
+      "bytes": 209481415,
+      "fileCount": 15,
+      "folderCount": 1,
+      "retentionClass": "derived-candidate-index",
+      "rebuildability": "rebuildable from manifests",
+      "authority": "candidate only",
+      "backupRequirement": "optional after source vault backup; retain current release copy",
+      "compactionEligibility": "eligible after backup",
+      "gitDisposition": "excluded when large; compact root index permitted",
+      "fullDistDisposition": "excluded from normal application payload when ignored"
+    },
+    {
+      "name": "release evidence",
+      "path": "release-evidence/rc10.73.7",
+      "bytes": 251406270,
+      "fileCount": 51,
+      "folderCount": 1,
+      "retentionClass": "release-receipt",
+      "rebuildability": "partially rebuildable; signed/observed receipts must be retained",
+      "authority": "release evidence, not production authority",
+      "backupRequirement": "mandatory release backup",
+      "compactionEligibility": "duplicate generated reports reviewable",
+      "gitDisposition": "compact receipts and checksums permitted",
+      "fullDistDisposition": "compact receipts permitted"
+    },
+    {
+      "name": "temporary data",
+      "path": "temporary test and browser output",
+      "bytes": 2047043,
+      "fileCount": 19,
+      "folderCount": 11,
+      "children": [
+        {
+          "path": "frontend/test-results",
+          "bytes": 1518709,
+          "fileCount": 18,
+          "folderCount": 10
+        },
+        {
+          "path": "frontend/playwright-report",
+          "bytes": 528334,
+          "fileCount": 1,
+          "folderCount": 1
+        }
+      ],
+      "retentionClass": "temporary",
+      "rebuildability": "fully rebuildable",
+      "authority": "none",
+      "backupRequirement": "none",
+      "compactionEligibility": "eligible after backup gate",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "rebuildable data",
+      "path": "rebuildable dependencies and compiled output",
+      "bytes": 303199668,
+      "fileCount": 19190,
+      "folderCount": 2131,
+      "children": [
+        {
+          "path": "backend/node_modules",
+          "bytes": 155084304,
+          "fileCount": 11590,
+          "folderCount": 1679
+        },
+        {
+          "path": "frontend/node_modules",
+          "bytes": 141820989,
+          "fileCount": 7246,
+          "folderCount": 446
+        },
+        {
+          "path": "backend/apps/api/dist",
+          "bytes": 1994820,
+          "fileCount": 264,
+          "folderCount": 3
+        },
+        {
+          "path": "backend/apps/worker/dist",
+          "bytes": 38384,
+          "fileCount": 36,
+          "folderCount": 2
+        },
+        {
+          "path": "frontend/apps/web/dist",
+          "bytes": 4261171,
+          "fileCount": 54,
+          "folderCount": 1
+        }
+      ],
+      "retentionClass": "local-build-cache",
+      "rebuildability": "fully rebuildable from locks and source",
+      "authority": "none",
+      "backupRequirement": "none",
+      "compactionEligibility": "eligible after backup gate",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "duplicate content",
+      "path": "knowledge-repository/AKR-0.10.73.7/github-live/snapshots/*/*/files",
+      "bytes": 2535581987,
+      "fileCount": 212500,
+      "folderCount": 46048,
+      "basis": "Materialized source-view files are logical duplicates of verified content-addressed objects referenced by each manifest.",
+      "retentionClass": "rebuildable-source-view",
+      "rebuildability": "rebuildable from CAS plus manifests",
+      "authority": "none beyond referenced CAS",
+      "backupRequirement": "preserve in first full backup",
+      "compactionEligibility": "eligible only after backup and restore verification",
+      "gitDisposition": "excluded",
+      "fullDistDisposition": "excluded"
+    },
+    {
+      "name": "historical releases",
+      "path": "knowledge-repository historical releases excluding AKR-0.10.73.7",
+      "bytes": 14015064,
+      "fileCount": 23,
+      "folderCount": 0,
+      "children": [
+        {
+          "path": "knowledge-repository/AKR-0.10.72.0",
+          "bytes": 5248421,
+          "fileCount": 15,
+          "folderCount": 0
+        },
+        {
+          "path": "knowledge-repository/AKR-0.10.73.5",
+          "bytes": 8766643,
+          "fileCount": 8,
+          "folderCount": 0
+        }
+      ],
+      "retentionClass": "historical-release-evidence",
+      "rebuildability": "varies; treat as non-rebuildable pending audit",
+      "authority": "release-pinned historical",
+      "backupRequirement": "mandatory under historical retention policy",
+      "compactionEligibility": "not assessed in this gate",
+      "gitDisposition": "existing governed history only",
+      "fullDistDisposition": "release-specific"
+    }
+  ],
+  "releaseEvidence": {
+    "path": "release-evidence/rc10.73.7",
+    "bytes": 251406270,
+    "fileCount": 51,
+    "folderCount": 1
+  },
+  "candidateIndexes": {
+    "path": "release-evidence/rc10.73.7 (vault-derived candidate indexes)",
+    "bytes": 209481415,
+    "fileCount": 15,
+    "folderCount": 1
+  },
+  "temporaryData": {
+    "path": "temporary test and browser output",
+    "bytes": 2047043,
+    "fileCount": 19,
+    "folderCount": 11,
+    "children": [
+      {
+        "path": "frontend/test-results",
+        "bytes": 1518709,
+        "fileCount": 18,
+        "folderCount": 10
+      },
+      {
+        "path": "frontend/playwright-report",
+        "bytes": 528334,
+        "fileCount": 1,
+        "folderCount": 1
+      }
+    ]
+  },
+  "rebuildableData": {
+    "path": "rebuildable dependencies and compiled output",
+    "bytes": 303199668,
+    "fileCount": 19190,
+    "folderCount": 2131,
+    "children": [
+      {
+        "path": "backend/node_modules",
+        "bytes": 155084304,
+        "fileCount": 11590,
+        "folderCount": 1679
+      },
+      {
+        "path": "frontend/node_modules",
+        "bytes": 141820989,
+        "fileCount": 7246,
+        "folderCount": 446
+      },
+      {
+        "path": "backend/apps/api/dist",
+        "bytes": 1994820,
+        "fileCount": 264,
+        "folderCount": 3
+      },
+      {
+        "path": "backend/apps/worker/dist",
+        "bytes": 38384,
+        "fileCount": 36,
+        "folderCount": 2
+      },
+      {
+        "path": "frontend/apps/web/dist",
+        "bytes": 4261171,
+        "fileCount": 54,
+        "folderCount": 1
+      }
+    ]
+  },
+  "historicalReleases": {
+    "path": "knowledge-repository historical releases excluding AKR-0.10.73.7",
+    "bytes": 14015064,
+    "fileCount": 23,
+    "folderCount": 0,
+    "children": [
+      {
+        "path": "knowledge-repository/AKR-0.10.72.0",
+        "bytes": 5248421,
+        "fileCount": 15,
+        "folderCount": 0
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.5",
+        "bytes": 8766643,
+        "fileCount": 8,
+        "folderCount": 0
+      }
+    ]
+  },
+  "git": {
+    "status": [
+      "M .gitignore",
+      " M backend/.dockerignore",
+      " M backend/package.json",
+      " M backend/scripts/rc10-73-6-github-acquisition-core.mjs",
+      " M backend/scripts/rc10-73-6-run-live-github-acquisition.mjs",
+      " M backend/scripts/rc10-73-6-test-live-acquisition.mjs",
+      " M frontend/.dockerignore",
+      " M release-evidence/local-environment/CHROMIUM_CODEX_READINESS_REPORT.md",
+      " M release-evidence/rc10.73.7/KNOWLEDGE_MANIFEST_DRIFT_RECONCILIATION.md",
+      " M release-evidence/rc10.73.7/PRE_ACQUISITION_GATE_RESULTS.json",
+      "?? .dockerignore",
+      "?? backend/scripts/rc10-73-7-acquisition-foundation.mjs",
+      "?? backend/scripts/rc10-73-7-build-acquisition-release-evidence.mjs",
+      "?? backend/scripts/rc10-73-7-build-distribution-manifest.mjs",
+      "?? backend/scripts/rc10-73-7-build-test-evidence.mjs",
+      "?? backend/scripts/rc10-73-7-release-closure-prebackup.mjs",
+      "?? backend/scripts/rc10-73-7-verify-acquisition-snapshots.mjs",
+      "?? frontend/tests/e2e/rc10-73-7-acquisition-posture.spec.ts",
+      "?? knowledge-repository/AKR-0.10.73.7/",
+      "?? release-evidence/rc10.73.7/AIW_RC10_73_7_IMPLEMENTATION_TRACEABILITY.md",
+      "?? release-evidence/rc10.73.7/AIW_RC10_73_7_RELEASE_REPORT.md",
+      "?? release-evidence/rc10.73.7/AIW_RC10_73_7_SHA256_FILE_MANIFEST.txt",
+      "?? release-evidence/rc10.73.7/AIW_RC10_73_7_TEST_EVIDENCE.json",
+      "?? release-evidence/rc10.73.7/ALL_47_LIVE_ACQUISITION_SUMMARY.json",
+      "?? release-evidence/rc10.73.7/CONTENT_SNAPSHOT_MANIFEST_INDEX.json",
+      "?? release-evidence/rc10.73.7/FAILED_AND_REVIEW_REQUIRED_REPOSITORIES.json",
+      "?? release-evidence/rc10.73.7/FULLDIST_ARCHIVE_SHA256.json",
+      "?? release-evidence/rc10.73.7/FULLDIST_CONTENTS.json",
+      "?? release-evidence/rc10.73.7/FULLDIST_FILELIST.txt",
+      "?? release-evidence/rc10.73.7/KNOWN_LIMITATIONS.md",
+      "?? release-evidence/rc10.73.7/LICENCE_EVIDENCE_REGISTER.json",
+      "?? release-evidence/rc10.73.7/PLAYWRIGHT_ACQUISITION_POSTURE_RESULTS.json",
+      "?? release-evidence/rc10.73.7/QUARANTINE_AND_SECURITY_REPORT.json",
+      "?? release-evidence/rc10.73.7/RC10_73_8_READINESS_ASSESSMENT.md",
+      "?? release-evidence/rc10.73.7/REPOSITORY_COVERAGE_MATRIX.json",
+      "?? release-evidence/rc10.73.7/SNAPSHOT_AND_MANIFEST_VERIFICATION.json",
+      "?? release-evidence/rc10.73.7/SOL_SEMANTIC_FOUNDATION_ACCEPTANCE.json",
+      "?? release-evidence/rc10.73.7/WHOLE_ARCHITECTURE_ARTEFACT_INDEX.json",
+      "?? release-evidence/rc10.73.7/playwright-acquisition-posture/"
+    ],
+    "staged": [],
+    "unstaged": [
+      ".gitignore",
+      "backend/.dockerignore",
+      "backend/package.json",
+      "backend/scripts/rc10-73-6-github-acquisition-core.mjs",
+      "backend/scripts/rc10-73-6-run-live-github-acquisition.mjs",
+      "backend/scripts/rc10-73-6-test-live-acquisition.mjs",
+      "frontend/.dockerignore",
+      "release-evidence/local-environment/CHROMIUM_CODEX_READINESS_REPORT.md",
+      "release-evidence/rc10.73.7/KNOWLEDGE_MANIFEST_DRIFT_RECONCILIATION.md",
+      "release-evidence/rc10.73.7/PRE_ACQUISITION_GATE_RESULTS.json"
+    ],
+    "untracked": [
+      ".dockerignore",
+      "backend/scripts/rc10-73-7-acquisition-foundation.mjs",
+      "backend/scripts/rc10-73-7-build-acquisition-release-evidence.mjs",
+      "backend/scripts/rc10-73-7-build-distribution-manifest.mjs",
+      "backend/scripts/rc10-73-7-build-test-evidence.mjs",
+      "backend/scripts/rc10-73-7-release-closure-prebackup.mjs",
+      "backend/scripts/rc10-73-7-verify-acquisition-snapshots.mjs",
+      "frontend/tests/e2e/rc10-73-7-acquisition-posture.spec.ts",
+      "knowledge-repository/AKR-0.10.73.7/README.md",
+      "release-evidence/rc10.73.7/AIW_RC10_73_7_IMPLEMENTATION_TRACEABILITY.md",
+      "release-evidence/rc10.73.7/AIW_RC10_73_7_RELEASE_REPORT.md",
+      "release-evidence/rc10.73.7/AIW_RC10_73_7_SHA256_FILE_MANIFEST.txt",
+      "release-evidence/rc10.73.7/AIW_RC10_73_7_TEST_EVIDENCE.json",
+      "release-evidence/rc10.73.7/ALL_47_LIVE_ACQUISITION_SUMMARY.json",
+      "release-evidence/rc10.73.7/CONTENT_SNAPSHOT_MANIFEST_INDEX.json",
+      "release-evidence/rc10.73.7/FAILED_AND_REVIEW_REQUIRED_REPOSITORIES.json",
+      "release-evidence/rc10.73.7/FULLDIST_ARCHIVE_SHA256.json",
+      "release-evidence/rc10.73.7/FULLDIST_CONTENTS.json",
+      "release-evidence/rc10.73.7/FULLDIST_FILELIST.txt",
+      "release-evidence/rc10.73.7/KNOWN_LIMITATIONS.md",
+      "release-evidence/rc10.73.7/LICENCE_EVIDENCE_REGISTER.json",
+      "release-evidence/rc10.73.7/PLAYWRIGHT_ACQUISITION_POSTURE_RESULTS.json",
+      "release-evidence/rc10.73.7/QUARANTINE_AND_SECURITY_REPORT.json",
+      "release-evidence/rc10.73.7/RC10_73_8_READINESS_ASSESSMENT.md",
+      "release-evidence/rc10.73.7/REPOSITORY_COVERAGE_MATRIX.json",
+      "release-evidence/rc10.73.7/SNAPSHOT_AND_MANIFEST_VERIFICATION.json",
+      "release-evidence/rc10.73.7/SOL_SEMANTIC_FOUNDATION_ACCEPTANCE.json",
+      "release-evidence/rc10.73.7/WHOLE_ARCHITECTURE_ARTEFACT_INDEX.json",
+      "release-evidence/rc10.73.7/playwright-acquisition-posture/acquisition-posture.png"
+    ],
+    "forbiddenTracked": [],
+    "forbiddenStaged": []
+  },
+  "fullDist": {
+    "path": "release-evidence/rc10.73.7/AIW_v0.10.0-rc.10.73.7_All_Source_Governed_Acquisition_and_Sol_Semantic_Transformation_Foundation_FULLDIST.zip",
+    "bytes": 40415289,
+    "entryCount": 2152,
+    "sha256": "6eae9de3b7fa894d9ed04e76b281553a4830361304adff998c80c634ae49bde6",
+    "forbiddenEntries": []
+  },
+  "acquisition": {
+    "completed": 47,
+    "failed": 0,
+    "controlledStops": 0,
+    "reviewRequired": 23,
+    "denominator": 186219,
+    "verifiedRepositories": 47,
+    "quarantineCount": 294
+  },
+  "backupGate": {
+    "schemaVersion": "aiw-knowledge-vault-backup-receipt-v1",
+    "releaseId": "AIW v0.10.0-rc.10.73.7",
+    "generatedAt": "2026-07-15T17:29:14.274Z",
+    "actor": "Codex GPT-5.6 Sol",
+    "status": "blocked-no-approved-destination",
+    "sourceRoot": "knowledge-repository/AKR-0.10.73.7/github-live",
+    "destination": null,
+    "totalBytes": 5367402297,
+    "fileCount": 285542,
+    "folderCount": 88031,
+    "minimumRequiredCapacityBytes": 5367402297,
+    "recommendedCapacityWith20PercentHeadroomBytes": 6440882757,
+    "sourceManifestFingerprint": null,
+    "destinationManifestFingerprint": null,
+    "verificationMethod": "not-run; destination approval required before source fingerprint, copy and independent destination replay",
+    "verificationResult": "not-performed",
+    "encryptionPosture": "destination-not-selected",
+    "retentionPosture": "destination-not-selected",
+    "backupCompleted": false,
+    "productionAccepted": false,
+    "blocker": "No product-owner-approved backup destination is recorded. No copy, compaction or deletion was attempted."
+  },
+  "productionAccepted": false
+}

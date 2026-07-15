@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "aiw-sol-semantic-foundation-acceptance-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T14:18:41.716Z",
+  "productionAccepted": false,
+  "knowledgeAuthority": "candidate",
+  "productRuntimeSolConfigured": false,
+  "productRuntimeTransformationExecuted": false,
+  "disposition": "Codex-Sol contract inspection only; product-runtime semantic transformation deferred to rc.10.73.8 because the governed runtime channel is unconfigured.",
+  "transformationContractValidated": true,
+  "allOutputsCandidateOnly": true,
+  "designGraphMutationPerformed": false,
+  "representativeBoundedEvidenceByAuthorityClass": [
+    {
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "archunit-example/example-junit4/build.gradle",
+      "boundedEvidenceAvailable": true,
+      "runtimeTransformationExecuted": false
+    },
+    {
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "immutableCommit": "562dbf4d0206d91630fae0a56ff05db9027fac8c",
+      "path": "README.md",
+      "boundedEvidenceAvailable": true,
+      "runtimeTransformationExecuted": false
+    },
+    {
+      "sourceAuthorityClass": "official-reference-architecture",
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "immutableCommit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "components/camel-activemq/src/main/docs/activemq-component.adoc",
+      "boundedEvidenceAvailable": true,
+      "runtimeTransformationExecuted": false
+    },
+    {
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "immutableCommit": "e59928aee75a566a3f96d8cad78a9a92ea96f829",
+      "path": "examples/anyof-asyncapi.yml",
+      "boundedEvidenceAvailable": true,
+      "runtimeTransformationExecuted": false
+    },
+    {
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "immutableCommit": "8dff0d9b1f9640684df8c3bbcdc2ee45f989ca0f",
+      "path": "EN/adoc/01_introduction_and_goals.adoc",
+      "boundedEvidenceAvailable": true,
+      "runtimeTransformationExecuted": false
+    }
+  ]
+}

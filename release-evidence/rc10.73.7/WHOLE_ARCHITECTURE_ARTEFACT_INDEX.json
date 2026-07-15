@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "aiw-whole-architecture-artefact-index-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T14:18:41.716Z",
+  "productionAccepted": false,
+  "knowledgeAuthority": "candidate",
+  "count": 91358,
+  "relationshipEncoding": "Complete cross-file membership is stored once in CROSS_FILE_ARCHITECTURE_GROUPS.json; per-artefact relatedFiles is a bounded preview.",
+  "storage": "deterministic-sharded-json",
+  "partCount": 5,
+  "parts": [
+    {
+      "partNumber": 1,
+      "path": "WHOLE_ARCHITECTURE_ARTEFACT_INDEX.part-001.json",
+      "count": 20000,
+      "sha256": "sha256:4ba7507713953027e1582315cf0e253ce992891fcb048bafb94b39732dce8ee0"
+    },
+    {
+      "partNumber": 2,
+      "path": "WHOLE_ARCHITECTURE_ARTEFACT_INDEX.part-002.json",
+      "count": 20000,
+      "sha256": "sha256:d0541de45ff3c84aba968583799ee8098b270a0bfe6eada06101ab443b77a4e0"
+    },
+    {
+      "partNumber": 3,
+      "path": "WHOLE_ARCHITECTURE_ARTEFACT_INDEX.part-003.json",
+      "count": 20000,
+      "sha256": "sha256:653e439950b4f70168bb26fbb5041a6336332588cb00169f90fe72d0fb8e76bf"
+    },
+    {
+      "partNumber": 4,
+      "path": "WHOLE_ARCHITECTURE_ARTEFACT_INDEX.part-004.json",
+      "count": 20000,
+      "sha256": "sha256:2deb1a5f3863ef2204bb9adb95b4fb244536ac6614683e5676802a111bf31281"
+    },
+    {
+      "partNumber": 5,
+      "path": "WHOLE_ARCHITECTURE_ARTEFACT_INDEX.part-005.json",
+      "count": 11358,
+      "sha256": "sha256:3efb8b03aa90da19240a9a30880214a61e7b1e837f79f4b575dcb3a7df70c526"
+    }
+  ]
+}

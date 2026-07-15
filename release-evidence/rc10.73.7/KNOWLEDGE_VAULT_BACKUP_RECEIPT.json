@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "aiw-knowledge-vault-backup-receipt-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7",
+  "generatedAt": "2026-07-15T18:51:52.811Z",
+  "actor": "Codex GPT-5.6 Sol",
+  "status": "deferred-by-product-owner",
+  "backupStatus": "deferred-by-product-owner",
+  "sourceRoot": "knowledge-repository/AKR-0.10.73.7/github-live",
+  "destination": null,
+  "totalBytes": 5367402297,
+  "fileCount": 285542,
+  "folderCount": 88031,
+  "minimumRequiredCapacityBytes": 5367402297,
+  "recommendedCapacityWith20PercentHeadroomBytes": 6440882757,
+  "sourceManifestFingerprint": null,
+  "destinationManifestFingerprint": null,
+  "verificationMethod": "not-run; destination approval required before source fingerprint, copy and independent destination replay",
+  "verificationResult": "not-performed",
+  "encryptionPosture": "destination-not-selected",
+  "retentionPosture": "destination-not-selected",
+  "backupCompleted": false,
+  "backupRiskAccepted": true,
+  "backupRiskAcceptedAt": "2026-07-15T18:51:52.811Z",
+  "backupRiskScope": "loss or corruption of the local raw acquisition vault",
+  "productionAccepted": false,
+  "blocker": "Independent verified backup was explicitly deferred by the product owner. This is a risk acceptance, not a passed backup gate. No copy, compaction or deletion was attempted.",
+  "destinationOptions": [
+    {
+      "id": "local-same-volume",
+      "destination": "C:/AIW/vault-backups/AIW_v0.10.0-rc.10.73.7",
+      "availableBytesObserved": 14917074944,
+      "capacitySufficient": true,
+      "faultDomain": "same physical volume as source",
+      "encryptionPosture": "unknown; BitLocker status query was access-denied without administrative elevation"
+    },
+    {
+      "id": "current-d-drive",
+      "destination": "D:/AIW_vault_backups/AIW_v0.10.0-rc.10.73.7",
+      "availableBytesObserved": 1115201536,
+      "capacitySufficient": false,
+      "faultDomain": "separate reported volume",
+      "encryptionPosture": "not assessed"
+    },
+    {
+      "id": "external-or-object-storage",
+      "destination": null,
+      "minimumFreeBytes": 6440882757,
+      "capacitySufficient": null,
+      "faultDomain": "preferred independent fault domain",
+      "encryptionPosture": "must be product-owner-approved before use"
+    }
+  ]
+}
