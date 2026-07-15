@@ -2,14 +2,15 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { acquireRepository, DEFAULT_GITHUB_API_VERSION } from './rc10-73-6-github-acquisition-core.mjs';
+import { selectAcquisitionDossiers } from './rc10-73-7-acquisition-selection.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const backend = resolve(here, '..');
 const product = resolve(backend, '..');
 const sourceMap = JSON.parse(await readFile(resolve(backend, 'data/rc10_55-global-architecture-intelligence-source-map.json'), 'utf8'));
-const approved = sourceMap.dossiers.filter((item) => item.sourceAuthority?.lifecycleStatus === 'approved');
 const requestedIds = (process.env.AIW_REFRESH_CONNECTORS || '').split(',').map((value) => value.trim()).filter(Boolean);
-const selected = requestedIds.length ? approved.filter((item) => requestedIds.includes(item.connectorId)) : approved;
+const selected = selectAcquisitionDossiers(sourceMap.dossiers, requestedIds);
+const acquisitionApproved = selectAcquisitionDossiers(sourceMap.dossiers);
 const outputRoot = resolve(process.env.AIW_GITHUB_SNAPSHOT_ROOT || resolve(product, 'knowledge-repository', 'AKR-0.10.73.6', 'github-live'));
 const summaryPath = resolve(process.env.AIW_GITHUB_ACQUISITION_SUMMARY || resolve(product, 'release-evidence', 'rc10.73.6', 'LIVE_GITHUB_ACQUISITION_SUMMARY.json'));
 const token = process.env.AIW_GITHUB_TOKEN?.trim() || undefined;
@@ -32,8 +33,8 @@ const failed = results.filter((item) => item.status === 'failed').length;
 const summary = {
   schemaVersion: 'aiw-github-acquisition-summary-v1', generatedAt: new Date().toISOString(), apiVersion, authenticated: Boolean(token), requested: selected.length,
   completed, reviewRequired: results.filter((item) => item.status === 'review-required').length, failed,
-  allApprovedRepositoriesSelected: selected.length === approved.length,
-  productionAccepted: completed === approved.length && failed === 0 && results.every((item) => item.licenceDisposition === 'technically-verified-pending-release-approval'),
+  allApprovedRepositoriesSelected: selected.length === acquisitionApproved.length,
+  productionAccepted: false,
   results,
 };
 await mkdir(dirname(summaryPath), { recursive: true }); await writeFile(summaryPath, `${JSON.stringify(summary, null, 2)}\n`);

@@ -1,0 +1,176 @@
+{
+  "schemaVersion": "aiw-github-connectivity-preflight-v2",
+  "releaseId": "AIW v0.10.0-rc.10.73.7-preflight",
+  "generatedAt": "2026-07-15T08:49:05.447Z",
+  "apiVersion": "2026-03-10",
+  "authenticated": true,
+  "preflightOnly": true,
+  "completeAcquisitionStarted": false,
+  "productionAccepted": false,
+  "selectionScope": "explicit-connector-filter",
+  "requestedConnectorIds": [
+    "GH-CNCF-TAG-SECURITY",
+    "GH-STRUCTURIZR-JAVA"
+  ],
+  "selectedCount": 2,
+  "total": 2,
+  "reachable": 2,
+  "unreachable": 0,
+  "exactIdentityCount": 2,
+  "archivedOrDisabledCount": 2,
+  "acceptedArchivedCount": 2,
+  "unresolvedImmutableRevisionCount": 0,
+  "sufficientRateLimit": true,
+  "rateLimitBefore": {
+    "httpStatus": 200,
+    "limit": 5000,
+    "remaining": 4994,
+    "used": 6,
+    "resetEpochSeconds": 1784106389,
+    "resetAt": "2026-07-15T09:06:29.000Z",
+    "resource": "core"
+  },
+  "rateLimitAfter": {
+    "httpStatus": 200,
+    "limit": 5000,
+    "remaining": 4994,
+    "used": 6,
+    "resetEpochSeconds": 1784106389,
+    "resetAt": "2026-07-15T09:06:29.000Z",
+    "resource": "core"
+  },
+  "rateLimitObservedFromResponseHeaders": {
+    "minimumRemaining": 4990,
+    "maximumRemaining": 4995,
+    "estimatedRepositoryAndLicenceRequests": 6
+  },
+  "rateLimitErrors": {
+    "before": null,
+    "after": null
+  },
+  "passConditions": {
+    "authenticated": true,
+    "expectedSelectionCount": true,
+    "allSelectedReachable": true,
+    "noUnexplainedRedirect": true,
+    "noUnexpectedArchivedOrDisabled": true,
+    "immutableRevisionResolvedForAllSelected": true,
+    "sufficientRateLimit": true
+  },
+  "results": [
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "requestedRepository": "cncf/tag-security",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "archivedSourceDisposition": "approved-for-immutable-acquisition",
+      "sourceFreshnessStatus": "archived",
+      "currentGuidanceEligible": false,
+      "semanticReviewStatus": "requires-freshness-and-successor-review",
+      "automaticPromotionAllowed": false,
+      "successorRepository": null,
+      "successorMigrationRequired": true,
+      "resolvedRepository": "cncf/tag-security",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "C217:B235E:FE9114C:F16FFCE:6A574977",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/cncf/tag-security",
+        "resolvedUrl": "https://api.github.com/repos/cncf/tag-security",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": true,
+      "archivedAcquisitionAccepted": true,
+      "disabled": false,
+      "visibility": "public",
+      "immutableRevisionEvidence": {
+        "httpStatus": 200,
+        "commitSha": "5fb87f474808e02e7786d7c5548e65ffc1a6e29e",
+        "resolved": true,
+        "ref": "main",
+        "apiRequestId": "C217:B235E:FE91EB7:F170C6E:6A574978",
+        "errorClassification": null
+      },
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE.md",
+        "apiRequestId": "C217:B235E:FE916B9:F1704E0:6A574978",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 3,
+        "repositoryRequestRemaining": 4995,
+        "licenceRequestRemaining": 4993,
+        "revisionRequestRemaining": 4991
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "requestedRepository": "structurizr/java",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "archivedSourceDisposition": "approved-for-immutable-acquisition",
+      "sourceFreshnessStatus": "archived",
+      "currentGuidanceEligible": false,
+      "semanticReviewStatus": "requires-freshness-and-successor-review",
+      "automaticPromotionAllowed": false,
+      "successorRepository": null,
+      "successorMigrationRequired": true,
+      "resolvedRepository": "structurizr/java",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "C219:5942B:FAB4E76:EDC47A8:6A574978",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/structurizr/java",
+        "resolvedUrl": "https://api.github.com/repos/structurizr/java",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": true,
+      "archivedAcquisitionAccepted": true,
+      "disabled": false,
+      "visibility": "public",
+      "immutableRevisionEvidence": {
+        "httpStatus": 200,
+        "commitSha": "5783db719d701978e3a833bd5596736e69545121",
+        "resolved": true,
+        "ref": "master",
+        "apiRequestId": "C219:5942B:FAB5865:EDC50D8:6A574979",
+        "errorClassification": null
+      },
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "C219:5942B:FAB5374:EDC4C72:6A574978",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 3,
+        "repositoryRequestRemaining": 4994,
+        "licenceRequestRemaining": 4992,
+        "revisionRequestRemaining": 4990
+      },
+      "remediationRequired": []
+    }
+  ]
+}

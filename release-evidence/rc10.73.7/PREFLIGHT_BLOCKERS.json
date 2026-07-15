@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "aiw-github-preflight-blockers-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7-preflight",
+  "generatedAt": "2026-07-15T02:54:12.284Z",
+  "productionAccepted": false,
+  "status": "passed-awaiting-product-owner-approval",
+  "fullAcquisitionMayStart": false,
+  "blockingCount": 0,
+  "blockers": [],
+  "acceptedArchivedSources": [
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "archivedSourceDisposition": "approved-for-immutable-acquisition",
+      "sourceFreshnessStatus": "archived",
+      "currentGuidanceEligible": false,
+      "semanticReviewStatus": "requires-freshness-and-successor-review",
+      "automaticPromotionAllowed": false,
+      "successorRepository": null,
+      "successorMigrationRequired": true,
+      "immutableRevisionEvidence": {
+        "httpStatus": 200,
+        "commitSha": "5fb87f474808e02e7786d7c5548e65ffc1a6e29e",
+        "resolved": true,
+        "ref": "main",
+        "apiRequestId": "C217:B235E:FE91EB7:F170C6E:6A574978",
+        "errorClassification": null
+      },
+      "authorityLimit": "Acquisition-only approval; not current normative guidance and no scoring, hard-constraint, conformance, promotion, redistribution, Design Graph mutation, or production authority."
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "archivedSourceDisposition": "approved-for-immutable-acquisition",
+      "sourceFreshnessStatus": "archived",
+      "currentGuidanceEligible": false,
+      "semanticReviewStatus": "requires-freshness-and-successor-review",
+      "automaticPromotionAllowed": false,
+      "successorRepository": null,
+      "successorMigrationRequired": true,
+      "immutableRevisionEvidence": {
+        "httpStatus": 200,
+        "commitSha": "5783db719d701978e3a833bd5596736e69545121",
+        "resolved": true,
+        "ref": "master",
+        "apiRequestId": "C219:5942B:FAB5865:EDC50D8:6A574979",
+        "errorClassification": null
+      },
+      "authorityLimit": "Acquisition-only approval; not current normative guidance and no scoring, hard-constraint, conformance, promotion, redistribution, Design Graph mutation, or production authority."
+    }
+  ],
+  "nonBlockingReviewRequirements": [
+    {
+      "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+      "repository": "DovAmir/awesome-design-patterns",
+      "category": "licence-api-not-found",
+      "licenceApiHttpStatus": 404,
+      "spdxId": null,
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "category": "licence-api-not-found",
+      "licenceApiHttpStatus": 404,
+      "spdxId": null,
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+      "repository": "cncf/landscape-graph",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-DEVELOPER-ROADMAP",
+      "repository": "nilbuild/developer-roadmap",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-101",
+      "repository": "ByteByteGoHq/system-design-101",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+      "repository": "donnemartin/system-design-primer",
+      "category": "licence-api-inconclusive",
+      "licenceApiHttpStatus": 200,
+      "spdxId": "NOASSERTION",
+      "exactRemediation": "Allow acquisition/quarantine only under the governed candidate-only policy; prohibit redistribution and promotion until path-level licence evidence receives independent legal/licence review."
+    }
+  ],
+  "passedConditions": [
+    "authenticated",
+    "governedAll47Selected",
+    "all47Reachable",
+    "all47AcquisitionApproved",
+    "noUnexplainedRedirectOrRename",
+    "noUnexpectedArchivedSource",
+    "noDisabledRepository",
+    "focusedArchivedPreflightPassed",
+    "sufficientRateLimit"
+  ],
+  "failedConditions": []
+}

@@ -4,7 +4,7 @@
       "id": "extract-openai-primary",
       "purpose": "knowledge-extraction",
       "providerId": "openai",
-      "model": "gpt-4.1-mini",
+      "model": "gpt-5.6-sol",
       "baseUrl": "https://api.openai.com/v1",
       "apiKeyEnvironmentVariable": "OPENAI_API_KEY",
       "protocol": "responses",

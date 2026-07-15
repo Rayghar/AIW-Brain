@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "aiw-sol-bounded-transformation-test-v1",
+  "generatedAt": "2026-07-15T09:10:12.755Z",
+  "productionAccepted": false,
+  "executionClassification": "deterministic-governed-gateway-harness",
+  "actualRuntime": {
+    "providerConfigured": false,
+    "providerId": "openai",
+    "model": "gpt-5.6-sol",
+    "activeProbeStatusCode": 503,
+    "activeProbePassed": false,
+    "runtimeSolActivated": false,
+    "missingSecret": "OPENAI_API_KEY",
+    "networkCallAttempted": false
+  },
+  "governedHarness": {
+    "provider": "openai",
+    "model": "gpt-5.6-sol",
+    "strictSchemaValidationPassed": true,
+    "redactionReceipt": {
+      "changed": true,
+      "counts": {
+        "api-key": 1,
+        "credential": 1
+      },
+      "findingKinds": [
+        "api-key",
+        "credential"
+      ]
+    },
+    "secretPatternTransmitted": false,
+    "evidenceAllowlistEnforced": true,
+    "evidenceEntailmentVerified": true,
+    "unsupportedClaimRejected": true,
+    "invalidOrExtraFieldsRejected": true,
+    "outputAuthority": "candidate",
+    "candidateOnly": true,
+    "graphFingerprintBefore": "sha256:13dd3a24d1c8bea12fe6136348a83aaf6c1aaa7946cdb80a5f1e899b987ce93a",
+    "graphFingerprintAfter": "sha256:13dd3a24d1c8bea12fe6136348a83aaf6c1aaa7946cdb80a5f1e899b987ce93a",
+    "designGraphMutated": false,
+    "automaticPromotion": false,
+    "transactionReceipt": {
+      "id": "sol-proposal-e4d3223745041130",
+      "status": "proposed",
+      "version": 1,
+      "eventCount": 1,
+      "lastEventHash": "48dec17b24db48c588212df2359f355cef9ae9f12295e8a45e65925c8f7b9bd9",
+      "humanApprovalRequired": true,
+      "directModelMutationAllowed": false
+    }
+  },
+  "distinctions": {
+    "codexSolSupervisedTransformation": "active-this-session",
+    "aiwRuntimeSolTransformation": "unconfigured-missing-secret",
+    "deterministicFallback": "governed-gateway-transport-harness-passed; not a provider activation claim",
+    "unconfiguredRuntime": true
+  }
+}

@@ -1,9 +1,9 @@
 import { expect, test, type Page, type TestInfo } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { mountAiw } from './support/staticAiwHarness';
 
-const shotRoot = '/mnt/data/AIW_RC10_51_ACCEPTANCE_SHOTS';
+const shotRoot = resolve('release-evidence/rc10.51/acceptance-shots');
 mkdirSync(shotRoot, { recursive: true });
 
 function collectErrors(page: Page) {

@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import { chromiumLaunchOptions } from './scripts/playwright-runtime.mjs';
 
-const chromiumExecutable = process.env.AIW_CHROMIUM_PATH ?? '/usr/bin/chromium';
+const reuseExistingServer = !process.env.CI;
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -12,26 +13,34 @@ export default defineConfig({
   outputDir: './test-results/rc10-59',
   reporter: [['list'], ['html', { outputFolder: './playwright-report/rc10-59', open: 'never' }]],
   use: {
+    baseURL: 'http://127.0.0.1:4173',
     locale: 'en-GB',
     timezoneId: 'Africa/Lagos',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'off',
-    launchOptions: {
-      executablePath: chromiumExecutable,
-      args: ['--no-sandbox', '--disable-dev-shm-usage'],
-    },
+    launchOptions: chromiumLaunchOptions(),
   },
   projects: [
     { name: 'chromium-desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1600, height: 900 } } },
     { name: 'chromium-laptop', use: { ...devices['Desktop Chrome'], viewport: { width: 1100, height: 760 } } },
   ],
-  webServer: {
-    command: "cd ../backend && env -u DATABASE_URL -u MONGODB_URI -u MONGO_URL PORT=4100 HOST=127.0.0.1 AIW_ALLOW_DEV_AUTH=true AIW_RUNTIME_ACCEPTANCE_MODE=report npm run start -w @aiw/api",
-    url: 'http://127.0.0.1:4100/health',
-    reuseExistingServer: true,
-    timeout: 120_000,
-    stdout: 'ignore',
-    stderr: 'pipe',
-  },
+  webServer: [
+    {
+      command: 'node scripts/start-playwright-api.mjs',
+      url: 'http://127.0.0.1:4100/health',
+      reuseExistingServer,
+      timeout: 120_000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+    {
+      command: 'node scripts/start-playwright-web.mjs',
+      url: 'http://127.0.0.1:4173',
+      reuseExistingServer,
+      timeout: 120_000,
+      stdout: 'ignore',
+      stderr: 'pipe',
+    },
+  ],
 });

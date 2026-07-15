@@ -85,7 +85,7 @@ services:
       AIW_VECTOR_EMBEDDING_MODE: ${AIW_VECTOR_EMBEDDING_MODE:-deterministic}
       AIW_LLM_PROVIDER: ${AIW_LLM_PROVIDER:-openai}
       AIW_LLM_RUNTIME_CONFIG_PATH: /var/lib/aiw/config/llm-runtime-overrides.json
-      AIW_LLM_MODEL: ${AIW_LLM_MODEL:-gpt-4.1-mini}
+      AIW_LLM_MODEL: ${AIW_LLM_MODEL:-gpt-5.6-sol}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       XAI_API_KEY: ${XAI_API_KEY:-}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}

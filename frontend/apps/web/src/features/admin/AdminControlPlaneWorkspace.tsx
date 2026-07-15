@@ -225,7 +225,7 @@ const ADMIN_DEMO_SEED = {
     githubMesh: { enabled: true },
   },
   routes: [
-    { id: 'coarchitect-primary', provider: 'openai', model: 'gpt-4.1-mini', purpose: 'guided-authoring', enabled: true, deterministicOnly: false, structuredOutputRequired: true, dataSensitivity: 'internal', environmentScope: 'pilot', updatedBy: 'demo-admin', updatedAt: new Date().toISOString() },
+    { id: 'coarchitect-primary', provider: 'openai', model: 'gpt-5.6-sol', purpose: 'guided-authoring', enabled: true, deterministicOnly: false, structuredOutputRequired: true, dataSensitivity: 'internal', environmentScope: 'pilot', updatedBy: 'demo-admin', updatedAt: new Date().toISOString() },
     { id: 'deterministic-fallback', provider: 'offline-deterministic', model: 'kernel', purpose: 'architecture-reasoning', enabled: true, deterministicOnly: true, dataSensitivity: 'internal', environmentScope: 'local', updatedBy: 'system', updatedAt: new Date().toISOString() },
   ],
   connectors: [
@@ -935,7 +935,7 @@ export function AdminControlPlaneWorkspace() {
           <div className="admin-form-grid">
             <Field label="Route id"><input value={routeDraft.id} onChange={(e) => setRouteDraft({ ...routeDraft, id: e.target.value })} placeholder="coarchitect-primary" /></Field>
             <Field label="Provider"><select value={routeDraft.provider} onChange={(e) => setRouteDraft({ ...routeDraft, provider: e.target.value })}>{['openai','azure-openai','anthropic','gemini','xai','qwen','deepseek','local','custom','offline-deterministic'].map((p) => <option key={p}>{p}</option>)}</select></Field>
-            <Field label="Model"><input value={routeDraft.model} onChange={(e) => setRouteDraft({ ...routeDraft, model: e.target.value })} placeholder="gpt-4.1-mini or private-model-id" /></Field>
+            <Field label="Model"><input value={routeDraft.model} onChange={(e) => setRouteDraft({ ...routeDraft, model: e.target.value })} placeholder="gpt-5.6-sol or private-model-id" /></Field>
             <Field label="Purpose"><select value={routeDraft.purpose} onChange={(e) => setRouteDraft({ ...routeDraft, purpose: e.target.value })}>{['architecture-reasoning','knowledge-extraction','explanation','guided-authoring','adr-drafting','general'].map((p) => <option key={p}>{p}</option>)}</select></Field>
             <Field label="Data sensitivity"><select value={routeDraft.dataSensitivity} onChange={(e) => setRouteDraft({ ...routeDraft, dataSensitivity: e.target.value })}>{['public','internal','confidential','restricted'].map((p) => <option key={p}>{p}</option>)}</select></Field>
             <Field label="Environment"><select value={routeDraft.environmentScope} onChange={(e) => setRouteDraft({ ...routeDraft, environmentScope: e.target.value })}>{['local','pilot','production'].map((p) => <option key={p}>{p}</option>)}</select></Field>

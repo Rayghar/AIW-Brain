@@ -1,13 +1,15 @@
 import { chromium } from '@playwright/test';
 import fs from 'node:fs';
-const out='/mnt/data/aiw_work/baseline-shots'; fs.mkdirSync(out,{recursive:true});
-const browser=await chromium.launch({headless:true, executablePath:'/usr/bin/chromium', args:['--no-sandbox']});
+import path from 'node:path';
+import { chromiumLaunchOptions } from './scripts/playwright-runtime.mjs';
+const out=path.resolve('release-evidence/local-environment/baseline-shots'); fs.mkdirSync(out,{recursive:true});
+const browser=await chromium.launch({headless:true, ...chromiumLaunchOptions()});
 const page=await browser.newPage({viewport:{width:1440,height:1000}, deviceScaleFactor:1});
 const consoleErrors=[]; const failed=[];
 page.on('console',m=>{ if(m.type()==='error') consoleErrors.push(m.text()); });
 page.on('pageerror',e=>consoleErrors.push('PAGEERROR '+e.message));
 page.on('requestfailed',r=>failed.push({url:r.url(),error:r.failure()?.errorText}));
-await page.goto('http://127.0.0.1:4173/',{waitUntil:'networkidle'});
+await page.goto(process.env.AIW_WEB_URL ?? 'http://127.0.0.1:4173/',{waitUntil:'networkidle'});
 await page.screenshot({path:`${out}/01-project-hub.png`,fullPage:true});
 const newBtn=page.getByRole('button',{name:/new guided architecture project/i});
 if(await newBtn.count()){await newBtn.click(); await page.waitForTimeout(300); await page.screenshot({path:`${out}/02-create-project.png`,fullPage:true});}

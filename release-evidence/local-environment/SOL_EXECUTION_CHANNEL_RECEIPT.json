@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "aiw-sol-execution-channel-receipt-v1",
+  "generatedAt": "2026-07-15T09:10:12.755Z",
+  "baseline": "AIW v0.10.0-rc.10.73.6",
+  "productionAccepted": false,
+  "channels": {
+    "codexAgent": {
+      "identity": "GPT-5.6 Sol",
+      "role": "engineering supervision, execution, inspection and review",
+      "status": "active",
+      "mutationAuthority": "repository-scoped engineering changes under user direction"
+    },
+    "aiwProductRuntime": {
+      "providerId": "openai",
+      "intendedModel": "gpt-5.6-sol",
+      "resolvedModel": "gpt-5.6-sol",
+      "secretReference": "OPENAI_API_KEY",
+      "secretPresent": false,
+      "healthConfigured": false,
+      "activeProbePassed": false,
+      "status": "unconfigured",
+      "authority": "candidate proposals only; no graph mutation or promotion"
+    }
+  },
+  "secretHandling": {
+    "secretValueReadIntoEvidence": false,
+    "secretValueLogged": false,
+    "repositorySecretModified": false
+  },
+  "runtimeInspection": {
+    "providerPolicy": "OpenAI Responses API route with provider, purpose, protocol and data-classification controls.",
+    "explicitModelNameAllowlistPresent": false,
+    "modelValidation": "Route model must be non-empty; provider protocol must be supported. The configured model identifier is auditable but not restricted by a name allowlist.",
+    "structuredOutput": "Provider-native strict JSON Schema plus independent AIW post-validation.",
+    "redaction": "System and user content are redacted before transport; receipts contain kinds, counts and fingerprints only.",
+    "grounding": "Approved reference allowlist, required citations and deterministic entailment verification.",
+    "transactionAndReview": "Proposal-recorded transaction; human approval required; direct model mutation prohibited; independent reviewer controls remain external.",
+    "legacyIntegrationsAdapter": "Scaffold only; not used as evidence of runtime provider activation."
+  },
+  "priorProviderEvidence": {
+    "path": "release-evidence/rc10.72.3/LIVE_SOL_PROVIDER_ACCEPTANCE.json",
+    "status": "blocked",
+    "productionAccepted": false,
+    "liveProviderUsed": false,
+    "routes": [
+      {
+        "providerId": "openai",
+        "model": "gpt-4.1-mini",
+        "configured": false
+      }
+    ]
+  },
+  "activationClaim": "AIW runtime Sol is not activated because OPENAI_API_KEY is absent."
+}

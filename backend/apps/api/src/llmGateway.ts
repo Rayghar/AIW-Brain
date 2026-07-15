@@ -81,7 +81,7 @@ function asProtocol(value: string | undefined, provider: LlmProviderDefinition):
 
 function defaultModel(providerId: LlmProviderId): string {
   const names: Record<LlmProviderId, string> = {
-    openai: process.env.OPENAI_MODEL || 'gpt-4.1-mini',
+    openai: process.env.OPENAI_MODEL || 'gpt-5.6-sol',
     xai: process.env.XAI_MODEL || 'grok-3-mini',
     gemini: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
     qwen: process.env.QWEN_MODEL || 'qwen-plus',

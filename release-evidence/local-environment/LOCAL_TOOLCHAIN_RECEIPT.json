@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "aiw-local-toolchain-receipt-v1",
+  "generatedAt": "2026-07-15T09:03:30.8617484Z",
+  "timestampSemantics": {
+    "generatedAt": "actual receipt-generation time",
+    "deterministicFixtureTimestampsUsed": false
+  },
+  "baseline": "AIW v0.10.0-rc.10.73.6",
+  "platform": {
+    "operatingSystem": "Microsoft Windows NT 10.0.26200.0",
+    "powershell": "5.1.26100.8655",
+    "node": "v24.18.0",
+    "npm": "11.18.0"
+  },
+  "playwright": {
+    "version": "1.61.1",
+    "chromiumBundle": "1228",
+    "chromiumVersionLaunched": "149.0.7827.55",
+    "managedExecutable": "%USERPROFILE%\\AppData\\Local\\ms-playwright\\chromium-1228\\chrome-win64\\chrome.exe",
+    "executableSource": "Playwright-managed Chromium",
+    "googleChromeRequired": false,
+    "userSpecificPathHardcodedInSource": false
+  },
+  "commandReceipts": [
+    { "command": "node --version", "exitCode": 0, "output": "v24.18.0" },
+    { "command": "npm.cmd --version", "exitCode": 0, "output": "11.18.0" },
+    { "command": "npx.cmd --offline playwright --version", "exitCode": 0, "output": "Version 1.61.1" },
+    { "command": "npx.cmd playwright install --list", "exitCode": 0, "outputSummary": "Chromium 1228, Chromium headless shell 1228, FFmpeg 1011, WinLDD 1007" },
+    { "command": "npx.cmd playwright test --list", "exitCode": 0, "outputSummary": "208 tests in 35 files across chromium-desktop and chromium-laptop" }
+  ],
+  "secretValuesRecorded": false,
+  "productionAccepted": false
+}

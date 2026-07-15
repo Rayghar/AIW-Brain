@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-governed-acquisition-policy-v1",
+  "generatedAt": "2026-07-15T09:07:04.985Z",
+  "deterministicFixtureTimestamp": "2026-07-15T00:00:00.000Z",
+  "productionAccepted": false,
+  "defaultSelection": "all dossiers where acquisitionStatus equals approved",
+  "expectedCount": 47,
+  "explicitFiltersSupported": true,
+  "deterministicOrdering": "connectorId ascending",
+  "partialRetrySupported": true,
+  "acquisitionDoesNotConfer": [
+    "scoring",
+    "candidate-elimination",
+    "hard-constraints",
+    "conformance",
+    "knowledge-promotion",
+    "licence-approval",
+    "production-authority"
+  ],
+  "generatedKnowledgeAuthority": "candidate",
+  "semanticContract": "release-evidence/rc10.73.7/SOL_SEMANTIC_TRANSFORMATION_CONTRACT.json"
+}

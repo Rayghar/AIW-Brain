@@ -30,7 +30,37 @@
           "recommendedPosture",
           "exactIngestionConfiguration",
           "requiredHumanReviewer"
-        ]
+          ,"acquisitionStatus"
+          ,"sourceAuthorityClass"
+          ,"previousLifecycleStatus"
+          ,"semanticReviewStatus"
+          ,"knowledgePromotionStatus"
+          ,"permittedUses"
+          ,"prohibitedUses"
+          ,"licenceDisposition"
+          ,"securityDisposition"
+          ,"lastImmutableRevision"
+          ,"lastAcquisitionStatus"
+        ],
+        "properties": {
+          "acquisitionStatus": { "enum": ["approved", "denied", "suspended"] },
+          "sourceAuthorityClass": { "enum": ["official-specification-or-standard", "official-reference-architecture", "architecture-conformance-implementation", "reviewed-practitioner-or-implementation-source", "educational-or-discovery-source"] },
+          "previousLifecycleStatus": { "enum": ["approved", "candidate", "discovery-only"] },
+          "semanticReviewStatus": { "type": "string", "minLength": 1 },
+          "knowledgePromotionStatus": { "const": "candidate-only-pending-independent-review" },
+          "permittedUses": { "type": "array", "items": { "type": "string" } },
+          "prohibitedUses": { "type": "array", "items": { "type": "string" } },
+          "licenceDisposition": { "type": "string", "minLength": 1 },
+          "securityDisposition": { "type": "string", "minLength": 1 },
+          "lastImmutableRevision": { "type": ["string", "null"] },
+          "lastAcquisitionStatus": { "type": "string", "minLength": 1 },
+          "archivedSourceDisposition": { "const": "approved-for-immutable-acquisition" },
+          "sourceFreshnessStatus": { "const": "archived" },
+          "currentGuidanceEligible": { "const": false },
+          "automaticPromotionAllowed": { "const": false },
+          "successorRepository": { "type": "null" },
+          "successorMigrationRequired": { "const": true }
+        }
       }
     }
   }

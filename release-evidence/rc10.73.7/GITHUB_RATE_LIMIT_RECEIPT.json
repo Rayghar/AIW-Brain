@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "aiw-github-rate-limit-receipt-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.7-preflight",
+  "generatedAt": "2026-07-15T02:54:12.284Z",
+  "productionAccepted": false,
+  "authenticated": true,
+  "authenticationReceipt": {
+    "aiwGithubTokenInitiallyPresentInCodexProcess": false,
+    "githubCliAuthenticated": true,
+    "effectiveAiwGithubTokenPresentDuringPreflight": true,
+    "credentialBridge": "GitHub CLI keyring token supplied in-memory to the PowerShell -Token parameter; not printed or persisted.",
+    "secretValueRecorded": false
+  },
+  "endpointSnapshots": {
+    "before": {
+      "httpStatus": 200,
+      "limit": 5000,
+      "remaining": 4994,
+      "used": 6,
+      "resetEpochSeconds": 1784086950,
+      "resetAt": "2026-07-15T03:42:30.000Z",
+      "resource": "core"
+    },
+    "after": {
+      "httpStatus": 200,
+      "limit": 5000,
+      "remaining": 4994,
+      "used": 6,
+      "resetEpochSeconds": 1784086950,
+      "resetAt": "2026-07-15T03:42:30.000Z",
+      "resource": "core"
+    }
+  },
+  "responseHeaderObservation": {
+    "minimumRemaining": 4807,
+    "maximumRemaining": 4900,
+    "estimatedRepositoryAndLicenceRequests": 94
+  },
+  "endpointCacheObservation": "The /rate_limit body repeated the earlier 4,994 value; per-response x-ratelimit-remaining headers showed the actual decreasing core budget and are used conservatively.",
+  "conservativeRemaining": 4807,
+  "estimatedPreflightCoreRequests": 94,
+  "sufficientForPreflight": true,
+  "fullAcquisitionCapacityDecision": "not-evaluated-by-this-preflight; full acquisition remains approval-gated"
+}

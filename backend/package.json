@@ -147,7 +147,14 @@
     "rc10_73_6:acquire": "node scripts/rc10-73-6-run-live-github-acquisition.mjs",
     "rc10_73_6:test": "node scripts/rc10-73-6-test-live-acquisition.mjs",
     "rc10_73_6:gate": "node scripts/gates/rc10-73-6-live-github-acquisition-gate.mjs",
-    "rc10_73_6:verify": "npm run rc10_73_6:test && npm run rc10_73_6:gate && npm run internal-deps:gate && npm run release:integrity:gate && npm run security:check"
+    "rc10_73_6:verify": "npm run rc10_73_6:test && npm run rc10_73_6:gate && npm run internal-deps:gate && npm run release:integrity:gate && npm run security:check",
+    "rc10_73_7:build-governance": "node scripts/rc10-73-7-build-pre-acquisition-governance.mjs",
+    "rc10_73_7:dry-run": "node scripts/rc10-73-7-acquisition-selection.mjs",
+    "rc10_73_7:test": "node scripts/rc10-73-7-test-pre-acquisition.mjs && vitest run packages/engine/test/rc10_73_7_candidate_authority_isolation.test.ts --pool=threads --maxWorkers=1 --no-file-parallelism",
+    "rc10_73_7:gate": "node scripts/gates/rc10-73-7-pre-acquisition-gate.mjs",
+    "rc10_73_7:verify": "npm run rc10_73_7:build-governance && npm run rc10_73_7:dry-run && npm run rc10_73_7:test && npm run rc10_73_7:gate",
+    "sol:execution-channels:verify": "tsx scripts/rc10-73-8/verify-sol-execution-channels.mts",
+    "rc10_73_7:preflight-review": "node scripts/rc10-73-7-build-github-preflight-review.mjs"
   },
   "engines": {
     "node": ">=22 <25",

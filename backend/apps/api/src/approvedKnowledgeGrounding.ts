@@ -80,7 +80,7 @@ export function buildApprovedKnowledgeGroundingPack(input: {
     });
   }
   for (const claim of convertedKnowledge.objects.filter((item) => item.objectClass === 'atomic-source-claim' && item.subjectId && requested.has(item.subjectId) && item.review?.status === 'verified' && item.authority?.reasoningEligible)) {
-    if (!claim.claimId || !claim.statement) continue;
+    if (!claim.claimId || !claim.subjectId || !claim.statement) continue;
     sources.push({
       id: claim.claimId,
       recordId: claim.subjectId,

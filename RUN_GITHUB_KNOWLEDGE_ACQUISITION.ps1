@@ -13,5 +13,10 @@ $env:AIW_REFRESH_CONNECTORS = $Connectors
 Push-Location $backend
 try {
   node scripts/rc10-73-6-preflight.mjs
-  if (-not $PreflightOnly) { node scripts/rc10-73-6-run-live-github-acquisition.mjs }
+  $preflightExitCode = $LASTEXITCODE
+  if ($preflightExitCode -ne 0) { exit $preflightExitCode }
+  if (-not $PreflightOnly) {
+    node scripts/rc10-73-6-run-live-github-acquisition.mjs
+    exit $LASTEXITCODE
+  }
 } finally { Pop-Location }

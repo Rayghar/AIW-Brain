@@ -1,0 +1,93 @@
+{
+  "schemaVersion": "aiw-pre-acquisition-gate-results-v1",
+  "generatedAt": "2026-07-15T09:10:02.557Z",
+  "deterministicFixtureTimestamp": "2026-07-15T00:00:00.000Z",
+  "baseline": "AIW v0.10.0-rc.10.73.6",
+  "networkAccess": false,
+  "productionAccepted": false,
+  "status": "passed",
+  "passed": 16,
+  "failed": 0,
+  "checks": [
+    {
+      "id": "total-governed-source-count-47",
+      "status": "passed",
+      "evidence": "Source map has 47 dossiers with preserved 30/9/8 previous lifecycle distribution."
+    },
+    {
+      "id": "default-acquisition-selection-47",
+      "status": "passed",
+      "evidence": "Empty connector list selects all acquisition-approved dossiers."
+    },
+    {
+      "id": "explicit-connector-filter-and-partial-retry",
+      "status": "passed",
+      "evidence": "Explicit retry filters are deduplicated, ordered, and reject unknown or unapproved connector IDs."
+    },
+    {
+      "id": "source-authority-remains-differentiated",
+      "status": "passed",
+      "evidence": "Five differentiated sourceAuthorityClass values remain while acquisitionStatus is approved for all 47."
+    },
+    {
+      "id": "candidate-and-discovery-remain-non-authoritative",
+      "status": "passed",
+      "evidence": "The 9 candidate and 8 discovery-only sources retain non-authoritative lifecycle and prohibited authority uses."
+    },
+    {
+      "id": "acquisition-does-not-grant-authority",
+      "status": "passed",
+      "evidence": "Acquisition permission is orthogonal to scoring, hard-constraint, conformance, and promotion authority."
+    },
+    {
+      "id": "archived-acquisition-dispositions-remain-non-normative",
+      "status": "passed",
+      "evidence": "Both archived identities are explicitly acquisition-approved while remaining ineligible as current guidance or automatic promotion; successors require separate governance."
+    },
+    {
+      "id": "focused-archived-preflight-proves-immutable-identities",
+      "status": "passed",
+      "evidence": "The authenticated focused evidence retains exact archived identities and a resolved 40-hex immutable revision for each connector."
+    },
+    {
+      "id": "prompt-injection-shaped-evidence-remains-data",
+      "status": "passed",
+      "evidence": "Prompt-injection-shaped text is retained only inside the untrusted evidence envelope."
+    },
+    {
+      "id": "repository-text-cannot-change-system-instructions",
+      "status": "passed",
+      "evidence": "System instructions are immutable application data and are not derived from repository text."
+    },
+    {
+      "id": "missing-evidence-prevents-claim-creation",
+      "status": "passed",
+      "evidence": "Missing or hash-mismatched bounded evidence is rejected before semantic proposal creation."
+    },
+    {
+      "id": "strict-output-schema-rejects-extra-or-invalid-fields",
+      "status": "passed",
+      "evidence": "Strict proposal validation rejects extra fields and non-candidate authority."
+    },
+    {
+      "id": "all-generated-knowledge-candidate-only",
+      "status": "passed",
+      "evidence": "The acceptance boundary permits candidate authority only."
+    },
+    {
+      "id": "authoritative-brain-route-excludes-candidates",
+      "status": "passed",
+      "evidence": "Runtime retrieval populates the authoritative route from approved hits only; candidate hits require explicit opt-in and remain separate."
+    },
+    {
+      "id": "deterministic-dry-run-replay-identical",
+      "status": "passed",
+      "evidence": "Dry-run output is byte-identical when input ordering is reversed."
+    },
+    {
+      "id": "production-accepted-remains-false",
+      "status": "passed",
+      "evidence": "Generated governance evidence cannot assert production acceptance."
+    }
+  ]
+}

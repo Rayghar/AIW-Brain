@@ -136,7 +136,7 @@ export function parseArchitectureKnowledge({ connectorId, repository, revision, 
 
 function headersToObject(headers) {
   const output = {};
-  for (const key of ['etag', 'x-ratelimit-limit', 'x-ratelimit-remaining', 'x-ratelimit-reset', 'retry-after', 'deprecation', 'sunset']) {
+  for (const key of ['etag', 'x-ratelimit-limit', 'x-ratelimit-remaining', 'x-ratelimit-reset', 'x-ratelimit-resource', 'x-github-request-id', 'location', 'retry-after', 'deprecation', 'sunset']) {
     const value = headers.get(key); if (value !== null) output[key] = value;
   }
   return output;
@@ -156,8 +156,9 @@ export class GitHubRestClient {
       try {
         const response = await this.fetchImpl(url, { method, headers: this.headers(etag ? { 'If-None-Match': etag } : {}), ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(this.requestTimeoutMs) });
         const metadata = headersToObject(response.headers);
-        if (response.status === 304) return { status: 304, body: undefined, headers: metadata, url };
-        if (expected.includes(response.status)) return { status: response.status, body: await response.json(), headers: metadata, url };
+        const responseMetadata = { url, requestedUrl: url, resolvedUrl: response.url || url, redirected: response.redirected === true };
+        if (response.status === 304) return { status: 304, body: undefined, headers: metadata, ...responseMetadata };
+        if (expected.includes(response.status)) return { status: response.status, body: await response.json(), headers: metadata, ...responseMetadata };
         const detail = (await response.text()).slice(0, 1000);
         const retryable = response.status === 429 || response.status >= 500 || (response.status === 403 && (metadata['x-ratelimit-remaining'] === '0' || /secondary rate limit/i.test(detail)));
         if (!retryable || attempt === this.maxRetries) throw new Error(`GITHUB_HTTP_${response.status}:${detail}`);

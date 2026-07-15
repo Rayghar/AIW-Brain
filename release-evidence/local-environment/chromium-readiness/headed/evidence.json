@@ -1,0 +1,15 @@
+{
+  "mode": "headed",
+  "project": "chromium-desktop",
+  "chromiumVersion": "149.0.7827.55",
+  "executable": "%USERPROFILE%\\AppData\\Local\\ms-playwright\\chromium-1228\\chrome-win64\\chrome.exe",
+  "executableSource": "Playwright-managed Chromium",
+  "testUrl": "http://127.0.0.1:4173/",
+  "pageTitle": "Architecture Intelligence Workbench",
+  "httpStatus": 200,
+  "consoleErrors": [],
+  "failedRequests": [],
+  "screenshot": "chromium-readiness.png",
+  "trace": "trace.zip",
+  "result": "passed"
+}

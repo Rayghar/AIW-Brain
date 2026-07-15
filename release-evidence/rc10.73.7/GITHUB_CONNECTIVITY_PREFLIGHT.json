@@ -1,0 +1,1916 @@
+{
+  "schemaVersion": "aiw-github-connectivity-preflight-v2",
+  "releaseId": "AIW v0.10.0-rc.10.73.7-preflight",
+  "generatedAt": "2026-07-15T02:54:12.284Z",
+  "apiVersion": "2026-03-10",
+  "authenticated": true,
+  "preflightOnly": true,
+  "completeAcquisitionStarted": false,
+  "productionAccepted": false,
+  "selectedCount": 47,
+  "total": 47,
+  "reachable": 47,
+  "unreachable": 0,
+  "exactIdentityCount": 47,
+  "archivedOrDisabledCount": 2,
+  "sufficientRateLimit": true,
+  "rateLimitBefore": {
+    "httpStatus": 200,
+    "limit": 5000,
+    "remaining": 4994,
+    "used": 6,
+    "resetEpochSeconds": 1784086950,
+    "resetAt": "2026-07-15T03:42:30.000Z",
+    "resource": "core"
+  },
+  "rateLimitAfter": {
+    "httpStatus": 200,
+    "limit": 5000,
+    "remaining": 4994,
+    "used": 6,
+    "resetEpochSeconds": 1784086950,
+    "resetAt": "2026-07-15T03:42:30.000Z",
+    "resource": "core"
+  },
+  "rateLimitObservedFromResponseHeaders": {
+    "minimumRemaining": 4807,
+    "maximumRemaining": 4900,
+    "estimatedRepositoryAndLicenceRequests": 94
+  },
+  "rateLimitErrors": {
+    "before": null,
+    "after": null
+  },
+  "passConditions": {
+    "authenticated": true,
+    "total47": true,
+    "reachable47": true,
+    "noUnexplainedRedirect": true,
+    "noUnexpectedArchivedOrDisabled": false,
+    "sufficientRateLimit": true
+  },
+  "results": [
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "requestedRepository": "apache/camel",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "apache/camel",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40AB77:C8E6F77:6A56F643",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/apache/camel",
+        "resolvedUrl": "https://api.github.com/repos/apache/camel",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE.txt",
+        "apiRequestId": "D5E7:1BD013:D40AECB:C8E72AD:6A56F644",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4900,
+        "licenceRequestRemaining": 4894
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "requestedRepository": "arc42/arc42-template",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "arc42/arc42-template",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40AD4F:C8E714B:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/arc42/arc42-template",
+        "resolvedUrl": "https://api.github.com/repos/arc42/arc42-template",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE.txt",
+        "apiRequestId": "D5E8:1BD013:D40B03F:C8E7423:6A56F644",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4898,
+        "licenceRequestRemaining": 4892
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "requestedRepository": "ea-toolkit/architecture-catalog",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "ea-toolkit/architecture-catalog",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D836F89:CD6B881:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/ea-toolkit/architecture-catalog",
+        "resolvedUrl": "https://api.github.com/repos/ea-toolkit/architecture-catalog",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "key": "mit",
+        "path": "LICENSE",
+        "apiRequestId": "D5E9:219112:D83732B:CD6BC20:6A56F644",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4897,
+        "licenceRequestRemaining": 4891
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "requestedRepository": "TNG/ArchUnit",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "resolvedRepository": "TNG/ArchUnit",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D63282B:CB1C939:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/TNG/ArchUnit",
+        "resolvedUrl": "https://api.github.com/repos/TNG/ArchUnit",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EA:3A7FC4:D632B7A:CB1CC70:6A56F644",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4899,
+        "licenceRequestRemaining": 4890
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+      "requestedRepository": "ardalis/CleanArchitecture",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "ardalis/CleanArchitecture",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EB:2DA58:CE6CD36:C37A0A4:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/ardalis/CleanArchitecture",
+        "resolvedUrl": "https://api.github.com/repos/ardalis/CleanArchitecture",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "key": "mit",
+        "path": "LICENSE",
+        "apiRequestId": "D5EB:2DA58:CE6D00E:C37A376:6A56F644",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4896,
+        "licenceRequestRemaining": 4893
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "requestedRepository": "asyncapi/spec",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "resolvedRepository": "asyncapi/spec",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EC:260987:CE52C80:C3731D4:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/asyncapi/spec",
+        "resolvedUrl": "https://api.github.com/repos/asyncapi/spec",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EC:260987:CE533CA:C3738B6:6A56F644",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4895,
+        "licenceRequestRemaining": 4885
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "requestedRepository": "fauzisho/awesome-antipattern",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "fauzisho/awesome-antipattern",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40B2B0:C8E767E:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/fauzisho/awesome-antipattern",
+        "resolvedUrl": "https://api.github.com/repos/fauzisho/awesome-antipattern",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE.md",
+        "apiRequestId": "D5E7:1BD013:D40B538:C8E78F6:6A56F645",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4889,
+        "licenceRequestRemaining": 4884
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+      "requestedRepository": "DovAmir/awesome-design-patterns",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "DovAmir/awesome-design-patterns",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40B2D7:C8E76B4:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/DovAmir/awesome-design-patterns",
+        "resolvedUrl": "https://api.github.com/repos/DovAmir/awesome-design-patterns",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 404,
+        "found": false,
+        "spdxId": null,
+        "name": null,
+        "key": null,
+        "path": null,
+        "apiRequestId": "D5E8:1BD013:D40B571:C8E7935:6A56F645",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4888,
+        "licenceRequestRemaining": 4883
+      },
+      "remediationRequired": [
+        "No repository licence API evidence was returned; require path-level licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-AWESOME-SCALABILITY",
+      "requestedRepository": "binhnguyennus/awesome-scalability",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "binhnguyennus/awesome-scalability",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D632E4D:CB1CF10:6A56F645",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/binhnguyennus/awesome-scalability",
+        "resolvedUrl": "https://api.github.com/repos/binhnguyennus/awesome-scalability",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "key": "mit",
+        "path": "LICENSE",
+        "apiRequestId": "D5EA:3A7FC4:D63310A:CB1D1CB:6A56F645",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4887,
+        "licenceRequestRemaining": 4882
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-AWESOME-SOFTWARE-ARCH",
+      "requestedRepository": "mehdihadeli/awesome-software-architecture",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "mehdihadeli/awesome-software-architecture",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D8377EA:CD6C09E:6A56F645",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/mehdihadeli/awesome-software-architecture",
+        "resolvedUrl": "https://api.github.com/repos/mehdihadeli/awesome-software-architecture",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "CC0-1.0",
+        "name": "Creative Commons Zero v1.0 Universal",
+        "key": "cc0-1.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E9:219112:D837F80:CD6C7FA:6A56F645",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4886,
+        "licenceRequestRemaining": 4876
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+      "requestedRepository": "ashishps1/awesome-system-design-resources",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "ashishps1/awesome-system-design-resources",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EB:2DA58:CE6D693:C37A9B6:6A56F644",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/ashishps1/awesome-system-design-resources",
+        "resolvedUrl": "https://api.github.com/repos/ashishps1/awesome-system-design-resources",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "GPL-3.0",
+        "name": "GNU General Public License v3.0",
+        "key": "gpl-3.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EB:2DA58:CE6D968:C37AC7C:6A56F646",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4881,
+        "licenceRequestRemaining": 4877
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "requestedRepository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40B7EF:C8E7BC7:6A56F645",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/aws-samples/aws-saas-factory-eks-reference-architecture",
+        "resolvedUrl": "https://api.github.com/repos/aws-samples/aws-saas-factory-eks-reference-architecture",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT-0",
+        "name": "MIT No Attribution",
+        "key": "mit-0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E7:1BD013:D40BB8D:C8E7F19:6A56F646",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4880,
+        "licenceRequestRemaining": 4875
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "requestedRepository": "aws-samples/serverless-patterns",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "aws-samples/serverless-patterns",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40B7FC:C8E7BD1:6A56F645",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/aws-samples/serverless-patterns",
+        "resolvedUrl": "https://api.github.com/repos/aws-samples/serverless-patterns",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE",
+        "apiRequestId": "D5E8:1BD013:D40BBBD:C8E7F4A:6A56F646",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4879,
+        "licenceRequestRemaining": 4874
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "requestedRepository": "awslabs/aws-solutions-constructs",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "awslabs/aws-solutions-constructs",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D633401:CB1D490:6A56F645",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/awslabs/aws-solutions-constructs",
+        "resolvedUrl": "https://api.github.com/repos/awslabs/aws-solutions-constructs",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE.txt",
+        "apiRequestId": "D5EA:3A7FC4:D63379C:CB1D808:6A56F646",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4878,
+        "licenceRequestRemaining": 4873
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "requestedRepository": "Azure/ResourceModules",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "Azure/ResourceModules",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EC:260987:CE53B37:C373FF2:6A56F645",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/Azure/ResourceModules",
+        "resolvedUrl": "https://api.github.com/repos/Azure/ResourceModules",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "key": "mit",
+        "path": "LICENSE",
+        "apiRequestId": "D5EC:260987:CE53E8E:C374356:6A56F646",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4872,
+        "licenceRequestRemaining": 4867
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "requestedRepository": "backstage/backstage",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "backstage/backstage",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40BEB4:C8E8200:6A56F646",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/backstage/backstage",
+        "resolvedUrl": "https://api.github.com/repos/backstage/backstage",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E9:219112:D8386B9:CD6CEE8:6A56F647",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4871,
+        "licenceRequestRemaining": 4865
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "requestedRepository": "plantuml-stdlib/C4-PlantUML",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "plantuml-stdlib/C4-PlantUML",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40BEE1:C8E822D:6A56F646",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/plantuml-stdlib/C4-PlantUML",
+        "resolvedUrl": "https://api.github.com/repos/plantuml-stdlib/C4-PlantUML",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "key": "mit",
+        "path": "LICENSE",
+        "apiRequestId": "D5E7:1BD013:D40C1E4:C8E8519:6A56F647",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4870,
+        "licenceRequestRemaining": 4864
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "requestedRepository": "r0light/cna-quality-model",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "r0light/cna-quality-model",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D838360:CD6CBD6:6A56F646",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/r0light/cna-quality-model",
+        "resolvedUrl": "https://api.github.com/repos/r0light/cna-quality-model",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 404,
+        "found": false,
+        "spdxId": null,
+        "name": null,
+        "key": null,
+        "path": null,
+        "apiRequestId": "D5E8:1BD013:D40C1C9:C8E84FB:6A56F647",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4869,
+        "licenceRequestRemaining": 4866
+      },
+      "remediationRequired": [
+        "No repository licence API evidence was returned; require path-level licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+      "requestedRepository": "cncf/landscape-graph",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "cncf/landscape-graph",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D633A77:CB1DABB:6A56F646",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/cncf/landscape-graph",
+        "resolvedUrl": "https://api.github.com/repos/cncf/landscape-graph",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE",
+        "apiRequestId": "D5EA:3A7FC4:D633D5C:CB1DD9F:6A56F647",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4868,
+        "licenceRequestRemaining": 4862
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "requestedRepository": "cncf/tag-security",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "cncf/tag-security",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EB:2DA58:CE6E184:C37B42C:6A56F646",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/cncf/tag-security",
+        "resolvedUrl": "https://api.github.com/repos/cncf/tag-security",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": true,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE.md",
+        "apiRequestId": "D5EB:2DA58:CE6E586:C37B7E9:6A56F647",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4863,
+        "licenceRequestRemaining": 4856
+      },
+      "remediationRequired": [
+        "Review the archived repository posture before acquisition.",
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAP-DISCOVERY",
+      "requestedRepository": "ContextMapper/context-map-discovery",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "resolvedRepository": "ContextMapper/context-map-discovery",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EC:260987:CE54124:C3745A4:6A56F647",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/ContextMapper/context-map-discovery",
+        "resolvedUrl": "https://api.github.com/repos/ContextMapper/context-map-discovery",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EC:260987:CE5443B:C374884:6A56F647",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4861,
+        "licenceRequestRemaining": 4858
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "requestedRepository": "ContextMapper/context-mapper-dsl",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "resolvedRepository": "ContextMapper/context-mapper-dsl",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40C46E:C8E8777:6A56F647",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/ContextMapper/context-mapper-dsl",
+        "resolvedUrl": "https://api.github.com/repos/ContextMapper/context-mapper-dsl",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E8:1BD013:D40C746:C8E8A52:6A56F648",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4860,
+        "licenceRequestRemaining": 4855
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "requestedRepository": "ddd-crew/ddd-starter-modelling-process",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "ddd-crew/ddd-starter-modelling-process",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40C4A5:C8E87BB:6A56F647",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/ddd-crew/ddd-starter-modelling-process",
+        "resolvedUrl": "https://api.github.com/repos/ddd-crew/ddd-starter-modelling-process",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "CC-BY-SA-4.0",
+        "name": "Creative Commons Attribution Share Alike 4.0 International",
+        "key": "cc-by-sa-4.0",
+        "path": "LICENCE.md",
+        "apiRequestId": "D5E7:1BD013:D40C8B4:C8E8C09:6A56F648",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4857,
+        "licenceRequestRemaining": 4853
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-DEVELOPER-ROADMAP",
+      "requestedRepository": "nilbuild/developer-roadmap",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "nilbuild/developer-roadmap",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D838B0D:CD6D323:6A56F647",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/nilbuild/developer-roadmap",
+        "resolvedUrl": "https://api.github.com/repos/nilbuild/developer-roadmap",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "license",
+        "apiRequestId": "D5E9:219112:D838E25:CD6D62A:6A56F648",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4859,
+        "licenceRequestRemaining": 4854
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "requestedRepository": "finos/ai-reference-architecture-library",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "finos/ai-reference-architecture-library",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D634469:CB1E45B:6A56F647",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/finos/ai-reference-architecture-library",
+        "resolvedUrl": "https://api.github.com/repos/finos/ai-reference-architecture-library",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EA:3A7FC4:D6347C2:CB1E786:6A56F648",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4852,
+        "licenceRequestRemaining": 4846
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "requestedRepository": "finos/architecture-as-code",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "resolvedRepository": "finos/architecture-as-code",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EC:260987:CE547A4:C374BFE:6A56F648",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/finos/architecture-as-code",
+        "resolvedUrl": "https://api.github.com/repos/finos/architecture-as-code",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EC:260987:CE54C0B:C375045:6A56F649",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4850,
+        "licenceRequestRemaining": 4844
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "requestedRepository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40C9E4:C8E8D1B:6A56F648",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/GoogleCloudPlatform/cloud-foundation-fabric",
+        "resolvedUrl": "https://api.github.com/repos/GoogleCloudPlatform/cloud-foundation-fabric",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E8:1BD013:D40CD97:C8E907B:6A56F649",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4851,
+        "licenceRequestRemaining": 4845
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "requestedRepository": "GoogleCloudPlatform/microservices-demo",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "GoogleCloudPlatform/microservices-demo",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EB:2DA58:CE6EA38:C37BC6F:6A56F648",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/GoogleCloudPlatform/microservices-demo",
+        "resolvedUrl": "https://api.github.com/repos/GoogleCloudPlatform/microservices-demo",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EB:2DA58:CE6ED83:C37BFD1:6A56F649",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4849,
+        "licenceRequestRemaining": 4843
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "requestedRepository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D8390F5:CD6D8D2:6A56F648",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/GoogleCloudPlatform/software-delivery-blueprint",
+        "resolvedUrl": "https://api.github.com/repos/GoogleCloudPlatform/software-delivery-blueprint",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E9:219112:D8394B5:CD6DC9E:6A56F649",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4848,
+        "licenceRequestRemaining": 4842
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+      "requestedRepository": "IBM/cloud-native-patterns",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "IBM/cloud-native-patterns",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40CC41:C8E8F16:6A56F648",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/IBM/cloud-native-patterns",
+        "resolvedUrl": "https://api.github.com/repos/IBM/cloud-native-patterns",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E7:1BD013:D40CF47:C8E921B:6A56F649",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4847,
+        "licenceRequestRemaining": 4841
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "requestedRepository": "it-at-m/refarch",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "it-at-m/refarch",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D634A46:CB1EA4E:6A56F649",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/it-at-m/refarch",
+        "resolvedUrl": "https://api.github.com/repos/it-at-m/refarch",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "key": "mit",
+        "path": "LICENSE",
+        "apiRequestId": "D5EA:3A7FC4:D6353E6:CB1F37B:6A56F649",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4840,
+        "licenceRequestRemaining": 4826
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "requestedRepository": "iluwatar/java-design-patterns",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "iluwatar/java-design-patterns",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40D053:C8E9338:6A56F649",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/iluwatar/java-design-patterns",
+        "resolvedUrl": "https://api.github.com/repos/iluwatar/java-design-patterns",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE.md",
+        "apiRequestId": "D5E8:1BD013:D40D352:C8E9619:6A56F649",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4839,
+        "licenceRequestRemaining": 4835
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "requestedRepository": "xmolecules/jmolecules",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "resolvedRepository": "xmolecules/jmolecules",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40D1D5:C8E94B9:6A56F649",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/xmolecules/jmolecules",
+        "resolvedUrl": "https://api.github.com/repos/xmolecules/jmolecules",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E7:1BD013:D40D4CC:C8E977C:6A56F64A",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4838,
+        "licenceRequestRemaining": 4832
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "requestedRepository": "jQAssistant/jqassistant",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "resolvedRepository": "jQAssistant/jqassistant",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EC:260987:CE54FE3:C37541C:6A56F649",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/jQAssistant/jqassistant",
+        "resolvedUrl": "https://api.github.com/repos/jQAssistant/jqassistant",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "GPL-3.0",
+        "name": "GNU General Public License v3.0",
+        "key": "gpl-3.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EC:260987:CE552DC:C3756FC:6A56F64A",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4837,
+        "licenceRequestRemaining": 4833
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "requestedRepository": "k8spatterns/examples",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "k8spatterns/examples",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EB:2DA58:CE6F1DC:C37C3F3:6A56F649",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/k8spatterns/examples",
+        "resolvedUrl": "https://api.github.com/repos/k8spatterns/examples",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE",
+        "apiRequestId": "D5EB:2DA58:CE6F4E6:C37C6F3:6A56F64A",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4836,
+        "licenceRequestRemaining": 4831
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "requestedRepository": "likec4/likec4",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "likec4/likec4",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D839A55:CD6E25D:6A56F649",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/likec4/likec4",
+        "resolvedUrl": "https://api.github.com/repos/likec4/likec4",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "MIT",
+        "name": "MIT License",
+        "key": "mit",
+        "path": "LICENSE",
+        "apiRequestId": "D5E9:219112:D839DC0:CD6E5A6:6A56F64A",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4834,
+        "licenceRequestRemaining": 4829
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "requestedRepository": "meshery/meshery",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "meshery/meshery",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40D627:C8E98DB:6A56F64A",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/meshery/meshery",
+        "resolvedUrl": "https://api.github.com/repos/meshery/meshery",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E8:1BD013:D40DCEF:C8E9FBE:6A56F64A",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4830,
+        "licenceRequestRemaining": 4819
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-MICROSOFT-AGENT-SKILLS",
+      "requestedRepository": "MicrosoftDocs/agent-skills",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "MicrosoftDocs/Agent-Skills",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40D76F:C8E9A2C:6A56F64A",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/MicrosoftDocs/agent-skills",
+        "resolvedUrl": "https://api.github.com/repos/MicrosoftDocs/agent-skills",
+        "identityChanged": false,
+        "caseChanged": true,
+        "disposition": "case-normalized"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "CC-BY-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "key": "cc-by-4.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E7:1BD013:D40DAF1:C8E9DB9:6A56F64B",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4828,
+        "licenceRequestRemaining": 4823
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "requestedRepository": "MicrosoftDocs/architecture-center",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "MicrosoftDocs/architecture-center",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EB:2DA58:CE6F762:C37C971:6A56F64A",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/MicrosoftDocs/architecture-center",
+        "resolvedUrl": "https://api.github.com/repos/MicrosoftDocs/architecture-center",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "CC-BY-4.0",
+        "name": "Creative Commons Attribution 4.0 International",
+        "key": "cc-by-4.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EB:2DA58:CE6FB10:C37CCE9:6A56F64B",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4827,
+        "licenceRequestRemaining": 4822
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "requestedRepository": "oam-dev/spec",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "resolvedRepository": "oam-dev/spec",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D83A13F:CD6E8E5:6A56F64A",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/oam-dev/spec",
+        "resolvedUrl": "https://api.github.com/repos/oam-dev/spec",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE",
+        "apiRequestId": "D5E9:219112:D83A4B7:CD6EC4A:6A56F64B",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4825,
+        "licenceRequestRemaining": 4820
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "requestedRepository": "open-telemetry/opentelemetry-demo",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "open-telemetry/opentelemetry-demo",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D6356AB:CB1F658:6A56F64B",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/open-telemetry/opentelemetry-demo",
+        "resolvedUrl": "https://api.github.com/repos/open-telemetry/opentelemetry-demo",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EA:3A7FC4:D635A28:CB1F9C6:6A56F64B",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4824,
+        "licenceRequestRemaining": 4818
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "requestedRepository": "SAP/architecture-center",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "resolvedRepository": "SAP/architecture-center",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EC:260987:CE55981:C375D82:6A56F64A",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/SAP/architecture-center",
+        "resolvedUrl": "https://api.github.com/repos/SAP/architecture-center",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "dev",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EC:260987:CE55D1A:C3760FD:6A56F64B",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4821,
+        "licenceRequestRemaining": 4816
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "requestedRepository": "service-mesh-patterns/service-mesh-patterns",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "service-mesh-patterns/service-mesh-patterns",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E7:1BD013:D40DDBC:C8EA093:6A56F64B",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/service-mesh-patterns/service-mesh-patterns",
+        "resolvedUrl": "https://api.github.com/repos/service-mesh-patterns/service-mesh-patterns",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E7:1BD013:D40E137:C8EA3BB:6A56F64C",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4817,
+        "licenceRequestRemaining": 4811
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "requestedRepository": "spring-projects/spring-modulith",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "resolvedRepository": "spring-projects/spring-modulith",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EB:2DA58:CE6FEFC:C37D0BD:6A56F64B",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/spring-projects/spring-modulith",
+        "resolvedUrl": "https://api.github.com/repos/spring-projects/spring-modulith",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5EB:2DA58:CE7029E:C37D420:6A56F64C",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4815,
+        "licenceRequestRemaining": 4809
+      },
+      "remediationRequired": []
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "requestedRepository": "structurizr/java",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "resolvedRepository": "structurizr/java",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E9:219112:D83A7EC:CD6EFE0:6A56F64B",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/structurizr/java",
+        "resolvedUrl": "https://api.github.com/repos/structurizr/java",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": true,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "Apache-2.0",
+        "name": "Apache License 2.0",
+        "key": "apache-2.0",
+        "path": "LICENSE",
+        "apiRequestId": "D5E9:219112:D83AC14:CD6F398:6A56F64C",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4814,
+        "licenceRequestRemaining": 4810
+      },
+      "remediationRequired": [
+        "Review the archived repository posture before acquisition."
+      ]
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-101",
+      "requestedRepository": "ByteByteGoHq/system-design-101",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "ByteByteGoHq/system-design-101",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5E8:1BD013:D40E00B:C8EA2B2:6A56F64B",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/ByteByteGoHq/system-design-101",
+        "resolvedUrl": "https://api.github.com/repos/ByteByteGoHq/system-design-101",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "main",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE.md",
+        "apiRequestId": "D5E8:1BD013:D40E328:C8EA5AC:6A56F64C",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4813,
+        "licenceRequestRemaining": 4808
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+      "requestedRepository": "donnemartin/system-design-primer",
+      "acquisitionStatus": "approved",
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "resolvedRepository": "donnemartin/system-design-primer",
+      "reachable": true,
+      "status": "reachable",
+      "httpStatus": 200,
+      "apiRequestId": "D5EA:3A7FC4:D635D19:CB1FC97:6A56F64B",
+      "redirectOrRename": {
+        "redirected": false,
+        "requestedUrl": "https://api.github.com/repos/donnemartin/system-design-primer",
+        "resolvedUrl": "https://api.github.com/repos/donnemartin/system-design-primer",
+        "identityChanged": false,
+        "caseChanged": false,
+        "disposition": "exact-identity"
+      },
+      "defaultBranch": "master",
+      "archived": false,
+      "disabled": false,
+      "visibility": "public",
+      "licenceApiEvidence": {
+        "httpStatus": 200,
+        "found": true,
+        "spdxId": "NOASSERTION",
+        "name": "Other",
+        "key": "other",
+        "path": "LICENSE.txt",
+        "apiRequestId": "D5EA:3A7FC4:D63603A:CB1FF9C:6A56F64C",
+        "errorClassification": null
+      },
+      "rateLimitImpact": {
+        "estimatedCoreRequests": 2,
+        "repositoryRequestRemaining": 4812,
+        "licenceRequestRemaining": 4807
+      },
+      "remediationRequired": [
+        "GitHub licence detection is inconclusive; require path-level legal/licence review before redistribution or promotion."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "aiw-playwright-smoke-results-v1",
+  "generatedAt": "2026-07-15T09:03:30.8617484Z",
+  "timestampSemantics": {
+    "generatedAt": "actual receipt-generation time",
+    "headlessArtifactRecordedAt": "2026-07-15T00:58:00.5444777Z",
+    "headedArtifactRecordedAt": "2026-07-15T00:58:18.0874302Z",
+    "artifactRecordedAtMeaning": "filesystem evidence write time; not a deterministic fixture and not asserted as browser launch start time",
+    "deterministicFixtureTimestampsUsed": false
+  },
+  "baseline": "AIW v0.10.0-rc.10.73.6",
+  "overallResult": "passed",
+  "chromiumActuallyLaunched": true,
+  "runs": [
+    {
+      "mode": "headless",
+      "project": "chromium-desktop",
+      "result": "passed",
+      "chromiumVersion": "149.0.7827.55",
+      "executable": "%USERPROFILE%\\AppData\\Local\\ms-playwright\\chromium-1228\\chrome-win64\\chrome.exe",
+      "executableSource": "Playwright-managed Chromium",
+      "testUrl": "http://127.0.0.1:4173/",
+      "httpStatus": 200,
+      "pageTitle": "Architecture Intelligence Workbench",
+      "consoleErrors": [],
+      "failedRequests": [],
+      "screenshot": "chromium-readiness/headless/chromium-readiness.png",
+      "screenshotSha256": "7fb56ee57f3e9ee2a6f197d9d8339563f1f1a1f61b8dae92d927875be68bf820",
+      "trace": "chromium-readiness/headless/trace.zip",
+      "traceSha256": "d76e4a14f941e6c52146e0831254cefc23d3428dcd18f275fce92cc4b5c21b5f"
+    },
+    {
+      "mode": "headed",
+      "project": "chromium-desktop",
+      "result": "passed",
+      "chromiumVersion": "149.0.7827.55",
+      "executable": "%USERPROFILE%\\AppData\\Local\\ms-playwright\\chromium-1228\\chrome-win64\\chrome.exe",
+      "executableSource": "Playwright-managed Chromium",
+      "testUrl": "http://127.0.0.1:4173/",
+      "httpStatus": 200,
+      "pageTitle": "Architecture Intelligence Workbench",
+      "consoleErrors": [],
+      "failedRequests": [],
+      "screenshot": "chromium-readiness/headed/chromium-readiness.png",
+      "screenshotSha256": "6bb65c2d5c2d4010831548e9f8dcc39d8c31e1375704cba37e0d3e6e34e5e1a1",
+      "trace": "chromium-readiness/headed/trace.zip",
+      "traceSha256": "0fb77f9b6e281124cfb6ef67084760e618e6f34704310eb1d1264118419fc52b"
+    }
+  ],
+  "preservedConfiguration": {
+    "screenshotsOnFailure": true,
+    "tracesOnFailure": true,
+    "browserConsoleCollection": true,
+    "failedRequestCollection": true,
+    "desktopProject": true,
+    "laptopProject": true
+  },
+  "productionAccepted": false
+}

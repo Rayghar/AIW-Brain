@@ -20,6 +20,23 @@ export interface RepositoryDossier {
   requiredHumanReviewer: string;
   permittedAiwUses: string[];
   prohibitedAiwUses: string[];
+  acquisitionStatus: 'approved' | 'denied' | 'suspended';
+  sourceAuthorityClass: 'official-specification-or-standard' | 'official-reference-architecture' | 'architecture-conformance-implementation' | 'reviewed-practitioner-or-implementation-source' | 'educational-or-discovery-source';
+  previousLifecycleStatus: string;
+  semanticReviewStatus: string;
+  knowledgePromotionStatus: 'candidate-only-pending-independent-review';
+  permittedUses: string[];
+  prohibitedUses: string[];
+  licenceDisposition: string;
+  securityDisposition: string;
+  lastImmutableRevision: string | null;
+  lastAcquisitionStatus: string;
+  archivedSourceDisposition?: 'approved-for-immutable-acquisition';
+  sourceFreshnessStatus?: 'archived';
+  currentGuidanceEligible?: false;
+  automaticPromotionAllowed?: false;
+  successorRepository?: null;
+  successorMigrationRequired?: true;
 }
 
 export interface PatternDna2RecordLike {

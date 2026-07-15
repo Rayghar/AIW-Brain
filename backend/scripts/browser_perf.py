@@ -15,10 +15,11 @@ from playwright.sync_api import Error as PlaywrightError
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
+FRONTEND_ROOT = ROOT.parent / "frontend"
 REPORT = ROOT / "BROWSER_PERFORMANCE.json"
 PORT = int(os.environ.get("AIW_PERF_PORT", "4173"))
 HOST = os.environ.get("AIW_PERF_HOST", "127.0.0.1")
-CHROMIUM = os.environ.get("AIW_CHROMIUM_EXECUTABLE", "/usr/bin/chromium")
+CHROMIUM = os.environ.get("AIW_CHROMIUM_PATH") or os.environ.get("AIW_CHROMIUM_EXECUTABLE")
 
 
 def percentile(values: list[float], pct: float) -> float:
@@ -80,13 +81,14 @@ def write_report(payload: dict) -> None:
 
 
 def main() -> int:
+    process_options = {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == "nt" else {"start_new_session": True}
     server = subprocess.Popen(
-        ["npm", "run", "preview", "-w", "@aiw/web", "--", "--host", HOST, "--port", str(PORT)],
-        cwd=ROOT,
+        ["node", "scripts/start-playwright-web.mjs"],
+        cwd=FRONTEND_ROOT,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         text=True,
-        start_new_session=True,
+        **process_options,
     )
     try:
         deadline = time.time() + 20
@@ -126,8 +128,11 @@ def main() -> int:
                         "--proxy-bypass-list=*",
                     ],
                 }
-                if Path(CHROMIUM).exists():
-                    launch_args["executable_path"] = CHROMIUM
+                if CHROMIUM:
+                    executable = Path(CHROMIUM).expanduser().resolve()
+                    if not executable.is_file() or (os.name != "nt" and not os.access(executable, os.X_OK)):
+                        raise RuntimeError(f"AIW_CHROMIUM_PATH must name an existing executable file: {executable}")
+                    launch_args["executable_path"] = str(executable)
                 browser = p.chromium.launch(**launch_args)
                 page = browser.new_page(viewport={"width": 1920, "height": 1080})
                 start = time.perf_counter()
@@ -216,11 +221,17 @@ def main() -> int:
         return 1
     finally:
         if server.poll() is None:
-            os.killpg(server.pid, signal.SIGTERM)
+            if os.name == "nt":
+                server.terminate()
+            else:
+                os.killpg(server.pid, signal.SIGTERM)
             try:
                 server.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                os.killpg(server.pid, signal.SIGKILL)
+                if os.name == "nt":
+                    server.kill()
+                else:
+                    os.killpg(server.pid, signal.SIGKILL)
 
 
 if __name__ == "__main__":

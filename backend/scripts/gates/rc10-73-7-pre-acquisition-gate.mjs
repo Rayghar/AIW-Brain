@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import { access, readFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const product = resolve(here, '../../..');
+const root = resolve(product, 'release-evidence/rc10.73.7');
+const required = ['ALL_47_REPOSITORY_GOVERNANCE_MATRIX.json','ALL_47_ACQUISITION_SELECTION_REPORT.md','SOURCE_AUTHORITY_MIGRATION_REPORT.md','SOL_SEMANTIC_TRANSFORMATION_CONTRACT.json','SOL_KNOWLEDGE_TRANSFORMATION_SECURITY_REPORT.md','PRE_ACQUISITION_GATE_RESULTS.json'];
+for (const name of required) await access(resolve(root, name));
+const matrix = JSON.parse(await readFile(resolve(root, required[0]), 'utf8'));
+const contract = JSON.parse(await readFile(resolve(root, required[3]), 'utf8'));
+const gate = JSON.parse(await readFile(resolve(root, required[5]), 'utf8'));
+assert.equal(matrix.repositories.length, 47);
+assert.equal(matrix.counts.acquisitionApproved, 47);
+assert.equal(new Set(matrix.repositories.map((item) => item.sourceAuthorityClass)).size >= 5, true);
+assert.equal(matrix.repositories.every((item) => item.knowledgePromotionStatus === 'candidate-only-pending-independent-review'), true);
+assert.equal(contract.outputAuthority, 'candidate');
+assert.equal(matrix.productionAccepted, false);
+assert.equal(contract.productionAccepted, false);
+assert.equal(gate.productionAccepted, false);
+assert.equal(gate.status, 'passed');
+assert.equal(gate.failed, 0);
+console.log(JSON.stringify({ gate: 'rc10.73.7-pre-acquisition', status: 'passed', governedRepositories: 47, acquisitionSelected: 47, authorityClasses: new Set(matrix.repositories.map((item) => item.sourceAuthorityClass)).size, generatedKnowledgeAuthority: 'candidate', productionAccepted: false }, null, 2));
