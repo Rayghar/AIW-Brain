@@ -92,3 +92,11 @@ Product-runtime Sol execution was not fabricated. The runtime channel remains un
 The raw acquisition vault is 5,367,402,297 bytes and is excluded from Git, frontend/backend application payloads, container contexts and FULLDIST. Runtime acceptance observed zero recursive raw-vault scans for ordinary retrieval, candidate/approved isolation, lazy evidence-ID object access and focused local timings within the engineering targets recorded in `KNOWLEDGE_RUNTIME_PERFORMANCE_RESULTS.json`.
 
 Independent vault backup was explicitly deferred by the product owner at 2026-07-15T18:51:52.811Z. `backupCompleted=false`, `backupStatus=deferred-by-product-owner`, and the accepted risk is loss or corruption of the local raw acquisition vault. This is not a passed gate; the FULLDIST archive cannot recover the vault. No storage compaction was performed. The superseded Apache Camel snapshot remains preserved and non-authoritative, eligible only for future backup-first compaction.
+
+## Final commit and distribution closure
+
+The approved release commit is `50d2d93f646f8648d6a81d5467448f95272ba9af` on `codex/rc-10-73-7-all-source-acquisition`, with parent `10a065c439f7354705a283110c0c37270e6c7a73`. It contains exactly 51 reviewed files: 10 modified and 41 added, with 17,573 insertions and 70 deletions. Pre-commit staged secret and raw-vault scans returned zero findings.
+
+The final FULLDIST was rebuilt after the commit using the governed allowlist and denylist. It contains 2,152 entries and is 19,072,557 bytes with SHA-256 `5aeb0b5fdd0762aea954c8dc33a44591e864a86db8862d325e6d1c4f1999812b`. Archive opening, exact file-list comparison, 2,151 SHA-256 manifest entries, forbidden-path exclusion, raw-vault exclusion, credential/secret-file checks, release identity and committed-HEAD correspondence all passed. The package contains 2,149 byte-for-byte committed source entries plus three explicitly identified post-commit packaging/commit-receipt metadata entries. Nine committed local/example configurations contain only classified placeholder connection URLs; actual secret findings are zero.
+
+The distribution remains an application/source package, not a backup of the local acquisition vault. `productionAccepted=false`.
