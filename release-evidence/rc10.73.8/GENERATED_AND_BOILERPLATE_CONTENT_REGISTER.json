@@ -1,0 +1,207 @@
+{
+  "schemaVersion": "aiw-generated-and-boilerplate-register-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "generatedFileCount": 9279,
+  "boilerplateFileCount": 5942,
+  "generatedPassageCount": 1974,
+  "boilerplatePassageCount": 12302,
+  "canonicalDispositionSource": "file and passage disposition shards",
+  "fileShards": [
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-00.ndjson",
+      "records": 11562,
+      "bytes": 11134299,
+      "sha256": "sha256:f37265d7a308f4200dbcb066ff64befcb392c0578ca5e31dabca218ff2d37880"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-01.ndjson",
+      "records": 11670,
+      "bytes": 11239020,
+      "sha256": "sha256:86059b4fb95ec50b2ac99e4b2d99198a62ed1c9da35501c5ca15a52f48e25163"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-02.ndjson",
+      "records": 11706,
+      "bytes": 11276268,
+      "sha256": "sha256:342314a8d501477762c0febbdb32640f3df1b6f661c1e5e36f1857aba97829a7"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-03.ndjson",
+      "records": 11632,
+      "bytes": 11198229,
+      "sha256": "sha256:2025e641898f242f910f3705f240a8e9deb468b0727fb10f0c166a1cab4d273c"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-04.ndjson",
+      "records": 11501,
+      "bytes": 11082483,
+      "sha256": "sha256:808c72d444d023980e01c7fbb777be44df505bf3e1c9fa38e9f19fc34430c962"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-05.ndjson",
+      "records": 11521,
+      "bytes": 11097916,
+      "sha256": "sha256:898799885bb3f089f03fb293c30f227286f6339b95b21c4876ca5b7558e68076"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-06.ndjson",
+      "records": 11626,
+      "bytes": 11202299,
+      "sha256": "sha256:dc7dc3d90fb5f605d48148f6cf0faf8614f56d2f5f67f50680b5e9576531cff6"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-07.ndjson",
+      "records": 11685,
+      "bytes": 11253665,
+      "sha256": "sha256:a6766d67404e65bc1ee68b49d79716fff1771aaf291a18932af15eba6be36e65"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-08.ndjson",
+      "records": 11657,
+      "bytes": 11221486,
+      "sha256": "sha256:e0e4397371695b42f1f0ec5f3cde647977407a89e0cbd024336287557a763bbd"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-09.ndjson",
+      "records": 11667,
+      "bytes": 11233874,
+      "sha256": "sha256:5e74aceffddfa86b30f6d3cd52c34671225315d903bc54ddf171183928ce91b6"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-0a.ndjson",
+      "records": 11569,
+      "bytes": 11149088,
+      "sha256": "sha256:7eb9df2bf58b18ffa3b861f246dee06a3b21a445b6a600fb1da0398e681b37c0"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-0b.ndjson",
+      "records": 11622,
+      "bytes": 11193211,
+      "sha256": "sha256:f30272615a8b7be797adf175406e9f7bc257a2f86079b9f5dbdc4d21e4e391b0"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-0c.ndjson",
+      "records": 11664,
+      "bytes": 11237080,
+      "sha256": "sha256:e344e0338213b7d1ba11c99ceeb1329059eca1483f41ba34671ffdd8b44f2ee4"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-0d.ndjson",
+      "records": 11731,
+      "bytes": 11298742,
+      "sha256": "sha256:14483e9228cc15428e13a1181c0a6960b13c72288767fe0b0924879822097c67"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-0e.ndjson",
+      "records": 11669,
+      "bytes": 11248565,
+      "sha256": "sha256:a92e7b6ab40cc7fad235193c022031fca355667a166a81b611db704d801b7289"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/file-dispositions-0f.ndjson",
+      "records": 11737,
+      "bytes": 11305039,
+      "sha256": "sha256:d608c8569e34aa439471b69f267b5cdc36d04cebb283a718cc56f5a4688d7d33"
+    }
+  ],
+  "passageShards": [
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-00.ndjson",
+      "records": 9303,
+      "bytes": 7783772,
+      "sha256": "sha256:fe02c636b31a907102dce4b1a88af4a34da9a35fdf6f59560075ba04211c5726"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-01.ndjson",
+      "records": 9152,
+      "bytes": 7664674,
+      "sha256": "sha256:e41e24b7ac4bfced5d46c485c02cf8d0fd86fcf1a7fd577639654c0ec3bf1e38"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-02.ndjson",
+      "records": 9195,
+      "bytes": 7698999,
+      "sha256": "sha256:7f0924eaffc43584af83701979816e5b8df5ff558a14fa664187c1a48e8bf4fb"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-03.ndjson",
+      "records": 9301,
+      "bytes": 7785618,
+      "sha256": "sha256:caa6a82272e4bfc729497b536e8a591687849dc417eeba931dad283fc8885fb3"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-04.ndjson",
+      "records": 9128,
+      "bytes": 7642597,
+      "sha256": "sha256:3c13528234a881e8de1569e87a1e847d194d5a97759cb44160742bf804bd9ca4"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-05.ndjson",
+      "records": 9259,
+      "bytes": 7749237,
+      "sha256": "sha256:a9ae325cefdd0cef7f37dc692e64acbcfba760ba2e1e353294292d7480576d89"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-06.ndjson",
+      "records": 9305,
+      "bytes": 7790523,
+      "sha256": "sha256:c9d6a184371c78983fcd3af4a727dbac58c36076a6a021786379dd7c97c42d3d"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-07.ndjson",
+      "records": 9174,
+      "bytes": 7677169,
+      "sha256": "sha256:6266e309c3a2030021e460d33bffa84f90467ecf50364e22e872d75a8ba41399"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-08.ndjson",
+      "records": 9187,
+      "bytes": 7689265,
+      "sha256": "sha256:4cd6a5b9fb57e108147c81818f697b50760f2ee6696f3914705ae24dc8f7ffc9"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-09.ndjson",
+      "records": 9088,
+      "bytes": 7603384,
+      "sha256": "sha256:c00c0d3187c61308ad6a6ec361ed722b6f76bd056bad47260ea9dfa057397a06"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-0a.ndjson",
+      "records": 9283,
+      "bytes": 7770772,
+      "sha256": "sha256:5006b22fe3229ba218e359087fcd922c71319f89ef36d28390bb19971916678d"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-0b.ndjson",
+      "records": 8936,
+      "bytes": 7481178,
+      "sha256": "sha256:1bb47732ee973c9b2908d97ba685130493b4fa409957f7279f906ea6b3e90ac5"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-0c.ndjson",
+      "records": 9286,
+      "bytes": 7774148,
+      "sha256": "sha256:33c0e1c8ff1fefe16f216af0091a8003e687cc6724d393f01f0ba72701d4e34d"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-0d.ndjson",
+      "records": 9241,
+      "bytes": 7735284,
+      "sha256": "sha256:aebdf07b94ae1f660d4f037beaf37589e6340b07e157bb9eae3214a1e4c7f9a8"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-0e.ndjson",
+      "records": 9208,
+      "bytes": 7705455,
+      "sha256": "sha256:d2b13897d6fbdbfe8e60df98315a9fd3f977f68cdb0e1ac787af711477963700"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1/passage-dispositions-0f.ndjson",
+      "records": 9193,
+      "bytes": 7700434,
+      "sha256": "sha256:654068fc91725f6c809df5300c4b27db535a8cf8aad817c805fc23c75fca034d"
+    }
+  ],
+  "authority": "candidate",
+  "productionAccepted": false
+}

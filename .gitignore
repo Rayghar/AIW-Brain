@@ -14,6 +14,7 @@ knowledge-repository/AKR-0.10.73.7/github-live/
 
 # Local immutable evidence vaults and rebuildable vault-derived indexes.
 knowledge-repository/AKR-*/github-live/
+knowledge-repository/AKR-*/candidate/
 release-evidence/rc10.73.7/WHOLE_ARCHITECTURE_ARTEFACT_INDEX.part-*.json
 release-evidence/rc10.73.7/*_SOURCE_INVENTORY.json
 release-evidence/rc10.73.7/MACHINE_READABLE_MODEL_INVENTORY.json

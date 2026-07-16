@@ -1,0 +1,135 @@
+{
+  "schemaVersion": "aiw-prompt-6-gate-6a-corpus-analysis-v1",
+  "generatedAt": "2026-07-15T22:09:46.784Z",
+  "releaseLine": "AIW v0.10.0-rc.10.73.8",
+  "stage": "Gate 6A corpus analysis and workload planning",
+  "status": "completed",
+  "inputs": [
+    {
+      "key": "governance",
+      "path": "release-evidence/rc10.73.7/ALL_47_REPOSITORY_GOVERNANCE_MATRIX.json",
+      "bytes": 147774,
+      "sha256": "13d475cb3434615a5d9fe38b3ddb7c1d3b1d3716fec121c77504e9f251fa8fab"
+    },
+    {
+      "key": "acquisition",
+      "path": "release-evidence/rc10.73.7/ALL_47_LIVE_ACQUISITION_SUMMARY.json",
+      "bytes": 63637,
+      "sha256": "af5141aba0aed1371ed30f44a61ccdbaf4e01dad88ef721902955b8ce31ac1b6"
+    },
+    {
+      "key": "coverage",
+      "path": "release-evidence/rc10.73.7/REPOSITORY_COVERAGE_MATRIX.json",
+      "bytes": 51704,
+      "sha256": "9edc1485a0754d2e3c2c930810a131a62ec7950bc6a63b6a6d9b3be9f8c554bf"
+    },
+    {
+      "key": "manifests",
+      "path": "release-evidence/rc10.73.7/CONTENT_SNAPSHOT_MANIFEST_INDEX.json",
+      "bytes": 33478,
+      "sha256": "aa64e3789991044fe2b73882d7b2366cbaffd003e0bd457789911fe7dba03180"
+    },
+    {
+      "key": "artefacts",
+      "path": "release-evidence/rc10.73.7/WHOLE_ARCHITECTURE_ARTEFACT_INDEX.json",
+      "bytes": 1544,
+      "sha256": "47edbd31730978e3bec20983ef1fe1d5a9ed825c601485e80f5f6c1a0820722a"
+    },
+    {
+      "key": "quarantine",
+      "path": "release-evidence/rc10.73.7/QUARANTINE_AND_SECURITY_REPORT.json",
+      "bytes": 174387,
+      "sha256": "e49b5474864f9b7d03b25f467f9ac20d53068c04c7c88dd1676715bc80c69704"
+    },
+    {
+      "key": "licences",
+      "path": "release-evidence/rc10.73.7/LICENCE_EVIDENCE_REGISTER.json",
+      "bytes": 33476,
+      "sha256": "2530088af1aa2a6c779d163c09cd04171f540af84c905308a67ad8ba9da2f1b9"
+    },
+    {
+      "key": "review",
+      "path": "release-evidence/rc10.73.7/FAILED_AND_REVIEW_REQUIRED_REPOSITORIES.json",
+      "bytes": 32353,
+      "sha256": "7c3a440fed8f9674c77cee23ffa49e1c3d884f3bc192c1a84d94c3973574b0c3"
+    },
+    {
+      "key": "semanticFoundation",
+      "path": "release-evidence/rc10.73.7/SOL_SEMANTIC_FOUNDATION_ACCEPTANCE.json",
+      "bytes": 2513,
+      "sha256": "23012f2127a087e8a713f3c9a4e23ea597e298223e42d8b39c5ba03f4fee4c51"
+    },
+    {
+      "key": "entryGate",
+      "path": "release-evidence/rc10.73.7/RC10_73_8_ENTRY_GATE.json",
+      "bytes": 2537,
+      "sha256": "3c5fa3c177d70a546377848ae7fa3995911cf3973f354e39e177da9dfcbb5711"
+    }
+  ],
+  "inputAccessBoundary": {
+    "accessMode": "explicit-compact-release-evidence-files-only",
+    "recursiveFilesystemScans": 0,
+    "rawVaultObjectsRead": 0,
+    "repositoryPayloadFilesRead": 0,
+    "quarantineObjectsRead": 0,
+    "networkRequests": 0,
+    "modelCalls": 0,
+    "repositoryCodeExecutions": 0
+  },
+  "corpus": {
+    "governedRepositories": 47,
+    "completedRepositories": 47,
+    "reviewRequiredRepositories": 23,
+    "failedRepositories": 0,
+    "authorityClasses": {
+      "architecture-conformance-implementation": 6,
+      "educational-or-discovery-source": 8,
+      "official-reference-architecture": 17,
+      "official-specification-or-standard": 3,
+      "reviewed-practitioner-or-implementation-source": 13
+    },
+    "previousLifecycleStatuses": {
+      "approved": 30,
+      "candidate": 9,
+      "discovery-only": 8
+    },
+    "completionStatuses": {
+      "complete": 24,
+      "complete-review-required": 23
+    },
+    "fileTotals": {
+      "totalTreeFiles": 186219,
+      "governedEligibleFiles": 106350,
+      "acceptedFiles": 105802,
+      "rejectedFiles": 254,
+      "policyExclusions": 79869,
+      "securityQuarantinedFiles": 294,
+      "processingFailures": 0,
+      "unprocessedFiles": 0,
+      "oversizedFiles": 254
+    },
+    "parserTotals": {
+      "parsedFiles": 103497,
+      "preservedAwaitingSpecialistParser": 2305,
+      "boundedEvidenceCount": 147239
+    },
+    "architectureArtefacts": 91358,
+    "crossFileArchitectureGroups": 5253,
+    "initialCandidateClaims": 315621,
+    "verifiedManifests": 47,
+    "denominatorPreserved": true,
+    "quarantinedFiles": 294,
+    "instructionShapedFiles": 6,
+    "repositoriesWithReviewRequirements": 23,
+    "licenceRepositories": 47,
+    "legalApprovalGranted": false,
+    "redistributionApproved": false,
+    "knowledgeAuthority": "candidate"
+  },
+  "gates": {
+    "gate6A": "completed",
+    "gate6B": "not-started-requires-explicit-product-owner-approval",
+    "gate6C": "blocked"
+  },
+  "productionAccepted": false
+}

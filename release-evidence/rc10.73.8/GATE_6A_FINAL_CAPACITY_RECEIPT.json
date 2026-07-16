@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-rc10-73-8-storage-capacity-gate-v1",
+  "stage": "gate-6a-complete",
+  "freeBytesBefore": 17449246720,
+  "minimumFreeBytes": 8589934592,
+  "preferredGate6BFreeBytes": 16106127360,
+  "projectedTemporaryBytes": 0,
+  "projectedPermanentBytes": 0,
+  "projectedPeakBytes": 0,
+  "projectedFreeBytesAtPeak": 17449246720,
+  "projectedTokenCount": null,
+  "projectedModelWorkload": null,
+  "productOwnerApproved": false,
+  "automaticEvidenceDeletionAllowed": false,
+  "decision": "proceed-gate-6a-complete-only",
+  "reasons": [],
+  "gate6BRequiresFreshCapacityAssessment": true,
+  "gate6CRequiresFreshCapacityAndWorkloadAssessment": true,
+  "productionAccepted": false,
+  "observedAt": "2026-07-16T06:16:40.031Z",
+  "observedPath": "C:\\AIW\\aiw"
+}

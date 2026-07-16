@@ -1,0 +1,480 @@
+{
+  "schemaVersion": "aiw-gate-6a-resource-telemetry-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "runKind": "primary",
+  "nodeHeapLimitBytes": 2348810240,
+  "peakHeapUsedBytes": 753895656,
+  "peakResidentSetBytes": 1049980928,
+  "peakExternalBytes": 65496410,
+  "windowsPagefileCommitmentBytes": null,
+  "windowsPagefileTelemetryStatus": "unavailable-access-denied-without-administrative-elevation",
+  "phaseStorage": {
+    "passageReconstruction": {
+      "freeBytesBefore": 18200174592,
+      "freeBytesAfter": 18203967488
+    },
+    "exactAndNormalizedDeduplication": {
+      "freeBytesBefore": 18203967488,
+      "freeBytesAfter": 18203410432
+    },
+    "nearDuplicateClustering": {
+      "freeBytesBefore": 18203406336,
+      "freeBytesAfter": 18161078272
+    },
+    "semanticUnitConsolidation": {
+      "freeBytesBefore": 18161078272,
+      "freeBytesAfter": 18162421760
+    },
+    "ledgerGeneration": {
+      "freeBytesBefore": 18162421760,
+      "freeBytesAfter": 17840947200
+    }
+  },
+  "totalElapsedMilliseconds": 1058276,
+  "largestManifest": {
+    "connectorId": "GH-MESHERY",
+    "repository": "meshery/meshery",
+    "manifestBytes": 429260100,
+    "fileCount": 68929,
+    "passageCount": 68858,
+    "concurrency": 1,
+    "elapsedMilliseconds": 648225
+  },
+  "repositories": [
+    {
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "manifestBytes": 58269566,
+      "fileCount": 39338,
+      "passageCount": 9208,
+      "concurrency": 4,
+      "elapsedMilliseconds": 27649
+    },
+    {
+      "connectorId": "GH-ARC42",
+      "repository": "arc42/arc42-template",
+      "manifestBytes": 251690,
+      "fileCount": 705,
+      "passageCount": 58,
+      "concurrency": 4,
+      "elapsedMilliseconds": 120
+    },
+    {
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "repository": "ea-toolkit/architecture-catalog",
+      "manifestBytes": 132680,
+      "fileCount": 449,
+      "passageCount": 17,
+      "concurrency": 4,
+      "elapsedMilliseconds": 51
+    },
+    {
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "manifestBytes": 4929454,
+      "fileCount": 1694,
+      "passageCount": 985,
+      "concurrency": 4,
+      "elapsedMilliseconds": 4387
+    },
+    {
+      "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+      "repository": "ardalis/CleanArchitecture",
+      "manifestBytes": 335069,
+      "fileCount": 548,
+      "passageCount": 242,
+      "concurrency": 4,
+      "elapsedMilliseconds": 993
+    },
+    {
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "manifestBytes": 154105,
+      "fileCount": 103,
+      "passageCount": 184,
+      "concurrency": 4,
+      "elapsedMilliseconds": 371
+    },
+    {
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "manifestBytes": 6644,
+      "fileCount": 3,
+      "passageCount": 10,
+      "concurrency": 4,
+      "elapsedMilliseconds": 37
+    },
+    {
+      "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+      "repository": "DovAmir/awesome-design-patterns",
+      "manifestBytes": 7752,
+      "fileCount": 3,
+      "passageCount": 19,
+      "concurrency": 4,
+      "elapsedMilliseconds": 52
+    },
+    {
+      "connectorId": "GH-AWESOME-SCALABILITY",
+      "repository": "binhnguyennus/awesome-scalability",
+      "manifestBytes": 9424,
+      "fileCount": 10,
+      "passageCount": 18,
+      "concurrency": 4,
+      "elapsedMilliseconds": 75
+    },
+    {
+      "connectorId": "GH-AWESOME-SOFTWARE-ARCH",
+      "repository": "mehdihadeli/awesome-software-architecture",
+      "manifestBytes": 894645,
+      "fileCount": 313,
+      "passageCount": 859,
+      "concurrency": 4,
+      "elapsedMilliseconds": 2910
+    },
+    {
+      "connectorId": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+      "repository": "ashishps1/awesome-system-design-resources",
+      "manifestBytes": 14002,
+      "fileCount": 26,
+      "passageCount": 19,
+      "concurrency": 4,
+      "elapsedMilliseconds": 68
+    },
+    {
+      "connectorId": "GH-AWS-SAAS-EKS",
+      "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+      "manifestBytes": 94755,
+      "fileCount": 312,
+      "passageCount": 33,
+      "concurrency": 4,
+      "elapsedMilliseconds": 201
+    },
+    {
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "manifestBytes": 23056111,
+      "fileCount": 13516,
+      "passageCount": 17948,
+      "concurrency": 4,
+      "elapsedMilliseconds": 67737
+    },
+    {
+      "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+      "repository": "awslabs/aws-solutions-constructs",
+      "manifestBytes": 3028475,
+      "fileCount": 5388,
+      "passageCount": 1132,
+      "concurrency": 4,
+      "elapsedMilliseconds": 3775
+    },
+    {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "manifestBytes": 918753,
+      "fileCount": 655,
+      "passageCount": 460,
+      "concurrency": 4,
+      "elapsedMilliseconds": 1417
+    },
+    {
+      "connectorId": "GH-BACKSTAGE",
+      "repository": "backstage/backstage",
+      "manifestBytes": 5063892,
+      "fileCount": 11851,
+      "passageCount": 1539,
+      "concurrency": 4,
+      "elapsedMilliseconds": 4069
+    },
+    {
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "manifestBytes": 256521,
+      "fileCount": 122,
+      "passageCount": 100,
+      "concurrency": 4,
+      "elapsedMilliseconds": 333
+    },
+    {
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "manifestBytes": 121101,
+      "fileCount": 173,
+      "passageCount": 35,
+      "concurrency": 4,
+      "elapsedMilliseconds": 317
+    },
+    {
+      "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+      "repository": "cncf/landscape-graph",
+      "manifestBytes": 111733,
+      "fileCount": 313,
+      "passageCount": 69,
+      "concurrency": 4,
+      "elapsedMilliseconds": 208
+    },
+    {
+      "connectorId": "GH-CNCF-TAG-SECURITY",
+      "repository": "cncf/tag-security",
+      "manifestBytes": 781884,
+      "fileCount": 820,
+      "passageCount": 1421,
+      "concurrency": 4,
+      "elapsedMilliseconds": 2595
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAP-DISCOVERY",
+      "repository": "ContextMapper/context-map-discovery",
+      "manifestBytes": 282704,
+      "fileCount": 105,
+      "passageCount": 91,
+      "concurrency": 4,
+      "elapsedMilliseconds": 442
+    },
+    {
+      "connectorId": "GH-CONTEXT-MAPPER-DSL",
+      "repository": "ContextMapper/context-mapper-dsl",
+      "manifestBytes": 1288711,
+      "fileCount": 997,
+      "passageCount": 209,
+      "concurrency": 4,
+      "elapsedMilliseconds": 1132
+    },
+    {
+      "connectorId": "GH-DDD-CREW",
+      "repository": "ddd-crew/ddd-starter-modelling-process",
+      "manifestBytes": 26250,
+      "fileCount": 45,
+      "passageCount": 46,
+      "concurrency": 4,
+      "elapsedMilliseconds": 203
+    },
+    {
+      "connectorId": "GH-DEVELOPER-ROADMAP",
+      "repository": "nilbuild/developer-roadmap",
+      "manifestBytes": 263764868,
+      "fileCount": 12497,
+      "passageCount": 10450,
+      "concurrency": 1,
+      "elapsedMilliseconds": 165898
+    },
+    {
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "manifestBytes": 66678,
+      "fileCount": 27,
+      "passageCount": 158,
+      "concurrency": 4,
+      "elapsedMilliseconds": 469
+    },
+    {
+      "connectorId": "GH-FINOS-CALM",
+      "repository": "finos/architecture-as-code",
+      "manifestBytes": 2124470,
+      "fileCount": 2965,
+      "passageCount": 1654,
+      "concurrency": 4,
+      "elapsedMilliseconds": 3768
+    },
+    {
+      "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+      "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+      "manifestBytes": 5876607,
+      "fileCount": 2966,
+      "passageCount": 6933,
+      "concurrency": 4,
+      "elapsedMilliseconds": 8697
+    },
+    {
+      "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+      "repository": "GoogleCloudPlatform/microservices-demo",
+      "manifestBytes": 600893,
+      "fileCount": 363,
+      "passageCount": 610,
+      "concurrency": 4,
+      "elapsedMilliseconds": 1299
+    },
+    {
+      "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+      "repository": "GoogleCloudPlatform/software-delivery-blueprint",
+      "manifestBytes": 92376,
+      "fileCount": 317,
+      "passageCount": 9,
+      "concurrency": 4,
+      "elapsedMilliseconds": 67
+    },
+    {
+      "connectorId": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+      "repository": "IBM/cloud-native-patterns",
+      "manifestBytes": 21448,
+      "fileCount": 40,
+      "passageCount": 9,
+      "concurrency": 4,
+      "elapsedMilliseconds": 20
+    },
+    {
+      "connectorId": "GH-ITATM-REFARCH",
+      "repository": "it-at-m/refarch",
+      "manifestBytes": 742561,
+      "fileCount": 295,
+      "passageCount": 429,
+      "concurrency": 4,
+      "elapsedMilliseconds": 1384
+    },
+    {
+      "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+      "repository": "iluwatar/java-design-patterns",
+      "manifestBytes": 7401462,
+      "fileCount": 3627,
+      "passageCount": 5826,
+      "concurrency": 4,
+      "elapsedMilliseconds": 19062
+    },
+    {
+      "connectorId": "GH-JMOLECULES",
+      "repository": "xmolecules/jmolecules",
+      "manifestBytes": 142151,
+      "fileCount": 115,
+      "passageCount": 90,
+      "concurrency": 4,
+      "elapsedMilliseconds": 461
+    },
+    {
+      "connectorId": "GH-JQASSISTANT",
+      "repository": "jQAssistant/jqassistant",
+      "manifestBytes": 7021565,
+      "fileCount": 2047,
+      "passageCount": 1813,
+      "concurrency": 4,
+      "elapsedMilliseconds": 4942
+    },
+    {
+      "connectorId": "GH-K8S-PATTERNS",
+      "repository": "k8spatterns/examples",
+      "manifestBytes": 353330,
+      "fileCount": 219,
+      "passageCount": 261,
+      "concurrency": 4,
+      "elapsedMilliseconds": 836
+    },
+    {
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "manifestBytes": 61673149,
+      "fileCount": 7305,
+      "passageCount": 7104,
+      "concurrency": 4,
+      "elapsedMilliseconds": 36160
+    },
+    {
+      "connectorId": "GH-MESHERY",
+      "repository": "meshery/meshery",
+      "manifestBytes": 429260100,
+      "fileCount": 68929,
+      "passageCount": 68858,
+      "concurrency": 1,
+      "elapsedMilliseconds": 648225
+    },
+    {
+      "connectorId": "GH-MICROSOFT-AGENT-SKILLS",
+      "repository": "MicrosoftDocs/agent-skills",
+      "manifestBytes": 175066,
+      "fileCount": 619,
+      "passageCount": 37,
+      "concurrency": 4,
+      "elapsedMilliseconds": 137
+    },
+    {
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "manifestBytes": 2041948,
+      "fileCount": 2217,
+      "passageCount": 3929,
+      "concurrency": 4,
+      "elapsedMilliseconds": 4711
+    },
+    {
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "manifestBytes": 60601,
+      "fileCount": 39,
+      "passageCount": 129,
+      "concurrency": 4,
+      "elapsedMilliseconds": 173
+    },
+    {
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "manifestBytes": 1296227,
+      "fileCount": 580,
+      "passageCount": 860,
+      "concurrency": 4,
+      "elapsedMilliseconds": 1336
+    },
+    {
+      "connectorId": "GH-SAP-ARCH-CENTER",
+      "repository": "SAP/architecture-center",
+      "manifestBytes": 1427591,
+      "fileCount": 795,
+      "passageCount": 1586,
+      "concurrency": 4,
+      "elapsedMilliseconds": 3370
+    },
+    {
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "manifestBytes": 198259,
+      "fileCount": 210,
+      "passageCount": 136,
+      "concurrency": 4,
+      "elapsedMilliseconds": 288
+    },
+    {
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "manifestBytes": 884897,
+      "fileCount": 950,
+      "passageCount": 332,
+      "concurrency": 4,
+      "elapsedMilliseconds": 818
+    },
+    {
+      "connectorId": "GH-STRUCTURIZR-JAVA",
+      "repository": "structurizr/java",
+      "manifestBytes": 9890014,
+      "fileCount": 1045,
+      "passageCount": 756,
+      "concurrency": 4,
+      "elapsedMilliseconds": 1571
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-101",
+      "repository": "ByteByteGoHq/system-design-101",
+      "manifestBytes": 121684,
+      "fileCount": 424,
+      "passageCount": 4,
+      "concurrency": 4,
+      "elapsedMilliseconds": 66
+    },
+    {
+      "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+      "repository": "donnemartin/system-design-primer",
+      "manifestBytes": 114511,
+      "fileCount": 139,
+      "passageCount": 564,
+      "concurrency": 4,
+      "elapsedMilliseconds": 505
+    }
+  ],
+  "measuredCandidateLedgerBytes": 329784477,
+  "projectedTemporaryStorageBytes": 1073741824,
+  "projectedPermanentStorageBytes": 805306368,
+  "rawVaultModifiedBytes": 0,
+  "repositoryCodeExecuted": false,
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "semanticTransformations": 0,
+  "candidateAuthorityLeakage": 0,
+  "designGraphMutations": 0,
+  "automaticDeletionPerformed": false,
+  "productionAccepted": false
+}

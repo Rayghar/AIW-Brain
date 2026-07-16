@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "aiw-semantic-transformation-workload-plan-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "originalPassageCount": 147239,
+  "uniqueExactPassageCount": 97513,
+  "normalizedUniqueCount": 97182,
+  "nearDuplicateClusterCount": 2257,
+  "boilerplateCount": 12302,
+  "generatedContentCount": 1974,
+  "nonArchitecturalEstimate": 56556,
+  "specialistParserBacklog": 2305,
+  "proposedSemanticUnitCount": 42953,
+  "projectedModelCallCount": 42953,
+  "projectedTokens": {
+    "minimum": 49395950,
+    "likely": 79463050,
+    "maximum": 139597250,
+    "assumptionsPerCall": {
+      "input": {
+        "minimum": 1000,
+        "likely": 1500,
+        "maximum": 2500
+      },
+      "output": {
+        "minimum": 150,
+        "likely": 350,
+        "maximum": 750
+      }
+    },
+    "inputLower": 42953000,
+    "inputUpper": 107382500,
+    "outputLower": 6442950,
+    "outputUpper": 32214750
+  },
+  "projectedElapsedTime": {
+    "minimumSecondsAtTwoCallsPerSecond": 21477,
+    "likelySecondsAtHalfCallPerSecond": 85906,
+    "maximumSecondsAtOneCallPerTenSeconds": 429530,
+    "status": "estimate-only; Gate 6B must measure actual throughput"
+  },
+  "projectedRetryVolume": {
+    "lowerBound": 0,
+    "upperBoundAtFivePercent": 2148,
+    "policy": "bounded retries plus dead-letter; exact limit requires Gate 6B approval"
+  },
+  "projectedCandidateVolume": {
+    "lowerBound": 42953,
+    "upperBound": 128859
+  },
+  "projectedHumanReviewVolume": {
+    "itemCount": 42953,
+    "clusterReviewMode": "one semantic unit with all source occurrences",
+    "proposedReviewBatchSize": 50,
+    "additionalReviewRequiredRepositories": 23
+  },
+  "proposedGate6BPilot": {
+    "units": 94,
+    "method": "two semantic units per repository, stratified across authority, parser, disposition and artefact classes",
+    "approvalStatus": "not-approved-not-started"
+  },
+  "costControlPosture": "no provider pricing invented; fresh approved pricing verification required before a live model workload",
+  "checkpointDesign": {
+    "order": "semanticUnitId ascending",
+    "batchSizeProposed": 100,
+    "resumeKey": "semanticUnitId plus model/prompt/schema pins",
+    "appendOnlyLedger": true,
+    "deadLetterRequired": true
+  },
+  "requiredDiskCapacity": {
+    "schemaVersion": "aiw-rc10-73-8-storage-capacity-gate-v1",
+    "stage": "gate-6a-deterministic-corpus-analysis",
+    "freeBytesBefore": 18200174592,
+    "minimumFreeBytes": 8589934592,
+    "projectedTemporaryBytes": 1073741824,
+    "projectedPermanentBytes": 805306368,
+    "projectedPeakBytes": 1879048192,
+    "projectedFreeBytesAtPeak": 16321126400,
+    "projectedTokenCount": null,
+    "projectedModelWorkload": null,
+    "productOwnerApproved": false,
+    "automaticEvidenceDeletionAllowed": false,
+    "decision": "proceed",
+    "reasons": [],
+    "productionAccepted": false,
+    "observedAt": "2026-07-16T05:23:31.685Z",
+    "observedPath": "C:\\AIW\\aiw"
+  },
+  "candidateIndexSizeEstimateBytes": {
+    "lowerBound": 87967744,
+    "upperBound": 351870976
+  },
+  "runtimeConfigured": false,
+  "fullModelWorkloadAuthorized": false,
+  "productionAccepted": false
+}

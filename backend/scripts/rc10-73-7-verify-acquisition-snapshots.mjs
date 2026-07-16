@@ -10,6 +10,10 @@ const evidenceRoot = resolve(product, 'release-evidence/rc10.73.7');
 const snapshotRoot = resolve(product, 'knowledge-repository/AKR-0.10.73.7/github-live');
 const summary = JSON.parse(await readFile(resolve(evidenceRoot, 'ALL_47_LIVE_ACQUISITION_SUMMARY.json'), 'utf8'));
 const results = [];
+const outputArgumentIndex = process.argv.indexOf('--output');
+const outputPath = outputArgumentIndex >= 0
+  ? resolve(product, process.argv[outputArgumentIndex + 1])
+  : resolve(evidenceRoot, 'SNAPSHOT_AND_MANIFEST_VERIFICATION.json');
 
 for (const item of [...summary.results].sort((a, b) => a.connectorId.localeCompare(b.connectorId))) {
   const manifestPath = resolve(snapshotRoot, 'snapshots', item.connectorId, item.snapshotId, 'manifest.json');
@@ -51,6 +55,6 @@ const receipt = {
   results,
 };
 
-await writeFile(resolve(evidenceRoot, 'SNAPSHOT_AND_MANIFEST_VERIFICATION.json'), `${JSON.stringify(receipt, null, 2)}\n`);
+await writeFile(outputPath, `${JSON.stringify(receipt, null, 2)}\n`);
 console.log(JSON.stringify({ passed: receipt.passed, expectedRepositories: 47, verifiedRepositories: receipt.verifiedRepositories, failedRepositories: receipt.failedRepositories, verifiedContentAddressedObjects: receipt.verifiedContentAddressedObjects, denominatorFiles: receipt.denominatorFiles, productionAccepted: false }, null, 2));
 if (!receipt.passed) process.exitCode = 1;

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "aiw-rc10-73-8-storage-capacity-gate-v1",
+  "stage": "gate-6a-deterministic-corpus-analysis",
+  "freeBytesBefore": 18200174592,
+  "minimumFreeBytes": 8589934592,
+  "projectedTemporaryBytes": 1073741824,
+  "projectedPermanentBytes": 805306368,
+  "projectedPeakBytes": 1879048192,
+  "projectedFreeBytesAtPeak": 16321126400,
+  "projectedTokenCount": null,
+  "projectedModelWorkload": null,
+  "productOwnerApproved": false,
+  "automaticEvidenceDeletionAllowed": false,
+  "decision": "proceed",
+  "reasons": [],
+  "productionAccepted": false,
+  "observedAt": "2026-07-16T05:23:31.685Z",
+  "observedPath": "C:\\AIW\\aiw"
+}

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "aiw-knowledge-runtime-performance-results-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.8",
+  "generatedAt": "2026-07-16T06:15:17.553Z",
+  "machine": {
+    "platform": "win32",
+    "architecture": "x64",
+    "nodeVersion": "v24.18.0",
+    "hostnameHash": "3e1cf38d86c64a66",
+    "cpuModel": "Intel64 Family 6 Model 186 Stepping 3, GenuineIntel",
+    "acceptanceEnvironment": "local Windows engineering environment"
+  },
+  "engineeringTargetsNotProductionSlos": true,
+  "vaultRoot": "knowledge-repository/AKR-0.10.73.7/github-live",
+  "vaultRecursivelyScannedDuringOrdinaryBrainQuery": false,
+  "freeBytesObservedBeforeAcceptance": 17495302144,
+  "minimumFreeBytesForPrompt6Stages": 8589934592,
+  "checks": [
+    {
+      "name": "ordinary-runtime-has-no-raw-vault-binding",
+      "passed": true,
+      "detail": {
+        "filesInspected": 157,
+        "rawVaultReferences": []
+      }
+    },
+    {
+      "name": "raw-evidence-access-is-lazy-by-evidence-id",
+      "passed": true,
+      "detail": {
+        "getCallsAfterPut": 0,
+        "getCallsAfterMetadataList": 0,
+        "getCallsAfterEvidenceIdLookup": 1,
+        "recursiveRawFilesystemScans": 0,
+        "durationMs": 0.3272999999999229
+      }
+    },
+    {
+      "name": "single-bounded-object-retrieval-under-2-seconds",
+      "passed": true,
+      "detail": {
+        "durationMs": 0.3272999999999229,
+        "targetMs": 2000
+      }
+    },
+    {
+      "name": "candidate-and-approved-retrieval-isolated",
+      "passed": true,
+      "detail": {
+        "approvedIds": [
+          "KCLM-CALM-PATTERNS"
+        ],
+        "candidateIds": []
+      }
+    },
+    {
+      "name": "approved-retrieval-under-500ms",
+      "passed": true,
+      "detail": {
+        "iterations": 100,
+        "p95Ms": 0.5249999999996362,
+        "targetMs": 500
+      }
+    },
+    {
+      "name": "approved-metadata-load-under-2-seconds",
+      "passed": true,
+      "detail": {
+        "durationMs": 10.151699999999892,
+        "targetMs": 2000,
+        "releaseId": "AKR-0.10.73.5"
+      }
+    },
+    {
+      "name": "frontend-bundle-excludes-raw-source-content",
+      "passed": true,
+      "detail": {
+        "filesInspected": 54,
+        "matches": []
+      }
+    },
+    {
+      "name": "application-fulldist-excludes-raw-vault",
+      "passed": true,
+      "detail": {
+        "entriesInspected": 2152,
+        "matches": []
+      }
+    },
+    {
+      "name": "raw-acquisition-content-not-tracked",
+      "passed": true,
+      "detail": {
+        "trackedFilesInspected": 2157,
+        "matches": []
+      }
+    },
+    {
+      "name": "raw-acquisition-content-not-staged",
+      "passed": true,
+      "detail": {
+        "stagedFilesInspected": 0,
+        "matches": []
+      }
+    },
+    {
+      "name": "container-context-excludes-vault",
+      "passed": true,
+      "detail": {
+        "policyFile": ".dockerignore"
+      }
+    },
+    {
+      "name": "disk-capacity-gate-fails-closed",
+      "passed": true,
+      "detail": {
+        "minimumFreeBytes": 8589934592,
+        "cases": [
+          {
+            "stage": "gate-6a-corpus-analysis-and-workload-planning",
+            "decision": "proceed",
+            "reasons": []
+          },
+          {
+            "stage": "gate-6b-representative-pilot",
+            "decision": "controlled-stop",
+            "reasons": [
+              "FREE_SPACE_BELOW_8_GIB_CONTROLLED_STOP",
+              "PROJECTED_FREE_SPACE_BELOW_8_GIB_CONTROLLED_STOP"
+            ]
+          },
+          {
+            "stage": "gate-6c-full-semantic-transformation",
+            "decision": "controlled-stop",
+            "reasons": [
+              "GATE_6C_PRODUCT_OWNER_APPROVAL_REQUIRED",
+              "GATE_6C_PROJECTED_TOKEN_COUNT_REQUIRED",
+              "GATE_6C_PROJECTED_MODEL_WORKLOAD_REQUIRED"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "passed": true,
+  "backupCompleted": false,
+  "backupStatus": "deferred-by-product-owner",
+  "backupRiskAccepted": true,
+  "backupRiskAcceptedAt": "2026-07-15T18:51:52.811Z",
+  "backupRiskScope": "loss or corruption of the local raw acquisition vault",
+  "productionAccepted": false
+}

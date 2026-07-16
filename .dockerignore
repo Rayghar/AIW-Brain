@@ -9,6 +9,7 @@ node_modules
 **/playwright-report
 knowledge-repository/AKR-*/github-live
 knowledge-repository/AKR-*/github-live/**
+knowledge-repository/AKR-*/candidate/**
 **/snapshots/**
 **/objects/sha256/**
 **/quarantine/sha256/**

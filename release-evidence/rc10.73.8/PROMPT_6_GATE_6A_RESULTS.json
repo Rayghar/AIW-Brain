@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "aiw-gate-6a-decision-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "decision": "conditional-pass-awaiting-product-owner-gate-6b-approval",
+  "deterministicCorpusAnalysisPassed": true,
+  "all47RepositoriesCovered": true,
+  "acceptedFileDispositionCoveragePercent": 100,
+  "acceptedPassageDispositionCoveragePercent": 100,
+  "silentEvidenceLoss": 0,
+  "snapshotAndManifestVerificationPassed": true,
+  "deterministicFingerprint": "sha256:72b08d5fa133f75e7c49ef7be40d7d98be620cb57c7af2e7ca78200bf02710c2",
+  "deterministicReplay": {
+    "primaryFingerprint": "sha256:72b08d5fa133f75e7c49ef7be40d7d98be620cb57c7af2e7ca78200bf02710c2",
+    "replayFingerprint": "sha256:72b08d5fa133f75e7c49ef7be40d7d98be620cb57c7af2e7ca78200bf02710c2",
+    "identical": true
+  },
+  "streamingSnapshotVerification": "passed-47-of-47",
+  "postGateStreamingSnapshotVerification": "passed-47-of-47",
+  "runtimeIsolationProof": "passed-12-of-12",
+  "runtimeSolConfigured": false,
+  "liveSemanticTransformationExecuted": false,
+  "proofs": {
+    "rawVaultModifiedBytes": 0,
+    "repositoryCodeExecuted": false,
+    "networkCalls": 0,
+    "modelCalls": 0,
+    "semanticTransformations": 0,
+    "candidateAuthorityLeakage": 0,
+    "designGraphMutations": 0,
+    "rawVaultScansDuringOrdinaryRetrieval": 0
+  },
+  "backupCompleted": false,
+  "backupStatus": "deferred-by-product-owner",
+  "blockers": [
+    "OPENAI_API_KEY absent",
+    "explicit model-name allowlist absent",
+    "independent vault backup deferred",
+    "Gate 6B not approved",
+    "material capability-source gaps remain"
+  ],
+  "gate6BStatus": "not-started",
+  "gate6CStatus": "blocked",
+  "gate6DStatus": "not-started",
+  "productionAccepted": false
+}

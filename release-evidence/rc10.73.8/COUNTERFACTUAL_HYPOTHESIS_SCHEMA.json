@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "aiw-counterfactual-hypothesis-schema-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "status": "proposed-schema-not-populated",
+  "authority": "candidate",
+  "modelGeneratedAssetsCreated": false,
+  "productionAccepted": false,
+  "requiredFields": [
+    "id",
+    "proposedChange",
+    "assumptions",
+    "affectedObjectIds",
+    "affectedQualities",
+    "expectedBenefit",
+    "possibleRegression",
+    "newObligations",
+    "removedObligations",
+    "uncertainty",
+    "validationEvidenceRequired",
+    "status"
+  ],
+  "defaultStatus": "candidate-hypothesis-unvalidated"
+}

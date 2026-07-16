@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "aiw-review-prioritisation-schema-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "status": "proposed-schema-not-populated",
+  "authority": "candidate",
+  "modelGeneratedAssetsCreated": false,
+  "productionAccepted": false,
+  "orderedFactors": [
+    "safety-impact",
+    "security-impact",
+    "hard-rule-potential",
+    "scoring-impact",
+    "pattern-dna-importance",
+    "reference-architecture-reuse-value",
+    "contradiction-severity",
+    "source-authority",
+    "licence-uncertainty",
+    "dependent-asset-count",
+    "likely-brain-usage"
+  ],
+  "proposerMayApproveOwnProposal": false,
+  "requiredFields": [
+    "reviewItemId",
+    "objectIds",
+    "evidenceIds",
+    "factorAssessments",
+    "priorityBand",
+    "requiredReviewerExpertise",
+    "status",
+    "rationale"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aiw-contradiction-schema-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "status": "proposed-schema-not-populated",
+  "authority": "candidate",
+  "modelGeneratedAssetsCreated": false,
+  "productionAccepted": false,
+  "relationTypes": [
+    "conflicts",
+    "contradicts",
+    "context-dependent",
+    "supersedes",
+    "narrows",
+    "extends",
+    "unresolved"
+  ],
+  "requiredFields": [
+    "id",
+    "leftObjectId",
+    "rightObjectId",
+    "relationType",
+    "conditions",
+    "leftEvidenceIds",
+    "rightEvidenceIds",
+    "severity",
+    "promotionBlocked",
+    "reviewRequirements"
+  ]
+}

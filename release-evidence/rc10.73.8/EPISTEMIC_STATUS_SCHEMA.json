@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "aiw-epistemic-status-schema-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "status": "proposed-schema-not-populated",
+  "authority": "candidate",
+  "modelGeneratedAssetsCreated": false,
+  "productionAccepted": false,
+  "statuses": [
+    "normative-requirement",
+    "source-stated-recommendation",
+    "measured-result",
+    "source-example",
+    "implementation-observation",
+    "expert-interpretation",
+    "sol-inference",
+    "hypothesis",
+    "illustration",
+    "unknown"
+  ],
+  "requiredDistinctions": [
+    "measured-fact",
+    "source-assertion",
+    "inference",
+    "recommendation",
+    "hypothesis"
+  ]
+}

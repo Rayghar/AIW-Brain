@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "aiw-architecture-cognition-graph-invariants-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "status": "proposed-schema-not-populated",
+  "authority": "candidate",
+  "modelGeneratedAssetsCreated": false,
+  "productionAccepted": false,
+  "invariants": [
+    "no-candidate-claim-without-evidence",
+    "no-consequential-edge-without-evidence",
+    "no-orphan-claim",
+    "no-silent-alias-merge",
+    "no-contradiction-erasure",
+    "no-candidate-authority-escalation",
+    "source-withdrawal-invalidates-dependents",
+    "model-cannot-mutate-graph",
+    "filesystem-path-not-canonical-identity",
+    "approved-and-candidate-indexes-physically-separated"
+  ]
+}

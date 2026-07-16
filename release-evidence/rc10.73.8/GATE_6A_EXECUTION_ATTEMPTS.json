@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "aiw-gate-6a-execution-attempts-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.8",
+  "attempts": [
+    {
+      "attempt": 1,
+      "kind": "primary",
+      "nodeMaxOldSpaceSizeMiB": 2048,
+      "result": "controlled-failure-before-ledger-generation",
+      "failure": "V8 heap exhaustion",
+      "observedDurationMilliseconds": 477200,
+      "exactExecutionTimestampAvailable": false,
+      "rawVaultModifiedBytes": 0,
+      "candidateShardsWritten": 0,
+      "cause": "connector-wide passage previews and token representations remained live across the corpus",
+      "remediation": "process bounded connector batches, retain compact hashes and counters only, release references and flush deterministically"
+    },
+    {
+      "attempt": 2,
+      "kind": "primary",
+      "nodeMaxOldSpaceSizeMiB": 2048,
+      "result": "passed",
+      "completedAt": "2026-07-16T05:23:31.685Z",
+      "elapsedMilliseconds": 1058276,
+      "peakHeapUsedBytes": 753895656,
+      "peakResidentSetBytes": 1049980928,
+      "deterministicFingerprint": "sha256:72b08d5fa133f75e7c49ef7be40d7d98be620cb57c7af2e7ca78200bf02710c2"
+    },
+    {
+      "attempt": 3,
+      "kind": "deterministic-replay",
+      "nodeMaxOldSpaceSizeMiB": 2048,
+      "result": "passed-identical",
+      "completedAt": "2026-07-16T05:41:43.926Z",
+      "observedDurationMilliseconds": 1137100,
+      "deterministicFingerprint": "sha256:72b08d5fa133f75e7c49ef7be40d7d98be620cb57c7af2e7ca78200bf02710c2"
+    }
+  ],
+  "largerHeapRequired": false,
+  "repositoryCodeExecuted": false,
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "semanticTransformations": 0,
+  "automaticDeletionPerformed": false,
+  "backupCompleted": false,
+  "backupStatus": "deferred-by-product-owner",
+  "productionAccepted": false
+}

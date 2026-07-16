@@ -12,6 +12,16 @@ import { evaluateStorageCapacity, MINIMUM_FREE_BYTES } from './rc10-73-8-storage
 
 const backend = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const product = resolve(backend, '..');
+const outputArgumentIndex = process.argv.indexOf('--output');
+const outputPath = outputArgumentIndex >= 0
+  ? resolve(product, process.argv[outputArgumentIndex + 1])
+  : resolve(product, 'release-evidence/rc10.73.7/KNOWLEDGE_RUNTIME_PERFORMANCE_RESULTS.json');
+if (outputArgumentIndex >= 0 && !process.argv[outputArgumentIndex + 1]) throw new Error('OUTPUT_PATH_REQUIRED');
+const releaseIdArgumentIndex = process.argv.indexOf('--release-id');
+const releaseId = releaseIdArgumentIndex >= 0
+  ? process.argv[releaseIdArgumentIndex + 1]
+  : 'AIW v0.10.0-rc.10.73.7';
+if (releaseIdArgumentIndex >= 0 && !releaseId) throw new Error('RELEASE_ID_REQUIRED');
 const evidenceRoot = resolve(product, 'release-evidence/rc10.73.7');
 const vaultRoot = resolve(product, 'knowledge-repository/AKR-0.10.73.7/github-live');
 const generatedAt = new Date().toISOString();
@@ -52,7 +62,7 @@ const runtimeFiles = (await Promise.all(runtimeRoots.map(listFiles))).flat().fil
 const rawVaultReferences = [];
 for (const path of runtimeFiles) {
   const source = await readFile(path, 'utf8');
-  if (/github-live|AKR-0\.10\.73\.7|AIW_GITHUB_SNAPSHOT_ROOT/.test(source)) rawVaultReferences.push(relative(product, path).replaceAll('\\', '/'));
+  if (/github-live|AKR-0\.10\.73\.[78]|AIW_GITHUB_SNAPSHOT_ROOT/.test(source)) rawVaultReferences.push(relative(product, path).replaceAll('\\', '/'));
 }
 checks.push(check('ordinary-runtime-has-no-raw-vault-binding', rawVaultReferences.length === 0, { filesInspected: runtimeFiles.length, rawVaultReferences }));
 
@@ -141,7 +151,7 @@ const machine = {
 };
 const receipt = {
   schemaVersion: 'aiw-knowledge-runtime-performance-results-v1',
-  releaseId: 'AIW v0.10.0-rc.10.73.7',
+  releaseId,
   generatedAt,
   machine,
   engineeringTargetsNotProductionSlos: true,
@@ -158,6 +168,6 @@ const receipt = {
   backupRiskScope: 'loss or corruption of the local raw acquisition vault',
   productionAccepted: false,
 };
-await writeFile(resolve(evidenceRoot, 'KNOWLEDGE_RUNTIME_PERFORMANCE_RESULTS.json'), `${JSON.stringify(receipt, null, 2)}\n`);
-process.stdout.write(`${JSON.stringify({ output: relative(product, resolve(evidenceRoot, 'KNOWLEDGE_RUNTIME_PERFORMANCE_RESULTS.json')).replaceAll('\\', '/'), passed: receipt.passed, checks: checks.length, freeBytesBefore }, null, 2)}\n`);
+await writeFile(outputPath, `${JSON.stringify(receipt, null, 2)}\n`);
+process.stdout.write(`${JSON.stringify({ output: relative(product, outputPath).replaceAll('\\', '/'), passed: receipt.passed, checks: checks.length, freeBytesBefore }, null, 2)}\n`);
 if (!receipt.passed) process.exitCode = 1;

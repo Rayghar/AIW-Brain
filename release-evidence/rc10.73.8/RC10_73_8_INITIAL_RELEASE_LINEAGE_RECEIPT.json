@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-rc10-73-8-initial-release-lineage-v1",
+  "generatedAt": "2026-07-15T22:09:46.784Z",
+  "parentRelease": "AIW v0.10.0-rc.10.73.7",
+  "parentTag": "v0.10.0-rc.10.73.7",
+  "parentAttestationCommit": "70c6b6677d2fc9732570b9012964da7d1c5b914e",
+  "sourceReleaseCommit": "50d2d93f646f8648d6a81d5467448f95272ba9af",
+  "currentBranch": "codex/rc-10-73-8-architecture-cognition",
+  "branchStartSha": "70c6b6677d2fc9732570b9012964da7d1c5b914e",
+  "observedHead": "70c6b6677d2fc9732570b9012964da7d1c5b914e",
+  "ancestryCheckExitCode": 0,
+  "carriedForward": {
+    "schemas": 31,
+    "migrations": 42,
+    "tests": 194,
+    "knownLimitationsPaths": 12
+  },
+  "backupCompleted": false,
+  "backupStatus": "deferred-by-product-owner",
+  "gate6CStatus": "blocked",
+  "productionAccepted": false
+}

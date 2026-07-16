@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aiw-knowledge-gap-and-uncertainty-schema-v1",
+  "generatedAt": "2026-07-16T05:23:31.685Z",
+  "status": "proposed-schema-not-populated",
+  "authority": "candidate",
+  "modelGeneratedAssetsCreated": false,
+  "productionAccepted": false,
+  "uncertaintyTypes": [
+    "weak-source-support",
+    "conflicting-evidence",
+    "stale-evidence",
+    "missing-workload-evidence",
+    "missing-context",
+    "missing-security-detail",
+    "missing-data-ownership",
+    "absent-operational-evidence",
+    "unknown-applicability"
+  ],
+  "requiredFields": [
+    "id",
+    "type",
+    "affectedObjectIds",
+    "evidenceIds",
+    "reason",
+    "abstentionRequired",
+    "reviewRequirements",
+    "status"
+  ]
+}

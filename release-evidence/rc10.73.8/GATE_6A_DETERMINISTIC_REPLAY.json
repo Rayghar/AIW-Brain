@@ -1,0 +1,337 @@
+{
+  "schemaVersion": "aiw-gate-6a-deterministic-replay-v1",
+  "generatedAt": "2026-07-16T05:41:43.926Z",
+  "primaryFingerprint": "sha256:72b08d5fa133f75e7c49ef7be40d7d98be620cb57c7af2e7ca78200bf02710c2",
+  "replayFingerprint": "sha256:72b08d5fa133f75e7c49ef7be40d7d98be620cb57c7af2e7ca78200bf02710c2",
+  "identical": true,
+  "primaryRun": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1",
+  "replayRun": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay",
+  "modelCalls": 0,
+  "semanticTransformations": 0,
+  "productionAccepted": false,
+  "primaryShardCount": 48,
+  "replayShardCount": 48,
+  "replayShardVerification": "all-record-counts-bytes-and-sha256-identical-to-primary",
+  "sourceOccurrenceMappingPosture": "retained-per-passage-in-passage-disposition-shards",
+  "specialistParserBacklog": 2305,
+  "dispositionTotals": {
+    "files": {
+      "ambiguous": 731,
+      "boilerplate": 5583,
+      "failed-with-explicit-reason": 254,
+      "generated-content": 671,
+      "human-review-required": 40283,
+      "implementation-example": 1944,
+      "insufficient-evidence": 1,
+      "non-architectural": 54578,
+      "outside-governed-semantic-scope": 79869,
+      "specialist-parser-required": 2305
+    },
+    "passages": {
+      "ambiguous": 2491,
+      "boilerplate": 5757,
+      "duplicate-mapped": 50057,
+      "generated-content": 1401,
+      "human-review-required": 40438,
+      "implementation-example": 2515,
+      "near-duplicate-clustered": 21965,
+      "non-architectural": 22615
+    }
+  },
+  "replayShards": {
+    "fileShards": [
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-00.ndjson",
+        "records": 11562,
+        "bytes": 11134299,
+        "sha256": "sha256:f37265d7a308f4200dbcb066ff64befcb392c0578ca5e31dabca218ff2d37880"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-01.ndjson",
+        "records": 11670,
+        "bytes": 11239020,
+        "sha256": "sha256:86059b4fb95ec50b2ac99e4b2d99198a62ed1c9da35501c5ca15a52f48e25163"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-02.ndjson",
+        "records": 11706,
+        "bytes": 11276268,
+        "sha256": "sha256:342314a8d501477762c0febbdb32640f3df1b6f661c1e5e36f1857aba97829a7"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-03.ndjson",
+        "records": 11632,
+        "bytes": 11198229,
+        "sha256": "sha256:2025e641898f242f910f3705f240a8e9deb468b0727fb10f0c166a1cab4d273c"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-04.ndjson",
+        "records": 11501,
+        "bytes": 11082483,
+        "sha256": "sha256:808c72d444d023980e01c7fbb777be44df505bf3e1c9fa38e9f19fc34430c962"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-05.ndjson",
+        "records": 11521,
+        "bytes": 11097916,
+        "sha256": "sha256:898799885bb3f089f03fb293c30f227286f6339b95b21c4876ca5b7558e68076"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-06.ndjson",
+        "records": 11626,
+        "bytes": 11202299,
+        "sha256": "sha256:dc7dc3d90fb5f605d48148f6cf0faf8614f56d2f5f67f50680b5e9576531cff6"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-07.ndjson",
+        "records": 11685,
+        "bytes": 11253665,
+        "sha256": "sha256:a6766d67404e65bc1ee68b49d79716fff1771aaf291a18932af15eba6be36e65"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-08.ndjson",
+        "records": 11657,
+        "bytes": 11221486,
+        "sha256": "sha256:e0e4397371695b42f1f0ec5f3cde647977407a89e0cbd024336287557a763bbd"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-09.ndjson",
+        "records": 11667,
+        "bytes": 11233874,
+        "sha256": "sha256:5e74aceffddfa86b30f6d3cd52c34671225315d903bc54ddf171183928ce91b6"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-0a.ndjson",
+        "records": 11569,
+        "bytes": 11149088,
+        "sha256": "sha256:7eb9df2bf58b18ffa3b861f246dee06a3b21a445b6a600fb1da0398e681b37c0"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-0b.ndjson",
+        "records": 11622,
+        "bytes": 11193211,
+        "sha256": "sha256:f30272615a8b7be797adf175406e9f7bc257a2f86079b9f5dbdc4d21e4e391b0"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-0c.ndjson",
+        "records": 11664,
+        "bytes": 11237080,
+        "sha256": "sha256:e344e0338213b7d1ba11c99ceeb1329059eca1483f41ba34671ffdd8b44f2ee4"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-0d.ndjson",
+        "records": 11731,
+        "bytes": 11298742,
+        "sha256": "sha256:14483e9228cc15428e13a1181c0a6960b13c72288767fe0b0924879822097c67"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-0e.ndjson",
+        "records": 11669,
+        "bytes": 11248565,
+        "sha256": "sha256:a92e7b6ab40cc7fad235193c022031fca355667a166a81b611db704d801b7289"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/file-dispositions-0f.ndjson",
+        "records": 11737,
+        "bytes": 11305039,
+        "sha256": "sha256:d608c8569e34aa439471b69f267b5cdc36d04cebb283a718cc56f5a4688d7d33"
+      }
+    ],
+    "passageShards": [
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-00.ndjson",
+        "records": 9303,
+        "bytes": 7783772,
+        "sha256": "sha256:fe02c636b31a907102dce4b1a88af4a34da9a35fdf6f59560075ba04211c5726"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-01.ndjson",
+        "records": 9152,
+        "bytes": 7664674,
+        "sha256": "sha256:e41e24b7ac4bfced5d46c485c02cf8d0fd86fcf1a7fd577639654c0ec3bf1e38"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-02.ndjson",
+        "records": 9195,
+        "bytes": 7698999,
+        "sha256": "sha256:7f0924eaffc43584af83701979816e5b8df5ff558a14fa664187c1a48e8bf4fb"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-03.ndjson",
+        "records": 9301,
+        "bytes": 7785618,
+        "sha256": "sha256:caa6a82272e4bfc729497b536e8a591687849dc417eeba931dad283fc8885fb3"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-04.ndjson",
+        "records": 9128,
+        "bytes": 7642597,
+        "sha256": "sha256:3c13528234a881e8de1569e87a1e847d194d5a97759cb44160742bf804bd9ca4"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-05.ndjson",
+        "records": 9259,
+        "bytes": 7749237,
+        "sha256": "sha256:a9ae325cefdd0cef7f37dc692e64acbcfba760ba2e1e353294292d7480576d89"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-06.ndjson",
+        "records": 9305,
+        "bytes": 7790523,
+        "sha256": "sha256:c9d6a184371c78983fcd3af4a727dbac58c36076a6a021786379dd7c97c42d3d"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-07.ndjson",
+        "records": 9174,
+        "bytes": 7677169,
+        "sha256": "sha256:6266e309c3a2030021e460d33bffa84f90467ecf50364e22e872d75a8ba41399"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-08.ndjson",
+        "records": 9187,
+        "bytes": 7689265,
+        "sha256": "sha256:4cd6a5b9fb57e108147c81818f697b50760f2ee6696f3914705ae24dc8f7ffc9"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-09.ndjson",
+        "records": 9088,
+        "bytes": 7603384,
+        "sha256": "sha256:c00c0d3187c61308ad6a6ec361ed722b6f76bd056bad47260ea9dfa057397a06"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-0a.ndjson",
+        "records": 9283,
+        "bytes": 7770772,
+        "sha256": "sha256:5006b22fe3229ba218e359087fcd922c71319f89ef36d28390bb19971916678d"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-0b.ndjson",
+        "records": 8936,
+        "bytes": 7481178,
+        "sha256": "sha256:1bb47732ee973c9b2908d97ba685130493b4fa409957f7279f906ea6b3e90ac5"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-0c.ndjson",
+        "records": 9286,
+        "bytes": 7774148,
+        "sha256": "sha256:33c0e1c8ff1fefe16f216af0091a8003e687cc6724d393f01f0ba72701d4e34d"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-0d.ndjson",
+        "records": 9241,
+        "bytes": 7735284,
+        "sha256": "sha256:aebdf07b94ae1f660d4f037beaf37589e6340b07e157bb9eae3214a1e4c7f9a8"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-0e.ndjson",
+        "records": 9208,
+        "bytes": 7705455,
+        "sha256": "sha256:d2b13897d6fbdbfe8e60df98315a9fd3f977f68cdb0e1ac787af711477963700"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/passage-dispositions-0f.ndjson",
+        "records": 9193,
+        "bytes": 7700434,
+        "sha256": "sha256:654068fc91725f6c809df5300c4b27db535a8cf8aad817c805fc23c75fca034d"
+      }
+    ],
+    "unitShards": [
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-00.ndjson",
+        "records": 4685,
+        "bytes": 1630926,
+        "sha256": "sha256:4b837a1ccb6c25104a5692df2b4918e723ea737ecbb377a840182b6c2b614dda"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-01.ndjson",
+        "records": 4821,
+        "bytes": 1783174,
+        "sha256": "sha256:02c436ecb561540c3e6714aff9867b61f5dd42cf2c6b79983684d8d551d51955"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-02.ndjson",
+        "records": 4657,
+        "bytes": 1637634,
+        "sha256": "sha256:337442fe2bb54e69972ccd50d1d74a5d02e2826f39a75aba6d2c744201be0b09"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-03.ndjson",
+        "records": 4727,
+        "bytes": 1686687,
+        "sha256": "sha256:d88a413992bcf8103e23cfde39b5a6550da301be518e112970f6ffe2209b9cd7"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-04.ndjson",
+        "records": 4831,
+        "bytes": 1713439,
+        "sha256": "sha256:763312e83fc1bf883b3523a57cd09bcde0240cddd27dbc7c6e742b5d4bdcc920"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-05.ndjson",
+        "records": 4584,
+        "bytes": 1646927,
+        "sha256": "sha256:ce307aaea05edaa64323397954a6e8b0b8129b0363363ec7b6f7aacbc5df3dcf"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-06.ndjson",
+        "records": 4757,
+        "bytes": 1769319,
+        "sha256": "sha256:db6ea8149ea5e353269c375857aba603163b47610961fa0e11b1f9e373c6078e"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-07.ndjson",
+        "records": 4820,
+        "bytes": 1772560,
+        "sha256": "sha256:5b2042daeb61921488d1d0a47864ebe0a571cc8b22150758cbfb7ee491628fcb"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-08.ndjson",
+        "records": 4619,
+        "bytes": 1678755,
+        "sha256": "sha256:a5a4632d4674512caf3deeffe1bee74e5fa8cbacc6b42ee73596b51a68fdf417"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-09.ndjson",
+        "records": 4751,
+        "bytes": 1678615,
+        "sha256": "sha256:0755084ad46587212521f8d24d10979b5630c09caad1989130a1c3bd38154a12"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-0a.ndjson",
+        "records": 4740,
+        "bytes": 1777044,
+        "sha256": "sha256:ffe17ba5b110a7753d7b07a5c777c315d2356cbdef6eee4cccc3da3de3e85f55"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-0b.ndjson",
+        "records": 4537,
+        "bytes": 1632562,
+        "sha256": "sha256:f7193ae01ceda6ed411a5a1dce0e6ac6f896a0bdf07b21bca80c1c610e93adb9"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-0c.ndjson",
+        "records": 4743,
+        "bytes": 1802606,
+        "sha256": "sha256:c0834f6dbd40b15b048b390ce9dc75fb59724da0623d35ea31c5a2e4cdffe609"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-0d.ndjson",
+        "records": 4687,
+        "bytes": 1611642,
+        "sha256": "sha256:0aa1c23c918dc299834f2114c9a27ba667c9015dd6343fdc915d537e739200ed"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-0e.ndjson",
+        "records": 4607,
+        "bytes": 1665560,
+        "sha256": "sha256:8be70bfd99aa29b164bcbe77d9889adb72c86b7a5efdd56488f3a41d15088825"
+      },
+      {
+        "path": "knowledge-repository/AKR-0.10.73.8/candidate/gate-6a/deterministic-corpus-v1-replay/semantic-units-0f.ndjson",
+        "records": 4651,
+        "bytes": 1673254,
+        "sha256": "sha256:c99888cb8df939756fdd0c8a6f83485169db988c4199f8b7b9ca195196b672a6"
+      }
+    ]
+  }
+}
