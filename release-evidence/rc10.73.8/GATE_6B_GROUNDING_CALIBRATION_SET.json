@@ -1,0 +1,280 @@
+{
+  "schemaVersion": "aiw-gate-6b-grounding-calibration-set-v1",
+  "generatedAt": "2026-07-16T16:39:05.699Z",
+  "productionAccepted": false,
+  "independentReviewStatus": "provisional-not-independently-reviewed",
+  "precisionMode": true,
+  "cases": [
+    {
+      "id": "CAL-DIRECT",
+      "category": "directly-supported",
+      "evidenceId": "E-CB",
+      "evidence": "A circuit breaker opens after repeated downstream failures and blocks further calls until the recovery interval ends.",
+      "claim": "A circuit breaker opens after repeated downstream failures and blocks further calls until the recovery interval ends.",
+      "expectedSupported": true,
+      "criticalUnsupported": false,
+      "rationale": "Direct statement replay.",
+      "score": {
+        "lexicalClaimCoverage": 1,
+        "supportScore": 1,
+        "riskFlags": []
+      }
+    },
+    {
+      "id": "CAL-PARAPHRASE",
+      "category": "accurate-paraphrase",
+      "evidenceId": "E-CB",
+      "evidence": "When a downstream service repeatedly fails, a circuit breaker opens and prevents further calls until a recovery interval expires.",
+      "claim": "When downstream failures repeat, the circuit breaker opens and blocks further calls until the recovery interval ends.",
+      "expectedSupported": true,
+      "criticalUnsupported": false,
+      "rationale": "Condition and recovery limitation retained.",
+      "score": {
+        "lexicalClaimCoverage": 0.6923,
+        "supportScore": 0.6923,
+        "riskFlags": []
+      }
+    },
+    {
+      "id": "CAL-PARTIAL",
+      "category": "partially-supported",
+      "evidenceId": "E-CB",
+      "evidence": "A circuit breaker blocks calls after repeated failures.",
+      "claim": "A circuit breaker blocks calls after repeated failures and guarantees zero downtime.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "Supported core plus unsupported guarantee.",
+      "score": {
+        "lexicalClaimCoverage": 1,
+        "supportScore": 0,
+        "riskFlags": [
+          "unsupported-absolute"
+        ]
+      }
+    },
+    {
+      "id": "CAL-UNSUPPORTED",
+      "category": "unsupported",
+      "evidenceId": "E-CB",
+      "evidence": "A circuit breaker blocks calls after repeated failures.",
+      "claim": "The pattern automatically encrypts all stored customer data.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "Unrelated conclusion.",
+      "score": {
+        "lexicalClaimCoverage": 0,
+        "supportScore": 0,
+        "riskFlags": []
+      }
+    },
+    {
+      "id": "CAL-OTHER-PASSAGE",
+      "category": "supported-by-another-passage",
+      "evidenceId": "E-CB",
+      "evidence": "A circuit breaker blocks calls after repeated failures.",
+      "claim": "An outbox records events in the same transaction as business state.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "Plausible elsewhere but unsupported by the cited passage.",
+      "score": {
+        "lexicalClaimCoverage": 0,
+        "supportScore": 0,
+        "riskFlags": []
+      }
+    },
+    {
+      "id": "CAL-EXCESSIVE",
+      "category": "valid-id-excessive-conclusion",
+      "evidenceId": "E-CB",
+      "evidence": "A circuit breaker can reduce repeated calls during a downstream failure.",
+      "claim": "A circuit breaker always eliminates every cascading failure without risk or operational cost.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "Evidence ID is valid but conclusion is absolute and excessive.",
+      "score": {
+        "lexicalClaimCoverage": 0.375,
+        "supportScore": 0,
+        "riskFlags": [
+          "unsupported-absolute"
+        ]
+      }
+    },
+    {
+      "id": "CAL-EXAMPLE-GUARANTEE",
+      "category": "example-generalised-to-guarantee",
+      "evidenceId": "E-EX",
+      "evidence": "For example, this sample deploys two modules to one resource group.",
+      "claim": "This architecture always guarantees that every module deployment succeeds.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "A worked example cannot establish a guarantee.",
+      "score": {
+        "lexicalClaimCoverage": 0,
+        "supportScore": 0,
+        "riskFlags": [
+          "unsupported-absolute"
+        ]
+      }
+    },
+    {
+      "id": "CAL-CONDITION-OMITTED",
+      "category": "condition-omitted",
+      "evidenceId": "E-COND",
+      "evidence": "When traffic exceeds the configured threshold, the policy routes requests to a secondary endpoint.",
+      "claim": "The policy routes requests to a secondary endpoint.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "Trigger condition omitted.",
+      "score": {
+        "lexicalClaimCoverage": 1,
+        "supportScore": 0,
+        "riskFlags": [
+          "condition-omission"
+        ]
+      }
+    },
+    {
+      "id": "CAL-LIMITATION-OMITTED",
+      "category": "limitation-omitted",
+      "evidenceId": "E-LIM",
+      "evidence": "Caching can reduce read latency; however, stale data remains a consistency risk.",
+      "claim": "Caching reduces read latency.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "Material consistency limitation omitted.",
+      "score": {
+        "lexicalClaimCoverage": 0.75,
+        "supportScore": 0,
+        "riskFlags": [
+          "limitation-omission"
+        ]
+      }
+    },
+    {
+      "id": "CAL-CONTRADICTION",
+      "category": "contradictory-evidence",
+      "evidenceId": "E-NEG",
+      "evidence": "The component must not persist authentication tokens.",
+      "claim": "The component persists authentication tokens.",
+      "expectedSupported": false,
+      "criticalUnsupported": true,
+      "rationale": "Claim reverses a binding prohibition.",
+      "score": {
+        "lexicalClaimCoverage": 0.75,
+        "supportScore": 0,
+        "riskFlags": [
+          "negation-mismatch"
+        ]
+      }
+    },
+    {
+      "id": "CAL-CONDITION-RETAINED",
+      "category": "condition-retained",
+      "evidenceId": "E-COND",
+      "evidence": "When traffic exceeds the configured threshold, the policy routes requests to a secondary endpoint.",
+      "claim": "When traffic exceeds the configured threshold, the policy routes requests to a secondary endpoint.",
+      "expectedSupported": true,
+      "criticalUnsupported": false,
+      "rationale": "Condition is retained.",
+      "score": {
+        "lexicalClaimCoverage": 1,
+        "supportScore": 1,
+        "riskFlags": []
+      }
+    },
+    {
+      "id": "CAL-LIMITATION-RETAINED",
+      "category": "limitation-retained",
+      "evidenceId": "E-LIM",
+      "evidence": "Caching can reduce read latency; however, stale data remains a consistency risk.",
+      "claim": "Caching can reduce read latency, but stale data remains a consistency risk.",
+      "expectedSupported": true,
+      "criticalUnsupported": false,
+      "rationale": "Benefit and limitation retained.",
+      "score": {
+        "lexicalClaimCoverage": 1,
+        "supportScore": 1,
+        "riskFlags": []
+      }
+    }
+  ],
+  "thresholds": [
+    {
+      "threshold": 0.3,
+      "tp": 4,
+      "fp": 0,
+      "tn": 8,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "falseNegativeRate": 0,
+      "criticalUnsupportedClaimRate": 0
+    },
+    {
+      "threshold": 0.4,
+      "tp": 4,
+      "fp": 0,
+      "tn": 8,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "falseNegativeRate": 0,
+      "criticalUnsupportedClaimRate": 0
+    },
+    {
+      "threshold": 0.5,
+      "tp": 4,
+      "fp": 0,
+      "tn": 8,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "falseNegativeRate": 0,
+      "criticalUnsupportedClaimRate": 0
+    },
+    {
+      "threshold": 0.55,
+      "tp": 4,
+      "fp": 0,
+      "tn": 8,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "falseNegativeRate": 0,
+      "criticalUnsupportedClaimRate": 0
+    },
+    {
+      "threshold": 0.6,
+      "tp": 4,
+      "fp": 0,
+      "tn": 8,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "falseNegativeRate": 0,
+      "criticalUnsupportedClaimRate": 0
+    },
+    {
+      "threshold": 0.7,
+      "tp": 3,
+      "fp": 0,
+      "tn": 8,
+      "fn": 1,
+      "precision": 1,
+      "recall": 0.75,
+      "falsePositiveRate": 0,
+      "falseNegativeRate": 0.25,
+      "criticalUnsupportedClaimRate": 0
+    }
+  ],
+  "recommendedThreshold": 0.6,
+  "fingerprint": "sha256:0e8e5ebe8eee0498cc42cbf961b953228f37e7f0064cc59d968159a443a9c14e",
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "approvedKnowledgeChanged": false
+}

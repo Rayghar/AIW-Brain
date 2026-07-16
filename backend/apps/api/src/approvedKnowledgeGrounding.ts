@@ -128,10 +128,37 @@ function containsUnsupportedNumber(output: string, evidence: string): boolean {
   return numbers.some((number) => !evidence.toLowerCase().includes(number.toLowerCase()));
 }
 
+export interface EvidenceSupportScore {
+  lexicalClaimCoverage: number;
+  supportScore: number;
+  riskFlags: Array<'unsupported-absolute' | 'unsupported-number' | 'condition-omission' | 'limitation-omission' | 'negation-mismatch'>;
+}
+
+export function scoreEvidenceSupport(output: string, evidence: string, precisionMode = false): EvidenceSupportScore {
+  const riskFlags: EvidenceSupportScore['riskFlags'] = [];
+  if (containsUnsupportedAbsolute(output, evidence)) riskFlags.push('unsupported-absolute');
+  if (containsUnsupportedNumber(output, evidence)) riskFlags.push('unsupported-number');
+  if (precisionMode) {
+    const evidenceHasCondition = /\b(?:if|when|only when|provided that|requires?|subject to)\b/i.test(evidence);
+    const outputRetainsCondition = /\b(?:if|when|only when|provided that|requires?|subject to|condition)\b/i.test(output);
+    if (evidenceHasCondition && !outputRetainsCondition) riskFlags.push('condition-omission');
+    const evidenceHasLimitation = /\b(?:however|except|unless|beyond (?:the )?scope|does not|cannot|limitation|trade-?off|risk)\b/i.test(evidence);
+    const outputRetainsLimitation = /\b(?:however|except|unless|scope|does not|cannot|limitation|trade-?off|risk)\b/i.test(output);
+    if (evidenceHasLimitation && !outputRetainsLimitation) riskFlags.push('limitation-omission');
+    const evidenceHasNegation = /\b(?:not|never|cannot|must not|may not|prohibited)\b/i.test(evidence);
+    const outputHasNegation = /\b(?:not|never|cannot|must not|may not|prohibited)\b/i.test(output);
+    if (evidenceHasNegation && !outputHasNegation) riskFlags.push('negation-mismatch');
+  }
+  const lexicalClaimCoverage = Number(overlapScore(output, evidence).toFixed(4));
+  return { lexicalClaimCoverage, supportScore: riskFlags.length ? 0 : lexicalClaimCoverage, riskFlags };
+}
+
 export interface EvidenceEntailmentItem {
   referenceId: string;
   supportScore: number;
   status: 'supported' | 'weak' | 'unsupported' | 'missing-source';
+  lexicalClaimCoverage?: number;
+  riskFlags?: EvidenceSupportScore['riskFlags'];
   sourceStatement?: string;
 }
 
@@ -148,19 +175,21 @@ export function verifyEvidenceEntailment(input: {
   citedReferenceIds: Iterable<string>;
   sources: EvidenceEntailmentSource[];
   threshold?: number;
+  precisionMode?: boolean;
 }): EvidenceEntailmentReceipt {
-  const threshold = input.threshold ?? 0.08;
+  const threshold = input.threshold ?? 0.5;
   const sourceById = new Map(input.sources.map((item) => [item.id, item]));
   const citedReferenceIds = [...new Set(input.citedReferenceIds)];
   const items = citedReferenceIds.map((referenceId): EvidenceEntailmentItem => {
     const source = sourceById.get(referenceId);
     if (!source) return { referenceId, supportScore: 0, status: 'missing-source' };
     const evidenceText = `${source.title} ${source.statement}`;
-    const contradictedByUnsupportedSpecificity = containsUnsupportedAbsolute(input.outputText, evidenceText) || containsUnsupportedNumber(input.outputText, evidenceText);
-    const supportScore = contradictedByUnsupportedSpecificity ? 0 : Number(overlapScore(input.outputText, evidenceText).toFixed(4));
+    const score = scoreEvidenceSupport(input.outputText, evidenceText, input.precisionMode ?? false);
+    const supportScore = score.supportScore;
     const status = supportScore >= threshold ? 'supported' : supportScore >= threshold / 2 ? 'weak' : 'unsupported';
-    return { referenceId, supportScore, status, sourceStatement: source.statement };
+    return { referenceId, supportScore, lexicalClaimCoverage: score.lexicalClaimCoverage, riskFlags: score.riskFlags, status, sourceStatement: source.statement };
   });
-  const unsupportedReferenceIds = items.filter((item) => item.status === 'unsupported' || item.status === 'missing-source').map((item) => item.referenceId);
+  const unsupportedReferenceIds = items.filter((item) => item.status === 'unsupported' || item.status === 'missing-source'
+    || ((input.precisionMode ?? false) && item.status === 'weak')).map((item) => item.referenceId);
   return { verified: unsupportedReferenceIds.length === 0, threshold, citedReferenceIds, items, unsupportedReferenceIds };
 }

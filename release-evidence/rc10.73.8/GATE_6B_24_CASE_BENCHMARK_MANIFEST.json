@@ -1,0 +1,858 @@
+{
+  "schemaVersion": "aiw-gate-6b-24-case-benchmark-manifest-v1",
+  "generatedAt": "2026-07-16T16:39:05.699Z",
+  "productionAccepted": false,
+  "caseCount": 24,
+  "semanticUnitCount": 24,
+  "modelCalls": 0,
+  "independentReviewStatus": "not-started",
+  "blindedPackContainsModelAnswers": false,
+  "coverage": [
+    "agentic-architecture-genome",
+    "agentic-governance-cross-field",
+    "causal-pattern-dna",
+    "conformance-implementation",
+    "contradiction-and-scope-tension",
+    "cross-file-pattern-dna",
+    "cross-file-reasoning",
+    "deliberate-non-claim",
+    "diagram-non-claim-control",
+    "diagram-semantics",
+    "duplicate-reuse",
+    "implementation-observation",
+    "insufficient-evidence-and-abstention",
+    "interfaces-and-data-obligations",
+    "machine-readable-source-example",
+    "modernisation",
+    "modernisation-observation",
+    "observability",
+    "pattern-dna-quality-model",
+    "resilience-and-performance",
+    "resilience-source-example",
+    "security-reference-architecture",
+    "source-example",
+    "source-example-implementation-structure"
+  ],
+  "architectureGroups": [
+    "ACFG-0950a50270cc1818742c5a93",
+    "ACFG-0c156fab5d4b30270abb18d8",
+    "ACFG-23eb75225ae1ca6696aec6a3",
+    "ACFG-320ec7fed4f6bcd4d1c63b7f",
+    "ACFG-42527522533d560a45d0a46a",
+    "ACFG-579a3b1739d9a8d917fe3dcb",
+    "ACFG-58fd77bf049118571a073ea0",
+    "ACFG-62ff83fd2947cbe12c243453",
+    "ACFG-86a150763f90ab45c113f2a4",
+    "ACFG-88704d96d75b40ac55fba4fd",
+    "ACFG-a1249e53361ad3146d537a2f",
+    "ACFG-b6a569e943298305528c6772",
+    "ACFG-bba1a9bad7f0d46d082d3624",
+    "ACFG-be877f533f0be94989c46628",
+    "ACFG-c57bafb060de8b4690ae8781"
+  ],
+  "fingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "freshQualityReview": {
+    "priorStrategyPlan": "GATE_6B_STRATEGY_COMPARISON_PLAN.json",
+    "priorCaseCount": 24,
+    "retainedPriorCaseCount": 5,
+    "replacedPriorCaseCount": 19,
+    "removedPriorCases": [
+      {
+        "semanticUnitId": "SEMU-7a53724388b1b0e4a6962769",
+        "retained": false,
+        "reason": "Replaced because the prior contradiction candidate supplied only one side within the case."
+      },
+      {
+        "semanticUnitId": "SEMU-b1f6669747c1d3ab214eb0c6",
+        "retained": false,
+        "reason": "Replaced because the prior contradiction candidate supplied only one side within the case."
+      },
+      {
+        "semanticUnitId": "SEMU-c09aaafcf236a51adbfd4656",
+        "retained": false,
+        "reason": "Replaced because the prior contradiction candidate supplied only one side within the case."
+      },
+      {
+        "semanticUnitId": "SEMU-5c4f6e0bd116a6ccc32fb7df",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-dc2948a0a72eb480d1cdb3ae",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-e557d360bdc9e2bf3620eba6",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-f5b224f867c12ec02d566268",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-029df1ecb23b467714150e73",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-0386df557c27cd3c03549573",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-0468ad001049217181a6743d",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-052abca7e2557db30bfb26f1",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-0618eb48301838e75db160e0",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-06e3ee48fe0091b465f2a90d",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-0a03087ebfb5466bb9680e21",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-0ae4deabe4c482e07626366e",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-0e6a5c4e9b4cce6a922c55bd",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-0f939027c88f9782917908c3",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-1216e99550488c442bdd8dec",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      },
+      {
+        "semanticUnitId": "SEMU-12d44f17dae24109d5ddd6e2",
+        "retained": false,
+        "reason": "Replaced during fresh review to improve propositional context or mandatory coverage."
+      }
+    ],
+    "headingOnlyCasesAllowed": false,
+    "oneToThreeTokenFragmentsAllowed": false,
+    "singleSidedContradictionCasesAllowed": false
+  },
+  "cases": [
+    {
+      "caseId": "G6B1-01",
+      "semanticUnitId": "SEMU-e9f9d891f5f3ea90e38f70a9",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+      "path": "docs/wiki/Solution creation.md",
+      "structuralRange": "lines 227-266",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "source-example",
+      "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+      "reviewQuestions": [
+        "What does the worked example demonstrate?",
+        "Which conclusions would over-generalise the example?"
+      ],
+      "architectureGroupId": "ACFG-bba1a9bad7f0d46d082d3624",
+      "occurrenceCount": 2,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+      "boundedEvidenceCharacters": 1669,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-02",
+      "semanticUnitId": "SEMU-f2931bbe5d7f1c3fd9d4b1bd",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+      "path": "docs/wiki/The library - Module design.md",
+      "structuralRange": "lines 590-629",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "source-example-implementation-structure",
+      "excerptHash": "sha256:a0f65cf4feb71a76aedead58a51cb8658be1b93a51f26ade1f430b4ba286cdfa",
+      "reviewQuestions": [
+        "Which module-test structure is demonstrated?",
+        "Which conclusions require evidence beyond this example?"
+      ],
+      "architectureGroupId": "ACFG-bba1a9bad7f0d46d082d3624",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:a0f65cf4feb71a76aedead58a51cb8658be1b93a51f26ade1f430b4ba286cdfa",
+      "boundedEvidenceCharacters": 4972,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-03",
+      "semanticUnitId": "SEMU-8cb01d6b548dbace272417aa",
+      "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "immutableCommit": "e59928aee75a566a3f96d8cad78a9a92ea96f829",
+      "path": "examples/kraken-websocket-request-reply-multiple-channels-asyncapi.yml",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "category": "interfaces-and-data-obligations",
+      "excerptHash": "sha256:6e59a1e080e56097a6124a885b69d638e6b8da4186c64e0b71e78e1e48373e77",
+      "reviewQuestions": [
+        "Which interface and security obligations are directly stated?",
+        "Which statements are recommendations rather than requirements?"
+      ],
+      "architectureGroupId": "ACFG-a1249e53361ad3146d537a2f",
+      "occurrenceCount": 2,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:6e59a1e080e56097a6124a885b69d638e6b8da4186c64e0b71e78e1e48373e77",
+      "boundedEvidenceCharacters": 2288,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-04",
+      "semanticUnitId": "SEMU-02a62be700366b90d661a71b",
+      "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "immutableCommit": "e59928aee75a566a3f96d8cad78a9a92ea96f829",
+      "path": "examples/streetlights-operation-security-asyncapi.yml",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "category": "machine-readable-source-example",
+      "excerptHash": "sha256:2b8be11e6155becdeceb3e24ce3e1560e8ff2b3e53e064cb59ce23808ac6e1f9",
+      "reviewQuestions": [
+        "Which interface and security facts are directly observable?",
+        "Which claims require abstention?"
+      ],
+      "architectureGroupId": "ACFG-a1249e53361ad3146d537a2f",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:2b8be11e6155becdeceb3e24ce3e1560e8ff2b3e53e064cb59ce23808ac6e1f9",
+      "boundedEvidenceCharacters": 1569,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-05",
+      "semanticUnitId": "SEMU-da2a0e336eef32c7df3b60c5",
+      "evidenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "immutableCommit": "a64696e70e24bd4d0ad26705c8338c51a19f5163",
+      "path": "8.practical_considerations.md",
+      "structuralRange": "lines 22-35",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "category": "contradiction-and-scope-tension",
+      "excerptHash": "sha256:a56539f2949f91f3b7e4a93b5964bf906c019903527cf932d8e7e2043d86b7f3",
+      "reviewQuestions": [
+        "Does the passage contain a true contradiction or a scoped distinction?",
+        "Identify both sides before judging."
+      ],
+      "architectureGroupId": null,
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:a56539f2949f91f3b7e4a93b5964bf906c019903527cf932d8e7e2043d86b7f3",
+      "boundedEvidenceCharacters": 979,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": true
+      }
+    },
+    {
+      "caseId": "G6B1-06",
+      "semanticUnitId": "SEMU-5d681719b2ac4ad1465e0244",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/reference-architectures/n-tier/linux-vm-content.md",
+      "structuralRange": "lines 84-112",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "security-reference-architecture",
+      "excerptHash": "sha256:3ba737d6bdb2468fb1dab3def62ec873e287d7d8ee5825d6cff05d1f89f412c4",
+      "reviewQuestions": [
+        "Identify security obligations and recommendations.",
+        "Which Architecture Genome fields are supported?"
+      ],
+      "architectureGroupId": "ACFG-62ff83fd2947cbe12c243453",
+      "occurrenceCount": 2,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:3ba737d6bdb2468fb1dab3def62ec873e287d7d8ee5825d6cff05d1f89f412c4",
+      "boundedEvidenceCharacters": 3432,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-07",
+      "semanticUnitId": "SEMU-5145eec6ccf40e5e999b4bb2",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/reference-architectures/n-tier/windows-vm-content.md",
+      "structuralRange": "lines 193-211",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "resilience-and-performance",
+      "excerptHash": "sha256:816f837ed39ff54faacc23a3cfef9ba4ae53e71869bd4b6888485e61de1368b4",
+      "reviewQuestions": [
+        "Which quality drivers and trade-offs are explicit?",
+        "What conditions are required?"
+      ],
+      "architectureGroupId": "ACFG-62ff83fd2947cbe12c243453",
+      "occurrenceCount": 2,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:816f837ed39ff54faacc23a3cfef9ba4ae53e71869bd4b6888485e61de1368b4",
+      "boundedEvidenceCharacters": 1841,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-08",
+      "semanticUnitId": "SEMU-0fb29b6a62cb6cc9df28b5d4",
+      "evidenceId": "BEV-8f946e0488f13c1df9469a2f",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/guide/saas/case-studies/dynamics-365-journey-saas.md",
+      "structuralRange": "lines 161-191",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "modernisation-observation",
+      "excerptHash": "sha256:9c38884a08f4342e51e0bc40d8abd95f5f8cc5403c6b8d01da0bfe1dff884e42",
+      "reviewQuestions": [
+        "Which operational lessons are observations?",
+        "Which recommendations are source-stated?"
+      ],
+      "architectureGroupId": "ACFG-86a150763f90ab45c113f2a4",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:9c38884a08f4342e51e0bc40d8abd95f5f8cc5403c6b8d01da0bfe1dff884e42",
+      "boundedEvidenceCharacters": 6882,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-09",
+      "semanticUnitId": "SEMU-e1d61a650356828956575045",
+      "evidenceId": "BEV-d04770a7fd02a158b96b119d",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/guide/architecture-styles/event-driven.md",
+      "structuralRange": "lines 17-56",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "causal-pattern-dna",
+      "excerptHash": "sha256:06ff651397e863b6d1ce44a06093c1625187e330af2976d800c16c81e8763ac1",
+      "reviewQuestions": [
+        "Extract cause, mechanism, consequence, and trade-off.",
+        "Distinguish topology alternatives."
+      ],
+      "architectureGroupId": "ACFG-be877f533f0be94989c46628",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:06ff651397e863b6d1ce44a06093c1625187e330af2976d800c16c81e8763ac1",
+      "boundedEvidenceCharacters": 6976,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-10",
+      "semanticUnitId": "SEMU-7fefaadf12f0efdec201ed2d",
+      "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "immutableCommit": "bb8ed13f69ec42842e598cbe57b95ba3476f5384",
+      "path": "Library/reference_architecture/agentic_ai/agent_card/agent_card_schema.json",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "agentic-architecture-genome",
+      "excerptHash": "sha256:7a962d5ac2dfb81a4ee21e7a1d842124bcf85ab061d1796e50e64cccdd2ecbf9",
+      "reviewQuestions": [
+        "Which agent-card fields are directly represented?",
+        "Which governance controls belong in the Architecture Genome?"
+      ],
+      "architectureGroupId": "ACFG-88704d96d75b40ac55fba4fd",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:7a962d5ac2dfb81a4ee21e7a1d842124bcf85ab061d1796e50e64cccdd2ecbf9",
+      "boundedEvidenceCharacters": 1285,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-11",
+      "semanticUnitId": "SEMU-047d5038e3482af8ee64b7fd",
+      "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+      "connectorId": "GH-FINOS-AI-RA",
+      "repository": "finos/ai-reference-architecture-library",
+      "immutableCommit": "bb8ed13f69ec42842e598cbe57b95ba3476f5384",
+      "path": "Library/reference_architecture/agentic_ai/agent_card/README.md",
+      "structuralRange": "lines 193-232",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "agentic-governance-cross-field",
+      "excerptHash": "sha256:b19d0d24872944336ecaf78a0926b0ddbdecd811348bc786f9ff0f1dc6d02fa6",
+      "reviewQuestions": [
+        "Which fields are obligations versus illustrations?",
+        "Identify trust-boundary implications."
+      ],
+      "architectureGroupId": "ACFG-88704d96d75b40ac55fba4fd",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:b19d0d24872944336ecaf78a0926b0ddbdecd811348bc786f9ff0f1dc6d02fa6",
+      "boundedEvidenceCharacters": 8000,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-12",
+      "semanticUnitId": "SEMU-0484cddf43204952d6882ebe",
+      "evidenceId": "BEV-d075515016509baf01b5c585",
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "immutableCommit": "8f9d5cb7cc884d35644b9a2995d3dff9d25bdf12",
+      "path": "literatureSearch/second-search/springerlink/SearchResults2.csv",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "pattern-dna-quality-model",
+      "excerptHash": "sha256:2ebf8f6b656758da739564c99c97a13fc2b86b6eafa388735654f7b826261232",
+      "reviewQuestions": [
+        "Which quality relationships are machine-readable observations?",
+        "Which causal links remain hypotheses?"
+      ],
+      "architectureGroupId": "ACFG-320ec7fed4f6bcd4d1c63b7f",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:2ebf8f6b656758da739564c99c97a13fc2b86b6eafa388735654f7b826261232",
+      "boundedEvidenceCharacters": 8000,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-13",
+      "semanticUnitId": "SEMU-678ef38412e39a3c1245cb8c",
+      "evidenceId": "BEV-577cee3a91825ff936c52564",
+      "connectorId": "GH-CNA-QUALITY-MODEL",
+      "repository": "r0light/cna-quality-model",
+      "immutableCommit": "8f9d5cb7cc884d35644b9a2995d3dff9d25bdf12",
+      "path": "literatureSearch/second-search/springerlink/all.csv",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "cross-file-pattern-dna",
+      "excerptHash": "sha256:51e4540398abc991da1dbda454f983325827ec751e4a399c3123240ffbb8f439",
+      "reviewQuestions": [
+        "How does this unit relate to its architecture group?",
+        "Which fields require cross-file evidence?"
+      ],
+      "architectureGroupId": "ACFG-320ec7fed4f6bcd4d1c63b7f",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:51e4540398abc991da1dbda454f983325827ec751e4a399c3123240ffbb8f439",
+      "boundedEvidenceCharacters": 8000,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-14",
+      "semanticUnitId": "SEMU-d9dd8008567d9ca5a3b73da4",
+      "evidenceId": "BEV-0a57ca89afc9e92ec29c8871",
+      "connectorId": "GH-SERVICE-MESH-PATTERNS",
+      "repository": "service-mesh-patterns/service-mesh-patterns",
+      "immutableCommit": "b7f2477177c2a04d931195cf29a33dcd094efc4e",
+      "path": "samples/servicemeshcon-na-2021/bookinfowithcircuitbreaker.yaml",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "resilience-source-example",
+      "excerptHash": "sha256:07ab5b00019b8aa5f1a3a1181c9916b5d2c6964e2bdfc2d5dcb54c4d32334e74",
+      "reviewQuestions": [
+        "Which resilience behaviour is demonstrated?",
+        "What is not guaranteed by the example?"
+      ],
+      "architectureGroupId": "ACFG-c57bafb060de8b4690ae8781",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:07ab5b00019b8aa5f1a3a1181c9916b5d2c6964e2bdfc2d5dcb54c4d32334e74",
+      "boundedEvidenceCharacters": 975,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-15",
+      "semanticUnitId": "SEMU-52c704f2c28e3897f26c840a",
+      "evidenceId": "BEV-b4d881c0aa0d205179a5c445",
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "immutableCommit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "path": "src/docs/antora/modules/ROOT/pages/fundamentals.adoc",
+      "structuralRange": "lines 566-604",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "category": "implementation-observation",
+      "excerptHash": "sha256:5015625f0b026e5db518fab13eff713c3bf7839c640f4313ee144ed2b843582f",
+      "reviewQuestions": [
+        "Which module structure is observable?",
+        "Can it support a recommendation without other evidence?"
+      ],
+      "architectureGroupId": "ACFG-579a3b1739d9a8d917fe3dcb",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:5015625f0b026e5db518fab13eff713c3bf7839c640f4313ee144ed2b843582f",
+      "boundedEvidenceCharacters": 1734,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-16",
+      "semanticUnitId": "SEMU-5e095ebe0cf60567fe9c07a9",
+      "evidenceId": "BEV-b3e3c943daf7709f0853caae",
+      "connectorId": "GH-OTEL-DEMO",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "immutableCommit": "ac6715420c9309835f9f0a720dc65ea4bd69f7d4",
+      "path": "src/flagd-ui/lib/flagd_ui_web/components/core_components.ex",
+      "structuralRange": "lines 41-80",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "observability",
+      "excerptHash": "sha256:45cbf0c8bb4c636b549b1f74a9ac5f2c56f2e4097c7a81f29016c3c086b33977",
+      "reviewQuestions": [
+        "Which telemetry relationships are explicit?",
+        "What official-specification gaps remain?"
+      ],
+      "architectureGroupId": "ACFG-0950a50270cc1818742c5a93",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:45cbf0c8bb4c636b549b1f74a9ac5f2c56f2e4097c7a81f29016c3c086b33977",
+      "boundedEvidenceCharacters": 1688,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-17",
+      "semanticUnitId": "SEMU-887f5b7f716711dbb37786cb",
+      "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "immutableCommit": "1edfb8a878baaa821e54cf423a070c792e8677c6",
+      "path": "themes/puml-theme-C4_sandstone.puml",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "diagram-semantics",
+      "excerptHash": "sha256:cca12fe6fa4c2726593b377b194fe97d1f91a0776f92f79dc46ae28b51191280",
+      "reviewQuestions": [
+        "Which model elements and relations are explicit?",
+        "Which semantics require a specialist parser?"
+      ],
+      "architectureGroupId": "ACFG-b6a569e943298305528c6772",
+      "occurrenceCount": 2,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:cca12fe6fa4c2726593b377b194fe97d1f91a0776f92f79dc46ae28b51191280",
+      "boundedEvidenceCharacters": 1107,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-18",
+      "semanticUnitId": "SEMU-807374cfa7e810b3e7d7118a",
+      "evidenceId": "BEV-235d9f247ef339a20866b297",
+      "connectorId": "GH-C4-PLANTUML",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "immutableCommit": "1edfb8a878baaa821e54cf423a070c792e8677c6",
+      "path": "themes/puml-theme-C4Language_danish.puml",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "diagram-non-claim-control",
+      "excerptHash": "sha256:63972acee76b24021a3d23df8fc512947e508ef36f912916cd684b370ec2d3f3",
+      "reviewQuestions": [
+        "Does this paired model content carry an architectural proposition?",
+        "Which provenance must be retained if treated as a non-claim?"
+      ],
+      "architectureGroupId": "ACFG-b6a569e943298305528c6772",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:63972acee76b24021a3d23df8fc512947e508ef36f912916cd684b370ec2d3f3",
+      "boundedEvidenceCharacters": 1440,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-19",
+      "semanticUnitId": "SEMU-5ee5141bf54426a9f4d00b1f",
+      "evidenceId": "BEV-6bfde0a7dbe3beb487385bfe",
+      "connectorId": "GH-LIKEC4",
+      "repository": "likec4/likec4",
+      "immutableCommit": "5152f62edf2b1af2f5f3dcfc515b88678a48af08",
+      "path": "packages/likec4/src/drawio-test-utils.ts",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "cross-file-reasoning",
+      "excerptHash": "sha256:adf63bda86fc64b37bcade57b0193595a044f37e155807f4489aaaf9fe2afd2c",
+      "reviewQuestions": [
+        "What is supported by this unit alone?",
+        "What must be deferred to its architecture group?"
+      ],
+      "architectureGroupId": "ACFG-58fd77bf049118571a073ea0",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:adf63bda86fc64b37bcade57b0193595a044f37e155807f4489aaaf9fe2afd2c",
+      "boundedEvidenceCharacters": 1863,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-20",
+      "semanticUnitId": "SEMU-2f7d1e8e3e138187076862c7",
+      "evidenceId": "BEV-525e8c7d02b86716e6ddfd0b",
+      "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+      "repository": "aws-samples/serverless-patterns",
+      "immutableCommit": "cb0fc7315a5aef82f68f9fe33b02d529abb0fd2a",
+      "path": "systems-manager-automation-to-lambda/README.md",
+      "structuralRange": "lines 21-51",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "category": "duplicate-reuse",
+      "excerptHash": "sha256:edb90e2ce68c7e558cf33510bc0deeba38df90af4f805e92e9532be249630364",
+      "reviewQuestions": [
+        "Is this content semantically reusable across occurrences?",
+        "What provenance must remain individual?"
+      ],
+      "architectureGroupId": "ACFG-23eb75225ae1ca6696aec6a3",
+      "occurrenceCount": 262,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:edb90e2ce68c7e558cf33510bc0deeba38df90af4f805e92e9532be249630364",
+      "boundedEvidenceCharacters": 1101,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-21",
+      "semanticUnitId": "SEMU-52464381ba053761a5c71a1b",
+      "evidenceId": "BEV-fcc349fa2dedc2c092f08f84",
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "repository": "ea-toolkit/architecture-catalog",
+      "immutableCommit": "1efa7ea08a8139dc07bcef1834d6964b5fcfd1dc",
+      "path": "README.md",
+      "structuralRange": "lines 87-95",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "deliberate-non-claim",
+      "excerptHash": "sha256:d9726e76824270faa3e2a6fbe67494033bae08b4923cc80e75ad21a4351ff0ff",
+      "reviewQuestions": [
+        "Does this passage contain any architectural proposition?",
+        "Should the system reject or abstain?"
+      ],
+      "architectureGroupId": null,
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:d9726e76824270faa3e2a6fbe67494033bae08b4923cc80e75ad21a4351ff0ff",
+      "boundedEvidenceCharacters": 384,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-22",
+      "semanticUnitId": "SEMU-20c7f2c259762971c74979ed",
+      "evidenceId": "BEV-51f4caabb87d02521ee53e84",
+      "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+      "repository": "ardalis/CleanArchitecture",
+      "immutableCommit": "a064d0b369b719ba03da71da1560d208d7e02e03",
+      "path": "src/Clean.Architecture.Infrastructure/Data/Migrations/20260424000000_UseDbGeneratedIds.cs",
+      "structuralRange": "lines 1-40",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "category": "modernisation",
+      "excerptHash": "sha256:4d8947a7cd104abcedcc9929bc301fb1474c4c0c04f7711066b756942e843e0b",
+      "reviewQuestions": [
+        "Which migration structure is observed?",
+        "Which target-state recommendation needs more evidence?"
+      ],
+      "architectureGroupId": "ACFG-0c156fab5d4b30270abb18d8",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:4d8947a7cd104abcedcc9929bc301fb1474c4c0c04f7711066b756942e843e0b",
+      "boundedEvidenceCharacters": 2106,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-23",
+      "semanticUnitId": "SEMU-2c791505a291982eea0ec748",
+      "evidenceId": "BEV-7cb026af13f9061c688c165f",
+      "connectorId": "GH-ARCHUNIT",
+      "repository": "TNG/ArchUnit",
+      "immutableCommit": "31ac54b1ebdc67d6268ca8a03b59e62308cf15fc",
+      "path": "docs/userguide/008_The_Library_API.adoc",
+      "structuralRange": "lines 229-268",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "category": "conformance-implementation",
+      "excerptHash": "sha256:9f9aecdb32b84bf9747eef10f09276b14ddaf4393d20dbef196589ba649f2c9c",
+      "reviewQuestions": [
+        "Which modularity rules are implemented?",
+        "Which rule can be treated as normative, if any?"
+      ],
+      "architectureGroupId": "ACFG-42527522533d560a45d0a46a",
+      "occurrenceCount": 1,
+      "evidenceAvailable": true,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:9f9aecdb32b84bf9747eef10f09276b14ddaf4393d20dbef196589ba649f2c9c",
+      "boundedEvidenceCharacters": 1748,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    },
+    {
+      "caseId": "G6B1-24",
+      "semanticUnitId": "CONTROL-GH-AWESOME-ANTIPATTERN-claim-bearing-materially-different",
+      "evidenceId": null,
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "immutableCommit": null,
+      "path": null,
+      "structuralRange": null,
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "category": "insufficient-evidence-and-abstention",
+      "excerptHash": "sha256:0114b60c9746bef556722c71e0342a5bebdc0727fe7fa38681145b80a3a83302",
+      "reviewQuestions": [
+        "No second governed passage is available. Must the system abstain?",
+        "What evidence is missing?"
+      ],
+      "architectureGroupId": null,
+      "occurrenceCount": 0,
+      "evidenceAvailable": false,
+      "modelGeneratedAnswerIncluded": false,
+      "independentReviewStatus": "not-reviewed",
+      "boundedEvidenceHash": "sha256:0114b60c9746bef556722c71e0342a5bebdc0727fe7fa38681145b80a3a83302",
+      "boundedEvidenceCharacters": 61,
+      "qualityReview": {
+        "fragmentExcluded": true,
+        "propositionalContentOrExplicitControl": true,
+        "twoSidedContradictionEvidence": null
+      }
+    }
+  ]
+}

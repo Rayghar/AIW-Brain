@@ -14,6 +14,7 @@ export * from './knowledgeMesh.js';
 export * from './patternIntelligence.js';
 
 export * from './llmProviders.js';
+export * from './epistemicStatus.js';
 
 export * from './productionKnowledgeOps.js';
 

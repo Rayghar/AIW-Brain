@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-strategy-micro-pilot-plan-v1",
+  "generatedAt": "2026-07-16T16:39:05.699Z",
+  "productionAccepted": false,
+  "executionStatus": "prepared-not-approved-not-started",
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "provider": "openai",
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "fallback": "disabled",
+  "limits": {
+    "semanticUnits": 24,
+    "totalCalls": 40,
+    "retriesPerCall": 1,
+    "retryableOnly": [
+      "provider-timeout",
+      "http-429",
+      "http-5xx"
+    ],
+    "totalTokens": 120000,
+    "concurrency": 2
+  },
+  "strategies": [
+    {
+      "id": "one-semantic-unit-per-call",
+      "plannedCalls": 24,
+      "maximumUnitsPerCall": 1
+    },
+    {
+      "id": "same-source-bounded-micro-batches",
+      "plannedCalls": 10,
+      "maximumUnitsPerCall": 3,
+      "crossSourceMixingAllowed": false
+    },
+    {
+      "id": "bounded-architecture-group",
+      "plannedCalls": 6,
+      "maximumUnitsPerCall": 4,
+      "architectureGroupRequired": true
+    }
+  ],
+  "measuredMetrics": [
+    "schema-validity",
+    "exact-evidence-lineage",
+    "unsupported-claim-rate",
+    "epistemic-status-accuracy",
+    "condition-and-limitation-completeness",
+    "non-claim-rejection",
+    "contradiction-precision",
+    "pattern-dna-completeness",
+    "architecture-genome-field-accuracy",
+    "cross-unit-contamination",
+    "tokens-per-valid-asset",
+    "calls-per-valid-asset",
+    "elapsed-duration",
+    "review-effort"
+  ],
+  "selectionRule": "Quality gates and evidence precision outrank cost; the cheapest strategy cannot win if it reduces correctness.",
+  "candidateOnlyPersistence": true,
+  "automaticPromotionAllowed": false,
+  "designGraphMutationAllowed": false,
+  "tokenCeilingApproved": false,
+  "costApprovalStatus": "not-approved",
+  "pricingEstimateStatus": "not-calculated-no-pricing-query",
+  "capacityAssessment": {
+    "schemaVersion": "aiw-gate-6b-1-capacity-assessment-v1",
+    "generatedAt": "2026-07-16T16:39:05.699Z",
+    "productionAccepted": false,
+    "measuredFreeBytes": 15746134016,
+    "preferredMinimumBeforeExecutionBytes": 16106127360,
+    "controlledStopFloorBytes": 8589934592,
+    "projectedTemporaryBytes": 268435456,
+    "projectedPermanentBytes": 33554432,
+    "projectedFreeBytesAtPeak": 15444144128,
+    "capacityReady": false,
+    "requiresFreshMeasurementImmediatelyBeforeExecution": true,
+    "automaticEvidenceDeletionAllowed": false
+  },
+  "runnerImplementationStatus": "proposed-command-not-executed",
+  "proposedCommand": "node --env-file-if-exists=.env --import=tsx scripts/rc10-73-8/run-gate-6b-strategy-micro-pilot.mts --manifest ../release-evidence/rc10.73.8/GATE_6B_24_CASE_BENCHMARK_MANIFEST.json --model gpt-4.1-mini-2025-04-14 --max-units 24 --max-calls 40 --max-tokens 120000 --max-retries 1 --concurrency 2 --approved-gate-6b-1"
+}

@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "aiw-gate-6b-epistemic-status-mapping-v1",
+  "generatedAt": "2026-07-16T16:39:05.699Z",
+  "productionAccepted": false,
+  "canonicalSchemaReference": "release-evidence/rc10.73.8/EPISTEMIC_STATUS_SCHEMA.json",
+  "canonicalStatuses": [
+    "normative-requirement",
+    "source-stated-recommendation",
+    "measured-result",
+    "source-example",
+    "implementation-observation",
+    "expert-interpretation",
+    "sol-inference",
+    "hypothesis",
+    "illustration",
+    "unknown"
+  ],
+  "historicalMappings": [
+    {
+      "input": "source-asserted",
+      "disposition": "requires-context",
+      "reviewRequired": true,
+      "rationale": "Generic source assertion is ambiguous and cannot be mapped without classification context."
+    },
+    {
+      "input": "source-asserted",
+      "status": "normative-requirement",
+      "disposition": "mapped",
+      "reviewRequired": true,
+      "rationale": "The source uses binding language; authority and scope still require review."
+    },
+    {
+      "input": "source-asserted",
+      "status": "source-stated-recommendation",
+      "disposition": "mapped",
+      "reviewRequired": true,
+      "rationale": "The source explicitly advises an action."
+    },
+    {
+      "input": "source-asserted",
+      "status": "source-example",
+      "disposition": "mapped",
+      "reviewRequired": true,
+      "rationale": "The statement is supported only as a worked or documented example."
+    },
+    {
+      "input": "source-asserted",
+      "status": "implementation-observation",
+      "disposition": "mapped",
+      "reviewRequired": true,
+      "rationale": "The statement describes observed implementation structure or behaviour."
+    },
+    {
+      "input": "model-inferred",
+      "status": "sol-inference",
+      "disposition": "mapped",
+      "reviewRequired": true,
+      "rationale": "A model inference is not a source statement and requires review."
+    },
+    {
+      "input": "uncertain",
+      "status": "unknown",
+      "disposition": "mapped",
+      "reviewRequired": true,
+      "rationale": "Uncertainty without a more precise epistemic basis maps to unknown."
+    },
+    {
+      "input": "unrecognised-status",
+      "disposition": "rejected",
+      "reviewRequired": true,
+      "rationale": "Unknown non-canonical epistemic status."
+    }
+  ],
+  "azureSmokeMigration": {
+    "historicalReceipt": "GATE_6B_REPLACEMENT_LIVE_BOUNDED_SMOKE_RESULT.json",
+    "historicalReceiptSha256": "sha256:bcd12f3461edbf129d4240b836397bb425da6fe4dad48804c2e1b1276c2716b9",
+    "historicalReceiptMutated": false,
+    "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+    "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+    "migrationDisposition": "candidate-review-proposal-not-applied-to-approved-knowledge",
+    "corrections": [
+      {
+        "claimIndex": 0,
+        "historicalStatus": "source-asserted",
+        "canonicalStatus": "source-example",
+        "statementOrigin": "source",
+        "epistemicBasis": "documented-example",
+        "rationale": "The passage demonstrates orchestration in a worked Bicep example; it does not establish a universal capability guarantee.",
+        "candidateOnly": true,
+        "reviewRequired": true
+      },
+      {
+        "claimIndex": 1,
+        "historicalStatus": "source-asserted",
+        "canonicalStatus": "source-example",
+        "statementOrigin": "source",
+        "epistemicBasis": "documented-example",
+        "rationale": "The statement describes configuration shown in the documented example and remains example-scoped.",
+        "candidateOnly": true,
+        "reviewRequired": true
+      },
+      {
+        "claimIndex": 2,
+        "historicalStatus": "source-asserted",
+        "canonicalStatus": "source-example",
+        "statementOrigin": "source",
+        "epistemicBasis": "documented-example",
+        "rationale": "The statement describes configuration shown in the documented example and remains example-scoped.",
+        "candidateOnly": true,
+        "reviewRequired": true
+      }
+    ]
+  },
+  "approvedKnowledgeGraphChanged": false,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

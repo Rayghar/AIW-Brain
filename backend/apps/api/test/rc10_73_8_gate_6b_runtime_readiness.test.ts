@@ -1,8 +1,9 @@
 import { createHash } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { LlmRuntimePolicy } from '@aiw/domain';
+import { canonicalEpistemicStatuses, mapHistoricalEpistemicStatus, type LlmRuntimePolicy } from '@aiw/domain';
 import { LlmGateway } from '../src/llmGateway.js';
-import { InMemoryGate6bCandidateStore, transformGate6bEvidenceUnit, type Gate6bEvidenceUnit, type Gate6bTransformationOutput } from '../src/gate6bSemanticTransformation.js';
+import { gate6bTransformationSchema, InMemoryGate6bCandidateStore, transformGate6bEvidenceUnit, validateGate6bEpistemicClaim, type Gate6bEvidenceUnit, type Gate6bTransformationOutput } from '../src/gate6bSemanticTransformation.js';
+import { validateJsonSchema } from '../src/jsonSchemaValidation.js';
 
 const originalEnvironment = { ...process.env };
 
@@ -40,7 +41,7 @@ function validOutput(): Gate6bTransformationOutput {
   return {
     schemaVersion: '1.0', authority: 'candidate', disposition: 'claim-candidate',
     summary: unit.excerpt,
-    claims: [{ statement: unit.excerpt, evidenceRefs: [unit.evidenceId], epistemicStatus: 'source-asserted', conditions: [], limitations: ['Independent review is required.'], confidence: 0.8, reviewRequired: true }],
+    claims: [{ statement: unit.excerpt, evidenceRefs: [unit.evidenceId], epistemicStatus: 'source-example', statementOrigin: 'source', epistemicBasis: 'documented-example', conditions: [], limitations: ['Independent review is required.'], confidence: 0.8, reviewRequired: true }],
     evidenceRefs: [unit.evidenceId], abstentionReason: '', reviewRequired: true,
     productionAccepted: false, automaticPromotionAllowed: false, designGraphMutationAllowed: false,
   };
@@ -55,6 +56,36 @@ function response(value: unknown, status = 200, model = 'test-supported-model'):
 }
 
 describe('rc.10.73.8 Gate 6B governed runtime readiness', () => {
+  it('accepts only canonical Gate 6A epistemic statuses', () => {
+    expect(canonicalEpistemicStatuses).toHaveLength(10);
+    const output: any = validOutput();
+    expect(validateJsonSchema(output, gate6bTransformationSchema(unit.evidenceId)).valid).toBe(true);
+    output.claims[0].epistemicStatus = 'source-asserted';
+    expect(validateJsonSchema(output, gate6bTransformationSchema(unit.evidenceId)).valid).toBe(false);
+  });
+
+  it('prevents source examples, Sol inferences and hypotheses from being represented as stronger facts', () => {
+    const example = validOutput().claims[0]!;
+    expect(() => validateGate6bEpistemicClaim({ ...example, epistemicStatus: 'normative-requirement', epistemicBasis: 'normative-text' }, unit))
+      .toThrow('NORMATIVE_STATUS_AUTHORITY_REQUIRED');
+    expect(() => validateGate6bEpistemicClaim(
+      { ...example, epistemicStatus: 'normative-requirement', epistemicBasis: 'documented-example' },
+      { ...unit, sourceAuthorityClass: 'official-specification-or-standard', excerpt: 'Example: clients MUST provide an identifier.' },
+    )).toThrow('EPISTEMIC_BASIS_MISMATCH');
+    expect(() => validateGate6bEpistemicClaim({ ...example, epistemicStatus: 'sol-inference', epistemicBasis: 'sol-interpretation', statementOrigin: 'source' }, unit))
+      .toThrow('SOL_INFERENCE_RECORDED_AS_SOURCE');
+    expect(() => validateGate6bEpistemicClaim({ ...example, epistemicStatus: 'hypothesis', epistemicBasis: 'hypothesis', statementOrigin: 'source' }, unit))
+      .toThrow('HYPOTHESIS_RECORDED_AS_FACT');
+    expect(() => validateGate6bEpistemicClaim({ ...example, epistemicStatus: 'expert-interpretation', epistemicBasis: 'expert-review', statementOrigin: 'expert' }, unit))
+      .toThrow('EXPERT_INTERPRETATION_REQUIRES_EXTERNAL_REVIEW_RECEIPT');
+  });
+
+  it('maps historical non-canonical statuses only with explicit context or rejects them', () => {
+    expect(mapHistoricalEpistemicStatus('source-asserted').disposition).toBe('requires-context');
+    expect(mapHistoricalEpistemicStatus('source-asserted', { documentedExample: true })).toMatchObject({ status: 'source-example', disposition: 'mapped' });
+    expect(mapHistoricalEpistemicStatus('model-inferred')).toMatchObject({ status: 'sol-inference', disposition: 'mapped' });
+    expect(mapHistoricalEpistemicStatus('invented-status').disposition).toBe('rejected');
+  });
   it('verifies only the exact configured model entitlement without listing the model catalogue', async () => {
     const fetchMock = vi.fn<typeof fetch>(async () => new Response(JSON.stringify({ id: 'test-supported-model', object: 'model' }), {
       status: 200, headers: { 'content-type': 'application/json', 'x-request-id': 'req-test-only' },

@@ -78,6 +78,7 @@ export interface JsonGenerationRequest {
     sources: EvidenceEntailmentSource[];
     requireCitations?: boolean;
     minimumSupportScore?: number;
+    precisionMode?: boolean;
   };
 }
 
@@ -565,6 +566,7 @@ async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerat
       citedReferenceIds,
       sources: request.grounding.sources,
       ...(request.grounding.minimumSupportScore !== undefined ? { threshold: request.grounding.minimumSupportScore } : {}),
+      ...(request.grounding.precisionMode !== undefined ? { precisionMode: request.grounding.precisionMode } : {}),
     });
     if (!groundingReceipt.verified) {
       telemetry.finalDisposition = 'rejected-grounding';

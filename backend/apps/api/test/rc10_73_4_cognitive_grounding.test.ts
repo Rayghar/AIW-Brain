@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LlmRuntimePolicy } from '@aiw/domain';
-import { buildApprovedKnowledgeGroundingPack, verifyEvidenceEntailment } from '../src/approvedKnowledgeGrounding.js';
+import { buildApprovedKnowledgeGroundingPack, scoreEvidenceSupport, verifyEvidenceEntailment } from '../src/approvedKnowledgeGrounding.js';
 import { redactForModel } from '../src/dataRedaction.js';
 import { validateJsonSchema } from '../src/jsonSchemaValidation.js';
 import { LlmGateway } from '../src/llmGateway.js';
@@ -83,7 +83,7 @@ describe('rc.10.73.4 governed cognitive grounding', () => {
       purpose: 'architecture-reasoning', schemaName: 'grounded_answer', dataClassification: 'restricted',
       system: 'Return governed JSON only.',
       user: 'password=hunter22 Explain the approved pattern for architect@example.com.',
-      grounding: { allowedReferenceIds: pack.allowedReferenceIds, sources: pack.sources, requireCitations: true, minimumSupportScore: 0.03 },
+      grounding: { allowedReferenceIds: pack.allowedReferenceIds, sources: pack.sources, requireCitations: true, minimumSupportScore: 0.5 },
       jsonSchema: {
         type: 'object', additionalProperties: false, required: ['answer', 'citedRecordIds'],
         properties: {
@@ -107,5 +107,23 @@ describe('rc.10.73.4 governed cognitive grounding', () => {
     });
     expect(receipt.verified).toBe(false);
     expect(receipt.unsupportedReferenceIds).toContain('PAT-TRANSACTIONAL-OUTBOX');
+  });
+
+  it('uses precision mode to reject omitted conditions, limitations and negation', () => {
+    expect(scoreEvidenceSupport(
+      'The policy routes requests to a secondary endpoint.',
+      'When traffic exceeds the configured threshold, the policy routes requests to a secondary endpoint.',
+      true,
+    )).toMatchObject({ supportScore: 0, riskFlags: expect.arrayContaining(['condition-omission']) });
+    expect(scoreEvidenceSupport(
+      'Caching reduces read latency.',
+      'Caching can reduce read latency; however, stale data remains a consistency risk.',
+      true,
+    )).toMatchObject({ supportScore: 0, riskFlags: expect.arrayContaining(['limitation-omission']) });
+    expect(scoreEvidenceSupport(
+      'The component persists authentication tokens.',
+      'The component must not persist authentication tokens.',
+      true,
+    )).toMatchObject({ supportScore: 0, riskFlags: expect.arrayContaining(['negation-mismatch']) });
   });
 });

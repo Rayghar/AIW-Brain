@@ -1,0 +1,154 @@
+{
+  "schemaVersion": "aiw-gate-6b-24-case-provisional-labels-v1",
+  "generatedAt": "2026-07-16T16:39:05.699Z",
+  "productionAccepted": false,
+  "independentReviewStatus": "not-independently-approved",
+  "blindedReviewerMustNotReceiveThisFileInitially": true,
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "labels": [
+    {
+      "caseId": "G6B1-01",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-example",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-02",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-example",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-03",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-example",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-04",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-example",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-05",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "normative-requirement",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-06",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-07",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-08",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-09",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-10",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-11",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-12",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-13",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-14",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-example",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-15",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-16",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-example",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-17",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-18",
+      "expectedDisposition": "non-claim",
+      "provisionalEpistemicStatus": "unknown",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-19",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-20",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "source-example",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-21",
+      "expectedDisposition": "non-claim",
+      "provisionalEpistemicStatus": "unknown",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-22",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-23",
+      "expectedDisposition": "claim-or-structured-asset-candidate",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "reviewRequired": true
+    },
+    {
+      "caseId": "G6B1-24",
+      "expectedDisposition": "abstain-insufficient-evidence",
+      "provisionalEpistemicStatus": "unknown",
+      "reviewRequired": true
+    }
+  ]
+}
