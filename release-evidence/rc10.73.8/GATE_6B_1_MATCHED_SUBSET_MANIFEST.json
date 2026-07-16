@@ -1,0 +1,166 @@
+{
+  "generatedAt": "2026-07-16T18:29:02.716Z",
+  "schemaVersion": "aiw-gate-6b-1-matched-subset-manifest-v1",
+  "productionAccepted": false,
+  "sourceBenchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "sourceBenchmarkCaseCount": 24,
+  "matchedSubsetCaseCount": 12,
+  "pairCount": 6,
+  "pairs": [
+    {
+      "pairId": "PAIR-01",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ]
+    },
+    {
+      "pairId": "PAIR-02",
+      "caseIds": [
+        "G6B1-03",
+        "G6B1-04"
+      ]
+    },
+    {
+      "pairId": "PAIR-03",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ]
+    },
+    {
+      "pairId": "PAIR-04",
+      "caseIds": [
+        "G6B1-10",
+        "G6B1-11"
+      ]
+    },
+    {
+      "pairId": "PAIR-05",
+      "caseIds": [
+        "G6B1-12",
+        "G6B1-13"
+      ]
+    },
+    {
+      "pairId": "PAIR-06",
+      "caseIds": [
+        "G6B1-17",
+        "G6B1-18"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "G6B1-01",
+      "semanticUnitId": "SEMU-e9f9d891f5f3ea90e38f70a9",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+      "repository": "Azure/ResourceModules",
+      "architectureGroupId": "ACFG-bba1a9bad7f0d46d082d3624",
+      "boundedEvidenceCharacters": 1669
+    },
+    {
+      "caseId": "G6B1-02",
+      "semanticUnitId": "SEMU-f2931bbe5d7f1c3fd9d4b1bd",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "excerptHash": "sha256:a0f65cf4feb71a76aedead58a51cb8658be1b93a51f26ade1f430b4ba286cdfa",
+      "repository": "Azure/ResourceModules",
+      "architectureGroupId": "ACFG-bba1a9bad7f0d46d082d3624",
+      "boundedEvidenceCharacters": 4972
+    },
+    {
+      "caseId": "G6B1-03",
+      "semanticUnitId": "SEMU-8cb01d6b548dbace272417aa",
+      "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+      "excerptHash": "sha256:6e59a1e080e56097a6124a885b69d638e6b8da4186c64e0b71e78e1e48373e77",
+      "repository": "asyncapi/spec",
+      "architectureGroupId": "ACFG-a1249e53361ad3146d537a2f",
+      "boundedEvidenceCharacters": 2288
+    },
+    {
+      "caseId": "G6B1-04",
+      "semanticUnitId": "SEMU-02a62be700366b90d661a71b",
+      "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+      "excerptHash": "sha256:2b8be11e6155becdeceb3e24ce3e1560e8ff2b3e53e064cb59ce23808ac6e1f9",
+      "repository": "asyncapi/spec",
+      "architectureGroupId": "ACFG-a1249e53361ad3146d537a2f",
+      "boundedEvidenceCharacters": 1569
+    },
+    {
+      "caseId": "G6B1-06",
+      "semanticUnitId": "SEMU-5d681719b2ac4ad1465e0244",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "excerptHash": "sha256:3ba737d6bdb2468fb1dab3def62ec873e287d7d8ee5825d6cff05d1f89f412c4",
+      "repository": "MicrosoftDocs/architecture-center",
+      "architectureGroupId": "ACFG-62ff83fd2947cbe12c243453",
+      "boundedEvidenceCharacters": 3432
+    },
+    {
+      "caseId": "G6B1-07",
+      "semanticUnitId": "SEMU-5145eec6ccf40e5e999b4bb2",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "excerptHash": "sha256:816f837ed39ff54faacc23a3cfef9ba4ae53e71869bd4b6888485e61de1368b4",
+      "repository": "MicrosoftDocs/architecture-center",
+      "architectureGroupId": "ACFG-62ff83fd2947cbe12c243453",
+      "boundedEvidenceCharacters": 1841
+    },
+    {
+      "caseId": "G6B1-10",
+      "semanticUnitId": "SEMU-7fefaadf12f0efdec201ed2d",
+      "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+      "excerptHash": "sha256:7a962d5ac2dfb81a4ee21e7a1d842124bcf85ab061d1796e50e64cccdd2ecbf9",
+      "repository": "finos/ai-reference-architecture-library",
+      "architectureGroupId": "ACFG-88704d96d75b40ac55fba4fd",
+      "boundedEvidenceCharacters": 1285
+    },
+    {
+      "caseId": "G6B1-11",
+      "semanticUnitId": "SEMU-047d5038e3482af8ee64b7fd",
+      "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+      "excerptHash": "sha256:b19d0d24872944336ecaf78a0926b0ddbdecd811348bc786f9ff0f1dc6d02fa6",
+      "repository": "finos/ai-reference-architecture-library",
+      "architectureGroupId": "ACFG-88704d96d75b40ac55fba4fd",
+      "boundedEvidenceCharacters": 8000
+    },
+    {
+      "caseId": "G6B1-12",
+      "semanticUnitId": "SEMU-0484cddf43204952d6882ebe",
+      "evidenceId": "BEV-d075515016509baf01b5c585",
+      "excerptHash": "sha256:2ebf8f6b656758da739564c99c97a13fc2b86b6eafa388735654f7b826261232",
+      "repository": "r0light/cna-quality-model",
+      "architectureGroupId": "ACFG-320ec7fed4f6bcd4d1c63b7f",
+      "boundedEvidenceCharacters": 8000
+    },
+    {
+      "caseId": "G6B1-13",
+      "semanticUnitId": "SEMU-678ef38412e39a3c1245cb8c",
+      "evidenceId": "BEV-577cee3a91825ff936c52564",
+      "excerptHash": "sha256:51e4540398abc991da1dbda454f983325827ec751e4a399c3123240ffbb8f439",
+      "repository": "r0light/cna-quality-model",
+      "architectureGroupId": "ACFG-320ec7fed4f6bcd4d1c63b7f",
+      "boundedEvidenceCharacters": 8000
+    },
+    {
+      "caseId": "G6B1-17",
+      "semanticUnitId": "SEMU-887f5b7f716711dbb37786cb",
+      "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+      "excerptHash": "sha256:cca12fe6fa4c2726593b377b194fe97d1f91a0776f92f79dc46ae28b51191280",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "architectureGroupId": "ACFG-b6a569e943298305528c6772",
+      "boundedEvidenceCharacters": 1107
+    },
+    {
+      "caseId": "G6B1-18",
+      "semanticUnitId": "SEMU-807374cfa7e810b3e7d7118a",
+      "evidenceId": "BEV-235d9f247ef339a20866b297",
+      "excerptHash": "sha256:63972acee76b24021a3d23df8fc512947e508ef36f912916cd684b370ec2d3f3",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "architectureGroupId": "ACFG-b6a569e943298305528c6772",
+      "boundedEvidenceCharacters": 1440
+    }
+  ],
+  "fingerprint": "sha256:de914b8c218039477e23e55b0d32d33025e1c695a3a7f64e99e41c496ec3262d",
+  "independentReviewStatus": "not-completed",
+  "modelCalls": 0
+}

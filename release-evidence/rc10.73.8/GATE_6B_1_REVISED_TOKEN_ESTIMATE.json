@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-revised-token-estimate-v1",
+  "generatedAt": "2026-07-16T18:29:02.716Z",
+  "productionAccepted": false,
+  "plannedCalls": 36,
+  "retryReserveCalls": 4,
+  "maximumCallsIncludingRetries": 40,
+  "projectedInputTokensWithoutRetries": 45946,
+  "maximumInputTokensIncludingRetryReserve": 59544,
+  "maximumOutputTokensIncludingRetryReserve": 60000,
+  "maximumTotalTokensIncludingRetryReserve": 119544,
+  "absoluteTokenCeiling": 120000,
+  "withinCeiling": true,
+  "estimationMethod": "ceil-deterministic-prompt-characters-divided-by-four-plus-1500-output-tokens-per-call-and-four-largest-request-retries"
+}

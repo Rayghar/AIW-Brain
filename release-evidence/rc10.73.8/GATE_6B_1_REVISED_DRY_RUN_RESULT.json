@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-revised-dry-run-result-v2",
+  "generatedAt": "2026-07-16T18:29:02.716Z",
+  "productionAccepted": false,
+  "status": "dry-run-passed-execution-controlled-stop",
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "tokens": 0,
+  "candidateRecords": 0,
+  "approvedRecordChanges": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "repositoryCodeExecuted": 0,
+  "requestPlanFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "blockers": [
+    "EXECUTION_APPROVAL_MISSING",
+    "INDEPENDENT_REVIEW_RECEIPT_INVALID",
+    "INSUFFICIENT_DISK_CAPACITY",
+    "TOKEN_AND_COST_APPROVAL_INVALID"
+  ],
+  "replayExpectedFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "replayFingerprintMatch": true,
+  "liveExecutionPerformed": false,
+  "fullGate6bPilotStarted": false,
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started",
+  "planAcceptance": {
+    "plannedCalls": 36,
+    "absoluteCallsIncludingRetries": 40,
+    "maximumProjectedTokensIncludingRetryReserve": 119544,
+    "oversizedRequests": 0,
+    "networkCalls": 0,
+    "modelCalls": 0,
+    "candidateRecords": 0,
+    "approvedChanges": 0,
+    "designGraphMutations": 0,
+    "automaticPromotions": 0
+  }
+}

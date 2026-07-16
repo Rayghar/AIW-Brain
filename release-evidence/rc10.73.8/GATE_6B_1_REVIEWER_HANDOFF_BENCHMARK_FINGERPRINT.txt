@@ -1,0 +1,5 @@
+AIW Gate 6B.1 source benchmark fingerprint
+sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974
+
+Independent review status: not started
+Production accepted: false

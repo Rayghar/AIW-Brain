@@ -1,16 +1,21 @@
 import { readFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   PINNED_MODEL,
   PURPOSE,
+  MATCHED_CASE_PAIRS,
   Gate6b1Stop,
   type BenchmarkManifest,
   type PlannedRequest,
   assertNoForbiddenOutcome,
+  assessPlan,
   buildRequestPlan,
   collectExecutionAuthorizationBlockers,
   executeIsolatedStrategies,
+  createGovernedGatewayExecutor,
+  calculateStrategyRequestCharacters,
   validateBenchmark,
   validateIndependentReviewReceipt,
   validatePlanLimits,
@@ -23,7 +28,11 @@ import {
 const root = resolve(import.meta.dirname, '..', '..', '..', '..');
 const manifestPath = resolve(root, 'release-evidence', 'rc10.73.8', 'GATE_6B_24_CASE_BENCHMARK_MANIFEST.json');
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8')) as BenchmarkManifest;
-const limits = { maximumSemanticUnits: 24, maximumCalls: 100, maximumTotalTokens: 500_000, maximumRetries: 1, concurrency: 2 };
+const limits = {
+  maximumSemanticUnits: 24, plannedCalls: 36, maximumCalls: 40, maximumTotalTokens: 120_000,
+  maximumRetries: 1, globalRetryBudget: 4, maximumIndividualRequestCharacters: 10_000,
+  maximumGroupedRequestCharacters: 18_000, concurrency: 2,
+};
 const posture = {
   provider: 'openai' as const, exactModel: PINNED_MODEL, allowedSnapshots: [PINNED_MODEL], purpose: PURPOSE,
   fallbackDisabled: true, candidateOnlyPersistence: true, designGraphMutationProhibited: true, automaticPromotionProhibited: true,
@@ -40,8 +49,14 @@ describe('Gate 6B.1 offline runner fail-closed controls', () => {
     const second = buildRequestPlan(manifest);
     expect(first).toEqual(second);
     expect(first.filter((item) => item.strategy === 'one-semantic-unit-per-call')).toHaveLength(24);
-    expect(first.filter((item) => item.strategy === 'same-source-bounded-micro-batches')).toHaveLength(17);
-    expect(first.filter((item) => item.strategy === 'bounded-architecture-group')).toHaveLength(18);
+    expect(first.filter((item) => item.strategy === 'same-source-bounded-micro-batches')).toHaveLength(6);
+    expect(first.filter((item) => item.strategy === 'bounded-architecture-group')).toHaveLength(6);
+    expect(first).toHaveLength(36);
+    const assessment = assessPlan(first, limits);
+    expect(assessment).toMatchObject({ plannedRequestCount: 36, maximumCallsIncludingRetryReserve: 40, blockers: [] });
+    expect(assessment.projectedTokenEnvelope.maximumIncludingRetries).toBeLessThanOrEqual(120_000);
+    const groupedPairs = first.filter((item) => item.strategy === 'same-source-bounded-micro-batches').map((item) => item.caseIds);
+    expect(groupedPairs).toEqual(MATCHED_CASE_PAIRS.map((pair) => [...pair]));
   });
 
   it('stops on an incorrect benchmark fingerprint', () => {
@@ -69,13 +84,16 @@ describe('Gate 6B.1 offline runner fail-closed controls', () => {
     expect(code(() => validateBenchmark(manifest, manifest.fingerprint, { ...limits, maximumSemanticUnits: 23 }))).toBe('SEMANTIC_UNIT_LIMIT_EXCEEDED');
   });
   it('stops when the call ceiling is exceeded', () => {
-    expect(code(() => validatePlanLimits(buildRequestPlan(manifest), { ...limits, maximumCalls: 40 }))).toBe('CALL_LIMIT_EXCEEDED');
+    expect(code(() => validatePlanLimits(buildRequestPlan(manifest), { ...limits, maximumCalls: 39 }))).toBe('CALL_LIMIT_EXCEEDED');
   });
   it('stops when the token envelope is exceeded', () => {
-    expect(code(() => validatePlanLimits(buildRequestPlan(manifest), { ...limits, maximumCalls: 100, maximumTotalTokens: 1 }))).toBe('TOKEN_ESTIMATE_EXCEEDED');
+    expect(code(() => validatePlanLimits(buildRequestPlan(manifest), { ...limits, maximumTotalTokens: 1 }))).toBe('TOKEN_ESTIMATE_EXCEEDED');
   });
-  it('stops when a bounded request exceeds the 8,000-character route limit', () => {
-    expect(code(() => validateRequestCharacterBounds(buildRequestPlan(manifest)))).toBe('REQUEST_INPUT_LIMIT_EXCEEDED');
+  it('accepts the revised character bounds and stops an oversized individual request', () => {
+    const plan = buildRequestPlan(manifest);
+    expect(code(() => validateRequestCharacterBounds(plan, limits))).toBe('NO_ERROR');
+    const invalid = [{ ...plan[0], inputCharacters: 10_001 }];
+    expect(code(() => validateRequestCharacterBounds(invalid, limits))).toBe('REQUEST_INPUT_LIMIT_EXCEEDED');
   });
   it('stops on an invalid evidence ID', () => {
     const copy = structuredClone(manifest); copy.cases[0].evidenceId = 'BEV-invalid';
@@ -108,14 +126,13 @@ describe('Gate 6B.1 offline runner fail-closed controls', () => {
     expect(code(() => assertNoForbiddenOutcome({ candidateAuthority: 'candidate', approvedRecordsChanged: 0, designGraphMutations: 0, automaticPromotions: 1 }))).toBe('AUTOMATIC_PROMOTION_ATTEMPT');
   });
   it('executes three strategies as isolated offline requests through an injected adapter', async () => {
-    const source = buildRequestPlan(manifest).find((item) => item.strategy === 'one-semantic-unit-per-call')!;
-    const plan = (['one-semantic-unit-per-call', 'same-source-bounded-micro-batches', 'bounded-architecture-group'] as const).map((strategy, index) => ({
-      ...source, requestId: `${strategy}:fixture-${index}`, strategy,
-    }));
+    const full = buildRequestPlan(manifest);
+    const plan = (['one-semantic-unit-per-call', 'same-source-bounded-micro-batches', 'bounded-architecture-group'] as const)
+      .map((strategy) => full.find((item) => item.strategy === strategy)!);
     let adapterCalls = 0;
     const result = await executeIsolatedStrategies({
       plan,
-      limits: { ...limits, maximumCalls: 3, maximumTotalTokens: 10_000 },
+      limits: { ...limits, plannedCalls: 3, maximumCalls: 3, globalRetryBudget: 0, maximumTotalTokens: 20_000 },
       freeBytes: async () => 16 * 1024 ** 3,
       executor: async () => {
         adapterCalls += 1;
@@ -125,5 +142,44 @@ describe('Gate 6B.1 offline runner fail-closed controls', () => {
     expect(adapterCalls).toBe(3);
     expect(result.strategies.map((item) => item.strategy)).toEqual(['one-semantic-unit-per-call', 'same-source-bounded-micro-batches', 'bounded-architecture-group']);
     expect(result).toMatchObject({ totalCalls: 3, totalRetries: 0, totalTokens: 450 });
+  });
+  it('stops before a retry can exceed the absolute provider-call ceiling', async () => {
+    const planned = buildRequestPlan(manifest)[0];
+    await expect(executeIsolatedStrategies({
+      plan: [planned],
+      limits: { ...limits, plannedCalls: 1, maximumCalls: 1, globalRetryBudget: 1, maximumTotalTokens: 10_000 },
+      freeBytes: async () => 17 * 1024 ** 3,
+      executor: async () => { throw new Gate6b1Stop('HTTP_429', 'fixture'); },
+    })).rejects.toMatchObject({ code: 'CALL_LIMIT_EXCEEDED' });
+  });
+  it('binds live execution to the existing governed LLM gateway interface without direct HTTP', async () => {
+    const excerpt = 'A bounded public architecture statement with one explicit limitation.';
+    const excerptHash = `sha256:${createHash('sha256').update(excerpt).digest('hex')}`;
+    const unit = {
+      semanticUnitId: 'SEMU-fixture', evidenceId: 'BEV-1234567890abcdef12345678', connectorId: 'GH-FIXTURE', repository: 'owner/repo',
+      immutableCommit: 'a'.repeat(40), path: 'docs/example.md', structuralRange: 'lines 1-2', excerpt, excerptHash,
+      parserVersion: 'fixture-v1', sourceAuthorityClass: 'reviewed-practitioner-or-implementation-source',
+    };
+    const base = buildRequestPlan(manifest)[0];
+    const promptCases = [{ caseId: 'CASE-1', semanticUnitId: unit.semanticUnitId, evidenceId: unit.evidenceId, repository: unit.repository, immutableCommit: unit.immutableCommit, path: unit.path, structuralRange: unit.structuralRange, excerpt }];
+    const planned = { ...base, caseIds: ['CASE-1'], semanticUnitIds: [unit.semanticUnitId], evidenceIds: [unit.evidenceId], repositories: [unit.repository], architectureGroupIds: [], caseLineage: [{ caseId: 'CASE-1', evidenceId: unit.evidenceId, excerptHash }], inputCharacters: calculateStrategyRequestCharacters(base.strategy, base.matchedPairId, [], promptCases) };
+    let gatewayCalls = 0;
+    const candidates: unknown[] = [];
+    const executor = createGovernedGatewayExecutor({
+      evidenceByCase: new Map([['CASE-1', unit]]),
+      appendCandidate: async (record) => { candidates.push(record); },
+      gateway: { generateJson: async (request: any) => {
+        gatewayCalls += 1;
+        expect(request).toMatchObject({ purpose: PURPOSE, requireEvidenceAllowlist: true, requireProviderNativeSchema: true });
+        return {
+          value: { schemaVersion: '1.0', authority: 'candidate', cases: [{ caseId: 'CASE-1', evidenceId: unit.evidenceId, disposition: 'abstain', claims: [], abstentionReason: 'Fixture abstention.', reviewRequired: true }], productionAccepted: false, automaticPromotionAllowed: false, designGraphMutationAllowed: false },
+          usage: { inputTokens: 20, outputTokens: 10 }, schemaValidation: { valid: true, violations: [] }, groundingReceipt: { verified: true },
+        };
+      } } as any,
+    });
+    const outcome = await executor(planned);
+    expect(gatewayCalls).toBe(1);
+    expect(candidates).toHaveLength(1);
+    expect(outcome).toMatchObject({ candidateAuthority: 'candidate', candidateRecordsCreated: 1, approvedRecordsChanged: 0, designGraphMutations: 0, automaticPromotions: 0 });
   });
 });

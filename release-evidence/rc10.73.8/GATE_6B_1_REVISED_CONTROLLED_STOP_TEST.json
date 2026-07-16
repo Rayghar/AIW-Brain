@@ -1,0 +1,144 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-revised-controlled-stop-test-v2",
+  "generatedAt": "2026-07-16T18:29:02.716Z",
+  "productionAccepted": false,
+  "liveProviderCalls": 0,
+  "tests": [
+    {
+      "code": "BENCHMARK_FINGERPRINT_MISMATCH",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "INDEPENDENT_REVIEW_RECEIPT_INVALID",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "TOKEN_AND_COST_APPROVAL_INVALID",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "MODEL_MISMATCH",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "MODEL_SNAPSHOT_NOT_PINNED",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "WILDCARD_MODEL_ENTRY",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "FALLBACK_ENABLED",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "SEMANTIC_UNIT_LIMIT_EXCEEDED",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "PLANNED_CALL_COUNT_MISMATCH",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "CALL_LIMIT_EXCEEDED",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "TOKEN_ESTIMATE_EXCEEDED",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "REQUEST_INPUT_LIMIT_EXCEEDED",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "INVALID_EVIDENCE_ID",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "EXCERPT_HASH_MISMATCH",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "CROSS_SOURCE_MICRO_BATCH",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "UNRELATED_ARCHITECTURE_GROUP_MIXTURE",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "MATCHED_SUBSET_REQUEST_INVALID",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "CASE_LINEAGE_MAPPING_INVALID",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "REQUEST_CHARACTER_REPLAY_MISMATCH",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "CROSS_UNIT_CONTAMINATION",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "GLOBAL_RETRY_BUDGET_EXHAUSTED",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "MISSING_SECRET",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "INSUFFICIENT_DISK_CAPACITY",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "CANDIDATE_AUTHORITY_LEAKAGE",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "DESIGN_GRAPH_MUTATION_ATTEMPT",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    },
+    {
+      "code": "AUTOMATIC_PROMOTION_ATTEMPT",
+      "expectedDisposition": "controlled-stop-before-provider-or-persistence",
+      "passed": true
+    }
+  ],
+  "testCount": 26,
+  "passed": 26,
+  "failed": 0,
+  "executableTestReference": "backend/apps/api/test/rc10_73_8_gate_6b1_runner.test.ts",
+  "verificationReceipt": "release-evidence/rc10.73.8/GATE_6B_1_OFFLINE_VERIFICATION_RECEIPT.json",
+  "evidenceMeaning": "Each named condition has a focused pure-function test; the verification receipt records the actual zero-provider test command and exit result."
+}

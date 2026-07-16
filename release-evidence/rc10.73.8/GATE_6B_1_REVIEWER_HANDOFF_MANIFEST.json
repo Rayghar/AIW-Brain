@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-reviewer-handoff-manifest-v1",
+  "generatedAt": "2026-07-16T18:29:02.716Z",
+  "productionAccepted": false,
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "independentReviewStatus": "not-started",
+  "humanReviewerRequired": true,
+  "included": [
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_24_CASE_BLINDED_REVIEW_PACK.md",
+      "bytes": 80817,
+      "sha256": "sha256:af9e0bcb172b9ec2bc47b287e4267678e9f6415e9cadf1be0d1943e137007ee7"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_24_CASE_REVIEW_INSTRUCTIONS.md",
+      "bytes": 670,
+      "sha256": "sha256:424e4fb86840ebb5fa6c31d9599ae861b599ec8d87e94a05a1333f47f5ca6c33"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_24_CASE_REVIEWER_LABELS.json",
+      "bytes": 993,
+      "sha256": "sha256:9ef3839f19f5e3286c5da9afaf59e545e95d77c6475762ec762cb480bf508e51"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_REVIEWER_HANDOFF_BENCHMARK_FINGERPRINT.txt",
+      "bytes": 182,
+      "sha256": "sha256:5ec257f436ccda74bba40e3329de9117831f14c292b39935ce991dc29676fe36"
+    }
+  ],
+  "benchmarkFingerprintDelivery": {
+    "value": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+    "source": "GATE_6B_24_CASE_BENCHMARK_MANIFEST.json"
+  },
+  "explicitlyExcluded": [
+    "GATE_6B_24_CASE_PROVISIONAL_LABELS.json",
+    "all-model-answers",
+    "all-prior-smoke-output",
+    "all-expected-dispositions"
+  ],
+  "reviewerReceiptTemplate": "release-evidence/rc10.73.8/GATE_6B_24_CASE_INDEPENDENT_REVIEW_RECEIPT.json",
+  "archivePath": "release-evidence/rc10.73.8/GATE_6B_1_REVIEWER_HANDOFF.zip",
+  "archiveReceipt": {
+    "bytes": 29650,
+    "entryCount": 4,
+    "sha256": "sha256:845a2cfc101ef26b972b58d640a39410809ba9fd2a12b79f1e3586f130507754",
+    "opensSuccessfully": true,
+    "includedEntryCountMatchesManifest": true,
+    "excludedMaterialEntryCount": 0
+  },
+  "reviewerMustNotReceiveExcludedMaterialInitially": true
+}
