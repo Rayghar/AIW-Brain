@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-token-and-cost-approval-receipt-v1",
+  "templateStatus": "blank-governed-template",
+  "productionAccepted": false,
+  "status": "not-approved",
+  "approved": false,
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "maximumSemanticUnits": 24,
+  "maximumCalls": 40,
+  "maximumTotalTokens": 120000,
+  "maximumRetries": 1,
+  "concurrency": 2,
+  "approvedCostCeiling": null,
+  "currency": null,
+  "approvedBy": null,
+  "approvedAt": null,
+  "approvalEvidence": null
+}

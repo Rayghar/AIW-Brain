@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "aiw-gate-6b-24-case-reviewer-labels-v1",
+  "templateStatus": "blank-governed-template",
+  "productionAccepted": false,
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "reviewerIdentifier": null,
+  "provisionalLabelsHidden": null,
+  "labels": [
+    "G6B1-01", "G6B1-02", "G6B1-03", "G6B1-04", "G6B1-05", "G6B1-06",
+    "G6B1-07", "G6B1-08", "G6B1-09", "G6B1-10", "G6B1-11", "G6B1-12",
+    "G6B1-13", "G6B1-14", "G6B1-15", "G6B1-16", "G6B1-17", "G6B1-18",
+    "G6B1-19", "G6B1-20", "G6B1-21", "G6B1-22", "G6B1-23", "G6B1-24"
+  ],
+  "labelTemplate": {
+    "caseId": null,
+    "disposition": null,
+    "canonicalEpistemicStatus": null,
+    "evidenceSufficient": null,
+    "conditionsComplete": null,
+    "limitationsComplete": null,
+    "contradictionDecision": null,
+    "patternDnaDecision": null,
+    "architectureGenomeDecision": null,
+    "uncertainty": null,
+    "reviewNotes": null
+  },
+  "completedLabels": []
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-gate-6b-grounding-independent-comparison-plan-v1",
+  "productionAccepted": false,
+  "status": "prepared-awaiting-independent-review",
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "provisionalThreshold": 0.6,
+  "thresholdDecision": "provisional-no-automatic-lowering",
+  "inputs": {
+    "deterministicCalibration": "GATE_6B_GROUNDING_CALIBRATION_SET.json",
+    "independentReviewerLabels": "GATE_6B_24_CASE_REVIEWER_LABELS.json",
+    "independentReviewReceipt": "GATE_6B_24_CASE_INDEPENDENT_REVIEW_RECEIPT.json",
+    "interReviewerAgreement": "GATE_6B_24_CASE_INTER_REVIEWER_AGREEMENT.json"
+  },
+  "requiredMetrics": [
+    "precision", "recall", "false-positives", "false-negatives", "critical-unsupported-claims",
+    "performance-by-evidence-type", "performance-by-epistemic-status", "condition-performance",
+    "limitation-performance", "contradiction-performance"
+  ],
+  "priority": "precision-and-consequential-claim-abstention-before-recall",
+  "automaticThresholdChangeAllowed": false,
+  "resultsAvailable": false
+}

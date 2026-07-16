@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-offline-verification-receipt-v1",
+  "generatedAt": "2026-07-16T17:13:35.757Z",
+  "productionAccepted": false,
+  "checkpointCommit": "405d0093fe6c811e61e2394eb0dddd19521164eb",
+  "providerCalls": 0,
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "semanticTransformations": 0,
+  "domainBuild": {
+    "command": "npm.cmd run build:domain",
+    "exitCode": 0,
+    "passed": true
+  },
+  "apiBuild": {
+    "command": "npm.cmd run build -w @aiw/api",
+    "exitCode": 0,
+    "passed": true
+  },
+  "focusedTests": {
+    "command": "npx.cmd vitest run apps/api/test/rc10_73_8_gate_6b_runtime_readiness.test.ts apps/api/test/rc10_73_8_gate_6b1_runner.test.ts apps/api/test/rc10_73_4_cognitive_grounding.test.ts --pool=threads --maxWorkers=1 --no-file-parallelism",
+    "exitCode": 0,
+    "testFilesPassed": 3,
+    "testsPassed": 42,
+    "testsFailed": 0,
+    "providerCalls": 0
+  },
+  "runnerSyntaxCheck": {
+    "command": "node --check scripts/rc10-73-8/run-gate-6b-strategy-micro-pilot.mts",
+    "exitCode": 0,
+    "passed": true
+  },
+  "jsonParsing": {
+    "passed": true,
+    "invalidFiles": []
+  },
+  "changedPathSafety": {
+    "uncommittedPathCount": 15,
+    "credentialFindings": 0,
+    "rawOrExcludedPathFindings": 0,
+    "trailingWhitespaceFindings": 0,
+    "conflictMarkerFindings": 0,
+    "stagedPaths": 0
+  },
+  "deterministicReplay": {
+    "primaryFingerprint": "sha256:5ea16e183a200ed2803ee04cf7be2852bf9d8aa1dd297a0c1727a6c46883ae5d",
+    "replayFingerprint": "sha256:5ea16e183a200ed2803ee04cf7be2852bf9d8aa1dd297a0c1727a6c46883ae5d",
+    "identical": true
+  },
+  "freshCapacity": {
+    "measuredAt": "2026-07-16T17:13:35.757Z",
+    "freeBytes": 15645859840,
+    "preferredMinimumBytes": 16106127360,
+    "controlledStopFloorBytes": 8589934592,
+    "preferredCapacityReady": false,
+    "aboveControlledStopFloor": true
+  },
+  "authorityPosture": {
+    "candidateRecordsCreated": 0,
+    "approvedRecordsChanged": 0,
+    "designGraphMutations": 0,
+    "automaticPromotions": 0
+  },
+  "gateStatus": {
+    "gate6b1": "not-started-controlled-stop",
+    "remainingGate6bPilot": "not-started",
+    "gate6c": "blocked",
+    "gate6d": "not-started"
+  }
+}

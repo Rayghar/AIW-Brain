@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "aiw-gate-6b-24-case-inter-reviewer-agreement-v1",
+  "templateStatus": "blank-governed-template",
+  "productionAccepted": false,
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "reviewerAIdentifier": null,
+  "reviewerBIdentifier": null,
+  "comparisonTimestamp": null,
+  "caseCountCompared": 0,
+  "agreementByDimension": {},
+  "overallAgreement": null,
+  "cohensKappa": null,
+  "conflicts": [],
+  "adjudicatorIdentifier": null,
+  "adjudicationStatus": "not-started",
+  "signatureOrApprovalEvidence": null
+}

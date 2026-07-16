@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-dry-run-result-v1",
+  "generatedAt": "2026-07-16T17:13:35.757Z",
+  "productionAccepted": false,
+  "status": "dry-run-passed-execution-controlled-stop",
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "tokens": 0,
+  "candidateRecords": 0,
+  "approvedRecordChanges": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "repositoryCodeExecuted": 0,
+  "requestPlanFingerprint": "sha256:5ea16e183a200ed2803ee04cf7be2852bf9d8aa1dd297a0c1727a6c46883ae5d",
+  "blockers": [
+    "CALL_LIMIT_EXCEEDED",
+    "EXECUTION_APPROVAL_MISSING",
+    "INDEPENDENT_REVIEW_RECEIPT_INVALID",
+    "INSUFFICIENT_DISK_CAPACITY",
+    "REQUEST_INPUT_LIMIT_EXCEEDED",
+    "TOKEN_AND_COST_APPROVAL_INVALID",
+    "TOKEN_ESTIMATE_EXCEEDED"
+  ],
+  "replayExpectedFingerprint": "sha256:5ea16e183a200ed2803ee04cf7be2852bf9d8aa1dd297a0c1727a6c46883ae5d",
+  "replayFingerprintMatch": true,
+  "liveExecutionPerformed": false,
+  "fullGate6bPilotStarted": false,
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started"
+}

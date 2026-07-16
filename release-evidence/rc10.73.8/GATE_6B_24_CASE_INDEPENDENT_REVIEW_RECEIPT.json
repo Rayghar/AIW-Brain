@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "aiw-gate-6b-24-case-independent-review-receipt-v1",
+  "templateStatus": "blank-governed-template",
+  "productionAccepted": false,
+  "independentReviewStatus": "not-completed",
+  "approved": false,
+  "reviewerIdentifier": null,
+  "relevantArchitectureExperience": null,
+  "reviewTimestamp": null,
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "provisionalLabelsHidden": null,
+  "caseByCaseDecisions": [],
+  "uncertaintySummary": null,
+  "conflictsWithProvisionalLabels": [],
+  "signatureOrApprovalEvidence": null,
+  "completionInstructions": "A human reviewer must complete every governed field and all 24 case decisions. AIW and Codex must not self-approve this receipt."
+}

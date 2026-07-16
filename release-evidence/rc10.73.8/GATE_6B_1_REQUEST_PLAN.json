@@ -1,0 +1,1397 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-request-plan-v1",
+  "generatedAt": "2026-07-16T17:13:35.757Z",
+  "productionAccepted": false,
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "caseCount": 24,
+  "strategyRequestCounts": {
+    "one-semantic-unit-per-call": 24,
+    "same-source-bounded-micro-batches": 17,
+    "bounded-architecture-group": 18
+  },
+  "totalPlannedRequests": 59,
+  "allStrategiesCoverSame24Cases": true,
+  "projectedTokenEnvelope": {
+    "minimum": 69104,
+    "likely": 86804,
+    "maximum": 151704
+  },
+  "maximumApprovedTokens": 120000,
+  "requests": [
+    {
+      "requestId": "one-semantic-unit-per-call:01",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-01"
+      ],
+      "semanticUnitIds": [
+        "SEMU-e9f9d891f5f3ea90e38f70a9"
+      ],
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce"
+      ],
+      "repositories": [
+        "Azure/ResourceModules"
+      ],
+      "architectureGroupIds": [
+        "ACFG-bba1a9bad7f0d46d082d3624"
+      ],
+      "inputCharacters": 2298,
+      "projectedInputTokens": 575,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:847eb7907bc47358f116af3e7ae22c3a08417dcbb9ef2dd241af3d70e1b0433e"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:02",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-02"
+      ],
+      "semanticUnitIds": [
+        "SEMU-f2931bbe5d7f1c3fd9d4b1bd"
+      ],
+      "evidenceIds": [
+        "BEV-53bc04b94c6a9116788e7543"
+      ],
+      "repositories": [
+        "Azure/ResourceModules"
+      ],
+      "architectureGroupIds": [
+        "ACFG-bba1a9bad7f0d46d082d3624"
+      ],
+      "inputCharacters": 5611,
+      "projectedInputTokens": 1403,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:5271732e177770b0db83e190b6178e5a7a59c65a7e1162b68ebbd765252de9b6"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:03",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-03"
+      ],
+      "semanticUnitIds": [
+        "SEMU-8cb01d6b548dbace272417aa"
+      ],
+      "evidenceIds": [
+        "BEV-b52e41d91d436a91aca36b8b"
+      ],
+      "repositories": [
+        "asyncapi/spec"
+      ],
+      "architectureGroupIds": [
+        "ACFG-a1249e53361ad3146d537a2f"
+      ],
+      "inputCharacters": 2949,
+      "projectedInputTokens": 738,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:974a694a92dc24a73f8b5085cad26b89fddef51de9182c459f68934cfdb15092"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:04",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-04"
+      ],
+      "semanticUnitIds": [
+        "SEMU-02a62be700366b90d661a71b"
+      ],
+      "evidenceIds": [
+        "BEV-45a8396b1620b74a67ac57ae"
+      ],
+      "repositories": [
+        "asyncapi/spec"
+      ],
+      "architectureGroupIds": [
+        "ACFG-a1249e53361ad3146d537a2f"
+      ],
+      "inputCharacters": 2213,
+      "projectedInputTokens": 554,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:19421d2dc9dd878ca1321afe04e580abce547575abd54fdfbe4d640debe01696"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:05",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "semanticUnitIds": [
+        "SEMU-da2a0e336eef32c7df3b60c5"
+      ],
+      "evidenceIds": [
+        "BEV-0053bcdba65df5d1e58fdbf4"
+      ],
+      "repositories": [
+        "oam-dev/spec"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 1573,
+      "projectedInputTokens": 394,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:185248aadcd4291dce50e92d94b5f5ddfa82895bb035ca36e94a4aebee5e03be"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:06",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-06"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5d681719b2ac4ad1465e0244"
+      ],
+      "evidenceIds": [
+        "BEV-79d04db6eab52cfde71559fc"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-62ff83fd2947cbe12c243453"
+      ],
+      "inputCharacters": 4098,
+      "projectedInputTokens": 1025,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:1748aa2130ee6830d51704bdd6215790cdf0a5d423842aa35cbc31f6f4f244b5"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:07",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-07"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5145eec6ccf40e5e999b4bb2"
+      ],
+      "evidenceIds": [
+        "BEV-48b0cb0824957d14e5044e65"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-62ff83fd2947cbe12c243453"
+      ],
+      "inputCharacters": 2509,
+      "projectedInputTokens": 628,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:d5fd54aa53ad1cc936c1c04bfe2a853f0d5be0ed103196ff6db94ef3be93ab3f"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:08",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-08"
+      ],
+      "semanticUnitIds": [
+        "SEMU-0fb29b6a62cb6cc9df28b5d4"
+      ],
+      "evidenceIds": [
+        "BEV-8f946e0488f13c1df9469a2f"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-86a150763f90ab45c113f2a4"
+      ],
+      "inputCharacters": 7550,
+      "projectedInputTokens": 1888,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:43e6299c88a7050d2296fc040db4cecdfa339b52e99cf4b3fc5c8d7010626d15"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:09",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "semanticUnitIds": [
+        "SEMU-e1d61a650356828956575045"
+      ],
+      "evidenceIds": [
+        "BEV-d04770a7fd02a158b96b119d"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-be877f533f0be94989c46628"
+      ],
+      "inputCharacters": 7633,
+      "projectedInputTokens": 1909,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:91135c141f134a50446a7a495d8a7808df26d2b42a1bec3fe54ee1ec87a8e493"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:10",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-10"
+      ],
+      "semanticUnitIds": [
+        "SEMU-7fefaadf12f0efdec201ed2d"
+      ],
+      "evidenceIds": [
+        "BEV-53e36cd2165eec1cffd76493"
+      ],
+      "repositories": [
+        "finos/ai-reference-architecture-library"
+      ],
+      "architectureGroupIds": [
+        "ACFG-88704d96d75b40ac55fba4fd"
+      ],
+      "inputCharacters": 1977,
+      "projectedInputTokens": 495,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:b0d31baf38d4f710792523d68cadfb392ee479679d782a9f0fa368a4aeb5c35b"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:11",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-11"
+      ],
+      "semanticUnitIds": [
+        "SEMU-047d5038e3482af8ee64b7fd"
+      ],
+      "evidenceIds": [
+        "BEV-ba42951a9a7b05050d9a36c7"
+      ],
+      "repositories": [
+        "finos/ai-reference-architecture-library"
+      ],
+      "architectureGroupIds": [
+        "ACFG-88704d96d75b40ac55fba4fd"
+      ],
+      "inputCharacters": 8679,
+      "projectedInputTokens": 2170,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:18756cc15c8c50deb181aef4bb784142a0bd2486558cc88566baa7c95ff686f9"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:12",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-12"
+      ],
+      "semanticUnitIds": [
+        "SEMU-0484cddf43204952d6882ebe"
+      ],
+      "evidenceIds": [
+        "BEV-d075515016509baf01b5c585"
+      ],
+      "repositories": [
+        "r0light/cna-quality-model"
+      ],
+      "architectureGroupIds": [
+        "ACFG-320ec7fed4f6bcd4d1c63b7f"
+      ],
+      "inputCharacters": 8665,
+      "projectedInputTokens": 2167,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:75fdbc45701c5ed951fcfc74510e0351ddbcd56d6f60270a720164fe9a265312"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:13",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-13"
+      ],
+      "semanticUnitIds": [
+        "SEMU-678ef38412e39a3c1245cb8c"
+      ],
+      "evidenceIds": [
+        "BEV-577cee3a91825ff936c52564"
+      ],
+      "repositories": [
+        "r0light/cna-quality-model"
+      ],
+      "architectureGroupIds": [
+        "ACFG-320ec7fed4f6bcd4d1c63b7f"
+      ],
+      "inputCharacters": 8654,
+      "projectedInputTokens": 2164,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:cfc05369d73bebb41d1589ec2da00964260302880dc18695dcce32188a0235d9"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:14",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-14"
+      ],
+      "semanticUnitIds": [
+        "SEMU-d9dd8008567d9ca5a3b73da4"
+      ],
+      "evidenceIds": [
+        "BEV-0a57ca89afc9e92ec29c8871"
+      ],
+      "repositories": [
+        "service-mesh-patterns/service-mesh-patterns"
+      ],
+      "architectureGroupIds": [
+        "ACFG-c57bafb060de8b4690ae8781"
+      ],
+      "inputCharacters": 1658,
+      "projectedInputTokens": 415,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:ecc1c4acf234e9ea85e5c08b3ad9806c7f3d56f66ea4381d4cca959a882bde67"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:15",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "semanticUnitIds": [
+        "SEMU-52c704f2c28e3897f26c840a"
+      ],
+      "evidenceIds": [
+        "BEV-b4d881c0aa0d205179a5c445"
+      ],
+      "repositories": [
+        "spring-projects/spring-modulith"
+      ],
+      "architectureGroupIds": [
+        "ACFG-579a3b1739d9a8d917fe3dcb"
+      ],
+      "inputCharacters": 2395,
+      "projectedInputTokens": 599,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:7095f4e4df88dde4deda82a8452b59d2f66780b1d3576fee6068ba1b163932a5"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:16",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-16"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5e095ebe0cf60567fe9c07a9"
+      ],
+      "evidenceIds": [
+        "BEV-b3e3c943daf7709f0853caae"
+      ],
+      "repositories": [
+        "open-telemetry/opentelemetry-demo"
+      ],
+      "architectureGroupIds": [
+        "ACFG-0950a50270cc1818742c5a93"
+      ],
+      "inputCharacters": 2358,
+      "projectedInputTokens": 590,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:f8cbe1c452a3f6a3883e32a66836740a75a23d11b6163ace983357ed93d03da0"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:17",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-17"
+      ],
+      "semanticUnitIds": [
+        "SEMU-887f5b7f716711dbb37786cb"
+      ],
+      "evidenceIds": [
+        "BEV-f6949d67d67d9d38262c6311"
+      ],
+      "repositories": [
+        "plantuml-stdlib/C4-PlantUML"
+      ],
+      "architectureGroupIds": [
+        "ACFG-b6a569e943298305528c6772"
+      ],
+      "inputCharacters": 1747,
+      "projectedInputTokens": 437,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:af5203790ee5310dd03f3c6b0d7b0fb7dd251a9f1738b0fb8ac47bd3a6b173df"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:18",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-18"
+      ],
+      "semanticUnitIds": [
+        "SEMU-807374cfa7e810b3e7d7118a"
+      ],
+      "evidenceIds": [
+        "BEV-235d9f247ef339a20866b297"
+      ],
+      "repositories": [
+        "plantuml-stdlib/C4-PlantUML"
+      ],
+      "architectureGroupIds": [
+        "ACFG-b6a569e943298305528c6772"
+      ],
+      "inputCharacters": 2085,
+      "projectedInputTokens": 522,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:d0b4c1a10669e6d147ae9acc66fdf6c97df357bd0738ad763014e007aecf9122"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:19",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-19"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5ee5141bf54426a9f4d00b1f"
+      ],
+      "evidenceIds": [
+        "BEV-6bfde0a7dbe3beb487385bfe"
+      ],
+      "repositories": [
+        "likec4/likec4"
+      ],
+      "architectureGroupIds": [
+        "ACFG-58fd77bf049118571a073ea0"
+      ],
+      "inputCharacters": 2494,
+      "projectedInputTokens": 624,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:f74b1bb814e57d5d96885faad582f3fc78baf40f7d9bc3382e93d6bb7e5e5f62"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:20",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-20"
+      ],
+      "semanticUnitIds": [
+        "SEMU-2f7d1e8e3e138187076862c7"
+      ],
+      "evidenceIds": [
+        "BEV-525e8c7d02b86716e6ddfd0b"
+      ],
+      "repositories": [
+        "aws-samples/serverless-patterns"
+      ],
+      "architectureGroupIds": [
+        "ACFG-23eb75225ae1ca6696aec6a3"
+      ],
+      "inputCharacters": 1756,
+      "projectedInputTokens": 439,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:5764b6dbfe98eaadf04663100791cc22b31e0a0c89c092cc0497b3833d82b45c"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:21",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "semanticUnitIds": [
+        "SEMU-52464381ba053761a5c71a1b"
+      ],
+      "evidenceIds": [
+        "BEV-fcc349fa2dedc2c092f08f84"
+      ],
+      "repositories": [
+        "ea-toolkit/architecture-catalog"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 977,
+      "projectedInputTokens": 245,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:62e9cc94f539012d44706b9d47bda19cc9c26554f8401eaaba2482ade23ec2a3"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:22",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-22"
+      ],
+      "semanticUnitIds": [
+        "SEMU-20c7f2c259762971c74979ed"
+      ],
+      "evidenceIds": [
+        "BEV-51f4caabb87d02521ee53e84"
+      ],
+      "repositories": [
+        "ardalis/CleanArchitecture"
+      ],
+      "architectureGroupIds": [
+        "ACFG-0c156fab5d4b30270abb18d8"
+      ],
+      "inputCharacters": 2798,
+      "projectedInputTokens": 700,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:93223551a66ef13b6377795b0bbf0348e9b54c79fc319e8ca54098e5ffe957b9"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:23",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-23"
+      ],
+      "semanticUnitIds": [
+        "SEMU-2c791505a291982eea0ec748"
+      ],
+      "evidenceIds": [
+        "BEV-7cb026af13f9061c688c165f"
+      ],
+      "repositories": [
+        "TNG/ArchUnit"
+      ],
+      "architectureGroupIds": [
+        "ACFG-42527522533d560a45d0a46a"
+      ],
+      "inputCharacters": 2377,
+      "projectedInputTokens": 595,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:649d29f6f4bb31a55e88fce825f042a0baf2e6d57797d020006b3cc056c9a2e5"
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:24",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-24"
+      ],
+      "semanticUnitIds": [
+        "CONTROL-GH-AWESOME-ANTIPATTERN-claim-bearing-materially-different"
+      ],
+      "evidenceIds": [],
+      "repositories": [
+        "fauzisho/awesome-antipattern"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 622,
+      "projectedInputTokens": 156,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:efeac34aaaa62f4dfdc36cd3cea9e60685faadb7e731d16f11f514558f717268"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:01",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-22"
+      ],
+      "semanticUnitIds": [
+        "SEMU-20c7f2c259762971c74979ed"
+      ],
+      "evidenceIds": [
+        "BEV-51f4caabb87d02521ee53e84"
+      ],
+      "repositories": [
+        "ardalis/CleanArchitecture"
+      ],
+      "architectureGroupIds": [
+        "ACFG-0c156fab5d4b30270abb18d8"
+      ],
+      "inputCharacters": 2805,
+      "projectedInputTokens": 702,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:c7f1786cec6243207b51bd9f6975f221e96829543f2d4faa96405fdb628bbf89"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:02",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-03",
+        "G6B1-04"
+      ],
+      "semanticUnitIds": [
+        "SEMU-8cb01d6b548dbace272417aa",
+        "SEMU-02a62be700366b90d661a71b"
+      ],
+      "evidenceIds": [
+        "BEV-b52e41d91d436a91aca36b8b",
+        "BEV-45a8396b1620b74a67ac57ae"
+      ],
+      "repositories": [
+        "asyncapi/spec"
+      ],
+      "architectureGroupIds": [
+        "ACFG-a1249e53361ad3146d537a2f"
+      ],
+      "inputCharacters": 4827,
+      "projectedInputTokens": 1207,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:0c2d3ffb84d5a3d1c4b7a291d146585469076672f4a8e305b98457d76bffb792"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:03",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-20"
+      ],
+      "semanticUnitIds": [
+        "SEMU-2f7d1e8e3e138187076862c7"
+      ],
+      "evidenceIds": [
+        "BEV-525e8c7d02b86716e6ddfd0b"
+      ],
+      "repositories": [
+        "aws-samples/serverless-patterns"
+      ],
+      "architectureGroupIds": [
+        "ACFG-23eb75225ae1ca6696aec6a3"
+      ],
+      "inputCharacters": 1763,
+      "projectedInputTokens": 441,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:3e01885c8ce520f0d395fd6ff0afd0bdecd2b03e08174d8e61fc25918195f559"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:04",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "semanticUnitIds": [
+        "SEMU-e9f9d891f5f3ea90e38f70a9",
+        "SEMU-f2931bbe5d7f1c3fd9d4b1bd"
+      ],
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce",
+        "BEV-53bc04b94c6a9116788e7543"
+      ],
+      "repositories": [
+        "Azure/ResourceModules"
+      ],
+      "architectureGroupIds": [
+        "ACFG-bba1a9bad7f0d46d082d3624"
+      ],
+      "inputCharacters": 7574,
+      "projectedInputTokens": 1894,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:ae2ee3150e3120fd80d354395a644266738c4ce7321ff3292677299388176363"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:05",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "semanticUnitIds": [
+        "SEMU-52464381ba053761a5c71a1b"
+      ],
+      "evidenceIds": [
+        "BEV-fcc349fa2dedc2c092f08f84"
+      ],
+      "repositories": [
+        "ea-toolkit/architecture-catalog"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 984,
+      "projectedInputTokens": 246,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:bfd10d5526f753b5e48f05abe9842e37a9884157ebab72c806c277a8abd5a968"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:06",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-24"
+      ],
+      "semanticUnitIds": [
+        "CONTROL-GH-AWESOME-ANTIPATTERN-claim-bearing-materially-different"
+      ],
+      "evidenceIds": [],
+      "repositories": [
+        "fauzisho/awesome-antipattern"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 629,
+      "projectedInputTokens": 158,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:509b774d6eda3ebb591d8e761cf0f1b4ee3aaa3434906731c944b5b1d7b50fe0"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:07",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-10",
+        "G6B1-11"
+      ],
+      "semanticUnitIds": [
+        "SEMU-7fefaadf12f0efdec201ed2d",
+        "SEMU-047d5038e3482af8ee64b7fd"
+      ],
+      "evidenceIds": [
+        "BEV-53e36cd2165eec1cffd76493",
+        "BEV-ba42951a9a7b05050d9a36c7"
+      ],
+      "repositories": [
+        "finos/ai-reference-architecture-library"
+      ],
+      "architectureGroupIds": [
+        "ACFG-88704d96d75b40ac55fba4fd"
+      ],
+      "inputCharacters": 10321,
+      "projectedInputTokens": 2581,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:023e5567ae39fe932ddfb4caa01e3910c354b0d68b7142b29c2568c400a0b1a3"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:08",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-19"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5ee5141bf54426a9f4d00b1f"
+      ],
+      "evidenceIds": [
+        "BEV-6bfde0a7dbe3beb487385bfe"
+      ],
+      "repositories": [
+        "likec4/likec4"
+      ],
+      "architectureGroupIds": [
+        "ACFG-58fd77bf049118571a073ea0"
+      ],
+      "inputCharacters": 2501,
+      "projectedInputTokens": 626,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:2dbbbff96c6c6071855430cb06b3538bb8d55c1b64b57f2cfcaaaae81be4e209"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:09",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07",
+        "G6B1-08"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5d681719b2ac4ad1465e0244",
+        "SEMU-5145eec6ccf40e5e999b4bb2",
+        "SEMU-0fb29b6a62cb6cc9df28b5d4"
+      ],
+      "evidenceIds": [
+        "BEV-79d04db6eab52cfde71559fc",
+        "BEV-48b0cb0824957d14e5044e65",
+        "BEV-8f946e0488f13c1df9469a2f"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-62ff83fd2947cbe12c243453",
+        "ACFG-86a150763f90ab45c113f2a4"
+      ],
+      "inputCharacters": 13480,
+      "projectedInputTokens": 3370,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:faffd897243308d51f738bb9a502c1565cee849ec3f5c74a4341f7ab61d2c227"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:10",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "semanticUnitIds": [
+        "SEMU-e1d61a650356828956575045"
+      ],
+      "evidenceIds": [
+        "BEV-d04770a7fd02a158b96b119d"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-be877f533f0be94989c46628"
+      ],
+      "inputCharacters": 7640,
+      "projectedInputTokens": 1910,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:8119f727f7bd66f28ebc23cc8c26449deef365e5255eb5967e4ecd53d9aaac41"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:11",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "semanticUnitIds": [
+        "SEMU-da2a0e336eef32c7df3b60c5"
+      ],
+      "evidenceIds": [
+        "BEV-0053bcdba65df5d1e58fdbf4"
+      ],
+      "repositories": [
+        "oam-dev/spec"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 1580,
+      "projectedInputTokens": 395,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:1dbb51f021063d877cf617b502fca2bc6dd4bf024982a80d3f336ca76f3cce90"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:12",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-16"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5e095ebe0cf60567fe9c07a9"
+      ],
+      "evidenceIds": [
+        "BEV-b3e3c943daf7709f0853caae"
+      ],
+      "repositories": [
+        "open-telemetry/opentelemetry-demo"
+      ],
+      "architectureGroupIds": [
+        "ACFG-0950a50270cc1818742c5a93"
+      ],
+      "inputCharacters": 2365,
+      "projectedInputTokens": 592,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:7679452d2dd3da8ceb9ae477f4d80150b0b79908eb1a17716ce44707c1033462"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:13",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-17",
+        "G6B1-18"
+      ],
+      "semanticUnitIds": [
+        "SEMU-887f5b7f716711dbb37786cb",
+        "SEMU-807374cfa7e810b3e7d7118a"
+      ],
+      "evidenceIds": [
+        "BEV-f6949d67d67d9d38262c6311",
+        "BEV-235d9f247ef339a20866b297"
+      ],
+      "repositories": [
+        "plantuml-stdlib/C4-PlantUML"
+      ],
+      "architectureGroupIds": [
+        "ACFG-b6a569e943298305528c6772"
+      ],
+      "inputCharacters": 3497,
+      "projectedInputTokens": 875,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:e7c9580d01c512bdfbb79ccce244ab062d14a6557990e714a811a844283541a4"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:14",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-12",
+        "G6B1-13"
+      ],
+      "semanticUnitIds": [
+        "SEMU-0484cddf43204952d6882ebe",
+        "SEMU-678ef38412e39a3c1245cb8c"
+      ],
+      "evidenceIds": [
+        "BEV-d075515016509baf01b5c585",
+        "BEV-577cee3a91825ff936c52564"
+      ],
+      "repositories": [
+        "r0light/cna-quality-model"
+      ],
+      "architectureGroupIds": [
+        "ACFG-320ec7fed4f6bcd4d1c63b7f"
+      ],
+      "inputCharacters": 16984,
+      "projectedInputTokens": 4246,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:5a8bf70fe422ad60d7ce638997d4934153b95a3f2b05e235c666509c3397fe55"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:15",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-14"
+      ],
+      "semanticUnitIds": [
+        "SEMU-d9dd8008567d9ca5a3b73da4"
+      ],
+      "evidenceIds": [
+        "BEV-0a57ca89afc9e92ec29c8871"
+      ],
+      "repositories": [
+        "service-mesh-patterns/service-mesh-patterns"
+      ],
+      "architectureGroupIds": [
+        "ACFG-c57bafb060de8b4690ae8781"
+      ],
+      "inputCharacters": 1665,
+      "projectedInputTokens": 417,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:7210e3ab07998f30ef17482bbc3e6e62a0f258fa4d3ff8c41cb7178120c9a350"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:16",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "semanticUnitIds": [
+        "SEMU-52c704f2c28e3897f26c840a"
+      ],
+      "evidenceIds": [
+        "BEV-b4d881c0aa0d205179a5c445"
+      ],
+      "repositories": [
+        "spring-projects/spring-modulith"
+      ],
+      "architectureGroupIds": [
+        "ACFG-579a3b1739d9a8d917fe3dcb"
+      ],
+      "inputCharacters": 2402,
+      "projectedInputTokens": 601,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:d4d0f6ae0dc422cb63064815170475cf1ee77a6d379153d6bb5cb3f157673f64"
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:17",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-23"
+      ],
+      "semanticUnitIds": [
+        "SEMU-2c791505a291982eea0ec748"
+      ],
+      "evidenceIds": [
+        "BEV-7cb026af13f9061c688c165f"
+      ],
+      "repositories": [
+        "TNG/ArchUnit"
+      ],
+      "architectureGroupIds": [
+        "ACFG-42527522533d560a45d0a46a"
+      ],
+      "inputCharacters": 2384,
+      "projectedInputTokens": 596,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:244afe0ab5fd61bfcbbdf1454bd1f77da1ae2ba219dc8a0605549db2958249f4"
+    },
+    {
+      "requestId": "bounded-architecture-group:01",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-16"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5e095ebe0cf60567fe9c07a9"
+      ],
+      "evidenceIds": [
+        "BEV-b3e3c943daf7709f0853caae"
+      ],
+      "repositories": [
+        "open-telemetry/opentelemetry-demo"
+      ],
+      "architectureGroupIds": [
+        "ACFG-0950a50270cc1818742c5a93"
+      ],
+      "inputCharacters": 2358,
+      "projectedInputTokens": 590,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:11ff515ec5ce8ce086b0b1005ab9c6ef1c9edb1f7db0b342b895ce824db263a0"
+    },
+    {
+      "requestId": "bounded-architecture-group:02",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-22"
+      ],
+      "semanticUnitIds": [
+        "SEMU-20c7f2c259762971c74979ed"
+      ],
+      "evidenceIds": [
+        "BEV-51f4caabb87d02521ee53e84"
+      ],
+      "repositories": [
+        "ardalis/CleanArchitecture"
+      ],
+      "architectureGroupIds": [
+        "ACFG-0c156fab5d4b30270abb18d8"
+      ],
+      "inputCharacters": 2798,
+      "projectedInputTokens": 700,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:243158f6b3eb43e948eabb3360cd5c0409fe6b28c0923fede0bd49bfcf3a7ecd"
+    },
+    {
+      "requestId": "bounded-architecture-group:03",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-20"
+      ],
+      "semanticUnitIds": [
+        "SEMU-2f7d1e8e3e138187076862c7"
+      ],
+      "evidenceIds": [
+        "BEV-525e8c7d02b86716e6ddfd0b"
+      ],
+      "repositories": [
+        "aws-samples/serverless-patterns"
+      ],
+      "architectureGroupIds": [
+        "ACFG-23eb75225ae1ca6696aec6a3"
+      ],
+      "inputCharacters": 1756,
+      "projectedInputTokens": 439,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:14b6910a15a860a43a6136ba6b0a02e36effd7c524dd7f72c698d68a2c787108"
+    },
+    {
+      "requestId": "bounded-architecture-group:04",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-12",
+        "G6B1-13"
+      ],
+      "semanticUnitIds": [
+        "SEMU-0484cddf43204952d6882ebe",
+        "SEMU-678ef38412e39a3c1245cb8c"
+      ],
+      "evidenceIds": [
+        "BEV-d075515016509baf01b5c585",
+        "BEV-577cee3a91825ff936c52564"
+      ],
+      "repositories": [
+        "r0light/cna-quality-model"
+      ],
+      "architectureGroupIds": [
+        "ACFG-320ec7fed4f6bcd4d1c63b7f"
+      ],
+      "inputCharacters": 16977,
+      "projectedInputTokens": 4245,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:3abacd37bb0c2c5b6227dc626460516f989be039a0e6ec4dc26921c060b6743b"
+    },
+    {
+      "requestId": "bounded-architecture-group:05",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-23"
+      ],
+      "semanticUnitIds": [
+        "SEMU-2c791505a291982eea0ec748"
+      ],
+      "evidenceIds": [
+        "BEV-7cb026af13f9061c688c165f"
+      ],
+      "repositories": [
+        "TNG/ArchUnit"
+      ],
+      "architectureGroupIds": [
+        "ACFG-42527522533d560a45d0a46a"
+      ],
+      "inputCharacters": 2377,
+      "projectedInputTokens": 595,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:2c6dc526370c1bee797ca9bdfa2b0495909dfed8e3dfbbc867a9b570e34f179a"
+    },
+    {
+      "requestId": "bounded-architecture-group:06",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "semanticUnitIds": [
+        "SEMU-52c704f2c28e3897f26c840a"
+      ],
+      "evidenceIds": [
+        "BEV-b4d881c0aa0d205179a5c445"
+      ],
+      "repositories": [
+        "spring-projects/spring-modulith"
+      ],
+      "architectureGroupIds": [
+        "ACFG-579a3b1739d9a8d917fe3dcb"
+      ],
+      "inputCharacters": 2395,
+      "projectedInputTokens": 599,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:7725be8ce9ba68287bc7a5c4f3b77c526672d99cadf998ab2c9dfce4421b57f1"
+    },
+    {
+      "requestId": "bounded-architecture-group:07",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-19"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5ee5141bf54426a9f4d00b1f"
+      ],
+      "evidenceIds": [
+        "BEV-6bfde0a7dbe3beb487385bfe"
+      ],
+      "repositories": [
+        "likec4/likec4"
+      ],
+      "architectureGroupIds": [
+        "ACFG-58fd77bf049118571a073ea0"
+      ],
+      "inputCharacters": 2494,
+      "projectedInputTokens": 624,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:9b2d39199e398d32272340d6cc0eec8ab4176462dd5c09496921f61d30f8387b"
+    },
+    {
+      "requestId": "bounded-architecture-group:08",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ],
+      "semanticUnitIds": [
+        "SEMU-5d681719b2ac4ad1465e0244",
+        "SEMU-5145eec6ccf40e5e999b4bb2"
+      ],
+      "evidenceIds": [
+        "BEV-79d04db6eab52cfde71559fc",
+        "BEV-48b0cb0824957d14e5044e65"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-62ff83fd2947cbe12c243453"
+      ],
+      "inputCharacters": 6265,
+      "projectedInputTokens": 1567,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:b504bc359b02a1279ba8eb998888d1de5601450dfc35cbb6502932bdd0aebf9f"
+    },
+    {
+      "requestId": "bounded-architecture-group:09",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-08"
+      ],
+      "semanticUnitIds": [
+        "SEMU-0fb29b6a62cb6cc9df28b5d4"
+      ],
+      "evidenceIds": [
+        "BEV-8f946e0488f13c1df9469a2f"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-86a150763f90ab45c113f2a4"
+      ],
+      "inputCharacters": 7550,
+      "projectedInputTokens": 1888,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:53068d9b51b70f35739613653b658e31f915cc91ec777763de312b875d54d3d4"
+    },
+    {
+      "requestId": "bounded-architecture-group:10",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-10",
+        "G6B1-11"
+      ],
+      "semanticUnitIds": [
+        "SEMU-7fefaadf12f0efdec201ed2d",
+        "SEMU-047d5038e3482af8ee64b7fd"
+      ],
+      "evidenceIds": [
+        "BEV-53e36cd2165eec1cffd76493",
+        "BEV-ba42951a9a7b05050d9a36c7"
+      ],
+      "repositories": [
+        "finos/ai-reference-architecture-library"
+      ],
+      "architectureGroupIds": [
+        "ACFG-88704d96d75b40ac55fba4fd"
+      ],
+      "inputCharacters": 10314,
+      "projectedInputTokens": 2579,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:4f0adb89a586de5586dd4fabe294b25e1f7ea3d8ddaec466975fb83c46828849"
+    },
+    {
+      "requestId": "bounded-architecture-group:11",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-03",
+        "G6B1-04"
+      ],
+      "semanticUnitIds": [
+        "SEMU-8cb01d6b548dbace272417aa",
+        "SEMU-02a62be700366b90d661a71b"
+      ],
+      "evidenceIds": [
+        "BEV-b52e41d91d436a91aca36b8b",
+        "BEV-45a8396b1620b74a67ac57ae"
+      ],
+      "repositories": [
+        "asyncapi/spec"
+      ],
+      "architectureGroupIds": [
+        "ACFG-a1249e53361ad3146d537a2f"
+      ],
+      "inputCharacters": 4820,
+      "projectedInputTokens": 1205,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:32a705aec16f16d1ee05d7f6eae99adad79130e4de1b65e9407bbb06f30887cd"
+    },
+    {
+      "requestId": "bounded-architecture-group:12",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-17",
+        "G6B1-18"
+      ],
+      "semanticUnitIds": [
+        "SEMU-887f5b7f716711dbb37786cb",
+        "SEMU-807374cfa7e810b3e7d7118a"
+      ],
+      "evidenceIds": [
+        "BEV-f6949d67d67d9d38262c6311",
+        "BEV-235d9f247ef339a20866b297"
+      ],
+      "repositories": [
+        "plantuml-stdlib/C4-PlantUML"
+      ],
+      "architectureGroupIds": [
+        "ACFG-b6a569e943298305528c6772"
+      ],
+      "inputCharacters": 3490,
+      "projectedInputTokens": 873,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:6a0cbce5831c8da4ec26a208e339404b356fed97b2b4fae43d3b722d9850350c"
+    },
+    {
+      "requestId": "bounded-architecture-group:13",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "semanticUnitIds": [
+        "SEMU-e9f9d891f5f3ea90e38f70a9",
+        "SEMU-f2931bbe5d7f1c3fd9d4b1bd"
+      ],
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce",
+        "BEV-53bc04b94c6a9116788e7543"
+      ],
+      "repositories": [
+        "Azure/ResourceModules"
+      ],
+      "architectureGroupIds": [
+        "ACFG-bba1a9bad7f0d46d082d3624"
+      ],
+      "inputCharacters": 7567,
+      "projectedInputTokens": 1892,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:206fb70e74c03cc79278b7580fc94f7b2048f443d9e9fb9f6bc51b9eb7987b25"
+    },
+    {
+      "requestId": "bounded-architecture-group:14",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "semanticUnitIds": [
+        "SEMU-e1d61a650356828956575045"
+      ],
+      "evidenceIds": [
+        "BEV-d04770a7fd02a158b96b119d"
+      ],
+      "repositories": [
+        "MicrosoftDocs/architecture-center"
+      ],
+      "architectureGroupIds": [
+        "ACFG-be877f533f0be94989c46628"
+      ],
+      "inputCharacters": 7633,
+      "projectedInputTokens": 1909,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:23d9e0f2876fb99c274f7684c5d7753f513039ed86b70220fa810c1e85ad9067"
+    },
+    {
+      "requestId": "bounded-architecture-group:15",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-14"
+      ],
+      "semanticUnitIds": [
+        "SEMU-d9dd8008567d9ca5a3b73da4"
+      ],
+      "evidenceIds": [
+        "BEV-0a57ca89afc9e92ec29c8871"
+      ],
+      "repositories": [
+        "service-mesh-patterns/service-mesh-patterns"
+      ],
+      "architectureGroupIds": [
+        "ACFG-c57bafb060de8b4690ae8781"
+      ],
+      "inputCharacters": 1658,
+      "projectedInputTokens": 415,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:7d5a1c4b61fb56511bd1aaa0e8f932fb8e4b6a6663adce3c6e017e1f7d3f4fc3"
+    },
+    {
+      "requestId": "bounded-architecture-group:16",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "semanticUnitIds": [
+        "SEMU-da2a0e336eef32c7df3b60c5"
+      ],
+      "evidenceIds": [
+        "BEV-0053bcdba65df5d1e58fdbf4"
+      ],
+      "repositories": [
+        "oam-dev/spec"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 1573,
+      "projectedInputTokens": 394,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:beb3a7e228ecff9e4344d4b2c51ce79f7bd2e9d090e994f54038e6da008064c7"
+    },
+    {
+      "requestId": "bounded-architecture-group:17",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "semanticUnitIds": [
+        "SEMU-52464381ba053761a5c71a1b"
+      ],
+      "evidenceIds": [
+        "BEV-fcc349fa2dedc2c092f08f84"
+      ],
+      "repositories": [
+        "ea-toolkit/architecture-catalog"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 977,
+      "projectedInputTokens": 245,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:6e99804e22966fdde300f9b652614c8107884023ea5bb474daf2e458226fb337"
+    },
+    {
+      "requestId": "bounded-architecture-group:18",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-24"
+      ],
+      "semanticUnitIds": [
+        "CONTROL-GH-AWESOME-ANTIPATTERN-claim-bearing-materially-different"
+      ],
+      "evidenceIds": [],
+      "repositories": [
+        "fauzisho/awesome-antipattern"
+      ],
+      "architectureGroupIds": [],
+      "inputCharacters": 622,
+      "projectedInputTokens": 156,
+      "expectedOutputSchema": "aiw-gate-6b-1-candidate-semantic-assets-v1",
+      "checkpointKey": "sha256:e6814a591d1e33e44adf7982a46018e5de96fe1eea8650f005395f04df8c0370"
+    }
+  ],
+  "deterministicFingerprint": "sha256:5ea16e183a200ed2803ee04cf7be2852bf9d8aa1dd297a0c1727a6c46883ae5d"
+}
