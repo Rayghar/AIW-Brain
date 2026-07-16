@@ -23,6 +23,25 @@ export interface LlmUsage {
   totalTokens?: number;
 }
 
+export type LlmModelIdentityValidationStatus = 'accepted-exact-request' | 'accepted-approved-alias-snapshot' | 'rejected';
+
+export interface LlmProviderTransactionTelemetry {
+  httpStatus?: number;
+  providerRequestId?: string;
+  requestedModel: string;
+  providerReportedModel?: string;
+  inputTokens?: number;
+  outputTokens?: number;
+  totalTokens?: number;
+  elapsedDurationMs: number;
+  retryCount: number;
+  responseFingerprint?: string;
+  schemaValidationStatus: 'not-run' | 'passed' | 'failed';
+  identityValidationStatus: LlmModelIdentityValidationStatus | 'not-run';
+  finalDisposition: 'accepted' | 'rejected-http' | 'rejected-invalid-json' | 'rejected-model-identity' | 'rejected-empty-response' | 'rejected-schema' | 'rejected-grounding' | 'rejected-other';
+  semanticContentPersisted: false;
+}
+
 export interface LlmExecutionResult<T> {
   value: T;
   providerId: LlmProviderId;
@@ -32,12 +51,16 @@ export interface LlmExecutionResult<T> {
   latencyMs: number;
   usage: LlmUsage;
   responseId?: string;
+  httpStatus: number;
+  providerReportedModel?: string;
+  providerRequestId?: string;
   requestFingerprint: string;
   responseFingerprint: string;
   fallbackUsed: boolean;
   schemaValidation: JsonSchemaValidationResult;
   redaction: { system: RedactionResult; user: RedactionResult };
   groundingReceipt?: EvidenceEntailmentReceipt;
+  transactionTelemetry: LlmProviderTransactionTelemetry;
 }
 
 export interface JsonGenerationRequest {
@@ -68,6 +91,7 @@ export interface LlmDeadLetterRecord {
   requestFingerprint: string;
   attempts: number;
   errors: string[];
+  providerTransactions: LlmProviderTransactionTelemetry[];
   containsPromptContent: false;
   productionAccepted: false;
 }
@@ -76,7 +100,34 @@ export interface LlmGatewayOptions {
   deadLetterSink?: (record: LlmDeadLetterRecord) => void | Promise<void>;
 }
 
+export interface LlmModelEntitlementReceipt {
+  providerId: LlmProviderId;
+  purpose: LlmPurpose;
+  model: string;
+  apiRouteUsed: string;
+  requestTimestamp: string;
+  httpStatus: number;
+  providerRequestId?: string;
+  exactModelIdReturned?: string;
+  available: boolean;
+  requestCount: 1;
+  retryCount: 0;
+  redaction: { secretMaterialIncluded: false; safeErrorRedactions: number };
+  safeProviderError?: { code?: string; type?: string; message: string };
+}
+
 const circuits = new Map<string, CircuitState>();
+
+class LlmProviderTransactionRejectedError extends Error {
+  constructor(message: string, readonly transactionTelemetry: LlmProviderTransactionTelemetry) {
+    super(message);
+    this.name = 'LlmProviderTransactionRejectedError';
+  }
+}
+
+function containsPatternSyntax(value: string): boolean {
+  return /[*?\[\]{}()|^$\\]/.test(value);
+}
 
 function envKeyForPurpose(purpose: LlmPurpose): string {
   return purpose.toUpperCase().replace(/-/g, '_');
@@ -169,8 +220,27 @@ export function validateLlmRuntimePolicy(policy: LlmRuntimePolicy): LlmRuntimePo
   for (const entry of normalized.modelAllowlist ?? []) {
     if (!llmProviderIds.includes(entry.providerId)) throw new Error(`INVALID_LLM_MODEL_ALLOWLIST_PROVIDER:${entry.providerId}`);
     if (!entry.model?.trim()) throw new Error(`INVALID_LLM_MODEL_ALLOWLIST_MODEL:${entry.providerId}`);
+    if (entry.provider && entry.provider !== entry.providerId) throw new Error(`LLM_MODEL_IDENTITY_PROVIDER_MISMATCH:${entry.providerId}:${entry.provider}`);
+    const identityValues = [entry.model, entry.configuredAlias, entry.requestedModel, entry.resolvedModel, entry.modelFamily, ...(entry.allowedSnapshots ?? [])].filter((value): value is string => Boolean(value));
+    if (identityValues.some(containsPatternSyntax)) throw new Error(`LLM_MODEL_IDENTITY_PATTERN_PROHIBITED:${entry.providerId}:${entry.model}`);
     if (!entry.verificationReference?.trim()) throw new Error(`LLM_MODEL_ALLOWLIST_VERIFICATION_REQUIRED:${entry.providerId}:${entry.model}`);
     if (entry.purposes?.some((purpose) => !llmPurposes.includes(purpose))) throw new Error(`INVALID_LLM_MODEL_ALLOWLIST_PURPOSE:${entry.providerId}:${entry.model}`);
+    if (entry.purposes?.includes('governed-candidate-semantic-transformation')) {
+      if (!entry.verificationTimestamp || !Number.isFinite(Date.parse(entry.verificationTimestamp))) throw new Error(`LLM_MODEL_ALLOWLIST_VERIFICATION_TIMESTAMP_REQUIRED:${entry.providerId}:${entry.model}`);
+      if (!entry.verificationMethod?.trim()) throw new Error(`LLM_MODEL_ALLOWLIST_VERIFICATION_METHOD_REQUIRED:${entry.providerId}:${entry.model}`);
+      if (!entry.provider || !entry.configuredAlias?.trim() || !entry.requestedModel?.trim() || !entry.resolvedModel?.trim()
+        || !entry.modelFamily?.trim() || !entry.allowedSnapshots?.length || !entry.modelIdentityDecision) {
+        throw new Error(`LLM_MODEL_IDENTITY_CONTRACT_REQUIRED:${entry.providerId}:${entry.model}`);
+      }
+      if (entry.model !== entry.requestedModel) throw new Error(`LLM_ROUTE_MODEL_IDENTITY_MISMATCH:${entry.providerId}:${entry.model}:${entry.requestedModel}`);
+      if (new Set(entry.allowedSnapshots).size !== entry.allowedSnapshots.length) throw new Error(`LLM_MODEL_SNAPSHOT_DUPLICATE:${entry.providerId}:${entry.model}`);
+      if (entry.modelIdentityDecision === 'exact-snapshot-pinned' && (entry.requestedModel !== entry.resolvedModel || !entry.allowedSnapshots.includes(entry.resolvedModel))) {
+        throw new Error(`LLM_EXACT_SNAPSHOT_PIN_INVALID:${entry.providerId}:${entry.model}`);
+      }
+      if (entry.modelIdentityDecision === 'approved-alias-explicit-snapshot' && entry.requestedModel !== entry.configuredAlias) {
+        throw new Error(`LLM_APPROVED_ALIAS_REQUEST_MISMATCH:${entry.providerId}:${entry.model}`);
+      }
+    }
     const key = `${entry.providerId}\n${entry.model}\n${[...(entry.purposes ?? [])].sort().join(',')}`;
     if (allowedModels.has(key)) throw new Error(`DUPLICATE_LLM_MODEL_ALLOWLIST_ENTRY:${entry.providerId}:${entry.model}`);
     allowedModels.add(key);
@@ -182,6 +252,7 @@ export function validateLlmRuntimePolicy(policy: LlmRuntimePolicy): LlmRuntimePo
     if (!llmPurposes.includes(route.purpose)) throw new Error(`INVALID_LLM_PURPOSE:${route.purpose}`);
     if (!llmProviderIds.includes(route.providerId)) throw new Error(`INVALID_LLM_PROVIDER:${route.providerId}`);
     if (!route.model.trim()) throw new Error(`LLM_MODEL_REQUIRED:${route.id}`);
+    if (route.purpose === 'governed-candidate-semantic-transformation' && route.fallbackRouteIds.length) throw new Error(`LLM_GOVERNED_TRANSFORMATION_FALLBACK_PROHIBITED:${route.id}`);
     const provider = providerDefinition(route.providerId);
     const protocol = route.protocol ?? provider.protocols[0];
     if (!protocol || !provider.protocols.includes(protocol)) throw new Error(`UNSUPPORTED_LLM_PROTOCOL:${route.id}:${protocol}`);
@@ -339,15 +410,34 @@ function responseFingerprint(value: unknown): string {
   return sha256(canonicalJson(value));
 }
 
-function modelAllowed(policy: LlmRuntimePolicy, route: LlmRouteConfiguration): boolean {
-  return (policy.modelAllowlist ?? []).some((entry) => entry.providerId === route.providerId
+function modelAllowlistEntry(policy: LlmRuntimePolicy, route: LlmRouteConfiguration): LlmModelAllowlistEntry | undefined {
+  return (policy.modelAllowlist ?? []).find((entry) => entry.providerId === route.providerId
     && entry.model === route.model
     && (!entry.purposes?.length || entry.purposes.includes(route.purpose)));
 }
 
+function modelAllowed(policy: LlmRuntimePolicy, route: LlmRouteConfiguration): boolean {
+  return Boolean(modelAllowlistEntry(policy, route));
+}
+
+export function validateResolvedModelIdentity(input: {
+  entry: LlmModelAllowlistEntry;
+  requestedModel: string;
+  providerReportedModel?: string;
+}): LlmModelIdentityValidationStatus {
+  const { entry, requestedModel, providerReportedModel } = input;
+  if (!providerReportedModel || requestedModel !== (entry.requestedModel ?? entry.model)) return 'rejected';
+  if (providerReportedModel === requestedModel && entry.model === requestedModel) return 'accepted-exact-request';
+  if (entry.configuredAlias === requestedModel
+    && entry.modelIdentityDecision === 'approved-alias-explicit-snapshot'
+    && (entry.allowedSnapshots ?? []).includes(providerReportedModel)) return 'accepted-approved-alias-snapshot';
+  return 'rejected';
+}
+
 async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerationRequest, policy: LlmRuntimePolicy, fetchImpl: typeof fetch): Promise<LlmExecutionResult<T>> {
   if (!route.enabled) throw new Error(`LLM_ROUTE_DISABLED:${route.id}`);
-  if (!modelAllowed(policy, route)) throw new Error(`LLM_MODEL_NOT_ALLOWLISTED:${route.providerId}:${route.model}:${route.purpose}`);
+  const allowlistEntry = modelAllowlistEntry(policy, route);
+  if (!allowlistEntry) throw new Error(`LLM_MODEL_NOT_ALLOWLISTED:${route.providerId}:${route.model}:${route.purpose}`);
   const classification = request.dataClassification ?? 'internal';
   if (!route.dataClassificationAllowlist.includes(classification)) throw new Error(`LLM_DATA_CLASSIFICATION_BLOCKED:${route.id}:${classification}`);
   if (!circuitAllows(route, policy)) throw new Error(`LLM_CIRCUIT_OPEN:${route.id}`);
@@ -392,39 +482,96 @@ async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerat
     signal: AbortSignal.timeout(Math.max(1_000, route.timeoutMs ?? 120_000)),
   });
   const text = await response.text();
+  const providerRequestId = response.headers.get('x-request-id') ?? response.headers.get('openai-request-id') ?? undefined;
+  const telemetry: LlmProviderTransactionTelemetry = {
+    httpStatus: response.status,
+    ...(providerRequestId ? { providerRequestId } : {}),
+    requestedModel: route.model,
+    elapsedDurationMs: Date.now() - started,
+    retryCount: 0,
+    responseFingerprint: sha256(text),
+    schemaValidationStatus: 'not-run',
+    identityValidationStatus: 'not-run',
+    finalDisposition: 'rejected-other',
+    semanticContentPersisted: false,
+  };
   let payload: any;
   try { payload = text ? JSON.parse(text) : {}; }
-  catch { throw new Error(`LLM_PROVIDER_INVALID_JSON:${route.providerId}:${response.status}`); }
-  if (!response.ok) throw new Error(`LLM_PROVIDER_${route.providerId}_${response.status}:${payload?.error?.message ?? payload?.message ?? 'request failed'}`);
+  catch {
+    telemetry.finalDisposition = 'rejected-invalid-json';
+    throw new LlmProviderTransactionRejectedError(`LLM_PROVIDER_INVALID_JSON:${route.providerId}:${response.status}`, telemetry);
+  }
+  const providerReportedModel = typeof payload.model === 'string' ? payload.model : undefined;
+  if (providerReportedModel) telemetry.providerReportedModel = providerReportedModel;
+  const usage = protocol === 'responses'
+    ? { inputTokens: payload.usage?.input_tokens, outputTokens: payload.usage?.output_tokens, totalTokens: payload.usage?.total_tokens }
+    : { inputTokens: payload.usage?.prompt_tokens, outputTokens: payload.usage?.completion_tokens, totalTokens: payload.usage?.total_tokens };
+  if (Number.isFinite(usage.inputTokens)) telemetry.inputTokens = usage.inputTokens;
+  if (Number.isFinite(usage.outputTokens)) telemetry.outputTokens = usage.outputTokens;
+  if (Number.isFinite(usage.totalTokens)) telemetry.totalTokens = usage.totalTokens;
+  if (!response.ok) {
+    telemetry.finalDisposition = 'rejected-http';
+    const providerMessage = redactForModel(String(payload?.error?.message ?? payload?.message ?? 'request failed'), 'internal').value.slice(0, 300);
+    throw new LlmProviderTransactionRejectedError(`LLM_PROVIDER_${route.providerId}_${response.status}:${providerMessage}`, telemetry);
+  }
+  telemetry.identityValidationStatus = route.purpose === 'governed-candidate-semantic-transformation'
+    ? validateResolvedModelIdentity({ entry: allowlistEntry, requestedModel: route.model, providerReportedModel })
+    : (!providerReportedModel || providerReportedModel === route.model ? 'accepted-exact-request' : 'rejected');
+  if (telemetry.identityValidationStatus === 'rejected') {
+    telemetry.finalDisposition = 'rejected-model-identity';
+    throw new LlmProviderTransactionRejectedError(`LLM_PROVIDER_MODEL_IDENTITY_REJECTED:${route.model}:${providerReportedModel ?? 'missing'}`, telemetry);
+  }
   const outputText = protocol === 'responses'
     ? (typeof payload.output_text === 'string' ? payload.output_text : contentText(payload.output))
     : contentText(payload.choices?.[0]?.message?.content);
-  if (!outputText) throw new Error(`LLM_PROVIDER_EMPTY_RESPONSE:${route.providerId}`);
-  const value = parseJsonContent(outputText) as T;
-  if (isInsufficientGrounding(value)) throw new Error(`LLM_INSUFFICIENT_GROUNDING:${value.missing}`);
+  if (!outputText) {
+    telemetry.finalDisposition = 'rejected-empty-response';
+    throw new LlmProviderTransactionRejectedError(`LLM_PROVIDER_EMPTY_RESPONSE:${route.providerId}`, telemetry);
+  }
+  let value: T;
+  try { value = parseJsonContent(outputText) as T; }
+  catch (error) {
+    telemetry.schemaValidationStatus = 'failed';
+    telemetry.finalDisposition = 'rejected-schema';
+    throw new LlmProviderTransactionRejectedError(error instanceof Error ? error.message : 'LLM_RESPONSE_NOT_JSON', telemetry);
+  }
+  if (isInsufficientGrounding(value)) {
+    telemetry.finalDisposition = 'rejected-grounding';
+    throw new LlmProviderTransactionRejectedError(`LLM_INSUFFICIENT_GROUNDING:${value.missing}`, telemetry);
+  }
   const schemaValidation = request.jsonSchema ? validateJsonSchema(value, request.jsonSchema) : { valid: true, violations: [] };
   if (!schemaValidation.valid) {
+    telemetry.schemaValidationStatus = 'failed';
+    telemetry.finalDisposition = 'rejected-schema';
     const detail = schemaValidation.violations.slice(0, 8).map((item) => `${item.path}:${item.rule}`).join(',');
-    throw new Error(`LLM_RESPONSE_SCHEMA_INVALID:${request.schemaName}:${detail}`);
+    throw new LlmProviderTransactionRejectedError(`LLM_RESPONSE_SCHEMA_INVALID:${request.schemaName}:${detail}`, telemetry);
   }
+  telemetry.schemaValidationStatus = 'passed';
   let groundingReceipt: EvidenceEntailmentReceipt | undefined;
   if (request.grounding) {
     const citedReferenceIds = [...new Set(collectCitationIds(value))];
     const allowlist = new Set(request.grounding.allowedReferenceIds);
     const outsideAllowlist = citedReferenceIds.filter((id) => !allowlist.has(id));
-    if (outsideAllowlist.length) throw new Error(`LLM_CITATION_OUTSIDE_ALLOWLIST:${outsideAllowlist.join(',')}`);
-    if (request.grounding.requireCitations && !citedReferenceIds.length) throw new Error('LLM_GROUNDED_CITATION_REQUIRED');
+    if (outsideAllowlist.length) {
+      telemetry.finalDisposition = 'rejected-grounding';
+      throw new LlmProviderTransactionRejectedError(`LLM_CITATION_OUTSIDE_ALLOWLIST:${outsideAllowlist.join(',')}`, telemetry);
+    }
+    if (request.grounding.requireCitations && !citedReferenceIds.length) {
+      telemetry.finalDisposition = 'rejected-grounding';
+      throw new LlmProviderTransactionRejectedError('LLM_GROUNDED_CITATION_REQUIRED', telemetry);
+    }
     groundingReceipt = verifyEvidenceEntailment({
       outputText: flattenOutputText(value),
       citedReferenceIds,
       sources: request.grounding.sources,
       ...(request.grounding.minimumSupportScore !== undefined ? { threshold: request.grounding.minimumSupportScore } : {}),
     });
-    if (!groundingReceipt.verified) throw new Error(`LLM_EVIDENCE_ENTAILMENT_FAILED:${groundingReceipt.unsupportedReferenceIds.join(',')}`);
+    if (!groundingReceipt.verified) {
+      telemetry.finalDisposition = 'rejected-grounding';
+      throw new LlmProviderTransactionRejectedError(`LLM_EVIDENCE_ENTAILMENT_FAILED:${groundingReceipt.unsupportedReferenceIds.join(',')}`, telemetry);
+    }
   }
-  const usage = protocol === 'responses'
-    ? { inputTokens: payload.usage?.input_tokens, outputTokens: payload.usage?.output_tokens, totalTokens: payload.usage?.total_tokens }
-    : { inputTokens: payload.usage?.prompt_tokens, outputTokens: payload.usage?.completion_tokens, totalTokens: payload.usage?.total_tokens };
+  telemetry.finalDisposition = 'accepted';
   markSuccess(route.id);
   return {
     value,
@@ -435,12 +582,16 @@ async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerat
     latencyMs: Date.now() - started,
     usage,
     ...(typeof payload.id === 'string' ? { responseId: payload.id } : {}),
+    httpStatus: response.status,
+    ...(providerReportedModel ? { providerReportedModel } : {}),
+    ...(providerRequestId ? { providerRequestId } : {}),
     requestFingerprint: requestFingerprint(redactedRequest),
     responseFingerprint: responseFingerprint(value),
     fallbackUsed: false,
     schemaValidation,
     redaction: { system: systemRedaction, user: userRedaction },
     ...(groundingReceipt ? { groundingReceipt } : {}),
+    transactionTelemetry: telemetry,
   };
 }
 
@@ -451,7 +602,7 @@ function orderedRoutes(policy: LlmRuntimePolicy, purpose: LlmPurpose): LlmRouteC
   const result: LlmRouteConfiguration[] = [];
   for (const route of primary) {
     if (!result.some((item) => item.id === route.id)) result.push(route);
-    if (policy.allowFallback) for (const id of route.fallbackRouteIds) {
+    if (policy.allowFallback && purpose !== 'governed-candidate-semantic-transformation') for (const id of route.fallbackRouteIds) {
       const fallback = byId.get(id);
       if (fallback?.enabled && !result.some((item) => item.id === fallback.id)) result.push(fallback);
     }
@@ -464,6 +615,7 @@ export class LlmGateway {
   private readonly fetchImpl: typeof fetch;
   private readonly options: LlmGatewayOptions;
   private readonly deadLetterRecords: LlmDeadLetterRecord[] = [];
+  private readonly transactionTelemetryRecords: LlmProviderTransactionTelemetry[] = [];
 
   constructor(policy: LlmRuntimePolicy = loadLlmRuntimePolicy(), fetchImpl: typeof fetch = fetch, options: LlmGatewayOptions = {}) {
     this.policy = validateLlmRuntimePolicy(policy);
@@ -472,6 +624,38 @@ export class LlmGateway {
   }
 
   deadLetters(): LlmDeadLetterRecord[] { return structuredClone(this.deadLetterRecords); }
+  transactions(): LlmProviderTransactionTelemetry[] { return structuredClone(this.transactionTelemetryRecords); }
+
+  async verifyExactModelEntitlement(input: { providerId: LlmProviderId; purpose: LlmPurpose; model: string }): Promise<LlmModelEntitlementReceipt> {
+    const route = this.policy.routes.find((item) => item.enabled && item.providerId === input.providerId && item.purpose === input.purpose && item.model === input.model);
+    if (!route) throw new Error(`LLM_ENTITLEMENT_ROUTE_NOT_CONFIGURED:${input.providerId}:${input.model}:${input.purpose}`);
+    const requestTimestamp = new Date().toISOString();
+    const apiRouteUsed = `/v1/models/${encodeURIComponent(input.model)}`;
+    const response = await this.fetchImpl(`${baseUrl(route)}/models/${encodeURIComponent(input.model)}`, {
+      method: 'GET',
+      headers: { authorization: `Bearer ${apiKey(route)}`, accept: 'application/json', 'user-agent': `AIW-LLM-Gateway/${AIW_RELEASE.version}` },
+      signal: AbortSignal.timeout(Math.max(1_000, route.timeoutMs ?? 30_000)),
+    });
+    const providerRequestId = response.headers.get('x-request-id') ?? response.headers.get('openai-request-id') ?? undefined;
+    const text = await response.text();
+    let payload: Record<string, any> = {};
+    try { payload = text ? JSON.parse(text) as Record<string, any> : {}; } catch { payload = {}; }
+    const exactModelIdReturned = typeof payload.id === 'string' ? payload.id : undefined;
+    const available = response.ok && exactModelIdReturned === input.model;
+    const rawError = String(payload.error?.message ?? payload.message ?? (available ? '' : 'model entitlement check failed'));
+    const redactedError = redactForModel(rawError, 'internal');
+    return {
+      providerId: input.providerId, purpose: input.purpose, model: input.model, apiRouteUsed, requestTimestamp,
+      httpStatus: response.status, ...(providerRequestId ? { providerRequestId } : {}),
+      ...(exactModelIdReturned ? { exactModelIdReturned } : {}), available, requestCount: 1, retryCount: 0,
+      redaction: { secretMaterialIncluded: false, safeErrorRedactions: redactedError.findings.length },
+      ...(!available ? { safeProviderError: {
+        ...(typeof payload.error?.code === 'string' ? { code: payload.error.code.slice(0, 120) } : {}),
+        ...(typeof payload.error?.type === 'string' ? { type: payload.error.type.slice(0, 120) } : {}),
+        message: redactedError.value.slice(0, 500),
+      } } : {}),
+    };
+  }
 
   configuration(): { policy: LlmRuntimePolicy; providers: Array<LlmProviderDefinition & { configured: boolean; routes: string[] }> } {
     return {
@@ -489,6 +673,7 @@ export class LlmGateway {
 
   async generateJson<T>(request: JsonGenerationRequest): Promise<LlmExecutionResult<T>> {
     const errors: string[] = [];
+    const providerTransactions: LlmProviderTransactionTelemetry[] = [];
     let totalAttempts = 0;
     const routes = orderedRoutes(this.policy, request.purpose);
     for (let index = 0; index < routes.length; index += 1) {
@@ -498,12 +683,18 @@ export class LlmGateway {
         totalAttempts += 1;
         try {
           const result = await invokeRoute<T>(route, request, this.policy, this.fetchImpl);
+          this.transactionTelemetryRecords.push(structuredClone(result.transactionTelemetry));
           return index === 0 ? result : { ...result, fallbackUsed: true };
         } catch (error) {
+          if (error instanceof LlmProviderTransactionRejectedError) {
+            error.transactionTelemetry.retryCount = attempt;
+            providerTransactions.push(structuredClone(error.transactionTelemetry));
+            this.transactionTelemetryRecords.push(structuredClone(error.transactionTelemetry));
+          }
           const message = error instanceof Error ? error.message : String(error);
           errors.push(`${route.id}:${redactForModel(message, 'internal').value.slice(0, 500)}`);
           markFailure(route.id, this.policy);
-          if (message.includes('DATA_CLASSIFICATION_BLOCKED') || message.includes('API_KEY_NOT_CONFIGURED') || message.includes('ROUTE_DISABLED') || message.includes('MODEL_NOT_ALLOWLISTED') || message.includes('INPUT_TOO_LARGE') || message.includes('EVIDENCE_ALLOWLIST_REQUIRED') || message.includes('GROUNDING_LINEAGE_MISMATCH') || message.includes('PROVIDER_NATIVE_SCHEMA_REQUIRED') || message.includes('INSUFFICIENT_GROUNDING') || message.includes('SCHEMA_INVALID') || message.includes('JSON_SCHEMA_REQUIRED') || message.includes('CITATION_OUTSIDE_ALLOWLIST') || message.includes('EVIDENCE_ENTAILMENT_FAILED') || message.includes('GROUNDED_CITATION_REQUIRED')) break;
+          if (message.includes('DATA_CLASSIFICATION_BLOCKED') || message.includes('API_KEY_NOT_CONFIGURED') || message.includes('ROUTE_DISABLED') || message.includes('MODEL_NOT_ALLOWLISTED') || message.includes('MODEL_IDENTITY_REJECTED') || message.includes('INPUT_TOO_LARGE') || message.includes('EVIDENCE_ALLOWLIST_REQUIRED') || message.includes('GROUNDING_LINEAGE_MISMATCH') || message.includes('PROVIDER_NATIVE_SCHEMA_REQUIRED') || message.includes('INSUFFICIENT_GROUNDING') || message.includes('SCHEMA_INVALID') || message.includes('JSON_SCHEMA_REQUIRED') || message.includes('CITATION_OUTSIDE_ALLOWLIST') || message.includes('EVIDENCE_ENTAILMENT_FAILED') || message.includes('GROUNDED_CITATION_REQUIRED')) break;
         }
       }
     }
@@ -513,6 +704,7 @@ export class LlmGateway {
       id: `LLM-DLQ-${createHash('sha256').update(`${requestFingerprint(safeRequest)}\n${errors.join('\n')}`).digest('hex').slice(0, 24)}`,
       createdAt: new Date().toISOString(), purpose: request.purpose, schemaName: request.schemaName,
       requestFingerprint: requestFingerprint(safeRequest), attempts: totalAttempts, errors,
+      providerTransactions,
       containsPromptContent: false, productionAccepted: false,
     };
     this.deadLetterRecords.push(deadLetter);

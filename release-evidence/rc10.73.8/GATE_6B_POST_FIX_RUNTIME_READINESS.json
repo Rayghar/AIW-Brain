@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "aiw-gate-6b-post-fix-runtime-readiness-v1",
+  "generatedAt": "2026-07-16T13:43:17.071Z",
+  "productionAccepted": false,
+  "provider": "openai",
+  "configuredAlias": "gpt-4.1-mini",
+  "requestedModel": "gpt-4.1-mini-2025-04-14",
+  "resolvedModel": "gpt-4.1-mini-2025-04-14",
+  "modelFamily": "gpt-4.1-mini",
+  "allowedSnapshots": [
+    "gpt-4.1-mini-2025-04-14"
+  ],
+  "purpose": "governed-candidate-semantic-transformation",
+  "modelIdentityDecision": "exact-snapshot-pinned",
+  "fallback": "disabled",
+  "originalRejectedSmoke": {
+    "preserved": true,
+    "sha256": "sha256:4196e360f301e6a394131b297a06cee5c95c86c482ad9bedded36896899cb59a",
+    "finalDisposition": "rejected-model-identity"
+  },
+  "implementationChecks": {
+    "exactIdentityPolicyImplemented": true,
+    "preAcceptanceTelemetryImplemented": true,
+    "rejectedSemanticContentPersistenceProhibited": true,
+    "wildcardAndPrefixAcceptanceProhibited": true
+  },
+  "verification": {
+    "focusedRuntimeTests": {
+      "status": "passed",
+      "testFiles": 3,
+      "tests": 24
+    },
+    "domainBuild": "passed",
+    "apiBuild": "passed",
+    "originalReceiptHashReplay": "passed"
+  },
+  "replacementSmoke": {
+    "approvalStatus": "pending-explicit-product-owner-approval",
+    "executed": false,
+    "proposedCommand": "node --env-file-if-exists=.env --import=tsx scripts/rc10-73-8/run-gate-6b-live-bounded-smoke.mts --approved-replacement-smoke"
+  },
+  "fullPilotExecuted": false,
+  "gate6BStatus": "blocked-pending-replacement-smoke-approval-and-execution",
+  "gate6CStatus": "blocked",
+  "gate6DStatus": "not-started",
+  "backupStatus": "deferred-by-product-owner",
+  "recommendation": "eligible-to-request-one-replacement-bounded-smoke; not-authorized-to-execute"
+}

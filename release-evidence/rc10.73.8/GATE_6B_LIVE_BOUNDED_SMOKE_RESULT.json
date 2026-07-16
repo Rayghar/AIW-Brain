@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "aiw-gate-6b-live-bounded-smoke-result-v1",
+  "generatedAt": "2026-07-16T10:34:51.088Z",
+  "productionAccepted": false,
+  "executionStatus": "failed-controlled-stop",
+  "startedAt": "2026-07-16T10:34:57.472Z",
+  "completedAt": "2026-07-16T10:35:09.200Z",
+  "provider": "openai",
+  "model": "gpt-4.1-mini",
+  "purpose": "governed-candidate-semantic-transformation",
+  "protocol": "responses",
+  "routeId": "gate-6b-live-smoke:openai:gpt-4.1-mini",
+  "entitlementReceipt": "release-evidence/rc10.73.8/GATE_6B_LIVE_MODEL_ENTITLEMENT_RECEIPT.json",
+  "transferApprovalReceipt": "release-evidence/rc10.73.8/GATE_6B_LIVE_TRANSFER_APPROVAL_RECEIPT.json",
+  "allowlistEntry": {
+    "providerId": "openai",
+    "model": "gpt-4.1-mini",
+    "purposes": [
+      "governed-candidate-semantic-transformation"
+    ],
+    "verificationReference": "release-evidence/rc10.73.8/GATE_6B_LIVE_MODEL_ENTITLEMENT_RECEIPT.json",
+    "verificationTimestamp": "2026-07-16T09:03:22.049Z",
+    "verificationMethod": "authenticated-exact-model-retrieve"
+  },
+  "limits": {
+    "modelCalls": 1,
+    "retries": 0,
+    "concurrency": 1,
+    "evidencePassages": 1,
+    "inputCharacters": 2120,
+    "maximumInputCharacters": 8000,
+    "maximumOutputTokens": 1500
+  },
+  "disabledCapabilities": {
+    "tools": true,
+    "webSearch": true,
+    "externalRetrieval": true,
+    "codeExecution": true,
+    "fallback": true
+  },
+  "requestCount": 1,
+  "retryCount": 0,
+  "fallbackUsed": false,
+  "httpRequest": {
+    "succeeded": true,
+    "status": null,
+    "statusClass": "2xx",
+    "exactStatusRetained": false,
+    "providerRequestId": null,
+    "evidence": "The gateway reached model-identity validation, which occurs only after response.ok succeeds."
+  },
+  "exactModelValidation": {
+    "passed": false,
+    "configured": "gpt-4.1-mini",
+    "providerReported": "gpt-4.1-mini-2025-04-14"
+  },
+  "evidence": {
+    "semanticUnitId": "SEMU-e9f9d891f5f3ea90e38f70a9",
+    "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+    "connectorId": "GH-AZURE-RESOURCE-MODULES",
+    "repository": "Azure/ResourceModules",
+    "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+    "path": "docs/wiki/Solution creation.md",
+    "heading": "Bicep Registry",
+    "structuralRange": "lines 227-266",
+    "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+    "excerptHashReplay": true,
+    "parserVersion": "markdown-structural-parser-v1"
+  },
+  "schemaValidation": {
+    "executed": false,
+    "valid": false,
+    "violations": [],
+    "reason": "Exact-model validation failed before output schema validation."
+  },
+  "evidenceLineage": {
+    "liveValidationExecuted": false,
+    "passed": false,
+    "citationOutsideAllowlistCount": null,
+    "groundingVerified": false,
+    "deterministicExcerptHashReplay": true
+  },
+  "unsupportedClaims": {
+    "evaluationStatus": "not-evaluated-exact-model-mismatch",
+    "rejectedOrOmitted": false,
+    "unsupportedReferenceIds": []
+  },
+  "epistemicStatus": {
+    "recorded": false,
+    "statuses": [],
+    "hypothesesRepresentedAsProvenFacts": 0
+  },
+  "fingerprints": {
+    "request": null,
+    "response": null
+  },
+  "tokenUsage": {
+    "recorded": false,
+    "inputTokens": null,
+    "outputTokens": null,
+    "totalTokens": null,
+    "reason": "The response was rejected at exact-model validation before usage extraction."
+  },
+  "redactionReceipt": {
+    "recorded": false,
+    "transferSafetySecretFindings": 0
+  },
+  "persistence": {
+    "candidateRecordsCreated": 0,
+    "candidateAuthorityPreserved": false,
+    "approvedRecordsChanged": 0
+  },
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "secretFindings": 0,
+  "secretsAbsentFromReceipt": true,
+  "rawEvidenceExcerptIncludedInReceipt": false,
+  "safeError": "LLM_ALL_ROUTES_FAILED:gate-6b-live-smoke:openai:gpt-4.1-mini:LLM_PROVIDER_MODEL_MISMATCH:gpt-4.1-mini:gpt-4.1-mini-2025-04-14"
+}

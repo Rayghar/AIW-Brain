@@ -12,10 +12,14 @@ const candidateRoot = resolve(product, 'knowledge-repository/AKR-0.10.73.8/candi
 const generatedAt = new Date().toISOString();
 const localTestsPassed = process.argv.includes('--local-tests-passed');
 const localBuildPassed = process.argv.includes('--local-build-passed');
-const intendedModel = process.env.AIW_LLM_KNOWLEDGE_EXTRACTION_MODEL || process.env.AIW_KNOWLEDGE_MODEL || process.env.AIW_LLM_MODEL || process.env.OPENAI_MODEL || 'gpt-5.6-sol';
+const intendedModel = 'gpt-4.1-mini-2025-04-14';
 const secretPresent = Boolean(process.env.OPENAI_API_KEY);
 const allowlist = (() => { try { const value = JSON.parse(process.env.AIW_LLM_MODEL_ALLOWLIST || '[]'); return Array.isArray(value) ? value : []; } catch { return []; } })();
-const selectedAllowlistEntry = allowlist.find((entry) => entry?.providerId === 'openai' && entry?.model === intendedModel && (!entry.purposes?.length || entry.purposes.includes('knowledge-extraction')));
+const selectedAllowlistEntry = allowlist.find((entry) => entry?.providerId === 'openai' && entry?.provider === 'openai'
+  && entry?.model === intendedModel && entry?.requestedModel === intendedModel && entry?.resolvedModel === intendedModel
+  && entry?.configuredAlias === 'gpt-4.1-mini' && entry?.allowedSnapshots?.length === 1
+  && entry.allowedSnapshots[0] === intendedModel && entry?.modelIdentityDecision === 'exact-snapshot-pinned'
+  && entry.purposes?.includes('governed-candidate-semantic-transformation'));
 
 function sha256(value) { return `sha256:${createHash('sha256').update(typeof value === 'string' ? value : JSON.stringify(value)).digest('hex')}`; }
 function stable(value) {
@@ -335,7 +339,7 @@ const runtimeReceipt = {
   modelVerificationPosture: 'not-verified-no-secret-no-approved-network-check', runtimeReady,
   localControlTestsPassed: localTestsPassed,
   localVerification: {
-    focusedTestFiles: 3, focusedTests: 17, focusedTestsPassed: localTestsPassed ? 17 : 0,
+    focusedTestFiles: 3, focusedTests: 24, focusedTestsPassed: localTestsPassed ? 24 : 0,
     domainTypeBuildExitCode: localBuildPassed ? 0 : null, apiTypeBuildExitCode: localBuildPassed ? 0 : null,
     secretPresenceInspection: 'process-environment-and-local-env-filenames-only-values-not-read-or-logged',
   },
@@ -388,7 +392,7 @@ for (const [name, value] of Object.entries({
   'GATE_6B_PROVISIONAL_GOLD_SET.json': provisionalGold,
 })) await writeFile(resolve(evidenceRoot, name), `${JSON.stringify(value, null, 2)}\n`);
 
-const allowlistReport = `# Gate 6B Model Allowlist Report\n\nGenerated: ${generatedAt}\n\n- Provider: OpenAI\n- Intended local configuration label: \`${intendedModel}\`\n- Secret present: **${secretPresent}**\n- Explicit allowlist entries: **${allowlist.length}**\n- Intended label allowlisted: **${Boolean(selectedAllowlistEntry)}**\n- Provider-account support verified: **false**\n- Runtime ready: **${runtimeReady}**\n\nThe allowlist is deliberately empty and fail-closed. The repository previously used \`gpt-5.6-sol\` as an intended label, but a Codex/product label is not proof of an OpenAI API model identifier or account entitlement. The bundled offline documentation reference does not establish that identifier and explicitly requires fresh official verification. No current documentation or account endpoint was contacted because network approval was not requested and \`OPENAI_API_KEY\` is absent.\n\nBefore a live smoke, the product owner must approve a network check, the account secret must be supplied externally, and the exact provider/model/purpose tuple must be added with a verification reference. No secret value may enter this report or Git.\n`;
+const allowlistReport = `# Gate 6B Model Allowlist Report\n\nGenerated: ${generatedAt}\n\n- Provider: OpenAI\n- Exact requested snapshot: \`${intendedModel}\`\n- Secret present: **${secretPresent}**\n- Explicit allowlist entries: **${allowlist.length}**\n- Exact snapshot contract allowlisted: **${Boolean(selectedAllowlistEntry)}**\n- Runtime ready: **${runtimeReady}**\n\nGate 6B accepts only an exact requested model or an approved alias resolving to an explicitly enumerated snapshot. Wildcard, prefix, regular-expression, implicit snapshot, fallback and substitution acceptance are prohibited. The product-runtime identifier is independent of the Codex engineering-supervision model. No secret value may enter this report or Git.\n`;
 await writeFile(resolve(evidenceRoot, 'GATE_6B_MODEL_ALLOWLIST_REPORT.md'), allowlistReport);
 const approvalReport = `# Gate 6B Pilot Approval Package\n\nGenerated: ${generatedAt}\n\nStatus: **prepared; not approved; not started**. Production accepted: **false**.\n\n## Selection\n\n- Corpus semantic units: ${selection.length}\n- Governed repositories: 47/47, with four base cases per repository\n- Supplementary paired cases: 12\n- Evidence-absence controls: ${abstentionCases.length}\n- Selection fingerprint: \`${selectionFingerprint}\`\n- Authority classes covered: ${Object.keys(authorityCoverage).length}\n- Candidate authority only; independent gold-set review has not occurred.\n\n## Strategy comparison\n\nA 24-unit paired subset is planned across one-unit calls, same-source micro-batches of at most three, and cross-file architecture groups of at most four. The comparison uses 38 calls before a strategy is selected. Evidence precision and contamination controls outrank cost.\n\n## Limits\n\n- Semantic-unit ceiling: 220\n- Model-call ceiling: 250\n- Token ceiling: 750,000\n- Retry ceiling: 2\n- Initial concurrency: 2; maximum after clean evidence: 4\n- Estimated token demand: 285,200 minimum; 458,800 likely; 806,000 uncapped maximum. The hard ceiling stops execution before 750,000 is exceeded.\n- Expected new candidate storage: below 64 MiB permanent; 512 MiB temporary envelope.\n\n## Runtime blocker\n\nThe secret is absent and there is no account-verified model allowlist entry. The live bounded smoke and pilot command are therefore blocked. No network or model call was made.\n\n## Proposed command after separate approval\n\n\`node backend/scripts/rc10-73-8/run-gate-6b-pilot.mjs --selection release-evidence/rc10.73.8/GATE_6B_PILOT_SELECTION.json --max-units 220 --max-calls 250 --max-tokens 750000 --max-retries 2 --concurrency 2\`\n\nThe runner command is a proposal only; no executable pilot runner has been invoked or authorized.\n`;
 await writeFile(resolve(evidenceRoot, 'GATE_6B_PILOT_APPROVAL_PACKAGE.md'), approvalReport);

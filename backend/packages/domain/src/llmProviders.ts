@@ -1,7 +1,7 @@
 export const llmProviderIds = ['openai','xai','gemini','qwen','deepseek','custom-openai','local-openai'] as const;
 export type LlmProviderId = (typeof llmProviderIds)[number];
 
-export const llmPurposes = ['knowledge-extraction','architecture-reasoning','recommendation-explanation','artifact-drafting','embedding'] as const;
+export const llmPurposes = ['knowledge-extraction','governed-candidate-semantic-transformation','architecture-reasoning','recommendation-explanation','artifact-drafting','embedding'] as const;
 export type LlmPurpose = (typeof llmPurposes)[number];
 
 export type LlmApiProtocol = 'responses' | 'chat-completions' | 'embeddings';
@@ -36,9 +36,18 @@ export interface LlmRouteConfiguration {
 
 export interface LlmModelAllowlistEntry {
   providerId: LlmProviderId;
+  provider?: LlmProviderId | undefined;
   model: string;
+  configuredAlias?: string | undefined;
+  requestedModel?: string | undefined;
+  resolvedModel?: string | undefined;
+  modelFamily?: string | undefined;
+  allowedSnapshots?: string[] | undefined;
+  modelIdentityDecision?: 'exact-model-allowlisted' | 'approved-alias-explicit-snapshot' | 'exact-snapshot-pinned' | undefined;
   purposes?: LlmPurpose[] | undefined;
   verificationReference?: string | undefined;
+  verificationTimestamp?: string | undefined;
+  verificationMethod?: string | undefined;
 }
 
 export interface LlmRuntimePolicy {

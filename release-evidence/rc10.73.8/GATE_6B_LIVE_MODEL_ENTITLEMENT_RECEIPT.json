@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "aiw-gate-6b-live-model-entitlement-receipt-v1",
+  "generatedAt": "2026-07-16T09:03:23.475Z",
+  "productionAccepted": false,
+  "provider": "openai",
+  "purpose": "governed-candidate-semantic-transformation",
+  "intendedModel": "gpt-4.1-mini",
+  "entitlementStatus": "passed",
+  "exactSupportedModelIdentifier": "gpt-4.1-mini",
+  "intendedModelAvailableToApiProject": true,
+  "apiRouteUsed": "/v1/models/gpt-4.1-mini",
+  "requestTimestamp": "2026-07-16T09:03:22.049Z",
+  "httpStatus": 200,
+  "providerRequestId": "56817e03-3e3d-4b10-bb47-1b58ff2e82fc",
+  "requestCount": 1,
+  "retryCount": 0,
+  "redactionResult": {
+    "secretMaterialIncluded": false,
+    "safeErrorRedactions": 0
+  },
+  "completeModelCatalogueRecorded": false,
+  "fallbackAttempted": false,
+  "modelSubstitutionAttempted": false,
+  "secretValueRecorded": false,
+  "secretHashRecorded": false,
+  "secretFingerprintRecorded": false,
+  "liveTransformationExecuted": false
+}
