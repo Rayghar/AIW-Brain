@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "aiw-gate-6b-token-and-retry-policy-v1",
+  "generatedAt": "2026-07-16T08:07:12.560Z",
+  "productionAccepted": false,
+  "maximumSemanticUnits": 220,
+  "selectedSemanticUnits": 189,
+  "selectionRecords": 202,
+  "sourceGapControls": 12,
+  "maximumModelCalls": 250,
+  "maximumTotalTokens": 750000,
+  "estimatedTokens": {
+    "minimum": 285200,
+    "likely": 458800,
+    "maximumUncapped": 806000,
+    "maximumScenarioExceedsCeiling": true
+  },
+  "estimatedElapsedRuntimeSeconds": {
+    "minimum": 900,
+    "likely": 2700,
+    "maximumAtLimits": 9000,
+    "basis": "214 likely calls, initial concurrency two, provider latency and bounded retries not yet measured"
+  },
+  "estimatedCandidateOutputBytes": {
+    "likely": 25165824,
+    "maximumEnvelope": 67108864
+  },
+  "maximumRetriesPerUnitOrBatch": 2,
+  "initialConcurrency": 2,
+  "maximumConcurrencyAfterCleanEvidence": 4,
+  "retryable": [
+    "provider-timeout",
+    "provider-429",
+    "provider-5xx",
+    "transient-transport"
+  ],
+  "neverRetry": [
+    "model-not-allowlisted",
+    "missing-secret",
+    "input-too-large",
+    "missing-evidence-lineage",
+    "schema-invalid",
+    "citation-outside-allowlist",
+    "unsupported-critical-claim",
+    "candidate-authority-leakage",
+    "design-graph-mutation"
+  ],
+  "controlledStops": [
+    "modelCalls>=250",
+    "totalTokens>=750000",
+    "semanticUnits>220",
+    "freeSpace<8GiB",
+    "retries>2",
+    "candidate-authority-leakage",
+    "design-graph-mutation",
+    "secret-exposure",
+    "unsupported-critical-claim",
+    "loss-of-evidence-lineage",
+    "repeated-schema-failure"
+  ],
+  "costApprovalStatus": "not-approved",
+  "pricingStatus": "not-queried-no-network"
+}

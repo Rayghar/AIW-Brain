@@ -61,6 +61,8 @@
       "dataClassificationAllowlist": ["public", "internal", "confidential"]
     }
   ],
+  "modelAllowlist": [],
+  "maxInputCharacters": 32768,
   "allowFallback": true,
   "requireStructuredOutput": true,
   "redactSecrets": true,

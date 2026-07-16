@@ -1,0 +1,1462 @@
+{
+  "schemaVersion": "aiw-gate-6b-provisional-gold-set-v1",
+  "generatedAt": "2026-07-16T08:07:12.560Z",
+  "productionAccepted": false,
+  "status": "inspectable-product-owner-review-candidate",
+  "independentlyApproved": false,
+  "warning": "Deterministic expected outcomes are not independent expert labels.",
+  "qualityGates": {
+    "exactEvidenceLineage": 1,
+    "candidateAuthorityLeakage": 0,
+    "designGraphMutation": 0,
+    "unsupportedCriticalClaims": 0,
+    "minimumSchemaValidity": 0.995,
+    "maximumUnsupportedClaimRate": 0.01,
+    "minimumOntologyAccuracy": 0.9,
+    "minimumNonClaimRejectionAccuracy": 0.95,
+    "minimumContradictionPrecision": 0.85,
+    "minimumReferenceArchitectureMembershipPrecision": 0.9,
+    "exactDuplicateReuse": 1,
+    "hypothesesAsFacts": 0,
+    "examplesAsGuarantees": 0
+  },
+  "cases": [
+    {
+      "semanticUnitId": "SEMU-b4cb93077563ee68dbb8116b",
+      "evidenceId": "BEV-a0e93be009456148c9404bc2",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-224584bd90b0844b67f10ffd",
+      "evidenceId": "BEV-f4325f43f0d225ece8bf2687",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f22d1c0a8831353fcafe516f",
+      "evidenceId": "BEV-0f5b1bb93179954c4670e3aa",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0e6a5c4e9b4cce6a922c55bd",
+      "evidenceId": "BEV-4e585ac5c4a016634284e393",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b1db9a385e2c1707c3d71c68",
+      "evidenceId": "BEV-8ab187266324c79c91814c9c",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-de1c1b4dc67745731840e4fa",
+      "evidenceId": "BEV-2817840a47156d4dea896383",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-455ab8064205693fccf8ed63",
+      "evidenceId": "BEV-190275031ff15bb6ab09ad51",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-6db96c9f75c6720d78673b9c",
+      "evidenceId": "BEV-700b68731c215f9a81ff8cbe",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5b3c3b38a0f582784ee738ef",
+      "evidenceId": "BEV-e9333827b1915c754d9ab7cf",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-1b2d4a9a659a17490b37d074",
+      "evidenceId": "BEV-e2fd96f030aa67d0467168f4",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-52464381ba053761a5c71a1b",
+      "evidenceId": "BEV-fcc349fa2dedc2c092f08f84",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-9adda485f8915995a4dbd6c0",
+      "evidenceId": "BEV-984177164c9b56b60f406b9d",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-4fa01a3a1aafa43647b5464e",
+      "evidenceId": "BEV-ae70c703ac9ee400c9a20a5a",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8de8faa8e537b66396b8d773",
+      "evidenceId": "BEV-1ff3373c490fab8a15b64fd0",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-4a2234fcc4916813044d504c",
+      "evidenceId": "BEV-a1c6f613ffef8b9d9d6f55bc",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-2c791505a291982eea0ec748",
+      "evidenceId": "BEV-7cb026af13f9061c688c165f",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-97c793572308b7b46411eed8",
+      "evidenceId": "BEV-b195435744498850ed82a691",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-20c7f2c259762971c74979ed",
+      "evidenceId": "BEV-51f4caabb87d02521ee53e84",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-d324dd720c046fc056a7b6e2",
+      "evidenceId": "BEV-ec8d4685464b71ab841552a4",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8fe0d97d10e725a1cd7f7bcb",
+      "evidenceId": "BEV-60420689cc769f57d01df67a",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8cb01d6b548dbace272417aa",
+      "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-02a62be700366b90d661a71b",
+      "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-7adde7287381c24559a186ca",
+      "evidenceId": "BEV-a286ab4b6e42c758525a1c04",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b31a885f3f9aca35ca8d140d",
+      "evidenceId": "BEV-bafa48f46dd5ee30e9b5bebf",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-87cfdae09a790ce775abc3d8",
+      "evidenceId": "BEV-ca72e57515085fc4b2c5c278",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-AWESOME-ANTIPATTERN-claim-bearing-materially-different",
+      "evidenceId": null,
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-d0d472cf2483041e62abc901",
+      "evidenceId": "BEV-642a70e5f17c9e6efb324e08",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-724f62d5689b3d3aa63b0510",
+      "evidenceId": "BEV-c8ae001cc1bcb0472d69e4a0",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b9f05c992b3535d44f573886",
+      "evidenceId": "BEV-2a21aea62c5e7533d3a49f6f",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-AWESOME-DESIGN-PATTERNS-claim-bearing-materially-different",
+      "evidenceId": null,
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-d0d472cf2483041e62abc901",
+      "evidenceId": "BEV-0d941fea1f8166be345d3624",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-35e32e80056209604be57c4d",
+      "evidenceId": "BEV-b9d4e246aa0348a9f40eda80",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-023e4b4c3366c2edf36b3fbf",
+      "evidenceId": "BEV-506d7d47735111dcf2e9d0a1",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-AWESOME-SCALABILITY-claim-bearing-materially-different",
+      "evidenceId": null,
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-AWESOME-SCALABILITY-deliberate-non-claim",
+      "evidenceId": null,
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-6632da9570cb11564c47affe",
+      "evidenceId": "BEV-55d500acf1b392c381bdd48d",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-50c278b7a68a959f2782ba01",
+      "evidenceId": "BEV-cfa1c5bb2efbfdda8ea2e53e",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-cb40fa9c0496cebc799341bd",
+      "evidenceId": "BEV-840f161a0a986b3b1330ff73",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-45d94af092c610de58e0552b",
+      "evidenceId": "BEV-8602cf06f24bab274ce8b616",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-55b940d86bcee48b629e50e1",
+      "evidenceId": "BEV-4c181bb67cd19729b864d873",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-42e7110e5c16d38f44a0a612",
+      "evidenceId": "BEV-4d71d057a46a0fcd14196631",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-AWESOME-SYSTEM-DESIGN-RESOURCES-claim-bearing-materially-different",
+      "evidenceId": null,
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-ebe9e51e02092162daa7b85c",
+      "evidenceId": "BEV-1b52ec5a6588825b0816631d",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-2d7c917c195d728f897ecb16",
+      "evidenceId": "BEV-00fca5d049deea23e56db612",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-51188f741c44dc2ad2ca9047",
+      "evidenceId": "BEV-8f5762a1097f8a077c652080",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-AWS-SAAS-EKS-claim-bearing-materially-different",
+      "evidenceId": null,
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-AWS-SAAS-EKS-deliberate-non-claim",
+      "evidenceId": null,
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-a987db45652308bfcf4ddc7e",
+      "evidenceId": "BEV-d8956b02a26c8867d9f92a88",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e2725debb9c48462b7f27857",
+      "evidenceId": "BEV-b96804ff6c0ca0c3aee6b17c",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-7d8fdb183850d66236b93b94",
+      "evidenceId": "BEV-3b611c4de8ba87fb71a00315",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b008dc37dfaa1d9fa29da0f7",
+      "evidenceId": "BEV-da32fe8328d45814ffbd95a3",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-2f7d1e8e3e138187076862c7",
+      "evidenceId": "BEV-525e8c7d02b86716e6ddfd0b",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-dc365d4ba18854a818b290eb",
+      "evidenceId": "BEV-c8aeb18a0924e3048fe8b0db",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8f7c62bbb3b1795755a0c984",
+      "evidenceId": "BEV-04c14427063b02d4bc9da5b9",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-243f978e43404f7277dbb69f",
+      "evidenceId": "BEV-47ef7a6b4559f3a25efb604c",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-87159bac762f3395ba73c120",
+      "evidenceId": "BEV-d4efdb2265c09a3aea53818a",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e9f9d891f5f3ea90e38f70a9",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f2931bbe5d7f1c3fd9d4b1bd",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-cd83306f1eb079117f98ce28",
+      "evidenceId": "BEV-93605d5179a0d0b00e72e2aa",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-eb67db8b100e92795f60b4aa",
+      "evidenceId": "BEV-4740b8813855cf75c2467347",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f3835ddfe1af198c89c026bd",
+      "evidenceId": "BEV-87423b4b5186c9383ab277f1",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-92adbdff30d5e4d8bb366690",
+      "evidenceId": "BEV-7679d290ee927b8aece91e1d",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b385d9fd1d159bca8cca1027",
+      "evidenceId": "BEV-e7aec7c43f2ab7c7848540e5",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-de79cecc65f6090afd943484",
+      "evidenceId": "BEV-7db583e1a7400fb46020de88",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-887f5b7f716711dbb37786cb",
+      "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c946b12861539aa5d420df64",
+      "evidenceId": "BEV-ffe8a011399962f3d21d9874",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-807374cfa7e810b3e7d7118a",
+      "evidenceId": "BEV-235d9f247ef339a20866b297",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-268349bcb0f41249b6e2cd78",
+      "evidenceId": "BEV-bbe753173c6c5d1204e28fb6",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0484cddf43204952d6882ebe",
+      "evidenceId": "BEV-d075515016509baf01b5c585",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c7629abaf6cb133674b9ce69",
+      "evidenceId": "BEV-88c235b9c524f45ae493fe2e",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-CNA-QUALITY-MODEL-deliberate-non-claim",
+      "evidenceId": null,
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-678ef38412e39a3c1245cb8c",
+      "evidenceId": "BEV-577cee3a91825ff936c52564",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-12d44f17dae24109d5ddd6e2",
+      "evidenceId": "BEV-64fbec54f61ebd15b8b42676",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5ba5a03817063aa8d0f4280b",
+      "evidenceId": "BEV-1634447cb9d6c0e7f2962b76",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-a2ecf4713bec6b4ceb94c4a8",
+      "evidenceId": "BEV-29491964f35b5f2b31600172",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-6e68a0207ef9f7ea6055914d",
+      "evidenceId": "BEV-70f0fe81955880d22a9d5263",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-d15af48bf5d66418692744dd",
+      "evidenceId": "BEV-525363232fd245f02fa143eb",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c6d8a45b665bf7accd03fd6f",
+      "evidenceId": "BEV-f6e1a1209be50fee9b43c3d7",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-4b132062f34663a8eff4a493",
+      "evidenceId": "BEV-af4c73778e9ecaedec09a90a",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-75de1831d8252fd552d976cd",
+      "evidenceId": "BEV-9a495f30c74f6ccf472eb4da",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-49249c739736842b2856dd5b",
+      "evidenceId": "BEV-8d94532198c180786df6c839",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-10db8567ba45719985d334d0",
+      "evidenceId": "BEV-3ad6e9d16925b569c228b846",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-3502d67da415dc87c6ffd913",
+      "evidenceId": "BEV-d0446e14d12e0bd25c7a410a",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b3fa14a002b68f935991cec4",
+      "evidenceId": "BEV-0fe43007488a98294b6bfc62",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b44891dbdc29fd825940381b",
+      "evidenceId": "BEV-ee2af29f5fe0a5118233333d",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8f4efd354d758335ced98c8f",
+      "evidenceId": "BEV-63f43c33bb198d61bad7b13f",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f28acc946cafe79a037cb481",
+      "evidenceId": "BEV-36aa5f21d9d1296a8c219b48",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-3c38fcb560c4703b4c7c5b3d",
+      "evidenceId": "BEV-34357dd67e8d87575f4c5c90",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-70eaeb6fdf2a703353eeedbd",
+      "evidenceId": "BEV-e2ca9b9c11c82bf58e315fe9",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c6aea168bea677b1491f7c48",
+      "evidenceId": "BEV-5fc4064a1f44051d3429319d",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-fdfe8ab68993f91d0697ee16",
+      "evidenceId": "BEV-f0e749ccbff354b76822c29a",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-671ecb29118088b0ce171a02",
+      "evidenceId": "BEV-3b72ccea0d893e4e24032539",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-1216e99550488c442bdd8dec",
+      "evidenceId": "BEV-8e61ae2967571ed0928cba40",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-a5990f21585e145a858dcfb5",
+      "evidenceId": "BEV-8f485fa69dbfbe211ea1329f",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-98a56637650f8f02ae7e9776",
+      "evidenceId": "BEV-a7a5bf881f247486c6d9c198",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-9678240236e4e9791dc389c3",
+      "evidenceId": "BEV-cd3e50d902e943df26c2033e",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-7fefaadf12f0efdec201ed2d",
+      "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-7f72d73e1a3e35c817a6e51e",
+      "evidenceId": "BEV-821e4557fdefa86af91aa43b",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8852dd8b31e5be55009f5772",
+      "evidenceId": "BEV-6b6c64b675801ab175c54292",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-047d5038e3482af8ee64b7fd",
+      "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e577a9c1a6ca4d504d9029b3",
+      "evidenceId": "BEV-a82dc0ee32f17202378e777e",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-93631ceda263829914ad598d",
+      "evidenceId": "BEV-6e76069ccc454dadc3efce59",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0468ad001049217181a6743d",
+      "evidenceId": "BEV-1a7d68b19a1da51cf9696d7f",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-733df77c4d1003d85178c264",
+      "evidenceId": "BEV-192034e9f8a859cd56729dff",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-3652a82546578d4a5c7496e5",
+      "evidenceId": "BEV-f872571de88ee87ff855010c",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b39b90c14f5566d50d1d05b8",
+      "evidenceId": "BEV-8fc67ad57147d17ca04c4669",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c06d115b2d2d31e0df94ecd0",
+      "evidenceId": "BEV-96ac60bdd6a06019a974bdca",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-bb66eadf60f7032f735d4df9",
+      "evidenceId": "BEV-ae877ba3ccebf9bfec7c46bf",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0618eb48301838e75db160e0",
+      "evidenceId": "BEV-cbe77586960526e53240abd7",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f6aa8e746a8a15ca7241a7f4",
+      "evidenceId": "BEV-1b8399f3164a384f2ebdebf4",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-58ed0d6043528b70796e4d11",
+      "evidenceId": "BEV-b6a4c17e390df5b046e67e25",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-890e83935b4bb60771030a9d",
+      "evidenceId": "BEV-be814164361e9b573246d953",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-4f6b4f6a4aecbd9486aab3cd",
+      "evidenceId": "BEV-1be1810edc8d75d0fe626e60",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT-claim-bearing-materially-different",
+      "evidenceId": null,
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT-deliberate-non-claim",
+      "evidenceId": null,
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-63688924e62c58d87bca1582",
+      "evidenceId": "BEV-68abf5cc8e9d7d9e6baaf50d",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-150e9b7f431febfde6645192",
+      "evidenceId": "BEV-58e504ce26f75728bc4e157a",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c896e901f9f5d20dcc7bdd6b",
+      "evidenceId": "BEV-197db67653407459c52628ae",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-9871b351530f690232e0cf8a",
+      "evidenceId": "BEV-291129504524c95048596d5a",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-6998a87c47b5327f0e3337a6",
+      "evidenceId": "BEV-4df7e602c8e40786b7685dbc",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-2cdbbc537b99881dc3379ba2",
+      "evidenceId": "BEV-3fad6773d8cab7f3747db193",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-aa98da13fe52f3815fbc96da",
+      "evidenceId": "BEV-41765f686bd227b0dbe771fa",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b95268b6d7dd82dcfc6de8ab",
+      "evidenceId": "BEV-0fed07bb95c2b545597c8269",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0a03087ebfb5466bb9680e21",
+      "evidenceId": "BEV-0a7e169ef9f302487e5ff804",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-80e962b36807c57f1644b719",
+      "evidenceId": "BEV-155807a40f2ff6d548393bba",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b6091b040e74c9137cea155a",
+      "evidenceId": "BEV-4ab7ea10b605223458f72b22",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-fe3eb34c255eee0be856c6f8",
+      "evidenceId": "BEV-4485cda4e18e25058b912a18",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-fbf0feb2dd4067b25c3f157f",
+      "evidenceId": "BEV-d02fa0675ded0aa0228adf88",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f7aeaf8ad368b616d191ab2d",
+      "evidenceId": "BEV-c71c69b361b6e0cafc379bce",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-7e7a7e913facadd0378e8028",
+      "evidenceId": "BEV-1aa7147258c9fcc55dd756bd",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e71f93d2143f1e2f4efb02c2",
+      "evidenceId": "BEV-99dd71f47149b7b07ada86c8",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-9a049c188e8f950dd1c2da84",
+      "evidenceId": "BEV-e2b96bbd8332947893a88db4",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-029df1ecb23b467714150e73",
+      "evidenceId": "BEV-03e2d5723e1e237c618c4367",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-799788522ac43e76b5aa98ca",
+      "evidenceId": "BEV-f3d1dd462290ecd7f33b384d",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-06e3ee48fe0091b465f2a90d",
+      "evidenceId": "BEV-05bf0a7c7c2e82d6dcb98783",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-ffbfcab996404503faf500ec",
+      "evidenceId": "BEV-242019e0b164861ed33a0b3f",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e476d4fcd834d8066c61b24b",
+      "evidenceId": "BEV-3fc2e455583373d57403a03c",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e8f1e85a78ed6d4c0f22c8f8",
+      "evidenceId": "BEV-1b6b1d71d4bfe0a059be5260",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f7d3e5000c4515d5e2c898b8",
+      "evidenceId": "BEV-4fe76c69a86fae2bcc9b7f7b",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8c7e0c3257bfc24ea309a237",
+      "evidenceId": "BEV-276820de29a9cfb950c59072",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5ee5141bf54426a9f4d00b1f",
+      "evidenceId": "BEV-6bfde0a7dbe3beb487385bfe",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-33f86109e896f46d7a869c26",
+      "evidenceId": "BEV-462321396dbffb7e4362fb39",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-49671a15032da441955b6b09",
+      "evidenceId": "BEV-2f847f190bd15fd78113e498",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-daeadb627db5937d825eee6d",
+      "evidenceId": "BEV-052abf7d00ce46174f69eb8e",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-a0e541d66b8a3dab8ab35cb9",
+      "evidenceId": "BEV-73b1cfb126dd6d4f0f997eaf",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5b38cb1e6f9760b3c52e18b0",
+      "evidenceId": "BEV-065b170a8b2592c622ba12be",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-a157a3805caf366592de4c8d",
+      "evidenceId": "BEV-a90194a8dbfa7c0002cbb07e",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-3294a874709c609ad8cb1ee3",
+      "evidenceId": "BEV-84177c6c75011ed1de3b3bb9",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-98605a7f9371775f15c91ffb",
+      "evidenceId": "BEV-e9d7350b6c79ac9c9fedc24e",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-2369958d42993cf64003e087",
+      "evidenceId": "BEV-ecea08d7924b41bee031868a",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-3c63508602435b37235b9d61",
+      "evidenceId": "BEV-49e912847555d4c919cd3696",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-933b2d524889c6a37c4b7588",
+      "evidenceId": "BEV-6199f84c7ff2be34e56c55f3",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5d681719b2ac4ad1465e0244",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0fb29b6a62cb6cc9df28b5d4",
+      "evidenceId": "BEV-8f946e0488f13c1df9469a2f",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-6411c0c37653aaa49f590fc4",
+      "evidenceId": "BEV-5ca45dfd10a229664099b538",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5145eec6ccf40e5e999b4bb2",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e24dfd2a69b818ce866de5f0",
+      "evidenceId": "BEV-d1852f8bdf665b425ac70f58",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-4e2b121bfba3351f7c9db561",
+      "evidenceId": "BEV-bae5a612978fcf1ace45cf17",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-6b7589f9cde6315448f4ed57",
+      "evidenceId": "BEV-9bba6016c2e33250914f151a",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-cc6aa25f34be2f62635d9a28",
+      "evidenceId": "BEV-ba0d6fabb12afe62124a1073",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f48055afc9b70975bb5de9db",
+      "evidenceId": "BEV-c0399eddd39b66bacc0a3454",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-722e99e599426a7bf28a9419",
+      "evidenceId": "BEV-70bac7a7a85d269fb68a7795",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0386df557c27cd3c03549573",
+      "evidenceId": "BEV-0f3364edda4d8415ed67b29c",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5e095ebe0cf60567fe9c07a9",
+      "evidenceId": "BEV-b3e3c943daf7709f0853caae",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-244a299897e4d6119f6c697f",
+      "evidenceId": "BEV-8d91c8f44f37beaefc202d38",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5adb4d732444b6584a6b1d7e",
+      "evidenceId": "BEV-c185cefdf52a3facdd1bbea0",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0ae4deabe4c482e07626366e",
+      "evidenceId": "BEV-4ad9faf2a3769509489d1e9d",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e0811d146d297e7b13496535",
+      "evidenceId": "BEV-f29b1db6227caf283f3579a3",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-cb990a466c280ce301b8f684",
+      "evidenceId": "BEV-06da7bef1afb2b53b39bff97",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-809c93a59e50a297e45a0604",
+      "evidenceId": "BEV-0a6e05198d3d44baf77a7c21",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-464ddd300ee938e5b32637e6",
+      "evidenceId": "BEV-b8488ac14995c08bc7766456",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-084d0b3281a6a8aaff1708f9",
+      "evidenceId": "BEV-20d9e6c2692442b852bf3e45",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-52c704f2c28e3897f26c840a",
+      "evidenceId": "BEV-b4d881c0aa0d205179a5c445",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-14d982ee085c67021daed594",
+      "evidenceId": "BEV-531833a9905988dac32cbbd4",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-dd1e2b82f77e27e0ea79a025",
+      "evidenceId": "BEV-a1af2d9085734386c50af0c2",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-9c8a77c01f1753ad8821510e",
+      "evidenceId": "BEV-d78179e5fafebf1c08761660",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8c5e765bdba78619cd954419",
+      "evidenceId": "BEV-59245ddccc886b70371195bb",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8ac416bf523d656f36d4393c",
+      "evidenceId": "BEV-57a608f87b0a678c3fb82328",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-8aa7ccd49374b5d50a357781",
+      "evidenceId": "BEV-9a73972a07593401cf1f586e",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-56cf057bc6bb4eb7237b49e1",
+      "evidenceId": "BEV-7048fbeeb03a5828f63420f0",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b4a913050fb9d5dc6b04d320",
+      "evidenceId": "BEV-c3793e7cf47f5afbd4405e48",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-SYSTEM-DESIGN-101-claim-bearing-materially-different",
+      "evidenceId": null,
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "CONTROL-GH-SYSTEM-DESIGN-101-deliberate-non-claim",
+      "evidenceId": null,
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "preflight-abstention-missing-governed-evidence",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-882c0b4e7efb9331f6e9f9d1",
+      "evidenceId": "BEV-1ecaba311d0385a5995d2774",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e652f16719ba21c9c50fda45",
+      "evidenceId": "BEV-6564e19a91247536f5cb2ced",
+      "slot": "claim-bearing-primary",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-d8f521331be87d874e073549",
+      "evidenceId": "BEV-074b0211868697439c3a5b86",
+      "slot": "claim-bearing-materially-different",
+      "expectedOutcome": "claim-candidate-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c603a3b54a3b4e153dd13b2a",
+      "evidenceId": "BEV-01ab8101e9c7f15de83f938b",
+      "slot": "deliberate-non-claim",
+      "expectedOutcome": "non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-cc7b10c1e5ce8f25f1b27a84",
+      "evidenceId": "BEV-6374235b0f81002ecd787cb3",
+      "slot": "complex-ambiguous-contradictory-or-cross-file",
+      "expectedOutcome": "candidate-or-abstain-requiring-individual-review",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-da2a0e336eef32c7df3b60c5",
+      "evidenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+      "slot": "supplementary-contradiction",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-7a53724388b1b0e4a6962769",
+      "evidenceId": "BEV-00895ec9f6e86546c3568051",
+      "slot": "supplementary-contradiction",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-b1f6669747c1d3ab214eb0c6",
+      "evidenceId": "BEV-00ccf1d0becbb7532e9ba3d2",
+      "slot": "supplementary-contradiction",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-c09aaafcf236a51adbfd4656",
+      "evidenceId": "BEV-00d1159cdbf477e334e38aa1",
+      "slot": "supplementary-contradiction",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-dc2948a0a72eb480d1cdb3ae",
+      "evidenceId": "BEV-0174b2826a222b6b42fccec3",
+      "slot": "supplementary-alias-near-duplicate",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-f5b224f867c12ec02d566268",
+      "evidenceId": "BEV-01b6cbcb29647f4e97e69cc9",
+      "slot": "supplementary-alias-near-duplicate",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-5c4f6e0bd116a6ccc32fb7df",
+      "evidenceId": "BEV-0256f531a40fadf63d7ed94b",
+      "slot": "supplementary-alias-near-duplicate",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e557d360bdc9e2bf3620eba6",
+      "evidenceId": "BEV-02813db39cc3b3ac2f23ea75",
+      "slot": "supplementary-alias-near-duplicate",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-7bb79d8ca65210540bdb4a68",
+      "evidenceId": "BEV-0026fa6cddf19388169e8b65",
+      "slot": "supplementary-cross-file-or-model",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-0f939027c88f9782917908c3",
+      "evidenceId": "BEV-002b482ee60ebb716d034e3a",
+      "slot": "supplementary-cross-file-or-model",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-e76fca125e53beaac73a291f",
+      "evidenceId": "BEV-0037165b45e39fc727cb4cbb",
+      "slot": "supplementary-cross-file-or-model",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-3678ed2da9c09c0fee1cca26",
+      "evidenceId": "BEV-003783e9551cf49df6c588df",
+      "slot": "supplementary-cross-file-or-model",
+      "expectedOutcome": "paired-analysis-candidate-or-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-052abca7e2557db30bfb26f1",
+      "evidenceId": "BEV-005c9d9d3b3b70cdb8830291",
+      "slot": "supplementary-unique-unit-coverage",
+      "expectedOutcome": "candidate-non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    },
+    {
+      "semanticUnitId": "SEMU-d9dd8008567d9ca5a3b73da4",
+      "evidenceId": "BEV-0a57ca89afc9e92ec29c8871",
+      "slot": "supplementary-required-theme-coverage",
+      "expectedOutcome": "candidate-non-claim-or-evidence-bounded-abstention",
+      "reviewStatus": "unreviewed"
+    }
+  ],
+  "evidenceAbsenceControls": [
+    {
+      "id": "G6B-ABSTAIN-CORE-BANKING",
+      "topic": "current normative core-banking modernisation guidance",
+      "evidenceRefs": [],
+      "expected": "preflight-abstention-missing-governed-evidence",
+      "modelCallAllowed": false
+    },
+    {
+      "id": "G6B-ABSTAIN-MCP-A2A",
+      "topic": "complete official MCP and A2A protocol guidance",
+      "evidenceRefs": [],
+      "expected": "preflight-abstention-missing-governed-evidence",
+      "modelCallAllowed": false
+    },
+    {
+      "id": "G6B-ABSTAIN-OTEL-SPEC",
+      "topic": "official OpenTelemetry specification semantics",
+      "evidenceRefs": [],
+      "expected": "preflight-abstention-demo-cannot-substitute-for-official-specification",
+      "modelCallAllowed": false
+    }
+  ]
+}

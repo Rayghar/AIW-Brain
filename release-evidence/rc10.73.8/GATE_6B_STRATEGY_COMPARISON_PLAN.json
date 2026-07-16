@@ -1,0 +1,97 @@
+{
+  "schemaVersion": "aiw-gate-6b-strategy-comparison-plan-v1",
+  "generatedAt": "2026-07-16T08:07:12.560Z",
+  "productionAccepted": false,
+  "pilotSelectionRecords": 202,
+  "boundedSemanticUnits": 189,
+  "boundedOccurrences": 190,
+  "sourceGapControls": 12,
+  "evidenceAbsenceControls": 3,
+  "pairedComparisonSubset": {
+    "semanticUnits": 24,
+    "selection": [
+      "SEMU-7a53724388b1b0e4a6962769",
+      "SEMU-b1f6669747c1d3ab214eb0c6",
+      "SEMU-c09aaafcf236a51adbfd4656",
+      "SEMU-da2a0e336eef32c7df3b60c5",
+      "SEMU-5c4f6e0bd116a6ccc32fb7df",
+      "SEMU-dc2948a0a72eb480d1cdb3ae",
+      "SEMU-e557d360bdc9e2bf3620eba6",
+      "SEMU-f5b224f867c12ec02d566268",
+      "SEMU-029df1ecb23b467714150e73",
+      "SEMU-02a62be700366b90d661a71b",
+      "SEMU-0386df557c27cd3c03549573",
+      "SEMU-0468ad001049217181a6743d",
+      "SEMU-047d5038e3482af8ee64b7fd",
+      "SEMU-0484cddf43204952d6882ebe",
+      "SEMU-052abca7e2557db30bfb26f1",
+      "SEMU-0618eb48301838e75db160e0",
+      "SEMU-06e3ee48fe0091b465f2a90d",
+      "SEMU-0a03087ebfb5466bb9680e21",
+      "SEMU-0ae4deabe4c482e07626366e",
+      "SEMU-0e6a5c4e9b4cce6a922c55bd",
+      "SEMU-0f939027c88f9782917908c3",
+      "SEMU-0fb29b6a62cb6cc9df28b5d4",
+      "SEMU-1216e99550488c442bdd8dec",
+      "SEMU-12d44f17dae24109d5ddd6e2"
+    ],
+    "composition": {
+      "claim-bearing-materially-different": 2,
+      "claim-bearing-primary": 5,
+      "complex-ambiguous-contradictory-or-cross-file": 3,
+      "deliberate-non-claim": 4,
+      "supplementary-alias-near-duplicate": 4,
+      "supplementary-contradiction": 4,
+      "supplementary-cross-file-or-model": 1,
+      "supplementary-unique-unit-coverage": 1
+    },
+    "crossFileGroupUnitCount": 21,
+    "strategies": [
+      {
+        "id": "one-unit-per-call",
+        "maximumUnitsPerCall": 1,
+        "plannedCalls": 24
+      },
+      {
+        "id": "same-source-micro-batch",
+        "maximumUnitsPerCall": 3,
+        "plannedCalls": 8,
+        "crossSourceMixingAllowed": false
+      },
+      {
+        "id": "bounded-architecture-group",
+        "maximumUnitsPerCall": 4,
+        "plannedCalls": 6,
+        "crossFileGroupRequired": true
+      }
+    ]
+  },
+  "measuredMetrics": [
+    "schema-validity",
+    "evidence-lineage-accuracy",
+    "unsupported-claims",
+    "cross-unit-contamination",
+    "condition-and-limitation-completeness",
+    "epistemic-classification",
+    "ontology-classification",
+    "duplicate-reuse",
+    "contradiction-precision",
+    "pattern-dna-completeness",
+    "architecture-genome-completeness",
+    "token-use",
+    "model-calls",
+    "retries",
+    "elapsed-time",
+    "candidate-output-size",
+    "projected-human-review-load"
+  ],
+  "selectionRule": "Evidence precision and zero cross-unit contamination outrank cost. Lowest cost may not win.",
+  "projectedCalls": {
+    "comparison": 38,
+    "remainingIfIndividual": 176,
+    "evidenceAbsencePreflightCalls": 0,
+    "likelyTotalIfIndividualWins": 214,
+    "hardCeiling": 250
+  },
+  "projectedUnitEquivalents": 248
+}

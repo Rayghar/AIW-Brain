@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "aiw-gate-6b-bounded-transformation-smoke-v1",
+  "generatedAt": "2026-07-16T08:07:12.560Z",
+  "productionAccepted": false,
+  "executionStatus": "not-executed-controlled-stop",
+  "providerId": "openai",
+  "model": null,
+  "secretPresent": false,
+  "deterministicTransportHarnessPassed": true,
+  "deterministicHarnessTests": 17,
+  "liveProviderCallExecuted": false,
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "tokens": 0,
+  "candidateRecordsPersisted": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "blockers": [
+    "OPENAI_API_KEY absent",
+    "No provider-account-verified allowlisted model",
+    "Network approval not requested because runtime preconditions are incomplete"
+  ]
+}

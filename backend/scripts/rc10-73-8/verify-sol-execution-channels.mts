@@ -70,13 +70,15 @@ const activeProbeResponse = await healthApp.inject({ method: 'POST', url: '/api/
 const activeProbePayload = activeProbeResponse.json() as Record<string, unknown>;
 if (!secretPresent) {
   assert.equal(activeProbeResponse.statusCode, 503);
-  assert.match(String(activeProbePayload.error), /LLM_API_KEY_NOT_CONFIGURED/);
+  assert.match(String(activeProbePayload.error), /LLM_MODEL_NOT_ALLOWLISTED|LLM_API_KEY_NOT_CONFIGURED/);
   assert.equal(guardedNetworkCalls, 0);
 }
 await healthApp.close();
 
 const harnessPolicy: LlmRuntimePolicy = {
   routes: [{ id: `architecture-reasoning:openai:${intendedModel}`, purpose: 'architecture-reasoning', providerId: 'openai', model: intendedModel, baseUrl: 'https://api.openai.com/v1', apiKeyEnvironmentVariable: 'OPENAI_API_KEY', protocol: 'responses', timeoutMs: 10_000, maxOutputTokens: 600, temperature: 0, enabled: true, fallbackRouteIds: [], dataClassificationAllowlist: ['public','internal'] }],
+  modelAllowlist: [{ providerId: 'openai', model: intendedModel, purposes: ['architecture-reasoning'], verificationReference: 'deterministic-transport-harness-only' }],
+  maxInputCharacters: 32768,
   allowFallback: false, requireStructuredOutput: true, redactSecrets: true, logPrompts: false, retainProviderContent: false,
   maxRetries: 0, circuitBreakerFailures: 20, circuitBreakerResetSeconds: 60,
 };

@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "aiw-gate-6b-runtime-readiness-receipt-v1",
+  "generatedAt": "2026-07-16T08:07:12.560Z",
+  "gate6aCheckpoint": "ce787cc8881e5257e0b6529e7b93a65947264b2d",
+  "productionAccepted": false,
+  "providerId": "openai",
+  "intendedModel": "gpt-5.6-sol",
+  "resolvedModel": "gpt-5.6-sol",
+  "secretReference": "OPENAI_API_KEY",
+  "secretPresent": false,
+  "explicitModelAllowlist": [],
+  "modelAllowlisted": false,
+  "providerAccountModelSupportVerified": false,
+  "modelVerificationPosture": "not-verified-no-secret-no-approved-network-check",
+  "runtimeReady": false,
+  "localControlTestsPassed": true,
+  "localVerification": {
+    "focusedTestFiles": 3,
+    "focusedTests": 17,
+    "focusedTestsPassed": 17,
+    "domainTypeBuildExitCode": 0,
+    "apiTypeBuildExitCode": 0,
+    "secretPresenceInspection": "process-environment-and-local-env-filenames-only-values-not-read-or-logged"
+  },
+  "controls": {
+    "strictModelAllowlisting": true,
+    "boundedInputCharacters": 32768,
+    "strictStructuredOutput": true,
+    "evidenceIdAllowlisting": true,
+    "redaction": true,
+    "unsupportedClaimRejection": true,
+    "maximumRetries": 2,
+    "deadLetterRecords": true,
+    "requestFingerprint": true,
+    "responseFingerprint": true,
+    "tokenAccounting": true,
+    "candidateOnlyPersistence": true,
+    "designGraphMutationAllowed": false,
+    "automaticPromotionAllowed": false
+  },
+  "activeProbeExecuted": false,
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "blockers": [
+    "OPENAI_API_KEY absent",
+    "No provider-account-verified allowlisted model",
+    "Network approval not requested because runtime preconditions are incomplete"
+  ],
+  "gate6BStatus": "approval-package-only-not-started",
+  "gate6CStatus": "blocked",
+  "gate6DStatus": "not-started"
+}

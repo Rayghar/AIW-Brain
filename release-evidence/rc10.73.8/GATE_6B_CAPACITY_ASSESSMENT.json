@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aiw-gate-6b-capacity-assessment-v1",
+  "generatedAt": "2026-07-16T08:07:12.560Z",
+  "productionAccepted": false,
+  "freeBytes": 17349222400,
+  "preferredMinimumBytes": 16106127360,
+  "controlledStopFloorBytes": 8589934592,
+  "projectedTemporaryBytes": 536870912,
+  "projectedPermanentBytes": 67108864,
+  "projectedFreeBytesAtPeak": 16745242624,
+  "capacityReadyForPilot": true,
+  "requiresFreshAssessmentImmediatelyBeforeExecution": true,
+  "automaticEvidenceDeletionAllowed": false
+}

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { knowledgeRepositoryConnectors, patternAtomicClaimReceipts, sprint78PatternCorpus } from '@aiw/domain';
 
-export interface ApprovedGroundingSource {
+export interface EvidenceEntailmentSource {
   id: string;
   recordId: string;
   title: string;
@@ -12,8 +12,12 @@ export interface ApprovedGroundingSource {
   activeKnowledgeReleaseId: string;
   connectorId?: string;
   trustTier?: number;
-  reviewStatus: 'verified';
+  reviewStatus: 'verified' | 'candidate';
   evidenceRole?: string;
+}
+
+export interface ApprovedGroundingSource extends EvidenceEntailmentSource {
+  reviewStatus: 'verified';
 }
 
 export interface ApprovedKnowledgeGroundingPack {
@@ -120,7 +124,7 @@ function containsUnsupportedAbsolute(output: string, evidence: string): boolean 
 }
 
 function containsUnsupportedNumber(output: string, evidence: string): boolean {
-  const numbers = output.match(/\b\d+(?:\.\d+)?\s*(?:%|ms|s|seconds?|minutes?|hours?|tps|rps|x)?\b/gi) ?? [];
+  const numbers = output.match(/\b\d+(?:\.\d+)?\s*(?:%|ms\b|seconds?\b|minutes?\b|hours?\b|tps\b|rps\b|x\b)/gi) ?? [];
   return numbers.some((number) => !evidence.toLowerCase().includes(number.toLowerCase()));
 }
 
@@ -142,7 +146,7 @@ export interface EvidenceEntailmentReceipt {
 export function verifyEvidenceEntailment(input: {
   outputText: string;
   citedReferenceIds: Iterable<string>;
-  sources: ApprovedGroundingSource[];
+  sources: EvidenceEntailmentSource[];
   threshold?: number;
 }): EvidenceEntailmentReceipt {
   const threshold = input.threshold ?? 0.08;

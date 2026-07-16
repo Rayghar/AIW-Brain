@@ -23,6 +23,8 @@ function policy(): LlmRuntimePolicy {
       baseUrl: 'https://example.test/v1', protocol: 'chat-completions', enabled: true,
       fallbackRouteIds: [], dataClassificationAllowlist: ['public', 'internal', 'confidential', 'restricted'],
     }],
+    modelAllowlist: [{ providerId: 'openai', model: 'test-model', purposes: ['architecture-reasoning'], verificationReference: 'deterministic-test-fixture' }],
+    maxInputCharacters: 32768,
     allowFallback: false, requireStructuredOutput: true, redactSecrets: true,
     logPrompts: false, retainProviderContent: false, maxRetries: 0,
     circuitBreakerFailures: 3, circuitBreakerResetSeconds: 60,

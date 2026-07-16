@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import type { LlmRuntimePolicy } from '@aiw/domain';
-import { LlmGateway, loadLlmRuntimePolicy } from './llmGateway.js';
+import { LlmGateway, loadLlmRuntimePolicy, validateLlmRuntimePolicy } from './llmGateway.js';
 
 interface StoredPolicies { version: '0.9.6' | '0.9.7' | '0.9.9' | '0.10.0-alpha.1' | '0.10.0-alpha.2' | '0.10.0-alpha.3' | '0.10.0-rc.1' | '0.10.0-rc.2'; tenants: Record<string, LlmRuntimePolicy> }
 
@@ -51,13 +51,13 @@ export class LlmRuntimeConfigurationStore {
   }
 
   async get(tenantId: string): Promise<LlmRuntimePolicy> {
-    if (this.connectionString) return structuredClone((await this.getPostgres(tenantId)) ?? loadLlmRuntimePolicy());
+    if (this.connectionString) return structuredClone(validateLlmRuntimePolicy((await this.getPostgres(tenantId)) ?? loadLlmRuntimePolicy()));
     await this.loadFile();
-    return structuredClone(this.policies.get(tenantId) ?? loadLlmRuntimePolicy());
+    return structuredClone(validateLlmRuntimePolicy(this.policies.get(tenantId) ?? loadLlmRuntimePolicy()));
   }
 
   async set(tenantId: string, policy: LlmRuntimePolicy, updatedBy = 'system'): Promise<LlmRuntimePolicy> {
-    const safe = structuredClone(policy);
+    const safe = structuredClone(validateLlmRuntimePolicy(policy));
     if (this.connectionString) {
       const client = await (await this.getPool()).connect();
       try {

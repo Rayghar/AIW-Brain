@@ -41,6 +41,11 @@ describe('Sprint 7.9 production knowledge operations', () => {
         { id: 'reasoning-primary', purpose: 'architecture-reasoning', providerId: 'xai', model: 'configured-grok', baseUrl: 'https://primary.example/v1', protocol: 'chat-completions', enabled: true, fallbackRouteIds: ['reasoning-fallback'], dataClassificationAllowlist: ['public','internal'] },
         { id: 'reasoning-fallback', purpose: 'architecture-reasoning', providerId: 'deepseek', model: 'configured-deepseek', baseUrl: 'https://fallback.example/v1', protocol: 'chat-completions', enabled: true, fallbackRouteIds: [], dataClassificationAllowlist: ['public','internal'] },
       ],
+      modelAllowlist: [
+        { providerId: 'xai', model: 'configured-grok', purposes: ['architecture-reasoning'], verificationReference: 'deterministic-test-fixture' },
+        { providerId: 'deepseek', model: 'configured-deepseek', purposes: ['architecture-reasoning'], verificationReference: 'deterministic-test-fixture' },
+      ],
+      maxInputCharacters: 32768,
       allowFallback: true, requireStructuredOutput: true, redactSecrets: true, logPrompts: false, retainProviderContent: false,
       maxRetries: 0, circuitBreakerFailures: 3, circuitBreakerResetSeconds: 60,
     };
@@ -63,6 +68,8 @@ describe('Sprint 7.9 production knowledge operations', () => {
     process.env.OPENAI_API_KEY = 'test-openai-key';
     const policy: LlmRuntimePolicy = {
       routes: [{ id: 'public-only', purpose: 'architecture-reasoning', providerId: 'openai', model: 'configured-openai', baseUrl: 'https://example.test/v1', protocol: 'responses', enabled: true, fallbackRouteIds: [], dataClassificationAllowlist: ['public'] }],
+      modelAllowlist: [{ providerId: 'openai', model: 'configured-openai', purposes: ['architecture-reasoning'], verificationReference: 'deterministic-test-fixture' }],
+      maxInputCharacters: 32768,
       allowFallback: false, requireStructuredOutput: true, redactSecrets: true, logPrompts: false, retainProviderContent: false,
       maxRetries: 0, circuitBreakerFailures: 3, circuitBreakerResetSeconds: 60,
     };

@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { doctrineSystemFor, DOCTRINE_VERSION } from './llmDoctrine.js';
 import { redactForModel, type RedactionResult } from './dataRedaction.js';
-import { verifyEvidenceEntailment, type ApprovedGroundingSource, type EvidenceEntailmentReceipt } from './approvedKnowledgeGrounding.js';
+import { verifyEvidenceEntailment, type EvidenceEntailmentSource, type EvidenceEntailmentReceipt } from './approvedKnowledgeGrounding.js';
 import { validateJsonSchema, type JsonSchemaValidationResult } from './jsonSchemaValidation.js';
 import {
   AIW_RELEASE,
@@ -11,6 +11,7 @@ import {
   type LlmApiProtocol,
   type LlmProviderDefinition,
   type LlmProviderId,
+  type LlmModelAllowlistEntry,
   type LlmPurpose,
   type LlmRouteConfiguration,
   type LlmRuntimePolicy,
@@ -32,6 +33,7 @@ export interface LlmExecutionResult<T> {
   usage: LlmUsage;
   responseId?: string;
   requestFingerprint: string;
+  responseFingerprint: string;
   fallbackUsed: boolean;
   schemaValidation: JsonSchemaValidationResult;
   redaction: { system: RedactionResult; user: RedactionResult };
@@ -46,15 +48,33 @@ export interface JsonGenerationRequest {
   jsonSchema?: Record<string, unknown>;
   dataClassification?: 'public'|'internal'|'confidential'|'restricted';
   allowInsufficientGrounding?: boolean;
+  requireEvidenceAllowlist?: boolean;
+  requireProviderNativeSchema?: boolean;
   grounding?: {
     allowedReferenceIds: string[];
-    sources: ApprovedGroundingSource[];
+    sources: EvidenceEntailmentSource[];
     requireCitations?: boolean;
     minimumSupportScore?: number;
   };
 }
 
 interface CircuitState { failures: number; openedAt?: number; }
+
+export interface LlmDeadLetterRecord {
+  id: string;
+  createdAt: string;
+  purpose: LlmPurpose;
+  schemaName: string;
+  requestFingerprint: string;
+  attempts: number;
+  errors: string[];
+  containsPromptContent: false;
+  productionAccepted: false;
+}
+
+export interface LlmGatewayOptions {
+  deadLetterSink?: (record: LlmDeadLetterRecord) => void | Promise<void>;
+}
 
 const circuits = new Map<string, CircuitState>();
 
@@ -125,9 +145,38 @@ function routeFromEnvironment(purpose: LlmPurpose): LlmRouteConfiguration {
   };
 }
 
-function validatePolicy(policy: LlmRuntimePolicy): LlmRuntimePolicy {
+function modelAllowlistFromEnvironment(): LlmModelAllowlistEntry[] {
+  const raw = process.env.AIW_LLM_MODEL_ALLOWLIST?.trim();
+  if (!raw) return [];
+  let parsed: unknown;
+  try { parsed = JSON.parse(raw); }
+  catch { throw new Error('AIW_LLM_MODEL_ALLOWLIST_INVALID_JSON'); }
+  if (!Array.isArray(parsed)) throw new Error('AIW_LLM_MODEL_ALLOWLIST_MUST_BE_ARRAY');
+  return parsed as LlmModelAllowlistEntry[];
+}
+
+export function validateLlmRuntimePolicy(policy: LlmRuntimePolicy): LlmRuntimePolicy {
+  const normalized: LlmRuntimePolicy = {
+    ...policy,
+    modelAllowlist: [...(policy.modelAllowlist ?? [])],
+    maxInputCharacters: policy.maxInputCharacters ?? 32_768,
+  };
+  if (!Number.isInteger(normalized.maxInputCharacters) || normalized.maxInputCharacters! < 1_024 || normalized.maxInputCharacters! > 262_144) throw new Error('LLM_MAX_INPUT_CHARACTERS_OUT_OF_RANGE');
+  if (!Number.isInteger(normalized.maxRetries) || normalized.maxRetries < 0 || normalized.maxRetries > 2) throw new Error('LLM_MAX_RETRIES_OUT_OF_RANGE');
+  if (!normalized.requireStructuredOutput) throw new Error('LLM_STRUCTURED_OUTPUT_REQUIRED');
+  if (!normalized.redactSecrets || normalized.logPrompts || normalized.retainProviderContent) throw new Error('UNSAFE_LLM_CONTENT_POLICY');
+  const allowedModels = new Set<string>();
+  for (const entry of normalized.modelAllowlist ?? []) {
+    if (!llmProviderIds.includes(entry.providerId)) throw new Error(`INVALID_LLM_MODEL_ALLOWLIST_PROVIDER:${entry.providerId}`);
+    if (!entry.model?.trim()) throw new Error(`INVALID_LLM_MODEL_ALLOWLIST_MODEL:${entry.providerId}`);
+    if (!entry.verificationReference?.trim()) throw new Error(`LLM_MODEL_ALLOWLIST_VERIFICATION_REQUIRED:${entry.providerId}:${entry.model}`);
+    if (entry.purposes?.some((purpose) => !llmPurposes.includes(purpose))) throw new Error(`INVALID_LLM_MODEL_ALLOWLIST_PURPOSE:${entry.providerId}:${entry.model}`);
+    const key = `${entry.providerId}\n${entry.model}\n${[...(entry.purposes ?? [])].sort().join(',')}`;
+    if (allowedModels.has(key)) throw new Error(`DUPLICATE_LLM_MODEL_ALLOWLIST_ENTRY:${entry.providerId}:${entry.model}`);
+    allowedModels.add(key);
+  }
   const ids = new Set<string>();
-  for (const route of policy.routes) {
+  for (const route of normalized.routes) {
     if (ids.has(route.id)) throw new Error(`DUPLICATE_LLM_ROUTE:${route.id}`);
     ids.add(route.id);
     if (!llmPurposes.includes(route.purpose)) throw new Error(`INVALID_LLM_PURPOSE:${route.purpose}`);
@@ -138,17 +187,19 @@ function validatePolicy(policy: LlmRuntimePolicy): LlmRuntimePolicy {
     if (!protocol || !provider.protocols.includes(protocol)) throw new Error(`UNSUPPORTED_LLM_PROTOCOL:${route.id}:${protocol}`);
     if (!route.baseUrl && !provider.defaultBaseUrl) throw new Error(`LLM_BASE_URL_REQUIRED:${route.id}`);
   }
-  return policy;
+  return normalized;
 }
 
 export function loadLlmRuntimePolicy(): LlmRuntimePolicy {
   if (process.env.AIW_LLM_CONFIG_JSON) {
     const parsed = JSON.parse(process.env.AIW_LLM_CONFIG_JSON) as LlmRuntimePolicy;
-    return validatePolicy(parsed);
+    return validateLlmRuntimePolicy(parsed);
   }
   const routes = llmPurposes.map(routeFromEnvironment);
-  return validatePolicy({
+  return validateLlmRuntimePolicy({
     routes,
+    modelAllowlist: modelAllowlistFromEnvironment(),
+    maxInputCharacters: Number(process.env.AIW_LLM_MAX_INPUT_CHARACTERS || 32_768),
     allowFallback: process.env.AIW_LLM_ALLOW_FALLBACK !== 'false',
     requireStructuredOutput: process.env.AIW_LLM_REQUIRE_STRUCTURED_OUTPUT !== 'false',
     redactSecrets: true,
@@ -260,16 +311,58 @@ function flattenOutputText(value: unknown): string {
   return '';
 }
 
+function canonicalJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value && typeof value === 'object') return `{${Object.entries(value as Record<string, unknown>).sort(([left], [right]) => left.localeCompare(right)).map(([key, item]) => `${JSON.stringify(key)}:${canonicalJson(item)}`).join(',')}}`;
+  return JSON.stringify(value) ?? 'null';
+}
+
+function sha256(value: string): string {
+  return `sha256:${createHash('sha256').update(value).digest('hex')}`;
+}
+
 function requestFingerprint(request: JsonGenerationRequest): string {
-  return `sha256:${createHash('sha256').update(`${DOCTRINE_VERSION}\n${request.purpose}\n${request.system}\n${request.user}\n${request.schemaName}`).digest('hex')}`;
+  return sha256(canonicalJson({
+    doctrineVersion: DOCTRINE_VERSION,
+    purpose: request.purpose,
+    system: request.system,
+    user: request.user,
+    schemaName: request.schemaName,
+    jsonSchema: request.jsonSchema ?? null,
+    dataClassification: request.dataClassification ?? 'internal',
+    allowedReferenceIds: [...(request.grounding?.allowedReferenceIds ?? [])].sort(),
+    sourceIdentities: (request.grounding?.sources ?? []).map((source) => ({ id: source.id, sourceReleaseId: source.sourceReleaseId, statementFingerprint: sha256(source.statement) })).sort((left, right) => left.id.localeCompare(right.id)),
+  }));
+}
+
+function responseFingerprint(value: unknown): string {
+  return sha256(canonicalJson(value));
+}
+
+function modelAllowed(policy: LlmRuntimePolicy, route: LlmRouteConfiguration): boolean {
+  return (policy.modelAllowlist ?? []).some((entry) => entry.providerId === route.providerId
+    && entry.model === route.model
+    && (!entry.purposes?.length || entry.purposes.includes(route.purpose)));
 }
 
 async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerationRequest, policy: LlmRuntimePolicy, fetchImpl: typeof fetch): Promise<LlmExecutionResult<T>> {
   if (!route.enabled) throw new Error(`LLM_ROUTE_DISABLED:${route.id}`);
+  if (!modelAllowed(policy, route)) throw new Error(`LLM_MODEL_NOT_ALLOWLISTED:${route.providerId}:${route.model}:${route.purpose}`);
   const classification = request.dataClassification ?? 'internal';
   if (!route.dataClassificationAllowlist.includes(classification)) throw new Error(`LLM_DATA_CLASSIFICATION_BLOCKED:${route.id}:${classification}`);
   if (!circuitAllows(route, policy)) throw new Error(`LLM_CIRCUIT_OPEN:${route.id}`);
   const provider = providerDefinition(route.providerId);
+  if (policy.requireStructuredOutput && !request.jsonSchema) throw new Error(`LLM_JSON_SCHEMA_REQUIRED:${request.schemaName}`);
+  if (request.requireProviderNativeSchema && !provider.supportsJsonSchema) throw new Error(`LLM_PROVIDER_NATIVE_SCHEMA_REQUIRED:${route.providerId}`);
+  if (request.system.length + request.user.length > (policy.maxInputCharacters ?? 32_768)) throw new Error(`LLM_INPUT_TOO_LARGE:${request.system.length + request.user.length}:${policy.maxInputCharacters ?? 32_768}`);
+  if (request.requireEvidenceAllowlist && !request.grounding) throw new Error('LLM_EVIDENCE_ALLOWLIST_REQUIRED');
+  if (request.grounding) {
+    const allowed = new Set(request.grounding.allowedReferenceIds);
+    const sourceIds = new Set(request.grounding.sources.map((source) => source.id));
+    const missingSources = [...allowed].filter((id) => !sourceIds.has(id));
+    const outsideAllowlist = [...sourceIds].filter((id) => !allowed.has(id));
+    if (missingSources.length || outsideAllowlist.length) throw new Error(`LLM_GROUNDING_LINEAGE_MISMATCH:missing=${missingSources.join(',')}:outside=${outsideAllowlist.join(',')}`);
+  }
   const protocol = route.protocol ?? provider.protocols[0] ?? 'chat-completions';
   const started = Date.now();
   const url = `${baseUrl(route)}/${protocol === 'responses' ? 'responses' : 'chat/completions'}`;
@@ -309,7 +402,6 @@ async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerat
   if (!outputText) throw new Error(`LLM_PROVIDER_EMPTY_RESPONSE:${route.providerId}`);
   const value = parseJsonContent(outputText) as T;
   if (isInsufficientGrounding(value)) throw new Error(`LLM_INSUFFICIENT_GROUNDING:${value.missing}`);
-  if (policy.requireStructuredOutput && !request.jsonSchema) throw new Error(`LLM_JSON_SCHEMA_REQUIRED:${request.schemaName}`);
   const schemaValidation = request.jsonSchema ? validateJsonSchema(value, request.jsonSchema) : { valid: true, violations: [] };
   if (!schemaValidation.valid) {
     const detail = schemaValidation.violations.slice(0, 8).map((item) => `${item.path}:${item.rule}`).join(',');
@@ -344,6 +436,7 @@ async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerat
     usage,
     ...(typeof payload.id === 'string' ? { responseId: payload.id } : {}),
     requestFingerprint: requestFingerprint(redactedRequest),
+    responseFingerprint: responseFingerprint(value),
     fallbackUsed: false,
     schemaValidation,
     redaction: { system: systemRedaction, user: userRedaction },
@@ -367,14 +460,28 @@ function orderedRoutes(policy: LlmRuntimePolicy, purpose: LlmPurpose): LlmRouteC
 }
 
 export class LlmGateway {
-  constructor(private readonly policy: LlmRuntimePolicy = loadLlmRuntimePolicy(), private readonly fetchImpl: typeof fetch = fetch) {}
+  private readonly policy: LlmRuntimePolicy;
+  private readonly fetchImpl: typeof fetch;
+  private readonly options: LlmGatewayOptions;
+  private readonly deadLetterRecords: LlmDeadLetterRecord[] = [];
+
+  constructor(policy: LlmRuntimePolicy = loadLlmRuntimePolicy(), fetchImpl: typeof fetch = fetch, options: LlmGatewayOptions = {}) {
+    this.policy = validateLlmRuntimePolicy(policy);
+    this.fetchImpl = fetchImpl;
+    this.options = options;
+  }
+
+  deadLetters(): LlmDeadLetterRecord[] { return structuredClone(this.deadLetterRecords); }
 
   configuration(): { policy: LlmRuntimePolicy; providers: Array<LlmProviderDefinition & { configured: boolean; routes: string[] }> } {
     return {
       policy: { ...this.policy, routes: this.policy.routes.map((route) => ({ ...route, apiKeyEnvironmentVariable: route.apiKeyEnvironmentVariable || providerDefinition(route.providerId).apiKeyEnvironmentVariable })) },
       providers: llmProviderCatalog.map((provider) => ({
         ...provider,
-        configured: provider.id === 'local-openai' || Boolean(process.env[provider.apiKeyEnvironmentVariable]) || this.policy.routes.some((route) => route.providerId === provider.id && Boolean(route.apiKeyEnvironmentVariable && process.env[route.apiKeyEnvironmentVariable])),
+        configured: this.policy.routes.some((route) => route.providerId === provider.id
+          && route.enabled
+          && modelAllowed(this.policy, route)
+          && (provider.id === 'local-openai' || Boolean(process.env[route.apiKeyEnvironmentVariable || provider.apiKeyEnvironmentVariable]))),
         routes: this.policy.routes.filter((route) => route.providerId === provider.id).map((route) => route.id),
       })),
     };
@@ -382,35 +489,49 @@ export class LlmGateway {
 
   async generateJson<T>(request: JsonGenerationRequest): Promise<LlmExecutionResult<T>> {
     const errors: string[] = [];
+    let totalAttempts = 0;
     const routes = orderedRoutes(this.policy, request.purpose);
     for (let index = 0; index < routes.length; index += 1) {
       const route = routes[index]!;
       const attempts = Math.max(1, this.policy.maxRetries + 1);
       for (let attempt = 0; attempt < attempts; attempt += 1) {
+        totalAttempts += 1;
         try {
           const result = await invokeRoute<T>(route, request, this.policy, this.fetchImpl);
           return index === 0 ? result : { ...result, fallbackUsed: true };
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
-          errors.push(`${route.id}:${message}`);
+          errors.push(`${route.id}:${redactForModel(message, 'internal').value.slice(0, 500)}`);
           markFailure(route.id, this.policy);
-          if (message.includes('DATA_CLASSIFICATION_BLOCKED') || message.includes('API_KEY_NOT_CONFIGURED') || message.includes('ROUTE_DISABLED') || message.includes('INSUFFICIENT_GROUNDING') || message.includes('SCHEMA_INVALID') || message.includes('JSON_SCHEMA_REQUIRED') || message.includes('CITATION_OUTSIDE_ALLOWLIST') || message.includes('EVIDENCE_ENTAILMENT_FAILED') || message.includes('GROUNDED_CITATION_REQUIRED')) break;
+          if (message.includes('DATA_CLASSIFICATION_BLOCKED') || message.includes('API_KEY_NOT_CONFIGURED') || message.includes('ROUTE_DISABLED') || message.includes('MODEL_NOT_ALLOWLISTED') || message.includes('INPUT_TOO_LARGE') || message.includes('EVIDENCE_ALLOWLIST_REQUIRED') || message.includes('GROUNDING_LINEAGE_MISMATCH') || message.includes('PROVIDER_NATIVE_SCHEMA_REQUIRED') || message.includes('INSUFFICIENT_GROUNDING') || message.includes('SCHEMA_INVALID') || message.includes('JSON_SCHEMA_REQUIRED') || message.includes('CITATION_OUTSIDE_ALLOWLIST') || message.includes('EVIDENCE_ENTAILMENT_FAILED') || message.includes('GROUNDED_CITATION_REQUIRED')) break;
         }
       }
     }
+    const classification = request.dataClassification ?? 'internal';
+    const safeRequest = { ...request, system: redactForModel(request.system, classification).value, user: redactForModel(request.user, classification).value };
+    const deadLetter: LlmDeadLetterRecord = {
+      id: `LLM-DLQ-${createHash('sha256').update(`${requestFingerprint(safeRequest)}\n${errors.join('\n')}`).digest('hex').slice(0, 24)}`,
+      createdAt: new Date().toISOString(), purpose: request.purpose, schemaName: request.schemaName,
+      requestFingerprint: requestFingerprint(safeRequest), attempts: totalAttempts, errors,
+      containsPromptContent: false, productionAccepted: false,
+    };
+    this.deadLetterRecords.push(deadLetter);
+    await this.options.deadLetterSink?.(structuredClone(deadLetter));
     throw new Error(`LLM_ALL_ROUTES_FAILED:${errors.join('|')}`);
   }
 
-  async health(purpose?: LlmPurpose): Promise<Array<{ routeId: string; providerId: LlmProviderId; model: string; configured: boolean; circuit: 'closed'|'open'; baseUrl?: string }>> {
+  async health(purpose?: LlmPurpose): Promise<Array<{ routeId: string; providerId: LlmProviderId; model: string; allowlisted: boolean; configured: boolean; circuit: 'closed'|'open'; baseUrl?: string }>> {
     const routes = this.policy.routes.filter((route) => !purpose || route.purpose === purpose);
     return routes.map((route) => {
       const provider = providerDefinition(route.providerId);
       const keyName = route.apiKeyEnvironmentVariable || provider.apiKeyEnvironmentVariable;
+      const allowlisted = modelAllowed(this.policy, route);
       return {
         routeId: route.id,
         providerId: route.providerId,
         model: route.model,
-        configured: route.providerId === 'local-openai' || Boolean(process.env[keyName]),
+        allowlisted,
+        configured: route.enabled && allowlisted && (route.providerId === 'local-openai' || Boolean(process.env[keyName])),
         circuit: circuitAllows(route, this.policy) ? 'closed' : 'open',
         ...(route.baseUrl || provider.defaultBaseUrl ? { baseUrl: route.baseUrl || provider.defaultBaseUrl } : {}),
       };

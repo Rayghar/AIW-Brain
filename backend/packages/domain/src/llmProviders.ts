@@ -34,8 +34,17 @@ export interface LlmRouteConfiguration {
   dataClassificationAllowlist: Array<'public'|'internal'|'confidential'|'restricted'>;
 }
 
+export interface LlmModelAllowlistEntry {
+  providerId: LlmProviderId;
+  model: string;
+  purposes?: LlmPurpose[] | undefined;
+  verificationReference?: string | undefined;
+}
+
 export interface LlmRuntimePolicy {
   routes: LlmRouteConfiguration[];
+  modelAllowlist?: LlmModelAllowlistEntry[];
+  maxInputCharacters?: number;
   allowFallback: boolean;
   requireStructuredOutput: boolean;
   redactSecrets: boolean;

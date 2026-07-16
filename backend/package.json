@@ -163,6 +163,8 @@
     "rc10_73_7:prebackup-closure": "node scripts/rc10-73-7-release-closure-prebackup.mjs",
     "rc10_73_7:runtime-storage-acceptance": "node scripts/rc10-73-7-runtime-storage-acceptance.mjs",
     "rc10_73_8:capacity-gate": "node scripts/rc10-73-8-storage-capacity-gate.mjs",
+    "rc10_73_8:gate6b-runtime-test": "vitest run apps/api/test/rc10_73_8_gate_6b_runtime_readiness.test.ts apps/api/test/rc10_73_4_cognitive_grounding.test.ts apps/api/test/sprint7_9.test.ts --pool=threads --maxWorkers=1 --no-file-parallelism",
+    "rc10_73_8:gate6b-prepare": "node scripts/rc10-73-8/prepare-gate-6b-approval.mjs --local-tests-passed --local-build-passed",
     "rc10_73_7:verify-snapshots": "node scripts/rc10-73-7-verify-acquisition-snapshots.mjs"
   },
   "engines": {

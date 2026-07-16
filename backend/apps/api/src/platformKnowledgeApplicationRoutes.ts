@@ -434,12 +434,19 @@ export async function registerPlatformKnowledgeApplicationRoutes(context: Applic
       .object({
         policy: z.object({
           routes: z.array(routeSchema).min(1),
+          modelAllowlist: z.array(z.object({
+            providerId: z.enum(llmProviderIds),
+            model: z.string().min(1),
+            purposes: z.array(z.enum(llmPurposes)).min(1).optional(),
+            verificationReference: z.string().min(1).max(500),
+          })),
+          maxInputCharacters: z.number().int().min(1024).max(262144),
           allowFallback: z.boolean(),
           requireStructuredOutput: z.boolean(),
           redactSecrets: z.literal(true),
           logPrompts: z.boolean(),
           retainProviderContent: z.boolean(),
-          maxRetries: z.number().int().min(0).max(5),
+          maxRetries: z.number().int().min(0).max(2),
           circuitBreakerFailures: z.number().int().min(1).max(20),
           circuitBreakerResetSeconds: z.number().int().min(5).max(3600),
         }),
