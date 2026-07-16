@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "aiw-gate-6b-post-replacement-smoke-readiness-v1",
+  "generatedAt": "2026-07-16T14:21:38.827Z",
+  "productionAccepted": false,
+  "entitlementPassed": true,
+  "exactModelIdentifier": "gpt-4.1-mini-2025-04-14",
+  "modelAllowlisted": true,
+  "allowlistPurpose": "governed-candidate-semantic-transformation",
+  "allowFallback": false,
+  "secretSafetyPassed": true,
+  "selectionQualityAuditPassed": true,
+  "localFocusedTestsPassed": 24,
+  "smokePassed": true,
+  "httpRequestSucceeded": true,
+  "exactModelReturned": true,
+  "schemaValidationPassed": true,
+  "evidenceLineagePassed": true,
+  "candidateAuthorityLeakage": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "requestCount": 1,
+  "retryCount": 0,
+  "modelCalls": 1,
+  "fullPilotExecuted": false,
+  "gate6BStatus": "bounded-smoke-passed-full-pilot-awaiting-explicit-approval",
+  "gate6CStatus": "blocked",
+  "gate6DStatus": "not-started",
+  "backupStatus": "deferred-by-product-owner",
+  "remainingBlockers": [
+    "Full Gate 6B pilot requires explicit product-owner approval",
+    "Pilot cost ceiling requires explicit execution approval",
+    "Gold set is not independently approved",
+    "Knowledge-vault backup remains deferred"
+  ],
+  "recommendation": "eligible-for-product-owner-consideration-not-authorized-to-execute",
+  "attemptHistory": [
+    {
+      "attempt": 1,
+      "requestedModel": "gpt-4.1-mini",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "disposition": "rejected-model-identity",
+      "receipt": "GATE_6B_LIVE_BOUNDED_SMOKE_RESULT.json"
+    },
+    {
+      "attempt": 2,
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "disposition": "accepted-candidate-only",
+      "receipt": "GATE_6B_REPLACEMENT_LIVE_BOUNDED_SMOKE_RESULT.json"
+    }
+  ]
+}

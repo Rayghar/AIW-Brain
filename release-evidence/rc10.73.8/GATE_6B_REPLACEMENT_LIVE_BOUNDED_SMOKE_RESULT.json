@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "aiw-gate-6b-live-bounded-smoke-result-v1",
+  "generatedAt": "2026-07-16T14:21:38.827Z",
+  "productionAccepted": false,
+  "executionStatus": "passed",
+  "startedAt": "2026-07-16T14:21:43.661Z",
+  "completedAt": "2026-07-16T14:21:56.777Z",
+  "provider": "openai",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "purpose": "governed-candidate-semantic-transformation",
+  "protocol": "responses",
+  "routeId": "gate-6b-live-smoke:openai:gpt-4.1-mini-2025-04-14",
+  "entitlementReceipt": "release-evidence/rc10.73.8/GATE_6B_MODEL_ALIAS_SNAPSHOT_MAPPING.json",
+  "transferApprovalReceipt": "release-evidence/rc10.73.8/GATE_6B_REPLACEMENT_LIVE_TRANSFER_APPROVAL_RECEIPT.json",
+  "allowlistEntry": {
+    "providerId": "openai",
+    "provider": "openai",
+    "model": "gpt-4.1-mini-2025-04-14",
+    "configuredAlias": "gpt-4.1-mini",
+    "requestedModel": "gpt-4.1-mini-2025-04-14",
+    "resolvedModel": "gpt-4.1-mini-2025-04-14",
+    "modelFamily": "gpt-4.1-mini",
+    "allowedSnapshots": [
+      "gpt-4.1-mini-2025-04-14"
+    ],
+    "modelIdentityDecision": "exact-snapshot-pinned",
+    "purposes": [
+      "governed-candidate-semantic-transformation"
+    ],
+    "verificationReference": "release-evidence/rc10.73.8/GATE_6B_MODEL_ALIAS_SNAPSHOT_MAPPING.json",
+    "verificationTimestamp": "2026-07-16T09:03:22.049Z",
+    "verificationMethod": "authenticated-alias-entitlement-plus-provider-resolved-snapshot-and-product-owner-pin"
+  },
+  "limits": {
+    "modelCalls": 1,
+    "retries": 0,
+    "concurrency": 1,
+    "evidencePassages": 1,
+    "inputCharacters": 2120,
+    "maximumInputCharacters": 8000,
+    "maximumOutputTokens": 1500
+  },
+  "disabledCapabilities": {
+    "tools": true,
+    "webSearch": true,
+    "externalRetrieval": true,
+    "codeExecution": true,
+    "fallback": true
+  },
+  "requestCount": 1,
+  "retryCount": 0,
+  "fallbackUsed": false,
+  "httpRequest": {
+    "succeeded": true,
+    "status": 200,
+    "providerRequestId": "req_25b53091722d4cda96e45faca19c8a26"
+  },
+  "exactModelValidation": {
+    "passed": true,
+    "configured": "gpt-4.1-mini-2025-04-14",
+    "providerReported": "gpt-4.1-mini-2025-04-14"
+  },
+  "evidence": {
+    "semanticUnitId": "SEMU-e9f9d891f5f3ea90e38f70a9",
+    "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+    "connectorId": "GH-AZURE-RESOURCE-MODULES",
+    "repository": "Azure/ResourceModules",
+    "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+    "path": "docs/wiki/Solution creation.md",
+    "heading": "Bicep Registry",
+    "structuralRange": "lines 227-266",
+    "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+    "excerptHashReplay": true,
+    "parserVersion": "markdown-structural-parser-v1"
+  },
+  "schemaValidation": {
+    "valid": true,
+    "violations": []
+  },
+  "evidenceLineage": {
+    "passed": true,
+    "citationOutsideAllowlistCount": 0,
+    "groundingVerified": true
+  },
+  "unsupportedClaims": {
+    "rejectedOrOmitted": true,
+    "unsupportedReferenceIds": []
+  },
+  "epistemicStatus": {
+    "recorded": true,
+    "statuses": [
+      "source-asserted"
+    ],
+    "hypothesesRepresentedAsProvenFacts": 0
+  },
+  "fingerprints": {
+    "request": "sha256:6beaf23fd589de3fc791af7c5df338befe3ca5b8ac9933b18cbb472dec0c3a52",
+    "response": "sha256:2ad26518b47a3dd6561487b81959d6bef5e7c96fe1b302fa9534f08e932921af"
+  },
+  "tokenUsage": {
+    "inputTokens": 1034,
+    "outputTokens": 473,
+    "totalTokens": 1507
+  },
+  "redactionReceipt": {
+    "systemChanged": false,
+    "userChanged": false,
+    "systemCounts": {},
+    "userCounts": {}
+  },
+  "persistence": {
+    "candidateRecordsCreated": 1,
+    "candidateAuthorityPreserved": true,
+    "approvedRecordsChanged": 0
+  },
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "secretFindings": 0,
+  "secretsAbsentFromReceipt": true,
+  "rawEvidenceExcerptIncludedInReceipt": false,
+  "candidateRecord": {
+    "id": "G6B-CAND-47d349ffb85b2cf0ab991efd",
+    "semanticUnitId": "SEMU-e9f9d891f5f3ea90e38f70a9",
+    "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+    "status": "pending-human-review",
+    "authority": "candidate",
+    "scoringEligible": false,
+    "hardConstraintEligible": false,
+    "conformanceEligible": false,
+    "automaticPromotionAllowed": false,
+    "designGraphMutationAllowed": false,
+    "requestFingerprint": "sha256:6beaf23fd589de3fc791af7c5df338befe3ca5b8ac9933b18cbb472dec0c3a52",
+    "responseFingerprint": "sha256:2ad26518b47a3dd6561487b81959d6bef5e7c96fe1b302fa9534f08e932921af",
+    "providerId": "openai",
+    "model": "gpt-4.1-mini-2025-04-14",
+    "routeId": "gate-6b-live-smoke:openai:gpt-4.1-mini-2025-04-14",
+    "httpStatus": 200,
+    "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+    "providerRequestId": "req_25b53091722d4cda96e45faca19c8a26",
+    "usage": {
+      "inputTokens": 1034,
+      "outputTokens": 473,
+      "totalTokens": 1507
+    },
+    "transactionTelemetry": {
+      "httpStatus": 200,
+      "providerRequestId": "req_25b53091722d4cda96e45faca19c8a26",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "elapsedDurationMs": 13059,
+      "retryCount": 0,
+      "responseFingerprint": "sha256:cb85ba7fc2f72841a8d07d2d7c8a7588dc1996ca4a75c4c84f55e6cdca762302",
+      "schemaValidationStatus": "passed",
+      "identityValidationStatus": "accepted-exact-request",
+      "finalDisposition": "accepted",
+      "semanticContentPersisted": false,
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "inputTokens": 1034,
+      "outputTokens": 473,
+      "totalTokens": 1507
+    },
+    "promptVersion": "gate-6b-bounded-candidate-v1",
+    "outputSchemaVersion": "aiw-gate-6b-candidate-transformation-v1",
+    "evidenceLineage": {
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+      "path": "docs/wiki/Solution creation.md",
+      "heading": "Bicep Registry",
+      "structuralRange": "lines 227-266",
+      "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+      "parserVersion": "markdown-structural-parser-v1",
+      "sourceAuthorityClass": "official-reference-architecture"
+    },
+    "redactionReceipt": {
+      "systemChanged": false,
+      "userChanged": false,
+      "systemCounts": {},
+      "userCounts": {}
+    },
+    "schemaValidation": {
+      "valid": true,
+      "violations": []
+    },
+    "groundingReceipt": {
+      "verified": true,
+      "threshold": 0.03,
+      "citedReferenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce"
+      ],
+      "unsupportedReferenceIds": [],
+      "items": [
+        {
+          "referenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "supportScore": 0.463,
+          "status": "supported"
+        }
+      ]
+    },
+    "output": {
+      "schemaVersion": "1.0",
+      "authority": "candidate",
+      "disposition": "claim-candidate",
+      "summary": "The provided Bicep example demonstrates orchestrating deployment of multiple Azure resources using modules from a private Bicep Registry, employing modules to deploy a resource group and a network security group, with dependencies handled accordingly.",
+      "claims": [
+        {
+          "statement": "It is possible to orchestrate the deployment of multiple Azure resources using modules from a private Bicep Registry in a single Bicep deployment file.",
+          "evidenceRefs": [
+            "BEV-f4e684d09a9fb9f2589375ce"
+          ],
+          "epistemicStatus": "source-asserted",
+          "conditions": [
+            "Use of private Bicep Registry modules"
+          ],
+          "limitations": [
+            "Example limited to specific resource types (Resource Group, NSG)"
+          ],
+          "confidence": 0.9,
+          "reviewRequired": true
+        },
+        {
+          "statement": "A resource group can be deployed using the 'resources.resource-group' module from a private Bicep Registry, with parameters for name and location.",
+          "evidenceRefs": [
+            "BEV-f4e684d09a9fb9f2589375ce"
+          ],
+          "epistemicStatus": "source-asserted",
+          "conditions": [
+            "Module version 1.0.0 from 'br/modules:resources.resource-group'"
+          ],
+          "limitations": [
+            "Default parameter values shown in example"
+          ],
+          "confidence": 0.9,
+          "reviewRequired": true
+        },
+        {
+          "statement": "A Network Security Group (NSG) can be deployed scoped to a specific resource group using the 'network.network-security-group' module from the private Bicep Registry, specifying the resource group scope and parameters such as the NSG name.",
+          "evidenceRefs": [
+            "BEV-f4e684d09a9fb9f2589375ce"
+          ],
+          "epistemicStatus": "source-asserted",
+          "conditions": [
+            "Module version 1.0.0 from 'br/modules:network.network-security-group'",
+            "Resource group scope defined with resourceGroup(resourceGroupName)"
+          ],
+          "limitations": [
+            "Example uses fixed NSG name 'defaultNsg'"
+          ],
+          "confidence": 0.9,
+          "reviewRequired": true
+        }
+      ],
+      "evidenceRefs": [
+        "BEV-f4e684d09a9fb9f2589375ce"
+      ],
+      "abstentionReason": "",
+      "reviewRequired": true,
+      "productionAccepted": false,
+      "automaticPromotionAllowed": false,
+      "designGraphMutationAllowed": false
+    },
+    "createdAt": "2026-07-16T14:21:56.776Z",
+    "productionAccepted": false
+  }
+}
