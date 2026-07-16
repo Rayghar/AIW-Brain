@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "aiw-gate-6b-24-case-delegated-sol-adversarial-review-v1",
+  "generatedAt": "2026-07-16T19:14:32.134Z",
+  "productionAccepted": false,
+  "reviewProtocolVersion": "delegated-sol-four-pass-v1",
+  "pass": 3,
+  "passName": "adversarial-evidence-and-boundary-review",
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "caseCount": 24,
+  "claimCandidateCount": 19,
+  "nonClaimCount": 4,
+  "abstentionCount": 1,
+  "evidenceSufficientForDisposition": 24,
+  "supportedClaimCandidateCount": 19,
+  "unsupportedClaimCandidateCount": 0,
+  "claimCandidatesWithExplicitConditions": 19,
+  "claimCandidatesWithExplicitLimitations": 19,
+  "contradictionOrAlternativeCases": [
+    {
+      "caseId": "G6B1-05",
+      "posture": "scoped-distinction-not-contradiction"
+    },
+    {
+      "caseId": "G6B1-09",
+      "posture": "context-dependent-alternatives"
+    },
+    {
+      "caseId": "G6B1-11",
+      "posture": "conditional-scope-not-contradiction"
+    },
+    {
+      "caseId": "G6B1-23",
+      "posture": "alternative-tools-not-contradiction"
+    }
+  ],
+  "patternDnaCoverage": {
+    "substantial": 4,
+    "partial": 11,
+    "none": 9
+  },
+  "architectureGenomeCoverage": {
+    "substantial": 5,
+    "partial": 14,
+    "none": 5
+  },
+  "criticalFindings": [
+    {
+      "caseId": "G6B1-12",
+      "finding": "Bibliographic metadata cannot establish quality causality."
+    },
+    {
+      "caseId": "G6B1-13",
+      "finding": "Cross-file group membership cannot replace missing publication evidence."
+    },
+    {
+      "caseId": "G6B1-16",
+      "finding": "UI flash-component code is not observability evidence."
+    },
+    {
+      "caseId": "G6B1-21",
+      "finding": "A product self-description contains source-attributed propositions despite its provisional non-claim label."
+    }
+  ],
+  "consequentialUnsupportedClaimRate": 0,
+  "candidateAuthorityLeakage": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

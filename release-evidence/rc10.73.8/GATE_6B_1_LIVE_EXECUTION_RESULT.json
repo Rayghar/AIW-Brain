@@ -1,0 +1,2393 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-live-execution-result-v1",
+  "startedAt": "2026-07-16T20:03:01.357Z",
+  "completedAt": "2026-07-16T20:07:33.631Z",
+  "productionAccepted": false,
+  "status": "completed-candidate-only",
+  "provider": "openai",
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "matchedSubsetFingerprint": "sha256:de914b8c218039477e23e55b0d32d33025e1c695a3a7f64e99e41c496ec3262d",
+  "requestPlanFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "runtimePlanFingerprintObservation": "sha256:9e1891961ee5625bb6a6ea9ed3ed084a883e8a0d5a7bb9bc33d504b6849c86f6",
+  "plan": {
+    "individualRequests": 24,
+    "sameSourceRequests": 6,
+    "architectureGroupRequests": 6,
+    "plannedCalls": 36,
+    "absoluteCallCeiling": 40,
+    "totalTokenCeiling": 120000
+  },
+  "result": {
+    "strategies": [
+      {
+        "strategy": "one-semantic-unit-per-call",
+        "requests": 24,
+        "retries": 0,
+        "tokens": 46602,
+        "candidateRecords": 24
+      },
+      {
+        "strategy": "same-source-bounded-micro-batches",
+        "requests": 6,
+        "retries": 0,
+        "tokens": 20260,
+        "candidateRecords": 12
+      },
+      {
+        "strategy": "bounded-architecture-group",
+        "requests": 6,
+        "retries": 0,
+        "tokens": 20708,
+        "candidateRecords": 12
+      }
+    ],
+    "totalCalls": 36,
+    "totalRetries": 0,
+    "totalTokens": 87570
+  },
+  "actual": {
+    "historicalRejectedProviderCalls": 3,
+    "currentRunNetworkCalls": 36,
+    "cumulativeProviderCalls": 39,
+    "providerTransactions": 36,
+    "retries": 0,
+    "inputTokens": 73448,
+    "outputTokens": 17021,
+    "totalTokens": 90469,
+    "costUsd": 0.056613
+  },
+  "schemaValidRequests": 36,
+  "exactEvidenceLineageRequests": 36,
+  "candidateRecordsCreated": 48,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "secretFindings": 0,
+  "repositoryCodeExecuted": 0,
+  "externalRetrievalCalls": 0,
+  "toolsEnabled": false,
+  "capacityBefore": {
+    "schemaVersion": "aiw-gate-6b-1-delegated-capacity-threshold-receipt-v1",
+    "generatedAt": "2026-07-16T20:03:01.381Z",
+    "productionAccepted": false,
+    "standardPreferredThresholdBytes": 17179869184,
+    "standardPreferredThresholdMet": false,
+    "safeClearlyAiwOwnedCleanupCouldReachStandardThreshold": false,
+    "cleanupPerformed": false,
+    "cleanupDeletionCount": 0,
+    "cleanupBytesRecovered": 0,
+    "rationale": "Clearly AIW-owned rebuildable outputs were insufficient to reach 16 GiB without deleting retained package or browser caches or unrelated operating-system/application logs. Product-owner-delegated Sol authority lowered only the immediate threshold for this bounded run after a conservative peak calculation.",
+    "delegatedExecutionThresholdBytes": 14495514624,
+    "delegationBasis": "product-owner-delegated technical authority for the bounded Gate 6B.1 run",
+    "freeBytesBeforeExecution": 15209074688,
+    "projectedTemporaryBytes": 536870912,
+    "projectedPermanentBytes": 134217728,
+    "projectedPeakFreeBytes": 14537986048,
+    "controlledStopFloorBytes": 8589934592,
+    "requiredAdditionalSafetyMarginBytes": 2147483648,
+    "minimumProjectedPeakFreeBytes": 10737418240,
+    "projectedMarginAboveControlledStopFloorBytes": 5948051456,
+    "rawEvidenceDeletionCount": 0,
+    "governedEvidenceDeletionCount": 0,
+    "backupStatus": "deferred-by-product-owner",
+    "passed": true
+  },
+  "freeBytesAfter": 15246913536,
+  "transferSafetyReceiptFingerprint": "sha256:144fcddb682e5b4360686abc90616be11cf68167e084c5ba900709636cdd3a8e",
+  "requestReceipts": [
+    {
+      "requestId": "one-semantic-unit-per-call:01",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-01"
+      ],
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce"
+      ],
+      "attempt": 0,
+      "totalCalls": 1,
+      "totalRetries": 0,
+      "totalTokens": 1445,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_5574d69169e1421096f1d0a1afd96893",
+      "latencyMs": 3569,
+      "inputTokens": 1227,
+      "outputTokens": 218,
+      "requestFingerprint": "sha256:bdb5f0fda4e5fe8f870e39ca998a44a1ff95510cb58505d834b7861abc5d2845",
+      "responseFingerprint": "sha256:7ad487959f50377e3d325f1953f38c330b6fab1c7c83e483e57274e83d460c52",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:02",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-02"
+      ],
+      "evidenceIds": [
+        "BEV-53bc04b94c6a9116788e7543"
+      ],
+      "attempt": 0,
+      "totalCalls": 2,
+      "totalRetries": 0,
+      "totalTokens": 4623,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_a39a3c3bcdd944c49b87b63a318be5be",
+      "latencyMs": 15270,
+      "inputTokens": 1875,
+      "outputTokens": 1303,
+      "requestFingerprint": "sha256:1fe7879390787b5ceaa0bb506940bb2aa481474e8a2b0ce3aa329ebbfddb95a3",
+      "responseFingerprint": "sha256:a8b2a9332297bb3857dab5826ad31490e486806df9a1ea77478642288fcd83b6",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:03",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-03"
+      ],
+      "evidenceIds": [
+        "BEV-b52e41d91d436a91aca36b8b"
+      ],
+      "attempt": 0,
+      "totalCalls": 3,
+      "totalRetries": 0,
+      "totalTokens": 6154,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_19ae9af5f683476f9782afb63f7e847d",
+      "latencyMs": 4717,
+      "inputTokens": 1332,
+      "outputTokens": 199,
+      "requestFingerprint": "sha256:86bd9c2731ea3fd0823c2a843f4fdf08626aec94c1382d33749bdd248598b9a1",
+      "responseFingerprint": "sha256:ed05e77c9b2f8edcec11a28cffa2a0be74fbc68cffa1fdf426dad904c8257243",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-b52e41d91d436a91aca36b8b",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:04",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-04"
+      ],
+      "evidenceIds": [
+        "BEV-45a8396b1620b74a67ac57ae"
+      ],
+      "attempt": 0,
+      "totalCalls": 4,
+      "totalRetries": 0,
+      "totalTokens": 7566,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_c7ccba5896114593bd09fd478e0682d8",
+      "latencyMs": 3664,
+      "inputTokens": 1223,
+      "outputTokens": 189,
+      "requestFingerprint": "sha256:2e49e9cd2d5099250113af7e0fbb2535a2b27792c0d74618212f335987c6cd07",
+      "responseFingerprint": "sha256:8aff88fcd10b44b67deb1287f305111f562c01921575ed8e54c3fc44b4cc6e57",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-45a8396b1620b74a67ac57ae",
+          "supportScore": 0.3333,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:05",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "evidenceIds": [
+        "BEV-0053bcdba65df5d1e58fdbf4"
+      ],
+      "attempt": 0,
+      "totalCalls": 5,
+      "totalRetries": 0,
+      "totalTokens": 9003,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_ce3895c5079045158708252f0c0d580f",
+      "latencyMs": 6037,
+      "inputTokens": 1021,
+      "outputTokens": 416,
+      "requestFingerprint": "sha256:c428d491127f31f0d7110e35d5736200a0d639b629c8f38bf8da214a35d976ae",
+      "responseFingerprint": "sha256:b6fda212ffcea632e0a269f2af5fe466486a80fbe4abb086e2cbe1129bbbd460",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:06",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-06"
+      ],
+      "evidenceIds": [
+        "BEV-79d04db6eab52cfde71559fc"
+      ],
+      "attempt": 0,
+      "totalCalls": 6,
+      "totalRetries": 0,
+      "totalTokens": 11738,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_26bbde616aad4eed97e854f731f19e32",
+      "latencyMs": 16964,
+      "inputTokens": 1569,
+      "outputTokens": 1166,
+      "requestFingerprint": "sha256:01de0ff443669d9239076e89963eead22ad90e09a9e8339547c25e5e65c01386",
+      "responseFingerprint": "sha256:d07641653745f792f57e5dbbbc308e8478af061355b8d4cf79e59092aa6df287",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:07",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-07"
+      ],
+      "evidenceIds": [
+        "BEV-48b0cb0824957d14e5044e65"
+      ],
+      "attempt": 0,
+      "totalCalls": 7,
+      "totalRetries": 0,
+      "totalTokens": 13671,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_372019db23344f269266b2bbff53bc95",
+      "latencyMs": 14325,
+      "inputTokens": 1158,
+      "outputTokens": 775,
+      "requestFingerprint": "sha256:085d4a487eff11cf39515bca3f5685f9d2584ca45b8495e76ff0946eb2dca88c",
+      "responseFingerprint": "sha256:8048502dd8a85503757c2f6b5f36d2b59906b705a19e368ac24415d1fd3636f8",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0.5714,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:08",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-08"
+      ],
+      "evidenceIds": [
+        "BEV-8f946e0488f13c1df9469a2f"
+      ],
+      "attempt": 0,
+      "totalCalls": 8,
+      "totalRetries": 0,
+      "totalTokens": 16907,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_c40a298e2282476e87aead943f1eb582",
+      "latencyMs": 13860,
+      "inputTokens": 2198,
+      "outputTokens": 1038,
+      "requestFingerprint": "sha256:2813022ecd6c7c83bccdfd6ff0b18948e45912276be14939ef52e0afd1572a58",
+      "responseFingerprint": "sha256:5d46e2552fc3399dc167b0513b94b315207e6cddf9a076d2b82b1758c8fbdbc3",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0.5909,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-8f946e0488f13c1df9469a2f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:09",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "evidenceIds": [
+        "BEV-d04770a7fd02a158b96b119d"
+      ],
+      "attempt": 0,
+      "totalCalls": 9,
+      "totalRetries": 0,
+      "totalTokens": 20169,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_aea83e7e3b504145a3faa093e8a921ef",
+      "latencyMs": 15623,
+      "inputTokens": 2203,
+      "outputTokens": 1059,
+      "requestFingerprint": "sha256:dcabe495c53cf40d752fff258ca1d4ffd303d2b85b9731f080bf0f5ece0f15db",
+      "responseFingerprint": "sha256:dda4373d3724c9d3fa557ea2f86b643555f859c14c6118746b2cf70212b44d83",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-d04770a7fd02a158b96b119d",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:10",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-10"
+      ],
+      "evidenceIds": [
+        "BEV-53e36cd2165eec1cffd76493"
+      ],
+      "attempt": 0,
+      "totalCalls": 10,
+      "totalRetries": 0,
+      "totalTokens": 21549,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_b1e0e6f2245b438fb1de31a397e0afc8",
+      "latencyMs": 2893,
+      "inputTokens": 1166,
+      "outputTokens": 214,
+      "requestFingerprint": "sha256:da2e9b90279c77055aa520aa8a3d6a3e695dab336ff8a8019617937a09fd02f8",
+      "responseFingerprint": "sha256:29e39eda337c6d1038aacfb38d93e349353932682c624f22775e96167d7c0405",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-53e36cd2165eec1cffd76493",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:11",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-11"
+      ],
+      "evidenceIds": [
+        "BEV-ba42951a9a7b05050d9a36c7"
+      ],
+      "attempt": 0,
+      "totalCalls": 11,
+      "totalRetries": 0,
+      "totalTokens": 24189,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_bdc301269024447f80aab15947168d2c",
+      "latencyMs": 6090,
+      "inputTokens": 2416,
+      "outputTokens": 224,
+      "requestFingerprint": "sha256:78dbd991e886810cfc4132d17f7bc8045fe996873034f83bb16592ad3c0add0c",
+      "responseFingerprint": "sha256:c347e7bb94e260a8b0d89c46de3cf35de80b41a280b3f64f3dbe6caeaf9ac53f",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-ba42951a9a7b05050d9a36c7",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:12",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-12"
+      ],
+      "evidenceIds": [
+        "BEV-d075515016509baf01b5c585"
+      ],
+      "attempt": 0,
+      "totalCalls": 12,
+      "totalRetries": 0,
+      "totalTokens": 27704,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_2ce40370449a4158802074471f188a7b",
+      "latencyMs": 10028,
+      "inputTokens": 3312,
+      "outputTokens": 203,
+      "requestFingerprint": "sha256:ace15b7991b80e1986c88045fd3b67df068f51e9622217eb402737bfb26c0de6",
+      "responseFingerprint": "sha256:a920f212c6a1b2a4c8fb4a5126c8bf4cb574a754327a029e0981cd50eb55ff9a",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-d075515016509baf01b5c585",
+          "supportScore": 0.6364,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:13",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-13"
+      ],
+      "evidenceIds": [
+        "BEV-577cee3a91825ff936c52564"
+      ],
+      "attempt": 0,
+      "totalCalls": 13,
+      "totalRetries": 0,
+      "totalTokens": 31311,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_c37f78234546435fbd08a60935668907",
+      "latencyMs": 4003,
+      "inputTokens": 3385,
+      "outputTokens": 222,
+      "requestFingerprint": "sha256:8f45d47fe64cecb287a44ef87a3efd0bd4eb487642473885059bc99498904a44",
+      "responseFingerprint": "sha256:e17c7549cc875f73ec6f7d8fc78ffc207c580e9063dd01e92f22b7c0dfe115a4",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-577cee3a91825ff936c52564",
+          "supportScore": 0.7647,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:14",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-14"
+      ],
+      "evidenceIds": [
+        "BEV-0a57ca89afc9e92ec29c8871"
+      ],
+      "attempt": 0,
+      "totalCalls": 14,
+      "totalRetries": 0,
+      "totalTokens": 32651,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_fb25c6065279427e9c6f6692546a72fb",
+      "latencyMs": 3089,
+      "inputTokens": 1105,
+      "outputTokens": 235,
+      "requestFingerprint": "sha256:b47f639a39ec460982d1ca592abe1d5946d754d21a328eec6f71907f9e4da498",
+      "responseFingerprint": "sha256:b8386189baad7c63b2ec0fca323fc31ec5d97bed135896bf475547e6d513356c",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-0a57ca89afc9e92ec29c8871",
+          "supportScore": 0.5909,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:15",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "evidenceIds": [
+        "BEV-b4d881c0aa0d205179a5c445"
+      ],
+      "attempt": 0,
+      "totalCalls": 15,
+      "totalRetries": 0,
+      "totalTokens": 34358,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_4cafeb6fafc643c894197ab35a3c8ff1",
+      "latencyMs": 7851,
+      "inputTokens": 1196,
+      "outputTokens": 511,
+      "requestFingerprint": "sha256:aafd0abb955441d58417cbd4a4a7074ca68ec6583156517246cc0cbd9768715a",
+      "responseFingerprint": "sha256:d3d863643d07bf994ec6881284cccae3297dba45dc21c68afb26c306af275f48",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-b4d881c0aa0d205179a5c445",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-b4d881c0aa0d205179a5c445",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-b4d881c0aa0d205179a5c445",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-b4d881c0aa0d205179a5c445",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:16",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-16"
+      ],
+      "evidenceIds": [
+        "BEV-b3e3c943daf7709f0853caae"
+      ],
+      "attempt": 0,
+      "totalCalls": 16,
+      "totalRetries": 0,
+      "totalTokens": 35919,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_86b41abcc5f847649a5ce7cd8f23f10d",
+      "latencyMs": 3768,
+      "inputTokens": 1342,
+      "outputTokens": 219,
+      "requestFingerprint": "sha256:2e842261670ae1d29e92336784aa1365d7efef69015dd1ba510be88bd18d9981",
+      "responseFingerprint": "sha256:a0b97ecd2e8e0a47ba34903005ad241dee8806c3eb23949ebfd316d92ee0cff9",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-b3e3c943daf7709f0853caae",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:17",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-17"
+      ],
+      "evidenceIds": [
+        "BEV-f6949d67d67d9d38262c6311"
+      ],
+      "attempt": 0,
+      "totalCalls": 17,
+      "totalRetries": 0,
+      "totalTokens": 37317,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_89da18f4d5b8481e936afcb7e33dd656",
+      "latencyMs": 3897,
+      "inputTokens": 1192,
+      "outputTokens": 206,
+      "requestFingerprint": "sha256:ebd393d0f3976df3ac1a2ac1465cdb960d9a34fafdbd4176714026e02d71b64e",
+      "responseFingerprint": "sha256:261d200054bd075e6ef494179baf30a3b3256ed15ae3d3544d490d83213c1359",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-f6949d67d67d9d38262c6311",
+          "supportScore": 0.5789,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:18",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-18"
+      ],
+      "evidenceIds": [
+        "BEV-235d9f247ef339a20866b297"
+      ],
+      "attempt": 0,
+      "totalCalls": 18,
+      "totalRetries": 0,
+      "totalTokens": 38846,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_dbb5ae6a1e534662adcf585380c180e6",
+      "latencyMs": 3141,
+      "inputTokens": 1345,
+      "outputTokens": 184,
+      "requestFingerprint": "sha256:0a04ab493be3468fd8569e8f433ef0ac914df60e24ebb3667a22a29df36c8d9c",
+      "responseFingerprint": "sha256:4b8a1193d522c16cd053645bf1ba7d75fef602a042672994ac4e2c2151aab510",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-235d9f247ef339a20866b297",
+          "supportScore": 0.4667,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:19",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-19"
+      ],
+      "evidenceIds": [
+        "BEV-6bfde0a7dbe3beb487385bfe"
+      ],
+      "attempt": 0,
+      "totalCalls": 19,
+      "totalRetries": 0,
+      "totalTokens": 40408,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_42ad0733e2c74b98b7c8156ed38922e2",
+      "latencyMs": 5307,
+      "inputTokens": 1346,
+      "outputTokens": 216,
+      "requestFingerprint": "sha256:fca6b77cc1bc452f5884acf09ccfddab8635b02b9527db6c300aada30e362c45",
+      "responseFingerprint": "sha256:c607716ebe396bc6f78959d1f8c95d9ec96c566fab725fbe4f234f08677a4daa",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-6bfde0a7dbe3beb487385bfe",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:20",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-20"
+      ],
+      "evidenceIds": [
+        "BEV-525e8c7d02b86716e6ddfd0b"
+      ],
+      "attempt": 0,
+      "totalCalls": 20,
+      "totalRetries": 0,
+      "totalTokens": 41747,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_fdb0c75e6c9b48d9ae4ef304f1d31d56",
+      "latencyMs": 3670,
+      "inputTokens": 1097,
+      "outputTokens": 242,
+      "requestFingerprint": "sha256:3cea57d5485476861c2aff30fce3bfdce9a6ebdcb899361eb758dfc54c619feb",
+      "responseFingerprint": "sha256:bf110cf7a8aaf393499729993ea6b3688132d743eb0997f04f76793d6c2a319d",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-525e8c7d02b86716e6ddfd0b",
+          "supportScore": 1,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:21",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "evidenceIds": [
+        "BEV-fcc349fa2dedc2c092f08f84"
+      ],
+      "attempt": 0,
+      "totalCalls": 21,
+      "totalRetries": 0,
+      "totalTokens": 42827,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_5af7a1031e94465285cc0a827b34931a",
+      "latencyMs": 3467,
+      "inputTokens": 890,
+      "outputTokens": 190,
+      "requestFingerprint": "sha256:98ed8bf7de938d326273f807db71b2b5516bfbc55fdbff0c43ba5157140942d4",
+      "responseFingerprint": "sha256:bf67fa1c8d29e701073ffe15c07f2d42643472a4db5b8da69de515f7e5b6cc8f",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-fcc349fa2dedc2c092f08f84",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:22",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-22"
+      ],
+      "evidenceIds": [
+        "BEV-51f4caabb87d02521ee53e84"
+      ],
+      "attempt": 0,
+      "totalCalls": 22,
+      "totalRetries": 0,
+      "totalTokens": 44319,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_023276a60c504ea2bb5369fa82a29206",
+      "latencyMs": 3336,
+      "inputTokens": 1268,
+      "outputTokens": 224,
+      "requestFingerprint": "sha256:4db6ae326430a8c6a38ffa26c0a185b00b01ee6fb7155e9d607484786eff6955",
+      "responseFingerprint": "sha256:ac34620221d24241e60e45eacd8831ad4d4364a39fa4d869da04b5ac8e699e3e",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-51f4caabb87d02521ee53e84",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:23",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-23"
+      ],
+      "evidenceIds": [
+        "BEV-7cb026af13f9061c688c165f"
+      ],
+      "attempt": 0,
+      "totalCalls": 23,
+      "totalRetries": 0,
+      "totalTokens": 45760,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_bf3020b148e64197bd20e13eee887428",
+      "latencyMs": 7177,
+      "inputTokens": 1225,
+      "outputTokens": 216,
+      "requestFingerprint": "sha256:94c307a479c053b1dd82e873d86b20bfbb8a375034126c34d1698a8d072f8498",
+      "responseFingerprint": "sha256:bbff89976ef9ecec361e8c712ed88b8722feebed3934570fbea92539fb97f36f",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-7cb026af13f9061c688c165f",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "one-semantic-unit-per-call:24",
+      "strategy": "one-semantic-unit-per-call",
+      "caseIds": [
+        "G6B1-24"
+      ],
+      "evidenceIds": [],
+      "attempt": 0,
+      "totalCalls": 24,
+      "totalRetries": 0,
+      "totalTokens": 46602,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_4c6593055c2b4ee5a84500ff0d20e06e",
+      "latencyMs": 1998,
+      "inputTokens": 739,
+      "outputTokens": 103,
+      "requestFingerprint": "sha256:66a9afb339555118253d00dddd15d1f3b2e6034aec4fd5e3ba56e7c4f41a789c",
+      "responseFingerprint": "sha256:21b898db0d6f695827db500169250d727f4fb4216843e946648b04acce042cca",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [],
+      "candidateRecordsCreated": 1,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:01",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce",
+        "BEV-53bc04b94c6a9116788e7543"
+      ],
+      "attempt": 0,
+      "totalCalls": 25,
+      "totalRetries": 0,
+      "totalTokens": 49464,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_e4ba1a99745440fb83b62fca52175001",
+      "latencyMs": 6332,
+      "inputTokens": 2416,
+      "outputTokens": 446,
+      "requestFingerprint": "sha256:9196949ef59d0190f497d493eba226483e351e4cd96798bc566e3ae14373788e",
+      "responseFingerprint": "sha256:bc356d39f6f426f0c91bda40055e0ccec5253a9a80ab80d94205a3288dad7ed7",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:02",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-03",
+        "G6B1-04"
+      ],
+      "evidenceIds": [
+        "BEV-b52e41d91d436a91aca36b8b",
+        "BEV-45a8396b1620b74a67ac57ae"
+      ],
+      "attempt": 0,
+      "totalCalls": 26,
+      "totalRetries": 0,
+      "totalTokens": 51716,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_79babc6485b4499ebef5f725d68e2098",
+      "latencyMs": 5258,
+      "inputTokens": 1871,
+      "outputTokens": 381,
+      "requestFingerprint": "sha256:6d37c9250849e6e3da8aec95754b8921b156e84ef2554f2eb980e269964d5370",
+      "responseFingerprint": "sha256:a09c3ed01b24eb428becf9d838fe1a9429f8a7648633b2c2bd29de074a341acc",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-b52e41d91d436a91aca36b8b",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-45a8396b1620b74a67ac57ae",
+          "supportScore": 0.6667,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:03",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ],
+      "evidenceIds": [
+        "BEV-79d04db6eab52cfde71559fc",
+        "BEV-48b0cb0824957d14e5044e65"
+      ],
+      "attempt": 0,
+      "totalCalls": 27,
+      "totalRetries": 0,
+      "totalTokens": 54836,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_c5c80569f78c4dd8b3bcdf30090c96ea",
+      "latencyMs": 14294,
+      "inputTokens": 2044,
+      "outputTokens": 1076,
+      "requestFingerprint": "sha256:0de07e08bec8a9a0c57d20ae2db0f0f93cd17da25417a0f42d5cd5684bfcb9e0",
+      "responseFingerprint": "sha256:d16f28ea1c1bbd6e99e06f0a9c597937211496d4cb6a3415e265ee5d8299a2d8",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0.9375,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:04",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-10",
+        "G6B1-11"
+      ],
+      "evidenceIds": [
+        "BEV-53e36cd2165eec1cffd76493",
+        "BEV-ba42951a9a7b05050d9a36c7"
+      ],
+      "attempt": 0,
+      "totalCalls": 28,
+      "totalRetries": 0,
+      "totalTokens": 58257,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_9f3df556ef7b4f6faa6231ca0fe5dcab",
+      "latencyMs": 7129,
+      "inputTokens": 2897,
+      "outputTokens": 524,
+      "requestFingerprint": "sha256:609157d25583206e9ce605f1f7bd498025f5b617bb78f0fd49eabe61f9911c2b",
+      "responseFingerprint": "sha256:9ac55091920c8065da0cd2db900b70934f54c2b8310e0d146d52d2f045542869",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-53e36cd2165eec1cffd76493",
+          "supportScore": 0,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": [
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-ba42951a9a7b05050d9a36c7",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-ba42951a9a7b05050d9a36c7",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:05",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-12",
+        "G6B1-13"
+      ],
+      "evidenceIds": [
+        "BEV-d075515016509baf01b5c585",
+        "BEV-577cee3a91825ff936c52564"
+      ],
+      "attempt": 0,
+      "totalCalls": 29,
+      "totalRetries": 0,
+      "totalTokens": 64626,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_6682b60ffc814eb1ab181ab96c1596f7",
+      "latencyMs": 10252,
+      "inputTokens": 6010,
+      "outputTokens": 359,
+      "requestFingerprint": "sha256:33b5deab7dd720f3872caa62162fd5cfecf658344a7dcdcfacc71179b1f9cea0",
+      "responseFingerprint": "sha256:e8dbb44b63ecd55ff8c6e9ad407e30eb7446f8fb56ae6f1c5c5161ee7b9b67fb",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-d075515016509baf01b5c585",
+          "supportScore": 0.7333,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-577cee3a91825ff936c52564",
+          "supportScore": 0.6842,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "same-source-bounded-micro-batches:06",
+      "strategy": "same-source-bounded-micro-batches",
+      "caseIds": [
+        "G6B1-17",
+        "G6B1-18"
+      ],
+      "evidenceIds": [
+        "BEV-f6949d67d67d9d38262c6311",
+        "BEV-235d9f247ef339a20866b297"
+      ],
+      "attempt": 0,
+      "totalCalls": 30,
+      "totalRetries": 0,
+      "totalTokens": 66862,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_9834423c7d9441c1b464f03e4f5cc062",
+      "latencyMs": 5221,
+      "inputTokens": 1856,
+      "outputTokens": 380,
+      "requestFingerprint": "sha256:10cc5db41632c15e20fe671a6c43ee3a64e3545124e7ff941caa0671077e9da2",
+      "responseFingerprint": "sha256:d053d6f612d5dd6a337f9347df25731f90e7618bfabfce37f3ba211faa2b2b59",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-f6949d67d67d9d38262c6311",
+          "supportScore": 0.2941,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-235d9f247ef339a20866b297",
+          "supportScore": 0.5217,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "bounded-architecture-group:01",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce",
+        "BEV-53bc04b94c6a9116788e7543"
+      ],
+      "attempt": 0,
+      "totalCalls": 31,
+      "totalRetries": 0,
+      "totalTokens": 69711,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_e1987aa852fd4ecfbf10d46e8d5c494a",
+      "latencyMs": 5095,
+      "inputTokens": 2412,
+      "outputTokens": 437,
+      "requestFingerprint": "sha256:a1d2faa41ebf97af8dc08b317bbab77a2a2fc64c3159460d3be80d388f22fc2e",
+      "responseFingerprint": "sha256:5f4928a9c5fc1aa476d91b5df7235b8f54c2c2c4f7031272ba4280f07c461aa2",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-53bc04b94c6a9116788e7543",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "bounded-architecture-group:02",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-03",
+        "G6B1-04"
+      ],
+      "evidenceIds": [
+        "BEV-b52e41d91d436a91aca36b8b",
+        "BEV-45a8396b1620b74a67ac57ae"
+      ],
+      "attempt": 0,
+      "totalCalls": 32,
+      "totalRetries": 0,
+      "totalTokens": 72119,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_2b4a86c69fb144feab1de96fd5cb3661",
+      "latencyMs": 17710,
+      "inputTokens": 1867,
+      "outputTokens": 541,
+      "requestFingerprint": "sha256:671202aeffa745655b79cfebe2759e37f3c5cb24aa0d20237e0832f211a2b0cf",
+      "responseFingerprint": "sha256:9d379c634eac1f26dc26d5d78071ccdb3c24afcb205260808a227fa22893accd",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-b52e41d91d436a91aca36b8b",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-b52e41d91d436a91aca36b8b",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-45a8396b1620b74a67ac57ae",
+          "supportScore": 0.3333,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-45a8396b1620b74a67ac57ae",
+          "supportScore": 0.3333,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "bounded-architecture-group:03",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ],
+      "evidenceIds": [
+        "BEV-79d04db6eab52cfde71559fc",
+        "BEV-48b0cb0824957d14e5044e65"
+      ],
+      "attempt": 0,
+      "totalCalls": 33,
+      "totalRetries": 0,
+      "totalTokens": 75622,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_15bddc3ac9d248c5bfc8a70c9f4854af",
+      "latencyMs": 17076,
+      "inputTokens": 2040,
+      "outputTokens": 1463,
+      "requestFingerprint": "sha256:8c1e0d0a43a032502f356aa352d7459f64b18fde35b864809d660cc6b4438e9b",
+      "responseFingerprint": "sha256:84c67a44da9875b64e906cadef4557c30f8877367f1057c24061ab26def4d6a3",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-79d04db6eab52cfde71559fc",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0.5556,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0.65,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        },
+        {
+          "referenceId": "BEV-48b0cb0824957d14e5044e65",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "bounded-architecture-group:04",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-10",
+        "G6B1-11"
+      ],
+      "evidenceIds": [
+        "BEV-53e36cd2165eec1cffd76493",
+        "BEV-ba42951a9a7b05050d9a36c7"
+      ],
+      "attempt": 0,
+      "totalCalls": 34,
+      "totalRetries": 0,
+      "totalTokens": 79043,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_48776a7520d642ad99034eeee2cb8bb9",
+      "latencyMs": 7774,
+      "inputTokens": 2893,
+      "outputTokens": 528,
+      "requestFingerprint": "sha256:3661a7576c5199eaef91c6f3032fe93f7142ad410f21725d0d77ebc44aae6f41",
+      "responseFingerprint": "sha256:23ea38f85282097e8d7ddfc83907fd7afc0a26896fa935f90ad5b3c4c1afa7b1",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-53e36cd2165eec1cffd76493",
+          "supportScore": 0.7778,
+          "status": "rejected-epistemic",
+          "persisted": false,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-ba42951a9a7b05050d9a36c7",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        },
+        {
+          "referenceId": "BEV-ba42951a9a7b05050d9a36c7",
+          "supportScore": 0,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": [
+            "condition-omission",
+            "limitation-omission",
+            "negation-mismatch"
+          ]
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "bounded-architecture-group:05",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-12",
+        "G6B1-13"
+      ],
+      "evidenceIds": [
+        "BEV-d075515016509baf01b5c585",
+        "BEV-577cee3a91825ff936c52564"
+      ],
+      "attempt": 0,
+      "totalCalls": 35,
+      "totalRetries": 0,
+      "totalTokens": 85376,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_0ce9e6642bd74e29a482539552029c20",
+      "latencyMs": 6886,
+      "inputTokens": 6006,
+      "outputTokens": 327,
+      "requestFingerprint": "sha256:2beb8ccf5811f210583e5a9b90b0d61066b15f77c39d005f877291ea26d8de72",
+      "responseFingerprint": "sha256:1d0fdf9b325fc75ceafdd1b74e6c61c4e0acec69ddae5033bc61b9ed54757e51",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-d075515016509baf01b5c585",
+          "supportScore": 0.7647,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-577cee3a91825ff936c52564",
+          "supportScore": 0.7647,
+          "status": "supported",
+          "persisted": true,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "requestId": "bounded-architecture-group:06",
+      "strategy": "bounded-architecture-group",
+      "caseIds": [
+        "G6B1-17",
+        "G6B1-18"
+      ],
+      "evidenceIds": [
+        "BEV-f6949d67d67d9d38262c6311",
+        "BEV-235d9f247ef339a20866b297"
+      ],
+      "attempt": 0,
+      "totalCalls": 36,
+      "totalRetries": 0,
+      "totalTokens": 87570,
+      "providerId": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_c7ba18db41ea4989a867f83c63d354e9",
+      "latencyMs": 4866,
+      "inputTokens": 1852,
+      "outputTokens": 342,
+      "requestFingerprint": "sha256:81ff4b197f9fb49ec08e85ed3e1b7d4955aa97c71a38ba60382dca147d027869",
+      "responseFingerprint": "sha256:573dd87be9788fd312534cc7f479d2bc42daeb726ca20c4def98dc6888955918",
+      "schemaValid": true,
+      "evidenceLineageValid": true,
+      "groundingSupport": [
+        {
+          "referenceId": "BEV-f6949d67d67d9d38262c6311",
+          "supportScore": 0.1875,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        },
+        {
+          "referenceId": "BEV-235d9f247ef339a20866b297",
+          "supportScore": 0.4286,
+          "status": "rejected-grounding",
+          "persisted": false,
+          "riskFlags": []
+        }
+      ],
+      "candidateRecordsCreated": 2,
+      "candidateAuthority": "candidate",
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    }
+  ],
+  "backupStatus": "deferred-by-product-owner",
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started"
+}

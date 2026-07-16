@@ -1,17 +1,101 @@
 {
-  "schemaVersion": "aiw-gate-6b-24-case-inter-reviewer-agreement-v1",
-  "templateStatus": "blank-governed-template",
+  "schemaVersion": "aiw-gate-6b-24-case-agreement-v2",
+  "generatedAt": "2026-07-16T19:14:32.134Z",
   "productionAccepted": false,
   "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
-  "reviewerAIdentifier": null,
-  "reviewerBIdentifier": null,
-  "comparisonTimestamp": null,
-  "caseCountCompared": 0,
-  "agreementByDimension": {},
-  "overallAgreement": null,
-  "cohensKappa": null,
-  "conflicts": [],
-  "adjudicatorIdentifier": null,
-  "adjudicationStatus": "not-started",
-  "signatureOrApprovalEvidence": null
+  "reviewerAIdentifier": "provisional-label-generator",
+  "reviewerBIdentifier": "gpt-5.6-sol-delegated-technical-review",
+  "reviewerAIndependent": false,
+  "reviewerBIndependent": false,
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "comparisonTimestamp": "2026-07-16T19:14:32.134Z",
+  "caseCountCompared": 24,
+  "agreementByDimension": {
+    "disposition": {
+      "count": 20,
+      "rate": 0.8333333333333334
+    },
+    "epistemicStatus": {
+      "count": 18,
+      "rate": 0.75
+    }
+  },
+  "conflicts": [
+    {
+      "caseId": "G6B1-02",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-stated-recommendation",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-10",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "normative-requirement",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-12",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-13",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-16",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-18",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "non-claim",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "illustration",
+      "provisionalEpistemicStatus": "unknown",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-21",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "non-claim",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "unknown",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-23",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    }
+  ],
+  "adjudicatorIdentifier": "gpt-5.6-sol-delegated-technical-review",
+  "adjudicationStatus": "completed",
+  "signatureOrApprovalEvidence": "product-owner delegated technical authority; not independent human agreement"
 }

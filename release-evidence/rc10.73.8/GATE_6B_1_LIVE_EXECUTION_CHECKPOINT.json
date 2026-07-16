@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-live-execution-checkpoint-v1",
+  "updatedAt": "2026-07-16T20:07:33.622Z",
+  "productionAccepted": false,
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "requestPlanFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "completedRequests": 36,
+  "lastCompletedRequestId": "bounded-architecture-group:06",
+  "totalCalls": 36,
+  "totalRetries": 0,
+  "totalTokens": 87570,
+  "candidateRecordCount": 48,
+  "candidateLedgerFingerprint": "sha256:b13bb62a9ab26fe8ed52583a0c8b428d0b35adc9fbf2625da2b058c29c9a2d84",
+  "controlledStopFloorBytes": 8589934592,
+  "freeBytes": 15246913536
+}

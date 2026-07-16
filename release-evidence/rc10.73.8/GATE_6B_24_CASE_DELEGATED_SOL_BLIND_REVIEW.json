@@ -1,15 +1,20 @@
 {
-  "schemaVersion": "aiw-gate-6b-24-case-reviewer-labels-v2",
-  "generatedAt": "2026-07-16T19:14:32.134Z",
+  "schemaVersion": "aiw-gate-6b-24-case-delegated-sol-blind-review-v1",
+  "generatedAt": "2026-07-16T19:11:31.036Z",
   "productionAccepted": false,
+  "reviewProtocolVersion": "delegated-sol-four-pass-v1",
+  "pass": 1,
+  "passName": "blind-evidence-only-review",
   "reviewActorType": "gpt-5.6-sol",
-  "reviewerIdentifier": "gpt-5.6-sol-delegated-technical-review",
   "humanReviewerPresent": false,
   "externallyVerified": false,
-  "provisionalLabelsHiddenDuringInitialLabelling": true,
+  "independentHumanReviewClaimed": false,
+  "proposerLabelsOpenedDuringPass": false,
+  "priorSmokeOutputOpenedDuringPass": false,
   "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
-  "reviewStatus": "completed-delegated-sol-not-independent-human-review",
-  "labels": [
+  "blindedPackSha256": "sha256:af9e0bcb172b9ec2bc47b287e4267678e9f6415e9cadf1be0d1943e137007ee7",
+  "caseCount": 24,
+  "decisions": [
     {
       "caseId": "G6B1-01",
       "disposition": "claim-candidate",
@@ -28,8 +33,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.96,
-      "rationale": "The passage demonstrates module orchestration and an explicitly bounded publishing alternative.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The passage demonstrates module orchestration and an explicitly bounded publishing alternative."
     },
     {
       "caseId": "G6B1-02",
@@ -49,8 +53,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.97,
-      "rationale": "The text directly states test-structure guidance, dependency handling and secret-injection recommendations.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The text directly states test-structure guidance, dependency handling and secret-injection recommendations."
     },
     {
       "caseId": "G6B1-03",
@@ -70,8 +73,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.95,
-      "rationale": "The machine-readable example states transport, encoding, precision, authentication and reconnection obligations.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The machine-readable example states transport, encoding, precision, authentication and reconnection obligations."
     },
     {
       "caseId": "G6B1-04",
@@ -91,8 +93,7 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.98,
-      "rationale": "The structured example directly exposes channel, server, protocol, scope and security-scheme facts.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The structured example directly exposes channel, server, protocol, scope and security-scheme facts."
     },
     {
       "caseId": "G6B1-05",
@@ -111,8 +112,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.99,
-      "rationale": "MUST language supports two bounded requirements while the apparent tension is resolved by explicit scope.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "MUST language supports two bounded requirements while the apparent tension is resolved by explicit scope."
     },
     {
       "caseId": "G6B1-06",
@@ -132,8 +132,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "substantial",
       "confidence": 0.98,
-      "rationale": "The passage supports topology, trust-boundary, access, egress and security-control fields.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The passage supports topology, trust-boundary, access, egress and security-control fields."
     },
     {
       "caseId": "G6B1-07",
@@ -154,8 +153,7 @@
       "patternDnaCoverage": "substantial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.98,
-      "rationale": "Quality drivers, tactics, conditions and trade-offs are explicitly described.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "Quality drivers, tactics, conditions and trade-offs are explicitly described."
     },
     {
       "caseId": "G6B1-08",
@@ -175,8 +173,7 @@
       "patternDnaCoverage": "substantial",
       "architectureGenomeCoverage": "substantial",
       "confidence": 0.97,
-      "rationale": "The passage separates operational experience from explicit monitoring, communication, deployment and incident-management recommendations.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The passage separates operational experience from explicit monitoring, communication, deployment and incident-management recommendations."
     },
     {
       "caseId": "G6B1-09",
@@ -196,8 +193,7 @@
       "patternDnaCoverage": "substantial",
       "architectureGenomeCoverage": "substantial",
       "confidence": 0.99,
-      "rationale": "The evidence provides mechanism, topology alternatives, consequences, risks and obligations suitable for causal Pattern DNA.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The evidence provides mechanism, topology alternatives, consequences, risks and obligations suitable for causal Pattern DNA."
     },
     {
       "caseId": "G6B1-10",
@@ -216,8 +212,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "substantial",
       "confidence": 0.98,
-      "rationale": "The JSON Schema directly defines required agent identity, capability, security, governance, data and compliance fields.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The JSON Schema directly defines required agent identity, capability, security, governance, data and compliance fields."
     },
     {
       "caseId": "G6B1-11",
@@ -237,8 +232,7 @@
       "patternDnaCoverage": "substantial",
       "architectureGenomeCoverage": "substantial",
       "confidence": 0.99,
-      "rationale": "The passage explicitly distinguishes runtime, deployment, provisioning and informational uses and their trust boundaries.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The passage explicitly distinguishes runtime, deployment, provisioning and informational uses and their trust boundaries."
     },
     {
       "caseId": "G6B1-12",
@@ -255,8 +249,7 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "none",
       "confidence": 0.99,
-      "rationale": "This is a bibliography extract, not claim-bearing evidence for quality relationships.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "This is a bibliography extract, not claim-bearing evidence for quality relationships."
     },
     {
       "caseId": "G6B1-13",
@@ -273,8 +266,7 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "none",
       "confidence": 0.99,
-      "rationale": "A second bibliography segment remains metadata-only and cannot establish cross-file causal claims.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "A second bibliography segment remains metadata-only and cannot establish cross-file causal claims."
     },
     {
       "caseId": "G6B1-14",
@@ -294,8 +286,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.96,
-      "rationale": "The source demonstrates a topology connection to a circuit-breaker component but not its effective behavior.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The source demonstrates a topology connection to a circuit-breaker component but not its effective behavior."
     },
     {
       "caseId": "G6B1-15",
@@ -315,8 +306,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.98,
-      "rationale": "The evidence directly documents an extension mechanism and its example module-detection behavior.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The evidence directly documents an extension mechanism and its example module-detection behavior."
     },
     {
       "caseId": "G6B1-16",
@@ -333,8 +323,7 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "none",
       "confidence": 0.99,
-      "rationale": "The unit is irrelevant to the proposed observability category and must not be forced into a claim.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The unit is irrelevant to the proposed observability category and must not be forced into a claim."
     },
     {
       "caseId": "G6B1-17",
@@ -353,13 +342,12 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.98,
-      "rationale": "Element-category styling for people, systems, containers and components is directly observable.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "Element-category styling for people, systems, containers and components is directly observable."
     },
     {
       "caseId": "G6B1-18",
       "disposition": "non-claim",
-      "primaryEpistemicStatus": "unknown",
+      "primaryEpistemicStatus": "illustration",
       "evidenceSufficientForDisposition": true,
       "evidenceSufficientForClaim": false,
       "conditions": [
@@ -373,8 +361,7 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "none",
       "confidence": 0.99,
-      "rationale": "The unit is presentation/localization content and serves as a deliberate non-claim control.",
-      "adjudication": "Changed from illustration to unknown because a non-claim localization control should not be assigned statement-level epistemic authority."
+      "rationale": "The unit is presentation/localization content and serves as a deliberate non-claim control."
     },
     {
       "caseId": "G6B1-19",
@@ -394,8 +381,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.98,
-      "rationale": "The code supports a deterministic conformance claim about valid edge-geometry structure and cell counting.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The code supports a deterministic conformance claim about valid edge-geometry structure and cell counting."
     },
     {
       "caseId": "G6B1-20",
@@ -414,8 +400,7 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.97,
-      "rationale": "The passage is a reusable deployment procedure and identifies required deployment outputs.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The passage is a reusable deployment procedure and identifies required deployment outputs."
     },
     {
       "caseId": "G6B1-21",
@@ -434,8 +419,7 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.91,
-      "rationale": "Contrary to a pure non-claim label, the passage contains bounded propositions about product scope that must remain source-attributed.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "Contrary to a pure non-claim label, the passage contains bounded propositions about product scope that must remain source-attributed."
     },
     {
       "caseId": "G6B1-22",
@@ -454,13 +438,12 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.98,
-      "rationale": "The code observes a provider-conditional rename, recreate, identity and data-copy migration structure.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "The code observes a provider-conditional rename, recreate, identity and data-copy migration structure."
     },
     {
       "caseId": "G6B1-23",
       "disposition": "claim-candidate",
-      "primaryEpistemicStatus": "implementation-observation",
+      "primaryEpistemicStatus": "source-example",
       "evidenceSufficientForDisposition": true,
       "evidenceSufficientForClaim": true,
       "conditions": [
@@ -475,8 +458,7 @@
       "patternDnaCoverage": "partial",
       "architectureGenomeCoverage": "partial",
       "confidence": 0.98,
-      "rationale": "The source documents modularity APIs and a concrete cycle rule while explicitly bounding their role.",
-      "adjudication": "Changed from source-example because the primary supported proposition is the implemented ArchUnit capability; the rule remains an example, not a universal norm."
+      "rationale": "The source documents modularity APIs and a concrete cycle rule while explicitly bounding their role."
     },
     {
       "caseId": "G6B1-24",
@@ -493,9 +475,9 @@
       "patternDnaCoverage": "none",
       "architectureGenomeCoverage": "none",
       "confidence": 1,
-      "rationale": "Missing evidence requires explicit abstention.",
-      "adjudication": "Blind decision retained after comparison and adversarial review."
+      "rationale": "Missing evidence requires explicit abstention."
     }
   ],
-  "adjudicationFingerprint": "sha256:5dc884ac75060d428b4eecf1951692fde6667d460f2e0024ebb795abf0111c1d"
+  "decisionFingerprint": "sha256:2784a8d2134fce3251ff0bb425bd3bf58769411d44cfe9bb1cf5513094d41823",
+  "status": "blind-decisions-frozen-awaiting-comparison-pass"
 }

@@ -182,4 +182,29 @@ describe('Gate 6B.1 offline runner fail-closed controls', () => {
     expect(candidates).toHaveLength(1);
     expect(outcome).toMatchObject({ candidateAuthority: 'candidate', candidateRecordsCreated: 1, approvedRecordsChanged: 0, designGraphMutations: 0, automaticPromotions: 0 });
   });
+  it('uses an empty evidence allowlist and requires strict abstention for the no-evidence control', async () => {
+    const excerpt = '[No governed bounded evidence is available for this control.]';
+    const excerptHash = `sha256:${createHash('sha256').update(excerpt).digest('hex')}`;
+    const base = buildRequestPlan(manifest)[0];
+    const promptCases = [{ caseId: 'CASE-NO-EVIDENCE', semanticUnitId: 'SEMU-NO-EVIDENCE', evidenceId: null, repository: 'owner/repo', immutableCommit: null, path: null, structuralRange: null, excerpt }];
+    const planned = {
+      ...base, caseIds: ['CASE-NO-EVIDENCE'], semanticUnitIds: ['SEMU-NO-EVIDENCE'], evidenceIds: [], repositories: ['owner/repo'], architectureGroupIds: [],
+      caseLineage: [{ caseId: 'CASE-NO-EVIDENCE', evidenceId: null, excerptHash }],
+      inputCharacters: calculateStrategyRequestCharacters(base.strategy, base.matchedPairId, [], promptCases),
+    };
+    const candidates: unknown[] = [];
+    const executor = createGovernedGatewayExecutor({
+      evidenceByCase: new Map([['CASE-NO-EVIDENCE', { kind: 'no-evidence-control', semanticUnitId: 'SEMU-NO-EVIDENCE', connectorId: 'GH-FIXTURE', repository: 'owner/repo', sourceAuthorityClass: 'educational-or-discovery-source', excerpt, excerptHash }]]),
+      appendCandidate: async (record) => { candidates.push(record); },
+      gateway: { generateJson: async (request: any) => {
+        expect(request.grounding).toMatchObject({ allowedReferenceIds: [], sources: [], requireCitations: false });
+        return {
+          value: { schemaVersion: '1.0', authority: 'candidate', cases: [{ caseId: 'CASE-NO-EVIDENCE', evidenceId: null, disposition: 'abstain', claims: [], abstentionReason: 'No governed evidence is available.', reviewRequired: true }], productionAccepted: false, automaticPromotionAllowed: false, designGraphMutationAllowed: false },
+          usage: { inputTokens: 20, outputTokens: 10 }, schemaValidation: { valid: true, violations: [] }, groundingReceipt: { verified: true },
+        };
+      } } as any,
+    });
+    await expect(executor(planned)).resolves.toMatchObject({ candidateRecordsCreated: 1, evidenceLineageValid: true });
+    expect(candidates).toHaveLength(1);
+  });
 });

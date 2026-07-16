@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-prompt-6g-entry-receipt-v1",
+  "generatedAt": "2026-07-16T20:09:08.405Z",
+  "productionAccepted": false,
+  "gate6b1EvaluationFingerprint": "sha256:748451e3fc7bd1c0d7ce12a9ce9d10d47be1d03b01ece75830e543fd15ed1c91",
+  "gate6b1Passed": false,
+  "selectedStrategy": null,
+  "entryStatus": "blocked-pending-strategy-redesign",
+  "permittedScope": [],
+  "prohibitedScope": [
+    "knowledge-promotion",
+    "approved-knowledge-mutation",
+    "Design-Graph-mutation",
+    "automatic-promotion",
+    "production-acceptance"
+  ],
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "backupStatus": "deferred-by-product-owner",
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started"
+}

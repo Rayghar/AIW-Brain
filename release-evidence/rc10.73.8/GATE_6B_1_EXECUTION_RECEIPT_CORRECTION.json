@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-execution-receipt-correction-v1",
+  "generatedAt": "2026-07-16T20:11:45.755Z",
+  "productionAccepted": false,
+  "correctedReceipt": "release-evidence/rc10.73.8/GATE_6B_1_LIVE_EXECUTION_RESULT.json",
+  "correctedReceiptSha256": "sha256:d0c39af545a1c29bfdd069bae3a7443543f178650314200e818df9127803fa18",
+  "field": "runtimePlanFingerprintObservation",
+  "historicalObservedValue": "sha256:9e1891961ee5625bb6a6ea9ed3ed084a883e8a0d5a7bb9bc33d504b6849c86f6",
+  "historicalObservationMethod": "noncanonical JSON replacer that retained only first-level request keys",
+  "authoritativeRequestPlanFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "runtimeReplayFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "committedDryRunFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "fingerprintsMatch": true,
+  "requestPlanChanged": false,
+  "providerCallsMadeForCorrection": 0,
+  "historicalReceiptRewritten": false,
+  "candidateAuthorityChanged": false,
+  "approvedKnowledgeChanged": false,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

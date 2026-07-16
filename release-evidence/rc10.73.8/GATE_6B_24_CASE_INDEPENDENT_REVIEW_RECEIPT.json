@@ -1,17 +1,582 @@
 {
-  "schemaVersion": "aiw-gate-6b-24-case-independent-review-receipt-v1",
-  "templateStatus": "blank-governed-template",
+  "schemaVersion": "aiw-gate-6b-24-case-review-receipt-v2",
+  "generatedAt": "2026-07-16T19:14:32.134Z",
   "productionAccepted": false,
-  "independentReviewStatus": "not-completed",
+  "independentReviewStatus": "not-performed",
   "approved": false,
-  "reviewerIdentifier": null,
-  "relevantArchitectureExperience": null,
-  "reviewTimestamp": null,
+  "reviewActorType": "gpt-5.6-sol",
+  "reviewerIdentifier": "gpt-5.6-sol-delegated-technical-review",
+  "relevantArchitectureExperience": "AI architecture-engineering supervision; not a human or independent external reviewer",
+  "reviewTimestamp": "2026-07-16T19:14:32.134Z",
   "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
-  "provisionalLabelsHidden": null,
-  "caseByCaseDecisions": [],
-  "uncertaintySummary": null,
-  "conflictsWithProvisionalLabels": [],
-  "signatureOrApprovalEvidence": null,
-  "completionInstructions": "A human reviewer must complete every governed field and all 24 case decisions. AIW and Codex must not self-approve this receipt."
+  "provisionalLabelsHidden": true,
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "delegatedExecutionReviewAccepted": true,
+  "delegatedExecutionScope": "bounded Gate 6B.1 strategy micro-pilot only",
+  "caseByCaseDecisions": [
+    {
+      "caseId": "G6B1-01",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-example",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Private Bicep Registry and subscription-scope deployment example",
+        "CI publishing is preferred but may not apply"
+      ],
+      "limitations": [
+        "Worked example does not prove universal suitability or production completeness",
+        "The excerpt ends before the complete deployment"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.96,
+      "rationale": "The passage demonstrates module orchestration and an explicitly bounded publishing alternative.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-02",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-stated-recommendation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "CARML module-test conventions",
+        "Scenario-specific Bicep test folders"
+      ],
+      "limitations": [
+        "Guidelines are repository-specific and not universal architecture requirements",
+        "No test outcome is measured"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.97,
+      "rationale": "The text directly states test-structure guidance, dependency handling and secret-injection recommendations.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-03",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-example",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Kraken WebSocket example represented in AsyncAPI 3.1",
+        "Private messages use a separate authenticated endpoint"
+      ],
+      "limitations": [
+        "Example-specific operational statements are not AsyncAPI-wide normative requirements",
+        "Approximate rate-limit and reconnection statements are source-specific"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.95,
+      "rationale": "The machine-readable example states transport, encoding, precision, authentication and reconnection obligations.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-04",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-example",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Streetlights Kafka example",
+        "Declared SASL SCRAM and OAuth2 server variants"
+      ],
+      "limitations": [
+        "Hosts and scopes are illustrative",
+        "No operational security effectiveness or deployment guarantee is supported"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.98,
+      "rationale": "The structured example directly exposes channel, server, protocol, scope and security-scheme facts.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-05",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "normative-requirement",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Requirements apply to image references and canonicalized file formats in this model"
+      ],
+      "limitations": [
+        "The model explicitly does not mandate a complete security-policy set",
+        "Transport security and data-at-rest controls are out of scope"
+      ],
+      "contradictionPosture": "scoped-distinction-not-contradiction",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.99,
+      "rationale": "MUST language supports two bounded requirements while the apparent tension is resolved by explicit scope.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-06",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-stated-recommendation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Azure VM network reference architecture",
+        "Management and outbound-connectivity requirements vary by workload"
+      ],
+      "limitations": [
+        "Vendor-specific reference guidance is not a universal target architecture",
+        "Public-IP exceptions require additional controls"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "substantial",
+      "confidence": 0.98,
+      "rationale": "The passage supports topology, trust-boundary, access, egress and security-control fields.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-07",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-stated-recommendation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Dynamic load for scale sets",
+        "Latency-sensitive workloads for placement groups",
+        "Measured baselines for changes"
+      ],
+      "limitations": [
+        "Benefits depend on workload evidence and SKU selection",
+        "Cost control and performance improvement are expected consequences, not guarantees"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "substantial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.98,
+      "rationale": "Quality drivers, tactics, conditions and trade-offs are explicitly described.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-08",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "implementation-observation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Large-scale SaaS operating context",
+        "Dynamics 365 experience"
+      ],
+      "limitations": [
+        "Experience does not prove every recommendation applies to every SaaS workload",
+        "Automation and engineering ownership need local risk and operating-model assessment"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "substantial",
+      "architectureGenomeCoverage": "substantial",
+      "confidence": 0.97,
+      "rationale": "The passage separates operational experience from explicit monitoring, communication, deployment and incident-management recommendations.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-09",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-stated-recommendation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Event-driven workloads and selected broker or stream topology",
+        "Payload and ordering choices depend on consumer needs"
+      ],
+      "limitations": [
+        "Vendor products are examples rather than mandatory realizations",
+        "Quality consequences depend on topology, error handling and consistency design"
+      ],
+      "contradictionPosture": "context-dependent-alternatives",
+      "patternDnaCoverage": "substantial",
+      "architectureGenomeCoverage": "substantial",
+      "confidence": 0.99,
+      "rationale": "The evidence provides mechanism, topology alternatives, consequences, risks and obligations suitable for causal Pattern DNA.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-10",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "normative-requirement",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Objects claiming conformance to FSI Agent Card schema v1.0.0"
+      ],
+      "limitations": [
+        "Required fields do not prove the truth or enforcement of their values",
+        "The excerpt covers only the beginning of the schema"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "substantial",
+      "confidence": 0.98,
+      "rationale": "The JSON Schema directly defines required agent identity, capability, security, governance, data and compliance fields.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-11",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-stated-recommendation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "FSI agent-card trust signal consumed by orchestrators, gateways or deployment gates",
+        "Actual enforcement depends on platform support and independent systems"
+      ],
+      "limitations": [
+        "Card declarations do not substitute for governance records or controls",
+        "Possible uses are not guarantees that an institution implements them"
+      ],
+      "contradictionPosture": "conditional-scope-not-contradiction",
+      "patternDnaCoverage": "substantial",
+      "architectureGenomeCoverage": "substantial",
+      "confidence": 0.99,
+      "rationale": "The passage explicitly distinguishes runtime, deployment, provisioning and informational uses and their trust boundaries.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-12",
+      "disposition": "non-claim",
+      "primaryEpistemicStatus": "unknown",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": false,
+      "conditions": [],
+      "limitations": [
+        "Bibliographic titles and metadata do not establish the publications findings",
+        "No causal quality relationship can be inferred from citation presence"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "none",
+      "confidence": 0.99,
+      "rationale": "This is a bibliography extract, not claim-bearing evidence for quality relationships.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-13",
+      "disposition": "non-claim",
+      "primaryEpistemicStatus": "unknown",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": false,
+      "conditions": [],
+      "limitations": [
+        "Architecture-group membership cannot supply missing publication content",
+        "Cross-file evidence is required before any Pattern DNA proposal"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "none",
+      "confidence": 0.99,
+      "rationale": "A second bibliography segment remains metadata-only and cannot establish cross-file causal claims.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-14",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-example",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "BookInfo Istio/Meshery example",
+        "Observed route and topology references"
+      ],
+      "limitations": [
+        "The shown fragment does not expose circuit-breaker thresholds or outcomes",
+        "No resilience guarantee or measured failure behavior is supported"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.96,
+      "rationale": "The source demonstrates a topology connection to a circuit-breaker component but not its effective behavior.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-15",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "implementation-observation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Spring Modulith 1.3 external module contributions",
+        "Factory registration through spring.factories"
+      ],
+      "limitations": [
+        "The example does not establish that this extension is preferable in every design",
+        "Architecture quality consequences need additional evidence"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.98,
+      "rationale": "The evidence directly documents an extension mechanism and its example module-detection behavior.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-16",
+      "disposition": "non-claim",
+      "primaryEpistemicStatus": "unknown",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": false,
+      "conditions": [],
+      "limitations": [
+        "UI flash-component code contains no telemetry relationship",
+        "Repository ownership cannot replace missing OpenTelemetry specification evidence"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "none",
+      "confidence": 0.99,
+      "rationale": "The unit is irrelevant to the proposed observability category and must not be forced into a claim.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-17",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "implementation-observation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "C4-PlantUML sandstone theme macro definitions"
+      ],
+      "limitations": [
+        "Colors encode presentation defaults rather than complete architectural semantics",
+        "Relations and topology are absent; specialist PlantUML parsing is required"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.98,
+      "rationale": "Element-category styling for people, systems, containers and components is directly observable.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-18",
+      "disposition": "non-claim",
+      "primaryEpistemicStatus": "unknown",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": false,
+      "conditions": [
+        "Danish C4 legend-localization macro file"
+      ],
+      "limitations": [
+        "Localized labels do not assert an architecture design",
+        "Source identity and group provenance must still be retained"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "none",
+      "confidence": 0.99,
+      "rationale": "The unit is presentation/localization content and serves as a deliberate non-claim control.",
+      "adjudication": "Changed from illustration to unknown because a non-claim localization control should not be assigned statement-level epistemic authority."
+    },
+    {
+      "caseId": "G6B1-19",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "implementation-observation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Draw.io export/import test helper",
+        "Specific mxGeometry XML invariants"
+      ],
+      "limitations": [
+        "The helper does not reconstruct architecture meaning",
+        "Cross-file diagrams are required for broader semantics"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.98,
+      "rationale": "The code supports a deterministic conformance claim about valid edge-geometry structure and cell counting.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-20",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "source-example",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "AWS SAM systems-manager-automation-to-lambda example"
+      ],
+      "limitations": [
+        "Procedural deployment instructions are not a reference-architecture guarantee",
+        "Exact duplicate reuse must retain each occurrence provenance"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.97,
+      "rationale": "The passage is a reusable deployment procedure and identifies required deployment outputs.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-21",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "implementation-observation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Architecture Catalog self-description"
+      ],
+      "limitations": [
+        "Vocabulary-agnostic and enterprise-wide scope are source assertions, not independently measured capabilities",
+        "EventCatalog comparison is descriptive and partly promotional"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.91,
+      "rationale": "Contrary to a pure non-claim label, the passage contains bounded propositions about product scope that must remain source-attributed.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-22",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "implementation-observation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "Entity Framework migration when the active provider is SQL Server"
+      ],
+      "limitations": [
+        "The excerpt does not show rollback, completion or operational validation",
+        "No general target-state recommendation follows from one migration"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.98,
+      "rationale": "The code observes a provider-conditional rename, recreate, identity and data-copy migration structure.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    },
+    {
+      "caseId": "G6B1-23",
+      "disposition": "claim-candidate",
+      "primaryEpistemicStatus": "implementation-observation",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": true,
+      "conditions": [
+        "ArchUnit modularity rules evaluated at test time",
+        "Example packages and annotations"
+      ],
+      "limitations": [
+        "Cycle freedom is an example rule, not a universal normative requirement",
+        "ArchUnit complements rather than necessarily replaces module systems"
+      ],
+      "contradictionPosture": "alternative-tools-not-contradiction",
+      "patternDnaCoverage": "partial",
+      "architectureGenomeCoverage": "partial",
+      "confidence": 0.98,
+      "rationale": "The source documents modularity APIs and a concrete cycle rule while explicitly bounding their role.",
+      "adjudication": "Changed from source-example because the primary supported proposition is the implemented ArchUnit capability; the rule remains an example, not a universal norm."
+    },
+    {
+      "caseId": "G6B1-24",
+      "disposition": "abstain",
+      "primaryEpistemicStatus": "unknown",
+      "evidenceSufficientForDisposition": true,
+      "evidenceSufficientForClaim": false,
+      "conditions": [],
+      "limitations": [
+        "No governed bounded evidence is available",
+        "Repository identity alone cannot support a claim"
+      ],
+      "contradictionPosture": "none",
+      "patternDnaCoverage": "none",
+      "architectureGenomeCoverage": "none",
+      "confidence": 1,
+      "rationale": "Missing evidence requires explicit abstention.",
+      "adjudication": "Blind decision retained after comparison and adversarial review."
+    }
+  ],
+  "uncertaintySummary": "Delegated Sol review can authorize bounded engineering execution but cannot establish independent human validation, knowledge promotion, production acceptance or external expert agreement.",
+  "conflictsWithProvisionalLabels": [
+    {
+      "caseId": "G6B1-02",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-stated-recommendation",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-10",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "normative-requirement",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-12",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-13",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-16",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-18",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "non-claim",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "illustration",
+      "provisionalEpistemicStatus": "unknown",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-21",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "non-claim",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "unknown",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-23",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    }
+  ],
+  "signatureOrApprovalEvidence": "current product-owner prompt delegating Gate 6B.1 benchmark review and technical execution authority",
+  "knowledgePromotionAuthorityGranted": false
 }

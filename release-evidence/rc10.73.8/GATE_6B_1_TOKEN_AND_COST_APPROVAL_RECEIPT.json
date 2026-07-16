@@ -1,9 +1,9 @@
 {
   "schemaVersion": "aiw-gate-6b-1-token-and-cost-approval-receipt-v1",
-  "templateStatus": "provisional-cost-ceiling-awaiting-product-owner-execution-approval",
+  "templateStatus": "completed-product-owner-delegated-bounded-execution-approval",
   "productionAccepted": false,
-  "status": "not-approved",
-  "approved": false,
+  "status": "approved",
+  "approved": true,
   "exactModel": "gpt-4.1-mini-2025-04-14",
   "maximumSemanticUnits": 24,
   "plannedCalls": 36,
@@ -16,7 +16,7 @@
   "externalRetrievalEnabled": false,
   "fallbackEnabled": false,
   "proposedCostCeilingUsd": 1.0,
-  "approvedCostCeiling": null,
+  "approvedCostCeiling": 1.0,
   "currency": "USD",
   "pricingReference": {
     "provider": "openai",
@@ -28,7 +28,9 @@
     "outputPerMillionTokensUsd": 1.6
   },
   "costEstimateReceipt": "release-evidence/rc10.73.8/GATE_6B_1_REVISED_COST_ESTIMATE.json",
-  "approvedBy": null,
-  "approvedAt": null,
-  "approvalEvidence": null
+  "approvedBy": "product-owner-delegated-to-gpt-5.6-sol",
+  "approvedAt": "2026-07-16T19:14:55.7004410Z",
+  "approvalScope": "bounded Gate 6B.1 strategy micro-pilot only",
+  "approvalEvidence": "current product-owner prompt delegating USD 1.00, 40-call and 120000-token ceilings",
+  "knowledgePromotionAuthorityGranted": false
 }

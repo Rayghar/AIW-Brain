@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-verification-receipt-v1",
+  "generatedAt": "2026-07-16T21:12:51.734Z",
+  "productionAccepted": false,
+  "branch": "codex/rc-10-73-8-architecture-cognition",
+  "revisedPlanCommit": "d86257cb995c8c9535dc28b286023201f39db75c",
+  "commands": [
+    {
+      "command": "npm.cmd run build --workspace @aiw/domain",
+      "exitCode": 0,
+      "result": "passed"
+    },
+    {
+      "command": "npm.cmd run build --workspace @aiw/api",
+      "exitCode": 0,
+      "result": "passed"
+    },
+    {
+      "command": "npx.cmd vitest run apps/api/test/rc10_73_8_gate_6b1_runner.test.ts apps/api/test/rc10_73_8_gate_6b_runtime_readiness.test.ts --pool=threads --maxWorkers=1 --no-file-parallelism",
+      "exitCode": 0,
+      "testFilesPassed": 2,
+      "testsPassed": 39,
+      "testsFailed": 0,
+      "reportedDurationSeconds": 598.4,
+      "environmentNote": "The final Windows run incurred unusually slow module import but completed successfully."
+    },
+    {
+      "command": "node --check for five Gate 6B.1 changed or new scripts",
+      "exitCode": 0,
+      "scriptsPassed": 5
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "result": "passed"
+    }
+  ],
+  "jsonEvidenceFilesParsed": 19,
+  "jsonParseFailures": 0,
+  "credentialFindings": 0,
+  "rawOrExcludedPathFindings": 0,
+  "productionAcceptedTrueFindings": 0,
+  "runtime": {
+    "exactModel": "gpt-4.1-mini-2025-04-14",
+    "successfulRequests": 36,
+    "historicalRejectedProviderCalls": 3,
+    "cumulativeProviderCalls": 39,
+    "retriesInCompletedRun": 0,
+    "inputTokens": 73448,
+    "outputTokens": 17021,
+    "totalTokens": 90469,
+    "estimatedCostUsd": 0.056613,
+    "schemaValidRequests": 36,
+    "exactEvidenceLineageRequests": 36,
+    "candidateRecords": 48,
+    "persistedClaims": 10,
+    "atomicClaimsRejectedBeforePersistence": 106,
+    "approvedRecordsChanged": 0,
+    "designGraphMutations": 0,
+    "automaticPromotions": 0
+  },
+  "decision": "redesign-and-rerun-smaller-diagnostic-set",
+  "prompt6GStatus": "blocked-pending-strategy-redesign-and-fresh-call-approval",
+  "backupStatus": "deferred-by-product-owner",
+  "gate6CStatus": "blocked",
+  "gate6DStatus": "not-started"
+}

@@ -1,15 +1,28 @@
 {
-  "schemaVersion": "aiw-gate-6b-24-case-reviewer-labels-v2",
+  "schemaVersion": "aiw-gate-6b-24-case-delegated-sol-adjudication-v1",
   "generatedAt": "2026-07-16T19:14:32.134Z",
   "productionAccepted": false,
+  "reviewProtocolVersion": "delegated-sol-four-pass-v1",
+  "pass": 4,
+  "passName": "adjudication-and-gate-review",
   "reviewActorType": "gpt-5.6-sol",
-  "reviewerIdentifier": "gpt-5.6-sol-delegated-technical-review",
   "humanReviewerPresent": false,
   "externallyVerified": false,
-  "provisionalLabelsHiddenDuringInitialLabelling": true,
+  "independentHumanReviewClaimed": false,
+  "productOwnerDelegatedTechnicalAuthority": true,
   "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
-  "reviewStatus": "completed-delegated-sol-not-independent-human-review",
-  "labels": [
+  "blindDecisionFingerprint": "sha256:2784a8d2134fce3251ff0bb425bd3bf58769411d44cfe9bb1cf5513094d41823",
+  "caseCount": 24,
+  "disagreementsAdjudicated": 8,
+  "dispositionAgreementWithProvisional": {
+    "count": 20,
+    "rate": 0.8333333333333334
+  },
+  "epistemicAgreementWithProvisional": {
+    "count": 18,
+    "rate": 0.75
+  },
+  "adjudicatedDecisions": [
     {
       "caseId": "G6B1-01",
       "disposition": "claim-candidate",
@@ -497,5 +510,7 @@
       "adjudication": "Blind decision retained after comparison and adversarial review."
     }
   ],
-  "adjudicationFingerprint": "sha256:5dc884ac75060d428b4eecf1951692fde6667d460f2e0024ebb795abf0111c1d"
+  "adjudicationFingerprint": "sha256:5dc884ac75060d428b4eecf1951692fde6667d460f2e0024ebb795abf0111c1d",
+  "delegatedReviewStatus": "completed-for-bounded-gate-6b1-execution-not-independent-human-approval",
+  "knowledgePromotionAuthorityGranted": false
 }

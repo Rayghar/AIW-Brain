@@ -1,0 +1,1220 @@
+{
+  "schemaVersion": "aiw-gate-6b-1-live-candidate-ledger-v1",
+  "generatedAt": "2026-07-16T20:07:33.631Z",
+  "productionAccepted": false,
+  "authority": "candidate",
+  "benchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "requestPlanFingerprint": "sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623",
+  "recordCount": 48,
+  "records": [
+    {
+      "candidateRecordId": "G6B1-CAND-48a2792c8a253860c52946be",
+      "createdAt": "2026-07-16T20:03:05.027Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:01",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-01",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "output": {
+        "caseId": "G6B1-01",
+        "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-2fbe91f0ebd5a66d10fbc48f",
+      "createdAt": "2026-07-16T20:03:20.315Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:02",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-02",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "output": {
+        "caseId": "G6B1-02",
+        "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-82ff52da35ef9d071ee5a54a",
+      "createdAt": "2026-07-16T20:03:25.045Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:03",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-03",
+      "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+      "output": {
+        "caseId": "G6B1-03",
+        "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-4b3a9506758e161841ab4abf",
+      "createdAt": "2026-07-16T20:03:28.716Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:04",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-04",
+      "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+      "output": {
+        "caseId": "G6B1-04",
+        "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-e89600098a20ef19860f19b5",
+      "createdAt": "2026-07-16T20:03:34.776Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:05",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-05",
+      "evidenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+      "output": {
+        "caseId": "G6B1-05",
+        "evidenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-206b05b935b43df18d094341",
+      "createdAt": "2026-07-16T20:03:51.752Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:06",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-06",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "output": {
+        "caseId": "G6B1-06",
+        "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-6fefa1f1305a021f4ffc6282",
+      "createdAt": "2026-07-16T20:04:06.091Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:07",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-07",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "output": {
+        "caseId": "G6B1-07",
+        "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-1a8a0e288a80ef9b37f8ec5e",
+      "createdAt": "2026-07-16T20:04:19.968Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:08",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-08",
+      "evidenceId": "BEV-8f946e0488f13c1df9469a2f",
+      "output": {
+        "caseId": "G6B1-08",
+        "evidenceId": "BEV-8f946e0488f13c1df9469a2f",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-2cb239c92edff806773469c0",
+      "createdAt": "2026-07-16T20:04:35.609Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:09",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-09",
+      "evidenceId": "BEV-d04770a7fd02a158b96b119d",
+      "output": {
+        "caseId": "G6B1-09",
+        "evidenceId": "BEV-d04770a7fd02a158b96b119d",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-69d335e96bdcdb0283fd5a4d",
+      "createdAt": "2026-07-16T20:04:38.511Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:10",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-10",
+      "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+      "output": {
+        "caseId": "G6B1-10",
+        "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-09a855bf13b5fdffef9d9be4",
+      "createdAt": "2026-07-16T20:04:44.618Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:11",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-11",
+      "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+      "output": {
+        "caseId": "G6B1-11",
+        "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-37e98f7f9fa2872e2423a395",
+      "createdAt": "2026-07-16T20:04:54.661Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:12",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-12",
+      "evidenceId": "BEV-d075515016509baf01b5c585",
+      "output": {
+        "caseId": "G6B1-12",
+        "evidenceId": "BEV-d075515016509baf01b5c585",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "The article \"Towards Software Compliance Specification and Enforcement Using TOSCA\" by Mohammed Mubarkoot and Jörn Altmann (2021) discusses a method to specify and enforce software compliance using the TOSCA standard, aiming to improve compliance management in cloud applications.",
+            "evidenceRefs": [
+              "BEV-d075515016509baf01b5c585"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [],
+            "limitations": [],
+            "confidence": 0.8,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-7c003d7d096995fcbbea15e5",
+      "createdAt": "2026-07-16T20:04:58.673Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:13",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-13",
+      "evidenceId": "BEV-577cee3a91825ff936c52564",
+      "output": {
+        "caseId": "G6B1-13",
+        "evidenceId": "BEV-577cee3a91825ff936c52564",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "Justus Bogner et al. (2021) in their article \"Industry practices and challenges for the evolvability assurance of microservices\" discuss empirical software engineering practices and challenges related to ensuring the evolvability of microservices architectures.",
+            "evidenceRefs": [
+              "BEV-577cee3a91825ff936c52564"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [
+              "focus on microservices in software engineering"
+            ],
+            "limitations": [
+              "specific to microservices evolvability assurance",
+              "context limited to surveyed industry practices"
+            ],
+            "confidence": 0.85,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-e1979253336b0045ac11bd29",
+      "createdAt": "2026-07-16T20:05:01.774Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:14",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-14",
+      "evidenceId": "BEV-0a57ca89afc9e92ec29c8871",
+      "output": {
+        "caseId": "G6B1-14",
+        "evidenceId": "BEV-0a57ca89afc9e92ec29c8871",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-1708bcbabb6d01f5367c6752",
+      "createdAt": "2026-07-16T20:05:09.635Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:15",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-15",
+      "evidenceId": "BEV-b4d881c0aa0d205179a5c445",
+      "output": {
+        "caseId": "G6B1-15",
+        "evidenceId": "BEV-b4d881c0aa0d205179a5c445",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-06c8ce100e7ba989a9e45d50",
+      "createdAt": "2026-07-16T20:05:13.420Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:16",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-16",
+      "evidenceId": "BEV-b3e3c943daf7709f0853caae",
+      "output": {
+        "caseId": "G6B1-16",
+        "evidenceId": "BEV-b3e3c943daf7709f0853caae",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-e4cd2aa3eb55caf2ba04b977",
+      "createdAt": "2026-07-16T20:05:17.333Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:17",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-17",
+      "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+      "output": {
+        "caseId": "G6B1-17",
+        "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-a7cde75ee1b568f4e5a9e031",
+      "createdAt": "2026-07-16T20:05:20.485Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:18",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-18",
+      "evidenceId": "BEV-235d9f247ef339a20866b297",
+      "output": {
+        "caseId": "G6B1-18",
+        "evidenceId": "BEV-235d9f247ef339a20866b297",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-0b7918e23b5dff9ffc03fd23",
+      "createdAt": "2026-07-16T20:05:25.812Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:19",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-19",
+      "evidenceId": "BEV-6bfde0a7dbe3beb487385bfe",
+      "output": {
+        "caseId": "G6B1-19",
+        "evidenceId": "BEV-6bfde0a7dbe3beb487385bfe",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-9433ba41ebeba6889b4f0c37",
+      "createdAt": "2026-07-16T20:05:29.498Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:20",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-20",
+      "evidenceId": "BEV-525e8c7d02b86716e6ddfd0b",
+      "output": {
+        "caseId": "G6B1-20",
+        "evidenceId": "BEV-525e8c7d02b86716e6ddfd0b",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "To deploy the AWS resources for the 'systems-manager-automation-to-lambda' pattern, use the AWS SAM CLI to run the command 'sam deploy --guided --capabilities CAPABILITY_NAMED_IAM' from the pattern directory specified by the template.yml file.",
+            "evidenceRefs": [
+              "BEV-525e8c7d02b86716e6ddfd0b"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [
+              "User has cloned the 'aws-samples/serverless-patterns' repository and changed directory to 'systems-manager-automation-to-lambda'."
+            ],
+            "limitations": [],
+            "confidence": 0.9,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-106022b40dd6b9927d862b22",
+      "createdAt": "2026-07-16T20:05:32.981Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:21",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-21",
+      "evidenceId": "BEV-fcc349fa2dedc2c092f08f84",
+      "output": {
+        "caseId": "G6B1-21",
+        "evidenceId": "BEV-fcc349fa2dedc2c092f08f84",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-cd55353c8f4317daf4ab21f5",
+      "createdAt": "2026-07-16T20:05:36.334Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:22",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-22",
+      "evidenceId": "BEV-51f4caabb87d02521ee53e84",
+      "output": {
+        "caseId": "G6B1-22",
+        "evidenceId": "BEV-51f4caabb87d02521ee53e84",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-7a89461fbe7a6bd0e9b8f187",
+      "createdAt": "2026-07-16T20:05:43.528Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:23",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-23",
+      "evidenceId": "BEV-7cb026af13f9061c688c165f",
+      "output": {
+        "caseId": "G6B1-23",
+        "evidenceId": "BEV-7cb026af13f9061c688c165f",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-d5283e61abb744c2744d3575",
+      "createdAt": "2026-07-16T20:05:45.545Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "one-semantic-unit-per-call:24",
+      "strategy": "one-semantic-unit-per-call",
+      "matchedPairId": null,
+      "caseId": "G6B1-24",
+      "evidenceId": null,
+      "output": {
+        "caseId": "G6B1-24",
+        "evidenceId": null,
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "No governed bounded evidence is available to support or refute claims regarding CONTROL-GH-AWESOME-ANTIPATTERN-claim-bearing-materially-different.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-48a2792c8a253860c52946be",
+      "createdAt": "2026-07-16T20:05:51.896Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:01",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-01",
+      "caseId": "G6B1-01",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "output": {
+        "caseId": "G6B1-01",
+        "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-2fbe91f0ebd5a66d10fbc48f",
+      "createdAt": "2026-07-16T20:05:51.897Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:01",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-01",
+      "caseId": "G6B1-02",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "output": {
+        "caseId": "G6B1-02",
+        "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-82ff52da35ef9d071ee5a54a",
+      "createdAt": "2026-07-16T20:05:57.178Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:02",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-02",
+      "caseId": "G6B1-03",
+      "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+      "output": {
+        "caseId": "G6B1-03",
+        "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-0db96ba8f76c5c0db0342cab",
+      "createdAt": "2026-07-16T20:05:57.178Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:02",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-02",
+      "caseId": "G6B1-04",
+      "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+      "output": {
+        "caseId": "G6B1-04",
+        "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "The Smartylighting Streetlights API uses Kafka-secure protocol servers with security schemes including saslScram and OAuth2 for managing streetlight operations.",
+            "evidenceRefs": [
+              "BEV-45a8396b1620b74a67ac57ae"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [
+              "Using asyncapi version 3.1.0"
+            ],
+            "limitations": [
+              "Security configurations differ per server"
+            ],
+            "confidence": 0.9,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-206b05b935b43df18d094341",
+      "createdAt": "2026-07-16T20:06:11.483Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:03",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-03",
+      "caseId": "G6B1-06",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "output": {
+        "caseId": "G6B1-06",
+        "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-daa9ec42b4b19d10a4a82302",
+      "createdAt": "2026-07-16T20:06:11.485Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:03",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-03",
+      "caseId": "G6B1-07",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "output": {
+        "caseId": "G6B1-07",
+        "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "Enable accelerated networking when possible to minimize network latency between components and design network architecture to reduce unnecessary hops for better performance.",
+            "evidenceRefs": [
+              "BEV-48b0cb0824957d14e5044e65"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [],
+            "limitations": [],
+            "confidence": 0.88,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-69d335e96bdcdb0283fd5a4d",
+      "createdAt": "2026-07-16T20:06:18.624Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:04",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-04",
+      "caseId": "G6B1-10",
+      "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+      "output": {
+        "caseId": "G6B1-10",
+        "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-09a855bf13b5fdffef9d9be4",
+      "createdAt": "2026-07-16T20:06:18.626Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:04",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-04",
+      "caseId": "G6B1-11",
+      "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+      "output": {
+        "caseId": "G6B1-11",
+        "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-d05c9be8de814ce36c1fdb4e",
+      "createdAt": "2026-07-16T20:06:28.892Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:05",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-05",
+      "caseId": "G6B1-12",
+      "evidenceId": "BEV-d075515016509baf01b5c585",
+      "output": {
+        "caseId": "G6B1-12",
+        "evidenceId": "BEV-d075515016509baf01b5c585",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "The publication titled 'Towards Software Compliance Specification and Enforcement Using TOSCA' by Mohammed Mubarkoot and Jörn Altmann (2021) is a relevant source for software compliance specification and enforcement using TOSCA.",
+            "evidenceRefs": [
+              "BEV-d075515016509baf01b5c585"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [],
+            "limitations": [],
+            "confidence": 0.8,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-46e4aa3b51c0ead5f1399095",
+      "createdAt": "2026-07-16T20:06:28.892Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:05",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-05",
+      "caseId": "G6B1-13",
+      "evidenceId": "BEV-577cee3a91825ff936c52564",
+      "output": {
+        "caseId": "G6B1-13",
+        "evidenceId": "BEV-577cee3a91825ff936c52564",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "The work 'Industry practices and challenges for the evolvability assurance of microservices' published in Empirical Software Engineering (2021) by Justus Bogner et al. addresses practical challenges in microservices evolvability assurance applicable for quality modeling.",
+            "evidenceRefs": [
+              "BEV-577cee3a91825ff936c52564"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [],
+            "limitations": [],
+            "confidence": 0.85,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-e4cd2aa3eb55caf2ba04b977",
+      "createdAt": "2026-07-16T20:06:34.125Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:06",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-06",
+      "caseId": "G6B1-17",
+      "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+      "output": {
+        "caseId": "G6B1-17",
+        "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-a7cde75ee1b568f4e5a9e031",
+      "createdAt": "2026-07-16T20:06:34.126Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "same-source-bounded-micro-batches:06",
+      "strategy": "same-source-bounded-micro-batches",
+      "matchedPairId": "PAIR-06",
+      "caseId": "G6B1-18",
+      "evidenceId": "BEV-235d9f247ef339a20866b297",
+      "output": {
+        "caseId": "G6B1-18",
+        "evidenceId": "BEV-235d9f247ef339a20866b297",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-48a2792c8a253860c52946be",
+      "createdAt": "2026-07-16T20:06:39.238Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:01",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-01",
+      "caseId": "G6B1-01",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "output": {
+        "caseId": "G6B1-01",
+        "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-2fbe91f0ebd5a66d10fbc48f",
+      "createdAt": "2026-07-16T20:06:39.238Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:01",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-01",
+      "caseId": "G6B1-02",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "output": {
+        "caseId": "G6B1-02",
+        "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-82ff52da35ef9d071ee5a54a",
+      "createdAt": "2026-07-16T20:06:56.964Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:02",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-02",
+      "caseId": "G6B1-03",
+      "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+      "output": {
+        "caseId": "G6B1-03",
+        "evidenceId": "BEV-b52e41d91d436a91aca36b8b",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-4b3a9506758e161841ab4abf",
+      "createdAt": "2026-07-16T20:06:56.964Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:02",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-02",
+      "caseId": "G6B1-04",
+      "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+      "output": {
+        "caseId": "G6B1-04",
+        "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-206b05b935b43df18d094341",
+      "createdAt": "2026-07-16T20:07:14.055Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:03",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-03",
+      "caseId": "G6B1-06",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "output": {
+        "caseId": "G6B1-06",
+        "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-ba2c3a50ebdefb8e5477c274",
+      "createdAt": "2026-07-16T20:07:14.055Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:03",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-03",
+      "caseId": "G6B1-07",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "output": {
+        "caseId": "G6B1-07",
+        "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "When workloads are latency-sensitive, using proximity placement groups to co-locate VMs physically improves performance; combining PPGs with availability sets enhances both low latency and high availability in a single datacenter.",
+            "evidenceRefs": [
+              "BEV-48b0cb0824957d14e5044e65"
+            ],
+            "epistemicStatus": "source-stated-recommendation",
+            "statementOrigin": "source",
+            "epistemicBasis": "source-advice",
+            "conditions": [
+              "Workload latency-sensitive"
+            ],
+            "limitations": [],
+            "confidence": 0.9,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-69d335e96bdcdb0283fd5a4d",
+      "createdAt": "2026-07-16T20:07:21.839Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:04",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-04",
+      "caseId": "G6B1-10",
+      "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+      "output": {
+        "caseId": "G6B1-10",
+        "evidenceId": "BEV-53e36cd2165eec1cffd76493",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-09a855bf13b5fdffef9d9be4",
+      "createdAt": "2026-07-16T20:07:21.841Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:04",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-04",
+      "caseId": "G6B1-11",
+      "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+      "output": {
+        "caseId": "G6B1-11",
+        "evidenceId": "BEV-ba42951a9a7b05050d9a36c7",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-c2fb496903d125b920d06f2b",
+      "createdAt": "2026-07-16T20:07:28.747Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:05",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-05",
+      "caseId": "G6B1-12",
+      "evidenceId": "BEV-d075515016509baf01b5c585",
+      "output": {
+        "caseId": "G6B1-12",
+        "evidenceId": "BEV-d075515016509baf01b5c585",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "Mohammed Mubarkoot and Jörn Altmann (2021) propose a method for software compliance specification and enforcement using TOSCA, relevant to cloud-native application management.",
+            "evidenceRefs": [
+              "BEV-d075515016509baf01b5c585"
+            ],
+            "epistemicStatus": "source-example",
+            "statementOrigin": "source",
+            "epistemicBasis": "documented-example",
+            "conditions": [],
+            "limitations": [],
+            "confidence": 0.8,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-d9f8e3d14ebc60e21ebc9503",
+      "createdAt": "2026-07-16T20:07:28.748Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:05",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-05",
+      "caseId": "G6B1-13",
+      "evidenceId": "BEV-577cee3a91825ff936c52564",
+      "output": {
+        "caseId": "G6B1-13",
+        "evidenceId": "BEV-577cee3a91825ff936c52564",
+        "disposition": "claim-candidate",
+        "claims": [
+          {
+            "statement": "Justus Bogner et al. (2021) analyze industry practices and challenges for evolvability assurance of microservices, providing empirical data relevant to microservice architecture quality.",
+            "evidenceRefs": [
+              "BEV-577cee3a91825ff936c52564"
+            ],
+            "epistemicStatus": "source-example",
+            "statementOrigin": "source",
+            "epistemicBasis": "documented-example",
+            "conditions": [],
+            "limitations": [],
+            "confidence": 0.85,
+            "reviewRequired": true
+          }
+        ],
+        "abstentionReason": "",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-e4cd2aa3eb55caf2ba04b977",
+      "createdAt": "2026-07-16T20:07:33.622Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:06",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-06",
+      "caseId": "G6B1-17",
+      "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+      "output": {
+        "caseId": "G6B1-17",
+        "evidenceId": "BEV-f6949d67d67d9d38262c6311",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    },
+    {
+      "candidateRecordId": "G6B1-CAND-a7cde75ee1b568f4e5a9e031",
+      "createdAt": "2026-07-16T20:07:33.622Z",
+      "authority": "candidate",
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "requestId": "bounded-architecture-group:06",
+      "strategy": "bounded-architecture-group",
+      "matchedPairId": "PAIR-06",
+      "caseId": "G6B1-18",
+      "evidenceId": "BEV-235d9f247ef339a20866b297",
+      "output": {
+        "caseId": "G6B1-18",
+        "evidenceId": "BEV-235d9f247ef339a20866b297",
+        "disposition": "abstain",
+        "claims": [],
+        "abstentionReason": "All proposed claims were rejected by atomic grounding or epistemic validation.",
+        "reviewRequired": true
+      }
+    }
+  ]
+}

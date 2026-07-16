@@ -1,0 +1,238 @@
+{
+  "schemaVersion": "aiw-gate-6b-24-case-delegated-sol-comparison-v1",
+  "generatedAt": "2026-07-16T19:14:32.134Z",
+  "productionAccepted": false,
+  "reviewProtocolVersion": "delegated-sol-four-pass-v1",
+  "pass": 2,
+  "passName": "provisional-comparison",
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "blindDecisionFingerprint": "sha256:2784a8d2134fce3251ff0bb425bd3bf58769411d44cfe9bb1cf5513094d41823",
+  "proposerLabelsOpenedAfterBlindFreeze": true,
+  "caseCount": 24,
+  "dispositionAgreements": 20,
+  "dispositionDisagreements": 4,
+  "dispositionAgreementRate": 0.8333333333333334,
+  "epistemicAgreements": 16,
+  "epistemicDisagreements": 8,
+  "epistemicAgreementRate": 0.6666666666666666,
+  "comparisons": [
+    {
+      "caseId": "G6B1-01",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-02",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-stated-recommendation",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-03",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-04",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-05",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "normative-requirement",
+      "provisionalEpistemicStatus": "normative-requirement",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-06",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-stated-recommendation",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-07",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-stated-recommendation",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-08",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-09",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-stated-recommendation",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-10",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "normative-requirement",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-11",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-stated-recommendation",
+      "provisionalEpistemicStatus": "source-stated-recommendation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-12",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-13",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-14",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-15",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-16",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-17",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-18",
+      "blindDisposition": "non-claim",
+      "provisionalDisposition": "non-claim",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "illustration",
+      "provisionalEpistemicStatus": "unknown",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-19",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-20",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "source-example",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-21",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "non-claim",
+      "dispositionAgreement": false,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "unknown",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-22",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "implementation-observation",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": true
+    },
+    {
+      "caseId": "G6B1-23",
+      "blindDisposition": "claim-candidate",
+      "provisionalDisposition": "claim-candidate",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "source-example",
+      "provisionalEpistemicStatus": "implementation-observation",
+      "epistemicAgreement": false
+    },
+    {
+      "caseId": "G6B1-24",
+      "blindDisposition": "abstain",
+      "provisionalDisposition": "abstain",
+      "dispositionAgreement": true,
+      "blindEpistemicStatus": "unknown",
+      "provisionalEpistemicStatus": "unknown",
+      "epistemicAgreement": true
+    }
+  ]
+}

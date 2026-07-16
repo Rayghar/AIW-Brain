@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { canonicalEpistemicStatuses } from '@aiw/domain';
 import type { LlmGateway } from '../../apps/api/src/llmGateway.js';
 import { validateGate6bEpistemicClaim, type Gate6bEvidenceUnit, type Gate6bTransformationOutput } from '../../apps/api/src/gate6bSemanticTransformation.js';
+import { scoreEvidenceSupport } from '../../apps/api/src/approvedKnowledgeGrounding.js';
 
 export const PINNED_MODEL = 'gpt-4.1-mini-2025-04-14';
 export const PURPOSE = 'governed-candidate-semantic-transformation';
@@ -274,6 +275,10 @@ export function buildRequestPlan(manifest: BenchmarkManifest): PlannedRequest[] 
   return all;
 }
 
+export function deterministicRequestPlanFingerprint(plan: PlannedRequest[]): string {
+  return sha256(canonicalJson(plan));
+}
+
 export function validateRequestIsolation(plan: PlannedRequest[]): void {
   for (const item of plan) {
     if (item.strategy === 'same-source-bounded-micro-batches' && item.repositories.length !== 1) {
@@ -351,9 +356,13 @@ export function validatePlanLimits(plan: PlannedRequest[], limits: RunnerLimits)
 
 export function validateIndependentReviewReceipt(receipt: Record<string, unknown>, fingerprint: string): void {
   const decisions = Array.isArray(receipt.caseByCaseDecisions) ? receipt.caseByCaseDecisions : [];
-  if (receipt.independentReviewStatus !== 'completed-approved' || receipt.approved !== true || receipt.benchmarkFingerprint !== fingerprint || receipt.provisionalLabelsHidden !== true || decisions.length !== EXPECTED_CASE_COUNT || !receipt.reviewerIdentifier || !receipt.relevantArchitectureExperience || !receipt.reviewTimestamp || !receipt.signatureOrApprovalEvidence) {
-    throw new Gate6b1Stop('INDEPENDENT_REVIEW_RECEIPT_INVALID', 'A completed, signed 24-case independent-review receipt is required.');
-  }
+  const shared = receipt.benchmarkFingerprint === fingerprint && receipt.provisionalLabelsHidden === true && decisions.length === EXPECTED_CASE_COUNT
+    && Boolean(receipt.reviewerIdentifier) && Boolean(receipt.relevantArchitectureExperience) && Boolean(receipt.reviewTimestamp) && Boolean(receipt.signatureOrApprovalEvidence);
+  const independentHuman = receipt.independentReviewStatus === 'completed-approved' && receipt.approved === true && receipt.humanReviewerPresent === true && receipt.externallyVerified === true;
+  const delegatedSol = receipt.independentReviewStatus === 'not-performed' && receipt.approved === false
+    && receipt.reviewActorType === 'gpt-5.6-sol' && receipt.humanReviewerPresent === false && receipt.externallyVerified === false
+    && receipt.delegatedExecutionReviewAccepted === true && receipt.delegatedExecutionScope === 'bounded Gate 6B.1 strategy micro-pilot only';
+  if (!shared || (!independentHuman && !delegatedSol)) throw new Gate6b1Stop('INDEPENDENT_REVIEW_RECEIPT_INVALID', 'A valid independent-human or explicitly delegated non-human bounded-execution review receipt is required.');
 }
 
 export function validateTokenAndCostReceipt(receipt: Record<string, unknown>, model: string, limits: RunnerLimits): void {
@@ -379,6 +388,17 @@ export type GovernedRequestOutcome = {
   outputTokens: number;
   schemaValid: boolean;
   evidenceLineageValid: boolean;
+  requestId?: string;
+  providerId?: string;
+  model?: string;
+  providerReportedModel?: string;
+  httpStatus?: number;
+  providerRequestId?: string;
+  latencyMs?: number;
+  requestFingerprint?: string;
+  responseFingerprint?: string;
+  caseOutputs?: StrategyGatewayOutput['cases'];
+  groundingSupport?: Array<{ referenceId: string; supportScore: number; status: string; persisted: boolean; riskFlags?: string[] }>;
 };
 
 type StrategyGatewayOutput = {
@@ -386,7 +406,7 @@ type StrategyGatewayOutput = {
   authority: 'candidate';
   cases: Array<{
     caseId: string;
-    evidenceId: string;
+    evidenceId: string | null;
     disposition: 'claim-candidate' | 'non-claim' | 'abstain';
     claims: Gate6bTransformationOutput['claims'];
     abstentionReason: string;
@@ -397,78 +417,157 @@ type StrategyGatewayOutput = {
   designGraphMutationAllowed: false;
 };
 
+export type Gate6bNoEvidenceControl = {
+  kind: 'no-evidence-control';
+  semanticUnitId: string;
+  connectorId: string;
+  repository: string;
+  sourceAuthorityClass: string;
+  excerpt: string;
+  excerptHash: string;
+};
+
+type ResolvedStrategyInput =
+  | { kind: 'evidence'; unit: Gate6bEvidenceUnit }
+  | Gate6bNoEvidenceControl;
+
 export function createGovernedGatewayExecutor(input: {
   gateway: Pick<LlmGateway, 'generateJson'>;
-  evidenceByCase: Map<string, Gate6bEvidenceUnit>;
-  appendCandidate: (record: { caseId: string; evidenceId: string; authority: 'candidate'; output: StrategyGatewayOutput['cases'][number] }) => Promise<void>;
+  evidenceByCase: Map<string, Gate6bEvidenceUnit | Gate6bNoEvidenceControl>;
+  appendCandidate: (record: { requestId: string; strategy: StrategyId; matchedPairId: string | null; caseId: string; evidenceId: string | null; authority: 'candidate'; output: StrategyGatewayOutput['cases'][number] }) => Promise<void>;
+  dataClassification?: 'public' | 'internal';
 }) {
   return async (planned: PlannedRequest): Promise<GovernedRequestOutcome> => {
-    const units = planned.caseIds.map((caseId) => {
-      const unit = input.evidenceByCase.get(caseId);
-      if (!unit) throw new Gate6b1Stop('EVIDENCE_UNIT_NOT_RESOLVED', `No governed evidence unit for ${caseId}.`);
-      if (sha256(unit.excerpt) !== unit.excerptHash) throw new Gate6b1Stop('EXCERPT_HASH_MISMATCH', `Excerpt hash replay failed for ${caseId}.`);
+    const units = planned.caseIds.map((caseId): { caseId: string; resolved: ResolvedStrategyInput } => {
+      const raw = input.evidenceByCase.get(caseId);
+      if (!raw) throw new Gate6b1Stop('EVIDENCE_UNIT_NOT_RESOLVED', `No governed evidence unit or abstention control for ${caseId}.`);
+      const resolved: ResolvedStrategyInput = 'kind' in raw && raw.kind === 'no-evidence-control' ? raw : { kind: 'evidence', unit: raw as Gate6bEvidenceUnit };
+      const excerpt = resolved.kind === 'evidence' ? resolved.unit.excerpt : resolved.excerpt;
+      const excerptHash = resolved.kind === 'evidence' ? resolved.unit.excerptHash : resolved.excerptHash;
+      const evidenceId = resolved.kind === 'evidence' ? resolved.unit.evidenceId : null;
+      if (sha256(excerpt) !== excerptHash) throw new Gate6b1Stop('EXCERPT_HASH_MISMATCH', `Excerpt hash replay failed for ${caseId}.`);
       const lineage = planned.caseLineage.find((item) => item.caseId === caseId);
-      if (!lineage || lineage.evidenceId !== unit.evidenceId || lineage.excerptHash !== unit.excerptHash) throw new Gate6b1Stop('CASE_LINEAGE_MAPPING_INVALID', `Planned lineage differs for ${caseId}.`);
-      return { caseId, unit };
+      if (!lineage || lineage.evidenceId !== evidenceId || lineage.excerptHash !== excerptHash) throw new Gate6b1Stop('CASE_LINEAGE_MAPPING_INVALID', `Planned lineage differs for ${caseId}.`);
+      return { caseId, resolved };
     });
-    const allowedEvidenceIds = units.map(({ unit }) => unit.evidenceId);
+    const allowedEvidenceIds = units.flatMap(({ resolved }) => resolved.kind === 'evidence' ? [resolved.unit.evidenceId] : []);
+    const claimSchema = (evidenceId: string | null) => ({
+      type: 'object', additionalProperties: false,
+      required: ['statement','evidenceRefs','epistemicStatus','statementOrigin','epistemicBasis','conditions','limitations','confidence','reviewRequired'],
+      properties: {
+        statement: { type: 'string' }, evidenceRefs: evidenceId
+          ? { type: 'array', minItems: 1, maxItems: 1, items: { type: 'string', enum: [evidenceId] } }
+          : { type: 'array', maxItems: 0, items: { type: 'string' } },
+        epistemicStatus: { type: 'string', enum: [...canonicalEpistemicStatuses] }, statementOrigin: { type: 'string', enum: ['source','sol','hypothesis','expert','unknown'] },
+        epistemicBasis: { type: 'string', enum: ['normative-text','source-advice','documented-example','implementation-evidence','measurement','expert-review','sol-interpretation','hypothesis','illustration','unknown'] },
+        conditions: { type: 'array', items: { type: 'string' } }, limitations: { type: 'array', items: { type: 'string' } },
+        confidence: { type: 'number' }, reviewRequired: { type: 'boolean', enum: [true] },
+      },
+    });
+    const noEvidenceRequest = allowedEvidenceIds.length === 0;
+    const caseItemSchema = {
+      type: 'object', additionalProperties: false,
+      required: ['caseId','evidenceId','disposition','claims','abstentionReason','reviewRequired'],
+      properties: {
+        caseId: { type: 'string', enum: planned.caseIds },
+        evidenceId: noEvidenceRequest ? { type: 'null' } : { type: 'string', enum: allowedEvidenceIds },
+        disposition: { type: 'string', enum: noEvidenceRequest ? ['abstain'] : ['claim-candidate','non-claim','abstain'] },
+        claims: noEvidenceRequest
+          ? { type: 'array', maxItems: 0, items: claimSchema(null) }
+          : { type: 'array', items: claimSchema(allowedEvidenceIds[0] ?? null) },
+        abstentionReason: noEvidenceRequest ? { type: 'string', minLength: 1 } : { type: 'string' },
+        reviewRequired: { type: 'boolean', enum: [true] },
+      },
+    };
+    if (!noEvidenceRequest) {
+      (caseItemSchema.properties.claims as any).items.properties.evidenceRefs.items.enum = allowedEvidenceIds;
+    }
     const schema = {
       type: 'object', additionalProperties: false,
       required: ['schemaVersion','authority','cases','productionAccepted','automaticPromotionAllowed','designGraphMutationAllowed'],
       properties: {
         schemaVersion: { type: 'string', enum: ['1.0'] }, authority: { type: 'string', enum: ['candidate'] },
-        cases: { type: 'array', minItems: units.length, maxItems: units.length, items: {
-          type: 'object', additionalProperties: false,
-          required: ['caseId','evidenceId','disposition','claims','abstentionReason','reviewRequired'],
-          properties: {
-            caseId: { type: 'string', enum: planned.caseIds }, evidenceId: { type: 'string', enum: allowedEvidenceIds },
-            disposition: { type: 'string', enum: ['claim-candidate','non-claim','abstain'] },
-            claims: { type: 'array', items: {
-              type: 'object', additionalProperties: false,
-              required: ['statement','evidenceRefs','epistemicStatus','statementOrigin','epistemicBasis','conditions','limitations','confidence','reviewRequired'],
-              properties: {
-                statement: { type: 'string' }, evidenceRefs: { type: 'array', items: { type: 'string', enum: allowedEvidenceIds } },
-                epistemicStatus: { type: 'string', enum: [...canonicalEpistemicStatuses] }, statementOrigin: { type: 'string', enum: ['source','sol','hypothesis','expert','unknown'] },
-                epistemicBasis: { type: 'string', enum: ['normative-text','source-advice','documented-example','implementation-evidence','measurement','expert-review','sol-interpretation','hypothesis','illustration','unknown'] },
-                conditions: { type: 'array', items: { type: 'string' } }, limitations: { type: 'array', items: { type: 'string' } },
-                confidence: { type: 'number' }, reviewRequired: { type: 'boolean', enum: [true] },
-              },
-            } }, abstentionReason: { type: 'string' }, reviewRequired: { type: 'boolean', enum: [true] },
-          },
-        } },
+        cases: { type: 'array', minItems: units.length, maxItems: units.length, items: caseItemSchema },
         productionAccepted: { type: 'boolean', enum: [false] }, automaticPromotionAllowed: { type: 'boolean', enum: [false] }, designGraphMutationAllowed: { type: 'boolean', enum: [false] },
       },
     };
-    const user = buildStrategyUserPrompt(planned.strategy, planned.matchedPairId, planned.architectureGroupIds, units.map(({ caseId, unit }) => ({
-      caseId, semanticUnitId: unit.semanticUnitId, evidenceId: unit.evidenceId, repository: unit.repository,
-      immutableCommit: unit.immutableCommit, path: unit.path, structuralRange: unit.structuralRange, excerpt: unit.excerpt,
+    const user = buildStrategyUserPrompt(planned.strategy, planned.matchedPairId, planned.architectureGroupIds, units.map(({ caseId, resolved }) => resolved.kind === 'evidence' ? ({
+      caseId, semanticUnitId: resolved.unit.semanticUnitId, evidenceId: resolved.unit.evidenceId, repository: resolved.unit.repository,
+      immutableCommit: resolved.unit.immutableCommit, path: resolved.unit.path, structuralRange: resolved.unit.structuralRange, excerpt: resolved.unit.excerpt,
+    }) : ({
+      caseId, semanticUnitId: resolved.semanticUnitId, evidenceId: null, repository: resolved.repository,
+      immutableCommit: null, path: null, structuralRange: null, excerpt: resolved.excerpt,
     })));
     if (SYSTEM_INSTRUCTION.length + user.length !== planned.inputCharacters) throw new Gate6b1Stop('REQUEST_CHARACTER_REPLAY_MISMATCH', `Request character replay failed for ${planned.requestId}.`);
     const result = await input.gateway.generateJson<StrategyGatewayOutput>({
-      purpose: PURPOSE, schemaName: 'aiw_gate_6b1_strategy_candidate_assets', dataClassification: 'internal',
+      purpose: PURPOSE, schemaName: 'aiw_gate_6b1_strategy_candidate_assets', dataClassification: input.dataClassification ?? 'internal',
       allowInsufficientGrounding: false, requireEvidenceAllowlist: true, requireProviderNativeSchema: true,
       system: SYSTEM_INSTRUCTION, user, jsonSchema: schema,
       grounding: {
         allowedReferenceIds: allowedEvidenceIds,
-        sources: units.map(({ unit }) => ({ id: unit.evidenceId, recordId: unit.semanticUnitId, title: `${unit.repository}/${unit.path}`, statement: unit.excerpt, sourceReleaseId: unit.immutableCommit, activeKnowledgeReleaseId: 'AKR-0.10.73.8-CANDIDATE', connectorId: unit.connectorId, reviewStatus: 'candidate', evidenceRole: 'candidate-bounded-source-evidence' })),
-        requireCitations: true, minimumSupportScore: 0.6, precisionMode: true,
+        sources: units.flatMap(({ resolved }) => resolved.kind === 'evidence' ? [{ id: resolved.unit.evidenceId, recordId: resolved.unit.semanticUnitId, title: `${resolved.unit.repository}/${resolved.unit.path}`, statement: resolved.unit.excerpt, sourceReleaseId: resolved.unit.immutableCommit, activeKnowledgeReleaseId: 'AKR-0.10.73.8-CANDIDATE', connectorId: resolved.unit.connectorId, reviewStatus: 'candidate', evidenceRole: 'candidate-bounded-source-evidence' }] : []),
+        // Claim envelopes require exact per-case evidenceRefs in the strict schema. A request may
+        // legitimately classify every case as non-claim or abstain, so gateway-level citation
+        // cardinality cannot require at least one claim citation for the whole response.
+        // The gateway validates the exact citation allowlist here. The calibrated 0.60 precision
+        // threshold is applied atomically to every claim statement below; scoring the complete
+        // JSON envelope would mix lineage metadata into the semantic support calculation.
+        requireCitations: false, minimumSupportScore: 0, precisionMode: true,
       },
     });
     const output = result.value;
     if (output.authority !== 'candidate' || output.productionAccepted || output.automaticPromotionAllowed || output.designGraphMutationAllowed) throw new Gate6b1Stop('CANDIDATE_AUTHORITY_LEAKAGE', 'Gateway output crossed the candidate boundary.');
-    if (output.cases.length !== units.length || new Set(output.cases.map((item) => item.caseId)).size !== units.length) throw new Gate6b1Stop('CASE_OUTPUT_CARDINALITY_INVALID', 'Every request case must have exactly one output envelope.');
-    for (const candidate of output.cases) {
-      const source = units.find((item) => item.caseId === candidate.caseId);
-      if (!source || candidate.evidenceId !== source.unit.evidenceId) throw new Gate6b1Stop('CROSS_UNIT_CONTAMINATION', `Case/evidence attribution mismatch for ${candidate.caseId}.`);
-      if (candidate.claims.some((claim) => claim.evidenceRefs.length !== 1 || claim.evidenceRefs[0] !== candidate.evidenceId)) throw new Gate6b1Stop('CROSS_UNIT_CONTAMINATION', `Claim crossed evidence boundaries for ${candidate.caseId}.`);
-      for (const claim of candidate.claims) validateGate6bEpistemicClaim(claim, source.unit);
-      await input.appendCandidate({ caseId: candidate.caseId, evidenceId: candidate.evidenceId, authority: 'candidate', output: candidate });
+    const atomicGroundingSupport: Array<{ referenceId: string; supportScore: number; status: string; persisted: boolean; riskFlags?: string[] }> = [];
+    const persistedCaseOutputs: StrategyGatewayOutput['cases'] = [];
+    for (const source of units) {
+      const expectedEvidenceId = source.resolved.kind === 'evidence' ? source.resolved.unit.evidenceId : null;
+      const matching = output.cases.filter((item) => item.caseId === source.caseId);
+      const candidate = matching.length === 1 ? matching[0]! : null;
+      if (!candidate || candidate.evidenceId !== expectedEvidenceId) {
+        const rejected: StrategyGatewayOutput['cases'][number] = {
+          caseId: source.caseId, evidenceId: expectedEvidenceId, disposition: 'abstain', claims: [],
+          abstentionReason: 'Provider output was rejected because case cardinality or evidence attribution did not match the governed request.', reviewRequired: true,
+        };
+        if (expectedEvidenceId) atomicGroundingSupport.push({ referenceId: expectedEvidenceId, supportScore: 0, status: 'rejected-cross-unit-contamination', persisted: false });
+        persistedCaseOutputs.push(rejected);
+        await input.appendCandidate({ requestId: planned.requestId, strategy: planned.strategy, matchedPairId: planned.matchedPairId, caseId: rejected.caseId, evidenceId: rejected.evidenceId, authority: 'candidate', output: rejected });
+        continue;
+      }
+      if (source.resolved.kind === 'no-evidence-control') {
+        if (candidate.disposition !== 'abstain' || candidate.claims.length !== 0 || !candidate.abstentionReason.trim()) throw new Gate6b1Stop('NO_EVIDENCE_CONTROL_NOT_ABSTAINED', `${candidate.caseId} must abstain without claims.`);
+        persistedCaseOutputs.push(candidate);
+      } else {
+        const acceptedClaims: typeof candidate.claims = [];
+        for (const claim of candidate.claims) {
+          const support = scoreEvidenceSupport(claim.statement, source.resolved.unit.excerpt, true);
+          let epistemicValid = true;
+          try { validateGate6bEpistemicClaim(claim, source.resolved.unit); } catch { epistemicValid = false; }
+          const lineageValid = claim.evidenceRefs.length === 1 && claim.evidenceRefs[0] === expectedEvidenceId;
+          const persisted = lineageValid && candidate.disposition === 'claim-candidate' && support.supportScore >= 0.6 && epistemicValid;
+          atomicGroundingSupport.push({ referenceId: source.resolved.unit.evidenceId, supportScore: support.supportScore, status: persisted ? 'supported' : !lineageValid ? 'rejected-cross-unit-contamination' : candidate.disposition !== 'claim-candidate' ? 'rejected-nonclaim-envelope' : epistemicValid ? 'rejected-grounding' : 'rejected-epistemic', persisted, ...(support.riskFlags ? { riskFlags: support.riskFlags } : {}) });
+          if (persisted) acceptedClaims.push(claim);
+        }
+        persistedCaseOutputs.push(acceptedClaims.length || candidate.disposition !== 'claim-candidate'
+          ? { ...candidate, claims: acceptedClaims }
+          : { ...candidate, disposition: 'abstain', claims: [], abstentionReason: 'All proposed claims were rejected by atomic grounding or epistemic validation.' });
+      }
+      const persisted = persistedCaseOutputs.at(-1)!;
+      await input.appendCandidate({ requestId: planned.requestId, strategy: planned.strategy, matchedPairId: planned.matchedPairId, caseId: persisted.caseId, evidenceId: persisted.evidenceId, authority: 'candidate', output: persisted });
     }
     return {
-      candidateAuthority: 'candidate', candidateRecordsCreated: output.cases.length, approvedRecordsChanged: 0,
+      candidateAuthority: 'candidate', candidateRecordsCreated: persistedCaseOutputs.length, approvedRecordsChanged: 0,
       designGraphMutations: 0, automaticPromotions: 0,
       inputTokens: result.usage.inputTokens ?? 0, outputTokens: result.usage.outputTokens ?? 0,
-      schemaValid: result.schemaValidation.valid, evidenceLineageValid: result.groundingReceipt?.verified === true,
+      schemaValid: result.schemaValidation.valid,
+      evidenceLineageValid: result.groundingReceipt?.verified === true || (allowedEvidenceIds.length === 0 && output.cases.every((item) => item.evidenceId === null && item.disposition === 'abstain' && item.claims.length === 0)),
+      requestId: planned.requestId, providerId: result.providerId, model: result.model,
+      ...(result.providerReportedModel ? { providerReportedModel: result.providerReportedModel } : {}),
+      ...(result.httpStatus ? { httpStatus: result.httpStatus } : {}),
+      ...(result.providerRequestId ? { providerRequestId: result.providerRequestId } : {}),
+      latencyMs: result.latencyMs, requestFingerprint: result.requestFingerprint,
+      ...(result.responseFingerprint ? { responseFingerprint: result.responseFingerprint } : {}),
+      caseOutputs: persistedCaseOutputs,
+      groundingSupport: atomicGroundingSupport,
     };
   };
 }
@@ -478,6 +577,7 @@ export async function executeIsolatedStrategies(input: {
   limits: RunnerLimits;
   executor: (request: PlannedRequest) => Promise<GovernedRequestOutcome>;
   freeBytes: () => Promise<number>;
+  onRequestComplete?: (input: { request: PlannedRequest; outcome: GovernedRequestOutcome; attempt: number; totalCalls: number; totalRetries: number; totalTokens: number }) => Promise<void>;
 }): Promise<{ strategies: Array<{ strategy: StrategyId; requests: number; retries: number; tokens: number; candidateRecords: number }>; totalCalls: number; totalRetries: number; totalTokens: number }> {
   validateRequestIsolation(input.plan);
   validatePlanLimits(input.plan, input.limits);
@@ -506,10 +606,11 @@ export async function executeIsolatedStrategies(input: {
           tokens += used;
           candidateRecords += outcome.candidateRecordsCreated;
           if (totalTokens > input.limits.maximumTotalTokens) throw new Gate6b1Stop('TOKEN_LIMIT_REACHED', 'Runtime token ceiling reached.');
+          await input.onRequestComplete?.({ request: planned, outcome, attempt, totalCalls, totalRetries, totalTokens });
           break;
         } catch (error) {
           const code = error instanceof Gate6b1Stop ? error.code : error instanceof Error ? error.message : String(error);
-          const retryable = ['PROVIDER_TIMEOUT', 'HTTP_429', 'HTTP_5XX'].includes(code);
+          const retryable = /PROVIDER_TIMEOUT|AbortError|TimeoutError|LLM_PROVIDER_[^:]*_429|HTTP_429|LLM_PROVIDER_[^:]*_5\d\d|HTTP_5XX/i.test(code);
           if (!retryable || attempt >= input.limits.maximumRetries) throw error;
           if (totalRetries >= input.limits.globalRetryBudget) throw new Gate6b1Stop('GLOBAL_RETRY_BUDGET_EXHAUSTED', 'Global retry budget is exhausted.');
           const retryTokenCeiling = planned.projectedInputTokens + MAX_OUTPUT_TOKENS_PER_REQUEST;
@@ -652,7 +753,7 @@ async function runCli(): Promise<void> {
       oversizedRequests: oversizedRequests.map((item) => item.requestId),
     },
     retryPolicy: { globalBudget: cli.limits.globalRetryBudget, maximumPerRequest: cli.limits.maximumRetries, retryableOnly: ['provider-timeout', 'http-429', 'http-5xx'], retryCountsAgainstCallAndTokenCeilings: true },
-    requests: plan, deterministicFingerprint: sha256(canonicalJson(plan)),
+    requests: plan, deterministicFingerprint: deterministicRequestPlanFingerprint(plan),
   };
   const replayFingerprintMatch = !cli.expectedPlanFingerprint || cli.expectedPlanFingerprint === requestPlan.deterministicFingerprint;
   if (!replayFingerprintMatch) throw new Gate6b1Stop('REQUEST_PLAN_REPLAY_MISMATCH', 'Request-plan replay fingerprint differs from the approved dry run.');
