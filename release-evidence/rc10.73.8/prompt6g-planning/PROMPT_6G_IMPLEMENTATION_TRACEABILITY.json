@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "aiw-prompt-6g-implementation-traceability-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "requirements": [
+    {
+      "requirementId": "P6G-01",
+      "requirement": "denominator",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-02",
+      "requirement": "distribution",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-03",
+      "requirement": "unit-index",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-04",
+      "requirement": "router-spec",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-05",
+      "requirement": "reason-codes",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-06",
+      "requirement": "asset-taxonomy",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-07",
+      "requirement": "route-c-contract",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-08",
+      "requirement": "route-a1-contract",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-09",
+      "requirement": "route-a2-contract",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-10",
+      "requirement": "deferred-backlog",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-11",
+      "requirement": "offline-routing",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-12",
+      "requirement": "validation",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-13",
+      "requirement": "wave1-plan",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    },
+    {
+      "requirementId": "P6G-14",
+      "requirement": "completion-boundary",
+      "implementation": [
+        "backend/apps/api/src/prompt6gCapabilityRouter.ts",
+        "backend/scripts/rc10-73-8/plan-prompt-6g-capability-aware.mts"
+      ],
+      "tests": [
+        "backend/apps/api/test/rc10_73_8_prompt_6g_router.test.ts"
+      ],
+      "evidenceRoot": "release-evidence/rc10.73.8/prompt6g-planning"
+    }
+  ],
+  "providerCalls": 0,
+  "modelGenerationCalls": 0
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "aiw-prompt-6g-routing-integrity-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "expectedUnits": 42953,
+  "classifiedUnits": 42953,
+  "silentOmissions": 0,
+  "duplicateAssignments": 0,
+  "providerOutsideEnabledClasses": 0,
+  "gpt56Assignments": 0,
+  "deferredLeakageToRouteA": 0,
+  "semanticRouteC": 0,
+  "passed": true,
+  "routingFingerprint": "sha256:741d92d5977d1d00cc176de5710e46b1954da6a6e8cae2883d7b2c708dd8c41f",
+  "replayFingerprint": "sha256:741d92d5977d1d00cc176de5710e46b1954da6a6e8cae2883d7b2c708dd8c41f",
+  "deterministicReplayIdentical": true,
+  "providerAuthorisedUnitsOutsideEnabledClasses": 0,
+  "gpt56SolCorpusAssignments": 0,
+  "deferredClassLeakageIntoRouteA": 0,
+  "deferredSemanticSynthesisByRouteC": 0
+}

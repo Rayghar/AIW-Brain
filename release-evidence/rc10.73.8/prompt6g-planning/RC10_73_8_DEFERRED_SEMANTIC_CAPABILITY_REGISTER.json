@@ -1,0 +1,232 @@
+{
+  "schemaVersion": "aiw-rc10-73-8-deferred-capabilities-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "capabilities": [
+    {
+      "assetClass": "contradiction-and-scoped-distinction",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [
+        "G6B1-05"
+      ],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "security-obligation",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [
+        "G6B1-06"
+      ],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": true,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "performance-tactic",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [
+        "G6B1-07"
+      ],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "pattern-dna",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [
+        "G6B1-09"
+      ],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "architecture-genome",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "cross-file architecture-group parser and class-specific prompt",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": true,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "modernisation-knowledge",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": true,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "low-authority-product-description",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "complex-epistemic-synthesis",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "complex-condition-and-limitation-synthesis",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "whole-reference-architecture-assembly",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "cross-file architecture-group parser and class-specific prompt",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": true,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    },
+    {
+      "assetClass": "untested-semantic-asset-class",
+      "whyDeferred": "no Gate 6B.3 route passed every absolute gate",
+      "failedBenchmarkEvidence": [],
+      "missingCapability": [
+        "class-specific semantic precision",
+        "field-level epistemic accuracy",
+        "complete conditions and limitations"
+      ],
+      "requiredSpecialistPromptOrParser": "class-specific strict prompt and validator",
+      "requiredModelBehaviour": "exact grounding, correct abstention, class-specific structured output",
+      "requiredEvaluator": "class-specific gold labels with field-level applicability",
+      "smallestFutureDiagnostic": "8-16 frozen cases including negative and abstention controls",
+      "deterministicDecompositionCanReduceModelBurden": true,
+      "crossFileContextRequired": false,
+      "externalDomainReviewNormallyDesirable": false,
+      "developmentAuthority": "candidate-planning-only",
+      "productionAuthority": false
+    }
+  ],
+  "closureClaim": "deferred-but-governed-not-transformed",
+  "prerequisites": [
+    "class-specific frozen benchmark",
+    "strict contract and evaluator",
+    "passing absolute diagnostic gates",
+    "capacity and transfer safety",
+    "explicit execution approval"
+  ]
+}

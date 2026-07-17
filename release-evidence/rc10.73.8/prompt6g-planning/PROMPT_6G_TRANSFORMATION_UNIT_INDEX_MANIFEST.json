@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "aiw-prompt-6g-transformation-unit-index-manifest-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "authority": "candidate",
+  "unitCount": 42953,
+  "indexStorage": "ignored-candidate-ledger-not-git",
+  "unitShards": [
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-00.ndjson",
+      "records": 2775,
+      "bytes": 6368703,
+      "sha256": "sha256:56843a198d0d6a62f0bea48f7efb19167717872f1a78748b500985806f72c368"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-01.ndjson",
+      "records": 2684,
+      "bytes": 6154122,
+      "sha256": "sha256:2f892b86d26bdaa1051d30757ea4d47f28ccf757f7a151474f44b3bb7a518a68"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-02.ndjson",
+      "records": 2620,
+      "bytes": 6007157,
+      "sha256": "sha256:45b2c66c34396dacf559eb07df0d722c4780903289e85f8185aa5b9a96ed12fc"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-03.ndjson",
+      "records": 2716,
+      "bytes": 6233931,
+      "sha256": "sha256:89a872f1c9e93b8e0b22d26f622bdd8578ec986f88dfcd76390fe5aaef8cede0"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-04.ndjson",
+      "records": 2672,
+      "bytes": 6126253,
+      "sha256": "sha256:8fe4f3cc7969ccf7508aeba97bb7f48fdbd20ea7fa4a85c6526b5f7dae91dc92"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-05.ndjson",
+      "records": 2597,
+      "bytes": 5956358,
+      "sha256": "sha256:4c063ac6904cf8f613e1837ae4d9514d641f3fab3b7d853d28ab52dccda304a0"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-06.ndjson",
+      "records": 2686,
+      "bytes": 6164692,
+      "sha256": "sha256:3b7a1a492307a51c0573843a3eacc5a61459099ee7c8a90ec9bb944cf28a3263"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-07.ndjson",
+      "records": 2666,
+      "bytes": 6113626,
+      "sha256": "sha256:e285ac04c524bf575815ec6c5e159c5bcfc6dddf04b6a968dee8c59fdf9c4a64"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-08.ndjson",
+      "records": 2689,
+      "bytes": 6165788,
+      "sha256": "sha256:8d717b2f53870f399c5bd440e7014ef3c951f90eec5b15131a7cf7f7280c0a4d"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-09.ndjson",
+      "records": 2720,
+      "bytes": 6236797,
+      "sha256": "sha256:b81d31604b77d7a30cc499486e88544b854f0e6f62a63fe2db7e5193e882a7d8"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-0a.ndjson",
+      "records": 2711,
+      "bytes": 6215874,
+      "sha256": "sha256:e8434a9cc376f17caf51fe9f7b44b380f120f3f4f5e84eb4c4fde3153bb07b23"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-0b.ndjson",
+      "records": 2707,
+      "bytes": 6212365,
+      "sha256": "sha256:5e41ba98771e36cad778db5fc401fc725bf368b4708f89b49fd4e6496d8c7634"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-0c.ndjson",
+      "records": 2645,
+      "bytes": 6073492,
+      "sha256": "sha256:63286c05b4d0b0e962accd3bf6f5c7b1976a372a6f7e46bedbc3a7d22e050f30"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-0d.ndjson",
+      "records": 2629,
+      "bytes": 6032752,
+      "sha256": "sha256:85e56227a03f2b9e323f108acdd483a19f56643703fedc96568505214dbc0d3b"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-0e.ndjson",
+      "records": 2700,
+      "bytes": 6190955,
+      "sha256": "sha256:d97f55701262dc5c43eb07b9d911ba56e7a1bdb8a9a052627a69a7e797986aa4"
+    },
+    {
+      "path": "knowledge-repository/AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-0f.ndjson",
+      "records": 2736,
+      "bytes": 6267596,
+      "sha256": "sha256:a82f29496c8992cbfef62162455eeee4824d515b9906eaf372c6b20c29c5f432"
+    }
+  ],
+  "indexFingerprint": "sha256:a0017995e7d3488744309a92f19122afa4696b57566570f6bd6996a5db5c4f0c",
+  "routingFingerprint": "sha256:741d92d5977d1d00cc176de5710e46b1954da6a6e8cae2883d7b2c708dd8c41f",
+  "replayFingerprint": "sha256:741d92d5977d1d00cc176de5710e46b1954da6a6e8cae2883d7b2c708dd8c41f",
+  "sourceOccurrencePosture": "canonical unit retains occurrence count; complete occurrence IDs remain in Gate 6A semantic-unit and passage shards",
+  "specialistParserBacklogSeparateFromTransformationUnitDenominator": 2305
+}

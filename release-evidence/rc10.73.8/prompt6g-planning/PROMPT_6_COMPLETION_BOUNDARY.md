@@ -1,0 +1,3 @@
+# Prompt 6 completion boundary
+
+A valid rc.10.73.8 closure requires the complete corpus denominator, 100% auditable disposition, complete deterministic Route C processing, validated transformation of only enabled Route A classes, candidate-only authority, immutable provenance, and an explicit deferred register with no silent exclusion. It must not claim Pattern DNA, Architecture Genome, contradiction resolution, security/performance synthesis, modernisation, whole-reference-architecture assembly or complex epistemic synthesis as transformed or production-ready. Specialist waves require class-specific diagnostics, passing absolute gates, capacity and transfer checks, and explicit execution approval.

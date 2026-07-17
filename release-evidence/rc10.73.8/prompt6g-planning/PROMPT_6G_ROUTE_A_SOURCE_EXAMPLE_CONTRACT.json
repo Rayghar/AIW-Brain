@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "aiw-prompt-6g-route-a-source-example-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "provider": "openai",
+  "strictStructuredOutput": true,
+  "evidenceIdAllowlist": true,
+  "excerptHashReplay": true,
+  "candidateOnly": true,
+  "crossSourceSynthesis": false,
+  "automaticPromotion": false,
+  "designGraphMutation": false,
+  "retries": {
+    "maximumPerRequest": 1,
+    "retryableOnly": [
+      "timeout",
+      "HTTP-429",
+      "HTTP-5xx",
+      "retryable-socket-failure"
+    ]
+  },
+  "reviewRequired": true,
+  "productionAccepted": false,
+  "assetClass": "source-example-with-explicit-conditions-and-limitations",
+  "epistemicStatus": "source-example",
+  "required": [
+    "exactEvidenceId",
+    "excerptHash",
+    "exactSupportAtomsOrSpans",
+    "explicitConditions",
+    "explicitLimitations"
+  ],
+  "prohibited": [
+    "universalisation",
+    "normative-promotion",
+    "cross-source-synthesis"
+  ],
+  "governingCase": "G6B1-01"
+}

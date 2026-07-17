@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "aiw-prompt-6g-routing-reason-codes-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "reasonCodes": [
+    {
+      "code": "RA-SOURCE-EXAMPLE",
+      "meaning": "Route A1 source example predicate passed"
+    },
+    {
+      "code": "RA-EXPLICIT-CONDITION",
+      "meaning": "explicit condition marker present"
+    },
+    {
+      "code": "RA-EXPLICIT-LIMITATION",
+      "meaning": "explicit limitation marker present"
+    },
+    {
+      "code": "RA-DIRECT-IMPLEMENTATION-OBSERVATION",
+      "meaning": "direct implementation observation predicate passed"
+    },
+    {
+      "code": "RA-NO-NORMATIVE-UNIVERSALISATION",
+      "meaning": "no normative universalisation signal"
+    },
+    {
+      "code": "RA-APPROVED-AUTHORITY-CLASS",
+      "meaning": "source authority class represented by passing Gate 6B.3 case"
+    },
+    {
+      "code": "RC-NO-EVIDENCE",
+      "meaning": "no governed evidence; deterministic abstention"
+    },
+    {
+      "code": "RC-SPECIALIST-PARSER-REQUIRED",
+      "meaning": "specialist parser required before semantics"
+    },
+    {
+      "code": "RC-EXACT-MACHINE-FACT",
+      "meaning": "exact non-semantic structured fact"
+    },
+    {
+      "code": "RC-NO-SEMANTIC-INFERENCE",
+      "meaning": "Route C semantic inference prohibited"
+    },
+    {
+      "code": "RD-UNPROVEN-SEMANTIC-CLASS",
+      "meaning": "asset class has no passing route"
+    },
+    {
+      "code": "RD-AUTHORITY-CLASS-NOT-ROUTE-A-VALIDATED",
+      "meaning": "authority class not validated for narrow Route A"
+    },
+    {
+      "code": "RD-CROSS-FILE-CONTEXT",
+      "meaning": "cross-file synthesis required"
+    },
+    {
+      "code": "RD-AMBIGUOUS",
+      "meaning": "ambiguous input defaults to deferred"
+    },
+    {
+      "code": "RC-PROCESSING-FAILURE",
+      "meaning": "explicit processing failure retained"
+    }
+  ]
+}

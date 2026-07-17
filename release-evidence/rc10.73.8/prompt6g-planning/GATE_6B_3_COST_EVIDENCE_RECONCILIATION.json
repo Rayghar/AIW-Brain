@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-cost-reconciliation-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "historicalFilesModified": 0,
+  "originalExecutionActualCostUsd": null,
+  "observedUsage": {
+    "inputTokens": 17385,
+    "outputTokens": 36562,
+    "totalTokens": 53947
+  },
+  "billing": {
+    "exactBilledTotalKnown": false,
+    "observedUsageCostLowerBoundUsd": 1.183785,
+    "conservativeUpperBoundUsd": 2.083785,
+    "reason": "one incomplete pre-checkpoint attempt lacks recoverable token telemetry"
+  },
+  "semanticAcceptanceUse": "monetary cost is an engineering metric and not a semantic acceptance gate",
+  "originalFilesPreserved": true
+}

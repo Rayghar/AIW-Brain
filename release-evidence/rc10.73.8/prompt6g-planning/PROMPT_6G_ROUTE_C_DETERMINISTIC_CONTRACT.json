@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "aiw-prompt-6g-route-c-contract-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "providerCalls": 0,
+  "permittedOperations": [
+    "no-evidence-abstention",
+    "source-identity-and-immutable-revision",
+    "path-heading-range-and-hash",
+    "exact-metadata",
+    "exact-alias",
+    "exact-duplicate-mapping",
+    "deterministic-near-duplicate-candidate-grouping-without-merge",
+    "non-semantic-machine-readable-facts",
+    "parser-and-format-facts",
+    "explicit-processing-failure",
+    "specialist-parser-required"
+  ],
+  "prohibitedOperations": [
+    "architecture-meaning-inference",
+    "applicability-inference",
+    "trade-off-inference",
+    "condition-inference",
+    "limitation-inference",
+    "pattern-dna",
+    "architecture-genome",
+    "contradiction-resolution",
+    "security-recommendation",
+    "performance-recommendation",
+    "modernisation-knowledge"
+  ],
+  "output": {
+    "authority": "candidate",
+    "productionAccepted": false,
+    "semanticSynthesisAllowed": false,
+    "evidenceIdentityRequired": true
+  }
+}

@@ -1,0 +1,228 @@
+{
+  "schemaVersion": "aiw-prompt-6g-planning-verification-v1",
+  "generatedAt": "2026-07-17T11:57:34.551Z",
+  "productionAccepted": false,
+  "status": "passed",
+  "providerCallsDuringPlanning": 0,
+  "modelGenerationCallsDuringPlanning": 0,
+  "historicalEvidenceFilesModified": 0,
+  "rawVaultModifiedFiles": 0,
+  "rawVaultModifiedBytes": 0,
+  "completeDenominatorDispositionPercent": 100,
+  "silentOmissions": 0,
+  "duplicateAssignments": 0,
+  "deferredClassLeakage": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAcceptedTrueFindings": 0,
+  "routingFingerprint": "sha256:741d92d5977d1d00cc176de5710e46b1954da6a6e8cae2883d7b2c708dd8c41f",
+  "replayFingerprint": "sha256:741d92d5977d1d00cc176de5710e46b1954da6a6e8cae2883d7b2c708dd8c41f",
+  "deterministicReplayIdentical": true,
+  "routerPrecision": 100,
+  "validationSampleCount": 120,
+  "excerptHashFailures": 0,
+  "rawFilesRead": 16197,
+  "rawBytesRead": 146676019,
+  "freeBytesBefore": 14350008320,
+  "freeBytesAfter": 14244446208,
+  "buildsAndTests": {
+    "domainBuild": "passed",
+    "apiBuild": "passed",
+    "testFilesPassed": 4,
+    "testsPassed": 46,
+    "testsFailed": 0,
+    "routingReplay": "passed",
+    "shardHashReplay": "passed"
+  },
+  "jsonValidation": "passed",
+  "credentialScan": {
+    "status": "passed",
+    "findings": 0
+  },
+  "rawPathScan": {
+    "status": "passed",
+    "findings": 0
+  },
+  "gitDiffCheck": "passed",
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backup": "deferred-by-product-owner",
+  "outputFiles": 35,
+  "jsonFilesParsed": 27,
+  "jsonParseFailures": 0,
+  "outputHashes": [
+    {
+      "name": "GATE_6B_3_COST_EVIDENCE_RECONCILIATION.json",
+      "bytes": 689,
+      "sha256": "sha256:b1d5a70dc1882c3d366af90854d061ac2d9c94a454d3037c5e08f3b7382c7350"
+    },
+    {
+      "name": "GATE_6B_3_EXECUTION_STATUS_RECONCILIATION.md",
+      "bytes": 650,
+      "sha256": "sha256:7b50122e2c3895ead01d56fc5006270beea12bf751298137e97473cc29f7b60f"
+    },
+    {
+      "name": "PROMPT_6G_ADVERSARIAL_ROUTE_REVIEW.json",
+      "bytes": 28670,
+      "sha256": "sha256:31343a5ca6f03b627eb3377f5e15881a09d59d09f1fbe0ad0da303b6dde66378"
+    },
+    {
+      "name": "PROMPT_6G_ASSET_CLASS_TAXONOMY.json",
+      "bytes": 888,
+      "sha256": "sha256:6994099e4b979e606df445b4f0bacd19c1088a41ba4e0d88865cace1c379b10e"
+    },
+    {
+      "name": "PROMPT_6G_BLIND_ROUTE_REVIEW.json",
+      "bytes": 36502,
+      "sha256": "sha256:85076f00a9aa9d76877a67ecbb037bd6ec903280fe55f0c8f1f87983fbcc4e43"
+    },
+    {
+      "name": "PROMPT_6G_CAPABILITY_ROUTER_SPEC.json",
+      "bytes": 1689,
+      "sha256": "sha256:d3d9644196748e29013fb72651ac2565b8fe0c480a62f24037cad62ffadb1873"
+    },
+    {
+      "name": "PROMPT_6G_CORPUS_DENOMINATOR_RECONCILIATION.json",
+      "bytes": 1136,
+      "sha256": "sha256:c2bd5a9beec72cf4531addf8659713027df8d61e25b1af5c0eaf0d6c6c7ab722"
+    },
+    {
+      "name": "PROMPT_6G_DEFERRED_CAPABILITY_BACKLOG.json",
+      "bytes": 10957,
+      "sha256": "sha256:cfd61b2715efa5f7548820f1ca47d620cc2a0f9ff4bd261cc083d2a549e474d0"
+    },
+    {
+      "name": "PROMPT_6G_DEFERRED_UNIT_REGISTER.json",
+      "bytes": 860,
+      "sha256": "sha256:fd14cddebfd5288caa9ce8abd8dd4a5d17d34e396f9d2fc0f1a02f1575ea1e36"
+    },
+    {
+      "name": "PROMPT_6G_IMPLEMENTATION_TRACEABILITY.json",
+      "bytes": 6011,
+      "sha256": "sha256:9aef5f1b3d63467f4663f91903ecbfcd0d70cf780f70a507057cc988ee03b237"
+    },
+    {
+      "name": "PROMPT_6G_OFFLINE_ROUTING_RESULT.json",
+      "bytes": 6180,
+      "sha256": "sha256:d5b94c09749f4e0fc6cc59a431731fb2a5dc2cc28bb8943b34ca141979d6114c"
+    },
+    {
+      "name": "PROMPT_6G_PLANNING_REPORT.md",
+      "bytes": 650,
+      "sha256": "sha256:221ae50dfeaa775b5f4317395f2efa2acf7ad5e1fe45fa60ccb2206f5368c733"
+    },
+    {
+      "name": "PROMPT_6G_ROUTER_QUALITY_EVALUATION.json",
+      "bytes": 447,
+      "sha256": "sha256:ff5e2089f60bd551a01b7aa697a0556ce2f07a932d1f21064e062480c24b1a37"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_ADJUDICATION.json",
+      "bytes": 44146,
+      "sha256": "sha256:f122d8d4331b15c3016ca80387c621eedb509a4bb143798291c6a09ef397a059"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_A_IMPLEMENTATION_OBSERVATION_CONTRACT.json",
+      "bytes": 1045,
+      "sha256": "sha256:b78217319e8fc87a046f3180d8318761386f4465486fcde4bcfac0deb050d512"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_A_PROMPT_SET.md",
+      "bytes": 570,
+      "sha256": "sha256:e75a26d7332c538bb0d7a3d345297db657a4f43e5b7d2043dbc236bcb624d913"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_A_SOURCE_EXAMPLE_CONTRACT.json",
+      "bytes": 1001,
+      "sha256": "sha256:633118006771f3443dfcd85b187c7db44513368da45dafec4198557b7520c21e"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_A_VALIDATION_MATRIX.json",
+      "bytes": 1075,
+      "sha256": "sha256:db2e31df7b9a20a5102ed04f63b3d310b54469137a10a1e745bd8631cc702bde"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_C_DETERMINISTIC_CONTRACT.json",
+      "bytes": 1098,
+      "sha256": "sha256:4f829c55d91ca5a7f57fdd679b7faa0bc8a9523f02448f63eb55f40acd7e60ff"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_C_TEST_PLAN.md",
+      "bytes": 417,
+      "sha256": "sha256:e25d4e794c0339e3477b9cdf7e40de61d0a2067661ee0e489f1019e30d8269e6"
+    },
+    {
+      "name": "PROMPT_6G_ROUTE_DISTRIBUTION_REPORT.md",
+      "bytes": 315,
+      "sha256": "sha256:73d1bcfe6710ff0922ca225160315cba7070f846ca25acd654551970e03707c6"
+    },
+    {
+      "name": "PROMPT_6G_ROUTING_INTEGRITY_RECEIPT.json",
+      "bytes": 784,
+      "sha256": "sha256:cd821ac0811b90d47d5b0a06e2a39bc60dc4e878ffef8364dc64ef4bc7a1974d"
+    },
+    {
+      "name": "PROMPT_6G_ROUTING_REASON_CODE_CATALOG.json",
+      "bytes": 1884,
+      "sha256": "sha256:c2d92293c86c0bbcaa9064f1f692dadc8314346ad68df19c0a9c4d42c903b29e"
+    },
+    {
+      "name": "PROMPT_6G_ROUTING_VALIDATION_SAMPLE.json",
+      "bytes": 446599,
+      "sha256": "sha256:82b83aaea814037f2249d5411a77136fc75ef2266010812a26eaf4bdbca67baf"
+    },
+    {
+      "name": "PROMPT_6G_SOURCE_AND_FORMAT_DISTRIBUTION.json",
+      "bytes": 3813,
+      "sha256": "sha256:1e83a43b414ae435f5452d3ff749bd8d8d07ddcb751c8162af99362bc1ad06e1"
+    },
+    {
+      "name": "PROMPT_6G_SPECIALIST_DIAGNOSTIC_ROADMAP.md",
+      "bytes": 511,
+      "sha256": "sha256:919f99c150eeb93e8daff569da3d9b745eaf02804e6dbe5c0a63e9ad167beb6a"
+    },
+    {
+      "name": "PROMPT_6G_TRANSFORMATION_UNIT_INDEX_MANIFEST.json",
+      "bytes": 5037,
+      "sha256": "sha256:19ed9a8eddf07e96ac71a418f6abb6152878d10d64da5449f80d9ea2a61f4145"
+    },
+    {
+      "name": "PROMPT_6G_WAVE1_CONTROLLED_STOP_POLICY.json",
+      "bytes": 886,
+      "sha256": "sha256:a5564a3b4ff9db98d81717b29601a1958181b6ec6e92d3daea1c7886aee3b74c"
+    },
+    {
+      "name": "PROMPT_6G_WAVE1_EXECUTION_PLAN.json",
+      "bytes": 72775,
+      "sha256": "sha256:7979688603fee642b077992de8a5eb3d1a8bc081acc247442cda471934ee3958"
+    },
+    {
+      "name": "PROMPT_6G_WAVE1_REVIEW_PLAN.md",
+      "bytes": 375,
+      "sha256": "sha256:7bfeacdd7cbbc12898dfe27be4ae7a28c75fe1cc2388c5dda4e6b5d0f8b5502e"
+    },
+    {
+      "name": "PROMPT_6G_WAVE1_TOKEN_AND_CALL_ESTIMATE.json",
+      "bytes": 910,
+      "sha256": "sha256:c76707e43cbd8c5b1ae5fe8cf30de9c6bf392ef9df35d639955b2cce0361825a"
+    },
+    {
+      "name": "PROMPT_6_COMPLETION_BOUNDARY.md",
+      "bytes": 708,
+      "sha256": "sha256:8cdbee4b3a35a45491ecaa59b1d9cdc35cf9aa408c7adecd40ca6268be96e799"
+    },
+    {
+      "name": "RC10_73_8_CAPABILITY_COVERAGE_MATRIX.json",
+      "bytes": 1036,
+      "sha256": "sha256:248f89213ab3d19a7d6192dd771ed256f56825da569ce2192e7a545f5d9c8336"
+    },
+    {
+      "name": "RC10_73_8_DEFERRED_SEMANTIC_CAPABILITY_REGISTER.json",
+      "bytes": 11239,
+      "sha256": "sha256:36327b686fa2730810df4a4bc8c9ea3a48b2624dfcc5fc132b99fcb2defe7c57"
+    }
+  ],
+  "gitStatusReconciled": true,
+  "scopedChangedPathCount": 40
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "aiw-prompt-6g-route-a-validation-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "classes": [
+    {
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "requiredEpistemicStatus": "source-example",
+      "conditionCompletenessThreshold": 90,
+      "limitationCompletenessThreshold": 90,
+      "precisionThreshold": 95,
+      "universalisationAllowed": false
+    },
+    {
+      "assetClass": "direct-implementation-observation",
+      "requiredEpistemicStatus": "implementation-observation",
+      "scopeRequiredWhenPresent": true,
+      "limitationCompletenessThreshold": 90,
+      "precisionThreshold": 95,
+      "universalisationAllowed": false
+    }
+  ],
+  "criticalCommon": {
+    "modelIdentity": 100,
+    "schemaValidity": 100,
+    "evidenceLineage": 100,
+    "supportSpanValidity": 100,
+    "unsupportedCriticalClaims": 0,
+    "crossCaseContamination": 0,
+    "authorityLeakage": 0,
+    "approvedStoreChanges": 0,
+    "designGraphMutations": 0,
+    "automaticPromotions": 0
+  }
+}

@@ -1,0 +1,974 @@
+{
+  "schemaVersion": "aiw-prompt-6g-blind-route-review-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "reviewActorType": "gpt-5.6-sol",
+  "providerRuntimeCalled": false,
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "priorAssignedRouteHiddenDuringIndependentPredicateDerivation": true,
+  "reviews": [
+    {
+      "semanticUnitId": "SEMU-00017ecde81d8b2ea574a0e3",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00048074a11639f270f0c2fb",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0006398d5c5fa5b17a547fe8",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00075a901d4411c6eacf2b99",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-000788829f1293a3b41db44f",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00079c57506af7ecbb4a38e7",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00093237617f5b5749bea555",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00098c277a31a93a81debbcb",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-000a96afbd900f90199da0de",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-000c2c26af13c1117187b55c",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-000c40594d4f147d985b8fea",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-000c615df7b8608dce50d780",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-000da69f88dfc9ba143cf0be",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-000f4e802837b99df62d4a26",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-001140e55c11f481845e76bc",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00160f484dffbbeac0756e80",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-001a703a5f9b14ea7bf20db9",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-001db69f993888d849669f76",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-001eaf9dea3ede927448d3a7",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-001eb410100c8f55c58f84a9",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-001febf6307a8955d15ed90e",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0020015457c967295c00f5c9",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-002414d621bf0ac9cd3de8f1",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00243386d7d56ebed1851a6c",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00250fe7a5d76cef1bfb2df5",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0028ca33273d26e85e91fb62",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0029a20fa5a63a68ed5eb103",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-002d7dbc906be1f8fb739e7b",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00358bb54bd6ce3036855af8",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-003aa631538475eab67692b7",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-003b8cc990041b4a09d6508b",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-003d25a6cc7cb27b4b7a2f90",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-003ec00f8f6c4865a1c400dd",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0044f9ec9794382e7cd3d2d8",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-004677c0e41580852b97dcea",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0049c3c2aff37909785532af",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0049fc867137a65fa2b0f061",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-004f9009633c4f40b083b759",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-004fb0516d7173f873f91ad3",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-005748773bf5e841bbd2f6c5",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00682909b1155b54ff55b3fc",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-007c0a6e27a3c5e93a4f2244",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-007c23e4cecd085cfd6d87f4",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0088101f1a1bdef2aa8da264",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-008da54cb61e119012020439",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00902dd4371dfe712ae3cb1c",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0093cddd8c89f3bed8f0a7e4",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0093e6f2507a05539773ad20",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-009d0b352fa3840d62bf32b7",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-009dcedff8f89fce6b6404eb",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00a0da5cac51f25ea2b23b22",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00b60a5cc40c72eaf2b6452a",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00c201e19e6ce017316ec967",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00c36ae0fc732f2457f3d874",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00c375f27b792a893b32b40a",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00c8e0e9dea7abcfef756009",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00ee16e698412b99f912a05c",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-00f391a3e4c69454c2b6c0d5",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0105fd17fb4b4e74d7500b88",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-011c7bf7e4419a167265878a",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-01246dc02d4458a45e5b1a92",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0128fcfae4caf9eaca823fbf",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0133466d9242699a59921d80",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-013761fb97266bd132b6e815",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-01564e13114a3359a12fd613",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-015fa6112c7b2ec0bd512366",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0172c571c56bfd18de6fc2d4",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-01852ff3574de0793263821d",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-01b3dd30def848245ce20a7b",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-01d343aa6069376dedfe1958",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-01eb04d7c16dfcb57600fb17",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-01f8c399078a4b7d12e2385c",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0208e8c0f221f8205a22e1db",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-02108988eea4baf429e0eb81",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-02227ac4efb81b2e30bdf554",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-023e4b4c3366c2edf36b3fbf",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0257c4c25b285f1cf388e92c",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-025a25bc6d983c1598f234de",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-02ace8ab691bd9f02c15a923",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-02b6883ae663b0d46da4f078",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-02c27d304b2e254cdff2436f",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-02e8c1523ed09f45f8498b11",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-034da6ebb56719226a9ea1e5",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-034e34b1e05d5d3637ef9c54",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0391b069dfc477bf5b02526b",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-03d0f3234f3688a8de62a04f",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-03de41974975d1878eeb15d6",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-042df36524de9e2f0bd91a50",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-047c5506f6f3dfd28080a1f5",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-04850a1244ae3addd196e462",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-04c20d89b72afb5615c2c3b1",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0505ac980780bd0b93c58078",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-05527301b13c613087010100",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-057e526e527773bb4efbd28d",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-05f7c1da89feab2b17d689d2",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0605b77682063ab547ed0c62",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-06152506f6ef146d109b5124",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-062d677d365043c580023dd8",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-06b401afc0b0d21e2ace98c9",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-06dd441ca45e9f8d5c0a5515",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-06ffd2f13aadf5f4afe49933",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0736ce7094670a33690b9dbb",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-07418462d37ef71d4e317366",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0788dc5f23c51e0f38bd3d27",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0796f6aa077fbe5a6e823f24",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-07a28accaa40a3c3b17d01bb",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-07a33e79af19ea93702637ca",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-07b56d4e014a8beab827fba3",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-07da0e05b89ba53f864d5c98",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-08661f8711f86f7a73b35066",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-087e4150c476b7795a3b2457",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-08d101147c760cb7156f4a23",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-093061cffd44fe360993eb7a",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0961b3c14a466cdefc9ae28a",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-096879f74bffb86db257b854",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-09815a036ffaa69b1a685216",
+      "independentlyPermitted": "route-a",
+      "assigned": "route-a",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0a0458be274c61797d6d299c",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0a7fb72482b12e1b5790e591",
+      "independentlyPermitted": "route-c",
+      "assigned": "route-c",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0a91427d3c2298eb62274255",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    },
+    {
+      "semanticUnitId": "SEMU-0aa149ad3eab8453568d5fdf",
+      "independentlyPermitted": "deferred",
+      "assigned": "deferred",
+      "confirmed": true,
+      "ambiguityDefaultsToDeferred": true,
+      "rationale": "assignment remains within independently derived capability boundary"
+    }
+  ]
+}

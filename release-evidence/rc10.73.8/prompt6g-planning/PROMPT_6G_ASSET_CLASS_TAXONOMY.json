@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "aiw-prompt-6g-asset-class-taxonomy-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "enabled": {
+    "routeA": [
+      "source-example-with-explicit-conditions-and-limitations",
+      "direct-implementation-observation"
+    ],
+    "routeC": [
+      "non-semantic-machine-readable-fact",
+      "insufficient-evidence",
+      "specialist-parser-required",
+      "processing-failure"
+    ]
+  },
+  "deferred": [
+    "contradiction-and-scoped-distinction",
+    "security-obligation",
+    "performance-tactic",
+    "pattern-dna",
+    "architecture-genome",
+    "modernisation-knowledge",
+    "low-authority-product-description",
+    "complex-epistemic-synthesis",
+    "complex-condition-and-limitation-synthesis",
+    "whole-reference-architecture-assembly",
+    "untested-semantic-asset-class"
+  ],
+  "unknownClassPosture": "deferred"
+}

@@ -1,0 +1,3 @@
+# Gate 6B.3 execution status reconciliation
+
+Historical evidence remains unchanged. The overall model comparison completed, while four individual structured responses were incomplete. The final checkpoint records the last active-stage disposition, not the overall run disposition. Completion therefore means the fixed comparison envelope reached an evaluable terminal result; it does not mean every individual response completed. Observed usage supports a lower-bound cost estimate, but the billed total is not claimed as exact because one pre-checkpoint incomplete attempt lacks token telemetry. Monetary cost did not determine semantic acceptance.

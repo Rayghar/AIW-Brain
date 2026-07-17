@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "aiw-prompt-6g-corpus-denominator-reconciliation-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "governedAcceptedFiles": 105802,
+  "parsedFiles": 103497,
+  "specialistParserBacklogFiles": 2305,
+  "acceptedPassages": 147239,
+  "exactUniquePassages": 97513,
+  "normalizedUniquePassages": 97182,
+  "semanticUnits": 75217,
+  "nearDuplicateClusters": 2257,
+  "proposedTransformationUnits": 42953,
+  "transformationUnitEquation": {
+    "humanReviewRequiredPassages": 40438,
+    "implementationExamplePassages": 2515,
+    "sum": 42953,
+    "matchesProposedTransformationUnits": true
+  },
+  "exactPassageDuplicateOccurrences": 49726,
+  "additionalNormalizedDuplicateOccurrences": 331,
+  "sourceAuthorityClasses": {
+    "architecture-conformance-implementation": 6,
+    "educational-or-discovery-source": 8,
+    "official-reference-architecture": 17,
+    "official-specification-or-standard": 3,
+    "reviewed-practitioner-or-implementation-source": 13
+  },
+  "crossFileArchitectureGroups": 5253,
+  "wholeArchitectureArtefacts": 91358,
+  "denominatorPreserved": true,
+  "silentLoss": 0
+}

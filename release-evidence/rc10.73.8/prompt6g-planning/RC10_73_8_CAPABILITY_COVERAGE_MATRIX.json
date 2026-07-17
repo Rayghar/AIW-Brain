@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "aiw-rc10-73-8-capability-coverage-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "completedPlanning": [
+    {
+      "capability": "corpus-denominator-reconciliation",
+      "coverage": 100
+    },
+    {
+      "capability": "offline-unit-disposition",
+      "coverage": 100
+    },
+    {
+      "capability": "route-c-contract",
+      "coverage": 100
+    },
+    {
+      "capability": "route-a-class-contracts",
+      "coverage": 100
+    }
+  ],
+  "executionNotStarted": [
+    "route-a-wave1",
+    "route-c-wave1"
+  ],
+  "deferredCapabilities": [
+    "contradiction-and-scoped-distinction",
+    "security-obligation",
+    "performance-tactic",
+    "pattern-dna",
+    "architecture-genome",
+    "modernisation-knowledge",
+    "low-authority-product-description",
+    "complex-epistemic-synthesis",
+    "complex-condition-and-limitation-synthesis",
+    "whole-reference-architecture-assembly",
+    "untested-semantic-asset-class"
+  ],
+  "gate6C": "blocked",
+  "gate6D": "not-started"
+}

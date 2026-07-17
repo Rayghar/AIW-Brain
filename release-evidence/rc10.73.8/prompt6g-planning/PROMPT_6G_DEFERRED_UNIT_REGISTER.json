@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "aiw-prompt-6g-deferred-unit-register-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "deferredUnitCount": 39075,
+  "sourceIndexManifest": "PROMPT_6G_TRANSFORMATION_UNIT_INDEX_MANIFEST.json",
+  "filter": {
+    "primaryDisposition": "deferred-unproven-semantic-class"
+  },
+  "countsByClass": {
+    "architecture-genome": 343,
+    "complex-condition-and-limitation-synthesis": 821,
+    "complex-epistemic-synthesis": 52,
+    "contradiction-and-scoped-distinction": 1649,
+    "low-authority-product-description": 18,
+    "modernisation-knowledge": 35,
+    "pattern-dna": 1674,
+    "performance-tactic": 631,
+    "security-obligation": 1009,
+    "untested-semantic-asset-class": 6155,
+    "whole-reference-architecture-assembly": 26688
+  },
+  "individualUnitIdentityStoredInIgnoredHashedIndexShards": true
+}

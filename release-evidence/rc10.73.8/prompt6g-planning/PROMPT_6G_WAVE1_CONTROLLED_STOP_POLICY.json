@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "aiw-prompt-6g-wave1-controlled-stop-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "criticalGates": {
+    "exactModelIdentity": 100,
+    "strictSchemaValidity": 100,
+    "exactEvidenceLineage": 100,
+    "supportSpanValidity": 100,
+    "routeAClassPrecisionMinimum": 95,
+    "routeAEpistemicAccuracyMinimum": 95,
+    "conditionCompletenessMinimum": 90,
+    "limitationCompletenessMinimum": 90,
+    "sourceExamplesPromotedToRequirements": 0,
+    "observationsPromotedToUniversalRecommendations": 0,
+    "unsupportedCriticalClaims": 0,
+    "crossCaseContamination": 0,
+    "authorityLeakage": 0,
+    "approvedStoreChanges": 0,
+    "designGraphMutations": 0,
+    "automaticPromotions": 0,
+    "replayMismatch": 0,
+    "denominatorLoss": 0
+  },
+  "stopBeforeScalingOnAnyCriticalFailure": true,
+  "automaticEvidenceDeletion": false
+}

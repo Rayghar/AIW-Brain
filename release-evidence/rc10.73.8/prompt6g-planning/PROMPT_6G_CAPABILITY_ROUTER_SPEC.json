@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "aiw-prompt-6g-capability-router-spec-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "algorithmVersion": "prompt6g-capability-router-v1",
+  "features": [
+    "semanticUnitId",
+    "evidenceId",
+    "sourceAuthorityClass",
+    "repository",
+    "path",
+    "format",
+    "parserType",
+    "heading",
+    "evidenceLength",
+    "tokenCount",
+    "hasNormativeLanguage",
+    "hasConditionMarkers",
+    "hasLimitationMarkers",
+    "hasSourceExampleIndicators",
+    "hasImplementationObservationIndicators",
+    "metadataOnly",
+    "machineReadableStructural",
+    "noEvidence",
+    "exactDuplicateOccurrenceCount",
+    "normalizedVariantCount",
+    "nearDuplicateCluster",
+    "crossFileGroupIds",
+    "ambiguity",
+    "risk",
+    "specialistParserRequirement",
+    "processingFailure",
+    "semanticSignals"
+  ],
+  "enabledRoutes": {
+    "routeA": {
+      "model": "gpt-4.1-mini-2025-04-14",
+      "classes": [
+        "source-example-with-explicit-conditions-and-limitations",
+        "direct-implementation-observation"
+      ]
+    },
+    "routeC": {
+      "providerExecution": false,
+      "classes": [
+        "no-evidence-abstention",
+        "exact-source-metadata",
+        "exact-alias",
+        "exact-duplicate-mapping",
+        "non-semantic-machine-readable-fact",
+        "parser-and-format-fact",
+        "specialist-parser-required",
+        "explicit-processing-failure"
+      ]
+    },
+    "routeB": {
+      "enabledClasses": [],
+      "corpusAssignmentsPermitted": false
+    }
+  },
+  "uncertainPosture": "deferred-unproven-semantic-class",
+  "genericSemanticFallbackAllowed": false,
+  "delegatedReviewRequired": true
+}

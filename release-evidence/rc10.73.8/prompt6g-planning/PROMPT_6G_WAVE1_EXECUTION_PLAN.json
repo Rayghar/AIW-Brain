@@ -1,0 +1,1680 @@
+{
+  "schemaVersion": "aiw-prompt-6g-wave1-plan-v1",
+  "generatedAt": "2026-07-17T11:50:33.780Z",
+  "productionAccepted": false,
+  "executionStatus": "not-started",
+  "unitCount": 164,
+  "routeAUnits": 64,
+  "routeCUnits": 100,
+  "deferredUnits": 0,
+  "model": "gpt-4.1-mini-2025-04-14",
+  "providerCallsPlanned": 64,
+  "retryReserve": 4,
+  "absoluteCallCeiling": 68,
+  "concurrency": 2,
+  "checkpointEveryUnits": 10,
+  "candidateJournal": "append-only candidate-only",
+  "deterministicReplayRequired": true,
+  "failureDisposition": "explicit-processing-failure",
+  "reviewSample": {
+    "allRouteA": true,
+    "routeCSamplePercent": 10
+  },
+  "stopConditions": [
+    "model-identity-failure",
+    "schema-failure",
+    "lineage-failure",
+    "support-span-failure",
+    "unsupported-critical-claim",
+    "authority-leakage",
+    "approved-store-change",
+    "Design-Graph-mutation",
+    "automatic-promotion",
+    "deterministic-replay-mismatch",
+    "denominator-loss",
+    "absolute-call-ceiling",
+    "token-runaway-ceiling"
+  ],
+  "units": [
+    {
+      "semanticUnitId": "SEMU-23fb937db1e4d3a413096c91",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-3389fcaf12ef7959a07f69b8",
+      "excerptHash": "sha256:2b89e1b413f024fef7279d741ca472c484f8369841149f60b1c9934e719c260a"
+    },
+    {
+      "semanticUnitId": "SEMU-28a6c448a66791f3898c37a9",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-668091253e590dbc2898fad1",
+      "excerptHash": "sha256:8802693ad4a75509270b7a87d7a4107bf1a1a3f1d38ea0ef519bd4f88780c9e3"
+    },
+    {
+      "semanticUnitId": "SEMU-291e2ba9add52083cd934d01",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "r0light/cna-quality-model",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "markdown",
+      "evidenceId": "BEV-edf3838d82e14014fa5a3e84",
+      "excerptHash": "sha256:268b0e4fe8cf8a245a3c3383cbf892d77166924fc276554d9e76ef63e40f5367"
+    },
+    {
+      "semanticUnitId": "SEMU-4159bc3bae5b081a8c93fdf3",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "cncf/tag-security",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-b0ee5f09c3c73e60c6bed6f1",
+      "excerptHash": "sha256:428c12a96dd674012cb973a1cdfd6caef05ea0a612da4ec814d666fa127bfdc7"
+    },
+    {
+      "semanticUnitId": "SEMU-4c7a561a401fc99b4b3a818c",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-603b970c6855f929caa10f6a",
+      "excerptHash": "sha256:3318be336a87a0d96ddebf9e6e0fcc3271e8d6e1cf5696ae66ca85fca2ccd32f"
+    },
+    {
+      "semanticUnitId": "SEMU-5841a30698ce4d0f35cb7165",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "iluwatar/java-design-patterns",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "markdown",
+      "evidenceId": "BEV-e438a4409df67c232f52f402",
+      "excerptHash": "sha256:927520e80ec57542eb38f0aef8011d3783335ce058fba5aafa26518841e509ac"
+    },
+    {
+      "semanticUnitId": "SEMU-7cbb11e46c864c7299c255e3",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-a49f95d37082453f9e3650cc",
+      "excerptHash": "sha256:49967bc655fcbb73a673eec7a2e7b73f50200a207c309d54be2fe485b42022d7"
+    },
+    {
+      "semanticUnitId": "SEMU-a576012dd1e9dda3a763d22b",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "MicrosoftDocs/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-17edfdd6bd6cff2499535b1f",
+      "excerptHash": "sha256:ff594a6497c4bfd5be10c1a191e2d990d557ac569079eb60673b6799cd6a451f"
+    },
+    {
+      "semanticUnitId": "SEMU-abb2c4ea9ae68b6fa9ffe013",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-94c8548c8366687fb0710fc7",
+      "excerptHash": "sha256:f3bafd7851096223e082e2af765a8fe957241c967d926aabdc9450de2f79d65c"
+    },
+    {
+      "semanticUnitId": "SEMU-b7b29d1835859c5c0b966eab",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-d005e42f0452d50cfc517b8f",
+      "excerptHash": "sha256:e013085ac26b7d7bf83e5e830938173aca67a76792c9092c3b7b3515cc7fed70"
+    },
+    {
+      "semanticUnitId": "SEMU-b82abd8f535100f92a178ef3",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-09dcefb9e7c9185530df7354",
+      "excerptHash": "sha256:10637a4947607106f71ed71d870682ad91f6a5812ee738928458c6f43f67cba2"
+    },
+    {
+      "semanticUnitId": "SEMU-d83b5a895a26e2f990d20cf9",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-e749fa133ac7b08e1808ae61",
+      "excerptHash": "sha256:0782f6b2b4d0a7eed5870a6b4f921de5a77f135de35234e143c4ba821e7a16e9"
+    },
+    {
+      "semanticUnitId": "SEMU-ea967694db0167edc6fb72d8",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-87c71ac9702a6526e55cf401",
+      "excerptHash": "sha256:138c6de3bd8af27a102bfa114a4f19958652f813f8761d43e9dbd7e88c05c216"
+    },
+    {
+      "semanticUnitId": "SEMU-eab3a47fa1cf48f160ce7fdc",
+      "route": "route-a",
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-014f1ce3676c5bef30cb61c2",
+      "excerptHash": "sha256:26296d44321fb1bc6c52a1eb0fd94a492a67bcbed802bddef2198a49e86455ff"
+    },
+    {
+      "semanticUnitId": "SEMU-01f8c399078a4b7d12e2385c",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-a7d6320208dde5e423fb2b45",
+      "excerptHash": "sha256:d54e9346f29d66ff58fafec90bb1814a0a0091dc7f404522cc5152ae0c32aa0e"
+    },
+    {
+      "semanticUnitId": "SEMU-042df36524de9e2f0bd91a50",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-6b798bcd91b605d211264aeb",
+      "excerptHash": "sha256:16394f8edb003e69c13f826b2fc38c5f09de0733c8badbf680dbb100dad3856a"
+    },
+    {
+      "semanticUnitId": "SEMU-047c5506f6f3dfd28080a1f5",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "MicrosoftDocs/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-d0f1647022adf60f43342a0a",
+      "excerptHash": "sha256:8ab36f860531e027033d1e2ee683bf13ccefbbd55bc3d112f49040ece19f6ff5"
+    },
+    {
+      "semanticUnitId": "SEMU-06b401afc0b0d21e2ace98c9",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-fcb5deb3aad74cc4cc07fc5d",
+      "excerptHash": "sha256:00e25a310d1e4d5269121a34fb18441a7e32a9227c89025b42ad459f89a1f7b5"
+    },
+    {
+      "semanticUnitId": "SEMU-06dd441ca45e9f8d5c0a5515",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-1f143e10467fa51525fd20f5",
+      "excerptHash": "sha256:3283e888bce1840a9ebc544cb130f29b227e743b4594300553eaaad500af218b"
+    },
+    {
+      "semanticUnitId": "SEMU-07b56d4e014a8beab827fba3",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-3e5887bc8ad79f70d13ec989",
+      "excerptHash": "sha256:6025f84d3f2e61c7daab4c07ca26a01e9c03876911dc2637829e8b797b01bd45"
+    },
+    {
+      "semanticUnitId": "SEMU-0961b3c14a466cdefc9ae28a",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-662b8777770b455709db163f",
+      "excerptHash": "sha256:8d8cd648c770fa776331eaaf3221b8e9bd00d3c529d0e601e276c5399146bc65"
+    },
+    {
+      "semanticUnitId": "SEMU-09815a036ffaa69b1a685216",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-f4d485ef1f24f4b8e6bfea98",
+      "excerptHash": "sha256:36c4b04acf1f0b43c1bc656043a572efc8aad40cd0cce76fcb889a7fe8b9cd8c"
+    },
+    {
+      "semanticUnitId": "SEMU-0ab796265c3de182d1b59a51",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-bdc98bafacf7cb5ba2430973",
+      "excerptHash": "sha256:c99e73f2c383901ce6e27313551e2fab908ed37155cb9081ba9df7382dd6629f"
+    },
+    {
+      "semanticUnitId": "SEMU-0b0120f9bb4e0935d0bf97f2",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-4f482f57324c49d0ac48b7cf",
+      "excerptHash": "sha256:91fb06ddc0800c57d31714900ce099aabe27857e49403e52a50500dbc3e420d0"
+    },
+    {
+      "semanticUnitId": "SEMU-0b1a44a5b8e7380abe6e9998",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-995b16d0f8b859b45a0d3fe7",
+      "excerptHash": "sha256:d4198f6cc22e1fe899a7a2cdb3965f02f349d1046da755ce189421b80f80cea0"
+    },
+    {
+      "semanticUnitId": "SEMU-0b8db8ee2359bfc89deb30d9",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-fc53cc19714925deae699582",
+      "excerptHash": "sha256:fdeaafcee7e17298a19bb17aabbaeb9abb74e88bef05e94aa12af8f8e2f13eb6"
+    },
+    {
+      "semanticUnitId": "SEMU-0b95d09ae2b0bd15756d224e",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-0beb8a7ebed6910b920d2a4b",
+      "excerptHash": "sha256:dc23e4afdc1d9763bee7d2c9fd036f918a36a7abb0008e405e620ac722b77c8b"
+    },
+    {
+      "semanticUnitId": "SEMU-0bdf512cf84b1ef1a47bc312",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-ef2bbf448ce4d8d2c3391cfb",
+      "excerptHash": "sha256:694fb6f2e5a4f62d7dddf016ec62dd7948cc7189c5fd4e1c1e02a83b355a3f3e"
+    },
+    {
+      "semanticUnitId": "SEMU-0c17aacae734b993fe91d416",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-60580ccba09e999f340ca523",
+      "excerptHash": "sha256:2dc9aab2ec54c69aef5022418f513aec056a83406b2216d852c43b03c36b2f6b"
+    },
+    {
+      "semanticUnitId": "SEMU-0c400cfa7557d63ce43a20a1",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-99eaba5f0da73c9a0cff97e8",
+      "excerptHash": "sha256:116bcd03ed150e29f3bf52bfc387d606d4f6b6ad42d3206c37d6e30d3db2ccc4"
+    },
+    {
+      "semanticUnitId": "SEMU-0c4cea9a7ec0875d61cb1f9c",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-60c53f15bf6370ec3c056bd2",
+      "excerptHash": "sha256:34b473497d0504833d1f7d465468694eade7d6755579efcb49b55ee8762d3a23"
+    },
+    {
+      "semanticUnitId": "SEMU-0c8c9529586e346a0a91e98f",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-854112f1c2c3f334046a8c84",
+      "excerptHash": "sha256:2e6fd390c07a4c659230bc9cdf6c1c3f089668307f08c8888852fdb0c2bb199a"
+    },
+    {
+      "semanticUnitId": "SEMU-0cef61a92d5e0aa1f5558d5f",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "awslabs/aws-solutions-constructs",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-08fd58e844fe8ec2c090543b",
+      "excerptHash": "sha256:1ec7b3f1737430aea3ccf3f83702e51d5d073d75e086734530291b17817268a7"
+    },
+    {
+      "semanticUnitId": "SEMU-0d0c94163f33b6226b55a3e1",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-22af8d0dba699126ab3296e4",
+      "excerptHash": "sha256:ecb3be4bb152a8bdd42955bdf3878d6022a17d57c63bd8efc8b89914f977c0ce"
+    },
+    {
+      "semanticUnitId": "SEMU-0ef2c646a3cb2ae669b13a0b",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-8e09278d483f91158d326f37",
+      "excerptHash": "sha256:cee33239ff8e0c3e9ed652f7b85bc838a558e7afe8fc41ce9377551a5b5ffc9b"
+    },
+    {
+      "semanticUnitId": "SEMU-0fdb29da5ca727b71b1f25c5",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-118d95caa7152cd2a1fd8c93",
+      "excerptHash": "sha256:2841aa768e1679dda9ab433b435b393cbaddfa0f2e527c0e00cbc0cd4ddb5c9e"
+    },
+    {
+      "semanticUnitId": "SEMU-103c846ea13b5c5b8137f58c",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-ebb7ac367ef50d9b3abb187f",
+      "excerptHash": "sha256:61286154f7fa665f8faef93f7012320f9834c8e7163c446e7ac349d9beb9c0e5"
+    },
+    {
+      "semanticUnitId": "SEMU-1059138f1a75866bd6e1eea7",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "iluwatar/java-design-patterns",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "markdown",
+      "evidenceId": "BEV-5db5c7c0a04a6b38fdd75279",
+      "excerptHash": "sha256:589c651afd0fbfa3edff781de999b376e61d6cc83d9569afc20b694cb0b34989"
+    },
+    {
+      "semanticUnitId": "SEMU-1062c4c75726d9a32e89b777",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "iluwatar/java-design-patterns",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "markdown",
+      "evidenceId": "BEV-6203d0829e9bdece145cd038",
+      "excerptHash": "sha256:f11b5a50b514820ac677215835460939dd18ceeb5838a57fb7960eabeae2a07b"
+    },
+    {
+      "semanticUnitId": "SEMU-10f3f754814dfcc4762c7d54",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "json",
+      "evidenceId": "BEV-4c684ddd3ddb27d0bbff04b7",
+      "excerptHash": "sha256:c6d07e1753b237280a4ea0c8f333be630a899a99433259aedfacc34e207a10c7"
+    },
+    {
+      "semanticUnitId": "SEMU-11dc6e9d042c6b5b19f1bebd",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "backstage/backstage",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-a0c011e7c9c287da29e59f84",
+      "excerptHash": "sha256:d24035522dec6e059314ee1b947d6f0899519297840a13b2246fa53d723d434f"
+    },
+    {
+      "semanticUnitId": "SEMU-12ceecff6b957fde7a3e6af6",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "jQAssistant/jqassistant",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "format": "java",
+      "evidenceId": "BEV-37075d0432bad6897523806b",
+      "excerptHash": "sha256:9308ac57c699bb437193c65260c4670e33078ea4b3acab19431c5c235eef0c9b"
+    },
+    {
+      "semanticUnitId": "SEMU-1319768f34442077ac722485",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-4b169101b9c2e1f16a8cb43a",
+      "excerptHash": "sha256:9d77cea653c022fe4f062d336c64321c34fc2e4ddafe3443eea079a651598417"
+    },
+    {
+      "semanticUnitId": "SEMU-133099a6e7f6658833994e8d",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-f9e1988ba5dfa444eac55580",
+      "excerptHash": "sha256:7c7283801d4feb19eeb48695ee9f772385bf87f2047040f861a5f7f62946aa94"
+    },
+    {
+      "semanticUnitId": "SEMU-13d1d37fe1bf55e637143aae",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-ac43091d09af13f0d9943f73",
+      "excerptHash": "sha256:c137aa8f048ba66d98eb3a62a06d0e9c9d974ab2ea48fa84d0604d80c14d1b81"
+    },
+    {
+      "semanticUnitId": "SEMU-13dddfdca92e5200949fed64",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-09e17968808ec93939f86693",
+      "excerptHash": "sha256:37f62ff19fbc7e69a6795250a7c7fe2fc44e0726403bfa6cfe03df364de555e9"
+    },
+    {
+      "semanticUnitId": "SEMU-14386da1672d635d42ad85e8",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "iluwatar/java-design-patterns",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "markdown",
+      "evidenceId": "BEV-bb6de3cb1aaf413bf62a88b7",
+      "excerptHash": "sha256:e8762a28b98f76dc56c14ab3d0a58723bdc782a66abb0f006a5f52ac8abd6f46"
+    },
+    {
+      "semanticUnitId": "SEMU-145fe13fc02381b74ec905ee",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-bf2860c23b1c7285fe1e1eec",
+      "excerptHash": "sha256:4c6ebb1bf00074dbe1d68708dd2b595522a89dc1c2245c233edc9e0f2accafe9"
+    },
+    {
+      "semanticUnitId": "SEMU-14a5e5d6c3fa832e48fb92c7",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-7261ca53367820e3a5300c42",
+      "excerptHash": "sha256:ab8ee04877c5f71b4ca3465c14252b5d691fd3bf2797e665464e93f40f73d59d"
+    },
+    {
+      "semanticUnitId": "SEMU-14b0add14ae78922a8055a33",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-a40c4a98a9a6e259457d7b62",
+      "excerptHash": "sha256:b367844785b74088f9aa5e0184260c60aa583bbc5cc4ff85923acad8609055a7"
+    },
+    {
+      "semanticUnitId": "SEMU-150b7b1f1359db19f4554bd4",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-29692f4550a3a1a72aedd53e",
+      "excerptHash": "sha256:b51ecb7d9fee63f2c2eab9db77f52e510a056d6511f27f2f8cb3b2a7c62891de"
+    },
+    {
+      "semanticUnitId": "SEMU-1694d38aaa731a69e27c324c",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-a8bbcaf0b8a250de3ed9f21d",
+      "excerptHash": "sha256:48c4388dc0b4bf50693ce1f55f7e4f4f49224fac615a58adb21dc0bdead92b7c"
+    },
+    {
+      "semanticUnitId": "SEMU-16a59faff361ab260858579e",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-f7d3bea0f9dc205481ac9190",
+      "excerptHash": "sha256:c6f942010905f304cda8f96a5c7d7fabca16ba0fe491c7785dbaee67e6d902dc"
+    },
+    {
+      "semanticUnitId": "SEMU-174005548b221d57c3c37024",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "iluwatar/java-design-patterns",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "markdown",
+      "evidenceId": "BEV-895512d489b6e553955590d0",
+      "excerptHash": "sha256:bb48f67621851bbeef26aecaffb1a84c71a0b1ee9d50e7b32692c5dfefd9b8fb"
+    },
+    {
+      "semanticUnitId": "SEMU-17d732c7e74aee6ea26abe02",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-cbf8d13199f350a2687c05a6",
+      "excerptHash": "sha256:d54befa75d447b3c184fb08cc5a5f187e07a9ccc32146be48f65c38cd15c9e84"
+    },
+    {
+      "semanticUnitId": "SEMU-184bc45cb6b4fab3cbe60144",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-8d5430d51f7b5842e0b6f93c",
+      "excerptHash": "sha256:a733d98a9471779e87dba635068225a18a5789caee85e3a21f586b50bc5f62e2"
+    },
+    {
+      "semanticUnitId": "SEMU-1905d0024088fac73312760d",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "MicrosoftDocs/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-17d5e63d0ca3ccddf802403d",
+      "excerptHash": "sha256:6a3a1128ffdd2b1b8c6f4ff893d1040604ac09d9dc7f2775e65256d84efb1d1e"
+    },
+    {
+      "semanticUnitId": "SEMU-1a1ecf2ff8cc1c5fd17fbd8e",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-76378b68bb5b0d4e6fcbf662",
+      "excerptHash": "sha256:0e48cf52f19e7901269342188cc812199103633f74c778c78ac0abf09766670e"
+    },
+    {
+      "semanticUnitId": "SEMU-1a49228b3590ca78758d04e9",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-a425e18ba195aec3c62415c4",
+      "excerptHash": "sha256:1fd41e40fc3d988c0b5413e55b58ec43b46c1adbaa98071ae94f438b675390c6"
+    },
+    {
+      "semanticUnitId": "SEMU-1ae72bb36d8b3d3212de4138",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-93f5a4d3a1849cf34fb40dab",
+      "excerptHash": "sha256:fc77e1e011edb0c6bce52cb001fab73a275ea599ba278350ab3fb33986bcb7e4"
+    },
+    {
+      "semanticUnitId": "SEMU-1c4cdb17fd5ca1f3b2ea4b35",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-1d0096d5c5025995ea78603f",
+      "excerptHash": "sha256:5a4439004c19b0ac32243cd09a230376c1904dd1150a04785eb518e5180cf7c4"
+    },
+    {
+      "semanticUnitId": "SEMU-1d868ebd9a58bd1d7b23a49b",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "markdown",
+      "evidenceId": "BEV-71931fa4d6d51c5543e9a8cf",
+      "excerptHash": "sha256:53e4aa974f32385613ae0d87bc8acb3ddda441355c8ebacb99d77c9f95205e03"
+    },
+    {
+      "semanticUnitId": "SEMU-1dda22544feee294b5b2aa1b",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-01d4c19340f77395d98a3000",
+      "excerptHash": "sha256:22416fbcb38c111ffd78bcf312cf464b0dd8b3cc4a330f1c44f2987272f87ef0"
+    },
+    {
+      "semanticUnitId": "SEMU-1e57b779ae948fd1841109fc",
+      "route": "route-a",
+      "assetClass": "direct-implementation-observation",
+      "repository": "apache/camel",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "asciidoc",
+      "evidenceId": "BEV-8585468a5a1d8cd3bc4647ea",
+      "excerptHash": "sha256:46661c45d53cee66520afbeae80441939f5699013142726842996805ddc0c522"
+    },
+    {
+      "semanticUnitId": "SEMU-0028ca33273d26e85e91fb62",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "backstage/backstage",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-b0240d2640552b46233941fc",
+      "excerptHash": "sha256:e97b71d298ed9abaa5dee83556f69aaa6c66962e65b82d4409a8181396c2ec08"
+    },
+    {
+      "semanticUnitId": "SEMU-003b8cc990041b4a09d6508b",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "asyncapi/spec",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "format": "yaml",
+      "evidenceId": "BEV-cda979dc58c42228803b66bc",
+      "excerptHash": "sha256:cd20902eba31a812dddff30f36a225e44e383a20d73b66f16a22f73341affd7d"
+    },
+    {
+      "semanticUnitId": "SEMU-003ec00f8f6c4865a1c400dd",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-e5621e3a279de0ee761f1815",
+      "excerptHash": "sha256:55d297edbf0406d5515e1b151ceed86fcd67662a0e37584fccef6d3248a658d9"
+    },
+    {
+      "semanticUnitId": "SEMU-004fb0516d7173f873f91ad3",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-ff50e9b465058a81d97895ef",
+      "excerptHash": "sha256:086e4566512ee88c318528c879b7cf66dce175bbb1f7ceca940a5bc98479d957"
+    },
+    {
+      "semanticUnitId": "SEMU-00682909b1155b54ff55b3fc",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-8e4200702db001e490a21323",
+      "excerptHash": "sha256:d7c4053890dd9c532002742e5d123bdf4b2a758f07949c6ca084f04f9a9a7352"
+    },
+    {
+      "semanticUnitId": "SEMU-007c0a6e27a3c5e93a4f2244",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-7f33f5429e0e74378c63644c",
+      "excerptHash": "sha256:2e400b69a82174b199dad58cb12a988d678271a4d600f47c5956760284b8f798"
+    },
+    {
+      "semanticUnitId": "SEMU-0088101f1a1bdef2aa8da264",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-2bb34eb40946cff2ef8cdc08",
+      "excerptHash": "sha256:4a6686d0ed1ba6a4725f946ff2daa93a27804cb21a2d35b4be3783fcafa3b61e"
+    },
+    {
+      "semanticUnitId": "SEMU-009dcedff8f89fce6b6404eb",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-faf73afed7b1eccf98cf11b5",
+      "excerptHash": "sha256:da81ed3ff3b6cfc03f2ac61345d2342ea26fcc1349a4dd97f15d8ccf02a25a64"
+    },
+    {
+      "semanticUnitId": "SEMU-00aa15dc6dce9cac3e107e26",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-a7966bae5b91a959c0da7f52",
+      "excerptHash": "sha256:73be59a23e17524661417fe220cdf507c64af43a017479eb97d157b445d5721e"
+    },
+    {
+      "semanticUnitId": "SEMU-00b08c783a61f9bcea963825",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "asyncapi/spec",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "format": "yaml",
+      "evidenceId": "BEV-404c12bf5d276855374e5cd5",
+      "excerptHash": "sha256:8fcbe903a4630d4c8ed7a73726dd603d56c2a98d109498bea1574f0d819d5a92"
+    },
+    {
+      "semanticUnitId": "SEMU-00f16999c26d2d05654ccc7e",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-ef9d374ba5c3cc55706c7bae",
+      "excerptHash": "sha256:63cfcafeb98e5cf5166f5f0495f5cd079831851b80c5cce2be4a307f5fb9bf7b"
+    },
+    {
+      "semanticUnitId": "SEMU-0106744752b439f9712d885f",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-6e020b591ed6fe7d525d66a7",
+      "excerptHash": "sha256:0a97bc6885fd0f47d0a2c04f862d3bd8a1983345e1c7cb49d886bc6f83bbec7c"
+    },
+    {
+      "semanticUnitId": "SEMU-0114be8d4724468b45326a53",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-f6d046132f11860ef00f9c2f",
+      "excerptHash": "sha256:c3ff8a10c4ecae34db3f4db7ba2651afa2c90c547ab41dda03ed159f4a17fa6d"
+    },
+    {
+      "semanticUnitId": "SEMU-0128fcfae4caf9eaca823fbf",
+      "route": "route-c",
+      "assetClass": "non-semantic-machine-readable-fact",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "json",
+      "evidenceId": "BEV-cc8037b54a988bc3804e5541",
+      "excerptHash": "sha256:653e90403cd8115c9ad268c461f5bd138c1777216aa40bb9022cfe9f565ecb82"
+    },
+    {
+      "semanticUnitId": "SEMU-01564e13114a3359a12fd613",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "likec4/likec4",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "c4",
+      "evidenceId": "BEV-0dc62c7cdbe5f063abc734f3",
+      "excerptHash": "sha256:a89a04c62b06101e389f853e111f9641ef79ef41edd90d2995ff7fe0249ef77a"
+    },
+    {
+      "semanticUnitId": "SEMU-0162174862094cd792688c6b",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-06902dd277e05226091d418f",
+      "excerptHash": "sha256:7c87b8e3589ba83226eca1e3826705bb0a19db3e6c6c427027a20053c0860539"
+    },
+    {
+      "semanticUnitId": "SEMU-0172c571c56bfd18de6fc2d4",
+      "route": "route-c",
+      "assetClass": "non-semantic-machine-readable-fact",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "json",
+      "evidenceId": "BEV-cb5c9788f16def93f5884bf9",
+      "excerptHash": "sha256:42b31c2928f1df8a381c793db4fcd05fbc59f64020d9642d568deb624e3f7db3"
+    },
+    {
+      "semanticUnitId": "SEMU-01b3ef9839dd880a38bcb765",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-36d6cd1ea44fdd2d725bf569",
+      "excerptHash": "sha256:a9d15bde50a8391487c41e4f47256260f6760786fb58a892a447ac8e9c5786b0"
+    },
+    {
+      "semanticUnitId": "SEMU-01cbe0ae31d3f5b9f9b60812",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-1ce8b39fdf6bbdd01a081b98",
+      "excerptHash": "sha256:98876162a75bc705dd70fe2538ecb2f12e5ee60e13ae1f078ed057eba9b16a49"
+    },
+    {
+      "semanticUnitId": "SEMU-01cd98b7e110efc0795c0a13",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-12ab94df13d4201a8f22372a",
+      "excerptHash": "sha256:3eb9bbd273f527071118dc32fe755f22d0042aab643f8669251bba4d97c8dc4c"
+    },
+    {
+      "semanticUnitId": "SEMU-01cda7ef87203f64429d690b",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-689b718bffca624386868ee6",
+      "excerptHash": "sha256:24e0204f19ebdb5aed8567bd569c5159d30d1c8cf01052f07265caa953da3550"
+    },
+    {
+      "semanticUnitId": "SEMU-01d37328bbaf052f24d223e2",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-8da70b2a1be57d56a399b937",
+      "excerptHash": "sha256:e59c300570dd68e56aea1a2423c39731d69a241d6b0cb69ba02a4394232012d0"
+    },
+    {
+      "semanticUnitId": "SEMU-01f2a2eb629d1d86b7d58ada",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-4472ad4cf1b12b4144ec3a9a",
+      "excerptHash": "sha256:9a9d8fa9546f7ac2c81c111b2133a3f421d50508789bba00d753f93dcd7519d0"
+    },
+    {
+      "semanticUnitId": "SEMU-0208e8c0f221f8205a22e1db",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "plantuml",
+      "evidenceId": "BEV-992e73ed13f44d5152d04c64",
+      "excerptHash": "sha256:161d49bc23b1b487566ab9f4442ecc23aa54ed9c00f2fe2cc88dd5beab82bfac"
+    },
+    {
+      "semanticUnitId": "SEMU-02119c51b0936afeeb9baed9",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "likec4/likec4",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "c4",
+      "evidenceId": "BEV-773f72f1e8050d9f01a87bc3",
+      "excerptHash": "sha256:0825c3806fcf47168df423a7fb5e141ee47debcb445b0c4bdd2b6a5c12524e49"
+    },
+    {
+      "semanticUnitId": "SEMU-021faca56ba8295f67828028",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-3969833efa6559c65c69db34",
+      "excerptHash": "sha256:4256402139016e5f72304a5ecfe644e37d41e42cf060bbcd1753eb07e4063304"
+    },
+    {
+      "semanticUnitId": "SEMU-02241d911457d105b07254a1",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "MicrosoftDocs/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-5fc8b92a0a00f550a9478f4f",
+      "excerptHash": "sha256:33636aac50f0b380060120f2a678aa18090c82a1c62d7c9e22e5544d2f9f7ac2"
+    },
+    {
+      "semanticUnitId": "SEMU-023676c73f27f38a39a6f73a",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-101861e259bf12e738656e7f",
+      "excerptHash": "sha256:af7467ead6e203cfc38eaa3f0593e55edfda7ae16a4439659048865f259c8f68"
+    },
+    {
+      "semanticUnitId": "SEMU-028775b67674406e72c8ae68",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-74ba75cd018ee95be1319630",
+      "excerptHash": "sha256:831b5010724c0532d48b3a2c692c4bc2753d0528f79dea3c17611172029855de"
+    },
+    {
+      "semanticUnitId": "SEMU-02970087737d39d456f335f5",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-c9ebf3ceccc12ad0f1fb3fd0",
+      "excerptHash": "sha256:257606571813ba21a6a9b4a626ebab87cb971a3c499ce76b550c0365d3ba4420"
+    },
+    {
+      "semanticUnitId": "SEMU-029999626083d8576de409d0",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "asyncapi/spec",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "format": "yaml",
+      "evidenceId": "BEV-a54fae0ebc9b98b90a92b8c6",
+      "excerptHash": "sha256:5150ef3fff6001e122f271f50805a338fa6d8d65e0b50f5457bf42ef43721051"
+    },
+    {
+      "semanticUnitId": "SEMU-029b29a69a71967b72fece3b",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-5279d648f08d7b45594148f1",
+      "excerptHash": "sha256:cbc7eb5c0bb28f1bd8ef8a56e271203b3d3b2d0a9d0f659bb0210d81ab0269ea"
+    },
+    {
+      "semanticUnitId": "SEMU-02a301cc2c253238efcdb179",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "backstage/backstage",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-36a2a77e0c7dd231a3edc411",
+      "excerptHash": "sha256:ec3f53643ddadf6c957d161b0cf620a56bea31c90b49b499f9b2c74c7185171f"
+    },
+    {
+      "semanticUnitId": "SEMU-02a62be700366b90d661a71b",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "asyncapi/spec",
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "format": "yaml",
+      "evidenceId": "BEV-45a8396b1620b74a67ac57ae",
+      "excerptHash": "sha256:2b8be11e6155becdeceb3e24ce3e1560e8ff2b3e53e064cb59ce23808ac6e1f9"
+    },
+    {
+      "semanticUnitId": "SEMU-02aa683e4503e81f44b67cec",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-b7ac7e1a1d43d3f3f90052a9",
+      "excerptHash": "sha256:1357b20af0bee1740b400c90e8cee3ecd14cce91d3899659f7bfc6690e1cfffd"
+    },
+    {
+      "semanticUnitId": "SEMU-02ac95fadc9683ff2bc714b0",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-c8ebfcbaee8ee5566261cbd0",
+      "excerptHash": "sha256:e0abacb09a97f8f4590ccb657b9acad9349cc0c65f6adacfe64d1049e32014d6"
+    },
+    {
+      "semanticUnitId": "SEMU-02b6bdaefd2e54903e16b6ba",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-7e90eaafc44304d95a2ee23f",
+      "excerptHash": "sha256:02be0c92a01bd34a4a1b8b76395c77de96b9082f6596d1814b0e7dcb7ee94054"
+    },
+    {
+      "semanticUnitId": "SEMU-02bb0fcb13a8f5795eb03c4f",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-450a05b0ed3d16f688087cef",
+      "excerptHash": "sha256:961739cde18439d1f8dad1ed92f011858bbbe6749eb5b0549127dcbe38e27142"
+    },
+    {
+      "semanticUnitId": "SEMU-02c607551af7b909c9162b4a",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-93572ca7109d1fbcdd939c04",
+      "excerptHash": "sha256:05567122ba663cba2c5bba29ea77cc8ae4b9495120d57e02bb276504abd1725e"
+    },
+    {
+      "semanticUnitId": "SEMU-02c86ff89e9acda60fe0b4cc",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-6f3fa8947267bc8a5ad6ddd7",
+      "excerptHash": "sha256:53a6de5cb491f00a5a9ad94c5a27e0520bab14ffe59754b393383c5721c96c13"
+    },
+    {
+      "semanticUnitId": "SEMU-02d56e87bc68a1f0502c524c",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-0fb0f9c2a901cabbb80657c1",
+      "excerptHash": "sha256:4390651d5ee32bb452a1f027ad0594ea6f1b032ff84ea39e7c316b80c246649a"
+    },
+    {
+      "semanticUnitId": "SEMU-02e8c1523ed09f45f8498b11",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "svg",
+      "evidenceId": "BEV-72ad763a446a297be2fc1e14",
+      "excerptHash": "sha256:e437b23fafd604f7d2576ac71d035c230dbe4547203e3e2a84c47e815db16a85"
+    },
+    {
+      "semanticUnitId": "SEMU-02f16ca9da448d2bc96c031e",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-ae84b7796e6192cba2dfc154",
+      "excerptHash": "sha256:b9fc60dda45fbf4257a5faaec104e5b4f839b22d44fac9b63d96c18d831d5d70"
+    },
+    {
+      "semanticUnitId": "SEMU-0300e62524628dada90d8d02",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-d2eebc8a04fb2f1e83b52935",
+      "excerptHash": "sha256:622179143a43fac8de34cc956629ade9a5b3daf40c167cca010e675a859ede21"
+    },
+    {
+      "semanticUnitId": "SEMU-03123f55ea530f238be255b8",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-60b42f5dc467adc38f94a8df",
+      "excerptHash": "sha256:92a85c7b656f539e98a305d680566d06a0121bfb69ddebb7cc653e4b317e6c4c"
+    },
+    {
+      "semanticUnitId": "SEMU-0330802af570db3ef949bd20",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "k8spatterns/examples",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-b03bf254e869223645b04b47",
+      "excerptHash": "sha256:eb325100e9c8cdc89dd5eef4d773de1ed8042a82c2b8ac9e01824fc2008a3254"
+    },
+    {
+      "semanticUnitId": "SEMU-03397a2f8a176b0c700a1ae7",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-cb72d72cb178dfd740e28f0f",
+      "excerptHash": "sha256:b79e5791edd4fe5b62cfa356d9fdac66f22427914838c0ae8ede8e631fa13233"
+    },
+    {
+      "semanticUnitId": "SEMU-034e34b1e05d5d3637ef9c54",
+      "route": "route-c",
+      "assetClass": "non-semantic-machine-readable-fact",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "json",
+      "evidenceId": "BEV-6bf47737a25950f2410dd2f6",
+      "excerptHash": "sha256:6641c8d5e654c28f60f90186cec6eea36844453db5b54e805d563eb80da3a651"
+    },
+    {
+      "semanticUnitId": "SEMU-034f84074a183ccd6e4c2e74",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-de5c6d7f9e27a11a350d6dd1",
+      "excerptHash": "sha256:a8331a2bffd3779ae13ea49fac87dc2c5a1dfd5fc4c0d330eddfcd01408ea19a"
+    },
+    {
+      "semanticUnitId": "SEMU-0365c68c3023b179d610c5f0",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-b5bedcd04272cb527d64ece7",
+      "excerptHash": "sha256:bf7afe8063064d6fd0bca8396d455d06f6962f39a9e773205d3e3ef61cbe41ed"
+    },
+    {
+      "semanticUnitId": "SEMU-03739b1e3ef145acc76050ad",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "open-telemetry/opentelemetry-demo",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-3dad105f8a53c9508a8cfbf7",
+      "excerptHash": "sha256:a7eba44f4de6ce096f9da7b4b62a013fa667c22cec4dab73568d6e490871f906"
+    },
+    {
+      "semanticUnitId": "SEMU-03becb0b1017594c693699cb",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-bfd4c0d98ad6d55b6d67134b",
+      "excerptHash": "sha256:164dc4ed6140e9cbe64c26c0a72d4e046daa34fc01cdcf60c51190ea89f6d837"
+    },
+    {
+      "semanticUnitId": "SEMU-03c94fcd2a8668d421e73adc",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-76269d57833e1da81c57ab28",
+      "excerptHash": "sha256:116c6725c8942ce73dd4aeba0a5a7116452ea9800df332f755f0f73588606d64"
+    },
+    {
+      "semanticUnitId": "SEMU-03ec87b07c326794dfb9ef22",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-470ee58694a5c1bf792fdd98",
+      "excerptHash": "sha256:3d74c558c16477ecd60a573900206bca35ca66f72c3ef77937faaae1473dcc2f"
+    },
+    {
+      "semanticUnitId": "SEMU-03f8d7cf26c200be3a1f1e09",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-71e31786a32a2c7ab612ace8",
+      "excerptHash": "sha256:ba3fc04863dbdcb60af54fe7a9c6da08a9ada8b7e1b84c2158b9a80c2532da66"
+    },
+    {
+      "semanticUnitId": "SEMU-0425c617cd8f7b0e867cb5f3",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-541ef26d6a42107752a43a52",
+      "excerptHash": "sha256:8203e44be5926f9512389a62b49acef5fd861f42361746107c654a9dcb1f45ac"
+    },
+    {
+      "semanticUnitId": "SEMU-04373be22b7f35db22ad785d",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "k8spatterns/examples",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-c816c00ec276e69e5c20fd11",
+      "excerptHash": "sha256:04a05b1e8c64295eb868a00f66bd4d420860c67a1288fc46337e70a85d1a14c2"
+    },
+    {
+      "semanticUnitId": "SEMU-04850a1244ae3addd196e462",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "drawio",
+      "evidenceId": "BEV-ff1db8066453427af17dd671",
+      "excerptHash": "sha256:dd85b1f26d8e9878bc03f0075c24c5fcbbce55c5ff558645849a1752adb91952"
+    },
+    {
+      "semanticUnitId": "SEMU-04927f1ad8676e1c759015e8",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-c24cc761d056a0c5192f1545",
+      "excerptHash": "sha256:2869b719779067266b83edf1f02e14e9b4d9f33c959b1d49fcab69bf483cd9b8"
+    },
+    {
+      "semanticUnitId": "SEMU-049bec245d9208c95544bfab",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-8d06cdbbbc00b50b9ee99147",
+      "excerptHash": "sha256:46789aaf91f84f4f41f0f4e950e51563080fa48313c0d65833131bb906249cd5"
+    },
+    {
+      "semanticUnitId": "SEMU-04a3c49d416a317fcf98b5f3",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-649a3ce9db29f983adcd89ad",
+      "excerptHash": "sha256:0e09af3cc61592e4e79a25c24e8991e3362a9217b5d1136a22c1cb188c3f4ab4"
+    },
+    {
+      "semanticUnitId": "SEMU-04b0aedb4b384315aa6b2fed",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "drawio",
+      "evidenceId": "BEV-1cd0da36db86a030af452fea",
+      "excerptHash": "sha256:f71e7f9b66911cbb862625f348721b838f385c29c15b154bc08c21540adde606"
+    },
+    {
+      "semanticUnitId": "SEMU-04b30225e5de67701affff03",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-07cf70af90b4deeb19768f07",
+      "excerptHash": "sha256:ac8ffad5a58d871779ab74d69b29ac910e689aa7c046fca7883285bcb86c226b"
+    },
+    {
+      "semanticUnitId": "SEMU-04bcb5f8b42b56b6a64b15ab",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-2e6f035986e2c40e571de09d",
+      "excerptHash": "sha256:635042d00f3bd136e963c8f9f60e4d6250f474c6ac48b5023c9570bb12e621c5"
+    },
+    {
+      "semanticUnitId": "SEMU-04c5427dbacfb90eb0ac1f7d",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "k8spatterns/examples",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-c2b0939b423fb09ae3ce8255",
+      "excerptHash": "sha256:c9ddbb20328365275b6c48a3d5778cee8f25d93eac37bdf18ec02918de462f1f"
+    },
+    {
+      "semanticUnitId": "SEMU-04cab5710248257b2aacb3ac",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-52c02e67ed41bde5f331f81a",
+      "excerptHash": "sha256:37d20a590e455de20222158370af807187886af5a807811b747add16182fcd5f"
+    },
+    {
+      "semanticUnitId": "SEMU-04e09cfc2acfea64fe60c10a",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-a2c04268b8ab969733f9706f",
+      "excerptHash": "sha256:e57959a39fa4e7c62ae81f5206e5d295b00564848a8fbb83cc49b35976047078"
+    },
+    {
+      "semanticUnitId": "SEMU-056ed33f97b88a717f8048d8",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-43c1577d6fe3115aed816d00",
+      "excerptHash": "sha256:cadaf790ad02cc5255841ad50a0f441b74a322b11689886e70ff00d56f2460fa"
+    },
+    {
+      "semanticUnitId": "SEMU-05995bc1c69c17716e60b4b7",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-f8b901992db7b6b605770792",
+      "excerptHash": "sha256:20e7cf39d641867f4e832b2aa661684c5948e9d06dcfd8e3e3457cc6c3fbad22"
+    },
+    {
+      "semanticUnitId": "SEMU-05ae0e40de68d50110a984ae",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-8da100884b4b6908341ba3c9",
+      "excerptHash": "sha256:00341e3b1d00dcfc0899e7ec309c0ddc5fad4d938126bf13608dd439302ee239"
+    },
+    {
+      "semanticUnitId": "SEMU-05bdb90a7632d7c829fe9853",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-2e36ad2061dd1b1c5cab99b1",
+      "excerptHash": "sha256:4e79fb6b0d32de95b8f844749f3f3b90636c3788678b95ae7ef597002ea9933c"
+    },
+    {
+      "semanticUnitId": "SEMU-05d60e3950bfb496fcb95f62",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-cf2fbfe401799a80bc752e60",
+      "excerptHash": "sha256:eb93dfd5a06cb91d93cf85770794ee236d805e22e3b03ea1ac58f4eb3236986a"
+    },
+    {
+      "semanticUnitId": "SEMU-05d72b9414d8e4c58e87d832",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-8affe2d2ff373bc5e57c69bd",
+      "excerptHash": "sha256:ed0d0c6fe58f8231b960ee76c3d4235c7e67d7cf18fc013d2fe30244ee36cec4"
+    },
+    {
+      "semanticUnitId": "SEMU-0609719dccdfdc6a0e830812",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-ffdc48ba3df709cd174864f5",
+      "excerptHash": "sha256:f5a81006ff9a9f3a9419fbb104597650084845b465c05fe979278d5a3fc1682a"
+    },
+    {
+      "semanticUnitId": "SEMU-060fd8def8d2f38a699dab05",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "likec4/likec4",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "c4",
+      "evidenceId": "BEV-48ad806b77a10a021088eddc",
+      "excerptHash": "sha256:abe76a738dca0e863a92027cba63036bb3e9feba249a6063ac799db79d407ddf"
+    },
+    {
+      "semanticUnitId": "SEMU-0611ea10f86a9458fc10eca4",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-62c7a535aa1f61265985513f",
+      "excerptHash": "sha256:f9370cd5371b7786f85eddbf89f3774f90fa9702c161e4f5ba3a8b17d67c9e7c"
+    },
+    {
+      "semanticUnitId": "SEMU-06268b14d4688c5f0dfb87db",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-5c729739918e4dc0d66210d5",
+      "excerptHash": "sha256:120206e3ec8625c41aee12a72991de15c67435b9fb0a244e2900a230cd8b6362"
+    },
+    {
+      "semanticUnitId": "SEMU-0626fe3700be10c133c22430",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-1ac306d300e4ad9f1b062159",
+      "excerptHash": "sha256:de10f0d4155ab8ab09030bae28aeda3b7c159154b0f4969300922feaf2be1d35"
+    },
+    {
+      "semanticUnitId": "SEMU-063148125d709c39f4a19771",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-94c1690b6e80cc12ee7d81ca",
+      "excerptHash": "sha256:c80ee2d274803ac3be1e4803b61a3f08a0a4044f7d233c80de991f72f6aaecd8"
+    },
+    {
+      "semanticUnitId": "SEMU-063b2acf3d7c16e0911bae4f",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-3a055adb8e642c534ac0ed8e",
+      "excerptHash": "sha256:ba6536c26a3461d3f2b6400af8e5c06dcee7e2ff72ba77feea1fe62c9324bee1"
+    },
+    {
+      "semanticUnitId": "SEMU-064562ce40fc7f16bce1e883",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-dd7fcc2c1cc2bd0d41f6ddf4",
+      "excerptHash": "sha256:46e9d8b1415b158130e95d9573539efdf102f364c24e14fdd6bb44706ecbcbb0"
+    },
+    {
+      "semanticUnitId": "SEMU-065b53b294d112e025afc4ec",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-d077b406b72d860864606fbd",
+      "excerptHash": "sha256:f1cac9c6ab9ff03ab2457405239827683703bd68773912ec38d794aa15a00f24"
+    },
+    {
+      "semanticUnitId": "SEMU-0661b634b399fb576aecf890",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-8f117b86b44d83fb72e71429",
+      "excerptHash": "sha256:7d4bd67d3c1aea1209dd343aaf73c5681a23b3bef910aa5cda8a92623305492a"
+    },
+    {
+      "semanticUnitId": "SEMU-067481e763fba809fdebc510",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-99e311ab8ab8cfaac1d2d798",
+      "excerptHash": "sha256:6e82d9727a0f537280c000c76ec6b68a1566dcd444313145edb4ef5ddbf0c5e5"
+    },
+    {
+      "semanticUnitId": "SEMU-06b89bcc4e53fea8cd0c065c",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "drawio",
+      "evidenceId": "BEV-b3506e3984542071d4dc76b4",
+      "excerptHash": "sha256:8b0400ede3c22e4841e934c270c6b1c89fdd3fa7885731c489ec3ced3b2346c3"
+    },
+    {
+      "semanticUnitId": "SEMU-06bf42704b5f34d86b07ad98",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "svg",
+      "evidenceId": "BEV-0a464bd80792e5542c83bae6",
+      "excerptHash": "sha256:8f698b3a4ba50cdbabdfc4f5f718adf8602086db32f0688a5f80d2a817f3264e"
+    },
+    {
+      "semanticUnitId": "SEMU-06c2f339f5303d4baba18a21",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-f515349b64c426e0d69a9630",
+      "excerptHash": "sha256:596f118cd78161ae9d454e474f2d71b124a36fed372bbddcc42febe625b16653"
+    },
+    {
+      "semanticUnitId": "SEMU-06caaa5af131375fe60d7e9a",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-da44f042289c51b7014767a8",
+      "excerptHash": "sha256:6a8b4657992b5456e48960230347dfceb62f86cdce304adb0fa6e23b1fbe4321"
+    },
+    {
+      "semanticUnitId": "SEMU-06cb16cfe5aeb2f83706f09e",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-8001d2da0457c253a18c7b25",
+      "excerptHash": "sha256:3e67507313ef2fa0c2cacc8d7445cc52cf7a573eeb052a998f6f9e83b470ba62"
+    },
+    {
+      "semanticUnitId": "SEMU-06f7145a6786968b55b6c827",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-d4538d56decd8d53aa4f9068",
+      "excerptHash": "sha256:30ddb72a05a137c939c8c520b6ed7f5d2854e76178bc8ed495aab3de580833c7"
+    },
+    {
+      "semanticUnitId": "SEMU-06fed276a4dc3b9a4be417df",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-f7119a57b7b80d53a09edc11",
+      "excerptHash": "sha256:ae06b2497de0cec3a6b069403da22055ed169db045deded3cde838e8d9e2f4ca"
+    },
+    {
+      "semanticUnitId": "SEMU-070c10f33739edd3e94fce0d",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-64cd0325335f5f878d6442fb",
+      "excerptHash": "sha256:805dd0eef0127f09d7ee2631fefb0d55f8338f3a86de8773337e1f4412404009"
+    },
+    {
+      "semanticUnitId": "SEMU-0712ac0d889116a8918f2ecb",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-0dd70e1063beadd6e4309841",
+      "excerptHash": "sha256:026410b467e3e7cdeac056b31a569e97c34cc0ddf46030b146bd12f159fa5971"
+    },
+    {
+      "semanticUnitId": "SEMU-0716011583df005464f197f4",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "plantuml-stdlib/C4-PlantUML",
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "format": "plantuml",
+      "evidenceId": "BEV-7b518df7742123bc5ee50e94",
+      "excerptHash": "sha256:a51f5f3e237aee8a4e1b03e151cc769481729ce5c2fc345bad418725554ea737"
+    },
+    {
+      "semanticUnitId": "SEMU-0728e336f0c6a0b8a8280ad7",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "terraform",
+      "evidenceId": "BEV-e098232098775222f27f6886",
+      "excerptHash": "sha256:1dd6c46777ea7a5e9354bd6686b9a04d151bd7cd80697cf5daee7efce62a8815"
+    },
+    {
+      "semanticUnitId": "SEMU-0735f2e7d7b4b35d560a0a20",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "svg",
+      "evidenceId": "BEV-12e4eecdf901deb8657ba0f4",
+      "excerptHash": "sha256:cbd0b3d7ee543b882843850bd64bcd18beac165219642071d36e00ee9a5344bf"
+    },
+    {
+      "semanticUnitId": "SEMU-073f4bbf3a80f642638aea4f",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "TNG/ArchUnit",
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "format": "yaml",
+      "evidenceId": "BEV-04988b7614f974912b032be2",
+      "excerptHash": "sha256:2bfabcaa7c209cf205612b3860ed84a408febf9a11fe10f785ac4141faa16a19"
+    },
+    {
+      "semanticUnitId": "SEMU-07418462d37ef71d4e317366",
+      "route": "route-c",
+      "assetClass": "non-semantic-machine-readable-fact",
+      "repository": "meshery/meshery",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "json",
+      "evidenceId": "BEV-01f6f31b89c16cb300873007",
+      "excerptHash": "sha256:ee42c5b734108054ee4bea1df76aeb1c6d034357ee982137fa81fc4904296b94"
+    },
+    {
+      "semanticUnitId": "SEMU-0744691f4b084591db65d06f",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "SAP/architecture-center",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "drawio",
+      "evidenceId": "BEV-6b9d3ad4a4f6343db66d0aab",
+      "excerptHash": "sha256:ce59cda719815fbcc1e08d999d92f0c0bfc853fc9abd8f81c5cfe080af44a0fd"
+    },
+    {
+      "semanticUnitId": "SEMU-0756db82708f96db81c5c551",
+      "route": "route-c",
+      "assetClass": "specialist-parser-required",
+      "repository": "aws-samples/serverless-patterns",
+      "sourceAuthorityClass": "official-reference-architecture",
+      "format": "yaml",
+      "evidenceId": "BEV-f68070d4593b13a6f360e493",
+      "excerptHash": "sha256:c900458f9019ac900eaf2fd223e64a7ab219235f277f38c57f7a3d145fd67a01"
+    }
+  ]
+}
