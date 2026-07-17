@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "aiw-prompt7-sdd-assembly-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "source": "accepted project candidate ArchitectureProject state",
+  "sections": [
+    "executive summary",
+    "context",
+    "requirements/quality drivers",
+    "views",
+    "interfaces",
+    "data",
+    "security",
+    "resilience",
+    "deployment",
+    "operations",
+    "decisions",
+    "alternatives/trade-offs",
+    "risks",
+    "assumptions",
+    "roadmap",
+    "fitness tests",
+    "traceability"
+  ],
+  "excludes": [
+    "rejected candidate",
+    "unaccepted proposal",
+    "production claim"
+  ],
+  "labelsDeferredItems": true,
+  "updatesOnAcceptedProjectRevision": true,
+  "authority": "candidate"
+}

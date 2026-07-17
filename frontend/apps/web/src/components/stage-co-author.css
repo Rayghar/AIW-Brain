@@ -99,6 +99,10 @@
 .stage-draft__content h5 { margin: 2px 0 0; color: var(--aiw-text, #e6f0f5); }
 .stage-draft__content header small, .stage-draft__content header span { font-size: .65rem; color: var(--aiw-muted, #8da4af); }
 .stage-draft__content pre { margin: 9px 0; padding: 9px; border: 1px solid rgba(128, 174, 190, .12); border-radius: 8px; background: rgba(3, 13, 20, .7); color: #cce0e8; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: .71rem; line-height: 1.45; }
+.stage-draft__content textarea { width: 100%; min-height: 96px; resize: vertical; margin: 9px 0; padding: 9px; border: 1px solid rgba(128, 174, 190, .2); border-radius: 8px; background: rgba(3, 13, 20, .7); color: #cce0e8; font: inherit; font-size: .71rem; line-height: 1.45; }
+.stage-draft__content textarea:focus { outline: 2px solid rgba(80, 190, 210, .38); outline-offset: 1px; }
+.stage-draft__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.stage-draft__actions button { display: inline-flex; align-items: center; gap: 5px; }
 .stage-draft__content p { margin: 6px 0; color: var(--aiw-muted, #94a9b5); font-size: .7rem; line-height: 1.45; }
 .stage-draft__missing { display: flex; gap: 7px; align-items: flex-start; padding: 8px; border: 1px solid rgba(217, 165, 82, .22); border-radius: 8px; background: rgba(217, 165, 82, .08); color: #edc17a; font-size: .68rem; }
 .stage-clarifications > div:last-child { display: grid; gap: 8px; }

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "aiw-prompt7-stage-propagation-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "order": [
+    "designIntent",
+    "logicalApplication",
+    "applicationRealization",
+    "logicalTechnology",
+    "physicalTechnology",
+    "validationRealization"
+  ],
+  "onAccept": [
+    "materialise typed operation in project candidate model",
+    "retain operation/evidence/requirement/quality/risk/decision references",
+    "recompute derived traceability",
+    "mark dependent downstream generated candidates stale",
+    "refresh SDD source material"
+  ],
+  "unaffectedCandidatesPreserved": true,
+  "approvedKnowledgeMutationAllowed": false
+}

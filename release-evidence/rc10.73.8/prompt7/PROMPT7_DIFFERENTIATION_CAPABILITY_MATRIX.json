@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "aiw-prompt7-differentiation-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "capabilities": [
+    {
+      "capability": "visual requirement-to-design traceability",
+      "posture": "implemented in candidate operation refs"
+    },
+    {
+      "capability": "accepted versus proposed graph comparison",
+      "posture": "candidate lifecycle metadata and preview"
+    },
+    {
+      "capability": "deterministic rule explanation",
+      "posture": "stage explanation and rationale"
+    },
+    {
+      "capability": "impact/staleness propagation",
+      "posture": "implemented and tested"
+    },
+    {
+      "capability": "review governance",
+      "posture": "existing governed review surfaces retained"
+    },
+    {
+      "capability": "fitness tests",
+      "posture": "SDD composer input retained"
+    },
+    {
+      "capability": "governed SDD assembly",
+      "posture": "scenario-specific accepted project model"
+    },
+    {
+      "capability": "conformance-ready state",
+      "posture": "typed candidate graph without automatic promotion"
+    }
+  ],
+  "traceChain": [
+    "requirement",
+    "quality driver",
+    "architecture decision",
+    "candidate graph change",
+    "interface/data/security impact",
+    "fitness test"
+  ]
+}

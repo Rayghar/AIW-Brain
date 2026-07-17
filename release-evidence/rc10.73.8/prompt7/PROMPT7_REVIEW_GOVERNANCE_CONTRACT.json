@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "aiw-prompt7-review-governance-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "inspectable": [
+    "requirements",
+    "accepted candidates",
+    "proposed candidates",
+    "decisions",
+    "traceability",
+    "assumptions",
+    "critical omissions",
+    "security/resilience findings",
+    "SDD completeness"
+  ],
+  "actions": [
+    "approve-project-candidate",
+    "return-with-comments",
+    "reject-candidate",
+    "request-evidence",
+    "request-regeneration",
+    "mark-risk-accepted",
+    "record-exception"
+  ],
+  "productionAuthority": false,
+  "automaticPromotionAllowed": false
+}

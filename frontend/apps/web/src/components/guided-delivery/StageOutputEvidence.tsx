@@ -186,15 +186,13 @@ function designRationaleEvidence(
       },
       {
         title: "Lineage remains visible",
-        evidence: `${modelNodes.filter((node) => node.lineage?.length).length} object(s) retain upstream lineage.`,
+        evidence: `${modelNodes.filter((node) => node.lineageFrom.length).length} object(s) retain upstream lineage.`,
         consequence:
           "Reviewers can explain which requirement, journey or earlier-stage responsibility caused each design element.",
       },
     ];
   if (stageId === "review") {
-    const openFindings = project.findings.filter(
-      (item) => item.status !== "resolved",
-    );
+    const openFindings = project.findings;
     return [
       {
         title: "Risk is explicit",
@@ -238,7 +236,7 @@ function designRationaleEvidence(
     },
     {
       title: "Gaps remain visible",
-      evidence: `${project.findings.filter((item) => item.status !== "resolved").length} unresolved finding(s) remain in the delivery context.`,
+      evidence: `${project.findings.length} unresolved finding(s) remain in the delivery context.`,
       consequence:
         "The document cannot silently transform missing evidence into confident implementation claims.",
     },

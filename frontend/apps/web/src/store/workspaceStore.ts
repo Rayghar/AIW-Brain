@@ -4,6 +4,9 @@ import { immer } from "zustand/middleware/immer";
 import { current, isDraft } from "immer";
 import type { Connection, EdgeChange, NodeChange } from "@xyflow/react";
 import {
+  architectureEdgeSchema,
+  architectureInterfaceSchema,
+  architectureNodeSchema,
   architectureProjectSchema,
   createId,
   sampleProject,
@@ -1389,12 +1392,73 @@ function draftString(value: unknown, max = 4000): string {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
-function applyStageDraftOperation(
+export function applyStageDraftOperation(
   project: ArchitectureProject,
   operation: StageDraftOperation,
 ): boolean {
   if (operation.validationStatus !== "ready") return false;
   switch (operation.kind) {
+    case "add-node": {
+      const parsed = architectureNodeSchema.safeParse(operation.proposedValue);
+      if (!parsed.success || project.nodes.some((item) => item.id === parsed.data.id))
+        return false;
+      const node = safeStructuredClone(parsed.data) as ArchitectureNode;
+      node.status = "draft";
+      node.properties = {
+        ...node.properties,
+        candidateLifecycleState: "accepted-for-project",
+        candidateAuthority: "candidate",
+        reviewRequired: true,
+        acceptedFromStageProposal: operation.id,
+        requirementRefs: [...operation.requirementRefs],
+        evidenceRefs: [...operation.evidenceRefs],
+        qualityDriverRefs: [...(operation.qualityDriverRefs ?? [])],
+        riskRefs: [...(operation.riskRefs ?? [])],
+        decisionRefs: [...(operation.decisionRefs ?? [])],
+      };
+      project.nodes.push(node);
+      return true;
+    }
+    case "add-edge": {
+      const parsed = architectureEdgeSchema.safeParse(operation.proposedValue);
+      if (
+        !parsed.success ||
+        project.edges.some((item) => item.id === parsed.data.id) ||
+        !project.nodes.some((item) => item.id === parsed.data.sourceId) ||
+        !project.nodes.some((item) => item.id === parsed.data.targetId)
+      )
+        return false;
+      const edge = safeStructuredClone(parsed.data) as ArchitectureEdge;
+      edge.properties = {
+        ...edge.properties,
+        candidateLifecycleState: "accepted-for-project",
+        candidateAuthority: "candidate",
+        reviewRequired: true,
+        acceptedFromStageProposal: operation.id,
+        requirementRefs: [...operation.requirementRefs],
+        evidenceRefs: [...operation.evidenceRefs],
+      };
+      project.edges.push(edge);
+      return true;
+    }
+    case "add-interface": {
+      const parsed = architectureInterfaceSchema.safeParse(operation.proposedValue);
+      if (
+        !parsed.success ||
+        (project.interfaces ?? []).some((item) => item.id === parsed.data.id) ||
+        !project.nodes.some((item) => item.id === parsed.data.providerNodeId) ||
+        parsed.data.consumerNodeIds.some((id) => !project.nodes.some((item) => item.id === id))
+      )
+        return false;
+      const contract = safeStructuredClone(parsed.data) as ArchitectureInterface;
+      contract.lifecycleStatus = "proposed";
+      contract.createdAt = new Date().toISOString();
+      contract.updatedAt = contract.createdAt;
+      contract.evidenceIds = [...new Set([...contract.evidenceIds, ...operation.evidenceRefs, ...operation.requirementRefs])];
+      project.interfaces ??= [];
+      project.interfaces.push(contract);
+      return true;
+    }
     case "replace-project-description": {
       const value = draftString(operation.proposedValue);
       if (!value || value === project.description) return false;
@@ -1571,6 +1635,41 @@ function applyStageDraftOperation(
     default:
       return false;
   }
+}
+
+const governedStageOrder: ArchitectureStage[] = [
+  "designIntent",
+  "logicalApplication",
+  "applicationRealization",
+  "logicalTechnology",
+  "physicalTechnology",
+  "validationRealization",
+];
+
+export function markGeneratedDownstreamCandidatesStale(
+  project: ArchitectureProject,
+  changedStage: ArchitectureStage,
+  acceptedOperationIds: string[],
+): string[] {
+  const changedIndex = governedStageOrder.indexOf(changedStage);
+  if (changedIndex < 0) return [];
+  const staleIds: string[] = [];
+  for (const node of project.nodes) {
+    if (governedStageOrder.indexOf(node.stage) <= changedIndex) continue;
+    const refs = Array.isArray(node.properties.upstreamStageRefs)
+      ? node.properties.upstreamStageRefs.map(String)
+      : [];
+    if (!refs.includes(changedStage) || node.properties.candidateAuthority !== "candidate")
+      continue;
+    node.properties.candidateLifecycleState = "stale";
+    node.properties.staleBecause = {
+      changedStage,
+      acceptedOperationIds: [...acceptedOperationIds],
+      markedAt: new Date().toISOString(),
+    };
+    staleIds.push(node.id);
+  }
+  return staleIds;
 }
 
 export const useWorkspaceStore = create<WorkspaceStore>()(
@@ -2402,6 +2501,11 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
           state.undoStack.push(snapshot);
           state.undoStack = state.undoStack.slice(-50);
           state.redoStack = [];
+          const staleIds = markGeneratedDownstreamCandidatesStale(
+            state.project,
+            proposal.architectureStage,
+            operations.map((item) => item.id),
+          );
           bump(state.project);
           updateDerived(
             state,
@@ -2421,7 +2525,7 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
               nextValue: operations.map((item) => item.id),
             },
           );
-          state.notice = `${applied} reviewed Sol draft${applied === 1 ? "" : "s"} accepted. The change is audited locally and can be undone.`;
+          state.notice = `${applied} reviewed Sol draft${applied === 1 ? "" : "s"} accepted for this project. ${staleIds.length ? `${staleIds.length} dependent candidate${staleIds.length === 1 ? " was" : "s were"} marked stale. ` : ""}No approved knowledge or production Design Graph state changed.`;
         }),
 
       setConnectionKind: (kind) =>

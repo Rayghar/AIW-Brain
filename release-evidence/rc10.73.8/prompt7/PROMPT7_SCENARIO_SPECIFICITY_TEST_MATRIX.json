@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "aiw-prompt7-scenario-specificity-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "scenarios": [
+    "agency-banking",
+    "event-fulfilment",
+    "sensitive-analytics",
+    "core-modernisation",
+    "agentic-application"
+  ],
+  "stages": [
+    "logicalApplication",
+    "applicationRealization",
+    "logicalTechnology",
+    "physicalTechnology"
+  ],
+  "assertions": [
+    "distinct component responsibilities",
+    "distinct interface obligations",
+    "distinct security/resilience implications",
+    "distinct deployment implications",
+    "distinct SDD fingerprints"
+  ],
+  "matrix": [
+    {
+      "scenario": "agency-banking",
+      "stage": "logicalApplication",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "applicationRealization",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "logicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "physicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "logicalApplication",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "applicationRealization",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "logicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "physicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "sensitive-analytics",
+      "stage": "logicalApplication",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "sensitive-analytics",
+      "stage": "applicationRealization",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "sensitive-analytics",
+      "stage": "logicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "sensitive-analytics",
+      "stage": "physicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "logicalApplication",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "applicationRealization",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "logicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "physicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "agentic-application",
+      "stage": "logicalApplication",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "agentic-application",
+      "stage": "applicationRealization",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "agentic-application",
+      "stage": "logicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    },
+    {
+      "scenario": "agentic-application",
+      "stage": "physicalTechnology",
+      "expectedNodeCandidates": 4,
+      "expectedRelationshipCandidates": 3,
+      "expectedInterfaceCandidates": 1,
+      "authority": "candidate"
+    }
+  ]
+}

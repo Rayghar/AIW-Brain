@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aiw-prompt7-output-diversity-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "measuredBy": "prompt7_productised_brain.test.ts",
+  "scenariosTested": 5,
+  "stagesTested": 4,
+  "stagePayloadSets": 20,
+  "uniquePayloadFingerprintsWithinEachStage": 5,
+  "byteIdenticalMateriallyDifferentScenarioPayloads": 0,
+  "scenarioSpecificSddFingerprintsTested": 3,
+  "scenarioSpecificSddFingerprintsUnique": 3,
+  "passed": true
+}

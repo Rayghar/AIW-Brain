@@ -7,13 +7,16 @@ import {
   CircleHelp,
   GitBranch,
   Loader2,
+  Pencil,
+  PauseCircle,
   RotateCcw,
   ShieldCheck,
   Sparkles,
   Target,
   Workflow,
+  X,
 } from 'lucide-react';
-import type { ArchitectureBrainProposalReceipt, StageCoAuthorProposal, StageCoAuthorTarget } from '@aiw/domain';
+import type { ArchitectureBrainProposalReceipt, StageCandidateState, StageCoAuthorProposal, StageCoAuthorTarget } from '@aiw/domain';
 import { postJson } from '../lib/apiClient';
 import { createPendingStageCoAuthorProposal, evidenceLabel, stageCoAuthorTitles } from '../lib/stageCoAuthor';
 import { useWorkspaceStore } from '../store/workspaceStore';
@@ -30,6 +33,12 @@ function proposalValue(value: unknown): string {
   if (typeof value === 'string') return value;
   if (value == null) return '';
   try { return JSON.stringify(value, null, 2); } catch { return String(value); }
+}
+
+function editedProposalValue(original: unknown, edited: string | undefined): unknown {
+  if (edited === undefined) return original;
+  if (typeof original === 'string') return edited.trim();
+  try { return JSON.parse(edited); } catch { return original; }
 }
 
 function ListSection({ title, items, icon }: { title: string; items: string[]; icon?: ReactNode }) {
@@ -50,6 +59,8 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
   const pendingProposal = createPendingStageCoAuthorProposal(project, targetStage);
   const [proposal, setProposal] = useState<BrainStageProposal>(pendingProposal);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [candidateStates, setCandidateStates] = useState<Record<string, StageCandidateState>>({});
+  const [editedValues, setEditedValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const automaticRequestKey = useRef<string | null>(null);
@@ -58,6 +69,8 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
     const next = createPendingStageCoAuthorProposal(project, targetStage);
     setProposal(next);
     setSelected(new Set());
+    setCandidateStates({});
+    setEditedValues({});
     setError(null);
   }, [project.id, project.branch.id, targetStage]);
 
@@ -73,6 +86,8 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
       });
       setProposal(result);
       setSelected(new Set(result.operations.filter((item) => item.validationStatus === 'ready').map((item) => item.id)));
+      setCandidateStates(Object.fromEntries(result.operations.map((item) => [item.id, 'proposed'])));
+      setEditedValues({});
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'The Architecture Brain is unavailable. No browser-generated architecture substitute was used.');
     } finally {
@@ -92,7 +107,19 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project.id, project.branch.id, targetStage, variant, serverPersistenceEnabled]);
 
-  const acceptSelected = () => applyStageCoAuthorOperations(proposal, [...selected]);
+  const acceptSelected = () => {
+    const governedProposal: BrainStageProposal = {
+      ...proposal,
+      operations: proposal.operations.map((operation) => ({
+        ...operation,
+        proposedValue: editedProposalValue(operation.proposedValue, editedValues[operation.id]),
+        candidateState: selected.has(operation.id) ? 'accepted-for-project' : candidateStates[operation.id] ?? 'proposed',
+      })),
+    };
+    applyStageCoAuthorOperations(governedProposal, [...selected]);
+    setCandidateStates((current) => ({ ...current, ...Object.fromEntries([...selected].map((id) => [id, 'accepted-for-project'])) }));
+    setSelected(new Set());
+  };
   const explanation = proposal.explanation;
   const readyCount = proposal.operations.filter((item) => item.validationStatus === 'ready').length;
   const clarificationCount = proposal.operations.filter((item) => item.validationStatus === 'requires-clarification').length + proposal.clarifications.length;
@@ -207,25 +234,31 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
 
     <section className="stage-drafts" aria-label="Sol field drafts">
       <div className="stage-drafts__heading">
-        <div><span className="eyebrow">Structured field proposals</span><h4>Review the values Sol can safely add to this stage</h4></div>
+        <div><span className="eyebrow">What AIW proposes</span><h4>Review actionable, traceable candidate changes for this stage</h4></div>
         <span>{readyCount} ready · {clarificationCount} need clarification</span>
       </div>
       {proposal.operations.length ? <div className="stage-drafts__list">{proposal.operations.map((operation) => {
         const isReady = operation.validationStatus === 'ready';
         const isSelected = selected.has(operation.id);
+        const candidateState = candidateStates[operation.id] ?? operation.candidateState ?? 'proposed';
         return <article key={operation.id} className={`stage-draft stage-draft--${operation.validationStatus}`}>
           <label className="stage-draft__select">
             <input type="checkbox" disabled={!isReady} checked={isSelected} onChange={(event) => setSelected((current) => { const next = new Set(current); if (event.target.checked) next.add(operation.id); else next.delete(operation.id); return next; })}/>
-            <span>{isReady ? 'Ready to accept' : operation.validationStatus === 'blocked' ? 'Blocked' : 'Clarification required'}</span>
+            <span>{candidateState} · {isReady ? 'ready to review' : operation.validationStatus === 'blocked' ? 'blocked' : 'clarification required'}</span>
           </label>
           <div className="stage-draft__content">
             <header><div><small>{operation.targetPath}</small><h5>{operation.label}</h5></div><span>{Math.round(operation.confidence * 100)}% confidence</span></header>
-            <pre>{proposalValue(operation.proposedValue)}</pre>
+            <textarea aria-label={`Edit ${operation.label}`} value={editedValues[operation.id] ?? proposalValue(operation.proposedValue)} onChange={(event) => setEditedValues((current) => ({ ...current, [operation.id]: event.target.value }))}/>
             <p><strong>Why:</strong> {operation.rationale || 'No rationale supplied.'}</p>
             {operation.tradeOffs.length ? <p><strong>Trade-off:</strong> {operation.tradeOffs.join(' ')}</p> : null}
             {operation.downstreamEffects.length ? <p><strong>Downstream effect:</strong> {operation.downstreamEffects.join(' ')}</p> : null}
             {operation.missingInformation.length ? <div className="stage-draft__missing"><CircleHelp size={13}/>{operation.missingInformation.join(' ')}</div> : null}
             {operation.evidenceRefs.length ? <footer>{operation.evidenceRefs.map((ref) => <span key={ref}>{evidenceLabel(project, ref)}</span>)}</footer> : null}
+            <div className="stage-draft__actions" aria-label={`Decide ${operation.label}`}>
+              <button type="button" className="button--quiet" onClick={() => { setCandidateStates((current) => ({ ...current, [operation.id]: 'under-review' })); setSelected((current) => new Set(current).add(operation.id)); }}><Pencil size={13}/> Modify / review</button>
+              <button type="button" className="button--quiet" onClick={() => { setCandidateStates((current) => ({ ...current, [operation.id]: 'deferred' })); setSelected((current) => { const next = new Set(current); next.delete(operation.id); return next; }); }}><PauseCircle size={13}/> Defer</button>
+              <button type="button" className="button--quiet" onClick={() => { setCandidateStates((current) => ({ ...current, [operation.id]: 'rejected' })); setSelected((current) => { const next = new Set(current); next.delete(operation.id); return next; }); }}><X size={13}/> Reject</button>
+            </div>
           </div>
         </article>;
       })}</div> : <div className="stage-drafts__empty">No safe field draft is available from the current evidence. Supply the missing facts rather than allowing Sol to invent them.</div>}

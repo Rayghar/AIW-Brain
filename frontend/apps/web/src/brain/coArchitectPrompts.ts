@@ -16,6 +16,10 @@ export const CO_ARCHITECT_PROMPTS_BY_STAGE: Record<AiwLifecycleStage, StageCoArc
     { id: 'complete-scenarios', label: 'Complete quality scenarios', instruction: 'Turn the current quality drivers into measurable quality attribute scenarios.', taskType: 'generate-design-interview-questions' },
     { id: 'detect-driver-conflicts', label: 'Find driver conflicts', instruction: 'Identify tensions between the current quality drivers and explain the trade-offs.', taskType: 'critique-architecture' },
   ],
+  'system-context': [
+    { id: 'challenge-boundary', label: 'Challenge boundary', instruction: 'Identify missing actors, external systems, trust boundaries and interactions in the current System Context.', taskType: 'critique-architecture' },
+    { id: 'trace-journeys', label: 'Trace journeys', instruction: 'Trace accepted stakeholder journeys into the System Context and identify any missing interaction.', taskType: 'critique-architecture' },
+  ],
   'logical-application': [
     { id: 'find-missing-services', label: 'Find missing services', instruction: 'Identify missing domains, services, APIs, data ownership, and boundaries.', taskType: 'critique-architecture' },
     { id: 'suggest-interfaces', label: 'Suggest interfaces', instruction: 'Suggest inbound and outbound interfaces for selected logical services.', taskType: 'draft-interface-contract' },

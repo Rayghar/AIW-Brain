@@ -175,7 +175,7 @@ export function SolWorkspaceDrawer({
               <CoArchitectPanel
                 embedded
                 onClose={onClose}
-                initialPrompt={initialAskPrompt}
+                {...(initialAskPrompt ? { initialPrompt: initialAskPrompt } : {})}
               />
             </Suspense>
           ) : null}

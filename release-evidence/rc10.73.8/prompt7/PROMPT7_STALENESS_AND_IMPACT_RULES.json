@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "aiw-prompt7-staleness-impact-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "rules": [
+    {
+      "trigger": "accepted upstream stage candidate changes",
+      "affected": "candidate nodes whose upstreamStageRefs explicitly name the changed stage",
+      "action": "stale"
+    },
+    {
+      "trigger": "unrelated project candidate",
+      "affected": "none",
+      "action": "preserve"
+    },
+    {
+      "trigger": "approved/non-candidate node",
+      "affected": "none",
+      "action": "never mutate through candidate acceptance"
+    }
+  ],
+  "test": "prompt7CandidateLifecycle.test.ts",
+  "passed": true
+}

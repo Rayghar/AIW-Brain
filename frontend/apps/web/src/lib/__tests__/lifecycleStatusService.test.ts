@@ -25,7 +25,7 @@ describe('authoritative lifecycle status', () => {
     // Deliberately make the brief incomplete: an upstream warning must remain visible
     // without moving the working frontier backwards.
     project.description = '';
-    project.context.objectives = [];
+    project.objectives = [];
     const result = resolveLifecycleStatus(project, undefined, 'physicalTechnology');
     expect(result.active.id).toBe('physicalTechnology');
     expect(result.current.id).toBe('physicalTechnology');

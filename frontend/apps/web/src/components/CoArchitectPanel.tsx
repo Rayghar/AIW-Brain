@@ -90,7 +90,6 @@ function promptsForStage(stageId: string, hasSelection: boolean) {
 
 const stages: ArchitectureStage[] = [
   "designIntent",
-  "systemContext",
   "logicalApplication",
   "applicationRealization",
   "logicalTechnology",
@@ -133,7 +132,7 @@ export function CoArchitectPanel({ embedded = false, onClose, initialPrompt = ""
   const deliveryStageId = currentDeliveryStageId(workspaceMode, project.activeStage, activeLifecycleStep);
   const deliveryStage = deliveryStages.find((item) => item.id === deliveryStageId) ?? deliveryStages[0]!;
   const effectiveArchitectureStage = deliveryStage.architectureStage ?? project.activeStage;
-  const scopeLabel = selectedNodeId ? (project.nodes.find((node) => node.id === selectedNodeId)?.name ?? selectedNodeId) : "Whole stage";
+  const scopeLabel = selectedNodeId ? (project.nodes.find((node) => node.id === selectedNodeId)?.label ?? selectedNodeId) : "Whole stage";
 
   const session = useMemo(
     () => project.coArchitectSessions.find((item) => item.stage === effectiveArchitectureStage && item.scopeNodeId === (selectedNodeId ?? undefined)),
@@ -163,12 +162,12 @@ export function CoArchitectPanel({ embedded = false, onClose, initialPrompt = ""
       };
     }
     if (deliveryStageId === 'quality') {
-      const acceptedDrivers = project.qualityScenarios.filter((item) => item.status !== 'deprecated');
+      const acceptedDrivers = project.qualityScenarios;
       return {
         headline: acceptedDrivers.length ? 'Quality drivers are available to constrain architecture choices.' : 'Measurable quality scenarios are still required before style and pattern ranking is authoritative.',
         metrics: [
           ['Quality scenarios', acceptedDrivers.length],
-          ['Driver weights', Object.values(project.driverWeights ?? {}).filter((value) => Number(value) > 0).length],
+          ['Driver weights', project.qualityPriorities.filter((value) => value.weight > 0).length],
           ['Constraints', project.constraints.length],
           ['Open findings', project.findings.length],
         ] as Array<[string, number]>,

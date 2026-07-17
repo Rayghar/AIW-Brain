@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "aiw-prompt7-sdd-traceability-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "test": "prompt7_productised_brain.test.ts",
+  "scenariosTested": [
+    "agency-banking",
+    "event-fulfilment",
+    "sensitive-analytics"
+  ],
+  "uniqueSddFingerprints": 3,
+  "expectedScenarioComponentsPresent": true,
+  "rejectedCandidatesExcludedByConstruction": true,
+  "acceptedProjectDecisionSource": true,
+  "productionAccepted": false
+}
