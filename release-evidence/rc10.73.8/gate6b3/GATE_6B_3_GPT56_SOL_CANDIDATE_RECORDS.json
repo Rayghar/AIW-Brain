@@ -1,0 +1,391 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-gpt56-candidates-v1",
+  "generatedAt": "2026-07-17T10:59:24.163Z",
+  "productionAccepted": false,
+  "exactModel": "gpt-5.6-sol",
+  "reasoningEffort": "high",
+  "providerCalls": 11,
+  "retries": 0,
+  "inputTokens": 17385,
+  "outputTokens": 36562,
+  "totalTokens": 53947,
+  "tokenCeilingAccountedTotal": 83947,
+  "unobservedTokenReserve": 30000,
+  "actualCostUsd": null,
+  "costStatus": "not-computable-no-verified-gpt-5.6-sol-price",
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "authority": "candidate",
+  "recordCount": 10,
+  "records": [
+    {
+      "candidateRecordId": "G6B3-GPT56-9a83f030bb37b0d4efb8ac87",
+      "requestId": "G6B2-REQ-02",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-05-ASSET-01",
+        "caseId": "G6B1-05",
+        "assetType": "contradiction-or-scoped-distinction",
+        "statement": "The evidence supports a scoped distinction rather than a direct contradiction: the model, in its current form, does not mandate a specific set of security policies, while its security guidance contains MUST statements for referencing OCI/Docker images by SHA wherever possible and converting file formats to a canonical format so they can be hashed; network transport security and securing data at rest remain beyond the model's scope.",
+        "epistemicStatus": "expert-interpretation",
+        "supportingAtomIds": [
+          "G6B1-05-A01",
+          "G6B1-05-A02",
+          "G6B1-05-A03",
+          "G6B1-05-A04",
+          "G6B1-05-A05",
+          "G6B1-05-A06",
+          "G6B1-05-A11"
+        ],
+        "fields": [
+          {
+            "fieldName": "broader-policy-position",
+            "value": "The model does not mandate a specific set of security policies in its current form.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-05-A01",
+              "G6B1-05-A02"
+            ]
+          },
+          {
+            "fieldName": "specific-guidance-oci-image-references",
+            "value": "OCI/Docker images MUST be referenced by SHA wherever possible.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-05-A04",
+              "G6B1-05-A05"
+            ]
+          },
+          {
+            "fieldName": "specific-guidance-file-formats",
+            "value": "File formats MUST be converted to a canonical format so that they can be hashed.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-05-A06"
+            ]
+          },
+          {
+            "fieldName": "scope-exclusions",
+            "value": "Network transport security and securing data at rest are beyond the scope of the model.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-05-A11"
+            ]
+          }
+        ],
+        "conditions": [
+          {
+            "value": "The broader non-mandate applies to the model \"in its current form.\"",
+            "supportingAtomIds": [
+              "G6B1-05-A01",
+              "G6B1-05-A02"
+            ]
+          },
+          {
+            "value": "The OCI/Docker image SHA-reference requirement applies \"wherever possible.\"",
+            "supportingAtomIds": [
+              "G6B1-05-A04",
+              "G6B1-05-A05"
+            ]
+          }
+        ],
+        "limitations": [
+          {
+            "value": "The model does not mandate a specific set of security policies in its current form.",
+            "supportingAtomIds": [
+              "G6B1-05-A01",
+              "G6B1-05-A02"
+            ]
+          },
+          {
+            "value": "Other security details, including network transport security and securing data at rest, are beyond the model's scope.",
+            "supportingAtomIds": [
+              "G6B1-05-A11"
+            ]
+          }
+        ],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-b34a77a3ebdbdc1c997c06e1",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS01",
+        "caseId": "G6B1-15",
+        "assetType": "implementation-observation",
+        "statement": "The `@Modulithic` annotation allows `additionalPackages` to trigger application-module detection for packages other than the package of the annotated class.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-A01"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [
+          {
+            "value": "Using `additionalPackages` requires knowing the additional packages in advance.",
+            "supportingAtomIds": [
+              "G6B1-15-A02"
+            ]
+          }
+        ],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-df1fc2f570c8f2c77d13b523",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS02",
+        "caseId": "G6B1-15",
+        "assetType": "implementation-observation",
+        "statement": "Spring Modulith supports external contributions of application modules through the `ApplicationModuleSource` and `ApplicationModuleSourceFactory` abstractions.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-A04"
+        ],
+        "fields": [],
+        "conditions": [
+          {
+            "value": "This observation applies as of version 1.3.",
+            "supportingAtomIds": [
+              "G6B1-15-A03"
+            ]
+          }
+        ],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-e282ebce93d8cdd82d3c5bbb",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS03",
+        "caseId": "G6B1-15",
+        "assetType": "procedure-or-runbook-step",
+        "statement": "An implementation of `ApplicationModuleSourceFactory` can be registered in a `spring.factories` file located in `META-INF`.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-A04",
+          "G6B1-15-A05"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-22004a4d93c2b53a850ca6d4",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS04",
+        "caseId": "G6B1-15",
+        "assetType": "source-example",
+        "statement": "A source example registers `example.CustomApplicationModuleSourceFactory` under the `org.springframework.modulith.core.ApplicationModuleSourceFactory` key.",
+        "epistemicStatus": "source-example",
+        "supportingAtomIds": [
+          "G6B1-15-A06"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-63270511e86a5f73b45e9eb7",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS05",
+        "caseId": "G6B1-15",
+        "assetType": "implementation-observation",
+        "statement": "An `ApplicationModuleSourceFactory` can return arbitrary package names to which an `ApplicationModuleDetectionStrategy` is applied, or explicitly return packages for which modules are created.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-A04",
+          "G6B1-15-A07"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-96cb81fac3df17bb1039f2ff",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS06",
+        "caseId": "G6B1-15",
+        "assetType": "source-example",
+        "statement": "A source example implements `ApplicationModuleSourceFactory` with `com.acme.toscan` as a root package, `ApplicationModuleDetectionStrategy.explicitlyAnnotated()` as its detection strategy, and `com.acme.module` as a module base package.",
+        "epistemicStatus": "source-example",
+        "supportingAtomIds": [
+          "G6B1-15-A08"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-b836d6973aa99498ec391ac6",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS07",
+        "caseId": "G6B1-15",
+        "assetType": "source-example",
+        "statement": "In the supplied example, `com.acme.toscan` is used to detect explicitly declared modules, and an application module is also created from `com.acme.module`.",
+        "epistemicStatus": "source-example",
+        "supportingAtomIds": [
+          "G6B1-15-A08",
+          "G6B1-15-A09"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-8b577d0c28cf4dc5e63e7dc9",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-AS08",
+        "caseId": "G6B1-15",
+        "assetType": "implementation-observation",
+        "statement": "Package names returned by the factory are subsequently translated into `ApplicationModuleSource` instances through the corresponding `getApplicationModuleSource(…)` variants exposed by `ApplicationModuleDetectionStrategy`.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-A07",
+          "G6B1-15-A10"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    },
+    {
+      "candidateRecordId": "G6B3-GPT56-05eac13652397c121c88af2f",
+      "requestId": "G6B2-REQ-05",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-21-NC1",
+        "caseId": "G6B1-21",
+        "assetType": "non-claim",
+        "statement": "The source provides contextual attribution to EventCatalog and describes Architecture Catalog as taking a different approach; this is descriptive context rather than an architecture claim.",
+        "epistemicStatus": "unknown",
+        "supportingAtomIds": [
+          "G6B1-21-A1"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "productionAccepted": false,
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false
+    }
+  ]
+}

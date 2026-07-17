@@ -27,9 +27,9 @@ const request = { purpose: 'governed-candidate-semantic-transformation' as const
 
 describe('Gate 6B.2 R2 provider protocol', () => {
   it('uses strict SDK parsed structured output from one schema source', async () => {
-    const mock = gateway(response(stageA())); const result = await mock.gateway.generateStrictStructured(request);
+    const mock = gateway(response(stageA())); const result = await mock.gateway.generateStrictStructured({ ...request, reasoningEffort: 'high' });
     expect(result.value).toEqual(stageA()); expect(result.manualJsonParsingUsed).toBe(false); expect(result.parsedOutputSource).toContain('responses-parse');
-    const body = mock.parse.mock.calls[0]![0] as any; expect(body.text.format.strict).toBe(true); expect(body.text.format.schema).toEqual(result.providerSchema); expect(body.stream).toBe(false);
+    const body = mock.parse.mock.calls[0]![0] as any; expect(body.text.format.strict).toBe(true); expect(body.text.format.schema).toEqual(result.providerSchema); expect(body.stream).toBe(false); expect(body.reasoning).toEqual({ effort: 'high' });
   });
   it.each([
     ['refused', response(null, { output: [{ type: 'message', content: [{ type: 'refusal', refusal: 'no' }] }] }), 'refused'],

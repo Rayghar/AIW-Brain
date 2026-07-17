@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-model-comparison-v1",
+  "generatedAt": "2026-07-17T11:12:43.910Z",
+  "productionAccepted": false,
+  "benchmark": {
+    "labelFingerprint": "sha256:ec670f9c339359caca50d77aa2d4dea8c23b3c287cda12627140bcd0b956c235",
+    "evaluatorFingerprint": "sha256:1001e1bd0d4ce4cb0a4f1eb1ef9ce38b5bbac212bf49eb762a176288d498b008",
+    "frozenEvidenceChanged": false
+  },
+  "models": [
+    {
+      "route": "route-a-gpt-4.1-mini",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "reasoningEffort": null,
+      "metrics": {
+        "exactEvidenceLineage": 100,
+        "acceptedQuotationValidity": 100,
+        "correctNonClaimDisposition": 100,
+        "correctInsufficientEvidenceAbstention": 100,
+        "dispositionAccuracy": 77.78,
+        "primaryOrPermittedAssetTypeAccuracy": 66.67,
+        "sourceAtomEpistemicAccuracy": 82.93,
+        "fieldEpistemicAccuracy": 82.76,
+        "assetSynthesisStatusAccuracy": 95.45,
+        "requiredConditionCompleteness": 71.43,
+        "requiredLimitationCompleteness": 66.67,
+        "criticalUnsupportedClaimsAccepted": 0,
+        "crossCaseContamination": 0,
+        "authorityLeakage": 0,
+        "designGraphMutations": 0,
+        "automaticPromotions": 0,
+        "patternDnaG6B109Complete": true
+      },
+      "passedGlobally": false,
+      "passingCases": [
+        "G6B1-01",
+        "G6B1-15",
+        "G6B1-24"
+      ],
+      "usefulAssets": 8,
+      "inputTokens": 25515,
+      "outputTokens": 16691,
+      "totalTokens": 42206,
+      "actualCostUsd": 0.0369116,
+      "latencyMs": 251828,
+      "tokensPerUsefulAsset": 5275.75,
+      "costPerUsefulAssetUsd": 0.004614
+    },
+    {
+      "route": "route-b-gpt-5.6-sol",
+      "model": "gpt-5.6-sol",
+      "reasoningEffort": "high",
+      "metrics": {
+        "evidenceAtomPrecision": 100,
+        "evidenceAtomRecall": 37.5,
+        "quotationValidity": 100,
+        "dispositionAccuracy": 44.44,
+        "primaryOrPermittedAssetTypeAccuracy": 33.33,
+        "sourceAtomEpistemicAccuracy": 40.91,
+        "fieldEpistemicAccuracy": 25,
+        "assetSynthesisStatusAccuracy": 100,
+        "requiredConditionCompleteness": 28.57,
+        "requiredLimitationCompleteness": 33.33,
+        "correctNonClaimDisposition": 100,
+        "correctInsufficientEvidenceAbstention": 100,
+        "criticalUnsupportedClaimsAccepted": 0,
+        "crossCaseContamination": 0,
+        "authorityLeakage": 0,
+        "designGraphMutations": 0,
+        "automaticPromotions": 0,
+        "patternDnaG6B109Complete": false
+      },
+      "passedGlobally": false,
+      "passingCases": [
+        "G6B1-24"
+      ],
+      "usefulAssets": 0,
+      "inputTokens": 17385,
+      "outputTokens": 36562,
+      "observedTotalTokens": 53947,
+      "tokenCeilingAccountedTotal": 83947,
+      "actualCostUsd": null,
+      "observedCostLowerBoundUsd": 1.183785,
+      "conservativeCostUpperBoundUsd": 2.083785,
+      "costExactness": "one-incomplete-attempt-usage-not-recoverable",
+      "latencyMs": 176964,
+      "providerCallsIncludingCanary": 11,
+      "retries": 0,
+      "incompleteStructuredResponses": 4
+    }
+  ],
+  "comparisonDecision": "no-single-model-global-pass; enable only case-backed classes and defer every unproven class",
+  "qualityOutranksCost": true,
+  "pricing": {
+    "reference": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+    "capturedAt": "2026-07-17T11:12:43.910Z",
+    "inputUsdPerMillionTokens": 5,
+    "outputUsdPerMillionTokens": 30
+  },
+  "providerCalls": {
+    "entitlementNonGeneration": 1,
+    "canaryAndComparisonGenerationAttempts": 11,
+    "totalProviderRequests": 12
+  },
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

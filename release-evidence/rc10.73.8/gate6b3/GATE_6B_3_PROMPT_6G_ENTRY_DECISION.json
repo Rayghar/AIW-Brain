@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-prompt-6g-entry-decision-v1",
+  "generatedAt": "2026-07-17T11:12:43.910Z",
+  "productionAccepted": false,
+  "gate6b3Status": "conditional-pass-capability-aware-routing",
+  "prompt6gEntryStatus": "approved-for-capability-aware-planning-only",
+  "prompt6gExecutionStarted": false,
+  "enabledAssetClasses": [
+    {
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "route": "route-a-gpt-4.1-mini"
+    },
+    {
+      "assetClass": "direct-implementation-observation",
+      "route": "route-a-gpt-4.1-mini"
+    },
+    {
+      "assetClass": "no-evidence-abstention",
+      "route": "route-c-deterministic"
+    },
+    {
+      "assetClass": "exact-source-metadata-alias-and-duplicate-facts",
+      "route": "route-c-deterministic"
+    }
+  ],
+  "deferredAssetClasses": [
+    "contradiction-and-scoped-distinction",
+    "security-obligation",
+    "performance-tactic",
+    "pattern-dna",
+    "low-authority-product-description",
+    "architecture-genome",
+    "modernisation-knowledge",
+    "complex-conditions-limitations-and-epistemic-adjudication"
+  ],
+  "globalGpt41MiniPass": false,
+  "globalGpt56SolPass": false,
+  "criticalSafety": {
+    "unsupportedCriticalClaimsAccepted": 0,
+    "authorityLeakage": 0,
+    "approvedRecordsChanged": 0,
+    "designGraphMutations": 0,
+    "automaticPromotions": 0
+  },
+  "requiredPipeline": "deterministic classification -> capability and asset-type routing -> approved route -> deterministic validation -> delegated review -> candidate knowledge",
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backup": "deferred-by-product-owner"
+}

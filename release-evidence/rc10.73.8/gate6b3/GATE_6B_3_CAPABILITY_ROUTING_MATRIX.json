@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-capability-routing-v1",
+  "generatedAt": "2026-07-17T11:12:43.910Z",
+  "productionAccepted": false,
+  "routingValidation": {
+    "valid": true,
+    "errors": []
+  },
+  "routes": [
+    {
+      "assetClass": "source-example-with-explicit-conditions-and-limitations",
+      "route": "route-a-gpt-4.1-mini",
+      "enabledForPlanning": true,
+      "evidenceCases": [
+        "G6B1-01"
+      ],
+      "rationale": "R2 V2 case passed every applicable absolute gate."
+    },
+    {
+      "assetClass": "direct-implementation-observation",
+      "route": "route-a-gpt-4.1-mini",
+      "enabledForPlanning": true,
+      "evidenceCases": [
+        "G6B1-15"
+      ],
+      "rationale": "R2 V2 case passed every applicable absolute gate."
+    },
+    {
+      "assetClass": "no-evidence-abstention",
+      "route": "route-c-deterministic",
+      "enabledForPlanning": true,
+      "evidenceCases": [
+        "G6B1-24"
+      ],
+      "rationale": "Deterministic zero-call control passed exactly."
+    },
+    {
+      "assetClass": "exact-source-metadata-alias-and-duplicate-facts",
+      "route": "route-c-deterministic",
+      "enabledForPlanning": true,
+      "evidenceCases": [
+        "deterministic-gate-6a-and-6b-tests"
+      ],
+      "rationale": "Deterministic extraction only; no semantic synthesis is permitted."
+    },
+    {
+      "assetClass": "contradiction-and-scoped-distinction",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [
+        "G6B1-05"
+      ],
+      "rationale": "Neither model passed all epistemic and field-level gates."
+    },
+    {
+      "assetClass": "security-obligation",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [
+        "G6B1-06"
+      ],
+      "rationale": "R2 omitted required conditions and limitations; GPT-5.6 Sol produced no accepted case result."
+    },
+    {
+      "assetClass": "performance-tactic",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [
+        "G6B1-07"
+      ],
+      "rationale": "R2 asset type was wrong; GPT-5.6 Sol produced no accepted case result."
+    },
+    {
+      "assetClass": "pattern-dna",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [
+        "G6B1-09"
+      ],
+      "rationale": "R2 failed field epistemic gates; GPT-5.6 Sol did not complete the case or generate required Pattern DNA."
+    },
+    {
+      "assetClass": "low-authority-product-description",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [
+        "G6B1-21"
+      ],
+      "rationale": "Neither model passed the permitted implementation-observation type gate."
+    },
+    {
+      "assetClass": "architecture-genome",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [],
+      "rationale": "No passing diagnostic case."
+    },
+    {
+      "assetClass": "modernisation-knowledge",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [],
+      "rationale": "No passing diagnostic case."
+    },
+    {
+      "assetClass": "complex-conditions-limitations-and-epistemic-adjudication",
+      "route": "deferred",
+      "enabledForPlanning": false,
+      "evidenceCases": [
+        "G6B1-05",
+        "G6B1-06",
+        "G6B1-07",
+        "G6B1-09"
+      ],
+      "rationale": "No model route passed all absolute gates."
+    }
+  ],
+  "globalModelRouteSelected": false,
+  "capabilityAwareRoutingRequired": true,
+  "unprovenClassesBlocked": true
+}

@@ -1,0 +1,298 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-verification-v1",
+  "generatedAt": "2026-07-17T11:12:43.910Z",
+  "productionAccepted": false,
+  "outputCount": 28,
+  "requiredOutputsPresent": true,
+  "outputHashes": [
+    {
+      "name": "GATE_6B_3_R2_EVIDENCE_PRESERVATION_RECEIPT.json",
+      "bytes": 4823,
+      "sha256": "sha256:9563eb5d85b01d307bf2781e62ebfa2777d04e9c41f2649173ff8d273dcc4e17"
+    },
+    {
+      "name": "GATE_6B_3_EVALUATOR_AUDIT.md",
+      "bytes": 1138,
+      "sha256": "sha256:3d0b82cd4a87b3e032e5dc64145f585c47cb51f8a9d91929b10f91ba0a336e8c"
+    },
+    {
+      "name": "GATE_6B_3_METRIC_DENOMINATOR_AUDIT.json",
+      "bytes": 2728,
+      "sha256": "sha256:16adb193b8506451f800d677cf41d9bdd420fd5dfb35384a6cfde9d06774c196"
+    },
+    {
+      "name": "GATE_6B_3_LABEL_CONSISTENCY_AUDIT.json",
+      "bytes": 1665,
+      "sha256": "sha256:1fceb4cddba9d4fafa9eb2e06af673082f3a742f251169db90ffd78b1f8c30fb"
+    },
+    {
+      "name": "GATE_6B_3_R2_CASE_LEVEL_CONFUSION_MATRIX.json",
+      "bytes": 5043,
+      "sha256": "sha256:7b7516cd56b8fb6a953eac5af836e713ff6fd056fd726c5c43c7d7911f427f71"
+    },
+    {
+      "name": "GATE_6B_3_BLIND_SOL_LABELS_V2.json",
+      "bytes": 10651,
+      "sha256": "sha256:f504a38ff3f70dcf31ce286693353c4cc9eae8c453a750b1cbb334352c1cbffe"
+    },
+    {
+      "name": "GATE_6B_3_ORIGINAL_LABEL_REVIEW.json",
+      "bytes": 6565,
+      "sha256": "sha256:2444d6132d6d3c7e7717d0d9db27152da7d7c42f3ea028fb0046e5ddf6cd13be"
+    },
+    {
+      "name": "GATE_6B_3_ADVERSARIAL_LABEL_REVIEW.json",
+      "bytes": 1880,
+      "sha256": "sha256:b5f516327c3df21af5ac56dc656fc9ebe907190c5c8a899eedcf7617b3fec7aa"
+    },
+    {
+      "name": "GATE_6B_3_LABEL_ADJUDICATION_RECEIPT.json",
+      "bytes": 24216,
+      "sha256": "sha256:f1b932e33e7835ace2a96a2468d50c89c230aa9404e521d5bf0d47ceb18ea4d1"
+    },
+    {
+      "name": "GATE_6B_3_LABEL_CHANGE_REGISTER.md",
+      "bytes": 6611,
+      "sha256": "sha256:2894ac978685f7f67e949da7da4c4c1ed2683e87f0db9b0755e00d5441bb7a08"
+    },
+    {
+      "name": "GATE_6B_3_EPISTEMIC_MODEL_V2.json",
+      "bytes": 863,
+      "sha256": "sha256:0055e0449586b757909dd8deb653f04646b4d61a144b3f42cff54d574bc443b6"
+    },
+    {
+      "name": "GATE_6B_3_CONDITION_LIMITATION_MODEL_V2.json",
+      "bytes": 513,
+      "sha256": "sha256:f3920a7749397b78b26c63b0c22f43e4e452b496af5b9e94cce35f730af207fa"
+    },
+    {
+      "name": "GATE_6B_3_ASSET_SET_EVALUATOR_V2.json",
+      "bytes": 717,
+      "sha256": "sha256:05c57ab4803fbc8d7fa5a4c541ed5c01e41f72f615e19b31ac42e18706a253d5"
+    },
+    {
+      "name": "GATE_6B_3_R2_REEVALUATION_V2.json",
+      "bytes": 9201,
+      "sha256": "sha256:6a9ace10af2ea7d6506d46db7a7f6daefb82143d2eb0941865b3a4be7107634b"
+    },
+    {
+      "name": "GATE_6B_3_R2_ORIGINAL_VS_V2_SCORECARD.md",
+      "bytes": 594,
+      "sha256": "sha256:5f704be5df54eb4056bfdf4dbb5ea16d2ee5b3b198e7de2b180b7519265fdb12"
+    },
+    {
+      "name": "GATE_6B_3_R2_REEVALUATION_DECISION.json",
+      "bytes": 595,
+      "sha256": "sha256:b2ae555053672d8c24f314dd2a8dc5d5eead1fc430349c833c6dda3d7250343c"
+    },
+    {
+      "name": "GATE_6B_3_GPT56_SOL_ENTITLEMENT_RECEIPT.json",
+      "bytes": 831,
+      "sha256": "sha256:772e4acfe3e404212ded8bfa2ce04aa387dda27a68bb69cf66148cfb23ee7b48"
+    },
+    {
+      "name": "GATE_6B_3_GPT56_SOL_SCHEMA_CANARY.json",
+      "bytes": 1216,
+      "sha256": "sha256:a512fcd1cbdae8f3ebeba15e61cc1a86f72769eff9db76cdb1f7e775f319688e"
+    },
+    {
+      "name": "GATE_6B_3_GPT56_SOL_EXECUTION_RESULT.json",
+      "bytes": 9395,
+      "sha256": "sha256:8db005984b1b4dbabc47b6f49a08548bcb23e1b88f21a7d3baf6f7af049bdb94"
+    },
+    {
+      "name": "GATE_6B_3_GPT56_SOL_ATOM_LEDGER.json",
+      "bytes": 20591,
+      "sha256": "sha256:a5687f824f9990ebd681fac10af70321ef9e5ef82db65d6146662b33d739f169"
+    },
+    {
+      "name": "GATE_6B_3_GPT56_SOL_CANDIDATE_RECORDS.json",
+      "bytes": 14214,
+      "sha256": "sha256:ce68aae0642e02cca918e8d47dd5bccddd18fa33cd46d49b46f026ddcaf82d3f"
+    },
+    {
+      "name": "GATE_6B_3_GPT56_SOL_QUALITY_EVALUATION.json",
+      "bytes": 7453,
+      "sha256": "sha256:22cb5cac3b8b9aea2ebc04921b24b0672c06797760b1d671f60ec83492e0a749"
+    },
+    {
+      "name": "GATE_6B_3_MODEL_COMPARISON.json",
+      "bytes": 3714,
+      "sha256": "sha256:ec3ca378233292ab3b9826e044e92fd9fed3123b2f1c8f60416468de8125d35b"
+    },
+    {
+      "name": "GATE_6B_3_CAPABILITY_ROUTING_MATRIX.json",
+      "bytes": 3565,
+      "sha256": "sha256:8587c9ba6a2f1de4170618bb1affd1beebffe202be03ed8ac298c3e7aa33d2c3"
+    },
+    {
+      "name": "GATE_6B_3_MODEL_SELECTION_DECISION.md",
+      "bytes": 1333,
+      "sha256": "sha256:dd16d1a5b715eace2b56852100eb2c5b3aa520bbd682e936f885a4b94b13a1d5"
+    },
+    {
+      "name": "GATE_6B_3_PROMPT_6G_ENTRY_DECISION.json",
+      "bytes": 1643,
+      "sha256": "sha256:cf12121559540a3b8fefeef9300f8280e9d09f91142cadfd188a23fa324d7947"
+    },
+    {
+      "name": "GATE_6B_3_COMPLETION_REPORT.md",
+      "bytes": 1255,
+      "sha256": "sha256:0d9fa681a746ad40053bfaa8adfb72a2da12fbbffc24a6c086bb7086a887dd5e"
+    }
+  ],
+  "historicalR2ReplayPassed": true,
+  "historicalR2FilesModified": 0,
+  "historicalReplay": [
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_PROVIDER_PROTOCOL_AUDIT.json",
+      "expectedSha256": "sha256:ca5989adf6654d50e258f98a9e76af90fd99b12042615fa15ba7be5eb5d149d4",
+      "actualSha256": "sha256:ca5989adf6654d50e258f98a9e76af90fd99b12042615fa15ba7be5eb5d149d4",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_COMPLETION_REPORT.md",
+      "expectedSha256": "sha256:6d4e7b420fc00c457f0bac8d7a5f84ab6b329e11eb33b3a83d68eaa583afde1f",
+      "actualSha256": "sha256:6d4e7b420fc00c457f0bac8d7a5f84ab6b329e11eb33b3a83d68eaa583afde1f",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_MODEL_CAPABILITY_ESCALATION.json",
+      "expectedSha256": "sha256:3f9063ad1e2874ae0ff4bc41d21477b3b1e872731064caa415cee23573a430d6",
+      "actualSha256": "sha256:3f9063ad1e2874ae0ff4bc41d21477b3b1e872731064caa415cee23573a430d6",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_ACTUAL_COST_REPORT.json",
+      "expectedSha256": "sha256:637c40b7c3871297b6717f74274f09c134162e27539545e96b726fa2b441ff8b",
+      "actualSha256": "sha256:637c40b7c3871297b6717f74274f09c134162e27539545e96b726fa2b441ff8b",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_CANDIDATE_RECORDS.json",
+      "expectedSha256": "sha256:beb581a8f7c10a623fc25da89ed690f223d5bb9217f3570bd7ff98caa1cf61ee",
+      "actualSha256": "sha256:beb581a8f7c10a623fc25da89ed690f223d5bb9217f3570bd7ff98caa1cf61ee",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_EVIDENCE_ATOM_LEDGER.json",
+      "expectedSha256": "sha256:4542cc2c842506e1adb822c39013d1ae3fdb8f59037b9b800f143f035fcf7961",
+      "actualSha256": "sha256:4542cc2c842506e1adb822c39013d1ae3fdb8f59037b9b800f143f035fcf7961",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_FAILED_ATTEMPTS.json",
+      "expectedSha256": "sha256:c12cbcec0078a331033555cb08200909112d92f71d001904ab69a285278d99b2",
+      "actualSha256": "sha256:c12cbcec0078a331033555cb08200909112d92f71d001904ab69a285278d99b2",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_LIVE_EXECUTION_RESULT.json",
+      "expectedSha256": "sha256:62d3685ff5b8960c115bcf0d4cad5e7ef9a37e86bdf1d3a5d1293a014c832317",
+      "actualSha256": "sha256:62d3685ff5b8960c115bcf0d4cad5e7ef9a37e86bdf1d3a5d1293a014c832317",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_PROMPT_6G_ENTRY_DECISION.json",
+      "expectedSha256": "sha256:1848b13f32007cafe943ce11b0ababfc81a2491d72622bb3b42c5939eb77406c",
+      "actualSha256": "sha256:1848b13f32007cafe943ce11b0ababfc81a2491d72622bb3b42c5939eb77406c",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_QUALITY_EVALUATION.json",
+      "expectedSha256": "sha256:d78b6b820fcacb381cb5b71ed91d4b8fe3553f68dfa667798a0975ad6538010c",
+      "actualSha256": "sha256:d78b6b820fcacb381cb5b71ed91d4b8fe3553f68dfa667798a0975ad6538010c",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_TRANSACTION_RECEIPT.json",
+      "expectedSha256": "sha256:883dc9d1db0b3ffae84aa89b71a03c44cc4833590c785939054ce2e27fe18d08",
+      "actualSha256": "sha256:883dc9d1db0b3ffae84aa89b71a03c44cc4833590c785939054ce2e27fe18d08",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_VERIFICATION_RECEIPT.json",
+      "expectedSha256": "sha256:1121e0cdc774aa31d441d02f98ea6810d1d67f66116fc38a77841c36ddd53f0a",
+      "actualSha256": "sha256:1121e0cdc774aa31d441d02f98ea6810d1d67f66116fc38a77841c36ddd53f0a",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_SCHEMA_CONTRACT.json",
+      "expectedSha256": "sha256:71a45e1f892ac266f92e81d31d9e108599b482ae3007cbef58e994c0a72d3d2d",
+      "actualSha256": "sha256:71a45e1f892ac266f92e81d31d9e108599b482ae3007cbef58e994c0a72d3d2d",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_EVIDENCE_ATOM_CONTRACT.json",
+      "expectedSha256": "sha256:e9d61a33590f61441e864c3c56c30dde65bf04bf218f195f479f619a8dc8bf0e",
+      "actualSha256": "sha256:e9d61a33590f61441e864c3c56c30dde65bf04bf218f195f479f619a8dc8bf0e",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_TYPED_ASSET_CONTRACT.json",
+      "expectedSha256": "sha256:e84dd32084d95f6c12ffd11e8a4929dc0ba7d9f587e5e1455136e15e217a3cd4",
+      "actualSha256": "sha256:e84dd32084d95f6c12ffd11e8a4929dc0ba7d9f587e5e1455136e15e217a3cd4",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_REQUEST_PLAN.json",
+      "expectedSha256": "sha256:3c52d5d093b2a920c69e9d77ed5cf4e19c5369be671cce5b19ad9baf37c81f30",
+      "actualSha256": "sha256:3c52d5d093b2a920c69e9d77ed5cf4e19c5369be671cce5b19ad9baf37c81f30",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_EXECUTION_AUTHORITY.json",
+      "expectedSha256": "sha256:23d18cea9afad640d96582ace88e0c0c737859807a8c90e2eec78274fbd34828",
+      "actualSha256": "sha256:23d18cea9afad640d96582ace88e0c0c737859807a8c90e2eec78274fbd34828",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_TRANSFER_SAFETY_RECEIPT.json",
+      "expectedSha256": "sha256:b34a4e27171f3b1e2d892dea5e8e105d28d784f64b96c537f8c2c0d65dd6dede",
+      "actualSha256": "sha256:b34a4e27171f3b1e2d892dea5e8e105d28d784f64b96c537f8c2c0d65dd6dede",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_PREDECESSOR_RESULT_RECEIPT.json",
+      "expectedSha256": "sha256:e2e6abc5a1afbaa74003c94ca5b206143ce036c6a1accbecf673edf48f21d79d",
+      "actualSha256": "sha256:e2e6abc5a1afbaa74003c94ca5b206143ce036c6a1accbecf673edf48f21d79d",
+      "passed": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_STRUCTURED_OUTPUT_ROOT_CAUSE.md",
+      "expectedSha256": "sha256:6a4e1df8f3583acfc36b87155beccb79fa123962f1564fb33637a90835a5f286",
+      "actualSha256": "sha256:6a4e1df8f3583acfc36b87155beccb79fa123962f1564fb33637a90835a5f286",
+      "passed": true
+    }
+  ],
+  "entitlementPassed": true,
+  "canaryPassed": true,
+  "evaluatorV2PassedGlobally": false,
+  "gpt56SolPassedGlobally": false,
+  "routingValidation": {
+    "valid": true,
+    "errors": []
+  },
+  "prompt6gEntryStatus": "approved-for-capability-aware-planning-only",
+  "verificationCommands": {
+    "domainBuild": "passed",
+    "apiBuild": "passed",
+    "focusedGate6bTestFiles": 7,
+    "focusedGate6bTestsPassed": 117,
+    "focusedGate6bTestsFailed": 0,
+    "evaluatorV2Tests": "passed",
+    "modelRoutingTests": "passed",
+    "changedScriptSyntax": "passed",
+    "jsonFilesParsed": 24,
+    "jsonParseFailures": 0,
+    "credentialFindings": 0,
+    "rawVaultPaths": 0,
+    "gitDiffCheck": "passed"
+  },
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backup": "deferred-by-product-owner"
+}

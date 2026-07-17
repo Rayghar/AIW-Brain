@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-gpt56-sol-entitlement-v1",
+  "generatedAt": "2026-07-17T10:29:36.935Z",
+  "productionAccepted": false,
+  "provider": "openai",
+  "exactRequestedModel": "gpt-5.6-sol",
+  "apiRouteUsed": "/v1/models/gpt-5.6-sol",
+  "requestTimestamp": "2026-07-17T10:29:36.940Z",
+  "httpStatus": 200,
+  "providerRequestId": "7df507a3-8514-4bac-805f-75424e5a9dd8",
+  "exactModelIdReturned": "gpt-5.6-sol",
+  "entitled": true,
+  "responsesApiRequired": true,
+  "structuredOutputsRequired": true,
+  "fallbackUsed": false,
+  "providerCalls": 1,
+  "generationCalls": 0,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "costUsd": 0,
+  "redaction": {
+    "secretMaterialIncluded": false,
+    "safeErrorRedactions": 0
+  },
+  "safeProviderError": null,
+  "credentialsRecorded": false,
+  "authenticationHeadersRecorded": false
+}

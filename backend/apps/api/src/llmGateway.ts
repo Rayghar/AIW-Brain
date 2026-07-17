@@ -119,6 +119,7 @@ export interface StrictStructuredGenerationRequest<T> {
   schema: ZodType<T>;
   dataClassification?: 'public'|'internal'|'confidential'|'restricted';
   maxOutputTokens?: number;
+  reasoningEffort?: 'none' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh';
 }
 
 export type StrictStructuredDisposition =
@@ -963,11 +964,13 @@ export class LlmGateway {
       text: { format },
       tools: [],
       stream: false,
+      ...(request.reasoningEffort ? { reasoning: { effort: request.reasoningEffort } } : {}),
     };
     const safeRequestFingerprint = sha256(canonicalJson({
       model: route.model, schemaName: request.schemaName, providerSchema,
       system: systemRedaction.value, user: userRedaction.value,
       maxOutputTokens: requestBody.max_output_tokens,
+      reasoningEffort: request.reasoningEffort ?? null,
     }));
     const clientInput = { apiKey: apiKey(route), baseURL: baseUrl(route), fetch: this.fetchImpl, timeout: Math.max(1_000, route.timeoutMs ?? 120_000) };
     const client = this.options.structuredClientFactory
