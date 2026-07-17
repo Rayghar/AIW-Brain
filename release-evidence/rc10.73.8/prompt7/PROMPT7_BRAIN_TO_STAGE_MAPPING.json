@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "aiw-prompt7-brain-stage-mapping-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "mappings": [
+    {
+      "target": "requirements",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "qualityDrivers",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "systemContext",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "logicalApplication",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "applicationRealization",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "logicalTechnology",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "physicalTechnology",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "reviewAssurance",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    },
+    {
+      "target": "sddPack",
+      "canonicalRoute": "stage-co-author",
+      "boundedProjection": "boundedBrainProjection",
+      "candidateAuthority": true
+    }
+  ],
+  "designStages": {
+    "logicalApplication": [
+      "components/services",
+      "responsibilities",
+      "boundaries",
+      "patterns/tactics",
+      "interactions",
+      "data ownership",
+      "interface obligations"
+    ],
+    "applicationRealization": [
+      "deployable units",
+      "modules",
+      "platform capabilities",
+      "adapters",
+      "data stores",
+      "supporting services"
+    ],
+    "logicalTechnology": [
+      "runtime",
+      "integration",
+      "security",
+      "data platform",
+      "observability",
+      "resilience",
+      "identity/secrets"
+    ],
+    "physicalTechnology": [
+      "topology",
+      "zones/trust boundaries",
+      "nodes/clusters",
+      "network relationships",
+      "deployment mappings",
+      "scaling",
+      "failover",
+      "backup/restore"
+    ]
+  },
+  "productionAccepted": false
+}

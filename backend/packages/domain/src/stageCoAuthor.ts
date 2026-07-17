@@ -24,10 +24,14 @@ export const stageDraftOperationKinds = [
   'update-node-property',
   'update-interface-field',
   'append-decision',
+  'add-node',
+  'add-edge',
+  'add-interface',
 ] as const;
 export type StageDraftOperationKind = (typeof stageDraftOperationKinds)[number];
 
 export type StageDraftValidationStatus = 'ready' | 'requires-clarification' | 'blocked';
+export type StageCandidateState = 'proposed' | 'under-review' | 'accepted-for-project' | 'rejected' | 'deferred' | 'stale' | 'superseded';
 
 export interface StageDraftOperation {
   id: string;
@@ -46,6 +50,15 @@ export interface StageDraftOperation {
   missingInformation: string[];
   tradeOffs: string[];
   downstreamEffects: string[];
+  candidateState?: StageCandidateState | undefined;
+  affectedObjectIds?: string[] | undefined;
+  qualityDriverRefs?: string[] | undefined;
+  riskRefs?: string[] | undefined;
+  decisionRefs?: string[] | undefined;
+  alternatives?: string[] | undefined;
+  assumptions?: string[] | undefined;
+  reviewRequired?: true | undefined;
+  authority?: 'candidate' | undefined;
 }
 
 export interface StageClarificationQuestion {

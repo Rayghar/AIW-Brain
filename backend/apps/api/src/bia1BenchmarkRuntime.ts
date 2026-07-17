@@ -12,32 +12,9 @@ import {
   type Bia1ArchitecturePackage,
   type Bia1Scenario,
 } from "./bia1Benchmark.js";
+import { boundedBrainProjection as boundedProjection, stableBrainRuntimeValue as stableRuntimeValue } from "./boundedBrainProjection.js";
 
 export type Bia1Mode = Bia1ArchitecturePackage["mode"];
-
-function boundedProjection(value: unknown, depth = 0): unknown {
-  if (value === null || value === undefined || typeof value === "boolean" || typeof value === "number") return value;
-  if (typeof value === "string") {
-    const stable = value.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi, "[runtime-id]");
-    return stable.length > 600 ? `${stable.slice(0, 597)}...` : stable;
-  }
-  if (Array.isArray(value)) return value.slice(0, 20).map((item) => boundedProjection(item, depth + 1));
-  if (typeof value === "object") {
-    if (depth >= 4) return "[bounded-structure]";
-    return Object.fromEntries(Object.entries(value as Record<string, unknown>)
-      .filter(([key]) => key !== "brainReceipt" && !/(?:At|timestamp)$/i.test(key))
-      .sort(([a], [b]) => a.localeCompare(b)).slice(0, 30).map(([key, item]) => [key, boundedProjection(item, depth + 1)]));
-  }
-  return String(value);
-}
-
-function stableRuntimeValue(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(stableRuntimeValue);
-  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value as Record<string, unknown>)
-    .filter(([key]) => key !== "brainReceipt" && !/(?:At|timestamp)$/i.test(key))
-    .sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, stableRuntimeValue(item)]));
-  return value;
-}
 
 function sparseProject(scenario: Bia1Scenario): ArchitectureProject {
   const project = structuredClone(sampleProject) as ArchitectureProject;

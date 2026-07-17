@@ -1,4 +1,5 @@
 import type {
+  ArchitectureEdge,
   ArchitectureInterface,
   ArchitectureNode,
   ArchitectureProject,
@@ -12,6 +13,7 @@ import type {
   StageDraftOperationKind,
 } from '@aiw/domain';
 import type { JsonGenerationRequest, LlmExecutionResult } from './llmGateway.js';
+import { boundedBrainProjection } from './boundedBrainProjection.js';
 
 interface LlmJsonGateway {
   generateJson<T>(request: JsonGenerationRequest): Promise<LlmExecutionResult<T>>;
@@ -116,6 +118,7 @@ function createRefCatalog(project: ArchitectureProject): Set<string> {
     ...(project.requirementsIntelligence?.journeys ?? []).map((item) => `journey:${item.id}`),
     ...(project.requirementsIntelligence?.sources ?? []).map((item) => `source:${item.id}`),
     ...project.decisions.map((item) => `decision:${item.id}`),
+    ...project.findings.map((item) => `finding:${item.id}`),
   ]);
 }
 
@@ -125,6 +128,233 @@ function driverRefs(project: ArchitectureProject): string[] {
     ...project.constraints.slice(0, 5).map((_, index) => `constraint:${index}`),
     ...project.qualityScenarios.slice(0, 5).map((item) => `quality-scenario:${item.id}`),
   ];
+}
+
+type ScenarioProfile = 'agency-banking' | 'event-fulfilment' | 'sensitive-analytics' | 'core-modernisation' | 'agentic-application' | 'bounded-enterprise';
+
+interface StageNodeTemplate {
+  label: string;
+  kind: ArchitectureNode['kind'];
+  responsibility: string;
+}
+
+const scenarioStageTemplates: Record<ScenarioProfile, Record<'logicalApplication'|'applicationRealization'|'logicalTechnology'|'physicalTechnology', StageNodeTemplate[]>> = {
+  'agency-banking': {
+    logicalApplication: [
+      { label: 'Agent Channel', kind: 'LogicalService', responsibility: 'Supports governed agent-assisted customer journeys without owning core banking state.' },
+      { label: 'Agency Transaction Service', kind: 'LogicalService', responsibility: 'Validates and orchestrates deposits, withdrawals and agency transactions.' },
+      { label: 'Core Banking Boundary', kind: 'LogicalService', responsibility: 'Owns the explicit interaction boundary to authoritative core accounts and balances.' },
+      { label: 'Fraud and Limit Decision Service', kind: 'LogicalService', responsibility: 'Evaluates transaction risk, limits and step-up controls before financial execution.' },
+    ],
+    applicationRealization: [
+      { label: 'Agent Experience Application', kind: 'ApplicationComponent', responsibility: 'Provides the deployable agent interaction and assisted-service experience.' },
+      { label: 'Agency Transaction API', kind: 'DeployableUnit', responsibility: 'Exposes versioned agency transaction contracts and enforces request validation.' },
+      { label: 'Transaction Workflow Worker', kind: 'DeployableUnit', responsibility: 'Executes recoverable transaction orchestration and reconciliation steps.' },
+      { label: 'Core Banking Adapter', kind: 'ApplicationComponent', responsibility: 'Isolates core-specific protocols, error handling and compatibility concerns.' },
+    ],
+    logicalTechnology: [
+      { label: 'API Runtime Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Hosts governed synchronous interfaces with throttling and version controls.' },
+      { label: 'Identity and Transaction Security', kind: 'LogicalTechnologyCapability', responsibility: 'Provides strong authentication, authorisation, secrets and audit controls.' },
+      { label: 'Reliable Messaging Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Supports recoverable work, reconciliation and decoupled notifications.' },
+      { label: 'Financial Observability Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Correlates business transactions, technical telemetry and audit evidence.' },
+    ],
+    physicalTechnology: [
+      { label: 'Agency Access Zone', kind: 'NetworkZone', responsibility: 'Terminates agent traffic in a controlled trust boundary.' },
+      { label: 'Transaction Application Cluster', kind: 'DeploymentNode', responsibility: 'Runs agency APIs and workflow components across independent failure domains.' },
+      { label: 'Core Integration Zone', kind: 'NetworkZone', responsibility: 'Isolates and governs traffic to core banking dependencies.' },
+      { label: 'Recovery Environment', kind: 'Environment', responsibility: 'Provides tested recovery capacity without implying an unapproved RTO or RPO.' },
+    ],
+  },
+  'event-fulfilment': {
+    logicalApplication: [
+      { label: 'Order Service', kind: 'LogicalService', responsibility: 'Owns order intent, lifecycle and customer-visible state.' },
+      { label: 'Inventory Reservation Service', kind: 'LogicalService', responsibility: 'Owns inventory availability and reservation outcomes.' },
+      { label: 'Payment Coordination Service', kind: 'LogicalService', responsibility: 'Coordinates payment authorisation while preserving payment-system authority.' },
+      { label: 'Fulfilment Process Manager', kind: 'LogicalService', responsibility: 'Coordinates delivery, cancellation, compensation and reconciliation.' },
+    ],
+    applicationRealization: [
+      { label: 'Order API', kind: 'DeployableUnit', responsibility: 'Accepts idempotent order commands and exposes order status.' },
+      { label: 'Inventory Adapter', kind: 'ApplicationComponent', responsibility: 'Translates governed reservation contracts to inventory systems.' },
+      { label: 'Payment Adapter', kind: 'ApplicationComponent', responsibility: 'Isolates provider-specific payment protocols and failure semantics.' },
+      { label: 'Fulfilment Event Processor', kind: 'DeployableUnit', responsibility: 'Consumes events, advances process state and records compensation work.' },
+    ],
+    logicalTechnology: [
+      { label: 'Event Streaming Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Carries durable domain events with replay and dead-letter controls.' },
+      { label: 'Idempotency and Deduplication Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Prevents duplicate delivery from becoming duplicate business effects.' },
+      { label: 'Workflow State Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Persists recoverable process state and compensation intent.' },
+      { label: 'Distributed Observability Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Correlates commands, events, retries and business outcomes.' },
+    ],
+    physicalTechnology: [
+      { label: 'API Ingress Zone', kind: 'NetworkZone', responsibility: 'Protects and routes customer order traffic.' },
+      { label: 'Fulfilment Runtime Cluster', kind: 'DeploymentNode', responsibility: 'Runs independently scalable order and fulfilment workloads.' },
+      { label: 'Messaging Cluster', kind: 'DeploymentNode', responsibility: 'Provides durable event transport across application failure domains.' },
+      { label: 'Operational Data Zone', kind: 'NetworkZone', responsibility: 'Restricts access to workflow, order and reconciliation stores.' },
+    ],
+  },
+  'sensitive-analytics': {
+    logicalApplication: [
+      { label: 'Data Intake Service', kind: 'LogicalService', responsibility: 'Validates classified source data and records lineage at ingestion.' },
+      { label: 'Privacy Transformation Service', kind: 'LogicalService', responsibility: 'Applies masking or tokenisation before analytical use.' },
+      { label: 'Curated Analytics Service', kind: 'LogicalService', responsibility: 'Owns governed analytical datasets and quality posture.' },
+      { label: 'Consumption Access Service', kind: 'LogicalService', responsibility: 'Mediates role-scoped BI and model access to approved data products.' },
+    ],
+    applicationRealization: [
+      { label: 'Ingestion Pipeline', kind: 'DeployableUnit', responsibility: 'Moves bounded source data through validation and lineage checkpoints.' },
+      { label: 'Tokenisation Adapter', kind: 'ApplicationComponent', responsibility: 'Integrates approved privacy protection without exposing raw identifiers.' },
+      { label: 'Data Quality Worker', kind: 'DeployableUnit', responsibility: 'Evaluates and records deterministic quality rules.' },
+      { label: 'Analytics Access API', kind: 'DeployableUnit', responsibility: 'Enforces governed access to curated analytical products.' },
+    ],
+    logicalTechnology: [
+      { label: 'Data Lineage Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Records source-to-consumption lineage and transformations.' },
+      { label: 'Privacy Protection Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Provides masking, tokenisation and controlled re-identification.' },
+      { label: 'Policy-Enforced Data Access', kind: 'LogicalTechnologyCapability', responsibility: 'Applies identity, role, purpose and regional access constraints.' },
+      { label: 'Analytics Observability Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Monitors pipeline health, quality, use and audit events.' },
+    ],
+    physicalTechnology: [
+      { label: 'Restricted Ingestion Zone', kind: 'NetworkZone', responsibility: 'Contains raw classified data entry points.' },
+      { label: 'Protected Processing Cluster', kind: 'DeploymentNode', responsibility: 'Runs privacy and quality processing in a restricted boundary.' },
+      { label: 'Curated Data Zone', kind: 'NetworkZone', responsibility: 'Hosts governed analytical products separately from raw sources.' },
+      { label: 'Analytics Consumption Zone', kind: 'NetworkZone', responsibility: 'Mediates BI and model consumers through controlled interfaces.' },
+    ],
+  },
+  'core-modernisation': {
+    logicalApplication: [
+      { label: 'Modernisation Facade', kind: 'LogicalService', responsibility: 'Presents stable contracts while capabilities move from the legacy core.' },
+      { label: 'Coexistence Orchestrator', kind: 'LogicalService', responsibility: 'Routes work between legacy and modern capabilities by migration state.' },
+      { label: 'Data Reconciliation Service', kind: 'LogicalService', responsibility: 'Compares authoritative outcomes across transition boundaries.' },
+      { label: 'Ledger Integration Boundary', kind: 'LogicalService', responsibility: 'Governs posting and balancing interactions with the general ledger.' },
+    ],
+    applicationRealization: [
+      { label: 'Compatibility API', kind: 'DeployableUnit', responsibility: 'Provides versioned channel contracts during coexistence.' },
+      { label: 'Legacy Core Adapter', kind: 'ApplicationComponent', responsibility: 'Contains legacy protocols, batch constraints and error mapping.' },
+      { label: 'Migration Control Service', kind: 'DeployableUnit', responsibility: 'Controls cohort routing, cutover, rollback and audit checkpoints.' },
+      { label: 'Reconciliation Worker', kind: 'DeployableUnit', responsibility: 'Detects and records state divergence before migration progression.' },
+    ],
+    logicalTechnology: [
+      { label: 'API Compatibility Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Maintains controlled contract compatibility across transition states.' },
+      { label: 'Change Data Capture Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Carries bounded state changes for coexistence and reconciliation.' },
+      { label: 'Migration Control Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Provides cohort, feature, cutover and rollback controls.' },
+      { label: 'Operational Reconciliation Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Measures consistency and blocks unsafe progression.' },
+    ],
+    physicalTechnology: [
+      { label: 'Legacy Core Zone', kind: 'NetworkZone', responsibility: 'Contains legacy dependencies and exposes only governed integration paths.' },
+      { label: 'Modern Banking Cluster', kind: 'DeploymentNode', responsibility: 'Runs modernised capabilities independently of legacy deployment cadence.' },
+      { label: 'Coexistence Integration Zone', kind: 'NetworkZone', responsibility: 'Hosts adapters, change capture and transition controls.' },
+      { label: 'Rollback Recovery Environment', kind: 'Environment', responsibility: 'Preserves a tested rollback path for bounded migration waves.' },
+    ],
+  },
+  'agentic-application': {
+    logicalApplication: [
+      { label: 'Goal Orchestration Service', kind: 'LogicalService', responsibility: 'Plans bounded user goals across approved specialist capabilities.' },
+      { label: 'Tool Policy Gateway', kind: 'LogicalService', responsibility: 'Authorises every tool invocation against user, purpose and data policy.' },
+      { label: 'Governed Memory Service', kind: 'LogicalService', responsibility: 'Stores scoped, attributable memory with retention and access controls.' },
+      { label: 'Human Approval Service', kind: 'LogicalService', responsibility: 'Pauses consequential actions for explicit accountable approval.' },
+    ],
+    applicationRealization: [
+      { label: 'Agent Orchestrator', kind: 'DeployableUnit', responsibility: 'Runs bounded plans and records every delegated step.' },
+      { label: 'Specialist Capability Adapter', kind: 'ApplicationComponent', responsibility: 'Normalises specialist agent contracts and isolates model differences.' },
+      { label: 'Tool Execution Sandbox', kind: 'DeployableUnit', responsibility: 'Executes approved tools with least privilege and bounded resources.' },
+      { label: 'Evaluation and Audit Worker', kind: 'DeployableUnit', responsibility: 'Evaluates outcomes and writes immutable decision telemetry.' },
+    ],
+    logicalTechnology: [
+      { label: 'Model Gateway Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Pins models, schemas, budgets and safe telemetry.' },
+      { label: 'Policy Decision Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Evaluates tool, memory and data-boundary policy.' },
+      { label: 'Prompt and Content Safety Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Detects prompt injection and unsafe content transitions.' },
+      { label: 'Agent Observability Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Correlates goals, plans, calls, approvals, cost and failures.' },
+    ],
+    physicalTechnology: [
+      { label: 'User Interaction Zone', kind: 'NetworkZone', responsibility: 'Terminates authenticated user requests outside agent execution.' },
+      { label: 'Agent Control Cluster', kind: 'DeploymentNode', responsibility: 'Runs orchestration and policy components in a controlled plane.' },
+      { label: 'Tool Execution Zone', kind: 'NetworkZone', responsibility: 'Isolates tools and external system credentials from the model plane.' },
+      { label: 'Governed Memory Zone', kind: 'NetworkZone', responsibility: 'Protects scoped memory, audit evidence and retention controls.' },
+    ],
+  },
+  'bounded-enterprise': {
+    logicalApplication: [
+      { label: 'Experience Boundary', kind: 'LogicalService', responsibility: 'Owns the user-facing interaction boundary.' },
+      { label: 'Business Capability Service', kind: 'LogicalService', responsibility: 'Owns the primary bounded business responsibility.' },
+      { label: 'Integration Boundary', kind: 'LogicalService', responsibility: 'Isolates external-system contracts and failures.' },
+      { label: 'Operational Control Service', kind: 'LogicalService', responsibility: 'Coordinates audit, recovery and operational control.' },
+    ],
+    applicationRealization: [
+      { label: 'Experience Application', kind: 'ApplicationComponent', responsibility: 'Implements the governed user experience.' },
+      { label: 'Business API', kind: 'DeployableUnit', responsibility: 'Exposes versioned business operations.' },
+      { label: 'Integration Adapter', kind: 'ApplicationComponent', responsibility: 'Contains external protocol and compatibility concerns.' },
+      { label: 'Operations Worker', kind: 'DeployableUnit', responsibility: 'Executes recoverable background and control work.' },
+    ],
+    logicalTechnology: [
+      { label: 'Application Runtime Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Hosts bounded application workloads.' },
+      { label: 'Integration Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Supports governed synchronous and asynchronous integration.' },
+      { label: 'Security Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Provides identity, policy, secrets and audit controls.' },
+      { label: 'Observability Capability', kind: 'LogicalTechnologyCapability', responsibility: 'Measures service health and business outcomes.' },
+    ],
+    physicalTechnology: [
+      { label: 'Ingress Zone', kind: 'NetworkZone', responsibility: 'Protects external access.' },
+      { label: 'Application Cluster', kind: 'DeploymentNode', responsibility: 'Runs application workloads across bounded failure domains.' },
+      { label: 'Integration Zone', kind: 'NetworkZone', responsibility: 'Isolates external dependencies.' },
+      { label: 'Recovery Environment', kind: 'Environment', responsibility: 'Supports tested recovery without inventing recovery targets.' },
+    ],
+  },
+};
+
+function scenarioProfile(project: ArchitectureProject): ScenarioProfile {
+  const text = JSON.stringify({ name: project.name, description: project.description, objectives: project.objectives, constraints: project.constraints, requirements: project.requirementsIntelligence?.requirements.map((item) => `${item.title} ${item.statement}`), journeys: project.requirementsIntelligence?.journeys.map((item) => `${item.name} ${item.goal}`) }).toLowerCase();
+  if (/agentic|specialist agent|tool access|prompt injection|governed memory/.test(text)) return 'agentic-application';
+  if (/legacy core|core banking modern|general ledger|coexistence|strangler|cutover/.test(text)) return 'core-modernisation';
+  if (/analytics|personally identifiable|pii|tokeni[sz]|masking|data lineage/.test(text)) return 'sensitive-analytics';
+  if (/fulfilment|fulfillment|inventory|delivery|order|duplicate event/.test(text)) return 'event-fulfilment';
+  if (/agency banking|banking agent|cash deposit|cash withdrawal|agent network/.test(text)) return 'agency-banking';
+  return 'bounded-enterprise';
+}
+
+function stableSlug(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 64) || 'candidate';
+}
+
+function primaryEvidenceRefs(project: ArchitectureProject): { evidenceRefs: string[]; requirementRefs: string[]; qualityRefs: string[]; riskRefs: string[]; decisionRefs: string[] } {
+  const requirementRefs = (project.requirementsIntelligence?.requirements ?? []).filter((item) => item.status === 'accepted').slice(0, 10).map((item) => `requirement:${item.id}`);
+  const evidenceRefs = requirementRefs.length ? requirementRefs : driverRefs(project).slice(0, 10);
+  return {
+    evidenceRefs,
+    requirementRefs,
+    qualityRefs: project.qualityScenarios.slice(0, 8).map((item) => `quality-scenario:${item.id}`),
+    riskRefs: project.findings.slice(0, 8).map((item) => `finding:${item.id}`),
+    decisionRefs: project.decisions.filter((item) => item.status === 'accepted').slice(0, 8).map((item) => `decision:${item.id}`),
+  };
+}
+
+function inferActionableArchitectureOperations(project: ArchitectureProject, targetStage: StageCoAuthorTarget): StageDraftOperation[] {
+  if (!['logicalApplication','applicationRealization','logicalTechnology','physicalTechnology'].includes(targetStage)) return [];
+  const stage = targetToArchitectureStage[targetStage];
+  const profile = scenarioProfile(project);
+  const templates = scenarioStageTemplates[profile][targetStage as keyof typeof scenarioStageTemplates[ScenarioProfile]];
+  const refs = primaryEvidenceRefs(project);
+  const nodeIds = templates.map((template) => `aiw-${stableSlug(project.id)}-${stableSlug(stage)}-${stableSlug(template.label)}`);
+  const upstreamStages: ArchitectureStage[] = stage === 'logicalApplication' ? ['designIntent'] : stage === 'applicationRealization' ? ['logicalApplication'] : stage === 'logicalTechnology' ? ['applicationRealization'] : ['logicalTechnology'];
+  const operations: StageDraftOperation[] = templates.map((template, index) => {
+    const node: ArchitectureNode = {
+      id: nodeIds[index]!, kind: template.kind, stage, label: template.label, description: template.responsibility,
+      properties: { responsibility: template.responsibility, scenarioProfile: profile, candidateLifecycleState: 'proposed', candidateAuthority: 'candidate', reviewRequired: true, upstreamStageRefs: upstreamStages },
+      lineageFrom: refs.requirementRefs.map((ref) => ref.slice('requirement:'.length)), positions: {}, tags: ['aiw-brain-candidate', profile], status: 'draft',
+    };
+    return {
+      id: `add-${node.id}`, kind: 'add-node', label: `Propose ${template.label}`, targetPath: `nodes.${node.id}`, targetId: node.id, proposedValue: node,
+      rationale: `${template.responsibility} This ${profile.replaceAll('-', ' ')} candidate makes a scenario-specific responsibility explicit for architect review.`,
+      evidenceRefs: refs.evidenceRefs, requirementRefs: refs.requirementRefs, qualityDriverRefs: refs.qualityRefs, riskRefs: refs.riskRefs, decisionRefs: refs.decisionRefs,
+      confidence: profile === 'bounded-enterprise' ? 0.62 : 0.82, validationStatus: 'ready' as const, missingInformation: [],
+      tradeOffs: kindTradeOffs(template.kind), alternatives: ['Retain the responsibility in an adjacent accepted component if separate ownership or deployment is not justified.'], assumptions: [],
+      downstreamEffects: [`Accepted ${stage} responsibility becomes governed input to downstream lifecycle stages.`, 'Changing this candidate later marks only dependent generated candidates stale.'],
+      candidateState: 'proposed' as const, affectedObjectIds: [node.id], reviewRequired: true as const, authority: 'candidate' as const,
+    };
+  });
+  for (let index = 0; index < nodeIds.length - 1; index += 1) {
+    const edge: ArchitectureEdge = { id: `aiw-edge-${stableSlug(project.id)}-${stableSlug(stage)}-${index + 1}`, sourceId: nodeIds[index]!, targetId: nodeIds[index + 1]!, kind: 'dependsOn', stage, label: 'governed dependency', properties: { scenarioProfile: profile, candidateLifecycleState: 'proposed', candidateAuthority: 'candidate' } };
+    operations.push({ id: `add-${edge.id}`, kind: 'add-edge', label: `Connect ${templates[index]!.label} to ${templates[index + 1]!.label}`, targetPath: `edges.${edge.id}`, targetId: edge.id, proposedValue: edge, rationale: 'The dependency makes responsibility flow, ownership and failure propagation visible for review.', evidenceRefs: refs.evidenceRefs, requirementRefs: refs.requirementRefs, qualityDriverRefs: refs.qualityRefs, riskRefs: refs.riskRefs, decisionRefs: refs.decisionRefs, confidence: 0.74, validationStatus: 'ready', missingInformation: [], tradeOffs: ['The dependency should be removed or reversed if responsibility ownership is clarified differently.'], downstreamEffects: ['Feeds interface, failure-path and deployment analysis.'], candidateState: 'proposed', affectedObjectIds: [edge.id, edge.sourceId, edge.targetId], reviewRequired: true, authority: 'candidate' });
+  }
+  const now = '1970-01-01T00:00:00.000Z';
+  const contract: ArchitectureInterface = { id: `aiw-interface-${stableSlug(project.id)}-${stableSlug(stage)}`, name: `${templates[0]!.label} to ${templates[1]!.label}`, stage, providerNodeId: nodeIds[1]!, consumerNodeIds: [nodeIds[0]!], interactionStyle: profile === 'event-fulfilment' ? 'event' : 'request-response', protocol: profile === 'event-fulfilment' ? 'governed event contract' : 'governed API contract', operationOrEvent: profile === 'event-fulfilment' ? 'BusinessStateChanged' : 'Submit governed request', version: 'candidate-v1', authentication: 'Required; mechanism requires project decision', authorization: 'Least privilege; policy requires project decision', encryption: 'Required in transit', retryPolicy: 'Bounded retries only for explicitly retryable failures', idempotency: 'Required for consequential commands', ordering: profile === 'event-fulfilment' ? 'Per aggregate where required' : 'Not assumed', deliveryGuarantee: profile === 'event-fulfilment' ? 'At-least-once with idempotent handling' : 'Request outcome explicit', deadLetterPolicy: 'Quarantine failed work for governed review', replayPolicy: 'Replay only with authorisation and idempotency controls', slo: 'Requires stakeholder-confirmed measurable target', dataClassification: project.context.dataSensitivity === 'restricted' ? 'restricted' : project.context.dataSensitivity === 'confidential' ? 'confidential' : 'internal', owner: templates[1]!.label, lifecycleStatus: 'proposed', evidenceIds: refs.evidenceRefs, createdAt: now, updatedAt: now };
+  operations.push({ id: `add-${contract.id}`, kind: 'add-interface', label: `Propose ${contract.name} contract`, targetPath: `interfaces.${contract.id}`, targetId: contract.id, proposedValue: contract, rationale: 'An explicit interface contract prevents protocol, ownership, security and failure semantics from remaining implicit.', evidenceRefs: refs.evidenceRefs, requirementRefs: refs.requirementRefs, qualityDriverRefs: refs.qualityRefs, riskRefs: refs.riskRefs, decisionRefs: refs.decisionRefs, confidence: 0.76, validationStatus: 'ready', missingInformation: [], tradeOffs: ['Protocol, SLO and security mechanisms remain project decisions; the candidate deliberately avoids inventing targets.'], downstreamEffects: ['Feeds data, security, resilience, observability and SDD traceability.'], candidateState: 'proposed', affectedObjectIds: [contract.id, contract.providerNodeId, ...contract.consumerNodeIds], reviewRequired: true, authority: 'candidate' });
+  return operations;
 }
 
 function textForRef(project: ArchitectureProject, ref: string): string {
@@ -349,6 +579,15 @@ function sanitizeOperation(raw: unknown, index: number, project: ArchitecturePro
     missingInformation: unsupportedNumber ? [...new Set([...missingInformation, 'Confirm any numeric target because it was not found in the governed project evidence.'])] : missingInformation,
     tradeOffs: boundedList(entry.tradeOffs, 6, 320),
     downstreamEffects: boundedList(entry.downstreamEffects, 6, 320),
+    candidateState: 'proposed',
+    affectedObjectIds: targetId ? [targetId] : [],
+    qualityDriverRefs: project.qualityScenarios.slice(0, 8).map((item) => `quality-scenario:${item.id}`),
+    riskRefs: project.findings.slice(0, 8).map((item) => `finding:${item.id}`),
+    decisionRefs: project.decisions.filter((item) => item.status === 'accepted').slice(0, 8).map((item) => `decision:${item.id}`),
+    alternatives: [],
+    assumptions: [],
+    reviewRequired: true,
+    authority: 'candidate',
   };
 }
 
@@ -454,7 +693,7 @@ function compactProject(project: ArchitectureProject, targetStage: StageCoAuthor
       } : null,
     },
     deterministicExplanation: explanation,
-    allowedOperationKinds: ['replace-project-description','append-objective','append-constraint','append-assumption','upsert-quality-priority','append-quality-scenario','update-node-description','update-node-property','update-interface-field','append-decision'],
+    allowedOperationKinds: ['replace-project-description','append-objective','append-constraint','append-assumption','upsert-quality-priority','append-quality-scenario','update-node-description','update-node-property','update-interface-field','append-decision','add-node','add-edge','add-interface'],
     allowedNodePropertyFields: [...allowedNodePropertyFields],
     allowedInterfaceFields: [...allowedInterfaceFields],
     qualityAttributes: library.qualityAttributes.map((item) => ({ id: item.id, name: item.name, calibrated: item.calibrated === true, measures: item.measures })),
@@ -463,7 +702,7 @@ function compactProject(project: ArchitectureProject, targetStage: StageCoAuthor
 
 export function buildDeterministicStageCoAuthorProposal(input: { project: ArchitectureProject; library: KnowledgeLibrary; targetStage: StageCoAuthorTarget }): StageCoAuthorProposal {
   const explanation = deterministicExplanation(input.project, input.library, input.targetStage);
-  const operations = inferTextOperations(input.project, input.targetStage);
+  const operations = [...inferTextOperations(input.project, input.targetStage), ...inferActionableArchitectureOperations(input.project, input.targetStage)].slice(0, 16);
   const clarifications = deterministicClarifications(input.project, input.targetStage);
   return {
     schemaVersion: '1.0', mode: 'deterministic', targetStage: input.targetStage, architectureStage: targetToArchitectureStage[input.targetStage], projectRevision: input.project.revision, generatedAt: new Date().toISOString(),
@@ -489,7 +728,7 @@ export async function buildGovernedStageCoAuthorProposal(input: { project: Archi
         'For every selected component explain its role, why it exists, what it enables, relevant drivers, quality impact, trade-offs, risks and realistic alternatives.',
         'Prefer precise architecture language over generic prose. Return only JSON matching the schema.',
       ].join(' '),
-      user: JSON.stringify(compactProject(input.project, input.targetStage, fallback.explanation, input.library)),
+      user: JSON.stringify(boundedBrainProjection(compactProject(input.project, input.targetStage, fallback.explanation, input.library))),
       jsonSchema: proposalSchema as unknown as Record<string, unknown>,
     });
     const source = result.value ?? {};

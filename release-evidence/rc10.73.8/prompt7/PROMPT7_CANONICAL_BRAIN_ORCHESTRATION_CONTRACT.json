@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "aiw-prompt7-canonical-brain-orchestration-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "service": {
+    "api": "POST /api/projects/:projectId/branches/:branchId/stage-co-author",
+    "orchestrator": "ArchitectureBrainOrchestrator.stageCoAuthor",
+    "runtime": "ArchitectureBrainRuntime.stageCoAuthor",
+    "assistant": "buildGovernedStageCoAuthorProposal",
+    "boundedProjection": "boundedBrainProjection"
+  },
+  "input": [
+    "projectId",
+    "tenantId",
+    "role",
+    "lifecycleStage",
+    "acceptedRequirements",
+    "qualityDrivers",
+    "stakeholders",
+    "journeys",
+    "constraints",
+    "risks",
+    "currentCandidateDesignGraph",
+    "acceptedPriorStageDecisions",
+    "boundedKnowledge",
+    "deterministicRules",
+    "generationIntent"
+  ],
+  "output": [
+    "typedCandidateChanges",
+    "architectureViews",
+    "rationale",
+    "alternatives",
+    "tradeOffs",
+    "risks",
+    "assumptions",
+    "questions",
+    "evidenceReferences",
+    "requirementTraceability",
+    "confidence",
+    "abstentions",
+    "stalenessMetadata",
+    "impactMetadata"
+  ],
+  "typedOperationKinds": [
+    "add-node",
+    "add-edge",
+    "add-interface",
+    "field updates",
+    "quality scenarios",
+    "candidate decisions"
+  ],
+  "authority": {
+    "generated": "candidate",
+    "reviewRequired": true,
+    "automaticPromotionAllowed": false,
+    "approvedKnowledgeMutationAllowed": false,
+    "productionDesignGraphMutationAllowed": false
+  },
+  "providerCallsDuringPlanningAndVerification": 0,
+  "productionAccepted": false
+}
