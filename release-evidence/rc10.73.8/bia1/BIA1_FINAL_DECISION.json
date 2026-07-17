@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "aiw-bia1-final-decision-v1",
+  "generatedAt": "2026-07-17T19:22:45.444Z",
+  "decision": "A-intelligence-proven",
+  "decisionScope": "development-proven for bounded architecture co-creation",
+  "rationale": [
+    "After one focused bounded-context remediation, all five Full Brain scenarios generated coherent candidate architecture packages and passed the corrected frozen rubric gates.",
+    "Agency Banking passed, and no scenario retained a critical security or resilience omission.",
+    "AIW Full Brain scored 96.20 versus 95.18 for generic GPT-5.6 Sol and 79.75 for deterministic-only.",
+    "The numerical advantage over the generic model is small, but AIW materially strengthens governed traceability, replayability, lifecycle integration, candidate authority and SDD delivery.",
+    "The UI journey completed for Agency Banking and Core Banking Modernisation, while also exposing an important gap: no actionable design-stage candidate was generated in the tested stage panels."
+  ],
+  "criticalGateSummary": {
+    "fullBrainScenariosPassed": 5,
+    "requiredMinimum": 4,
+    "agencyBankingPassed": true,
+    "unresolvedCriticalSafetyOrResilienceOmissions": 0,
+    "differentiationGatePassed": true
+  },
+  "mostReliableToday": [
+    "requirements-to-architecture traceability",
+    "coherent component, interface, data, security, resilience and deployment views",
+    "candidate ADRs, risks, roadmaps and fitness tests",
+    "bounded governed reasoning with no approved-state mutation",
+    "candidate SDD generation"
+  ],
+  "notYetReliable": [
+    "materially outperforming a strong generic model on pure reasoning quality",
+    "actionable UI design-stage candidate generation across the tested spaces",
+    "production-authoritative architecture approval",
+    "deferred Gate 6 specialist semantic capabilities"
+  ],
+  "bestScenario": { "scenarioId": "BIA1-S1", "score": 99.06 },
+  "worstScenario": { "scenarioId": "BIA1-S2", "score": 93.76 },
+  "prompt7Entry": "approved",
+  "productionAccepted": false,
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backupStatus": "deferred-by-product-owner"
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "aiw-bia1-evaluator-correction-v1",
+  "generatedAt": "2026-07-17T19:22:45.444Z",
+  "historicalScorecardsModified": false,
+  "providerCallsForCorrection": 0,
+  "rubricChanged": false,
+  "scenarioInputsChanged": false,
+  "goldExpectationsChanged": false,
+  "defects": [
+    {
+      "id": "BIA1-EVAL-001",
+      "finding": "Architecture text normalized punctuation in requirement identifiers, but the evaluator searched for the original hyphenated identifiers.",
+      "impact": "Critical requirement and quality coverage were forced to zero for every mode even when exact requirement identifiers were present.",
+      "repair": "Normalize both the architecture text and each identifier before exact token-sequence matching."
+    },
+    {
+      "id": "BIA1-EVAL-002",
+      "finding": "The evaluator searched the explicit unsupportedClaimsRejected ledger for words such as accepted or asserted.",
+      "impact": "Correctly rejected statements could be counted as accepted unsupported consequential claims.",
+      "repair": "Treat the ledger as rejection evidence; accepted unsupported claims remain an adversarial-review finding."
+    }
+  ],
+  "offlineRescore": {
+    "aiwFullBrainAverage": 96.2,
+    "genericGpt56SolAverage": 95.18,
+    "deterministicOnlyAverage": 79.75,
+    "aiwFullBrainPassedScenarios": 5,
+    "genericPassedScenarios": 5,
+    "deterministicOnlyPassedScenarios": 0
+  },
+  "authority": {
+    "reviewActorType": "gpt-5.6-sol",
+    "humanReviewerPresent": false,
+    "externallyVerified": false,
+    "developmentDecisionAuthority": true,
+    "productionAuthority": false
+  },
+  "approvedRecordsChanged": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}

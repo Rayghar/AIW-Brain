@@ -29,4 +29,14 @@ describe("BIA-1 runtime isolation and deterministic baseline", () => {
     expect(bia1ArchitecturePackageSchema.parse(value).mode).toBe("aiw-deterministic-only");
     expect(evaluateArchitecturePackage(scenario, value).productionAccepted).toBe(false);
   });
+
+  it("normalizes requirement identifiers and never treats rejected-claim prose as accepted", async () => {
+    const scenario = BIA1_SCENARIOS[0]!;
+    const context = await buildAiwBrainContext(scenario);
+    const value = buildDeterministicArchitecturePackage(scenario, context);
+    value.unsupportedClaimsRejected = ["That a proposed architecture is already accepted without review."];
+    const evaluation = evaluateArchitecturePackage(scenario, value);
+    expect(evaluation.metrics.criticalRequirementCoverage).toBe(100);
+    expect(evaluation.metrics.unsupportedConsequentialClaims).toBe(0);
+  });
 });

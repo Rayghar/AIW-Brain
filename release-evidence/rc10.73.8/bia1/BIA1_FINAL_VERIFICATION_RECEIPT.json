@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "aiw-bia1-final-verification-v1",
+  "generatedAt": "2026-07-17T20:29:00.000Z",
+  "builds": {
+    "domain": "passed",
+    "api": "passed",
+    "frontend": "passed"
+  },
+  "tests": {
+    "focusedBia1Files": 3,
+    "focusedBia1Tests": 11,
+    "focusedBia1Result": "passed",
+    "benchmarkReplay": "passed",
+    "browserJourneyResult": "2 passed",
+    "browserJourneyScenarios": ["BIA1-S1", "BIA1-S4"],
+    "browserEvidenceCommit": "5a8c9abe9a30abd41aa5e3aeb5609cb02bbc4f84"
+  },
+  "scans": {
+    "jsonParseFailures": 0,
+    "credentialFindings": 0,
+    "rawVaultOrExcludedPaths": 0,
+    "unrestrictedProviderResponseFields": 0,
+    "productionAcceptedTrueFindings": 0,
+    "historicalGate6FilesModified": 0,
+    "gitDiffCheck": "passed"
+  },
+  "runtimeSafety": {
+    "approvedRecordsChangedWithoutApproval": 0,
+    "productionDesignGraphMutations": 0,
+    "automaticPromotions": 0,
+    "providerCalls": 10,
+    "retries": 0
+  },
+  "productionAccepted": false,
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backupStatus": "deferred-by-product-owner"
+}

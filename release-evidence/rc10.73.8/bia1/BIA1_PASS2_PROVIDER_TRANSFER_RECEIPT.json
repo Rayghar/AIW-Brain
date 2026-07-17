@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "aiw-bia1-pass2-provider-transfer-v1",
+  "generatedAt": "2026-07-17T19:18:35.381Z",
+  "provider": "openai",
+  "model": "gpt-5.6-sol",
+  "productOwnerApproval": {
+    "approved": true,
+    "scope": "five frozen synthetic BIA-1 scenario packets and their post-remediation bounded AIW Brain summaries for exactly five governed Pass 2 requests"
+  },
+  "actualTransfer": {
+    "providerRequests": 5,
+    "scenarioPacketsTransferred": 5,
+    "boundedBrainSummariesTransferred": 5,
+    "retries": 0,
+    "unrestrictedProviderResponsesRetained": 0
+  },
+  "boundedContexts": [
+    { "scenarioId": "BIA1-S1", "characters": 85547, "fingerprint": "sha256:0cac2ef04a62585068bee614d2864e49635160b44d71e7f85b21914c2a728097" },
+    { "scenarioId": "BIA1-S2", "characters": 67032, "fingerprint": "sha256:752c1a7de4bd3e3df692fd77d0e440cddfcaadf408df81cc2a0e7fab4a7473c5" },
+    { "scenarioId": "BIA1-S3", "characters": 69182, "fingerprint": "sha256:32e1ee1107bb87ffa770c1463f9e309d448de4841997e3c0bd148eb4ab72dd95" },
+    { "scenarioId": "BIA1-S4", "characters": 69160, "fingerprint": "sha256:8be217b22fabcbd336a86b9e7779a4ec5f0606d7892a0084c362a3e7d979b6a4" },
+    { "scenarioId": "BIA1-S5", "characters": 63162, "fingerprint": "sha256:c1a7a1d7f4886e8c11170ddbfd2513420087bc6f2929f942dbe3a9c7c4662b5a" }
+  ],
+  "containsCredentials": false,
+  "containsRawVaultPayload": false,
+  "containsPersonalInformation": false,
+  "containsEvaluatorGoldExpectations": false,
+  "containsReferenceSdd": false,
+  "toolsEnabled": false,
+  "externalRetrievalEnabled": false,
+  "fallbackEnabled": false,
+  "approvedRecordsChanged": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "aiw-bia1-capability-scorecard-v1",
+  "generatedAt": "2026-07-17T19:22:45.444Z",
+  "scoreAuthority": "offline rescore of frozen outputs after BIA1-EVAL-001 and BIA1-EVAL-002 correction",
+  "historicalRunnerScoresPreserved": true,
+  "modes": [
+    {
+      "mode": "aiw-full-brain",
+      "averageScore": 96.2,
+      "passedScenarios": 5,
+      "scores": {
+        "BIA1-S1": 99.06,
+        "BIA1-S2": 93.76,
+        "BIA1-S3": 96.22,
+        "BIA1-S4": 95.63,
+        "BIA1-S5": 96.32
+      }
+    },
+    {
+      "mode": "generic-gpt56-sol",
+      "averageScore": 95.18,
+      "passedScenarios": 5,
+      "scores": {
+        "BIA1-S1": 97.22,
+        "BIA1-S2": 94.66,
+        "BIA1-S3": 93.8,
+        "BIA1-S4": 94.29,
+        "BIA1-S5": 95.94
+      }
+    },
+    {
+      "mode": "aiw-deterministic-only",
+      "averageScore": 79.75,
+      "passedScenarios": 0,
+      "scores": {
+        "BIA1-S1": 82.21,
+        "BIA1-S2": 78.46,
+        "BIA1-S3": 76.96,
+        "BIA1-S4": 79.89,
+        "BIA1-S5": 81.22
+      }
+    }
+  ],
+  "fullBrainAbsoluteGates": {
+    "scenariosPassingAllGates": 5,
+    "agencyBankingPassed": true,
+    "criticalRequirementCoveragePercent": 100,
+    "criticalInterfaceCompletenessPercent": 100,
+    "criticalTraceabilityPercent": 100,
+    "criticalSecurityAndResilienceOmissions": 0,
+    "unsupportedConsequentialClaims": 0,
+    "architectureCoherenceFivePoint": 5,
+    "practicalUsefulnessFivePoint": 5
+  },
+  "differentiation": {
+    "absoluteScoreDeltaOverGeneric": 1.02,
+    "tenPointPathPassed": false,
+    "withinThreePointsPathPassed": true,
+    "materialAiwAdvantages": [
+      "governed requirement and decision lineage",
+      "deterministic rule and review contributions",
+      "candidate-only Design Graph context",
+      "replayable bounded context fingerprints",
+      "explicit approved-state mutation controls",
+      "integrated SDD and governance workflow"
+    ],
+    "differentiationGatePassed": true,
+    "qualification": "AIW's score advantage is marginal; the accepted differentiation rests on governed lifecycle and implementation integration, not a ten-point reasoning advantage."
+  },
+  "providerUsage": {
+    "actualCalls": 10,
+    "retries": 0,
+    "inputTokens": 113097,
+    "outputTokens": 128085,
+    "totalTokens": 241182,
+    "observedCostUsd": null,
+    "costPosture": "not computable from a verified price receipt"
+  },
+  "productionAccepted": false
+}

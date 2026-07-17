@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "aiw-bia1-pass2-checkpoint-v1",
+  "completedScenarioIds": [
+    "BIA1-S1",
+    "BIA1-S2",
+    "BIA1-S3",
+    "BIA1-S4",
+    "BIA1-S5"
+  ],
+  "attempts": 5,
+  "productionAccepted": false
+}

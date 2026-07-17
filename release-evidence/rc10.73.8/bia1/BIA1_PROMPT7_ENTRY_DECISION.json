@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "aiw-bia1-prompt7-entry-decision-v1",
+  "generatedAt": "2026-07-17T19:22:45.444Z",
+  "entryStatus": "approved",
+  "basis": "BIA-1 Decision A: development-proven for bounded architecture co-creation",
+  "prompt7Started": false,
+  "constraints": [
+    "retain candidate-only authority until explicit review and promotion",
+    "do not infer production acceptance from BIA-1",
+    "carry the UI design-stage integration gap into Prompt 7",
+    "retain deferred corpus-enrichment and specialist semantic capabilities on the governed backlog",
+    "preserve exact model, evidence, traceability and approved-state mutation controls"
+  ],
+  "productionAccepted": false,
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backupStatus": "deferred-by-product-owner"
+}

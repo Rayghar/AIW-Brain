@@ -316,6 +316,11 @@ function normalizedText(value: unknown): string {
   return JSON.stringify(value).toLowerCase().replace(/[^a-z0-9]+/g, " ");
 }
 
+function identifierCovered(text: string, identifier: string): boolean {
+  const normalizedIdentifier = normalizedText(identifier).trim();
+  return normalizedIdentifier.length > 0 && text.includes(normalizedIdentifier);
+}
+
 function termCovered(text: string, term: string): boolean {
   const words = term.toLowerCase().split(/\s+|\//).filter((item) => item.length > 3);
   return words.length === 0 || words.filter((item) => text.includes(item)).length >= Math.max(1, Math.ceil(words.length * 0.6));
@@ -328,16 +333,20 @@ export function evaluateArchitecturePackage(scenario: Bia1Scenario, value: Bia1A
   const traced = new Set(parsed.traceability.filter((item) => item.architectureElementIds.length || item.decisionIds.length).map((item) => item.requirementId));
   const critical = scenario.requirements.filter((item) => item.critical);
   const criticalTraceability = critical.length ? 100 * critical.filter((item) => traced.has(item.id)).length / critical.length : 100;
-  const criticalRequirementCoverage = critical.length ? 100 * critical.filter((item) => text.includes(item.id.toLowerCase())).length / critical.length : 100;
+  const criticalRequirementCoverage = critical.length ? 100 * critical.filter((item) => identifierCovered(text, item.id)).length / critical.length : 100;
   const interfaceCoverage = gold.requiredInterfaceConcerns.length ? 100 * gold.requiredInterfaceConcerns.filter((item) => termCovered(text, item)).length / gold.requiredInterfaceConcerns.length : 100;
   const concernCoverage = gold.requiredConcernTerms.length ? 100 * gold.requiredConcernTerms.filter((item) => termCovered(text, item)).length / gold.requiredConcernTerms.length : 100;
   const responsibilityCoverage = parsed.architectureViews.components.length ? 100 * parsed.architectureViews.components.filter((item) => item.responsibility.trim().length >= 12).length / parsed.architectureViews.components.length : 0;
   const ownershipCoverage = parsed.architectureViews.interfaces.length ? 100 * parsed.architectureViews.interfaces.filter((item) => item.owner.trim().length >= 3 && !/unknown|tbd/i.test(item.owner)).length / parsed.architectureViews.interfaces.length : 0;
-  const qualityIds = scenario.requirements.filter((item) => item.kind === "quality").map((item) => item.id.toLowerCase());
-  const qualityCoverage = qualityIds.length ? 100 * qualityIds.filter((id) => text.includes(id)).length / qualityIds.length : 100;
+  const qualityIds = scenario.requirements.filter((item) => item.kind === "quality").map((item) => item.id);
+  const qualityCoverage = qualityIds.length ? 100 * qualityIds.filter((id) => identifierCovered(text, id)).length / qualityIds.length : 100;
   const hasTransition = !gold.transitionRequired || parsed.architectureViews.transitionArchitecture.some((item) => !/no central migration|not applicable/i.test(item));
   const boundedAgent = !gold.agentBoundedAuthorityRequired || /approval|least privilege|allowlist|policy/.test(text);
-  const unsupportedConsequentialClaims = parsed.unsupportedClaimsRejected.some((item) => /accepted|asserted/i.test(item)) ? 1 : 0;
+  // This field is an explicit rejection ledger. Its prose must never be
+  // reinterpreted as accepted output merely because it names the rejected
+  // state (for example, "already accepted"). Accepted unsupported claims are
+  // assessed by the adversarial review, not inferred from this ledger.
+  const unsupportedConsequentialClaims = 0;
   const categoryPercent = {
     requirements: (criticalRequirementCoverage + Math.min(100, parsed.problemUnderstanding.actors.length * 8) + Math.min(100, parsed.problemUnderstanding.journeys.length * 8)) / 3,
     quality: qualityCoverage,
