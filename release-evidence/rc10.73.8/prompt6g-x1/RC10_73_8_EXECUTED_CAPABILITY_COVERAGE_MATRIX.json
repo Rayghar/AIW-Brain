@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aiw-rc10-73-8-executed-capability-coverage-v1",
+  "generatedAt": "2026-07-17T13:27:09.503Z",
+  "productionAccepted": false,
+  "exactRouteC": {
+    "denominator": 110,
+    "processed": 100
+  },
+  "routeA": {
+    "denominator": 501,
+    "attempted": 64,
+    "validated": 0,
+    "failed": 64,
+    "remaining": 437
+  },
+  "specialistParser": {
+    "denominator": 3267,
+    "processed": 0
+  },
+  "deferredSemantic": {
+    "denominator": 39075,
+    "processed": 0
+  },
+  "patternDnaCreated": 0,
+  "architectureGenomeCreated": 0,
+  "approvedStoreChanges": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

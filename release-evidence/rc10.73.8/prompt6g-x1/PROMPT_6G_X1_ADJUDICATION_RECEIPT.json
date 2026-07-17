@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-adjudication-v1",
+  "generatedAt": "2026-07-17T13:25:34.217Z",
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "productionAccepted": false,
+  "adjudicatedCaseCount": 64,
+  "passed": false,
+  "gates": {
+    "exactModelIdentity": false,
+    "strictSchemaValidity": false,
+    "exactEvidenceLineage": false,
+    "supportSpanValidity": false,
+    "routeAClassPrecision": false,
+    "routeAEpistemicAccuracy": false,
+    "conditionCompleteness": false,
+    "limitationCompleteness": false,
+    "noUniversalisation": true,
+    "noCriticalUnsupportedClaims": true,
+    "noCrossCaseContamination": true,
+    "authorityIsolation": true,
+    "routeCReplay": true,
+    "denominatorIntegrity": true
+  },
+  "propagationAuthority": "none-candidate-only"
+}

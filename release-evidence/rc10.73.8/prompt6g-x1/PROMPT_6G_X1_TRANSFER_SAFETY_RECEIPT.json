@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-transfer-safety-v1",
+  "generatedAt": "2026-07-17T12:52:43.003Z",
+  "productionAccepted": false,
+  "evidenceContentIncluded": false,
+  "provider": "openai",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "unitsScanned": 64,
+  "redactionFindings": 24,
+  "blockedSecretFindings": 0,
+  "failures": [],
+  "passed": true
+}

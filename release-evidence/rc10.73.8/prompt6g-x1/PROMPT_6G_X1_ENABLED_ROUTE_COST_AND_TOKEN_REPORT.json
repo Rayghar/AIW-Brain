@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-enabled-route-cost-token-v1",
+  "generatedAt": "2026-07-17T13:27:09.465Z",
+  "productionAccepted": false,
+  "scope": "wave1-only-scale-not-executed",
+  "inputTokens": 9723,
+  "outputTokens": 3584,
+  "totalTokens": 13307,
+  "observedUsageCostUsd": 0.0096236,
+  "actualBilledCostUsd": null,
+  "costEvidenceStatus": "observed-usage-lower-bound-incomplete-provider-telemetry",
+  "monetaryCostCeiling": null,
+  "costAffectedQuality": false
+}

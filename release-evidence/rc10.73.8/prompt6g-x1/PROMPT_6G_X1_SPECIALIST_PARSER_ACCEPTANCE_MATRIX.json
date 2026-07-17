@@ -1,0 +1,159 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-specialist-parser-acceptance-v1",
+  "generatedAt": "2026-07-17T13:27:09.487Z",
+  "productionAccepted": false,
+  "classes": [
+    {
+      "parserClass": "yaml-structural-parser-required",
+      "units": 1989,
+      "formats": [
+        "yaml",
+        "yml"
+      ],
+      "safeRules": [
+        "parse documents without custom tag execution",
+        "preserve aliases as references with expansion bounds",
+        "retain exact scalar and source range"
+      ],
+      "unsupported": [
+        "remote include",
+        "custom executable tag",
+        "unbounded alias expansion"
+      ],
+      "outputs": [
+        "document/key path",
+        "exact scalar",
+        "source range",
+        "alias relationship"
+      ],
+      "remoteIncludePolicy": "prohibited",
+      "macroPolicy": "prohibited",
+      "errorDisposition": "specialist-parser-required-or-explicit-processing-failure",
+      "rerouting": "rerun capability router only over fingerprinted deterministic parser outputs",
+      "requiredTests": [
+        "fixture safety",
+        "schema validation",
+        "replay fingerprint",
+        "denominator preservation",
+        "unsupported construct",
+        "security boundary"
+      ],
+      "implementationStatus": "not-started"
+    },
+    {
+      "parserClass": "topology-parser-required",
+      "units": 745,
+      "formats": [
+        "terraform",
+        "plantuml",
+        "c4",
+        "dsl"
+      ],
+      "safeRules": [
+        "parse syntax without evaluating expressions",
+        "retain declared nodes and edges",
+        "treat modules and includes as opaque identities"
+      ],
+      "unsupported": [
+        "remote module fetch",
+        "include resolution",
+        "macro execution"
+      ],
+      "outputs": [
+        "declared component",
+        "declared relationship",
+        "variable/reference identity",
+        "source range"
+      ],
+      "remoteIncludePolicy": "prohibited",
+      "macroPolicy": "prohibited",
+      "errorDisposition": "specialist-parser-required-or-explicit-processing-failure",
+      "rerouting": "rerun capability router only over fingerprinted deterministic parser outputs",
+      "requiredTests": [
+        "fixture safety",
+        "schema validation",
+        "replay fingerprint",
+        "denominator preservation",
+        "unsupported construct",
+        "security boundary"
+      ],
+      "implementationStatus": "not-started"
+    },
+    {
+      "parserClass": "xml-model-parser-required",
+      "units": 364,
+      "formats": [
+        "xml",
+        "xsd",
+        "svg"
+      ],
+      "safeRules": [
+        "disable DTD and external entities",
+        "preserve namespaces and attributes",
+        "retain element relationships and ranges"
+      ],
+      "unsupported": [
+        "external entity",
+        "XInclude fetch",
+        "script execution"
+      ],
+      "outputs": [
+        "element/attribute fact",
+        "namespace",
+        "declared relation",
+        "source range"
+      ],
+      "remoteIncludePolicy": "prohibited",
+      "macroPolicy": "prohibited",
+      "errorDisposition": "specialist-parser-required-or-explicit-processing-failure",
+      "rerouting": "rerun capability router only over fingerprinted deterministic parser outputs",
+      "requiredTests": [
+        "fixture safety",
+        "schema validation",
+        "replay fingerprint",
+        "denominator preservation",
+        "unsupported construct",
+        "security boundary"
+      ],
+      "implementationStatus": "not-started"
+    },
+    {
+      "parserClass": "architecture-model-parser-required",
+      "units": 169,
+      "formats": [
+        "drawio",
+        "structured architecture model"
+      ],
+      "safeRules": [
+        "decode only bounded local model payloads",
+        "preserve pages/cells/edges/groups",
+        "retain opaque unsupported objects"
+      ],
+      "unsupported": [
+        "embedded script",
+        "remote image fetch",
+        "macro/plugin execution"
+      ],
+      "outputs": [
+        "model node",
+        "model edge",
+        "group membership",
+        "diagram page",
+        "source identity"
+      ],
+      "remoteIncludePolicy": "prohibited",
+      "macroPolicy": "prohibited",
+      "errorDisposition": "specialist-parser-required-or-explicit-processing-failure",
+      "rerouting": "rerun capability router only over fingerprinted deterministic parser outputs",
+      "requiredTests": [
+        "fixture safety",
+        "schema validation",
+        "replay fingerprint",
+        "denominator preservation",
+        "unsupported construct",
+        "security boundary"
+      ],
+      "implementationStatus": "not-started"
+    }
+  ]
+}

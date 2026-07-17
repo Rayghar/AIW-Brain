@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-token-preflight-v1",
+  "generatedAt": "2026-07-17T12:52:42.992Z",
+  "productionAccepted": false,
+  "requestCount": 64,
+  "totalInputCharacters": 120928,
+  "maximumInputCharacters": 7693,
+  "projectedInputTokens": 30258,
+  "projectedOutputTokens": 128000,
+  "projectedMaximumIncludingRetryReserve": 173954,
+  "retryReserve": 4,
+  "estimateMethod": "ceil(input-characters/4)+maximum-output-tokens-per-request; retry reserve uses largest request",
+  "ceiling": 221000,
+  "passed": true,
+  "estimateOnly": true
+}

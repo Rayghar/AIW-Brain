@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-capacity-preflight-v1",
+  "generatedAt": "2026-07-17T12:52:42.998Z",
+  "productionAccepted": false,
+  "freeBytes": 13987713024,
+  "estimatedTemporaryBytes": 536870912,
+  "projectedFreeAtPeak": 13450842112,
+  "controlledStopFloorBytes": 8589934592,
+  "passed": true,
+  "automaticEvidenceDeletion": false
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-prompt6-progress-v1",
+  "generatedAt": "2026-07-17T13:27:09.495Z",
+  "productionAccepted": false,
+  "prompt6EnabledRouteExecution": "stopped-before-complete-scale",
+  "prompt6FullSemanticProgramme": "in-progress",
+  "fullyProcessedExactDeterministicUnits": 100,
+  "attemptedModelTransformationUnits": 64,
+  "validatedModelTransformedUnits": 0,
+  "specialistParserBacklogUnits": 3267,
+  "deferredSemanticUnits": 39075,
+  "explicitFailures": 64,
+  "remainingEnabledRouteAUnits": 437,
+  "remainingExactRouteCUnits": 10,
+  "denominator": 42953,
+  "accountedUnits": 42953,
+  "silentOmissions": 0,
+  "next": "specialist-parser-and-architecture-group-foundation",
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backup": "deferred-by-product-owner"
+}

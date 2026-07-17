@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-route-a-candidate-ledger-v1",
+  "generatedAt": "2026-07-17T13:18:13.931Z",
+  "productionAccepted": false,
+  "authority": "candidate",
+  "records": [],
+  "recordCount": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

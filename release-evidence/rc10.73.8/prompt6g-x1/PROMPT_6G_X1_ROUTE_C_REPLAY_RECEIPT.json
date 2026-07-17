@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-route-c-replay-v1",
+  "generatedAt": "2026-07-17T12:52:43.017Z",
+  "productionAccepted": false,
+  "primaryFingerprint": "sha256:35dc679877c7052f53f9f7310edbdac4d8fdca4a0801a0d3a9dcd958aad1e70f",
+  "replayFingerprint": "sha256:35dc679877c7052f53f9f7310edbdac4d8fdca4a0801a0d3a9dcd958aad1e70f",
+  "replayMismatch": 0,
+  "passed": true
+}

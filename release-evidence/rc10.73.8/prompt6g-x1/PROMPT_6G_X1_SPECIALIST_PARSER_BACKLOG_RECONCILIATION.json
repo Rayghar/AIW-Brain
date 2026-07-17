@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-specialist-parser-backlog-v1",
+  "generatedAt": "2026-07-17T13:27:09.476Z",
+  "productionAccepted": false,
+  "parserClasses": {
+    "yaml-structural-parser-required": 1989,
+    "topology-parser-required": 745,
+    "xml-model-parser-required": 364,
+    "architecture-model-parser-required": 169
+  },
+  "total": 3267,
+  "processedKnowledge": 0,
+  "authoritativeSource": "PROMPT_6G_OFFLINE_ROUTING_RESULT.json",
+  "priority": [
+    "yaml-structural-parser-required",
+    "topology-parser-required",
+    "xml-model-parser-required",
+    "architecture-model-parser-required"
+  ]
+}

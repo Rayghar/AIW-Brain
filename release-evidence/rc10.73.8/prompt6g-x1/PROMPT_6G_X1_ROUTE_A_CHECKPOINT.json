@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-route-a-checkpoint-v1",
+  "generatedAt": "2026-07-17T13:18:13.935Z",
+  "productionAccepted": false,
+  "completedUnits": 64,
+  "attempts": 64,
+  "retries": 0,
+  "tokens": 13307,
+  "checkpointFingerprint": "sha256:78412d26c776156c93082894b79656335c3f4f4c418d979940b0aa564e46736b",
+  "resumable": true
+}

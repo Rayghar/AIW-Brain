@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-wave1-plan-reconciliation-v1",
+  "generatedAt": "2026-07-17T12:52:42.967Z",
+  "productionAccepted": false,
+  "historicalPlan": {
+    "path": "release-evidence/rc10.73.8/prompt6g-planning/PROMPT_6G_WAVE1_EXECUTION_PLAN.json",
+    "unitCount": 164,
+    "routeAUnits": 64,
+    "routeCLabelledUnits": 100,
+    "specialistParserUnitsMisclassifiedAsWaveRouteC": 96,
+    "exactRouteCFactsInHistoricalWave": 4
+  },
+  "correctedExecutionPlan": {
+    "unitCount": 164,
+    "routeAUnits": 64,
+    "exactRouteCFacts": 100,
+    "specialistParserUnits": 0,
+    "deferredUnits": 0
+  },
+  "exactRouteCDenominator": 110,
+  "remainingExactRouteCAfterWave1": 10,
+  "historicalEvidenceRewritten": false,
+  "correctionRequired": true,
+  "passed": true
+}

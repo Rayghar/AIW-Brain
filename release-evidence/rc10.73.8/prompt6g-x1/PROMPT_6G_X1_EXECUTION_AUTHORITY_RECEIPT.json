@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-execution-authority-v1",
+  "generatedAt": "2026-07-17T12:52:42.986Z",
+  "productionAccepted": false,
+  "authorisedBy": "product-owner",
+  "provider": "openai",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "purpose": "governed-candidate-semantic-transformation",
+  "authorisedClasses": [
+    "source-example-with-explicit-conditions-and-limitations",
+    "direct-implementation-observation"
+  ],
+  "plannedCalls": 64,
+  "absoluteCallCeiling": 68,
+  "globalRetryReserve": 4,
+  "maximumRetryPerRequest": 1,
+  "retryableOnly": [
+    "timeout",
+    "HTTP-429",
+    "HTTP-5xx"
+  ],
+  "maximumTotalTokensIncludingRetries": 221000,
+  "concurrency": 1,
+  "fallbackEnabled": false,
+  "toolsEnabled": false,
+  "externalRetrievalEnabled": false,
+  "monetaryCostCeiling": null,
+  "costTrackingRequired": true,
+  "costMayReduceQuality": false,
+  "candidateOnlyPersistence": true,
+  "automaticPromotionAllowed": false,
+  "designGraphMutationAllowed": false,
+  "executionFingerprint": "sha256:4c45040e3f9202aae1ae10e46421fccc1367807ffdcf1446ad6fada2d9758741",
+  "labelsFingerprint": "sha256:08501a91ace9ea1f47be4575e1384f6a1a9e75698ebeec9d1df33819e54256a1",
+  "valid": true
+}

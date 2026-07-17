@@ -5,6 +5,7 @@ frontend/playwright-report/
 **/.playwright-artifacts-*/
 *.log
 *.tmp
+release-evidence/**/**-checkpoint-internal.json
 *.key
 *.pem
 .env

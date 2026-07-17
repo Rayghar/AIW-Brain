@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-enabled-route-scale-result-v1",
+  "generatedAt": "2026-07-17T13:27:09.454Z",
+  "productionAccepted": false,
+  "executionStatus": "not-executed-wave1-critical-gate-failure",
+  "reason": "Wave 1 failed one or more absolute critical gates",
+  "wave1Passed": false,
+  "conditionalScaleAuthorised": false,
+  "remainingRouteAUnitsProcessed": 0,
+  "remainingRouteCUnitsProcessed": 0,
+  "approvedStoreChanges": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

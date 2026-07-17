@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-enabled-route-candidate-index-v1",
+  "generatedAt": "2026-07-17T13:27:09.460Z",
+  "productionAccepted": false,
+  "authority": "candidate",
+  "wave1RouteACandidates": 0,
+  "wave1RouteCRecords": 100,
+  "scaledRouteARecords": 0,
+  "scaledRouteCRecords": 0,
+  "candidateCount": 100,
+  "conditionalScaleStatus": "not-executed"
+}

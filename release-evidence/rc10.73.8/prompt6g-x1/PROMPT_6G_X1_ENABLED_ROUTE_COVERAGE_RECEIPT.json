@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-enabled-route-coverage-v1",
+  "generatedAt": "2026-07-17T13:27:09.471Z",
+  "productionAccepted": false,
+  "wave1RouteAAttempted": 64,
+  "wave1RouteAValidated": 0,
+  "scaledRouteAProcessed": 0,
+  "routeADenominator": 501,
+  "exactRouteCWave1": 100,
+  "exactRouteCScale": 0,
+  "exactRouteCDenominator": 110,
+  "specialistParserProcessed": 0,
+  "deferredModelCalls": 0,
+  "gpt56CorpusCalls": 0,
+  "complete": false,
+  "stopReason": "Wave 1 failed one or more absolute critical gates"
+}

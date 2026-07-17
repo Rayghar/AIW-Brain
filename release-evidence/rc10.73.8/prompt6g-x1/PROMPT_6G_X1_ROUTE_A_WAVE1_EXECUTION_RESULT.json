@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "aiw-prompt-6g-x1-route-a-wave1-execution-v1",
+  "generatedAt": "2026-07-17T13:18:13.911Z",
+  "productionAccepted": false,
+  "executionStatus": "completed-controlled-wave",
+  "semanticQualityStatus": "failed-absolute-gates",
+  "unitCount": 64,
+  "providerAttempts": 64,
+  "retries": 0,
+  "strictStructuredResponsesReceived": 7,
+  "gatewayConnectionFailures": 57,
+  "inputTokens": 9723,
+  "outputTokens": 3584,
+  "totalTokens": 13307,
+  "acceptedCandidateAssets": 0,
+  "failedUnits": 64,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "candidateAuthority": "candidate"
+}
