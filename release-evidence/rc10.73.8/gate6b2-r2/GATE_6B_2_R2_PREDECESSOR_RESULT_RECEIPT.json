@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-predecessor-result-v1",
+  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "productionAccepted": false,
+  "executionStatus": "incomplete-controlled-stop",
+  "transportStatus": "passed-after-recovery",
+  "capacityStatus": "passed-after-remediation",
+  "structuredOutputStatus": "failed-on-G6B2-REQ-02",
+  "semanticEvaluationStatus": "insufficient-sample",
+  "completedBenchmarkRequests": 1,
+  "schemaFailedRequests": 1,
+  "notExecutedRequests": 6,
+  "prompt6gEntryStatus": "blocked",
+  "historicalReceiptsPreservedUnchanged": true,
+  "referencedHistory": [
+    "two pre-HTTP transport failures",
+    "recovered HTTP-200 request",
+    "support-span rejection",
+    "malformed structured-output request",
+    "capacity stop",
+    "capacity resume",
+    "prior attempt and token telemetry"
+  ],
+  "priorSemanticQualityClaimPermitted": false
+}

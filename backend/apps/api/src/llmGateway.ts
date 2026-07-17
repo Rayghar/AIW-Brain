@@ -1,4 +1,7 @@
 import { createHash } from 'node:crypto';
+import OpenAI from 'openai';
+import { zodTextFormat } from 'openai/helpers/zod';
+import type { ZodType } from 'zod';
 import { doctrineSystemFor, DOCTRINE_VERSION } from './llmDoctrine.js';
 import { redactForModel, type RedactionResult } from './dataRedaction.js';
 import { verifyEvidenceEntailment, type EvidenceEntailmentSource, type EvidenceEntailmentReceipt } from './approvedKnowledgeGrounding.js';
@@ -108,6 +111,58 @@ export interface JsonGenerationRequest {
   };
 }
 
+export interface StrictStructuredGenerationRequest<T> {
+  purpose: LlmPurpose;
+  system: string;
+  user: string;
+  schemaName: string;
+  schema: ZodType<T>;
+  dataClassification?: 'public'|'internal'|'confidential'|'restricted';
+  maxOutputTokens?: number;
+}
+
+export type StrictStructuredDisposition =
+  | 'completed'
+  | 'refused'
+  | 'incomplete'
+  | 'content-filtered'
+  | 'provider-http-error'
+  | 'model-mismatch'
+  | 'schema-rejected'
+  | 'transport-failure';
+
+export interface StrictStructuredExecutionResult<T> {
+  value: T;
+  disposition: 'completed';
+  providerId: LlmProviderId;
+  requestedModel: string;
+  providerReportedModel: string;
+  responseStatus: string;
+  responseId?: string;
+  providerRequestId?: string;
+  usage: LlmUsage;
+  latencyMs: number;
+  requestFingerprint: string;
+  responseFingerprint: string;
+  schemaName: string;
+  providerSchema: Record<string, unknown>;
+  redaction: { system: RedactionResult; user: RedactionResult };
+  parsedOutputSource: 'openai-sdk-responses-parse-output-parsed';
+  manualJsonParsingUsed: false;
+  semanticContentPersisted: false;
+}
+
+export class LlmStrictStructuredError extends Error {
+  constructor(
+    message: string,
+    readonly disposition: Exclude<StrictStructuredDisposition, 'completed'>,
+    readonly safeTelemetry: Record<string, unknown>,
+  ) {
+    super(message);
+    this.name = 'LlmStrictStructuredError';
+  }
+}
+
 interface CircuitState { failures: number; openedAt?: number; }
 
 export interface LlmDeadLetterRecord {
@@ -128,6 +183,9 @@ export interface LlmGatewayOptions {
   transportTelemetrySink?: (record: LlmSafeTransportTelemetry) => void | Promise<void>;
   freshFetchFactory?: () => { fetchImpl: typeof fetch; close?: () => void | Promise<void> };
   initialAccounting?: Partial<LlmGatewayAccounting>;
+  structuredClientFactory?: (input: { apiKey: string; baseURL: string; fetch: typeof fetch; timeout: number }) => {
+    responses: { parse: (body: Record<string, unknown>) => Promise<any> };
+  };
 }
 
 export interface LlmModelEntitlementReceipt {
@@ -863,6 +921,125 @@ export class LlmGateway {
     this.deadLetterRecords.push(deadLetter);
     await this.options.deadLetterSink?.(structuredClone(deadLetter));
     throw new Error(`LLM_ALL_ROUTES_FAILED:${errors.join('|')}`);
+  }
+
+  /**
+   * Provider-native strict Structured Outputs route for governed semantic work.
+   * The parsed value comes only from the OpenAI SDK `responses.parse` helper;
+   * arbitrary output text is never concatenated, repaired, or JSON.parse'd.
+   */
+  async generateStrictStructured<T>(request: StrictStructuredGenerationRequest<T>): Promise<StrictStructuredExecutionResult<T>> {
+    const route = orderedRoutes(this.policy, request.purpose)[0]!;
+    if (route.providerId !== 'openai' || (route.protocol ?? 'responses') !== 'responses') {
+      throw new LlmStrictStructuredError('LLM_STRICT_STRUCTURED_RESPONSES_ROUTE_REQUIRED', 'schema-rejected', {
+        providerId: route.providerId, protocol: route.protocol ?? null, semanticContentPersisted: false,
+      });
+    }
+    const entry = modelAllowlistEntry(this.policy, route);
+    if (!entry) throw new LlmStrictStructuredError('LLM_MODEL_NOT_ALLOWLISTED', 'model-mismatch', { requestedModel: route.model, semanticContentPersisted: false });
+    if (entry.model !== route.model || (entry.allowedSnapshots?.length && !entry.allowedSnapshots.includes(route.model))) {
+      throw new LlmStrictStructuredError('LLM_EXACT_SNAPSHOT_NOT_ALLOWLISTED', 'model-mismatch', { requestedModel: route.model, semanticContentPersisted: false });
+    }
+    const classification = request.dataClassification ?? 'public';
+    if (!route.dataClassificationAllowlist.includes(classification)) {
+      throw new LlmStrictStructuredError('LLM_DATA_CLASSIFICATION_BLOCKED', 'schema-rejected', { classification, semanticContentPersisted: false });
+    }
+    if (request.system.length + request.user.length > (this.policy.maxInputCharacters ?? 32_768)) {
+      throw new LlmStrictStructuredError('LLM_INPUT_TOO_LARGE', 'schema-rejected', { characterCount: request.system.length + request.user.length, semanticContentPersisted: false });
+    }
+
+    const systemRedaction = redactForModel(request.system, classification);
+    const userRedaction = redactForModel(request.user, classification);
+    const format = zodTextFormat(request.schema, request.schemaName);
+    const providerSchema = structuredClone(format.schema as Record<string, unknown>);
+    const routeMaxOutputTokens = route.maxOutputTokens ?? 6_000;
+    const requestBody: Record<string, unknown> = {
+      model: route.model,
+      input: [
+        { role: 'system', content: doctrineSystemFor(request.purpose, systemRedaction.value) },
+        { role: 'user', content: userRedaction.value },
+      ],
+      max_output_tokens: Math.min(request.maxOutputTokens ?? routeMaxOutputTokens, routeMaxOutputTokens),
+      text: { format },
+      tools: [],
+      stream: false,
+    };
+    const safeRequestFingerprint = sha256(canonicalJson({
+      model: route.model, schemaName: request.schemaName, providerSchema,
+      system: systemRedaction.value, user: userRedaction.value,
+      maxOutputTokens: requestBody.max_output_tokens,
+    }));
+    const clientInput = { apiKey: apiKey(route), baseURL: baseUrl(route), fetch: this.fetchImpl, timeout: Math.max(1_000, route.timeoutMs ?? 120_000) };
+    const client = this.options.structuredClientFactory
+      ? this.options.structuredClientFactory(clientInput)
+      : new OpenAI({ ...clientInput, maxRetries: 0 });
+    const started = Date.now();
+    this.accountingState.attempts += 1;
+    try {
+      const pending: any = client.responses.parse(requestBody);
+      const wrapped = typeof pending?.withResponse === 'function'
+        ? await pending.withResponse()
+        : { data: await pending, response: undefined, request_id: null };
+      const response: any = wrapped.data;
+      const usage: LlmUsage = {
+        ...(Number.isFinite(response?.usage?.input_tokens) ? { inputTokens: response.usage.input_tokens } : {}),
+        ...(Number.isFinite(response?.usage?.output_tokens) ? { outputTokens: response.usage.output_tokens } : {}),
+        ...(Number.isFinite(response?.usage?.total_tokens) ? { totalTokens: response.usage.total_tokens } : {}),
+      };
+      this.accountingState.inputTokens += usage.inputTokens ?? 0;
+      this.accountingState.outputTokens += usage.outputTokens ?? 0;
+      this.accountingState.totalTokens += usage.totalTokens ?? (usage.inputTokens ?? 0) + (usage.outputTokens ?? 0);
+      const common = {
+        responseStatus: String(response?.status ?? 'unknown'),
+        requestedModel: route.model,
+        providerReportedModel: typeof response?.model === 'string' ? response.model : undefined,
+        responseId: typeof response?.id === 'string' ? response.id : undefined,
+        providerRequestId: typeof wrapped.request_id === 'string' ? wrapped.request_id : undefined,
+        httpStatus: wrapped.response?.status,
+        usage,
+        elapsedDurationMs: Date.now() - started,
+        semanticContentPersisted: false,
+      };
+      if (response?.model !== route.model) throw new LlmStrictStructuredError('LLM_PROVIDER_MODEL_IDENTITY_REJECTED', 'model-mismatch', common);
+      if (response?.status === 'incomplete') {
+        const reason = response?.incomplete_details?.reason;
+        throw new LlmStrictStructuredError('LLM_PROVIDER_STRUCTURED_OUTPUT_INCOMPLETE', reason === 'content_filter' ? 'content-filtered' : 'incomplete', { ...common, incompleteReason: reason ?? null });
+      }
+      if (response?.status !== 'completed') throw new LlmStrictStructuredError('LLM_PROVIDER_RESPONSE_NOT_COMPLETED', 'provider-http-error', common);
+      const refusal = (response?.output ?? []).flatMap((item: any) => item?.content ?? []).find((item: any) => item?.type === 'refusal');
+      if (refusal) throw new LlmStrictStructuredError('LLM_PROVIDER_STRUCTURED_OUTPUT_REFUSED', 'refused', common);
+      if (response?.output_parsed === null || response?.output_parsed === undefined) {
+        throw new LlmStrictStructuredError('LLM_PROVIDER_PARSED_OUTPUT_MISSING', 'schema-rejected', common);
+      }
+      const value = request.schema.parse(response.output_parsed);
+      return {
+        value, disposition: 'completed', providerId: route.providerId,
+        requestedModel: route.model, providerReportedModel: response.model,
+        responseStatus: response.status,
+        ...(typeof response.id === 'string' ? { responseId: response.id } : {}),
+        ...(typeof wrapped.request_id === 'string' ? { providerRequestId: wrapped.request_id } : {}),
+        usage, latencyMs: Date.now() - started,
+        requestFingerprint: safeRequestFingerprint, responseFingerprint: responseFingerprint(value),
+        schemaName: request.schemaName, providerSchema,
+        redaction: { system: systemRedaction, user: userRedaction },
+        parsedOutputSource: 'openai-sdk-responses-parse-output-parsed',
+        manualJsonParsingUsed: false, semanticContentPersisted: false,
+      };
+    } catch (error) {
+      if (error instanceof LlmStrictStructuredError) throw error;
+      const cause = (error as any)?.cause;
+      const status = Number.isInteger((error as any)?.status) ? (error as any).status : undefined;
+      const safe = {
+        requestedModel: route.model, elapsedDurationMs: Date.now() - started,
+        ...(status ? { httpStatus: status } : {}),
+        errorName: boundedText((error as any)?.name, 'Error'),
+        errorMessage: boundedText((error as any)?.message, 'strict structured request failed'),
+        ...(cause?.code ? { causeCode: boundedText(cause.code) } : {}),
+        semanticContentPersisted: false,
+      };
+      const transport = isRetryableLlmTransportFailure(error);
+      throw new LlmStrictStructuredError('LLM_STRICT_STRUCTURED_REQUEST_FAILED', transport ? 'transport-failure' : status ? 'provider-http-error' : 'schema-rejected', safe);
+    }
   }
 
   async health(purpose?: LlmPurpose): Promise<Array<{ routeId: string; providerId: LlmProviderId; model: string; allowlisted: boolean; configured: boolean; circuit: 'closed'|'open'; baseUrl?: string }>> {

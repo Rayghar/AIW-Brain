@@ -1,0 +1,160 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-request-plan-v1",
+  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "productionAccepted": false,
+  "predecessorDiagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "frozenCasesUnchanged": true,
+  "frozenLabelsUnchanged": true,
+  "schemaCanaryCalls": 1,
+  "stageAMaximumCalls": 7,
+  "stageBMaximumCalls": 7,
+  "noEvidenceControlProviderCalls": 0,
+  "plannedMaximumProviderCalls": 15,
+  "plan": [
+    {
+      "requestId": "G6B2-REQ-01-R2-A",
+      "originalRequestId": "G6B2-REQ-01",
+      "stage": "A",
+      "caseIds": [
+        "G6B1-01"
+      ],
+      "purpose": "source-example",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-01-R2-B",
+      "originalRequestId": "G6B2-REQ-01",
+      "stage": "B",
+      "caseIds": [
+        "G6B1-01"
+      ],
+      "purpose": "source-example",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-02-R2-A",
+      "originalRequestId": "G6B2-REQ-02",
+      "stage": "A",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "purpose": "contradiction-versus-scoped-distinction",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-02-R2-B",
+      "originalRequestId": "G6B2-REQ-02",
+      "stage": "B",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "purpose": "contradiction-versus-scoped-distinction",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-03-R2-A",
+      "originalRequestId": "G6B2-REQ-03",
+      "stage": "A",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "purpose": "causal-pattern-dna",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-03-R2-B",
+      "originalRequestId": "G6B2-REQ-03",
+      "stage": "B",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "purpose": "causal-pattern-dna",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-04-R2-A",
+      "originalRequestId": "G6B2-REQ-04",
+      "stage": "A",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "purpose": "implementation-observation",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-04-R2-B",
+      "originalRequestId": "G6B2-REQ-04",
+      "stage": "B",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "purpose": "implementation-observation",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-05-R2-A",
+      "originalRequestId": "G6B2-REQ-05",
+      "stage": "A",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "purpose": "deliberate-non-claim",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-05-R2-B",
+      "originalRequestId": "G6B2-REQ-05",
+      "stage": "B",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "purpose": "deliberate-non-claim",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-07-R2-A",
+      "originalRequestId": "G6B2-REQ-07",
+      "stage": "A",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "purpose": "same-source-examples",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-07-R2-B",
+      "originalRequestId": "G6B2-REQ-07",
+      "stage": "B",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "purpose": "same-source-examples",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-08-R2-A",
+      "originalRequestId": "G6B2-REQ-08",
+      "stage": "A",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ],
+      "purpose": "security-and-performance-recommendations",
+      "maxOutputTokens": 6000
+    },
+    {
+      "requestId": "G6B2-REQ-08-R2-B",
+      "originalRequestId": "G6B2-REQ-08",
+      "stage": "B",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ],
+      "purpose": "security-and-performance-recommendations",
+      "maxOutputTokens": 6000
+    }
+  ],
+  "requestPlanFingerprint": "sha256:0a9140e9fa3d0f4d7872d659bc303509b88e0fa4b1820ad8361be83eea8ec317"
+}

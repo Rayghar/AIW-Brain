@@ -1,0 +1,468 @@
+{
+  "schemaVersion": "aiw-gate-6b2-r2-strict-structured-v1",
+  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "productionAccepted": false,
+  "sourceOfTruth": "backend/apps/api/src/gate6b2R2SemanticTransformation.ts Zod schemas",
+  "promptVersion": "gate-6b2-r2-two-stage-cognition-v1",
+  "providerHelper": "openai/helpers/zod zodTextFormat",
+  "strict": true,
+  "stageASchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "schemaVersion": {
+        "type": "string",
+        "const": "aiw-gate-6b2-r2-strict-structured-v1"
+      },
+      "promptVersion": {
+        "type": "string",
+        "const": "gate-6b2-r2-two-stage-cognition-v1"
+      },
+      "stage": {
+        "type": "string",
+        "const": "evidence-atom-extraction"
+      },
+      "authority": {
+        "type": "string",
+        "const": "candidate"
+      },
+      "productionAccepted": {
+        "type": "boolean",
+        "const": false
+      },
+      "automaticPromotionAllowed": {
+        "type": "boolean",
+        "const": false
+      },
+      "designGraphMutationAllowed": {
+        "type": "boolean",
+        "const": false
+      },
+      "cases": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "caseId": {
+              "type": "string"
+            },
+            "disposition": {
+              "type": "string",
+              "enum": [
+                "atoms-proposed",
+                "non-claim",
+                "abstain-insufficient-evidence"
+              ]
+            },
+            "additionalEvidenceRequired": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "atoms": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "atomId": {
+                    "type": "string"
+                  },
+                  "caseId": {
+                    "type": "string"
+                  },
+                  "evidenceId": {
+                    "type": "string"
+                  },
+                  "atomType": {
+                    "type": "string",
+                    "enum": [
+                      "exact-source-statement",
+                      "requirement",
+                      "recommendation",
+                      "example",
+                      "implementation-observation",
+                      "procedure",
+                      "machine-readable-architecture-fact",
+                      "condition",
+                      "limitation",
+                      "causal-relationship",
+                      "contradiction-side",
+                      "non-claim",
+                      "insufficient-evidence-disposition"
+                    ]
+                  },
+                  "exactSupportText": {
+                    "type": "string"
+                  },
+                  "supportRole": {
+                    "type": "string",
+                    "enum": [
+                      "primary",
+                      "condition",
+                      "limitation",
+                      "context",
+                      "mechanism",
+                      "consequence",
+                      "trade-off",
+                      "contradiction"
+                    ]
+                  },
+                  "polarity": {
+                    "type": "string",
+                    "enum": [
+                      "affirmed",
+                      "negated",
+                      "conditional",
+                      "unknown"
+                    ]
+                  },
+                  "sourceModality": {
+                    "type": "string",
+                    "enum": [
+                      "must",
+                      "shall",
+                      "should",
+                      "may",
+                      "can",
+                      "example",
+                      "observed",
+                      "descriptive",
+                      "unknown"
+                    ]
+                  },
+                  "proposedEpistemicStatus": {
+                    "type": "string",
+                    "enum": [
+                      "normative-requirement",
+                      "source-stated-recommendation",
+                      "measured-result",
+                      "source-example",
+                      "implementation-observation",
+                      "expert-interpretation",
+                      "sol-inference",
+                      "hypothesis",
+                      "illustration",
+                      "unknown"
+                    ]
+                  },
+                  "occurrenceHint": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "conditionAtomIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "limitationAtomIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "atomId",
+                  "caseId",
+                  "evidenceId",
+                  "atomType",
+                  "exactSupportText",
+                  "supportRole",
+                  "polarity",
+                  "sourceModality",
+                  "proposedEpistemicStatus",
+                  "occurrenceHint",
+                  "conditionAtomIds",
+                  "limitationAtomIds"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "caseId",
+            "disposition",
+            "additionalEvidenceRequired",
+            "atoms"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "schemaVersion",
+      "promptVersion",
+      "stage",
+      "authority",
+      "productionAccepted",
+      "automaticPromotionAllowed",
+      "designGraphMutationAllowed",
+      "cases"
+    ],
+    "additionalProperties": false
+  },
+  "stageBSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "schemaVersion": {
+        "type": "string",
+        "const": "aiw-gate-6b2-r2-strict-structured-v1"
+      },
+      "promptVersion": {
+        "type": "string",
+        "const": "gate-6b2-r2-two-stage-cognition-v1"
+      },
+      "stage": {
+        "type": "string",
+        "const": "typed-architecture-asset-synthesis"
+      },
+      "authority": {
+        "type": "string",
+        "const": "candidate"
+      },
+      "productionAccepted": {
+        "type": "boolean",
+        "const": false
+      },
+      "automaticPromotionAllowed": {
+        "type": "boolean",
+        "const": false
+      },
+      "designGraphMutationAllowed": {
+        "type": "boolean",
+        "const": false
+      },
+      "cases": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "caseId": {
+              "type": "string"
+            },
+            "disposition": {
+              "type": "string",
+              "enum": [
+                "candidate-assets",
+                "non-claim",
+                "abstain-insufficient-evidence",
+                "rejected-semantic-output"
+              ]
+            },
+            "additionalEvidenceRequired": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "assets": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "assetId": {
+                    "type": "string"
+                  },
+                  "caseId": {
+                    "type": "string"
+                  },
+                  "assetType": {
+                    "type": "string",
+                    "enum": [
+                      "atomic-claim",
+                      "source-example",
+                      "implementation-observation",
+                      "procedure-or-runbook-step",
+                      "pattern-dna",
+                      "architecture-genome-fragment",
+                      "contradiction-or-scoped-distinction",
+                      "interface-obligation",
+                      "data-obligation",
+                      "security-obligation",
+                      "resilience-obligation",
+                      "source-reference",
+                      "non-claim",
+                      "abstention"
+                    ]
+                  },
+                  "statement": {
+                    "type": "string"
+                  },
+                  "epistemicStatus": {
+                    "type": "string",
+                    "enum": [
+                      "normative-requirement",
+                      "source-stated-recommendation",
+                      "measured-result",
+                      "source-example",
+                      "implementation-observation",
+                      "expert-interpretation",
+                      "sol-inference",
+                      "hypothesis",
+                      "illustration",
+                      "unknown"
+                    ]
+                  },
+                  "supportingAtomIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "fieldName": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        },
+                        "knowledgeState": {
+                          "type": "string",
+                          "enum": [
+                            "stated",
+                            "unknown",
+                            "not-stated",
+                            "not-applicable",
+                            "requires-additional-evidence"
+                          ]
+                        },
+                        "supportingAtomIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "fieldName",
+                        "value",
+                        "knowledgeState",
+                        "supportingAtomIds"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "conditions": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "supportingAtomIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "supportingAtomIds"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "limitations": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        },
+                        "supportingAtomIds": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "value",
+                        "supportingAtomIds"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "reviewRequired": {
+                    "type": "boolean",
+                    "const": true
+                  },
+                  "authority": {
+                    "type": "string",
+                    "const": "candidate"
+                  },
+                  "productionAccepted": {
+                    "type": "boolean",
+                    "const": false
+                  },
+                  "automaticPromotionAllowed": {
+                    "type": "boolean",
+                    "const": false
+                  },
+                  "designGraphMutationAllowed": {
+                    "type": "boolean",
+                    "const": false
+                  }
+                },
+                "required": [
+                  "assetId",
+                  "caseId",
+                  "assetType",
+                  "statement",
+                  "epistemicStatus",
+                  "supportingAtomIds",
+                  "fields",
+                  "conditions",
+                  "limitations",
+                  "reviewRequired",
+                  "authority",
+                  "productionAccepted",
+                  "automaticPromotionAllowed",
+                  "designGraphMutationAllowed"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "caseId",
+            "disposition",
+            "additionalEvidenceRequired",
+            "assets"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "schemaVersion",
+      "promptVersion",
+      "stage",
+      "authority",
+      "productionAccepted",
+      "automaticPromotionAllowed",
+      "designGraphMutationAllowed",
+      "cases"
+    ],
+    "additionalProperties": false
+  },
+  "providerSupportedSubsetValidated": true,
+  "schemaFingerprint": "sha256:16cd0eb5828636e1e2b374bf9e951cc5c4080e7e00e50a4ce34f34ed411ffd33",
+  "typeSchemaDriftPreventedBy": "same runtime Zod schema generates provider schema and parses output"
+}

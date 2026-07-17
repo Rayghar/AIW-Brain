@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-capacity-preflight-v1",
+  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "productionAccepted": false,
+  "freeBytes": 15588929536,
+  "controlledStopFloorBytes": 8589934592,
+  "projectedTemporaryBytes": 134217728,
+  "projectedPeakFreeBytes": 15454711808,
+  "passed": true,
+  "deletionPerformed": false,
+  "backupStatus": "deferred-by-product-owner"
+}

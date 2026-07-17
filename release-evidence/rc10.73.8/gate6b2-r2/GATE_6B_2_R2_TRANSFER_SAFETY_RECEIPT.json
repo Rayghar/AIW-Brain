@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-transfer-safety-v1",
+  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "productionAccepted": false,
+  "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "frozenLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "exactHashReplayPassed": true,
+  "repositoryPassagesApprovedForTransfer": 8,
+  "noEvidenceControls": 1,
+  "credentialsDetected": 0,
+  "secretsDetected": 0,
+  "personalInformationDetected": 0,
+  "internalAiwSourceDetected": 0,
+  "internalOrganisationInformationDetected": 0,
+  "passageContentRecorded": false,
+  "receipts": [
+    {
+      "caseId": "G6B1-01",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-02",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "excerptHash": "sha256:a0f65cf4feb71a76aedead58a51cb8658be1b93a51f26ade1f430b4ba286cdfa",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-05",
+      "evidenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+      "excerptHash": "sha256:a56539f2949f91f3b7e4a93b5964bf906c019903527cf932d8e7e2043d86b7f3",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-06",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "excerptHash": "sha256:3ba737d6bdb2468fb1dab3def62ec873e287d7d8ee5825d6cff05d1f89f412c4",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-07",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "excerptHash": "sha256:816f837ed39ff54faacc23a3cfef9ba4ae53e71869bd4b6888485e61de1368b4",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-09",
+      "evidenceId": "BEV-d04770a7fd02a158b96b119d",
+      "excerptHash": "sha256:06ff651397e863b6d1ce44a06093c1625187e330af2976d800c16c81e8763ac1",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-15",
+      "evidenceId": "BEV-b4d881c0aa0d205179a5c445",
+      "excerptHash": "sha256:5015625f0b026e5db518fab13eff713c3bf7839c640f4313ee144ed2b843582f",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-21",
+      "evidenceId": "BEV-fcc349fa2dedc2c092f08f84",
+      "excerptHash": "sha256:d9726e76824270faa3e2a6fbe67494033bae08b4923cc80e75ad21a4351ff0ff",
+      "hashReplay": true,
+      "transferred": true,
+      "publicRepositoryEvidence": true,
+      "passageContentRecorded": false
+    },
+    {
+      "caseId": "G6B1-24",
+      "evidenceId": null,
+      "excerptHash": "sha256:0114b60c9746bef556722c71e0342a5bebdc0727fe7fa38681145b80a3a83302",
+      "hashReplay": true,
+      "transferred": false,
+      "publicRepositoryEvidence": false,
+      "passageContentRecorded": false
+    }
+  ]
+}

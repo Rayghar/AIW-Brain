@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-provider-protocol-audit-v1",
+  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "productionAccepted": false,
+  "endpointType": "OpenAI Responses API /v1/responses",
+  "nonSecretRequestFormat": "model,input,max_output_tokens,text.format,tools=[],stream=false",
+  "priorPath": {
+    "strictTruePresent": true,
+    "api": "Responses API",
+    "streaming": false,
+    "sdkParsedOutputHelper": false,
+    "parsedOutputSource": "manual contentText concatenation then parseJsonContent",
+    "manualTextConcatenation": true,
+    "jsonParsingLocation": "llmGateway.ts invokeRoute",
+    "schemaValidationLocation": "post-JSON.parse deterministic validator",
+    "refusalHandling": "not distinct",
+    "incompleteHandling": "not distinct",
+    "truncationDetection": "not distinct"
+  },
+  "r2Path": {
+    "strictTruePresent": true,
+    "api": "Responses API",
+    "streaming": false,
+    "sdkParsedOutputHelper": true,
+    "parsedOutputSource": "openai.responses.parse output_parsed",
+    "manualTextConcatenation": false,
+    "arbitraryJsonParse": false,
+    "refusalHandling": "distinct",
+    "incompleteHandling": "distinct",
+    "contentFilterHandling": "distinct",
+    "truncationDetection": "incomplete_details",
+    "jsonParsingLocation": "OpenAI SDK structured parser",
+    "schemaValidationLocation": "SDK Zod parse followed by deterministic gates"
+  },
+  "schemaNames": [
+    "gate6b2_r2_evidence_atoms",
+    "gate6b2_r2_typed_assets"
+  ],
+  "schemaFingerprint": "sha256:16cd0eb5828636e1e2b374bf9e951cc5c4080e7e00e50a4ce34f34ed411ffd33",
+  "supportedSchemaValidation": true,
+  "unsupportedKeywordsFound": [],
+  "responseStatusesHandled": [
+    "completed",
+    "incomplete",
+    "failed",
+    "refusal",
+    "content_filter"
+  ],
+  "outputItemTypesInspected": [
+    "message",
+    "output_text",
+    "refusal"
+  ],
+  "maximumOutputTokenBehaviour": "bounded at 6000 per provider request",
+  "credentialsRecorded": false,
+  "authorizationHeadersRecorded": false
+}

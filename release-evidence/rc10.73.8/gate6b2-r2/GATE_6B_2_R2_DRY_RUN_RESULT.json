@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-dry-run-v1",
+  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "productionAccepted": false,
+  "status": "passed",
+  "requestPlanFingerprint": "sha256:0a9140e9fa3d0f4d7872d659bc303509b88e0fa4b1820ad8361be83eea8ec317",
+  "frozenDiagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "frozenLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "plannedMaximumCalls": 15,
+  "absoluteCallCeiling": 18,
+  "maximumTokens": 200000,
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "providerTokens": 0,
+  "candidateRecords": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "noEvidenceControl": {
+    "caseId": "G6B1-24",
+    "disposition": "abstain-insufficient-evidence",
+    "evidenceAvailable": false,
+    "providerCalls": 0,
+    "additionalEvidenceRequired": [
+      "a governed bounded source passage"
+    ],
+    "candidateClaimsCreated": 0,
+    "authority": "candidate",
+    "productionAccepted": false,
+    "automaticPromotionAllowed": false,
+    "designGraphMutationAllowed": false
+  },
+  "blockers": []
+}
