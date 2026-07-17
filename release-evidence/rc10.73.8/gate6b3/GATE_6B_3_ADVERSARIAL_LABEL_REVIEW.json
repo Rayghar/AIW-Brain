@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-adversarial-label-review-v1",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "pass": 3,
+  "modelOutputsConsulted": false,
+  "changesMadeToImproveR2Score": false,
+  "challenges": [
+    {
+      "caseId": "G6B1-02",
+      "challenge": "Worked examples might justify source-example as primary.",
+      "resolution": "Examples exist, but the lead propositions are direct implementation structure and guidelines; example remains secondary."
+    },
+    {
+      "caseId": "G6B1-05",
+      "challenge": "MUST language might justify a normative whole asset.",
+      "resolution": "It justifies normative atoms, not a composite scoped distinction that the source does not name as one requirement."
+    },
+    {
+      "caseId": "G6B1-07",
+      "challenge": "The PPG recommendation mentions high availability and could be resilience.",
+      "resolution": "That is a secondary effect inside a Performance Efficiency section; it cannot justify resilience-control as the primary expected type."
+    },
+    {
+      "caseId": "G6B1-09",
+      "challenge": "All Pattern DNA fields may be source-stated.",
+      "resolution": "Fields may be source-direct, but assembling them into Pattern DNA is a deterministic or delegated synthesis."
+    },
+    {
+      "caseId": "G6B1-21",
+      "challenge": "Marketing prose and a bibliographic link could be treated as non-claim.",
+      "resolution": "Authority and confidence affect review posture, not propositional content; the schema-driven enterprise modelling statement remains claim-bearing."
+    }
+  ],
+  "survivingCorrections": [
+    "G6B1-02",
+    "G6B1-05",
+    "G6B1-07",
+    "G6B1-09",
+    "G6B1-21"
+  ]
+}

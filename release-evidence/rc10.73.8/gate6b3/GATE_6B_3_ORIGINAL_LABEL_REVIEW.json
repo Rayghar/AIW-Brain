@@ -1,0 +1,192 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-original-label-review-v1",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "pass": 2,
+  "originalLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "blindLabelFingerprint": "sha256:ec670f9c339359caca50d77aa2d4dea8c23b3c287cda12627140bcd0b956c235",
+  "cases": [
+    {
+      "caseId": "G6B1-01",
+      "original": {
+        "expectedDisposition": "structured-asset-candidate",
+        "expectedAssetType": "source-example",
+        "expectedEpistemicStatus": "source-example",
+        "requiredConditions": [
+          "example uses modules from a private Bicep Registry"
+        ],
+        "requiredLimitations": [
+          "preferred CI publishing method may not apply to all scenarios"
+        ]
+      },
+      "review": {
+        "classification": [
+          "confirmed",
+          "wrong-epistemic-level"
+        ],
+        "rationale": "Source example is primary, but advice and limitation atoms need their own epistemic statuses; the whole asset cannot describe all atoms."
+      }
+    },
+    {
+      "caseId": "G6B1-02",
+      "original": {
+        "expectedDisposition": "structured-asset-candidate",
+        "expectedAssetType": "source-example",
+        "expectedEpistemicStatus": "source-example",
+        "requiredConditions": [
+          "module test file scenario"
+        ],
+        "requiredLimitations": [
+          "sensitive data must be injected rather than stored"
+        ]
+      },
+      "review": {
+        "classification": [
+          "too-narrow",
+          "wrong-asset-type"
+        ],
+        "rationale": "The passage primarily states CARML implementation and test-file guidelines; source-example is at most secondary."
+      }
+    },
+    {
+      "caseId": "G6B1-05",
+      "original": {
+        "expectedDisposition": "structured-asset-candidate",
+        "expectedAssetType": "contradiction-or-scoped-distinction",
+        "expectedEpistemicStatus": "normative-requirement",
+        "requiredConditions": [
+          "both image SHA reference and canonical file format conditions are satisfied"
+        ],
+        "requiredLimitations": [
+          "transport security and data-at-rest security are beyond model scope"
+        ]
+      },
+      "review": {
+        "classification": [
+          "wrong-epistemic-level"
+        ],
+        "rationale": "Two atoms are normative, while the scoped distinction assembled across them is deterministic synthesis."
+      }
+    },
+    {
+      "caseId": "G6B1-06",
+      "original": {
+        "expectedDisposition": "structured-asset-candidate",
+        "expectedAssetType": "security-control",
+        "expectedEpistemicStatus": "source-stated-recommendation",
+        "requiredConditions": [
+          "direct public IP only in extreme circumstances"
+        ],
+        "requiredLimitations": [
+          "additional NSG or equivalent security measures required"
+        ]
+      },
+      "review": {
+        "classification": [
+          "confirmed",
+          "acceptable-alternative"
+        ],
+        "rationale": "Security-control and security-obligation are permitted ontology aliases."
+      }
+    },
+    {
+      "caseId": "G6B1-07",
+      "original": {
+        "expectedDisposition": "structured-asset-candidate",
+        "expectedAssetType": "resilience-control",
+        "expectedEpistemicStatus": "source-stated-recommendation",
+        "requiredConditions": [
+          "dynamic load for scale sets or latency-sensitive workload for PPGs"
+        ],
+        "requiredLimitations": [
+          "PPG availability statement is scoped to a single physical datacenter"
+        ]
+      },
+      "review": {
+        "classification": [
+          "wrong-asset-type",
+          "limitation-applicability-defect"
+        ],
+        "rationale": "The section explicitly concerns Performance Efficiency; single-datacenter scope is not evidence that the primary asset is a resilience control."
+      }
+    },
+    {
+      "caseId": "G6B1-09",
+      "original": {
+        "expectedDisposition": "structured-asset-candidate",
+        "expectedAssetType": "pattern-dna",
+        "expectedEpistemicStatus": "implementation-observation",
+        "requiredConditions": [
+          "event-driven context with producers, ingestion and consumers"
+        ],
+        "requiredLimitations": [
+          "broker topology can risk inconsistency without restart or replay mechanism"
+        ]
+      },
+      "review": {
+        "classification": [
+          "confirmed",
+          "wrong-epistemic-level"
+        ],
+        "rationale": "Pattern DNA is correct, but its synthesis status differs from its individually sourced fields."
+      }
+    },
+    {
+      "caseId": "G6B1-15",
+      "original": {
+        "expectedDisposition": "structured-asset-candidate",
+        "expectedAssetType": "implementation-observation",
+        "expectedEpistemicStatus": "implementation-observation",
+        "requiredConditions": [
+          "Spring Modulith version 1.3"
+        ],
+        "requiredLimitations": [
+          "additionalPackages requires advance knowledge of packages"
+        ]
+      },
+      "review": {
+        "classification": [
+          "confirmed"
+        ],
+        "rationale": "Direct Spring Modulith implementation observation with a source example."
+      }
+    },
+    {
+      "caseId": "G6B1-21",
+      "original": {
+        "expectedDisposition": "non-claim",
+        "expectedAssetType": "non-claim",
+        "expectedEpistemicStatus": "unknown",
+        "requiredConditions": [],
+        "requiredLimitations": []
+      },
+      "review": {
+        "classification": [
+          "benchmark-intent-mismatch"
+        ],
+        "rationale": "The excerpt contains an explicit proposition about Architecture Catalog; low authority or marketing posture does not make it a non-claim."
+      }
+    },
+    {
+      "caseId": "G6B1-24",
+      "original": {
+        "expectedDisposition": "abstain-insufficient-evidence",
+        "expectedAssetType": "insufficient-evidence-abstention",
+        "expectedEpistemicStatus": "unknown",
+        "requiredConditions": [],
+        "requiredLimitations": []
+      },
+      "review": {
+        "classification": [
+          "confirmed"
+        ],
+        "rationale": "No governed evidence requires deterministic abstention with zero provider calls."
+      }
+    }
+  ]
+}

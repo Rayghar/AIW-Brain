@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-denominator-audit-v1",
+  "generatedAt": "2026-07-17T10:10:24.745Z",
+  "productionAccepted": false,
+  "originalEvaluationCount": 10,
+  "uniqueCaseCount": 9,
+  "assetRecordCount": 22,
+  "metrics": [
+    {
+      "metric": "dispositionAccuracy",
+      "reported": 80,
+      "denominator": 10,
+      "numerator": 8,
+      "unit": "case occurrences",
+      "duplicateCaseEffect": "G6B1-01 counted twice because individual and paired requests were both included"
+    },
+    {
+      "metric": "semanticAssetTypeAccuracy",
+      "reported": 70,
+      "denominator": 10,
+      "numerator": 7,
+      "unit": "case occurrences",
+      "defect": "only acceptedAssets[0] was evaluated; the complete case asset set was ignored"
+    },
+    {
+      "metric": "canonicalEpistemicStatusAccuracy",
+      "reported": 50,
+      "denominator": 10,
+      "numerator": 5,
+      "unit": "case occurrences",
+      "defect": "one asset-level status was compared with one frozen status; source atoms, fields and synthesis were conflated"
+    },
+    {
+      "metric": "conditionCompleteness",
+      "reported": 30,
+      "denominator": 10,
+      "numerator": 3,
+      "unit": "all case occurrences",
+      "defect": "non-applicable and optional cases remained in the denominator; only nonempty candidate asset conditions or empty frozen requirements passed"
+    },
+    {
+      "metric": "limitationCompleteness",
+      "reported": 30,
+      "denominator": 10,
+      "numerator": 3,
+      "unit": "all case occurrences",
+      "defect": "non-applicable and optional cases remained in the denominator; only nonempty candidate asset limitations or empty frozen requirements passed"
+    },
+    {
+      "metric": "correctNonClaimDisposition",
+      "reported": 0,
+      "denominator": 1,
+      "numerator": 0,
+      "unit": "frozen deliberate-non-claim occurrences",
+      "defect": "zero validated atoms became rejected-semantic-output; no deterministic non-claim classification path existed"
+    }
+  ],
+  "findings": {
+    "nonApplicableConditionsCountedAsMissing": true,
+    "nonApplicableLimitationsCountedAsMissing": true,
+    "completeAssetSetEvaluated": false,
+    "firstAcceptedAssetOnly": true,
+    "assetTypeAliasesNormalised": [
+      "security-control->security-obligation",
+      "resilience-control->resilience-obligation",
+      "insufficient-evidence-abstention->abstention"
+    ],
+    "compositeAssetForcedToOneEpistemicStatus": true,
+    "fieldEpistemicStatusesEvaluated": false,
+    "zeroAtomDeliberateNonClaimClassifiedAsFailure": true,
+    "pairedCaseIndividualFallbackAvailable": false,
+    "assetAuthorityConfusedWithEpistemicStatus": false,
+    "sourceEpistemicConflatedWithSynthesisStatus": true
+  }
+}

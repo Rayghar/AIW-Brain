@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-condition-limitation-v2",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "applicabilityValues": [
+    "required",
+    "optional",
+    "not-applicable",
+    "unknown"
+  ],
+  "denominatorRule": "only required applicability contributes to required completeness",
+  "reports": [
+    "required captured",
+    "required omitted",
+    "optional captured",
+    "non-applicable",
+    "unknown posture"
+  ],
+  "emptyArrayPenaltyWhenNotApplicable": false
+}

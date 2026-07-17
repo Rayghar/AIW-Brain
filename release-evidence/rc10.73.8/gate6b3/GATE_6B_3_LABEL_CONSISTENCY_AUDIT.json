@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-label-consistency-audit-v1",
+  "generatedAt": "2026-07-17T10:10:24.745Z",
+  "productionAccepted": false,
+  "originalLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "caseCount": 9,
+  "confirmedCaseCount": 4,
+  "defectCaseCount": 5,
+  "cases": [
+    {
+      "caseId": "G6B1-01",
+      "consistent": true,
+      "findings": []
+    },
+    {
+      "caseId": "G6B1-02",
+      "consistent": false,
+      "findings": [
+        "source-example-is-too-narrow-for-guidelines-and-direct-implementation-observations"
+      ]
+    },
+    {
+      "caseId": "G6B1-05",
+      "consistent": false,
+      "findings": [
+        "whole-composite-asset-cannot-inherit-normative-status-from-two-requirement-atoms"
+      ]
+    },
+    {
+      "caseId": "G6B1-06",
+      "consistent": true,
+      "findings": []
+    },
+    {
+      "caseId": "G6B1-07",
+      "consistent": false,
+      "findings": [
+        "resilience-control-is-not-supported;excerpt-is-performance-efficiency-guidance"
+      ]
+    },
+    {
+      "caseId": "G6B1-09",
+      "consistent": false,
+      "findings": [
+        "pattern-dna-synthesis-status-is-distinct-from-source-atom-epistemic-status"
+      ]
+    },
+    {
+      "caseId": "G6B1-15",
+      "consistent": true,
+      "findings": []
+    },
+    {
+      "caseId": "G6B1-21",
+      "consistent": false,
+      "findings": [
+        "non-claim-label-conflicts-with-explicit-claim-bearing-product-description"
+      ]
+    },
+    {
+      "caseId": "G6B1-24",
+      "consistent": true,
+      "findings": []
+    }
+  ],
+  "originalLabelsModified": false,
+  "externalHumanReview": false
+}

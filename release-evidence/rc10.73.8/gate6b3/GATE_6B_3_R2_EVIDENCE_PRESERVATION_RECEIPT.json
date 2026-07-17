@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-r2-preservation-v1",
+  "generatedAt": "2026-07-17T10:10:24.745Z",
+  "productionAccepted": false,
+  "preservedFileCount": 20,
+  "files": [
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_PROVIDER_PROTOCOL_AUDIT.json",
+      "bytes": 1996,
+      "sha256": "sha256:ca5989adf6654d50e258f98a9e76af90fd99b12042615fa15ba7be5eb5d149d4"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_COMPLETION_REPORT.md",
+      "bytes": 1426,
+      "sha256": "sha256:6d4e7b420fc00c457f0bac8d7a5f84ab6b329e11eb33b3a83d68eaa583afde1f"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_MODEL_CAPABILITY_ESCALATION.json",
+      "bytes": 1862,
+      "sha256": "sha256:3f9063ad1e2874ae0ff4bc41d21477b3b1e872731064caa415cee23573a430d6"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_ACTUAL_COST_REPORT.json",
+      "bytes": 650,
+      "sha256": "sha256:637c40b7c3871297b6717f74274f09c134162e27539545e96b726fa2b441ff8b"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_CANDIDATE_RECORDS.json",
+      "bytes": 34649,
+      "sha256": "sha256:beb581a8f7c10a623fc25da89ed690f223d5bb9217f3570bd7ff98caa1cf61ee"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_EVIDENCE_ATOM_LEDGER.json",
+      "bytes": 65544,
+      "sha256": "sha256:4542cc2c842506e1adb822c39013d1ae3fdb8f59037b9b800f143f035fcf7961"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_FAILED_ATTEMPTS.json",
+      "bytes": 21095,
+      "sha256": "sha256:c12cbcec0078a331033555cb08200909112d92f71d001904ab69a285278d99b2"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_LIVE_EXECUTION_RESULT.json",
+      "bytes": 14489,
+      "sha256": "sha256:62d3685ff5b8960c115bcf0d4cad5e7ef9a37e86bdf1d3a5d1293a014c832317"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_PROMPT_6G_ENTRY_DECISION.json",
+      "bytes": 792,
+      "sha256": "sha256:1848b13f32007cafe943ce11b0ababfc81a2491d72622bb3b42c5939eb77406c"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_QUALITY_EVALUATION.json",
+      "bytes": 7510,
+      "sha256": "sha256:d78b6b820fcacb381cb5b71ed91d4b8fe3553f68dfa667798a0975ad6538010c"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_TRANSACTION_RECEIPT.json",
+      "bytes": 10816,
+      "sha256": "sha256:883dc9d1db0b3ffae84aa89b71a03c44cc4833590c785939054ce2e27fe18d08"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_VERIFICATION_RECEIPT.json",
+      "bytes": 705,
+      "sha256": "sha256:1121e0cdc774aa31d441d02f98ea6810d1d67f66116fc38a77841c36ddd53f0a"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_SCHEMA_CONTRACT.json",
+      "bytes": 14736,
+      "sha256": "sha256:71a45e1f892ac266f92e81d31d9e108599b482ae3007cbef58e994c0a72d3d2d"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_EVIDENCE_ATOM_CONTRACT.json",
+      "bytes": 589,
+      "sha256": "sha256:e9d61a33590f61441e864c3c56c30dde65bf04bf218f195f479f619a8dc8bf0e"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_TYPED_ASSET_CONTRACT.json",
+      "bytes": 500,
+      "sha256": "sha256:e84dd32084d95f6c12ffd11e8a4929dc0ba7d9f587e5e1455136e15e217a3cd4"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_REQUEST_PLAN.json",
+      "bytes": 3971,
+      "sha256": "sha256:3c52d5d093b2a920c69e9d77ed5cf4e19c5369be671cce5b19ad9baf37c81f30"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_EXECUTION_AUTHORITY.json",
+      "bytes": 1067,
+      "sha256": "sha256:23d18cea9afad640d96582ace88e0c0c737859807a8c90e2eec78274fbd34828"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_TRANSFER_SAFETY_RECEIPT.json",
+      "bytes": 3520,
+      "sha256": "sha256:b34a4e27171f3b1e2d892dea5e8e105d28d784f64b96c537f8c2c0d65dd6dede"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_PREDECESSOR_RESULT_RECEIPT.json",
+      "bytes": 874,
+      "sha256": "sha256:e2e6abc5a1afbaa74003c94ca5b206143ce036c6a1accbecf673edf48f21d79d"
+    },
+    {
+      "path": "release-evidence/rc10.73.8/gate6b2-r2/GATE_6B_2_R2_STRUCTURED_OUTPUT_ROOT_CAUSE.md",
+      "bytes": 882,
+      "sha256": "sha256:6a4e1df8f3583acfc36b87155beccb79fa123962f1564fb33637a90835a5f286"
+    }
+  ],
+  "manifestFingerprint": "sha256:21aaec6ea33eb9844322a9c9e20df8cbcba43ab484a6260fd9fff4fa37c7fc2f",
+  "historicalFilesModified": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "verificationMethod": "byte-length-and-sha256-before-v2-work"
+}

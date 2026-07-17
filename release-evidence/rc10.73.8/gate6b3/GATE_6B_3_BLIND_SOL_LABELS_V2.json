@@ -1,0 +1,380 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-blind-sol-labels-v2",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "pass": 1,
+  "proceduralBlindReview": true,
+  "reviewerPriorThreadExposureDisclosed": true,
+  "materialsUsed": [
+    "immutable bounded evidence",
+    "source identity and authority",
+    "original benchmark question",
+    "canonical ontology",
+    "canonical epistemic contract"
+  ],
+  "materialsWithheldDuringPass": [
+    "GPT-4.1-mini outputs",
+    "R2 scores",
+    "failed-gate list",
+    "prior expected labels"
+  ],
+  "caseCount": 9,
+  "labels": [
+    {
+      "caseId": "G6B1-01",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "source-example"
+      ],
+      "secondaryAssetTypes": [
+        "source-reference",
+        "contradiction-or-scoped-distinction"
+      ],
+      "assetTypeAliases": {},
+      "permittedSourceAtomEpistemicStatuses": [
+        "source-example",
+        "source-stated-recommendation"
+      ],
+      "expectedSynthesisStatuses": [
+        "source-direct",
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [],
+      "conditionApplicability": "required",
+      "requiredConditionEvidenceTerms": [
+        "private bicep registry"
+      ],
+      "limitationApplicability": "required",
+      "requiredLimitationEvidenceTerms": [
+        "not be applicable to all scenarios"
+      ],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-02",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "implementation-observation",
+        "procedure-or-runbook-step"
+      ],
+      "secondaryAssetTypes": [
+        "source-example",
+        "security-control"
+      ],
+      "assetTypeAliases": {
+        "security-control": [
+          "security-obligation"
+        ]
+      },
+      "permittedSourceAtomEpistemicStatuses": [
+        "implementation-observation",
+        "source-stated-recommendation",
+        "source-example"
+      ],
+      "expectedSynthesisStatuses": [
+        "source-direct",
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [],
+      "conditionApplicability": "required",
+      "requiredConditionEvidenceTerms": [
+        "module test files"
+      ],
+      "limitationApplicability": "required",
+      "requiredLimitationEvidenceTerms": [
+        "sensitive data should not be stored"
+      ],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-05",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "contradiction-or-scoped-distinction"
+      ],
+      "secondaryAssetTypes": [
+        "security-control",
+        "source-example"
+      ],
+      "assetTypeAliases": {
+        "security-control": [
+          "security-obligation"
+        ]
+      },
+      "permittedSourceAtomEpistemicStatuses": [
+        "normative-requirement",
+        "implementation-observation",
+        "source-example"
+      ],
+      "expectedSynthesisStatuses": [
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [
+        {
+          "fieldName": "condition",
+          "permittedStatuses": [
+            "normative-requirement",
+            "implementation-observation"
+          ]
+        },
+        {
+          "fieldName": "limitation",
+          "permittedStatuses": [
+            "implementation-observation"
+          ]
+        }
+      ],
+      "conditionApplicability": "required",
+      "requiredConditionEvidenceTerms": [
+        "referenced by sha",
+        "canonical format"
+      ],
+      "limitationApplicability": "required",
+      "requiredLimitationEvidenceTerms": [
+        "beyond the scope"
+      ],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-06",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "security-control"
+      ],
+      "secondaryAssetTypes": [
+        "implementation-observation",
+        "source-reference"
+      ],
+      "assetTypeAliases": {
+        "security-control": [
+          "security-obligation"
+        ]
+      },
+      "permittedSourceAtomEpistemicStatuses": [
+        "source-stated-recommendation",
+        "implementation-observation",
+        "source-example",
+        "unknown"
+      ],
+      "expectedSynthesisStatuses": [
+        "source-direct",
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [],
+      "conditionApplicability": "required",
+      "requiredConditionEvidenceTerms": [
+        "extreme circumstances"
+      ],
+      "limitationApplicability": "required",
+      "requiredLimitationEvidenceTerms": [
+        "other security measures"
+      ],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-07",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "performance-tactic"
+      ],
+      "secondaryAssetTypes": [
+        "source-reference",
+        "source-example"
+      ],
+      "assetTypeAliases": {
+        "performance-tactic": [
+          "performance-efficiency-recommendation"
+        ]
+      },
+      "permittedSourceAtomEpistemicStatuses": [
+        "source-stated-recommendation",
+        "implementation-observation",
+        "unknown"
+      ],
+      "expectedSynthesisStatuses": [
+        "source-direct",
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [],
+      "conditionApplicability": "required",
+      "requiredConditionEvidenceTerms": [
+        "dynamic load",
+        "latency-sensitive"
+      ],
+      "limitationApplicability": "not-applicable",
+      "requiredLimitationEvidenceTerms": [],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-09",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "pattern-dna"
+      ],
+      "secondaryAssetTypes": [
+        "implementation-observation",
+        "source-reference"
+      ],
+      "assetTypeAliases": {},
+      "permittedSourceAtomEpistemicStatuses": [
+        "implementation-observation",
+        "source-stated-recommendation"
+      ],
+      "expectedSynthesisStatuses": [
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [
+        {
+          "fieldName": "context-or-trigger",
+          "permittedStatuses": [
+            "implementation-observation",
+            "source-stated-recommendation"
+          ]
+        },
+        {
+          "fieldName": "mechanism",
+          "permittedStatuses": [
+            "implementation-observation",
+            "source-stated-recommendation"
+          ]
+        },
+        {
+          "fieldName": "consequence",
+          "permittedStatuses": [
+            "implementation-observation",
+            "source-stated-recommendation"
+          ]
+        },
+        {
+          "fieldName": "trade-off-or-limitation",
+          "permittedStatuses": [
+            "implementation-observation",
+            "source-stated-recommendation"
+          ]
+        }
+      ],
+      "conditionApplicability": "required",
+      "requiredConditionEvidenceTerms": [
+        "event-driven architecture"
+      ],
+      "limitationApplicability": "required",
+      "requiredLimitationEvidenceTerms": [
+        "challenges"
+      ],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-15",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "implementation-observation"
+      ],
+      "secondaryAssetTypes": [
+        "source-example",
+        "procedure-or-runbook-step"
+      ],
+      "assetTypeAliases": {},
+      "permittedSourceAtomEpistemicStatuses": [
+        "implementation-observation"
+      ],
+      "expectedSynthesisStatuses": [
+        "source-direct",
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [],
+      "conditionApplicability": "required",
+      "requiredConditionEvidenceTerms": [
+        "version 1.3"
+      ],
+      "limitationApplicability": "required",
+      "requiredLimitationEvidenceTerms": [
+        "requires knowing"
+      ],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-21",
+      "expectedDisposition": "candidate-assets",
+      "permittedDispositions": [
+        "candidate-assets"
+      ],
+      "primaryAssetTypes": [
+        "implementation-observation"
+      ],
+      "secondaryAssetTypes": [
+        "source-reference"
+      ],
+      "assetTypeAliases": {},
+      "permittedSourceAtomEpistemicStatuses": [
+        "implementation-observation",
+        "source-stated-recommendation"
+      ],
+      "expectedSynthesisStatuses": [
+        "source-direct",
+        "deterministic-composition"
+      ],
+      "fieldEpistemicExpectations": [],
+      "conditionApplicability": "not-applicable",
+      "requiredConditionEvidenceTerms": [],
+      "limitationApplicability": "optional",
+      "requiredLimitationEvidenceTerms": [],
+      "expectedNonClaim": false,
+      "expectedAbstention": false
+    },
+    {
+      "caseId": "G6B1-24",
+      "expectedDisposition": "abstain-insufficient-evidence",
+      "permittedDispositions": [
+        "abstain-insufficient-evidence"
+      ],
+      "primaryAssetTypes": [],
+      "secondaryAssetTypes": [],
+      "assetTypeAliases": {},
+      "permittedSourceAtomEpistemicStatuses": [
+        "unknown"
+      ],
+      "expectedSynthesisStatuses": [],
+      "fieldEpistemicExpectations": [],
+      "conditionApplicability": "not-applicable",
+      "requiredConditionEvidenceTerms": [],
+      "limitationApplicability": "not-applicable",
+      "requiredLimitationEvidenceTerms": [],
+      "expectedNonClaim": false,
+      "expectedAbstention": true
+    }
+  ],
+  "labelFingerprint": "sha256:ec670f9c339359caca50d77aa2d4dea8c23b3c287cda12627140bcd0b956c235"
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-epistemic-model-v2",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "sourceAtomStatuses": [
+    "normative-requirement",
+    "source-stated-recommendation",
+    "measured-result",
+    "source-example",
+    "implementation-observation",
+    "illustration",
+    "unknown"
+  ],
+  "fieldEpistemicStatusRequired": true,
+  "assetSynthesisStatuses": [
+    "source-direct",
+    "deterministic-composition",
+    "sol-inference",
+    "delegated-sol-interpretation",
+    "hypothesis"
+  ],
+  "invariants": [
+    "normative atom does not make composite asset normative",
+    "multi-atom synthesis is not source-stated unless the complete synthesis is directly stated",
+    "source example cannot automatically become normative",
+    "historical R2 candidates are read-only"
+  ],
+  "migrationViewOnly": true
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-asset-set-evaluator-v2",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "evaluatorSource": "backend/apps/api/src/gate6b3Evaluator.ts",
+  "evaluationUnit": "unique-case-complete-accepted-asset-set",
+  "firstAssetOnly": false,
+  "aliasesSupported": true,
+  "secondaryAssetCannotReplaceRequiredPrimary": true,
+  "sourceReferenceSecondaryOnlyUnlessPrimaryExpected": true,
+  "procedureRecommendationDistinguished": true,
+  "performanceResilienceDistinguished": true,
+  "semanticIsolationFallback": {
+    "maximumPerFailedPairedCase": 1,
+    "preservesPairedAttempt": true,
+    "samePromptModelEvidenceSchema": true,
+    "countsAsProviderCall": true
+  }
+}

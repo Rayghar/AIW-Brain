@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-r2-reevaluation-decision-v1",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "passed": false,
+  "gate6b2Classification": "semantic-quality-still-below-v2-gates",
+  "prompt6gEntryStatus": "blocked",
+  "nextStep": "verify-exact-gpt-5.6-sol-runtime-entitlement",
+  "failedGates": [
+    "dispositionAccuracy",
+    "primaryAssetTypeAccuracy",
+    "requiredConditionCompleteness",
+    "requiredLimitationCompleteness"
+  ],
+  "providerCalls": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

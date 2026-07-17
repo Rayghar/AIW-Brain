@@ -1,0 +1,731 @@
+{
+  "schemaVersion": "aiw-gate-6b-3-label-adjudication-v1",
+  "generatedAt": "2026-07-17T10:17:37.138Z",
+  "productionAccepted": false,
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "pass": 4,
+  "originalLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "adjudicatedLabelFingerprint": "sha256:ec670f9c339359caca50d77aa2d4dea8c23b3c287cda12627140bcd0b956c235",
+  "changedCaseCount": 9,
+  "changeCount": 44,
+  "decisions": [
+    {
+      "caseId": "G6B1-01",
+      "field": "expectedDisposition",
+      "originalValue": "structured-asset-candidate",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-01",
+      "reason": "Source example is primary, but advice and limitation atoms need their own epistemic statuses; the whole asset cannot describe all atoms.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-01",
+      "field": "expectedAssetType",
+      "originalValue": "source-example",
+      "revisedValue": [
+        "source-example"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-01",
+      "reason": "Source example is primary, but advice and limitation atoms need their own epistemic statuses; the whole asset cannot describe all atoms.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-01",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "source-example",
+      "revisedValue": {
+        "sourceAtoms": [
+          "source-example",
+          "source-stated-recommendation"
+        ],
+        "synthesis": [
+          "source-direct",
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-01",
+      "reason": "Source example is primary, but advice and limitation atoms need their own epistemic statuses; the whole asset cannot describe all atoms.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-01",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-01",
+      "reason": "Source example is primary, but advice and limitation atoms need their own epistemic statuses; the whole asset cannot describe all atoms.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-01",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-01",
+      "reason": "Source example is primary, but advice and limitation atoms need their own epistemic statuses; the whole asset cannot describe all atoms.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-02",
+      "field": "expectedDisposition",
+      "originalValue": "structured-asset-candidate",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-02",
+      "reason": "The passage primarily states CARML implementation and test-file guidelines; source-example is at most secondary.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-02",
+      "field": "expectedAssetType",
+      "originalValue": "source-example",
+      "revisedValue": [
+        "implementation-observation",
+        "procedure-or-runbook-step"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-02",
+      "reason": "The passage primarily states CARML implementation and test-file guidelines; source-example is at most secondary.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-02",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "source-example",
+      "revisedValue": {
+        "sourceAtoms": [
+          "implementation-observation",
+          "source-stated-recommendation",
+          "source-example"
+        ],
+        "synthesis": [
+          "source-direct",
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-02",
+      "reason": "The passage primarily states CARML implementation and test-file guidelines; source-example is at most secondary.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-02",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-02",
+      "reason": "The passage primarily states CARML implementation and test-file guidelines; source-example is at most secondary.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-02",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-02",
+      "reason": "The passage primarily states CARML implementation and test-file guidelines; source-example is at most secondary.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-05",
+      "field": "expectedDisposition",
+      "originalValue": "structured-asset-candidate",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-05",
+      "reason": "Two atoms are normative, while the scoped distinction assembled across them is deterministic synthesis.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-05",
+      "field": "expectedAssetType",
+      "originalValue": "contradiction-or-scoped-distinction",
+      "revisedValue": [
+        "contradiction-or-scoped-distinction"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-05",
+      "reason": "Two atoms are normative, while the scoped distinction assembled across them is deterministic synthesis.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-05",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "normative-requirement",
+      "revisedValue": {
+        "sourceAtoms": [
+          "normative-requirement",
+          "implementation-observation",
+          "source-example"
+        ],
+        "synthesis": [
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-05",
+      "reason": "Two atoms are normative, while the scoped distinction assembled across them is deterministic synthesis.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-05",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-05",
+      "reason": "Two atoms are normative, while the scoped distinction assembled across them is deterministic synthesis.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-05",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-05",
+      "reason": "Two atoms are normative, while the scoped distinction assembled across them is deterministic synthesis.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-06",
+      "field": "expectedDisposition",
+      "originalValue": "structured-asset-candidate",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-06",
+      "reason": "Security-control and security-obligation are permitted ontology aliases.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-06",
+      "field": "expectedAssetType",
+      "originalValue": "security-control",
+      "revisedValue": [
+        "security-control"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-06",
+      "reason": "Security-control and security-obligation are permitted ontology aliases.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-06",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "source-stated-recommendation",
+      "revisedValue": {
+        "sourceAtoms": [
+          "source-stated-recommendation",
+          "implementation-observation",
+          "source-example",
+          "unknown"
+        ],
+        "synthesis": [
+          "source-direct",
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-06",
+      "reason": "Security-control and security-obligation are permitted ontology aliases.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-06",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-06",
+      "reason": "Security-control and security-obligation are permitted ontology aliases.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-06",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-06",
+      "reason": "Security-control and security-obligation are permitted ontology aliases.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-07",
+      "field": "expectedDisposition",
+      "originalValue": "structured-asset-candidate",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-07",
+      "reason": "The section explicitly concerns Performance Efficiency; single-datacenter scope is not evidence that the primary asset is a resilience control.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-07",
+      "field": "expectedAssetType",
+      "originalValue": "resilience-control",
+      "revisedValue": [
+        "performance-tactic"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-07",
+      "reason": "The section explicitly concerns Performance Efficiency; single-datacenter scope is not evidence that the primary asset is a resilience control.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-07",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "source-stated-recommendation",
+      "revisedValue": {
+        "sourceAtoms": [
+          "source-stated-recommendation",
+          "implementation-observation",
+          "unknown"
+        ],
+        "synthesis": [
+          "source-direct",
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-07",
+      "reason": "The section explicitly concerns Performance Efficiency; single-datacenter scope is not evidence that the primary asset is a resilience control.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-07",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-07",
+      "reason": "The section explicitly concerns Performance Efficiency; single-datacenter scope is not evidence that the primary asset is a resilience control.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-07",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "not-applicable",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-07",
+      "reason": "The section explicitly concerns Performance Efficiency; single-datacenter scope is not evidence that the primary asset is a resilience control.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-09",
+      "field": "expectedDisposition",
+      "originalValue": "structured-asset-candidate",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-09",
+      "reason": "Pattern DNA is correct, but its synthesis status differs from its individually sourced fields.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-09",
+      "field": "expectedAssetType",
+      "originalValue": "pattern-dna",
+      "revisedValue": [
+        "pattern-dna"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-09",
+      "reason": "Pattern DNA is correct, but its synthesis status differs from its individually sourced fields.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-09",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "implementation-observation",
+      "revisedValue": {
+        "sourceAtoms": [
+          "implementation-observation",
+          "source-stated-recommendation"
+        ],
+        "synthesis": [
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-09",
+      "reason": "Pattern DNA is correct, but its synthesis status differs from its individually sourced fields.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-09",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-09",
+      "reason": "Pattern DNA is correct, but its synthesis status differs from its individually sourced fields.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-09",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-09",
+      "reason": "Pattern DNA is correct, but its synthesis status differs from its individually sourced fields.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-15",
+      "field": "expectedDisposition",
+      "originalValue": "structured-asset-candidate",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-15",
+      "reason": "Direct Spring Modulith implementation observation with a source example.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-15",
+      "field": "expectedAssetType",
+      "originalValue": "implementation-observation",
+      "revisedValue": [
+        "implementation-observation"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-15",
+      "reason": "Direct Spring Modulith implementation observation with a source example.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-15",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "implementation-observation",
+      "revisedValue": {
+        "sourceAtoms": [
+          "implementation-observation"
+        ],
+        "synthesis": [
+          "source-direct",
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-15",
+      "reason": "Direct Spring Modulith implementation observation with a source example.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-15",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-15",
+      "reason": "Direct Spring Modulith implementation observation with a source example.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-15",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "required",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-15",
+      "reason": "Direct Spring Modulith implementation observation with a source example.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-21",
+      "field": "expectedDisposition",
+      "originalValue": "non-claim",
+      "revisedValue": "candidate-assets",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-21",
+      "reason": "The excerpt contains an explicit proposition about Architecture Catalog; low authority or marketing posture does not make it a non-claim.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-21",
+      "field": "expectedAssetType",
+      "originalValue": "non-claim",
+      "revisedValue": [
+        "implementation-observation"
+      ],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-21",
+      "reason": "The excerpt contains an explicit proposition about Architecture Catalog; low authority or marketing posture does not make it a non-claim.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-21",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "unknown",
+      "revisedValue": {
+        "sourceAtoms": [
+          "implementation-observation",
+          "source-stated-recommendation"
+        ],
+        "synthesis": [
+          "source-direct",
+          "deterministic-composition"
+        ]
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-21",
+      "reason": "The excerpt contains an explicit proposition about Architecture Catalog; low authority or marketing posture does not make it a non-claim.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-21",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "not-applicable",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-21",
+      "reason": "The excerpt contains an explicit proposition about Architecture Catalog; low authority or marketing posture does not make it a non-claim.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-21",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "optional",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-21",
+      "reason": "The excerpt contains an explicit proposition about Architecture Catalog; low authority or marketing posture does not make it a non-claim.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-24",
+      "field": "expectedAssetType",
+      "originalValue": "insufficient-evidence-abstention",
+      "revisedValue": [],
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-24",
+      "reason": "No governed evidence requires deterministic abstention with zero provider calls.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-24",
+      "field": "expectedEpistemicStatus",
+      "originalValue": "unknown",
+      "revisedValue": {
+        "sourceAtoms": [
+          "unknown"
+        ],
+        "synthesis": []
+      },
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-24",
+      "reason": "No governed evidence requires deterministic abstention with zero provider calls.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-24",
+      "field": "conditionApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "not-applicable",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-24",
+      "reason": "No governed evidence requires deterministic abstention with zero provider calls.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    },
+    {
+      "caseId": "G6B1-24",
+      "field": "limitationApplicability",
+      "originalValue": "implicit-required-or-empty",
+      "revisedValue": "not-applicable",
+      "evidence": "GATE_6B_2_DIAGNOSTIC_REVIEW_PACK.md#g6b1-24",
+      "reason": "No governed evidence requires deterministic abstention with zero provider calls.",
+      "reviewerPass": [
+        1,
+        2,
+        3
+      ],
+      "adjudicationDecision": "accepted-development-benchmark-v2"
+    }
+  ],
+  "originalLabelsOverwritten": false,
+  "independentlyApproved": false
+}
