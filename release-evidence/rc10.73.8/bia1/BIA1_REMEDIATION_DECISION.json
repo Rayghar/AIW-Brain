@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "aiw-bia1-remediation-decision-v1",
+  "selectedAt": "2026-07-17T17:30:00.000Z",
+  "selectedTheme": "bounded-context-propagation",
+  "rootCause": "The Full Brain generation prompt included complete deterministic runtime structures between 430,000 and 582,000 characters per scenario. All five requests failed locally with LLM_INPUT_TOO_LARGE before provider execution.",
+  "pass1Evidence": {
+    "fullBrainProviderCalls": 0,
+    "fullBrainFailedClosed": 5,
+    "genericProviderCalls": 5,
+    "genericAverageScore": 71.18,
+    "deterministicAverageScore": 55.75,
+    "fullBrainAverageScore": 0
+  },
+  "whyHighestImpact": "No AIW Full Brain architecture could be generated, so all downstream intelligence and differentiation metrics were blocked. The product UI independently showed no actionable design-stage candidates, reinforcing context propagation and composition as the dominant cross-scenario defect.",
+  "scope": "Replace duplicated full runtime structures with a bounded obligation, traceability, recommendation, finding, context and Design Graph projection while preserving local fingerprints of the full runtime result.",
+  "outOfScope": ["Changing frozen scenarios", "Changing the rubric", "Changing generic baseline outputs", "Broad retrieval redesign", "Pattern DNA completion", "Specialist parsers", "Approved-state mutation"],
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}

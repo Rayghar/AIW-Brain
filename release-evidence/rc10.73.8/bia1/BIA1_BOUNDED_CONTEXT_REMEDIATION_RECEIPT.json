@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-bia1-bounded-context-remediation-v1",
+  "generatedAt": "2026-07-17T18:40:00.000Z",
+  "policyInputCharacterCeiling": 180000,
+  "brainContextCharacterCeiling": 120000,
+  "records": [
+    { "scenarioId": "BIA1-S1", "contextCharacters": 85547, "totalPromptCharacters": 89712, "contextFingerprint": "sha256:0cac2ef04a62585068bee614d2864e49635160b44d71e7f85b21914c2a728097", "replayFingerprint": "sha256:0cac2ef04a62585068bee614d2864e49635160b44d71e7f85b21914c2a728097" },
+    { "scenarioId": "BIA1-S2", "contextCharacters": 67032, "totalPromptCharacters": 69771, "contextFingerprint": "sha256:752c1a7de4bd3e3df692fd77d0e440cddfcaadf408df81cc2a0e7fab4a7473c5", "replayFingerprint": "sha256:752c1a7de4bd3e3df692fd77d0e440cddfcaadf408df81cc2a0e7fab4a7473c5" },
+    { "scenarioId": "BIA1-S3", "contextCharacters": 69182, "totalPromptCharacters": 71867, "contextFingerprint": "sha256:32e1ee1107bb87ffa770c1463f9e309d448de4841997e3c0bd148eb4ab72dd95", "replayFingerprint": "sha256:32e1ee1107bb87ffa770c1463f9e309d448de4841997e3c0bd148eb4ab72dd95" },
+    { "scenarioId": "BIA1-S4", "contextCharacters": 69160, "totalPromptCharacters": 72434, "contextFingerprint": "sha256:8be217b22fabcbd336a86b9e7779a4ec5f0606d7892a0084c362a3e7d979b6a4", "replayFingerprint": "sha256:8be217b22fabcbd336a86b9e7779a4ec5f0606d7892a0084c362a3e7d979b6a4" },
+    { "scenarioId": "BIA1-S5", "contextCharacters": 63162, "totalPromptCharacters": 66262, "contextFingerprint": "sha256:c1a7a1d7f4886e8c11170ddbfd2513420087bc6f2929f942dbe3a9c7c4662b5a", "replayFingerprint": "sha256:c1a7a1d7f4886e8c11170ddbfd2513420087bc6f2929f942dbe3a9c7c4662b5a" }
+  ],
+  "allPromptsWithinPolicy": true,
+  "deterministicReplayMatch": true,
+  "fullRuntimeObservationFingerprintPosture": "retained locally per observation; excluded from transfer and not used as replay authority",
+  "allScenarioRequirementsPreserved": true,
+  "rawRuntimeStructuresTransferred": false,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}

@@ -24,4 +24,19 @@ describe("BIA-1 replay and isolation", () => {
       expect(prompt.user).not.toContain("GOLD_EXPECTATION");
     }
   });
+
+  it("bounds Full Brain context without losing scenario requirements or authority controls", async () => {
+    for (const scenario of BIA1_SCENARIOS) {
+      const context = await buildAiwBrainContext(scenario);
+      const replay = await buildAiwBrainContext(scenario);
+      const prompt = architectureGenerationRequest({ scenario, mode: "aiw-full-brain", aiwContext: context });
+      expect(context.contextCharacters).toBeLessThanOrEqual(120_000);
+      expect(prompt.system.length + prompt.user.length).toBeLessThan(180_000);
+      expect(context.context.requirementsIntelligence.scenarioRequirementTraceability.map((item) => item.id)).toEqual(scenario.requirements.map((item) => item.id));
+      expect(context.context.approvedRecordsChanged).toBe(0);
+      expect(context.context.designGraphMutations).toBe(0);
+      expect(context.contextFingerprint).toBe(replay.contextFingerprint);
+      expect(context.context.contextComposition.fullRuntimeObservationTransferred).toBe(false);
+    }
+  }, 30_000);
 });

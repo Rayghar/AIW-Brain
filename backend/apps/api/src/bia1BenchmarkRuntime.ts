@@ -15,6 +15,30 @@ import {
 
 export type Bia1Mode = Bia1ArchitecturePackage["mode"];
 
+function boundedProjection(value: unknown, depth = 0): unknown {
+  if (value === null || value === undefined || typeof value === "boolean" || typeof value === "number") return value;
+  if (typeof value === "string") {
+    const stable = value.replace(/[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/gi, "[runtime-id]");
+    return stable.length > 600 ? `${stable.slice(0, 597)}...` : stable;
+  }
+  if (Array.isArray(value)) return value.slice(0, 20).map((item) => boundedProjection(item, depth + 1));
+  if (typeof value === "object") {
+    if (depth >= 4) return "[bounded-structure]";
+    return Object.fromEntries(Object.entries(value as Record<string, unknown>)
+      .filter(([key]) => key !== "brainReceipt" && !/(?:At|timestamp)$/i.test(key))
+      .sort(([a], [b]) => a.localeCompare(b)).slice(0, 30).map(([key, item]) => [key, boundedProjection(item, depth + 1)]));
+  }
+  return String(value);
+}
+
+function stableRuntimeValue(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(stableRuntimeValue);
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value as Record<string, unknown>)
+    .filter(([key]) => key !== "brainReceipt" && !/(?:At|timestamp)$/i.test(key))
+    .sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => [key, stableRuntimeValue(item)]));
+  return value;
+}
+
 function sparseProject(scenario: Bia1Scenario): ArchitectureProject {
   const project = structuredClone(sampleProject) as ArchitectureProject;
   project.id = `bia1-${scenario.scenarioId.toLowerCase()}`;
@@ -85,34 +109,75 @@ export async function buildAiwBrainContext(scenario: Bia1Scenario) {
   const contextCandidate = architectureBrain.systemContextCandidate({ project });
   const graph = architectureBrain.designGraphPreview({ project });
   const manifest = architectureBrain.manifest(project, "CAMBRIDGE-SA-1.0");
+  const fullRuntimeFingerprint = sha256(stableRuntimeValue({ proposal, recommendations, findings, audit, review, contextCandidate, graph, manifest }));
+  const designGraphProjection = {
+    revision: (graph as any).revision ?? null,
+    nodeCount: Array.isArray((graph as any).nodes) ? (graph as any).nodes.length : 0,
+    edgeCount: Array.isArray((graph as any).edges) ? (graph as any).edges.length : 0,
+    integrity: boundedProjection((graph as any).integrity),
+    nodes: boundedProjection((graph as any).nodes ?? []),
+    edges: boundedProjection((graph as any).edges ?? []),
+  };
+  const {
+    designGraphFingerprint: _runtimeDesignGraphFingerprint,
+    fingerprint: _runtimeManifestFingerprint,
+    ...stableManifest
+  } = manifest as unknown as Record<string, unknown>;
   const context = {
     source: "AIW current Architecture Brain runtime",
     scenarioId: scenario.scenarioId,
-    requirementsIntelligence: {
-      requirements: proposal.requirements,
-      stakeholders: proposal.stakeholders,
-      journeys: proposal.journeys,
-      conflicts: proposal.conflicts ?? [],
-      openQuestions: proposal.openQuestions,
-      contextPackages: proposal.contextPackages,
-      evidence: proposal.evidence,
+    governance: {
+      deterministicRules: proposal.brainReceipt.deterministicRules,
+      knowledgeRefs: proposal.brainReceipt.knowledgeRefs,
+      warnings: proposal.brainReceipt.warnings,
     },
-    deterministicRecommendations: recommendations,
-    deterministicFindings: findings,
-    deterministicAudit: audit,
-    architectureReview: review,
-    systemContextCandidate: contextCandidate,
-    designGraphCandidate: graph,
-    knowledgeManifest: manifest,
+    requirementsIntelligence: {
+      scenarioRequirementTraceability: scenario.requirements.map((item) => ({ id: item.id, kind: item.kind, critical: item.critical, statement: item.statement })),
+      distilledRequirementCount: proposal.requirements.length,
+      requirements: proposal.requirements.slice(0, 40).map((item) => boundedProjection(item)),
+      stakeholderCount: proposal.stakeholders.length,
+      stakeholders: proposal.stakeholders.slice(0, 20).map((item) => boundedProjection(item)),
+      journeyCount: proposal.journeys.length,
+      journeys: proposal.journeys.slice(0, 12).map((item) => boundedProjection(item)),
+      conflictCount: proposal.conflicts?.length ?? 0,
+      conflicts: (proposal.conflicts ?? []).slice(0, 12).map((item) => boundedProjection(item)),
+      openQuestionCount: proposal.openQuestions.length,
+      openQuestions: proposal.openQuestions.slice(0, 20).map((item) => boundedProjection(item)),
+      contextPackages: proposal.contextPackages.map((item) => ({ target: item.target, requirementRefs: (item.requirementRefs ?? []).slice(0, 20), journeyRefs: (item.journeyRefs ?? []).slice(0, 12) })),
+      evidencePosture: { recordCount: proposal.evidence.length, contentIncluded: false, reason: "Scenario packet is the generation authority; raw deterministic evidence records are retained locally." },
+    },
+    deterministicRecommendations: boundedProjection(recommendations),
+    deterministicFindings: boundedProjection(findings),
+    deterministicAudit: boundedProjection(audit),
+    architectureReview: boundedProjection(review),
+    systemContextCandidate: boundedProjection(contextCandidate),
+    designGraphCandidate: {
+      ...designGraphProjection,
+      deterministicProjectionFingerprint: sha256(designGraphProjection),
+      runtimePreviewFingerprintTransferred: false,
+    },
+    knowledgeManifest: boundedProjection(stableManifest),
+    contextComposition: {
+      strategy: "bounded-obligation-and-traceability-projection",
+      fullRuntimeObservationRetainedLocally: true,
+      fullRuntimeObservationTransferred: false,
+      rawRuntimeStructuresTransferred: false,
+      arraysBounded: true,
+      stringsBounded: true,
+    },
     authority: "candidate",
     approvedRecordsChanged: 0,
     designGraphMutations: 0,
     automaticPromotions: 0,
   };
+  const contextCharacters = JSON.stringify(context).length;
+  if (contextCharacters > 120_000) throw new Error(`BIA1_BOUNDED_CONTEXT_LIMIT_EXCEEDED:${contextCharacters}`);
   return {
     project,
     context,
     contextFingerprint: sha256(context),
+    contextCharacters,
+    fullRuntimeObservationFingerprint: fullRuntimeFingerprint,
     deterministicRules: proposal.brainReceipt.deterministicRules,
     knowledgeRefs: proposal.brainReceipt.knowledgeRefs,
   };

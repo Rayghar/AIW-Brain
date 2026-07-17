@@ -9,6 +9,9 @@ describe("BIA-1 runtime isolation and deterministic baseline", () => {
     expect(result.context.approvedRecordsChanged).toBe(0);
     expect(result.context.designGraphMutations).toBe(0);
     expect(result.context.automaticPromotions).toBe(0);
+    expect(result.contextCharacters).toBeLessThanOrEqual(120_000);
+    expect(result.context.contextComposition.rawRuntimeStructuresTransferred).toBe(false);
+    expect(result.context.requirementsIntelligence.scenarioRequirementTraceability.some((item) => item.id === "AB-FR-001")).toBe(true);
   });
 
   it("keeps the generic prompt free of AIW context and evaluator-only material", () => {
