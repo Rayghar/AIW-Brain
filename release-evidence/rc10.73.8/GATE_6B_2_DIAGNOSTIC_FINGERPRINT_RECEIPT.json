@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-diagnostic-fingerprint-receipt-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "sourceBenchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "frozenLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "manifestReplay": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "labelsFrozenBeforeExecution": true,
+  "modelReceivedFrozenLabels": false
+}

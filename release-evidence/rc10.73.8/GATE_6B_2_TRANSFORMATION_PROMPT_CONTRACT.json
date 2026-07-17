@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-prompt-contract-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "promptVersion": "gate-6b2-typed-semantic-assets-v1",
+  "promptSha256": "sha256:b17f12abaf347c9a266d2245bd0eb5dabe9df93c20643720d42c023d4627fd37",
+  "candidateOnly": true,
+  "permitsNonClaim": true,
+  "permitsAbstention": true,
+  "requiresExactSupportSpans": true,
+  "requiresFieldLevelSupport": true,
+  "prohibitsExampleUniversalisation": true,
+  "prohibitsBibliographicClaimPromotion": true,
+  "prohibitsProcedureUniversalisation": true,
+  "prohibitsCrossCaseAttribution": true,
+  "prohibitsCrossSourceContamination": true,
+  "prefersPrecisionOverQuantity": true
+}

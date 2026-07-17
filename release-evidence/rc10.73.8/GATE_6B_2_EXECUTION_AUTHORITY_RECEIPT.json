@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-execution-authority-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "authorityStatus": "product-owner-authorized-by-controlling-gate-6b2-request",
+  "historicalGate6b1AuthorityReused": false,
+  "provider": "openai",
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "purpose": "governed-candidate-semantic-transformation",
+  "plannedProviderCalls": 8,
+  "absoluteProviderCallCeilingIncludingRetries": 10,
+  "globalRetryBudget": 2,
+  "maximumRetryPerRequest": 1,
+  "retryableOnly": [
+    "provider-timeout",
+    "HTTP-429",
+    "HTTP-5xx"
+  ],
+  "maximumTotalTokensIncludingRetries": 120000,
+  "maximumOutputTokensPerRequest": 4000,
+  "concurrency": 1,
+  "toolsEnabled": false,
+  "externalRetrievalEnabled": false,
+  "codeExecutionEnabled": false,
+  "fallbackEnabled": false,
+  "candidateOnlyPersistence": true,
+  "automaticPromotionAllowed": false,
+  "designGraphMutationAllowed": false,
+  "monetaryCostCeiling": null,
+  "monetaryCostApprovalRequired": false,
+  "costTrackingRequired": true,
+  "costMayStopExecution": false
+}

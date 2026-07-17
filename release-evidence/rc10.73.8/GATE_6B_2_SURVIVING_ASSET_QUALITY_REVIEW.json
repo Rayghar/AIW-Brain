@@ -1,0 +1,126 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-surviving-asset-quality-review-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "survivingClaimCount": 10,
+  "classifications": {
+    "bibliographic metadata": 5,
+    "useful procedure or implementation step": 1,
+    "useful architecture intelligence": 1,
+    "low-value restatement": 3
+  },
+  "reviews": [
+    {
+      "proposalId": "G6B1-PROP-056",
+      "caseId": "G6B1-12",
+      "statementHash": "sha256:553acac5d58f62ef8122e233d1e0e230e57485a6cb94af971749cb07323dc8aa",
+      "classification": "bibliographic metadata",
+      "incorrectlyTyped": true,
+      "adversarialFindings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-057",
+      "caseId": "G6B1-13",
+      "statementHash": "sha256:0332a984faf86b7f5a07d07bd620f39bad44e334f03e014f100611ffbf1ec48f",
+      "classification": "bibliographic metadata",
+      "incorrectlyTyped": true,
+      "adversarialFindings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-067",
+      "caseId": "G6B1-20",
+      "statementHash": "sha256:719d5977fbd5a06c50ce523a3a0f48ff75f6f1b85692424895b32a88c6fef93f",
+      "classification": "useful procedure or implementation step",
+      "incorrectlyTyped": true,
+      "adversarialFindings": [
+        "procedure was typed as a recommendation"
+      ],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-074",
+      "caseId": "G6B1-04",
+      "statementHash": "sha256:aa134e5eee02efa8bb60212e3f9849b9515c5ce923f8e8ddb5eb66ac2dea3df7",
+      "classification": "useful architecture intelligence",
+      "incorrectlyTyped": false,
+      "adversarialFindings": [],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-082",
+      "caseId": "G6B1-07",
+      "statementHash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "classification": "low-value restatement",
+      "incorrectlyTyped": false,
+      "adversarialFindings": [],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-087",
+      "caseId": "G6B1-12",
+      "statementHash": "sha256:1dcd3bfa00bd18cb69aebd2ec7e63355328f1a07a204e0d347cf16af61fcab3a",
+      "classification": "bibliographic metadata",
+      "incorrectlyTyped": true,
+      "adversarialFindings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-088",
+      "caseId": "G6B1-13",
+      "statementHash": "sha256:25c815fae9e4aa2767f23b8780ace280abe91fa08400b037de9d5f6712ceafd5",
+      "classification": "bibliographic metadata",
+      "incorrectlyTyped": true,
+      "adversarialFindings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-106",
+      "caseId": "G6B1-07",
+      "statementHash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "classification": "low-value restatement",
+      "incorrectlyTyped": false,
+      "adversarialFindings": [],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-113",
+      "caseId": "G6B1-12",
+      "statementHash": "sha256:f04376c9374328304b21c305b9bcd5c55e5d0ca20812550279c4c8b83ca175e2",
+      "classification": "low-value restatement",
+      "incorrectlyTyped": false,
+      "adversarialFindings": [],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    },
+    {
+      "proposalId": "G6B1-PROP-114",
+      "caseId": "G6B1-13",
+      "statementHash": "sha256:3f8fe6bf237a1798a5c00e589895dc91eeedbf6848db9a1dbcccd7038f3d2185",
+      "classification": "bibliographic metadata",
+      "incorrectlyTyped": true,
+      "adversarialFindings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "humanReviewerPresent": false,
+      "externallyVerified": false
+    }
+  ]
+}

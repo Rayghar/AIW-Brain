@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-typed-validation-matrix-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "lexicalThreshold": 0.6,
+  "lexicalRole": "screening-signal-only",
+  "validationOrder": [
+    "case-id-allowlist",
+    "evidence-id-allowlist",
+    "immutable-evidence-hash",
+    "exact-support-span",
+    "asset-type",
+    "polarity",
+    "condition-applicability",
+    "limitation-applicability",
+    "lexical-coverage",
+    "epistemic-status",
+    "cross-case-contamination",
+    "disposition"
+  ],
+  "assetRules": {
+    "atomic-claim": "claim-level spans and epistemic validation",
+    "pattern-dna": "required known fields validated independently; unknowns preserved",
+    "architecture-genome": "known fields validated independently; unknowns preserved",
+    "source-reference": "reference posture; no architecture-claim promotion",
+    "procedure-or-runbook-step": "procedure posture; no universalisation",
+    "non-claim": "reason, residual use and exact support",
+    "insufficient-evidence-abstention": "missing and additional evidence recorded"
+  }
+}

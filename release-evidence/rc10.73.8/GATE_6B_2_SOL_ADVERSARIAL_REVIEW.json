@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-sol-adversarial-review-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "pass": "C",
+  "survivingClaimCount": 10,
+  "reviews": [
+    {
+      "proposalId": "G6B1-PROP-056",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-057",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-067",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [
+        "procedure was typed as a recommendation"
+      ],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-074",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [],
+      "survivesAsUsefulArchitectureIntelligence": true
+    },
+    {
+      "proposalId": "G6B1-PROP-082",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-087",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-088",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-106",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-113",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [],
+      "survivesAsUsefulArchitectureIntelligence": false
+    },
+    {
+      "proposalId": "G6B1-PROP-114",
+      "attemptedDisproof": [
+        "evidence scope",
+        "epistemic type",
+        "condition completeness",
+        "limitation completeness",
+        "asset-type fitness"
+      ],
+      "findings": [
+        "reference was typed as a recommendation or example"
+      ],
+      "survivesAsUsefulArchitectureIntelligence": false
+    }
+  ]
+}

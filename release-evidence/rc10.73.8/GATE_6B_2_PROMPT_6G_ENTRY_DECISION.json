@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-prompt-6g-entry-decision-v1",
+  "generatedAt": "2026-07-17T06:41:45.759Z",
+  "productionAccepted": false,
+  "gate6b2Status": "failed-controlled-stop",
+  "semanticContractRepairPassed": false,
+  "prompt6gPlanningAuthorized": false,
+  "prompt6gExecutionStarted": false,
+  "fullCorpusProviderExecutionAuthorized": false,
+  "decisionReason": "Gate 6B.2 received no provider response after the initial transport failure and one permitted retry.",
+  "remainingRootCause": "unrecoverable-provider-transport",
+  "semanticRootCauseClassification": "unresolved-because-diagnostic-did-not-execute",
+  "smallestNextDiagnostic": "After explicit new execution authority and restored provider connectivity, rerun only G6B2-REQ-01 to prove the provider schema and typed validator path before authorising the remaining seven requests.",
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started",
+  "backupStatus": "deferred-by-product-owner"
+}

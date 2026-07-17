@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-diagnostic-manifest-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "authority": "candidate",
+  "sourceBenchmarkFingerprint": "sha256:f11583bc507e3abdd88e4a5f914c27fdde6ab71e4e9d3594a59151f168cd9974",
+  "uniqueCases": [
+    {
+      "caseId": "G6B1-01",
+      "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+      "path": "docs/wiki/Solution creation.md",
+      "structuralRange": "lines 227-266",
+      "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff",
+      "boundedEvidenceCharacters": 1669,
+      "sourceAuthorityClass": "official-reference-architecture",
+      "parserVersion": "markdown-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-02",
+      "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+      "connectorId": "GH-AZURE-RESOURCE-MODULES",
+      "repository": "Azure/ResourceModules",
+      "immutableCommit": "0342b24f9439a62a349ad90f4258b3304b4523d9",
+      "path": "docs/wiki/The library - Module design.md",
+      "structuralRange": "lines 590-629",
+      "excerptHash": "sha256:a0f65cf4feb71a76aedead58a51cb8658be1b93a51f26ade1f430b4ba286cdfa",
+      "boundedEvidenceCharacters": 4972,
+      "sourceAuthorityClass": "official-reference-architecture",
+      "parserVersion": "markdown-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-05",
+      "evidenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+      "connectorId": "GH-OAM-SPEC",
+      "repository": "oam-dev/spec",
+      "immutableCommit": "a64696e70e24bd4d0ad26705c8338c51a19f5163",
+      "path": "8.practical_considerations.md",
+      "structuralRange": "lines 22-35",
+      "excerptHash": "sha256:a56539f2949f91f3b7e4a93b5964bf906c019903527cf932d8e7e2043d86b7f3",
+      "boundedEvidenceCharacters": 979,
+      "sourceAuthorityClass": "official-specification-or-standard",
+      "parserVersion": "markdown-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-06",
+      "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/reference-architectures/n-tier/linux-vm-content.md",
+      "structuralRange": "lines 84-112",
+      "excerptHash": "sha256:3ba737d6bdb2468fb1dab3def62ec873e287d7d8ee5825d6cff05d1f89f412c4",
+      "boundedEvidenceCharacters": 3432,
+      "sourceAuthorityClass": "official-reference-architecture",
+      "parserVersion": "markdown-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-07",
+      "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/reference-architectures/n-tier/windows-vm-content.md",
+      "structuralRange": "lines 193-211",
+      "excerptHash": "sha256:816f837ed39ff54faacc23a3cfef9ba4ae53e71869bd4b6888485e61de1368b4",
+      "boundedEvidenceCharacters": 1841,
+      "sourceAuthorityClass": "official-reference-architecture",
+      "parserVersion": "markdown-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-09",
+      "evidenceId": "BEV-d04770a7fd02a158b96b119d",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "immutableCommit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/guide/architecture-styles/event-driven.md",
+      "structuralRange": "lines 17-56",
+      "excerptHash": "sha256:06ff651397e863b6d1ce44a06093c1625187e330af2976d800c16c81e8763ac1",
+      "boundedEvidenceCharacters": 6976,
+      "sourceAuthorityClass": "official-reference-architecture",
+      "parserVersion": "markdown-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-15",
+      "evidenceId": "BEV-b4d881c0aa0d205179a5c445",
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "immutableCommit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "path": "src/docs/antora/modules/ROOT/pages/fundamentals.adoc",
+      "structuralRange": "lines 566-604",
+      "excerptHash": "sha256:5015625f0b026e5db518fab13eff713c3bf7839c640f4313ee144ed2b843582f",
+      "boundedEvidenceCharacters": 1734,
+      "sourceAuthorityClass": "architecture-conformance-implementation",
+      "parserVersion": "asciidoc-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-21",
+      "evidenceId": "BEV-fcc349fa2dedc2c092f08f84",
+      "connectorId": "GH-ARCHITECTURE-CATALOG",
+      "repository": "ea-toolkit/architecture-catalog",
+      "immutableCommit": "1efa7ea08a8139dc07bcef1834d6964b5fcfd1dc",
+      "path": "README.md",
+      "structuralRange": "lines 87-95",
+      "excerptHash": "sha256:d9726e76824270faa3e2a6fbe67494033bae08b4923cc80e75ad21a4351ff0ff",
+      "boundedEvidenceCharacters": 384,
+      "sourceAuthorityClass": "reviewed-practitioner-or-implementation-source",
+      "parserVersion": "markdown-structural-parser-v1"
+    },
+    {
+      "caseId": "G6B1-24",
+      "evidenceId": null,
+      "connectorId": "GH-AWESOME-ANTIPATTERN",
+      "repository": "fauzisho/awesome-antipattern",
+      "immutableCommit": null,
+      "path": null,
+      "structuralRange": null,
+      "excerptHash": "sha256:0114b60c9746bef556722c71e0342a5bebdc0727fe7fa38681145b80a3a83302",
+      "boundedEvidenceCharacters": 61,
+      "sourceAuthorityClass": "educational-or-discovery-source",
+      "parserVersion": "no-evidence-control-v1"
+    }
+  ],
+  "requests": [
+    {
+      "requestId": "G6B2-REQ-01",
+      "caseIds": [
+        "G6B1-01"
+      ],
+      "purpose": "source-example"
+    },
+    {
+      "requestId": "G6B2-REQ-02",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "purpose": "contradiction-versus-scoped-distinction"
+    },
+    {
+      "requestId": "G6B2-REQ-03",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "purpose": "causal-pattern-dna"
+    },
+    {
+      "requestId": "G6B2-REQ-04",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "purpose": "implementation-observation"
+    },
+    {
+      "requestId": "G6B2-REQ-05",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "purpose": "deliberate-non-claim"
+    },
+    {
+      "requestId": "G6B2-REQ-06",
+      "caseIds": [
+        "G6B1-24"
+      ],
+      "purpose": "insufficient-evidence-abstention"
+    },
+    {
+      "requestId": "G6B2-REQ-07",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "purpose": "same-source-examples"
+    },
+    {
+      "requestId": "G6B2-REQ-08",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ],
+      "purpose": "security-and-performance-recommendations"
+    }
+  ],
+  "uniqueCaseCount": 9,
+  "plannedRequestCount": 8,
+  "fingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a"
+}

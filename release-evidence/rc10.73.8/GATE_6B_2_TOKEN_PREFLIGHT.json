@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-token-preflight-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "estimationMethod": "complete-system-user-and-provider-schema-characters-divided-by-four-plus-full-4000-output-allowance-for-eight-planned-and-two-largest-retry-reserve-requests",
+  "plannedCalls": 8,
+  "retryReserveCalls": 2,
+  "projectedMaximumTokensWithoutRetries": 52640,
+  "projectedRetryReserveTokens": 15122,
+  "projectedMaximumTokensIncludingRetries": 67762,
+  "absoluteTokenCeiling": 120000,
+  "evidenceTruncated": false,
+  "outputAllowanceReduced": false,
+  "sufficientWithoutTruncation": true
+}

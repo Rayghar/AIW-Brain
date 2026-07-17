@@ -1,0 +1,330 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-frozen-sol-labels-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "frozenBeforeProviderExecution": true,
+  "labelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "labels": [
+    {
+      "caseId": "G6B1-01",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "structured-asset-candidate",
+      "expectedAssetType": "source-example",
+      "expectedEpistemicStatus": "source-example",
+      "requiredConditions": [
+        "example uses modules from a private Bicep Registry"
+      ],
+      "requiredLimitations": [
+        "preferred CI publishing method may not apply to all scenarios"
+      ],
+      "requiredSupportSpans": [
+        {
+          "quote": "The following sample shows how you could orchestrate a deployment of multiple resources using modules from a private Bicep Registry.",
+          "start": 0,
+          "end": 132
+        },
+        {
+          "quote": "However, this option may not be applicable to all scenarios",
+          "start": 431,
+          "end": 490
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "all deployments must use this orchestration",
+        "local publication is universally preferred"
+      ],
+      "patternDnaExpectations": null
+    },
+    {
+      "caseId": "G6B1-02",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "structured-asset-candidate",
+      "expectedAssetType": "source-example",
+      "expectedEpistemicStatus": "source-example",
+      "requiredConditions": [
+        "module test file scenario"
+      ],
+      "requiredLimitations": [
+        "sensitive data must be injected rather than stored"
+      ],
+      "requiredSupportSpans": [
+        {
+          "quote": "Module test files in CARML are implemented using comprehensive `.bicep` test files",
+          "start": 0,
+          "end": 82
+        },
+        {
+          "quote": "Sensitive data should not be stored inside the module test file",
+          "start": 364,
+          "end": 427
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "every Bicep repository must use this exact folder structure"
+      ],
+      "patternDnaExpectations": null
+    },
+    {
+      "caseId": "G6B1-05",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "structured-asset-candidate",
+      "expectedAssetType": "contradiction-or-scoped-distinction",
+      "expectedEpistemicStatus": "normative-requirement",
+      "requiredConditions": [
+        "both image SHA reference and canonical file format conditions are satisfied"
+      ],
+      "requiredLimitations": [
+        "transport security and data-at-rest security are beyond model scope"
+      ],
+      "requiredSupportSpans": [
+        {
+          "quote": "This model, in its current form, does not mandate a specific set of security policies.",
+          "start": 0,
+          "end": 86
+        },
+        {
+          "quote": "OCI/Docker images MUST be referenced by SHA wherever possible",
+          "start": 156,
+          "end": 217
+        },
+        {
+          "quote": "File formats MUST be converted to a canonical format so that they can be hashed",
+          "start": 220,
+          "end": 299
+        },
+        {
+          "quote": "Other security details, such as network transport security or securing data at rest, are considered beyond the scope of this model.",
+          "start": 680,
+          "end": 811
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "the model mandates a complete security policy",
+        "digest verification covers out-of-scope security"
+      ],
+      "patternDnaExpectations": null
+    },
+    {
+      "caseId": "G6B1-06",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "structured-asset-candidate",
+      "expectedAssetType": "security-control",
+      "expectedEpistemicStatus": "source-stated-recommendation",
+      "requiredConditions": [
+        "direct public IP only in extreme circumstances"
+      ],
+      "requiredLimitations": [
+        "additional NSG or equivalent security measures required"
+      ],
+      "requiredSupportSpans": [
+        {
+          "quote": "Avoid attaching a public IP address directly to a VM.",
+          "start": 582,
+          "end": 635
+        },
+        {
+          "quote": "Only* do so in extreme circumstances and include other security measures",
+          "start": 637,
+          "end": 709
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "public IP addresses are always prohibited"
+      ],
+      "patternDnaExpectations": null
+    },
+    {
+      "caseId": "G6B1-07",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "structured-asset-candidate",
+      "expectedAssetType": "resilience-control",
+      "expectedEpistemicStatus": "source-stated-recommendation",
+      "requiredConditions": [
+        "dynamic load for scale sets or latency-sensitive workload for PPGs"
+      ],
+      "requiredLimitations": [
+        "PPG availability statement is scoped to a single physical datacenter"
+      ],
+      "requiredSupportSpans": [
+        {
+          "quote": "Use virtual machine scale sets if the workload has a dynamic load.",
+          "start": 722,
+          "end": 788
+        },
+        {
+          "quote": "If your workload is unusually latency-sensitive, use [proximity placement groups (PPGs)]",
+          "start": 1110,
+          "end": 1198
+        },
+        {
+          "quote": "within a single physical datacenter",
+          "start": 1432,
+          "end": 1467
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "scale sets are required for every workload"
+      ],
+      "patternDnaExpectations": null
+    },
+    {
+      "caseId": "G6B1-09",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "structured-asset-candidate",
+      "expectedAssetType": "pattern-dna",
+      "expectedEpistemicStatus": "implementation-observation",
+      "requiredConditions": [
+        "event-driven context with producers, ingestion and consumers"
+      ],
+      "requiredLimitations": [
+        "broker topology can risk inconsistency without restart or replay mechanism"
+      ],
+      "requiredSupportSpans": [
+        {
+          "quote": "Producers are decoupled from consumers, which means that a producer doesn't know which consumers are listening.",
+          "start": 491,
+          "end": 602
+        },
+        {
+          "quote": "Events are delivered in near real time, so consumers can respond immediately to events as they occur.",
+          "start": 389,
+          "end": 490
+        },
+        {
+          "quote": "distributed transactions are risky because there's no built-in mechanism for restarting or replaying them",
+          "start": 6728,
+          "end": 6833
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "event-driven architecture guarantees exactly-once processing",
+        "all event topologies are durable"
+      ],
+      "patternDnaExpectations": {
+        "requiredFields": [
+          "context-or-trigger",
+          "mechanism",
+          "consequence",
+          "trade-off-or-limitation"
+        ],
+        "fieldLevelSupportRequired": true,
+        "fieldLevelEpistemicStatusRequired": true
+      }
+    },
+    {
+      "caseId": "G6B1-15",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "structured-asset-candidate",
+      "expectedAssetType": "implementation-observation",
+      "expectedEpistemicStatus": "implementation-observation",
+      "requiredConditions": [
+        "Spring Modulith version 1.3"
+      ],
+      "requiredLimitations": [
+        "additionalPackages requires advance knowledge of packages"
+      ],
+      "requiredSupportSpans": [
+        {
+          "quote": "As of version 1.3, Spring Modulith supports external contributions of application modules via the `ApplicationModuleSource` and `ApplicationModuleSourceFactory` abstractions.",
+          "start": 204,
+          "end": 378
+        },
+        {
+          "quote": "its usage requires knowing about those in advance",
+          "start": 153,
+          "end": 202
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "all module frameworks use this mechanism"
+      ],
+      "patternDnaExpectations": null
+    },
+    {
+      "caseId": "G6B1-21",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "non-claim",
+      "expectedAssetType": "non-claim",
+      "expectedEpistemicStatus": "unknown",
+      "requiredConditions": [],
+      "requiredLimitations": [],
+      "requiredSupportSpans": [
+        {
+          "quote": "The catalog UI design is inspired by [EventCatalog](https://www.eventcatalog.dev/)",
+          "start": 0,
+          "end": 82
+        },
+        {
+          "quote": "Architecture Catalog takes a different approach: vocabulary-agnostic,\nschema-driven, and built for enterprise architecture modelling across\nall layers (not just events).",
+          "start": 215,
+          "end": 384
+        }
+      ],
+      "prohibitedOverGeneralisations": [
+        "EventCatalog is unsuitable for enterprise architecture"
+      ],
+      "requiredNonClaimPosture": true,
+      "patternDnaExpectations": null
+    },
+    {
+      "caseId": "G6B1-24",
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "expectedDisposition": "abstain-insufficient-evidence",
+      "expectedAssetType": "insufficient-evidence-abstention",
+      "expectedEpistemicStatus": "unknown",
+      "requiredConditions": [],
+      "requiredLimitations": [],
+      "requiredSupportSpans": [],
+      "prohibitedOverGeneralisations": [
+        "any repository-specific claim"
+      ],
+      "requiredAbstentionPosture": true,
+      "requiredMissingEvidence": [
+        "a governed bounded source passage"
+      ],
+      "patternDnaExpectations": null
+    }
+  ]
+}

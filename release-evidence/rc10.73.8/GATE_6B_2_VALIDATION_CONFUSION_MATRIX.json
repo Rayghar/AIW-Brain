@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-validation-confusion-matrix-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "proposalCount": 116,
+  "rejectedProposalCount": 106,
+  "survivingProposalCount": 10,
+  "exactRetrospectiveConfusionMatrixAvailable": false,
+  "reason": "Rejected Gate 6B.1 semantic content was not persisted by design, so semantic true/false labels cannot be paired with all validator decisions.",
+  "observableMatrix": {
+    "validatorRejectedContentUnavailable": 104,
+    "validatorAcceptedReviewable": 8
+  },
+  "validatorRiskFlagCounts": {
+    "limitation-omission": 63,
+    "negation-mismatch": 38,
+    "condition-omission": 76
+  },
+  "causeCounts": {
+    "correct grounding rejection": 2,
+    "low-value but technically supported": 4,
+    "unresolved": 104,
+    "wrong output asset type": 6
+  }
+}

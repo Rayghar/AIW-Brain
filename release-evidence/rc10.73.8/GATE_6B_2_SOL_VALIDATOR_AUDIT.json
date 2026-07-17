@@ -1,0 +1,1671 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-sol-validator-audit-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "pass": "B",
+  "passAJudgementsChanged": false,
+  "proposalCount": 116,
+  "audits": [
+    {
+      "proposalId": "G6B1-PROP-001",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-002",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-003",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-004",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-005",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-006",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-007",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-008",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-009",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-010",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-011",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-012",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-013",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-014",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-015",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-016",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.3333,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-017",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-018",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-019",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-020",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-021",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-022",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-023",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-024",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-025",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-026",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-027",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-028",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-029",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-030",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-031",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.5714,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-032",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-033",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-034",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-035",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-036",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-037",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-038",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.5909,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-039",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-040",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-041",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-042",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-043",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-044",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-045",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-046",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-047",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-048",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-049",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-050",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-051",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-052",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-053",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-054",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-055",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-056",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.6364,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-057",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.7647,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-058",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.5909,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-059",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-060",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-061",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-062",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-063",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-064",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.5789,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-065",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.4667,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-066",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-067",
+      "validatorStatus": "supported",
+      "lexicalScore": 1,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-068",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-069",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-070",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-071",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-072",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-073",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-074",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.6667,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-075",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-076",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-077",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-078",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-079",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-080",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-081",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-082",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.9375,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-083",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-084",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-085",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-086",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-087",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.7333,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-088",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.6842,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-089",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.2941,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-090",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.5217,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-091",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-092",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-093",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-094",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-095",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.3333,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-096",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.3333,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-097",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-098",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-099",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-100",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-101",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-102",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-103",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-104",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.5556,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-105",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-106",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.65,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-107",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-108",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-109",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-110",
+      "validatorStatus": "rejected-epistemic",
+      "lexicalScore": 0.7778,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-111",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-112",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0,
+      "riskFlags": [
+        "condition-omission",
+        "limitation-omission",
+        "negation-mismatch"
+      ],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "triggered",
+      "limitationDetection": "triggered",
+      "negationDetection": "triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-113",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.7647,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-114",
+      "validatorStatus": "supported",
+      "lexicalScore": 0.7647,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "accepted-candidate",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-115",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.1875,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    },
+    {
+      "proposalId": "G6B1-PROP-116",
+      "validatorStatus": "rejected-grounding",
+      "lexicalScore": 0.4286,
+      "riskFlags": [],
+      "supportSpanLogicAvailable": false,
+      "conditionDetection": "not-triggered",
+      "limitationDetection": "not-triggered",
+      "negationDetection": "not-triggered",
+      "finalValidatorDisposition": "rejected",
+      "auditLimitation": "Gate 6B.1 did not preserve support spans or rejected statement text."
+    }
+  ]
+}

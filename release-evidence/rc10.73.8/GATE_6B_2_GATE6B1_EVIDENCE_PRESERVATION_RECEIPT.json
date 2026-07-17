@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-gate6b1-evidence-preservation-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "baselineCommit": "a312e08b459ef838814d5273270c69ac87d0c03a",
+  "files": [
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_LIVE_FAILED_ATTEMPTS.json",
+      "bytes": 3408,
+      "workingTreeSha256": "sha256:4258349ea485483bf681482e4202debef3c472d10508b0c4eb90cfdcb4c4a08b",
+      "baselineCommitSha256": "sha256:4258349ea485483bf681482e4202debef3c472d10508b0c4eb90cfdcb4c4a08b",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_LIVE_EXECUTION_RESULT.json",
+      "bytes": 75633,
+      "workingTreeSha256": "sha256:d0c39af545a1c29bfdd069bae3a7443543f178650314200e818df9127803fa18",
+      "baselineCommitSha256": "sha256:d0c39af545a1c29bfdd069bae3a7443543f178650314200e818df9127803fa18",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_LIVE_TRANSACTION_RECEIPT.json",
+      "bytes": 29842,
+      "workingTreeSha256": "sha256:187ebd2f2fdf94bdf59f29d16f68b843df735adafc59db1c5bbc0a9624021156",
+      "baselineCommitSha256": "sha256:187ebd2f2fdf94bdf59f29d16f68b843df735adafc59db1c5bbc0a9624021156",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_LIVE_CANDIDATE_RECORDS.json",
+      "bytes": 46342,
+      "workingTreeSha256": "sha256:add7c423b19d9091b9b60a879437ed3ba1e93f7921a201822fb7bc1351f49946",
+      "baselineCommitSha256": "sha256:add7c423b19d9091b9b60a879437ed3ba1e93f7921a201822fb7bc1351f49946",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_STRATEGY_EVALUATION.json",
+      "bytes": 25721,
+      "workingTreeSha256": "sha256:8a1318fc9ee99264f39d4dd99189f8025c5850b0a345d8272b7717a49107c6fc",
+      "baselineCommitSha256": "sha256:8a1318fc9ee99264f39d4dd99189f8025c5850b0a345d8272b7717a49107c6fc",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_TECHNICAL_DECISION.md",
+      "bytes": 624,
+      "workingTreeSha256": "sha256:3e953e718417bbcd039744bc86c258f3283589226c5d9d8a8888ef73313af328",
+      "baselineCommitSha256": "sha256:3e953e718417bbcd039744bc86c258f3283589226c5d9d8a8888ef73313af328",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/PROMPT_6G_ENTRY_RECEIPT.json",
+      "bytes": 720,
+      "workingTreeSha256": "sha256:57b55b2c3018a2d9154105cdf0d87aa84a981857605685bc9f3a74b43773a1b5",
+      "baselineCommitSha256": "sha256:57b55b2c3018a2d9154105cdf0d87aa84a981857605685bc9f3a74b43773a1b5",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_COMPLETION_REPORT.md",
+      "bytes": 3990,
+      "workingTreeSha256": "sha256:76a1df12b4054efe915f2d44a56ee651167f475d95a7991f60acd26eb2713a95",
+      "baselineCommitSha256": "sha256:76a1df12b4054efe915f2d44a56ee651167f475d95a7991f60acd26eb2713a95",
+      "byteForByteUnchanged": true
+    },
+    {
+      "path": "release-evidence/rc10.73.8/GATE_6B_1_VERIFICATION_RECEIPT.json",
+      "bytes": 2207,
+      "workingTreeSha256": "sha256:5b0d974b6aa6cbb88652e742771c32063bb49adc7222485e78bef6e1d553fea1",
+      "baselineCommitSha256": "sha256:5b0d974b6aa6cbb88652e742771c32063bb49adc7222485e78bef6e1d553fea1",
+      "byteForByteUnchanged": true
+    }
+  ],
+  "allHistoricalEvidenceUnchanged": true,
+  "formerAuthority": {
+    "providerCallsUsed": 39,
+    "providerCallCeiling": 40,
+    "remainingCalls": 1,
+    "status": "closed-not-reusable"
+  },
+  "gate6b2UsesNewAuthorityReceipt": true,
+  "historicalReceiptMutations": 0
+}

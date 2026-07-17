@@ -1,0 +1,3 @@
+# Gate 6B.1 plan-fingerprint reconciliation
+
+The committed request-plan fingerprint is `sha256:7f42ec8ec9005362c8b929a6e8b31c9f0ecf9b8266a6eadaec2476c503120623`. The historical execution receipt separately recorded `sha256:9e1891961ee5625bb6a6ea9ed3ed084a883e8a0d5a7bb9bc33d504b6849c86f6` as `runtimePlanFingerprintObservation`. They are not identical. The latter was an observation from a non-canonical runtime representation and was retained in the immutable historical receipt. `GATE_6B_1_EXECUTION_RECEIPT_CORRECTION.json` already demonstrates the canonical replay against the committed plan. Gate 6B.2 binds its own plan to a new canonical fingerprint and does not mutate either value.

@@ -1,0 +1,942 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-sol-evidence-review-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "pass": "A",
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "proposalCount": 116,
+  "judgements": [
+    {
+      "proposalId": "G6B1-PROP-001",
+      "caseId": "G6B1-01",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-002",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-003",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-004",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-005",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-006",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-007",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-008",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-009",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-010",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-011",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-012",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-013",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-014",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-015",
+      "caseId": "G6B1-03",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-016",
+      "caseId": "G6B1-04",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-017",
+      "caseId": "G6B1-05",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-018",
+      "caseId": "G6B1-05",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-019",
+      "caseId": "G6B1-05",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-020",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-021",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-022",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-023",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-024",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-025",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-026",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-027",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-028",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-029",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-030",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-031",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-032",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-033",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-034",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-035",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-036",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-037",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-038",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-039",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-040",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-041",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-042",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-043",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-044",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-045",
+      "caseId": "G6B1-08",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-046",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-047",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-048",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-049",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-050",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-051",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-052",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-053",
+      "caseId": "G6B1-09",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-054",
+      "caseId": "G6B1-10",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-055",
+      "caseId": "G6B1-11",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-056",
+      "caseId": "G6B1-12",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-057",
+      "caseId": "G6B1-13",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-058",
+      "caseId": "G6B1-14",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-059",
+      "caseId": "G6B1-15",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-060",
+      "caseId": "G6B1-15",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-061",
+      "caseId": "G6B1-15",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-062",
+      "caseId": "G6B1-15",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-063",
+      "caseId": "G6B1-16",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-064",
+      "caseId": "G6B1-17",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-065",
+      "caseId": "G6B1-18",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-066",
+      "caseId": "G6B1-19",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-067",
+      "caseId": "G6B1-20",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-068",
+      "caseId": "G6B1-21",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-069",
+      "caseId": "G6B1-22",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-070",
+      "caseId": "G6B1-23",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-071",
+      "caseId": "G6B1-01",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-072",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-073",
+      "caseId": "G6B1-03",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-074",
+      "caseId": "G6B1-04",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-075",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-076",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-077",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-078",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-079",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-080",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-081",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-082",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-083",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-084",
+      "caseId": "G6B1-10",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-085",
+      "caseId": "G6B1-11",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-086",
+      "caseId": "G6B1-11",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-087",
+      "caseId": "G6B1-12",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-088",
+      "caseId": "G6B1-13",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-089",
+      "caseId": "G6B1-17",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-090",
+      "caseId": "G6B1-18",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-091",
+      "caseId": "G6B1-01",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-092",
+      "caseId": "G6B1-02",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-093",
+      "caseId": "G6B1-03",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-094",
+      "caseId": "G6B1-03",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-095",
+      "caseId": "G6B1-04",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-096",
+      "caseId": "G6B1-04",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-097",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-098",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-099",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-100",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-101",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-102",
+      "caseId": "G6B1-06",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-103",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-104",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-105",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-106",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-107",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-108",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-109",
+      "caseId": "G6B1-07",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-110",
+      "caseId": "G6B1-10",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-111",
+      "caseId": "G6B1-11",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-112",
+      "caseId": "G6B1-11",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-113",
+      "caseId": "G6B1-12",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-114",
+      "caseId": "G6B1-13",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "reviewable-supported-proposal",
+      "evidenceSufficiency": "bounded-evidence-and-statement-available",
+      "limitation": null
+    },
+    {
+      "proposalId": "G6B1-PROP-115",
+      "caseId": "G6B1-17",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    },
+    {
+      "proposalId": "G6B1-PROP-116",
+      "caseId": "G6B1-18",
+      "judgementFrozenBeforeValidatorAudit": true,
+      "evidenceReviewDisposition": "not-reviewable-historical-content-not-persisted",
+      "evidenceSufficiency": "statement-unavailable",
+      "limitation": "Gate 6B.1 correctly omitted rejected semantic content; exact content-level review cannot be reconstructed from a fingerprint."
+    }
+  ]
+}

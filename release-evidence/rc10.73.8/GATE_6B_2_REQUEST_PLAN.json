@@ -1,0 +1,212 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-request-plan-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "promptVersion": "gate-6b2-typed-semantic-assets-v1",
+  "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+  "plannedProviderCalls": 8,
+  "absoluteProviderCallCeilingIncludingRetries": 10,
+  "requestPlanFingerprint": "sha256:d80d90b4eaf4f4d9f9252b9cfbc113aab771f8797b798694edbeaa379941c8e8",
+  "requests": [
+    {
+      "requestId": "G6B2-REQ-01",
+      "caseIds": [
+        "G6B1-01"
+      ],
+      "purpose": "source-example",
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce"
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-01",
+          "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 8961,
+      "projectedInputTokens": 2241,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:c781916d236c94512962c52ad0ad1ef01f9c98ee5c15f85d82521621838beaa2"
+    },
+    {
+      "requestId": "G6B2-REQ-02",
+      "caseIds": [
+        "G6B1-05"
+      ],
+      "purpose": "contradiction-versus-scoped-distinction",
+      "evidenceIds": [
+        "BEV-0053bcdba65df5d1e58fdbf4"
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-05",
+          "evidenceId": "BEV-0053bcdba65df5d1e58fdbf4",
+          "excerptHash": "sha256:a56539f2949f91f3b7e4a93b5964bf906c019903527cf932d8e7e2043d86b7f3"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 8259,
+      "projectedInputTokens": 2065,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:62598e24f3c91666c3a7e4d32c2204b75da0ff4cba99ca8bad9e3c7b6aeed19e"
+    },
+    {
+      "requestId": "G6B2-REQ-03",
+      "caseIds": [
+        "G6B1-09"
+      ],
+      "purpose": "causal-pattern-dna",
+      "evidenceIds": [
+        "BEV-d04770a7fd02a158b96b119d"
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-09",
+          "evidenceId": "BEV-d04770a7fd02a158b96b119d",
+          "excerptHash": "sha256:06ff651397e863b6d1ce44a06093c1625187e330af2976d800c16c81e8763ac1"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 14294,
+      "projectedInputTokens": 3574,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:da7f7ee8dcf11ec873a66e05d2c975c87eb4972c1e6846d95731d96214cd1774"
+    },
+    {
+      "requestId": "G6B2-REQ-04",
+      "caseIds": [
+        "G6B1-15"
+      ],
+      "purpose": "implementation-observation",
+      "evidenceIds": [
+        "BEV-b4d881c0aa0d205179a5c445"
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-15",
+          "evidenceId": "BEV-b4d881c0aa0d205179a5c445",
+          "excerptHash": "sha256:5015625f0b026e5db518fab13eff713c3bf7839c640f4313ee144ed2b843582f"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 9058,
+      "projectedInputTokens": 2265,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:963e1e0f07a8e6923a78ee2029ee8591cbfe8fd65bb5fe4995c94fa7ded4b2ec"
+    },
+    {
+      "requestId": "G6B2-REQ-05",
+      "caseIds": [
+        "G6B1-21"
+      ],
+      "purpose": "deliberate-non-claim",
+      "evidenceIds": [
+        "BEV-fcc349fa2dedc2c092f08f84"
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-21",
+          "evidenceId": "BEV-fcc349fa2dedc2c092f08f84",
+          "excerptHash": "sha256:d9726e76824270faa3e2a6fbe67494033bae08b4923cc80e75ad21a4351ff0ff"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 7663,
+      "projectedInputTokens": 1916,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:1f9b08035531aad0bb9ca55d847d94a7719d7d8f798496e86af9d1c492aea264"
+    },
+    {
+      "requestId": "G6B2-REQ-06",
+      "caseIds": [
+        "G6B1-24"
+      ],
+      "purpose": "insufficient-evidence-abstention",
+      "evidenceIds": [
+        null
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-24",
+          "evidenceId": null,
+          "excerptHash": "sha256:0114b60c9746bef556722c71e0342a5bebdc0727fe7fa38681145b80a3a83302"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 7230,
+      "projectedInputTokens": 1808,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:751fb66933075e20ecebe367060a2eac96cb97119e69af0907ef259c303a38d5"
+    },
+    {
+      "requestId": "G6B2-REQ-07",
+      "caseIds": [
+        "G6B1-01",
+        "G6B1-02"
+      ],
+      "purpose": "same-source-examples",
+      "evidenceIds": [
+        "BEV-f4e684d09a9fb9f2589375ce",
+        "BEV-53bc04b94c6a9116788e7543"
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-01",
+          "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "excerptHash": "sha256:825952e6114e95ce2b100f6cace95334855b0e37dbe4497bd55cc20b12a892ff"
+        },
+        {
+          "caseId": "G6B1-02",
+          "evidenceId": "BEV-53bc04b94c6a9116788e7543",
+          "excerptHash": "sha256:a0f65cf4feb71a76aedead58a51cb8658be1b93a51f26ade1f430b4ba286cdfa"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 14192,
+      "projectedInputTokens": 3548,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:426cda1a463b2d450cb6a95c374d3cd0d41240b351ffb9073d5040d9e2613a31"
+    },
+    {
+      "requestId": "G6B2-REQ-08",
+      "caseIds": [
+        "G6B1-06",
+        "G6B1-07"
+      ],
+      "purpose": "security-and-performance-recommendations",
+      "evidenceIds": [
+        "BEV-79d04db6eab52cfde71559fc",
+        "BEV-48b0cb0824957d14e5044e65"
+      ],
+      "caseLineage": [
+        {
+          "caseId": "G6B1-06",
+          "evidenceId": "BEV-79d04db6eab52cfde71559fc",
+          "excerptHash": "sha256:3ba737d6bdb2468fb1dab3def62ec873e287d7d8ee5825d6cff05d1f89f412c4"
+        },
+        {
+          "caseId": "G6B1-07",
+          "evidenceId": "BEV-48b0cb0824957d14e5044e65",
+          "excerptHash": "sha256:816f837ed39ff54faacc23a3cfef9ba4ae53e71869bd4b6888485e61de1368b4"
+        }
+      ],
+      "systemPromptVersion": "gate-6b2-typed-semantic-assets-v1",
+      "outputSchemaVersion": "aiw-gate-6b2-typed-semantic-assets-v1",
+      "inputCharacters": 12889,
+      "projectedInputTokens": 3223,
+      "maximumOutputTokens": 4000,
+      "checkpointKey": "sha256:03537e4ae7694a1012b4bcfaaf464ca603d9e8d1b79315a4da17f3e767aa5a2d"
+    }
+  ]
+}

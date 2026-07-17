@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-dry-run-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "status": "passed",
+  "requestPlanFingerprint": "sha256:d80d90b4eaf4f4d9f9252b9cfbc113aab771f8797b798694edbeaa379941c8e8",
+  "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "networkCalls": 0,
+  "modelCalls": 0,
+  "providerTokens": 0,
+  "candidateRecords": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "repositoryCodeExecuted": 0,
+  "blockers": []
+}

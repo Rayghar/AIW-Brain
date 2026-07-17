@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-candidate-records-v1",
+  "generatedAt": "2026-07-17T06:41:45.759Z",
+  "productionAccepted": false,
+  "authority": "candidate",
+  "recordCount": 0,
+  "records": [],
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0
+}

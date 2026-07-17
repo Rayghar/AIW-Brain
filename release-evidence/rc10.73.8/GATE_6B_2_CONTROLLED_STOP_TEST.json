@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-controlled-stop-test-v1",
+  "generatedAt": "2026-07-17T02:34:54.224Z",
+  "productionAccepted": false,
+  "liveProviderCalls": 0,
+  "testCount": 13,
+  "passed": 13,
+  "failed": 0,
+  "tests": [
+    {
+      "condition": "provider-call-ceiling",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "token-runaway-ceiling",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "exact-model-failure",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "secret-safety-failure",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "evidence-transfer-safety-failure",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "provider-schema-failure",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "evidence-lineage-failure",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "authority-leakage",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "approved-knowledge-mutation",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "design-graph-mutation",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "automatic-promotion-attempt",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "controlled-capacity-floor",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    },
+    {
+      "condition": "unrecoverable-provider-failure",
+      "expected": "fail-closed-without-unauthorized-persistence",
+      "passed": true
+    }
+  ]
+}

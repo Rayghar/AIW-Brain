@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-token-usage-v1",
+  "generatedAt": "2026-07-17T06:41:45.759Z",
+  "productionAccepted": false,
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "totalTokens": 0,
+  "ceiling": 120000,
+  "withinCeiling": true,
+  "note": "Both attempts failed before an HTTP response or provider usage receipt existed."
+}
