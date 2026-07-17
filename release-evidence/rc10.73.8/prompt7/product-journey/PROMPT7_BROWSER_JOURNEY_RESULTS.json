@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aiw-prompt7-browser-journeys-v1",
+  "results": [],
+  "screenshots": [
+    {
+      "scenario": "event-fulfilment",
+      "stage": "requirements",
+      "path": "product-journey/event-fulfilment-requirements.png"
+    }
+  ],
+  "providerCalls": 0,
+  "productionAccepted": false
+}

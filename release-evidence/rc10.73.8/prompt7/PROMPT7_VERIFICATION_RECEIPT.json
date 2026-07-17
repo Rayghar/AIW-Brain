@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "aiw-prompt7-verification-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "baseline": "244b16f4bf1e3ded77a3bffcc98f82764527d928",
+  "builds": {
+    "domain": "passed",
+    "api": "passed",
+    "frontend": "passed-after-restoring-declared-node-types"
+  },
+  "tests": {
+    "backendFocused": {
+      "passed": 10
+    },
+    "frontendFocused": {
+      "passed": 6
+    },
+    "browser": {
+      "passed": 0,
+      "failedInitial": 3,
+      "correctedRerun": "blocked"
+    }
+  },
+  "providerCalls": 0,
+  "modelGenerationCalls": 0,
+  "historicalBiaFilesModified": 0,
+  "credentialsCommitted": 0,
+  "rawVaultPayloadsCommitted": 0,
+  "unrestrictedProviderResponsesCommitted": 0,
+  "approvedKnowledgeChanges": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAcceptedTrueFindings": 0,
+  "productionAccepted": false
+}

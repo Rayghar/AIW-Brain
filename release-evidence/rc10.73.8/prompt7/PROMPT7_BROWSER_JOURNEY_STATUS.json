@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "aiw-prompt7-browser-status-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "attemptedScenarios": [
+    "agency-banking",
+    "core-modernisation",
+    "event-fulfilment"
+  ],
+  "requirementsScreenshotsCaptured": [
+    {
+      "file": "agency-banking-requirements.png",
+      "bytes": 242127,
+      "sha256": "5c5340ae3dc1bc0ae885959c7aa9f6fbb3c5dccd1717af8d49e77e85679e188c"
+    },
+    {
+      "file": "core-modernisation-requirements.png",
+      "bytes": 244816,
+      "sha256": "e7dcfe639d09b577f7c7eba059d817e9121700bf1f4a2250062b3c0cdc985e14"
+    },
+    {
+      "file": "event-fulfilment-requirements.png",
+      "bytes": 174642,
+      "sha256": "c4a7cf31d38be0d25f4d1ec08e7877fdf5ba41862a0abde6e6c5b15f2d761f16"
+    }
+  ],
+  "firstRunResult": "failed-on-test-observation-after-candidate-acceptance",
+  "implementationDefectFound": false,
+  "testDefectCorrected": "candidate acceptance resets the proposal; the test now asserts the accept action becomes disabled rather than waiting for transient notice text",
+  "rerunStatus": "blocked-by-unsandboxed-execution-approval-service-usage-limit",
+  "completeJourneyAccepted": false,
+  "providerCalls": 0,
+  "productionAccepted": false
+}

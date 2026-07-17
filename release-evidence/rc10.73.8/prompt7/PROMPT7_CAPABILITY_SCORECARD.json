@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "aiw-prompt7-capability-scorecard-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "scoreIntegrity": {
+    "correctedBiaScore": 96.2,
+    "reproducible": true
+  },
+  "canonicalService": {
+    "implemented": true,
+    "boundedProjectionShared": true
+  },
+  "designStages": {
+    "total": 4,
+    "actionableCandidateContractPassed": 4,
+    "deterministicScenarioProfiles": 5
+  },
+  "scenarioSpecificity": {
+    "unitAndIntegrationPassed": true,
+    "byteIdenticalPayloads": 0
+  },
+  "candidateFlow": {
+    "accept": "passed-offline",
+    "reject": "implemented",
+    "modify": "implemented",
+    "defer": "implemented",
+    "staleness": "passed-offline"
+  },
+  "sdd": {
+    "scenarioSpecificAssemblyPassed": true,
+    "acceptedProjectStateSource": true
+  },
+  "browser": {
+    "journeysRequired": 3,
+    "journeysAccepted": 0,
+    "status": "rerun-blocked-after-test-correction"
+  },
+  "uiApiParityPercent": null,
+  "acceptanceCriteriaPassed": false,
+  "productionAccepted": false
+}

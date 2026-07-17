@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "aiw-prompt7-next-stage-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "nextStageEntryApproved": false,
+  "blocker": "three-scenario Solution Architect and Reviewer browser acceptance has not replayed after the assertion correction",
+  "permittedNextWork": [
+    "rerun Prompt 7 browser journeys",
+    "fix only observed product integration defects",
+    "recompute UI/API parity",
+    "final Prompt 7 acceptance decision"
+  ],
+  "prohibited": [
+    "broad corpus transformation",
+    "Gate 6C",
+    "Gate 6D",
+    "release tag"
+  ],
+  "productionAccepted": false
+}

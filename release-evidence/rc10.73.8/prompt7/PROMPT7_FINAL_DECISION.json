@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aiw-prompt7-final-decision-v1",
+  "generatedAt": "2026-07-17T21:10:51.505Z",
+  "decision": "B",
+  "label": "Brain works but UI integration acceptance incomplete",
+  "rationale": "Canonical service, actionable candidates, scenario diversity, candidate authority, staleness and SDD integration pass builds and focused tests. The required corrected three-scenario browser rerun could not be executed because unsandboxed execution approval was unavailable, so UI/API parity and complete journeys cannot be claimed.",
+  "prompt7Complete": false,
+  "nextAction": "rerun the frozen Prompt 7 browser journey and close only observed UI defects; do not return to corpus transformation",
+  "providerCalls": 0,
+  "productionAccepted": false,
+  "gate6c": "blocked",
+  "gate6d": "not-started",
+  "backup": "deferred-by-product-owner"
+}
