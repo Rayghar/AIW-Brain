@@ -20,6 +20,7 @@ import {
 import { createArchitectureViewbook, resolveViewVisibleEdgeIds, resolveViewVisibleNodeIds } from '@aiw/modelling';
 import { useWorkspaceStore } from '../store/workspaceStore';
 import { ArchitectureViewbook } from '../features/canvas/ArchitectureViewbook';
+import type { ProjectReviewAction } from '@aiw/domain';
 
 type ReviewTaskFocus = 'review' | 'findings' | 'evidence' | 'audit' | 'disposition';
 
@@ -42,12 +43,16 @@ export function ReviewerAssuranceStudio() {
   const recentActivity = useWorkspaceStore((state) => state.recentActivity);
   const lifecycleArtifacts = useWorkspaceStore((state) => state.lifecycleArtifacts);
   const decideStageApproval = useWorkspaceStore((state) => state.decideStageApproval);
+  const recordProjectReviewDecision = useWorkspaceStore((state) => state.recordProjectReviewDecision);
   const setWorkspaceMode = useWorkspaceStore((state) => state.setWorkspaceMode);
   const [selectedApprovalId, setSelectedApprovalId] = useState<string | null>(() => {
     const approval = [...(project.stageApprovals ?? [])].reverse().find((item: any) => item.stage === 'validationRealization');
     return approval?.id ?? null;
   });
   const [comment, setComment] = useState('');
+  const candidateNodes = useMemo(() => (project.nodes ?? []).filter((node: any) => node.properties?.candidateAuthority === 'candidate'), [project.nodes]);
+  const [selectedCandidateId, setSelectedCandidateId] = useState<string>(() => candidateNodes[0]?.id ?? '');
+  const [decisionPending, setDecisionPending] = useState(false);
   const [viewbookOpen, setViewbookOpen] = useState(false);
   const [taskFocus, setTaskFocus] = useState<ReviewTaskFocus>(() => {
     if (typeof window === 'undefined') return 'review';
@@ -93,6 +98,16 @@ export function ReviewerAssuranceStudio() {
     if (!selectedApproval) return;
     decideStageApproval(selectedApproval.id, status, 'Architecture Reviewer', comment || undefined);
     setComment('');
+  };
+
+  const recordCandidateDecision = async (action: ProjectReviewAction) => {
+    const candidateAction = ['approve-project-candidate', 'return-with-comments', 'reject-candidate', 'request-evidence', 'request-regeneration'].includes(action);
+    const targetType = candidateAction && selectedCandidateId ? 'candidate' : 'project';
+    const targetId = targetType === 'candidate' ? selectedCandidateId : project.id;
+    setDecisionPending(true);
+    const saved = await recordProjectReviewDecision(targetType, targetId, action, comment);
+    setDecisionPending(false);
+    if (saved) setComment('');
   };
 
   const selectedTaskLabel = taskFocus === 'evidence' ? 'Evidence Ledger' : taskFocus === 'audit' ? 'Review Audit' : taskFocus === 'disposition' ? 'Disposition' : taskFocus === 'findings' ? 'Findings' : 'Review Queue';
@@ -197,6 +212,32 @@ export function ReviewerAssuranceStudio() {
               <button type="button" className="is-change" disabled={!selectedApproval || selectedApproval.status !== 'pending'} onClick={() => decide('changes-requested')}><MessageSquareWarning size={15}/> Request changes</button>
               <button type="button" className="is-reject" disabled={!selectedApproval || selectedApproval.status !== 'pending'} onClick={() => decide('rejected')}><XCircle size={15}/> Reject</button>
             </div>
+            <section className="assurance-project-decisions" aria-label="Persistent project candidate decisions">
+              <h3>Project candidate decisions</h3>
+              <p>These actions persist with project-candidate authority only. They never promote knowledge or confer production approval.</p>
+              <label>
+                <span>Candidate</span>
+                <select aria-label="Review candidate" value={selectedCandidateId} onChange={(event) => setSelectedCandidateId(event.target.value)}>
+                  {candidateNodes.map((node: any) => <option key={node.id} value={node.id}>{node.label}</option>)}
+                </select>
+              </label>
+              <div className="assurance-project-decisions__actions">
+                <button disabled={decisionPending || !selectedCandidateId} onClick={() => void recordCandidateDecision('approve-project-candidate')}>Approve project candidate</button>
+                <button disabled={decisionPending || !selectedCandidateId} onClick={() => void recordCandidateDecision('return-with-comments')}>Return with comments</button>
+                <button disabled={decisionPending || !selectedCandidateId} onClick={() => void recordCandidateDecision('reject-candidate')}>Reject candidate</button>
+                <button disabled={decisionPending || !selectedCandidateId} onClick={() => void recordCandidateDecision('request-evidence')}>Request evidence</button>
+                <button disabled={decisionPending || !selectedCandidateId} onClick={() => void recordCandidateDecision('request-regeneration')}>Request regeneration</button>
+                <button disabled={decisionPending} onClick={() => void recordCandidateDecision('mark-risk-accepted')}>Mark risk accepted</button>
+                <button disabled={decisionPending} onClick={() => void recordCandidateDecision('record-exception')}>Record exception</button>
+              </div>
+              <div className="assurance-project-decisions__ledger" data-testid="review-decision-ledger">
+                {(project.reviewDecisionLedger ?? []).slice().reverse().slice(0, 12).map((decision: any) => <article key={decision.id}>
+                  <strong>{decision.action.replaceAll('-', ' ')}</strong>
+                  <span>{decision.resultingState}</span>
+                  <small>{decision.actorId} · {readableDate(decision.timestamp)} · {decision.authority}</small>
+                </article>)}
+              </div>
+            </section>
             <p className="assurance-boundary">Reviewers can inspect, compare and disposition the submitted baseline. Model mutation, pattern application and artifact generation remain producer responsibilities.</p>
           </aside> : null}
         </div>

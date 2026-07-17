@@ -5,6 +5,7 @@ import { sampleProject, type ArchitectureProject, type KnowledgeLibrary, type St
 import { composeSdd } from '@aiw/engine';
 import { boundedBrainProjection, stableBrainRuntimeValue } from '../src/boundedBrainProjection.js';
 import { buildDeterministicStageCoAuthorProposal } from '../src/stageCoAuthorAssistant.js';
+import { recordProjectReviewDecision } from '../src/projectReviewDecisions.js';
 
 const library = JSON.parse(readFileSync(new URL('../../../data/knowledge-library.json', import.meta.url), 'utf8')) as KnowledgeLibrary;
 const stages: StageCoAuthorTarget[] = ['logicalApplication', 'applicationRealization', 'logicalTechnology', 'physicalTechnology'];
@@ -90,5 +91,36 @@ describe('Prompt 7 productised bounded Brain', () => {
     expect(documents[0]).toContain('Agency Transaction Service');
     expect(documents[1]).toContain('Fulfilment Process Manager');
     expect(documents[2]).toContain('Privacy Transformation Service');
+  });
+
+  it('persists project-candidate reviewer decisions without production authority', () => {
+    const project = scenarioProject('Review persistence', 'Review a candidate architecture.');
+    const proposal = buildDeterministicStageCoAuthorProposal({ project, library, targetStage: 'logicalApplication' });
+    const node = structuredClone(proposal.operations.find((item) => item.kind === 'add-node')!.proposedValue) as ArchitectureProject['nodes'][number];
+    node.properties.candidateLifecycleState = 'accepted-for-project';
+    project.nodes.push(node);
+    const recorded = recordProjectReviewDecision(project, {
+      targetType: 'candidate', targetId: node.id, action: 'reject-candidate', actorId: 'reference-reviewer',
+      comment: 'Responsibility overlaps an existing boundary.', now: '2026-07-17T12:00:00.000Z',
+    });
+    expect(recorded.decision.authority).toBe('project-candidate-review');
+    expect(recorded.decision.resultingState).toBe('rejected');
+    expect(recorded.project.nodes[0]?.status).not.toBe('approved');
+    expect(recorded.project.reviewDecisionLedger).toHaveLength(1);
+    expect(project.reviewDecisionLedger).toBeUndefined();
+  });
+
+  it('excludes rejected project candidates from the governed SDD', () => {
+    const project = scenarioProject('SDD rejection', 'Exclude rejected candidates.');
+    project.nodes.push({
+      id: 'accepted-service', kind: 'LogicalService', stage: 'logicalApplication', label: 'Accepted Service',
+      properties: { candidateAuthority: 'candidate', candidateLifecycleState: 'accepted-for-project' }, lineageFrom: [], positions: {}, tags: [], status: 'draft',
+    }, {
+      id: 'rejected-service', kind: 'LogicalService', stage: 'logicalApplication', label: 'Rejected Service Must Not Appear',
+      properties: { candidateAuthority: 'candidate', candidateLifecycleState: 'rejected' }, lineageFrom: [], positions: {}, tags: [], status: 'draft',
+    });
+    const markdown = composeSdd(project, library);
+    expect(markdown).toContain('Accepted Service');
+    expect(markdown).not.toContain('Rejected Service Must Not Appear');
   });
 });

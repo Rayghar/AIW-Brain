@@ -270,6 +270,34 @@ export interface StageApproval {
   snapshotId?: string | undefined;
 }
 
+export const projectReviewActions = [
+  'approve-project-candidate',
+  'return-with-comments',
+  'reject-candidate',
+  'request-evidence',
+  'request-regeneration',
+  'mark-risk-accepted',
+  'record-exception',
+] as const;
+export type ProjectReviewAction = (typeof projectReviewActions)[number];
+
+export interface ProjectReviewDecision {
+  id: string;
+  projectId: string;
+  branchId: string;
+  targetType: 'candidate' | 'graph-object' | 'risk' | 'project';
+  targetId: string;
+  action: ProjectReviewAction;
+  actorRole: 'reviewer';
+  actorId: string;
+  timestamp: string;
+  comment: string;
+  priorState: string;
+  resultingState: string;
+  authority: 'project-candidate-review';
+  auditReference: string;
+}
+
 export const projectRoles = ['owner', 'architect', 'reviewer', 'governance', 'contributor', 'viewer'] as const;
 export type ProjectRole = (typeof projectRoles)[number];
 
@@ -762,6 +790,7 @@ export interface ArchitectureProject {
   context: ProjectContext;
   branch: BranchMetadata;
   stageApprovals: StageApproval[];
+  reviewDecisionLedger?: ProjectReviewDecision[] | undefined;
   activeRulePackIds: string[];
   members: ProjectMember[];
   reviewAssignments: ReviewAssignment[];

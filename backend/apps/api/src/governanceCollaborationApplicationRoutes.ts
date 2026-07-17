@@ -221,6 +221,7 @@ import { sprint878PlatformRelease } from "./services/releaseRegistry.js";
 import { productionMindFactoryRoutes } from "./routes/productionMindFactoryRoutes.js";
 import type { ApplicationRouteContext } from "./applicationRouteContext.js";
 import { markArchitectureBrainCompatibilityAlias } from "./architectureBrainRouteBoundary.js";
+import { recordProjectReviewDecision } from './projectReviewDecisions.js';
 export async function registerGovernanceCollaborationApplicationRoutes(context: ApplicationRouteContext) {
   const {
     app, repository, eventHub, auditLog, idempotency, telemetry, durableEvents,
@@ -383,6 +384,36 @@ export async function registerGovernanceCollaborationApplicationRoutes(context: 
         error:
           error instanceof Error ? error.message : "REVIEW_COMPLETION_FAILED",
       });
+    }
+  });
+
+  app.post('/api/projects/:projectId/branches/:branchId/review-decisions', async (request, reply) => {
+    const params = projectParamsSchema.safeParse(request.params);
+    const body = z.object({
+      targetType: z.enum(['candidate', 'graph-object', 'risk', 'project']),
+      targetId: z.string().min(1),
+      action: z.enum(['approve-project-candidate', 'return-with-comments', 'reject-candidate', 'request-evidence', 'request-regeneration', 'mark-risk-accepted', 'record-exception']),
+      comment: z.string().max(4000).default(''),
+      expectedRevision: z.number().int().nonnegative(),
+    }).safeParse(request.body);
+    if (!params.success || !body.success) return reply.code(400).send({ error: 'INVALID_PROJECT_REVIEW_DECISION' });
+    const principal = principalFor(request);
+    const current = await repository.getProject(principal.tenantId, params.data.projectId, params.data.branchId);
+    if (!current) return reply.code(404).send({ error: 'PROJECT_NOT_FOUND' });
+    if (!canPerform(current, principal.subject, 'review.decide')) return reply.code(403).send({ error: 'FORBIDDEN:review.decide' });
+    try {
+      const recorded = recordProjectReviewDecision(current, { ...body.data, actorId: principal.subject });
+      const saved = await repository.saveProject(recorded.project, current.revision);
+      auditLog.append({
+        tenantId: saved.tenantId, projectId: saved.id, branchId: saved.branch.id,
+        actorId: principal.subject, eventType: 'review', action: body.data.action,
+        targetType: body.data.targetType, targetId: body.data.targetId, outcome: 'success',
+        correlationId: request.id, retentionDays: saved.securitySettings.auditRetentionDays,
+        metadata: { decisionId: recorded.decision.id, authority: recorded.decision.authority, requestedRevision: body.data.expectedRevision, appliedRevision: current.revision },
+      });
+      return { project: saved, decision: recorded.decision };
+    } catch (error) {
+      return reply.code(409).send({ error: error instanceof Error ? error.message : 'PROJECT_REVIEW_DECISION_FAILED' });
     }
   });
 

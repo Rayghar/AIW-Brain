@@ -33,6 +33,8 @@ import {
   type RecommendationContext,
   type RecommendationScore,
   type StageApproval,
+  type ProjectReviewAction,
+  type ProjectReviewDecision,
   type RelationshipKind,
   type DiscussionThread,
   type MergePlan,
@@ -406,6 +408,12 @@ interface WorkspaceStore {
     reviewer: string,
     comment?: string,
   ) => void;
+  recordProjectReviewDecision: (
+    targetType: ProjectReviewDecision['targetType'],
+    targetId: string,
+    action: ProjectReviewAction,
+    comment?: string,
+  ) => Promise<boolean>;
   toggleRulePack: (rulePackId: string) => void;
   importRuntimeInventoryData: (
     name: string,
@@ -1400,8 +1408,9 @@ export function applyStageDraftOperation(
   switch (operation.kind) {
     case "add-node": {
       const parsed = architectureNodeSchema.safeParse(operation.proposedValue);
-      if (!parsed.success || project.nodes.some((item) => item.id === parsed.data.id))
-        return false;
+      if (!parsed.success) return false;
+      const existing = project.nodes.find((item) => item.id === parsed.data.id);
+      if (existing && existing.properties.candidateLifecycleState !== 'stale') return false;
       const node = safeStructuredClone(parsed.data) as ArchitectureNode;
       node.status = "draft";
       node.properties = {
@@ -1416,7 +1425,10 @@ export function applyStageDraftOperation(
         riskRefs: [...(operation.riskRefs ?? [])],
         decisionRefs: [...(operation.decisionRefs ?? [])],
       };
-      project.nodes.push(node);
+      if (existing) {
+        const preservedPositions = existing.positions;
+        Object.assign(existing, node, { positions: preservedPositions });
+      } else project.nodes.push(node);
       return true;
     }
     case "add-edge": {
@@ -1659,7 +1671,8 @@ export function markGeneratedDownstreamCandidatesStale(
     const refs = Array.isArray(node.properties.upstreamStageRefs)
       ? node.properties.upstreamStageRefs.map(String)
       : [];
-    if (!refs.includes(changedStage) || node.properties.candidateAuthority !== "candidate")
+    const affectedByIntent = changedStage === 'designIntent';
+    if ((!affectedByIntent && !refs.includes(changedStage)) || node.properties.candidateAuthority !== "candidate")
       continue;
     node.properties.candidateLifecycleState = "stale";
     node.properties.staleBecause = {
@@ -2432,12 +2445,14 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
       setProjectText: (field, value) =>
         set((state) => {
           state.project[field] = value;
+          const staleIds = markGeneratedDownstreamCandidatesStale(state.project, 'designIntent', [`project:${field}`]);
           bump(state.project);
           updateDerived(state, "intent-change", {
             kind: "requirement-changed",
             field,
             nextValue: value,
           });
+          if (staleIds.length) state.notice = `${staleIds.length} affected downstream candidate(s) marked stale after ${field} changed.`;
         }),
 
       setListField: (field, value) =>
@@ -2446,6 +2461,7 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
             .split("\n")
             .map((item) => item.trim())
             .filter(Boolean);
+          const staleIds = markGeneratedDownstreamCandidatesStale(state.project, 'designIntent', [`project:${field}`]);
           bump(state.project);
           updateDerived(state, "intent-change", {
             kind:
@@ -2455,6 +2471,7 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
             field,
             nextValue: value,
           });
+          if (staleIds.length) state.notice = `${staleIds.length} affected downstream candidate(s) marked stale after ${field} changed.`;
         }),
 
       setQualityWeight: (attributeId, weight) =>
@@ -2464,12 +2481,14 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
           );
           if (existing) existing.weight = weight;
           else state.project.qualityPriorities.push({ attributeId, weight });
+          const staleIds = markGeneratedDownstreamCandidatesStale(state.project, 'designIntent', [`quality:${attributeId}`]);
           bump(state.project);
           updateDerived(state, "quality-change", {
             kind: "attribute-changed",
             field: attributeId,
             nextValue: weight,
           });
+          if (staleIds.length) state.notice = `${staleIds.length} affected downstream candidate(s) marked stale after the quality driver changed.`;
         }),
 
       applyStageCoAuthorOperations: (proposal, operationIds) =>
@@ -4169,6 +4188,26 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
           bump(state.project, false);
           state.notice = `${approval.stage} approval marked ${status}.`;
         }),
+
+      recordProjectReviewDecision: async (targetType, targetId, action, comment = '') => {
+        const state = get();
+        if (!can(state.experienceProfile, 'review.disposition')) {
+          set((draft) => { draft.notice = 'The active role cannot record reviewer decisions.'; });
+          return false;
+        }
+        try {
+          const response = await postJson<{ project: ArchitectureProject; decision: ProjectReviewDecision }>(
+            `/api/projects/${encodeURIComponent(state.project.id)}/branches/${encodeURIComponent(state.project.branch.id)}/review-decisions`,
+            { targetType, targetId, action, comment, expectedRevision: state.project.revision },
+          );
+          get().hydrateProject(response.project, true);
+          set((draft) => { draft.notice = `${action.replaceAll('-', ' ')} recorded with project-candidate authority.`; });
+          return true;
+        } catch (error) {
+          set((draft) => { draft.notice = error instanceof Error ? error.message : 'Reviewer decision could not be persisted.'; });
+          return false;
+        }
+      },
 
       toggleRulePack: (rulePackId) =>
         set((state) => {

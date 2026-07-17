@@ -124,6 +124,7 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
   const readyCount = proposal.operations.filter((item) => item.validationStatus === 'ready').length;
   const clarificationCount = proposal.operations.filter((item) => item.validationStatus === 'requires-clarification').length + proposal.clarifications.length;
   const stale = proposal.projectRevision !== project.revision;
+  const staleStageCandidates = project.nodes.filter((node) => node.stage === targetStage && node.properties.candidateAuthority === 'candidate' && node.properties.candidateLifecycleState === 'stale');
   const modeLabel = proposal.mode === 'llm-assisted' ? 'Sol enriched' : proposal.mode === 'deterministic-fallback' ? 'Deterministic fallback' : 'Deterministic';
   const showComponentRationale = targetStage !== 'requirements' && targetStage !== 'qualityDrivers';
   const rationaleFocus: Record<StageCoAuthorTarget, string> = {
@@ -229,6 +230,7 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
     </div>
 
     <div className="stage-co-author__governance-note"><ShieldCheck size={15}/><span><strong>Human-controlled draft layer.</strong> {proposal.notice}</span></div>
+    {staleStageCandidates.length ? <div className="stage-co-author__error" data-testid="stale-stage-candidates"><AlertTriangle size={15}/>{staleStageCandidates.length} accepted candidate(s) are stale because upstream project intent changed. Regenerate this stage to replace only the affected candidate content.</div> : null}
     {stale ? <div className="stage-co-author__error"><AlertTriangle size={15}/>The project changed after this proposal was generated. Regenerate before accepting it.</div> : null}
     {error ? <div className="stage-co-author__error"><AlertTriangle size={15}/>{error}</div> : null}
 
@@ -253,6 +255,20 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
             {operation.tradeOffs.length ? <p><strong>Trade-off:</strong> {operation.tradeOffs.join(' ')}</p> : null}
             {operation.downstreamEffects.length ? <p><strong>Downstream effect:</strong> {operation.downstreamEffects.join(' ')}</p> : null}
             {operation.missingInformation.length ? <div className="stage-draft__missing"><CircleHelp size={13}/>{operation.missingInformation.join(' ')}</div> : null}
+            <details className="stage-draft__traceability">
+              <summary>Traceability, alternatives and impact</summary>
+              <dl>
+                <div><dt>Authority</dt><dd>{operation.authority ?? 'candidate'} · review required</dd></div>
+                <div><dt>Requirements</dt><dd>{operation.requirementRefs.length ? operation.requirementRefs.map((ref) => evidenceLabel(project, ref)).join(', ') : 'No requirement reference supplied'}</dd></div>
+                <div><dt>Quality drivers</dt><dd>{operation.qualityDriverRefs?.length ? operation.qualityDriverRefs.map((ref) => evidenceLabel(project, ref)).join(', ') : 'None explicitly linked'}</dd></div>
+                <div><dt>Risks</dt><dd>{operation.riskRefs?.length ? operation.riskRefs.map((ref) => evidenceLabel(project, ref)).join(', ') : 'None explicitly linked'}</dd></div>
+                <div><dt>Decisions</dt><dd>{operation.decisionRefs?.length ? operation.decisionRefs.map((ref) => evidenceLabel(project, ref)).join(', ') : 'Candidate decision not yet accepted'}</dd></div>
+                <div><dt>Evidence</dt><dd>{operation.evidenceRefs.length ? operation.evidenceRefs.map((ref) => evidenceLabel(project, ref)).join(', ') : 'Unavailable — abstention remains visible'}</dd></div>
+                <div><dt>Affected objects</dt><dd>{operation.affectedObjectIds?.length ? operation.affectedObjectIds.join(', ') : operation.targetId ?? operation.targetPath}</dd></div>
+                <div><dt>Alternatives</dt><dd>{operation.alternatives?.length ? operation.alternatives.join(' ') : 'No alternative supplied'}</dd></div>
+                <div><dt>Assumptions</dt><dd>{operation.assumptions?.length ? operation.assumptions.join(' ') : 'No additional assumption supplied'}</dd></div>
+              </dl>
+            </details>
             {operation.evidenceRefs.length ? <footer>{operation.evidenceRefs.map((ref) => <span key={ref}>{evidenceLabel(project, ref)}</span>)}</footer> : null}
             <div className="stage-draft__actions" aria-label={`Decide ${operation.label}`}>
               <button type="button" className="button--quiet" onClick={() => { setCandidateStates((current) => ({ ...current, [operation.id]: 'under-review' })); setSelected((current) => new Set(current).add(operation.id)); }}><Pencil size={13}/> Modify / review</button>

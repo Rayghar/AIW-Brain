@@ -56,4 +56,32 @@ describe('Prompt 7 candidate lifecycle', () => {
     expect(project.nodes[1]?.properties.candidateLifecycleState).toBe('accepted-for-project');
     expect(project.nodes[2]?.properties.candidateLifecycleState).toBeUndefined();
   });
+
+  it('marks every generated downstream candidate stale when accepted intent changes', () => {
+    const project = structuredClone(sampleProject) as ArchitectureProject;
+    project.nodes = [
+      { id: 'logical', kind: 'LogicalService', stage: 'logicalApplication', label: 'Logical', properties: { candidateAuthority: 'candidate', candidateLifecycleState: 'accepted-for-project', upstreamStageRefs: ['designIntent'] }, lineageFrom: [], positions: {}, tags: [], status: 'draft' },
+      { id: 'physical', kind: 'DeploymentNode', stage: 'physicalTechnology', label: 'Physical', properties: { candidateAuthority: 'candidate', candidateLifecycleState: 'accepted-for-project', upstreamStageRefs: ['logicalTechnology'] }, lineageFrom: [], positions: {}, tags: [], status: 'draft' },
+      { id: 'approved', kind: 'System', stage: 'logicalApplication', label: 'Approved', properties: { candidateAuthority: 'approved' }, lineageFrom: [], positions: {}, tags: [], status: 'approved' },
+    ];
+    expect(markGeneratedDownstreamCandidatesStale(project, 'designIntent', ['project:description'])).toEqual(['logical', 'physical']);
+    expect(project.nodes[0]?.properties.candidateLifecycleState).toBe('stale');
+    expect(project.nodes[1]?.properties.candidateLifecycleState).toBe('stale');
+    expect(project.nodes[2]?.status).toBe('approved');
+  });
+
+  it('regenerates a stale candidate in place without creating a duplicate', () => {
+    const project = structuredClone(sampleProject) as ArchitectureProject;
+    const node: ArchitectureNode = {
+      id: 'prompt7-logical-service', kind: 'LogicalService', stage: 'logicalApplication', label: 'Updated Service',
+      description: 'Updated responsibility.', properties: { candidateLifecycleState: 'proposed', candidateAuthority: 'candidate', upstreamStageRefs: ['designIntent'] },
+      lineageFrom: [], positions: { default: { x: 20, y: 20 } }, tags: [], status: 'draft',
+    };
+    project.nodes = [{ ...structuredClone(node), label: 'Old Service', properties: { ...node.properties, candidateLifecycleState: 'stale' }, positions: { default: { x: 7, y: 9 } } }];
+    expect(applyStageDraftOperation(project, operation(node))).toBe(true);
+    expect(project.nodes).toHaveLength(1);
+    expect(project.nodes[0]?.label).toBe('Updated Service');
+    expect(project.nodes[0]?.properties.candidateLifecycleState).toBe('accepted-for-project');
+    expect(project.nodes[0]?.positions.default).toEqual({ x: 7, y: 9 });
+  });
 });

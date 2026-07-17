@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { architectureStages, entityKinds, findingSeverities, projectRoles, relationshipKinds } from './types.js';
+import { architectureStages, entityKinds, findingSeverities, projectReviewActions, projectRoles, relationshipKinds } from './types.js';
 import type { RequirementsIntelligenceState } from './requirementsGenesis.js';
 import type { ArchitectureDesignGraph } from './architectureDesignGraph.js';
 
@@ -457,6 +457,13 @@ export const architectureProjectSchema = z.object({
     comments: z.array(z.string()),
     snapshotId: z.string().optional(),
   })),
+  reviewDecisionLedger: z.array(z.object({
+    id: z.string(), projectId: z.string(), branchId: z.string(),
+    targetType: z.enum(['candidate', 'graph-object', 'risk', 'project']),
+    targetId: z.string(), action: z.enum(projectReviewActions), actorRole: z.literal('reviewer'),
+    actorId: z.string(), timestamp: z.string(), comment: z.string(), priorState: z.string(),
+    resultingState: z.string(), authority: z.literal('project-candidate-review'), auditReference: z.string(),
+  })).default([]),
   activeRulePackIds: z.array(z.string()),
   members: z.array(projectMemberSchema),
   reviewAssignments: z.array(reviewAssignmentSchema),
