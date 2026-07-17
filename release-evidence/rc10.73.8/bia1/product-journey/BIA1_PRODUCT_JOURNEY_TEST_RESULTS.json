@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "aiw-bia1-product-journey-results-v1",
+  "results": [
+    {
+      "scenarioId": "BIA1-S1",
+      "stagesCompleted": [
+        "requirements",
+        "context",
+        "logical",
+        "realization",
+        "logical-technology",
+        "physical-technology",
+        "review",
+        "sdd"
+      ],
+      "roles": [
+        "Solution Architect",
+        "Reviewer"
+      ],
+      "generatedStageCount": 0,
+      "stageGaps": [
+        "logical: no actionable Sol Design candidate",
+        "realization: no actionable Sol Design candidate",
+        "logical-technology: no actionable Sol Design candidate",
+        "physical-technology: no actionable Sol Design candidate"
+      ],
+      "actualOutputsObserved": true,
+      "rationaleObserved": true,
+      "candidateStateOnly": true,
+      "errors": []
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "stagesCompleted": [
+        "requirements",
+        "context",
+        "logical",
+        "realization",
+        "logical-technology",
+        "physical-technology",
+        "review",
+        "sdd"
+      ],
+      "roles": [
+        "Solution Architect",
+        "Reviewer"
+      ],
+      "generatedStageCount": 0,
+      "stageGaps": [
+        "logical: no actionable Sol Design candidate",
+        "realization: no actionable Sol Design candidate",
+        "logical-technology: no actionable Sol Design candidate",
+        "physical-technology: no actionable Sol Design candidate"
+      ],
+      "actualOutputsObserved": true,
+      "rationaleObserved": true,
+      "candidateStateOnly": true,
+      "errors": []
+    }
+  ],
+  "productionAccepted": false
+}

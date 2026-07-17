@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "aiw-bia1-pass1-gaps-v1",
+  "gapCount": 5,
+  "gaps": [
+    {
+      "scenarioId": "BIA1-S1",
+      "mode": "aiw-full-brain",
+      "omission": "benchmark-generation-failed"
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "mode": "aiw-full-brain",
+      "omission": "benchmark-generation-failed"
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "mode": "aiw-full-brain",
+      "omission": "benchmark-generation-failed"
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "mode": "aiw-full-brain",
+      "omission": "benchmark-generation-failed"
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "mode": "aiw-full-brain",
+      "omission": "benchmark-generation-failed"
+    }
+  ],
+  "productionAccepted": false
+}

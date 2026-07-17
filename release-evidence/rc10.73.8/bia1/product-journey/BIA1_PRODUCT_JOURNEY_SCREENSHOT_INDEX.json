@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "aiw-bia1-screenshot-index-v1",
+  "records": [
+    {
+      "scenarioId": "BIA1-S1",
+      "stage": "01-requirements",
+      "path": "product-journey/bia1-s1-01-requirements.png",
+      "role": "Solution Architect"
+    },
+    {
+      "scenarioId": "BIA1-S1",
+      "stage": "02-context",
+      "path": "product-journey/bia1-s1-02-context.png",
+      "role": "Solution Architect"
+    },
+    {
+      "scenarioId": "BIA1-S1",
+      "stage": "03-design-output",
+      "path": "product-journey/bia1-s1-03-design-output.png",
+      "role": "Solution Architect"
+    },
+    {
+      "scenarioId": "BIA1-S1",
+      "stage": "04-governance-review",
+      "path": "product-journey/bia1-s1-04-governance-review.png",
+      "role": "Reviewer"
+    },
+    {
+      "scenarioId": "BIA1-S1",
+      "stage": "05-sdd",
+      "path": "product-journey/bia1-s1-05-sdd.png",
+      "role": "Solution Architect"
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "stage": "01-requirements",
+      "path": "product-journey/bia1-s4-01-requirements.png",
+      "role": "Solution Architect"
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "stage": "02-context",
+      "path": "product-journey/bia1-s4-02-context.png",
+      "role": "Solution Architect"
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "stage": "03-design-output",
+      "path": "product-journey/bia1-s4-03-design-output.png",
+      "role": "Solution Architect"
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "stage": "04-governance-review",
+      "path": "product-journey/bia1-s4-04-governance-review.png",
+      "role": "Reviewer"
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "stage": "05-sdd",
+      "path": "product-journey/bia1-s4-05-sdd.png",
+      "role": "Solution Architect"
+    }
+  ],
+  "productionAccepted": false
+}

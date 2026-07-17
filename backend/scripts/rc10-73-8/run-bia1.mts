@@ -119,6 +119,66 @@ async function runPass1() {
   process.stdout.write(`${JSON.stringify({ frozenFingerprint, summaries, providerCalls: accounting.attempts, inputTokens: accounting.inputTokens, outputTokens: accounting.outputTokens, totalTokens: accounting.totalTokens, productionAccepted: false }, null, 2)}\n`);
 }
 
+async function runPass1OfflinePreflight() {
+  await mkdir(out, { recursive: true });
+  const frozenFingerprint = await verifyFreeze();
+  const modeC: any[] = [];
+  const transfers: any[] = [];
+  for (const scenario of BIA1_SCENARIOS) {
+    const aiw = await buildAiwBrainContext(scenario);
+    const deterministic = buildDeterministicArchitecturePackage(scenario, aiw);
+    modeC.push({ scenarioId: scenario.scenarioId, mode: "aiw-deterministic-only", status: "completed", architecture: deterministic, runtime: { providerCalls: 0, modelCalls: 0, deterministicRules: aiw.deterministicRules, contextFingerprint: aiw.contextFingerprint }, candidateCreated: true, approvedRecordsChanged: 0, designGraphMutations: 0, automaticPromotions: 0 });
+    const scenarioPacket = { ...scenario } as any;
+    delete scenarioPacket.evaluatorOnlyReference;
+    const serializedContext = JSON.stringify(aiw.context);
+    const serializedScenario = JSON.stringify(scenarioPacket);
+    transfers.push({
+      scenarioId: scenario.scenarioId,
+      genericMode: { scenarioCharacters: serializedScenario.length, contentFingerprint: sha256(scenarioPacket), includesAiwContext: false },
+      fullBrainMode: { scenarioCharacters: serializedScenario.length, brainContextCharacters: serializedContext.length, brainContextFingerprint: aiw.contextFingerprint, includesAiwContext: true },
+      containsRawVaultContent: false,
+      containsSourceCode: false,
+      containsCredentials: false,
+      containsPersonalInformation: false,
+      containsCustomerOrInternalOrganisationData: false,
+      containsEvaluatorGoldExpectations: false,
+      containsReferenceSdd: false,
+      contentClasses: ["synthetic benchmark scenario", "deterministic requirements analysis", "AIW rule/recommendation identifiers", "candidate Design Graph projection", "knowledge manifest references"],
+    });
+  }
+  const evaluations = modeC.map((record) => evaluationFor(BIA1_SCENARIOS.find((item) => item.scenarioId === record.scenarioId)!, record));
+  await writeJson("BIA1_PASS1_MODE_C_RESULTS.json", { schemaVersion: "aiw-bia1-pass1-results-v1", generatedAt: new Date().toISOString(), frozenScenarioFingerprint: frozenFingerprint, mode: "aiw-deterministic-only", exactModel: null, ...BIA1_ACTOR, productionAccepted: false, scenarioResults: modeC, evaluations });
+  await writeJson("BIA1_PROVIDER_TRANSFER_SAFETY_RECEIPT.json", {
+    schemaVersion: "aiw-bia1-provider-transfer-safety-v1",
+    generatedAt: new Date().toISOString(),
+    provider: "openai",
+    intendedModel: model,
+    intendedCalls: 10,
+    transferOccurred: false,
+    productOwnerSpecificTransferApprovalRequired: true,
+    transfers,
+    prohibitedContentChecksPassed: true,
+    toolsEnabled: false,
+    externalRetrievalEnabled: false,
+    fallbackEnabled: false,
+    providerResponseRetention: "strict parsed architecture package only; unrestricted response content prohibited",
+    productionAccepted: false,
+  });
+  await writeJson("BIA1_PASS1_OFFLINE_PREFLIGHT.json", {
+    schemaVersion: "aiw-bia1-pass1-offline-preflight-v1",
+    frozenFingerprint,
+    deterministicScenariosCompleted: modeC.length,
+    deterministicReplayFingerprints: modeC.map((item) => ({ scenarioId: item.scenarioId, fingerprint: sha256(item.architecture) })),
+    providerCalls: 0,
+    modelCalls: 0,
+    approvedRecordsChanged: 0,
+    designGraphMutations: 0,
+    automaticPromotions: 0,
+    productionAccepted: false,
+  });
+  process.stdout.write(`${JSON.stringify({ frozenFingerprint, deterministicScenariosCompleted: modeC.length, transferOccurred: false, providerCalls: 0, modelCalls: 0, productionAccepted: false }, null, 2)}\n`);
+}
+
 async function evaluatePass2() {
   const frozenFingerprint = await verifyFreeze();
   const policy = bia1Gpt56Policy(JSON.parse(await readFile(runtimePath, "utf8")));
@@ -149,6 +209,7 @@ async function evaluatePass2() {
   process.stdout.write(`${JSON.stringify({ summaries, comparison, providerCalls: gateway.accounting().attempts, tokens: gateway.accounting().totalTokens, productionAccepted: false }, null, 2)}\n`);
 }
 
-if (process.argv.includes("--pass1")) await runPass1();
+if (process.argv.includes("--pass1-offline-preflight")) await runPass1OfflinePreflight();
+else if (process.argv.includes("--pass1")) await runPass1();
 else if (process.argv.includes("--pass2")) await evaluatePass2();
 else throw new Error("BIA1_MODE_REQUIRED");

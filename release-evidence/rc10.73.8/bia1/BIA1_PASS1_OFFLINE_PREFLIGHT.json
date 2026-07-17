@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "aiw-bia1-pass1-offline-preflight-v1",
+  "frozenFingerprint": "sha256:3bb913eccd72451071e8fb180b0024e83c66a4b2dd3e8e7963c69c16fe6ce6cb",
+  "deterministicScenariosCompleted": 5,
+  "deterministicReplayFingerprints": [
+    {
+      "scenarioId": "BIA1-S1",
+      "fingerprint": "sha256:3b9a36b1cebc64e89e285c2873caa3cd14c8bc2d261d38570ece8678e4b21228"
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "fingerprint": "sha256:1a9202c24f3bf052c934a9def7a0512d7b9c7b72915804c89cfb804373c785e0"
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "fingerprint": "sha256:806d128f6f357ff306a06a439ce5d48c2dc3917bca1a8a6680ffd114fa298c46"
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "fingerprint": "sha256:759e99a7acc4d17cbd3457277ef04dcc485be1e5ce024d166705638b5dee5c0d"
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "fingerprint": "sha256:f94cc4cf949f312fe57e675205131adfe8ba54db54a4bdf7267cb212e45b2b20"
+    }
+  ],
+  "providerCalls": 0,
+  "modelCalls": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}

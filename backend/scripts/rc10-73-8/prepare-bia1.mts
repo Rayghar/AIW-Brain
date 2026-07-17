@@ -32,7 +32,7 @@ const files = [...names, "BIA1_FROZEN_RUBRIC.json", "BIA1_CRITICAL_OMISSION_CATA
 const records = [];
 for (const path of files) {
   const content = await readFile(resolve(out, path));
-  records.push({ path, bytes: content.byteLength, sha256: sha256(content) });
+  records.push({ path, bytes: content.byteLength, sha256: sha256(content.toString("utf8")) });
 }
 await writeJson("BIA1_SCENARIO_FINGERPRINT_RECEIPT.json", {
   schemaVersion: "aiw-bia1-fingerprint-receipt-v1",

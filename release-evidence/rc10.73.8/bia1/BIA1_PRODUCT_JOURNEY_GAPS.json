@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "aiw-bia1-product-journey-gaps-v1",
+  "generatedAt": "2026-07-17T00:00:00.000Z",
+  "finalBrowserResult": {
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "durationSeconds": 156.8,
+    "browserErrors": 0
+  },
+  "gaps": [
+    {
+      "id": "BIA1-UI-GAP-001",
+      "severity": "critical-intelligence",
+      "scenarios": ["BIA1-S1", "BIA1-S4"],
+      "finding": "All four clean-project design stages returned zero actionable Sol Design candidates after recomputation.",
+      "impact": "The UI lifecycle can proceed, but the Brain did not compose scenario-specific candidate changes through the design stages."
+    },
+    {
+      "id": "BIA1-UI-GAP-002",
+      "severity": "high",
+      "scenarios": ["BIA1-S1", "BIA1-S4"],
+      "finding": "Design-output screenshots are byte-identical across materially different scenarios.",
+      "sha256": "a1173aad1b72563e38d93a6c1d6dfe888e913ed56a4d3d74d2ec43972af7c75d",
+      "impact": "Visible output is not sufficiently scenario-specific to demonstrate architecture intelligence."
+    },
+    {
+      "id": "BIA1-UI-GAP-003",
+      "severity": "high",
+      "scenarios": ["BIA1-S1", "BIA1-S4"],
+      "finding": "SDD screenshots are byte-identical across materially different scenarios.",
+      "sha256": "8d6696349c686dc8aaa3c8b33835ee99c410438c30c39fcae7e547f041e7bb32",
+      "impact": "The delivery view does not yet prove that upstream scenario context changes the delivered SDD."
+    },
+    {
+      "id": "BIA1-UI-GAP-004",
+      "severity": "medium",
+      "scenarios": ["BIA1-S1", "BIA1-S4"],
+      "finding": "The Reviewer profile exposes Governance but no direct Review & Assurance shortcut in this guided journey.",
+      "impact": "The assurance workflow is reachable but role/navigation terminology is inconsistent."
+    }
+  ],
+  "approvedRecordsChanged": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "humanReviewerPresent": false,
+  "productionAccepted": false
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "aiw-bia1-screenshot-index-v1",
+  "records": [
+    { "scenarioId": "BIA1-S1", "stage": "01-requirements", "path": "product-journey/bia1-s1-01-requirements.png", "role": "Solution Architect", "bytes": 181778, "sha256": "a9d6a5c2084fdf57981dc69d1845c3803279c4adb7469ab75dae6ba1a7ebaf7e" },
+    { "scenarioId": "BIA1-S1", "stage": "02-context", "path": "product-journey/bia1-s1-02-context.png", "role": "Solution Architect", "bytes": 194340, "sha256": "dcb19ce77873dc2eddb2130dfefaa3cd03e2db07c89f59da0529ecc84d6486a8" },
+    { "scenarioId": "BIA1-S1", "stage": "03-design-output", "path": "product-journey/bia1-s1-03-design-output.png", "role": "Solution Architect", "bytes": 235587, "sha256": "a1173aad1b72563e38d93a6c1d6dfe888e913ed56a4d3d74d2ec43972af7c75d" },
+    { "scenarioId": "BIA1-S1", "stage": "04-governance-review", "path": "product-journey/bia1-s1-04-governance-review.png", "role": "Reviewer", "bytes": 516673, "sha256": "ae866ad362d4535ce4cf418f422fa96a7b5f0288fef666d5a2e00144b89ee000" },
+    { "scenarioId": "BIA1-S1", "stage": "05-sdd", "path": "product-journey/bia1-s1-05-sdd.png", "role": "Solution Architect", "bytes": 321334, "sha256": "8d6696349c686dc8aaa3c8b33835ee99c410438c30c39fcae7e547f041e7bb32" },
+    { "scenarioId": "BIA1-S4", "stage": "01-requirements", "path": "product-journey/bia1-s4-01-requirements.png", "role": "Solution Architect", "bytes": 178356, "sha256": "868061a902c0f9f16f1ce3f25ce67251467061bc151f38e891e5441d3e3ed9f2" },
+    { "scenarioId": "BIA1-S4", "stage": "02-context", "path": "product-journey/bia1-s4-02-context.png", "role": "Solution Architect", "bytes": 186216, "sha256": "0ff920be214fa085686eb8894c6cf50c8b4c9af445089cc816e37a347cf4bab1" },
+    { "scenarioId": "BIA1-S4", "stage": "03-design-output", "path": "product-journey/bia1-s4-03-design-output.png", "role": "Solution Architect", "bytes": 235587, "sha256": "a1173aad1b72563e38d93a6c1d6dfe888e913ed56a4d3d74d2ec43972af7c75d" },
+    { "scenarioId": "BIA1-S4", "stage": "04-governance-review", "path": "product-journey/bia1-s4-04-governance-review.png", "role": "Reviewer", "bytes": 525426, "sha256": "37a176637267fee45dfc68b72e3be7d8ad834f9cb595d4ba14482ef03eb42333" },
+    { "scenarioId": "BIA1-S4", "stage": "05-sdd", "path": "product-journey/bia1-s4-05-sdd.png", "role": "Solution Architect", "bytes": 321334, "sha256": "8d6696349c686dc8aaa3c8b33835ee99c410438c30c39fcae7e547f041e7bb32" }
+  ],
+  "duplicateScreenshotFindings": [
+    { "stages": ["BIA1-S1:03-design-output", "BIA1-S4:03-design-output"], "sha256": "a1173aad1b72563e38d93a6c1d6dfe888e913ed56a4d3d74d2ec43972af7c75d" },
+    { "stages": ["BIA1-S1:05-sdd", "BIA1-S4:05-sdd"], "sha256": "8d6696349c686dc8aaa3c8b33835ee99c410438c30c39fcae7e547f041e7bb32" }
+  ],
+  "productionAccepted": false
+}

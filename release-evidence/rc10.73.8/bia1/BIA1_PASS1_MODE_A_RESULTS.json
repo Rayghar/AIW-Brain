@@ -1,0 +1,167 @@
+{
+  "schemaVersion": "aiw-bia1-pass1-results-v1",
+  "generatedAt": "2026-07-17T17:21:18.550Z",
+  "frozenScenarioFingerprint": "sha256:3bb913eccd72451071e8fb180b0024e83c66a4b2dd3e8e7963c69c16fe6ce6cb",
+  "exactModel": "gpt-5.6-sol",
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "productionAccepted": false,
+  "mode": "aiw-full-brain",
+  "scenarioResults": [
+    {
+      "scenarioId": "BIA1-S1",
+      "mode": "aiw-full-brain",
+      "status": "failed-closed",
+      "error": "LLM_INPUT_TOO_LARGE",
+      "disposition": "schema-rejected",
+      "telemetry": null,
+      "candidateCreated": false,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0,
+      "latencyMs": 16
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "mode": "aiw-full-brain",
+      "status": "failed-closed",
+      "error": "LLM_INPUT_TOO_LARGE",
+      "disposition": "schema-rejected",
+      "telemetry": null,
+      "candidateCreated": false,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0,
+      "latencyMs": 12
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "mode": "aiw-full-brain",
+      "status": "failed-closed",
+      "error": "LLM_INPUT_TOO_LARGE",
+      "disposition": "schema-rejected",
+      "telemetry": null,
+      "candidateCreated": false,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0,
+      "latencyMs": 5
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "mode": "aiw-full-brain",
+      "status": "failed-closed",
+      "error": "LLM_INPUT_TOO_LARGE",
+      "disposition": "schema-rejected",
+      "telemetry": null,
+      "candidateCreated": false,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0,
+      "latencyMs": 8
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "mode": "aiw-full-brain",
+      "status": "failed-closed",
+      "error": "LLM_INPUT_TOO_LARGE",
+      "disposition": "schema-rejected",
+      "telemetry": null,
+      "candidateCreated": false,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0,
+      "latencyMs": 6
+    }
+  ],
+  "evaluations": [
+    {
+      "scenarioId": "BIA1-S1",
+      "mode": "aiw-full-brain",
+      "overallScore": 0,
+      "passed": false,
+      "criticalOmissions": [
+        "benchmark-generation-failed"
+      ],
+      "gates": {},
+      "metrics": {},
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "mode": "aiw-full-brain",
+      "overallScore": 0,
+      "passed": false,
+      "criticalOmissions": [
+        "benchmark-generation-failed"
+      ],
+      "gates": {},
+      "metrics": {},
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "mode": "aiw-full-brain",
+      "overallScore": 0,
+      "passed": false,
+      "criticalOmissions": [
+        "benchmark-generation-failed"
+      ],
+      "gates": {},
+      "metrics": {},
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "mode": "aiw-full-brain",
+      "overallScore": 0,
+      "passed": false,
+      "criticalOmissions": [
+        "benchmark-generation-failed"
+      ],
+      "gates": {},
+      "metrics": {},
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "mode": "aiw-full-brain",
+      "overallScore": 0,
+      "passed": false,
+      "criticalOmissions": [
+        "benchmark-generation-failed"
+      ],
+      "gates": {},
+      "metrics": {},
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    }
+  ]
+}

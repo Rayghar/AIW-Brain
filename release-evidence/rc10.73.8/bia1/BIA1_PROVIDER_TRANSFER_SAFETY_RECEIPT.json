@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "aiw-bia1-provider-transfer-safety-v1",
+  "generatedAt": "2026-07-17T17:03:38.958Z",
+  "provider": "openai",
+  "intendedModel": "gpt-5.6-sol",
+  "intendedCalls": 10,
+  "transferOccurred": true,
+  "productOwnerApproval": {
+    "approved": true,
+    "approvedScope": "five synthetic scenario packets and bounded AIW Brain summaries for ten governed gpt-5.6-sol benchmark requests",
+    "recordedAt": "2026-07-17T17:04:00.000Z"
+  },
+  "actualTransfer": {
+    "providerRequests": 5,
+    "genericScenarioPacketsTransferred": 5,
+    "fullBrainSummariesTransferred": 0,
+    "fullBrainPreProviderRejections": 5,
+    "fullBrainRejectionReason": "LLM_INPUT_TOO_LARGE",
+    "unrestrictedProviderResponsesRetained": 0
+  },
+  "productOwnerSpecificTransferApprovalRequired": true,
+  "transfers": [
+    {
+      "scenarioId": "BIA1-S1",
+      "genericMode": {
+        "scenarioCharacters": 4035,
+        "contentFingerprint": "sha256:91164a8b3b90ab7145d88711765e04c4d2c4f3224b8eec965d831bab6667b286",
+        "includesAiwContext": false
+      },
+      "fullBrainMode": {
+        "scenarioCharacters": 4035,
+        "brainContextCharacters": 581756,
+        "brainContextFingerprint": "sha256:f94e6633710c30665d1f087c7c5e207d4a8e76d457488be2d8eee46cd3dcaacb",
+        "includesAiwContext": true
+      },
+      "containsRawVaultContent": false,
+      "containsSourceCode": false,
+      "containsCredentials": false,
+      "containsPersonalInformation": false,
+      "containsCustomerOrInternalOrganisationData": false,
+      "containsEvaluatorGoldExpectations": false,
+      "containsReferenceSdd": false,
+      "contentClasses": [
+        "synthetic benchmark scenario",
+        "deterministic requirements analysis",
+        "AIW rule/recommendation identifiers",
+        "candidate Design Graph projection",
+        "knowledge manifest references"
+      ]
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "genericMode": {
+        "scenarioCharacters": 2712,
+        "contentFingerprint": "sha256:8af904b3034952c77b50462cc5ef78b835afb1205d4276b152d7189c71d69da4",
+        "includesAiwContext": false
+      },
+      "fullBrainMode": {
+        "scenarioCharacters": 2712,
+        "brainContextCharacters": 281776,
+        "brainContextFingerprint": "sha256:289c8fb014b57f765582a7262d67bf837bb420a0646d321adc2475e8a3c26273",
+        "includesAiwContext": true
+      },
+      "containsRawVaultContent": false,
+      "containsSourceCode": false,
+      "containsCredentials": false,
+      "containsPersonalInformation": false,
+      "containsCustomerOrInternalOrganisationData": false,
+      "containsEvaluatorGoldExpectations": false,
+      "containsReferenceSdd": false,
+      "contentClasses": [
+        "synthetic benchmark scenario",
+        "deterministic requirements analysis",
+        "AIW rule/recommendation identifiers",
+        "candidate Design Graph projection",
+        "knowledge manifest references"
+      ]
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "genericMode": {
+        "scenarioCharacters": 2658,
+        "contentFingerprint": "sha256:0d45e9b50efe28a429b9c915beb4b432ccc7e86084f9dffc211067867a4bc77a",
+        "includesAiwContext": false
+      },
+      "fullBrainMode": {
+        "scenarioCharacters": 2658,
+        "brainContextCharacters": 277620,
+        "brainContextFingerprint": "sha256:dd4ce9f20d909d03a682d122f9c600796f28d3002d1cd5a1e850a8026b63eaec",
+        "includesAiwContext": true
+      },
+      "containsRawVaultContent": false,
+      "containsSourceCode": false,
+      "containsCredentials": false,
+      "containsPersonalInformation": false,
+      "containsCustomerOrInternalOrganisationData": false,
+      "containsEvaluatorGoldExpectations": false,
+      "containsReferenceSdd": false,
+      "contentClasses": [
+        "synthetic benchmark scenario",
+        "deterministic requirements analysis",
+        "AIW rule/recommendation identifiers",
+        "candidate Design Graph projection",
+        "knowledge manifest references"
+      ]
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "genericMode": {
+        "scenarioCharacters": 3247,
+        "contentFingerprint": "sha256:7810471f7f4bf52e3a9391285329e8dee5ddb1776c950e6c238f8a38b050bd17",
+        "includesAiwContext": false
+      },
+      "fullBrainMode": {
+        "scenarioCharacters": 3247,
+        "brainContextCharacters": 278099,
+        "brainContextFingerprint": "sha256:06bdf534b23da07aba57b1641bcd8627dc2cb78691156d73726e0f903c8671fb",
+        "includesAiwContext": true
+      },
+      "containsRawVaultContent": false,
+      "containsSourceCode": false,
+      "containsCredentials": false,
+      "containsPersonalInformation": false,
+      "containsCustomerOrInternalOrganisationData": false,
+      "containsEvaluatorGoldExpectations": false,
+      "containsReferenceSdd": false,
+      "contentClasses": [
+        "synthetic benchmark scenario",
+        "deterministic requirements analysis",
+        "AIW rule/recommendation identifiers",
+        "candidate Design Graph projection",
+        "knowledge manifest references"
+      ]
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "genericMode": {
+        "scenarioCharacters": 3073,
+        "contentFingerprint": "sha256:aaaa92f07a8a9107201a04b9c3dcff6fa35926c23a3fea3be6abc5d6cc4665d1",
+        "includesAiwContext": false
+      },
+      "fullBrainMode": {
+        "scenarioCharacters": 3073,
+        "brainContextCharacters": 208682,
+        "brainContextFingerprint": "sha256:7378233c8d0ed4670e6fb4729f55ad42bca90691e215ff5ede11712595dbcbb3",
+        "includesAiwContext": true
+      },
+      "containsRawVaultContent": false,
+      "containsSourceCode": false,
+      "containsCredentials": false,
+      "containsPersonalInformation": false,
+      "containsCustomerOrInternalOrganisationData": false,
+      "containsEvaluatorGoldExpectations": false,
+      "containsReferenceSdd": false,
+      "contentClasses": [
+        "synthetic benchmark scenario",
+        "deterministic requirements analysis",
+        "AIW rule/recommendation identifiers",
+        "candidate Design Graph projection",
+        "knowledge manifest references"
+      ]
+    }
+  ],
+  "prohibitedContentChecksPassed": true,
+  "toolsEnabled": false,
+  "externalRetrievalEnabled": false,
+  "fallbackEnabled": false,
+  "providerResponseRetention": "strict parsed architecture package only; unrestricted response content prohibited",
+  "productionAccepted": false
+}

@@ -1,0 +1,3592 @@
+{
+  "schemaVersion": "aiw-bia1-pass1-results-v1",
+  "generatedAt": "2026-07-17T17:21:18.550Z",
+  "frozenScenarioFingerprint": "sha256:3bb913eccd72451071e8fb180b0024e83c66a4b2dd3e8e7963c69c16fe6ce6cb",
+  "exactModel": "gpt-5.6-sol",
+  "reviewActorType": "gpt-5.6-sol",
+  "humanReviewerPresent": false,
+  "externallyVerified": false,
+  "developmentDecisionAuthority": true,
+  "productionAuthority": false,
+  "productionAccepted": false,
+  "mode": "aiw-deterministic-only",
+  "scenarioResults": [
+    {
+      "scenarioId": "BIA1-S1",
+      "mode": "aiw-deterministic-only",
+      "status": "completed",
+      "architecture": {
+        "scenarioId": "BIA1-S1",
+        "mode": "aiw-deterministic-only",
+        "authority": "candidate",
+        "productionAccepted": false,
+        "problemUnderstanding": {
+          "businessObjective": "Enable a regulated financial institution to operate a secure agency-banking channel through approved agents while retaining core-banking authority and controlled financial operations.",
+          "scope": [
+            "Context",
+            "Logical application architecture",
+            "Interfaces",
+            "Data ownership",
+            "Security and fraud controls",
+            "Deployment",
+            "Operations",
+            "ADRs",
+            "Traceability",
+            "SDD"
+          ],
+          "actors": [
+            "Retail customer",
+            "Agency agent",
+            "Agent supervisor",
+            "Operations",
+            "Customer support",
+            "Fraud and risk",
+            "Compliance",
+            "Information security",
+            "Finance and reconciliation",
+            "Core-banking team",
+            "SRE",
+            "Product owner"
+          ],
+          "journeys": [
+            "Register, verify, approve and suspend agency agents.",
+            "Authenticate agents and authorize only permitted operations.",
+            "Onboard customers and complete identity verification.",
+            "Support cash deposits and withdrawals with explicit transaction status.",
+            "Support transfers and balance enquiries through the bank.",
+            "Enforce limits, fees, liquidity and fraud policies before financial posting.",
+            "Prevent duplicate financial processing and safely resolve timeout uncertainty.",
+            "Support controlled reversal, settlement, reconciliation and disputes.",
+            "Issue receipts and notifications without making notification delivery the posting authority.",
+            "Retain immutable audit and operational evidence for every financial action."
+          ],
+          "functionalRequirementIds": [
+            "AB-FR-001",
+            "AB-FR-002",
+            "AB-FR-003",
+            "AB-FR-004",
+            "AB-FR-005",
+            "AB-FR-006",
+            "AB-FR-007",
+            "AB-FR-008",
+            "AB-FR-009",
+            "AB-FR-010"
+          ],
+          "qualityDrivers": [
+            {
+              "id": "AB-QR-001",
+              "statement": "Remain available during dependency degradation without unsafe offline financial posting.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "AB-QR-002",
+              "statement": "Protect personal and financial data using least privilege, encryption and trust boundaries.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "AB-QR-003",
+              "statement": "Provide observable end-to-end transaction correlation, failure detection and reconciliation.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "AB-QR-004",
+              "statement": "Define recovery, replay, cutover and rollback controls without inventing unapproved numeric targets.",
+              "rationale": "Explicit scenario quality requirement"
+            }
+          ],
+          "constraints": [
+            "External identity and payment-switch services may be unavailable or slow.",
+            "Unconfirmed availability, latency, throughput, RTO and RPO targets must remain open questions.",
+            "Core banking remains system of record for customer accounts and financial posting.",
+            "Architecture changes require human approval and traceability.",
+            "Remain provider-neutral until physical technology selection."
+          ],
+          "assumptions": [
+            "Agents use managed or registered channels.",
+            "The bank can expose governed core-banking and payment-switch interfaces."
+          ],
+          "ambiguities": [
+            "Quantitative targets and responsibility assignments require stakeholder confirmation."
+          ],
+          "unresolvedQuestions": [
+            "Confirm measurable service levels, recovery objectives and named operational owners."
+          ]
+        },
+        "architectureViews": {
+          "systemContext": [
+            "Retail customer interacts with the system of interest.",
+            "Agency agent interacts with the system of interest.",
+            "Agent supervisor interacts with the system of interest.",
+            "Operations interacts with the system of interest.",
+            "Customer support interacts with the system of interest.",
+            "Fraud and risk interacts with the system of interest.",
+            "Compliance interacts with the system of interest.",
+            "Information security interacts with the system of interest.",
+            "Finance and reconciliation interacts with the system of interest.",
+            "Core-banking team interacts with the system of interest.",
+            "SRE interacts with the system of interest.",
+            "Product owner interacts with the system of interest.",
+            "Agent channel is a known system boundary.",
+            "Core banking is a known system boundary.",
+            "Identity/KYC provider is a known system boundary.",
+            "Payment switch is a known system boundary.",
+            "Fraud platform is a known system boundary.",
+            "Reconciliation platform is a known system boundary."
+          ],
+          "components": [
+            {
+              "id": "CMP-1-01",
+              "name": "Agent channel",
+              "description": "Deterministically identified system or capability boundary: Agent channel.",
+              "responsibility": "Register, verify, approve and suspend agency agents.",
+              "requirementIds": [
+                "AB-FR-001"
+              ],
+              "qualityDriverIds": [
+                "AB-QR-001"
+              ],
+              "riskIds": [
+                "RISK-1-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-1-02",
+              "name": "Core banking",
+              "description": "Deterministically identified system or capability boundary: Core banking.",
+              "responsibility": "Authenticate agents and authorize only permitted operations.",
+              "requirementIds": [
+                "AB-FR-002"
+              ],
+              "qualityDriverIds": [
+                "AB-QR-002"
+              ],
+              "riskIds": [
+                "RISK-1-02"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-1-03",
+              "name": "Identity/KYC provider",
+              "description": "Deterministically identified system or capability boundary: Identity/KYC provider.",
+              "responsibility": "Onboard customers and complete identity verification.",
+              "requirementIds": [
+                "AB-FR-003"
+              ],
+              "qualityDriverIds": [
+                "AB-QR-003"
+              ],
+              "riskIds": [
+                "RISK-1-03"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-1-04",
+              "name": "Payment switch",
+              "description": "Deterministically identified system or capability boundary: Payment switch.",
+              "responsibility": "Support cash deposits and withdrawals with explicit transaction status.",
+              "requirementIds": [
+                "AB-FR-004"
+              ],
+              "qualityDriverIds": [
+                "AB-QR-004"
+              ],
+              "riskIds": [
+                "RISK-1-04"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-1-05",
+              "name": "Fraud platform",
+              "description": "Deterministically identified system or capability boundary: Fraud platform.",
+              "responsibility": "Support transfers and balance enquiries through the bank.",
+              "requirementIds": [
+                "AB-FR-005"
+              ],
+              "qualityDriverIds": [
+                "AB-QR-001"
+              ],
+              "riskIds": [
+                "RISK-1-05"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-1-06",
+              "name": "Reconciliation platform",
+              "description": "Deterministically identified system or capability boundary: Reconciliation platform.",
+              "responsibility": "Enforce limits, fees, liquidity and fraud policies before financial posting.",
+              "requirementIds": [
+                "AB-FR-006"
+              ],
+              "qualityDriverIds": [
+                "AB-QR-002"
+              ],
+              "riskIds": [
+                "RISK-1-06"
+              ],
+              "decisionIds": []
+            }
+          ],
+          "interfaces": [
+            {
+              "id": "IF-1-01",
+              "name": "Core financial posting",
+              "source": "Agent channel",
+              "target": "Core banking",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Core financial posting contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AB-FR-001"
+              ]
+            },
+            {
+              "id": "IF-1-02",
+              "name": "KYC verification",
+              "source": "Core banking",
+              "target": "Identity/KYC provider",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed KYC verification contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AB-FR-002"
+              ]
+            },
+            {
+              "id": "IF-1-03",
+              "name": "Payment routing",
+              "source": "Identity/KYC provider",
+              "target": "Payment switch",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Payment routing contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AB-FR-003"
+              ]
+            },
+            {
+              "id": "IF-1-04",
+              "name": "Notification delivery",
+              "source": "Payment switch",
+              "target": "Fraud platform",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Notification delivery contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AB-FR-004"
+              ]
+            },
+            {
+              "id": "IF-1-05",
+              "name": "Finance settlement",
+              "source": "Fraud platform",
+              "target": "Reconciliation platform",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Finance settlement contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AB-FR-005"
+              ]
+            }
+          ],
+          "dataArchitecture": [
+            "Customer identity: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Agent identity: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Account data: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Transaction journal: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Limits and fees: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Audit evidence: ownership, classification, retention and system-of-record posture require confirmation."
+          ],
+          "securityArchitecture": [
+            "Apply least privilege and authenticated identities.",
+            "Classify and encrypt sensitive data.",
+            "Record auditable security decisions."
+          ],
+          "deploymentRuntime": [
+            "Deployment topology requires physical-design confirmation.",
+            "Separate trust and failure domains where requirements demand it."
+          ],
+          "resilienceFailurePaths": [
+            "Failure concern: Duplicate posting; recovery control requires confirmation.",
+            "Failure concern: Agent fraud; recovery control requires confirmation.",
+            "Failure concern: Dependency timeout ambiguity; recovery control requires confirmation.",
+            "Failure concern: Liquidity shortfall; recovery control requires confirmation.",
+            "Failure concern: Privacy breach; recovery control requires confirmation.",
+            "Failure concern: Reconciliation mismatch; recovery control requires confirmation."
+          ],
+          "observabilityOperations": [
+            "Correlate business actions, interfaces and failures.",
+            "Define service, dependency and reconciliation health indicators."
+          ],
+          "transitionArchitecture": [
+            "No central migration transition is stated; deployment evolution remains an open issue."
+          ]
+        },
+        "decisions": [],
+        "risks": [
+          {
+            "id": "RISK-1-01",
+            "description": "Duplicate posting",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AB-FR-001"
+            ]
+          },
+          {
+            "id": "RISK-1-02",
+            "description": "Agent fraud",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AB-FR-002"
+            ]
+          },
+          {
+            "id": "RISK-1-03",
+            "description": "Dependency timeout ambiguity",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AB-FR-003"
+            ]
+          },
+          {
+            "id": "RISK-1-04",
+            "description": "Liquidity shortfall",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AB-FR-004"
+            ]
+          },
+          {
+            "id": "RISK-1-05",
+            "description": "Privacy breach",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AB-FR-005"
+            ]
+          },
+          {
+            "id": "RISK-1-06",
+            "description": "Reconciliation mismatch",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AB-FR-006"
+            ]
+          }
+        ],
+        "traceability": [
+          {
+            "requirementId": "AB-FR-001",
+            "architectureElementIds": [
+              "CMP-1-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-001",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-002",
+            "architectureElementIds": [
+              "CMP-1-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-002",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-003",
+            "architectureElementIds": [
+              "CMP-1-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-003",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-004",
+            "architectureElementIds": [
+              "CMP-1-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-004",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-005",
+            "architectureElementIds": [
+              "CMP-1-05"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-005",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-006",
+            "architectureElementIds": [
+              "CMP-1-06"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-06"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-006",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-007",
+            "architectureElementIds": [
+              "CMP-1-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-007",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-008",
+            "architectureElementIds": [
+              "CMP-1-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-008",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-009",
+            "architectureElementIds": [
+              "CMP-1-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-009",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-FR-010",
+            "architectureElementIds": [
+              "CMP-1-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-FR-010",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-QR-001",
+            "architectureElementIds": [
+              "CMP-1-05"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-QR-001",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-QR-002",
+            "architectureElementIds": [
+              "CMP-1-06"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-06"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-QR-002",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-QR-003",
+            "architectureElementIds": [
+              "CMP-1-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-QR-003",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-QR-004",
+            "architectureElementIds": [
+              "CMP-1-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-QR-004",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-C-001",
+            "architectureElementIds": [
+              "CMP-1-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-C-001",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-C-002",
+            "architectureElementIds": [
+              "CMP-1-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-C-002",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AB-C-003",
+            "architectureElementIds": [
+              "CMP-1-05"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-1-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S1:AB-C-003",
+              "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+            ],
+            "disposition": "partially-satisfied"
+          }
+        ],
+        "delivery": {
+          "executiveSummary": "Deterministic candidate architecture skeleton for Agency Banking; semantic design decisions remain unapproved.",
+          "sddSections": [
+            {
+              "heading": "Scope and requirements",
+              "content": "Enable a regulated financial institution to operate a secure agency-banking channel through approved agents while retaining core-banking authority and controlled financial operations."
+            },
+            {
+              "heading": "Deterministic architecture inventory",
+              "content": "6 known boundaries and 5 known integrations were mapped without semantic generation."
+            }
+          ],
+          "openIssues": [
+            "Architecture style, detailed contracts, deployment choices and measurable targets require governed design."
+          ],
+          "implementationRoadmap": [
+            "Validate requirements",
+            "Assign ownership",
+            "Select and approve architecture decisions",
+            "Test fitness criteria"
+          ],
+          "acceptanceAndFitnessTests": [
+            "Verify AB-FR-001: Register, verify, approve and suspend agency agents.",
+            "Verify AB-FR-002: Authenticate agents and authorize only permitted operations.",
+            "Verify AB-FR-003: Onboard customers and complete identity verification.",
+            "Verify AB-FR-004: Support cash deposits and withdrawals with explicit transaction status.",
+            "Verify AB-FR-005: Support transfers and balance enquiries through the bank.",
+            "Verify AB-FR-006: Enforce limits, fees, liquidity and fraud policies before financial posting.",
+            "Verify AB-FR-007: Prevent duplicate financial processing and safely resolve timeout uncertainty.",
+            "Verify AB-FR-008: Support controlled reversal, settlement, reconciliation and disputes.",
+            "Verify AB-FR-010: Retain immutable audit and operational evidence for every financial action.",
+            "Verify AB-QR-001: Remain available during dependency degradation without unsafe offline financial posting.",
+            "Verify AB-QR-002: Protect personal and financial data using least privilege, encryption and trust boundaries.",
+            "Verify AB-QR-003: Provide observable end-to-end transaction correlation, failure detection and reconciliation.",
+            "Verify AB-QR-004: Define recovery, replay, cutover and rollback controls without inventing unapproved numeric targets.",
+            "Verify AB-C-001: Core banking remains system of record for customer accounts and financial posting.",
+            "Verify AB-C-002: Architecture changes require human approval and traceability."
+          ]
+        },
+        "abstentions": [
+          "Deterministic-only mode abstains from architecture-style selection and unsupported semantic synthesis."
+        ],
+        "unsupportedClaimsRejected": [
+          "No quantitative target or product choice was invented."
+        ],
+        "approvedRecordsChanged": 0,
+        "designGraphMutations": 0,
+        "automaticPromotions": 0
+      },
+      "runtime": {
+        "providerCalls": 0,
+        "modelCalls": 0,
+        "deterministicRules": [
+          "source-evidence-contract",
+          "requirements-taxonomy",
+          "conflict-detection",
+          "journey-grammar",
+          "architecture-context-graph",
+          "unsupported-metric-guard"
+        ],
+        "contextFingerprint": "sha256:4f7b42967167508295727fab852a36908053eb5d4c8b6457a2fdf4271aab9b25"
+      },
+      "candidateCreated": true,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "mode": "aiw-deterministic-only",
+      "status": "completed",
+      "architecture": {
+        "scenarioId": "BIA1-S2",
+        "mode": "aiw-deterministic-only",
+        "authority": "candidate",
+        "productionAccepted": false,
+        "problemUnderstanding": {
+          "businessObjective": "Fulfil customer orders reliably across inventory, payment, warehouse and delivery services while making partial failure and reconciliation explicit.",
+          "scope": [
+            "Event boundaries",
+            "Ownership",
+            "Consistency model",
+            "Contracts",
+            "Failure paths",
+            "Operational controls",
+            "Traceability"
+          ],
+          "actors": [
+            "Customer",
+            "Commerce product owner",
+            "Warehouse operations",
+            "Finance",
+            "Customer support",
+            "Security",
+            "SRE"
+          ],
+          "journeys": [
+            "Accept an order and expose authoritative order status.",
+            "Reserve and release inventory under a named owner.",
+            "Authorize, capture, void or refund payment without duplicate charging.",
+            "Create fulfilment and delivery work with cancellation semantics.",
+            "Reconcile stuck, duplicate and out-of-order events.",
+            "Notify customers of material state changes."
+          ],
+          "functionalRequirementIds": [
+            "EF-FR-001",
+            "EF-FR-002",
+            "EF-FR-003",
+            "EF-FR-004",
+            "EF-FR-005",
+            "EF-FR-006"
+          ],
+          "qualityDrivers": [
+            {
+              "id": "EF-QR-001",
+              "statement": "Define consistency boundaries, idempotency keys and event ordering assumptions.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "EF-QR-002",
+              "statement": "Contain partial failure using retry, dead-letter, compensation and operator recovery paths.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "EF-QR-003",
+              "statement": "Correlate commands, events and business state end to end.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "EF-QR-004",
+              "statement": "Authenticate producers and consumers and protect sensitive order and payment data.",
+              "rationale": "Explicit scenario quality requirement"
+            }
+          ],
+          "constraints": [
+            "Events may be duplicated, delayed or arrive out of order.",
+            "External payment and delivery providers have independent availability.",
+            "No distributed transaction spans payment, inventory and fulfilment systems."
+          ],
+          "assumptions": [
+            "Each domain can own a durable transactional store.",
+            "Business operations can define compensation policies."
+          ],
+          "ambiguities": [
+            "Quantitative targets and responsibility assignments require stakeholder confirmation."
+          ],
+          "unresolvedQuestions": [
+            "Confirm measurable service levels, recovery objectives and named operational owners."
+          ]
+        },
+        "architectureViews": {
+          "systemContext": [
+            "Customer interacts with the system of interest.",
+            "Commerce product owner interacts with the system of interest.",
+            "Warehouse operations interacts with the system of interest.",
+            "Finance interacts with the system of interest.",
+            "Customer support interacts with the system of interest.",
+            "Security interacts with the system of interest.",
+            "SRE interacts with the system of interest.",
+            "Order is a known system boundary.",
+            "Inventory is a known system boundary.",
+            "Payment is a known system boundary.",
+            "Fulfilment is a known system boundary.",
+            "Delivery is a known system boundary.",
+            "Notification is a known system boundary.",
+            "Reconciliation is a known system boundary."
+          ],
+          "components": [
+            {
+              "id": "CMP-2-01",
+              "name": "Order",
+              "description": "Deterministically identified system or capability boundary: Order.",
+              "responsibility": "Accept an order and expose authoritative order status.",
+              "requirementIds": [
+                "EF-FR-001"
+              ],
+              "qualityDriverIds": [
+                "EF-QR-001"
+              ],
+              "riskIds": [
+                "RISK-2-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-2-02",
+              "name": "Inventory",
+              "description": "Deterministically identified system or capability boundary: Inventory.",
+              "responsibility": "Reserve and release inventory under a named owner.",
+              "requirementIds": [
+                "EF-FR-002"
+              ],
+              "qualityDriverIds": [
+                "EF-QR-002"
+              ],
+              "riskIds": [
+                "RISK-2-02"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-2-03",
+              "name": "Payment",
+              "description": "Deterministically identified system or capability boundary: Payment.",
+              "responsibility": "Authorize, capture, void or refund payment without duplicate charging.",
+              "requirementIds": [
+                "EF-FR-003"
+              ],
+              "qualityDriverIds": [
+                "EF-QR-003"
+              ],
+              "riskIds": [
+                "RISK-2-03"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-2-04",
+              "name": "Fulfilment",
+              "description": "Deterministically identified system or capability boundary: Fulfilment.",
+              "responsibility": "Create fulfilment and delivery work with cancellation semantics.",
+              "requirementIds": [
+                "EF-FR-004"
+              ],
+              "qualityDriverIds": [
+                "EF-QR-004"
+              ],
+              "riskIds": [
+                "RISK-2-04"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-2-05",
+              "name": "Delivery",
+              "description": "Deterministically identified system or capability boundary: Delivery.",
+              "responsibility": "Reconcile stuck, duplicate and out-of-order events.",
+              "requirementIds": [
+                "EF-FR-005"
+              ],
+              "qualityDriverIds": [
+                "EF-QR-001"
+              ],
+              "riskIds": [
+                "RISK-2-05"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-2-06",
+              "name": "Notification",
+              "description": "Deterministically identified system or capability boundary: Notification.",
+              "responsibility": "Notify customers of material state changes.",
+              "requirementIds": [
+                "EF-FR-006"
+              ],
+              "qualityDriverIds": [
+                "EF-QR-002"
+              ],
+              "riskIds": [
+                "RISK-2-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-2-07",
+              "name": "Reconciliation",
+              "description": "Deterministically identified system or capability boundary: Reconciliation.",
+              "responsibility": "Accept an order and expose authoritative order status.",
+              "requirementIds": [
+                "EF-FR-001"
+              ],
+              "qualityDriverIds": [
+                "EF-QR-003"
+              ],
+              "riskIds": [
+                "RISK-2-02"
+              ],
+              "decisionIds": []
+            }
+          ],
+          "interfaces": [
+            {
+              "id": "IF-2-01",
+              "name": "Command APIs",
+              "source": "Order",
+              "target": "Inventory",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Command APIs contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "EF-FR-001"
+              ]
+            },
+            {
+              "id": "IF-2-02",
+              "name": "Domain events",
+              "source": "Inventory",
+              "target": "Payment",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Domain events contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "EF-FR-002"
+              ]
+            },
+            {
+              "id": "IF-2-03",
+              "name": "Payment provider",
+              "source": "Payment",
+              "target": "Fulfilment",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Payment provider contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "EF-FR-003"
+              ]
+            },
+            {
+              "id": "IF-2-04",
+              "name": "Carrier API",
+              "source": "Fulfilment",
+              "target": "Delivery",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Carrier API contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "EF-FR-004"
+              ]
+            }
+          ],
+          "dataArchitecture": [
+            "Order: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Inventory reservation: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Payment intent: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Shipment: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Event journal: ownership, classification, retention and system-of-record posture require confirmation."
+          ],
+          "securityArchitecture": [
+            "Apply least privilege and authenticated identities.",
+            "Classify and encrypt sensitive data.",
+            "Record auditable security decisions."
+          ],
+          "deploymentRuntime": [
+            "Deployment topology requires physical-design confirmation.",
+            "Separate trust and failure domains where requirements demand it."
+          ],
+          "resilienceFailurePaths": [
+            "Failure concern: Duplicate charge; recovery control requires confirmation.",
+            "Failure concern: Oversell; recovery control requires confirmation.",
+            "Failure concern: Orphaned reservation; recovery control requires confirmation.",
+            "Failure concern: Lost event; recovery control requires confirmation.",
+            "Failure concern: Inconsistent cancellation; recovery control requires confirmation."
+          ],
+          "observabilityOperations": [
+            "Correlate business actions, interfaces and failures.",
+            "Define service, dependency and reconciliation health indicators."
+          ],
+          "transitionArchitecture": [
+            "No central migration transition is stated; deployment evolution remains an open issue."
+          ]
+        },
+        "decisions": [],
+        "risks": [
+          {
+            "id": "RISK-2-01",
+            "description": "Duplicate charge",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "EF-FR-001"
+            ]
+          },
+          {
+            "id": "RISK-2-02",
+            "description": "Oversell",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "EF-FR-002"
+            ]
+          },
+          {
+            "id": "RISK-2-03",
+            "description": "Orphaned reservation",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "EF-FR-003"
+            ]
+          },
+          {
+            "id": "RISK-2-04",
+            "description": "Lost event",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "EF-FR-004"
+            ]
+          },
+          {
+            "id": "RISK-2-05",
+            "description": "Inconsistent cancellation",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "EF-FR-005"
+            ]
+          }
+        ],
+        "traceability": [
+          {
+            "requirementId": "EF-FR-001",
+            "architectureElementIds": [
+              "CMP-2-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-FR-001",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-FR-002",
+            "architectureElementIds": [
+              "CMP-2-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-FR-002",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-FR-003",
+            "architectureElementIds": [
+              "CMP-2-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-FR-003",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-FR-004",
+            "architectureElementIds": [
+              "CMP-2-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-FR-004",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-FR-005",
+            "architectureElementIds": [
+              "CMP-2-05"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-FR-005",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-FR-006",
+            "architectureElementIds": [
+              "CMP-2-06"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-FR-006",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-QR-001",
+            "architectureElementIds": [
+              "CMP-2-07"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-QR-001",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-QR-002",
+            "architectureElementIds": [
+              "CMP-2-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-QR-002",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-QR-003",
+            "architectureElementIds": [
+              "CMP-2-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-QR-003",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-QR-004",
+            "architectureElementIds": [
+              "CMP-2-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-QR-004",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "EF-C-001",
+            "architectureElementIds": [
+              "CMP-2-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-2-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S2:EF-C-001",
+              "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+            ],
+            "disposition": "partially-satisfied"
+          }
+        ],
+        "delivery": {
+          "executiveSummary": "Deterministic candidate architecture skeleton for Event-driven fulfilment; semantic design decisions remain unapproved.",
+          "sddSections": [
+            {
+              "heading": "Scope and requirements",
+              "content": "Fulfil customer orders reliably across inventory, payment, warehouse and delivery services while making partial failure and reconciliation explicit."
+            },
+            {
+              "heading": "Deterministic architecture inventory",
+              "content": "7 known boundaries and 4 known integrations were mapped without semantic generation."
+            }
+          ],
+          "openIssues": [
+            "Architecture style, detailed contracts, deployment choices and measurable targets require governed design."
+          ],
+          "implementationRoadmap": [
+            "Validate requirements",
+            "Assign ownership",
+            "Select and approve architecture decisions",
+            "Test fitness criteria"
+          ],
+          "acceptanceAndFitnessTests": [
+            "Verify EF-FR-001: Accept an order and expose authoritative order status.",
+            "Verify EF-FR-002: Reserve and release inventory under a named owner.",
+            "Verify EF-FR-003: Authorize, capture, void or refund payment without duplicate charging.",
+            "Verify EF-FR-004: Create fulfilment and delivery work with cancellation semantics.",
+            "Verify EF-FR-005: Reconcile stuck, duplicate and out-of-order events.",
+            "Verify EF-QR-001: Define consistency boundaries, idempotency keys and event ordering assumptions.",
+            "Verify EF-QR-002: Contain partial failure using retry, dead-letter, compensation and operator recovery paths.",
+            "Verify EF-QR-003: Correlate commands, events and business state end to end.",
+            "Verify EF-QR-004: Authenticate producers and consumers and protect sensitive order and payment data.",
+            "Verify EF-C-001: No distributed transaction spans payment, inventory and fulfilment systems."
+          ]
+        },
+        "abstentions": [
+          "Deterministic-only mode abstains from architecture-style selection and unsupported semantic synthesis."
+        ],
+        "unsupportedClaimsRejected": [
+          "No quantitative target or product choice was invented."
+        ],
+        "approvedRecordsChanged": 0,
+        "designGraphMutations": 0,
+        "automaticPromotions": 0
+      },
+      "runtime": {
+        "providerCalls": 0,
+        "modelCalls": 0,
+        "deterministicRules": [
+          "source-evidence-contract",
+          "requirements-taxonomy",
+          "conflict-detection",
+          "journey-grammar",
+          "architecture-context-graph",
+          "unsupported-metric-guard"
+        ],
+        "contextFingerprint": "sha256:82898d0b3056ef2f4489e8e9d221d89534ff99e491dac4d5f239603bd49994d3"
+      },
+      "candidateCreated": true,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "mode": "aiw-deterministic-only",
+      "status": "completed",
+      "architecture": {
+        "scenarioId": "BIA1-S3",
+        "mode": "aiw-deterministic-only",
+        "authority": "candidate",
+        "productionAccepted": false,
+        "problemUnderstanding": {
+          "businessObjective": "Provide governed multi-source analytics for authorised model and BI consumers while protecting personal information and preserving lineage, residency and auditability.",
+          "scope": [
+            "Classification",
+            "Trust boundaries",
+            "Access model",
+            "Privacy controls",
+            "Lineage",
+            "Recovery",
+            "Traceability"
+          ],
+          "actors": [
+            "Data owner",
+            "Data steward",
+            "Analyst",
+            "Data scientist",
+            "Privacy officer",
+            "Security",
+            "Auditor",
+            "SRE"
+          ],
+          "journeys": [
+            "Ingest governed data from multiple source systems with source ownership.",
+            "Transform and quality-check data with reproducible lineage.",
+            "Provide role- and purpose-bound access for BI and model consumption.",
+            "Apply retention, legal hold and defensible deletion.",
+            "Provide complete access, transformation and export audit evidence."
+          ],
+          "functionalRequirementIds": [
+            "SA-FR-001",
+            "SA-FR-002",
+            "SA-FR-003",
+            "SA-FR-004",
+            "SA-FR-005"
+          ],
+          "qualityDrivers": [
+            {
+              "id": "SA-QR-001",
+              "statement": "Classify, encrypt, mask or tokenise sensitive fields across trust boundaries.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "SA-QR-002",
+              "statement": "Enforce regional or jurisdictional data-placement constraints.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "SA-QR-003",
+              "statement": "Detect data-quality, lineage and pipeline-health failures.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "SA-QR-004",
+              "statement": "Recover analytical data products without losing source lineage or access policy.",
+              "rationale": "Explicit scenario quality requirement"
+            }
+          ],
+          "constraints": [
+            "Some records contain direct and indirect identifiers.",
+            "Jurisdiction policies vary by dataset and consumer purpose.",
+            "Analytical stores are not systems of record for operational source data."
+          ],
+          "assumptions": [
+            "Source owners expose change or extract contracts.",
+            "A governed identity platform provides workforce attributes."
+          ],
+          "ambiguities": [
+            "Quantitative targets and responsibility assignments require stakeholder confirmation."
+          ],
+          "unresolvedQuestions": [
+            "Confirm measurable service levels, recovery objectives and named operational owners."
+          ]
+        },
+        "architectureViews": {
+          "systemContext": [
+            "Data owner interacts with the system of interest.",
+            "Data steward interacts with the system of interest.",
+            "Analyst interacts with the system of interest.",
+            "Data scientist interacts with the system of interest.",
+            "Privacy officer interacts with the system of interest.",
+            "Security interacts with the system of interest.",
+            "Auditor interacts with the system of interest.",
+            "SRE interacts with the system of interest.",
+            "Source systems is a known system boundary.",
+            "Ingestion plane is a known system boundary.",
+            "Processing plane is a known system boundary.",
+            "Governed analytical store is a known system boundary.",
+            "BI is a known system boundary.",
+            "Model platform is a known system boundary.",
+            "Catalog is a known system boundary."
+          ],
+          "components": [
+            {
+              "id": "CMP-3-01",
+              "name": "Source systems",
+              "description": "Deterministically identified system or capability boundary: Source systems.",
+              "responsibility": "Ingest governed data from multiple source systems with source ownership.",
+              "requirementIds": [
+                "SA-FR-001"
+              ],
+              "qualityDriverIds": [
+                "SA-QR-001"
+              ],
+              "riskIds": [
+                "RISK-3-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-3-02",
+              "name": "Ingestion plane",
+              "description": "Deterministically identified system or capability boundary: Ingestion plane.",
+              "responsibility": "Transform and quality-check data with reproducible lineage.",
+              "requirementIds": [
+                "SA-FR-002"
+              ],
+              "qualityDriverIds": [
+                "SA-QR-002"
+              ],
+              "riskIds": [
+                "RISK-3-02"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-3-03",
+              "name": "Processing plane",
+              "description": "Deterministically identified system or capability boundary: Processing plane.",
+              "responsibility": "Provide role- and purpose-bound access for BI and model consumption.",
+              "requirementIds": [
+                "SA-FR-003"
+              ],
+              "qualityDriverIds": [
+                "SA-QR-003"
+              ],
+              "riskIds": [
+                "RISK-3-03"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-3-04",
+              "name": "Governed analytical store",
+              "description": "Deterministically identified system or capability boundary: Governed analytical store.",
+              "responsibility": "Apply retention, legal hold and defensible deletion.",
+              "requirementIds": [
+                "SA-FR-004"
+              ],
+              "qualityDriverIds": [
+                "SA-QR-004"
+              ],
+              "riskIds": [
+                "RISK-3-04"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-3-05",
+              "name": "BI",
+              "description": "Deterministically identified system or capability boundary: BI.",
+              "responsibility": "Provide complete access, transformation and export audit evidence.",
+              "requirementIds": [
+                "SA-FR-005"
+              ],
+              "qualityDriverIds": [
+                "SA-QR-001"
+              ],
+              "riskIds": [
+                "RISK-3-05"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-3-06",
+              "name": "Model platform",
+              "description": "Deterministically identified system or capability boundary: Model platform.",
+              "responsibility": "Ingest governed data from multiple source systems with source ownership.",
+              "requirementIds": [
+                "SA-FR-001"
+              ],
+              "qualityDriverIds": [
+                "SA-QR-002"
+              ],
+              "riskIds": [
+                "RISK-3-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-3-07",
+              "name": "Catalog",
+              "description": "Deterministically identified system or capability boundary: Catalog.",
+              "responsibility": "Transform and quality-check data with reproducible lineage.",
+              "requirementIds": [
+                "SA-FR-002"
+              ],
+              "qualityDriverIds": [
+                "SA-QR-003"
+              ],
+              "riskIds": [
+                "RISK-3-02"
+              ],
+              "decisionIds": []
+            }
+          ],
+          "interfaces": [
+            {
+              "id": "IF-3-01",
+              "name": "Batch/CDC ingestion",
+              "source": "Source systems",
+              "target": "Ingestion plane",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Batch/CDC ingestion contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "SA-FR-001"
+              ]
+            },
+            {
+              "id": "IF-3-02",
+              "name": "Identity",
+              "source": "Ingestion plane",
+              "target": "Processing plane",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Identity contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "SA-FR-002"
+              ]
+            },
+            {
+              "id": "IF-3-03",
+              "name": "Catalog/lineage",
+              "source": "Processing plane",
+              "target": "Governed analytical store",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Catalog/lineage contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "SA-FR-003"
+              ]
+            },
+            {
+              "id": "IF-3-04",
+              "name": "BI queries",
+              "source": "Governed analytical store",
+              "target": "BI",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed BI queries contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "SA-FR-004"
+              ]
+            },
+            {
+              "id": "IF-3-05",
+              "name": "Model feature access",
+              "source": "BI",
+              "target": "Model platform",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Model feature access contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "SA-FR-005"
+              ]
+            }
+          ],
+          "dataArchitecture": [
+            "PII: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Operational facts: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Reference data: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Derived features: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Lineage: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Access audit: ownership, classification, retention and system-of-record posture require confirmation."
+          ],
+          "securityArchitecture": [
+            "Apply least privilege and authenticated identities.",
+            "Classify and encrypt sensitive data.",
+            "Record auditable security decisions."
+          ],
+          "deploymentRuntime": [
+            "Deployment topology requires physical-design confirmation.",
+            "Separate trust and failure domains where requirements demand it."
+          ],
+          "resilienceFailurePaths": [
+            "Failure concern: Re-identification; recovery control requires confirmation.",
+            "Failure concern: Residency breach; recovery control requires confirmation.",
+            "Failure concern: Privilege creep; recovery control requires confirmation.",
+            "Failure concern: Lineage loss; recovery control requires confirmation.",
+            "Failure concern: Stale or poor-quality data; recovery control requires confirmation."
+          ],
+          "observabilityOperations": [
+            "Correlate business actions, interfaces and failures.",
+            "Define service, dependency and reconciliation health indicators."
+          ],
+          "transitionArchitecture": [
+            "No central migration transition is stated; deployment evolution remains an open issue."
+          ]
+        },
+        "decisions": [],
+        "risks": [
+          {
+            "id": "RISK-3-01",
+            "description": "Re-identification",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "SA-FR-001"
+            ]
+          },
+          {
+            "id": "RISK-3-02",
+            "description": "Residency breach",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "SA-FR-002"
+            ]
+          },
+          {
+            "id": "RISK-3-03",
+            "description": "Privilege creep",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "SA-FR-003"
+            ]
+          },
+          {
+            "id": "RISK-3-04",
+            "description": "Lineage loss",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "SA-FR-004"
+            ]
+          },
+          {
+            "id": "RISK-3-05",
+            "description": "Stale or poor-quality data",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "SA-FR-005"
+            ]
+          }
+        ],
+        "traceability": [
+          {
+            "requirementId": "SA-FR-001",
+            "architectureElementIds": [
+              "CMP-3-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-FR-001",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-FR-002",
+            "architectureElementIds": [
+              "CMP-3-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-FR-002",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-FR-003",
+            "architectureElementIds": [
+              "CMP-3-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-FR-003",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-FR-004",
+            "architectureElementIds": [
+              "CMP-3-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-FR-004",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-FR-005",
+            "architectureElementIds": [
+              "CMP-3-05"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-FR-005",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-QR-001",
+            "architectureElementIds": [
+              "CMP-3-06"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-QR-001",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-QR-002",
+            "architectureElementIds": [
+              "CMP-3-07"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-QR-002",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-QR-003",
+            "architectureElementIds": [
+              "CMP-3-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-QR-003",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-QR-004",
+            "architectureElementIds": [
+              "CMP-3-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-QR-004",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "SA-C-001",
+            "architectureElementIds": [
+              "CMP-3-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-3-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S3:SA-C-001",
+              "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+            ],
+            "disposition": "partially-satisfied"
+          }
+        ],
+        "delivery": {
+          "executiveSummary": "Deterministic candidate architecture skeleton for Sensitive analytics platform; semantic design decisions remain unapproved.",
+          "sddSections": [
+            {
+              "heading": "Scope and requirements",
+              "content": "Provide governed multi-source analytics for authorised model and BI consumers while protecting personal information and preserving lineage, residency and auditability."
+            },
+            {
+              "heading": "Deterministic architecture inventory",
+              "content": "7 known boundaries and 5 known integrations were mapped without semantic generation."
+            }
+          ],
+          "openIssues": [
+            "Architecture style, detailed contracts, deployment choices and measurable targets require governed design."
+          ],
+          "implementationRoadmap": [
+            "Validate requirements",
+            "Assign ownership",
+            "Select and approve architecture decisions",
+            "Test fitness criteria"
+          ],
+          "acceptanceAndFitnessTests": [
+            "Verify SA-FR-001: Ingest governed data from multiple source systems with source ownership.",
+            "Verify SA-FR-002: Transform and quality-check data with reproducible lineage.",
+            "Verify SA-FR-003: Provide role- and purpose-bound access for BI and model consumption.",
+            "Verify SA-FR-004: Apply retention, legal hold and defensible deletion.",
+            "Verify SA-FR-005: Provide complete access, transformation and export audit evidence.",
+            "Verify SA-QR-001: Classify, encrypt, mask or tokenise sensitive fields across trust boundaries.",
+            "Verify SA-QR-002: Enforce regional or jurisdictional data-placement constraints.",
+            "Verify SA-QR-003: Detect data-quality, lineage and pipeline-health failures.",
+            "Verify SA-QR-004: Recover analytical data products without losing source lineage or access policy.",
+            "Verify SA-C-001: Analytical stores are not systems of record for operational source data."
+          ]
+        },
+        "abstentions": [
+          "Deterministic-only mode abstains from architecture-style selection and unsupported semantic synthesis."
+        ],
+        "unsupportedClaimsRejected": [
+          "No quantitative target or product choice was invented."
+        ],
+        "approvedRecordsChanged": 0,
+        "designGraphMutations": 0,
+        "automaticPromotions": 0
+      },
+      "runtime": {
+        "providerCalls": 0,
+        "modelCalls": 0,
+        "deterministicRules": [
+          "source-evidence-contract",
+          "requirements-taxonomy",
+          "conflict-detection",
+          "journey-grammar",
+          "architecture-context-graph",
+          "unsupported-metric-guard"
+        ],
+        "contextFingerprint": "sha256:411437f569a6adfcb42b09eebdce14471b37964df62c4fc536205afe099ef335"
+      },
+      "candidateCreated": true,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "mode": "aiw-deterministic-only",
+      "status": "completed",
+      "architecture": {
+        "scenarioId": "BIA1-S4",
+        "mode": "aiw-deterministic-only",
+        "authority": "candidate",
+        "productionAccepted": false,
+        "problemUnderstanding": {
+          "businessObjective": "Modernise a legacy core-banking estate through governed coexistence and migration with minimal customer disruption and reversible transition states.",
+          "scope": [
+            "Current-state diagnosis",
+            "Target architecture",
+            "Transition states",
+            "Migration waves",
+            "Cutover/rollback",
+            "Data strategy",
+            "Risk register",
+            "ADRs"
+          ],
+          "actors": [
+            "Retail banking",
+            "Operations",
+            "Payments",
+            "Finance",
+            "Regulatory reporting",
+            "Risk",
+            "Security",
+            "Migration office",
+            "SRE",
+            "Customer support"
+          ],
+          "journeys": [
+            "Preserve channel access to customer, account, payment and product capabilities throughout migration.",
+            "Integrate product processing with the general ledger and regulatory reporting.",
+            "Support coexistence routing between legacy and target cores by governed migration state.",
+            "Reconcile data and financial postings before, during and after every migration wave.",
+            "Support controlled cutover, rollback and exception handling.",
+            "Migrate batch workloads and end-of-day dependencies without losing operational control."
+          ],
+          "functionalRequirementIds": [
+            "CB-FR-001",
+            "CB-FR-002",
+            "CB-FR-003",
+            "CB-FR-004",
+            "CB-FR-005",
+            "CB-FR-006"
+          ],
+          "qualityDrivers": [
+            {
+              "id": "CB-QR-001",
+              "statement": "Minimise customer disruption and define measurable transition service levels.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "CB-QR-002",
+              "statement": "Preserve security, auditability and segregation of duties across coexistence.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "CB-QR-003",
+              "statement": "Contain operational and data-integrity risk with rehearsed recovery paths.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "CB-QR-004",
+              "statement": "Observe business reconciliation and technical health across both estates.",
+              "rationale": "Explicit scenario quality requirement"
+            }
+          ],
+          "constraints": [
+            "Legacy interfaces and batch windows have incomplete documentation.",
+            "Customer and account migration ordering is constrained by product dependencies.",
+            "The legacy core cannot be replaced in a single big-bang event.",
+            "Regulatory and general-ledger obligations remain authoritative throughout transition."
+          ],
+          "assumptions": [
+            "A migration control plane can hold account-level migration state.",
+            "Parallel reconciliation can compare legacy and target outcomes."
+          ],
+          "ambiguities": [
+            "Quantitative targets and responsibility assignments require stakeholder confirmation."
+          ],
+          "unresolvedQuestions": [
+            "Confirm measurable service levels, recovery objectives and named operational owners."
+          ]
+        },
+        "architectureViews": {
+          "systemContext": [
+            "Retail banking interacts with the system of interest.",
+            "Operations interacts with the system of interest.",
+            "Payments interacts with the system of interest.",
+            "Finance interacts with the system of interest.",
+            "Regulatory reporting interacts with the system of interest.",
+            "Risk interacts with the system of interest.",
+            "Security interacts with the system of interest.",
+            "Migration office interacts with the system of interest.",
+            "SRE interacts with the system of interest.",
+            "Customer support interacts with the system of interest.",
+            "Legacy core is a known system boundary.",
+            "Channels is a known system boundary.",
+            "Payments is a known system boundary.",
+            "Customer information is a known system boundary.",
+            "Product processors is a known system boundary.",
+            "General ledger is a known system boundary.",
+            "Batch scheduler is a known system boundary.",
+            "Regulatory reporting is a known system boundary.",
+            "Target core is a known system boundary."
+          ],
+          "components": [
+            {
+              "id": "CMP-4-01",
+              "name": "Legacy core",
+              "description": "Deterministically identified system or capability boundary: Legacy core.",
+              "responsibility": "Preserve channel access to customer, account, payment and product capabilities throughout migration.",
+              "requirementIds": [
+                "CB-FR-001"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-001"
+              ],
+              "riskIds": [
+                "RISK-4-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-02",
+              "name": "Channels",
+              "description": "Deterministically identified system or capability boundary: Channels.",
+              "responsibility": "Integrate product processing with the general ledger and regulatory reporting.",
+              "requirementIds": [
+                "CB-FR-002"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-002"
+              ],
+              "riskIds": [
+                "RISK-4-02"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-03",
+              "name": "Payments",
+              "description": "Deterministically identified system or capability boundary: Payments.",
+              "responsibility": "Support coexistence routing between legacy and target cores by governed migration state.",
+              "requirementIds": [
+                "CB-FR-003"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-003"
+              ],
+              "riskIds": [
+                "RISK-4-03"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-04",
+              "name": "Customer information",
+              "description": "Deterministically identified system or capability boundary: Customer information.",
+              "responsibility": "Reconcile data and financial postings before, during and after every migration wave.",
+              "requirementIds": [
+                "CB-FR-004"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-004"
+              ],
+              "riskIds": [
+                "RISK-4-04"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-05",
+              "name": "Product processors",
+              "description": "Deterministically identified system or capability boundary: Product processors.",
+              "responsibility": "Support controlled cutover, rollback and exception handling.",
+              "requirementIds": [
+                "CB-FR-005"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-001"
+              ],
+              "riskIds": [
+                "RISK-4-05"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-06",
+              "name": "General ledger",
+              "description": "Deterministically identified system or capability boundary: General ledger.",
+              "responsibility": "Migrate batch workloads and end-of-day dependencies without losing operational control.",
+              "requirementIds": [
+                "CB-FR-006"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-002"
+              ],
+              "riskIds": [
+                "RISK-4-06"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-07",
+              "name": "Batch scheduler",
+              "description": "Deterministically identified system or capability boundary: Batch scheduler.",
+              "responsibility": "Preserve channel access to customer, account, payment and product capabilities throughout migration.",
+              "requirementIds": [
+                "CB-FR-001"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-003"
+              ],
+              "riskIds": [
+                "RISK-4-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-08",
+              "name": "Regulatory reporting",
+              "description": "Deterministically identified system or capability boundary: Regulatory reporting.",
+              "responsibility": "Integrate product processing with the general ledger and regulatory reporting.",
+              "requirementIds": [
+                "CB-FR-002"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-004"
+              ],
+              "riskIds": [
+                "RISK-4-02"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-4-09",
+              "name": "Target core",
+              "description": "Deterministically identified system or capability boundary: Target core.",
+              "responsibility": "Support coexistence routing between legacy and target cores by governed migration state.",
+              "requirementIds": [
+                "CB-FR-003"
+              ],
+              "qualityDriverIds": [
+                "CB-QR-001"
+              ],
+              "riskIds": [
+                "RISK-4-03"
+              ],
+              "decisionIds": []
+            }
+          ],
+          "interfaces": [
+            {
+              "id": "IF-4-01",
+              "name": "Channel APIs",
+              "source": "Legacy core",
+              "target": "Channels",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Channel APIs contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "CB-FR-001"
+              ]
+            },
+            {
+              "id": "IF-4-02",
+              "name": "Payment rails",
+              "source": "Channels",
+              "target": "Payments",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Payment rails contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "CB-FR-002"
+              ]
+            },
+            {
+              "id": "IF-4-03",
+              "name": "GL posting",
+              "source": "Payments",
+              "target": "Customer information",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed GL posting contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "CB-FR-003"
+              ]
+            },
+            {
+              "id": "IF-4-04",
+              "name": "Batch files",
+              "source": "Customer information",
+              "target": "Product processors",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Batch files contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "CB-FR-004"
+              ]
+            },
+            {
+              "id": "IF-4-05",
+              "name": "Regulatory extracts",
+              "source": "Product processors",
+              "target": "General ledger",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Regulatory extracts contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "CB-FR-005"
+              ]
+            }
+          ],
+          "dataArchitecture": [
+            "Customer: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Account: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Product: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Balance: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Transaction: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Ledger: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Migration state: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Reconciliation evidence: ownership, classification, retention and system-of-record posture require confirmation."
+          ],
+          "securityArchitecture": [
+            "Apply least privilege and authenticated identities.",
+            "Classify and encrypt sensitive data.",
+            "Record auditable security decisions."
+          ],
+          "deploymentRuntime": [
+            "Deployment topology requires physical-design confirmation.",
+            "Separate trust and failure domains where requirements demand it."
+          ],
+          "resilienceFailurePaths": [
+            "Failure concern: Dual posting; recovery control requires confirmation.",
+            "Failure concern: Data divergence; recovery control requires confirmation.",
+            "Failure concern: Failed cutover; recovery control requires confirmation.",
+            "Failure concern: Batch overrun; recovery control requires confirmation.",
+            "Failure concern: Regulatory misreporting; recovery control requires confirmation.",
+            "Failure concern: Customer disruption; recovery control requires confirmation."
+          ],
+          "observabilityOperations": [
+            "Correlate business actions, interfaces and failures.",
+            "Define service, dependency and reconciliation health indicators."
+          ],
+          "transitionArchitecture": [
+            "Coexistence and reversible migration states are mandatory but require human-authored sequencing."
+          ]
+        },
+        "decisions": [],
+        "risks": [
+          {
+            "id": "RISK-4-01",
+            "description": "Dual posting",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "CB-FR-001"
+            ]
+          },
+          {
+            "id": "RISK-4-02",
+            "description": "Data divergence",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "CB-FR-002"
+            ]
+          },
+          {
+            "id": "RISK-4-03",
+            "description": "Failed cutover",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "CB-FR-003"
+            ]
+          },
+          {
+            "id": "RISK-4-04",
+            "description": "Batch overrun",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "CB-FR-004"
+            ]
+          },
+          {
+            "id": "RISK-4-05",
+            "description": "Regulatory misreporting",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "CB-FR-005"
+            ]
+          },
+          {
+            "id": "RISK-4-06",
+            "description": "Customer disruption",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "CB-FR-006"
+            ]
+          }
+        ],
+        "traceability": [
+          {
+            "requirementId": "CB-FR-001",
+            "architectureElementIds": [
+              "CMP-4-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-FR-001",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-FR-002",
+            "architectureElementIds": [
+              "CMP-4-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-FR-002",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-FR-003",
+            "architectureElementIds": [
+              "CMP-4-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-FR-003",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-FR-004",
+            "architectureElementIds": [
+              "CMP-4-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-FR-004",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-FR-005",
+            "architectureElementIds": [
+              "CMP-4-05"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-FR-005",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-FR-006",
+            "architectureElementIds": [
+              "CMP-4-06"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-06"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-FR-006",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-QR-001",
+            "architectureElementIds": [
+              "CMP-4-07"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-QR-001",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-QR-002",
+            "architectureElementIds": [
+              "CMP-4-08"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-QR-002",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-QR-003",
+            "architectureElementIds": [
+              "CMP-4-09"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-QR-003",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-QR-004",
+            "architectureElementIds": [
+              "CMP-4-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-QR-004",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-C-001",
+            "architectureElementIds": [
+              "CMP-4-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-C-001",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "CB-C-002",
+            "architectureElementIds": [
+              "CMP-4-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-4-06"
+            ],
+            "evidenceRefs": [
+              "BIA1-S4:CB-C-002",
+              "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+            ],
+            "disposition": "partially-satisfied"
+          }
+        ],
+        "delivery": {
+          "executiveSummary": "Deterministic candidate architecture skeleton for Core banking modernisation; semantic design decisions remain unapproved.",
+          "sddSections": [
+            {
+              "heading": "Scope and requirements",
+              "content": "Modernise a legacy core-banking estate through governed coexistence and migration with minimal customer disruption and reversible transition states."
+            },
+            {
+              "heading": "Deterministic architecture inventory",
+              "content": "9 known boundaries and 5 known integrations were mapped without semantic generation."
+            }
+          ],
+          "openIssues": [
+            "Architecture style, detailed contracts, deployment choices and measurable targets require governed design."
+          ],
+          "implementationRoadmap": [
+            "Validate requirements",
+            "Assign ownership",
+            "Select and approve architecture decisions",
+            "Test fitness criteria"
+          ],
+          "acceptanceAndFitnessTests": [
+            "Verify CB-FR-001: Preserve channel access to customer, account, payment and product capabilities throughout migration.",
+            "Verify CB-FR-002: Integrate product processing with the general ledger and regulatory reporting.",
+            "Verify CB-FR-003: Support coexistence routing between legacy and target cores by governed migration state.",
+            "Verify CB-FR-004: Reconcile data and financial postings before, during and after every migration wave.",
+            "Verify CB-FR-005: Support controlled cutover, rollback and exception handling.",
+            "Verify CB-FR-006: Migrate batch workloads and end-of-day dependencies without losing operational control.",
+            "Verify CB-QR-001: Minimise customer disruption and define measurable transition service levels.",
+            "Verify CB-QR-002: Preserve security, auditability and segregation of duties across coexistence.",
+            "Verify CB-QR-003: Contain operational and data-integrity risk with rehearsed recovery paths.",
+            "Verify CB-QR-004: Observe business reconciliation and technical health across both estates.",
+            "Verify CB-C-001: The legacy core cannot be replaced in a single big-bang event.",
+            "Verify CB-C-002: Regulatory and general-ledger obligations remain authoritative throughout transition."
+          ]
+        },
+        "abstentions": [
+          "Deterministic-only mode abstains from architecture-style selection and unsupported semantic synthesis."
+        ],
+        "unsupportedClaimsRejected": [
+          "No quantitative target or product choice was invented."
+        ],
+        "approvedRecordsChanged": 0,
+        "designGraphMutations": 0,
+        "automaticPromotions": 0
+      },
+      "runtime": {
+        "providerCalls": 0,
+        "modelCalls": 0,
+        "deterministicRules": [
+          "source-evidence-contract",
+          "requirements-taxonomy",
+          "conflict-detection",
+          "journey-grammar",
+          "architecture-context-graph",
+          "unsupported-metric-guard"
+        ],
+        "contextFingerprint": "sha256:3d644853e68efbc53ce9e34de551d0a4140cf28dd373e30e643ea74468565db6"
+      },
+      "candidateCreated": true,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "mode": "aiw-deterministic-only",
+      "status": "completed",
+      "architecture": {
+        "scenarioId": "BIA1-S5",
+        "mode": "aiw-deterministic-only",
+        "authority": "candidate",
+        "productionAccepted": false,
+        "problemUnderstanding": {
+          "businessObjective": "Deliver an enterprise agentic application that coordinates specialist capabilities and tools while bounding autonomy, data access, failure and cost.",
+          "scope": [
+            "Agent boundaries",
+            "Orchestration",
+            "Tool permissions",
+            "Memory",
+            "Control plane",
+            "Failure containment",
+            "Audit",
+            "Evaluation",
+            "Deployment",
+            "Traceability"
+          ],
+          "actors": [
+            "End user",
+            "Business owner",
+            "Human approver",
+            "Security",
+            "Privacy",
+            "Model risk",
+            "Tool owner",
+            "Platform engineering",
+            "SRE",
+            "Auditor"
+          ],
+          "journeys": [
+            "Accept user goals and decompose them into governed tasks.",
+            "Coordinate specialist agents or capabilities without implicit privilege sharing.",
+            "Invoke allowlisted tools under explicit purpose, scope and approval policy.",
+            "Maintain governed working and durable memory with retention and tenant boundaries.",
+            "Escalate high-impact, ambiguous or failed actions to a human.",
+            "Record auditable plans, decisions, tool calls, approvals and outcomes."
+          ],
+          "functionalRequirementIds": [
+            "AA-FR-001",
+            "AA-FR-002",
+            "AA-FR-003",
+            "AA-FR-004",
+            "AA-FR-005",
+            "AA-FR-006"
+          ],
+          "qualityDrivers": [
+            {
+              "id": "AA-QR-001",
+              "statement": "Resist prompt injection and untrusted tool or retrieved content.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "AA-QR-002",
+              "statement": "Contain model, agent and tool failure without cascading authority.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "AA-QR-003",
+              "statement": "Enforce data classification, least privilege and tenant isolation.",
+              "rationale": "Explicit scenario quality requirement"
+            },
+            {
+              "id": "AA-QR-004",
+              "statement": "Observe quality, safety, latency, cost and policy decisions end to end.",
+              "rationale": "Explicit scenario quality requirement"
+            }
+          ],
+          "constraints": [
+            "Models may fail, hallucinate or be unavailable.",
+            "Tool results and retrieved content are untrusted inputs.",
+            "No model or agent may directly mutate approved enterprise state.",
+            "High-impact external actions require deterministic policy and explicit approval."
+          ],
+          "assumptions": [
+            "Tools expose bounded APIs and service identities.",
+            "A policy engine and approval service are available."
+          ],
+          "ambiguities": [
+            "Quantitative targets and responsibility assignments require stakeholder confirmation."
+          ],
+          "unresolvedQuestions": [
+            "Confirm measurable service levels, recovery objectives and named operational owners."
+          ]
+        },
+        "architectureViews": {
+          "systemContext": [
+            "End user interacts with the system of interest.",
+            "Business owner interacts with the system of interest.",
+            "Human approver interacts with the system of interest.",
+            "Security interacts with the system of interest.",
+            "Privacy interacts with the system of interest.",
+            "Model risk interacts with the system of interest.",
+            "Tool owner interacts with the system of interest.",
+            "Platform engineering interacts with the system of interest.",
+            "SRE interacts with the system of interest.",
+            "Auditor interacts with the system of interest.",
+            "User experience is a known system boundary.",
+            "Orchestrator is a known system boundary.",
+            "Specialist agents is a known system boundary.",
+            "Tool gateway is a known system boundary.",
+            "Policy engine is a known system boundary.",
+            "Memory is a known system boundary.",
+            "Approval service is a known system boundary.",
+            "Audit/evaluation plane is a known system boundary."
+          ],
+          "components": [
+            {
+              "id": "CMP-5-01",
+              "name": "User experience",
+              "description": "Deterministically identified system or capability boundary: User experience.",
+              "responsibility": "Accept user goals and decompose them into governed tasks.",
+              "requirementIds": [
+                "AA-FR-001"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-001"
+              ],
+              "riskIds": [
+                "RISK-5-01"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-5-02",
+              "name": "Orchestrator",
+              "description": "Deterministically identified system or capability boundary: Orchestrator.",
+              "responsibility": "Coordinate specialist agents or capabilities without implicit privilege sharing.",
+              "requirementIds": [
+                "AA-FR-002"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-002"
+              ],
+              "riskIds": [
+                "RISK-5-02"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-5-03",
+              "name": "Specialist agents",
+              "description": "Deterministically identified system or capability boundary: Specialist agents.",
+              "responsibility": "Invoke allowlisted tools under explicit purpose, scope and approval policy.",
+              "requirementIds": [
+                "AA-FR-003"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-003"
+              ],
+              "riskIds": [
+                "RISK-5-03"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-5-04",
+              "name": "Tool gateway",
+              "description": "Deterministically identified system or capability boundary: Tool gateway.",
+              "responsibility": "Maintain governed working and durable memory with retention and tenant boundaries.",
+              "requirementIds": [
+                "AA-FR-004"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-004"
+              ],
+              "riskIds": [
+                "RISK-5-04"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-5-05",
+              "name": "Policy engine",
+              "description": "Deterministically identified system or capability boundary: Policy engine.",
+              "responsibility": "Escalate high-impact, ambiguous or failed actions to a human.",
+              "requirementIds": [
+                "AA-FR-005"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-001"
+              ],
+              "riskIds": [
+                "RISK-5-05"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-5-06",
+              "name": "Memory",
+              "description": "Deterministically identified system or capability boundary: Memory.",
+              "responsibility": "Record auditable plans, decisions, tool calls, approvals and outcomes.",
+              "requirementIds": [
+                "AA-FR-006"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-002"
+              ],
+              "riskIds": [
+                "RISK-5-06"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-5-07",
+              "name": "Approval service",
+              "description": "Deterministically identified system or capability boundary: Approval service.",
+              "responsibility": "Accept user goals and decompose them into governed tasks.",
+              "requirementIds": [
+                "AA-FR-001"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-003"
+              ],
+              "riskIds": [
+                "RISK-5-07"
+              ],
+              "decisionIds": []
+            },
+            {
+              "id": "CMP-5-08",
+              "name": "Audit/evaluation plane",
+              "description": "Deterministically identified system or capability boundary: Audit/evaluation plane.",
+              "responsibility": "Coordinate specialist agents or capabilities without implicit privilege sharing.",
+              "requirementIds": [
+                "AA-FR-002"
+              ],
+              "qualityDriverIds": [
+                "AA-QR-004"
+              ],
+              "riskIds": [
+                "RISK-5-01"
+              ],
+              "decisionIds": []
+            }
+          ],
+          "interfaces": [
+            {
+              "id": "IF-5-01",
+              "name": "Model gateway",
+              "source": "User experience",
+              "target": "Orchestrator",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Model gateway contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AA-FR-001"
+              ]
+            },
+            {
+              "id": "IF-5-02",
+              "name": "Enterprise tools",
+              "source": "Orchestrator",
+              "target": "Specialist agents",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Enterprise tools contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AA-FR-002"
+              ]
+            },
+            {
+              "id": "IF-5-03",
+              "name": "Identity",
+              "source": "Specialist agents",
+              "target": "Tool gateway",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Identity contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AA-FR-003"
+              ]
+            },
+            {
+              "id": "IF-5-04",
+              "name": "Policy",
+              "source": "Tool gateway",
+              "target": "Policy engine",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Policy contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AA-FR-004"
+              ]
+            },
+            {
+              "id": "IF-5-05",
+              "name": "Observability",
+              "source": "Policy engine",
+              "target": "Memory",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Observability contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AA-FR-005"
+              ]
+            },
+            {
+              "id": "IF-5-06",
+              "name": "Evaluation",
+              "source": "Memory",
+              "target": "Approval service",
+              "owner": "Ownership requires confirmation",
+              "contract": "Governed Evaluation contract; protocol and version require design confirmation.",
+              "consistencyAndFailureSemantics": "Explicit timeout, retry and reconciliation posture requires design confirmation.",
+              "securityControls": [
+                "Authenticated service identity",
+                "Authorised least-privilege access",
+                "Audit correlation"
+              ],
+              "requirementIds": [
+                "AA-FR-006"
+              ]
+            }
+          ],
+          "dataArchitecture": [
+            "User goal: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Plan: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Tool inputs/outputs: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Working memory: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Durable memory: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Approval: ownership, classification, retention and system-of-record posture require confirmation.",
+            "Audit evidence: ownership, classification, retention and system-of-record posture require confirmation."
+          ],
+          "securityArchitecture": [
+            "Apply least privilege and authenticated identities.",
+            "Classify and encrypt sensitive data.",
+            "Record auditable security decisions."
+          ],
+          "deploymentRuntime": [
+            "Deployment topology requires physical-design confirmation.",
+            "Separate trust and failure domains where requirements demand it."
+          ],
+          "resilienceFailurePaths": [
+            "Failure concern: Prompt injection; recovery control requires confirmation.",
+            "Failure concern: Excessive agency; recovery control requires confirmation.",
+            "Failure concern: Data leakage; recovery control requires confirmation.",
+            "Failure concern: Tool misuse; recovery control requires confirmation.",
+            "Failure concern: Runaway loop; recovery control requires confirmation.",
+            "Failure concern: Cost/latency runaway; recovery control requires confirmation.",
+            "Failure concern: Unauditable delegation; recovery control requires confirmation."
+          ],
+          "observabilityOperations": [
+            "Correlate business actions, interfaces and failures.",
+            "Define service, dependency and reconciliation health indicators."
+          ],
+          "transitionArchitecture": [
+            "No central migration transition is stated; deployment evolution remains an open issue."
+          ]
+        },
+        "decisions": [],
+        "risks": [
+          {
+            "id": "RISK-5-01",
+            "description": "Prompt injection",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AA-FR-001"
+            ]
+          },
+          {
+            "id": "RISK-5-02",
+            "description": "Excessive agency",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AA-FR-002"
+            ]
+          },
+          {
+            "id": "RISK-5-03",
+            "description": "Data leakage",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AA-FR-003"
+            ]
+          },
+          {
+            "id": "RISK-5-04",
+            "description": "Tool misuse",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AA-FR-004"
+            ]
+          },
+          {
+            "id": "RISK-5-05",
+            "description": "Runaway loop",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AA-FR-005"
+            ]
+          },
+          {
+            "id": "RISK-5-06",
+            "description": "Cost/latency runaway",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AA-FR-006"
+            ]
+          },
+          {
+            "id": "RISK-5-07",
+            "description": "Unauditable delegation",
+            "impact": "high",
+            "mitigation": "Create a governed control and test it before approval; deterministic mode does not invent the implementation.",
+            "owner": "Risk owner requires confirmation",
+            "requirementIds": [
+              "AA-QR-001"
+            ]
+          }
+        ],
+        "traceability": [
+          {
+            "requirementId": "AA-FR-001",
+            "architectureElementIds": [
+              "CMP-5-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-FR-001",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-FR-002",
+            "architectureElementIds": [
+              "CMP-5-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-FR-002",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-FR-003",
+            "architectureElementIds": [
+              "CMP-5-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-FR-003",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-FR-004",
+            "architectureElementIds": [
+              "CMP-5-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-FR-004",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-FR-005",
+            "architectureElementIds": [
+              "CMP-5-05"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-FR-005",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-FR-006",
+            "architectureElementIds": [
+              "CMP-5-06"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-06"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-FR-006",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-QR-001",
+            "architectureElementIds": [
+              "CMP-5-07"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-07"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-QR-001",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-QR-002",
+            "architectureElementIds": [
+              "CMP-5-08"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-01"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-QR-002",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-QR-003",
+            "architectureElementIds": [
+              "CMP-5-01"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-02"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-QR-003",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-QR-004",
+            "architectureElementIds": [
+              "CMP-5-02"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-03"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-QR-004",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-C-001",
+            "architectureElementIds": [
+              "CMP-5-03"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-04"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-C-001",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          },
+          {
+            "requirementId": "AA-C-002",
+            "architectureElementIds": [
+              "CMP-5-04"
+            ],
+            "decisionIds": [],
+            "riskIds": [
+              "RISK-5-05"
+            ],
+            "evidenceRefs": [
+              "BIA1-S5:AA-C-002",
+              "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+            ],
+            "disposition": "partially-satisfied"
+          }
+        ],
+        "delivery": {
+          "executiveSummary": "Deterministic candidate architecture skeleton for AI-powered agentic application; semantic design decisions remain unapproved.",
+          "sddSections": [
+            {
+              "heading": "Scope and requirements",
+              "content": "Deliver an enterprise agentic application that coordinates specialist capabilities and tools while bounding autonomy, data access, failure and cost."
+            },
+            {
+              "heading": "Deterministic architecture inventory",
+              "content": "8 known boundaries and 6 known integrations were mapped without semantic generation."
+            }
+          ],
+          "openIssues": [
+            "Architecture style, detailed contracts, deployment choices and measurable targets require governed design."
+          ],
+          "implementationRoadmap": [
+            "Validate requirements",
+            "Assign ownership",
+            "Select and approve architecture decisions",
+            "Test fitness criteria"
+          ],
+          "acceptanceAndFitnessTests": [
+            "Verify AA-FR-001: Accept user goals and decompose them into governed tasks.",
+            "Verify AA-FR-002: Coordinate specialist agents or capabilities without implicit privilege sharing.",
+            "Verify AA-FR-003: Invoke allowlisted tools under explicit purpose, scope and approval policy.",
+            "Verify AA-FR-004: Maintain governed working and durable memory with retention and tenant boundaries.",
+            "Verify AA-FR-005: Escalate high-impact, ambiguous or failed actions to a human.",
+            "Verify AA-FR-006: Record auditable plans, decisions, tool calls, approvals and outcomes.",
+            "Verify AA-QR-001: Resist prompt injection and untrusted tool or retrieved content.",
+            "Verify AA-QR-002: Contain model, agent and tool failure without cascading authority.",
+            "Verify AA-QR-003: Enforce data classification, least privilege and tenant isolation.",
+            "Verify AA-QR-004: Observe quality, safety, latency, cost and policy decisions end to end.",
+            "Verify AA-C-001: No model or agent may directly mutate approved enterprise state.",
+            "Verify AA-C-002: High-impact external actions require deterministic policy and explicit approval."
+          ]
+        },
+        "abstentions": [
+          "Deterministic-only mode abstains from architecture-style selection and unsupported semantic synthesis."
+        ],
+        "unsupportedClaimsRejected": [
+          "No quantitative target or product choice was invented."
+        ],
+        "approvedRecordsChanged": 0,
+        "designGraphMutations": 0,
+        "automaticPromotions": 0
+      },
+      "runtime": {
+        "providerCalls": 0,
+        "modelCalls": 0,
+        "deterministicRules": [
+          "source-evidence-contract",
+          "requirements-taxonomy",
+          "conflict-detection",
+          "journey-grammar",
+          "architecture-context-graph",
+          "unsupported-metric-guard"
+        ],
+        "contextFingerprint": "sha256:d76bfe8a6cf7c7963a38b87b176b6870f0ad2519e3229fcdba5c06f443af2833"
+      },
+      "candidateCreated": true,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0
+    }
+  ],
+  "evaluations": [
+    {
+      "scenarioId": "BIA1-S1",
+      "mode": "aiw-deterministic-only",
+      "scores": {
+        "requirements": 7.04,
+        "quality": 0,
+        "coherence": 12,
+        "functional": 0,
+        "interfaces": 10,
+        "security": 10.67,
+        "decisions": 0,
+        "traceability": 10,
+        "grounding": 3.5,
+        "usefulness": 5
+      },
+      "overallScore": 58.21,
+      "metrics": {
+        "criticalRequirementCoverage": 0,
+        "criticalInterfaceCompleteness": 100,
+        "criticalTraceability": 100,
+        "concernCoverage": 88.88888888888889,
+        "responsibilityCoverage": 100,
+        "ownershipCoverage": 100,
+        "architectureCoherenceFivePoint": 3.75,
+        "practicalUsefulnessFivePoint": 5,
+        "unsupportedConsequentialClaims": 0
+      },
+      "criticalOmissions": [],
+      "gates": {
+        "overallScore": false,
+        "criticalRequirementCoverage": false,
+        "criticalInterfaceCompleteness": true,
+        "criticalTraceability": true,
+        "criticalSecurityAndResilienceOmissions": true,
+        "unsupportedConsequentialClaims": true,
+        "architectureCoherence": false,
+        "practicalUsefulness": true
+      },
+      "passed": false,
+      "evaluatorRoles": [
+        "requirements-and-architecture",
+        "security-resilience-operations",
+        "evidence-and-traceability",
+        "adversarial-architecture-critic",
+        "final-adjudicator"
+      ],
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "mode": "aiw-deterministic-only",
+      "scores": {
+        "requirements": 4.16,
+        "quality": 0,
+        "coherence": 12,
+        "functional": 0,
+        "interfaces": 10,
+        "security": 10.5,
+        "decisions": 0,
+        "traceability": 10,
+        "grounding": 3.5,
+        "usefulness": 4.3
+      },
+      "overallScore": 54.46,
+      "metrics": {
+        "criticalRequirementCoverage": 0,
+        "criticalInterfaceCompleteness": 100,
+        "criticalTraceability": 100,
+        "concernCoverage": 87.5,
+        "responsibilityCoverage": 100,
+        "ownershipCoverage": 100,
+        "architectureCoherenceFivePoint": 3.75,
+        "practicalUsefulnessFivePoint": 4.3,
+        "unsupportedConsequentialClaims": 0
+      },
+      "criticalOmissions": [],
+      "gates": {
+        "overallScore": false,
+        "criticalRequirementCoverage": false,
+        "criticalInterfaceCompleteness": true,
+        "criticalTraceability": true,
+        "criticalSecurityAndResilienceOmissions": true,
+        "unsupportedConsequentialClaims": true,
+        "architectureCoherence": false,
+        "practicalUsefulness": true
+      },
+      "passed": false,
+      "evaluatorRoles": [
+        "requirements-and-architecture",
+        "security-resilience-operations",
+        "evidence-and-traceability",
+        "adversarial-architecture-critic",
+        "final-adjudicator"
+      ],
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "mode": "aiw-deterministic-only",
+      "scores": {
+        "requirements": 4.16,
+        "quality": 0,
+        "coherence": 12,
+        "functional": 0,
+        "interfaces": 10,
+        "security": 9,
+        "decisions": 0,
+        "traceability": 10,
+        "grounding": 3.5,
+        "usefulness": 4.3
+      },
+      "overallScore": 52.96,
+      "metrics": {
+        "criticalRequirementCoverage": 0,
+        "criticalInterfaceCompleteness": 100,
+        "criticalTraceability": 100,
+        "concernCoverage": 75,
+        "responsibilityCoverage": 100,
+        "ownershipCoverage": 100,
+        "architectureCoherenceFivePoint": 3.75,
+        "practicalUsefulnessFivePoint": 4.3,
+        "unsupportedConsequentialClaims": 0
+      },
+      "criticalOmissions": [],
+      "gates": {
+        "overallScore": false,
+        "criticalRequirementCoverage": false,
+        "criticalInterfaceCompleteness": true,
+        "criticalTraceability": true,
+        "criticalSecurityAndResilienceOmissions": true,
+        "unsupportedConsequentialClaims": true,
+        "architectureCoherence": false,
+        "practicalUsefulness": true
+      },
+      "passed": false,
+      "evaluatorRoles": [
+        "requirements-and-architecture",
+        "security-resilience-operations",
+        "evidence-and-traceability",
+        "adversarial-architecture-critic",
+        "final-adjudicator"
+      ],
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "mode": "aiw-deterministic-only",
+      "scores": {
+        "requirements": 5.12,
+        "quality": 0,
+        "coherence": 12,
+        "functional": 0,
+        "interfaces": 10,
+        "security": 10.67,
+        "decisions": 0,
+        "traceability": 10,
+        "grounding": 3.5,
+        "usefulness": 4.6
+      },
+      "overallScore": 55.89,
+      "metrics": {
+        "criticalRequirementCoverage": 0,
+        "criticalInterfaceCompleteness": 100,
+        "criticalTraceability": 100,
+        "concernCoverage": 88.88888888888889,
+        "responsibilityCoverage": 100,
+        "ownershipCoverage": 100,
+        "architectureCoherenceFivePoint": 3.75,
+        "practicalUsefulnessFivePoint": 4.6,
+        "unsupportedConsequentialClaims": 0
+      },
+      "criticalOmissions": [],
+      "gates": {
+        "overallScore": false,
+        "criticalRequirementCoverage": false,
+        "criticalInterfaceCompleteness": true,
+        "criticalTraceability": true,
+        "criticalSecurityAndResilienceOmissions": true,
+        "unsupportedConsequentialClaims": true,
+        "architectureCoherence": false,
+        "practicalUsefulness": true
+      },
+      "passed": false,
+      "evaluatorRoles": [
+        "requirements-and-architecture",
+        "security-resilience-operations",
+        "evidence-and-traceability",
+        "adversarial-architecture-critic",
+        "final-adjudicator"
+      ],
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "mode": "aiw-deterministic-only",
+      "scores": {
+        "requirements": 5.12,
+        "quality": 0,
+        "coherence": 12,
+        "functional": 0,
+        "interfaces": 10,
+        "security": 12,
+        "decisions": 0,
+        "traceability": 10,
+        "grounding": 3.5,
+        "usefulness": 4.6
+      },
+      "overallScore": 57.22,
+      "metrics": {
+        "criticalRequirementCoverage": 0,
+        "criticalInterfaceCompleteness": 100,
+        "criticalTraceability": 100,
+        "concernCoverage": 100,
+        "responsibilityCoverage": 100,
+        "ownershipCoverage": 100,
+        "architectureCoherenceFivePoint": 3.75,
+        "practicalUsefulnessFivePoint": 4.6,
+        "unsupportedConsequentialClaims": 0
+      },
+      "criticalOmissions": [],
+      "gates": {
+        "overallScore": false,
+        "criticalRequirementCoverage": false,
+        "criticalInterfaceCompleteness": true,
+        "criticalTraceability": true,
+        "criticalSecurityAndResilienceOmissions": true,
+        "unsupportedConsequentialClaims": true,
+        "architectureCoherence": false,
+        "practicalUsefulness": true
+      },
+      "passed": false,
+      "evaluatorRoles": [
+        "requirements-and-architecture",
+        "security-resilience-operations",
+        "evidence-and-traceability",
+        "adversarial-architecture-critic",
+        "final-adjudicator"
+      ],
+      "reviewActorType": "gpt-5.6-sol",
+      "humanReviewerPresent": false,
+      "externallyVerified": false,
+      "developmentDecisionAuthority": true,
+      "productionAuthority": false,
+      "productionAccepted": false
+    }
+  ]
+}
