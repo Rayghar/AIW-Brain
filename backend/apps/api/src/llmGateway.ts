@@ -38,8 +38,34 @@ export interface LlmProviderTransactionTelemetry {
   responseFingerprint?: string;
   schemaValidationStatus: 'not-run' | 'passed' | 'failed';
   identityValidationStatus: LlmModelIdentityValidationStatus | 'not-run';
-  finalDisposition: 'accepted' | 'rejected-http' | 'rejected-invalid-json' | 'rejected-model-identity' | 'rejected-empty-response' | 'rejected-schema' | 'rejected-grounding' | 'rejected-other';
+  finalDisposition: 'accepted' | 'rejected-http' | 'rejected-invalid-json' | 'rejected-model-identity' | 'rejected-empty-response' | 'rejected-schema' | 'rejected-grounding' | 'rejected-transport' | 'rejected-other';
   semanticContentPersisted: false;
+}
+
+export interface LlmSafeTransportTelemetry {
+  startedAt: string;
+  endedAt: string;
+  elapsedDurationMs: number;
+  requestOrigin: string;
+  method: string;
+  attempt: number;
+  freshConnection: boolean;
+  httpStatus?: number;
+  errorName?: string;
+  errorMessage?: string;
+  causeCode?: string;
+  causeMessage?: string;
+  socket?: { localAddress?: string; localPort?: number; remoteAddress?: string; remotePort?: number; bytesWritten?: number; bytesRead?: number };
+  retryable: boolean;
+  credentialsRecorded: false;
+  authenticationHeadersRecorded: false;
+}
+
+export interface LlmGatewayAccounting {
+  attempts: number;
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
 }
 
 export interface LlmExecutionResult<T> {
@@ -99,6 +125,9 @@ export interface LlmDeadLetterRecord {
 
 export interface LlmGatewayOptions {
   deadLetterSink?: (record: LlmDeadLetterRecord) => void | Promise<void>;
+  transportTelemetrySink?: (record: LlmSafeTransportTelemetry) => void | Promise<void>;
+  freshFetchFactory?: () => { fetchImpl: typeof fetch; close?: () => void | Promise<void> };
+  initialAccounting?: Partial<LlmGatewayAccounting>;
 }
 
 export interface LlmModelEntitlementReceipt {
@@ -123,6 +152,69 @@ class LlmProviderTransactionRejectedError extends Error {
   constructor(message: string, readonly transactionTelemetry: LlmProviderTransactionTelemetry) {
     super(message);
     this.name = 'LlmProviderTransactionRejectedError';
+  }
+}
+
+export class LlmProviderTransportError extends Error {
+  constructor(message: string, readonly transportTelemetry: LlmSafeTransportTelemetry) {
+    super(message);
+    this.name = 'LlmProviderTransportError';
+  }
+}
+
+function boundedText(value: unknown, fallback = ''): string {
+  return redactForModel(String(value ?? fallback), 'internal').value.slice(0, 500);
+}
+
+export function isRetryableLlmTransportFailure(error: unknown): boolean {
+  const value = error instanceof LlmProviderTransportError
+    ? `${error.message}:${error.transportTelemetry.causeCode ?? ''}`
+    : `${error instanceof Error ? error.name : ''}:${error instanceof Error ? error.message : String(error)}:${String((error as any)?.cause?.code ?? '')}`;
+  return /AbortError|TimeoutError|TIMEOUT|TIMEDOUT|UND_ERR_SOCKET|ECONNRESET|EPIPE|ECONNABORTED|fetch failed/i.test(value);
+}
+
+async function boundedFetch(
+  fetchImpl: typeof fetch,
+  input: string,
+  init: RequestInit,
+  context: { attempt: number; freshConnection: boolean; sink?: LlmGatewayOptions['transportTelemetrySink'] },
+): Promise<Response> {
+  const started = Date.now();
+  const startedAt = new Date(started).toISOString();
+  const origin = new URL(input).origin;
+  try {
+    const response = await fetchImpl(input, init);
+    const ended = Date.now();
+    await context.sink?.({
+      startedAt, endedAt: new Date(ended).toISOString(), elapsedDurationMs: ended - started,
+      requestOrigin: origin, method: init.method ?? 'GET', attempt: context.attempt,
+      freshConnection: context.freshConnection, httpStatus: response.status, retryable: false,
+      credentialsRecorded: false, authenticationHeadersRecorded: false,
+    });
+    return response;
+  } catch (error) {
+    const ended = Date.now();
+    const cause = (error as any)?.cause;
+    const socket = cause?.socket;
+    const telemetry: LlmSafeTransportTelemetry = {
+      startedAt, endedAt: new Date(ended).toISOString(), elapsedDurationMs: ended - started,
+      requestOrigin: origin, method: init.method ?? 'GET', attempt: context.attempt,
+      freshConnection: context.freshConnection,
+      errorName: boundedText((error as any)?.name, 'Error'), errorMessage: boundedText((error as any)?.message, 'transport failure'),
+      ...(cause?.code ? { causeCode: boundedText(cause.code) } : {}),
+      ...(cause?.message ? { causeMessage: boundedText(cause.message) } : {}),
+      ...(socket ? { socket: {
+        ...(socket.localAddress ? { localAddress: boundedText(socket.localAddress) } : {}),
+        ...(Number.isInteger(socket.localPort) ? { localPort: socket.localPort } : {}),
+        ...(socket.remoteAddress ? { remoteAddress: boundedText(socket.remoteAddress) } : {}),
+        ...(Number.isInteger(socket.remotePort) ? { remotePort: socket.remotePort } : {}),
+        ...(Number.isFinite(socket.bytesWritten) ? { bytesWritten: socket.bytesWritten } : {}),
+        ...(Number.isFinite(socket.bytesRead) ? { bytesRead: socket.bytesRead } : {}),
+      } } : {}),
+      retryable: isRetryableLlmTransportFailure(error), credentialsRecorded: false, authenticationHeadersRecorded: false,
+    };
+    await context.sink?.(telemetry);
+    throw new LlmProviderTransportError(`LLM_PROVIDER_TRANSPORT_FAILURE:${telemetry.causeCode ?? telemetry.errorName ?? 'UNKNOWN'}`, telemetry);
   }
 }
 
@@ -435,7 +527,13 @@ export function validateResolvedModelIdentity(input: {
   return 'rejected';
 }
 
-async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerationRequest, policy: LlmRuntimePolicy, fetchImpl: typeof fetch): Promise<LlmExecutionResult<T>> {
+async function invokeRoute<T>(
+  route: LlmRouteConfiguration,
+  request: JsonGenerationRequest,
+  policy: LlmRuntimePolicy,
+  fetchImpl: typeof fetch,
+  transportContext: { attempt: number; freshConnection: boolean; sink?: LlmGatewayOptions['transportTelemetrySink'] },
+): Promise<LlmExecutionResult<T>> {
   if (!route.enabled) throw new Error(`LLM_ROUTE_DISABLED:${route.id}`);
   const allowlistEntry = modelAllowlistEntry(policy, route);
   if (!allowlistEntry) throw new Error(`LLM_MODEL_NOT_ALLOWLISTED:${route.providerId}:${route.model}:${route.purpose}`);
@@ -476,12 +574,12 @@ async function invokeRoute<T>(route: LlmRouteConfiguration, request: JsonGenerat
       max_tokens: route.maxOutputTokens,
       ...(schema && provider.supportsJsonSchema ? { response_format: { type: 'json_schema', json_schema: { name: request.schemaName, schema, strict: true } } } : { response_format: { type: 'json_object' } }),
     };
-  const response = await fetchImpl(url, {
+  const response = await boundedFetch(fetchImpl, url, {
     method: 'POST',
     headers: { authorization: `Bearer ${apiKey(route)}`, 'content-type': 'application/json', accept: 'application/json', 'user-agent': `AIW-LLM-Gateway/${AIW_RELEASE.version}` },
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(Math.max(1_000, route.timeoutMs ?? 120_000)),
-  });
+  }, transportContext);
   const text = await response.text();
   const providerRequestId = response.headers.get('x-request-id') ?? response.headers.get('openai-request-id') ?? undefined;
   const telemetry: LlmProviderTransactionTelemetry = {
@@ -614,30 +712,64 @@ function orderedRoutes(policy: LlmRuntimePolicy, purpose: LlmPurpose): LlmRouteC
 
 export class LlmGateway {
   private readonly policy: LlmRuntimePolicy;
-  private readonly fetchImpl: typeof fetch;
+  private fetchImpl: typeof fetch;
   private readonly options: LlmGatewayOptions;
+  private closeTransport: (() => void | Promise<void>) | undefined;
+  private freshConnection = false;
   private readonly deadLetterRecords: LlmDeadLetterRecord[] = [];
   private readonly transactionTelemetryRecords: LlmProviderTransactionTelemetry[] = [];
+  private readonly transportTelemetryRecords: LlmSafeTransportTelemetry[] = [];
+  private readonly accountingState: LlmGatewayAccounting;
 
   constructor(policy: LlmRuntimePolicy = loadLlmRuntimePolicy(), fetchImpl: typeof fetch = fetch, options: LlmGatewayOptions = {}) {
     this.policy = validateLlmRuntimePolicy(policy);
     this.fetchImpl = fetchImpl;
     this.options = options;
+    this.accountingState = {
+      attempts: options.initialAccounting?.attempts ?? 0,
+      inputTokens: options.initialAccounting?.inputTokens ?? 0,
+      outputTokens: options.initialAccounting?.outputTokens ?? 0,
+      totalTokens: options.initialAccounting?.totalTokens ?? 0,
+    };
   }
 
   deadLetters(): LlmDeadLetterRecord[] { return structuredClone(this.deadLetterRecords); }
   transactions(): LlmProviderTransactionTelemetry[] { return structuredClone(this.transactionTelemetryRecords); }
+  transportTransactions(): LlmSafeTransportTelemetry[] { return structuredClone(this.transportTelemetryRecords); }
+  accounting(): LlmGatewayAccounting { return structuredClone(this.accountingState); }
+
+  private async recordTransportTelemetry(record: LlmSafeTransportTelemetry): Promise<void> {
+    this.transportTelemetryRecords.push(structuredClone(record));
+    await this.options.transportTelemetrySink?.(structuredClone(record));
+  }
+
+  private async replaceFailedTransport(): Promise<boolean> {
+    if (!this.options.freshFetchFactory) return false;
+    await this.closeTransport?.();
+    const fresh = this.options.freshFetchFactory();
+    this.fetchImpl = fresh.fetchImpl;
+    this.closeTransport = fresh.close;
+    this.freshConnection = true;
+    return true;
+  }
+
+  private recordUsage(telemetry: LlmProviderTransactionTelemetry): void {
+    this.accountingState.inputTokens += telemetry.inputTokens ?? 0;
+    this.accountingState.outputTokens += telemetry.outputTokens ?? 0;
+    this.accountingState.totalTokens += telemetry.totalTokens ?? (telemetry.inputTokens ?? 0) + (telemetry.outputTokens ?? 0);
+  }
 
   async verifyExactModelEntitlement(input: { providerId: LlmProviderId; purpose: LlmPurpose; model: string }): Promise<LlmModelEntitlementReceipt> {
     const route = this.policy.routes.find((item) => item.enabled && item.providerId === input.providerId && item.purpose === input.purpose && item.model === input.model);
     if (!route) throw new Error(`LLM_ENTITLEMENT_ROUTE_NOT_CONFIGURED:${input.providerId}:${input.model}:${input.purpose}`);
     const requestTimestamp = new Date().toISOString();
     const apiRouteUsed = `/v1/models/${encodeURIComponent(input.model)}`;
-    const response = await this.fetchImpl(`${baseUrl(route)}/models/${encodeURIComponent(input.model)}`, {
+    this.accountingState.attempts += 1;
+    const response = await boundedFetch(this.fetchImpl, `${baseUrl(route)}/models/${encodeURIComponent(input.model)}`, {
       method: 'GET',
       headers: { authorization: `Bearer ${apiKey(route)}`, accept: 'application/json', 'user-agent': `AIW-LLM-Gateway/${AIW_RELEASE.version}` },
       signal: AbortSignal.timeout(Math.max(1_000, route.timeoutMs ?? 30_000)),
-    });
+    }, { attempt: this.accountingState.attempts, freshConnection: this.freshConnection, sink: (record) => this.recordTransportTelemetry(record) });
     const providerRequestId = response.headers.get('x-request-id') ?? response.headers.get('openai-request-id') ?? undefined;
     const text = await response.text();
     let payload: Record<string, any> = {};
@@ -683,19 +815,38 @@ export class LlmGateway {
       const attempts = Math.max(1, this.policy.maxRetries + 1);
       for (let attempt = 0; attempt < attempts; attempt += 1) {
         totalAttempts += 1;
+        this.accountingState.attempts += 1;
         try {
-          const result = await invokeRoute<T>(route, request, this.policy, this.fetchImpl);
+          const result = await invokeRoute<T>(route, request, this.policy, this.fetchImpl, {
+            attempt: this.accountingState.attempts,
+            freshConnection: this.freshConnection,
+            sink: (record) => this.recordTransportTelemetry(record),
+          });
           this.transactionTelemetryRecords.push(structuredClone(result.transactionTelemetry));
+          this.recordUsage(result.transactionTelemetry);
           return index === 0 ? result : { ...result, fallbackUsed: true };
         } catch (error) {
           if (error instanceof LlmProviderTransactionRejectedError) {
             error.transactionTelemetry.retryCount = attempt;
             providerTransactions.push(structuredClone(error.transactionTelemetry));
             this.transactionTelemetryRecords.push(structuredClone(error.transactionTelemetry));
+            this.recordUsage(error.transactionTelemetry);
+          } else if (error instanceof LlmProviderTransportError) {
+            const transportTransaction: LlmProviderTransactionTelemetry = {
+              requestedModel: route.model, elapsedDurationMs: error.transportTelemetry.elapsedDurationMs,
+              retryCount: attempt, schemaValidationStatus: 'not-run', identityValidationStatus: 'not-run',
+              finalDisposition: 'rejected-transport', semanticContentPersisted: false,
+            };
+            providerTransactions.push(transportTransaction);
+            this.transactionTelemetryRecords.push(structuredClone(transportTransaction));
           }
           const message = error instanceof Error ? error.message : String(error);
           errors.push(`${route.id}:${redactForModel(message, 'internal').value.slice(0, 500)}`);
           markFailure(route.id, this.policy);
+          if (error instanceof LlmProviderTransportError && error.transportTelemetry.retryable && attempt + 1 < attempts) {
+            if (await this.replaceFailedTransport()) continue;
+            break;
+          }
           if (message.includes('DATA_CLASSIFICATION_BLOCKED') || message.includes('API_KEY_NOT_CONFIGURED') || message.includes('ROUTE_DISABLED') || message.includes('MODEL_NOT_ALLOWLISTED') || message.includes('MODEL_IDENTITY_REJECTED') || message.includes('INPUT_TOO_LARGE') || message.includes('EVIDENCE_ALLOWLIST_REQUIRED') || message.includes('GROUNDING_LINEAGE_MISMATCH') || message.includes('PROVIDER_NATIVE_SCHEMA_REQUIRED') || message.includes('INSUFFICIENT_GROUNDING') || message.includes('SCHEMA_INVALID') || message.includes('JSON_SCHEMA_REQUIRED') || message.includes('CITATION_OUTSIDE_ALLOWLIST') || message.includes('EVIDENCE_ENTAILMENT_FAILED') || message.includes('GROUNDED_CITATION_REQUIRED')) break;
         }
       }

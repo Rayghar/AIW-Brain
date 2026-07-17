@@ -1,0 +1,230 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-transport-diagnostic-v1",
+  "startedAt": "2026-07-17T07:28:59.843Z",
+  "completedAt": "2026-07-17T07:29:05.188Z",
+  "productionAccepted": false,
+  "diagnosticType": "non-generation-transport-only",
+  "modelCalls": 0,
+  "benchmarkEvidenceTransferred": false,
+  "host": "api.openai.com",
+  "port": 443,
+  "timeoutMs": 15000,
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "passed": true,
+  "dns": {
+    "startedAt": "2026-07-17T07:28:59.843Z",
+    "endedAt": "2026-07-17T07:28:59.912Z",
+    "elapsedMs": 69,
+    "passed": true,
+    "dnsResult": [
+      {
+        "address": "162.159.140.245",
+        "family": 4
+      },
+      {
+        "address": "172.66.0.243",
+        "family": 4
+      }
+    ],
+    "retryPosture": "no-automatic-retry"
+  },
+  "tcp": {
+    "startedAt": "2026-07-17T07:28:59.912Z",
+    "endedAt": "2026-07-17T07:28:59.952Z",
+    "elapsedMs": 40,
+    "passed": true,
+    "socket": {
+      "localAddress": "192.168.88.251",
+      "localPort": 62255,
+      "remoteAddress": "162.159.140.245",
+      "remotePort": 443,
+      "bytesWritten": 0,
+      "bytesRead": 0
+    },
+    "retryPosture": "no-automatic-retry"
+  },
+  "tls": {
+    "startedAt": "2026-07-17T07:28:59.952Z",
+    "endedAt": "2026-07-17T07:29:00.032Z",
+    "elapsedMs": 80,
+    "passed": true,
+    "tlsResult": {
+      "authorized": true,
+      "authorizationError": null,
+      "protocol": "TLSv1.3",
+      "cipher": "TLS_AES_256_GCM_SHA384",
+      "localAddress": "192.168.88.251",
+      "localPort": 62256,
+      "remoteAddress": "162.159.140.245",
+      "remotePort": 443,
+      "bytesWritten": 0,
+      "bytesRead": 0
+    },
+    "retryPosture": "no-automatic-retry"
+  },
+  "basicHttps": {
+    "startedAt": "2026-07-17T07:29:00.033Z",
+    "endedAt": "2026-07-17T07:29:00.577Z",
+    "elapsedMs": 544,
+    "passed": true,
+    "httpStatus": 401,
+    "providerRequestId": "bef93409-1254-4898-ae07-88c7fbc2aed7",
+    "bytesRead": 151,
+    "expectedUnauthenticatedResponse": true,
+    "retryPosture": "no-automatic-retry"
+  },
+  "exactModelEntitlement": {
+    "startedAt": "2026-07-17T07:29:00.578Z",
+    "endedAt": "2026-07-17T07:29:01.380Z",
+    "elapsedMs": 802,
+    "passed": true,
+    "httpStatus": 200,
+    "providerRequestId": "efd9d1cc-62ad-499f-80e9-6c1dc78c5937",
+    "exactModelIdReturned": "gpt-4.1-mini-2025-04-14",
+    "redaction": {
+      "secretMaterialIncluded": false,
+      "safeErrorRedactions": 0
+    },
+    "retryPosture": "no-automatic-retry"
+  },
+  "consecutiveAuthenticated": [
+    {
+      "startedAt": "2026-07-17T07:29:01.380Z",
+      "endedAt": "2026-07-17T07:29:02.099Z",
+      "elapsedMs": 719,
+      "passed": true,
+      "httpStatus": 200,
+      "providerRequestId": "9f4e1896-351b-47ce-9798-fc753800a7d1",
+      "exactModelIdReturned": "gpt-4.1-mini-2025-04-14",
+      "redaction": {
+        "secretMaterialIncluded": false,
+        "safeErrorRedactions": 0
+      },
+      "retryPosture": "no-automatic-retry"
+    },
+    {
+      "startedAt": "2026-07-17T07:29:02.099Z",
+      "endedAt": "2026-07-17T07:29:02.711Z",
+      "elapsedMs": 612,
+      "passed": true,
+      "httpStatus": 200,
+      "providerRequestId": "779c5953-8372-481b-89b8-f8895b719151",
+      "exactModelIdReturned": "gpt-4.1-mini-2025-04-14",
+      "redaction": {
+        "secretMaterialIncluded": false,
+        "safeErrorRedactions": 0
+      },
+      "retryPosture": "no-automatic-retry"
+    },
+    {
+      "startedAt": "2026-07-17T07:29:02.711Z",
+      "endedAt": "2026-07-17T07:29:03.091Z",
+      "elapsedMs": 380,
+      "passed": true,
+      "httpStatus": 200,
+      "providerRequestId": "c6263dfe-9edc-4620-9163-99186493b057",
+      "exactModelIdReturned": "gpt-4.1-mini-2025-04-14",
+      "redaction": {
+        "secretMaterialIncluded": false,
+        "safeErrorRedactions": 0
+      },
+      "retryPosture": "no-automatic-retry"
+    }
+  ],
+  "freshConnection": {
+    "startedAt": "2026-07-17T07:29:03.092Z",
+    "endedAt": "2026-07-17T07:29:05.188Z",
+    "elapsedMs": 2096,
+    "passed": true,
+    "childExitCode": 0,
+    "result": {
+      "startedAt": "2026-07-17T07:29:04.059Z",
+      "endedAt": "2026-07-17T07:29:05.064Z",
+      "elapsedMs": 1005,
+      "passed": true,
+      "httpStatus": 200,
+      "providerRequestId": "228c4473-ffb7-4543-ad42-74f5c5fe7134",
+      "exactModelIdReturned": "gpt-4.1-mini-2025-04-14",
+      "redaction": {
+        "secretMaterialIncluded": false,
+        "safeErrorRedactions": 0
+      },
+      "retryPosture": "no-automatic-retry"
+    },
+    "transportTelemetry": [
+      {
+        "startedAt": "2026-07-17T07:29:04.060Z",
+        "endedAt": "2026-07-17T07:29:05.045Z",
+        "elapsedDurationMs": 985,
+        "requestOrigin": "https://api.openai.com",
+        "method": "GET",
+        "attempt": 1,
+        "freshConnection": false,
+        "httpStatus": 200,
+        "retryable": false,
+        "credentialsRecorded": false,
+        "authenticationHeadersRecorded": false
+      }
+    ],
+    "productionAccepted": false
+  },
+  "transportTelemetry": [
+    {
+      "startedAt": "2026-07-17T07:29:00.580Z",
+      "endedAt": "2026-07-17T07:29:01.364Z",
+      "elapsedDurationMs": 784,
+      "requestOrigin": "https://api.openai.com",
+      "method": "GET",
+      "attempt": 1,
+      "freshConnection": false,
+      "httpStatus": 200,
+      "retryable": false,
+      "credentialsRecorded": false,
+      "authenticationHeadersRecorded": false
+    },
+    {
+      "startedAt": "2026-07-17T07:29:01.381Z",
+      "endedAt": "2026-07-17T07:29:02.095Z",
+      "elapsedDurationMs": 714,
+      "requestOrigin": "https://api.openai.com",
+      "method": "GET",
+      "attempt": 2,
+      "freshConnection": false,
+      "httpStatus": 200,
+      "retryable": false,
+      "credentialsRecorded": false,
+      "authenticationHeadersRecorded": false
+    },
+    {
+      "startedAt": "2026-07-17T07:29:02.100Z",
+      "endedAt": "2026-07-17T07:29:02.710Z",
+      "elapsedDurationMs": 610,
+      "requestOrigin": "https://api.openai.com",
+      "method": "GET",
+      "attempt": 3,
+      "freshConnection": false,
+      "httpStatus": 200,
+      "retryable": false,
+      "credentialsRecorded": false,
+      "authenticationHeadersRecorded": false
+    },
+    {
+      "startedAt": "2026-07-17T07:29:02.712Z",
+      "endedAt": "2026-07-17T07:29:03.083Z",
+      "elapsedDurationMs": 371,
+      "requestOrigin": "https://api.openai.com",
+      "method": "GET",
+      "attempt": 4,
+      "freshConnection": false,
+      "httpStatus": 200,
+      "retryable": false,
+      "credentialsRecorded": false,
+      "authenticationHeadersRecorded": false
+    }
+  ],
+  "noUndErrSocket": true,
+  "transportRootCauseConclusion": "The historical UND_ERR_SOCKET was not reproduced. The same Node.js fetch stack now passed pooled sequential and fresh-process requests, so the defensible classification is a transient or stale-socket infrastructure failure rather than a persistent DNS, TCP, TLS, authentication or entitlement defect.",
+  "credentialsRecorded": false,
+  "authenticationHeadersRecorded": false,
+  "rawSecretValuesRecorded": false
+}

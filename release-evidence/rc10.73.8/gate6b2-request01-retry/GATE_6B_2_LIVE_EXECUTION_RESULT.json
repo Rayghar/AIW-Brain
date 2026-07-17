@@ -1,0 +1,171 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-live-execution-v1",
+  "startedAt": "2026-07-17T07:01:00.640Z",
+  "completedAt": "2026-07-17T07:01:13.474Z",
+  "productionAccepted": false,
+  "status": "request-01-retry-failed",
+  "scope": "G6B2-REQ-01-only",
+  "fullGate6b2Passed": false,
+  "connectivityDiagnosticPassed": false,
+  "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "requestPlanFingerprint": "sha256:d80d90b4eaf4f4d9f9252b9cfbc113aab771f8797b798694edbeaa379941c8e8",
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "providerCalls": 1,
+  "retries": 0,
+  "actualInputTokens": 2023,
+  "actualOutputTokens": 674,
+  "actualTotalTokens": 2697,
+  "actualCostUsd": 0.001888,
+  "requestReceipts": [
+    {
+      "requestId": "G6B2-REQ-01",
+      "caseIds": [
+        "G6B1-01"
+      ],
+      "attempt": 0,
+      "provider": "openai",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "httpStatus": 200,
+      "providerRequestId": "req_6487e93325e4437daafee5f7360ea6aa",
+      "inputTokens": 2023,
+      "outputTokens": 674,
+      "totalTokens": 2697,
+      "elapsedMs": 12739,
+      "requestFingerprint": "sha256:ddf1fa7853c837d710c358d64fee4e8658ca07a732e091c28dd5baa9c57c575a",
+      "responseFingerprint": "sha256:9596859798a1ed38c7f47aa2eb461251f00688aca40a24ff35727bddbb5242b9",
+      "strictSchemaValid": true,
+      "exactEvidenceLineage": true,
+      "supportSpanValid": false,
+      "groundingAcceptedItems": 0,
+      "groundingRejectedItems": 1,
+      "delegatedReviewItems": 0,
+      "candidateRecordsCreated": 0,
+      "approvedRecordsChanged": 0,
+      "designGraphMutations": 0,
+      "automaticPromotions": 0,
+      "finalDisposition": "completed-with-semantic-rejections"
+    }
+  ],
+  "governedTypedOutputs": [
+    {
+      "requestId": "G6B2-REQ-01",
+      "cases": [
+        {
+          "caseId": "G6B1-01",
+          "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "disposition": "atomic-claim-candidate",
+          "assetType": "implementation-observation",
+          "authority": "candidate",
+          "reviewRequired": true,
+          "productionAccepted": false,
+          "automaticPromotionAllowed": false,
+          "designGraphMutationAllowed": false,
+          "statement": "The provided sample demonstrates orchestration of a deployment for multiple Azure resources using modules from a private Bicep Registry, deploying a resource group with a Network Security Group (NSG), then using them in a subsequent VNET deployment.",
+          "epistemicStatus": "implementation-observation",
+          "statementOrigin": "source",
+          "epistemicBasis": "implementation-evidence",
+          "supportSpans": [
+            {
+              "quote": "The following sample shows how you could orchestrate a deployment of multiple resources using modules from a private Bicep Registry. In this example, we will deploy a resource group with a Network Security Group (NSG), and use them in a subsequent VNET deployment.",
+              "start": 0,
+              "end": 245
+            }
+          ],
+          "conditions": [],
+          "conditionState": "not-stated",
+          "conditionSupportSpans": [],
+          "limitations": [
+            "This example is a demonstration snippet and may not cover all deployment scenarios."
+          ],
+          "limitationState": "stated",
+          "limitationSupportSpans": [
+            {
+              "quote": "The following sample shows how you could orchestrate a deployment of multiple resources using modules from a private Bicep Registry. ...",
+              "start": 0,
+              "end": 245
+            }
+          ],
+          "confidence": 0.9,
+          "reviewRationale": "The source text explicitly shows an example deployment code snippet and commentary explaining the orchestration using private Bicep Registry modules. The statement is a direct interpretation of the example's purpose and content.",
+          "fields": [
+            {
+              "name": "ModulesUsed",
+              "value": "Resource Group module, Network Security Group module",
+              "epistemicStatus": "implementation-observation",
+              "supportSpans": [
+                {
+                  "quote": "deploy a resource group with a Network Security Group (NSG)",
+                  "start": 58,
+                  "end": 98
+                }
+              ],
+              "unknown": false
+            },
+            {
+              "name": "DeploymentOrder",
+              "value": "Deploy Resource Group first, then Network Security Group, then VNET",
+              "epistemicStatus": "implementation-observation",
+              "supportSpans": [
+                {
+                  "quote": "we will deploy a resource group with a Network Security Group (NSG), and use them in a subsequent VNET deployment",
+                  "start": 58,
+                  "end": 126
+                }
+              ],
+              "unknown": false
+            },
+            {
+              "name": "PreferredPublishingMethodNote",
+              "value": "Preferred method to publish modules is using the CI environment provided in the repository but local script is an alternative",
+              "epistemicStatus": "source-stated-recommendation",
+              "supportSpans": [
+                {
+                  "quote": "the preferred method to publish modules to the Bicep registry is to leverage the [CI environment] provided in this repository... As an alternative, the same `Publish-ModuleToPrivateBicepRegistry.ps1` script... can be run locally.",
+                  "start": 247,
+                  "end": 452
+                }
+              ],
+              "unknown": false
+            }
+          ],
+          "nonClaimReason": "",
+          "nonClaimUse": "",
+          "missingEvidence": [],
+          "additionalEvidenceRequired": [],
+          "abstentionRationale": ""
+        }
+      ],
+      "validation": [
+        {
+          "caseId": "G6B1-01",
+          "evidenceId": "BEV-f4e684d09a9fb9f2589375ce",
+          "disposition": "atomic-claim-candidate",
+          "assetType": "implementation-observation",
+          "accepted": false,
+          "routedForDelegatedReview": false,
+          "lexicalCoverage": 0.7273,
+          "supportSpanValid": false,
+          "conditionComplete": true,
+          "limitationComplete": true,
+          "epistemicValid": true,
+          "crossCaseContamination": false,
+          "violations": [
+            "ATOMIC_CLAIM_TYPE_MISMATCH",
+            "SUPPORT_SPAN_INVALID"
+          ]
+        }
+      ]
+    }
+  ],
+  "candidateRecordsCreated": 0,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "secretFindings": 0,
+  "toolsEnabled": false,
+  "externalRetrievalCalls": 0,
+  "repositoryCodeExecuted": 0,
+  "freeBytesAfter": 14918275072,
+  "backupStatus": "deferred-by-product-owner"
+}

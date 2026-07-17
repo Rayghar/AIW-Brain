@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-capacity-controlled-stop-v1",
+  "observedAt": "2026-07-17T07:30:00Z",
+  "productionAccepted": false,
+  "freeBytes": 6052503552,
+  "freeGiB": 5.637,
+  "controlledStopFloorBytes": 8589934592,
+  "requiredBeforeSemanticResumeBytes": 8589934592,
+  "capacityPassed": false,
+  "transportDiagnosticPassed": true,
+  "semanticRequestsAfterTransportDiagnostic": 0,
+  "modelCallsAfterTransportDiagnostic": 0,
+  "automaticCleanupPerformed": false,
+  "immutableEvidenceDeleted": false,
+  "gate6b2Status": "pending-capacity-remediation-after-transport-pass",
+  "prompt6gEntryStatus": "blocked",
+  "blocker": "free-space-below-8-GiB-controlled-stop-floor",
+  "requiredNextAction": "Product-owner-approved capacity remediation followed by a fresh capacity and fingerprint preflight.",
+  "backupStatus": "deferred-by-product-owner",
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started"
+}

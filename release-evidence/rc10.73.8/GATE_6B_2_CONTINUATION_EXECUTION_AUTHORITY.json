@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-continuation-execution-authority-v1",
+  "generatedAt": "2026-07-17T07:29:39.3177751Z",
+  "productionAccepted": false,
+  "authorityStatus": "prepared-but-blocked-by-capacity",
+  "provider": "openai",
+  "purpose": "governed-candidate-semantic-transformation",
+  "historicalTransportAttempts": 2,
+  "separatelyAuthorizedPreContinuationRecoveryAttempts": 1,
+  "separateRecoveryAttemptPosture": "preserved-outside-this-continuation-envelope-and-not-discounted-from-global-audit-totals",
+  "plannedSemanticRequests": 8,
+  "globalRetryReserve": 2,
+  "absoluteGate6b2AttemptCeiling": 12,
+  "maximumRetryPerRequest": 1,
+  "maximumTotalTokens": 120000,
+  "maximumOutputTokensPerRequest": 4000,
+  "concurrency": 1,
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "fallbackEnabled": false,
+  "toolsEnabled": false,
+  "externalRetrievalEnabled": false,
+  "candidateOnlyPersistence": true,
+  "automaticPromotionAllowed": false,
+  "designGraphMutationAllowed": false,
+  "monetaryCostCeiling": null,
+  "costTrackingRequired": true,
+  "costMayStopExecution": false,
+  "transportDiagnostic": {
+    "path": "release-evidence/rc10.73.8/GATE_6B_2_TRANSPORT_DIAGNOSTIC.json",
+    "passed": true,
+    "modelCalls": 0
+  },
+  "capacity": {
+    "measuredAt": "2026-07-17T07:30:00Z",
+    "freeBytes": 6052503552,
+    "controlledStopFloorBytes": 8589934592,
+    "passed": false,
+    "automaticCleanupAllowed": false
+  },
+  "frozenInputs": {
+    "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+    "frozenLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+    "requestPlanFingerprint": "sha256:d80d90b4eaf4f4d9f9252b9cfbc113aab771f8797b798694edbeaa379941c8e8",
+    "evidenceTransferSafetyPassed": true
+  },
+  "executionPermittedNow": false,
+  "blocker": "free-space-below-8-GiB-controlled-stop-floor",
+  "prompt6gEntryStatus": "blocked",
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started",
+  "backupStatus": "deferred-by-product-owner"
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-live-transaction-v1",
+  "generatedAt": "2026-07-17T07:01:13.474Z",
+  "productionAccepted": false,
+  "provider": "openai",
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "plannedCalls": 8,
+  "providerCalls": 1,
+  "retries": 0,
+  "callCeiling": 10,
+  "actualInputTokens": 2023,
+  "actualOutputTokens": 674,
+  "actualTotalTokens": 2697,
+  "tokenCeiling": 120000,
+  "actualCostUsd": 0.001888,
+  "monetaryCostCeiling": null,
+  "costMayStopExecution": false,
+  "networkReceipts": [
+    {
+      "ordinal": 1,
+      "httpStatus": 200,
+      "providerRequestId": "req_6487e93325e4437daafee5f7360ea6aa",
+      "observedAt": "2026-07-17T07:01:13.250Z"
+    }
+  ],
+  "transactions": [
+    {
+      "httpStatus": 200,
+      "providerRequestId": "req_6487e93325e4437daafee5f7360ea6aa",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "elapsedDurationMs": 12732,
+      "retryCount": 0,
+      "responseFingerprint": "sha256:a99c9335d74fdf410dc8afd784cf34b95d64f9b0a2f775495baefc2fbc30e676",
+      "schemaValidationStatus": "passed",
+      "identityValidationStatus": "accepted-exact-request",
+      "finalDisposition": "accepted",
+      "semanticContentPersisted": false,
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "inputTokens": 2023,
+      "outputTokens": 674,
+      "totalTokens": 2697
+    }
+  ],
+  "credentialsRecorded": false,
+  "authenticationHeadersRecorded": false,
+  "rawRequestBodiesRecorded": false,
+  "unrestrictedProviderResponsesRecorded": false
+}

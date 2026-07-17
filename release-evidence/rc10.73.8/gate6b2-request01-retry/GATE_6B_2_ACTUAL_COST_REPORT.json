@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-actual-cost-v1",
+  "generatedAt": "2026-07-17T07:01:13.474Z",
+  "productionAccepted": false,
+  "currency": "USD",
+  "monetaryCostCeiling": null,
+  "costTrackingRequired": true,
+  "actualCostUsd": 0.001888,
+  "pricingUsed": {
+    "inputPerMillionTokensUsd": 0.4,
+    "outputPerMillionTokensUsd": 1.6
+  },
+  "byRequest": [
+    {
+      "requestId": "G6B2-REQ-01",
+      "costUsd": 0.001888
+    }
+  ],
+  "byAssetType": {}
+}

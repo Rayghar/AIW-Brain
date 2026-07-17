@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-token-usage-v1",
+  "generatedAt": "2026-07-17T07:01:13.474Z",
+  "productionAccepted": false,
+  "inputTokens": 2023,
+  "outputTokens": 674,
+  "totalTokens": 2697,
+  "ceiling": 120000,
+  "withinCeiling": true,
+  "byRequest": [
+    {
+      "requestId": "G6B2-REQ-01",
+      "inputTokens": 2023,
+      "outputTokens": 674,
+      "totalTokens": 2697
+    }
+  ]
+}
