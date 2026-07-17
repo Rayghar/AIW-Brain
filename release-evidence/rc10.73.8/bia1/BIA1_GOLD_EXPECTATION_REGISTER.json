@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "aiw-bia1-gold-expectations-v1",
+  "evaluatorOnly": true,
+  "frozen": true,
+  "scenarios": [
+    {
+      "scenarioId": "BIA1-S1",
+      "evaluationOnly": true,
+      "generationAccessProhibited": true,
+      "criticalRequirementIds": [
+        "AB-FR-001",
+        "AB-FR-002",
+        "AB-FR-003",
+        "AB-FR-004",
+        "AB-FR-005",
+        "AB-FR-006",
+        "AB-FR-007",
+        "AB-FR-008",
+        "AB-FR-010",
+        "AB-QR-001",
+        "AB-QR-002",
+        "AB-QR-003",
+        "AB-QR-004",
+        "AB-C-001",
+        "AB-C-002"
+      ],
+      "requiredConcernTerms": [
+        "core banking system of record",
+        "idempotency",
+        "reversal",
+        "reconciliation",
+        "fraud",
+        "liquidity",
+        "least privilege",
+        "audit",
+        "dependency degradation"
+      ],
+      "requiredInterfaceConcerns": [
+        "Core financial posting",
+        "KYC verification",
+        "Payment routing",
+        "Notification delivery",
+        "Finance settlement"
+      ],
+      "transitionRequired": false,
+      "agentBoundedAuthorityRequired": false,
+      "alternativeArchitecturesPermitted": true
+    },
+    {
+      "scenarioId": "BIA1-S2",
+      "evaluationOnly": true,
+      "generationAccessProhibited": true,
+      "criticalRequirementIds": [
+        "EF-FR-001",
+        "EF-FR-002",
+        "EF-FR-003",
+        "EF-FR-004",
+        "EF-FR-005",
+        "EF-QR-001",
+        "EF-QR-002",
+        "EF-QR-003",
+        "EF-QR-004",
+        "EF-C-001"
+      ],
+      "requiredConcernTerms": [
+        "order ownership",
+        "inventory reservation",
+        "payment idempotency",
+        "outbox",
+        "compensation",
+        "dead letter",
+        "reconciliation",
+        "correlation"
+      ],
+      "requiredInterfaceConcerns": [
+        "Command APIs",
+        "Domain events",
+        "Payment provider",
+        "Carrier API"
+      ],
+      "transitionRequired": false,
+      "agentBoundedAuthorityRequired": false,
+      "alternativeArchitecturesPermitted": true
+    },
+    {
+      "scenarioId": "BIA1-S3",
+      "evaluationOnly": true,
+      "generationAccessProhibited": true,
+      "criticalRequirementIds": [
+        "SA-FR-001",
+        "SA-FR-002",
+        "SA-FR-003",
+        "SA-FR-004",
+        "SA-FR-005",
+        "SA-QR-001",
+        "SA-QR-002",
+        "SA-QR-003",
+        "SA-QR-004",
+        "SA-C-001"
+      ],
+      "requiredConcernTerms": [
+        "classification",
+        "tokenisation or masking",
+        "purpose-bound access",
+        "residency",
+        "lineage",
+        "retention",
+        "audit",
+        "recovery"
+      ],
+      "requiredInterfaceConcerns": [
+        "Batch/CDC ingestion",
+        "Identity",
+        "Catalog/lineage",
+        "BI queries",
+        "Model feature access"
+      ],
+      "transitionRequired": false,
+      "agentBoundedAuthorityRequired": false,
+      "alternativeArchitecturesPermitted": true
+    },
+    {
+      "scenarioId": "BIA1-S4",
+      "evaluationOnly": true,
+      "generationAccessProhibited": true,
+      "criticalRequirementIds": [
+        "CB-FR-001",
+        "CB-FR-002",
+        "CB-FR-003",
+        "CB-FR-004",
+        "CB-FR-005",
+        "CB-FR-006",
+        "CB-QR-001",
+        "CB-QR-002",
+        "CB-QR-003",
+        "CB-QR-004",
+        "CB-C-001",
+        "CB-C-002"
+      ],
+      "requiredConcernTerms": [
+        "coexistence",
+        "migration state",
+        "strangler",
+        "reconciliation",
+        "cutover",
+        "rollback",
+        "general ledger",
+        "batch",
+        "regulatory reporting"
+      ],
+      "requiredInterfaceConcerns": [
+        "Channel APIs",
+        "Payment rails",
+        "GL posting",
+        "Batch files",
+        "Regulatory extracts"
+      ],
+      "transitionRequired": true,
+      "agentBoundedAuthorityRequired": false,
+      "alternativeArchitecturesPermitted": true
+    },
+    {
+      "scenarioId": "BIA1-S5",
+      "evaluationOnly": true,
+      "generationAccessProhibited": true,
+      "criticalRequirementIds": [
+        "AA-FR-001",
+        "AA-FR-002",
+        "AA-FR-003",
+        "AA-FR-004",
+        "AA-FR-005",
+        "AA-FR-006",
+        "AA-QR-001",
+        "AA-QR-002",
+        "AA-QR-003",
+        "AA-QR-004",
+        "AA-C-001",
+        "AA-C-002"
+      ],
+      "requiredConcernTerms": [
+        "agent boundary",
+        "tool allowlist",
+        "least privilege",
+        "approval",
+        "prompt injection",
+        "memory boundary",
+        "failure containment",
+        "audit",
+        "evaluation"
+      ],
+      "requiredInterfaceConcerns": [
+        "Model gateway",
+        "Enterprise tools",
+        "Identity",
+        "Policy",
+        "Observability",
+        "Evaluation"
+      ],
+      "transitionRequired": false,
+      "agentBoundedAuthorityRequired": true,
+      "alternativeArchitecturesPermitted": true
+    }
+  ],
+  "productionAccepted": false
+}

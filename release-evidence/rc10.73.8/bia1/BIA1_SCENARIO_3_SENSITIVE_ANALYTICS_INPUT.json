@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "aiw-bia1-scenario-v1",
+  "scenarioId": "BIA1-S3",
+  "title": "Sensitive analytics platform",
+  "productionAccepted": false,
+  "businessObjective": "Provide governed multi-source analytics for authorised model and BI consumers while protecting personal information and preserving lineage, residency and auditability.",
+  "stakeholders": [
+    "Data owner",
+    "Data steward",
+    "Analyst",
+    "Data scientist",
+    "Privacy officer",
+    "Security",
+    "Auditor",
+    "SRE"
+  ],
+  "requirements": [
+    {
+      "id": "SA-FR-001",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Ingest governed data from multiple source systems with source ownership."
+    },
+    {
+      "id": "SA-FR-002",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Transform and quality-check data with reproducible lineage."
+    },
+    {
+      "id": "SA-FR-003",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Provide role- and purpose-bound access for BI and model consumption."
+    },
+    {
+      "id": "SA-FR-004",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Apply retention, legal hold and defensible deletion."
+    },
+    {
+      "id": "SA-FR-005",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Provide complete access, transformation and export audit evidence."
+    },
+    {
+      "id": "SA-QR-001",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Classify, encrypt, mask or tokenise sensitive fields across trust boundaries."
+    },
+    {
+      "id": "SA-QR-002",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Enforce regional or jurisdictional data-placement constraints."
+    },
+    {
+      "id": "SA-QR-003",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Detect data-quality, lineage and pipeline-health failures."
+    },
+    {
+      "id": "SA-QR-004",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Recover analytical data products without losing source lineage or access policy."
+    },
+    {
+      "id": "SA-C-001",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "Analytical stores are not systems of record for operational source data."
+    }
+  ],
+  "constraints": [
+    "Some records contain direct and indirect identifiers.",
+    "Jurisdiction policies vary by dataset and consumer purpose."
+  ],
+  "assumptions": [
+    "Source owners expose change or extract contracts.",
+    "A governed identity platform provides workforce attributes."
+  ],
+  "knownSystems": [
+    "Source systems",
+    "Ingestion plane",
+    "Processing plane",
+    "Governed analytical store",
+    "BI",
+    "Model platform",
+    "Catalog"
+  ],
+  "knownIntegrations": [
+    "Batch/CDC ingestion",
+    "Identity",
+    "Catalog/lineage",
+    "BI queries",
+    "Model feature access"
+  ],
+  "knownData": [
+    "PII",
+    "Operational facts",
+    "Reference data",
+    "Derived features",
+    "Lineage",
+    "Access audit"
+  ],
+  "knownRisks": [
+    "Re-identification",
+    "Residency breach",
+    "Privilege creep",
+    "Lineage loss",
+    "Stale or poor-quality data"
+  ],
+  "expectedDeliverables": [
+    "Classification",
+    "Trust boundaries",
+    "Access model",
+    "Privacy controls",
+    "Lineage",
+    "Recovery",
+    "Traceability"
+  ]
+}

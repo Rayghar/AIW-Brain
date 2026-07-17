@@ -1,0 +1,147 @@
+{
+  "schemaVersion": "aiw-bia1-scenario-v1",
+  "scenarioId": "BIA1-S4",
+  "title": "Core banking modernisation",
+  "productionAccepted": false,
+  "businessObjective": "Modernise a legacy core-banking estate through governed coexistence and migration with minimal customer disruption and reversible transition states.",
+  "stakeholders": [
+    "Retail banking",
+    "Operations",
+    "Payments",
+    "Finance",
+    "Regulatory reporting",
+    "Risk",
+    "Security",
+    "Migration office",
+    "SRE",
+    "Customer support"
+  ],
+  "requirements": [
+    {
+      "id": "CB-FR-001",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Preserve channel access to customer, account, payment and product capabilities throughout migration."
+    },
+    {
+      "id": "CB-FR-002",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Integrate product processing with the general ledger and regulatory reporting."
+    },
+    {
+      "id": "CB-FR-003",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Support coexistence routing between legacy and target cores by governed migration state."
+    },
+    {
+      "id": "CB-FR-004",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Reconcile data and financial postings before, during and after every migration wave."
+    },
+    {
+      "id": "CB-FR-005",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Support controlled cutover, rollback and exception handling."
+    },
+    {
+      "id": "CB-FR-006",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Migrate batch workloads and end-of-day dependencies without losing operational control."
+    },
+    {
+      "id": "CB-QR-001",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Minimise customer disruption and define measurable transition service levels."
+    },
+    {
+      "id": "CB-QR-002",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Preserve security, auditability and segregation of duties across coexistence."
+    },
+    {
+      "id": "CB-QR-003",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Contain operational and data-integrity risk with rehearsed recovery paths."
+    },
+    {
+      "id": "CB-QR-004",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Observe business reconciliation and technical health across both estates."
+    },
+    {
+      "id": "CB-C-001",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "The legacy core cannot be replaced in a single big-bang event."
+    },
+    {
+      "id": "CB-C-002",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "Regulatory and general-ledger obligations remain authoritative throughout transition."
+    }
+  ],
+  "constraints": [
+    "Legacy interfaces and batch windows have incomplete documentation.",
+    "Customer and account migration ordering is constrained by product dependencies."
+  ],
+  "assumptions": [
+    "A migration control plane can hold account-level migration state.",
+    "Parallel reconciliation can compare legacy and target outcomes."
+  ],
+  "knownSystems": [
+    "Legacy core",
+    "Channels",
+    "Payments",
+    "Customer information",
+    "Product processors",
+    "General ledger",
+    "Batch scheduler",
+    "Regulatory reporting",
+    "Target core"
+  ],
+  "knownIntegrations": [
+    "Channel APIs",
+    "Payment rails",
+    "GL posting",
+    "Batch files",
+    "Regulatory extracts"
+  ],
+  "knownData": [
+    "Customer",
+    "Account",
+    "Product",
+    "Balance",
+    "Transaction",
+    "Ledger",
+    "Migration state",
+    "Reconciliation evidence"
+  ],
+  "knownRisks": [
+    "Dual posting",
+    "Data divergence",
+    "Failed cutover",
+    "Batch overrun",
+    "Regulatory misreporting",
+    "Customer disruption"
+  ],
+  "expectedDeliverables": [
+    "Current-state diagnosis",
+    "Target architecture",
+    "Transition states",
+    "Migration waves",
+    "Cutover/rollback",
+    "Data strategy",
+    "Risk register",
+    "ADRs"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "aiw-bia1-rubric-v1",
+  "frozen": true,
+  "totalPoints": 100,
+  "categories": [
+    {
+      "id": "requirements",
+      "name": "Requirements and problem understanding",
+      "weight": 12
+    },
+    {
+      "id": "quality",
+      "name": "Quality-driver reasoning",
+      "weight": 10
+    },
+    {
+      "id": "coherence",
+      "name": "Architecture coherence",
+      "weight": 16
+    },
+    {
+      "id": "functional",
+      "name": "Functional completeness",
+      "weight": 10
+    },
+    {
+      "id": "interfaces",
+      "name": "Interfaces and data ownership",
+      "weight": 10
+    },
+    {
+      "id": "security",
+      "name": "Security, privacy and resilience",
+      "weight": 12
+    },
+    {
+      "id": "decisions",
+      "name": "Decisions, alternatives and trade-offs",
+      "weight": 10
+    },
+    {
+      "id": "traceability",
+      "name": "Requirement-to-design traceability",
+      "weight": 10
+    },
+    {
+      "id": "grounding",
+      "name": "Evidence grounding and unsupported-claim control",
+      "weight": 5
+    },
+    {
+      "id": "usefulness",
+      "name": "Practicality, clarity and SDD usefulness",
+      "weight": 5
+    }
+  ],
+  "aiwFullBrainGates": {
+    "overallScore": 85,
+    "criticalRequirementCoverage": 95,
+    "criticalInterfaceCompleteness": 90,
+    "criticalTraceability": 95,
+    "criticalSecurityAndResilienceOmissions": 0,
+    "unsupportedConsequentialClaims": 0,
+    "architectureCoherenceFivePoint": 4,
+    "practicalUsefulnessFivePoint": 4
+  },
+  "differentiation": {
+    "primaryMarginPoints": 10,
+    "nearParityPoints": 3,
+    "nearParityRequiresMaterialAiwLifecycleAdvantage": true
+  },
+  "productionAccepted": false
+}

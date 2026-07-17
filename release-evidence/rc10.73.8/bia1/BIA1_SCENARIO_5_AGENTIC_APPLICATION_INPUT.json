@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "aiw-bia1-scenario-v1",
+  "scenarioId": "BIA1-S5",
+  "title": "AI-powered agentic application",
+  "productionAccepted": false,
+  "businessObjective": "Deliver an enterprise agentic application that coordinates specialist capabilities and tools while bounding autonomy, data access, failure and cost.",
+  "stakeholders": [
+    "End user",
+    "Business owner",
+    "Human approver",
+    "Security",
+    "Privacy",
+    "Model risk",
+    "Tool owner",
+    "Platform engineering",
+    "SRE",
+    "Auditor"
+  ],
+  "requirements": [
+    {
+      "id": "AA-FR-001",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Accept user goals and decompose them into governed tasks."
+    },
+    {
+      "id": "AA-FR-002",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Coordinate specialist agents or capabilities without implicit privilege sharing."
+    },
+    {
+      "id": "AA-FR-003",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Invoke allowlisted tools under explicit purpose, scope and approval policy."
+    },
+    {
+      "id": "AA-FR-004",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Maintain governed working and durable memory with retention and tenant boundaries."
+    },
+    {
+      "id": "AA-FR-005",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Escalate high-impact, ambiguous or failed actions to a human."
+    },
+    {
+      "id": "AA-FR-006",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Record auditable plans, decisions, tool calls, approvals and outcomes."
+    },
+    {
+      "id": "AA-QR-001",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Resist prompt injection and untrusted tool or retrieved content."
+    },
+    {
+      "id": "AA-QR-002",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Contain model, agent and tool failure without cascading authority."
+    },
+    {
+      "id": "AA-QR-003",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Enforce data classification, least privilege and tenant isolation."
+    },
+    {
+      "id": "AA-QR-004",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Observe quality, safety, latency, cost and policy decisions end to end."
+    },
+    {
+      "id": "AA-C-001",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "No model or agent may directly mutate approved enterprise state."
+    },
+    {
+      "id": "AA-C-002",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "High-impact external actions require deterministic policy and explicit approval."
+    }
+  ],
+  "constraints": [
+    "Models may fail, hallucinate or be unavailable.",
+    "Tool results and retrieved content are untrusted inputs."
+  ],
+  "assumptions": [
+    "Tools expose bounded APIs and service identities.",
+    "A policy engine and approval service are available."
+  ],
+  "knownSystems": [
+    "User experience",
+    "Orchestrator",
+    "Specialist agents",
+    "Tool gateway",
+    "Policy engine",
+    "Memory",
+    "Approval service",
+    "Audit/evaluation plane"
+  ],
+  "knownIntegrations": [
+    "Model gateway",
+    "Enterprise tools",
+    "Identity",
+    "Policy",
+    "Observability",
+    "Evaluation"
+  ],
+  "knownData": [
+    "User goal",
+    "Plan",
+    "Tool inputs/outputs",
+    "Working memory",
+    "Durable memory",
+    "Approval",
+    "Audit evidence"
+  ],
+  "knownRisks": [
+    "Prompt injection",
+    "Excessive agency",
+    "Data leakage",
+    "Tool misuse",
+    "Runaway loop",
+    "Cost/latency runaway",
+    "Unauditable delegation"
+  ],
+  "expectedDeliverables": [
+    "Agent boundaries",
+    "Orchestration",
+    "Tool permissions",
+    "Memory",
+    "Control plane",
+    "Failure containment",
+    "Audit",
+    "Evaluation",
+    "Deployment",
+    "Traceability"
+  ]
+}

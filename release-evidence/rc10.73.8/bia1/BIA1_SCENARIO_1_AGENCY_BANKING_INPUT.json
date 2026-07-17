@@ -1,0 +1,177 @@
+{
+  "schemaVersion": "aiw-bia1-scenario-v1",
+  "scenarioId": "BIA1-S1",
+  "title": "Agency Banking",
+  "productionAccepted": false,
+  "businessObjective": "Enable a regulated financial institution to operate a secure agency-banking channel through approved agents while retaining core-banking authority and controlled financial operations.",
+  "stakeholders": [
+    "Retail customer",
+    "Agency agent",
+    "Agent supervisor",
+    "Operations",
+    "Customer support",
+    "Fraud and risk",
+    "Compliance",
+    "Information security",
+    "Finance and reconciliation",
+    "Core-banking team",
+    "SRE",
+    "Product owner"
+  ],
+  "requirements": [
+    {
+      "id": "AB-FR-001",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Register, verify, approve and suspend agency agents."
+    },
+    {
+      "id": "AB-FR-002",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Authenticate agents and authorize only permitted operations."
+    },
+    {
+      "id": "AB-FR-003",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Onboard customers and complete identity verification."
+    },
+    {
+      "id": "AB-FR-004",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Support cash deposits and withdrawals with explicit transaction status."
+    },
+    {
+      "id": "AB-FR-005",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Support transfers and balance enquiries through the bank."
+    },
+    {
+      "id": "AB-FR-006",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Enforce limits, fees, liquidity and fraud policies before financial posting."
+    },
+    {
+      "id": "AB-FR-007",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Prevent duplicate financial processing and safely resolve timeout uncertainty."
+    },
+    {
+      "id": "AB-FR-008",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Support controlled reversal, settlement, reconciliation and disputes."
+    },
+    {
+      "id": "AB-FR-009",
+      "kind": "functional",
+      "critical": false,
+      "statement": "Issue receipts and notifications without making notification delivery the posting authority."
+    },
+    {
+      "id": "AB-FR-010",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Retain immutable audit and operational evidence for every financial action."
+    },
+    {
+      "id": "AB-QR-001",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Remain available during dependency degradation without unsafe offline financial posting."
+    },
+    {
+      "id": "AB-QR-002",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Protect personal and financial data using least privilege, encryption and trust boundaries."
+    },
+    {
+      "id": "AB-QR-003",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Provide observable end-to-end transaction correlation, failure detection and reconciliation."
+    },
+    {
+      "id": "AB-QR-004",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Define recovery, replay, cutover and rollback controls without inventing unapproved numeric targets."
+    },
+    {
+      "id": "AB-C-001",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "Core banking remains system of record for customer accounts and financial posting."
+    },
+    {
+      "id": "AB-C-002",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "Architecture changes require human approval and traceability."
+    },
+    {
+      "id": "AB-C-003",
+      "kind": "constraint",
+      "critical": false,
+      "statement": "Remain provider-neutral until physical technology selection."
+    }
+  ],
+  "constraints": [
+    "External identity and payment-switch services may be unavailable or slow.",
+    "Unconfirmed availability, latency, throughput, RTO and RPO targets must remain open questions."
+  ],
+  "assumptions": [
+    "Agents use managed or registered channels.",
+    "The bank can expose governed core-banking and payment-switch interfaces."
+  ],
+  "knownSystems": [
+    "Agent channel",
+    "Core banking",
+    "Identity/KYC provider",
+    "Payment switch",
+    "Fraud platform",
+    "Reconciliation platform"
+  ],
+  "knownIntegrations": [
+    "Core financial posting",
+    "KYC verification",
+    "Payment routing",
+    "Notification delivery",
+    "Finance settlement"
+  ],
+  "knownData": [
+    "Customer identity",
+    "Agent identity",
+    "Account data",
+    "Transaction journal",
+    "Limits and fees",
+    "Audit evidence"
+  ],
+  "knownRisks": [
+    "Duplicate posting",
+    "Agent fraud",
+    "Dependency timeout ambiguity",
+    "Liquidity shortfall",
+    "Privacy breach",
+    "Reconciliation mismatch"
+  ],
+  "expectedDeliverables": [
+    "Context",
+    "Logical application architecture",
+    "Interfaces",
+    "Data ownership",
+    "Security and fraud controls",
+    "Deployment",
+    "Operations",
+    "ADRs",
+    "Traceability",
+    "SDD"
+  ],
+  "evaluatorOnlyReference": "Agency Banking Solution SDD-Ver0.1.pdf; never provide to a generation mode."
+}

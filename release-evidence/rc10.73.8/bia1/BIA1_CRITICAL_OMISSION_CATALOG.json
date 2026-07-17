@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "aiw-bia1-critical-omissions-v1",
+  "frozen": true,
+  "omissions": [
+    "unresolved-critical-security-omission",
+    "unresolved-critical-resilience-omission",
+    "missing-critical-interface",
+    "mandatory-requirement-contradiction",
+    "unsupported-consequential-claim",
+    "material-component-without-responsibility",
+    "material-interface-without-owner",
+    "critical-requirement-without-traceability",
+    "missing-transition-architecture",
+    "unbounded-agent-tool-authority",
+    "direct-approved-state-mutation"
+  ],
+  "productionAccepted": false
+}

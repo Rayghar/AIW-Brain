@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "aiw-bia1-fingerprint-receipt-v1",
+  "frozenAt": "2026-07-17T14:40:22.155Z",
+  "baselineCommit": "170561006a7b000e966b7e4b15632083ee8b3d9c",
+  "generationOutputsPresentAtFreeze": false,
+  "records": [
+    {
+      "path": "BIA1_SCENARIO_1_AGENCY_BANKING_INPUT.json",
+      "bytes": 5186,
+      "sha256": "sha256:826eb28046162c7266792443329714016caeaef9d8702ea7f5c18e4e12c73ab4"
+    },
+    {
+      "path": "BIA1_SCENARIO_2_EVENT_FULFILMENT_INPUT.json",
+      "bytes": 3454,
+      "sha256": "sha256:26e94de008eb2bfcea4ac5e063954f9907d7f45ea300d6154feac89bbabd49e0"
+    },
+    {
+      "path": "BIA1_SCENARIO_3_SENSITIVE_ANALYTICS_INPUT.json",
+      "bytes": 3373,
+      "sha256": "sha256:7b72ab40af44ef09894868641bb6dd803e0503d2990479550fc2d01fcd566136"
+    },
+    {
+      "path": "BIA1_SCENARIO_4_CORE_BANKING_MODERNISATION_INPUT.json",
+      "bytes": 4086,
+      "sha256": "sha256:67636c2cd8a944e915dafcab3c0620027d5608d34a38c1ffd3360a42f504cea2"
+    },
+    {
+      "path": "BIA1_SCENARIO_5_AGENTIC_APPLICATION_INPUT.json",
+      "bytes": 3922,
+      "sha256": "sha256:45ba9be599bd16b8aed4ebdc4fb69e88247afa73f8b1b2a6270eea695d07f1dd"
+    },
+    {
+      "path": "BIA1_FROZEN_RUBRIC.json",
+      "bytes": 1700,
+      "sha256": "sha256:d62b52ef3ed8b25ef183826a2ab5432e90a67202966539f135485fca2f4204b7"
+    },
+    {
+      "path": "BIA1_CRITICAL_OMISSION_CATALOG.json",
+      "bytes": 587,
+      "sha256": "sha256:18801cdffe675290ea93191a179626091fab282e136b16d1856c22dd9958cdfb"
+    },
+    {
+      "path": "BIA1_GOLD_EXPECTATION_REGISTER.json",
+      "bytes": 4943,
+      "sha256": "sha256:186f54d10f3f170f412d01e28af1727671f7c42d37cdfb87be3b735b31f6d74f"
+    }
+  ],
+  "aggregateFingerprint": "sha256:fedb153c011228fedcb080ff1b6b2503ad692e6d77fd31e1189d529d6b5ee255",
+  "goldExpectationsExcludedFromGeneration": true,
+  "historicalGate6EvidenceModified": 0,
+  "productionAccepted": false
+}

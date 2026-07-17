@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "aiw-bia1-scenario-v1",
+  "scenarioId": "BIA1-S2",
+  "title": "Event-driven fulfilment",
+  "productionAccepted": false,
+  "businessObjective": "Fulfil customer orders reliably across inventory, payment, warehouse and delivery services while making partial failure and reconciliation explicit.",
+  "stakeholders": [
+    "Customer",
+    "Commerce product owner",
+    "Warehouse operations",
+    "Finance",
+    "Customer support",
+    "Security",
+    "SRE"
+  ],
+  "requirements": [
+    {
+      "id": "EF-FR-001",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Accept an order and expose authoritative order status."
+    },
+    {
+      "id": "EF-FR-002",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Reserve and release inventory under a named owner."
+    },
+    {
+      "id": "EF-FR-003",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Authorize, capture, void or refund payment without duplicate charging."
+    },
+    {
+      "id": "EF-FR-004",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Create fulfilment and delivery work with cancellation semantics."
+    },
+    {
+      "id": "EF-FR-005",
+      "kind": "functional",
+      "critical": true,
+      "statement": "Reconcile stuck, duplicate and out-of-order events."
+    },
+    {
+      "id": "EF-FR-006",
+      "kind": "functional",
+      "critical": false,
+      "statement": "Notify customers of material state changes."
+    },
+    {
+      "id": "EF-QR-001",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Define consistency boundaries, idempotency keys and event ordering assumptions."
+    },
+    {
+      "id": "EF-QR-002",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Contain partial failure using retry, dead-letter, compensation and operator recovery paths."
+    },
+    {
+      "id": "EF-QR-003",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Correlate commands, events and business state end to end."
+    },
+    {
+      "id": "EF-QR-004",
+      "kind": "quality",
+      "critical": true,
+      "statement": "Authenticate producers and consumers and protect sensitive order and payment data."
+    },
+    {
+      "id": "EF-C-001",
+      "kind": "constraint",
+      "critical": true,
+      "statement": "No distributed transaction spans payment, inventory and fulfilment systems."
+    }
+  ],
+  "constraints": [
+    "Events may be duplicated, delayed or arrive out of order.",
+    "External payment and delivery providers have independent availability."
+  ],
+  "assumptions": [
+    "Each domain can own a durable transactional store.",
+    "Business operations can define compensation policies."
+  ],
+  "knownSystems": [
+    "Order",
+    "Inventory",
+    "Payment",
+    "Fulfilment",
+    "Delivery",
+    "Notification",
+    "Reconciliation"
+  ],
+  "knownIntegrations": [
+    "Command APIs",
+    "Domain events",
+    "Payment provider",
+    "Carrier API"
+  ],
+  "knownData": [
+    "Order",
+    "Inventory reservation",
+    "Payment intent",
+    "Shipment",
+    "Event journal"
+  ],
+  "knownRisks": [
+    "Duplicate charge",
+    "Oversell",
+    "Orphaned reservation",
+    "Lost event",
+    "Inconsistent cancellation"
+  ],
+  "expectedDeliverables": [
+    "Event boundaries",
+    "Ownership",
+    "Consistency model",
+    "Contracts",
+    "Failure paths",
+    "Operational controls",
+    "Traceability"
+  ]
+}
