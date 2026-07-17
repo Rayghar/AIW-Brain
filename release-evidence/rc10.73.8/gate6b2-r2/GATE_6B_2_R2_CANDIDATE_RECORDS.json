@@ -1,0 +1,949 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-candidates-v1",
+  "generatedAt": "2026-07-17T09:47:38.363Z",
+  "productionAccepted": false,
+  "providerAttempts": 14,
+  "retries": 0,
+  "inputTokens": 25515,
+  "outputTokens": 16691,
+  "totalTokens": 42206,
+  "actualCostUsd": 0.0369116,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "authority": "candidate",
+  "recordCount": 22,
+  "records": [
+    {
+      "candidateRecordId": "G6B2-R2-CAND-57f99e8499cc49645f1d9ac5",
+      "requestId": "G6B2-REQ-01",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-01-asset-example1",
+        "caseId": "G6B1-01",
+        "assetType": "source-example",
+        "statement": "This example demonstrates orchestrating a deployment of multiple resources using modules from a private Bicep Registry, specifically deploying a resource group with a Network Security Group (NSG), and subsequently deploying a VNET using them.",
+        "epistemicStatus": "source-example",
+        "supportingAtomIds": [
+          "G6B1-01-atom1"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-ca11c551b0431d57f0d46749",
+      "requestId": "G6B2-REQ-02",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-05-asset1",
+        "caseId": "G6B1-05",
+        "assetType": "contradiction-or-scoped-distinction",
+        "statement": "Digest verification of schematics preserves immutability only when OCI/Docker images are referenced by SHA and file formats are converted to canonical forms for hashing; this does not address other security aspects such as transport security or data at rest protection, which are outside the scope of this model.",
+        "epistemicStatus": "expert-interpretation",
+        "supportingAtomIds": [
+          "G6B1-05-atom1",
+          "G6B1-05-atom2",
+          "G6B1-05-atom3",
+          "G6B1-05-atom5"
+        ],
+        "fields": [
+          {
+            "fieldName": "condition",
+            "value": "Digest verification preserves immutability when images are SHA-referenced and file formats canonicalized",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-05-atom1",
+              "G6B1-05-atom2",
+              "G6B1-05-atom3"
+            ]
+          },
+          {
+            "fieldName": "limitation",
+            "value": "Security factors beyond image referencing and hashing, such as network transport security or data at rest protection, are out of scope",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-05-atom5"
+            ]
+          }
+        ],
+        "conditions": [
+          {
+            "value": "OCI/Docker images must be referenced by SHA",
+            "supportingAtomIds": [
+              "G6B1-05-atom1"
+            ]
+          },
+          {
+            "value": "File formats must be converted to a canonical format for hashing",
+            "supportingAtomIds": [
+              "G6B1-05-atom2"
+            ]
+          }
+        ],
+        "limitations": [
+          {
+            "value": "Other security details beyond hashing and referencing are not covered",
+            "supportingAtomIds": [
+              "G6B1-05-atom5"
+            ]
+          }
+        ],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-3b795cf6d5a0ea317e980dfe",
+      "requestId": "G6B2-REQ-02",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-05-asset2",
+        "caseId": "G6B1-05",
+        "assetType": "source-example",
+        "statement": "If a schematic references an image by its hash, verifying the digest of the schematic ensures the image pulled matches the referenced hash used in the schematic generation.",
+        "epistemicStatus": "source-example",
+        "supportingAtomIds": [
+          "G6B1-05-atom4"
+        ],
+        "fields": [
+          {
+            "fieldName": "example",
+            "value": "Schematic digest verification ensures pulled image matches referenced image hash",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-05-atom4"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-f1f01b5617770f0b54b589ee",
+      "requestId": "G6B2-REQ-03",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-09-pattern-dna-01",
+        "caseId": "G6B1-09",
+        "assetType": "pattern-dna",
+        "statement": "Event-driven architecture employing decoupled producers and consumers using a publish-subscribe or event stream model, enabling near real-time event delivery and multiple consumer instances for scalability and fault tolerance.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-09-atom5",
+          "G6B1-09-atom2",
+          "G6B1-09-atom3",
+          "G6B1-09-atom1",
+          "G6B1-09-atom22",
+          "G6B1-09-atom23",
+          "G6B1-09-atom24"
+        ],
+        "fields": [
+          {
+            "fieldName": "context-or-trigger",
+            "value": "Event-driven architecture with decoupled producers and consumers, using a publish-subscribe or event stream model.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-09-atom5",
+              "G6B1-09-atom2",
+              "G6B1-09-atom3"
+            ]
+          },
+          {
+            "fieldName": "mechanism",
+            "value": "Producers do not know which consumers are listening; consumers are decoupled from each other; multiple instances of consumers handle volume and avoid single points of failure; single consumer may process events on multiple threads.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-09-atom2",
+              "G6B1-09-atom3",
+              "G6B1-09-atom22",
+              "G6B1-09-atom24"
+            ]
+          },
+          {
+            "fieldName": "consequence",
+            "value": "Events are delivered in near real time, allowing consumers to respond immediately; multiple consumer instances enable scalability and resiliency.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-09-atom1",
+              "G6B1-09-atom22",
+              "G6B1-09-atom23"
+            ]
+          },
+          {
+            "fieldName": "trade-off-or-limitation",
+            "value": "A single consumer processing events on multiple threads may create challenges for ordered processing and exactly-once semantics; multiple instances needed to handle volume and frequency.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-09-atom24",
+              "G6B1-09-atom23"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [
+          {
+            "value": "Multiple instances might be required to handle volume and frequency of events.",
+            "supportingAtomIds": [
+              "G6B1-09-atom23"
+            ]
+          },
+          {
+            "value": "Single consumer processing on multiple threads challenges ordered processing or exactly-once semantics.",
+            "supportingAtomIds": [
+              "G6B1-09-atom24"
+            ]
+          }
+        ],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-5317a2800bf6195e45387c41",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-asset-implobs-application-module-detection",
+        "caseId": "G6B1-15",
+        "assetType": "implementation-observation",
+        "statement": "While `@Modulithic` allows defining `additionalPackages` to trigger application module detection for packages other than the one of the annotated class, its usage requires knowing about those in advance.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-atom1"
+        ],
+        "fields": [
+          {
+            "fieldName": "context",
+            "value": "`@Modulithic` supports `additionalPackages` for module detection but requires prior knowledge of those packages.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-15-atom1"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-5c620a0ab642f90375f4b322",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-asset-implobs-external-module-contribution",
+        "caseId": "G6B1-15",
+        "assetType": "implementation-observation",
+        "statement": "As of version 1.3, Spring Modulith supports external contributions of application modules via the `ApplicationModuleSource` and `ApplicationModuleSourceFactory` abstractions, with implementations registered in `spring.factories` and packages translated into module sources by detection strategies.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-atom2",
+          "G6B1-15-atom3",
+          "G6B1-15-atom4",
+          "G6B1-15-atom6"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "External application modules can be contributed using `ApplicationModuleSource` and `ApplicationModuleSourceFactory` abstractions.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-15-atom2"
+            ]
+          },
+          {
+            "fieldName": "registration-method",
+            "value": "Implementations of ApplicationModuleSourceFactory can be registered via a `spring.factories` file in `META-INF`.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-15-atom3"
+            ]
+          },
+          {
+            "fieldName": "factory-behavior",
+            "value": "The factory can return arbitrary package names to apply detection strategies or explicitly return packages to create modules.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-15-atom4"
+            ]
+          },
+          {
+            "fieldName": "package-translation",
+            "value": "Returned package names are translated into `ApplicationModuleSource`s using detection strategies.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-15-atom6"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-7071c29f68de19b75eca9b1d",
+      "requestId": "G6B2-REQ-04",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-15-asset-implobs-explicit-module-creation",
+        "caseId": "G6B1-15",
+        "assetType": "implementation-observation",
+        "statement": "Explicitly returning package names can be used to detect and create application modules, such as detecting explicit declared modules within `com.acme.toscan` and creating a module from `com.acme.module`.",
+        "epistemicStatus": "implementation-observation",
+        "supportingAtomIds": [
+          "G6B1-15-atom4",
+          "G6B1-15-atom5"
+        ],
+        "fields": [
+          {
+            "fieldName": "consequence",
+            "value": "Example usage detects explicitly declared modules within `com.acme.toscan` and creates an application module for `com.acme.module`.",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-15-atom5"
+            ]
+          }
+        ],
+        "conditions": [
+          {
+            "value": "Factory returns arbitrary or explicit package names",
+            "supportingAtomIds": [
+              "G6B1-15-atom4"
+            ]
+          }
+        ],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-25b0199640fd350c300eac40",
+      "requestId": "G6B2-REQ-07",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-01-example1",
+        "caseId": "G6B1-01",
+        "assetType": "source-example",
+        "statement": "The following sample shows how you could orchestrate a deployment of multiple resources using modules from a private Bicep Registry. In this example, we will deploy a resource group with a Network Security Group (NSG), and use them in a subsequent VNET deployment.",
+        "epistemicStatus": "source-example",
+        "supportingAtomIds": [
+          "G6B1-01-atom1"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-46e0cb086c1e7c2032eb43bf",
+      "requestId": "G6B2-REQ-07",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-01-recommendation1",
+        "caseId": "G6B1-01",
+        "assetType": "source-reference",
+        "statement": "The preferred method to publish modules to the Bicep registry is to leverage the CI environment provided in this repository.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-01-atom2"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-054b205e93bc8246a18aef4f",
+      "requestId": "G6B2-REQ-07",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-01-limitation1",
+        "caseId": "G6B1-01",
+        "assetType": "contradiction-or-scoped-distinction",
+        "statement": "This publishing option may not be applicable to all scenarios, for example as noted in the Consume library section.",
+        "epistemicStatus": "expert-interpretation",
+        "supportingAtomIds": [
+          "G6B1-01-atom3"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-743d2fd01475a3c57f2e94ba",
+      "requestId": "G6B2-REQ-07",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-01-recommendation2",
+        "caseId": "G6B1-01",
+        "assetType": "source-reference",
+        "statement": "As an alternative, the Publish-ModuleToPrivateBicepRegistry.ps1 script used by the CI environment pipeline can also be run locally to publish modules to the private Bicep registry.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-01-atom4"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-ba13d0ed8405c444698e2fa2",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-06-asset2",
+        "caseId": "G6B1-06",
+        "assetType": "security-obligation",
+        "statement": "Use Azure Bastion, VPN, or ExpressRoute for management access to VMs instead of public IP addresses to enhance security posture.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-06-atom5",
+          "G6B1-06-atom12"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Azure Bastion provides secure browser-based SSH or RDP access over TLS; VPN or ExpressRoute offers private network connectivity",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-06-atom5",
+              "G6B1-06-atom12"
+            ]
+          },
+          {
+            "fieldName": "consequence",
+            "value": "VMs do not require public IP addresses, thereby reducing exposure to internet threats",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-06-atom12"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-1aeef66d7740e26c367b47ec",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-06-asset3",
+        "caseId": "G6B1-06",
+        "assetType": "security-obligation",
+        "statement": "Apply Network Security Groups (NSGs) to restrict network traffic to VMs and subnets.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-06-atom8",
+          "G6B1-06-atom9"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Associate NSGs with subnets or individual VM NICs to allow or deny network traffic",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-06-atom8"
+            ]
+          },
+          {
+            "fieldName": "context-or-trigger",
+            "value": "Default security rules block all inbound internet traffic; custom rules can allow specific ports like 443",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-06-atom9"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-e00eaee7d4526617b8bbda62",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-06-asset4",
+        "caseId": "G6B1-06",
+        "assetType": "security-obligation",
+        "statement": "Use Azure NAT Gateway for secure outbound internet connectivity from private subnets while disallowing unsolicited inbound connections.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-06-atom10"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Azure NAT Gateway allows outbound internet connections from private subnet instances; only response packets to outbound connections are allowed inbound",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-06-atom10"
+            ]
+          },
+          {
+            "fieldName": "consequence",
+            "value": "Maintains privacy of instances by preventing unsolicited inbound internet connection attempts",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-06-atom10"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-4c0aedbebcdafed736d0161f",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset1",
+        "caseId": "G6B1-07",
+        "assetType": "source-reference",
+        "statement": "Performance Efficiency refers to workload scalability, latency minimization, resource optimization, and continuous performance improvement.",
+        "epistemicStatus": "unknown",
+        "supportingAtomIds": [
+          "G6B1-07-atom1",
+          "G6B1-07-atom2"
+        ],
+        "fields": [
+          {
+            "fieldName": "context-or-trigger",
+            "value": "Workload needs to meet user demand efficiently",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom1"
+            ]
+          },
+          {
+            "fieldName": "mechanism",
+            "value": "Design choices around VM size, disk configurations, and architecture affect performance",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom2"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-ec7d030a3487f1561a0cc9c9",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset2",
+        "caseId": "G6B1-07",
+        "assetType": "source-reference",
+        "statement": "Performance decisions impact latency, scalability, resource use, cost, and rearchitecting risks.",
+        "epistemicStatus": "unknown",
+        "supportingAtomIds": [
+          "G6B1-07-atom2"
+        ],
+        "fields": [],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-94603a834d96ee351dca191a",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset3",
+        "caseId": "G6B1-07",
+        "assetType": "source-example",
+        "statement": "Use virtual machine scale sets to scale out and in dynamically with workloads to maintain performance and cost control.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-07-atom3"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Scale out during traffic peaks, scale in during low traffic",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom3"
+            ]
+          },
+          {
+            "fieldName": "consequence",
+            "value": "Ensure adequate processing power with controlled costs",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom3"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-4c0c74c0f54abefd43d1033f",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset4",
+        "caseId": "G6B1-07",
+        "assetType": "source-example",
+        "statement": "Choose appropriate VM and disk SKUs to meet required IOPS and configure caching to improve performance.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-07-atom4"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Select VM and disk SKUs for required IOPS; enable caching",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom4"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-e6927bce77c0b63b0520b784",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset5",
+        "caseId": "G6B1-07",
+        "assetType": "source-example",
+        "statement": "Use proximity placement groups (PPGs) and availability sets to locate VMs physically close to each other for low latency and high availability.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-07-atom5"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Configure PPGs to co-locate VMs; combine with availability sets",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom5"
+            ]
+          },
+          {
+            "fieldName": "consequence",
+            "value": "Achieve reduced latency and high availability within a physical datacenter",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom5"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-4f49cdb0ef161c0959f51421",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset6",
+        "caseId": "G6B1-07",
+        "assetType": "source-example",
+        "statement": "Enable accelerated networking where possible to reduce latency between components.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-07-atom6"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Activate accelerated networking feature on VMs and network interfaces",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom6"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-565915ac1e8107404f6b9960",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset7",
+        "caseId": "G6B1-07",
+        "assetType": "source-example",
+        "statement": "Design network architecture to minimize unnecessary hops to improve performance efficiency.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-07-atom7"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Architect networks with direct routing paths to reduce hops",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom7"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    },
+    {
+      "candidateRecordId": "G6B2-R2-CAND-3d9924f9d8c7347bc575b150",
+      "requestId": "G6B2-REQ-08",
+      "authority": "candidate",
+      "status": "pending-review",
+      "asset": {
+        "assetId": "G6B1-07-asset8",
+        "caseId": "G6B1-07",
+        "assetType": "source-example",
+        "statement": "Use Azure Monitor and similar tools to continuously analyze performance metrics, update baselines, and guide performance improvements.",
+        "epistemicStatus": "source-stated-recommendation",
+        "supportingAtomIds": [
+          "G6B1-07-atom8"
+        ],
+        "fields": [
+          {
+            "fieldName": "mechanism",
+            "value": "Continuous metric analysis and baseline updates to identify performance improvement areas",
+            "knowledgeState": "stated",
+            "supportingAtomIds": [
+              "G6B1-07-atom8"
+            ]
+          }
+        ],
+        "conditions": [],
+        "limitations": [],
+        "reviewRequired": true,
+        "authority": "candidate",
+        "productionAccepted": false,
+        "automaticPromotionAllowed": false,
+        "designGraphMutationAllowed": false
+      },
+      "approvedKnowledgeChanged": false,
+      "designGraphMutation": false,
+      "automaticPromotion": false,
+      "productionAccepted": false
+    }
+  ]
+}

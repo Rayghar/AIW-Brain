@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-cost-v1",
+  "generatedAt": "2026-07-17T09:47:38.363Z",
+  "productionAccepted": false,
+  "providerAttempts": 14,
+  "retries": 0,
+  "inputTokens": 25515,
+  "outputTokens": 16691,
+  "totalTokens": 42206,
+  "actualCostUsd": 0.0369116,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "monetaryCostCeiling": null,
+  "costMayStopExecution": false,
+  "qualityTakesPriorityOverCost": true,
+  "pricing": {
+    "inputUsdPerMillionTokens": 0.4,
+    "outputUsdPerMillionTokens": 1.6,
+    "reference": "https://openai.com/api/pricing/",
+    "capturedForEstimate": "2026-07-17"
+  }
+}

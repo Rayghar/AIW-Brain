@@ -1,6 +1,6 @@
 {
   "schemaVersion": "aiw-gate-6b-2-r2-typed-asset-contract-v1",
-  "generatedAt": "2026-07-17T09:33:18.842Z",
+  "generatedAt": "2026-07-17T09:43:32.795Z",
   "productionAccepted": false,
   "contractSource": "gate6b2R2StageBSchema",
   "inputBoundary": "validated-atoms-only",

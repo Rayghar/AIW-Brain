@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-model-capability-escalation-v1",
+  "generatedAt": "2026-07-17T10:49:26.1787498+01:00",
+  "productionAccepted": false,
+  "classification": "strict-protocol-passed-semantic-quality-failed",
+  "transportPassed": true,
+  "strictStructuredOutputPassed": true,
+  "exactEvidenceLineagePassed": true,
+  "exactAcceptedQuotationValidityPassed": true,
+  "primarySemanticDefects": [
+    "non-claim disposition failure",
+    "semantic asset-type accuracy below threshold",
+    "canonical epistemic-status accuracy below threshold",
+    "condition completeness below threshold",
+    "limitation completeness below threshold",
+    "21 proposed evidence atoms used text not found verbatim in immutable bounded evidence",
+    "5 atom links depended on rejected atoms"
+  ],
+  "acceptedAtoms": 45,
+  "rejectedAtoms": 26,
+  "acceptedTypedAssets": 22,
+  "rejectedTypedAssets": 1,
+  "currentModel": "gpt-4.1-mini-2025-04-14",
+  "strongestStructuredOutputCapableModelActuallyVerifiedForThisRuntime": "gpt-4.1-mini-2025-04-14",
+  "strongerEntitledModelVerified": false,
+  "strongerModelIdentity": null,
+  "silentModelSubstitutionAllowed": false,
+  "comparisonStatus": "blocked-pending-separate-entitlement-and-execution-authority",
+  "comparisonMustPreserve": {
+    "requestPlanFingerprint": "sha256:0a9140e9fa3d0f4d7872d659bc303509b88e0fa4b1820ad8361be83eea8ec317",
+    "schemaFingerprint": "sha256:16cd0eb5828636e1e2b374bf9e951cc5c4080e7e00e50a4ce34f34ed411ffd33",
+    "frozenLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+    "promptVersion": "gate-6b2-r2-two-stage-cognition-v1",
+    "evidence": "unchanged",
+    "evaluator": "unchanged"
+  },
+  "selectionCriterion": "semantic-quality-not-price",
+  "prompt6gEntryStatus": "blocked",
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started"
+}

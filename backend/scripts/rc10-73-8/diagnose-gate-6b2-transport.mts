@@ -9,7 +9,10 @@ import type { LlmRuntimePolicy } from '@aiw/domain';
 import { LlmGateway, type LlmSafeTransportTelemetry } from '../../apps/api/src/llmGateway.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-const evidenceRoot = resolve(root, 'release-evidence', 'rc10.73.8');
+const r2Mode = process.argv.includes('--r2-transport');
+const evidenceRoot = r2Mode
+  ? resolve(root, 'release-evidence', 'rc10.73.8', 'gate6b2-r2')
+  : resolve(root, 'release-evidence', 'rc10.73.8');
 const runtimePolicyPath = resolve(root, 'backend', 'config', 'llm-runtime-overrides.json');
 const model = 'gpt-4.1-mini-2025-04-14';
 const purpose = 'governed-candidate-semantic-transformation';
@@ -136,8 +139,10 @@ async function main() {
     consecutiveAuthenticated, freshConnection, transportTelemetry, noUndErrSocket,
     credentialsRecorded: false, authenticationHeadersRecorded: false, rawSecretValuesRecorded: false,
   };
-  await writeJsonAtomic('GATE_6B_2_TRANSPORT_DIAGNOSTIC.json', result);
-  await writeFile(resolve(evidenceRoot, 'GATE_6B_2_TRANSPORT_DIAGNOSTIC.md'), `# Gate 6B.2 transport diagnostic\n\nStatus: **${passed ? 'PASS' : 'FAIL'}**\nGenerated: ${completedAt}\nExact model entitlement: ${exactModelEntitlement.passed ? 'passed' : 'failed'}\nThree consecutive authenticated non-generation responses: ${consecutiveAuthenticated.every((item) => item.passed) ? 'passed' : 'failed'}\nFresh-process connection: ${freshConnection.passed ? 'passed' : 'failed'}\nUND_ERR_SOCKET observed: ${noUndErrSocket ? 'no' : 'yes'}\nModel generation calls: 0\nProduction accepted: false\n\nDNS, TCP, TLS, basic HTTPS and authenticated model-entitlement checks used no benchmark evidence or semantic prompt content. Secrets and authentication headers are excluded from this report.\n`, 'utf8');
+  const receiptName = r2Mode ? 'GATE_6B_2_R2_TRANSPORT_DIAGNOSTIC.json' : 'GATE_6B_2_TRANSPORT_DIAGNOSTIC.json';
+  const reportName = r2Mode ? 'GATE_6B_2_R2_TRANSPORT_DIAGNOSTIC.md' : 'GATE_6B_2_TRANSPORT_DIAGNOSTIC.md';
+  await writeJsonAtomic(receiptName, { ...result, r2Preflight: r2Mode });
+  await writeFile(resolve(evidenceRoot, reportName), `# Gate 6B.2${r2Mode ? ' R2' : ''} transport diagnostic\n\nStatus: **${passed ? 'PASS' : 'FAIL'}**\nGenerated: ${completedAt}\nExact model entitlement: ${exactModelEntitlement.passed ? 'passed' : 'failed'}\nThree consecutive authenticated non-generation responses: ${consecutiveAuthenticated.every((item) => item.passed) ? 'passed' : 'failed'}\nFresh-process connection: ${freshConnection.passed ? 'passed' : 'failed'}\nUND_ERR_SOCKET observed: ${noUndErrSocket ? 'no' : 'yes'}\nModel generation calls: 0\nProduction accepted: false\n\nDNS, TCP, TLS, basic HTTPS and authenticated model-entitlement checks used no benchmark evidence or semantic prompt content. Secrets and authentication headers are excluded from this report.\n`, 'utf8');
   process.stdout.write(`${JSON.stringify({ passed, dns: dns.passed, tcp: tcp.passed, tls: tls.passed, basicHttps: basicHttps.passed, exactModelEntitlement: exactModelEntitlement.passed, consecutiveAuthenticated: consecutiveAuthenticated.map((item) => item.passed), freshConnection: freshConnection.passed, noUndErrSocket, modelCalls: 0, productionAccepted: false }, null, 2)}\n`);
   if (!passed) process.exitCode = 2;
 }

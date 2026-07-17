@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-prompt-6g-decision-v1",
+  "generatedAt": "2026-07-17T09:47:38.363Z",
+  "productionAccepted": false,
+  "providerAttempts": 14,
+  "retries": 0,
+  "inputTokens": 25515,
+  "outputTokens": 16691,
+  "totalTokens": 42206,
+  "actualCostUsd": 0.0369116,
+  "approvedRecordsChanged": 0,
+  "designGraphMutations": 0,
+  "automaticPromotions": 0,
+  "gate6b2R2Status": "failed-semantic-quality",
+  "prompt6gEntryStatus": "blocked",
+  "prompt6gExecutionStarted": false,
+  "gate6cStatus": "blocked",
+  "gate6dStatus": "not-started",
+  "backupStatus": "deferred-by-product-owner",
+  "failedGates": [
+    "correctNonClaimDisposition",
+    "semanticAssetTypeAccuracy",
+    "canonicalEpistemicStatusAccuracy",
+    "conditionCompleteness",
+    "limitationCompleteness"
+  ]
+}

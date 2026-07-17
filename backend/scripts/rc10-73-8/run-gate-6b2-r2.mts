@@ -161,6 +161,11 @@ async function canary() {
   const prepared = await prepare();
   if (prepared.blockers.length) throw new Error(`GATE6B2_R2_CANARY_PREFLIGHT_BLOCKED:${prepared.blockers.join(',')}`);
   if (!process.env.OPENAI_API_KEY?.trim()) throw new Error('GATE6B2_R2_SECRET_MISSING');
+  const transport = await readJson(resolve(outputRoot, 'GATE_6B_2_R2_TRANSPORT_DIAGNOSTIC.json'));
+  if (!transport.passed || !transport.noUndErrSocket || !transport.exactModelEntitlement?.passed
+    || transport.consecutiveAuthenticated?.length !== 3 || !transport.consecutiveAuthenticated.every((item: any) => item.passed)) {
+    throw new Error('GATE6B2_R2_TRANSPORT_PREFLIGHT_NOT_PASSED');
+  }
   const synthetic = 'Synthetic public fixture: A component should validate input before processing it.';
   const system = await readFile(resolve(root, 'backend', 'config', 'gate6b2-r2-stage-a-prompt.md'), 'utf8');
   const counters = { attempts: 0, retries: 0, tokens: 0 }; const telemetry: any[] = [];
@@ -182,6 +187,8 @@ async function live() {
   if (!process.env.OPENAI_API_KEY?.trim()) throw new Error('GATE6B2_R2_SECRET_MISSING');
   const canaryReceipt = await readJson(resolve(outputRoot, 'GATE_6B_2_R2_SCHEMA_CANARY_RESULT.json'));
   if (!canaryReceipt.passed) throw new Error('GATE6B2_R2_SCHEMA_CANARY_NOT_PASSED');
+  const transport = await readJson(resolve(outputRoot, 'GATE_6B_2_R2_TRANSPORT_DIAGNOSTIC.json'));
+  if (!transport.passed || !transport.noUndErrSocket) throw new Error('GATE6B2_R2_TRANSPORT_PREFLIGHT_NOT_PASSED');
   if (await freeBytes() < controlledFloor) throw new Error('GATE6B2_R2_CAPACITY_BELOW_FLOOR');
   const stageASystem = await readFile(resolve(root, 'backend', 'config', 'gate6b2-r2-stage-a-prompt.md'), 'utf8');
   const stageBSystem = await readFile(resolve(root, 'backend', 'config', 'gate6b2-r2-stage-b-prompt.md'), 'utf8');

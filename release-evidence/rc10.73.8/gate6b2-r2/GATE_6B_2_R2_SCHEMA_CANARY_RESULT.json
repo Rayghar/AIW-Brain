@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-r2-schema-canary-v1",
+  "generatedAt": "2026-07-17T09:43:02.101Z",
+  "productionAccepted": false,
+  "passed": true,
+  "syntheticNonSensitiveFixture": true,
+  "repositoryEvidenceTransferred": false,
+  "benchmarkAnswerRequested": false,
+  "approvedStoreAccess": false,
+  "designGraphAccess": false,
+  "providerCalls": 1,
+  "retries": 0,
+  "tokens": 1132,
+  "exactModelIdentity": true,
+  "responseStatus": "completed",
+  "refusal": false,
+  "incomplete": false,
+  "parsedOutputAvailable": true,
+  "strictSchemaValid": true,
+  "exactSyntheticQuotationResolved": true,
+  "candidateRecordsPersisted": 0,
+  "telemetry": [
+    {
+      "attempt": 1,
+      "retry": 0,
+      "disposition": "completed",
+      "httpStatus": 200,
+      "providerRequestId": "req_ac8e83201ad94db2afc091fd4b884504",
+      "requestedModel": "gpt-4.1-mini-2025-04-14",
+      "providerReportedModel": "gpt-4.1-mini-2025-04-14",
+      "responseStatus": "completed",
+      "inputTokens": 930,
+      "outputTokens": 202,
+      "totalTokens": 1132,
+      "latencyMs": 6938,
+      "requestFingerprint": "sha256:9570621eae43c780bae413c923ce2745807128725d9b250b3f81ab36e27f8776",
+      "responseFingerprint": "sha256:392d2b7d154396ad892b0ab7f84b3c313906e4da2a85d2b9712eb06838ffa2f4",
+      "parsedOutputResult": "passed",
+      "schemaResult": "passed",
+      "manualJsonParsingUsed": false
+    }
+  ]
+}
