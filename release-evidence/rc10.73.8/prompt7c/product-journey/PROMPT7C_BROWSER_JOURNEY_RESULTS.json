@@ -1,0 +1,249 @@
+{
+  "schemaVersion": "aiw-prompt7c-browser-journeys-v1",
+  "results": [
+    {
+      "scenarioId": "agency-banking",
+      "stages": [
+        {
+          "candidateCount": 8,
+          "fingerprint": "166c65412d369c5cfb4767830386e3cd76d7676244e5a592a8d22cc1b03082e5"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "b3271c091a1afbfc33188c277745683747ee3472724c21e03f2d576cfcc7d889"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "22885e5e97106cb538eae2f136c87fb5dd7d3f78e89d48e9dac937cb6f1888d7"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "ec6f0062f8dc2442f8b39f39167aa6ea2e72eb05c32b86c31f06ceb0462114fd"
+        }
+      ],
+      "allFourDesignStagesActionable": true,
+      "acceptRejectModifyObserved": true,
+      "deferObserved": true,
+      "selectiveStalenessObserved": true,
+      "reviewerDecisionPersistenceObserved": true,
+      "scenarioSpecificSddFingerprint": "246e060bae3fa2857cc6b70bf1460f43fa27fc36d9e0230bc4371765d95cb47b",
+      "rejectedCandidatesExcludedFromSdd": true,
+      "candidateAuthorityOnly": true,
+      "errors": []
+    },
+    {
+      "scenarioId": "core-modernisation",
+      "stages": [
+        {
+          "candidateCount": 8,
+          "fingerprint": "0afd666b587b6b529c86c95df04cb7c9e9c860f07e5f2037fa8ebcb683866936"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "f1b880244ba1bd320b3f6b5050209b265dc9d484d622083bc5bd1a48a0848931"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "50d1fa097c57d0937c3397fdf6f083d639fbfaa46b8309bc230cf35a8a2daef7"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "5349836a332df3b1e0135555a4432ab378d56d66168ca3c3badb3c10856b4d2d"
+        }
+      ],
+      "allFourDesignStagesActionable": true,
+      "acceptRejectModifyObserved": true,
+      "deferObserved": true,
+      "selectiveStalenessObserved": true,
+      "reviewerDecisionPersistenceObserved": true,
+      "scenarioSpecificSddFingerprint": "6b2e046f5988b47234008311a36d9a0cc30377bf7d0b4607f585f438ee035369",
+      "rejectedCandidatesExcludedFromSdd": true,
+      "candidateAuthorityOnly": true,
+      "errors": []
+    },
+    {
+      "scenarioId": "event-fulfilment",
+      "stages": [
+        {
+          "candidateCount": 8,
+          "fingerprint": "1f5e4297112c7b85e29b4cc0b8a918b70f049bed4b4c27e3fd6e130e7c3fd694"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "ca46d3e7b3aafaee73001de2f0ddb82c81e9b3e1be2a673b5c8f9244d4498458"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "ff347ee8a3b526bad892f2560ef8cac44965dc5debce7b879c739b90191a94c9"
+        },
+        {
+          "candidateCount": 8,
+          "fingerprint": "ff0c8dc1b0f23382ef85959503092da31ac2619214cf67958bf38de1077c6027"
+        }
+      ],
+      "allFourDesignStagesActionable": true,
+      "acceptRejectModifyObserved": true,
+      "deferObserved": true,
+      "selectiveStalenessObserved": true,
+      "reviewerDecisionPersistenceObserved": true,
+      "scenarioSpecificSddFingerprint": "46afe2aa895f93bfb27ac3fefddb1df0da238771b17a25427ffe184cc66a10e4",
+      "rejectedCandidatesExcludedFromSdd": true,
+      "candidateAuthorityOnly": true,
+      "errors": []
+    }
+  ],
+  "screenshots": [
+    {
+      "scenario": "agency-banking",
+      "stage": "accepted-requirements",
+      "path": "product-journey/agency-banking-accepted-requirements.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "system-context",
+      "path": "product-journey/agency-banking-system-context.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "candidate-comparison",
+      "path": "product-journey/agency-banking-candidate-comparison.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "stage-1",
+      "path": "product-journey/agency-banking-stage-1.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "stage-2",
+      "path": "product-journey/agency-banking-stage-2.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "stage-3",
+      "path": "product-journey/agency-banking-stage-3.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "stage-4",
+      "path": "product-journey/agency-banking-stage-4.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "staleness-state",
+      "path": "product-journey/agency-banking-staleness-state.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "reviewer-governance",
+      "path": "product-journey/agency-banking-reviewer-governance.png"
+    },
+    {
+      "scenario": "agency-banking",
+      "stage": "sdd",
+      "path": "product-journey/agency-banking-sdd.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "accepted-requirements",
+      "path": "product-journey/core-modernisation-accepted-requirements.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "system-context",
+      "path": "product-journey/core-modernisation-system-context.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "candidate-comparison",
+      "path": "product-journey/core-modernisation-candidate-comparison.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "stage-1",
+      "path": "product-journey/core-modernisation-stage-1.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "stage-2",
+      "path": "product-journey/core-modernisation-stage-2.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "stage-3",
+      "path": "product-journey/core-modernisation-stage-3.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "stage-4",
+      "path": "product-journey/core-modernisation-stage-4.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "staleness-state",
+      "path": "product-journey/core-modernisation-staleness-state.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "reviewer-governance",
+      "path": "product-journey/core-modernisation-reviewer-governance.png"
+    },
+    {
+      "scenario": "core-modernisation",
+      "stage": "sdd",
+      "path": "product-journey/core-modernisation-sdd.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "accepted-requirements",
+      "path": "product-journey/event-fulfilment-accepted-requirements.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "system-context",
+      "path": "product-journey/event-fulfilment-system-context.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "candidate-comparison",
+      "path": "product-journey/event-fulfilment-candidate-comparison.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "stage-1",
+      "path": "product-journey/event-fulfilment-stage-1.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "stage-2",
+      "path": "product-journey/event-fulfilment-stage-2.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "stage-3",
+      "path": "product-journey/event-fulfilment-stage-3.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "stage-4",
+      "path": "product-journey/event-fulfilment-stage-4.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "staleness-state",
+      "path": "product-journey/event-fulfilment-staleness-state.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "reviewer-governance",
+      "path": "product-journey/event-fulfilment-reviewer-governance.png"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "stage": "sdd",
+      "path": "product-journey/event-fulfilment-sdd.png"
+    }
+  ],
+  "providerCalls": 0,
+  "productionAccepted": false
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "aiw-prompt7c-execution-manifest-v1",
+  "baselineCommit": "5c23da0b23694b985b236796797792468152cbf9",
+  "focusedFixCommit": "14079418b0d3aef92edfdb8c54e4d8b485cc1e2b",
+  "branch": "codex/rc-10-73-8-architecture-cognition",
+  "scenarios": ["agency-banking", "core-modernisation", "event-fulfilment"],
+  "roles": ["solution-architect", "reviewer"],
+  "designStages": ["logicalApplication", "applicationRealization", "logicalTechnology", "physicalTechnology"],
+  "correctedAcceptanceAssertion": "after candidate acceptance, verify that the proposal is reset and the accept action becomes disabled",
+  "providerCalls": 0,
+  "tokens": 0,
+  "providerCostUsd": 0,
+  "browserProject": "chromium-desktop",
+  "browserJourneyResult": "product-journey/PROMPT7C_BROWSER_JOURNEY_RESULTS.json",
+  "parityLedger": "product-journey/PROMPT7C_UI_API_PARITY_LEDGER.json",
+  "reviewDecisionLedger": "product-journey/PROMPT7C_REVIEW_DECISION_LEDGER.json",
+  "screenshotCount": 30,
+  "productionAccepted": false
+}

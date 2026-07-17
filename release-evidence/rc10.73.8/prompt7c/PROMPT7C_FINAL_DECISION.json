@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-prompt7c-final-decision-v1",
+  "decision": "A-productised-intelligence-passed",
+  "prompt7Complete": true,
+  "nextStageEntryApproved": true,
+  "decisionBasis": [
+    "three of three corrected browser journeys passed",
+    "all four design stages produced actionable scenario-specific candidates",
+    "candidate accept, reject, modify, and defer flows passed",
+    "selective downstream staleness and affected-stage regeneration passed",
+    "seven reviewer action types persisted with reload verification",
+    "808 of 808 consequential API obligations were exposed through the UI",
+    "three scenario-specific SDD fingerprints were distinct and rejected candidates were excluded"
+  ],
+  "providerCalls": 0,
+  "tokens": 0,
+  "providerCostUsd": 0,
+  "productionAccepted": false,
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "backupStatus": "deferred-by-product-owner"
+}

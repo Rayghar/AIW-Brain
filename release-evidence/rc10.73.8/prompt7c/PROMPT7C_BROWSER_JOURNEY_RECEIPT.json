@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "aiw-prompt7c-browser-journey-receipt-v1",
+  "browserProject": "chromium-desktop",
+  "journeysRequired": 3,
+  "journeysPassed": 3,
+  "journeys": [
+    {
+      "scenario": "agency-banking",
+      "fourStagesActionable": true,
+      "candidateFlows": "passed",
+      "selectiveStaleness": "passed",
+      "reviewPersistence": "passed",
+      "sddFingerprint": "246e060bae3fa2857cc6b70bf1460f43fa27fc36d9e0230bc4371765d95cb47b"
+    },
+    {
+      "scenario": "core-modernisation",
+      "fourStagesActionable": true,
+      "candidateFlows": "passed",
+      "selectiveStaleness": "passed",
+      "reviewPersistence": "passed",
+      "sddFingerprint": "6b2e046f5988b47234008311a36d9a0cc30377bf7d0b4607f585f438ee035369"
+    },
+    {
+      "scenario": "event-fulfilment",
+      "fourStagesActionable": true,
+      "candidateFlows": "passed",
+      "selectiveStaleness": "passed",
+      "reviewPersistence": "passed",
+      "sddFingerprint": "46afe2aa895f93bfb27ac3fefddb1df0da238771b17a25427ffe184cc66a10e4"
+    }
+  ],
+  "screenshotCount": 30,
+  "byteIdenticalScenarioArchitectureOutputs": 0,
+  "scenarioSpecificSdds": "3/3",
+  "rejectedCandidatesExcludedFromSdd": "3/3",
+  "providerCalls": 0,
+  "passed": true,
+  "source": "product-journey/PROMPT7C_BROWSER_JOURNEY_RESULTS.json"
+}

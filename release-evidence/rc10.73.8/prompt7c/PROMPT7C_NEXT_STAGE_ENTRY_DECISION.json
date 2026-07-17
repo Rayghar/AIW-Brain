@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "aiw-prompt7c-next-stage-entry-v1",
+  "prompt7Complete": true,
+  "nextStageEntryApproved": true,
+  "approvalScope": "next bounded release stage only",
+  "prompt8Started": false,
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "releaseTagCreated": false,
+  "productionAccepted": false,
+  "backupStatus": "deferred-by-product-owner"
+}

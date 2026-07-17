@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-prompt7c-ui-api-parity-result-v1",
+  "totalConsequentialObligations": 808,
+  "exposedConsequentialObligations": 808,
+  "overallConsequentialUiApiParity": 1,
+  "requiredMinimum": 0.9,
+  "criticalHiddenObligations": 0,
+  "scenarioStageResponsesMeasured": 12,
+  "passed": true,
+  "sourceLedger": "product-journey/PROMPT7C_UI_API_PARITY_LEDGER.json"
+}

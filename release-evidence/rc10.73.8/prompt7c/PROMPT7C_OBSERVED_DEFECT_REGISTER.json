@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "aiw-prompt7c-observed-defects-v1",
+  "defects": [
+    {
+      "id": "P7C-DEF-001",
+      "observation": "Reviewer actions were not durably persisted or reload-verifiable.",
+      "rootCause": "The reviewer workspace had no governed project-candidate decision endpoint or ledger.",
+      "focusedFix": "Added an append-only candidate-authority reviewer ledger, governed API endpoint, UI controls, reload verification, and audit references.",
+      "regressionEvidence": "Seven action types persisted and replayed across three scenarios."
+    },
+    {
+      "id": "P7C-DEF-002",
+      "observation": "Consequential canonical-service metadata was not accessible in stage candidate details.",
+      "rootCause": "The stage panel rendered headline operations but omitted traceability and decision-support fields.",
+      "focusedFix": "Exposed requirements, quality drivers, risks, decisions, evidence, alternatives, assumptions, affected objects, authority, and review posture.",
+      "regressionEvidence": "808 of 808 applicable obligations were visible, actionable, or traceable."
+    },
+    {
+      "id": "P7C-DEF-003",
+      "observation": "An upstream design-intent change did not reliably stale and regenerate affected downstream candidates.",
+      "rootCause": "Design-intent setters did not run selective generated-candidate staleness, and stale same-ID candidates blocked replacement.",
+      "focusedFix": "Applied selective stale marking on design-intent changes and allowed stale candidate replacement in place while preserving candidate authority.",
+      "regressionEvidence": "All three journeys observed downstream staleness and regenerated only the affected stage."
+    },
+    {
+      "id": "P7C-DEF-004",
+      "observation": "Rejected candidates could remain in assembled SDD material.",
+      "rootCause": "The SDD composer did not exclude rejected nodes and dependent graph material.",
+      "focusedFix": "Filtered rejected nodes, dependent edges and interfaces, and rejected decisions in both engine copies.",
+      "regressionEvidence": "Rejected candidate labels were absent from all three scenario SDDs."
+    }
+  ],
+  "unrelatedRefactoring": false,
+  "providerExperimentation": false,
+  "productionAccepted": false
+}

@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aiw-prompt7c-initial-run-controlled-stop-v1",
+  "status": "controlled-stop-observed-product-defects",
+  "acceptanceBasis": false,
+  "screenshotCount": 18,
+  "screenshotDirectory": "initial-run",
+  "observedDefectRegister": "PROMPT7C_OBSERVED_DEFECT_REGISTER.json",
+  "supersededByVerifiedRun": "product-journey/PROMPT7C_BROWSER_JOURNEY_RESULTS.json",
+  "productPassClaimed": false,
+  "productFailureClaimed": false,
+  "providerCalls": 0,
+  "productionAccepted": false
+}

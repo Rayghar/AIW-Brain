@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-prompt7c-capability-scorecard-v1",
+  "correctedBrowserJourneysPassed": "3/3",
+  "allFourDesignStagesProduceActionableCandidates": 1,
+  "scenarioSpecificCandidatePayloads": 1,
+  "byteIdenticalScenarioArchitectureOutputs": 0,
+  "candidateAcceptFlow": "passed",
+  "candidateRejectFlow": "passed",
+  "candidateModifyFlow": "passed",
+  "candidateDeferFlow": "passed",
+  "selectiveDownstreamStaleness": "passed",
+  "reviewerDecisionPersistence": "passed",
+  "scenarioSpecificSdds": "3/3",
+  "rejectedCandidatesExcludedFromSdd": 1,
+  "overallConsequentialUiApiParity": 1,
+  "criticalHiddenObligations": 0,
+  "approvedKnowledgeMutations": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAcceptedTrueFindings": 0,
+  "passed": true
+}

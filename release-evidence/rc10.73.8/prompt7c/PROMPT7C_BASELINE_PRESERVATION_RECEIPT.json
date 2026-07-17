@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "aiw-prompt7c-baseline-preservation-v1",
+  "generatedAt": "2026-07-18T00:26:26.0025434+01:00",
+  "baselineCommit": "5c23da0b23694b985b236796797792468152cbf9",
+  "prompt7ImplementationCommits": [
+    "a55bc5403aaad7079c82d23c4072ebecd3c63047",
+    "fa77797c535817691e8311ce03e2201edd2309a2",
+    "5c23da0b23694b985b236796797792468152cbf9"
+  ],
+  "focusedFixCommit": "14079418b0d3aef92edfdb8c54e4d8b485cc1e2b",
+  "historicalBia1FilesModified": 0,
+  "historicalPrompt7EvidenceFilesModified": 0,
+  "canonicalBrainOrchestrationPreserved": true,
+  "boundedBrainProjectionPreserved": true,
+  "typedStageCandidatesPreserved": true,
+  "scenarioSpecificOutputsPreserved": true,
+  "candidateStateModelPreserved": true,
+  "selectiveStalenessModelPreserved": true,
+  "scenarioSpecificSddAssemblyPreserved": true,
+  "productionAccepted": false
+}

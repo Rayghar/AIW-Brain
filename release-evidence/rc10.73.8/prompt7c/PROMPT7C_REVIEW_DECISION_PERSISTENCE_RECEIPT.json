@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "aiw-prompt7c-review-persistence-v1",
+  "decisionCount": 7,
+  "supportedActionsCovered": [
+    "approve-project-candidate",
+    "return-with-comments",
+    "reject-candidate",
+    "request-evidence",
+    "request-regeneration",
+    "mark-risk-accepted",
+    "record-exception"
+  ],
+  "scenariosCovered": ["agency-banking", "core-modernisation", "event-fulfilment"],
+  "reloadVerifiedCount": 7,
+  "reloadMethod": "governed API project reload followed by UI navigation to the persisted reviewer ledger",
+  "auditReferencesPresent": true,
+  "actorRole": "reviewer",
+  "authority": "project-candidate-review",
+  "productionAuthority": false,
+  "passed": true,
+  "sourceLedger": "product-journey/PROMPT7C_REVIEW_DECISION_LEDGER.json"
+}

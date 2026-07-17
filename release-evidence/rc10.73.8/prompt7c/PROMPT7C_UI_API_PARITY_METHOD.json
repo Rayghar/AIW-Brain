@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "aiw-prompt7c-ui-api-parity-method-v1",
+  "endpoint": "POST /api/projects/:projectId/branches/:branchId/stage-co-author",
+  "scope": {
+    "scenarios": 3,
+    "stagesPerScenario": 4,
+    "responseCount": 12
+  },
+  "consequentialClasses": [
+    "typed-candidate",
+    "requirement-reference",
+    "quality-driver-reference",
+    "risk-reference",
+    "decision-reference",
+    "rationale",
+    "alternative",
+    "trade-off",
+    "evidence-reference",
+    "confidence-or-abstention",
+    "impact-metadata"
+  ],
+  "countingRule": "Inventory every applicable consequential item returned by the canonical service; implementation-only identifiers are excluded.",
+  "exposureRule": "An item passes when visible, actionable, or traceable through the stage candidate details view.",
+  "criticalRule": "No critical requirement, interface, security, resilience, or decision obligation may be hidden.",
+  "minimumOverallParity": 0.9,
+  "ledger": "product-journey/PROMPT7C_UI_API_PARITY_LEDGER.json"
+}

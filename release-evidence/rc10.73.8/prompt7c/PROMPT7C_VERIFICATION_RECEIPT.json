@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "aiw-prompt7c-verification-v1",
+  "focusedFixCommit": "14079418b0d3aef92edfdb8c54e4d8b485cc1e2b",
+  "verification": {
+    "domainBuildBackend": "passed",
+    "engineBuildBackend": "passed",
+    "apiBuild": "passed",
+    "domainBuildFrontend": "passed",
+    "engineBuildFrontend": "passed",
+    "frontendProductionBuild": "passed-with-nonblocking-chunk-size-warning",
+    "backendPrompt7Tests": {"status": "passed", "tests": 6},
+    "frontendCandidateLifecycleTests": {"status": "passed", "tests": 4},
+    "correctedBrowserSuite": {"status": "passed", "tests": 3},
+    "jsonParsing": "passed",
+    "credentialScan": {"findings": 0},
+    "rawVaultAndExcludedPathScan": {"findings": 0},
+    "unrestrictedProviderResponseScan": {"findings": 0},
+    "gitDiffCheck": "passed"
+  },
+  "providerCalls": 0,
+  "tokens": 0,
+  "providerCostUsd": 0,
+  "historicalBia1FilesModified": 0,
+  "historicalPrompt7FilesModifiedWithoutReceipt": 0,
+  "approvedKnowledgeChanges": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAcceptedTrueFindings": 0,
+  "productionAccepted": false
+}
