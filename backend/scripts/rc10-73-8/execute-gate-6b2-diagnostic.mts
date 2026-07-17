@@ -127,11 +127,13 @@ async function main() {
   const system = await readFile(resolve(evidenceRoot, 'GATE_6B_2_TRANSFORMATION_PROMPT.md'), 'utf8');
   const policy = governedPolicy(await readJson(runtimePolicyPath));
   let priorTransportTimeoutCalls = continuation ? 2 : 0;
-  let priorTransportTimeoutRetries = continuation ? 1 : 0;
+  let priorTransportTimeoutRetries = 0;
   let preservedFailedAttempts: any[] = [];
   try {
     const priorFailure = await readJson(resolve(evidenceRoot, 'GATE_6B_2_FAILED_ATTEMPTS.json'));
-    if (process.argv.includes('--resume-after-transport-timeout') && /fetch failed/i.test(String(priorFailure.terminalError ?? ''))) {
+    if (continuation && priorFailure.failedAttemptCount === 2) {
+      preservedFailedAttempts = priorFailure.attempts;
+    } else if (process.argv.includes('--resume-after-transport-timeout') && /fetch failed/i.test(String(priorFailure.terminalError ?? ''))) {
       priorTransportTimeoutCalls = 1;
       priorTransportTimeoutRetries = 1;
       preservedFailedAttempts = [{
@@ -144,7 +146,9 @@ async function main() {
     }
   } catch { /* First activation has no historical Gate 6B.2 failure. */ }
   let networkCalls = priorTransportTimeoutCalls;
-  const networkReceipts: any[] = priorTransportTimeoutCalls ? [{ ordinal: 1, httpStatus: null, providerRequestId: null, observedAt: null, disposition: 'transport-timeout-before-http-response' }] : [];
+  const networkReceipts: any[] = continuation
+    ? preservedFailedAttempts.map((item: any, index: number) => ({ ordinal: index + 1, httpStatus: null, providerRequestId: null, observedAt: null, disposition: item.disposition, historical: true }))
+    : priorTransportTimeoutCalls ? [{ ordinal: 1, httpStatus: null, providerRequestId: null, observedAt: null, disposition: 'transport-timeout-before-http-response' }] : [];
   const attemptCeiling = continuation ? authority.absoluteGate6b2AttemptCeiling : maxCalls;
   const transportTelemetry: any[] = [];
   const countedFetch: typeof fetch = async (...args) => {
@@ -172,7 +176,7 @@ async function main() {
   if (singleRequestRetry && selectedRequests.length !== 1) throw new Error('GATE6B2_REQUEST_01_NOT_UNIQUE');
   for (const request of selectedRequests) {
     if (await freeBytes() < controlledStopFloor) throw new Error('GATE6B2_CAPACITY_FLOOR');
-    let attempt = request.requestId === 'G6B2-REQ-01' && priorTransportTimeoutCalls ? 1 : 0;
+    let attempt = !continuation && request.requestId === 'G6B2-REQ-01' && priorTransportTimeoutCalls ? 1 : 0;
     while (true) {
       if (networkCalls >= attemptCeiling) throw new Error('GATE6B2_PROVIDER_CALL_CEILING');
       try {
@@ -199,13 +203,14 @@ async function main() {
         governedOutputs.push(safeOutput);
         for (const accepted of validation.acceptedItems) candidateRecords.push({ candidateRecordId: `G6B2-CAND-${sha256(`${request.requestId}\n${accepted.caseId}\n${accepted.evidenceId ?? 'none'}\n${JSON.stringify(accepted)}`).slice(7, 31)}`, requestId: request.requestId, caseId: accepted.caseId, evidenceId: accepted.evidenceId, authority: 'candidate', status: 'pending-human-review', output: accepted, productionAccepted: false, approvedKnowledgeChanged: false, designGraphMutation: false, automaticPromotion: false });
         requestReceipts.push({ requestId: request.requestId, caseIds: request.caseIds, attempt, provider: result.providerId, requestedModel: model, providerReportedModel: result.providerReportedModel, httpStatus: result.httpStatus, providerRequestId: result.providerRequestId, inputTokens, outputTokens, totalTokens, elapsedMs: result.latencyMs, requestFingerprint: result.requestFingerprint, responseFingerprint: result.responseFingerprint, strictSchemaValid: result.schemaValidation.valid, exactEvidenceLineage: true, supportSpanValid: validation.items.every((item) => item.supportSpanValid), groundingAcceptedItems: validation.acceptedItems.length, groundingRejectedItems: validation.rejectedItems.length, delegatedReviewItems: validation.delegatedReviewItems.length, candidateRecordsCreated: validation.acceptedItems.length, approvedRecordsChanged: 0, designGraphMutations: 0, automaticPromotions: 0, finalDisposition: validation.accepted ? 'accepted-candidate-only' : 'completed-with-semantic-rejections' });
-        await writeJsonAtomic(checkpointPath, { schemaVersion: 'aiw-gate-6b-2-live-checkpoint-v1', updatedAt: new Date().toISOString(), productionAccepted: false, completedRequests: requestReceipts.length, lastCompletedRequestId: request.requestId, providerCalls: networkCalls, retries, totalTokens: accumulatedTokens, candidateRecordCount: candidateRecords.length, candidateFingerprint: sha256(JSON.stringify(candidateRecords)), freeBytes: await freeBytes() });
+        await writeJsonAtomic(checkpointPath, { schemaVersion: 'aiw-gate-6b-2-live-checkpoint-v1', updatedAt: new Date().toISOString(), productionAccepted: false, completedRequests: requestReceipts.length, lastCompletedRequestId: request.requestId, providerCalls: networkCalls, retries, inputTokens: gateway.transactions().reduce((sum, item) => sum + (item.inputTokens ?? 0), 0), outputTokens: gateway.transactions().reduce((sum, item) => sum + (item.outputTokens ?? 0), 0), totalTokens: accumulatedTokens, requestReceipts, transportTelemetry, candidateRecordCount: candidateRecords.length, candidateFingerprint: sha256(JSON.stringify(candidateRecords)), freeBytes: await freeBytes() });
         break;
       } catch (error) {
         const transaction = gateway.transactions().at(-1);
         failedAttempts.push({ attemptId: `G6B2-ATTEMPT-${String(networkCalls).padStart(2, '0')}`, requestId: request.requestId, attempt, safeError: safeError(error), httpStatus: transaction?.httpStatus ?? null, providerRequestId: transaction?.providerRequestId ?? null, requestedModel: transaction?.requestedModel ?? model, providerReportedModel: transaction?.providerReportedModel ?? null, inputTokens: transaction?.inputTokens ?? 0, outputTokens: transaction?.outputTokens ?? 0, totalTokens: transaction?.totalTokens ?? 0, retryable: retryable(error), semanticContentPersisted: false, approvedRecordsChanged: 0, designGraphMutations: 0, automaticPromotions: 0 });
         const failureTokens = transaction?.totalTokens ?? (transaction?.inputTokens ?? 0) + (transaction?.outputTokens ?? 0);
         accumulatedTokens += failureTokens;
+        await writeJsonAtomic('GATE_6B_2_FAILED_ATTEMPTS.json', { schemaVersion: 'aiw-gate-6b-2-failed-attempts-v1', generatedAt: new Date().toISOString(), productionAccepted: false, failedAttemptCount: failedAttempts.length, attempts: failedAttempts, providerCalls: networkCalls, retries, accumulatedTokens, transportTelemetry, credentialsRecorded: false, authenticationHeadersRecorded: false, unrestrictedProviderResponsesRecorded: false, rejectedSemanticContentPersistedAsCandidate: false });
         if (!retryable(error) || singleRequestRetry || attempt >= maxRetryPerRequest) throw error;
         if (/TRANSPORT_FAILURE|UND_ERR_SOCKET|ECONNRESET|EPIPE/i.test(safeError(error))) {
           await writeJsonAtomic(checkpointPath, { schemaVersion: 'aiw-gate-6b-2-live-checkpoint-v1', updatedAt: new Date().toISOString(), productionAccepted: false, completedRequests: requestReceipts.length, failedRequestId: request.requestId, providerCalls: networkCalls, retries, totalTokens: accumulatedTokens, freshProcessRetryRequired: true, transportTelemetry, candidateRecordCount: candidateRecords.length, candidateFingerprint: sha256(JSON.stringify(candidateRecords)), freeBytes: await freeBytes() });

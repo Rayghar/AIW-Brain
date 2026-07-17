@@ -2,7 +2,7 @@
   "schemaVersion": "aiw-gate-6b-2-continuation-execution-authority-v1",
   "generatedAt": "2026-07-17T07:29:39.3177751Z",
   "productionAccepted": false,
-  "authorityStatus": "prepared-but-blocked-by-capacity",
+  "authorityStatus": "consumed-controlled-stop-semantic-schema-failure",
   "provider": "openai",
   "purpose": "governed-candidate-semantic-transformation",
   "historicalTransportAttempts": 2,
@@ -31,10 +31,10 @@
     "modelCalls": 0
   },
   "capacity": {
-    "measuredAt": "2026-07-17T07:30:00Z",
-    "freeBytes": 6052503552,
+    "measuredAt": "2026-07-17T08:04:51.0893918Z",
+    "freeBytes": 13593763840,
     "controlledStopFloorBytes": 8589934592,
-    "passed": false,
+    "passed": true,
     "automaticCleanupAllowed": false
   },
   "frozenInputs": {
@@ -44,7 +44,18 @@
     "evidenceTransferSafetyPassed": true
   },
   "executionPermittedNow": false,
-  "blocker": "free-space-below-8-GiB-controlled-stop-floor",
+  "blocker": "G6B2-REQ-02-provider-structured-output-malformed-json",
+  "executionOutcome": {
+    "continuationProviderAttempts": 2,
+    "completedRequests": 1,
+    "schemaFailedRequests": 1,
+    "notExecutedRequests": 6,
+    "continuationRetries": 0,
+    "knownTokens": 2557,
+    "actualTotalTokens": null,
+    "actualCostUsd": null,
+    "additionalCallsAuthorized": false
+  },
   "prompt6gEntryStatus": "blocked",
   "gate6cStatus": "blocked",
   "gate6dStatus": "not-started",

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-capacity-resume-preflight-v1",
+  "measuredAt": "2026-07-17T08:04:51.0893918Z",
+  "productionAccepted": false,
+  "freeBytes": 13593763840,
+  "freeGiB": 12.66,
+  "controlledStopFloorBytes": 8589934592,
+  "capacityPassed": true,
+  "transportDiagnosticPassed": true,
+  "transportDiagnosticModelCalls": 0,
+  "noUndErrSocket": true,
+  "exactModel": "gpt-4.1-mini-2025-04-14",
+  "evidenceTransferSafetyPassed": true,
+  "diagnosticFingerprint": "sha256:d6a9bdaaa702ceea8d5eecd2077f90b3e6095f00fd6196bcbfc5760aa9c1b31a",
+  "frozenLabelFingerprint": "sha256:dcf4de58f1c933075af5f891a85f945c8bdbba9efa3c65cb9bf7104e0942e43c",
+  "requestPlanFingerprint": "sha256:d80d90b4eaf4f4d9f9252b9cfbc113aab771f8797b798694edbeaa379941c8e8",
+  "automaticCleanupPerformed": false,
+  "resumePermitted": true,
+  "backupStatus": "deferred-by-product-owner"
+}

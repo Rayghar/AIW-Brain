@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aiw-gate-6b-2-live-checkpoint-v1",
+  "updatedAt": "2026-07-17T08:08:21.345Z",
+  "productionAccepted": false,
+  "completedRequests": 1,
+  "lastCompletedRequestId": "G6B2-REQ-01",
+  "providerCalls": 3,
+  "retries": 0,
+  "totalTokens": 2557,
+  "candidateRecordCount": 0,
+  "candidateFingerprint": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+  "freeBytes": 13813039104
+}
