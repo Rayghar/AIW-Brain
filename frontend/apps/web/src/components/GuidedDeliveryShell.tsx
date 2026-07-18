@@ -82,7 +82,7 @@ export function GuidedDeliveryShell({ children }: GuidedDeliveryShellProps) {
   const [message, setMessage] = useState<string | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
   const [solOpen, setSolOpen] = useState(false);
-  const [solMode, setSolMode] = useState<SolWorkspaceMode>("draft");
+  const [solMode, setSolMode] = useState<SolWorkspaceMode>("understand");
   const stageId = currentDeliveryStageId(workspaceMode, project.activeStage, activeLifecycleStep);
   const isCanvasStage = ["logical", "realization", "logicalTechnology", "physicalTechnology"].includes(stageId);
   const lifecycle = useMemo(() => ({
@@ -112,7 +112,7 @@ export function GuidedDeliveryShell({ children }: GuidedDeliveryShellProps) {
   }, [stageId, isCanvasStage]);
 
   function openSol(mode?: SolWorkspaceMode) {
-    setSolMode(mode ?? (isCanvasStage ? "design" : stageId === "review" || stageId === "sdd" ? "ask" : "draft"));
+    setSolMode(mode ?? (isCanvasStage ? "propose" : stageId === "review" || stageId === "sdd" ? "ask" : "understand"));
     setSolOpen(true);
   }
 
@@ -208,7 +208,7 @@ export function GuidedDeliveryShell({ children }: GuidedDeliveryShellProps) {
               <strong>{assessment.progress}%</strong><small>{assessment.requiredPassed}/{assessment.requiredTotal} required checks</small>
               <div className="guided-progress"><span style={{ width: `${assessment.progress}%` }} /></div>
             </div>
-            <div className="guided-stagebar-actions"><button type="button" className="button button--ai canvas-os-assistant" data-testid="open-stage-co-author" onClick={() => openSol("design")}><BrainCircuit size={15}/> Sol</button></div>
+            <div className="guided-stagebar-actions"><button type="button" className="button button--ai canvas-os-assistant" data-testid="open-stage-co-author" onClick={() => openSol("propose")}><BrainCircuit size={15}/> Sol</button></div>
           </header>
         ) : (
           <>

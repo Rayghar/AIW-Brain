@@ -33,7 +33,7 @@ test('Sol exposes stage-correct quality, context, reasoning, lineage and governa
   await openSample(page);
 
   await page.getByTestId('open-stage-co-author').click();
-  const drawer = page.getByRole('dialog', { name: /Sol for Requirements & Intent/i });
+  const drawer = page.getByRole('complementary', { name: /Sol for Requirements & Intent/i });
   await expect(drawer).toBeVisible();
   await drawer.getByRole('button', { name: /^Ask/i }).click();
   await drawer.getByRole('button', { name: /Which requirement is most ambiguous/i }).click();

@@ -167,22 +167,31 @@
 .aiw-stage-flow .guided-validation-view { margin-bottom: 18px; }
 
 /* One Sol surface. */
-.sol-workspace-layer { position: fixed; inset: 0; z-index: 1000; display: grid; justify-items: end; }
-.sol-workspace-backdrop { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: rgba(0,8,16,.55); backdrop-filter: blur(2px); }
-.sol-workspace { position: relative; z-index: 1; display: grid; grid-template-rows: auto auto minmax(0, 1fr); width: min(620px, 100vw); height: 100vh; overflow: hidden; color: #dff8fb; background: linear-gradient(180deg, #0a2230, #06131f 72%); border-left: 1px solid rgba(94,234,212,.2); box-shadow: -28px 0 80px rgba(0,0,0,.48); }
+.sol-workspace { position: fixed; z-index: 1000; top: 0; right: 0; display: grid; grid-template-rows: auto auto minmax(0, 1fr); max-width: 100vw; height: 100vh; overflow: hidden; color: #dff8fb; background: linear-gradient(180deg, #0a2230, #06131f 72%); border-left: 1px solid rgba(94,234,212,.2); box-shadow: -20px 0 54px rgba(0,0,0,.34); }
 .sol-workspace__header { display: flex; align-items: center; justify-content: space-between; min-height: 66px; padding: 12px 14px; border-bottom: 1px solid rgba(148,163,184,.12); }
 .sol-workspace__identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .sol-workspace__identity > span { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; color: #7ce9df; background: rgba(20,184,166,.12); border: 1px solid rgba(94,234,212,.22); }
 .sol-workspace__identity > div { display: grid; min-width: 0; gap: 1px; }
 .sol-workspace__identity strong { font-size: .93rem; }
 .sol-workspace__identity small { color: #80a3b0; font-size: .65rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sol-workspace__modes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; padding: 8px 10px; border-bottom: 1px solid rgba(148,163,184,.1); background: rgba(4,17,27,.72); }
+.sol-workspace__modes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; padding: 8px 10px; border-bottom: 1px solid rgba(148,163,184,.1); background: rgba(4,17,27,.72); }
 .sol-workspace__modes > button { display: grid !important; grid-template-columns: 20px minmax(0, 1fr) !important; align-items: center !important; gap: 7px !important; min-width: 0 !important; min-height: 48px !important; padding: 7px 9px !important; color: #9ebbc5 !important; background: transparent !important; border: 1px solid transparent !important; border-radius: 9px !important; text-align: left !important; }
 .sol-workspace__modes > button.is-active { color: #efffff !important; background: rgba(20,184,166,.12) !important; border-color: rgba(94,234,212,.22) !important; }
 .sol-workspace__modes span { display: grid; min-width: 0; gap: 1px; }
 .sol-workspace__modes strong { font-size: .7rem; }
 .sol-workspace__modes small { color: #7595a2; font-size: .56rem; line-height: 1.2; }
 .sol-workspace__body { min-height: 0; overflow-y: auto; padding: 12px; }
+.sol-workspace__resize { display: grid; grid-template-columns: auto 92px; align-items: center; gap: 6px; color: #80a3b0; font-size: .58rem; }
+.sol-workspace__resize input { width: 92px; accent-color: #2dd4bf; }
+.stage-change-sets { display: grid; gap: 10px; margin: 12px 0; }
+.stage-change-sets__grid { display: grid; gap: 10px; }
+.stage-change-sets__grid > article { padding: 12px; border: 1px solid rgba(94,234,212,.16); border-radius: 12px; background: rgba(8,31,42,.62); }
+.stage-change-sets__grid header { display: flex; justify-content: space-between; gap: 12px; }
+.stage-change-sets__grid h5 { margin: 3px 0 0; }
+.stage-change-sets__grid p { color: #b7ced5; }
+.stage-change-sets__grid dl { display: grid; gap: 6px; margin: 0; }
+.stage-change-sets__grid dl > div { display: grid; grid-template-columns: 90px minmax(0,1fr); gap: 8px; }
+.stage-change-sets__grid dt { color: #80a3b0; }
 .sol-workspace .stage-co-author { width: 100%; max-width: none; margin: 0; }
 .sol-workspace .sol-brain-panel.is-embedded { position: static !important; inset: auto !important; width: 100% !important; height: auto !important; min-height: 0; max-height: none; border: 0 !important; box-shadow: none !important; background: transparent !important; }
 .sol-workspace .sol-brain-panel.is-embedded .sol-brain-shell { min-height: 0; height: auto; border: 0; background: transparent; }

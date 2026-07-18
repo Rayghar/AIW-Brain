@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { sampleProject, type ArchitectureNode, type ArchitectureProject, type StageDraftOperation } from '@aiw/domain';
-import { applyStageDraftOperation, markGeneratedDownstreamCandidatesStale } from '../workspaceStore';
+import { applyStageDraftOperation, markGeneratedDownstreamCandidatesStale, supersedeRegeneratedStageCandidates } from '../workspaceStore';
 
 function operation(node: ArchitectureNode): StageDraftOperation {
   return {
@@ -83,5 +83,19 @@ describe('Prompt 7 candidate lifecycle', () => {
     expect(project.nodes[0]?.label).toBe('Updated Service');
     expect(project.nodes[0]?.properties.candidateLifecycleState).toBe('accepted-for-project');
     expect(project.nodes[0]?.positions.default).toEqual({ x: 7, y: 9 });
+  });
+
+  it('supersedes obsolete stale candidates after an affected stage is regenerated', () => {
+    const project = structuredClone(sampleProject) as ArchitectureProject;
+    project.nodes = [
+      { id: 'stale-physical', kind: 'DeploymentNode', stage: 'physicalTechnology', label: 'Old topology', properties: { candidateAuthority: 'candidate', candidateLifecycleState: 'stale' }, lineageFrom: [], positions: {}, tags: [], status: 'draft' },
+      { id: 'current-physical', kind: 'DeploymentNode', stage: 'physicalTechnology', label: 'Current topology', properties: { candidateAuthority: 'candidate', candidateLifecycleState: 'accepted-for-project' }, lineageFrom: [], positions: {}, tags: [], status: 'draft' },
+      { id: 'stale-logical', kind: 'LogicalService', stage: 'logicalApplication', label: 'Other stage', properties: { candidateAuthority: 'candidate', candidateLifecycleState: 'stale' }, lineageFrom: [], positions: {}, tags: [], status: 'draft' },
+    ];
+    expect(supersedeRegeneratedStageCandidates(project, 'physicalTechnology', ['operation-new-topology'])).toEqual(['stale-physical']);
+    expect(project.nodes[0]?.properties.candidateLifecycleState).toBe('superseded');
+    expect(project.nodes[0]?.properties.supersededBecause).toMatchObject({ regeneratedStage: 'physicalTechnology', acceptedOperationIds: ['operation-new-topology'] });
+    expect(project.nodes[1]?.properties.candidateLifecycleState).toBe('accepted-for-project');
+    expect(project.nodes[2]?.properties.candidateLifecycleState).toBe('stale');
   });
 });

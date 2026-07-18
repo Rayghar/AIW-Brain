@@ -1685,6 +1685,29 @@ export function markGeneratedDownstreamCandidatesStale(
   return staleIds;
 }
 
+export function supersedeRegeneratedStageCandidates(
+  project: ArchitectureProject,
+  regeneratedStage: ArchitectureStage,
+  acceptedOperationIds: string[],
+): string[] {
+  const supersededIds: string[] = [];
+  for (const node of project.nodes) {
+    if (
+      node.stage !== regeneratedStage ||
+      node.properties.candidateAuthority !== "candidate" ||
+      node.properties.candidateLifecycleState !== "stale"
+    ) continue;
+    node.properties.candidateLifecycleState = "superseded";
+    node.properties.supersededBecause = {
+      regeneratedStage,
+      acceptedOperationIds: [...acceptedOperationIds],
+      supersededAt: new Date().toISOString(),
+    };
+    supersededIds.push(node.id);
+  }
+  return supersededIds;
+}
+
 export const useWorkspaceStore = create<WorkspaceStore>()(
   persist(
     immer((set, get) => ({
@@ -1869,6 +1892,11 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
             set((draft) => {
               draft.persistenceStatus = "saved";
               draft.lastSavedRevision = saved.revision;
+              if (
+                draft.project.id === state.project.id &&
+                draft.project.branch.id === state.project.branch.id &&
+                draft.project.revision === state.project.revision
+              ) draft.project.revision = saved.revision;
             });
             return true;
           } catch (error) {
@@ -2517,6 +2545,11 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
               "No selected draft could be applied. Resolve clarifications or refresh the proposal.";
             return;
           }
+          const supersededIds = supersedeRegeneratedStageCandidates(
+            state.project,
+            proposal.architectureStage,
+            operations.map((item) => item.id),
+          );
           state.undoStack.push(snapshot);
           state.undoStack = state.undoStack.slice(-50);
           state.redoStack = [];
@@ -2544,7 +2577,7 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
               nextValue: operations.map((item) => item.id),
             },
           );
-          state.notice = `${applied} reviewed Sol draft${applied === 1 ? "" : "s"} accepted for this project. ${staleIds.length ? `${staleIds.length} dependent candidate${staleIds.length === 1 ? " was" : "s were"} marked stale. ` : ""}No approved knowledge or production Design Graph state changed.`;
+          state.notice = `${applied} reviewed Sol draft${applied === 1 ? "" : "s"} accepted for this project. ${supersededIds.length ? `${supersededIds.length} obsolete stale candidate${supersededIds.length === 1 ? " was" : "s were"} superseded. ` : ""}${staleIds.length ? `${staleIds.length} dependent candidate${staleIds.length === 1 ? " was" : "s were"} marked stale. ` : ""}No approved knowledge or production Design Graph state changed.`;
         }),
 
       setConnectionKind: (kind) =>

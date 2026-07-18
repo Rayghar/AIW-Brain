@@ -40,7 +40,7 @@ async function acceptOneSolDesignChange(page: Page, stageTitle: RegExp) {
   if (await node.isVisible().catch(() => false)) await node.click({ force: true });
   await page.getByTestId('open-stage-co-author').click();
   console.log('STAGE Sol opened', String(stageTitle));
-  const drawer = page.getByRole('dialog', { name: /Sol for/i });
+  const drawer = page.getByRole('complementary', { name: /Sol for/i });
   await drawer.getByRole('button', { name: /^Design/i }).click();
   await drawer.getByRole('button', { name: /Open Sol Design on canvas/i }).click();
   console.log('STAGE Sol Design opened', String(stageTitle));

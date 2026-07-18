@@ -53,7 +53,7 @@ async function acceptStageDesign(page: Page, stage: RegExp) {
   const node = page.locator(".react-flow__node:not(.living-canvas-ghost-node)").first();
   if (await node.isVisible().catch(() => false)) await node.click({ force: true });
   await page.getByTestId("open-stage-co-author").click();
-  const drawer = page.getByRole("dialog", { name: /Sol for/i });
+  const drawer = page.getByRole("complementary", { name: /Sol for/i });
   await drawer.getByRole("button", { name: /^Design/i }).click();
   await drawer.getByRole("button", { name: /Open Sol Design on canvas/i }).click();
   const cursor = page.getByTestId("generative-cursor-controller");

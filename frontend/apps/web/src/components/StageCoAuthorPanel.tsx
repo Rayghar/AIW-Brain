@@ -230,6 +230,19 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
     </div>
 
     <div className="stage-co-author__governance-note"><ShieldCheck size={15}/><span><strong>Human-controlled draft layer.</strong> {proposal.notice}</span></div>
+    {proposal.changeSets?.length ? <section className="stage-change-sets" aria-label="Coherent architecture change sets">
+      <div className="stage-drafts__heading"><div><span className="eyebrow">Architecture change sets</span><h4>Choose a coherent boundary strategy before deciding individual changes</h4></div><span>{proposal.changeSets.length} alternative{proposal.changeSets.length === 1 ? '' : 's'}</span></div>
+      <div className="stage-change-sets__grid">{proposal.changeSets.map((changeSet) => <article key={changeSet.id}>
+        <header><div><small>{changeSet.validationPosture} · {changeSet.evidenceStrength} evidence</small><h5>{changeSet.title}</h5></div><span>{changeSet.operationIds.length} changes</span></header>
+        <p>{changeSet.architectureHypothesis}</p>
+        <dl>
+          <div><dt>Graph diff</dt><dd>{changeSet.canvasDiff.addedNodeIds.length} nodes · {changeSet.canvasDiff.addedEdgeIds.length} relationships · {changeSet.canvasDiff.addedInterfaceIds.length} interfaces</dd></div>
+          <div><dt>Problem</dt><dd>{changeSet.problemAddressed}</dd></div>
+          <div><dt>Trade-offs</dt><dd>{changeSet.tradeOffs.join(' ') || 'No trade-off recorded.'}</dd></div>
+          <div><dt>Assumptions</dt><dd>{changeSet.assumptions.join(' ') || 'No additional assumption recorded.'}</dd></div>
+        </dl>
+      </article>)}</div>
+    </section> : null}
     {staleStageCandidates.length ? <div className="stage-co-author__error" data-testid="stale-stage-candidates"><AlertTriangle size={15}/>{staleStageCandidates.length} accepted candidate(s) are stale because upstream project intent changed. Regenerate this stage to replace only the affected candidate content.</div> : null}
     {stale ? <div className="stage-co-author__error"><AlertTriangle size={15}/>The project changed after this proposal was generated. Regenerate before accepting it.</div> : null}
     {error ? <div className="stage-co-author__error"><AlertTriangle size={15}/>{error}</div> : null}
