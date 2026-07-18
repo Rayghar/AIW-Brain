@@ -181,6 +181,73 @@ export interface SolutionJourney {
   updatedAt: string;
 }
 
+export type SequenceCandidateStatus = 'candidate'|'accepted'|'rejected'|'deferred'|'stale'|'superseded';
+export type SequenceParticipantType = 'actor'|'system'|'service'|'data-store'|'external-system'|'operator';
+
+export interface RequirementsSequenceParticipant {
+  id: string;
+  name: string;
+  type: SequenceParticipantType;
+  boundary: 'user'|'aiw-system'|'trusted-enterprise'|'external'|'unknown';
+  sourceRefs: string[];
+}
+
+export interface RequirementsSequenceMessage {
+  id: string;
+  order: number;
+  fromParticipantId: string;
+  toParticipantId: string;
+  label: string;
+  semantics: 'synchronous'|'asynchronous'|'manual';
+  classification: 'command'|'query'|'event'|'notification'|'data-exchange'|'manual-task';
+  protocol?: string;
+  request?: string;
+  response?: string;
+  dataClassifications: string[];
+  trustBoundaryCrossing: boolean;
+  authenticationPoint: boolean;
+  authorisationPoint: boolean;
+  timeout?: string;
+  retry?: string;
+  idempotency?: string;
+  requirementRefs: string[];
+  journeyStepRefs: string[];
+  interfaceRefs: string[];
+  assumptionRefs: string[];
+}
+
+export interface RequirementsSequenceFragment {
+  id: string;
+  kind: 'alternate'|'optional'|'loop'|'parallel'|'failure'|'recovery';
+  label: string;
+  messageRefs: string[];
+  condition?: string;
+}
+
+export interface RequirementsSequenceDiagram {
+  id: string;
+  projectId: string;
+  revision: number;
+  title: string;
+  scenario: string;
+  trigger: string;
+  preconditions: string[];
+  participants: RequirementsSequenceParticipant[];
+  messages: RequirementsSequenceMessage[];
+  fragments: RequirementsSequenceFragment[];
+  compensatingActions: string[];
+  requirementRefs: string[];
+  journeyRefs: string[];
+  interfaceRefs: string[];
+  unresolvedAssumptions: string[];
+  status: SequenceCandidateStatus;
+  supersedesId?: string;
+  staleReason?: string;
+  fingerprint: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface RequirementsHealthGap {
   id: string;
   dimension: 'completeness'|'clarity'|'testability'|'traceability'|'journey-coverage'|'stakeholder-coverage'|'contradiction'|'architecture-significance';
@@ -232,6 +299,7 @@ export interface RequirementsIntelligenceState {
   requirements: CanonicalRequirementRecord[];
   stakeholders: RequirementStakeholder[];
   journeys: SolutionJourney[];
+  sequenceDiagrams?: RequirementsSequenceDiagram[];
   openQuestions: RequirementOpenQuestion[];
   health: RequirementsHealthAssessment;
   contextPackages: ArchitectureContextPackage[];
@@ -268,7 +336,7 @@ export function emptyRequirementsIntelligenceState(knowledgeReleaseId = 'CAMBRID
   return {
     schemaVersion: '1.0',
     knowledgeReleaseId,
-    sources: [], evidence: [], requirements: [], stakeholders: [], journeys: [], openQuestions: [],
+    sources: [], evidence: [], requirements: [], stakeholders: [], journeys: [], sequenceDiagrams: [], openQuestions: [],
     health: { completeness: 0, clarity: 0, testability: 0, traceability: 0, journeyCoverage: 0, stakeholderCoverage: 0, contradictionCount: 0, openCriticalQuestions: 0, assessedAt: new Date(0).toISOString(), gaps: [] },
     contextPackages: [],
   };

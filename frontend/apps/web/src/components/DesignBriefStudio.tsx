@@ -24,6 +24,7 @@ import type { RequirementsSourceInput } from "@aiw/engine";
 import { useWorkspaceStore } from "../store/workspaceStore";
 import { postJson } from "../lib/apiClient";
 import { JourneySequenceDiagram } from "./requirements/JourneySequenceDiagram";
+import { SequenceIntelligenceWorkspace } from "../features/sequence-intelligence/SequenceIntelligenceWorkspace";
 import "./requirements/requirements-genesis.css";
 
 interface IntakeSource extends RequirementsSourceInput {
@@ -260,7 +261,7 @@ export function DesignBriefStudio() {
       <RequirementsReview proposal={proposal} accepted={accepted?.requirements ?? []} selected={selected} setSelected={setSelected} updateRequirement={updateRequirement} health={health} allSelected={allSelected} onToggleAll={() => proposal && setSelected(allSelected ? new Set() : new Set([...proposal.requirements.map((item) => item.id), ...proposal.stakeholders.map((item) => item.id), ...proposal.journeys.map((item) => item.id)]))} onAccept={() => void acceptSelection()} loading={loading} />
     </> : null}
 
-    {view === "journeys" ? <JourneyAtlas journeys={displayedJourneys} active={activeJourney} onSelect={setActiveJourneyId} /> : null}
+    {view === "journeys" ? <><JourneyAtlas journeys={displayedJourneys} active={activeJourney} onSelect={setActiveJourneyId} /><SequenceIntelligenceWorkspace project={project} /></> : null}
 
     {view === "stakeholders" ? <section className="genesis-panel"><header><div><h3>Stakeholders and concerns</h3><p>These records shape priorities, approval, context actors and architecture explanations.</p></div></header><div className="genesis-list">{(proposal?.stakeholders ?? accepted?.stakeholders ?? []).map((item) => <article className="genesis-requirement" key={item.id}><input type="checkbox" checked={!proposal || selected.has(item.id)} disabled={!proposal} onChange={() => setSelected((current) => { const next = new Set(current); next.has(item.id) ? next.delete(item.id) : next.add(item.id); return next; })}/><div className="genesis-requirement__body"><strong>{item.name} · {item.role}</strong><p>{item.concerns.join(" · ")}</p><div className="genesis-requirement__meta"><span className="genesis-chip">{item.origin}</span>{item.decisionRights.map((right) => <span className="genesis-chip" key={right}>{right}</span>)}</div></div><UsersRound size={16}/></article>)}</div></section> : null}
 

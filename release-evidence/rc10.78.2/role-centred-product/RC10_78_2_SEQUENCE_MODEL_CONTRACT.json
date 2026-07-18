@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T22:45:10.7669688+01:00",
+  "verificationStatus": "implemented-and-statically-verified",
+  "canonicalType": "RequirementsSequenceDiagram",
+  "authority": "project-candidate",
+  "sourceAuthority": [
+    "accepted requirements",
+    "accepted solution journeys",
+    "non-rejected journey interactions",
+    "existing project interfaces where deterministically matched"
+  ],
+  "fields": {
+    "identity": ["id", "projectId", "revision", "fingerprint", "status", "supersedesId"],
+    "context": ["title", "scenario", "trigger", "preconditions"],
+    "structure": ["participants", "messages", "fragments", "compensatingActions"],
+    "lineage": ["requirementRefs", "journeyRefs", "interfaceRefs", "assumptionRefs"],
+    "lifecycle": ["candidate", "accepted", "rejected", "deferred", "stale", "superseded"]
+  },
+  "messageSemantics": ["synchronous", "asynchronous", "manual"],
+  "fragmentKinds": ["alternate", "failure", "recovery"],
+  "participantTypes": ["actor", "system", "external-system", "data-store"],
+  "trustAndSecurityMarkers": ["trustBoundaryCrossing", "authenticationPoint", "authorisationPoint"],
+  "designGraphIntegration": {
+    "recordKind": "sequence-diagram",
+    "lineageRelationships": ["sequence-to-journey", "sequence-to-requirement", "sequence-to-interface"]
+  },
+  "generationPosture": {
+    "deterministic": true,
+    "inventMissingParticipants": false,
+    "inventMissingMessages": false,
+    "modelCalls": 0,
+    "networkCalls": 0
+  },
+  "mutationPosture": {
+    "approvedKnowledgeChanges": 0,
+    "productionDesignGraphMutations": 0,
+    "automaticPromotions": 0
+  },
+  "productionAccepted": false
+}

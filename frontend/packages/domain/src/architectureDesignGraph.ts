@@ -13,6 +13,7 @@ export const architectureDesignGraphRecordKinds = [
   'requirement',
   'stakeholder',
   'journey',
+  'sequence-diagram',
   'open-question',
   'quality-priority',
   'quality-scenario',
@@ -393,6 +394,11 @@ export function buildArchitectureDesignGraph(
     status: journey.status, stageRefs: ['designIntent', 'logicalApplication'],
     attributes: { priority: journey.priority, actorRefs: journey.actorRefs, architectureObligations: journey.architectureObligations, canonicalValue: journey },
   });
+  for (const sequence of requirements?.sequenceDiagrams ?? []) addRecord({
+    kind: 'sequence-diagram', sourceRef: sequence.id, label: sequence.title, summary: sequence.scenario,
+    status: sequence.status, stageRefs: ['designIntent', 'logicalApplication'], evidenceRefs: sequence.requirementRefs,
+    attributes: { journeyRefs: sequence.journeyRefs, interfaceRefs: sequence.interfaceRefs, fingerprint: sequence.fingerprint, canonicalValue: sequence },
+  });
   for (const question of requirements?.openQuestions ?? []) addRecord({
     kind: 'open-question', sourceRef: question.id, label: question.question, summary: question.whyItMatters,
     status: question.status, stageRefs: ['designIntent'], attributes: { impact: question.impact, answer: question.answer ?? '', canonicalValue: question },
@@ -463,6 +469,11 @@ export function buildArchitectureDesignGraph(
   for (const journey of requirements?.journeys ?? []) {
     for (const requirementRef of journey.requirementRefs) linkResolved({ kind: 'traces-to', sourceRef: requirementRef, targetRef: journey.id, relationSourceRef: journey.id, rationale: 'Journey traces to the accepted requirement.' });
     for (const actorRef of journey.actorRefs) linkResolved({ kind: 'participates-in', sourceRef: actorRef, targetRef: journey.id, relationSourceRef: journey.id, rationale: 'Actor participates in the solution journey.' });
+  }
+  for (const sequence of requirements?.sequenceDiagrams ?? []) {
+    for (const journeyRef of sequence.journeyRefs) linkResolved({ kind: 'derived-from', sourceRef: sequence.id, targetRef: journeyRef, relationSourceRef: sequence.id, rationale: 'Sequence diagram is derived from an accepted solution journey.' });
+    for (const requirementRef of sequence.requirementRefs) linkResolved({ kind: 'traces-to', sourceRef: sequence.id, targetRef: requirementRef, relationSourceRef: sequence.id, rationale: 'Sequence interaction traces to the accepted requirement.' });
+    for (const interfaceRef of sequence.interfaceRefs) linkResolved({ kind: 'traces-to', sourceRef: sequence.id, targetRef: interfaceRef, relationSourceRef: sequence.id, rationale: 'Sequence message traces to the governed interface.' });
   }
   for (const question of requirements?.openQuestions ?? []) {
     for (const requirementRef of question.relatedRequirementRefs) linkResolved({ kind: 'affects', sourceRef: question.id, targetRef: requirementRef, relationSourceRef: question.id, rationale: 'Open question affects the requirement.' });

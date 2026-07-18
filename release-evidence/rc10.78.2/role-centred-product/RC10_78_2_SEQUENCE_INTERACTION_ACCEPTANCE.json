@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T22:45:10.7669688+01:00",
+  "componentStatus": "implemented-and-typechecked",
+  "browserAcceptanceStatus": "pending",
+  "implementedInteractions": [
+    "select sequence and version",
+    "filter by requirement",
+    "filter trust-boundary crossings",
+    "filter failure and recovery fragments",
+    "zoom in, zoom out and fit",
+    "play and pause message progression",
+    "step previous and next",
+    "preview regeneration",
+    "accept, reject and defer"
+  ],
+  "accessibilityPosture": [
+    "labelled toolbar",
+    "labelled filters",
+    "keyboard-focusable SVG canvas",
+    "text lineage adjacent to visual content",
+    "reduced-motion styling"
+  ],
+  "remainingGate": "Run the fresh Solution Architect Chromium journey and verify the interaction controls against a persisted PostgreSQL project.",
+  "productionAccepted": false
+}

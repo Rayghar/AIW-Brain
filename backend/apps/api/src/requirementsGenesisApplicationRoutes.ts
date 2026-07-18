@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import type { RequirementsDistillationProposal, RequirementSourceKind } from '@aiw/domain';
-import { canPerform, mergeRequirementsProposal, migrateLegacyRequirementsProject, resolveRequirementConflict } from '@aiw/engine';
+import type { RequirementsDistillationProposal, RequirementSourceKind, RequirementsSequenceDiagram } from '@aiw/domain';
+import { applyGeneratedSequences, canPerform, generateRequirementsSequences, mergeRequirementsProposal, migrateLegacyRequirementsProject, resolveRequirementConflict } from '@aiw/engine';
 import type { ApplicationRouteContext } from './applicationRouteContext.js';
 import { principalFor, projectParamsSchema } from './appRuntimeSupport.js';
 import { RepositoryRevisionConflict } from './repository.js';
@@ -231,5 +231,48 @@ export async function registerRequirementsGenesisApplicationRoutes(context: Appl
     const project = await repository.getProject(principal.tenantId, params.data.projectId, params.data.branchId);
     if (!project || !canPerform(project, principal.subject, 'project.read')) return reply.code(404).send({ error: 'PROJECT_NOT_FOUND' });
     return { state: project.requirementsIntelligence ?? null, projectRevision: project.revision };
+  });
+
+  app.post('/api/projects/:projectId/branches/:branchId/sequences/generate', async (request, reply) => {
+    const params = projectParamsSchema.safeParse(request.params);
+    const body = z.object({ expectedRevision: z.number().int().nonnegative(), preview: z.boolean().default(true) }).safeParse(request.body);
+    if (!params.success || !body.success) return reply.code(400).send({ error: 'INVALID_SEQUENCE_GENERATION_REQUEST' });
+    const principal = principalFor(request);
+    const project = await repository.getProject(principal.tenantId, params.data.projectId, params.data.branchId);
+    if (!project || !canPerform(project, principal.subject, 'project.read')) return reply.code(404).send({ error: 'PROJECT_NOT_FOUND' });
+    if (project.revision !== body.data.expectedRevision) return reply.code(409).send({ error: 'REVISION_CONFLICT', currentRevision: project.revision });
+    const generated = generateRequirementsSequences(project);
+    if (body.data.preview) return { authority: 'candidate', persisted: false, sequences: generated, projectRevision: project.revision };
+    if (!canPerform(project, principal.subject, 'project.edit')) return reply.code(403).send({ error: 'FORBIDDEN:project.edit' });
+    const next = applyGeneratedSequences(project, generated);
+    const saved = await repository.saveProject(next, project.revision);
+    auditLog.append({ tenantId: saved.tenantId, projectId: saved.id, branchId: saved.branch.id, actorId: principal.subject, eventType: 'architecture-intelligence', action: 'generate-requirements-sequences', targetType: 'sequence-model', targetId: saved.id, outcome: 'success', correlationId: request.id, retentionDays: saved.securitySettings.auditRetentionDays, metadata: { sequenceCount: generated.length, previousRevision: project.revision, nextRevision: saved.revision, authority: 'candidate' } });
+    return reply.send({ authority: 'candidate', persisted: true, sequences: saved.requirementsIntelligence?.sequenceDiagrams ?? [], projectRevision: saved.revision });
+  });
+
+  app.post('/api/projects/:projectId/branches/:branchId/sequences/:sequenceId/decision', async (request, reply) => {
+    const params = z.object({ projectId: z.string().min(1), branchId: z.string().min(1), sequenceId: z.string().min(1) }).safeParse(request.params);
+    const body = z.object({ expectedRevision: z.number().int().nonnegative(), decision: z.enum(['accepted','rejected','deferred']), rationale: z.string().trim().min(3).max(2000) }).safeParse(request.body);
+    if (!params.success || !body.success) return reply.code(400).send({ error: 'INVALID_SEQUENCE_DECISION' });
+    const principal = principalFor(request);
+    const project = await repository.getProject(principal.tenantId, params.data.projectId, params.data.branchId);
+    if (!project) return reply.code(404).send({ error: 'PROJECT_NOT_FOUND' });
+    if (!canPerform(project, principal.subject, 'project.edit')) return reply.code(403).send({ error: 'FORBIDDEN:project.edit' });
+    if (project.revision !== body.data.expectedRevision) return reply.code(409).send({ error: 'REVISION_CONFLICT', currentRevision: project.revision });
+    const sequences: RequirementsSequenceDiagram[] = project.requirementsIntelligence?.sequenceDiagrams ?? [];
+    if (!sequences.some((item) => item.id === params.data.sequenceId)) return reply.code(404).send({ error: 'SEQUENCE_NOT_FOUND' });
+    const now = new Date().toISOString();
+    const next = {
+      ...project,
+      requirementsIntelligence: {
+        ...project.requirementsIntelligence!,
+        sequenceDiagrams: sequences.map((item) => item.id === params.data.sequenceId ? { ...item, status: body.data.decision, updatedAt: now } : item),
+      },
+      revision: project.revision + 1,
+      updatedAt: now,
+    };
+    const saved = await repository.saveProject(next, project.revision);
+    auditLog.append({ tenantId: saved.tenantId, projectId: saved.id, branchId: saved.branch.id, actorId: principal.subject, eventType: 'architecture-intelligence', action: `sequence-${body.data.decision}`, targetType: 'sequence-model', targetId: params.data.sequenceId, outcome: 'success', correlationId: request.id, retentionDays: saved.securitySettings.auditRetentionDays, metadata: { rationale: body.data.rationale, authority: 'project-candidate' } });
+    return reply.send({ project: saved, sequence: (saved.requirementsIntelligence?.sequenceDiagrams as RequirementsSequenceDiagram[] | undefined)?.find((item: RequirementsSequenceDiagram) => item.id === params.data.sequenceId) });
   });
 }

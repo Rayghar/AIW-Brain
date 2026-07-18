@@ -57,6 +57,7 @@ export * from './architectureBlueprint.js';
 export * from './generativeCursor.js';
 export * from './architectureOutcomeEvaluation.js';
 export * from './requirementsGenesis.js';
+export * from './requirementsSequence.js';
 export * from './stageReadiness.js';
 export * from './architectureContextGraph.js';
 export * from './systemContext.js';

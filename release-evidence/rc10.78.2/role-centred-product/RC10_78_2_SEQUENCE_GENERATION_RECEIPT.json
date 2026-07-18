@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T22:45:10.7669688+01:00",
+  "verificationStatus": "locally-executed",
+  "focusedTest": "backend/packages/engine/test/rc10_78_2_sequence_intelligence.test.ts",
+  "apiTest": "backend/apps/api/test/rc10_78_2_role_product.test.ts",
+  "testResults": {
+    "filesPassed": 2,
+    "testsPassed": 3,
+    "testsFailed": 0
+  },
+  "verifiedBehaviours": [
+    "accepted journey paths generate candidate sequence versions",
+    "message ordering is deterministic",
+    "synchronous and asynchronous semantics are retained",
+    "trust-boundary crossings are retained",
+    "requirement and journey lineage is retained",
+    "unchanged replay produces the same fingerprint",
+    "changed evidence creates a superseding revision",
+    "only affected sequence versions become stale",
+    "preview creates no persistence",
+    "persist generates candidate authority only",
+    "acceptance changes project-candidate state only"
+  ],
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "approvedKnowledgeChanges": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}
