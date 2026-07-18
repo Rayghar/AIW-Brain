@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-18T21:50:41.9142403+01:00",
+  "recordedSourceBranch": "codex/rc-10-78-1-consolidated-intelligence-admin-readiness",
+  "deliveryBranch": "codex/rc-10-78-2-role-ux-living-canvas-postgres",
+  "headAtBranchCreation": "6dcafc6f55ab4f2c93e28a196c606f2b448313ea",
+  "expectedAncestry": {
+    "534ffcfb13730eb4775d00d41a2ebdf9b9abea80": true,
+    "6dd79ed14c5e704292a1560fe5815b57719da0e4": true,
+    "ef5f517e59c6d87a2d713d7b52afc695041601f4": true,
+    "aa0cda96009329fa7dfbded17f7c5481375e2af2": true,
+    "785f6c595a4e87d92f072f80aa1ed2d1f2056679": true,
+    "6dcafc6f55ab4f2c93e28a196c606f2b448313ea": true
+  },
+  "workingTreeAtAudit": {
+    "staged": 0,
+    "unstaged": 8,
+    "untracked": 0,
+    "preExistingPaths": [
+      { "path": "backend/packages/admin/tsconfig.tsbuildinfo", "category": "reproducible-build-state", "sha256": "5e58d40a89e7bce700a3eadfc982f6d11b6b9b26972938f9652373f67abed569" },
+      { "path": "backend/packages/artifacts/tsconfig.tsbuildinfo", "category": "reproducible-build-state", "sha256": "18270e2a7491c899846ab407602ad5c52ffcbd4cdfb375f80e94a721b9f7d05f" },
+      { "path": "backend/packages/domain/tsconfig.tsbuildinfo", "category": "reproducible-build-state", "sha256": "a2e28958f86c423c1ab420142313fa316633503eb5dd929f59a601f1af51ee18" },
+      { "path": "backend/packages/engine/tsconfig.tsbuildinfo", "category": "reproducible-build-state", "sha256": "24d1e5cbcba9c435ca5eafbd9179fdd781223557e184a7e554ad6a5f5815ac21" },
+      { "path": "backend/packages/intelligence/tsconfig.tsbuildinfo", "category": "reproducible-build-state", "sha256": "0886cf487cf0090da8be5066f3f1138a55cd1ab1dcd5008ee019e005dd2eb272" },
+      { "path": "backend/packages/knowledge/tsconfig.tsbuildinfo", "category": "reproducible-build-state", "sha256": "6c84219638e8bff3978b35807b220dd94a8ee5e975d6c438668fe624567f3a55" },
+      { "path": "backend/packages/modelling/tsconfig.tsbuildinfo", "category": "reproducible-build-state", "sha256": "02e2718e05520bed18e2a6a2eee370c41b2b912bff98d03c26dba3ad72ae11a8" },
+      { "path": "backend/scripts/migrate-db.ts", "category": "substantive-pre-existing-source-edit", "sha256": "b42732b7fa7b0de55e0876d2af8b1170740e040f1340866bbca0c986b16ad88a" }
+    ]
+  },
+  "localEnvironment": {
+    "backendEnvExists": true,
+    "backendEnvIgnored": true,
+    "backendEnvTracked": false,
+    "backendEnvStaged": false,
+    "databaseUrlPresent": true,
+    "openAiApiKeyPresent": true,
+    "secretValuesCaptured": false
+  },
+  "releaseMetadata": {
+    "declaredPackageVersion": "0.10.0-rc.10.73.6",
+    "targetRelease": "0.10.0-rc.10.78.2",
+    "metadataDrift": true
+  },
+  "database": {
+    "configuredProvider": "postgresql",
+    "latestMigrationFile": "021_rc10_78_1_durable_operational_acceptance.sql",
+    "runtimeConnectivityStatus": "connected",
+    "serverVersion": "18.4 (709c4c3)",
+    "appliedMigrationCount": 3,
+    "latestAppliedMigration": "002_sprint5_observability_and_drift.sql",
+    "pendingMigrationReconciliation": true,
+    "publicTableCount": 21,
+    "rlsEnabledTableCount": 17,
+    "silentMemoryFallbackWhenConfigured": false
+  },
+  "authority": {
+    "productionAccepted": false,
+    "approvedKnowledgeMutations": 0,
+    "productionDesignGraphMutations": 0,
+    "automaticPromotions": 0,
+    "rc10_79Started": false,
+    "prompt6Status": "paused",
+    "backupStatus": "deferred-by-product-owner"
+  }
+}

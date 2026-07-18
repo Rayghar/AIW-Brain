@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-18T21:50:41.9142403+01:00",
+  "release": "v0.10.0-rc.10.78.2",
+  "plannedAreas": [
+    { "area": "baseline-and-forensic-audit", "paths": ["release-evidence/rc10.78.2/role-centred-product", "frontend/tests/e2e"] },
+    { "area": "public-auth-and-role-home", "paths": ["frontend/apps/web/src/features/auth", "frontend/apps/web/src/features/role-home", "frontend/apps/web/src/App.tsx", "frontend/apps/web/src/design-system"] },
+    { "area": "postgres-project-user-persistence", "paths": ["backend/apps/api/src", "backend/apps/api/test", "backend/database/migrations", "backend/scripts"] },
+    { "area": "sequence-intelligence", "paths": ["backend/packages/domain/src", "backend/packages/engine/src", "backend/apps/api/src", "frontend/apps/web/src/features/sequence-intelligence"] },
+    { "area": "living-canvas-coauthoring", "paths": ["frontend/apps/web/src/features/living-canvas", "frontend/apps/web/src/components", "backend/apps/api/src/livingCanvasApplicationRoutes.ts"] },
+    { "area": "role-focused-navigation", "paths": ["frontend/apps/web/src/lib/roleNavigation.ts", "frontend/apps/web/src/lib/roleTools.ts", "frontend/apps/web/src/components"] },
+    { "area": "verification-and-packaging", "paths": ["release-evidence/rc10.78.2/role-centred-product", "scripts/rc10.78.2"] }
+  ],
+  "forbiddenPaths": [
+    "backend/.env",
+    "node_modules",
+    "knowledge-vault",
+    "safe-cas",
+    "quarantine",
+    "browser-cache",
+    "package-cache"
+  ],
+  "authorityInvariants": {
+    "productionAccepted": false,
+    "approvedKnowledgeMutations": 0,
+    "productionDesignGraphMutations": 0,
+    "automaticPromotions": 0,
+    "rc10_79Started": false
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-18T21:50:41.9142403+01:00",
+  "roles": {
+    "unauthenticated": { "current": ["project-hub", "development role entry"], "target": ["public landing", "enterprise sign-in", "request access"], "gap": "no explicit public/auth boundary" },
+    "solution-architect": { "default": "project cockpit", "primary": ["requirements", "quality drivers", "journeys", "system context", "logical application", "application realization", "logical technology", "physical technology", "review", "SDD"], "gaps": ["first-class sequence intelligence", "role home backed by project API", "consolidated intelligence rail"] },
+    "enterprise-architect": { "default": "portfolio", "primary": ["portfolio", "comparison", "standards", "governance", "reuse", "risks", "release impact", "project assurance"], "gaps": ["distinct enterprise home", "project-to-enterprise drilldown continuity", "journey browser acceptance"] },
+    "tenant-administrator": { "default": "admin control plane", "primary": ["People & Access", "identity providers", "roles", "tenant", "audit", "database readiness"], "gaps": ["production-grade sign-in state surfaces", "actual configured PostgreSQL acceptance"] },
+    "project-owner": { "default": "project cockpit", "primary": ["project creation", "collaborators", "role mapping", "review assignments", "archive"], "gaps": ["guided transactional project setup", "idempotent UI receipt"] }
+  },
+  "authority": { "roleSelectionIsAuthorization": false, "serverSideRoleEnforcementRequired": true, "candidateOnlyGeneration": true }
+}
