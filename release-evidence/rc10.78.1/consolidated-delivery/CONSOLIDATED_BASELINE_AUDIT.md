@@ -1,9 +1,9 @@
 # Consolidated delivery baseline audit
 
-Generated: 2026-07-18  
-Repository: `C:\AIW\aiw`  
-Original branch: `codex/rc-10-73-8-architecture-cognition`  
-Focused branch: `codex/rc-10-78-1-consolidated-intelligence-admin-readiness`  
+Generated: 2026-07-18
+Repository: `C:\AIW\aiw`
+Original branch: `codex/rc-10-73-8-architecture-cognition`
+Focused branch: `codex/rc-10-78-1-consolidated-intelligence-admin-readiness`
 Baseline HEAD: `534ffcfb13730eb4775d00d41a2ebdf9b9abea80`
 
 ## Working-tree reconciliation
