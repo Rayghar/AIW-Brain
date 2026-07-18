@@ -131,6 +131,13 @@ export class PostgresProjectRepository implements ProjectRepository {
        ON CONFLICT(tenant_id,project_id,branch_id) DO UPDATE SET current_revision=EXCLUDED.current_revision,canonical_model=EXCLUDED.canonical_model,content_hash=EXCLUDED.content_hash,updated_at=now()`,
       [project.tenantId, project.id, project.branch.id, project.revision, JSON.stringify(project), contentHash(project)],
     );
+    await client.query(`DELETE FROM project_members WHERE tenant_id=$1 AND project_id=$2`, [project.tenantId, project.id]);
+    for (const member of project.members) {
+      await client.query(
+        `INSERT INTO project_members(tenant_id,project_id,member_id,display_name,email,role,status,joined_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,
+        [project.tenantId, project.id, member.id, member.displayName, member.email, member.role, member.status, member.joinedAt],
+      );
+    }
   }
 
   async getProject(tenantId: string, projectId: string, branchId: string): Promise<ArchitectureProject | null> {

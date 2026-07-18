@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS service_level_objectives (
   target_node_id TEXT,
   indicator TEXT NOT NULL,
   target NUMERIC NOT NULL,
-  window TEXT NOT NULL,
+  "window" TEXT NOT NULL,
   definition JSONB NOT NULL,
   enabled BOOLEAN NOT NULL DEFAULT TRUE,
   PRIMARY KEY (tenant_id, slo_id),

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T22:45:10.7669688+01:00",
+  "databaseAcceptance": {
+    "status": "passed",
+    "solutionArchitect": {
+      "created": true,
+      "activated": true,
+      "roles": ["solution-architect"],
+      "defaultProfile": "solution-architect"
+    },
+    "enterpriseArchitect": {
+      "created": true,
+      "activated": true,
+      "roles": ["enterprise-architect", "architecture-reviewer"],
+      "defaultProfile": "enterprise-architect"
+    },
+    "invitationsCreated": 2,
+    "rawTokensPersisted": false,
+    "roleAssignmentsPersisted": true
+  },
+  "identityPosture": {
+    "canonicalAuthority": "existing tenant role-assignment and audit authorities",
+    "passwordsStoredByAiw": false,
+    "authenticationHandledBy": "configured enterprise identity provider or explicitly enabled development authentication",
+    "roleAndStatusValidationServerSide": true
+  },
+  "browserAcceptance": {
+    "status": "pending",
+    "reason": "People & Access creation has not yet been verified through the real browser surface."
+  },
+  "productionAccepted": false,
+  "secretValuesCaptured": false
+}

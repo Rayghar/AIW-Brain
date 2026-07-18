@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T22:45:10.7669688+01:00",
+  "verificationStatus": "postgresql-executed",
+  "tables": [
+    "tenant_user_profiles_v1",
+    "tenant_user_invitations_v1"
+  ],
+  "rowLevelSecurityEnabled": true,
+  "rowLevelSecurityForced": true,
+  "tenantPolicies": [
+    "tenant_user_profiles_v1_isolation",
+    "tenant_user_invitations_v1_isolation"
+  ],
+  "tenantContext": "aiw.tenant_id",
+  "crossTenantProjectVisible": false,
+  "tenantIsolationPassed": true,
+  "passwordStoreIntroduced": false,
+  "authenticationSecretsPersisted": false,
+  "invitationTokenPosture": "only SHA-256 token hashes are persisted",
+  "secretValuesCaptured": false,
+  "productionAccepted": false
+}

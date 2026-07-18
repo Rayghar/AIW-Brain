@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T22:45:10.7669688+01:00",
+  "databaseAcceptance": {
+    "status": "passed",
+    "projectCreated": true,
+    "projectReloaded": true,
+    "projectUpdated": true,
+    "portfolioVisibility": true,
+    "membersPersisted": 2,
+    "documentsPersisted": 1,
+    "crossTenantVisibility": false
+  },
+  "apiAcceptance": {
+    "status": "statically-and-postgresql-verified",
+    "durableFailureFallsBackToLocalDemoState": false,
+    "projectAndMembersUseOneTransaction": true
+  },
+  "browserAcceptance": {
+    "status": "pending",
+    "reason": "The fresh-project role journey has not yet been executed in Chromium for this release slice."
+  },
+  "productionAccepted": false
+}

@@ -182,6 +182,7 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
   );
   const [accessStatus, setAccessStatus] = useState<"checking" | "development-token" | "development" | "enterprise" | "offline">("checking");
   const [accessMessage, setAccessMessage] = useState("Checking workspace sync…");
+  const [storage, setStorage] = useState<{ provider: "memory"|"postgresql"|"mongodb-atlas"; durable: boolean; postgresConfigured: boolean } | null>(null);
   const [projects, setProjects] = useState<PortfolioEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [entering, setEntering] = useState(false);
@@ -238,12 +239,16 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
   const refresh = async () => {
     setLoading(true);
     setError(null);
+    let observedStorage = storage;
     try {
       await refreshSession();
+      const storageStatus = await getJson<{ provider: "memory"|"postgresql"|"mongodb-atlas"; durable: boolean; postgresConfigured: boolean }>("/api/storage/status");
+      setStorage(storageStatus);
+      observedStorage = storageStatus;
       setProjects(await getJson<PortfolioEntry[]>("/api/projects"));
     } catch (cause) {
       setAccessStatus("offline");
-      setAccessMessage("Cloud project sync is unavailable. You can continue locally without losing design work.");
+      setAccessMessage(observedStorage?.durable ? "The configured durable project store is unavailable. AIW will not fall back to local project persistence." : "Cloud project sync is unavailable. Local development mode remains available because no durable store is configured.");
       setError(
         cause instanceof Error ? cause.message : "Project sync unavailable.",
       );
@@ -271,6 +276,9 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
         project = await getJson<ArchitectureProject>("/api/projects/demo");
         hydrateProject(project, true);
       } catch {
+        if (storage?.durable || storage?.postgresConfigured) {
+          throw new Error("The reference project is unavailable from the configured durable store. No local substitute was opened.");
+        }
         project = structuredClone(sampleProject);
         hydrateProject(project, false);
       }
@@ -311,7 +319,7 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
       setProjects(await getJson<PortfolioEntry[]>("/api/projects"));
     } catch (cause) {
       setAccessStatus("offline");
-      setAccessMessage("Workspace access could not be enabled. You can still continue locally.");
+      setAccessMessage(storage?.durable ? "Workspace access could not be enabled. Durable project access remains fail-closed." : "Workspace access could not be enabled. Local development mode remains available.");
       setError(cause instanceof Error ? cause.message : "Access setup failed.");
     } finally {
       setLoading(false);
@@ -369,6 +377,10 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
       setWorkspaceMode("design");
       enterWorkbench();
     } catch (cause) {
+      if (storage?.durable || storage?.postgresConfigured) {
+        setError(cause instanceof Error ? cause.message : "Durable project creation failed.");
+        return;
+      }
       const localProject = structuredClone(sampleProject);
       localProject.id = `local-${Date.now()}`;
       localProject.name = name.trim();
@@ -419,20 +431,20 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
           </div>
         </div>
         <div className="project-hub-copy">
-          <span className="eyebrow">{t("hub.eyebrow")}</span>
-          <h1>Start a guided architecture design</h1>
-          <p>Choose a project, capture requirements, move through each architecture stage, and generate the final SDD pack.</p>
+          <span className="eyebrow">Architecture Intelligence Workbench</span>
+          <h1>Start with intent.<br/>Design with evidence.<br/>Validate what gets built.</h1>
+          <p>AIW is a governed architecture co-authoring environment for solution and enterprise architects—not a chatbot or drawing tool. Turn requirements into traceable models, decisions and an accepted project SDD.</p>
         </div>
         <div className="project-hub-security">
           <Server size={17} />
           <span>
-            <strong>Guided lifecycle first</strong>
-            <small>Requirements → Drivers → Architecture → Assurance → SDD.</small>
+            <strong>Evidence-governed lifecycle</strong>
+            <small>Intent → requirements → journeys → architecture → assurance → SDD.</small>
           </span>
         </div>
         <div className="project-hub-reference-cta">
-          <strong>Open a sample architecture project</strong>
-          <p>Use a ready-made architecture example to explore the guided lifecycle from requirements to SDD.</p>
+          <strong>Explore the governed workbench</strong>
+          <p>Use a reference project to inspect candidate changes, traceability, reviewer governance and SDD assembly. This development release is not production accepted.</p>
           <button className="button button--primary" onClick={() => void openFullReference()} disabled={loading || entering}>
             {loading || entering ? <Loader2 className="spin" size={16} /> : <BrainCircuit size={16} />} Open sample architecture
           </button>
@@ -478,7 +490,7 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
           <summary>
             <span>
               <Server size={16} />
-              <strong>Workspace sync</strong>
+              <strong>Enterprise access and persistence</strong>
             </span>
             <small>{principal ? "Connected" : accessStatus === "checking" ? "Checking" : "Local design mode"}</small>
           </summary>
@@ -715,6 +727,7 @@ export function ProjectHub({ onEnter }: ProjectHubProps) {
             <button
               className="button button--primary"
               onClick={() => setShowCreate(true)}
+              disabled={Boolean(storage?.durable && accessStatus === "offline")}
             >
               <Plus size={16} /> New guided architecture project
             </button>

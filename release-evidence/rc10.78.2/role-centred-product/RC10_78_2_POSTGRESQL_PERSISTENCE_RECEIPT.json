@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T22:45:10.7669688+01:00",
+  "verificationStatus": "postgresql-executed",
+  "adapter": "postgresql",
+  "serverVersion": "PostgreSQL 18.4",
+  "migration": "022_rc10_78_2_role_product_persistence.sql",
+  "migrationApplied": true,
+  "appliedMigrationCount": 23,
+  "publicTableCount": 116,
+  "acceptanceRunId": "8ff58997",
+  "project": {
+    "id": "project-rc10-78-2-8ff58997",
+    "created": true,
+    "reloaded": true,
+    "updated": true,
+    "revisionAfterUpdate": 1,
+    "portfolioVisible": true,
+    "persistedMemberCount": 2,
+    "persistedDocumentCount": 1
+  },
+  "users": {
+    "profilesObservedAfterRun": 4,
+    "solutionArchitectRolePersisted": true,
+    "enterpriseArchitectRolePersisted": true,
+    "invitationsCreatedByRun": 2,
+    "rawInvitationTokensPersisted": false
+  },
+  "transactionBoundaries": [
+    "project and project-member persistence",
+    "tenant profile, role assignment, invitation and audit persistence",
+    "user status and role update with audit"
+  ],
+  "failClosedWhenPostgresqlUnavailable": true,
+  "approvedKnowledgeMutations": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false,
+  "secretValuesCaptured": false,
+  "knownLimitation": "The pg connection-string library warns that sslmode semantics will change in a future major version; the deployed connection should pin verify-full semantics before that upgrade."
+}

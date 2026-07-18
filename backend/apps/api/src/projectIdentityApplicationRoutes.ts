@@ -219,6 +219,7 @@ import { sprint878PlatformRelease } from "./services/releaseRegistry.js";
 import { productionMindFactoryRoutes } from "./routes/productionMindFactoryRoutes.js";
 import type { ApplicationRouteContext } from "./applicationRouteContext.js";
 import { markArchitectureBrainCompatibilityAlias } from "./architectureBrainRouteBoundary.js";
+import { peopleAccessRoutes } from "./routes/peopleAccessRoutes.js";
 export async function registerProjectIdentityApplicationRoutes(context: ApplicationRouteContext) {
   const {
     app, repository, eventHub, auditLog, idempotency, telemetry, durableEvents,
@@ -1110,6 +1111,7 @@ export async function registerProjectIdentityApplicationRoutes(context: Applicat
       version: AIW_RELEASE.version,
     }),
   );
+  await app.register(async (scope) => peopleAccessRoutes(scope, { principalFor }));
   await app.register(async (scope) =>
     saasAdminRoutes(scope, { principalFor: principalFor as never, telemetry }),
   );
