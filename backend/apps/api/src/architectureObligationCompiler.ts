@@ -22,7 +22,7 @@ interface EvidenceRecord {
   requirementRefs: string[];
   journeyRefs: string[];
   qualityDriverRefs: string[];
-  sourceKind: 'requirement' | 'journey' | 'quality' | 'constraint' | 'objective' | 'context' | 'risk' | 'decision';
+  sourceKind: 'requirement' | 'journey' | 'sequence' | 'quality' | 'constraint' | 'objective' | 'context' | 'risk' | 'decision';
 }
 
 interface ResponsibilityCluster {
@@ -46,7 +46,7 @@ const stopWords = new Set([
   'the','a','an','and','or','to','of','for','from','with','without','through','within','into','on','in','by','as','at','is','are','be','being','been','must','shall','should','may','can','could','would','will','system','solution','platform','application','service','user','users','support','provide','enable','ensure','allow','required','requirement','process','manage','management','data','information','business','customer','customers','project','architecture','existing','new','all','each','any','when','where','while','before','after','during','between','across','using','use','used','its','their','that','this','these','those',
 ]);
 
-const architectureSignalPattern = /\b(manag\w*|captur\w*|process\w*|stor\w*|persist\w*|retriev\w*|publish\w*|consum\w*|rout\w*|integrat\w*|onboard\w*|screen\w*|approv\w*|authori[sz]\w*|notif\w*|reconcil\w*|migrat\w*|monitor\w*|detect\w*|creat\w*|updat\w*|delet\w*|search\w*|discover\w*|access\w*|revok\w*|scal\w*|protect\w*|audit\w*|govern\w*|validat\w*|coordinat\w*|calculat\w*|quot\w*|settl\w*|enrol\w*|enroll\w*|grad\w*|assess\w*|telemetry|payment\w*|fund\w*|claim\w*|policy|student\w*|device\w*|asset\w*|data|customer\w*|agent\w*|workflow\w*|identity|order\w*|transaction\w*|interface\w*|api|event\w*|system|service\w*|platform|availability|resilien\w*|privacy|secur\w*|fraud|sanction\w*|aml|legacy|deploy\w*|region\w*|recover\w*|failure\w*|offline|lineage|contract\w*|beneficiar\w*|ledger|partner\w*|correspondent\w*)\b/i;
+const architectureSignalPattern = /\b(manag\w*|captur\w*|process\w*|stor\w*|persist\w*|retriev\w*|publish\w*|consum\w*|rout\w*|integrat\w*|onboard\w*|screen\w*|approv\w*|authenticat\w*|authori[sz]\w*|notif\w*|reconcil\w*|migrat\w*|monitor\w*|detect\w*|creat\w*|updat\w*|delet\w*|search\w*|discover\w*|access\w*|revok\w*|scal\w*|protect\w*|audit\w*|govern\w*|validat\w*|coordinat\w*|calculat\w*|quot\w*|settl\w*|enrol\w*|enroll\w*|grad\w*|assess\w*|telemetry|payment\w*|fund\w*|claim\w*|policy|student\w*|device\w*|asset\w*|data|customer\w*|agent\w*|workflow\w*|identity|order\w*|transaction\w*|interface\w*|api|event\w*|system|service\w*|platform|availability|resilien\w*|privacy|secur\w*|fraud|sanction\w*|aml|legacy|deploy\w*|region\w*|recover\w*|failure\w*|offline|lineage|contract\w*|beneficiar\w*|ledger|partner\w*|correspondent\w*)\b/i;
 
 function isArchitecturallyRelevant(record: EvidenceRecord): boolean {
   return architectureSignalPattern.test(`${record.title} ${record.text}`);
@@ -263,6 +263,19 @@ function collectEvidence(project: ArchitectureProject): EvidenceRecord[] {
       journeyRefs: [`journey:${journey.id}`],
       qualityDriverRefs: unique(journey.paths.flatMap((path) => path.interactions.flatMap((item) => item.qualityRefs))),
       sourceKind: 'journey',
+    });
+  }
+  for (const sequence of project.requirementsIntelligence?.sequenceDiagrams ?? []) {
+    if (sequence.status !== 'accepted') continue;
+    records.push({
+      ref: `sequence:${sequence.id}`,
+      title: sequence.title,
+      text: `${sequence.scenario} ${sequence.trigger} ${sequence.preconditions.join(' ')} ${sequence.messages.map((message) => `${message.label} ${message.semantics} ${message.trustBoundaryCrossing ? 'trust boundary' : ''} ${message.retry ?? ''}`).join(' ')} ${sequence.fragments.map((fragment) => `${fragment.kind} ${fragment.label}`).join(' ')}`,
+      criticality: sequence.messages.some((message) => message.trustBoundaryCrossing || message.authenticationPoint || message.authorisationPoint) ? 'high' : 'medium',
+      requirementRefs: sequence.requirementRefs.map((id) => id.startsWith('requirement:') ? id : `requirement:${id}`),
+      journeyRefs: sequence.journeyRefs.map((id) => id.startsWith('journey:') ? id : `journey:${id}`),
+      qualityDriverRefs: [],
+      sourceKind: 'sequence',
     });
   }
   project.qualityScenarios.forEach((scenario) => records.push({

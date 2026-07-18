@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T23:10:00.0000000+01:00",
+  "implementationStatus": "implemented-and-statically-verified",
+  "surface": "existing Sol workspace drawer and StageCoAuthorPanel",
+  "modes": {
+    "understand": "accepted upstream counts, stage purpose, outcome narrative, design logic, risks and open questions",
+    "propose": "coherent change sets and editable field or graph operations",
+    "compare": "boundary-strategy alternatives with graph diff, benefits, trade-offs, risks and assumptions",
+    "decide": "selective accept, modify, reject, defer and undo",
+    "askSol": "governed bounded route with deterministic fallback and no silent canonical mutation"
+  },
+  "authorityReceiptVisible": true,
+  "providerTraceVisibleWhenUsed": true,
+  "unavailableEvidenceRemainsVisible": true,
+  "browserAcceptanceStatus": "pending",
+  "productionAccepted": false
+}

@@ -230,6 +230,17 @@ export function StageCoAuthorPanel({ targetStage, defaultOpen = false, compact =
     </div>
 
     <div className="stage-co-author__governance-note"><ShieldCheck size={15}/><span><strong>Human-controlled draft layer.</strong> {proposal.notice}</span></div>
+    {proposal.contextSummary ? <section className="stage-context-summary" aria-label="Accepted upstream stage context">
+      <div><span className="eyebrow">What AIW understood</span><strong>Accepted context carried into this stage</strong></div>
+      <dl>
+        <div><dt>Requirements</dt><dd>{proposal.contextSummary.acceptedRequirementCount}</dd></div>
+        <div><dt>Journeys</dt><dd>{proposal.contextSummary.acceptedJourneyCount}</dd></div>
+        <div><dt>Sequences</dt><dd>{proposal.contextSummary.acceptedSequenceCount}</dd></div>
+        <div><dt>Decisions</dt><dd>{proposal.contextSummary.acceptedDecisionCount}</dd></div>
+        <div><dt>Open questions</dt><dd>{proposal.contextSummary.unresolvedQuestionCount}</dd></div>
+      </dl>
+      {proposal.contextSummary.staleSequenceCount ? <p role="status"><AlertTriangle size={14}/>{proposal.contextSummary.staleSequenceCount} sequence candidate(s) are stale and excluded from accepted stage context.</p> : null}
+    </section> : null}
     {proposal.changeSets?.length ? <section className="stage-change-sets" aria-label="Coherent architecture change sets">
       <div className="stage-drafts__heading"><div><span className="eyebrow">Architecture change sets</span><h4>Choose a coherent boundary strategy before deciding individual changes</h4></div><span>{proposal.changeSets.length} alternative{proposal.changeSets.length === 1 ? '' : 's'}</span></div>
       <div className="stage-change-sets__grid">{proposal.changeSets.map((changeSet) => <article key={changeSet.id}>

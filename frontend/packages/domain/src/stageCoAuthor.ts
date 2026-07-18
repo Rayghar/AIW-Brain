@@ -200,6 +200,17 @@ export interface StageCoAuthorModelTrace {
   fallbackUsed: boolean;
 }
 
+export interface StageContextSummary {
+  acceptedRequirementCount: number;
+  acceptedJourneyCount: number;
+  acceptedSequenceCount: number;
+  acceptedDecisionCount: number;
+  unresolvedQuestionCount: number;
+  staleSequenceCount: number;
+  sequenceRefs: string[];
+  upstreamEvidenceRefs: string[];
+}
+
 export interface StageCoAuthorProposal {
   schemaVersion: '1.0';
   mode: 'deterministic' | 'llm-assisted' | 'deterministic-fallback';
@@ -208,6 +219,7 @@ export interface StageCoAuthorProposal {
   projectRevision: number;
   generatedAt: string;
   summary: string;
+  contextSummary?: StageContextSummary | undefined;
   operations: StageDraftOperation[];
   obligations?: ArchitectureObligation[] | undefined;
   changeSets?: ArchitectureChangeSet[] | undefined;

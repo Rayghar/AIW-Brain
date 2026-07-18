@@ -117,10 +117,35 @@ function createRefCatalog(project: ArchitectureProject): Set<string> {
     ...(project.requirementsIntelligence?.requirements ?? []).map((item) => `requirement:${item.id}`),
     ...(project.requirementsIntelligence?.stakeholders ?? []).map((item) => `stakeholder:${item.id}`),
     ...(project.requirementsIntelligence?.journeys ?? []).map((item) => `journey:${item.id}`),
+    ...(project.requirementsIntelligence?.sequenceDiagrams ?? []).map((item) => `sequence:${item.id}`),
     ...(project.requirementsIntelligence?.sources ?? []).map((item) => `source:${item.id}`),
     ...project.decisions.map((item) => `decision:${item.id}`),
     ...project.findings.map((item) => `finding:${item.id}`),
   ]);
+}
+
+function stageContextSummary(project: ArchitectureProject) {
+  const intelligence = project.requirementsIntelligence;
+  const acceptedRequirements = intelligence?.requirements.filter((item) => item.status === 'accepted') ?? [];
+  const acceptedJourneys = intelligence?.journeys.filter((item) => item.status === 'accepted') ?? [];
+  const acceptedSequences = intelligence?.sequenceDiagrams?.filter((item) => item.status === 'accepted') ?? [];
+  const staleSequences = intelligence?.sequenceDiagrams?.filter((item) => item.status === 'stale') ?? [];
+  const acceptedDecisions = project.decisions.filter((item) => item.status === 'accepted');
+  return {
+    acceptedRequirementCount: acceptedRequirements.length,
+    acceptedJourneyCount: acceptedJourneys.length,
+    acceptedSequenceCount: acceptedSequences.length,
+    acceptedDecisionCount: acceptedDecisions.length,
+    unresolvedQuestionCount: intelligence?.openQuestions.filter((item) => item.status === 'open').length ?? 0,
+    staleSequenceCount: staleSequences.length,
+    sequenceRefs: acceptedSequences.map((item) => `sequence:${item.id}`),
+    upstreamEvidenceRefs: [
+      ...acceptedRequirements.slice(0, 80).map((item) => `requirement:${item.id}`),
+      ...acceptedJourneys.slice(0, 24).map((item) => `journey:${item.id}`),
+      ...acceptedSequences.slice(0, 24).map((item) => `sequence:${item.id}`),
+      ...acceptedDecisions.slice(0, 24).map((item) => `decision:${item.id}`),
+    ],
+  };
 }
 
 function driverRefs(project: ArchitectureProject): string[] {
@@ -465,6 +490,7 @@ function compactProject(project: ArchitectureProject, targetStage: StageCoAuthor
         acceptedRequirements: project.requirementsIntelligence.requirements.filter((item) => item.status === 'accepted').slice(0, 80).map((item) => ({ ref: `requirement:${item.id}`, id: item.id, title: item.title, statement: item.statement, type: item.type, priority: item.priority, evidenceRefs: item.evidenceRefs, journeyRefs: item.journeyRefs, qualityAttributeHints: item.qualityAttributeHints })),
         stakeholders: project.requirementsIntelligence.stakeholders.filter((item) => item.status === 'accepted').slice(0, 30).map((item) => ({ ref: `stakeholder:${item.id}`, id: item.id, name: item.name, role: item.role, concerns: item.concerns })),
         journeys: project.requirementsIntelligence.journeys.filter((item) => item.status === 'accepted').slice(0, 24).map((item) => ({ ref: `journey:${item.id}`, id: item.id, name: item.name, goal: item.goal, priority: item.priority, requirementRefs: item.requirementRefs, qualityHotspots: item.qualityHotspots, architectureObligations: item.architectureObligations, participants: item.participants.map((participant) => ({ id: participant.id, name: participant.name, kind: participant.kind })), interactions: item.paths.flatMap((path) => path.interactions).slice(0, 40).map((interaction) => ({ from: interaction.fromParticipantId, to: interaction.toParticipantId, label: interaction.label, requirementRefs: interaction.requirementRefs, qualityRefs: interaction.qualityRefs, trustBoundaryCrossing: interaction.trustBoundaryCrossing })) })),
+        acceptedSequences: (project.requirementsIntelligence.sequenceDiagrams ?? []).filter((item) => item.status === 'accepted').slice(0, 24).map((item) => ({ ref: `sequence:${item.id}`, id: item.id, revision: item.revision, title: item.title, scenario: item.scenario, trigger: item.trigger, requirementRefs: item.requirementRefs, journeyRefs: item.journeyRefs, interfaceRefs: item.interfaceRefs, participants: item.participants.map((participant) => ({ id: participant.id, name: participant.name, type: participant.type, boundary: participant.boundary })), messages: item.messages.slice(0, 60).map((message) => ({ id: message.id, from: message.fromParticipantId, to: message.toParticipantId, label: message.label, semantics: message.semantics, trustBoundaryCrossing: message.trustBoundaryCrossing, authenticationPoint: message.authenticationPoint, authorisationPoint: message.authorisationPoint, requirementRefs: message.requirementRefs, interfaceRefs: message.interfaceRefs })), fragments: item.fragments })),
         contextPackage: project.requirementsIntelligence.contextPackages.find((item) => item.target === targetStage) ?? project.requirementsIntelligence.contextPackages.find((item) => item.target === (targetStage === 'systemContext' ? 'systemContext' : targetStage)),
         openQuestions: project.requirementsIntelligence.openQuestions.filter((item) => item.status === 'open').slice(0, 30),
         health: project.requirementsIntelligence.health,
@@ -494,7 +520,7 @@ export function buildDeterministicStageCoAuthorProposal(input: { project: Archit
       : operations.length
         ? `AIW prepared ${operations.length} evidence-aware field draft${operations.length === 1 ? '' : 's'} for ${stageTitles[input.targetStage]}.`
         : `AIW prepared a model explanation for ${stageTitles[input.targetStage]}; no safe deterministic field draft is currently available.`,
-    operations, obligations: composition.obligations, changeSets, attentionQueue: composition.attentionQueue, clarifications, explanation,
+    operations, contextSummary: stageContextSummary(input.project), obligations: composition.obligations, changeSets, attentionQueue: composition.attentionQueue, clarifications, explanation,
     notice: 'The proposal is a candidate layer only. Evidence-derived change sets remain reversible and nothing enters the canonical model until the architect accepts specific operations.',
   };
 }

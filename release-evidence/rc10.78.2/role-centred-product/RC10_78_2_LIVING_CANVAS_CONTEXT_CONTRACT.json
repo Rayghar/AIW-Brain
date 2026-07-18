@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T23:10:00.0000000+01:00",
+  "verificationStatus": "implemented-and-statically-verified",
+  "canonicalRoute": "POST /api/projects/:projectId/branches/:branchId/stage-co-author",
+  "contextAuthority": "accepted upstream project state only",
+  "contextInputs": [
+    "accepted requirements",
+    "accepted journeys",
+    "accepted requirements-derived sequence versions",
+    "accepted architecture decisions",
+    "quality drivers and scenarios",
+    "constraints and assumptions",
+    "current stage graph objects",
+    "current interfaces",
+    "open questions",
+    "bounded active knowledge"
+  ],
+  "contextSummaryFields": [
+    "acceptedRequirementCount",
+    "acceptedJourneyCount",
+    "acceptedSequenceCount",
+    "acceptedDecisionCount",
+    "unresolvedQuestionCount",
+    "staleSequenceCount",
+    "sequenceRefs",
+    "upstreamEvidenceRefs"
+  ],
+  "sequencePosture": {
+    "acceptedSequencesIncluded": true,
+    "candidateSequencesIncluded": false,
+    "staleSequencesIncluded": false,
+    "staleSequencesReported": true,
+    "sequenceMessagesMaySeedObligations": true
+  },
+  "candidateControls": {
+    "previewBeforeAcceptance": true,
+    "coherentChangeSets": true,
+    "graphDiff": true,
+    "selectiveAcceptance": true,
+    "editRejectDefer": true,
+    "revisionConflictFailsClosed": true,
+    "authority": "candidate",
+    "reviewRequired": true
+  },
+  "approvedKnowledgeChanges": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}

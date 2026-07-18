@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-07-18T23:10:00.0000000+01:00",
+  "implementationStatus": "complete-for-bounded-context-extension",
+  "localTestStatus": "pending-final-run",
+  "browserAcceptanceStatus": "pending",
+  "verifiedByInspection": [
+    "guide, compose and draft-stage autonomy modes",
+    "governed proposal overlay",
+    "added-node, relationship and interface graph diff",
+    "preview, accept, reject, defer and undo controls",
+    "focus and keyboard actions",
+    "smart arrange event after accepted change",
+    "stale proposal rejection",
+    "accepted-sequence context propagation",
+    "candidate-only mutation grammar"
+  ],
+  "newReleaseTest": "backend/apps/api/test/rc10_78_2_living_canvas_context.test.ts",
+  "providerCalls": 0,
+  "approvedKnowledgeChanges": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false
+}
