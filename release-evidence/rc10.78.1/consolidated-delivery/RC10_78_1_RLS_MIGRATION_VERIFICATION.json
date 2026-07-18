@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aiw-rls-migration-verification-v1",
+  "migrations": ["020_rc10_78_saas_admin_foundation.sql", "021_rc10_78_1_durable_operational_acceptance.sql"],
+  "forceRowLevelSecurityPresent": true,
+  "tenantPolicyDefinitionsPresent": true,
+  "migrationTextTestsPassed": true,
+  "targetDatabaseApplied": false,
+  "status": "implementation-verified-target-application-pending"
+}

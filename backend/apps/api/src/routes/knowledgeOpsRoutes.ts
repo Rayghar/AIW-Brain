@@ -112,7 +112,9 @@ export async function knowledgeOpsRoutes(app: FastifyInstance, deps: KnowledgeOp
       adminRepositories.audit.push({ actor: actorOf(principal), action: 'rbac.denied', subject: 'audit.export', at: new Date().toISOString(), detail: `roles: ${rbacGuard.roles.join(',') || 'none'}` });
       return reply.code(403).send({ error: 'PERMISSION_DENIED', permission: 'audit.export', roles: rbacGuard.roles });
     }
-    const rows = adminRepositories.audit.map((event: { at: string; actor: string; action: string; subject: string; detail: string; tenantId?: string }) => [event.at, event.tenantId ?? principal.tenantId, event.actor, event.action, event.subject, `"${String(event.detail).replaceAll('"', "'" )}"`].join(','));
+    const platformScope = rbacGuard.roles.includes('platform-admin');
+    const events = adminRepositories.audit.filter((event: { tenantId?: string }) => platformScope || event.tenantId === principal.tenantId);
+    const rows = events.map((event: { at: string; actor: string; action: string; subject: string; detail: string; tenantId?: string }) => [event.at, event.tenantId ?? principal.tenantId, event.actor, event.action, event.subject, `"${String(event.detail).replaceAll('"', "'" )}"`].join(','));
     reply.header('content-type', 'text/csv; charset=utf-8');
     return ['at,tenantId,actor,action,subject,detail', ...rows].join('\n');
   });
@@ -121,7 +123,10 @@ export async function knowledgeOpsRoutes(app: FastifyInstance, deps: KnowledgeOp
     const principal = principalFor(request);
     const denied = requireRead(reply, principal, 'audit.read');
     if (denied) return denied;
-    return { events: adminRepositories.audit.slice(-200).reverse() };
+    const verdict = hasPermission(principal, 'audit.read');
+    const platformScope = verdict.ok && verdict.roles.includes('platform-admin');
+    const events = adminRepositories.audit.filter((event: { tenantId?: string }) => platformScope || event.tenantId === principal.tenantId);
+    return { events: events.slice(-200).reverse(), tenantId: principal.tenantId, platformScope };
   });
 
   app.get('/api/admin/model-routes', async (request, reply) => {

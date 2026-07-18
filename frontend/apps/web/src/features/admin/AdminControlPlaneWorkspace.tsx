@@ -23,8 +23,8 @@ import { getJson, postJson, putJson, deleteJson } from '../../lib/apiClient';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { StudioActionStrip, StudioDataTable, StudioOperatorChecklist, StudioPipelineBoard, StudioWorkflowPanel, type StudioPipelineStep } from '../../components/StudioSpecialistSurfaces';
 
-type Tab = 'overview' | 'production' | 'models' | 'repositories' | 'repoPilot' | 'mindFactory' | 'sources' | 'patterns' | 'releases' | 'security' | 'tenant' | 'audit';
-const ADMIN_TAB_IDS: Tab[] = ['overview', 'production', 'models', 'repositories', 'repoPilot', 'mindFactory', 'sources', 'patterns', 'releases', 'security', 'tenant', 'audit'];
+type Tab = 'overview' | 'saas' | 'production' | 'models' | 'repositories' | 'repoPilot' | 'mindFactory' | 'sources' | 'patterns' | 'releases' | 'security' | 'tenant' | 'audit';
+const ADMIN_TAB_IDS: Tab[] = ['overview', 'saas', 'production', 'models', 'repositories', 'repoPilot', 'mindFactory', 'sources', 'patterns', 'releases', 'security', 'tenant', 'audit'];
 
 type ControlPlaneSnapshot = {
   generatedAt: string;
@@ -94,6 +94,21 @@ type SecurityPosture = { generatedAt: string; mode: string; summary: { passed: n
 type SecurityPayload = { roles: string[]; defaultRolePermissions: Record<string, string[]>; assignments: RoleAssignment[]; mappingRules: RoleMappingRule[] };
 type TenantPolicyPayload = { policies: TenantPolicy[] };
 type PerformancePayload = { generatedAt: string; checks: Array<{ checkId: string; ok: boolean; measurement: string; threshold: string; recommendation: string }> };
+type SaasOverview = {
+  generatedAt: string;
+  tenantId: string;
+  organisation: { name: string; slug: string; status: string; primaryRegion: string; dataResidency: string } | null;
+  subscription: { planId: string; status: string; currentPeriodEnd: string } | null;
+  plan: { name: string; monthlyPriceUsd: number | null; tenantModelKeys: boolean; specialistFeatures: string[] } | null;
+  usage: { totals: Record<string, number>; estimatedCostUsd: number; eventCount: number };
+  entitlements: Array<{ metric: string; used: number; allowance: number | null; exceeded: boolean }>;
+  budget: { monthlyBudgetUsd: number | null; warningPercent: number; mode: string; semanticAcceptanceUnaffected: boolean } | null;
+  budgetStatus: { percent: number; warning: boolean; mode: string; semanticAcceptanceUnaffected: boolean };
+  access: { activeAssignments: number; roleCount: number };
+  operations: { deploymentMode: string; services: Array<{ service: string; status: string; evidence: string; productionProof: boolean }>; blockers: string[]; productionAccepted: false; billingBoundary?: { configured: boolean; posture: string } };
+  blockers: string[];
+  productionAccepted: false;
+};
 
 type RepositoryAssetDetection = { kind: string; path: string; confidence: number; reason: string; controlsSeeded: string[] };
 type RepositoryConformanceControl = { id: string; title: string; evidenceKind: string; sourcePath: string; severity: string; fitnessTestSeed: string; humanApprovalRequired: boolean };
@@ -140,6 +155,11 @@ const ADMIN_LOCAL_GUIDES: Record<Tab, { title: string; detail: string; actions: 
     title: 'Production readiness preview',
     detail: 'Readiness checks are visible as a launch checklist, but live evidence, worker status and release pins need backend connectivity.',
     actions: ['Connect PostgreSQL/pgvector', 'Enable worker service', 'Load release manifests and audit evidence'],
+  },
+  saas: {
+    title: 'SaaS administration local mode',
+    detail: 'Organisation, plan, usage, identity, billing and operational acceptance tasks require the tenant-scoped Admin API.',
+    actions: ['Create or select an organisation', 'Assign a reference plan and notify-only budget', 'Run identity and operational acceptance'],
   },
   models: {
     title: 'Model route local mode',
@@ -295,6 +315,7 @@ export function AdminControlPlaneWorkspace() {
   const [securityPosture, setSecurityPosture] = useState<SecurityPosture | null>(null);
   const [tenantPolicies, setTenantPolicies] = useState<TenantPolicy[]>([]);
   const [performanceChecks, setPerformanceChecks] = useState<PerformancePayload | null>(null);
+  const [saasOverview, setSaasOverview] = useState<SaasOverview | null>(null);
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [degradedReason, setDegradedReason] = useState<string | null>(null);
@@ -372,7 +393,7 @@ export function AdminControlPlaneWorkspace() {
         return;
       }
 
-      const [snapshotData, summaryData, routeData, connectorData, sourceData, auditData, tenantData, releaseData, manifestData, pinData, patternData, repoPilotData, mindFactoryData, securityData, securityPostureData, tenantPolicyData, performanceData] = await Promise.all([
+      const [snapshotData, summaryData, routeData, connectorData, sourceData, auditData, tenantData, releaseData, manifestData, pinData, patternData, repoPilotData, mindFactoryData, securityData, securityPostureData, tenantPolicyData, performanceData, saasData] = await Promise.all([
         getJson<ControlPlaneSnapshot>('/api/admin/control-plane'),
         getJson<AdminSummary>('/api/admin/summary'),
         getJson<{ routes: ModelRoute[] }>('/api/admin/model-routes'),
@@ -390,6 +411,7 @@ export function AdminControlPlaneWorkspace() {
         getJson<SecurityPosture>('/api/admin/security/posture'),
         getJson<TenantPolicyPayload>('/api/admin/security/tenant-policies'),
         getJson<PerformancePayload>('/api/admin/security/performance-checks'),
+        getJson<SaasOverview>('/api/admin/saas/overview'),
       ]);
       setSnapshot(snapshotData);
       setSummary(summaryData);
@@ -409,6 +431,7 @@ export function AdminControlPlaneWorkspace() {
       setSecurityPosture(securityPostureData);
       setTenantPolicies(tenantPolicyData.policies);
       setPerformanceChecks(performanceData);
+      setSaasOverview(saasData);
       setDegradedReason(null);
       setDemoSeedLoaded(false);
     } catch (error) {
@@ -452,6 +475,7 @@ export function AdminControlPlaneWorkspace() {
   const productionSafe = snapshot ? Object.values(snapshot.safety).every((value) => value === true || value === false) && !snapshot.safety.llmIsAuthority && snapshot.safety.repositoryWritesDefaultDisabled && snapshot.safety.productionFinalizationFailClosed : false;
   const allTabs: Array<{ id: Tab; label: string; icon: React.ReactNode; count?: number }> = [
     { id: 'overview', label: 'Control center', icon: <ServerCog size={15}/> },
+    { id: 'saas', label: 'SaaS operations', icon: <DatabaseZap size={15}/>, count: saasOverview?.blockers.length ?? 0 },
     { id: 'production', label: 'Production readiness', icon: <ClipboardCheck size={15}/> },
     { id: 'models', label: 'Model routes', icon: <BrainCircuit size={15}/>, count: routes.length },
     { id: 'repositories', label: 'Repositories', icon: <GitBranch size={15}/>, count: connectors.length },
@@ -882,6 +906,37 @@ export function AdminControlPlaneWorkspace() {
             <li><CheckCircle2 size={14}/> <strong>Knowledge:</strong> Object-store bucket/path for snapshots and releases, KMS key reference, release pinning policy and rollback owner.</li>
             <li><CheckCircle2 size={14}/> <strong>Runtime:</strong> PostgreSQL/pgvector DSN, worker process, API base URL, telemetry sink, backup location and audit retention.</li>
           </ul>
+        </article>
+      </div> : null}
+
+      {tab === 'saas' ? <div className="admin-section-stack" data-testid="saas-admin-workspace">
+        <article className="admin-wide-card">
+          <h3><DatabaseZap size={17}/> Tenant SaaS operating view</h3>
+          <p>Admin tasks are tenant-scoped and auditable. Budgets are notify-only engineering controls and never change semantic acceptance.</p>
+          <div className="admin-mini-grid">
+            <span>Organisation <strong>{saasOverview?.organisation?.name ?? 'Not configured'}</strong></span>
+            <span>Plan <strong>{saasOverview?.plan?.name ?? 'Not assigned'}</strong></span>
+            <span>Usage events <strong>{saasOverview?.usage.eventCount ?? 0}</strong></span>
+            <span>Active access assignments <strong>{saasOverview?.access.activeAssignments ?? 0}</strong></span>
+            <span>Budget posture <strong>{saasOverview?.budget ? `${saasOverview.budgetStatus.percent}% · notify-only` : 'Not configured'}</strong></span>
+            <span>Production accepted <strong>No</strong></span>
+          </div>
+        </article>
+        <div className="admin-readiness-grid">
+          {[
+            { title: 'Organisations and tenant scope', detail: saasOverview?.organisation ? `${saasOverview.organisation.slug} · ${saasOverview.organisation.primaryRegion} · ${saasOverview.organisation.dataResidency}` : 'Create the tenant organisation profile and residency posture.', status: saasOverview?.organisation ? 'ready' : 'blocked' },
+            { title: 'Plans and entitlements', detail: saasOverview?.plan ? `${saasOverview.plan.name}; tenant model keys=${saasOverview.plan.tenantModelKeys}.` : 'Assign Architect or Enterprise reference plan.', status: saasOverview?.plan ? 'ready' : 'blocked' },
+            { title: 'Usage and budgets', detail: `${saasOverview?.usage.estimatedCostUsd ?? 0} USD estimated; ${saasOverview?.entitlements.filter((item) => item.exceeded).length ?? 0} entitlement warning(s).`, status: saasOverview?.budgetStatus.warning ? 'watch' : 'ready' },
+            { title: 'Identity and access', detail: `${saasOverview?.access.roleCount ?? 0} active role type(s); use OIDC/SAML acceptance for live identity proof.`, status: (saasOverview?.access.activeAssignments ?? 0) > 0 ? 'ready' : 'blocked' },
+            { title: 'Billing boundary', detail: saasOverview?.operations.billingBoundary?.posture ?? 'Signed webhook boundary not configured.', status: saasOverview?.operations.billingBoundary?.configured ? 'ready' : 'watch' },
+            { title: 'Operations and security', detail: `${saasOverview?.operations.services.filter((item) => item.status === 'healthy').length ?? 0}/${saasOverview?.operations.services.length ?? 0} service checks healthy; target-environment proof remains separate.`, status: saasOverview?.operations.blockers.length ? 'watch' : 'ready' },
+          ].map((item) => <article className={`admin-readiness-item ${item.status}`} key={item.title}><div><span className="eyebrow">SaaS task</span><h3>{item.title}</h3></div><strong>{item.status}</strong><p>{item.detail}</p></article>)}
+        </div>
+        <article className="admin-wide-card">
+          <h3><ClipboardCheck size={17}/> Operational acceptance</h3>
+          <p>Runs bounded persistence, tenant isolation, identity-contract, durable queue, object-store, telemetry, backup/restore and signed billing checks. Local success remains reference evidence, not production proof.</p>
+          <button type="button" className="button button--primary" disabled={loading} onClick={async () => { setLoading(true); try { await postJson('/api/admin/saas/operations/acceptance', {}); setNotice('Bounded operational acceptance completed; target-environment blockers remain visible.'); await refresh(); } catch (error) { setNotice(String((error as { message?: string }).message ?? error)); } finally { setLoading(false); } }}><ClipboardCheck size={15}/> Run bounded acceptance</button>
+          {saasOverview?.blockers.length ? <ul className="admin-check-list">{saasOverview.blockers.map((blocker) => <li key={blocker}><ShieldCheck size={14}/>{blocker}</li>)}</ul> : null}
         </article>
       </div> : null}
 

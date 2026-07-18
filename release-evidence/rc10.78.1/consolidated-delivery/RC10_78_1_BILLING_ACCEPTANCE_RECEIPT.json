@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "aiw-billing-acceptance-v1",
+  "invalidSignatureRejected": true,
+  "validSignatureAccepted": true,
+  "idempotentReplayVerified": true,
+  "retrySafe": true,
+  "provider": "reference-boundary-only",
+  "liveBillingProvider": "not-configured",
+  "targetEnvironmentAcceptance": "pending",
+  "productionAccepted": false
+}

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "aiw-backup-restore-receipt-v1",
+  "backupCompleted": false,
+  "backupStatus": "deferred-by-product-owner",
+  "backupRiskAccepted": true,
+  "backupRiskScope": "loss or corruption of the local raw acquisition vault",
+  "backupRestoreDrillContract": "implemented",
+  "independentlyVerifiedRestore": false,
+  "productionAccepted": false
+}

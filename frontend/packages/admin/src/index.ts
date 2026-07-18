@@ -182,6 +182,159 @@ export interface PerformanceCheckResult {
   recommendation: string;
 }
 
+export type PlanId = 'architect' | 'enterprise';
+export type SubscriptionStatus = 'trial' | 'active' | 'past-due' | 'suspended' | 'cancelled';
+export type UsageMetric = 'active-projects' | 'reasoning-runs' | 'input-tokens' | 'output-tokens' | 'storage-bytes' | 'exports' | 'collaborator-seats';
+
+export interface ReferencePlan {
+  planId: PlanId;
+  name: string;
+  monthlyPriceUsd: number | null;
+  includedProjects: number | null;
+  reasoningTokenAllowance: number | null;
+  storageBytesAllowance: number | null;
+  exportAllowance: number | null;
+  collaboratorAllowance: number | null;
+  specialistFeatures: string[];
+  tenantModelKeys: boolean;
+  enterpriseUpgradePath: boolean;
+  commercialStatus: 'reference-catalogue';
+}
+
+export interface OrganisationProfile {
+  tenantId: string;
+  name: string;
+  slug: string;
+  status: 'provisioning' | 'active' | 'suspended' | 'closed';
+  primaryRegion: string;
+  dataResidency: string;
+  billingEmail?: string;
+  createdAt: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export interface TenantSubscription {
+  tenantId: string;
+  planId: PlanId;
+  status: SubscriptionStatus;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+  externalBillingReference?: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export interface TenantUsageEvent {
+  eventId: string;
+  tenantId: string;
+  projectId?: string;
+  metric: UsageMetric;
+  quantity: number;
+  estimatedCostUsd?: number;
+  occurredAt: string;
+  source: string;
+  correlationId?: string;
+}
+
+export interface TenantUsageSummary {
+  tenantId: string;
+  periodStart: string;
+  periodEnd: string;
+  totals: Record<UsageMetric, number>;
+  estimatedCostUsd: number;
+  eventCount: number;
+}
+
+export interface TenantBudgetPolicy {
+  tenantId: string;
+  monthlyBudgetUsd: number | null;
+  warningPercent: number;
+  mode: 'notify-only';
+  semanticAcceptanceUnaffected: true;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export interface EnterpriseIdentityProvider {
+  providerId: string;
+  tenantId: string;
+  type: 'oidc' | 'saml';
+  name: string;
+  issuer: string;
+  clientId: string;
+  metadataUrl?: string;
+  scopes: string[];
+  enabled: boolean;
+  roleClaimPath?: string;
+  signingCertificateReference?: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+export interface BillingEventReceipt {
+  provider: string;
+  eventId: string;
+  tenantId: string;
+  eventType: string;
+  payloadSha256: string;
+  signatureVerified: boolean;
+  disposition: 'accepted' | 'ignored' | 'rejected';
+  externalCustomerReference?: string;
+  externalSubscriptionReference?: string;
+  receivedAt: string;
+  processedAt?: string;
+  processingDetail: string;
+}
+
+export interface OperationalAcceptanceCheck {
+  id: string;
+  category: 'database' | 'identity' | 'queue' | 'object-storage' | 'telemetry' | 'backup-restore' | 'billing' | 'audit' | 'degraded-mode';
+  status: 'passed' | 'partial' | 'failed' | 'not-configured' | 'not-exercised';
+  detail: string;
+  productionProof: boolean;
+  evidence?: string[];
+}
+
+export interface OperationalAcceptanceRun {
+  runId: string;
+  tenantId: string;
+  environment: string;
+  startedAt: string;
+  completedAt: string;
+  status: 'passed' | 'partial' | 'failed';
+  checks: OperationalAcceptanceCheck[];
+  evidenceSha256: string;
+  productionProof: boolean;
+  executedBy: string;
+}
+
+export interface BackupRestoreDrill {
+  drillId: string;
+  tenantId: string;
+  startedAt: string;
+  completedAt: string;
+  sourceAdapter: string;
+  backupUri: string;
+  backupSha256: string;
+  restoreTarget: string;
+  restoredSha256: string;
+  matched: boolean;
+  productionProof: boolean;
+  executedBy: string;
+}
+
+export interface AdminOperationalPosture {
+  generatedAt: string;
+  tenantId: string;
+  deploymentMode: 'reference' | 'pilot' | 'production';
+  deterministicModeAvailable: boolean;
+  services: Array<{ service: string; status: 'healthy' | 'degraded' | 'failed' | 'not-configured'; evidence: string; productionProof: boolean }>;
+  backup: { status: 'not-exercised' | 'reference-only' | 'verified'; lastExerciseAt?: string; productionProof: boolean };
+  blockers: string[];
+  productionAccepted: false;
+}
+
 export interface AdminControlPlaneSnapshot {
   generatedAt: string;
   readiness: number;
@@ -220,6 +373,15 @@ export interface AdminControlPlaneStore {
   tenantPolicies: Map<string, TenantPolicy>;
   roleAssignments: Map<string, RoleAssignment>;
   roleMappingRules: Map<string, RoleMappingRule>;
+  planCatalog: Map<PlanId, ReferencePlan>;
+  organisations: Map<string, OrganisationProfile>;
+  subscriptions: Map<string, TenantSubscription>;
+  usageEvents: TenantUsageEvent[];
+  budgets: Map<string, TenantBudgetPolicy>;
+  identityProviders: Map<string, EnterpriseIdentityProvider>;
+  billingEvents: Map<string, BillingEventReceipt>;
+  operationalAcceptanceRuns: OperationalAcceptanceRun[];
+  backupRestoreDrills: BackupRestoreDrill[];
 }
 
 export const requiredAdminSections: AdminControlPlaneSection[] = [
@@ -261,7 +423,64 @@ export function createAdminControlPlaneStore(): AdminControlPlaneStore {
     tenantPolicies: new Map<string, TenantPolicy>(),
     roleAssignments: new Map<string, RoleAssignment>(),
     roleMappingRules: new Map<string, RoleMappingRule>(),
+    planCatalog: new Map<PlanId, ReferencePlan>(),
+    organisations: new Map<string, OrganisationProfile>(),
+    subscriptions: new Map<string, TenantSubscription>(),
+    usageEvents: [],
+    budgets: new Map<string, TenantBudgetPolicy>(),
+    identityProviders: new Map<string, EnterpriseIdentityProvider>(),
+    billingEvents: new Map<string, BillingEventReceipt>(),
+    operationalAcceptanceRuns: [],
+    backupRestoreDrills: [],
   };
+}
+
+export function referencePlanCatalog(): ReferencePlan[] {
+  return [
+    { planId: 'architect', name: 'AIW Architect', monthlyPriceUsd: 20, includedProjects: 5, reasoningTokenAllowance: 1_000_000, storageBytesAllowance: 5_000_000_000, exportAllowance: 25, collaboratorAllowance: 3, specialistFeatures: ['governed-sdd', 'design-graph', 'architecture-review'], tenantModelKeys: true, enterpriseUpgradePath: true, commercialStatus: 'reference-catalogue' },
+    { planId: 'enterprise', name: 'AIW Enterprise', monthlyPriceUsd: null, includedProjects: null, reasoningTokenAllowance: null, storageBytesAllowance: null, exportAllowance: null, collaboratorAllowance: null, specialistFeatures: ['enterprise-identity', 'tenant-policy', 'specialist-adjudication', 'operational-acceptance'], tenantModelKeys: true, enterpriseUpgradePath: false, commercialStatus: 'reference-catalogue' },
+  ];
+}
+
+export function normalizeOrganisationProfile(input: Partial<OrganisationProfile>, actor: string, fallbackTenantId: string): { ok: true; organisation: OrganisationProfile } | { ok: false; reasons: string[] } {
+  const tenantId = input.tenantId?.trim() || fallbackTenantId;
+  const name = input.name?.trim() || '';
+  const slug = input.slug?.trim().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '') || '';
+  const reasons = [...(!name ? ['Organisation name is required.'] : []), ...(!slug ? ['Organisation slug is required.'] : []), ...(slug.length > 63 ? ['Organisation slug must be at most 63 characters.'] : [])];
+  if (reasons.length) return { ok: false, reasons };
+  const now = new Date().toISOString();
+  return { ok: true, organisation: { tenantId, name, slug, status: input.status ?? 'active', primaryRegion: input.primaryRegion?.trim() || 'reference-local', dataResidency: input.dataResidency?.trim() || 'tenant-policy', ...(input.billingEmail?.trim() ? { billingEmail: input.billingEmail.trim() } : {}), createdAt: input.createdAt ?? now, updatedAt: now, updatedBy: actor } };
+}
+
+export function normalizeTenantSubscription(input: Partial<TenantSubscription>, actor: string, fallbackTenantId: string): { ok: true; subscription: TenantSubscription } | { ok: false; reasons: string[] } {
+  const tenantId = input.tenantId?.trim() || fallbackTenantId;
+  const planId = input.planId;
+  const reasons = planId === 'architect' || planId === 'enterprise' ? [] : ['A valid reference plan is required.'];
+  const start = input.currentPeriodStart ? new Date(input.currentPeriodStart) : new Date();
+  const end = input.currentPeriodEnd ? new Date(input.currentPeriodEnd) : new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, start.getUTCDate()));
+  if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || end <= start) reasons.push('Subscription period must be valid and increasing.');
+  if (reasons.length) return { ok: false, reasons };
+  return { ok: true, subscription: { tenantId, planId: planId!, status: input.status ?? 'active', currentPeriodStart: start.toISOString(), currentPeriodEnd: end.toISOString(), ...(input.externalBillingReference ? { externalBillingReference: input.externalBillingReference } : {}), updatedAt: new Date().toISOString(), updatedBy: actor } };
+}
+
+export function normalizeBudgetPolicy(input: Partial<TenantBudgetPolicy>, actor: string, fallbackTenantId: string): { ok: true; budget: TenantBudgetPolicy } | { ok: false; reasons: string[] } {
+  const monthlyBudgetUsd = input.monthlyBudgetUsd === null || input.monthlyBudgetUsd === undefined ? null : Number(input.monthlyBudgetUsd);
+  const warningPercent = Number(input.warningPercent ?? 80);
+  const reasons = [...(monthlyBudgetUsd !== null && (!Number.isFinite(monthlyBudgetUsd) || monthlyBudgetUsd < 0) ? ['Monthly budget must be null or non-negative.'] : []), ...(!Number.isFinite(warningPercent) || warningPercent < 1 || warningPercent > 100 ? ['Warning percent must be between 1 and 100.'] : [])];
+  if (reasons.length) return { ok: false, reasons };
+  return { ok: true, budget: { tenantId: input.tenantId?.trim() || fallbackTenantId, monthlyBudgetUsd, warningPercent, mode: 'notify-only', semanticAcceptanceUnaffected: true, updatedAt: new Date().toISOString(), updatedBy: actor } };
+}
+
+export function buildTenantUsageSummary(events: TenantUsageEvent[], tenantId: string, periodStart: string, periodEnd: string): TenantUsageSummary {
+  const totals: Record<UsageMetric, number> = { 'active-projects': 0, 'reasoning-runs': 0, 'input-tokens': 0, 'output-tokens': 0, 'storage-bytes': 0, exports: 0, 'collaborator-seats': 0 };
+  const selected = events.filter((event) => event.tenantId === tenantId && event.occurredAt >= periodStart && event.occurredAt < periodEnd);
+  for (const event of selected) totals[event.metric] += event.quantity;
+  return { tenantId, periodStart, periodEnd, totals, estimatedCostUsd: selected.reduce((sum, event) => sum + (event.estimatedCostUsd ?? 0), 0), eventCount: selected.length };
+}
+
+export function evaluateTenantEntitlements(plan: ReferencePlan, usage: TenantUsageSummary): Array<{ metric: UsageMetric; used: number; allowance: number | null; exceeded: boolean }> {
+  const allowance: Partial<Record<UsageMetric, number | null>> = { 'active-projects': plan.includedProjects, 'input-tokens': plan.reasoningTokenAllowance, 'output-tokens': plan.reasoningTokenAllowance, 'storage-bytes': plan.storageBytesAllowance, exports: plan.exportAllowance, 'collaborator-seats': plan.collaboratorAllowance };
+  return (Object.keys(usage.totals) as UsageMetric[]).map((metric) => ({ metric, used: usage.totals[metric], allowance: allowance[metric] ?? null, exceeded: allowance[metric] !== null && allowance[metric] !== undefined ? usage.totals[metric] > allowance[metric]! : false }));
 }
 
 export function isMutationAllowedByAdminPolicy(policy: { writeEnabled?: boolean; humanApproved?: boolean }): boolean {

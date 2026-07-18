@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "aiw-tenant-isolation-receipt-v1",
+  "memoryRepositoryCrossTenantReadDenied": true,
+  "platformScopeExplicit": true,
+  "tenantScopeImplicitlyElevated": false,
+  "forceRlsPolicyMigrationsPresent": true,
+  "focusedTestsPassed": true,
+  "targetDatabaseRlsAcceptance": "pending-target-environment",
+  "productionAccepted": false
+}

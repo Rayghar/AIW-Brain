@@ -143,6 +143,7 @@ import { adminConfigurationRoutes } from "./routes/adminConfigurationRoutes.js";
 import { patternDnaRoutes } from "./routes/patternDnaRoutes.js";
 import { repositoryConformancePilotRoutes } from "./routes/repositoryConformancePilotRoutes.js";
 import { enterpriseSecurityRoutes } from "./routes/enterpriseSecurityRoutes.js";
+import { saasAdminRoutes } from "./routes/saasAdminRoutes.js";
 import { reviewStudioRoutes } from "./routes/reviewStudioRoutes.js";
 import { knowledgeReleaseRoutes } from "./routes/knowledgeReleaseRoutes.js";
 import { healthRoutes } from "./routes/healthRoutes.js";
@@ -1108,6 +1109,9 @@ export async function registerProjectIdentityApplicationRoutes(context: Applicat
       principalFor: principalFor as never,
       version: AIW_RELEASE.version,
     }),
+  );
+  await app.register(async (scope) =>
+    saasAdminRoutes(scope, { principalFor: principalFor as never, telemetry }),
   );
   await app.register(async (scope) =>
     productionMindFactoryRoutes(scope, { principalFor: principalFor as never }),

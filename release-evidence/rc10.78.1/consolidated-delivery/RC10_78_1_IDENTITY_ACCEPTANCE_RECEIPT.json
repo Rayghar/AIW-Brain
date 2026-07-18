@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aiw-identity-acceptance-v1",
+  "oidcConfigurationContract": "implemented",
+  "roleMappingValidation": "passed-offline",
+  "exactTenantScopeRequired": true,
+  "liveEnterpriseIdentityProvider": "not-configured",
+  "targetEnvironmentAcceptance": "pending",
+  "productionAccepted": false
+}

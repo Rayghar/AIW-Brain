@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aiw-rc10.78.1-admin-capability-matrix-v1",
+  "capabilities": [
+    { "capability": "organisation-and-tenant-context", "implementation": "complete", "targetEnvironmentAcceptance": "pending" },
+    { "capability": "reference-plan-and-entitlements", "implementation": "complete", "targetEnvironmentAcceptance": "pending" },
+    { "capability": "usage-and-notify-only-budgets", "implementation": "complete", "targetEnvironmentAcceptance": "pending" },
+    { "capability": "enterprise-identity-contract", "implementation": "complete", "targetEnvironmentAcceptance": "pending" },
+    { "capability": "signed-billing-webhook-boundary", "implementation": "complete", "targetEnvironmentAcceptance": "pending" },
+    { "capability": "operational-readiness-and-security-posture", "implementation": "complete", "targetEnvironmentAcceptance": "pending" },
+    { "capability": "backup-and-restore-drill-recording", "implementation": "complete", "targetEnvironmentAcceptance": "pending" }
+  ],
+  "productionAccepted": false
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aiw-operational-acceptance-v1",
+  "localBoundedAcceptance": "passed",
+  "healthAndDependencyChecks": "implemented",
+  "durableAcceptanceRunPersistence": "implemented",
+  "liveTargetEnvironment": "not-configured",
+  "targetEnvironmentAcceptance": "pending",
+  "productionAccepted": false
+}
