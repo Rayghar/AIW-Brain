@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "aiw-consolidated-final-decision-v1",
+  "generatedAt": "2026-07-18T19:27:55+01:00",
+  "decision": "B-reference-and-development-foundation-passed-target-environment-pending",
+  "architectureGeneralisation": "passed",
+  "workbenchIntelligence": "passed",
+  "browserAcceptance": "passed-desktop-and-laptop",
+  "saasAdminReferenceFoundation": "passed",
+  "targetEnvironmentAcceptance": "pending",
+  "productionAccepted": false,
+  "gate6C": "blocked",
+  "gate6D": "not-started",
+  "prompt6": "paused",
+  "rc10_79Started": false,
+  "backup": "deferred-by-product-owner"
+}

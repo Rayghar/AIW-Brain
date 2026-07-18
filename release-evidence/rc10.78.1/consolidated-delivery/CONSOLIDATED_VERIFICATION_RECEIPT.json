@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "aiw-consolidated-verification-v1",
+  "generatedAt": "2026-07-18T19:27:55+01:00",
+  "builds": {
+    "backendDomain": "passed",
+    "backendAdmin": "passed",
+    "backendEngine": "passed",
+    "backendApi": "passed",
+    "frontendProduction": "passed"
+  },
+  "focusedTests": {
+    "apiFiles": 3,
+    "apiTestsPassed": 18,
+    "unseenJourneyTestsPassed": 1,
+    "candidateLifecycleTestsPassed": 5,
+    "desktopBrowserJourneysPassed": 3,
+    "laptopBrowserJourneysPassed": 3
+  },
+  "jsonFilesParsed": 30,
+  "gitDiffCheck": "passed",
+  "credentialsCommitted": 0,
+  "rawVaultPayloadsCommitted": 0,
+  "unrestrictedProviderResponsesCommitted": 0,
+  "providerCalls": 0,
+  "tokens": 0,
+  "providerCostUsd": 0,
+  "approvedKnowledgeChanges": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0,
+  "productionAccepted": false,
+  "status": "passed-development-and-reference-foundation"
+}

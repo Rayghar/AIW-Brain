@@ -1,0 +1,249 @@
+{
+  "schemaVersion": "aiw-consolidated-browser-journeys-v1",
+  "results": [
+    {
+      "scenarioId": "cross-border-sme-payments",
+      "stages": [
+        {
+          "candidateCount": 18,
+          "fingerprint": "9787b78f6a2e1762b8d561767156b5ed4e5088c5ce2090e04333701c150cb07e"
+        },
+        {
+          "candidateCount": 18,
+          "fingerprint": "2bd193d84eb41cc26af12d8ae0d2ba3e547ade0012cdb10314194ace09682c28"
+        },
+        {
+          "candidateCount": 17,
+          "fingerprint": "e3142a640ea02f34631dcda465aef3b2e4325ce56f1be76bbac913b80b44eeda"
+        },
+        {
+          "candidateCount": 16,
+          "fingerprint": "c7125442b1e6687a0f8eefd8104fdab5b54cd29a693d57d8d72d6f8444f9e269"
+        }
+      ],
+      "allFourDesignStagesActionable": true,
+      "acceptRejectModifyObserved": true,
+      "deferObserved": true,
+      "selectiveStalenessObserved": true,
+      "reviewerDecisionPersistenceObserved": true,
+      "scenarioSpecificSddFingerprint": "aa0621a9e9bf8f4e6d516014bcc6fdf6efa42181df3c061a9544a5123bd7b746",
+      "rejectedCandidatesExcludedFromSdd": true,
+      "candidateAuthorityOnly": true,
+      "errors": []
+    },
+    {
+      "scenarioId": "insurance-claims-modernisation",
+      "stages": [
+        {
+          "candidateCount": 25,
+          "fingerprint": "75d8b1eb2fa7e2cfc0284a3617b5305cf477a67e9e7faeb0c42d8f80de29206f"
+        },
+        {
+          "candidateCount": 25,
+          "fingerprint": "39b3c95d01dc1bded033f76721f222fc0e31e926f014be55723967fe55ef24a2"
+        },
+        {
+          "candidateCount": 29,
+          "fingerprint": "76906f5b3f355656c116e79fe590df565c8010ba93ed50de0f09b5f14eb7a401"
+        },
+        {
+          "candidateCount": 21,
+          "fingerprint": "17b1fe62216e90c2837161f9db06a78eacd85ac0d17a8efa08182b6445a07648"
+        }
+      ],
+      "allFourDesignStagesActionable": true,
+      "acceptRejectModifyObserved": true,
+      "deferObserved": true,
+      "selectiveStalenessObserved": true,
+      "reviewerDecisionPersistenceObserved": true,
+      "scenarioSpecificSddFingerprint": "2e7d4a5324f9c6ad8e94724319bbfa39de7396171c3b61aa2d2ec722d71c49d4",
+      "rejectedCandidatesExcludedFromSdd": true,
+      "candidateAuthorityOnly": true,
+      "errors": []
+    },
+    {
+      "scenarioId": "regulated-ai-service",
+      "stages": [
+        {
+          "candidateCount": 23,
+          "fingerprint": "9a1e21c94d58cab5f07bdc2f7a90f51c00fe5976ba68562ea1099b59ac9bfd06"
+        },
+        {
+          "candidateCount": 23,
+          "fingerprint": "1c03291856c2063cbad20807adaf872d6a155376238e16f4bf0c24949c8ecbec"
+        },
+        {
+          "candidateCount": 23,
+          "fingerprint": "c5b316b125828f19dce81df79bf001126a6b6f27c0c6ff66967162688fba427b"
+        },
+        {
+          "candidateCount": 22,
+          "fingerprint": "0d95001ed501a07d3584da0d5f2cb0c6308901e35ead08dfa9a07518b3408844"
+        }
+      ],
+      "allFourDesignStagesActionable": true,
+      "acceptRejectModifyObserved": true,
+      "deferObserved": true,
+      "selectiveStalenessObserved": true,
+      "reviewerDecisionPersistenceObserved": true,
+      "scenarioSpecificSddFingerprint": "9635dfc76a6b9300495fd722c0b2957e4a7312a7c750251084e3ee781c5e0775",
+      "rejectedCandidatesExcludedFromSdd": true,
+      "candidateAuthorityOnly": true,
+      "errors": []
+    }
+  ],
+  "screenshots": [
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "accepted-requirements",
+      "path": "product-journey/cross-border-sme-payments-accepted-requirements.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "system-context",
+      "path": "product-journey/cross-border-sme-payments-system-context.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "candidate-comparison",
+      "path": "product-journey/cross-border-sme-payments-candidate-comparison.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "stage-1",
+      "path": "product-journey/cross-border-sme-payments-stage-1.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "stage-2",
+      "path": "product-journey/cross-border-sme-payments-stage-2.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "stage-3",
+      "path": "product-journey/cross-border-sme-payments-stage-3.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "stage-4",
+      "path": "product-journey/cross-border-sme-payments-stage-4.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "staleness-state",
+      "path": "product-journey/cross-border-sme-payments-staleness-state.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "reviewer-governance",
+      "path": "product-journey/cross-border-sme-payments-reviewer-governance.png"
+    },
+    {
+      "scenario": "cross-border-sme-payments",
+      "stage": "sdd",
+      "path": "product-journey/cross-border-sme-payments-sdd.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "accepted-requirements",
+      "path": "product-journey/insurance-claims-modernisation-accepted-requirements.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "system-context",
+      "path": "product-journey/insurance-claims-modernisation-system-context.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "candidate-comparison",
+      "path": "product-journey/insurance-claims-modernisation-candidate-comparison.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "stage-1",
+      "path": "product-journey/insurance-claims-modernisation-stage-1.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "stage-2",
+      "path": "product-journey/insurance-claims-modernisation-stage-2.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "stage-3",
+      "path": "product-journey/insurance-claims-modernisation-stage-3.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "stage-4",
+      "path": "product-journey/insurance-claims-modernisation-stage-4.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "staleness-state",
+      "path": "product-journey/insurance-claims-modernisation-staleness-state.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "reviewer-governance",
+      "path": "product-journey/insurance-claims-modernisation-reviewer-governance.png"
+    },
+    {
+      "scenario": "insurance-claims-modernisation",
+      "stage": "sdd",
+      "path": "product-journey/insurance-claims-modernisation-sdd.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "accepted-requirements",
+      "path": "product-journey/regulated-ai-service-accepted-requirements.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "system-context",
+      "path": "product-journey/regulated-ai-service-system-context.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "candidate-comparison",
+      "path": "product-journey/regulated-ai-service-candidate-comparison.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "stage-1",
+      "path": "product-journey/regulated-ai-service-stage-1.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "stage-2",
+      "path": "product-journey/regulated-ai-service-stage-2.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "stage-3",
+      "path": "product-journey/regulated-ai-service-stage-3.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "stage-4",
+      "path": "product-journey/regulated-ai-service-stage-4.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "staleness-state",
+      "path": "product-journey/regulated-ai-service-staleness-state.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "reviewer-governance",
+      "path": "product-journey/regulated-ai-service-reviewer-governance.png"
+    },
+    {
+      "scenario": "regulated-ai-service",
+      "stage": "sdd",
+      "path": "product-journey/regulated-ai-service-sdd.png"
+    }
+  ],
+  "providerCalls": 0,
+  "productionAccepted": false
+}

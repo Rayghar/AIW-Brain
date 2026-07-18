@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "aiw-consolidated-browser-acceptance-v1",
+  "generatedAt": "2026-07-18T19:27:55+01:00",
+  "projects": {
+    "chromium-desktop": { "scenariosPassed": 3, "scenariosRun": 3 },
+    "chromium-laptop": { "scenariosPassed": 3, "scenariosRun": 3 }
+  },
+  "scenarioCount": 3,
+  "designStageAcceptances": 12,
+  "screenshotCountPerProject": 30,
+  "consequentialObligations": 2257,
+  "exposedOrTraceableObligations": 2257,
+  "overallUiApiParity": 1,
+  "criticalHiddenObligations": 0,
+  "reviewerDecisionsPersisted": 7,
+  "providerCalls": 0,
+  "tokens": 0,
+  "providerCostUsd": 0,
+  "passed": true,
+  "productionAccepted": false
+}

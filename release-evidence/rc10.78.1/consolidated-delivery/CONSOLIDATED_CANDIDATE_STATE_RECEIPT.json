@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "aiw-consolidated-candidate-state-v1",
+  "statesExercised": ["proposed", "under-review", "accepted-for-project", "rejected", "deferred", "stale", "superseded"],
+  "acceptFlow": "passed",
+  "rejectFlow": "passed",
+  "modifyFlow": "passed",
+  "deferFlow": "passed",
+  "selectiveDownstreamStaleness": "passed",
+  "regenerationSupersededObsoleteStaleCandidates": true,
+  "approvedKnowledgeMutations": 0,
+  "productionDesignGraphMutations": 0,
+  "automaticPromotions": 0
+}

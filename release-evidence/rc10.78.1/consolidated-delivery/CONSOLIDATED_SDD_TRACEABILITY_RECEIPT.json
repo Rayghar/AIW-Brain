@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "aiw-consolidated-sdd-traceability-v1",
+  "scenarioSpecificSdds": 3,
+  "distinctSddFingerprints": 3,
+  "rejectedCandidatesExcluded": true,
+  "acceptedCandidateStateIncluded": true,
+  "deferredItemsLabelled": true,
+  "candidateAuthorityPreserved": true,
+  "passed": true
+}

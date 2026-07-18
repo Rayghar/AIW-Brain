@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aiw-consolidated-next-stage-entry-v1",
+  "nextStage": "target-environment integration and acceptance",
+  "entryApproved": false,
+  "blockingPrerequisites": [
+    "apply and verify migrations against the target database",
+    "configure and validate enterprise identity",
+    "configure and validate the billing provider boundary",
+    "run target-environment operational acceptance",
+    "perform an independently verified backup and restore drill"
+  ],
+  "releaseTagApproved": false,
+  "productionAccepted": false
+}

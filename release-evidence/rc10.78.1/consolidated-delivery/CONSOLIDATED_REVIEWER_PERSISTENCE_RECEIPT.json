@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "aiw-consolidated-reviewer-persistence-v1",
+  "actionsCovered": ["approve-project-candidate", "return-with-comments", "reject-candidate", "request-evidence", "request-regeneration", "mark-risk-accepted", "record-exception"],
+  "persistedDecisionCount": 7,
+  "reloadVerifiedCount": 7,
+  "authority": "project-candidate-review",
+  "productionAuthority": false,
+  "passed": true
+}
