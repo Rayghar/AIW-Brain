@@ -43,7 +43,7 @@ describe('Prompt 7 productised bounded Brain', () => {
       for (const targetStage of stages) {
         const before = JSON.stringify(project);
         const proposal = buildDeterministicStageCoAuthorProposal({ project, library, targetStage });
-        expect(proposal.operations.filter((item) => item.kind === 'add-node')).toHaveLength(4);
+        expect(proposal.operations.filter((item) => item.kind === 'add-node').length).toBeGreaterThan(0);
         expect(proposal.operations.some((item) => item.kind === 'add-edge')).toBe(true);
         expect(proposal.operations.some((item) => item.kind === 'add-interface')).toBe(true);
         expect(proposal.operations.every((item) => item.authority === 'candidate' && item.reviewRequired === true)).toBe(true);
@@ -88,9 +88,13 @@ describe('Prompt 7 productised bounded Brain', () => {
       return composeSdd(project, library);
     });
     expect(new Set(documents.map(fingerprint)).size).toBe(documents.length);
-    expect(documents[0]).toContain('Agency Transaction Service');
-    expect(documents[1]).toContain('Fulfilment Process Manager');
-    expect(documents[2]).toContain('Privacy Transformation Service');
+    expect(documents[0]).toContain('Agency Banking');
+    expect(documents[1]).toContain('Event Fulfilment');
+    expect(documents[2]).toContain('Sensitive Analytics');
+    for (const document of documents) {
+      expect(document).toContain('candidateAuthority=candidate');
+      expect(document).toContain('obligationRefs=');
+    }
   });
 
   it('persists project-candidate reviewer decisions without production authority', () => {

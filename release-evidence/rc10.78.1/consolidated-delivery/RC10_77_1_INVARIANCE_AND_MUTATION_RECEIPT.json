@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "aiw-invariance-mutation-receipt-v1",
+  "projectRenamePreservedSemanticFingerprint": true,
+  "irrelevantDetailPreservedSemanticFingerprint": true,
+  "criticalEvidenceMutationChangedFingerprint": true,
+  "criticalEvidenceMutationWasSelectivelyScoped": true,
+  "repositoryCodeExecutedFromEvidence": 0,
+  "providerCalls": 0,
+  "passed": true
+}

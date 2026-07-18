@@ -56,11 +56,19 @@ export async function registerLivingCanvasApplicationRoutes(context: Application
       targetStage: z.enum(['requirements','qualityDrivers','systemContext','logicalApplication','applicationRealization','logicalTechnology','physicalTechnology','reviewAssurance','sddPack']),
       intelligenceMode: z.enum(['deterministic', 'hybrid']).default('hybrid'),
       dataClassification: z.enum(['public','internal','confidential','restricted']).default('internal'),
+      expectedRevision: z.number().int().nonnegative().optional(),
     }).safeParse(request.body);
     if (!params.success || !body.success) return reply.code(400).send({ error: 'INVALID_STAGE_CO_AUTHOR_REQUEST', details: body.success ? undefined : body.error.flatten() });
     const principal = principalFor(request);
     const project = await repository.getProject(principal.tenantId, params.data.projectId, params.data.branchId);
     if (!project || !canPerform(project, principal.subject, 'project.read')) return reply.code(404).send({ error: 'PROJECT_NOT_FOUND' });
+    if (body.data.expectedRevision !== undefined && project.revision !== body.data.expectedRevision) {
+      return reply.code(409).send({
+        error: 'REVISION_CONFLICT',
+        currentRevision: project.revision,
+        expectedRevision: body.data.expectedRevision,
+      });
+    }
     const proposal = await architectureBrain.stageCoAuthor({
       tenantId: principal.tenantId,
       project,

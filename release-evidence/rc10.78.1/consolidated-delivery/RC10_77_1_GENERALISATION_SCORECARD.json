@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "aiw-rc10.77.1-generalisation-scorecard-v1",
+  "unseenScenarioCount": 6,
+  "designStagesPerScenario": 4,
+  "scenariosWithActionableCandidatesInAllStages": 6,
+  "scenarioSpecificFingerprintCount": 6,
+  "identityInvariance": "passed",
+  "irrelevantDetailResistance": "passed",
+  "criticalMutationSensitivity": "passed",
+  "fixedFourNodeTemplateDetected": false,
+  "testsPassed": 5,
+  "testsFailed": 0,
+  "decision": "development-pass"
+}

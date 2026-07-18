@@ -209,6 +209,7 @@ function buildStakeholders(project: ArchitectureProject, sources: RequirementSou
 }
 
 const journeyTemplates: Array<{ name: string; pattern: RegExp; goal: string; obligations: string[] }> = [
+  { name: 'Assisted service request', pattern: /customer request|service request|case handling|agent approval|human approval/i, goal: 'Resolve a customer request through a governed human-assisted journey', obligations: ['Bounded recommendation authority','Human approval or escalation','Audit and deterministic fallback'] },
   { name: 'Customer onboarding', pattern: /onboard|registration|register customer|open account|kyc/i, goal: 'Create and validate a customer relationship', obligations: ['Identity verification','Consent and data classification','Duplicate and exception handling'] },
   { name: 'Agent onboarding and approval', pattern: /agent onboarding|register agent|approve agent|agent management/i, goal: 'Approve an authorised service agent', obligations: ['Maker-checker approval','Identity and credential lifecycle','Audit evidence'] },
   { name: 'Cash deposit', pattern: /cash.?in|cash deposit|deposit transaction/i, goal: 'Accept cash and credit the intended account', obligations: ['Transaction idempotency','Ledger consistency','Receipt and audit evidence'] },

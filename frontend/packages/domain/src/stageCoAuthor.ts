@@ -33,6 +33,92 @@ export type StageDraftOperationKind = (typeof stageDraftOperationKinds)[number];
 export type StageDraftValidationStatus = 'ready' | 'requires-clarification' | 'blocked';
 export type StageCandidateState = 'proposed' | 'under-review' | 'accepted-for-project' | 'rejected' | 'deferred' | 'stale' | 'superseded';
 
+export type ArchitectureEvidenceStrength = 'weak' | 'moderate' | 'strong';
+export type ArchitectureValidationPosture = 'fallback-seed' | 'assumption-heavy' | 'supported' | 'blocked';
+export type ArchitectureObligationConcern =
+  | 'business-responsibility' | 'state-ownership' | 'authority-boundary' | 'journey-coordination'
+  | 'interface-contract' | 'data-ownership-lineage' | 'identity-security-trust' | 'privacy-governance'
+  | 'consistency-transaction-semantics' | 'failure-compensation' | 'resilience-recovery'
+  | 'observability-operations' | 'migration-coexistence' | 'human-approval-governance'
+  | 'deployment-isolation';
+
+export interface ArchitectureObligation {
+  id: string;
+  title: string;
+  statement: string;
+  concern: ArchitectureObligationConcern;
+  criticality: 'low' | 'medium' | 'high' | 'critical';
+  evidenceStrength: ArchitectureEvidenceStrength;
+  sourceRefs: string[];
+  requirementRefs: string[];
+  journeyRefs: string[];
+  qualityDriverRefs: string[];
+  unresolvedAssumptions: string[];
+  targetStages: StageCoAuthorTarget[];
+  satisfactionState: 'unaddressed' | 'proposed' | 'accepted' | 'deferred';
+  subjectKey: string;
+}
+
+export interface ArchitectureCanvasDiff {
+  addedNodeIds: string[];
+  modifiedNodeIds: string[];
+  removedNodeIds: string[];
+  addedEdgeIds: string[];
+  addedInterfaceIds: string[];
+  affectedAcceptedObjectIds: string[];
+}
+
+export interface ArchitectureChangeAlternative {
+  id: string;
+  title: string;
+  summary: string;
+  boundaryStrategy: string;
+  benefits: string[];
+  tradeOffs: string[];
+  risks: string[];
+  hardConstraintFailures: string[];
+  evidenceStrength: ArchitectureEvidenceStrength;
+  operationIds: string[];
+}
+
+export interface ArchitectureChangeSet {
+  id: string;
+  title: string;
+  architectureHypothesis: string;
+  stage: StageCoAuthorTarget;
+  problemAddressed: string;
+  requirementRefs: string[];
+  qualityDriverRefs: string[];
+  obligationRefs: string[];
+  operationIds: string[];
+  canvasDiff: ArchitectureCanvasDiff;
+  interfaceImpact: string[];
+  dataSecurityImpact: string[];
+  alternatives: ArchitectureChangeAlternative[];
+  tradeOffs: string[];
+  risks: string[];
+  assumptions: string[];
+  fitnessTests: string[];
+  downstreamImpact: string[];
+  evidenceStrength: ArchitectureEvidenceStrength;
+  assumptionBurden: number;
+  unresolvedCriticalQuestions: string[];
+  validationPosture: ArchitectureValidationPosture;
+  authority: 'candidate';
+  reviewState: StageCandidateState;
+}
+
+export interface ArchitectureAttentionItem {
+  id: string;
+  kind: 'clarification' | 'contradiction' | 'interface-gap' | 'security-gap' | 'failure-gap' | 'evidence-gap';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  title: string;
+  detail: string;
+  relatedRefs: string[];
+  actionLabel: string;
+  navigationTarget: string;
+}
+
 export interface StageDraftOperation {
   id: string;
   kind: StageDraftOperationKind;
@@ -59,6 +145,11 @@ export interface StageDraftOperation {
   assumptions?: string[] | undefined;
   reviewRequired?: true | undefined;
   authority?: 'candidate' | undefined;
+  obligationRefs?: string[] | undefined;
+  changeSetId?: string | undefined;
+  evidenceStrength?: ArchitectureEvidenceStrength | undefined;
+  assumptionBurden?: number | undefined;
+  validationPosture?: ArchitectureValidationPosture | undefined;
 }
 
 export interface StageClarificationQuestion {
@@ -118,6 +209,9 @@ export interface StageCoAuthorProposal {
   generatedAt: string;
   summary: string;
   operations: StageDraftOperation[];
+  obligations?: ArchitectureObligation[] | undefined;
+  changeSets?: ArchitectureChangeSet[] | undefined;
+  attentionQueue?: ArchitectureAttentionItem[] | undefined;
   clarifications: StageClarificationQuestion[];
   explanation: StageArchitectureExplanation;
   notice: string;

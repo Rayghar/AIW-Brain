@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "aiw-rc10.77.1-scenario-branch-register-v1",
+  "generatedAt": "2026-07-18T19:27:55+01:00",
+  "productionRuntimeScenarioBranches": [],
+  "fixtureOnlyScenarios": [
+    "Cross-border SME payment platform",
+    "Insurance claims modernisation",
+    "University digital learning platform",
+    "Industrial IoT predictive maintenance",
+    "Enterprise data-product marketplace",
+    "Regulated AI-assisted customer service"
+  ],
+  "scenarioNameOrIdBranchCount": 0,
+  "passed": true,
+  "productionAccepted": false
+}
