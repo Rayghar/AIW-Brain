@@ -19,7 +19,7 @@ import {
   Trash2,
   WifiOff,
 } from 'lucide-react';
-import { getJson, postJson, putJson, deleteJson } from '../../lib/apiClient';
+import { getJson, postJson, patchJson, putJson, deleteJson } from '../../lib/apiClient';
 import { useWorkspaceStore } from '../../store/workspaceStore';
 import { StudioActionStrip, StudioDataTable, StudioOperatorChecklist, StudioPipelineBoard, StudioWorkflowPanel, type StudioPipelineStep } from '../../components/StudioSpecialistSurfaces';
 
@@ -92,6 +92,7 @@ type RoleMappingRule = { ruleId: string; claim: string; match: string; roles: st
 type TenantPolicy = { tenantId: string; mode: string; requireSso: boolean; allowDevelopmentAuth: boolean; allowedIdentityProviderIds: string[]; auditRetentionDays: number; repositoryWritePolicy: string; candidateKnowledgePolicy: string; updatedAt: string };
 type SecurityPosture = { generatedAt: string; mode: string; summary: { passed: number; failed: number; productionReady: boolean }; guardrails: Record<string, string | boolean>; checks: Array<{ checkId: string; ok: boolean; severity: string; detail: string }>; principal?: { subject: string; roles: string[]; authMode: string } };
 type SecurityPayload = { roles: string[]; defaultRolePermissions: Record<string, string[]>; assignments: RoleAssignment[]; mappingRules: RoleMappingRule[] };
+type TenantUserProfile = { tenantId: string; userId: string; organisationId?: string; identitySubject: string; email: string; displayName: string; roles: string[]; status: 'invited'|'active'|'suspended'|'disabled'; defaultProfile: string; createdAt: string; updatedAt: string; updatedBy: string };
 type TenantPolicyPayload = { policies: TenantPolicy[] };
 type PerformancePayload = { generatedAt: string; checks: Array<{ checkId: string; ok: boolean; measurement: string; threshold: string; recommendation: string }> };
 type SaasOverview = {
@@ -141,6 +142,7 @@ const connectorDefaults = { id: '', provider: 'github', repositoryUrl: '', defau
 const sourceDefaults = { id: '', title: '', sourceType: 'repository', licence: '', reviewOwner: '', trustTier: 'candidate', refreshCadenceDays: '30' };
 const flagDefaults = { flag: '', enabled: true };
 const roleAssignmentDefaults = { subject: '', email: '', roles: 'auditor', source: 'manual', active: true };
+const userInvitationDefaults = { email: '', displayName: '', roles: 'solution-architect', defaultProfile: 'solution-architect', expiresInDays: '7' };
 const roleMappingDefaults = { claim: 'groups', match: 'AIW-Architects', roles: 'enterprise-architect', enabled: true };
 const tenantPolicyDefaults = { mode: 'pilot', requireSso: false, allowDevelopmentAuth: true, allowedIdentityProviderIds: 'idp-reference-development', auditRetentionDays: '365', repositoryWritePolicy: 'deny', candidateKnowledgePolicy: 'blocked-from-production' };
 const pinDefaults = { scope: 'tenant', scopeId: 'default', releaseId: '' };
@@ -312,6 +314,7 @@ export function AdminControlPlaneWorkspace() {
   const [patternPage, setPatternPage] = useState(0);
   const [tenant, setTenant] = useState<TenantSettingsPayload>({ settings: {}, flags: {} });
   const [security, setSecurity] = useState<SecurityPayload | null>(null);
+  const [people, setPeople] = useState<TenantUserProfile[]>([]);
   const [securityPosture, setSecurityPosture] = useState<SecurityPosture | null>(null);
   const [tenantPolicies, setTenantPolicies] = useState<TenantPolicy[]>([]);
   const [performanceChecks, setPerformanceChecks] = useState<PerformancePayload | null>(null);
@@ -325,6 +328,7 @@ export function AdminControlPlaneWorkspace() {
   const [sourceDraft, setSourceDraft] = useState(sourceDefaults);
   const [flagDraft, setFlagDraft] = useState(flagDefaults);
   const [roleDraft, setRoleDraft] = useState(roleAssignmentDefaults);
+  const [userInvitationDraft, setUserInvitationDraft] = useState(userInvitationDefaults);
   const [roleMapDraft, setRoleMapDraft] = useState(roleMappingDefaults);
   const [tenantPolicyDraft, setTenantPolicyDraft] = useState(tenantPolicyDefaults);
   const [pinDraft, setPinDraft] = useState(pinDefaults);
@@ -432,6 +436,12 @@ export function AdminControlPlaneWorkspace() {
       setTenantPolicies(tenantPolicyData.policies);
       setPerformanceChecks(performanceData);
       setSaasOverview(saasData);
+      try {
+        const peopleData = await getJson<{ users: TenantUserProfile[] }>('/api/admin/people');
+        setPeople(peopleData.users);
+      } catch {
+        setPeople([]);
+      }
       setDegradedReason(null);
       setDemoSeedLoaded(false);
     } catch (error) {
@@ -735,6 +745,32 @@ export function AdminControlPlaneWorkspace() {
     setNotice(`Role assignment saved for ${roleDraft.subject}.`);
     setRoleDraft(roleAssignmentDefaults);
     await refresh();
+  };
+
+  const refreshPeople = async () => {
+    const result = await getJson<{ users: TenantUserProfile[] }>('/api/admin/people');
+    setPeople(result.users);
+  };
+
+  const invitePerson = async () => {
+    setLoading(true);
+    try {
+      await postJson('/api/admin/people/invitations', { ...userInvitationDraft, roles: splitCsv(userInvitationDraft.roles), expiresInDays: Number(userInvitationDraft.expiresInDays) });
+      setUserInvitationDraft(userInvitationDefaults);
+      await refreshPeople();
+      setNotice('Invitation and tenant role profile persisted. No password was stored by AIW.');
+    } catch (error) { setNotice(error instanceof Error ? error.message : 'Invitation could not be persisted.'); }
+    finally { setLoading(false); }
+  };
+
+  const setPersonStatus = async (userId: string, status: TenantUserProfile['status']) => {
+    setLoading(true);
+    try {
+      await patchJson(`/api/admin/people/${encodeURIComponent(userId)}`, { status });
+      await refreshPeople();
+      setNotice(`User status updated to ${status}.`);
+    } catch (error) { setNotice(error instanceof Error ? error.message : 'User status could not be persisted.'); }
+    finally { setLoading(false); }
   };
 
   const saveRoleMapping = async () => {
@@ -1224,6 +1260,19 @@ export function AdminControlPlaneWorkspace() {
 
 
       {tab === 'security' ? <div className="admin-section-stack">
+        <article className="admin-form-card" aria-label="People and access">
+          <h3><UserCog size={17}/> People &amp; Access</h3>
+          <p>Create the tenant profile and invitation lifecycle in PostgreSQL. AIW stores no password and never returns the raw invitation token.</p>
+          <div className="admin-form-grid">
+            <Field label="Display name"><input value={userInvitationDraft.displayName} onChange={(e) => setUserInvitationDraft({ ...userInvitationDraft, displayName: e.target.value })} placeholder="Architecture practitioner" /></Field>
+            <Field label="Email"><input type="email" value={userInvitationDraft.email} onChange={(e) => setUserInvitationDraft({ ...userInvitationDraft, email: e.target.value })} placeholder="architect@example.com" /></Field>
+            <Field label="Roles CSV"><input value={userInvitationDraft.roles} onChange={(e) => setUserInvitationDraft({ ...userInvitationDraft, roles: e.target.value })} placeholder="solution-architect" /></Field>
+            <Field label="Default profile"><select value={userInvitationDraft.defaultProfile} onChange={(e) => setUserInvitationDraft({ ...userInvitationDraft, defaultProfile: e.target.value })}><option value="solution-architect">Solution Architect</option><option value="enterprise-architect">Enterprise Architect</option><option value="platform-architect">Platform Architect</option><option value="architecture-reviewer">Architecture Reviewer</option><option value="administrator">Administrator</option><option value="knowledge-curator">Knowledge Curator</option></select></Field>
+            <Field label="Invitation expiry (days)"><input type="number" min="1" max="30" value={userInvitationDraft.expiresInDays} onChange={(e) => setUserInvitationDraft({ ...userInvitationDraft, expiresInDays: e.target.value })} /></Field>
+          </div>
+          <button type="button" disabled={loading || !userInvitationDraft.email || !userInvitationDraft.displayName} onClick={() => void invitePerson()}>Create invitation</button>
+        </article>
+        <Table title="Tenant people" empty="No persisted tenant users found." rows={people.map((person) => ({ key: person.userId, cells: [person.displayName, person.email, person.roles.join(', '), person.defaultProfile, person.status, safeDate(person.updatedAt)], actions: <div className="admin-table-actions"><button type="button" disabled={loading || person.status === 'active'} onClick={() => void setPersonStatus(person.userId, 'active')}>Activate</button><button type="button" disabled={loading || person.status === 'suspended'} onClick={() => void setPersonStatus(person.userId, 'suspended')}>Suspend</button></div> }))}/>
         <article className="admin-wide-card">
           <h3><UserCog size={17}/> Enterprise Security, RBAC and Scale Hardening</h3>
           <p>Production mode now requires explicit roles from OIDC/proxy-verified claims or governed assignments. Development auth is treated as a local-only profile and is blocked by production tenant policy.</p>

@@ -78,5 +78,6 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
 
 export async function getJson<T>(path: string): Promise<T> { return request<T>(path, { method: 'GET' }); }
 export async function postJson<T>(path: string, body: unknown): Promise<T> { return request<T>(path, { method: 'POST', body: JSON.stringify(body) }); }
+export async function patchJson<T>(path: string, body: unknown): Promise<T> { return request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }); }
 export async function putJson<T>(path: string, body: unknown, extraHeaders: Record<string, string> = {}): Promise<T> { return request<T>(path, { method: 'PUT', headers: extraHeaders, body: JSON.stringify(body) }); }
 export async function deleteJson<T>(path: string): Promise<T> { return request<T>(path, { method: 'DELETE' }); }
