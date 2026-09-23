@@ -1,0 +1,42 @@
+--- a/worker.js
++++ b/worker.js
+@@ -1,3 +1,4 @@
++import {prepareRepositoryPacket} from './repository-packet.js';
+ import {handleOperations} from './operation-service.js';
+ import {handleRecovery} from './recovery-service.js';
+ import {handleOrganizations,refreshOrganizationAssurance} from './organization-service.js';
+@@ -75,7 +76,7 @@
+       const body=await request.text();if(body.length>10000)return json({error:'Shorten the project brief and retry.'},413);
+       let input;try{input=JSON.parse(body)}catch{return json({error:'The project details could not be read.'},400)}
+       const id='project-'+crypto.randomUUID(),at=new Date().toISOString();let document;
+-      try{if(input?.sourceProjectId){const template=await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(actor,input.sourceProjectId).first();if(!template)throw Error('Choose your own saved template.');const source=(await readStoredProject(env,actor,template.document)).document;if(!source.workspace?.reusableTemplate)throw Error('Mark the project as a reusable template first.');if(typeof input.name!=='string'||!input.name.trim()||input.name.length>100)throw Error('Give the project a name of 1–100 characters.');document=instantiateTemplate(source,id,input.name.trim(),at);}else document=createProject(input||{},id,at)}catch(e){return json({error:e.message},400)}
++      try{if(input?.sourceProjectId){const template=await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(actor,input.sourceProjectId).first();if(!template)throw Error('Choose your own saved template.');const source=(await readStoredProject(env,actor,template.document)).document;if(!source.workspace?.reusableTemplate)throw Error('Mark the project as a reusable template first.');if(typeof input.name!=='string'||!input.name.trim()||input.name.length>100)throw Error('Give the project a name of 1â€“100 characters.');document=instantiateTemplate(source,id,input.name.trim(),at);}else document=createProject(input||{},id,at)}catch(e){return json({error:e.message},400)}
+       await env.DB.prepare('INSERT INTO projects (owner_id,id,document,revision,updated_at) VALUES (?,?,?,1,?)').bind(actor,id,JSON.stringify(document),at).run();
+       return json({document,revision:1,updatedAt:at},201);
+     }
+@@ -102,6 +103,15 @@
+       const body=markdown?(runtime?exportRuntimeMarkdown(project):security?exportSecurityMarkdown(project):interfaces?exportInterfacesMarkdown(project):technologyRealisation?exportTechnologyRealisationMarkdown(project):technology?exportTechnologyMarkdown(project):realisation?exportRealisationMarkdown(project):logical?exportLogicalMarkdown(project):decisions?exportDecisionsMarkdown(project):quality?exportQualityMarkdown(project):exportMarkdown(project)):JSON.stringify({exportedAt:new Date().toISOString(),project,validation:{reviewedForCurrentRevision:project.review?.contentVersion===project.contentVersion,findings:findings(project)},qualityValidation:{reviewedForCurrentRevision:qualityReviewCurrent(project),findings:qualityFindings(project)},decisionValidation:{reviewedForCurrentRevision:decisionReviewCurrent(project),findings:decisionFindings(project)},logicalValidation:{reviewedForCurrentRevision:logicalReviewCurrent(project),findings:logicalFindings(project)},realisationValidation:{reviewedForCurrentRevision:realisationReviewCurrent(project),findings:realisationFindings(project)},technologyValidation:{reviewedForCurrentRevision:technologyReviewCurrent(project),findings:technologyFindings(project)},technologyRealisationValidation:{reviewedForCurrentRevision:realizationReviewCurrent(project),findings:technologyRealisationFindings(project)},interfacesValidation:{reviewedForCurrentRevision:interfaceReviewCurrent(project),findings:interfaceFindings(project)},securityValidation:{reviewedForCurrentRevision:securityReviewCurrent(project),findings:securityFindings(project)},runtimeValidation:{reviewedForCurrentRevision:runtimeReviewCurrent(project),findings:runtimeFindings(project)},connectedModel:logicalGraph(project),guidance:'Project rules and reviewed proposals; generated records retain their drafting origin',intelligence:intelligenceStatus(env)},null,2);
+       return new Response(body,{headers:{'Content-Type':markdown?'text/markdown; charset=utf-8':'application/json; charset=utf-8','Content-Disposition':'attachment; filename="'+(markdown?(runtime?'AIW_Bank_Payment_Deployment_Runtime.md':security?'AIW_Bank_Payment_Security.md':interfaces?'AIW_Bank_Payment_Interfaces_Data.md':technologyRealisation?'AIW_Bank_Payment_Technology_Realization.md':technology?'AIW_Bank_Payment_Logical_Technology.md':realisation?'AIW_Bank_Payment_Application_Realisation.md':logical?'AIW_Bank_Payment_Logical_Model.md':decisions?'AIW_Bank_Payment_Decisions.md':quality?'AIW_Bank_Payment_Quality_Drivers.md':'AIW_Bank_Payment_Requirements.md'):'AIW_Bank_Payment_Project.json').replace('AIW_Bank_Payment',filename)+'"','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
+     }
++    if(url.pathname==='/api/knowledge/repository-packet'&&request.method==='POST'){
++      if(request.headers.get('Origin')!==url.origin)return json({error:'Use your private workspace origin.'},403);
++      if(!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'Expected JSON.'},415);
++      const raw=await request.text();if(new TextEncoder().encode(raw).length>8000000)return json({error:'Packet exceeds 8 MB.'},413);
++      const row=await env.DB.prepare('SELECT document,revision FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();
++      if(!row)return json({error:'Project not found.'},404);
++      try{const stored=await readStoredProject(env,owner,row.document);return json(prepareRepositoryPacket(stored.document,JSON.parse(raw),{tenantId:owner,projectId}));}
++      catch(e){return json({error:e.message},400);}
++    }
+     if(url.pathname==='/api/commands'&&request.method==='POST'){
+       if(request.headers.get('Origin')!==url.origin)return json({error:'This action must originate from your private workspace.'},403);
+       if(!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'Expected a project action.'},415);
+--- a/build.mjs
++++ b/build.mjs
+@@ -10,6 +10,7 @@
+ await cp('intelligence-provider.js','dist/server/intelligence-provider.js');
+ await cp('brain-retrieval.js','dist/server/brain-retrieval.js');
+ await cp('knowledge-service.js','dist/server/knowledge-service.js');
++await cp('repository-packet.js','dist/server/repository-packet.js');
+ await cp('intelligence-service.js','dist/server/intelligence-service.js');
+ await cp('public/intelligence-context.js','dist/server/public/intelligence-context.js');
+ for(const file of ['reference-projects.js','organization-knowledge.js','object-graph.js','guided-creation.js','delivery-feedback.js','canonical-command.js','workbench-domain.js','architecture-analysis.js','standards-domain.js','chapter-guide.js','reasoning-contract.js','workbook-reader.js','intake-domain.js','assurance-domain.js','composition-knowledge.js','composition-design.js','quality-analysis.js','model-reversal.js','brain-catalogue.js','brain-playbook.js','brain-integrity.js','akr-discovery.js','knowledge-ingestion.js','knowledge-governance.js','architecture-brain.js','persistence-knowledge.js','persistence-design.js','read-design-knowledge.js','read-design.js','architecture-proposal.js','architecture-source-pack.js','architecture-knowledge.js','architecture-design.js','aiw-brain.js','brain-authoring.js','knowledge-pack.js','knowledge-relevance.js','security-design.js','exchange-design.js','design-planner.js','design-task-state.js','design-task-domain.js','model-alternatives.js','model-alternatives-state.js','model-impact.js','journey-context.js','evidence-domain.js','interface-impact.js','changes-domain.js','sdd-renderer.js','projects-domain.js','model-scope.js','requirements-domain.js','quality-domain.js','decisions-domain.js','logical-domain.js','realisation-domain.js','technology-model.js','technology-domain.js','technology-realisation-model.js','technology-realisation-domain.js','interfaces-domain.js','interfaces-model.js','security-domain.js','security-model.js','runtime-domain.js','runtime-model.js','review-domain.js','model.js'])await cp('public/'+file,'dist/server/public/'+file);

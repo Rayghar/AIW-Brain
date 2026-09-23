@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "aiw-repository-packet-v1",
+  "storeId": "00000000-0000-0000-0000-000000000001",
+  "tenantId": "synthetic-tenant",
+  "projectId": "synthetic-project",
+  "fromCursor": 0,
+  "cursor": 1,
+  "authority": "candidate",
+  "productionAccepted": false,
+  "sources": [
+    {
+      "repositoryId": "SYNTHETIC",
+      "repository": "example/synthetic",
+      "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "path": "guide.md",
+      "hash": "4f673aa6b3843fbcc366d27877e82f90e99bd5b6d0777895d588cb2bc1e60baf",
+      "snapshot": "snapshots/SYNTHETIC/example",
+      "object": "objects/sha256/4f/4f673aa6b3843fbcc366d27877e82f90e99bd5b6d0777895d588cb2bc1e60baf",
+      "manifestHash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "licenceDisposition": "original-synthetic-test-only",
+      "exportDisposition": "metadata-only",
+      "revisionId": "revision-b66be76a5a6dc16a0cca2960b3aaa247",
+      "supersedes": null,
+      "passages": [
+        {
+          "lineStart": 1,
+          "lineEnd": 1,
+          "excerptHash": "4f673aa6b3843fbcc366d27877e82f90e99bd5b6d0777895d588cb2bc1e60baf",
+          "passageId": "passage-4348e134e7681d21b6fd3f5a66b763f5"
+        }
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "claimId": "claim-7e57209a9d2c3fee9fed9fcb66aa3033",
+      "revisionId": "revision-b66be76a5a6dc16a0cca2960b3aaa247",
+      "passageId": "passage-4348e134e7681d21b6fd3f5a66b763f5",
+      "statement": "Candidate interpretation pending human architecture review.",
+      "reviewState": "unreviewed",
+      "releaseState": "unreleased",
+      "eligible": false,
+      "contextStatus": "conditions-limitations-and-polarity-unresolved",
+      "edges": [
+        {
+          "type": "prerequisite",
+          "target": "concept-5770431064d9ac674fe3f8a43dfe037f",
+          "label": "idempotent",
+          "status": "suggestion",
+          "inference": "lexical-cue-only; applicability and semantics unverified"
+        }
+      ]
+    }
+  ],
+  "notices": [
+    {
+      "cursor": 1,
+      "kind": "revision",
+      "revisionId": "revision-b66be76a5a6dc16a0cca2960b3aaa247",
+      "supersedes": null
+    }
+  ],
+  "release": {
+    "status": "blocked",
+    "reason": "Synthetic fixture; no human approval or signed release."
+  }
+}

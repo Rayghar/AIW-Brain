@@ -1,0 +1,1 @@
+A synthetic service may retry a request when the operation is idempotent. Review its timeout and failure conditions.
