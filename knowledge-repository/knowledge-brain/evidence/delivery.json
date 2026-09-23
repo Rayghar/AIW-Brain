@@ -1,0 +1,88 @@
+{
+  "baseline": "AIW v0.10.0-rc.10.73.6",
+  "feature": "AIW Knowledge Room standalone discovery workspace",
+  "productionAccepted": false,
+  "knowledgeAuthority": "discovery-only",
+  "baselineCheckpoint": "440e02a",
+  "cleanEnvironment": {
+    "status": "passed",
+    "command": "python -m venv .venv",
+    "python": "3.13.3",
+    "runtimeDependencies": []
+  },
+  "backendToolBuild": {
+    "status": "passed",
+    "command": "python -m py_compile brain.py package_source.py"
+  },
+  "frontendBuild": {
+    "status": "passed",
+    "command": "node --check web/app.js; python brain.py build --input ../AKR-0.10.73.5/KNOWLEDGE-OBJECTS.json --vault local-vault"
+  },
+  "focusedAndFullToolRegression": {
+    "status": "passed",
+    "command": "python -m unittest discover -s tests -v",
+    "tests": 20,
+    "failures": 0,
+    "errors": 0
+  },
+  "catalogue": {
+    "source": "AKR-0.10.73.5/KNOWLEDGE-OBJECTS.json",
+    "stats": {
+      "indexed": 1326,
+      "total": 1326,
+      "incompleteLineage": 1326,
+      "kinds": {
+        "atomic-source-claim": 14,
+        "editorial-pattern-claim": 984,
+        "architecture-style": 14,
+        "pattern-dna-record": 284,
+        "anti-pattern": 30
+      }
+    },
+    "inputUnchanged": true,
+    "sourceSha256": "sha256:68b03987ec4d161e67df84cfcb3201a7268d43d8a387fb714473a727742f96d0"
+  },
+  "candidateShard": {
+    "source": "AKR-0.10.73.8/candidate/prompt-6g-planning-v1/transformation-units-00.ndjson",
+    "stats": {
+      "indexed": 50,
+      "total": 2775,
+      "incompleteLineage": 0,
+      "kinds": {
+        "candidate-semantic-unit": 50
+      }
+    },
+    "sourceSha256": "sha256:56843a198d0d6a62f0bea48f7efb19167717872f1a78748b500985806f72c368",
+    "coverage": "one selected shard; not the full acquisition"
+  },
+  "integrity": {
+    "status": "passed",
+    "outputReceiptHashesVerified": true,
+    "allProjectedRecordsDiscoveryOnly": true,
+    "canonicalGraphWrites": false
+  },
+  "browserEvidence": "browser.json",
+  "platformGates": {
+    "backendCleanInstallBuild": "not-run",
+    "frontendCleanInstallBuild": "not-run",
+    "fullPlatformRegression": "not-run",
+    "platformSecurityAndIntegrity": "not-run",
+    "reason": "Standalone additive tool only; existing platform source tree has extensive unrelated uncommitted changes. This delivery does not claim platform release acceptance."
+  },
+  "externalAuthorities": {
+    "legalLicenceClearance": "not-requested-or-granted",
+    "independentArchitectureReview": "pending",
+    "fourEyesKnowledgeApproval": "pending",
+    "enterpriseKmsSigning": "not-integrated",
+    "productionAcceptance": "not-granted"
+  },
+  "limitations": [
+    "No live Sol integration or LLM synthesis",
+    "No automatic source acquisition or upstream passage verification",
+    "No semantic support/contradiction graph",
+    "No multi-user authentication; loopback single-user preview only",
+    "No installed skills, slash commands, subagents, or scheduled maintenance",
+    "Source labels do not prove approval; unlabelled records inherit operator-selected scope",
+    "Guide is 10 original pages; not a reproduction of reference content counts"
+  ]
+}

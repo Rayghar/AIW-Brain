@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": [
+    "Real AIW catalogue: 1326 records loaded",
+    "Search, record selection, provenance and discovery boundary",
+    "Honest empty search state",
+    "Guide and linked page navigation",
+    "Starter vault browsing",
+    "Source receipt and complete selected-file coverage",
+    "Repository filtering",
+    "Mobile layout without horizontal overflow",
+    "Untrusted record content cannot create executable DOM",
+    "Malformed and hostile Markdown links remain inert"
+  ],
+  "pageErrors": [],
+  "productionAccepted": false
+}

@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AIW · Knowledge room</title><link rel="stylesheet" href="style.css"><script src="app.js" defer></script></head>
+<body>
+<aside class="rail"><a class="brand" href="#library"><b>AIW<span> / </span></b>Knowledge room</a><p class="eyebrow">A place to understand</p>
+<nav aria-label="Workspace"><button data-view="library" class="active">01 &nbsp; Explore knowledge</button><button data-view="guide">02 &nbsp; Read the guide</button><button data-view="vault">03 &nbsp; Your linked notes</button><button data-view="sources">04 &nbsp; Source receipts</button></nav>
+<div class="rail-bottom"><span class="dot"></span> Local workspace<p>Source → understanding → human review</p><small>AIW v0.10.0-rc.10.73.6<br>Discovery workspace</small></div></aside>
+<main><header><span>THE AIW KNOWLEDGE REPOSITORY</span><span class="badge">Discovery only</span></header>
+<section class="intro"><p class="eyebrow" id="kicker">EXPLORE / CONNECT / UNDERSTAND</p><h1 id="title">Make knowledge<br><em>worth returning to.</em></h1><p id="subtitle">Explore architecture ideas, follow their sources, and see what still needs evidence.</p></section>
+<section class="metrics" aria-label="Collection summary"><div><strong id="count">0</strong><span>indexed records</span></div><div><strong id="source-count">0</strong><span>selected files</span></div><div><strong id="gaps">0</strong><span>incomplete passage locators</span></div></section>
+<p id="coverage" class="coverage" role="status">Loading local collection…</p>
+<div class="toolbar"><label class="search">Search this workspace<input id="search" type="search" placeholder="Search ideas, sources, or record IDs…" autocomplete="off"></label><label id="kind-label">Type<select id="kind"><option value="">All record types</option></select></label><label id="repo-label">Repository<select id="repo"><option value="">All repositories</option></select></label></div>
+<section class="workspace"><div><div class="list-heading"><h2 id="list-title">Knowledge collection</h2><span id="result-count" aria-live="polite"></span></div><div id="results"></div><button id="more" hidden>Show more</button></div><article id="detail" tabindex="-1" aria-label="Selected record"><p class="eyebrow">FOLLOW YOUR CURIOSITY</p><h2>Select an idea to begin.</h2><p>Each record keeps its source receipt beside it. A citation is a starting point for review, not a claim of approval.</p></article></section>
+<footer>No promotion, scoring, or Design Graph changes are performed here. Imported source text is untrusted material.</footer></main>
+</body></html>

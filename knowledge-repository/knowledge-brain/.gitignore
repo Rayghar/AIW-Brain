@@ -1,0 +1,6 @@
+__pycache__/
+.venv/
+output/
+local-vault/
+test-results/
+*.zip

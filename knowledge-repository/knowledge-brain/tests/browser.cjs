@@ -1,0 +1,82 @@
+/* Uses an explicitly provided Playwright module or the existing AIW v5 installation. */
+const path = require('node:path');
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const { chromium } = require(process.env.AIW_PLAYWRIGHT_MODULE || path.resolve(__dirname, '../../../v5/node_modules/@playwright/test'));
+(async () => {
+  const browser = await chromium.launch({headless: true});
+  const page = await browser.newPage({viewport: {width: 1440, height: 1000}});
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  const checks = [];
+  try {
+    await page.goto(process.env.AIW_BRAIN_URL || 'http://127.0.0.1:8765');
+    await page.locator('#results .card').first().waitFor();
+    assert.equal(await page.locator('#count').innerText(), '1,326');
+    checks.push('Real AIW catalogue: 1326 records loaded');
+    await page.locator('#search').fill('CALM Patterns');
+    await page.locator('#results .card').first().click();
+    assert.match(await page.locator('#detail').innerText(), /Input receipt/);
+    assert.match(await page.locator('#detail').innerText(), /NOT APPROVED/);
+    checks.push('Search, record selection, provenance and discovery boundary');
+    await page.locator('#search').fill('unlikely-no-match-134981');
+    assert.equal(await page.locator('#results .card').count(), 0);
+    checks.push('Honest empty search state');
+    await page.locator('[data-view="guide"]').click();
+    await page.waitForFunction(() => document.querySelector('#list-title').textContent.includes('guide'));
+    assert.equal(await page.locator('#results .card').count(), 10);
+    await page.locator('#results .card').filter({hasText: 'Start with a question'}).click();
+    await page.locator('#detail button').filter({hasText: 'the two layers'}).click();
+    assert.equal(await page.locator('#detail h2').innerText(), 'Keep evidence and understanding distinct');
+    checks.push('Guide and linked page navigation');
+    await page.locator('[data-view="vault"]').click();
+    await page.waitForFunction(() => document.querySelector('#list-title').textContent === 'Your linked notes');
+    await page.locator('#results .card').filter({hasText: 'Your AIW knowledge vault'}).click();
+    checks.push('Starter vault browsing');
+    await page.locator('[data-view="sources"]').click();
+    await page.waitForFunction(() => document.querySelector('#list-title').textContent === 'Selected source files');
+    await page.locator('#results .card').first().click();
+    assert.match(await page.locator('#detail').innerText(), /1326 of 1326/);
+    checks.push('Source receipt and complete selected-file coverage');
+    await page.locator('[data-view="library"]').click();
+    await page.waitForFunction(() => document.querySelector('#list-title').textContent === 'Knowledge collection');
+    await page.locator('#repo').selectOption('finos/architecture-as-code');
+    assert.ok(await page.locator('#results .card').count() > 0);
+    checks.push('Repository filtering');
+    await page.locator('#repo').selectOption('');
+    await page.locator('#results .card').first().click();
+    await page.screenshot({path: path.resolve(__dirname, '../test-results/desktop.png'), fullPage: true});
+    await page.setViewportSize({width: 390, height: 844});
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+    await page.screenshot({path: path.resolve(__dirname, '../test-results/mobile.png'), fullPage: true});
+    checks.push('Mobile layout without horizontal overflow');
+    // Intercept only the test browser response; do not modify the real catalogue.
+    await page.route('**/catalog.json', async route => {
+      const response = await route.fetch(); const data = await response.json();
+      data.nodes[0].title = '<img src=x onerror="window.pwned=true">';
+      data.nodes[0].text = '<script>window.pwned=true</script>';
+      data.nodes[0].provenance.repository = 'javascript:alert(1)';
+      await route.fulfill({response, json: data});
+    });
+    await page.route('**/pages.json', async route => {
+      const response = await route.fetch(); const data = await response.json();
+      data[0].text += '\n[bad](http://[) <img src=x onerror=\"window.pwned=true\">';
+      await route.fulfill({response, json: data});
+    });
+    await page.reload();
+    await page.locator('#results .card').first().click();
+    assert.equal(await page.locator('#results img, #detail script').count(), 0);
+    assert.equal(await page.evaluate(() => window.pwned), undefined);
+    assert.equal(await page.locator('#detail a[href^="javascript:"]').count(), 0);
+    checks.push('Untrusted record content cannot create executable DOM');
+    await page.locator('[data-view=\"guide\"]').click();
+    await page.waitForFunction(() => document.querySelector('#list-title').textContent.includes('guide'));
+    await page.locator('#results .card').first().click();
+    assert.equal(await page.locator('#detail img').count(), 0);
+    assert.equal(await page.evaluate(() => window.pwned), undefined);
+    checks.push('Malformed and hostile Markdown links remain inert');
+    assert.deepEqual(errors, []);
+    fs.writeFileSync(path.resolve(__dirname, '../evidence/browser.json'), JSON.stringify({passed: true, checks, pageErrors: errors, productionAccepted: false}, null, 2) + '\n');
+    console.log(JSON.stringify({passed: true, checks}));
+  } finally { await browser.close(); }
+})().catch(e => { console.error(e); process.exitCode = 1; });
