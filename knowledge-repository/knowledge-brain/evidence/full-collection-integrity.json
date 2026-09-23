@@ -1,0 +1,54 @@
+{
+  "baseline": "AIW v0.10.0-rc.10.73.6",
+  "productionAccepted": false,
+  "knowledgeAuthority": "discovery-only",
+  "recordAuthorityChecks": 229172,
+  "generatedHashes": "passed",
+  "databaseIntegrity": "passed",
+  "indexAndSearchDenominators": "passed",
+  "selectedManifestHashes": "passed",
+  "sharedScopeChecks": "passed",
+  "verifiedPreviewSmoke": "passed",
+  "stats": {
+    "indexed": 229172,
+    "total": 229172,
+    "fileEntries": 186219,
+    "candidateUnits": 42953,
+    "linkedCandidates": 42953,
+    "repositories": 47,
+    "verifiedTextFiles": 103474,
+    "incompleteLineage": 0,
+    "acquisitionCounts": {
+      "policy-excluded": 79869,
+      "accepted": 103497,
+      "quarantined": 294,
+      "accepted-opaque": 2305,
+      "rejected": 254
+    },
+    "availabilityCounts": {
+      "policy-excluded": 79869,
+      "verified-text": 103474,
+      "quarantined": 294,
+      "opaque-no-text-preview": 2305,
+      "rejected": 254,
+      "verified-non-utf8": 23
+    }
+  },
+  "collectionCoverage": {
+    "manifestIndex": {
+      "id": "855c437e419b22e9ec017d4c",
+      "file": "CONTENT_SNAPSHOT_MANIFEST_INDEX.json",
+      "sha256": "sha256:aa64e3789991044fe2b73882d7b2366cbaffd003e0bd457789911fe7dba03180",
+      "indexed": 0,
+      "total": 0,
+      "truncated": false
+    },
+    "candidateShards": 16,
+    "unselectedHistoricalManifests": [
+      "snapshots/GH-APACHE-CAMEL/KSNAP-GH-APACHE-CAMEL-5334c7647ca3/manifest.json"
+    ],
+    "indexScope": "All selected manifest entries and all transformation shards; earlier derived/replay datasets are not duplicated",
+    "textCoverage": "Full UTF-8 text for hash-verified accepted files up to 2 MiB; all other entries remain metadata only"
+  },
+  "databaseSha256": "sha256:61a6b2707418cac60c0ec421dbfac4e8fcdd71802d8a927c8e6e0966fdddb57c"
+}

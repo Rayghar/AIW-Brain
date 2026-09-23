@@ -1,0 +1,25 @@
+{
+  "purpose": "Existing archive receipts; archives were not extracted or rewritten by this integration",
+  "archives": [
+    {
+      "file": "AKR.zip",
+      "bytes": 11953885,
+      "sha256": "sha256:fd15251a81f342786f9f80b92aa06c8bceabb2d709242fdefc81ba59656218bd"
+    },
+    {
+      "file": "knowledge-repository.part01.rar",
+      "bytes": 524288000,
+      "sha256": "sha256:6b86fc38ef7411309edb6f4ff9d63f9acee2a991078b50f3f346571b3e3a196b"
+    },
+    {
+      "file": "knowledge-repository.part02.rar",
+      "bytes": 524288000,
+      "sha256": "sha256:0105436456c6b85d7b9b811738570b1beb5e60679b968f427c087440998733e2"
+    },
+    {
+      "file": "knowledge-repository.part03.rar",
+      "bytes": 60306850,
+      "sha256": "sha256:03a02096b3bb6af3c617712d246aebb3bbd6319d8e5d8107f2de3e034d3202a7"
+    }
+  ]
+}

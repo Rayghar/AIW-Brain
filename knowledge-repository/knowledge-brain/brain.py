@@ -217,8 +217,11 @@ class LocalHandler(SimpleHTTPRequestHandler):
         super().end_headers()
 
     def do_GET(self):
+        from collection import handle_api
+        if handle_api(self):
+            return
         if urlsplit(self.path).path not in {"/", "/index.html", "/app.js", "/style.css",
-                                          "/catalog.json", "/pages.json", "/graph.json", "/build-receipt.json"}:
+                                          "/catalog.json", "/pages.json", "/graph.json", "/build-receipt.json", "/collection-receipt.json"}:
             self.send_error(404)
             return
         super().do_GET()
@@ -249,6 +252,12 @@ def main(argv=None):
     p = sub.add_parser("serve")
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--directory", type=Path, default=ROOT / "output")
+    p = sub.add_parser("collection")
+    p.add_argument("--snapshot-root", type=Path, required=True)
+    p.add_argument("--manifest-index", type=Path, required=True)
+    p.add_argument("--candidates", type=Path, required=True)
+    p.add_argument("--vault", type=Path)
+    p.add_argument("--output", type=Path, default=ROOT / "output" / "collection")
     args = parser.parse_args(argv)
     if args.command in ("build", "stats", "graph"):
         catalog = build_catalog(args.input, args.tenant, args.project, args.limit)
@@ -282,6 +291,10 @@ def main(argv=None):
         with path.open("x", encoding="utf-8") as stream:
             stream.write(body + "\n")
         print(path)
+    elif args.command == "collection":
+        from collection import build_collection
+        catalog = build_collection(args.snapshot_root, args.manifest_index, args.candidates, args.output, args.vault)
+        print(json.dumps(catalog["stats"]))
     elif args.command == "serve":
         directory = args.directory.resolve(strict=True)
         if not directory.is_relative_to((ROOT / "output").resolve()):

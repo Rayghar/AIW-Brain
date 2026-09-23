@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "checks": [
+    "All 47 selected snapshots and 16 candidate shards represented",
+    "Bounded pagination with no duplicate or skipped first-page records",
+    "Repository and full-text search with hash-verified downloaded source preview",
+    "Candidate-to-source navigation pins repository, revision and file path",
+    "Quarantined entries visible for coverage but unavailable to source reader",
+    "Empty query results are honest and have no stale cards",
+    "Historical duplicate and file-disposition coverage disclosed",
+    "Guide links and complete selected-manifest receipts preserved",
+    "Mobile layout has no horizontal overflow",
+    "Untrusted downloaded markup is rendered only as inert text",
+    "Database downloads and cross-origin API requests are blocked"
+  ],
+  "pageErrors": [],
+  "coverage": {
+    "indexed": 229172,
+    "total": 229172,
+    "fileEntries": 186219,
+    "candidateUnits": 42953,
+    "linkedCandidates": 42953,
+    "repositories": 47,
+    "verifiedTextFiles": 103474,
+    "incompleteLineage": 0,
+    "acquisitionCounts": {
+      "policy-excluded": 79869,
+      "accepted": 103497,
+      "quarantined": 294,
+      "accepted-opaque": 2305,
+      "rejected": 254
+    },
+    "availabilityCounts": {
+      "policy-excluded": 79869,
+      "verified-text": 103474,
+      "quarantined": 294,
+      "opaque-no-text-preview": 2305,
+      "rejected": 254,
+      "verified-non-utf8": 23
+    }
+  },
+  "productionAccepted": false
+}

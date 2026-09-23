@@ -1,0 +1,105 @@
+{
+  "baseline": "AIW v0.10.0-rc.10.73.6",
+  "baselineCheckpoint": "47c1f0d",
+  "feature": "Full acquired GitHub collection in AIW Knowledge Room",
+  "productionAccepted": false,
+  "knowledgeAuthority": "discovery-only",
+  "coverage": {
+    "indexed": 229172,
+    "total": 229172,
+    "fileEntries": 186219,
+    "candidateUnits": 42953,
+    "linkedCandidates": 42953,
+    "repositories": 47,
+    "verifiedTextFiles": 103474,
+    "incompleteLineage": 0,
+    "acquisitionCounts": {
+      "policy-excluded": 79869,
+      "accepted": 103497,
+      "quarantined": 294,
+      "accepted-opaque": 2305,
+      "rejected": 254
+    },
+    "availabilityCounts": {
+      "policy-excluded": 79869,
+      "verified-text": 103474,
+      "quarantined": 294,
+      "opaque-no-text-preview": 2305,
+      "rejected": 254,
+      "verified-non-utf8": 23
+    }
+  },
+  "databaseSha256": "sha256:61a6b2707418cac60c0ec421dbfac4e8fcdd71802d8a927c8e6e0966fdddb57c",
+  "cleanEnvironment": {
+    "status": "passed",
+    "command": "python -m venv --without-pip .venv-collection",
+    "python": "3.13.3",
+    "sqlite": "3.49.1",
+    "thirdPartyRuntimePackages": []
+  },
+  "backendBuild": {
+    "status": "passed",
+    "command": "python -m py_compile brain.py collection.py verify_collection.py package_source.py"
+  },
+  "frontendBuild": {
+    "status": "passed",
+    "command": "node --check web/app.js; generated site assets with checked SHA-256"
+  },
+  "fullToolRegression": {
+    "status": "passed",
+    "command": "python -m unittest discover -s tests -v",
+    "tests": 36,
+    "logSha256": "sha256:d689886cbcd5df5f5be93ad2f8b78e70eca53f8cf7b83f62669b2bee72be3f00"
+  },
+  "fullCollectionBrowser": {
+    "status": "passed",
+    "checks": 11,
+    "evidence": "full-collection-browser.json"
+  },
+  "legacyBrowserRegression": {
+    "status": "passed",
+    "checks": 10,
+    "evidence": "browser.json"
+  },
+  "securityAndIntegrity": {
+    "status": "passed",
+    "recordAuthorityChecks": 229172,
+    "evidence": [
+      "full-collection-integrity.json",
+      "full-collection-inputs.json"
+    ],
+    "quarantineBodyIndexing": false,
+    "arbitraryFileServing": false,
+    "databaseDownload": false,
+    "canonicalGraphMutation": false
+  },
+  "archives": {
+    "readOnly": true,
+    "extracted": false,
+    "receipts": "archive-receipts.json"
+  },
+  "externalAuthorities": {
+    "licenceClearance": "not-granted-by-this-work",
+    "independentArchitectureReview": "pending",
+    "fourEyesKnowledgeApproval": "pending",
+    "enterpriseKmsSigning": "not-integrated",
+    "productionAcceptance": "not-granted"
+  },
+  "platformGates": {
+    "backendCleanInstallBuild": "not-run",
+    "frontendCleanInstallBuild": "not-run",
+    "fullPlatformRegression": "not-run",
+    "platformReleaseSecurityAndIntegrity": "not-run",
+    "reason": "Standalone repository tool; no changes to platform source or live Sol runtime. Existing unrelated platform modifications remain outside this delivery."
+  },
+  "limits": [
+    "Local single-user service; no multi-user authentication",
+    "Source text is untrusted; byte identity does not verify semantic claims",
+    "23 hash-verified non-UTF-8 files remain metadata-only",
+    "Opaque, excluded, quarantined and rejected entries remain metadata-only",
+    "One unselected historical Apache Camel snapshot is reported without double-counting",
+    "Earlier derived/replay data and archive backups are not duplicated",
+    "Live Sol integration and knowledge promotion are not performed"
+  ],
+  "preview": "http://127.0.0.1:8766"
+}

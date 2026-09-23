@@ -12,6 +12,8 @@ Site will not load: run the local serve command after building. Opening index.ht
 
 Broken notes: run check-links on the selected vault. Fix file names or ambiguous wiki links. Heading fragments and external URLs need separate checking.
 
-Large build: use a smaller explicit source selection. The tool reads and hashes all chosen records even when the display limit is small. This version is designed as a local explorer, not a scalable hosted search service.
+Large build: use a smaller explicit source selection. The tool reads and hashes all chosen records even when the display limit is small. For the acquired repository collection, use the collection command: its SQLite index searches all selected file entries without loading the whole corpus in your browser. It remains a local single-user explorer.
+
+Source preview blocked: check its availability disposition. A changed source file or acquisition manifest requires rebuilding; quarantined content remains blocked. Do not change the disposition to bypass the restriction.
 
 Return to [start](01-start.md).

@@ -4,3 +4,5 @@ output/
 local-vault/
 test-results/
 *.zip
+
+.venv-collection/

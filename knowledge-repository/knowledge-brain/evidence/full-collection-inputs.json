@@ -1,0 +1,23 @@
+{
+  "manifestIndexSha256": "sha256:aa64e3789991044fe2b73882d7b2366cbaffd003e0bd457789911fe7dba03180",
+  "candidateShardsVerified": [
+    "transformation-units-00.ndjson",
+    "transformation-units-01.ndjson",
+    "transformation-units-02.ndjson",
+    "transformation-units-03.ndjson",
+    "transformation-units-04.ndjson",
+    "transformation-units-05.ndjson",
+    "transformation-units-06.ndjson",
+    "transformation-units-07.ndjson",
+    "transformation-units-08.ndjson",
+    "transformation-units-09.ndjson",
+    "transformation-units-0a.ndjson",
+    "transformation-units-0b.ndjson",
+    "transformation-units-0c.ndjson",
+    "transformation-units-0d.ndjson",
+    "transformation-units-0e.ndjson",
+    "transformation-units-0f.ndjson"
+  ],
+  "referenceScope": "passed",
+  "productionAccepted": false
+}
