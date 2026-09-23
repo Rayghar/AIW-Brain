@@ -54,6 +54,7 @@ def main():
     files['evidence/evaluation.json'] = encoded(evaluation)
     files['evidence/pilot-runs.json'] = encoded(runs)
     files['evidence/focused-final.json'] = encoded(focused)
+    files['evidence/seabaas-signals.json'] = (evidence / 'seabaas-signals.json').read_bytes()
     files['pilot-packet-metadata.json'] = encoded(packet)
     question_rows = '\n'.join('| ' + q['question'] + ' | `' + q['expectedPath'] + '` | ' + ('PASS' if q['passed'] else 'FAIL') + ' | '+str(q['approvedHits'])+' |' for q in evaluation['questions'])
     selected = '\n'.join('- `' + s['repository'] + '@' + s['commit'] + ':' + s['path'] + '`' for s in packet['sources'])
@@ -77,6 +78,7 @@ SEABaaS: UNTESTED. No verified workbook-driven case or architect-reviewed app jo
 
 {selected}
 '''
+    evaluation_text += '\nA local SEABaaS workbook topic smoke check scanned 21 sheets and found four topic signals with expected public pilot locators. No original requirements are exported. Its baseline is unconfirmed; the architecture case remains unverified. See evidence/seabaas-signals.json.\n'
     files['evaluation-report.md'] = evaluation_text.encode()
     readme = f'''# AIW second-brain handoff
 
@@ -84,7 +86,7 @@ Engineering baseline: {BASELINE}. Target: supplied Model Explorer Site v44 (`eef
 
 | Status | Result |
 |---|---|
-| Done | Streaming corpus inventory and object reconciliation; 24-file local pilot; stable revisions and 149 exact passages; candidate graph cues; checkpointed refresh, dry run, invalidation and metadata-only bounded export. |
+| Partial | Full-corpus audit stopped at user request; measured observations and physical counts included. Completed pilot: 24-file local pilot; stable revisions and 149 exact passages; candidate graph cues; checkpointed refresh, dry run, invalidation and metadata-only bounded export. |
 | Done | v44 authenticated read-only packet adapter, build patch, actual-packet tests and Chromium checks. Existing source-fetch commands reused. No design graph mutation. |
 | Not done | Cloud deployment, live corpus synchronization, automatic project revocation processing, reviewed architecture advice and architect-reviewed SEABaaS case. |
 | Blocked | Licence clearance, human architecture review, independent approval and trusted signed-release integration. No real claims independently approved. |
@@ -100,6 +102,7 @@ Pilot and test details: evaluation-report.md, pilot-manifest.jsonl and evidence/
 
 No acquired source bodies, object stores, quarantine, archives, credentials, dependencies, builds or unrelated local files are included. The small source/passage example is original synthetic material. SHA256SUMS covers every enclosed payload except itself; the ZIP's digest is delivered separately. To reproduce, unpack source-code.zip, use repository-layer/README.md, then run make_handoff.py against measured evidence after committing your scoped changes.
 '''
+    readme = ('# Full-corpus audit is INCOMPLETE\n\nThe user requested the handoff before hashing finished. ' + str(corpus['counts']['fileEntries']) + ' of ' + str(corpus.get('expectedFileEntries',186219)) + ' file entries were inspected. Physical store counts are current; unprocessed content is not integrity-verified. The 24-file pilot and recorded tests completed.\n\n') + readme
     files['README_FOR_CHATGPT.md'] = readme.encode()
     source_files = {}
     for path in HERE.iterdir():
@@ -126,7 +129,7 @@ No acquired source bodies, object stores, quarantine, archives, credentials, dep
     (dest / 'AIW_SECOND_BRAIN_HANDOFF.zip.sha256').write_text(digest+'  '+target.name+'\n')
     (dest / 'README_FOR_CHATGPT.md').write_bytes(files['README_FOR_CHATGPT.md'])
     summary = [
-        'Completed: streaming acquisition audit and 24-file, 149-passage evidence-linked pilot.',
+        'Completed: 24-file, 149-passage pilot; full-corpus integrity audit remains partial.',
         'Completed: resumable candidate refresh, invalidation, bounded metadata export and tested v44 preview adapter.',
         f"Verified: {regressions['passed']}/{len(regressions['results'])} regression commands; {focused['repositoryTests']} final repository tests; {browser['passed']} browser checks.",
         'Blocked: licence clearance, independent human approval and trusted signed repository releases; approved claims = 0.',
