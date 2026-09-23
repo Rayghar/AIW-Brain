@@ -1,4 +1,4 @@
-﻿import assert from 'node:assert/strict';
+import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {prepareRepositoryPacket} from './repository-packet.js';
 import {releasedClaims} from './public/knowledge-governance.js';
@@ -21,4 +21,7 @@ test('source cap enforced',()=>assert.throws(()=>prepareRepositoryPacket(project
 test('claim cap enforced',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.claims=Array(251).fill(p.claims[0])),scope)));
 test('cursor rollback rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.cursor=-1),scope)));
 test('descriptive edges cannot claim approval',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.claims.find(c=>c.edges.length).edges[0].status='approved'),scope)));
+test('revision notices require successor metadata',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>delete p.notices[0].supersedes),scope)));
+test('notice range cannot silently omit the high-water event',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.notices.pop()),scope)));
+test('notice range cannot omit an intermediate invalidation position',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.notices.splice(1,1)),scope)));
 console.log(JSON.stringify({suite:'v44-repository-adapter',passed:results.length,failed:0,results},null,2));

@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aiw:repository-operations:v1",
+  "$defs": {
+    "search": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "question",
+        "mode",
+        "limit"
+      ],
+      "properties": {
+        "question": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "mode": {
+          "enum": [
+            "candidate",
+            "approved"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "command"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "command": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "const": "knowledge.activate"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "reviewed",
+                "reviewer",
+                "reason",
+                "id",
+                "stamp"
+              ],
+              "properties": {
+                "reviewed": {
+                  "const": true
+                },
+                "reviewer": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 180
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 180
+                },
+                "stamp": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "withdrawal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "command"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "command": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "const": "knowledge.withdraw"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "reviewed",
+                "reviewer",
+                "reason",
+                "id",
+                "stamp"
+              ],
+              "properties": {
+                "reviewed": {
+                  "const": true
+                },
+                "reviewer": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 180
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 180
+                },
+                "stamp": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sourceFetch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "command"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "command": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "payload"
+          ],
+          "properties": {
+            "type": {
+              "const": "knowledge.fetch"
+            },
+            "payload": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "connectorId",
+                "path",
+                "ref",
+                "expectedHash"
+              ],
+              "properties": {
+                "connectorId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 350
+                },
+                "ref": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{40}$"
+                },
+                "expectedHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "invalidationNotice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cursor",
+        "kind",
+        "revisionId",
+        "reason",
+        "dependentClaimsIneligible"
+      ],
+      "properties": {
+        "cursor": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "kind": {
+          "const": "invalidation"
+        },
+        "revisionId": {
+          "type": "string",
+          "pattern": "^revision-[a-f0-9]{32}$"
+        },
+        "reason": {
+          "enum": [
+            "withdrawn",
+            "superseded",
+            "source-unavailable"
+          ]
+        },
+        "dependentClaimsIneligible": {
+          "const": true
+        }
+      }
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/search"
+    },
+    {
+      "$ref": "#/$defs/activation"
+    },
+    {
+      "$ref": "#/$defs/withdrawal"
+    },
+    {
+      "$ref": "#/$defs/sourceFetch"
+    },
+    {
+      "$ref": "#/$defs/invalidationNotice"
+    }
+  ]
+}

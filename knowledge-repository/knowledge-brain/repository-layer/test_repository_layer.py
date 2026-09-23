@@ -112,6 +112,32 @@ class LayerTests(unittest.TestCase):
         self.assertEqual(result['resolution'],'verified-object-only')
         self.assertEqual(result['errors'],[])
 
+    def test_inventory_complete(self):
+        snapshot=self.root/self.item['snapshot']
+        mp=snapshot/'manifest.json'; manifest=json.loads(mp.read_text())
+        manifest['manifestSha256']='sha256:'+'1'*64
+        r.dump(mp,manifest)
+        (self.root/'checkpoints').mkdir()
+        r.dump(self.root/'checkpoints/TEST.json',{'commitSha':self.item['commit'],'processedCount':1,'journal':'checkpoints/journal.ndjson'})
+        (self.root/'checkpoints/journal.ndjson').write_text('{}\n')
+        index={'knowledgeAuthority':'candidate','productionAccepted':False,'manifests':[{'connectorId':'TEST','repository':self.item['repository'],'snapshotId':self.item['commit'],'immutableCommit':self.item['commit'],'manifestChecksum':manifest['manifestSha256'],'denominatorCount':1}]}
+        r.dump(self.root/'index.json',index)
+        summary=r.inventory(self.root,self.root/'index.json',self.root/'audit')
+        self.assertTrue(summary['auditRunFinished']);self.assertTrue(summary['auditComplete']);self.assertTrue(summary['integrityPassed'])
+        self.assertEqual(summary['counts']['verified'],1);self.assertEqual(summary['allSnapshotPhysicalCounts']['objects'],1)
+        self.assertFalse(summary['productionAccepted'])
+
+    def test_quarantine_presence_without_reading(self):
+        from unittest.mock import patch
+        restricted=self.root/'quarantine/sha256/object'
+        restricted.parent.mkdir(parents=True);restricted.write_bytes(b'never parse or export this')
+        with patch.object(r,'file_hash',side_effect=AssertionError('restricted bytes read')):
+            checked=r.check_file(self.root,{'path':'secret','status':'quarantined','contentAddressedObject':'quarantine/sha256/object'})
+        self.assertTrue(checked['quarantineObjectPresent']);self.assertEqual(checked['errors'],[])
+        restricted.unlink()
+        checked=r.check_file(self.root,{'path':'secret','status':'quarantined','contentAddressedObject':'quarantine/sha256/object'})
+        self.assertIn('missing-quarantine-object',checked['errors'])
+
     def test_streaming_array(self):
         p=self.root/'large.json'; r.dump(p,{'connectorId':'T','files':[{'path':str(i),'text':'x'*100} for i in range(2000)],'other':[{'skip':True}]*3000})
         self.assertEqual(sum(k=='file' for k,v in r.manifest_values(p)),2000)

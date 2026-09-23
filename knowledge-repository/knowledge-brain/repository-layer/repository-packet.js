@@ -49,11 +49,13 @@ export function prepareRepositoryPacket(project,packet,{tenantId,projectId}){
  }
  let last=packet.fromCursor;
  for(const n of packet.notices){
-  keys(n,['cursor','kind','revisionId','supersedes','reason','dependentClaimsIneligible']);
-  if(!Number.isSafeInteger(n.cursor)||n.cursor<=last||n.cursor>packet.cursor||!id('revision',n.revisionId)||!['revision','invalidation'].includes(n.kind))fail('invalid notice');
+  keys(n,n.kind==='revision'?['cursor','kind','revisionId','supersedes']:['cursor','kind','revisionId','reason','dependentClaimsIneligible']);
+  if(!Number.isSafeInteger(n.cursor)||n.cursor!==last+1||n.cursor>packet.cursor||!id('revision',n.revisionId)||!['revision','invalidation'].includes(n.kind))fail('invalid notice');
+  if(n.kind==='revision'&&n.supersedes!==null&&!id('revision',n.supersedes))fail('invalid successor notice');
   if(n.kind==='invalidation'&&(n.dependentClaimsIneligible!==true||!['withdrawn','superseded','source-unavailable'].includes(n.reason)))fail('invalid invalidation');
   last=n.cursor;
  }
+ if(last!==packet.cursor)fail('incomplete notice range');
  const remainingSources=100-(project.knowledge?.sources?.length||0),remainingClaims=250-(project.knowledge?.claims?.length||0);
  return {schemaVersion:VERSION,storeId:packet.storeId,scope:{tenantId,projectId},cursor:packet.cursor,readOnly:true,authority:'discovery-only',productionAccepted:false,
   locators,counts:{sources:packet.sources.length,candidates:packet.claims.length},capacity:{remainingSources,remainingClaims},

@@ -12,3 +12,5 @@ Local app package: 0.10.0-rc.10.91.1, not verified as cloud Site v44.
 Preserve unrelated changes and acquired bytes. No pushes, external publication, original text exports or invented approvals. Platform release gates and cloud end-to-end integration remain explicitly unrun.
 
 Target updated by user: supplied AIW-Model-Explorer-v44-local.zip, SOURCE-RELEASE siteVersion 44, sourceCommit eef8464a885b93aee3f4a9348045dcc82f1635cd. Isolated extraction under output/v44-target; adapt and test against this source. Existing local v5 application remains untouched.
+
+Completion continuation: rerun the full current acquisition inventory in output/repository-layer-complete; verify quarantine presence without reading restricted bytes; validate the required pilot checks; replace partial-handoff wording with measured completion and explicit external authority gates. No new product features, remote publication or unrelated app changes.

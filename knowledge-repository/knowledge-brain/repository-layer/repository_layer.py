@@ -124,6 +124,12 @@ def check_file(snapshot, f):
     status = f.get('status', 'unknown')
     result = {'path': f['path'], 'hash': f.get('contentSha256', '').removeprefix('sha256:'), 'acquisition': status,
               'restricted': status not in ('accepted', 'accepted-opaque'), 'exportDisposition': 'metadata-only', 'errors': []}
+    if status == 'quarantined':
+        try:
+            result['quarantineObjectPresent'] = safe(snapshot, f.get('contentAddressedObject', '')).is_file()
+            if not result['quarantineObjectPresent']: result['errors'].append('missing-quarantine-object')
+        except (OSError, ValueError):
+            result['errors'].append('unresolvable-quarantine-object')
     if status not in ('accepted', 'accepted-opaque'):
         result['resolution'] = 'restricted-not-read'
         return result
@@ -195,6 +201,8 @@ def inventory(root, index_path, output):
                                   commit=e['immutableCommit'], snapshot=e['snapshotId'], checkpointResolved=checkpoint_ok,
                                   licenceDisposition=meta.get('licenceEvidence', {}).get('finalDisposition', 'unknown'))
                     out.write(json.dumps(record) + '\n')
+                    if counts['fileEntries'] % 5000 == 0:
+                        print(e['connectorId'], counts['fileEntries'], '/', e['denominatorCount'], flush=True)
             for key, value in manifest_values(mp):
                 if key != 'file':
                     meta[key] = value
@@ -237,6 +245,13 @@ def inventory(root, index_path, output):
             for _, _, files in os.walk(p.parent / folder):
                 physical[folder] += len(files)
     summary['allSnapshotPhysicalCounts'] = dict(physical)
+    summary['expectedFileEntries'] = sum(e['denominatorCount'] for e in index['manifests'])
+    summary['auditRunFinished'] = True
+    summary['auditComplete'] = totals['fileEntries'] == summary['expectedFileEntries'] and len(summary['repositories']) == len(index['manifests'])
+    summary['integrityPassed'] = summary['auditComplete'] and not summary['errors'] and not any(any(r['errors'].values()) for r in summary['repositories'])
+    summary['quarantineBytesVerified'] = False
+    summary['historicalSnapshotBytesVerified'] = False
+    summary['scope'] = 'All current acquisition-index manifests and objects; historical snapshot stores counted separately. Restricted quarantine presence checked without reading bytes.'
     dump(output / 'corpus-summary.json', summary)
     return summary
 

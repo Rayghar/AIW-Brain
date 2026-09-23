@@ -38,3 +38,6 @@ node build.mjs
 ```
 
 The packet preview returns existing `knowledge.fetch` commands for explicit acquisition through v44's registered-repository, immutable-commit and expected-hash checks. It does not export or import original source text. Preview capacity is advisory; each actual command is checked by existing project limits. No packet grants licence clearance, review, signature, activation or canonical graph authority. Live cloud deployment and trusted signed-release integration remain external work.
+
+
+Completion verification uses `schema-validate.cjs` for both JSON Schema files and their seven examples. Set `AIW_AJV_MODULE` to an installed Ajv 2020 module and `AIW_PACKET_PATH` to the actual pilot packet; these are test tools, not runtime dependencies. Playwright likewise uses `AIW_PLAYWRIGHT_MODULE`. The handoff builder requires a finished full inventory receipt and refuses the old partial-audit summary. `summarize_partial.py` and `finalize_audit.py` are historical recovery/report tools; the completed run directly uses the corrected inventory implementation.

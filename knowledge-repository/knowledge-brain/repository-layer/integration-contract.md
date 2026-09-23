@@ -6,7 +6,7 @@ The supplied application is Model Explorer Site v44, source commit `eef8464a885b
 
 The shared repository layer holds corpus-scale acquisition metadata and immutable objects on the laptop. Its SQLite pilot store contains source identities, located passages, pending interpretations and descriptive edge suggestions. A packet carries at most 100 source revisions, 250 candidates, 500 notices and 8,000,000 UTF-8 JSON bytes. Source bodies, quarantined objects and acquired archives are excluded. Existing project contents still count toward the application's own limits; the adapter reports remaining capacity, and existing commands enforce it at mutation time.
 
-`contract.schema.json` is the complete JSON Schema 2020-12 wire definition. The handoff includes that schema and appends it below this document. Cross-field validation also checks hash-derived identifiers, line order, unique IDs, source/passage/claim referential integrity, sequential notices and authenticated scope. Unknown fields, source bodies and authority upgrades are rejected. `architecture-knowledge-sample.json` conforms to the same schema; its source text is original synthetic test material in `synthetic-fixture.txt`.
+`contract.schema.json` is the complete JSON Schema 2020-12 wire definition. The handoff includes that schema and appends it below this document. Cross-field validation also checks hash-derived identifiers, line order, unique IDs, source/passage/claim referential integrity, contiguous sequential notices and authenticated scope. Unknown fields, source bodies and authority upgrades are rejected. `architecture-knowledge-sample.json` conforms to the same schema; its source text is original synthetic test material in `synthetic-fixture.txt`.
 
 Source revision ID = `revision-` plus the first 32 hex characters of SHA-256(JSON compact array of repository, exact commit, path, file SHA-256). Passage ID similarly hashes revision ID, inclusive 1-based lineStart, lineEnd and excerpt SHA-256. Claim ID hashes passage ID. Paths in this v1 adapter are restricted to ASCII documentation locators, and hashes are lowercase hex without a prefix. Passage text is obtained by UTF-8 decoding exact bytes, splitting on LF, slicing inclusive line locations and joining with LF; retained CR characters are part of the hash. No normalization or instructions from source bodies are executed.
 
@@ -43,3 +43,16 @@ The current v44 preview displays invalidation notices to its caller but does not
 ## Operating boundaries
 
 The pilot scheduler revalidates a pinned local selection; it does not poll GitHub branches or download new snapshots. New acquisitions must use the governed acquisition process, then provide a successor selection. `refresh.ps1` is ready for Task Scheduler but no system task is registered automatically. The laptop corpus is not mounted in the cloud, and no cloud deployment, live LLM call, expert review or architect-reviewed SEABaaS case is claimed.
+
+
+## Exact operation schemas and existing activation/withdrawal examples
+
+`operations.schema.json` defines the search arguments, immutable source fetch, existing v44 project activation/withdrawal commands, and invalidation notices. `operations.examples.json` contains synthetic documentation examples only; no example is submitted to a service or counted as a real approval. Both schema documents are included in the handoff.
+
+Search JSON arguments map to `query(dbpath, question, mode, limit)` in the local repository adapter. The CLI exposes question and mode and uses the bounded default limit of 12. There is no invented HTTP search endpoint.
+
+Activation uses the existing authenticated `POST /api/commands?project=<projectId>` endpoint. Its exact body is the `activation` example, with the current project revision, a real release ID, a genuine human review and the application's current `knowledgeStamp(project)`. It acts only on already stored reviewed project releases; it cannot activate a repository metadata packet. The repository-to-independent-signed-release bridge remains an external integration gate.
+
+Withdrawal uses the same existing endpoint and the `withdrawal` body, with a real recorded source/claim/release ID and `knowledgeImpactStamp(project,targetId)`. Application review is required. This is the project authority operation; it is distinct from unsigned repository invalidation notices, which may only be previewed by this adapter.
+
+Repository invalidation is exercised without changing project authority by refreshing a selector with `withdrawn:true`, or ingesting a successor immutable snapshot for the same repository/path. Export with `--cursor <previousCursor>` returns the exact `invalidationNotice` shape. Consumers retain history and cannot treat a descriptive notice as a signed approval. The existing local tests exercise changed-source and withdrawal invalidation; no production authority is simulated as real.

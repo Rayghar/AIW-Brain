@@ -1,0 +1,52 @@
+{
+  "search": {
+    "question": "caching",
+    "mode": "candidate",
+    "limit": 12
+  },
+  "activation": {
+    "revision": 1,
+    "command": {
+      "type": "knowledge.activate",
+      "payload": {
+        "reviewed": true,
+        "reviewer": "SYNTHETIC-NOT-A-REAL-APPROVER",
+        "reason": "Documentation fixture only; never execute as an approval.",
+        "id": "KR-SYNTHETIC",
+        "stamp": "CURRENT-knowledgeStamp-MUST-BE-SUPPLIED-BY-APPLICATION"
+      }
+    }
+  },
+  "withdrawal": {
+    "revision": 1,
+    "command": {
+      "type": "knowledge.withdraw",
+      "payload": {
+        "reviewed": true,
+        "reviewer": "SYNTHETIC-NOT-A-REAL-APPROVER",
+        "reason": "Documentation fixture only.",
+        "id": "KS-SYNTHETIC",
+        "stamp": "CURRENT-knowledgeImpactStamp-MUST-BE-SUPPLIED-BY-APPLICATION"
+      }
+    }
+  },
+  "sourceFetch": {
+    "revision": 1,
+    "command": {
+      "type": "knowledge.fetch",
+      "payload": {
+        "connectorId": "SYNTHETIC",
+        "path": "guide.md",
+        "ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "expectedHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    }
+  },
+  "invalidationNotice": {
+    "cursor": 2,
+    "kind": "invalidation",
+    "revisionId": "revision-cccccccccccccccccccccccccccccccc",
+    "reason": "superseded",
+    "dependentClaimsIneligible": true
+  }
+}

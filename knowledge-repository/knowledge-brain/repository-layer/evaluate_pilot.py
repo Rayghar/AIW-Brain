@@ -18,24 +18,31 @@ for item in packet['sources']:
         'fileHashPassed': r.sha(raw) == item['hash'],
         'passagesPassed': all(r.sha('\n'.join(lines[s['lineStart']-1:s['lineEnd']]).encode()) == s['excerptHash'] for s in item['passages'])})
 questions = [
-    ('Where should caching trade-offs be reviewed?', 'caching', 'docs/best-practices/caching.md'),
-    ('Where is API design evidence?', 'api design', 'docs/best-practices/api-design.md'),
-    ('Where is transient failure guidance?', 'transient faults', 'docs/best-practices/transient-faults.md'),
-    ('Where is the accounting component documented?', 'accounting', 'src/accounting/README.md'),
-    ('Where is Kafka documented in the demo?', 'kafka', 'src/kafka/README.md'),
-    ('Where should autoscaling prerequisites be reviewed?', 'auto scaling', 'docs/best-practices/auto-scaling.md')]
+    ('When should caching be considered, and which applicability constraints need review?', 'caching', 'docs/best-practices/caching.md'),
+    ('Which interface-design principles and consumer constraints should an API design review examine?', 'api design', 'docs/best-practices/api-design.md'),
+    ('What retry and failure-handling conditions need review before selecting a resilience tactic?', 'transient faults', 'docs/best-practices/transient-faults.md'),
+    ('How should an architect assess the demo accounting component without generalizing its implementation?', 'accounting', 'src/accounting/README.md'),
+    ('What evidence should an architect inspect when assessing Kafka in the demo event flow?', 'kafka', 'src/kafka/README.md'),
+    ('Which workload and operational assumptions need review before choosing autoscaling?', 'auto scaling', 'docs/best-practices/auto-scaling.md')]
+reasons = {
+    'caching': 'Caching is the selected source topic; reviewers must establish consistency, invalidation and operational conditions from its original context.',
+    'api design': 'API design is the selected source topic; interface guidance must be evaluated against consumer requirements.',
+    'transient faults': 'Transient-fault guidance is the selected topic; retry applicability and failure conditions require explicit interpretation.',
+    'accounting': 'The demo component README is implementation-specific evidence, not independently approved reusable architecture advice.',
+    'kafka': 'The demo Kafka README is the expected component evidence; it does not establish suitability for a different project.',
+    'auto scaling': 'Autoscaling guidance is the expected topic; workload assumptions and limitations must be reviewed before proposing a tactic.'}
 results = []
 for question, query, expected in questions:
     hits = r.query(out / 'pilot.sqlite', query)
     results.append({'question': question, 'query': query, 'expectedPath': expected,
-        'expectedReason': 'Direct topic or component match; applicability and advice require human review.',
+        'expectedReason': reasons[query],
         'actual': [{k: x[k] for k in ('revisionId', 'repository', 'commit', 'path', 'matchReason')} for x in hits],
         'passed': expected in [x['path'] for x in hits],
         'approvedHits': len(r.query(out / 'pilot.sqlite', query, mode='approved'))})
 r.dump(out / 'evaluation.json', {'label': 'Actual local pilot; lexical source-location evaluation only',
     'provenance': checks, 'questions': results, 'passed': sum(x['passed'] for x in results),
     'failed': sum(not x['passed'] for x in results), 'humanArchitectureReview': 'not performed',
-    'SEABaaS': 'untested; workbook and app workflow not verified', 'claimPrecision': 'unmeasured',
+    'SEABaaS': 'Workbook topic signals checked separately; authoritative baseline and architect-reviewed application case unverified', 'claimPrecision': 'unmeasured',
     'contextualRelevance': 'unmeasured', 'omissions': 'unmeasured', 'productionAccepted': False})
 with (out / 'pilot-manifest.jsonl').open('w', encoding='utf-8') as f:
     for s in packet['sources']:
