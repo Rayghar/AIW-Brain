@@ -7,7 +7,7 @@ export function repositoryLocators(preview){
  if(preview)return preview.locators;
  return REPOSITORY_PILOT.sources.map(source=>{
   const registered=BRAIN_CATALOGUE.repositories.find(repo=>repo.connectorId===source.repositoryId&&repo.repository.toLowerCase()===source.repository.toLowerCase());
-  const supported=!!registered&&/\.(md|mdx|txt|adoc|rst)$/i.test(source.path);
+  const supported=!!registered&&/\.(md|mdx|markdown|txt|adoc|asciidoc|rst)$/i.test(source.path);
   return {revisionId:source.revisionId,repository:source.repository,path:source.path,licenceDisposition:source.licenceDisposition,
    status:supported?'ready-for-explicit-source-retrieval':'repository-registration-required',
    command:supported?{type:'knowledge.fetch',payload:{connectorId:source.repositoryId,path:source.path,ref:source.commit,expectedHash:source.hash}}:null};

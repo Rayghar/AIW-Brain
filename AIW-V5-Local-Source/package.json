@@ -92,7 +92,12 @@
     "test:chapter-reasoning": "node chapter-reasoning-validate.mjs",
     "test:chapter-sol-browser": "node chapter-sol-browser-validate.mjs",
     "test:stewardship": "node stewardship-validate.mjs",
-    "test:stewardship-browser": "node stewardship-browser-validate.mjs"
+    "test:stewardship-browser": "node stewardship-browser-validate.mjs",
+    "test:repository-service": "node repository-service-validate.mjs",
+    "repository:init": "node repository-service/cli.mjs init",
+    "repository:build": "node repository-service/cli.mjs build",
+    "repository:serve": "node repository-service/cli.mjs serve",
+    "repository:status": "node repository-service/cli.mjs status"
   },
   "devDependencies": {
     "drizzle-kit": "^0.31.10",

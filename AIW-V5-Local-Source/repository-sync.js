@@ -39,6 +39,9 @@ export async function verifyRepositorySync(packet,env,{tenantId,projectId,now=Da
   for(const s of r.sources){if(!exact(s,['id','repository','commit','path','hash'])||!/^KS-\d{4,}$/.test(s.id)||!/^[-\w.]+\/[-\w.]+$/.test(s.repository)||!/^[a-f0-9]{40}$/.test(s.commit)||typeof s.path!=='string'||!/^[\w./ -]{1,350}$/.test(s.path)||!hash(s.hash)||sourceIds.has(s.id))fail('invalid source receipt');sourceIds.add(s.id);}
  }
  let keys;try{keys=JSON.parse(env.AIW_REPOSITORY_SYNC_KEYS||'{}');}catch{fail('trusted public keys are not configured');}
+ // A notice key (the repository service's automated key) may sign revision and invalidation notices
+ // only. It can never make a release receipt verify, so it cannot make repository claims eligible.
+ if(packet.release===null&&!bytes64(keys?.[packet.signature.keyId])){try{keys=JSON.parse(env.AIW_REPOSITORY_NOTICE_KEYS||'{}');}catch{fail('trusted notice keys are not configured');}}
  const publicBytes=bytes64(keys?.[packet.signature.keyId]),signature=bytes64(packet.signature.value);
  if(!publicBytes||publicBytes.length!==32||!signature||signature.length!==64)fail('trusted public key or signature is unavailable');
  const {signature:unused,...payload}=packet;

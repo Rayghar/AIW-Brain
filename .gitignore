@@ -31,3 +31,6 @@ release-evidence/rc10.73.7/*_FULLDIST.zip
 **/.cache/ms-playwright/
 **/ms-playwright/
 .DS_Store
+
+# Knowledge repository service store: derived identities, locations and a contentless index of acquired content.
+knowledge-repository/store/

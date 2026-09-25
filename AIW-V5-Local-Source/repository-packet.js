@@ -35,7 +35,7 @@ export function prepareRepositoryPacket(project,packet,{tenantId,projectId}){
    passages.set(p.passageId,s.revisionId);
   }
   const registered=BRAIN_CATALOGUE.repositories.find(r=>r.connectorId===s.repositoryId&&r.repository.toLowerCase()===s.repository.toLowerCase());
-  const supported=!!registered&&/\.(md|mdx|txt|adoc|rst)$/i.test(s.path);
+  const supported=!!registered&&/\.(md|mdx|markdown|txt|adoc|asciidoc|rst)$/i.test(s.path);
   locators.push({revisionId:s.revisionId,repository:s.repository,path:s.path,licenceDisposition:s.licenceDisposition,status:supported?'ready-for-explicit-source-retrieval':'repository-registration-required',
    command:supported?{type:'knowledge.fetch',payload:{connectorId:s.repositoryId,path:s.path,ref:s.commit,expectedHash:s.hash}}:null});
  }
