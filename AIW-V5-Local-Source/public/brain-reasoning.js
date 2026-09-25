@@ -142,7 +142,9 @@ function fixItem(p, D, d, values, objective = null) {
   const rows = d.rows.map(id => D.rows.find(r => r.id === id)).filter(Boolean);
   const C = d.switchPoint ? D.choices?.get(d.target.id) : null;
   const choice = C ? {realisation: `${C.record.ref} ${C.record.title}`, reading: C.reading, lean: C.leanRecorded || C.leanAll, options: C.options.map(o => ({id: o.option.id, product: o.option.product || o.option.title, operatingModel: o.option.operatingModel, score: o.score, recordedScore: o.recordedScore})), ceiling: C.ceiling ? {what: C.ceiling.what, limit: C.ceiling.limit, unit: C.ceiling.unit, demand: C.ceiling.demand, passed: C.ceiling.passed, holds: C.ceiling.holdsText} : null, criteria: C.criteria.map(c => `${c.id} ${c.title} (weight ${c.weight})`)} : null;
-  const item = {id: 'F:' + d.id, kind: d.switchPoint ? 'switch' : 'fix', title: d.title, chapter: d.chapter, vital: d.vital, rows: rows.map(r => r.ref),
+  // A switch point is about a Chapter 7 realisation: Sol's recall of what the project knows and has
+  // learned anchors on it (its stamp is unchanged, so earlier advice stays current).
+  const item = {id: 'F:' + d.id, kind: d.switchPoint ? 'switch' : 'fix', title: d.title, chapter: d.chapter, vital: d.vital, rows: rows.map(r => r.ref), ...(C ? {objectId: C.record.id, objectChapter: 7} : {}),
     reading, choice, draft: {why: d.why, also: d.also || '', arithmetic: list(d.math).slice(0, 6), changes: describeCommands(p, E.commands).flatMap(x => x.fields.map(f => `${x.head} · ${f.label}: ${f.before ? clip(f.before, 80) + ' → ' : ''}${clip(f.after, 160)}`)).slice(0, 8), effect: describeEffect(E, {brief: true}), moves: E.changed.map(c => `${c.ref} ${vitalLabel(c.vital)}: ${VSTATE[c.from].label} → ${VSTATE[c.to].label}`).slice(0, 10)},
     knobs: d.knobs.map(k => ({key: k.key, label: k.label, type: k.type, value: v[k.key], ...(k.type === 'number' ? {min: k.min ?? 0, max: k.max ?? 1e12, step: k.step || 1, unit: k.unit || ''} : {maxLength: k.maxLength || (k.type === 'textarea' ? 2400 : 120)})})),
     products: uniq([...rows.map(r => r.product), ...(choice ? choice.options.map(o => o.product) : [])].filter(Boolean))};
@@ -276,7 +278,7 @@ export function reasoningPacket(p, raw) {
   let governed = null;
   try {
     const own = items.find(i => i.objectId), anchor = own ? own.objectId : rows[0]?.id || items.find(i => i.kind === 'decision')?.id.slice(2);
-    if (anchor) { const c = brainContext(p, {chapter: own ? own.chapter : rows[0] ? 10 : 3, id: anchor}); if (c.selected.id !== 'project') { governed = architectureBrain(p, c, {query: [request.prompt, ...items.map(i => i.title)].join(' '), limit: 3});
+    if (anchor) { const c = brainContext(p, {chapter: own ? own.objectChapter || own.chapter : rows[0] ? 10 : 3, id: anchor}); if (c.selected.id !== 'project') { governed = architectureBrain(p, c, {query: [request.prompt, ...items.map(i => i.title)].join(' '), limit: 3});
       // Knowledge captured from a disagreement holds for the record it is linked to (above), not wherever its words match.
       const captured = new Set(knowledgeState(p).sources.filter(x => x.origin === 'architect-dismissal').map(x => x.id));
       for (const s of brainSources(p, governed).filter(x => !(x.kind === 'governed-claim' && captured.has(x.receipt?.sourceId))).slice(0, 3)) add(s); } }

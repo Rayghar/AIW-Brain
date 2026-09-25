@@ -11,7 +11,8 @@ const MAX_QUERY=300,MAX_TERMS=12,PAGE=20;
 const json=v=>{try{return JSON.parse(v||'[]');}catch{return [];}};
 
 // User text becomes a safe FTS5 expression: quoted terms and phrases, all required, last term as prefix.
-export function ftsQuery(input){
+// mode 'any' (Brain leads) accepts any term and lets BM25 rank passages that match more of them.
+export function ftsQuery(input,mode='all'){
  const text=String(input||'').slice(0,MAX_QUERY),parts=[];let last=null;
  for(const m of text.matchAll(/"([^"]{1,120})"|([\p{L}\p{N}][\p{L}\p{N}_'-]*)/gu)){
   if(parts.length>=MAX_TERMS)break;
@@ -19,8 +20,8 @@ export function ftsQuery(input){
   else{const words=m[2].match(/[\p{L}\p{N}]+/gu)||[];if(!words.length)continue;parts.push('"'+words.join(' ')+'"');last=words.length===1&&words[0].length>=3?parts.length-1:null;}
  }
  if(!parts.length)return null;
- if(last!==null)parts[last]+='*';
- return parts.join(' AND ');
+ if(last!==null&&mode!=='any')parts[last]+='*';
+ return parts.join(mode==='any'?' OR ':' AND ');
 }
 const terms=q=>[...String(q||'').toLowerCase().matchAll(/[\p{L}\p{N}]{3,}/gu)].map(m=>m[0]).slice(0,MAX_TERMS);
 
@@ -61,8 +62,11 @@ export function openReader(config){
     selection:json(store.get('selection')||'null'),registry:json(store.get('registry')||'null'),counts:{...c,...r},authority:AUTHORITY,productionAccepted:false,
     connectors:db.prepare('SELECT connector_id,repository,name,lifecycle,use_policy,spdx,review_status,final_disposition,documents,"indexed" AS indexed_documents,passages,commit_sha FROM connectors ORDER BY connector_id').all().map(x=>({connectorId:x.connector_id,repository:x.repository,name:x.name,lifecycle:x.lifecycle,usePolicy:x.use_policy,spdx:x.spdx,reviewStatus:x.review_status,finalDisposition:x.final_disposition,commit:x.commit_sha,documents:x.documents,indexedDocuments:x.indexed_documents,passages:x.passages}))};
   },
-  async search({q,connector=null,concept=null,retrievable=false,page=1}={}){
-   const match=ftsQuery(q);if(!match)return {query:String(q||''),total:0,page:1,results:[],files:[],authority:AUTHORITY};
+  async search({q,connector=null,concept=null,retrievable=false,page=1,mode='all'}={}){
+   const match=ftsQuery(q,mode);
+   // A concept alone lists the passages that name it, in document order.
+   if(!match&&concept)return this.conceptPassages({concept:String(concept),connector,retrievable,page});
+   if(!match)return {query:String(q||''),total:0,page:1,results:[],files:[],authority:AUTHORITY};
    const where=["passage_search MATCH ?","r.state='current'"],args=[match];
    if(connector){where.push('r.connector_id=?');args.push(String(connector));}
    if(retrievable)where.push('r.retrievable=1');
@@ -76,6 +80,13 @@ export function openReader(config){
    for(const x of picked.slice(offset,offset+PAGE)){const p={rowid:x.prow,passage_id:x.passage_id,line_start:x.line_start,line_end:x.line_end,excerpt_sha256:x.excerpt_sha256,heading:x.heading},r={...x,rowid:x.rrow};results.push({...passageOut(p,r,await excerpt(r,p,cache),q),score:Number(x.score.toFixed(4))});}
    const files=db.prepare("SELECT r.*,r.rowid rrow FROM file_search JOIN revisions r ON r.rowid=file_search.rowid WHERE file_search MATCH ? AND r.state='current'"+(connector?' AND r.connector_id=?':'')+(retrievable?' AND r.retrievable=1':'')+' ORDER BY bm25(file_search,3.0,1.0,0.5) LIMIT 8').all(...[match,...(connector?[String(connector)]:[])]).map(r=>revisionOut(r));
    return {query:String(q||''),match,total,page:n,pageSize:PAGE,results,files,authority:AUTHORITY};
+  },
+  async conceptPassages({concept,connector=null,retrievable=false,page=1}){
+   const where=["pc.concept_id=?","r.state='current'"],args=[concept];if(connector){where.push('r.connector_id=?');args.push(String(connector));}if(retrievable)where.push('r.retrievable=1');
+   const from='FROM passage_concepts pc JOIN passages p ON p.rowid=pc.passage_rowid JOIN revisions r ON r.rowid=p.revision_rowid WHERE '+where.join(' AND ');
+   const total=Number(db.prepare('SELECT COUNT(*) n '+from).get(...args).n),n=Math.max(1,Math.min(20,Number(page)||1)),cache=new Map(),results=[];
+   for(const x of db.prepare('SELECT p.rowid prow,p.*,r.*,r.rowid rrow '+from+' ORDER BY r.retrievable DESC,r.connector_id,r.path,p.ordinal LIMIT ? OFFSET ?').all(...args,PAGE,(n-1)*PAGE)){const p={rowid:x.prow,passage_id:x.passage_id,line_start:x.line_start,line_end:x.line_end,excerpt_sha256:x.excerpt_sha256,heading:x.heading},r={...x,rowid:x.rrow};results.push(passageOut(p,r,await excerpt(r,p,cache),''));}
+   return {query:'',concept,total,page:n,pageSize:PAGE,results,files:[],authority:AUTHORITY};
   },
   async passage(id){
    const p=db.prepare('SELECT rowid,* FROM passages WHERE passage_id=?').get(String(id));if(!p)return null;

@@ -83,6 +83,7 @@ export async function handleRepositoryCorpus(request,env,identity,projectId,{fet
   if(/^GH-[A-Z0-9-]{1,80}$/.test(q('connector')))params.set('connector',q('connector'));
   if(/^concept-[a-f0-9]{32}$/.test(q('concept')))params.set('concept',q('concept'));
   if(q('retrievable')==='1')params.set('retrievable','1');
+  if(q('mode')==='any')params.set('mode','any');
   const data=await repositoryService(env,'/v1/search?'+params,{fetcher});
   return json({authority:CORPUS_AUTHORITY,query:str(data.query,300),total:num(data.total),page:num(data.page)||1,pageSize:num(data.pageSize)||20,
    results:(Array.isArray(data.results)?data.results:[]).map(x=>passageView(state,x)).filter(Boolean),files:(Array.isArray(data.files)?data.files:[]).map(r=>revisionView(state,r)).filter(Boolean)});

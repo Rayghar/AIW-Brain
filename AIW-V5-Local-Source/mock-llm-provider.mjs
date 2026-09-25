@@ -5,7 +5,7 @@
 // server reaches it only when a test sets AIW_LLM_BASE_URL to its loopback address.
 import http from 'node:http';
 
-export function mockAssessment(packet, {refineBy = 0.1} = {}) {
+export function mockAssessment(packet, {refineBy = 0.1, faults = {}} = {}) {
   const assessments = packet.items.map((it, i) => {
     const ref = it.ref, nums = it.knobs.filter(k => k.type === 'number'), words = it.knobs.filter(k => k.type !== 'number');
     const base = {id: it.id, headline: '', reasoning: '', refinements: [], proposals: [], preferred: 'none', risks: [], questions: [], sourceRefs: [ref]};
@@ -34,6 +34,17 @@ export function mockAssessment(packet, {refineBy = 0.1} = {}) {
       refinements: [{key: words[0].key, value: `${String(words[0].value || '').slice(0, Math.max(0, (words[0].maxLength || 2400) - 60))} Review this with the owning team before release.`.trim(), why: 'Names the review the wording still needs.'}], preferred: lean};
     return {...base, verdict: 'apply', headline: 'Apply as drafted.', reasoning: `The draft follows from the reading in ${ref}; confirm its values with evidence after it is applied.`, preferred: lean};
   });
+  // Deliberate faults, for proving that the guards and the evaluation (sol-evaluation.js) detect them.
+  for (const a of assessments) {
+    const fault = faults[a.id], it = packet.items.find(x => x.id === a.id);
+    if (!fault || !it) continue;
+    if (fault === 'wrong-verdict') a.verdict = it.allowed.verdicts.find(v => v !== a.verdict && v !== 'insufficient') || a.verdict;
+    if (fault === 'invented-number') a.reasoning += ' It will need 987654 replicas to be safe.';
+    if (fault === 'guarantee') a.reasoning += ' This guarantees a verified outcome at full capacity.';
+    if (fault === 'no-own-citation') a.sourceRefs = packet.sources.filter(s => s.ref !== it.ref).slice(0, 1).map(s => s.ref);
+    if (fault === 'out-of-bounds') { const k = it.knobs.find(x => x.type === 'number'); if (k) a.refinements = [{key: k.key, value: String(k.max + 1), why: 'Beyond the knob bound.'}]; }
+    if (fault === 'reading-only') a.sourceRefs = [it.ref];
+  }
   return {summary: `Sol assessed ${assessments.length} decision${assessments.length === 1 ? '' : 's'} on the desk.`, sourceRefs: [...new Set(assessments.flatMap(a => a.sourceRefs))], assessments};
 }
 export const mockReview = (input, {reject = []} = {}) => ({assessments: input.candidate.assessments.map(a => ({id: a.id, supported: !reject.includes(a.id), issues: reject.includes(a.id) ? ['It overstates what the reading shows.'] : []}))});

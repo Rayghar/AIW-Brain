@@ -436,7 +436,7 @@ function fixHTML(d) {
    ${err ? `<p class="dk-verdict bad">${esc(err.message)}</p>` : `<h5>What changes · ${E.commands.length}</h5>${changesHTML(E.commands)}`}
    ${d.switchPoint ? '<p class="cm-muted">A decision to frame, not a fix: the vitals move when Chapter 7 records the product the decision chooses.</p>' : `<h5>On the desk</h5><p class="dk-effect">${esc(describeEffect(E))}</p>${cellPills(E.changed)}`}
    ${d.math?.length ? `<details class="dk-mathd"><summary>The arithmetic</summary><ol class="dk-math">${d.math.map(m => `<li>${esc(m)}</li>`).join('')}</ol></details>` : ''}
-   <div class="cm-acts">${d.switchPoint ? '' : act('fix-preview', `data-id="${esc(d.id)}" aria-pressed="${previewing}"`, icon('vitals') + (previewing ? 'Stop the preview' : 'Preview on the desk'), previewing ? 'on' : '')}${act('fix-apply', `data-id="${esc(d.id)}"`, icon('review') + 'Review and apply…', 'primary')}${chLink(d.target.chapter, d.target.id, `Edit in Chapter ${d.target.chapter} instead`)}</div>
+   <div class="cm-acts">${d.switchPoint ? `<button type="button" class="cm-btn" data-dk="noop" data-k-action="product-compare" data-id="${esc(d.target.id)}">Compare in Mind Factory</button>` : act('fix-preview', `data-id="${esc(d.id)}" aria-pressed="${previewing}"`, icon('vitals') + (previewing ? 'Stop the preview' : 'Preview on the desk'), previewing ? 'on' : '')}${act('fix-apply', `data-id="${esc(d.id)}"`, icon('review') + 'Review and apply…', 'primary')}${chLink(d.target.chapter, d.target.id, `Edit in Chapter ${d.target.chapter} instead`)}</div>
    <p class="cm-muted">Applied only through Chapter ${d.chapter}'s change review, where every changed field is shown and you confirm it. Drafted values stay unconfirmed until evidence confirms them.</p></section>`;
 }
 function judgementHTML(j) {
@@ -524,7 +524,7 @@ function choiceHTML(id) {
   if (!C) return '';
   const n = suggestionCommands(C).length;
   const sw = fixes().byId.get('switch:' + id);
-  return `<section class="dk-choice"><h4>The product choice<span>${C.options.length} options</span></h4>${choiceSummaryHTML(C)}${choiceTableHTML(C)}<div class="cm-acts">${n ? act('record-suggestions', `data-id="${esc(id)}"`, `Record ${n} suggested judgement${n === 1 ? '' : 's'} in Chapter 7`, 'gold') : ''}${chLink(7, id, 'Compare the options in Chapter 7')}</div></section>${sw ? fixHTML(sw) : ''}`;
+  return `<section class="dk-choice"><h4>The product choice<span>${C.options.length} options</span></h4>${choiceSummaryHTML(C)}${choiceTableHTML(C)}<div class="cm-acts">${n ? act('record-suggestions', `data-id="${esc(id)}"`, `Record ${n} suggested judgement${n === 1 ? '' : 's'} in Chapter 7`, 'gold') : ''}${chLink(7, id, 'Compare the options in Chapter 7')}<button type="button" class="cm-btn" data-dk="noop" data-k-action="product-compare" data-id="${esc(id)}">Compare in Mind Factory</button></div></section>${sw ? fixHTML(sw) : ''}`;
 }
 function loadOverview() {
   const C = DM.cap, O = C.objective, short = C.rows.filter(r => r.verdict.state === 'bad' || r.verdict.state === 'warn');

@@ -23,7 +23,7 @@ export async function startService(config,{token,key=null,port=config.port,host=
    const url=new URL(req.url,'http://127.0.0.1'),q=k=>url.searchParams.get(k);let m;
    if(req.method==='GET'){
     if(url.pathname==='/v1/status')return send(200,{...reader.status(),signing:key?{keyId:key.keyId,publicKey:key.publicKey,purpose:'notices-only'}:null});
-    if(url.pathname==='/v1/search')return send(200,await reader.search({q:q('q'),connector:q('connector'),concept:q('concept'),retrievable:q('retrievable')==='1',page:Number(q('page'))||1}));
+    if(url.pathname==='/v1/search')return send(200,await reader.search({q:q('q'),connector:q('connector'),concept:q('concept'),retrievable:q('retrievable')==='1',page:Number(q('page'))||1,mode:q('mode')==='any'?'any':'all'}));
     if((m=/^\/v1\/passages\/(passage-[a-f0-9]{32})$/.exec(url.pathname))){const p=await reader.passage(m[1]);return p?send(200,p):send(404,{error:'No such passage.'});}
     if((m=/^\/v1\/revisions\/(revision-[a-f0-9]{32})$/.exec(url.pathname))){const r=reader.revision(m[1]);return r?send(200,r):send(404,{error:'No such revision.'});}
     if((m=/^\/v1\/revisions\/(revision-[a-f0-9]{32})\/original$/.exec(url.pathname))){const o=await reader.original(m[1]);log({event:'original',revisionId:m[1],status:o.status});return o.status===200?send(200,o.body):send(o.status,{error:o.error,reason:o.reason});}

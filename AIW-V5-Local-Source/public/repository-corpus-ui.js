@@ -3,13 +3,15 @@
 // project (knowledge.fetch), then interprets and reviews it before it can support any design.
 import {projectURL} from './project-context.js';
 import {knowledgeState} from './knowledge-governance.js';
+import {sha256} from './brain-integrity.js';
 
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const button=(action,label,attrs='')=>`<button type="button" class="btn" data-k-action="${action}" ${attrs}>${label}</button>`;
 const fresh=projectId=>({projectId,status:null,loading:false,query:'',connector:'',retrievable:false,results:null,reading:null,error:''});
 let state=fresh('');
 export const corpusState=()=>state;
-export function resetCorpus(projectId){if(state.projectId!==projectId)state=fresh(projectId);}
+// A state not yet bound to a project (a lead opened before Sources first rendered) binds instead of resetting.
+export function resetCorpus(projectId){if(state.projectId!==projectId)state=state.projectId===''?{...state,projectId}:fresh(projectId);}
 
 async function get(view,params={}){
  const url=new URL(projectURL('/api/knowledge/corpus'),location.origin);url.searchParams.set('view',view);
@@ -31,6 +33,14 @@ export async function readCorpusPassage(redraw,id){
  try{state.reading=(await get('passage',{id})).passage;}catch(e){state.error=e.message;}finally{state.loading=false;redraw();}
 }
 export const closeCorpusPassage=redraw=>{state.reading=null;redraw();};
+// From elsewhere in the workbench: a lead Sol's view showed, or a catalogue concept's passages.
+export async function openCorpusLead(redraw,{query='',passageId=''}={}){await searchCorpus(redraw,{query});if(/^passage-[a-f0-9]{32}$/.test(passageId))await readCorpusPassage(redraw,passageId);}
+export const conceptIdOf=catalogueId=>'concept-'+sha256(JSON.stringify(['catalogue',catalogueId])).slice(0,32);
+export async function searchConcept(redraw,catalogueId,name=''){
+ state.query='';state.loading=true;state.error='';state.reading=null;redraw();
+ try{state.results={...await get('search',{concept:conceptIdOf(catalogueId),connector:state.connector,retrievable:state.retrievable?'1':''}),conceptName:name||catalogueId};}
+ catch(e){state.error=e.message;state.results=null;}finally{state.loading=false;redraw();}
+}
 export function corpusFilter(key,value){if(key==='connector')state.connector=value;if(key==='retrievable')state.retrievable=!!value;}
 
 // The exact revision a result names, wherever it is shown (list, reader or file matches).
@@ -70,6 +80,6 @@ export function renderCorpus(p){
  return `<section class="kw-discovery kw-corpus" aria-label="Knowledge repository"><span class="brain-eyebrow">Knowledge repository · discovery only</span><h4>Search the acquired architecture corpus</h4><p>${esc(c.connectors)} repositories · ${esc(c.documents)} documents · ${esc(c.passages)} passages · ${esc(c.retrievable)} files can become project sources. Passages are unreviewed repository text: read one, retrieve the exact original, then interpret and review it before it can support a design.</p>
 <form data-k-corpus-search class="kw-corpus-form"><label class="brain-field"><span>Search passages</span><div class="kw-search"><input data-k-corpus-query value="${esc(state.query)}" placeholder="Circuit breaker, outbox, zero trust…" aria-label="Search the knowledge repository"><button class="btn" type="submit">Search the corpus</button></div></label><div class="kw-corpus-filters"><label class="brain-field"><span>Repository</span><select data-k-corpus-connector aria-label="Repository filter"><option value="">All repositories</option>${connectors}</select></label><label class="brain-check"><input type="checkbox" data-k-corpus-retrievable ${state.retrievable?'checked':''}> Only files I can retrieve into this project</label></div></form>
 ${state.error?`<p class="kw-overlap" role="alert">${esc(state.error)}</p>`:''}${state.loading?'<p class="kw-discovery-count" role="status">Reading the repository…</p>':''}
-${state.reading?reader(p,state.reading):res?`<p class="kw-discovery-count">${esc(res.total)} matching passage${res.total===1?'':'s'}${res.total?' · page '+esc(res.page)+' of '+pages:''} · at most two per file</p><div class="kw-discovery-list kw-corpus-results">${res.results.map(x=>hit(p,x)).join('')||'<p>No passage matches every term. Try fewer or broader terms.</p>'}</div>${pages>1?`<div class="brain-actions kw-pager">${res.page>1?button('corpus-page','← Previous page',`data-page="${res.page-1}"`):''}${res.page<pages?button('corpus-page','Next page →',`data-page="${res.page+1}"`):''}</div>`:''}${res.files.length?`<details><summary>Matching file names · ${res.files.length}</summary>${res.files.map(r=>`<article class="kw-lead"><b>${esc(r.title)}</b><small>${esc(r.repository)} · ${esc(r.path)}</small>${posture(r)}${actions(p,null,r)}</article>`).join('')}</details>`:''}`:''}
+${state.reading?reader(p,state.reading):res?`<p class="kw-discovery-count">${res.conceptName?'Passages that name '+esc(res.conceptName)+' (a lexical cue, not a judgement that it applies) · ':''}${esc(res.total)} matching passage${res.total===1?'':'s'}${res.total?' · page '+esc(res.page)+' of '+pages:''} · at most two per file</p><div class="kw-discovery-list kw-corpus-results">${res.results.map(x=>hit(p,x)).join('')||'<p>No passage matches every term. Try fewer or broader terms.</p>'}</div>${pages>1?`<div class="brain-actions kw-pager">${res.page>1?button('corpus-page','← Previous page',`data-page="${res.page-1}"`):''}${res.page<pages?button('corpus-page','Next page →',`data-page="${res.page+1}"`):''}</div>`:''}${res.files.length?`<details><summary>Matching file names · ${res.files.length}</summary>${res.files.map(r=>`<article class="kw-lead"><b>${esc(r.title)}</b><small>${esc(r.repository)} · ${esc(r.path)}</small>${posture(r)}${actions(p,null,r)}</article>`).join('')}</details>`:''}`:''}
 <details><summary>Repository posture</summary><p>Store ${esc(st.storeId)} · notice cursor ${esc(st.cursor)} · built ${esc(String(st.builtAt||'').slice(0,19).replace('T',' '))}. Licences are detected, not cleared. Candidate and discovery-only repositories can be searched but not retrieved; metadata-only dossiers expose file names only.</p>${button('corpus-sync','Apply signed repository notices now')}</details></section>`;
 }

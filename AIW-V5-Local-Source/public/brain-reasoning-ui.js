@@ -16,7 +16,7 @@ const list = v => Array.isArray(v) ? v : [];
 const nounOf = items => items.every(i => String(i.id).endsWith('|whatif')) ? 'move' : items.every(i => String(i.id).startsWith('M:')) ? 'record' : items.every(i => String(i.id).startsWith('K:')) ? 'queue item' : 'decision';
 // Lower-case a label's first word unless it is an acronym ("SA Playbook tactic" stays as it is).
 const lowerFirst = s => String(s).replace(/^[A-Z](?![A-Z])/, c => c.toLowerCase());
-export const SOL = {projectId: null, config: null, runs: [], byItem: new Map(), loading: false, pending: null, busy: false, error: '', note: '', stamps: new Map(), stampBase: null};
+export const SOL = {projectId: null, config: null, runs: [], byItem: new Map(), loading: false, pending: null, leads: null, busy: false, error: '', note: '', stamps: new Map(), stampBase: null};
 
 async function call(path, body) {
   const r = await fetch(projectURL('/api/intelligence/' + path), {credentials: 'same-origin', ...(body ? {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)} : {})});
@@ -60,13 +60,30 @@ export function solChapterEntry(p, id, values = null) {
 // What the architect did with a piece of advice, as recorded in the project.
 export const solOutcomes = (p, runId, itemId) => (p?.coauthoring?.assessments || []).filter(r => r.runId === runId && r.itemId === itemId);
 
+// Leads: passages in the knowledge repository that mention what these decisions touch. They are shown
+// beside what Sol will read and are never sent: Sol cannot read or cite them. To rely on one, the
+// architect retrieves its exact original and takes it through interpretation, review and release.
+const STOP = new Set('about above after again against also because been being below between both could does doing down during each from have into more most must need needs only other over same should some such than that their them then there these they this those through under very were what when which while will with would your chapter draft drafts reading readings record records decision decisions design part parts step steps vital vitals round desk judgement sol'.split(' '));
+export function leadQuery(packet) {
+  const words = [], add = t => { for (const w of String(t || '').toLowerCase().match(/[a-z][a-z0-9-]{3,}/g) || []) if (!STOP.has(w) && !words.includes(w)) words.push(w); };
+  for (const i of list(packet?.items)) add(i.title);
+  for (const x of list(packet?.sources)) if (['product-mechanism', 'catalogue-description', 'playbook-entry', 'governed-claim'].includes(x.kind)) add(x.title);
+  return words.slice(0, 12).join(' ');
+}
+async function loadLeads(onChange) {
+  const L = SOL.leads; if (!L?.query) { if (L) L.loading = false; return; }
+  try { const r = await fetch(projectURL('/api/knowledge/corpus?view=search&mode=any&q=' + encodeURIComponent(L.query)), {credentials: 'same-origin'}), d = await r.json().catch(() => ({}));
+    if (SOL.leads !== L) return; L.unavailable = !r.ok; L.results = r.ok ? list(d.results).slice(0, 5) : []; }
+  catch { if (SOL.leads === L) L.unavailable = true; }
+  finally { if (SOL.leads === L) { L.loading = false; onChange?.(); } }
+}
 export async function solPrepare(request, {title = '', onChange} = {}) {
   SOL.error = ''; SOL.busy = true; onChange?.();
-  try { const d = await call('reasoning-context', {task: 'decisions', ...request}); SOL.pending = {request, title, packet: d.packet, prompt: request.prompt || ''}; if (d.configuration) SOL.config = d.configuration; }
-  catch (e) { SOL.error = e.message; SOL.pending = null; }
+  try { const d = await call('reasoning-context', {task: 'decisions', ...request}); SOL.pending = {request, title, packet: d.packet, prompt: request.prompt || ''}; if (d.configuration) SOL.config = d.configuration; SOL.leads = {query: leadQuery(d.packet), loading: true, results: []}; loadLeads(onChange); }
+  catch (e) { SOL.error = e.message; SOL.pending = null; SOL.leads = null; }
   finally { SOL.busy = false; onChange?.(); }
 }
-export function solCancel(onChange) { SOL.pending = null; SOL.error = ''; onChange?.(); }
+export function solCancel(onChange) { SOL.pending = null; SOL.leads = null; SOL.error = ''; onChange?.(); }
 export async function solSend({prompt = null, onChange} = {}) {
   const P = SOL.pending;
   if (!P || SOL.busy) return null;
@@ -76,7 +93,7 @@ export async function solSend({prompt = null, onChange} = {}) {
   try {
     P.requestId ||= crypto.randomUUID();
     const run = await call('reason', {task: 'decisions', ...P.request, packetStamp: P.packet.stamp, requestId: P.requestId});
-    SOL.runs = [run, ...SOL.runs.filter(r => r.id !== run.id)]; index(); SOL.pending = null;
+    SOL.runs = [run, ...SOL.runs.filter(r => r.id !== run.id)]; index(); SOL.pending = null; SOL.leads = null;
     const xs = run.result.assessments, kindOf = id => run.packet.items.find(i => i.id === id)?.kind, counts = new Map(), held = xs.filter(a => a.withheld).length;
     for (const k of Object.keys(VERDICTS)) for (const a of xs) if (!a.withheld && a.verdict === k) { const w = verdictText(kindOf(a.id), k).short.toLowerCase(); counts.set(w, (counts.get(w) || 0) + 1); }
     const noun = nounOf(run.packet.items);
@@ -106,6 +123,13 @@ export function sourcesHTML(sources, cited = null) {
   const xs = cited ? sources.filter(s => cited.includes(s.ref)) : sources;
   return `<ul class="dk-solsrc">${xs.map(s => `<li><details><summary><b>${esc(s.ref)}</b> <small>${esc(kindName[s.kind] || s.kind)}</small> ${esc(s.title)}</summary><p class="cm-muted">${esc(s.posture || '')}${s.receipt?.locator ? ` · <a href="${esc(s.receipt.locator)}" target="_blank" rel="noopener noreferrer">where it is documented</a>` : s.receipt?.packId ? ' · ' + esc(s.receipt.packId) : ''}</p><pre>${esc(String(s.excerpt || ''))}</pre></details></li>`).join('')}</ul>`;
 }
+function leadsHTML(noun) {
+  const L = SOL.leads;
+  if (!L || L.unavailable) return '';
+  if (L.loading) return '<p class="cm-muted dk-sollead-wait">Looking for leads in the knowledge repository…</p>';
+  if (!L.results.length) return `<p class="cm-muted">The knowledge repository has no passage that mentions what these ${esc(noun)}s touch.</p>`;
+  return `<details class="dk-sollead"><summary>Leads from the knowledge repository · ${L.results.length} · not sent to Sol</summary><p class="cm-muted">Unreviewed repository passages that mention what these ${esc(noun)}s touch. Sol does not read them and cannot cite them. To rely on one, open it in Mind Factory, retrieve the exact original, then interpret and review it.</p><ul class="dk-solsrc">${L.results.map(x => `<li><b>${esc(x.heading || x.revision?.title)}</b> <small>${esc(x.revision?.repository)} · ${esc(x.revision?.path)} · lines ${esc(x.lineStart)}–${esc(x.lineEnd)}</small><p class="cm-muted">${esc(x.snippet)}</p><button type="button" class="cm-link" data-k-action="corpus-lead" data-q="${esc(L.query)}" data-id="${esc(x.passageId)}">Open it in Mind Factory sources</button></li>`).join('')}</ul></details>`;
+}
 // What Sol will read, before anything is sent.
 export function pendingHTML() {
   const P = SOL.pending;
@@ -116,6 +140,7 @@ export function pendingHTML() {
   return `<section class="dk-solpend" aria-label="What Sol will read"><h4>Ask Sol<span>${k.items.length} ${noun}${k.items.length === 1 ? '' : 's'}</span></h4><p class="cm-spec-t"><b>${esc(P.title || k.items.map(i => i.title).join('; '))}</b></p>
    <p>Sol will read ${k.sources.length} sources: ${Object.entries(counts).map(([kind, n]) => `${n} ${esc(n === 1 ? lowerFirst(kindName[kind] || kind) : kindPlural[kind] || kind)}`).join(', ')}.${k.omissions.length ? ` ${k.omissions.length} more did not fit and ${k.omissions.length === 1 ? 'is' : 'are'} left out.` : ''} Every excerpt below is what will be sent, and nothing else.</p>
    <details class="dk-solsee"><summary>Inspect what will be sent</summary>${sourcesHTML(k.sources)}</details>
+   ${leadsHTML(noun)}
    <label class="dk-in col"><span>Your question for Sol (optional)</span><textarea rows="2" maxlength="1000" data-dk-in="sol-prompt" placeholder="For example: is the cost of 24 replicas justified, or is there a simpler way?">${esc(P.prompt || '')}</textarea></label>
    ${SOL.error ? `<p class="dk-verdict bad" role="alert">${esc(SOL.error)}</p>` : ''}
    <div class="cm-acts"><button type="button" class="cm-btn primary" data-dk="sol-send" ${connected && !SOL.busy ? '' : 'disabled'}>${SOL.busy ? 'Sol is reasoning…' : 'Send to Sol'}</button><button type="button" class="cm-btn" data-dk="sol-cancel">Cancel</button></div>
