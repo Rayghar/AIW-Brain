@@ -1,0 +1,49 @@
+/* Chapter 5 extends the shared forest, paper, and gold workbench. */
+.realisation-studio .inspector-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid #d9e2d1;font-size:14px;color:#4e6855}
+.realisation-studio .inspector-head small{font-size:12px}
+.realisation-studio .attributes{display:grid;grid-template-columns:90px minmax(0,1fr);column-gap:14px;row-gap:14px;margin:18px 0 26px;font-size:14px;line-height:1.65}
+.realisation-studio .attributes dt{color:#607158}
+.realisation-studio .attributes dd{margin:0;overflow-wrap:anywhere}
+.realisation-studio .attr-label{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-top:24px;color:#607158}
+.realisation-studio .relations{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.realisation-studio .relations .relation{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;text-align:left;border:1px solid #d6e1cc;border-radius:7px;padding:12px;color:#425f43;background:#fffef8;line-height:1.5}
+.realisation-studio .relations .relation span{font-size:12px;color:#637659}
+.realisation-studio .relations .relation b{font-size:14px;font-weight:500}
+.a-source-link{display:block;padding:12px 0;border-bottom:1px solid #dde5d3;text-decoration:none;font-size:14px;line-height:1.6;color:#345b45}
+.a-source-link:hover{text-decoration:underline;text-underline-offset:3px}
+.a-source-link b{font-weight:600}
+.a-source-link small{display:block;font-size:12px;color:#65785c;margin-top:5px}
+.a-allocation{border-bottom:1px solid #dde5d3;padding:7px 0}
+.a-allocation:last-child{border-bottom:0}
+.a-allocation>label{border:0!important}
+.a-allocation [data-a-scope]{padding-left:30px}
+.a-allocation [data-a-scope] .l-field{margin-top:0}
+.a-allocation-summary{padding:14px 0;border-bottom:1px solid #dbe4d1}
+.a-allocation-summary>b{font-size:12px;font-weight:600;color:#4e6c58}
+.a-allocation-summary p{font-size:14px!important;line-height:1.65}
+.a-record .eyebrow{color:#58737b}
+.a-record .l-record-title{font-size:24px}
+.a-output-register{margin-top:24px}
+.realisation-studio .l-chapter-progress .btn{border:0;white-space:normal;background:transparent;font-size:14px;line-height:1.7;min-width:0;justify-content:flex-start;text-align:left}
+.realisation-studio .review-note{display:flex;flex-direction:column;gap:10px;font-size:14px;margin-top:28px}
+.realisation-studio .review-note textarea{min-height:110px;background:#fffef8;border:1px solid #cbd8be;border-radius:7px;padding:13px;font:inherit;font-size:16px;color:#284b39}
+.a-dialog .l-checks .l-note{margin-top:0}
+.a-dialog .l-steps .btn{font-size:14px}
+.a-dialog .l-field textarea{font-family:inherit}
+.realisation-studio .l-source-summary{align-items:center}
+.realisation-studio .l-source-summary>span{min-width:120px}
+.realisation-studio .inspector-body h3{margin:24px 0 12px;font-size:16px}
+.realisation-studio .inspector-body>p{font-size:16px;line-height:1.7}
+.realisation-studio .inspector-body .l-gap-note>p{font-size:14px}
+.realisation-studio .inspector-body>.text-button{font-size:12px;margin:0 0 10px}
+@media(max-width:700px){
+ .realisation-studio .attributes{grid-template-columns:88px minmax(0,1fr)}
+ .a-allocation [data-a-scope]{padding-left:0}
+ .a-record .l-record-title{font-size:22px}
+ .realisation-studio .l-chapter-progress{grid-template-columns:1fr}
+ .realisation-studio .inspector-head{padding:16px}
+ .realisation-studio .inspector-body>.btn{min-height:44px}
+ .realisation-studio .l-source-summary>span{min-width:100px}
+ .realisation-studio .l-source-summary>.btn{width:100%}
+}
+

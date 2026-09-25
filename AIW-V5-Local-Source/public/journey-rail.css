@@ -1,0 +1,302 @@
+/* Persistent exploration: every chapter keeps its journey, views and assistance. */
+body.explorer-workspace{height:100dvh;overflow:hidden;background:#f6f5ee;color:#284737}
+.explorer-workspace #app{height:100%;display:flex;flex-direction:column}
+.explorer-workspace :is(.topbar,.r-topbar){height:64px;flex:0 0 64px;padding:0 26px;background:#fdfef8;border-bottom:1px solid #dce3d6}
+.explorer-workspace :is(.shell,.r-shell){display:grid;grid-template-columns:280px minmax(0,1fr);flex:1;height:0;min-height:0}
+.explorer-workspace :is(.main,.r-main){display:flex;flex-direction:column;min-width:0;min-height:0;height:100%;padding:20px 24px 10px;overflow:hidden}
+.explorer-workspace :is(.sidebar,.r-sidebar).journey-rail{padding:16px 14px;display:flex;flex-direction:column;gap:0;min-height:0;height:100%;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;background:#f9faf4;border-right:1px solid #dce3d6}
+.journey-rail>:is(.eyebrow,.r-kicker){font-size:12px;letter-spacing:.11em;margin:0 0 8px;padding:0 6px}
+.rail-project{flex:none;margin-bottom:18px}
+.journey-rail :is(.project-card,.r-project){padding:0;margin:0;background:transparent;border:0;border-radius:0;box-shadow:none}
+.rail-project-heading{display:flex;align-items:center;justify-content:space-between;margin:0 6px 10px;font-size:12px}
+.rail-project-heading>span{letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#64755f}
+.rail-project-heading a{color:#59705a;text-decoration:none;font-size:12px}
+.rail-project-heading a:hover{text-decoration:underline;text-underline-offset:3px}
+.journey-rail .project-switch{display:flex;gap:10px;align-items:center;margin:0;padding:10px;border:1px solid #d7dfd0;border-radius:8px;background:#fffef9;color:#264d3d;text-decoration:none}
+.journey-rail .project-switch:hover{background:#f1f5eb;border-color:#afc1a7;text-decoration:none}
+.project-mark{display:grid;place-items:center;flex:0 0 32px;height:34px;background:#e8eee0;border:1px solid #d7e0cb;border-radius:6px;color:#45654d;font:600 12px/1 system-ui}
+.project-identity{min-width:0;flex:1}
+.project-chevron{font-size:18px;color:#73846d}
+.journey-rail .project-identity strong{display:block;font-size:14px;line-height:1.4;overflow-wrap:anywhere}
+.journey-rail .project-identity small{font-size:12px;line-height:1.4;margin-top:4px;color:#75806a}
+.rail-project-tools{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px}
+.rail-project-tools :is(button.cr-entry,button.ev-project-link){display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid transparent;background:transparent;padding:7px 5px;margin:0;min-height:32px;border-radius:5px;font:inherit;font-size:14px;line-height:1.4;color:#526a50;text-decoration:none;cursor:pointer}
+.rail-project-tools :is(button.cr-entry,button.ev-project-link):hover{background:#eaf0e2;border-color:#dce4d4}
+.rail-project-tools :is(.cr-entry,.ev-project-link) span{font-size:12px;background:#e5ebdd;border-radius:4px;padding:1px 4px}
+.journey-rail :is(.project-name,.r-project strong){font-size:15px;line-height:1.4;font-weight:600}
+.journey-rail :is(.project-card,.r-project) small{display:block;font-size:12px;line-height:1.5;margin-top:6px;color:#617358}
+.journey-route{flex:none;min-height:0;display:flex;flex-direction:column;margin-bottom:16px}
+.rail-close{display:none}
+.journey-route>:is(.eyebrow,.r-kicker){font-size:12px;letter-spacing:.1em;padding:0 7px;margin:0 0 9px;font-weight:600}
+.journey-rail nav.journey-chapters{display:flex;flex-direction:column;flex:none;min-height:0;overflow:visible;margin:0;padding:0;gap:2px}
+.journey-rail nav.journey-chapters:focus-visible{outline:2px solid #698657;outline-offset:2px}
+.journey-rail :is(.chapter-item,.r-chapter){flex:none;display:flex;align-items:center;gap:8px;padding:5px 8px;margin:0;min-height:32px;border:1px solid transparent;border-radius:6px;color:#556b4e;background:transparent;text-decoration:none;width:100%;text-align:left}
+.journey-rail :is(.chapter-item,.r-chapter) b{display:block;font-size:14px;line-height:1.5;font-weight:500}
+.journey-rail :is(.chapter-item,.r-chapter)>span:nth-child(2){flex:1;min-width:0}
+.journey-rail :is(.chapter-item,.r-chapter) small{display:none}
+.journey-rail :is(.chapter-number,.r-chapter>span:first-child){width:22px;height:22px;flex:0 0 22px;font-size:12px;display:grid;place-items:center;border:0;border-radius:5px;background:transparent;color:#88957c}
+.journey-rail :is(.chapter-item,.r-chapter).current{background:#e7eedf;border-color:#dce6d1;color:#234d3b}
+.journey-rail :is(.chapter-item,.r-chapter).current :is(.chapter-number,>span:first-child){background:#244f3e;color:#fff;border-color:#244f3e}
+.journey-rail :is(.chapter-item,.r-chapter):hover{background:#edf2e5;border-color:#dce5d1}
+.journey-explorer{display:flex;flex-direction:column;flex:1;min-height:120px;border-top:1px solid #dce3d3;padding-top:14px;overflow:hidden}
+.journey-explorer header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:0 6px}
+.journey-explorer h2{font:600 12px/1.5 Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;margin:0;color:#536a48}
+.journey-explorer header>button{border:0;background:transparent;padding:4px 0;color:#486c3c;text-decoration:underline;text-underline-offset:3px;font:inherit;font-size:14px;line-height:1.5;cursor:pointer;white-space:nowrap}
+.rail-view-hint{font-size:12px!important;color:#748167!important;margin:6px 6px 10px!important;line-height:1.5!important}
+.rail-layer-list{display:grid;gap:3px;overflow:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#bdcbb2 transparent;overscroll-behavior:contain;padding-right:4px;align-content:start}
+.rail-layer{display:flex;align-items:center;gap:10px;border:1px solid transparent;border-radius:7px;background:transparent;color:#50664a;padding:7px 8px;min-height:36px;width:100%;text-align:left;font:14px/1.4 Arial,sans-serif;cursor:pointer}
+.rail-layer:hover{background:#eef3e6;border-color:#dfe8d4}
+.rail-layer[aria-pressed=true]{color:#214d3a;background:#eef3e7}
+.rail-layer>.icon{width:16px;height:16px;flex:0 0 16px;color:var(--layer)}
+.rail-layer-icon{width:13px;height:13px;border:1px solid var(--layer);background:color-mix(in srgb,var(--layer) 14%,transparent);border-radius:3px;flex:0 0 13px}
+.rail-layer-check{display:grid;place-items:center;flex:0 0 15px;height:15px;border:1px solid #c6d3bc;border-radius:4px;margin-left:auto;font-size:12px;line-height:1}
+.rail-layer[aria-pressed=true] .rail-layer-check{background:#315d46;border-color:#315d46;color:#fff}
+.rail-view-help{display:none}
+.journey-rail :is(.sidebar-note,.r-side-note){display:block;border-top:1px solid #e0e6d8;margin:14px 6px 0;padding-top:12px;font-size:12px;line-height:1.6;color:#708264}
+.journey-rail .sidebar-bottom{margin:0;padding:12px 6px 0;font-size:12px}
+.explorer-workspace :is(.heading-row,.r-heading){flex:none;align-items:center;gap:20px;margin:0 0 14px;min-height:80px}
+.explorer-workspace :is(h1,.r-heading h1){font:400 32px/1.16 Georgia,serif;letter-spacing:-.7px;margin:8px 0}
+.explorer-workspace :is(.heading-row .subtitle,.r-heading>div:first-child>p:last-child){display:block;font-size:14px;line-height:1.5;color:#738168;margin:8px 0 0}
+.explorer-workspace :is(.breadcrumb,.r-breadcrumb){font-size:12px;line-height:1.5;margin:0}
+.explorer-workspace :is(.progress-wrap,.r-progress){width:176px;min-width:150px;margin:0}
+.explorer-workspace :is(.progress-top,.r-progress>div:first-child){font-size:12px;line-height:1.5}
+.explorer-workspace :is(.progress-top b,.r-progress b){font:400 27px/1.2 Georgia,serif}
+.explorer-workspace :is(.progress-wrap small,.r-progress small){font-size:12px;line-height:1.5;display:block;margin-top:6px}
+.explorer-workspace :is(.workspace-bar,.r-workspace-bar){position:relative;top:auto;flex:none;min-height:46px;margin:0 0 10px;gap:12px;z-index:6}
+.explorer-workspace :is(.tab,.r-tabs button){font-size:14px;min-height:44px;padding:10px 0}
+.explorer-workspace :is(.journey-status,.r-where){font-size:12px;gap:10px;margin-left:auto}
+.explorer-workspace :is(.journey-status button,.r-where .next-button){font-size:12px;max-width:250px}
+.explorer-workspace :is(.l-assistance,.r-assistant-bar){display:flex;align-items:center;justify-content:space-between;gap:12px;flex:none;min-height:42px;margin:0 0 12px;padding:0;flex-wrap:wrap}
+.explorer-workspace .r-assistant-bar>div{display:flex;font-size:12px;gap:8px;align-items:center}
+.explorer-workspace :is(.l-assistance,.r-assistant-bar) :is(.r-btn,.btn){min-height:38px;font-size:14px;padding:7px 11px}
+.lens-options{position:absolute;right:8px;top:8px;z-index:5}
+.lens-options>summary{display:grid;place-items:center;list-style:none;cursor:pointer;width:32px;height:32px;border:1px solid transparent;border-radius:5px;color:#718067;background:transparent;padding:0!important}
+.lens-options>summary::-webkit-details-marker{display:none}
+.lens-options>summary:hover,.lens-options[open]>summary{background:#e7eddf;border-color:#cbd7c1}
+.lens-options svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.3}
+.lens-options>div{position:absolute;right:0;top:37px;width:202px;display:grid;gap:4px;padding:9px;background:#fffef8;border:1px solid #cbd6c2;box-shadow:0 8px 24px #244b3520;border-radius:7px}
+.lens-options>div>span{font:10px/1.4 system-ui;text-transform:uppercase;letter-spacing:.06em;color:#77806c;padding:4px 7px}
+.lens-options button{font:inherit;font-size:14px;line-height:1.5;min-height:36px;text-align:left;display:flex;align-items:center;justify-content:space-between;border:0;border-radius:4px;background:transparent;color:#4c6445;padding:7px 8px;cursor:pointer}
+.lens-options button:hover,.lens-options button[aria-pressed=true]{background:#ecf1e5;color:#244d39}
+.lens-options button[aria-pressed=true]::after{content:'✓'}
+.lens-options :focus-visible{outline:2px solid #9b7b35;outline-offset:2px}
+.f-context-dock>.lens-options{right:45px}
+.explorer-workspace .f-context-dock[open]>summary{padding-right:88px}
+#inspector{position:relative}
+#inspector:has(>.lens-options)>:is(header,.t-dock-head){padding-right:48px}
+.explorer-workspace .ux-assist-role{font-size:12px!important}
+.explorer-workspace :is(.studio,.r-studio){flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;gap:16px;align-content:start}
+.explorer-workspace :is(.stage,.r-surface){min-width:0;min-height:0}
+.explorer-workspace .canvas-card{border-radius:11px;border:1px solid #dce3d3;box-shadow:0 2px 9px #2a4b2905;background:#fcfdf7}
+.explorer-workspace .canvas-toolbar{padding:12px 16px;min-height:62px}
+.explorer-workspace .canvas-toolbar .model-title{font-size:15px}
+.explorer-workspace .canvas-toolbar small{font-size:12px;line-height:1.5}
+.explorer-workspace .canvas-viewport{height:clamp(340px,43dvh,520px);min-height:340px}
+.explorer-workspace .canvas-bottom{position:static;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:10px 14px;background:#fcfdf7;border-top:1px solid #e4eadb}
+.explorer-workspace .canvas-tools button[data-action=sol],.explorer-workspace .canvas-tools button[data-action=mind],.explorer-workspace .cursor-switch{display:flex;align-items:center;gap:6px;min-height:36px;font-size:12px}
+.explorer-workspace .cursor-switch .cursor-word{display:inline}
+.explorer-workspace .canvas-tools{min-height:36px}
+.explorer-workspace .canvas-tools button{min-width:36px;min-height:36px}
+.explorer-workspace .canvas-meta{font-size:12px;line-height:1.5}
+.explorer-workspace .legend{font-size:12px;line-height:1.5}
+.explorer-workspace .ux-layer-strip{padding:6px 14px}
+.explorer-workspace .ux-layer-strip summary{font-size:12px;min-height:32px}
+.explorer-workspace .stage>.next-strip{display:flex;padding:14px 0;margin:0;font-size:14px}
+.explorer-workspace .next-copy small{font-size:12px}
+.explorer-workspace .next-copy strong{font-size:14px;line-height:1.5}
+.explorer-workspace .next-strip>.btn{font-size:14px;min-height:40px}
+.explorer-workspace .flow-note{font-size:14px;line-height:1.65}
+.explorer-workspace :is(.inspector,.r-inspector){border-radius:10px;min-width:0}
+.explorer-workspace :is(.inspector-body,.r-inspector-body){font-size:14px;line-height:1.6}
+.explorer-workspace .inspector p{font-size:14px;line-height:1.6}
+.explorer-workspace :is(.attribute,.relation,.context-ribbon){font-size:13px;line-height:1.6}
+.explorer-workspace :is(.inspector,.r-inspector) h2{font:400 25px/1.2 Georgia,serif}
+.explorer-workspace .ux-selection{padding:9px 14px;gap:12px}
+.explorer-workspace .ux-selection-copy small{font-size:12px!important}
+.explorer-workspace .ux-selection-copy>span{display:block;line-height:1.5;font-size:13px}
+.explorer-workspace .ux-bottom-lens{scroll-margin-top:12px}
+.explorer-workspace :is(.footer,.r-footer){flex:none;margin:0;padding:8px 0 0;min-height:24px;font-size:12px;line-height:1.5}
+.explorer-workspace .r-footer>span{display:block}
+.explorer-workspace .r-record-description{display:block;font-size:14px;line-height:1.6;margin-top:7px}
+.explorer-workspace .r-pathway{display:flex;flex-wrap:wrap}
+.explorer-workspace .d-preview-band p{display:block;font-size:14px;line-height:1.5;margin:6px 0}
+.explorer-workspace .r-map-head-actions .icon-only{display:inline-flex}
+.explorer-workspace .r-map-actions>span,.explorer-workspace .r-perspectives>span{display:block;font-size:12px}
+.explorer-workspace .r-trace-controls .r-btn:first-child{display:inline-flex}
+.explorer-workspace .r-where>span,.explorer-workspace .r-where strong{display:inline}
+.explorer-workspace .r-side-progress{max-height:320px;overflow:auto}
+.explorer-workspace .r-map-card .r-card-head{display:flex!important}
+.explorer-workspace .r-map-card .r-card-head .r-kicker{display:block}
+.explorer-workspace.foundation-workspace[data-workspace-tab=model] .r-map-card .r-map-viewport{flex:1 0 360px;min-height:360px}
+.explorer-workspace .f-readiness .r-progress>div:first-child>span{display:inline}
+.explorer-workspace .f-readiness .r-progress small{display:block}
+.explorer-workspace .f-context-dock{--f-dock-height:340px}
+.explorer-workspace .f-context-dock::details-content{display:contents}
+.explorer-workspace .f-context-dock:not([open])>*:not(summary){display:none}
+.explorer-workspace .f-context-dock>summary>span:first-child{display:grid;gap:3px}
+.explorer-workspace .f-context-dock>summary strong{white-space:normal;overflow:visible;font-size:14px;line-height:1.4}
+.explorer-workspace .f-context-dock[open]>summary{padding-right:88px;flex:none}
+.explorer-workspace .f-context-dock .f-context-close{font-size:22px;width:34px;min-height:34px;padding:0;right:7px;top:8px}
+.explorer-workspace .f-readiness .r-progress{display:block;width:190px}
+.explorer-workspace .f-readiness-hint{display:block;margin-top:4px}
+.explorer-workspace .f-context-panels{font-size:14px}
+@media(min-width:1101px){
+ body.explorer-workspace[data-lens-position=side] :is(.studio,.r-studio){display:grid!important;grid-template-columns:minmax(0,1fr) 300px;grid-template-rows:minmax(0,1fr);overflow:hidden;align-items:stretch}
+ .explorer-workspace[data-lens-position=side] :is(.stage,.r-surface){overflow:auto;height:100%;scrollbar-width:thin;overscroll-behavior:contain}
+ .explorer-workspace[data-lens-position=side] :is(.inspector,.r-inspector){height:100%;max-height:none!important;overflow:auto;position:relative!important;top:0!important;margin:0;scrollbar-width:thin;display:block}
+ .explorer-workspace[data-lens-position=side] .inspector-body{padding:16px;max-height:none;overflow:visible;display:block}
+ .explorer-workspace[data-lens-position=side] .ux-lens-grid{display:block}
+ .explorer-workspace[data-lens-position=side] .ux-lens-grid>section+section{border-top:1px solid #dce5d1;margin-top:18px;padding-top:16px}
+ .explorer-workspace[data-lens-position=side] .ux-lens-grid .attribute{grid-template-columns:95px minmax(0,1fr)}
+ .explorer-workspace[data-lens-position=side] .inspector .l-inline-actions{display:flex;flex-direction:column;gap:6px}
+ .explorer-workspace[data-lens-position=side] .inspector .btn{font-size:14px;min-height:38px;line-height:1.5;white-space:normal;word-break:normal;overflow-wrap:normal}
+ .explorer-workspace[data-lens-position=side] .ux-bottom-lens{border-top:1px solid #d9e0d1!important}
+ .explorer-workspace[data-lens-position=side] .f-context-dock{height:100%;max-height:none;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+ .explorer-workspace[data-lens-position=side] .f-context-dock:not([open])>*:not(summary){display:none}
+ .explorer-workspace[data-lens-position=side] .f-context-dock[open]>.r-inspector{display:flex;flex-direction:column;height:0;min-height:0;flex:1}
+ .explorer-workspace[data-lens-position=side] .f-context-dock .r-inspector-body{display:flex;flex-direction:column;min-height:0;flex:1;padding:0;overflow:hidden}
+ .explorer-workspace[data-lens-position=side] .f-context-tabs{flex-wrap:wrap;gap:4px;padding:8px}
+ .explorer-workspace[data-lens-position=side] .f-context-tabs button{font-size:12px;padding:6px;min-height:32px}
+ .explorer-workspace[data-lens-position=side] .f-context-panels{padding:14px;overflow:auto}
+ .explorer-workspace[data-lens-position=side] .f-context-panels :is(dl,.r-relations,.q-link-list,.d-source-list){display:block}
+ .explorer-workspace[data-lens-position=side] .f-context-panels dl>div{margin-bottom:12px}
+ .explorer-workspace[data-lens-position=side] .t-dock-body{display:block}
+ .explorer-workspace[data-lens-position=side] .ux-selection{display:none}
+ body.explorer-workspace[data-lens-position=side] .r-studio:has(.f-context-dock:not([open])){display:flex!important;flex-direction:column}
+ .explorer-workspace[data-lens-position=side] .f-context-dock:not([open]){height:auto;flex:none}
+ .explorer-workspace[data-lens-position=side] .studio>#flow-panel{grid-column:1/-1;max-height:300px;overflow:auto}
+ .explorer-workspace[data-lens-position=bottom] .studio{display:flex;flex-direction:column;overflow:auto}
+ .explorer-workspace[data-lens-position=bottom] .studio>.stage{flex:none;overflow:visible}
+ .explorer-workspace[data-lens-position=bottom] .studio>.inspector{flex:none}
+ .explorer-workspace :is(.r-studio.r-wide,.shell.wide-canvas .studio){grid-template-columns:minmax(0,1fr)!important}
+ .explorer-workspace .r-studio.r-wide .f-context-dock{display:none}
+ .explorer-workspace .shell.wide-canvas{grid-template-columns:minmax(0,1fr)}
+ .explorer-workspace .shell.wide-canvas>.sidebar{display:none}
+ .explorer-workspace .shell.wide-canvas .studio>.inspector{display:none}
+}
+@media(max-width:1100px){
+ .explorer-workspace :is(.shell,.r-shell){grid-template-columns:225px minmax(0,1fr)}
+ .explorer-workspace :is(.main,.r-main){padding:14px 16px 8px}
+ .explorer-workspace :is(h1,.r-heading h1){font-size:27px}
+ .explorer-workspace :is(.studio,.r-studio){display:flex;flex-direction:column;overflow:auto}
+ .explorer-workspace .studio>.stage{flex:none;overflow:visible}
+ .explorer-workspace .inspector{flex:none}
+ .explorer-workspace .r-where>span{display:none}
+ .explorer-workspace .lens-options{display:none}
+ .explorer-workspace .ux-lens-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+ .explorer-workspace :is(.topbar,.r-topbar){height:58px;flex-basis:58px;padding:0 12px}
+ .explorer-workspace :is(.shell,.r-shell){display:flex;position:relative}
+ .explorer-workspace :is(.main,.r-main){padding:10px 12px 6px;width:100%}
+ .explorer-workspace :is(.sidebar,.r-sidebar).journey-rail{display:none}
+ .explorer-workspace :is(.sidebar,.r-sidebar).journey-rail.open{display:flex;position:absolute;inset:0;z-index:20;width:100%;height:100%;border:0;padding:18px 20px;background:#f9faf4;overflow:auto}
+ .journey-rail .rail-close{display:flex;align-items:center;justify-content:space-between;flex-shrink:0;font-size:14px;min-height:40px;padding:6px 10px;background:#eef3e5;border:1px solid #cedcc0;border-radius:6px;margin:0 0 12px;color:#284b36}
+ .explorer-workspace .journey-rail .journey-route{flex:none;min-height:0;max-height:none}
+ .explorer-workspace .journey-rail nav.journey-chapters{display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:max-content;align-content:start;gap:5px}
+ .explorer-workspace .journey-rail :is(.chapter-item,.r-chapter){min-height:44px;padding:7px 9px}
+ .explorer-workspace .journey-rail :is(.chapter-item,.r-chapter) b{font-size:14px}
+ .explorer-workspace .journey-rail .journey-explorer{flex:none;height:230px;min-height:160px}
+ .explorer-workspace .journey-rail :is(.project-card,.r-project){display:block;margin:0}
+ .explorer-workspace .journey-rail>:is(.eyebrow,.r-kicker){display:block}
+ .explorer-workspace .rail-layer-list{grid-template-columns:1fr 1fr;gap:4px}
+ .explorer-workspace .rail-layer{min-height:44px;font-size:14px;padding:8px 6px}
+ .explorer-workspace .journey-rail :is(.sidebar-note,.r-side-note,.sidebar-bottom){display:block}
+ .explorer-workspace :is(.heading-row,.r-heading){min-height:0;gap:10px;margin-bottom:8px;flex-direction:row;align-items:flex-start}
+ .explorer-workspace :is(h1,.r-heading h1){font-size:24px;line-height:1.15;margin:6px 0;max-width:none}
+ .explorer-workspace :is(.heading-row .subtitle,.r-heading>div:first-child>p:last-child){font-size:12px;line-height:1.5;margin:5px 0}
+ .explorer-workspace :is(.progress-wrap,.r-progress){min-width:76px;width:76px;margin:0}
+ .explorer-workspace :is(.progress-top,.r-progress>div:first-child){font-size:12px;display:block}
+ .explorer-workspace :is(.progress-top b,.r-progress b){font-size:24px}
+ .explorer-workspace :is(.progress-wrap small,.r-progress small){font-size:12px}
+ .explorer-workspace .f-readiness .r-progress{width:100%;min-width:0}
+ .explorer-workspace .f-readiness .r-progress>div:first-child>span{display:block;white-space:normal;line-height:1.3}
+ .explorer-workspace .f-readiness .r-progress b{display:block}
+ .explorer-workspace .f-readiness .r-progress small{display:block;white-space:normal;line-height:1.3;margin-top:4px}
+ .explorer-workspace .f-readiness-hint{text-align:left;line-height:1.3}
+ .explorer-workspace :is(.workspace-bar,.r-workspace-bar){flex-wrap:wrap;gap:4px;min-height:0;flex-direction:row}
+ .explorer-workspace :is(.tabs,.r-tabs){gap:14px;flex:1}
+ .explorer-workspace :is(.tab,.r-tabs button){font-size:14px;min-height:42px;gap:4px}
+ .explorer-workspace .journey-status{order:3;flex:0 0 100%;width:100%;margin:0;min-height:34px;justify-content:space-between;flex-wrap:nowrap;gap:8px}
+ .explorer-workspace .journey-status button{flex:1 1 45%;max-width:none;min-width:0}
+ .explorer-workspace .r-where{width:100%;margin:0;min-height:34px}
+ .explorer-workspace .r-where .next-button{max-width:none;width:100%;font-size:12px}
+ .explorer-workspace .mobile-layers{display:flex;font-size:12px;min-height:40px;padding:5px}
+ .explorer-workspace :is(.l-assistance,.r-assistant-bar){gap:6px;min-height:40px;margin-bottom:8px}
+ .explorer-workspace .r-assistant-bar>div{display:flex;flex-wrap:wrap;width:100%;font-size:12px}
+ .explorer-workspace .r-assistant-bar nav{width:100%;display:flex;gap:6px}
+ .explorer-workspace :is(.l-assistance,.r-assistant-bar) :is(.r-btn,.btn){min-height:40px;font-size:14px;padding:6px 9px}
+ .explorer-workspace .l-assistance>span{font-size:12px;width:100%}
+ .explorer-workspace .l-assistance>div{width:100%;gap:6px}
+ .explorer-workspace .l-assistance .btn{white-space:nowrap}
+ .explorer-workspace .ux-assist-role{display:none}
+ .explorer-workspace .canvas-toolbar{padding:10px 12px;gap:8px}
+ .explorer-workspace .canvas-toolbar .toolbar-actions .btn span{display:inline}
+ .explorer-workspace .canvas-viewport{height:340px;min-height:340px}
+ .explorer-workspace .canvas-bottom{gap:7px;padding:9px}
+ .explorer-workspace .canvas-bottom .cursor-switch{font-size:12px;min-height:40px;flex:1;justify-content:center}
+ .explorer-workspace .canvas-tools button{min-width:36px;min-height:40px}
+ .explorer-workspace .ux-selection-copy>span{display:block;font-size:13px}
+ .explorer-workspace .r-studio{min-height:180px}
+ .explorer-workspace .f-context-dock{--f-dock-height:max(250px,42dvh)}
+ .explorer-workspace .r-card-head{flex-wrap:wrap}
+ .explorer-workspace .r-map-card>.r-card-head h2{font-size:18px}
+ .explorer-workspace :is(.footer,.r-footer){font-size:12px;min-height:20px}
+}
+@media(max-height:600px){
+ body.explorer-workspace{height:auto;min-height:100dvh;overflow:auto}
+ .explorer-workspace #app{height:auto;min-height:100dvh}
+ .explorer-workspace :is(.shell,.r-shell,.main,.r-main){height:auto;min-height:0}
+ .explorer-workspace :is(.sidebar,.r-sidebar).journey-rail{height:calc(100dvh - 64px);position:sticky;top:64px;overflow:auto}
+ .explorer-workspace :is(.studio,.r-studio,.stage,.r-surface){min-height:350px;overflow:visible}
+ .explorer-workspace[data-lens-position=side] .f-context-dock{height:500px}
+ .explorer-workspace[data-lens-position=side] .inspector{max-height:600px!important}
+}
+
+/* Modelling gives the drawing area priority; Work keeps its explanatory layout. */
+.explorer-workspace[data-workspace-tab=model] :is(.main,.r-main){padding:10px 16px 6px}
+.explorer-workspace[data-workspace-tab=model] :is(.heading-row,.r-heading){min-height:48px;margin-bottom:5px;gap:14px}
+.explorer-workspace[data-workspace-tab=model] :is(h1,.r-heading h1){font-size:24px;margin:3px 0;letter-spacing:-.3px}
+.explorer-workspace[data-workspace-tab=model] :is(.heading-row .subtitle,.r-heading>div:first-child>p:last-child){display:none}
+.explorer-workspace[data-workspace-tab=model] :is(.workspace-bar,.r-workspace-bar){margin-bottom:5px}
+.explorer-workspace[data-workspace-tab=model] :is(.l-assistance,.r-assistant-bar){min-height:40px;margin-bottom:6px;padding:0!important}
+.explorer-workspace[data-workspace-tab=model] .canvas-toolbar{min-height:44px;padding:7px 12px;gap:10px}
+.explorer-workspace[data-workspace-tab=model] .canvas-toolbar small{display:none}
+.explorer-workspace[data-workspace-tab=model] .canvas-card{overflow:visible}
+.explorer-workspace[data-workspace-tab=model] .canvas-viewport{height:max(380px,calc(100dvh - 350px));min-height:380px}
+.explorer-workspace[data-workspace-tab=model] .canvas-meta{padding:9px 12px;font-size:12px;text-transform:none;letter-spacing:0}
+.explorer-workspace[data-workspace-tab=model] .canvas-bottom{position:sticky;bottom:0;z-index:4;padding:6px 12px}
+.explorer-workspace[data-workspace-tab=model] .ux-selection{padding:7px 12px}
+.explorer-workspace[data-workspace-tab=model] .ux-selection-copy>span{display:none}
+.explorer-workspace[data-workspace-tab=model] .canvas-tools :is([data-action=sol],[data-action=mind]){display:none}
+@media(min-width:701px){
+ .canvas-command-drawer{display:contents}
+ .canvas-command-drawer::details-content{display:contents}
+ .canvas-command-drawer>summary{display:none}
+}
+@media(min-width:1101px){
+ .explorer-workspace[data-workspace-tab=model] :is(.shell,.r-shell){grid-template-columns:224px minmax(0,1fr)}
+ .explorer-workspace[data-workspace-tab=model] .canvas-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.85fr)}
+ .explorer-workspace[data-workspace-tab=model] .canvas-card>*{grid-column:1/-1;min-width:0}
+ .explorer-workspace[data-workspace-tab=model] .canvas-command-drawer>.l-model-actions{grid-column:1;grid-row:2;margin:0;padding:7px 12px;gap:6px;align-items:center}
+ .explorer-workspace[data-workspace-tab=model] .canvas-command-drawer>.exploration-controls{grid-column:2;grid-row:2;margin:0;padding:7px 12px;gap:6px}
+ .explorer-workspace[data-workspace-tab=model] .canvas-command-drawer>.ux-layer-strip{display:none}
+ .explorer-workspace[data-workspace-tab=model] .shell.wide-canvas{grid-template-columns:minmax(0,1fr)}
+ .explorer-workspace[data-workspace-tab=model] .shell.wide-canvas .canvas-command-drawer>.ux-layer-strip{display:block;grid-column:1/-1}
+ .explorer-workspace[data-workspace-tab=model][data-lens-position=side] .canvas-card,
+ .explorer-workspace[data-workspace-tab=model].brain-open .canvas-card{display:block}
+}
+@media(max-width:1100px){
+ .explorer-workspace[data-workspace-tab=model] .canvas-viewport{height:max(360px,56dvh);min-height:360px}
+ .explorer-workspace[data-workspace-tab=model] .l-model-actions{padding-bottom:8px}
+}
+@media(max-width:700px){
+ .explorer-workspace[data-workspace-tab=model] :is(.main,.r-main){padding:8px 10px 6px}
+ .explorer-workspace[data-workspace-tab=model] :is(h1,.r-heading h1){font-size:22px}
+ .explorer-workspace[data-workspace-tab=model] .canvas-viewport{height:max(340px,52dvh);min-height:340px}
+ .explorer-workspace[data-workspace-tab=model] .progress-wrap small,
+ .explorer-workspace[data-workspace-tab=model] .progress-top>span{display:none}
+ .explorer-workspace[data-workspace-tab=model] .progress-wrap{min-width:54px;width:54px}
+ .canvas-command-drawer>summary{padding:9px 12px;font-size:14px;min-height:42px;cursor:pointer}
+ .canvas-command-drawer>summary small{font-size:12px;color:#65745c;margin-left:12px}
+}

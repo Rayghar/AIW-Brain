@@ -1,0 +1,121 @@
+import {browserSource} from './browser-source.mjs';
+import * as projectContext from './public/project-context.js';
+import * as projectScope from './public/model-scope.js';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {seedProject} from './public/requirements-domain.js';
+import {logicalGraph} from './public/logical-domain.js';
+import {applyTechnologyRealisationCommand} from './public/technology-realisation-domain.js';
+import {withInterfaces,contracts,contract,dataRecord,dataRecords,interfaceSources,interfaceSourceChanged,interfaceIntakeCurrent,interfaceReviewCurrent,interfaceHandoffCurrent,contractReviewCurrent,dataReviewCurrent,contractCheckCurrent,contractStamp,interfaceFindings,interfaceMilestones,interfaceProposal,samplePayload,evaluateContract,applyInterfacesCommand,exportInterfacesMarkdown} from './public/interfaces-domain.js';
+import worker from './worker.js';
+import {localDatabase} from './local-db.js';
+const cmd=(p,type,payload={})=>applyInterfacesCommand(p,{type:'interfaces.'+type,payload}).document;
+const base=withInterfaces(seedProject()),original=JSON.stringify(base);
+assert.equal(contracts(base).length,7);assert.equal(dataRecords(base).length,4);
+assert.equal(contract(base,'rest').ref,'IF-001');assert.equal(dataRecord(base,'instruction').ref,'DAT-001');
+assert.equal(new Set(dataRecords(base).flatMap(d=>d.fields.map(f=>f.id))).size,14);
+assert.deepEqual(withInterfaces(base),base,'Reopening retains stable contract, data, and exchange identities');
+assert(Buffer.byteLength(original)<400000,'Upstream references remain compact');
+assert.deepEqual(base.artefacts,seedProject().artefacts);
+assert(interfaceSources(base,contract(base,'posting-api')).requirements.some(r=>r.id==='REQ-003'));
+assert(interfaceSources(base,dataRecord(base,'posting')).requirements.some(r=>r.id==='REQ-003'));
+assert(interfaceSources(base,contract(base,'network')).drivers.some(r=>r.id==='QD-004'));
+assert.equal(new Set(logicalGraph(base).nodes.map(n=>n.id)).size,55);
+assert.equal(new Set(interfaceFindings(base).map(f=>f.id)).size,interfaceFindings(base).length);
+let p=cmd(base,'intake');assert(interfaceIntakeCurrent(p));
+const c0=contract(p,'rest'),contractPlan={...c0,title:'Controlled payment initiation',purpose:'Create a traceable instruction without implying settlement.',owner:'Payments API owner',operation:'POST /payments',protocol:'HTTPS / JSON',contractVersion:'review-fixture-v1',correlationKey:'paymentReference',idempotencyKey:'paymentReference',duplicatePolicy:'Return the existing result for the same immutable instruction; reject a mismatched repeat.',timeoutPolicy:'Retain pending outcome and enquire before replay.',retryPolicy:'Enquire with the original reference before an owned retry.',failurePolicy:'Distinguish invalid, rejected, and unknown outcomes.',authorization:'Named caller identity and explicit instruction authority.',transport:'Protected, authenticated channel; fixture only.',compatibility:'Review additive changes and version breaking changes.',evidence:'Synthetic provider-consumer design fixture.',timeoutMs:'2000',timeoutBasis:'Synthetic timing assumption; not a measured SLA.',timeoutConfirmed:false};
+p=cmd(p,'contract',contractPlan);assert.equal(contract(p,'rest').ref,'IF-001');assert.equal(contract(p,'rest').exchanges[0].id,c0.exchanges[0].id);
+assert.equal(logicalGraph(p).nodes.find(n=>n.id==='rest').title,contractPlan.title,'Shared model changes in place');
+assert(interfaceFindings(p).some(f=>f.objectId==='rest'&&f.code==='timeout'));
+assert.throws(()=>cmd(p,'contract',{...contractPlan,from:'missing'}),/existing/);
+assert.throws(()=>cmd(p,'contract',{...contractPlan,to:contractPlan.from}),/different/);
+assert.throws(()=>cmd(p,'contract',{...contractPlan,timeoutMs:-1}),/non-negative/);
+assert.throws(()=>cmd(p,'contract',{...contractPlan,exchanges:[{dataId:'missing',role:'request'}]}),/existing/);
+assert.throws(()=>cmd(p,'contract',{...contractPlan,exchanges:[c0.exchanges[0],c0.exchanges[0]]}),/once/);
+assert.throws(()=>cmd(p,'contract',{...contractPlan,kind:'event',exchanges:[{dataId:'instruction',role:'response'}]}),/event/);
+const d0=dataRecord(p,'instruction'),dataPlan={...d0,owner:'Payments data owner',protection:'Restricted writer and masked support view.',retentionPolicy:'Owned deletion and hold procedure; fixture only.',retentionDays:'90',retentionBasis:'Synthetic retention fixture, not a legal requirement.',retentionConfirmed:false};
+p=cmd(p,'data',dataPlan);assert.equal(dataRecord(p,'instruction').fields[0].id,d0.fields[0].id);
+assert(interfaceFindings(p).some(f=>f.objectId==='instruction'&&f.code==='retention-assumption'));
+assert.throws(()=>cmd(p,'data',{...dataPlan,retentionDays:'forever'}),/non-negative/);
+assert.throws(()=>cmd(p,'data',{...dataPlan,classification:'secret-ish'}),/classification/);
+const field={name:'clientSequence',type:'integer',required:true,key:false,classification:'Inherited',description:'A synthetic client sequence used to order local test requests.',example:'1',enumeration:'',constraints:'Monotonicity needs an implementation test.'};
+p=cmd(p,'field',{id:'instruction',field});let df=dataRecord(p,'instruction').fields.at(-1);assert.equal(df.id,'DF-015');
+p=cmd(p,'field',{id:'instruction',field:{...df,description:'Revised sequence definition'}});assert.equal(dataRecord(p,'instruction').fields.at(-1).id,'DF-015');
+assert.throws(()=>cmd(p,'field',{id:'instruction',field}),/already/);
+assert.throws(()=>cmd(p,'field',{id:'instruction',field:{...field,name:'bad field'}}),/field name/);
+assert.throws(()=>cmd(p,'field',{id:'instruction',field:{...field,name:'test',type:'magic'}}),/type/);
+const sample=samplePayload(p,contract(p,'rest'));assert(evaluateContract(p,'rest',sample).valid);
+const invalid=JSON.parse(sample);delete invalid.paymentReference;invalid.amount='one thousand';invalid.currency='INVALID';
+const rejected=evaluateContract(p,'rest',JSON.stringify(invalid));assert(!rejected.valid);assert(rejected.issues.some(i=>i.message.includes('paymentReference')));assert(rejected.issues.some(i=>i.message.includes('amount must be number')));assert(rejected.issues.some(i=>i.message.includes('currency is outside')));
+const noFields=structuredClone(p);dataRecord(noFields,'instruction').fields=[];assert(!evaluateContract(noFields,'rest','{}').valid,'An empty dictionary cannot pass the sample check');
+assert.throws(()=>evaluateContract(p,'rest','{broken'),/valid JSON/);assert.throws(()=>evaluateContract(p,'rest','[]'),/JSON object/);
+assert(evaluateContract(p,'rest',JSON.stringify({...JSON.parse(sample),undeclared:'synthetic'})).issues.some(i=>i.level==='warning'));
+for(const scenario of ['normal','duplicate','timeout']){const result=evaluateContract(p,'rest',sample,'request',scenario);assert(result.valid);assert.equal(result.steps.length,4);assert(result.policyDefined);}
+const review={id:'rest',reviewer:'Test reviewer',evidence:'Synthetic design review',reviewed:true};
+assert.throws(()=>cmd(p,'record-review',{...review,reviewed:false}),/explicit/);
+p=cmd(p,'record-review',review);assert(contractReviewCurrent(p,contract(p,'rest')));
+p=cmd(p,'record-review',{...review,id:'instruction'});assert(dataReviewCurrent(p,dataRecord(p,'instruction')));
+const check={id:'rest',payload:sample,role:'request',scenario:'duplicate',observations:'Synthetic repeat policy review; runtime conformance remains open.',reviewed:true,visited:[0,1,2,3],stamp:contractStamp(p,contract(p,'rest'))};
+assert.throws(()=>cmd(p,'check',{...check,visited:[0,3]}),/four stages/);
+assert.throws(()=>cmd(p,'check',{...check,stamp:'old'}),/Definitions changed/);
+p=cmd(p,'check',check);let record=p.interfaces.checks.at(-1);assert.equal(record.id,'CT-001');assert(contractCheckCurrent(p,record));assert(!Object.hasOwn(record,'payload'),'No entered sample payload is persisted');
+const beforeEdit=p;p=cmd(p,'field',{id:'instruction',field:{...df,description:'New definition after design check'}});
+assert(!contractReviewCurrent(p,contract(p,'rest')));assert(!dataReviewCurrent(p,dataRecord(p,'instruction')));assert(!contractCheckCurrent(p,p.interfaces.checks[0]));
+assert.throws(()=>cmd(p,'check',check),/Definitions changed/);
+p=cmd(p,'remove-field',{id:'instruction',fieldId:df.id});p=cmd(p,'field',{id:'instruction',field:{...field,name:'deliverySequence'}});assert.equal(dataRecord(p,'instruction').fields.at(-1).id,'DF-016');
+const secret=dataRecord(p,'instruction').fields.at(-1);p=cmd(p,'field',{id:'instruction',field:{...secret,classification:'Restricted'}});assert(interfaceFindings(p).some(f=>f.code==='field-classification'));
+const lineage={title:'Instruction to posting outcome',from:'instruction',to:'posting',contractId:'posting-api',transformation:'Retain paymentReference and attach the authoritative postingReference and outcome.',owner:'Payments data architecture',evidence:'Synthetic mapping fixture'};
+p=cmd(p,'lineage',lineage);assert.equal(p.interfaces.lineage[0].id,'DL-001');p=cmd(p,'lineage',{...lineage,id:'DL-001',title:'Controlled posting derivation'});assert.equal(p.interfaces.lineage.length,1);
+assert.throws(()=>cmd(p,'lineage',{...lineage,to:'instruction'}),/different/);
+assert.throws(()=>cmd(p,'lineage',{...lineage,contractId:'missing'}),/existing/);
+assert.throws(()=>cmd(p,'lineage',{...lineage,title:'Controlled posting derivation'}),/already/);
+p=cmd(p,'remove-lineage',{id:'DL-001'});p=cmd(p,'lineage',lineage);assert.equal(p.interfaces.lineage[0].id,'DL-002');
+const unchanged=JSON.stringify(p),proposal=interfaceProposal(p,'uncertainty','network');assert(proposal);assert.equal(JSON.stringify(p),unchanged);
+assert.throws(()=>cmd(p,'proposal',proposal),/Review/);
+p=cmd(p,'proposal',{...proposal,record:{...proposal.record,timeoutPolicy:'Edited: keep pending and assign the enquiry to payments operations.'},reviewed:true});assert(contract(p,'network').timeoutPolicy.startsWith('Edited:'));
+const dataGhost=interfaceProposal(p,'lifecycle','posting');p=cmd(p,'proposal',{...dataGhost,record:{...dataGhost.record,retentionPolicy:'Edited lifecycle obligation.'},reviewed:true});assert.equal(dataRecord(p,'posting').retentionPolicy,'Edited lifecycle obligation.');
+p=cmd(p,'party',{title:'Reconciliation provider',purpose:'Supply controlled reconciliation outcomes.',owner:'Test provider',confirmed:false});assert.equal(p.interfaces.parties.at(-1).ref,'EXT-004');
+p=cmd(p,'data',{title:'Reconciliation evidence',purpose:'Link enquiry and authoritative results.',owner:'Payments operations',authorityId:'ext-004',classification:'Confidential',retentionPolicy:'Owned review and expiry.',protection:'Restricted access.',evidence:'Synthetic fixture'});assert.equal(dataRecords(p).at(-1).ref,'DAT-005');
+p=cmd(p,'contract',{...contractPlan,id:null,title:'Reconciliation enquiry',to:'ext-004'});assert.equal(contracts(p).at(-1).ref,'IF-008');
+const addedInput=applyTechnologyRealisationCommand(p,{type:'techrealisation.connection',payload:{from:'tr-001',to:'tr-002',title:'State access',protocol:'Service interaction',contract:'Original reference and authoritative outcome',security:'Owned identity',failure:'Enquire before retry',owner:'Test platform'}}).document;
+const inherited=withInterfaces(addedInput);assert.equal(contracts(inherited).at(-1).sourceId,'TI-001');assert.equal(contracts(inherited).at(-1).ref,'IF-009');assert.deepEqual(withInterfaces(inherited),inherited);assert(interfaceSourceChanged(inherited,contract(inherited,'rest')));assert(!interfaceIntakeCurrent(inherited));
+for(const key of ['artefacts','quality','decisions','logical','realisation','technology','technologyRealisation'])assert.deepEqual(p[key],base[key],'Chapter 8 preserves upstream '+key);
+assert.equal(JSON.stringify(base),original,'Commands and proposals are pure with respect to the caller state');
+
+// A complete working chapter can retain explicitly acknowledged reference assumptions.
+let ready=cmd(base,'intake');
+for(const d of dataRecords(base))ready=cmd(ready,'data',{...d,protection:'Owned access and masking fixture.',retentionPolicy:'Owned retention, deletion, and legal-hold fixture.'});
+for(const c of contracts(base))ready=cmd(ready,'contract',{...contractPlan,...c,operation:'operation-'+c.ref,protocol:'Fixture exchange',contractVersion:'fixture-v1',idempotencyKey:'paymentReference',duplicatePolicy:contractPlan.duplicatePolicy,timeoutPolicy:contractPlan.timeoutPolicy,retryPolicy:contractPlan.retryPolicy,failurePolicy:contractPlan.failurePolicy,authorization:contractPlan.authorization,transport:contractPlan.transport,compatibility:contractPlan.compatibility,exchanges:c.exchanges.some(x=>x.role==='request')?c.exchanges:[...c.exchanges,{dataId:'instruction',role:'request'}]});
+for(const d of dataRecords(ready))ready=cmd(ready,'record-review',{...review,id:d.id});
+for(const c of contracts(ready)){ready=cmd(ready,'record-review',{...review,id:c.id});ready=cmd(ready,'check',{...check,id:c.id,payload:samplePayload(ready,contract(ready,c.id)),scenario:'normal',stamp:contractStamp(ready,contract(ready,c.id))});}
+assert.throws(()=>cmd(ready,'handoff',{acknowledge:true}),/checks/);
+ready=cmd(ready,'review');assert(interfaceReviewCurrent(ready));assert.throws(()=>cmd(ready,'handoff'),/Acknowledge/);
+ready=cmd(ready,'handoff',{acknowledge:true});assert(interfaceHandoffCurrent(ready));assert(interfaceMilestones(ready).every(m=>m.done),JSON.stringify(interfaceFindings(ready).filter(f=>f.level==='error')));assert(ready.interfaces.handoff.findings.length>0);
+const revised=cmd(ready,'contract',{...contract(ready,'rest'),purpose:'Revised initiation boundary'});assert(!interfaceReviewCurrent(revised));assert(!interfaceHandoffCurrent(revised));assert(!contractReviewCurrent(revised,contract(revised,'rest')));
+const changedParty=cmd(beforeEdit,'party',{...beforeEdit.interfaces.parties[0],owner:'Revised external owner'});assert(!contractReviewCurrent(changedParty,contract(changedParty,'rest')));assert(!contractCheckCurrent(changedParty,changedParty.interfaces.checks[0]));
+for(const term of ['IF-001','DAT-001','DF-001','DX-001','CT-001','REQ-003','QD-004','Security handoff'])assert(exportInterfacesMarkdown(ready).includes(term),term);
+assert(!exportInterfacesMarkdown(ready).includes('undefined'));
+
+// The actual shared layout supports both viewports with the new graph objects.
+const g=logicalGraph(inherited),ids=new Set(g.nodes.map(n=>n.id));assert.equal(ids.size,g.nodes.length);assert(g.edges.every(e=>ids.has(e.from)&&ids.has(e.to)));assert(g.edges.some(e=>e.id==='DL-002'));assert(g.edges.some(e=>e.exchange));
+const modelSource=fs.readFileSync('public/model.js','utf8').replaceAll('export const ','const '),appSource=fs.readFileSync('public/app.js','utf8').replace(/^import .*?;\n/gm,'').replace(/\npersist\(\);render\(\);\n/,'\n');
+const el={textContent:'',style:{},innerHTML:'',classList:{add(){},remove(){},toggle(){}},focus(){},click(){},setAttribute(){},scrollIntoView(){}};
+const ctx={console,Set,Map,URL,URLSearchParams,location:{search:''},Blob,setTimeout:()=>0,clearTimeout(){},localStorage:{getItem:()=>null,setItem(){}},document:{body:el,querySelector:()=>el,querySelectorAll:()=>[],addEventListener(){},createElement:()=>el},window:{aiwLogicalStudio:{graph:()=>g,groups:inherited.logical.groups,bind(){}},addEventListener(){},matchMedia:()=>({matches:true})}};
+const uxSource=browserSource('public/workspace-ux.js');
+Object.assign(ctx,projectContext,projectScope);vm.createContext(ctx);vm.runInContext(uxSource,ctx);vm.runInContext(modelSource+'\n'+appSource+'\nglobalThis.layout=layoutModel;globalThis.testLayers=layers;',ctx);
+for(const visible of [['physical','interface'],['physical','interface','data'],['physical','data'],['technology','interface','data','security'],ctx.testLayers.map(l=>l.id)])for(const mobile of [false,true]){const l=ctx.layout(g.nodes.filter(n=>visible.includes(n.layer)),mobile,false,false),ps=[...l.positions.values()];for(const v of ps)assert(v.x>=0&&v.y>=0&&v.x+200<=l.width&&v.y+74<=l.height);for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++)assert(ps[i].x+200<=ps[j].x||ps[j].x+200<=ps[i].x||ps[i].y+74<=ps[j].y||ps[j].y+74<=ps[i].y);}
+
+const files=new Map(),FILES={async put(k,v){files.set(k,v)},async get(k){return files.has(k)?{text:async()=>files.get(k)}:null},async delete(k){files.delete(k)}};
+const DB=localDatabase(':memory:'),env={DB,FILES,ASSETS:{fetch:()=>new Response('asset')}};
+const api=(path,method='GET',body=null,owner='architect-a',origin='https://aiw.test')=>{const headers=new Headers();if(owner)headers.set('oai-authenticated-user-id',owner);if(body){headers.set('Content-Type','application/json');headers.set('Origin',origin)}return worker.fetch(new Request('https://aiw.test'+path,{method,headers,...(body?{body:JSON.stringify(body)}:{})}),env)};
+try{
+ assert.equal((await api('/api/project','GET',null,null)).status,401);let state=await(await api('/api/project')).json();
+ const body={revision:state.revision,command:{type:'interfaces.contract',payload:contractPlan}};assert.equal((await api('/api/commands','POST',body,'architect-a','https://other.test')).status,403);
+ const saved=await api('/api/commands','POST',body);assert.equal(saved.status,200);state=await saved.json();assert.equal((await api('/api/commands','POST',body)).status,409);
+ const reopened=await(await api('/api/project')).json();assert.equal(contract(reopened.document,'rest').title,contractPlan.title);assert.equal(contract(reopened.document,'rest').exchanges[0].id,'DX-001');
+ assert.notEqual(contract((await(await api('/api/project','GET',null,'architect-b')).json()).document,'rest').title,contractPlan.title);
+ for(const format of ['json','md']){const res=await api('/api/export?chapter=8&format='+format);assert.equal(res.status,200);if(format==='json'){const b=await res.json();assert(b.connectedModel.nodes.some(n=>n.ref==='DAT-001'));assert(b.interfacesValidation.findings.some(f=>f.code==='retention'));}else{assert(res.headers.get('Content-Disposition').includes('Interfaces_Data.md'));assert((await res.text()).includes('IF-001'));}}
+ const earlier=await api('/api/commands','POST',{revision:state.revision,command:{type:'technology.intake'}});assert.equal(earlier.status,200);assert.equal(contract((await earlier.json()).document,'rest').title,contractPlan.title);
+ console.log('PASS Interfaces & Data: stable IF/DAT/DF/DX/DL/EXT/CT references; inherited traceability; contract, dictionary, participant and lineage edits; schema, repeated-delivery and timeout checks; reviewed ghosts; source/schema/review invalidation; attainable Security handoff; shared desktop/mobile graph layouts; owner-isolated persistence, CAS, and exports.');
+}finally{DB.close()}

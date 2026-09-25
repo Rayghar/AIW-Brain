@@ -1,0 +1,26 @@
+{
+  "authority": "Happy DOM + actual Worker + SQLite; no rendered-browser layout certification",
+  "results": [
+    {
+      "topic": "delivery",
+      "passed": true,
+      "output": "PASS delivery UI/Worker: diagram, conditions, evidence calculator, alternative comparison, unsaved guards, model review, acceptance, source-bound measurements, owner and SDD. No rendered layout claim.\n"
+    },
+    {
+      "topic": "resilience",
+      "passed": true,
+      "output": "PASS resilience UI/Worker: diagram, conditions, evidence calculator, alternative comparison, unsaved guards, model review, acceptance, source-bound measurements, owner and SDD. No rendered layout claim.\n"
+    },
+    {
+      "topic": "distribution",
+      "passed": true,
+      "output": "PASS distribution UI/Worker: diagram, conditions, evidence calculator, alternative comparison, unsaved guards, model review, acceptance, source-bound measurements, owner and SDD. No rendered layout claim.\n"
+    },
+    {
+      "topic": "structure",
+      "passed": true,
+      "output": "PASS structure UI/Worker: diagram, conditions, evidence calculator, alternative comparison, unsaved guards, model review, acceptance, source-bound measurements, owner and SDD. No rendered layout claim.\n"
+    }
+  ],
+  "passed": true
+}

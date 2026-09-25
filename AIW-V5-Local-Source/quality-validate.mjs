@@ -1,0 +1,58 @@
+import assert from 'node:assert/strict';
+import {seedProject,applyCommand} from './public/requirements-domain.js';
+import {withQuality,applyQualityCommand,qualityFindings,qualityMilestones,qualityReviewCurrent,qualityHandoffCurrent,orderedDrivers,sourceChanged,targetIsMeasurable,potentialTradeoffs,conflictIsResolved,qualityProposals,qualityGuidance,exportQualityMarkdown} from './public/quality-domain.js';
+import worker from './worker.js';
+import {localDatabase} from './local-db.js';
+const original=seedProject(),p=withQuality(original),q=(p,type,payload={})=>applyQualityCommand(p,{type:'quality.'+type,payload}).document;
+assert.equal(original.quality,undefined,'Legacy input is not mutated');
+assert.deepEqual(p.artefacts,original.artefacts);assert.deepEqual(p.relationships,original.relationships);
+assert.equal(p.quality.drivers.length,6);assert(p.quality.drivers.every(d=>!d.targetConfirmed&&!d.confirmed&&d.origin==='reference'));
+assert(p.quality.drivers.every(targetIsMeasurable));assert(p.quality.drivers.every(d=>d.requirementIds.length&&d.responsibilityIds.length));
+assert.deepEqual(p.quality.drivers.map(d=>d.id),['QD-001','QD-002','QD-003','QD-004','QD-005','QD-006']);
+let draft=q(p,'driver',{category:'performance',title:'Test an investigation lookup'}),d=draft.quality.drivers.at(-1);
+assert.equal(d.id,'QD-007');assert.equal(d.scenarioId,'QS-007');
+assert(qualityFindings(draft).some(f=>f.driverId===d.id&&f.code==='measurement'));assert(qualityFindings(draft).some(f=>f.driverId===d.id&&f.code==='requirements'));
+assert.throws(()=>q(draft,'driver',{...d,targetConfirmed:true}),/measurable/);
+assert.throws(()=>q(draft,'driver',{...d,requirementIds:['REQ-missing']}),/existing Chapter 1/);
+assert.throws(()=>q(draft,'driver',{...d,responsibilityIds:['unknown']}),/existing application/);
+for(const value of ['', '-1','Infinity','NaN'])assert(!targetIsMeasurable({...p.quality.drivers[0],targetValue:value}));
+assert(!targetIsMeasurable({...p.quality.drivers[1],targetValue:'101'}));
+assert(!targetIsMeasurable({...p.quality.drivers[0],measurement:'Verify [the response]'}));
+const before=JSON.stringify(draft);const proposal=qualityProposals(draft,d,'validate')[0];assert.equal(proposal.id,'measurement');assert.equal(JSON.stringify(draft),before,'Ghost suggestions do not mutate the project');
+draft=q(draft,'delete',{id:d.id});draft=q(draft,'driver',{category:'performance',title:'A new lookup scenario'});assert.equal(draft.quality.drivers.at(-1).id,'QD-008');
+assert.equal(orderedDrivers(p)[0].id,'QD-001');assert.equal(orderedDrivers(q(p,'move',{id:'QD-004',direction:'up'}))[0].id,'QD-004');
+assert(potentialTradeoffs(p,p.quality.drivers[0]).some(t=>t.driverIds.includes('QD-003')));
+let conflicted=q(p,'conflict',{driverIds:['QD-001','QD-003'],title:'Integrity versus acknowledgement time',effect:'Checks contribute to acknowledgement latency.'});
+let conflict=conflicted.quality.conflicts[0];assert.equal(conflict.id,'QC-001');assert(qualityFindings(conflicted).some(f=>f.code==='conflict'));
+assert.throws(()=>q(conflicted,'conflict',{...conflict,status:'resolved'}),/resolution and accountable owner/);
+conflicted=q(conflicted,'conflict',{...conflict,status:'resolved',resolution:'Preserve duplicate detection and measure the complete protected path.',owner:'Payments architect'});conflict=conflicted.quality.conflicts[0];assert(conflictIsResolved(conflicted,conflict));
+conflicted=q(conflicted,'driver',{...conflicted.quality.drivers[0],targetValue:'1',targetConfirmed:false});assert(!conflictIsResolved(conflicted,conflict),'A changed driver reopens the resolution for review');
+let reviewed=q(q(p,'intake'),'review');assert(qualityReviewCurrent(reviewed));assert.throws(()=>q(reviewed,'handoff'),/Acknowledge/);reviewed=q(reviewed,'handoff',{acknowledge:true});assert(qualityHandoffCurrent(reviewed));
+const req=reviewed.artefacts.find(a=>a.id===reviewed.quality.drivers[0].requirementIds[0]);
+const revised=applyCommand(reviewed,{type:'artefact',payload:{...req,description:req.description+' Revised required behaviour.'}}).document;
+assert.equal(revised.quality.drivers[0].id,'QD-001');assert(sourceChanged(revised,revised.quality.drivers[0]));assert(!qualityReviewCurrent(revised));assert(!qualityHandoffCurrent(revised));
+assert(qualityFindings(revised).some(f=>f.code==='source-change'));const reconciled=q(revised,'driver',{...revised.quality.drivers[0],confirmed:true});assert(!sourceChanged(reconciled,reconciled.quality.drivers[0]));
+const removed=applyCommand(reviewed,{type:'deleteArtefact',payload:{id:req.id}}).document;assert(qualityFindings(removed).some(f=>f.code==='broken-requirement'));
+let ready=withQuality(seedProject());for(const a of [...ready.artefacts].filter(a=>a.type==='requirement'))ready=applyCommand(ready,{type:'artefact',payload:{...a,confirmed:true}}).document;
+for(const d of [...ready.quality.drivers])ready=q(ready,'driver',{...d,targetConfirmed:true,confirmed:true});ready=q(q(q(ready,'intake'),'review'),'handoff');assert.deepEqual(qualityFindings(ready),[]);assert(qualityMilestones(ready).every(m=>m.done));
+assert.notEqual(qualityGuidance(p,p.quality.drivers[0],'model').next,qualityGuidance(p,p.quality.drivers[0],'output').next);
+const md=exportQualityMarkdown(reviewed);for(const s of ['QD-001','QS-001','REQ-003','assumption','Candidate tactic','Chapter 3 handoff'])assert(md.includes(s),s);
+const DB=localDatabase(':memory:'),env={DB,ASSETS:{fetch:()=>new Response('asset')}};
+const reqApi=async(path,method='GET',body=null,owner='architect-a',origin='https://aiw.test')=>{
+  const headers=new Headers();if(owner)headers.set('oai-authenticated-user-id',owner);if(body){headers.set('Content-Type','application/json');headers.set('Origin',origin)}
+  return worker.fetch(new Request('https://aiw.test'+path,{method,headers,...(body?{body:JSON.stringify(body)}:{})}),env);
+};
+try{
+  assert.equal((await reqApi('/api/project','GET',null,null)).status,401);
+  let state=await (await reqApi('/api/project')).json();assert.equal(state.document.quality.drivers.length,6);
+  const driver={...state.document.quality.drivers[0],title:'Persist a reviewed integrity scenario',targetValue:'0',targetConfirmed:true,confirmed:true};
+  const change={revision:state.revision,command:{type:'quality.driver',payload:driver}};
+  assert.equal((await reqApi('/api/commands','POST',change,'architect-a','https://elsewhere.test')).status,403);
+  const saved=await reqApi('/api/commands','POST',change);assert.equal(saved.status,200);state=await saved.json();assert.equal(state.selected,'QD-001');
+  assert.equal((await reqApi('/api/commands','POST',change)).status,409,'Stale quality writes are rejected');
+  const reopened=await (await reqApi('/api/project')).json();assert.equal(reopened.document.quality.drivers[0].title,driver.title);assert.equal(reopened.document.quality.drivers[0].scenarioId,'QS-001');assert(reopened.document.quality.drivers[0].targetConfirmed);
+  const other=await (await reqApi('/api/project','GET',null,'architect-b')).json();assert.notEqual(other.document.quality.drivers[0].title,driver.title);
+  const jsonResponse=await reqApi('/api/export?chapter=2&format=json');assert.equal(jsonResponse.status,200);assert(jsonResponse.headers.get('Content-Disposition').includes('.json'));const bundle=await jsonResponse.json();assert.equal(bundle.project.quality.drivers[0].id,'QD-001');assert(Array.isArray(bundle.qualityValidation.findings));
+  const mdResponse=await reqApi('/api/export?chapter=2&format=md');assert.equal(mdResponse.status,200);assert(mdResponse.headers.get('Content-Disposition').includes('Quality'));const text=await mdResponse.text();assert(text.includes(driver.title));assert(text.includes('QS-001'));
+  console.log('PASS Quality scenarios: stable references; legacy project preservation; assumptions and measurable targets; requirement/responsibility validation; named prioritisation; conflict resolution invalidation; ghost non-mutation; source-change review; complete progress and handoff; durable API reopen, authentication, owner isolation, concurrency, and exports.');
+}finally{DB.close()}

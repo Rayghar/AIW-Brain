@@ -1,0 +1,60 @@
+// DOM and Worker integration checks. No browser, layout engine or production data.
+import assert from 'node:assert/strict';
+const {Window}=await import(process.env.AIW_DOM_MODULE||'happy-dom');
+import {pathToFileURL,fileURLToPath} from 'node:url';
+const root=fileURLToPath(new URL('.',import.meta.url)).replace(/\/$/,'');
+const ch=Number(process.env.AIW_CHAPTER||4),blank=process.env.AIW_BLANK==='1';
+const w=new Window({url:`https://aiw.test/?chapter=${ch}&tab=work`,width:1440,height:900});
+for(const key of ['window','document','history','location','localStorage','CustomEvent','Event','FormData','Node','Element','HTMLElement','SVGElement','MutationObserver','ResizeObserver','navigator'])Object.defineProperty(globalThis,key,{value:key==='window'?w:w[key],configurable:true,writable:true});
+for(const key of ['matchMedia','getComputedStyle','requestAnimationFrame','cancelAnimationFrame'])globalThis[key]=w[key].bind(w);
+w.document.body.innerHTML='<div id="app"></div><div id="cursor-tip" hidden></div><div id="toast"></div>';
+const {default:worker}=await import(pathToFileURL(root+'/worker.js'));
+const {localDatabase}=await import(pathToFileURL(root+'/local-db.js'));
+const files=new Map(),env={DB:localDatabase(':memory:'),FILES:{async put(k,v){files.set(k,v)},async get(k){return files.has(k)?{text:async()=>files.get(k)}:null},async delete(k){files.delete(k)}},ASSETS:{fetch:()=>new Response('asset')}};
+globalThis.fetch=(path,options={})=>worker.fetch(new Request(new URL(path,'https://aiw.test'),{...options,headers:{...options.headers,'oai-authenticated-user-id':'ux-test',Origin:'https://aiw.test'}}),env);
+const errors=[];w.addEventListener('error',e=>errors.push(e.message));
+const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
+const click=s=>{const el=q(s);assert.ok(el,'Missing '+s);el.focus();el.click();return el};
+const waitFor=async(fn,message)=>{for(let i=0;i<120;i++){if(fn())return;await new Promise(r=>setTimeout(r,25));}throw Error(message+' '+q('.ip-error')?.textContent)};
+if(blank){const created=await(await fetch('/api/projects',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Equipment reservations',template:'blank',brief:'Reserve shared equipment.'})})).json();const id=created.document.id;await fetch('/api/commands?project='+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:1,command:{type:'artefact',payload:{type:'requirement',title:'Reserve equipment',description:'Reserve available equipment and retrieve its recorded outcome.',acceptance:'The same request reference returns the recorded reservation.',owner:'Equipment services',source:'Workshop notes'}}})});history.replaceState({},'',`https://aiw.test/?chapter=${ch}&tab=work&project=${id}`);}
+await import(pathToFileURL(root+'/public/entry.js'));
+const input=(selector,value)=>{const el=q(selector);assert.ok(el,'Missing '+selector);el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));return el;};
+const select=(selector,value)=>{const el=q(selector);assert.ok(el,'Missing '+selector);el.value=value;el.dispatchEvent(new Event('change',{bubbles:true}));return el;};
+const submit=selector=>{assert.ok(q(selector),'Missing '+selector);q(selector).dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
+const ip=a=>click('[data-ip-action="'+a+'"]');
+const store=w.aiwProjectStore,impact=w.aiwInterfaceImpact,initial=structuredClone(store.value.document);
+const dirtyUnload=()=>{const event=new Event('beforeunload',{cancelable:true});w.dispatchEvent(event);return event.defaultPrevented;};
+const openMind=()=>w.aiwLogicalStudio.assistant('mind');
+const record=(p,id)=>[...p.logical.responsibilities,...p.realisation.components,...p.technology.capabilities,...p.technologyRealisation.records].find(r=>r.id===id);
+const review=()=>{if(!q('.ip-dialog'))ip('details');};
+
+const dc=a=>click('[data-dc-action="'+a+'"]');
+const saved=()=>waitFor(()=>!w.aiwDesignTasks.busy,'Guided task save: '+q('.dc-error')?.textContent);
+const answer=(key,value)=>input('[data-dc-answer="'+key+'"]',value);
+w.aiwLogicalStudio.assistant('sol');click('[data-dc-action="launch"]');assert.ok(q('.dc-dialog'));assert.equal(qa('dialog[open]').length,1);
+dc('start');await saved();assert.ok(store.value.document.coauthoring.designTasks.length===1);assert.ok(q('[data-dc-answer="boundary"]'));
+answer('boundary','Own validation and safe acceptance.');answer('exclusions','Exclude posting and customer notification.');
+dc('close');assert.ok(q('.dc-leave'));dc('stay');assert.equal(q('[data-dc-answer="boundary"]').value,'Own validation and safe acceptance.');
+dc('answer');assert.ok(q('[data-dc-action="answer"]').disabled);await saved();
+assert.equal(store.value.document.coauthoring.designTasks[0].answers.boundary,'Own validation and safe acceptance.');
+dc('close');await store.load();w.aiwLogicalStudio.assistant('sol');click('[data-dc-action="launch"]');dc('resume');assert.ok(q('[data-dc-answer="information"]'),'Resume at next missing question');
+answer('information','The authoritative instruction register records state; consumers only read the outcome.');answer('failure','Keep an uncertain instruction pending, reconcile before a repeat.');select('[data-dc-answer="interaction"]','event');dc('answer');await saved();
+answer('owner','Application team');dc('answer');await saved();
+select('[data-dc-answer="category"]','compute');select('[data-dc-answer="boundaryId"]','');answer('support','Execute the recorded acceptance boundary.');answer('trustName','Acceptance environment');answer('trustPolicy','Only authenticated requests enter the boundary.');dc('answer');await saved();
+answer('operations','Accountable on-call response, traced outcomes and reviewed restoration.');answer('unknowns','Measure recovery expectations with operations.');dc('answer');await saved();
+assert.ok(q('.dc-approaches'));assert.equal(store.value.document.modelAlternatives.records.length,2);assert.equal(record(store.value.document,'api')?.boundary,record(initial,'api')?.boundary);assert.ok(q('#dc-title').textContent.includes('Mind Factory'));
+click('[data-dc-action="choose"][data-approach="separate"]');assert.ok(q('[data-dc-slot]'));select('[data-dc-slot]','coordination');input('[data-dc-record="title"]','Coordinate the recorded instruction');
+input('[data-dc-meta="rationale"]','A separate coordinator localises uncertain-outcome recovery while preserving the existing acceptance component.');dc('preview');await saved();
+assert.ok(q('.ip-dialog'),q('.dc-error')?.textContent);assert.equal(qa('dialog[open]').length,1);assert.equal(qa('[data-ip-change] option').length,7);assert.equal(q('[data-ip-action="add"]'),null);assert.equal(record(store.value.document,'api')?.boundary,record(initial,'api')?.boundary);
+// Shape a new ghost through the same Sol task; it must not use a saved-record editor.
+select('[data-ip-change]',[...q('[data-ip-change]').options].find(o=>o.textContent.includes('Coordinate the recorded instruction')).value);ip('edit');assert.ok(q('.dc-dialog'));assert.equal(qa('dialog[open]').length,1);select('[data-dc-slot]','coordination');assert.equal(q('[data-dc-record="title"]').value,'Coordinate the recorded instruction');input('[data-dc-record="boundary"]','Own uncertainty resolution; never repeat an effect without authoritative confirmation.');dc('preview');await saved();assert.ok(q('.ip-dialog'));
+ip('review');ip('apply');assert.ok(q('.ip-error').textContent.includes('Confirm'));input('[data-ip-input="reviewer"]','Design QA');input('[data-ip-input="reason"]','The isolated coordinator owns uncertainty and the operating obligations are explicit.');q('[data-ip-confirm]').checked=true;ip('apply');await waitFor(()=>!impact.pending&&!impact.busy,'Accept guided proposal');
+let task=store.value.document.coauthoring.designTasks[0];assert.equal(task.status,'applied');assert.ok(task.applied.records.some(r=>r.isNew));assert.equal(task.applied.records.some(r=>!r.isNew),!blank);assert.ok(task.applied.changeIds.length>0);
+w.aiwDesignTasks.openTask(task.id);assert.ok(q('.dc-record-trail'));assert.ok(q('.dc-dialog').textContent.includes('Design QA'));dc('native');assert.ok(q('.logical-dialog'));assert.equal(q('.dc-dialog'),null);click('.logical-dialog header button');assert.equal(qa('dialog[open]').length,0);
+await store.load();w.aiwLogicalStudio.assistant('sol');click('[data-dc-action="launch"]');dc('resume');assert.ok(q('.dc-record-trail'));dc('close');
+// A conflicting task save preserves local input and cannot overwrite another author's answers.
+w.aiwLogicalStudio.assistant('sol');click('[data-dc-action="launch"]');dc('start');await saved();const concurrentTask=store.value.document.coauthoring.designTasks.at(-1);answer('boundary','Unsaved boundary must remain available.');
+const concurrentResponse=await fetch('/api/commands?project='+store.value.document.id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:store.value.revision,command:{type:'design.answers',payload:{id:concurrentTask.id,taskRevision:concurrentTask.revision,answers:{owner:'Concurrent owner'}}}})});assert.equal(concurrentResponse.status,200);dc('answer');await saved();assert.ok(q('[data-dc-action="reload"]'));assert.equal(q('[data-dc-answer="boundary"]').value,'Unsaved boundary must remain available.');dc('reload');await saved();assert.ok(q('[data-dc-action="current-task"]'));const currentRevision=store.value.revision;dc('answer');await saved();assert.equal(store.value.revision,currentRevision);assert.equal(store.value.document.coauthoring.designTasks.at(-1).answers.owner,'Concurrent owner');dc('current-task');assert.ok(q('.dc-leave'));dc('discard');assert.equal(q('[data-dc-answer="boundary"]').value,'');dc('close');
+if(blank)assert.doesNotMatch(JSON.stringify(store.value.document.modelAlternatives),/bank|payment|ledger|agency/i);assert.deepEqual(errors,[]);assert.equal(qa('.journey-rail>section').length,3);assert.equal(qa('.ev-launcher,.lens-position-controls').length,0);
+console.log('PASS Guided design UI (Chapter '+ch+', '+(blank?'blank equipment project':'Bank reference')+'): native Sol adoption and restoration; required questions; partial save/reload/resume; two alternatives; existing-object reuse; new ghost editing; shared impact acceptance; durable reasoning; no nested dialogs; refined navigation retained.');
+await w.happyDOM.close();process.exit(0);

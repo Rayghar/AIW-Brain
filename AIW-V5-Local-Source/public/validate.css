@@ -1,0 +1,62 @@
+/* The Validate tab: SDD readiness and the model views behind one switch. */
+.vx-bar{display:flex;align-items:center;gap:12px;margin:0 0 8px;padding:5px 8px;border:1px solid #c6d3c2;border-radius:12px;background:#f3f6ed;min-width:0;color:#1f4336}
+.vx-switch{display:flex;gap:2px;padding:2px;border:1px solid #cdd7c6;border-radius:10px;background:#fbfcf7;flex:none}
+.vx-switch button{display:flex;flex-direction:column;align-items:flex-start;gap:0;border:0;background:none;border-radius:8px;padding:4px 12px;min-height:38px;cursor:pointer;color:#4c6656;font:inherit;text-align:left}
+.vx-switch button b{font-size:13px;font-weight:600;white-space:nowrap}
+.vx-switch button small{font-size:10.5px;color:#76866f;white-space:nowrap}
+.vx-switch button:hover{background:#edf1e6}
+.vx-switch button[aria-pressed=true]{background:#214d40;color:#fff}
+.vx-switch button[aria-pressed=true] small{color:#cfe0d4}
+.vx-switch button:focus-visible{outline:2px solid #b18d42;outline-offset:1px}
+.vx-state{margin:0;font-size:12.5px;color:#5f7064;min-width:0;flex:1 1 auto;line-height:1.35}
+/* Model views: the anatomy takes the surface on its own. */
+body.vx-model .studio>.stage.tab-content>:not(.vx-bar):not(.an),body.vx-model .r-studio>.r-surface>:not(.vx-bar):not(.an){display:none!important}
+/* SDD readiness across the journey */
+.vx-ready{container-type:inline-size;margin:0 0 12px;padding:10px 12px 12px;border:1px solid #c6d3c2;border-radius:12px;background:#fffefa;color:#1f4336}
+.vx-ready>header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.vx-ready>header small{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:#76866f;font-weight:600}
+.vx-ready>header b{display:block;font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:16px;line-height:1.3;margin-top:2px}
+.vx-link{flex:none;font-size:12.5px;color:#2f5a44;white-space:nowrap;padding-top:2px}
+.vx-tiles{list-style:none;display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:6px;margin:10px 0 0;padding:0}
+.vx-tile{display:flex;flex-direction:column;gap:1px;padding:6px 8px 9px;border:1px solid #d6dfcf;border-top:3px solid #aab2a5;border-radius:9px;background:#fff;color:#1f4336;text-decoration:none;position:relative;min-width:0;height:100%}
+.vx-tile small{font-size:10px;color:#76866f;font-weight:600}
+.vx-tile b{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vx-n{font-size:13px;font-weight:700;color:#2f6b4f}
+.vx-r{font-size:10.5px;color:#76866f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vx-m{position:absolute;left:8px;right:8px;bottom:4px;height:3px;border-radius:2px;background:#e5eadf;overflow:hidden}
+.vx-m::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--p);background:#6f9b80}
+.vx-tile.gaps{border-top-color:#b0493a}.vx-tile.gaps .vx-n{color:#b0493a}
+.vx-tile.treated{border-top-color:#b5832f}.vx-tile.treated .vx-n{color:#8b5e12}
+.vx-tile.review{border-top-color:#c9a24c}
+.vx-tile.clear{border-top-color:#2f6b4f}
+.vx-tile:hover{border-color:#9fb39a}
+.vx-tile.cur{background:#fff8e6;box-shadow:0 0 0 2px #e6c27e}
+.vx-tile:focus-visible{outline:2px solid #b18d42;outline-offset:2px}
+.vx-obs{display:flex;gap:14px;align-items:flex-start;margin-top:10px;padding-top:10px;border-top:1px dashed #d6dfcf}
+.vx-obs[hidden]{display:none}
+.vx-obs-in{flex:1 1 auto;min-width:0}
+.vx-obs-in>small{display:block;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:#76866f;font-weight:600;margin-bottom:5px}
+.vx-obs ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px}
+.vx-obs li{border-left:3px solid #8fa98a;padding:2px 0 2px 8px;font-size:12.5px;line-height:1.4}
+.vx-obs li.gap{border-left-color:#b5832f}.vx-obs li.risk{border-left-color:#b0493a}
+.vx-obs li a{color:#1f4336;text-decoration:none}
+.vx-obs li a:hover{text-decoration:underline}
+.vx-obs p{margin:6px 0 0;font-size:11.5px;color:#76866f}
+.vx-obs-acts{display:flex;flex-direction:column;gap:6px;flex:none}
+/* The same two actions on every chapter's page, whatever that page calls a button. */
+.vx-obs-acts .btn{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;min-height:34px;margin:0;padding:6px 12px;border:1px solid #cfdac8;border-radius:8px;background:#fff;color:#1f4336;font-family:inherit;font-size:12.5px;font-weight:600;line-height:1.25;text-decoration:none;white-space:nowrap;cursor:pointer;box-shadow:none}
+.vx-obs-acts .btn:hover{border-color:#8fa98a;background:#f5f8f2}
+.vx-obs-acts .btn:focus-visible{outline:2px solid #b18d42;outline-offset:2px}
+@container (max-width:1020px){.vx-tiles{grid-template-columns:repeat(6,minmax(0,1fr))}.vx-obs ul{grid-template-columns:1fr}}
+@container (max-width:520px){.vx-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){.vx-bar{flex-wrap:wrap}.vx-state{flex-basis:100%}.vx-ready>header{flex-direction:column}.vx-obs{flex-direction:column}.vx-obs-acts{flex-direction:row;flex-wrap:wrap}}
+.vx-anti{margin-top:10px;padding-top:10px;border-top:1px dashed #d6dfcf}
+.vx-anti[hidden]{display:none}
+.vx-anti>summary{cursor:pointer;font-size:12.5px;color:#5a665d;list-style-position:inside}
+.vx-anti>summary b{color:#a8412f;font-weight:700}
+.vx-anti .sp-ap{margin-top:6px}
+.vx-anti .sp-ap h4{display:none}
+.vx-anti .sp-apx{display:grid;grid-template-columns:180px minmax(0,1fr);gap:2px 12px}
+.vx-anti .sp-apx>*{grid-column:2}
+.vx-anti .sp-apx>b{grid-column:1;grid-row:1 / span 4}
+@container (max-width:760px){.vx-anti .sp-apx{grid-template-columns:1fr}.vx-anti .sp-apx>*,.vx-anti .sp-apx>b{grid-column:1;grid-row:auto}}

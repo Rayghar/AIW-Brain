@@ -1,0 +1,57 @@
+import {READ_OPTIONS,assessRead} from './read-design-knowledge.js';
+import {applyLogicalCommand} from './logical-domain.js';
+import {applyRealisationCommand} from './realisation-domain.js';
+import {applyTechnologyCommand} from './technology-domain.js';
+import {applyTechnologyRealisationCommand} from './technology-realisation-domain.js';
+import {applyDecisionCommand} from './decisions-domain.js';
+import {applyInterfacesCommand} from './interfaces-domain.js';
+import {modelEditSnapshot} from './model-impact.js';
+import {architectureProposal} from './architecture-proposal.js';
+
+const copy=v=>structuredClone(v);
+export function previewReadDesign(input,alternative,t,at){
+ const a=t.answers,assessment=assessRead(input,t,alternative.design.approach),cached=assessment.optionId==='cache-aside',used=[],executed=[],source='Read design '+t.id+' · '+t.requirementId+' / '+t.driverId;let p=copy(input);
+ const run=(type,payload)=>{const fn=type.startsWith('logical.')?applyLogicalCommand:type.startsWith('realisation.')?applyRealisationCommand:type.startsWith('technology.')?applyTechnologyCommand:type.startsWith('techrealisation.')?applyTechnologyRealisationCommand:type.startsWith('interfaces.')?applyInterfacesCommand:applyDecisionCommand;const r=fn(p,{type,payload},at);p=r.document;executed.push({type,payload:copy(payload)});return r.selected;};
+ const mark=(type,id,slot)=>{if(!used.some(x=>x.id===id&&x.type===type))used.push({type,id,slot});return id;};
+ const decisionId=run('decision.save',{question:'How should '+a.readScope+' be read?',context:t.basis.requirement.description,requirementIds:[t.requirementId],driverIds:[t.driverId],owner:a.owner,source,rationale:alternative.rationale,assumptions:'Conditional effects require tests. '+assessment.caveats.join(' '),risks:assessment.option.cost,mitigation:a.failure});
+ const roles=[];
+ function role(slot,id,title,purpose,kind){
+  const existing=id?p.realisation.components.find(c=>c.id===id):null;if(id&&!existing)throw Error('The selected '+slot+' was removed.');
+  if(slot==='cache'&&existing?.kind!=='store'&&existing)throw Error('Choose a store component for the disposable cache.');
+  if(!existing&&(!title||p.realisation.components.some(c=>c.title.toLowerCase()===title.toLowerCase())))throw Error('Name a distinct new '+slot+' or select its existing component.');
+  const logical=run('logical.responsibility',{title:({caller:'Serve reads',processor:'Own authoritative information',cache:'Retain eligible read copies'}[slot])+' · '+t.requirementId+' · '+t.id,purpose,boundary:purpose,owner:a.owner,source,requirementIds:[t.requirementId],decisionIds:[decisionId],confirmed:false});mark('logical.responsibility',logical,slot+' responsibility');roles.push(logical);
+  if(!id)id=run('realisation.component',{title,kind,purpose,boundary:purpose,owner:a.owner,inputs:a.readScope,outputs:slot==='processor'?'Authoritative response under the declared consistency contract.':slot==='cache'?'Disposable read copy; no business-write authority.':'Authorised result or the declared read failure.',source,rationale:alternative.rationale,technologyNeeds:slot==='cache'?'Caching with bounded age and controlled refill.':'Read connectivity; select authoritative persistence separately.',assumptions:'Capacity and consistency require implementation evidence.',status:'candidate',allocations:[{logicalId:logical,scope:purpose}]});
+  else run('logical.mapping',{logicalId:logical,physicalId:id,scope:purpose,owner:a.owner,evidence:source,status:'candidate'});
+  if(!p.technology.knownApplications.includes(id))p.technology.knownApplications.push(id);mark('realisation.component',id,slot);return {app:id,logical};
+ }
+ const reader=role('caller',a.callerId,a.callerTitle,'Serve authorised reads of '+a.readScope+'. '+a.failure,'service'),authority=role('processor',a.processorId,a.processorTitle,'Own '+a.readScope+' and permitted writes. '+a.authorityPolicy,'service'),cache=cached?role('cache',a.cacheId,a.cacheTitle,'Retain only eligible copies for at most '+a.maxAge+' seconds under the declared age policy. '+a.freshnessPlan,'store'):null;
+ const participants=[reader,authority,...(cache?[cache]:[])];if(new Set(participants.map(x=>x.app)).size!==participants.length)throw Error('Reader, authority and cache need distinct component identities.');
+ const interaction=(from,to,label,condition,kind='sync')=>{run('logical.connection',{from:from.logical,to:to.logical,label,kind:'flow',condition});run('realisation.interaction',{from:from.app,to:to.app,label:label+' · '+t.requirementId,interaction:kind,condition,failure:a.failure});};
+ interaction(reader,authority,cached?'loads on an eligible miss':'reads the authoritative result',a.authorityPolicy+(cached?' Cache failure: '+a.cacheFailure+'. '+a.recovery:''));
+ if(cached){interaction(reader,cache,'looks up an eligible read copy',a.isolation+' '+a.freshnessPlan);interaction(reader,cache,'fills only a permitted read copy','After an authoritative read; preserve source age and version. '+a.freshnessPlan,'data');interaction(authority,cache,'invalidates after committed changes',a.invalidation,'data');}
+ let dataId=a.dataId;
+ if(!dataId)dataId=run('interfaces.data',{title:a.readScope,purpose:'Authoritative information for '+t.requirementId+'. '+a.authorityPolicy,owner:a.owner,authorityId:authority.app,classification:a.classification,retentionPolicy:a.retention,protection:a.isolation,evidence:source,assumptions:'Define the field dictionary and verify the authoritative read contract in Chapter 8.',origin:'suggestion'});
+ const authoritative=p.interfaces.data.find(d=>d.id===dataId);if(authoritative.authorityId!==authority.app)throw Error('The saved data authority must remain unchanged.');
+ mark('interfaces.data',dataId,'authoritative data');
+ // The component definition is preserved when data is reused. The Chapter 8
+ // authority relationship is the canonical owner; copies never gain it.
+ run('realisation.interaction',{from:authority.app,to:dataId,label:'provides authoritative reads · '+t.id,interaction:'data',condition:a.authorityPolicy,failure:a.failure});
+ if(cached){
+  const copyId=run('interfaces.data',{title:'Read copy · '+a.readScope+' · '+t.id,purpose:'Disposable derivative of '+authoritative.ref+'. No business-write authority. Maximum accepted age '+a.maxAge+' seconds. '+a.freshnessPlan,owner:authoritative.owner,authorityId:authority.app,classification:authoritative.classification,retentionPolicy:'Expire or evict the copy under its '+a.maxAge+' second age bound. '+a.invalidation,protection:a.isolation,evidence:source,assumptions:'Define eligible fields, version metadata and source-age checks. Cache expiry is separate from authoritative retention.',origin:'suggestion'});mark('interfaces.data',copyId,'read copy');
+  run('interfaces.lineage',{from:dataId,to:copyId,title:'disposable read copy',transformation:a.freshnessPlan+' Invalidation: '+a.invalidation,owner:a.owner,evidence:source});mark('interfaces.lineage',p.interfaces.lineage.at(-1).id,'copy lineage');
+  run('realisation.interaction',{from:cache.app,to:copyId,label:'retains disposable copy · '+t.id,interaction:'data',condition:a.isolation+' '+a.freshnessPlan,failure:'Discard and rebuild under the recovery policy. '+a.recovery});
+ }
+ const boundary=a.boundaryId||run('technology.boundary',{title:a.trustName,owner:a.owner,policy:a.trustPolicy});if(!a.boundaryId)mark('technology.boundary',boundary,'trust boundary');
+ const caps=[];
+ for(const category of cached?['connectivity','caching']:['connectivity']){
+  const supported=category==='caching'?[reader,cache]:[reader,authority],purpose=category==='caching'?'Eligible read copies with explicit freshness, eviction and refill.':'Controlled reads from the authoritative boundary.',needs=[];
+  for(const {app} of supported){const prior=copy(p.technology.needs.filter(n=>n.applicationId===app));let need=prior.find(n=>n.category===category);if(!need){run('technology.needs',{applicationId:app,boundaryId:p.technology.applicationBoundaries[app]||boundary,confirmed:false,needs:[...prior,{category,description:purpose,criticality:'essential'}]});for(const old of prior){const i=p.technology.needs.findIndex(n=>n.id===old.id);if(i>=0)p.technology.needs[i]=old;}need=p.technology.needs.find(n=>n.applicationId===app&&n.category===category);}needs.push(need.id);}
+  let cap=(category===(cached?'caching':'connectivity'))?a.capabilityId:'';
+  if(cap){const existing=p.technology.capabilities.find(c=>c.id===cap);if(!existing||existing.category!==category||existing.boundaryId!==boundary)throw Error('Use a '+category+' capability in the selected trust boundary.');const snap=modelEditSnapshot(p,{type:'technology.capability',payload:{id:cap}});run('technology.capability',{id:cap,...snap,status:'candidate',mappings:[...snap.mappings,...needs.filter(id=>!snap.mappings.some(m=>m.needId===id)).map(needId=>({needId,scope:purpose}))]});}
+  else cap=run('technology.capability',{title:(category==='caching'?'Bounded read caching':'Authoritative read connectivity')+' · '+t.id,category,purpose,boundary:purpose,owner:a.owner,source,rationale:alternative.rationale,boundaryId:boundary,driverIds:[t.driverId],decisionIds:[decisionId],status:'candidate',continuity:'single',recoveryPlan:cached?a.recovery:a.failure,recoveryOwner:a.owner,assumptions:'No implementation, hit rate, latency or capacity is verified.',mappings:needs.map(needId=>({needId,scope:purpose}))});mark('technology.capability',cap,category+' support');caps.push(cap);
+ }
+ const plan=run('techrealisation.plan',{title:'Read operating plan · '+t.id,purpose:'Operate the reviewed '+assessment.option.pattern+' path for '+a.readScope+'.',owner:a.owner,operationsPlan:cached?a.recovery:a.failure,accessPlan:a.isolation,dataPlan:a.authorityPolicy+(cached?' Freshness: '+a.maxAge+' seconds. '+a.freshnessPlan+' Invalidation: '+a.invalidation:''),resiliencePlan:a.failure+(cached?' Cache unavailable: '+a.cacheFailure+'. Source unavailable: '+a.originFailure+'. '+a.recovery:''),interfacePlan:'Define the read contract and returned source version in Chapter 8.',lifecyclePlan:cached?'Evict disposable copies without changing authoritative retention.':'Retain the authoritative lifecycle policy.',rationale:alternative.rationale,assumptions:'Select and assess products in Chapter 7; capacity and cost remain unmeasured.',mappings:caps.map(capabilityId=>({capabilityId,scope:'Support the reviewed read path.'}))});mark('techrealisation.plan',plan,'read operating plan');
+ for(const o of READ_OPTIONS){const assessment=assessRead(input,t,o.id);run('decision.alternative',{id:decisionId,title:o.title,summary:o.benefit,benefits:o.benefit,costs:o.cost,consequences:o.counterfactual,pattern:o.pattern+' · '+o.tactic,antiPattern:o.id==='cache-aside'?'Treating the copy as an authority, serving beyond the age bound, or exposing another caller’s data.':'Assuming direct access alone guarantees current data.',responsibilityIds:roles,relationships:[],assessments:{[t.driverId]:{effect:assessment.blockers.length?'tension':'unknown',reason:assessment.status+' · Verify conditional effects against the scenario.',evidence:t.methodReceipt.packId}}});}
+ const decision=p.decisions.records.find(d=>d.id===decisionId);run('decision.choose',{id:decisionId,alternativeId:decision.alternatives.find(o=>o.title===assessment.option.title).id});mark('decision.save',decisionId,'decision');
+ return architectureProposal(input,p,t,alternative,used,executed,decisionId,assessment);
+}

@@ -1,0 +1,41 @@
+import {buildRecovery,previewRecovery} from './recovery-service.js';
+import assert from 'node:assert/strict';
+import {readFile,mkdtemp,rm,writeFile} from 'node:fs/promises';
+import {tmpdir,cpus,totalmem} from 'node:os';
+import path from 'node:path';
+import worker from './worker.js';
+import {localDatabase} from './local-db.js';
+import {localFiles} from './local-files.js';
+import {sourceAssurance} from './public/assurance-domain.js';
+import {mapWorkbookRows,previewIntake,applyIntake} from './public/intake-domain.js';
+import {openWorkbook,sha256} from './public/workbook-reader.js';
+const filename=process.env.AIW_WORKBOOK;if(!filename)throw Error('Set AIW_WORKBOOK to the original SEABaaS workbook for the 1,400-row acceptance workload.');
+const root=await mkdtemp(path.join(tmpdir(),'aiw-intake-')),DB=localDatabase(path.join(root,'project.sqlite')),env={DB,FILES:localFiles(path.join(root,'files'))},origin='http://localhost:4173';let projectId,revision,document;
+const report={runtime:process.version,cpu:cpus()[0].model,memoryGiB:Math.round(totalmem()/2**30),checks:[],timings:{}};
+async function call(route,{body,bytes,owner='intake-reviewer',method}={}){const r=await worker.fetch(new Request(origin+route+(route.includes('?')?'&':'?')+'project='+(projectId||'bank-payment'),{method:method||((body||bytes)?'POST':'GET'),headers:{'oai-authenticated-user-id':owner,Origin:origin,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:bytes?{body:bytes}:{})}),env);const data=await r.json();assert.equal(r.status<300,true,JSON.stringify({status:r.status,error:data.error}));return data;}
+try{
+ const created=await call('/api/projects',{body:{name:'Intake acceptance workload',template:'blank'}});projectId=created.document.id;
+ const bytes=await readFile(filename),sourceHash=await sha256(bytes),t=performance.now();
+ const upload=await call('/api/intake?action=upload&filename=SEABaaS.xlsx',{bytes});
+ const inspect=await call('/api/intake?action=inspect',{body:{uploadId:upload.id,sheet:'11 Requirement Detail'}});assert.equal(inspect.headerRow,5);assert.equal(inspect.headers.length,27);
+ const input={uploadId:upload.id,sheet:inspect.sheet,headerRow:inspect.headerRow,mapping:inspect.mapping};
+ const preview=await call('/api/intake?action=preview',{body:input});assert.equal(preview.counts.add,1400);
+ const result=await call('/api/intake?action=apply',{body:{...input,revision:preview.projectRevision,previewStamp:preview.stamp,reviewed:true}});({revision,document}=result);report.timings.uploadPreviewApplyMs=Math.round(performance.now()-t);
+ assert.equal(document.artefacts.length,1400);assert.equal(new Set(document.artefacts.map(a=>a.externalId)).size,1400);assert.ok(document.artefacts.every(a=>a.confirmed===false&&a.provenance));report.checks.push('All 1,400 unique requirements imported as unconfirmed with external identity and provenance.');
+ const a=sourceAssurance(document.artefacts);assert.equal(a.counts.deliveryGaps,360);assert.equal(a.counts.additionalAssurance,20);assert.equal(a.counts.repeatedGroups,103);const frd=document.artefacts.find(a=>a.externalId==='FRD-022');assert.ok(a.findings.some(f=>f.artefactId===frd.id&&f.code==='source-conflict'));report.checks.push('360 delivery gaps, 20 additional assurance cases, 103 repeated-statement groups and FRD-022 conflict detected.');
+ const source=await call('/api/intake?action=source&dataset='+document.intake.datasets[0].id+'&externalId=FRD-022');assert.equal(source.row.values.length,27);assert.equal(source.row.sourceRow,7);assert.equal(source.row.values[3].address,'D7');
+ const reinput={...input,datasetId:document.intake.datasets[0].id},again=await call('/api/intake?action=preview',{body:reinput});assert.equal(again.counts.unchanged,1400);
+ const unchanged=await call('/api/intake?action=apply',{body:{...reinput,revision,previewStamp:again.stamp,reviewed:true}});assert.equal(unchanged.revision,revision);report.checks.push('Unchanged re-import is a no-op: no duplicated IDs or revision churn.');
+ let start=performance.now();const saved=await call('/api/commands',{body:{revision,command:{type:'artefact',payload:{...frd,title:'Architect-reviewed audit requirement'}}}});revision=saved.revision;report.timings.singleRecordSaveMs=Math.round(performance.now()-start);assert.equal(saved.document.artefacts.find(a=>a.id===frd.id).externalId,'FRD-022');
+ start=performance.now();const reload=await call('/api/project');report.timings.projectReloadMs=Math.round(performance.now()-start);assert.equal(reload.document.artefacts.length,1400);assert.equal(reload.document.artefacts.find(a=>a.id===frd.id).title,'Architect-reviewed audit requirement');
+ start=performance.now();const page=await call('/api/requirements?domain=Audit%20Log&gaps=1');report.timings.filteredPageMs=Math.round(performance.now()-start);assert.equal(page.total,40);assert.ok(page.rows.length<=50);
+ const search=await call('/api/requirements?q=FRD-022');assert.equal(search.total,1);assert.equal(search.rows[0].id,frd.id);report.checks.push('Persisted edits retain imported metadata; save/reload, indexed domain filter and external-ID search pass.');
+ const foreign=await worker.fetch(new Request(origin+'/api/intake?action=source&project='+projectId+'&dataset='+document.intake.datasets[0].id,{headers:{'oai-authenticated-user-id':'another-owner'}}),env);assert.equal(foreign.status,404);report.checks.push('Workbook and project source access remains owner-scoped.');
+ const wb=await openWorkbook(bytes),sheet=await wb.sheet(inspect.sheet),mapped=mapWorkbookRows(sheet,5,input.mapping),edited=structuredClone(mapped.rows);edited.find(r=>r.externalId==='FRD-022').fields.description+=' Source revision.';edited.find(r=>r.externalId==='FRD-022').rowHash='changed';
+ const changedSource={...mapped,rows:edited,datasetId:document.intake.datasets[0].id,revision:2,filename:'SEABaaS.xlsx',sheet:inspect.sheet,headerRow:5,workbookHash:sourceHash+'changed'};
+ const cp=previewIntake(reload.document,changedSource,mapped.rows);assert.equal(cp.changes.find(c=>c.externalId==='FRD-022').kind,'conflict');assert.throws(()=>applyIntake(reload.document,changedSource,cp,{previewStamp:cp.stamp,reviewed:true},new Date().toISOString(),'tester'),/keep or replace/);report.checks.push('Source updates cannot overwrite architect edits without a reviewed conflict choice.');
+ const recovery=await buildRecovery(env,{owner:'intake-reviewer'},projectId),recoveryPreview=await previewRecovery(recovery);const restored=await call('/api/recovery?action=restore',{body:{package:recovery,hash:recoveryPreview.hash,name:'Restored workbook design',reviewed:true}});const originalId=projectId;projectId=restored.id;
+ const restoredSource=await call('/api/intake?action=source&dataset='+document.intake.datasets[0].id+'&externalId=FRD-022');assert.equal(restoredSource.row.values[3].address,'D7');const original=await worker.fetch(new Request(origin+'/api/intake?action=download&project='+projectId+'&uploadId='+upload.id,{headers:{'oai-authenticated-user-id':'intake-reviewer'}}),env);assert.equal(original.status,200);assert.equal(await sha256(await original.arrayBuffer()),sourceHash);const restoredProject=await call('/api/project');assert.equal(restoredProject.document.artefacts.length,1400);assert.equal(restoredProject.document.artefacts.find(a=>a.id===frd.id).title,'Architect-reviewed audit requirement');projectId=originalId;report.checks.push('Complete 1,400-row recovery restores the edited model, original workbook bytes and exact cell-level source snapshots.');
+ assert.equal(await sha256(await readFile(filename)),sourceHash);report.sourceHash=sourceHash;report.counts=a.counts;report.peakRssMiB=Math.round(process.resourceUsage().maxRSS/1024);report.status='passed';
+ if(process.env.AIW_REPORT)await writeFile(process.env.AIW_REPORT,JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
+}finally{DB.close();await rm(root,{recursive:true,force:true});}

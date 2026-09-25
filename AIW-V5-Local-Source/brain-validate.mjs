@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import {createProject} from './public/projects-domain.js';
+import {applyCommand,seedProject} from './public/requirements-domain.js';
+import {withFinalReview,exportSDD,reviewSourceStamp,applyFinalReviewCommand,reviewDesignStamp} from './public/review-domain.js';
+import {brainContext,brainNote,knowledgeReceipt,receiptCurrent,noteCurrent} from './public/aiw-brain.js';
+import {applyBrainCommand,acceptedNarratives,narrativeFindings} from './public/brain-authoring.js';
+import {applyDesignCommand} from './public/design-task-domain.js';
+import {designBasisCurrent} from './public/design-task-state.js';
+import worker from './worker.js';
+import {localDatabase} from './local-db.js';
+
+let p=withFinalReview(createProject({name:'Equipment reservations',template:'blank'},'equipment'));
+p=applyCommand(p,{type:'artefact',payload:{type:'requirement',title:'Reserve equipment',description:'Reserve available equipment and retrieve the original reservation outcome.',acceptance:'Repeated requests return the recorded reservation.',owner:'Equipment team',source:'Reservation workshop'}}).document;
+const context={chapter:1,id:'REQ-001',tab:'work'},c=brainContext(p,context),original=JSON.stringify(p);
+assert.equal(c.selected.title,'Reserve equipment');assert.equal(c.requirements.length,1);assert.equal(c.knowledge.length,2);
+assert(c.knowledge.every(k=>k.receipt.scoring===false&&!k.receipt.liveSource));assert.equal(brainContext(p,{id:'missing'}).selected.id,'project');
+let r=applyBrainCommand(p,{type:'brain.draft',payload:{chapter:1,objectId:'REQ-001',basisStamp:c.stamp}}),n=r.document.coauthoring.narratives[0];p=r.document;
+assert.equal(JSON.stringify(JSON.parse(original).artefacts),JSON.stringify(p.artefacts));assert.match(n.body,/Reservation workshop|Reserve available equipment/);
+assert.doesNotMatch(n.body,/bank|payment|ledger/i);assert.equal(acceptedNarratives(p).length,0);assert.doesNotMatch(exportSDD(p),/TXT-001/);
+const issue=(type,payload={})=>{n=brainNote(p,'TXT-001');p=applyBrainCommand(p,{type,payload:{id:n.id,revision:n.revision,...payload}}).document;return brainNote(p,n.id);};
+assert.throws(()=>issue('brain.accept',{reviewed:true,reviewer:'Architect'}),/rationale/);
+n=issue('brain.update',{title:'Reservation design',body:n.body+'\n\nScheduling capacity remains an open question.'});
+const stamp=reviewSourceStamp(p);n=issue('brain.accept',{reviewed:true,reviewer:'Architect',reason:'The passage reflects the recorded requirement and open questions.'});assert.notEqual(reviewSourceStamp(p),stamp);assert.match(exportSDD(p),/TXT-001/);assert.match(exportSDD(p),/AKR-0.10.73.5/);
+const accepted=n.accepted.body,acceptedStamp=reviewSourceStamp(p);
+n=issue('brain.update',{title:n.title,body:'UNACCEPTED EDIT'});assert.equal(n.accepted.body,accepted);assert.equal(reviewSourceStamp(p),acceptedStamp);assert.doesNotMatch(exportSDD(p),/UNACCEPTED EDIT/);
+assert.throws(()=>applyBrainCommand(p,{type:'brain.update',payload:{id:n.id,revision:1,title:'Wrong revision',body:'Lost update'}}),/changed elsewhere/);
+p=applyCommand(p,{type:'artefact',payload:{...p.artefacts[0],description:'Reserve equipment within its recorded operating window.'}}).document;n=brainNote(p,n.id);assert.equal(noteCurrent(p,n),false);assert.equal(narrativeFindings(p).length,1);assert.throws(()=>issue('brain.accept',{reviewed:true,reviewer:'Architect',reason:'Accept'}),/changed object/);
+issue('brain.refresh',{reviewed:true,basisStamp:brainContext(p,context).stamp,reason:'The operating window must be stated in the revised text.'});assert.equal(narrativeFindings(p).length,1,'Refreshing a draft does not refresh the accepted passage');
+n=issue('brain.update',{title:'Reservation design',body:'Reserve equipment within its recorded operating window. The window needs confirmation.'});issue('brain.accept',{reviewed:true,reviewer:'Architect',reason:'Updated the passage to the new source.'});assert.equal(narrativeFindings(p).length,0);
+p=applyFinalReviewCommand(p,{type:'review.checks',payload:{stamp:reviewDesignStamp(p)}}).document;p=applyFinalReviewCommand(p,{type:'review.baseline',payload:{title:'Co-authored design',stamp:reviewDesignStamp(p),reviewed:true}}).document;const frozen=p.finalReview.baselines[0].markdown;
+issue('brain.withdraw',{reviewed:true,reason:'Revise the explanation before the next review.'});assert.equal(acceptedNarratives(p).length,0);assert.equal(p.finalReview.baselines[0].markdown,frozen);assert.match(frozen,/TXT-001/);
+assert(receiptCurrent(knowledgeReceipt('STYLE-LAYERED')));assert(!receiptCurrent({...knowledgeReceipt('STYLE-LAYERED'),sourceSha256:'changed'}));
+const bank=withFinalReview(seedProject()),req=bank.artefacts.find(r=>r.type==='requirement');const started=applyDesignCommand(bank,{type:'design.start',payload:{requirementId:req.id}}).document;const task=started.coauthoring.designTasks[0];assert(task.inherited.length);assert(task.knowledge.every(receiptCurrent));assert(designBasisCurrent(started,task));
+
+// Exercise the real owner-scoped Worker and blob storage, including a losing save.
+const files=new Map(),DB=localDatabase(':memory:'),baseFiles={async put(k,v){files.set(k,v)},async get(k){return files.has(k)?{text:async()=>files.get(k)}:null},async delete(k){files.delete(k)}};let env={DB,FILES:baseFiles,ASSETS:{fetch:()=>new Response('asset')}},state;
+const api=(path,method='GET',body,owner='brain-owner')=>worker.fetch(new Request('https://aiw.test'+path,{method,headers:{'oai-authenticated-user-id':owner,Origin:'https://aiw.test','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}),env);
+state=await(await api('/api/project')).json();
+const send=async(command)=>{const response=await api('/api/commands','POST',{revision:state.revision,command});assert.equal(response.status,200,await response.clone().text());state=await response.json();};
+const basis=brainContext(state.document,{chapter:4,id:'api'});await send({type:'brain.draft',payload:{chapter:4,objectId:'api',basisStamp:basis.stamp}});
+let stored=JSON.parse((await DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind('brain-owner',state.document.id).first()).document);assert.equal(stored.coauthoring.narrativeCount,1);assert.equal(stored.coauthoring.narratives,undefined);assert(stored.coauthoring.storageKey.startsWith('evidence/brain-owner/'));
+const reloaded=await(await api('/api/project')).json();assert.equal(reloaded.document.coauthoring.narratives[0].id,'TXT-001');
+const outsider=await(await api('/api/project','GET',null,'other-owner')).json();assert.equal(outsider.document.coauthoring?.narratives?.length||0,0);
+assert.equal((await api('/api/commands','POST',{revision:state.revision-1,command:{type:'brain.update',payload:{id:'TXT-001',revision:1,title:'Stale',body:'Stale'}}})).status,409);
+env={...env,FILES:{...baseFiles,put:async()=>{throw Error('Synthetic co-author storage failure');}}};assert.equal((await api('/api/commands','POST',{revision:state.revision,command:{type:'brain.update',payload:{id:'TXT-001',revision:1,title:'Failed save',body:'Not stored'}}})).status,503);env={...env,FILES:baseFiles};assert.equal((await(await api('/api/project')).json()).revision,state.revision);
+DB.close();console.log('PASS Brain: shared source context, AKR receipt limits, inherited values, draft/accepted separation, source freshness, revision conflicts, private blob persistence, failure recovery and immutable SDD baseline.');

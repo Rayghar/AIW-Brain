@@ -1,0 +1,75 @@
+import {applyCommand} from './public/requirements-domain.js';
+import assert from 'node:assert/strict';
+import {generateKeyPairSync,createPublicKey,createHash,sign} from 'node:crypto';
+import {mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import worker from './worker.js';
+import {localDatabase} from './local-db.js';
+import {localFiles} from './local-files.js';
+import {createProject} from './public/projects-domain.js';
+import {applyKnowledgeCommand,knowledgeStamp,releasedClaims,claimReceiptCurrent,claimReceipt} from './public/knowledge-governance.js';
+import {acquireRepositorySource} from './knowledge-service.js';
+import {sha256} from './public/brain-integrity.js';
+import {evaluateArchitectureCase} from './public/architecture-case.js';
+import {canonicalJSON,refreshRepositoryAssurance} from './repository-sync.js';
+import {renderKnowledgeReleases} from './public/knowledge-workspace-ui.js';
+
+const root=await mkdtemp(path.join(tmpdir(),'aiw-repository-trust-')),DB=localDatabase(path.join(root,'project.sqlite'));
+const {privateKey}=generateKeyPairSync('ed25519'),publicKey=Buffer.from(createPublicKey(privateKey).export({format:'jwk'}).x,'base64url');
+const keyId='repo-'+createHash('sha256').update(publicKey).digest('hex').slice(0,16),env={DB,FILES:localFiles(path.join(root,'files')),AIW_REPOSITORY_SYNC_KEYS:JSON.stringify({[keyId]:publicKey.toString('base64url')})};
+const owner='architect-owner',projectId='repository-trust-check',origin='http://localhost:4173',storeId='a'.repeat(8)+'-'+['b'.repeat(4),'c'.repeat(4),'d'.repeat(4),'e'.repeat(12)].join('-');
+async function call(route,{method='GET',actor=owner,body,headers={}}={}){
+ const response=await worker.fetch(new Request(origin+route+(route.includes('?')?'&':'?')+'project='+projectId,{method,headers:{'oai-authenticated-user-id':actor,Origin:origin,...(body?{'Content-Type':'application/json'}:{}),...headers},...(body?{body:JSON.stringify(body)}:{})}),env);
+ return {status:response.status,...await response.json()};
+}
+function signed(request){const {signature:blank,...payload}=request;return {...payload,signature:{algorithm:'Ed25519',keyId,value:sign(null,Buffer.from(canonicalJSON(payload)),privateKey).toString('base64url')}};}
+try{
+ let p=createProject({name:'Repository trust pilot',template:'blank'},projectId),now=new Date().toISOString();
+ const body='# Cache Aside\nBounded stale reads may serve product descriptions when reservation writes remain authoritative.\n',commit='c'.repeat(40),repository='MicrosoftDocs/architecture-center',pathName='docs/patterns/cache-aside.md';
+ const fetched=await acquireRepositorySource(p,{connectorId:'GH-MICROSOFT-ARCH-CENTER',ref:commit,path:pathName,expectedHash:sha256(body)},env,owner,now,{fetcher:async url=>new Response(url.includes('api.github.com')?commit:body)});p=fetched.document;
+ const sourceId=fetched.selected;
+ for(const title of ['Synthetic pilot scope','Unrelated synthetic requirement'])p=applyCommand(p,{type:'artefact',payload:{type:'requirement',title,description:'Synthetic fixture for scoped knowledge support.',acceptance:'Only a linked eligible claim should support this requirement.',owner:'Fixture architect',source:'Synthetic verification'}}).document;
+ const make=(type,payload,actor=owner)=>{const result=applyKnowledgeCommand(p,{type:'knowledge.'+type,payload},now,actor);p=result.document;return result.selected;};
+ const claimId=make('claim',{sourceId,lineStart:1,lineEnd:2,subjectId:'PAT-CACHE-ASIDE',claimType:'applicability',polarity:'supports',predicate:'allows bounded staleness',statement:'Descriptions may be cached with a bounded lifetime.',conditions:['The read is not authoritative.'],limitations:['Reservation writes must remain authoritative.']});
+ make('review',{id:claimId,decision:'verified',reviewed:true,reviewer:'Independent architect',reason:'Confirmed with original and permitted reuse.',sourceChecked:true,rightsChecked:true,conditionsChecked:true},'independent-reviewer');
+ const releaseId=make('release',{claimIds:[claimId],title:'Reviewed caching guidance',reviewed:true,reviewer:'Independent architect',reason:'Reviewed for this context.'},'independent-reviewer');
+ assert.throws(()=>make('activate',{id:releaseId,reviewed:true,reviewer:'Architect',reason:'Use',stamp:knowledgeStamp(p)}),/signed repository release/);
+ await DB.prepare('INSERT INTO projects(owner_id,id,document,revision,updated_at) VALUES(?,?,?,?,?)').bind(owner,projectId,JSON.stringify(p),1,now).run();
+ let proposal=await call('/api/knowledge/repository-sync?release='+releaseId);assert.equal(proposal.status,200);assert.equal(proposal.storeId,null);assert.equal(proposal.release.sources[0].hash,sha256(body));
+ const {status:proposalStatus,...request}=proposal;
+ const observed={cursor:1,kind:'revision',repository,commit,path:pathName,hash:sha256(body),reason:'observed'};
+ const packet=signed({...request,storeId,notices:[observed],cursor:1});
+ const {status:otherTenant}=await call('/api/knowledge/repository-sync',{method:'POST',body:packet,actor:'stranger'});assert.equal(otherTenant,400);
+ const wrongOrigin=await call('/api/knowledge/repository-sync',{method:'POST',body:packet,headers:{Origin:'https://not-this-site.invalid'}});assert.equal(wrongOrigin.status,403);
+ let applied=await call('/api/knowledge/repository-sync',{method:'POST',body:packet});assert.equal(applied.status,200,applied.error);assert.equal(applied.acceptedRelease,releaseId);assert.deepEqual(applied.revoked,[]);
+ const duplicate=await call('/api/knowledge/repository-sync',{method:'POST',body:packet});assert.equal(duplicate.unchanged,true);
+ let loaded=await call('/api/project');assert.equal(loaded.status,200);assert.equal(loaded.document.knowledge.repositorySync.cursor,1);
+ assert(renderKnowledgeReleases(loaded.document).includes('data-k-signed-update'));assert(renderKnowledgeReleases(loaded.document).includes('data-id="'+releaseId+'"'));
+ const activated=await call('/api/commands',{method:'POST',body:{revision:loaded.revision,command:{type:'knowledge.activate',payload:{id:releaseId,reviewed:true,reviewer:'Architect',reason:'Accepted conditional evidence',stamp:knowledgeStamp(loaded.document)}}}});assert.equal(activated.status,200,activated.error);
+ const hit=releasedClaims(activated.document).find(x=>x.claim.id===claimId);assert(hit?.eligible);const receipt=claimReceipt(activated.document,hit.claim,hit.release);assert(claimReceiptCurrent(activated.document,receipt));
+ const unrelated=evaluateArchitectureCase(activated.document,{requirementIds:['REQ-001']});assert.equal(unrelated.projectEligibleSignedRepositoryClaims,1);assert.equal(unrelated.eligibleSignedRepositoryClaims,0,'Unlinked eligible claims do not support this case');
+ const rationale=applyKnowledgeCommand(activated.document,{type:'knowledge.link',payload:{claimId,releaseId,objectId:'REQ-001',reason:'Synthetic applicability reviewed for the selected requirement.',reviewer:'Fixture architect',reviewed:true}},now,owner).document;
+ assert.equal(evaluateArchitectureCase(rationale,{requirementIds:['REQ-001']}).eligibleSignedRepositoryClaims,1);assert.equal(evaluateArchitectureCase(rationale,{requirementIds:['REQ-002']}).eligibleSignedRepositoryClaims,0);
+ const configured=env.AIW_REPOSITORY_SYNC_KEYS;env.AIW_REPOSITORY_SYNC_KEYS='{}';
+ const noKey=await call('/api/project');assert.equal(noKey.document.workspace.repositoryTrust.configuredKeys,0);assert(!releasedClaims(noKey.document).some(x=>x.eligible),'Removing a public key invalidates retained proof');
+ env.AIW_REPOSITORY_SYNC_KEYS=JSON.stringify({[keyId]:Buffer.alloc(32,7).toString('base64url')});const rotated=await call('/api/project');assert(!releasedClaims(rotated.document).some(x=>x.eligible),'Reusing a key ID with different key bytes must not preserve trust');env.AIW_REPOSITORY_SYNC_KEYS=configured;
+ const copied=structuredClone(activated.document);copied.id='different-project';await refreshRepositoryAssurance(env,owner,copied);assert(!releasedClaims(copied).some(x=>x.eligible),'Proof is bound to its original project');
+ const legacy=structuredClone(activated.document);delete legacy.knowledge.repositorySync.releases[0].proof;await refreshRepositoryAssurance(env,owner,legacy);assert(!releasedClaims(legacy).some(x=>x.eligible),'Legacy boolean receipts need signed renewal');
+ const forged=structuredClone(activated.document);forged.knowledge.repositorySync.releases[0].proof.release.checksum='0'.repeat(64);await refreshRepositoryAssurance(env,owner,forged);assert(!releasedClaims(forged).some(x=>x.eligible),'Tampered retained proof is rejected');
+ const expired=structuredClone(activated.document);expired.knowledge.repositorySync.releases[0].expiresAt='2020-01-01T00:00:00.000Z';assert(!releasedClaims(expired).some(x=>x.eligible),'Expired receipts must leave Brain retrieval without a scheduled job');
+ const tampered={...packet,projectId:'another-project'};assert.equal((await call('/api/knowledge/repository-sync',{method:'POST',body:tampered})).status,400);
+ const modified={...packet,release:{...packet.release,checksum:'0'.repeat(64)}};assert.equal((await call('/api/knowledge/repository-sync',{method:'POST',body:modified})).status,400);
+ proposal=await call('/api/knowledge/repository-sync');
+ const notice={cursor:2,kind:'invalidation',repository,commit,path:pathName,hash:sha256(body),reason:'withdrawn'};
+ const {status:withdrawalStatus,...withdrawalRequest}=proposal;
+ const revoked=signed({...withdrawalRequest,storeId,notices:[notice],cursor:2});
+ applied=await call('/api/knowledge/repository-sync',{method:'POST',body:revoked});assert.equal(applied.status,200,applied.error);assert.deepEqual(applied.revoked,[sourceId]);
+ loaded=await call('/api/project');assert.equal(loaded.document.knowledge.repositorySync.cursor,2);assert(!releasedClaims(loaded.document).some(x=>x.eligible));assert(!claimReceiptCurrent(loaded.document,receipt));assert(loaded.document.knowledge.withdrawals.some(x=>x.targetId===sourceId));
+ assert.equal((await call('/api/knowledge/repository-sync',{method:'POST',body:packet})).status,400,'Old signed cursor cannot restore revoked material');
+ const other=signed({...withdrawalRequest,storeId:'f'.repeat(8)+'-'+['b'.repeat(4),'c'.repeat(4),'d'.repeat(4),'e'.repeat(12)].join('-'),notices:[notice],cursor:2});
+ assert.equal((await call('/api/knowledge/repository-sync',{method:'POST',body:other})).status,400,'Trust store is pinned');
+ const invalidLease=signed({...withdrawalRequest,storeId,notices:[],expiresAt:new Date(Date.now()-1000).toISOString()});
+ assert.equal((await call('/api/knowledge/repository-sync',{method:'POST',body:invalidLease})).status,400);
+ console.log('PASS signed project release, independent authenticated review, exact source binding, scope, origin, replay, tamper, invalidation and Brain withdrawal. Inputs are synthetic; no real repository claim was approved.');
+}finally{DB.close();await rm(root,{recursive:true,force:true});}

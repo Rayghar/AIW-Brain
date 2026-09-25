@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {interactionFixture,interactionFixtureAnswers} from './architecture-design-validate.mjs';
+import {applyArchitectureCommand} from './public/architecture-design.js';
+import {applyAlternativeCommand,previewAlternative} from './public/model-alternatives.js';
+import {previewReversal} from './public/model-reversal.js';
+import {applyRealisationCommand} from './public/realisation-domain.js';
+const at='2026-09-20T22:00:00.000Z';
+let p=interactionFixture();p=applyArchitectureCommand(p,{type:'architecture.start',payload:{requirementId:'REQ-001',driverId:'QD-001'}},at).document;
+const task=()=>p.coauthoring.designTasks.at(-1);p=applyArchitectureCommand(p,{type:'architecture.answers',payload:{id:task().id,taskRevision:task().revision,answers:interactionFixtureAnswers}},at).document;
+const prepared=applyArchitectureCommand(p,{type:'architecture.prepare',payload:{id:task().id,taskRevision:task().revision,optionId:'durable-queue'}},at);p=prepared.document;
+const before=structuredClone(p),a=p.modelAlternatives.records.find(x=>x.id===prepared.selected),q=previewAlternative(p,a);
+p=applyAlternativeCommand(p,{type:'alternative.apply',payload:{id:a.id,alternativeRevision:a.revision,previewStamp:q.stamp,reviewed:true,reviewer:'Synthetic reviewer',reason:'Synthetic composition acceptance.'}},at).document;
+const accepted=p.modelAlternatives.records.find(x=>x.id===a.id),reversal=previewReversal(p,accepted);assert(reversal.allowed,reversal.reason);
+const changed=structuredClone(p);changed.realisation.components[0].purpose+=' Later change.';assert.equal(previewReversal(changed,accepted).allowed,false);
+const linked=structuredClone(p);linked.knowledge={links:[{objectId:p.realisation.components[0].id}]};assert.equal(previewReversal(linked,accepted).allowed,false);
+assert.throws(()=>applyAlternativeCommand(p,{type:'alternative.rollback',payload:{id:a.id,alternativeRevision:accepted.revision,previewStamp:reversal.stamp,reviewed:false}},at),/reviewer/);
+const reversed=applyAlternativeCommand(p,{type:'alternative.rollback',payload:{id:a.id,alternativeRevision:accepted.revision,previewStamp:reversal.stamp,reviewed:true,reviewer:'Synthetic reviewer',reason:'The simpler retained structure meets this synthetic scenario.'}},at).document;
+for(const key of reversal.domains){for(const [field,value] of Object.entries(before[key]))if(!['version','counter','counters'].includes(field))assert.deepEqual(reversed[key][field],value,key+'.'+field);assert(reversed[key].version>p[key].version);}
+assert.equal(reversed.modelAlternatives.records.find(x=>x.id===a.id).status,'reverted');assert.equal(reversed.coauthoring.designTasks.at(-1).status,'dismissed');assert(reversed.coauthoring.designTasks.at(-1).applied.methodReceipt);assert(reversed.changes.events.at(-1).title.startsWith('Reversed'));
+console.log('PASS composition reversal: exact previous model restored, counters preserved, current checks invalidated, original reasoning retained, later model edits and references block destructive reversal.');

@@ -1,0 +1,708 @@
+{
+  "at": "2026-09-20T21:13:15.035Z",
+  "evaluation": "Eight synthetic counterfactual scenarios with primary-source methods and bounded project context",
+  "authority": "Implementation-author evaluation with explicit rubric; not independent human approval or production calibration",
+  "results": [
+    {
+      "id": "fulfilment-dual-write",
+      "topic": "delivery",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9241,
+        "outputTokens": 632
+      },
+      "durationMs": 18342,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "catalogue:PAT-TRANSACTIONAL-OUTBOX",
+          "kind": "catalogue-description"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "akr:PAT-TRANSACTIONAL-OUTBOX",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "transaction|atomic",
+          "passed": true
+        },
+        {
+          "criterion": "separate|same|single",
+          "passed": true
+        },
+        {
+          "criterion": "cannot|not|gap|fail",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Limitations of Separate Transactions in Transactional Outbox and Minimal Correction",
+        "summary": "When the business record and the outbox message are updated in separate transactions, the transactional outbox design cannot guarantee publication of every committed fulfilment change due to a commit-to-publish gap. The minimal correction is to ensure both the business record change and the outbox record update commit atomically in one local transaction and to operate a reliable relay for publishing and acknowledging messages with duplicate protection.",
+        "passage": "The transactional outbox pattern aims to solve the dual-write problem where a service must update its internal database and also notify other systems through messaging. The key requirement is to avoid having the business state committed without the corresponding publication intent, which can happen if these two updates are in separate transactions. When the business change and outbox insert do not share the same local transaction, there exists a commit-to-publish gap: the business state can commit successfully but the outbox message might fail to persist or be published, risking silent loss of publication intent (S4, S7). This gap prevents the guarantee of publishing every committed fulfilment change as required by the quality scenario to maintain the declared service contract (S1, S2, S3). The smallest correction to close this gap is to co-locate the business record update and the insertion of an immutable event record (the outbox entry) in a single local atomic commit within one transactional boundary (S4, S7). This ensures no committed business changes exist without a corresponding durable publication intent. Subsequently, an outbox relay process claims committed entries, publishes messages to external consumers, marks them as acknowledged, and handles failures and replay scenarios (S4, S7). Because delivery can be repeated, downstream consumers must implement idempotency and duplicate suppression to maintain the business effect integrity (S4). While this design reduces publication loss risk, it does not solve ordering or delivery latency issues and requires operational ownership of relay availability, retention, and poison message handling (S4). The pattern is contingent upon prerequisites like stable event identifiers, retention policies, and operational discipline. Simply maintaining separate transactions does not satisfy these requirements or guarantee complete publication (S3).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S7"
+        ],
+        "assumptions": [
+          "Consumers implement idempotency to handle duplicate event deliveries.",
+          "Operations teams can manage outbox relay availability, retention, retries, and poison message scenarios.",
+          "Local atomic transactions spanning both business changes and outbox entries are feasible in the service's data store.",
+          "Stable event identifiers and idempotency keys are assigned consistently to outbox records."
+        ],
+        "questions": [
+          "Are the business state change and outbox record insert currently performed in one database transaction or separate ones?",
+          "Is there a reliable outbox relay process implemented to publish and acknowledge events?",
+          "Do downstream consumers guarantee idempotent processing of duplicate messages?",
+          "What are the operational capabilities for monitoring and replaying the outbox relay backlog?",
+          "Are event identifiers and schemas governed to ensure consistency and compatibility?",
+          "Is there a retention and poison message handling policy defined for the outbox store?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "advisory-notification",
+      "topic": "delivery",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8973,
+        "outputTokens": 614
+      },
+      "durationMs": 5819,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "catalogue:PAT-TRANSACTIONAL-OUTBOX",
+          "kind": "catalogue-description"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "akr:PAT-TRANSACTIONAL-OUTBOX",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "best.effort|simpler",
+          "passed": true
+        },
+        {
+          "criterion": "loss|lost|fail",
+          "passed": true
+        },
+        {
+          "criterion": "overhead|complex|relay|operat",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Compare best-effort publication with transactional outbox for non-critical exhibition update",
+        "summary": "For a non-critical exhibition update where notification loss is acceptable and the authoritative report suffices, best-effort publication is simpler and aligns with the loss acceptance policy. Transactional Outbox offers stronger atomicity guarantees but adds operational complexity and overhead that may be unnecessary for this use case.",
+        "passage": "The requirement REQ-001 and quality scenario QD-001 define the need to publish fulfilment changes while maintaining the declared service contract, with acceptance that notification loss is explicitly tolerated and the authoritative report is sufficient (S1,S2,S3).\n\nBest-effort publication does not guarantee atomicity between the database change and the notification, accepting that notifications may be lost but relying on authoritative data reconciliation. This model is simpler technologically and operationally because it avoids the need for an outbox relay, duplicate detection, retention and replay mechanisms (S3).\n\nTransactional Outbox, by contrast, atomically commits the business change and notification intent in one local transaction, then asynchronously relays the message with deduplication and retry guarantees (S4,S7). It supports stronger integrity and completion quality but requires additional operational responsibilities including relay monitoring, backlog management, duplicate handling, and potential complexity with ordering and retention policies (S4,S7).\n\nFor a non-critical exhibition update where notification loss is acceptable and only the authoritative report matters, the benefits of transactional outbox are outweighed by its complexity and operational cost (S3,S7). The best-effort approach sufficiently meets the quality scenario and recovery contract because lost notifications are explicitly tolerable and reconcilable from the authoritative state (S3).\n\nTherefore, retaining the simpler best-effort publication option is reasonable given the current acceptance of notification loss and the aim to minimize operational burden, provided that the system correctly implements the reconciliation from the authoritative report and tests the failure modes described. Transactional Outbox should be preferred only when stronger guarantees on delivery and ordering are mandatory and the team can support its operational obligations (S4,S7).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S7"
+        ],
+        "assumptions": [
+          "Notification loss is explicitly acceptable and authoritative state suffices for downstream reconciliation.",
+          "Business change and outbox entry can share one local transaction if Transactional Outbox is chosen.",
+          "Consumers can handle duplicate delivery for transactional outbox scenario.",
+          "Operational capabilities to monitor and manage transactional outbox relay are present if selected.",
+          "Best-effort publication does not guarantee delivery but is simpler to operate in this context."
+        ],
+        "questions": [
+          "Is the team prepared to operate the transactional outbox relay with monitoring, retries, poison message handling and replay?",
+          "Can consumers tolerate at-least-once delivery and implement idempotency if transactional outbox is used?",
+          "Are there scalability or ordering demands that exceed best-effort publication capabilities?",
+          "What is the acceptable maximum delay for downstream completion and reconciliation?",
+          "Are there regulatory or audit requirements mandating guaranteed notification delivery?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "supplier-unknown-outcome",
+      "topic": "resilience",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9163,
+        "outputTokens": 501
+      },
+      "durationMs": 3983,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "catalogue:PAT-RETRY-WITH-BACKOFF",
+          "kind": "catalogue-description"
+        },
+        {
+          "ref": "S5",
+          "id": "catalogue:PAT-TIMEOUT",
+          "kind": "catalogue-description"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "playbook:PB-050",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S8",
+          "id": "akr:PAT-RETRY-WITH-BACKOFF",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "idempot|duplicat|repeat",
+          "passed": true
+        },
+        {
+          "criterion": "uncertain|unknown|outcome",
+          "passed": true
+        },
+        {
+          "criterion": "budget|deadline|bounded|limit",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Handling Supplier Timeout with Retry and Circuit Breaker under Non-Idempotent Conditions",
+        "summary": "Retry with backoff and circuit breaking can improve resilience when a supplier times out after possibly accepting an instruction. However, to safely repeat a non-idempotent operation, it is critical to establish the outcome and original effect state to avoid duplications or inconsistent results.",
+        "passage": "When a supplier times out without conclusive acknowledgement of operation success, retrying with backoff and circuit breaker patterns mitigates transient failures by spacing attempts and preventing overload. However, since the operation is non-idempotent and may have been partially or fully executed, it is essential first to establish the operation's definitive result or guarantee no repeated side effects before retries. Blind retries risk duplicating business effects and violating the declared service contract. Timeout does not equal failure; therefore, additional mechanisms such as duplicate suppression, operation result reconciliation, or external authoritativeness must be in place to confirm the original completion before any repetition. The retry duration and attempts should be constrained within an end-to-end deadline respecting latency and resource limits, while circuit breakers isolate failing dependencies to contain faults without amplifying load. This approach aligns with the project’s quality scenario to resolve operations safely and retain the original authoritative result, under the operating owner’s responsibility and access policies. Implementing retry and circuit breaker requires coordinated failure classification, idempotency validation or compensation controls, bounded retry attempts with jittered backoff, and fallback to explicit unavailable status without inventing results. These controls prevent unsafe repeats and preserve consistency while supporting recovery or controlled deferral.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S8"
+        ],
+        "assumptions": [
+          "The operation has non-idempotent side effects that cannot be safely repeated without confirmation.",
+          "The supplier system may accept instructions without immediate confirmation, making outcome ambiguous on timeout.",
+          "There exists an authoritative record or mechanism to reconcile or verify operation completion.",
+          "Retry with backoff and circuit breaker can be coordinated to limit repeated attempts and isolate failures.",
+          "Fallback behavior returns explicit unavailability rather than guessed or provisional results."
+        ],
+        "questions": [
+          "How is the operation outcome or side effects confirmed or reconciled after a timeout?",
+          "What mechanisms enforce duplicate suppression or compensation in this context?",
+          "What are the exact limits for retry attempts, timing, and backoff parameters?",
+          "How is the circuit breaker configured to detect and isolate failure conditions?",
+          "What is the fallback response when retries are exhausted or unsafe?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "library-local-state",
+      "topic": "distribution",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8451,
+        "outputTokens": 415
+      },
+      "durationMs": 4241,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "akr:STYLE-LAYERED",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "session|state",
+          "passed": true
+        },
+        {
+          "criterion": "shared|dependen",
+          "passed": true
+        },
+        {
+          "criterion": "health|readiness|ready",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Load Balancer and Replicas for Library Catalogue Availability",
+        "summary": "Adding a load balancer with two replicas for the library catalogue, whose sessions exist only in server memory, introduces challenges regarding session state management, shared dependencies, and instance readiness that must be carefully addressed before adoption.",
+        "passage": "The library catalogue sessions are currently maintained only in the memory of each server instance, meaning session state is local and not shared across servers. Introducing a load balancer with two more replicas improves availability by providing multiple service instances. However, since session state is local, the load balancer must consider that requests routed to different replicas may lose session continuity, leading to inconsistent user experience or processing errors. This imposes a shared-dependency concern, as the load balancer's routing strategy must be aware of session affinity or the system must externalize session state to shared storage to maintain consistency. Additionally, readiness of replicas is critical since unready or failing instances with local state can serve stale or invalid sessions. The load balancer must implement health probes to detect and remove such instances from rotation to avoid errors. Without handling these state and readiness issues, adding replicas and a load balancer alone will not safely meet availability and service contract requirements. Careful assessment of state management strategies, potential shared dependencies, and readiness probe design is essential before adoption (S1,S3).",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ],
+        "assumptions": [
+          "Sessions are stored only in server memory and not persisted externally.",
+          "No existing mechanism for session sharing or replication is implemented.",
+          "Load balancer can be configured with health probes and session affinity if needed.",
+          "The service contract requires maintaining session and operation integrity across failures."
+        ],
+        "questions": [
+          "How is session state currently managed during user interactions?",
+          "Is there a plan to externalize session state or replicate it among replicas?",
+          "What health probe and readiness criteria will be configured for the load balancer?",
+          "Can the load balancer enforce session affinity or sticky sessions?",
+          "What are the expected failure and recovery handling procedures for lost session state?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "laboratory-local-transaction",
+      "topic": "structure",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8226,
+        "outputTokens": 614
+      },
+      "durationMs": 4556,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "catalogue:STYLE-MICROSERVICES",
+          "kind": "catalogue-description"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "transaction|atomic",
+          "passed": true
+        },
+        {
+          "criterion": "modul|layer|together",
+          "passed": true
+        },
+        {
+          "criterion": "separate|distribut|network",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Atomic Commit for Laboratory Responsibilities: Layered Module vs Separate Microservices",
+        "summary": "When a single atomic transaction must span multiple responsibilities—such as maintaining laboratory booking rules and providing independent laboratory catalogue details—only a modular layered approach within one deployment can reliably support this transactional integrity. Separate microservices, each with independent data and ownership, inherently cannot commit atomically together in one local transaction due to distributed transaction limitations. Therefore, to fulfill the declared service contract requiring atomic commit, a modular layered design within a single application is the simpler and viable alternative.",
+        "passage": "The requirement mandates one atomic transaction covering both laboratory responsibilities (booking and catalogue) as a local commit (S1, S2). Modular layering organizes these responsibilities into separate internal modules but executes them within one deployment and runtime context, enabling a single local transaction to span both (S3). This approach favors simpler calls, shared runtime resources, and atomic commits, preserving integrity and recovery guarantees (S3).\n\nIn contrast, separating the responsibilities into independent microservices assigns independent write ownership and deployment boundaries to each (S3, S4). Microservices support independent scaling and evolution but require distributed coordination mechanisms for atomic operations across service boundaries. The quality scenario here blocks distributed atomicity (S3), as multiple microservices cannot commit in a single local transaction. Instead, they must rely on compensation or reconciliation patterns to maintain integrity under partial failure (S3). This introduces complexity, performance overhead, and risks incomplete operations, thus conflicting with the requirement for an atomic commit (S3, S4).\n\nGiven the exclusive need for a single local atomic transaction across both responsibilities, the architectural incompatibility lies in microservices' inability to provide this. Reusing existing microservices capabilities without complex distributed transactions or sagas does not meet the contract (S3). Consequently, retaining the modular layered approach within one deployment is the simpler, viable alternative for this scenario. This choice localizes changes, simplifies failure handling, and retains the declared service contract for atomicity and recovery (S3). Open questions include effect on independent scalability and owner boundaries, and fallback options if future needs evolve toward independent deployment or scaling (S3, S4).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4"
+        ],
+        "assumptions": [
+          "The atomic commit must be local to a single transaction scope encompassing both responsibilities.",
+          "Both responsibilities have distinct data ownership and deployment boundaries in a microservices architecture.",
+          "Distributed atomic commit across microservices is not supported or desired due to complexity and risk.",
+          "The requirement prioritizes integrity and atomicity over independent deployment and scaling.",
+          "Reconciliation or compensation are less preferred due to the declared service contract."
+        ],
+        "questions": [
+          "Is independent deployment and scaling of the two laboratory responsibilities a future requirement?",
+          "What is the tolerance for partial success or compensating transactions if microservices implementation is chosen?",
+          "What supporting technology is available for distributed transactions or sagas if a microservices approach were attempted?",
+          "Are the boundaries of write ownership and information authority strictly separated for the two responsibilities?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "bottleneck-calibration",
+      "topic": "distribution",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8137,
+        "outputTokens": 463
+      },
+      "durationMs": 3854,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "100",
+          "passed": true
+        },
+        {
+          "criterion": "assum|estimat|calculat|analyt",
+          "passed": true
+        },
+        {
+          "criterion": "measur|test|verif",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Calculated pool limit using worker safe rate and downstream cap",
+        "summary": "With three replicas each safely handling 60 requests/s, and a shared downstream capped at 100 requests/s, the useful pool capacity is limited to 100 requests/s rather than the sum of individual replica capacities (180 requests/s). This capping reflects the bottleneck introduced by the shared dependency.",
+        "passage": "Given three replicas with a safe processing rate of 60 requests per second each, their combined theoretical maximum is 180 requests per second (3 × 60). However, because they share a downstream dependency capped at 100 requests per second, the effective pool capacity must be limited to that bottleneck. Applying the calculation formula: useful capacity = min(workers × service rate × efficiency/100, downstream cap). Assuming efficiency is 100%, this yields min(3 × 60 × 1, 100) = 100 requests per second as the useful pool capacity. This calculation is an analytical estimate based on declared input rates and does not demonstrate that 100 requests per second has been safely achieved or maintained in operation. Factors such as distribution efficiency, transient failures, recovery behavior, and real workload variability impact actual capacity and availability. Moreover, the presence of a single shared dependency implies that replicas alone do not guarantee availability; a failure or overload of the shared component affects the entire pool. Thus, while the calculation informs capacity planning, it is not proof of achieved capacity or sustained availability without empirical validation through representative load testing and failure recovery exercises (S3, S1).",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ],
+        "assumptions": [
+          "All replicas have identical safe processing rates.",
+          "Efficiency of request distribution is ideal (100%) for calculation purposes.",
+          "Shared downstream dependency capacity is a hard limit to total pool throughput.",
+          "Analytical estimates do not substitute for empirical capacity verification.",
+          "Replicas and downstream dependency have independent failure modes."
+        ],
+        "questions": [
+          "What is the actual measured efficiency of request distribution among replicas?",
+          "Has load testing been done to verify the 100 requests/s cap is sustainable under real conditions?",
+          "What fault tolerance or redundancy exists for the shared downstream dependency?",
+          "How are failures or overload conditions on the shared dependency handled operationally?",
+          "Are all replicas equally healthy and independent in service?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "no-fabricated-result",
+      "topic": "resilience",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8890,
+        "outputTokens": 451
+      },
+      "durationMs": 4527,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "akr:STYLE-LAYERED",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "cannot|must not|not.*success|fabricat|false",
+          "passed": true
+        },
+        {
+          "criterion": "reject|fail|unavailable|deferr",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Open circuit and booking confirmation correctness",
+        "summary": "An open circuit cannot correctly return a successful booking confirmation if the booking authority service is unavailable, because doing so would violate the declared service contract that requires the operation to resolve safely and retain the original truthful result. The permitted failure response is to explicitly return an unavailable status rather than fabricate a success.",
+        "passage": "The recorded requirement and quality scenario (S1, S2) enforce that operations retain declared integrity and recovery contracts even when an operating dependency is interrupted. The business authority is the only writer of the operation register (S3), so success confirmation depends on authoritative booking information. The architecture reasoning (S3) states that a missing business result cannot be falsely reported as success and that fallback must explicitly signal unavailability rather than invent a positive outcome. An open circuit pattern will temporarily reject calls when the booking authority is failing, thus preventing false successes (S3). This avoids the business correctness problem of confirming bookings without authoritative validation. The permitted failure response is therefore to report explicit unavailability rather than a successful confirmation. This maintains the declared service contract and prevents silent data corruption or reconciliation complexity. Assumptions include that retrying safely is possible, and the fallback plan is understood to be explicit unavailability (S3). Open questions remain on precise operational thresholds for triggering the circuit breaker and the observable consequences for user experience. Existing simpler fallback approaches are to reject and notify unavailability rather than risking false confirmation. No approach should fabricate results outside the business authority's record, preserving correctness and trust in outcomes (S3).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "assumptions": [
+          "The booking authority service is the sole source of truth for booking confirmation.",
+          "The system supports safe retries or controlled fallback responses.",
+          "Fallback behavior is limited to explicit unavailability status without inventing business results.",
+          "The circuit breaker opens on observed failure thresholds and rejects calls until recovery."
+        ],
+        "questions": [
+          "What precise policy triggers opening and closing the circuit breaker in booking authority calls?",
+          "How are users or client systems informed about unavailability to handle fallback gracefully?",
+          "Are retries orchestrated transparently or visible to client components?",
+          "What are the operational monitoring and alerting responsibilities for availability risks?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "serial-work-pool",
+      "topic": "distribution",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8455,
+        "outputTokens": 460
+      },
+      "durationMs": 4080,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-154",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "akr:STYLE-LAYERED",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "global|serial|order",
+          "passed": true
+        },
+        {
+          "criterion": "cannot|not|limit|constraint",
+          "passed": true
+        },
+        {
+          "criterion": "coordinat|partition|measur|test",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Throughput impact of single global order with three replicas",
+        "summary": "The requirement enforces one global order for all operations with an authoritative owner of the operation register. This constraint limits scalability of useful throughput from simply adding replicas, as concurrency and parallel processing are restricted.",
+        "passage": "The current design context establishes a single business authority as the sole writer of the operation register, enforcing a global serial order on operations (S3, S1). This constraint implies that operations cannot be processed concurrently across independent replicas without explicit partitioning or coordination to preserve order, as noted by the blocked prerequisite for serial work in the balanced-pool pattern (S3). Consequently, simply having three replicas does not yield three times the useful throughput, because the global ordering and single authority serialize the effective operation processing. The current recipe with single-endpoint or health-aware load distribution patterns can distribute read or stateless requests but cannot parallelize the serial global operation without a different coordination design (S3). Therefore, achieving scalable throughput under the one-global-order constraint requires explicit design for serial work coordination or partitioning not present in the current design. Without such design, replicas share the same bottleneck, limiting throughput gains. This assessment aligns with the confirmed quality scenario enforcing the declared service contract and operation result integrity (S1, S2). No existing tested design claims throughput multiplication by replica count under these conditions.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "assumptions": [
+          "One global order means operations must be serialized consistent with the business authority's operation register.",
+          "Replicas are otherwise independent compute nodes but must coordinate or serialize to maintain the single order.",
+          "No additional explicit partitioning or coordination design for serial work is currently implemented or confirmed.",
+          "Load distribution to replicas without serial coordination does not increase useful throughput for the ordered operations.",
+          "The recovery and failure handling require retaining the original result, thus disallowing concurrent conflicting operations without reconciliation."
+        ],
+        "questions": [
+          "Is there an existing explicit coordination mechanism or partition strategy to enforce global order across replicas?",
+          "Are all replicas equal writers or is there a single leader managing ordering?",
+          "What failure modes or retry behaviors would break ordering guarantees in the current design?",
+          "Could partial ordering or operation partitioning be introduced to allow more parallelism without violating the contract?"
+        ],
+        "options": []
+      }
+    }
+  ],
+  "passed": true
+}

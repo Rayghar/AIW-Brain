@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {prepareRepositoryPacket} from './repository-packet.js';
+import {releasedClaims} from './public/knowledge-governance.js';
+const packet=JSON.parse(fs.readFileSync(process.env.AIW_PACKET_PATH,'utf8'));
+const project={id:packet.projectId},scope={tenantId:packet.tenantId,projectId:packet.projectId};
+const results=[];
+function test(name,fn){fn();results.push({name,passed:true});}
+const mutate=fn=>{const p=structuredClone(packet);fn(p);return p;};
+test('actual 24-file metadata packet accepted',()=>{const result=prepareRepositoryPacket(project,packet,scope);assert.equal(result.counts.sources,24);assert.equal(result.readOnly,true);assert.equal(result.activation.allowed,false);assert(result.locators.every(x=>x.command));});
+test('no project mutation or approved retrieval',()=>{const before=JSON.stringify(project);prepareRepositoryPacket(project,packet,scope);assert.equal(JSON.stringify(project),before);assert.deepEqual(releasedClaims(project),[]);});
+test('tenant boundary',()=>assert.throws(()=>prepareRepositoryPacket(project,packet,{...scope,tenantId:'other'})));
+test('project boundary',()=>assert.throws(()=>prepareRepositoryPacket(project,packet,{...scope,projectId:'other'})));
+test('source body injection rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.sources[0].body='private text'),scope)));
+test('approval injection rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.claims[0].eligible=true),scope)));
+test('release injection rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.release.status='signed'),scope)));
+test('source identity tampering rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.sources[0].hash='0'.repeat(64)),scope)));
+test('passage tampering rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.sources[0].passages[0].lineStart++),scope)));
+test('path traversal rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.sources[0].path='../private'),scope)));
+test('source cap enforced',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.sources=Array(101).fill(p.sources[0])),scope)));
+test('claim cap enforced',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.claims=Array(251).fill(p.claims[0])),scope)));
+test('cursor rollback rejected',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.cursor=-1),scope)));
+test('descriptive edges cannot claim approval',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.claims.find(c=>c.edges.length).edges[0].status='approved'),scope)));
+test('revision notices require successor metadata',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>delete p.notices[0].supersedes),scope)));
+test('notice range cannot silently omit the high-water event',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.notices.pop()),scope)));
+test('notice range cannot omit an intermediate invalidation position',()=>assert.throws(()=>prepareRepositoryPacket(project,mutate(p=>p.notices.splice(1,1)),scope)));
+console.log(JSON.stringify({suite:'v44-repository-adapter',passed:results.length,failed:0,results},null,2));

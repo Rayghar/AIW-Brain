@@ -1,0 +1,51 @@
+// DOM + actual Worker integration; mocked provider, no browser/layout claims.
+import assert from 'node:assert/strict';
+import {pathToFileURL,fileURLToPath} from 'node:url';
+import {SUGGESTED_FIELDS} from './public/intelligence-context.js';
+import {assembleSDD} from './public/review-domain.js';
+const {Window}=await import(process.env.AIW_DOM_MODULE||'happy-dom');
+const root=fileURLToPath(new URL('.',import.meta.url)).replace(/\/$/,'');
+const w=new Window({url:'https://aiw.test/?chapter=4&tab=work',width:1440,height:900});
+for(const key of ['window','document','history','location','localStorage','CustomEvent','Event','FormData','Node','Element','HTMLElement','SVGElement','MutationObserver','ResizeObserver','navigator'])Object.defineProperty(globalThis,key,{value:key==='window'?w:w[key],configurable:true,writable:true});
+for(const key of ['matchMedia','getComputedStyle','requestAnimationFrame','cancelAnimationFrame'])globalThis[key]=w[key].bind(w);
+document.body.innerHTML='<div id="app"></div><div id="cursor-tip" hidden></div><div id="toast"></div>';
+const {default:worker}=await import(pathToFileURL(root+'/worker.js')),{localDatabase}=await import(pathToFileURL(root+'/local-db.js'));
+const files=new Map(),env={DB:localDatabase(':memory:'),FILES:{async put(k,v){files.set(k,v)},async get(k){return files.has(k)?{text:async()=>files.get(k)}:null},async delete(k){files.delete(k)}},ASSETS:{fetch:()=>new Response('asset')}};
+let providerCalls=0;
+globalThis.fetch=async(path,options={})=>{
+ if(path==='https://api.openai.com/v1/responses'){
+  providerCalls++;const body=JSON.parse(options.body),packet=JSON.parse(body.input[0].content);
+  const result={title:'Explain the selected boundary',summary:'Review the selected object and its linked obligations.',passage:'This is an editable explanation of the saved design. Proposed interpretation and verification remain separate.',sourceRefs:['S1'],assumptions:['Confirm that one boundary owns the recorded outcome.'],questions:['What evidence will verify recovery?'],options:packet.canDesign&&packet.request.mode!=='author'?[{title:'Cohesive boundary',approach:'cohesive',rationale:'Explore one clear ownership boundary.',tradeoffs:['Shared change cadence needs review.'],sourceRefs:['S1'],answers:Object.fromEntries(SUGGESTED_FIELDS.map(k=>[k,'']))}]:[]};
+  return new Response(JSON.stringify({id:'ui-response',model:'test-model',status:'completed',output:[{type:'message',content:[{type:'output_text',text:JSON.stringify(result)}]}]}));
+ }
+ return worker.fetch(new Request(new URL(path,'https://aiw.test'),{...options,headers:{...options.headers,'oai-authenticated-user-id':'ui-architect',Origin:'https://aiw.test'}}),env);
+};
+const errors=[];w.addEventListener('error',e=>errors.push(e.message));
+const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
+const click=s=>{const el=q(s);assert(el,'Missing '+s);assert(!el.disabled,'Disabled '+s);el.click();return el;};
+const waitFor=async(fn,label)=>{for(let i=0;i<120;i++){if(fn())return;await new Promise(r=>setTimeout(r,25));}throw Error(label+' '+q('.intel-error')?.textContent);};
+const intel=a=>click('[data-intel-action="'+a+'"]'),brain=a=>click('[data-brain-action="'+a+'"]');
+const input=(selector,value)=>{const el=q(selector);assert(el,selector);el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));};
+await import(pathToFileURL(root+'/public/entry.js'));
+const store=w.aiwProjectStore;
+click('[data-brain-launch="design"]');await waitFor(()=>q('.intel-setup'),'Connection state');intel('suggest');intel('prepare');await waitFor(()=>q('.intel-packet'),'Review sources');assert(q('[data-intel-action="generate"]').disabled);assert.equal(providerCalls,0);assert(q('.intel-sources').textContent.includes('S1'));
+env.OPENAI_API_KEY='ui-test-key';env.AIW_LLM_MODEL='test-model';intel('connection');await waitFor(()=>q('.intel-compose>details>summary').textContent.includes('Use the connected model'),'Configured provider');
+intel('generate');await waitFor(()=>q('.intel-option'),'Visual response');assert(q('.intel-option svg'));assert.equal(providerCalls,1);assert.equal(qa('dialog[open]').length,0);
+intel('adopt-design');await waitFor(()=>q('.dc-dialog')&&store.value.document.coauthoring.designTasks?.length,'Review generated design');assert.equal(qa('dialog[open]').length,1);assert(store.value.document.coauthoring.designTasks[0].generation.runId);assert.match(q('.dc-dialog').textContent,/LLM suggestions/);assert.equal(store.value.document.coauthoring.designTasks[0].status,'questions');click('[data-dc-action="close"]');
+click('[data-brain-launch="design"]');brain('author');intel('suggest');intel('prepare');await waitFor(()=>q('.intel-packet'),'Author sources');intel('generate');await waitFor(()=>q('[data-intel-action="adopt-passage"]'),'Generated passage');const passage=q('[data-intel-action="adopt-passage"]');passage.closest('details').open=true;intel('adopt-passage');await waitFor(()=>q('[data-brain-field="body"]')&&store.value.document.coauthoring.narratives?.length,'Editable author draft');assert.equal(store.value.document.coauthoring.narratives[0].accepted,undefined);assert(!q('.intel-result'),'Consumed response should not crowd the manuscript');
+brain('review');input('[data-brain-field="reviewer"]','UI architect');input('[data-brain-field="reason"]','Reviewed source and remaining assumptions.');q('[data-brain-confirm]').checked=true;brain('accept');await waitFor(()=>store.value.document.coauthoring.narratives[0].accepted,'Reviewed passage');assert(assembleSDD(store.value.document).includes('Drafting origin: OpenAI'));
+brain('close');await store.load();document.dispatchEvent(new CustomEvent('aiw:external-project'));click('[data-brain-launch="design"]');brain('author');assert(q('[data-brain-field="body"]').value.includes('editable explanation'));assert(q('.brain-content').textContent.includes('Generated draft'));
+brain('mind');
+assert.equal(qa('.brain-pattern-library .brain-pattern').length,1,'One focused pattern, not a stack of cards');
+assert(q('.brain-pattern-figure svg'),'An illustrative pattern diagram is present');
+assert(q('.brain-match').textContent.includes('REQ-'),'Retrieval shows the recorded object behind the topic');
+assert(q('.brain-pattern-conditions').textContent.includes('Establish first'));
+input('[data-intel-prompt]','Preserve this existing question.');
+brain('knowledge-explore');assert.match(q('[data-intel-prompt]').value,/Preserve this existing question/);assert.match(q('[data-intel-prompt]').value,/Retry with Backoff/);
+assert(q('.intel-compose>details').open);assert(!q('.intel-packet'));assert.equal(providerCalls,2,'Exploring a question never sends it to the provider');
+intel('prepare');await waitFor(()=>q('.intel-packet'),'Knowledge source review');assert.equal(providerCalls,2);assert.match(q('.intel-packet').textContent,/Nested retries/);assert.match(q('.intel-packet').textContent,/Unassessed/);
+intel('generate');await waitFor(()=>q('[data-intel-action="adopt-passage"]'),'Knowledge response');intel('adopt-passage');await waitFor(()=>q('[data-brain-field="body"]')&&store.value.document.coauthoring.narratives.length===2,'Knowledge draft');
+const knowledgeDraft=store.value.document.coauthoring.narratives.at(-1);assert(!knowledgeDraft.accepted);assert(knowledgeDraft.generation.sources.some(s=>s.relevance?.signals.length&&s.receipt?.content.risks.length));
+assert.equal(providerCalls,3);assert.equal(qa('.journey-rail>section').length,3);assert.deepEqual(errors,[]);
+console.log('PASS LLM UI: connection state, source review before calls, guided design, accepted/draft separation and saved origin; contextual pattern diagram, evidence, retained question, review and saved knowledge provenance. DOM and mock provider only.');
+await w.happyDOM.close();env.DB.close();
