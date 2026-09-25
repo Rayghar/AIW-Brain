@@ -16,6 +16,7 @@ import {handleIntake} from './intake-service.js';
 import {queryRequirements} from './requirement-storage.js';
 import {applyAssuranceCommand} from './public/assurance-domain.js';
 import {acquireRepositorySource} from './knowledge-service.js';
+import {handleRepositoryCorpus,syncRepositoryNotices} from './knowledge-repository.js';
 import {applyKnowledgeCommand} from './public/knowledge-governance.js';
 import {journeyIndex} from './public/journey-context.js';
 import {applyArchitectureCommand} from './public/architecture-design.js';
@@ -86,6 +87,8 @@ export default {async fetch(request,env,ctx){
     }
     if(url.pathname==='/api/project'&&request.method==='GET'){
       if(projectId===PROJECT_ID)await env.DB.prepare('INSERT OR IGNORE INTO projects (owner_id,id,document,revision,updated_at) VALUES (?,?,?,1,?)').bind(owner,PROJECT_ID,JSON.stringify(withFinalReview(seedProject())),new Date().toISOString()).run();
+      // Signed repository revocations are applied before the project is read (throttled; never blocks reading).
+      await syncRepositoryNotices(env,identity,projectId).catch(e=>console.error('Repository notice sync',e?.message));
       const row=await env.DB.prepare('SELECT document,revision,updated_at FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();
       if(!row)return json({error:'This project is unavailable for your account. Return to Projects to choose another.'},404);
       return json({document:await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview((await readStoredProject(env,owner,row.document)).document))),revision:row.revision,updatedAt:row.updated_at});
@@ -108,6 +111,7 @@ export default {async fetch(request,env,ctx){
       const body=markdown?(runtime?exportRuntimeMarkdown(project):security?exportSecurityMarkdown(project):interfaces?exportInterfacesMarkdown(project):technologyRealisation?exportTechnologyRealisationMarkdown(project):technology?exportTechnologyMarkdown(project):realisation?exportRealisationMarkdown(project):logical?exportLogicalMarkdown(project):decisions?exportDecisionsMarkdown(project):quality?exportQualityMarkdown(project):exportMarkdown(project)):JSON.stringify({exportedAt:new Date().toISOString(),project,validation:{reviewedForCurrentRevision:project.review?.contentVersion===project.contentVersion,findings:findings(project)},qualityValidation:{reviewedForCurrentRevision:qualityReviewCurrent(project),findings:qualityFindings(project)},decisionValidation:{reviewedForCurrentRevision:decisionReviewCurrent(project),findings:decisionFindings(project)},logicalValidation:{reviewedForCurrentRevision:logicalReviewCurrent(project),findings:logicalFindings(project)},realisationValidation:{reviewedForCurrentRevision:realisationReviewCurrent(project),findings:realisationFindings(project)},technologyValidation:{reviewedForCurrentRevision:technologyReviewCurrent(project),findings:technologyFindings(project)},technologyRealisationValidation:{reviewedForCurrentRevision:realizationReviewCurrent(project),findings:technologyRealisationFindings(project)},interfacesValidation:{reviewedForCurrentRevision:interfaceReviewCurrent(project),findings:interfaceFindings(project)},securityValidation:{reviewedForCurrentRevision:securityReviewCurrent(project),findings:securityFindings(project)},runtimeValidation:{reviewedForCurrentRevision:runtimeReviewCurrent(project),findings:runtimeFindings(project)},connectedModel:logicalGraph(project),guidance:'Project rules and reviewed proposals; generated records retain their drafting origin',intelligence:intelligenceStatus(env)},null,2);
       return new Response(body,{headers:{'Content-Type':markdown?'text/markdown; charset=utf-8':'application/json; charset=utf-8','Content-Disposition':'attachment; filename="'+(markdown?(runtime?'AIW_Bank_Payment_Deployment_Runtime.md':security?'AIW_Bank_Payment_Security.md':interfaces?'AIW_Bank_Payment_Interfaces_Data.md':technologyRealisation?'AIW_Bank_Payment_Technology_Realization.md':technology?'AIW_Bank_Payment_Logical_Technology.md':realisation?'AIW_Bank_Payment_Application_Realisation.md':logical?'AIW_Bank_Payment_Logical_Model.md':decisions?'AIW_Bank_Payment_Decisions.md':quality?'AIW_Bank_Payment_Quality_Drivers.md':'AIW_Bank_Payment_Requirements.md'):'AIW_Bank_Payment_Project.json').replace('AIW_Bank_Payment',filename)+'"','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
     }
+    if(url.pathname==='/api/knowledge/corpus')return await handleRepositoryCorpus(request,env,identity,projectId);
     if(url.pathname==='/api/knowledge/repository-packet'&&request.method==='GET'){
       if(!['owner','editor'].includes(identity.role))return json({error:'A project editor is required to preview repository packets.'},403);
       const row=await env.DB.prepare('SELECT id FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();

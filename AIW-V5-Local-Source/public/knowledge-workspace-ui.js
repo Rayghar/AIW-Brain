@@ -8,6 +8,7 @@ import {repositoryLocators} from './repository-pilot-ui.js';
 import {projectURL} from './project-context.js';
 import {renderStewardship,stewardCount} from './stewardship-ui.js';
 import {dismissalSourceBody,STEWARD_DECISIONS} from './knowledge-governance.js';
+import {resetCorpus,loadCorpusStatus,searchCorpus,readCorpusPassage,closeCorpusPassage,corpusFilter,corpusRevision,corpusPassage,corpusState} from './repository-corpus-ui.js';
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const button=(action,label,attrs='')=>`<button type="button" class="btn" data-k-action="${action}" ${attrs}>${label}</button>`;
 let wantView=null,context=null,hooks=null,projectId='',query='',discoveryQuery='',graphQuery='',graphFocus='',conceptId='',compareId='',view='explore',form='',fields={},selectedLeads=new Set(),repositorySelected=new Set(),repositoryPreview=null,dirty=false,pending=null,busy=false,error='',notice='';
@@ -51,8 +52,10 @@ function edit(p){const s=knowledgeState(p);let body='',label='Save';
  return `<form data-k-save><div class="kw-form-heading">${button('cancel','← Back')}<span>${esc(form.replace(/-/g,' '))}</span></div>${body}<button type="submit" class="btn primary">${label}</button><p class="brain-note">${dirty?'Unsaved input':'Ready for your review'}</p></form>`;
 }
 export function knowledgeWorkspace(p,c,{compact=false}={}){
- context=c;if(projectId!==p.id){projectId=p.id;query='';discoveryQuery='';graphQuery='';graphFocus='';conceptId='';compareId='';form='';fields={};selectedLeads=new Set();repositorySelected=new Set();repositoryPreview=null;dirty=false;view='explore';error='';}
+ context=c;resetCorpus(p.id);if(projectId!==p.id){projectId=p.id;query='';discoveryQuery='';graphQuery='';graphFocus='';conceptId='';compareId='';form='';fields={};selectedLeads=new Set();repositorySelected=new Set();repositoryPreview=null;dirty=false;view='explore';error='';}
  if(wantView&&!compact){view=wantView;wantView=null;}
+ // The knowledge repository answers asynchronously; its section redraws when the status arrives.
+ if(view==='sources'&&!compact&&!form&&typeof window!=='undefined'&&!corpusState().status)setTimeout(()=>loadCorpusStatus(draw),0);
  if(compact)return `<section class="kw-brief"><span class="brain-eyebrow">Architecture Brain</span><p>${esc(c.governed.procedure.questions[0])}</p>${button('open','Explore related architecture')}<small>${c.governed.claims.length} reviewed claims in scope · ${c.governed.excluded.length} excluded</small></section>`;
  return `<section class="kw-workspace" aria-label="Architectural knowledge"><div class="kw-heading"><h3>Architecture in context</h3><p>Ideas, evidence and consequences for this design.</p></div><nav class="kw-tabs" aria-label="Knowledge view">${[['explore','Explore'],['connections','Connections'],['sources','Sources'],['releases','Releases'],['stewardship','Stewards'+(stewardCount(p)?' · '+stewardCount(p):'')]].map(([id,title])=>button('tab',title,`data-view="${id}" aria-pressed="${view===id}"`)).join('')}</nav><div class="kw-error" role="alert" ${error?'':'hidden'}>${esc(error)}</div>${notice?`<p role="status">${esc(notice)}</p>`:''}<div class="kw-body">${form?edit(p):view==='connections'?renderKnowledgeGraph(p,{focusId:graphFocus,search:graphQuery,objectId:c.selected.id}):view==='sources'?renderKnowledgeSources(p,discoveryQuery,selectedLeads,repositorySelected,repositoryPreview):view==='releases'?renderKnowledgeReleases(p):view==='stewardship'?renderStewardship(p):explore(p)}</div>${pending?`<div class="kw-leave" role="alertdialog" aria-label="Unsaved knowledge edits"><h4>Keep these source edits?</h4><p>Your unsaved input is retained.</p>${button('stay','Keep editing')}${button('discard','Discard unsaved edits')}</div>`:''}</section>`;
 }
@@ -97,6 +100,14 @@ async function previewRepositoryFile(file){
   repositoryPreview=preview;repositorySelected=new Set();notice=preview.counts.sources+' metadata locators previewed for this project. No originals, claims or releases were imported.';
  }catch(e){error=e instanceof SyntaxError?'The selected file is not valid JSON.':e.message;}
  finally{busy=false;draw();}
+}
+// Signed repository notices, verified by the server with the configured public key, applied now.
+async function applyRepositoryNotices(){
+ busy=true;error='';notice='';draw();try{
+  const response=await fetch(projectURL('/api/knowledge/corpus?view=sync'),{method:'POST',credentials:'same-origin'}),result=await response.json();if(!response.ok)throw Error(result.error||'Repository notices could not be applied.');
+  if(result.status==='synchronised'){await window.aiwProjectStore.load();document.dispatchEvent(new CustomEvent('aiw:external-project'));hooks?.changed?.();}
+  notice=result.status==='synchronised'?result.applied+' signed notice(s) applied · '+result.revoked.length+' source revision(s) withdrawn. Review affected rationale.':result.status==='current'?'This project is current with the repository notices.':result.status==='no-repository-sources'?'This project holds no repository originals, so no notice applies to it.':(result.reason||'No notices were applied ('+result.status+').');
+ }catch(e){error=e.message;}finally{busy=false;draw();}
 }
 async function downloadSigningRequest(releaseId){
  busy=true;error='';draw();try{
@@ -149,6 +160,12 @@ if(typeof document!=='undefined'){
   if(a==='batch-fetch')return retrieveSelected();
   if(a==='repository-fetch'){const locator=repositoryLocators(repositoryPreview).find(item=>item.revisionId===b.dataset.id);if(locator?.command)return quickCommand('fetch',locator.command.payload,'Exact source verified and saved. Interpret and review before use.');return;}
   if(a==='repository-batch-fetch')return retrieveRepositorySelected();
+  if(a==='corpus-page')return searchCorpus(draw,{page:Number(b.dataset.page)||1});
+  if(a==='corpus-read')return readCorpusPassage(draw,b.dataset.id);
+  if(a==='corpus-close')return closeCorpusPassage(draw);
+  if(a==='corpus-fetch'){const r=corpusRevision(b.dataset.id);if(r?.command)return quickCommand('fetch',r.command.payload,'Exact original verified against the knowledge repository and saved. Interpret and review it before use.');return;}
+  if(a==='corpus-interpret'){const x=corpusPassage(b.dataset.id),src=s.sources.find(v=>v.id===b.dataset.source);if(x&&src)return navigate(()=>start('claim',{sourceId:src.id,lineStart:String(x.lineStart),lineEnd:String(x.lineEnd),subjectId:x.concepts[0]?.catalogueId||'',claimType:'applicability',polarity:'neutral',predicate:''}));return;}
+  if(a==='corpus-sync')return applyRepositoryNotices();
   if(a==='refresh-source'){const src=s.sources.find(x=>x.id===b.dataset.id),repo=BRAIN_CATALOGUE.repositories.find(x=>x.connectorId===src?.connectorId);if(!src||!repo)return;return navigate(()=>start('fetch',{connectorId:src.connectorId,ref:repo.ingestion?.defaultBranch||'main',path:src.path,supersedes:src.id,title:src.title}));}
   if(a==='suggest')return quickCommand('suggest',{sourceId:b.dataset.id},'Passages located in the exact source revision. Interpret and review before use.');
   if(a==='dismiss-suggestion')return quickCommand('dismiss-suggestion',{id:b.dataset.id},'Passage dismissed; other candidates and source history retained.');
@@ -164,8 +181,8 @@ if(typeof document!=='undefined'){
   if(a==='link')return navigate(()=>start('link',{claimId:b.dataset.id,releaseId:b.dataset.release}));
  });
  document.addEventListener('input',e=>{const key=e.target.dataset.kField;if(!key)return;fields[key]=e.target.type==='checkbox'?e.target.checked:e.target.value;dirty=true;});
- document.addEventListener('change',e=>{const key=e.target.dataset.kField;if(key){fields[key]=e.target.type==='checkbox'?e.target.checked:e.target.value;dirty=true;}const lead=e.target.dataset.kLead;if(lead){if(e.target.checked)selectedLeads.add(lead);else selectedLeads.delete(lead);}const repositoryLead=e.target.dataset.kRepositoryLead;if(repositoryLead){if(e.target.checked)repositorySelected.add(repositoryLead);else repositorySelected.delete(repositoryLead);}if(e.target.matches('[data-k-repository-packet]'))previewRepositoryFile(e.target.files?.[0]);if(e.target.matches('[data-k-signed-update]'))uploadSignedUpdate(e.target.files?.[0]);if(e.target.matches('[data-k-compare]')){compareId=e.target.value;draw();}});
- document.addEventListener('submit',e=>{if(e.target.matches('[data-k-search]')){e.preventDefault();query=e.target.querySelector('[data-k-query]').value;conceptId='';compareId='';draw();}if(e.target.matches('[data-k-discovery-search]')){e.preventDefault();discoveryQuery=e.target.querySelector('[data-k-discovery-query]').value;draw();}if(e.target.matches('[data-k-graph-search]')){e.preventDefault();graphQuery=e.target.querySelector('[data-k-graph-query]').value;draw();}if(e.target.matches('[data-k-save]')){e.preventDefault();save();}});
+ document.addEventListener('change',e=>{const key=e.target.dataset.kField;if(key){fields[key]=e.target.type==='checkbox'?e.target.checked:e.target.value;dirty=true;}const lead=e.target.dataset.kLead;if(lead){if(e.target.checked)selectedLeads.add(lead);else selectedLeads.delete(lead);}const repositoryLead=e.target.dataset.kRepositoryLead;if(repositoryLead){if(e.target.checked)repositorySelected.add(repositoryLead);else repositorySelected.delete(repositoryLead);}if(e.target.matches('[data-k-repository-packet]'))previewRepositoryFile(e.target.files?.[0]);if(e.target.matches('[data-k-signed-update]'))uploadSignedUpdate(e.target.files?.[0]);if(e.target.matches('[data-k-compare]')){compareId=e.target.value;draw();}if(e.target.matches('[data-k-corpus-connector]'))corpusFilter('connector',e.target.value);if(e.target.matches('[data-k-corpus-retrievable]'))corpusFilter('retrievable',e.target.checked);});
+ document.addEventListener('submit',e=>{if(e.target.matches('[data-k-corpus-search]')){e.preventDefault();searchCorpus(draw,{query:e.target.querySelector('[data-k-corpus-query]').value,page:1});return;}if(e.target.matches('[data-k-search]')){e.preventDefault();query=e.target.querySelector('[data-k-query]').value;conceptId='';compareId='';draw();}if(e.target.matches('[data-k-discovery-search]')){e.preventDefault();discoveryQuery=e.target.querySelector('[data-k-discovery-query]').value;draw();}if(e.target.matches('[data-k-graph-search]')){e.preventDefault();graphQuery=e.target.querySelector('[data-k-graph-query]').value;draw();}if(e.target.matches('[data-k-save]')){e.preventDefault();save();}});
  document.addEventListener('keydown',e=>{const node=e.target.closest?.('.kg-map [data-k-action="graph-focus"]');if(node&&(e.key==='Enter'||e.key===' ')){e.preventDefault();graphFocus=node.dataset.id;view='connections';draw();}});
  window.addEventListener('beforeunload',e=>{if(dirty||busy){e.preventDefault();e.returnValue='';}});
 }

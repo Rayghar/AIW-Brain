@@ -10,6 +10,7 @@ for(const file of ['operation-service.js','connection-adapters.js','recovery-ser
 await cp('intelligence-provider.js','dist/server/intelligence-provider.js');
 await cp('brain-retrieval.js','dist/server/brain-retrieval.js');
 await cp('knowledge-service.js','dist/server/knowledge-service.js');
+await cp('knowledge-repository.js','dist/server/knowledge-repository.js');
 await cp('repository-packet.js','dist/server/repository-packet.js');
 await cp('repository-sync.js','dist/server/repository-sync.js');
 await cp('intelligence-service.js','dist/server/intelligence-service.js');
