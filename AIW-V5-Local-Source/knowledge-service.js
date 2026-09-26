@@ -8,9 +8,10 @@ import {repositoryService} from './knowledge-repository.js';
 // recorded original held by the laptop knowledge repository. Both must reproduce the same
 // repository/commit/path/SHA-256 identity, so signed receipts and invalidations bind identically.
 export const SOURCE_PATH=/\.(md|mdx|markdown|txt|adoc|asciidoc|rst)$/i;
+// A byte-order mark is kept, as the corpus keeps it, so a file hashes to the same identity either way.
 async function readBounded(response,max){
  if(!response.ok)throw Error('Repository access failed ('+response.status+'). The existing source is retained.');
- const reader=response.body?.getReader();if(!reader)throw Error('The repository returned no source body.');const parts=[];let size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>max){await reader.cancel();throw Error('Choose a smaller source file.');}parts.push(value);}const bytes=new Uint8Array(size);let offset=0;for(const b of parts){bytes.set(b,offset);offset+=b.length;}return new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+ const reader=response.body?.getReader();if(!reader)throw Error('The repository returned no source body.');const parts=[];let size=0;while(true){const {done,value}=await reader.read();if(done)break;size+=value.length;if(size>max){await reader.cancel();throw Error('Choose a smaller source file.');}parts.push(value);}const bytes=new Uint8Array(size);let offset=0;for(const b of parts){bytes.set(b,offset);offset+=b.length;}return new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(bytes);
 }
 async function readGitHub(repo,{path,ref,expectedHash},fetcher){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000),headers={'Accept':'application/vnd.github.sha','User-Agent':'AIW-knowledge-reader'};

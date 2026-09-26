@@ -128,6 +128,13 @@ await check('Site retrieval through the corpus transport: same origin and identi
  await assert.rejects(acquireRepositorySource({id:'other'},payload,env,'local-architect',at,{fetcher:lying}),/differs from the requested source hash/);
  await assert.rejects(acquireRepositorySource({id:'other'},{...payload,connectorId:'GH-JAVA-DESIGN-PATTERNS'},env,'local-architect',at),/registered public repository/);
  await assert.rejects(acquireRepositorySource({id:'other'},{...payload},{},'local-architect',at),/not configured/);
+ // One identity whichever way a file is read: a GitHub read keeps a byte-order mark as the corpus does.
+ const reader=openReader(config);let bomRev;try{bomRev=reader.revision(reader.store.db.prepare('SELECT revision_id FROM revisions WHERE path=?').get('docs/patterns/bom-note.md').revision_id);}finally{reader.close();}
+ const viaCorpus=await acquireRepositorySource({id:'bom-corpus'},{transport:'corpus',revisionId:bomRev.revisionId,connectorId:bomRev.connectorId,path:bomRev.path,ref:bomRev.commit,expectedHash:bomRev.fileSha256},env,'local-architect',at);
+ const github=async url=>String(url).startsWith('https://api.github.com/')?new Response(bomRev.commit):new Response(Buffer.from(bom,'utf8'));
+ const viaGitHub=await acquireRepositorySource({id:'bom-github'},{connectorId:bomRev.connectorId,path:bomRev.path,ref:bomRev.commit,expectedHash:bomRev.fileSha256},{},'local-architect',at,{fetcher:github});
+ const saved=r=>r.document.knowledge.sources.find(x=>x.id===r.selected);
+ assert.equal(saved(viaGitHub).hash,saved(viaCorpus).hash,'a BOM file has one identity through both transports');assert.equal(saved(viaGitHub).body,bom);
 });
 
 await check('candidate packet: accepted unchanged by the Site packet validator; locators carry exact knowledge.fetch commands',async()=>{
