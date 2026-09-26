@@ -1,0 +1,402 @@
+{
+  "schemaVersion": "aiw-test-evidence-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.6",
+  "packageLine": "AIW V5 Local Source v20.1 (fixes to Sol's checks on v20)",
+  "sourceCommit": "4f1e61b55e3448080a80f1a4fb90186edc44730f",
+  "generatedAt": "2026-09-26T10:13:30.829Z",
+  "workstation": {
+    "os": "Windows 11 Enterprise 10.0.26200",
+    "node": "v24.18.0",
+    "browser": "Playwright 1.56.0 · Chromium headless shell 141.0.7390.37 (revision 1194)"
+  },
+  "defects": {
+    "reproducedOn": "v20 (1c32f9c), with the provider test double; recorded by probe-sol-checks.mjs",
+    "probe": {
+      "reasoning over 1,800 characters": {
+        "before": {
+          "batch": "failed",
+          "error": "Sol returned incomplete or oversized text.",
+          "answered": 0,
+          "of": 6
+        },
+        "after": {
+          "batch": "completed",
+          "answered": 6,
+          "withheld": [],
+          "of": 6
+        }
+      },
+      "a fifth risk": {
+        "before": {
+          "batch": "failed",
+          "error": "Sol returned an oversized list.",
+          "answered": 0,
+          "of": 6
+        },
+        "after": {
+          "batch": "completed",
+          "answered": 6,
+          "withheld": [],
+          "of": 6
+        }
+      },
+      "a headline over 240 characters": {
+        "before": {
+          "batch": "failed",
+          "error": "Sol returned incomplete or oversized text.",
+          "answered": 0,
+          "of": 6
+        },
+        "after": {
+          "batch": "completed",
+          "answered": 6,
+          "withheld": [],
+          "of": 6
+        }
+      },
+      "the same decision twice": {
+        "before": {
+          "batch": "failed",
+          "error": "Sol returned too many assessments.",
+          "answered": 0,
+          "of": 6
+        },
+        "after": {
+          "batch": "completed",
+          "answered": 6,
+          "withheld": [],
+          "of": 6
+        }
+      },
+      "guarantee wording in a drafted scaling policy": {
+        "before": {
+          "batch": "completed",
+          "answered": 5,
+          "withheld": [
+            {
+              "id": "F:capacity:run-001",
+              "issues": [
+                "It presents a mechanism or draft as guaranteeing a verified outcome."
+              ]
+            }
+          ],
+          "of": 6
+        },
+        "after": {
+          "batch": "completed",
+          "answered": 6,
+          "withheld": [],
+          "of": 6
+        }
+      },
+      "guarantee wording in the reasoning (must still withhold)": {
+        "before": {
+          "batch": "completed",
+          "answered": 5,
+          "withheld": [
+            {
+              "id": "F:capacity:run-001",
+              "issues": [
+                "It presents a mechanism or draft as guaranteeing a verified outcome."
+              ]
+            }
+          ],
+          "of": 6
+        },
+        "after": {
+          "batch": "completed",
+          "answered": 5,
+          "withheld": [
+            {
+              "id": "F:capacity:run-001",
+              "issues": [
+                "It presents a mechanism or draft as guaranteeing a verified outcome."
+              ]
+            }
+          ],
+          "of": 6
+        }
+      },
+      "a broken structure (must still fail)": {
+        "before": {
+          "batch": "failed",
+          "error": "Sol returned an unsupported assessment structure.",
+          "answered": 0,
+          "of": 6
+        },
+        "after": {
+          "batch": "failed",
+          "error": "Sol returned an unsupported assessment structure.",
+          "answered": 0,
+          "of": 6
+        }
+      },
+      "end to end: one oversized field in a live answer": {
+        "before": {
+          "batch": "failed",
+          "code": "invalid_output",
+          "error": "Sol returned incomplete or oversized text.",
+          "answered": 0,
+          "of": 6
+        },
+        "after": {
+          "batch": "completed",
+          "answered": 6,
+          "of": 6
+        }
+      },
+      "second pass: design gaps are not defects in the advice": {
+        "before": {
+          "stated": false
+        },
+        "after": {
+          "stated": true
+        }
+      },
+      "second pass: refinements are proposals, not achieved outcomes": {
+        "before": {
+          "stated": false
+        },
+        "after": {
+          "stated": true
+        }
+      }
+    },
+    "note": "The second-pass fix changes instructions a live model reads; the probe shows the instructions now state the calibration, not that a model follows it."
+  },
+  "gates": {
+    "syntax": {
+      "command": "npm run check",
+      "status": "passed",
+      "seconds": 137.8,
+      "output": "Syntax checks passed for 334 application, service and verification modules."
+    },
+    "build": {
+      "command": "npm run build",
+      "status": "passed",
+      "seconds": 8.3,
+      "output": "Built private project Worker, static assets, and D1 migrations; packaged imports verified."
+    },
+    "focusedSuites": {
+      "where": "A clean extract of the v20.1 package with no node_modules.",
+      "suites": [
+        {
+          "name": "test",
+          "status": "passed",
+          "seconds": 0.7,
+          "checks": 11
+        },
+        {
+          "name": "test:brain-reasoning",
+          "status": "passed",
+          "seconds": 5.1,
+          "checks": 8
+        },
+        {
+          "name": "test:chapter-reasoning",
+          "status": "passed",
+          "seconds": 6.2,
+          "checks": 9
+        },
+        {
+          "name": "test:stewardship",
+          "status": "passed",
+          "seconds": 5.4,
+          "checks": 8
+        },
+        {
+          "name": "test:sol-evaluation",
+          "status": "passed",
+          "seconds": 6.8,
+          "checks": 6
+        },
+        {
+          "name": "test:brain-ahead",
+          "status": "passed",
+          "seconds": 4.4,
+          "checks": 5
+        },
+        {
+          "name": "test:repository-service",
+          "status": "passed",
+          "seconds": 3,
+          "checks": 12
+        },
+        {
+          "name": "test:repository-acquire",
+          "status": "passed",
+          "seconds": 2.4,
+          "checks": 5
+        },
+        {
+          "name": "test:knowledge-repository",
+          "status": "passed",
+          "seconds": 4.2,
+          "checks": 4
+        },
+        {
+          "name": "test:repository-sync",
+          "status": "passed",
+          "seconds": 3.7
+        }
+      ]
+    },
+    "cleanInstall": {
+      "command": "npm ci --offline --ignore-scripts --no-audit --no-fund",
+      "status": "passed",
+      "seconds": 263.4,
+      "output": "added 17 packages in 4m"
+    },
+    "solEvaluation": {
+      "command": "npm run evaluate:sol (test double)",
+      "status": "passed",
+      "seconds": 5.1
+    },
+    "browser": {
+      "evidence": "BROWSER_CLICK_RACE.md",
+      "runs": [
+        {
+          "suite": "test:brain-reasoning-browser",
+          "runs": 5,
+          "passed": 5,
+          "checks": 7
+        },
+        {
+          "suite": "test:chapter-sol-browser",
+          "runs": 1,
+          "passed": 1,
+          "checks": 10
+        },
+        {
+          "suite": "test:stewardship-browser",
+          "runs": 1,
+          "passed": 1,
+          "checks": 5
+        },
+        {
+          "suite": "test:desk-browser",
+          "runs": 1,
+          "passed": 1,
+          "checks": 16
+        },
+        {
+          "suite": "test:knowledge-repository-browser",
+          "runs": 1,
+          "passed": 1,
+          "checks": 6
+        }
+      ],
+      "note": "Run after the harness fix (4f1e61b). Before it, brain-reasoning-browser failed intermittently on v20 and v20.1 alike; see BROWSER_CLICK_RACE.md."
+    },
+    "fullRegression": {
+      "runner": "release-checks.mjs",
+      "timeoutMs": 1500000,
+      "concurrency": 2,
+      "sourceCommit": "4f1e61b55e3448080a80f1a4fb90186edc44730f",
+      "suites": 85,
+      "passed": 81,
+      "failed": 4,
+      "failures": [
+        {
+          "name": "test:realise-browser",
+          "seconds": 1503,
+          "firstLine": "Timed out after 1500000 ms: realise-browser-validate.mjs",
+          "classification": "throttled by laptop standby; passed when re-run alone on the same commit",
+          "reason": "Started at 10:02; the laptop was in Modern Standby from 10:09 to 10:25, and the suite outlived its 25-minute timer. Re-run alone: 9 checks passed in 162 s."
+        },
+        {
+          "name": "test:responsibility-browser",
+          "seconds": 987,
+          "firstLine": "Command failed: responsibility-browser-validate.mjs",
+          "classification": "first page load timed out during a standby transition; passed when re-run alone on the same commit",
+          "reason": "Started at 10:31:45, within a second of a standby exit and re-entry (10:31:25 to 10:31:44); its 8 s wait for the first page expired. Re-run alone: 10 checks passed in 108 s."
+        },
+        {
+          "name": "test:threat-browser",
+          "seconds": 1504,
+          "firstLine": "Timed out after 1500000 ms: threat-browser-validate.mjs",
+          "classification": "throttled by laptop standby; passed when re-run alone on the same commit",
+          "reason": "Started at 10:02; the laptop was in Modern Standby from 10:09 to 10:25, and the suite outlived its 25-minute timer. Re-run alone: 9 checks passed in 143 s."
+        },
+        {
+          "name": "test:validate-browser",
+          "seconds": 430,
+          "firstLine": "Command failed: validate-browser-validate.mjs",
+          "classification": "first page load timed out during a standby transition; passed when re-run alone on the same commit",
+          "reason": "Started at 10:42:56, two seconds after a standby exit, with another entry at 10:43:21; its wait for the first page expired. Re-run alone: 7 checks passed in 46 s."
+        }
+      ],
+      "rerunAlone": {
+        "evidence": "REGRESSION_RERUN.json",
+        "suites": [
+          {
+            "name": "test:threat-browser",
+            "status": "passed",
+            "seconds": 142.9
+          },
+          {
+            "name": "test:realise-browser",
+            "status": "passed",
+            "seconds": 161.7
+          },
+          {
+            "name": "test:responsibility-browser",
+            "status": "passed",
+            "seconds": 107.9
+          },
+          {
+            "name": "test:validate-browser",
+            "status": "passed",
+            "seconds": 46.1
+          }
+        ]
+      },
+      "evidence": "REGRESSION_RESULTS.json"
+    },
+    "package": {
+      "archive": "release-evidence/sol-check-fixes/AIW-V5-Local-Source-v20.1.zip",
+      "bytes": 3281128,
+      "sha256": "6de5dca115ccc2c4ce90318bf4b7fff6ac0de12e55923d9f97cab97d84faf29e",
+      "reproducible": true,
+      "fileCount": 494,
+      "byteIdenticalToCommit": true,
+      "forbiddenPathCount": 0,
+      "secretFindings": 0,
+      "personalDataFindings": 0,
+      "deltaFromV20": {
+        "added": 0,
+        "changed": 14,
+        "removed": 0,
+        "changedPaths": [
+          "AIW-BRAIN-ARCHITECTURE.md",
+          "README.md",
+          "brain-reasoning-browser-validate.mjs",
+          "brain-reasoning-validate.mjs",
+          "chapter-reasoning-validate.mjs",
+          "chapter-sol-browser-validate.mjs",
+          "desk-browser-validate.mjs",
+          "intelligence-provider.js",
+          "intelligence-service.js",
+          "knowledge-repository-browser-validate.mjs",
+          "public/brain-reasoning-ui.js",
+          "public/brain-reasoning.js",
+          "public/desk.css",
+          "stewardship-browser-validate.mjs"
+        ]
+      },
+      "result": "passed",
+      "evidence": "PACKAGE_SHA256.json"
+    }
+  },
+  "notRun": [
+    {
+      "what": "A live provider run of the fixed checks",
+      "why": "Uses the sponsor's provider key and costs money; needs their explicit go-ahead. It is the only way to show the second-pass fix working."
+    },
+    {
+      "what": "Changes to the older design-drafting validator (public/intelligence-context.js)",
+      "why": "It shows the same throw-on-oversize pattern, but no defect was reported there and this release keeps to the reported ones."
+    }
+  ],
+  "productionAccepted": false
+}

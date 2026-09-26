@@ -1,0 +1,78 @@
+{
+  "schema": "aiw-sol-check-probe-v1",
+  "label": "before",
+  "at": "2026-09-26T07:55:02.330Z",
+  "provider": "test double (mock-llm-provider.mjs); no live model",
+  "packetDecisions": 6,
+  "cases": {
+    "reasoning over 1,800 characters": {
+      "batch": "failed",
+      "error": "Sol returned incomplete or oversized text.",
+      "answered": 0,
+      "of": 6
+    },
+    "a fifth risk": {
+      "batch": "failed",
+      "error": "Sol returned an oversized list.",
+      "answered": 0,
+      "of": 6
+    },
+    "a headline over 240 characters": {
+      "batch": "failed",
+      "error": "Sol returned incomplete or oversized text.",
+      "answered": 0,
+      "of": 6
+    },
+    "the same decision twice": {
+      "batch": "failed",
+      "error": "Sol returned too many assessments.",
+      "answered": 0,
+      "of": 6
+    },
+    "guarantee wording in a drafted scaling policy": {
+      "batch": "completed",
+      "answered": 5,
+      "withheld": [
+        {
+          "id": "F:capacity:run-001",
+          "issues": [
+            "It presents a mechanism or draft as guaranteeing a verified outcome."
+          ]
+        }
+      ],
+      "of": 6
+    },
+    "guarantee wording in the reasoning (must still withhold)": {
+      "batch": "completed",
+      "answered": 5,
+      "withheld": [
+        {
+          "id": "F:capacity:run-001",
+          "issues": [
+            "It presents a mechanism or draft as guaranteeing a verified outcome."
+          ]
+        }
+      ],
+      "of": 6
+    },
+    "a broken structure (must still fail)": {
+      "batch": "failed",
+      "error": "Sol returned an unsupported assessment structure.",
+      "answered": 0,
+      "of": 6
+    },
+    "end to end: one oversized field in a live answer": {
+      "batch": "failed",
+      "code": "invalid_output",
+      "error": "Sol returned incomplete or oversized text.",
+      "answered": 0,
+      "of": 6
+    },
+    "second pass: design gaps are not defects in the advice": {
+      "stated": false
+    },
+    "second pass: refinements are proposals, not achieved outcomes": {
+      "stated": false
+    }
+  }
+}

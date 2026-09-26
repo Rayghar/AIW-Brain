@@ -1,0 +1,69 @@
+{
+  "schema": "aiw-sol-check-probe-v1",
+  "label": "after",
+  "at": "2026-09-26T08:04:17.965Z",
+  "provider": "test double (mock-llm-provider.mjs); no live model",
+  "packetDecisions": 6,
+  "cases": {
+    "reasoning over 1,800 characters": {
+      "batch": "completed",
+      "answered": 6,
+      "withheld": [],
+      "of": 6
+    },
+    "a fifth risk": {
+      "batch": "completed",
+      "answered": 6,
+      "withheld": [],
+      "of": 6
+    },
+    "a headline over 240 characters": {
+      "batch": "completed",
+      "answered": 6,
+      "withheld": [],
+      "of": 6
+    },
+    "the same decision twice": {
+      "batch": "completed",
+      "answered": 6,
+      "withheld": [],
+      "of": 6
+    },
+    "guarantee wording in a drafted scaling policy": {
+      "batch": "completed",
+      "answered": 6,
+      "withheld": [],
+      "of": 6
+    },
+    "guarantee wording in the reasoning (must still withhold)": {
+      "batch": "completed",
+      "answered": 5,
+      "withheld": [
+        {
+          "id": "F:capacity:run-001",
+          "issues": [
+            "It presents a mechanism or draft as guaranteeing a verified outcome."
+          ]
+        }
+      ],
+      "of": 6
+    },
+    "a broken structure (must still fail)": {
+      "batch": "failed",
+      "error": "Sol returned an unsupported assessment structure.",
+      "answered": 0,
+      "of": 6
+    },
+    "end to end: one oversized field in a live answer": {
+      "batch": "completed",
+      "answered": 6,
+      "of": 6
+    },
+    "second pass: design gaps are not defects in the advice": {
+      "stated": true
+    },
+    "second pass: refinements are proposals, not achieved outcomes": {
+      "stated": true
+    }
+  }
+}

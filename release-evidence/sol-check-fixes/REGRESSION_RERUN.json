@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "aiw-regression-rerun-v1",
+  "sourceCommit": "4f1e61b55e3448080a80f1a4fb90186edc44730f",
+  "runAt": "2026-09-26T10:03:18.994Z",
+  "why": "During the full run on this commit the laptop entered Modern Standby repeatedly (10:09–10:25, then brief entries at 10:30, 10:31 and 10:43 local time). The four browser suites running in those windows were throttled: two outlived their 25-minute timers and two timed out loading their first page. None of them exercises Sol’s checks. Each is re-run here alone on the same commit.",
+  "suites": [
+    {
+      "name": "test:threat-browser",
+      "status": "passed",
+      "seconds": 142.9,
+      "exitCode": 0,
+      "checks": 9
+    },
+    {
+      "name": "test:realise-browser",
+      "status": "passed",
+      "seconds": 161.7,
+      "exitCode": 0,
+      "checks": 9
+    },
+    {
+      "name": "test:responsibility-browser",
+      "status": "passed",
+      "seconds": 107.9,
+      "exitCode": 0,
+      "checks": 10
+    },
+    {
+      "name": "test:validate-browser",
+      "status": "passed",
+      "seconds": 46.1,
+      "exitCode": 0,
+      "checks": 7
+    }
+  ]
+}

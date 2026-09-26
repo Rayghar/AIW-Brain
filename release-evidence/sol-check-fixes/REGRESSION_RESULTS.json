@@ -1,0 +1,431 @@
+[
+  {
+    "name": "test",
+    "status": "passed",
+    "ms": 567
+  },
+  {
+    "name": "test:anatomy",
+    "status": "passed",
+    "ms": 3987
+  },
+  {
+    "name": "test:anatomy-browser",
+    "status": "passed",
+    "ms": 75665
+  },
+  {
+    "name": "test:architecture",
+    "status": "passed",
+    "ms": 3587
+  },
+  {
+    "name": "test:architecture-case",
+    "status": "passed",
+    "ms": 6733
+  },
+  {
+    "name": "test:architecture-drafting",
+    "status": "passed",
+    "ms": 3308
+  },
+  {
+    "name": "test:brain",
+    "status": "passed",
+    "ms": 2686
+  },
+  {
+    "name": "test:brain-ahead",
+    "status": "passed",
+    "ms": 4287
+  },
+  {
+    "name": "test:brain-integration",
+    "status": "passed",
+    "ms": 2249
+  },
+  {
+    "name": "test:brain-reasoning",
+    "status": "passed",
+    "ms": 8101
+  },
+  {
+    "name": "test:brain-reasoning-browser",
+    "status": "passed",
+    "ms": 28165
+  },
+  {
+    "name": "test:changes",
+    "status": "passed",
+    "ms": 12463
+  },
+  {
+    "name": "test:chapter-reasoning",
+    "status": "passed",
+    "ms": 6553
+  },
+  {
+    "name": "test:chapter-sol-browser",
+    "status": "passed",
+    "ms": 58293
+  },
+  {
+    "name": "test:composition",
+    "status": "passed",
+    "ms": 21946
+  },
+  {
+    "name": "test:connected-model",
+    "status": "passed",
+    "ms": 12753
+  },
+  {
+    "name": "test:decisions",
+    "status": "passed",
+    "ms": 1701
+  },
+  {
+    "name": "test:deploy",
+    "status": "passed",
+    "ms": 1806
+  },
+  {
+    "name": "test:deploy-browser",
+    "status": "passed",
+    "ms": 42172
+  },
+  {
+    "name": "test:design-spec",
+    "status": "passed",
+    "ms": 978
+  },
+  {
+    "name": "test:design-tasks",
+    "status": "passed",
+    "ms": 4152
+  },
+  {
+    "name": "test:desk",
+    "status": "passed",
+    "ms": 3166
+  },
+  {
+    "name": "test:desk-browser",
+    "status": "passed",
+    "ms": 73975
+  },
+  {
+    "name": "test:desk-fixes",
+    "status": "passed",
+    "ms": 9372
+  },
+  {
+    "name": "test:development",
+    "status": "passed",
+    "ms": 4180
+  },
+  {
+    "name": "test:enhancements",
+    "status": "passed",
+    "ms": 6106
+  },
+  {
+    "name": "test:evidence",
+    "status": "passed",
+    "ms": 4243
+  },
+  {
+    "name": "test:exchange",
+    "status": "passed",
+    "ms": 1734
+  },
+  {
+    "name": "test:exchange-browser",
+    "status": "passed",
+    "ms": 56424
+  },
+  {
+    "name": "test:exchange-design",
+    "status": "passed",
+    "ms": 5611
+  },
+  {
+    "name": "test:grounding-review",
+    "status": "passed",
+    "ms": 3314
+  },
+  {
+    "name": "test:intelligence",
+    "status": "passed",
+    "ms": 2536
+  },
+  {
+    "name": "test:interface-impact",
+    "status": "passed",
+    "ms": 4387
+  },
+  {
+    "name": "test:interfaces",
+    "status": "passed",
+    "ms": 3969
+  },
+  {
+    "name": "test:investigation",
+    "status": "passed",
+    "ms": 3256
+  },
+  {
+    "name": "test:journey",
+    "status": "passed",
+    "ms": 888
+  },
+  {
+    "name": "test:knowledge-design",
+    "status": "passed",
+    "ms": 7216
+  },
+  {
+    "name": "test:knowledge-ingestion",
+    "status": "passed",
+    "ms": 1096
+  },
+  {
+    "name": "test:knowledge-repository",
+    "status": "passed",
+    "ms": 3960
+  },
+  {
+    "name": "test:knowledge-repository-browser",
+    "status": "passed",
+    "ms": 22792
+  },
+  {
+    "name": "test:knowledge-second-brain",
+    "status": "passed",
+    "ms": 2375
+  },
+  {
+    "name": "test:logical",
+    "status": "passed",
+    "ms": 1800
+  },
+  {
+    "name": "test:model-alternatives",
+    "status": "passed",
+    "ms": 27523
+  },
+  {
+    "name": "test:model-impact",
+    "status": "passed",
+    "ms": 15162
+  },
+  {
+    "name": "test:operations",
+    "status": "passed",
+    "ms": 7934
+  },
+  {
+    "name": "test:persistence",
+    "status": "passed",
+    "ms": 5940
+  },
+  {
+    "name": "test:platform",
+    "status": "passed",
+    "ms": 1743
+  },
+  {
+    "name": "test:platform-browser",
+    "status": "passed",
+    "ms": 265133
+  },
+  {
+    "name": "test:product-choice",
+    "status": "passed",
+    "ms": 1829
+  },
+  {
+    "name": "test:projects",
+    "status": "passed",
+    "ms": 1896
+  },
+  {
+    "name": "test:quality",
+    "status": "passed",
+    "ms": 1609
+  },
+  {
+    "name": "test:readiness",
+    "status": "passed",
+    "ms": 669524
+  },
+  {
+    "name": "test:reads",
+    "status": "passed",
+    "ms": 4075
+  },
+  {
+    "name": "test:realisation",
+    "status": "passed",
+    "ms": 2261
+  },
+  {
+    "name": "test:realise",
+    "status": "passed",
+    "ms": 1737
+  },
+  {
+    "name": "test:realise-browser",
+    "status": "failed",
+    "ms": 1502910,
+    "error": "Timed out after 1500000 ms: realise-browser-validate.mjs\n"
+  },
+  {
+    "name": "test:reconciliation",
+    "status": "passed",
+    "ms": 14284
+  },
+  {
+    "name": "test:repository-acquire",
+    "status": "passed",
+    "ms": 2305
+  },
+  {
+    "name": "test:repository-service",
+    "status": "passed",
+    "ms": 5258
+  },
+  {
+    "name": "test:repository-sync",
+    "status": "passed",
+    "ms": 5063
+  },
+  {
+    "name": "test:requirements",
+    "status": "passed",
+    "ms": 2194
+  },
+  {
+    "name": "test:responsibility",
+    "status": "passed",
+    "ms": 2323
+  },
+  {
+    "name": "test:responsibility-browser",
+    "status": "failed",
+    "ms": 986517,
+    "error": "Command failed: responsibility-browser-validate.mjs\nnode:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\npage.waitForSelector: Timeout 8000ms exceeded.\r\nCall log:\r\n\u001b[2m  - waiting for locator('.cm .cm-head, .cm .dp-row, .cm .tm-card, .cm .rz-card, .cm .pf-cap, .cm .sk-rec, .cm .lr-card') to be visible\u001b[22m\r\n\u001b[2m    - locator resolved to 5 elements. Proceeding with the first one: <div tabindex=\"0\" role=\"button\" data-card=\"api\" class=\"lr-card resp\" aria-label=\"Responsibility LR-001 Payment API\">…</div>\u001b[22m\r\n\r\n    at open (C:\\AIW\\aiw\\AIW-V5-Local-Source\\responsibility-browser-validate.mjs:24:133)\r\n    at async file:///C:/AIW/aiw/AIW-V5-Local-Source/responsibility-browser-validate.mjs:34:3 {\r\n  name: 'TimeoutError'\r\n}\r\n\r\nNode.js v24.18.0\r\n"
+  },
+  {
+    "name": "test:reversal",
+    "status": "passed",
+    "ms": 5522
+  },
+  {
+    "name": "test:review",
+    "status": "passed",
+    "ms": 43199
+  },
+  {
+    "name": "test:runtime",
+    "status": "passed",
+    "ms": 3262
+  },
+  {
+    "name": "test:security",
+    "status": "passed",
+    "ms": 2810
+  },
+  {
+    "name": "test:security-design",
+    "status": "passed",
+    "ms": 6143
+  },
+  {
+    "name": "test:sol-evaluation",
+    "status": "passed",
+    "ms": 6329
+  },
+  {
+    "name": "test:stack",
+    "status": "passed",
+    "ms": 2692
+  },
+  {
+    "name": "test:stack-browser",
+    "status": "passed",
+    "ms": 233564
+  },
+  {
+    "name": "test:stewardship",
+    "status": "passed",
+    "ms": 5024
+  },
+  {
+    "name": "test:stewardship-browser",
+    "status": "passed",
+    "ms": 27602
+  },
+  {
+    "name": "test:story",
+    "status": "passed",
+    "ms": 1143
+  },
+  {
+    "name": "test:story-browser",
+    "status": "passed",
+    "ms": 121875
+  },
+  {
+    "name": "test:technology",
+    "status": "passed",
+    "ms": 3590
+  },
+  {
+    "name": "test:technology-realisation",
+    "status": "passed",
+    "ms": 10682
+  },
+  {
+    "name": "test:threat",
+    "status": "passed",
+    "ms": 1646
+  },
+  {
+    "name": "test:threat-browser",
+    "status": "failed",
+    "ms": 1503546,
+    "error": "Timed out after 1500000 ms: threat-browser-validate.mjs\n"
+  },
+  {
+    "name": "test:tradeoff",
+    "status": "passed",
+    "ms": 1303
+  },
+  {
+    "name": "test:tradeoff-browser",
+    "status": "passed",
+    "ms": 34428
+  },
+  {
+    "name": "test:utility",
+    "status": "passed",
+    "ms": 1130
+  },
+  {
+    "name": "test:utility-browser",
+    "status": "passed",
+    "ms": 36444
+  },
+  {
+    "name": "test:validate-browser",
+    "status": "failed",
+    "ms": 430391,
+    "error": "Command failed: validate-browser-validate.mjs\nnode:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\npage.waitForSelector: Timeout 8000ms exceeded.\r\nCall log:\r\n\u001b[2m  - waiting for locator('.vx-bar') to be visible\u001b[22m\r\n\r\n    at open (C:\\AIW\\aiw\\AIW-V5-Local-Source\\validate-browser-validate.mjs:24:152)\r\n    at async file:///C:/AIW/aiw/AIW-V5-Local-Source/validate-browser-validate.mjs:52:3 {\r\n  name: 'TimeoutError'\r\n}\r\n\r\nNode.js v24.18.0\r\n"
+  },
+  {
+    "name": "test:workspace",
+    "status": "passed",
+    "ms": 518
+  }
+]
