@@ -1,0 +1,2309 @@
+{
+  "schema": "aiw-sol-evaluation-v2",
+  "at": "2026-09-26T23:08:31.361Z",
+  "dataset": {
+    "title": "Held-out decisions for evaluating Sol's advice",
+    "digest": "eefa96c59a04b91632e1b7aca53e10e986f7748905a893def19544160e3b6347",
+    "cases": 26,
+    "authority": "Implementation-authored expectations. They were written from the designs' own readings before Sol was run on these cases, and none of these cases was used to write Sol's instructions, the guards or the provider test double. They are not independent expert review: an architect should review and amend them before any result is relied on."
+  },
+  "provider": "OpenAI",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "summary": {
+    "cases": 26,
+    "requestFailures": 17,
+    "assessments": 9,
+    "withheld": {
+      "rate": 0.333,
+      "of": 9,
+      "reasons": {
+        "number": 1,
+        "proposals": 2
+      }
+    },
+    "verdictAgreement": {
+      "rate": 1,
+      "of": 6
+    },
+    "ownReadingCited": {
+      "rate": 1,
+      "of": 6
+    },
+    "expectedSupportCited": {
+      "rate": 1,
+      "of": 5
+    },
+    "addressesTheIssue": {
+      "rate": 1,
+      "of": 5
+    },
+    "numbersWithinBand": {
+      "rate": 1,
+      "of": 1
+    },
+    "proposalsValid": {
+      "rate": null,
+      "of": 0
+    },
+    "preferenceWithinOptions": {
+      "rate": null,
+      "of": 0
+    },
+    "falseSupport": {
+      "rate": 0.167,
+      "of": 6
+    },
+    "tokens": 118795,
+    "latencyMs": {
+      "p50": 115,
+      "p95": 8324
+    },
+    "byDomain": {
+      "bank-payment": {
+        "verdictAgreement": {
+          "rate": 1,
+          "of": 6
+        },
+        "addressesTheIssue": {
+          "rate": 1,
+          "of": 5
+        }
+      },
+      "service-permits": {
+        "verdictAgreement": {
+          "rate": null,
+          "of": 0
+        },
+        "addressesTheIssue": {
+          "rate": null,
+          "of": 0
+        }
+      },
+      "warehouse-fulfilment": {
+        "verdictAgreement": {
+          "rate": null,
+          "of": 0
+        },
+        "addressesTheIssue": {
+          "rate": null,
+          "of": 0
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "BP-01",
+      "domain": "bank-payment",
+      "ms": 8324,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13497,
+        "outputTokens": 570
+      },
+      "packet": {
+        "stamp": "bea64b24f78ad60242eeeab498b5d0942c8e3ef228b8f0ccbad9343c752a4d59",
+        "sources": 14,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14462
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-001",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": true,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "flags": [],
+          "citedKinds": [
+            "instrument-reading",
+            "planning-assumptions",
+            "product-mechanism"
+          ],
+          "refinements": [
+            "scalingPolicy"
+          ],
+          "answerIs": "shown",
+          "answer": {
+            "headline": "Refine scaling policy to specify CPU target at 70% and confirm scaling range to 24 replicas",
+            "reasoning": "The arithmetic and demand calculations supporting maxReplicas=24 are well supported by the design excerpts including user concurrency, request frequency, and per replica capacity (S1, S2). Kubernetes HPA supports scaling by CPU utilization as described (S3). However, the scalingPolicy text uses placeholders ({utilisation} %, {min}, {max}) instead of concrete values. Refining the text to explicitly state 'Horizontal Pod Autoscaler on CPU at 70%, from 1 to 24 replicas.' matches the draft arithmetic and removes ambiguity. The maximum replicas number 24 is justified and within product limits. Confirming this draft in future through load tests will validate this design decision.",
+            "risks": [
+              "Capacity shortfall if maxReplicas is set too low",
+              "Overprovisioning causing resource waste if maxReplicas is too high",
+              "Ambiguity in scaling policy text leading to misconfiguration",
+              "Lack of load testing data to confirm replica count adequacy"
+            ],
+            "questions": [
+              "Have load or performance tests been done to validate 24 replicas for full load?",
+              "Is 70% CPU utilization target optimal for this workload and environment?",
+              "What overhead does the Horizontal Pod Autoscaler impose on cluster resources?",
+              "Are there failure scenarios where a spare replica is insufficient for availability?"
+            ],
+            "refinements": [
+              {
+                "key": "scalingPolicy",
+                "value": "Horizontal Pod Autoscaler on CPU at 70%, from 1 to 24 replicas.",
+                "why": "To specify exact CPU utilization target and scaling range consistent with draft calculations and Kubernetes support."
+              }
+            ],
+            "proposals": [],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1",
+              "S2",
+              "S3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-02",
+      "domain": "bank-payment",
+      "ms": 6869,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12271,
+        "outputTokens": 730
+      },
+      "packet": {
+        "stamp": "d2a0ce063c5e65baaa57ef46eade6dd8d5df14840f3427a12955b13a813b2b36",
+        "sources": 11,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14346
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:integrity:if-004+rest",
+          "kind": "fix",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [
+            "\\bguarantee"
+          ],
+          "unsupportedNumbers": [],
+          "falseSupport": true,
+          "flags": [
+            {
+              "kind": "forbidden",
+              "match": "guarantee",
+              "sentence": "Are there established client contracts guaranteeing paymentReference stability and uniqueness?"
+            }
+          ],
+          "citedKinds": [
+            "instrument-reading",
+            "model"
+          ],
+          "refinements": [],
+          "answerIs": "shown",
+          "answer": {
+            "headline": "Idempotency by paymentReference with duplicate policy adequately addresses repeated-requests integrity risk",
+            "reasoning": "The reading identifies that RUN-001 payment service views IF-001 and IF-004 interfaces as lacking idempotency keys or duplicate request handling, leading to a critical integrity risk (S1). The fix drafts the paymentReference as an idempotency key for both interfaces with a duplicate policy that repeated keys return previous outcome, differing data under same key is refused. This design explicitly targets the critical QD-001 quality driver to ensure at most one financial effect per instruction (S5). The reading confirms the fix lowers integrity risk from Critical to Normal. The choice of paymentReference as key is reasonable given current interface semantics and length limits, avoiding side effects from repeats. No conflicting details exist in the reading suggesting a better key or duplicate policy is needed. The proposed policy is clear and specific to this design, supporting idempotency and avoiding repeated payments. No evidence or rationale suggests refinement or reconsideration is needed. Remaining open questions concern verification in testing and consistent paymentReference supply by clients, but these are operational concerns beyond the design fix itself. Thus the fix is sound as drafted and strongly supported by the reading, and applying it is advised.",
+            "risks": [
+              "Clients may supply different paymentReference for logically identical requests, leading to possible duplicates",
+              "Incomplete enforcement of duplicate policy might allow repeated effects",
+              "Testing may miss edge cases of repeated request behavior",
+              "Monitoring might be needed to detect accidental duplicate attempts"
+            ],
+            "questions": [
+              "Are there established client contracts guaranteeing paymentReference stability and uniqueness?",
+              "How will duplicate policy enforcement failures be detected and handled?",
+              "Is there an operational process to remediate duplicate or conflicting requests?",
+              "Are there plans to test and validate idempotency logic under load and concurrency?"
+            ],
+            "refinements": [],
+            "proposals": [],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1",
+              "S5"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-03",
+      "domain": "bank-payment",
+      "ms": 6555,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13855,
+        "outputTokens": 664
+      },
+      "packet": {
+        "stamp": "c74bee1220ebf4af7241c6d8962a52c40b1fdf994767382a2f5cd4c73ba1d983",
+        "sources": 14,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14985
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:observability:run-001",
+          "kind": "fix",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "flags": [],
+          "citedKinds": [
+            "instrument-reading",
+            "model",
+            "playbook-entry",
+            "product-mechanism"
+          ],
+          "refinements": [],
+          "answerIs": "shown",
+          "answer": {
+            "headline": "Monitoring draft effectively addresses critical observability drivers to reveal RUN-001 failures",
+            "reasoning": "The monitoring covers key metrics identified by critical quality drivers, including request rates, error rates, 95th percentile response time, and readiness status. Alerts map directly to drivers QD-001 (financial effect integrity), QD-002 (intake availability), QD-003 (latency), QD-005 (security), and QD-006 (reference preservation), as per the proposed fix (S1). This directly confronts the recorded lack of monitoring for RUN-001, changing the vital from Critical to Normal on observability. The draft excludes sensitive payload details, respecting security constraints (S8). Kubernetes mechanisms for restart and autoscaling (S3, S4) support availability but require complementary monitoring and alerting for failure detection, which the draft provides. The approach aligns with SA Playbook guidance for monitoring and alerting (S10). No test or production evidence yet exists but given the documented drivers and mechanisms, the fix is sound to apply as drafted.",
+            "risks": [
+              "Incomplete detection of all failure modes",
+              "Potential alert fatigue if thresholds are not tuned",
+              "Telemetry overhead impacting performance",
+              "Timely response to alerts depends on operational process"
+            ],
+            "questions": [
+              "How are alert thresholds determined for production scale and noise tolerance?",
+              "What measures ensure sensitive payload data is excluded from telemetry?",
+              "How is monitoring data aggregated and retained to avoid overload?",
+              "What is the operational response plan for the defined alerts?"
+            ],
+            "refinements": [],
+            "proposals": [],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1",
+              "S5",
+              "S6",
+              "S7",
+              "S8",
+              "S10",
+              "S3",
+              "S4"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-04",
+      "domain": "bank-payment",
+      "ms": 6767,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12727,
+        "outputTokens": 878
+      },
+      "packet": {
+        "stamp": "03cdef21122eec97a2b734c8a8225b0b578aaddb5b7ed61420c6f028c268bfdf",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 13889
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "J:security:run-002"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "J:security:run-002",
+          "kind": "judgement",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "number"
+          ],
+          "issues": [
+            "It states 105, 104, which no reading in the packet contains."
+          ],
+          "answerIs": "withheld-draft",
+          "draftVerdict": "judge",
+          "answer": {
+            "headline": "No recorded threats yet; architect judgement needed to identify and prioritize threats to risk engine and its assets",
+            "reasoning": "The design shows a security driver on the risk engine but no documented threats or vulnerabilities recorded yet. Without threats identified, no controls are confirmed. The risk engine runs on Kubernetes 1.31, which offers availability mechanisms but not direct security controls. Chapter 9 references and the threat model should be consulted to uncover realistic threat scenarios from communication flows and data handling. The architect must identify plausible unauthorized action, data disclosure, tampering, missing evidence, or denial threats against the risk-engine, its interfaces (if-004, if-005), or risk-record. Architectural tactics such as limiting access (T-SE-LIMIT), validating input (T-SE-VALIDATE), and detecting intrusion (T-SE-DETECT) are known strategies to mitigate such threats. Design patterns like Secure Communication (PB-105) or Facade (PB-104) may support secure communications and simplified controlled interfaces. Ultimately, the architect’s judgement is needed to characterize real risks, decide their priority (Critical, High, Moderate, Low), and propose controls accordingly.",
+            "risks": [
+              "Unauthorised action",
+              "Replay or tampering",
+              "Data disclosure"
+            ],
+            "questions": [
+              "What are the plausible threat scenarios emerging from communication flows of the risk engine?",
+              "Which assets (risk-engine, interfaces, risk-record) are most critical to protect under QD-005 drivers?",
+              "What priority should be assigned to each identified threat to inform risk treatment?",
+              "Are existing or planned controls sufficient to mitigate the identified threats effectively?"
+            ],
+            "refinements": [],
+            "proposals": [
+              {
+                "title": "Threat: Unauthorized access to the risk engine (risk-engine)",
+                "category": "Unauthorised action",
+                "priority": "Critical",
+                "targetIds": [
+                  "risk-engine"
+                ],
+                "scenario": "An attacker exploits insufficient authentication or authorization controls to submit unauthorized instructions or queries to the risk engine.",
+                "consequence": "Potential leakage or corruption of risk decisions and violation of the security driver QD-005."
+              },
+              {
+                "title": "Threat: Replay or tampering of messages on interfaces (if-004, if-005)",
+                "category": "Replay or tampering",
+                "priority": "High",
+                "targetIds": [
+                  "if-004",
+                  "if-005"
+                ],
+                "scenario": "An attacker intercepts and replays or alters messages on the risk engine's interfaces to influence risk decisions or cause incorrect authorization responses.",
+                "consequence": "Compromise of decision integrity and denial of service to legitimate users."
+              },
+              {
+                "title": "Threat: Data disclosure from the risk record (risk-record)",
+                "category": "Data disclosure",
+                "priority": "High",
+                "targetIds": [
+                  "risk-record"
+                ],
+                "scenario": "Unauthorized access to sensitive risk decision data stored in the risk record database due to weak access controls or misconfigurations.",
+                "consequence": "Exposure of sensitive decision data violating confidentiality requirements."
+              }
+            ],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-05",
+      "domain": "bank-payment",
+      "ms": 7179,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10420,
+        "outputTokens": 751
+      },
+      "packet": {
+        "stamp": "c8ef44ee054901a60fdf26b5b1a02eb200f09b97cd1a1c639c58f0610debf774",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 13451
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "D:ADR-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-001",
+          "kind": "decision",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "proposals"
+          ],
+          "issues": [
+            "It proposes threats for a decision that does not take them."
+          ],
+          "answerIs": "withheld-draft",
+          "draftVerdict": "judge",
+          "answer": {
+            "headline": "Decision ADR-001 requires business judgement to select synchronous versus asynchronous payment acknowledgement based on availability, predictability, and traceability trade-offs.",
+            "reasoning": "The design identifies two main alternatives: synchronous acknowledgement (ALT-001) and durable asynchronous handoff (ALT-002). ALT-001 risks treating HTTP timeouts as failures and increases operational complexity due to required bounded waits to distinguish outcomes. ALT-002 supports availability (QD-002) and predictable acknowledgement (QD-003) but introduces additional operational complexity and potential failure modes. Traceability (QD-006) is better supported by ALT-002's durable handoff and notification model. The choice depends on how the business prioritizes immediate acknowledgement versus robustness and scalability under load, as well as operational tolerance of complexity and failure modes. These trade-offs are not fully resolved in the current draft and require informed judgement.",
+            "risks": [
+              "Operational complexity due to asynchronous processing and notification delays",
+              "False failure detection in synchronous calls causing retries and load spikes",
+              "Customer dissatisfaction with delayed payment acknowledgement",
+              "Increased infrastructure requirements to ensure durable handoff and notification reliability"
+            ],
+            "questions": [
+              "What is the business priority: immediate synchronous acknowledgement vs. higher availability and traceability through asynchronous processing?",
+              "Can the operational team support the complexity of asynchronous durable handoff and notification?",
+              "What are acceptable maximum latencies from customer perspective for payment acknowledgement?",
+              "Is there infrastructure in place to reliably correlate and notify outcomes post final settlement?"
+            ],
+            "refinements": [],
+            "proposals": [],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1",
+              "S3",
+              "S4",
+              "S5"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-06",
+      "domain": "bank-payment",
+      "ms": 7086,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10432,
+        "outputTokens": 784
+      },
+      "packet": {
+        "stamp": "12532673d07b2bc4055078b122530dfa8fa45e2ec378e74d5e309e586cb4d248",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 13287
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "D:ADR-002"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-002",
+          "kind": "decision",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "proposals"
+          ],
+          "issues": [
+            "It proposes threats for a decision that does not take them."
+          ],
+          "answerIs": "withheld-draft",
+          "draftVerdict": "judge",
+          "answer": {
+            "headline": "Decision requires architect judgement to balance financial integrity against performance optimizations.",
+            "reasoning": "The design identifies two alternatives for enforcing the single financial effect: ALT-003 enforces the effect at the core ledger posting boundary, ensuring strong idempotency and preservation of one financial effect (QD-001 critical). ALT-003 introduces a potential performance or failure cost impacting response time (QD-003) but supports the integrity goal best. ALT-004 attempts to optimize by suppressing repeats at the application cache, which supports performance (QD-003) but cannot guarantee the durability of the one-effect financial integrity (QD-001 tension). Security impacts (QD-005) are neutral or tensioned based on alternative. Therefore, the architect must weigh the critical integrity goal against performance and optimization trade-offs. Neither alternative unconditionally solves all concerns, so judgement is needed to choose the preferred trade-off based on business priorities and risk tolerance.",
+            "risks": [
+              "Risk of duplicate financial postings if enforcement is only at application cache (ALT-004).",
+              "Additional latency or failure modes introduced by enforcing at posting boundary (ALT-003).",
+              "Potential mismatch between performance targets (acknowledgement within 2 seconds) and the stronger integrity guarantee.",
+              "Security risks if unauthorised instructions are not robustly rejected in either approach."
+            ],
+            "questions": [
+              "What is the business tolerance for the risk of duplicate charges?",
+              "Is the performance cost of enforcing at the posting boundary acceptable under the 2-second acknowledgement target?",
+              "Can caching optimizations be layered on top of the posting boundary enforcement to improve performance without sacrificing integrity?",
+              "What auditing and recovery mechanisms complement the chosen approach to handle failure and retry scenarios?"
+            ],
+            "refinements": [],
+            "proposals": [],
+            "preferred": "ALT-003",
+            "sourceRefs": [
+              "S1",
+              "S3",
+              "S4",
+              "S5"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-07",
+      "domain": "bank-payment",
+      "ms": 4818,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12867,
+        "outputTokens": 539
+      },
+      "packet": {
+        "stamp": "d0a2a008676489bdce20f7b4dd0f22498984caf3f38737b569a8679b4ae978a5",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14967
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:switch:tr-003",
+          "kind": "switch",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "flags": [],
+          "citedKinds": [
+            "instrument-reading",
+            "planning-assumptions",
+            "product-mechanism",
+            "model"
+          ],
+          "refinements": [],
+          "answerIs": "shown",
+          "answer": {
+            "headline": "The switch decision favoring Apache Kafka over RabbitMQ aligns with scalability and quality drivers",
+            "reasoning": "The project aims to support 100,000 concurrent users, corresponding to about 3,125 req/s demand, which is within RabbitMQ's theoretical message rate ceiling but close to practical limits due to the single queue leader bottleneck (10,000 msg/s ceiling) and its impact on scalability (S1,S2,S6). RabbitMQ supports availability and recoverability well (S3,S4) but has tension on traceability because it removes messages post-acknowledgement (S5). Apache Kafka scores higher against the drivers, indicating better alignment with concurrency, throughput, and message traceability needs (S1). The switch is drafted from Chapter 7 options and consistent with planning assumptions (S1,S2).",
+            "risks": [
+              "Possible operational complexity in managing Kafka as a self-managed product",
+              "Potential unknowns on some quality drivers marked unknown for RabbitMQ (QD-001, QD-003)"
+            ],
+            "questions": [
+              "What evidence supports Kafka's operational stability and availability compared to RabbitMQ in this context?",
+              "What are the cost implications of adopting Kafka versus RabbitMQ at this scale?",
+              "Are there any workload patterns that might favor RabbitMQ despite lower driver scores?"
+            ],
+            "refinements": [],
+            "proposals": [],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1",
+              "S2",
+              "S3",
+              "S4",
+              "S5",
+              "S6",
+              "S7",
+              "S8",
+              "S9"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-08",
+      "domain": "bank-payment",
+      "ms": 5630,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12882,
+        "outputTokens": 567
+      },
+      "packet": {
+        "stamp": "cfa0b978efe45ac56479ae34f8896e6016e935af7ee14f34d055f37dd6701963",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14967
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:switch:tr-002",
+          "kind": "switch",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "flags": [],
+          "citedKinds": [
+            "instrument-reading",
+            "planning-assumptions",
+            "product-mechanism",
+            "model"
+          ],
+          "refinements": [],
+          "answerIs": "shown",
+          "answer": {
+            "headline": "Product choice framing is sound and rightly scoped as a Chapter 3 decision",
+            "reasoning": "The draft precisely identifies PostgreSQL's known architectural ceiling of one primary server limiting writes to about 10,000/sec, exceeded at 100,000 concurrent users needing 9,375 writes/sec (S1, S5). It balances PostgreSQL and MongoDB equally (score 8) against quality drivers (S1). The planning assumptions and product mechanisms confirm this context (S2, S5). The choice requires business judgement on scaling and driver priorities, which is appropriate for Chapter 3. The question's context and criteria are clear and self-consistent. However, evidence from real load testing against the planned loads is still needed to validate assumptions and finalize the decision.",
+            "risks": [
+              "Assumptions on concurrency and load may not reflect real usage leading to underestimated throughput needs.",
+              "PostgreSQL's single primary model risks hitting a scaling ceiling affecting availability and performance above 75,000 users.",
+              "Equal scoring on drivers might mask non-functional differences needing deeper analysis for critical qualities like recoverability or cost.",
+              "Incomplete testing evidence might risk picking a product unsuitable at peak scale."
+            ],
+            "questions": [
+              "What are the outcomes of load or stress testing for PostgreSQL and MongoDB under expected workloads?",
+              "How do recovery and operational ownership compare between the two products at scale?",
+              "Would splitting writes by service or key domains with PostgreSQL be practical long term?",
+              "What non-functional quality priorities might tip the choice towards one product?"
+            ],
+            "refinements": [],
+            "proposals": [],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1",
+              "S2",
+              "S5",
+              "S6",
+              "S7",
+              "S8",
+              "S9"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-09",
+      "domain": "bank-payment",
+      "ms": 7419,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13663,
+        "outputTokens": 698
+      },
+      "packet": {
+        "stamp": "3f16dd5e4de310fff806fdbd6fb7d1a82408a10b4f01ea8edd59af8b97227237",
+        "sources": 11,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 16553
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:2:QD-003",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "flags": [],
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "conditions",
+            "response",
+            "measurement"
+          ],
+          "answerIs": "shown",
+          "answer": {
+            "headline": "Refine QD-003 to specify timeouts and enforce performance tactics to meet the 2 second acknowledgement latency target reliably",
+            "reasoning": "The design situates the payment acknowledgement quality driver with a proposed 2 second latency target measured at the 95th percentile during peak load (S1,S2). However, vital readings report no timeouts on the critical call paths in the Payment service and Risk engine components, risking unbounded wait and violating latency goals (S1). The current tactics include bounded timeouts and workload isolation but concurrency is only considered, and caching and data access optimizations remain open (S1). This leaves the design incomplete to predictably meet the latency target, especially under peak load conditions. Thus, refinement is needed to capture explicit timeouts for nested calls and to adopt concurrency, caching, or other performance tactics actively (S6,S7,S8). These refinements will clarify the stimulus-response timing, ensure measurement is meaningful, and reduce risk of slow acknowledgements that cause repeats and support issues (S1).",
+            "risks": [
+              "Unbounded latency due to missing timeouts on critical calls",
+              "Repeat submissions caused by slow acknowledgements",
+              "High-cost high-performance tactics increasing system complexity",
+              "Performance overhead from security or screening checks impairing latency"
+            ],
+            "questions": [
+              "Have call timeout limits been configured and tested on all dependent services?",
+              "What concurrency or caching tactics are planned or feasible to improve acknowledgement latency?",
+              "Is the 2 second latency target confirmed with performance testing evidence?",
+              "Are all screening dependencies consistently available during peak load testing?"
+            ],
+            "refinements": [
+              {
+                "key": "conditions",
+                "value": "At representative peak load with all screening dependencies available, and configured call timeouts active.",
+                "why": "Enforce bounded timeouts on dependencies to limit latency and prevent unbounded wait."
+              },
+              {
+                "key": "response",
+                "value": "Return the accepted reference or an explicit hold response within specified timeout limits. This measures acknowledgement, not final settlement.",
+                "why": "Make the response time bounds explicit to support latency measurement."
+              },
+              {
+                "key": "measurement",
+                "value": "Measure from receipt of an instruction to acknowledgement; record load and percentile; measure and enforce timeouts per nested dependency call.",
+                "why": "Captures the need to measure timeouts and latency in the dependent calls explicitly."
+              }
+            ],
+            "proposals": [],
+            "preferred": "none",
+            "sourceRefs": [
+              "S1"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "BP-10",
+      "domain": "bank-payment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 327190,
+      "packet": {
+        "stamp": "3a35f0a42443b22f25e4bb5e65a7b04fdefb541ccc7555f45a4173b744a9bb08",
+        "sources": 17
+      }
+    },
+    {
+      "id": "BP-11",
+      "domain": "bank-payment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 121,
+      "packet": {
+        "stamp": "5b9dd9acfd956f933ff44fd8dbcc506f10f40d1c3198664054a83349a73c2086",
+        "sources": 18
+      }
+    },
+    {
+      "id": "BP-12",
+      "domain": "bank-payment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 80,
+      "packet": {
+        "stamp": "acadc9af66dbbf5ebc68be040b61dfee8c3b9cbc1871eb7fa3445792a30213f4",
+        "sources": 11
+      }
+    },
+    {
+      "id": "BP-13",
+      "domain": "bank-payment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 75,
+      "packet": {
+        "stamp": "889e80b74ab9c59222a42e2a809ffb546e90870ff81db4274bae6b75cec233d0",
+        "sources": 11
+      }
+    },
+    {
+      "id": "BP-14",
+      "domain": "bank-payment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 297,
+      "packet": {
+        "stamp": "fd8d420c4861c223ddb2bd32f16716d01c2c8e4a4d1fd95199bd944fb9e7a4d9",
+        "sources": 16
+      }
+    },
+    {
+      "id": "SP-01",
+      "domain": "service-permits",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 115,
+      "packet": {
+        "stamp": "23b9654f9531db8a31b041e631f802da47a7e0f3349e16f0ec2e725d2a557d75",
+        "sources": 8
+      }
+    },
+    {
+      "id": "SP-02",
+      "domain": "service-permits",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 108,
+      "packet": {
+        "stamp": "aee5f07e9e5a75e5663548311787e4a9936e4ed357545bbb6cd9068f5e924d3a",
+        "sources": 6
+      }
+    },
+    {
+      "id": "SP-03",
+      "domain": "service-permits",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 46,
+      "packet": {
+        "stamp": "6364db3e4a39b6d7623528ff0c5341091ceda506e986bf6e3cc3c7e6189cf8d2",
+        "sources": 8
+      }
+    },
+    {
+      "id": "SP-04",
+      "domain": "service-permits",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 28,
+      "packet": {
+        "stamp": "405d3b2d273dadd7eb5318fe536adac5c574ea007305635b52cd8a3640546979",
+        "sources": 4
+      }
+    },
+    {
+      "id": "SP-05",
+      "domain": "service-permits",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 32,
+      "packet": {
+        "stamp": "e5e65ab3f7ad64d5beeb0e35f46c64805187536a56cf5c7e9299f9c91bb35228",
+        "sources": 4
+      }
+    },
+    {
+      "id": "SP-06",
+      "domain": "service-permits",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 40,
+      "packet": {
+        "stamp": "6d327273e459039a1320a25275cc61bf75b8639df4d94a6e1f2c68cdc3ba3768",
+        "sources": 8
+      }
+    },
+    {
+      "id": "WF-01",
+      "domain": "warehouse-fulfilment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 49,
+      "packet": {
+        "stamp": "2f36d7f66e7d38f2d462cd43abdc69b69c9cda0471292afd1441e88087832a79",
+        "sources": 8
+      }
+    },
+    {
+      "id": "WF-02",
+      "domain": "warehouse-fulfilment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 43,
+      "packet": {
+        "stamp": "5a2e1d8df00dc3e4f9393d04ac9ee16ab11f63ac247cb79006324d5e1b6e69e3",
+        "sources": 6
+      }
+    },
+    {
+      "id": "WF-03",
+      "domain": "warehouse-fulfilment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 36,
+      "packet": {
+        "stamp": "4a3064757262c7023ebdb34916b3887688893d297e67120123f6d20c81051fdb",
+        "sources": 8
+      }
+    },
+    {
+      "id": "WF-04",
+      "domain": "warehouse-fulfilment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 28,
+      "packet": {
+        "stamp": "2040a8e49640efa288a5677bd7be65bd3a9e6e97ca6211cd454bcf2682f97a20",
+        "sources": 4
+      }
+    },
+    {
+      "id": "WF-05",
+      "domain": "warehouse-fulfilment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 43,
+      "packet": {
+        "stamp": "06824e138f0c087c88deee995b7937c75037e8f1dafe243789abf74ccfc6d7b0",
+        "sources": 4
+      }
+    },
+    {
+      "id": "WF-06",
+      "domain": "warehouse-fulfilment",
+      "error": "provider_unavailable",
+      "detail": "The provider connection was interrupted. Your request is saved.",
+      "ms": 35,
+      "packet": {
+        "stamp": "b043e0254775900fcd6d1a1d51e287533e17cc93a863898b6f8cfd03b8783c7c",
+        "sources": 8
+      }
+    }
+  ],
+  "direct": {
+    "receives": "The project’s own description, each decision’s title, kind, verdicts and draft values, a recorded decision’s question, context and alternatives, and any listed options or threat targets. Not the Brain’s readings, objective and assumptions, drivers, mechanisms, tactics or governed knowledge; not Sol’s instructions, guard, second pass or chapter rules.",
+    "instructions": "You are an experienced solution architect. An architect asks you to assess each design decision below and advise them; they decide. For each decision return one assessment with a verdict from that decision's list:\n- apply: the draft is sound as drafted.\n- refine: the draft is right in direction but should change; give new values for its draft fields, and why.\n- reconsider: the approach itself is questionable; say what to consider instead.\n- judge: it needs the architect's or the business's judgement; give the options and the questions to settle, and for a threat judgement up to three threat scenarios on the listed targets.\n- insufficient: there is not enough to advise; say what is missing.\nFor a decision with alternatives you may name a preferred one; otherwise preferred is \"none\". Be concise: a headline of one sentence, reasoning of two to five sentences, at most four risks and four questions.",
+    "model": "gpt-4.1-mini-2025-04-14",
+    "summary": {
+      "cases": 26,
+      "requestFailures": 17,
+      "assessments": 9,
+      "verdictAgreement": {
+        "rate": 1,
+        "of": 9
+      },
+      "addressesTheIssue": {
+        "rate": 0.8,
+        "of": 5
+      },
+      "numbersWithinBand": {
+        "rate": 1,
+        "of": 1
+      },
+      "proposalsValid": {
+        "rate": 1,
+        "of": 1
+      },
+      "preferenceWithinOptions": {
+        "rate": 1,
+        "of": 2
+      },
+      "falseSupport": {
+        "rate": 0.333,
+        "of": 9
+      },
+      "tokens": 10054,
+      "latencyMs": {
+        "p50": 69,
+        "p95": 4625
+      },
+      "byDomain": {
+        "bank-payment": {
+          "verdictAgreement": {
+            "rate": 1,
+            "of": 9
+          },
+          "addressesTheIssue": {
+            "rate": 0.8,
+            "of": 5
+          }
+        },
+        "service-permits": {
+          "verdictAgreement": {
+            "rate": null,
+            "of": 0
+          },
+          "addressesTheIssue": {
+            "rate": null,
+            "of": 0
+          }
+        },
+        "warehouse-fulfilment": {
+          "verdictAgreement": {
+            "rate": null,
+            "of": 0
+          },
+          "addressesTheIssue": {
+            "rate": null,
+            "of": 0
+          }
+        }
+      },
+      "missing": 0,
+      "brainChecks": {
+        "wouldWithhold": {
+          "rate": 0.667,
+          "of": 9
+        },
+        "reasons": {
+          "other": 1,
+          "proposals": 6
+        }
+      }
+    },
+    "results": [
+      {
+        "id": "BP-01",
+        "domain": "bank-payment",
+        "ms": 3656,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 630,
+          "outputTokens": 329
+        },
+        "given": {
+          "characters": 586,
+          "recordedDecisions": 0
+        },
+        "assessments": [
+          {
+            "id": "F:capacity:run-001",
+            "kind": "fix",
+            "verdict": "refine",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": true,
+            "proposalsOk": null,
+            "preferredOk": null,
+            "addresses": false,
+            "forbidden": [],
+            "unsupportedNumbers": [],
+            "falseSupport": false,
+            "flags": [],
+            "citedKinds": [],
+            "refinements": [
+              "scalingPolicy"
+            ],
+            "brainChecks": [],
+            "brainCheckReasons": [],
+            "answer": {
+              "headline": "Refine scaling parameters for RUN-001 to balance performance and cost.",
+              "reasoning": "Setting the maximum replicas to 24 is reasonable given expected load, but the scaling policy is underspecified. Without concrete CPU utilisation thresholds and correct min and max replica counts matching the maxReplicas value, autoscaling may be suboptimal. Specifying a concrete CPU utilisation target (e.g., 70%) and ensuring minReplicas is set to a sensible baseline helps stabilize scaling behavior and avoid unnecessary resource consumption or latency.",
+              "risks": [
+                "Overprovisioning leading to increased costs if max replicas are too high or CPU threshold too low.",
+                "Underprovisioning causing latency spikes and degraded user experience if scaling parameters are too restrictive.",
+                "Insufficient scaling range leading to bottlenecks during traffic peaks."
+              ],
+              "questions": [
+                "What are the current and expected traffic and CPU load patterns for RUN-001?",
+                "What are the minimum acceptable and maximum resource utilization targets?",
+                "Is there a budget or resource constraint influencing max replica count?",
+                "Should other metrics besides CPU be considered for scaling triggers?"
+              ],
+              "refinements": [
+                {
+                  "key": "scalingPolicy",
+                  "value": "Horizontal Pod Autoscaler on CPU at 70%, from 3 to 24 replicas.",
+                  "why": "Defines clear scaling thresholds and aligns min/max replicas to maintain stability and responsiveness."
+                }
+              ],
+              "proposals": [],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-02",
+        "domain": "bank-payment",
+        "ms": 5103,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 660,
+          "outputTokens": 596
+        },
+        "given": {
+          "characters": 737,
+          "recordedDecisions": 0
+        },
+        "assessments": [
+          {
+            "id": "F:integrity:if-004+rest",
+            "kind": "fix",
+            "verdict": "refine",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": null,
+            "preferredOk": null,
+            "addresses": true,
+            "forbidden": [
+              "\\bguarantee"
+            ],
+            "unsupportedNumbers": [],
+            "falseSupport": true,
+            "flags": [
+              {
+                "kind": "forbidden",
+                "match": "guarantee",
+                "sentence": "Failure to persist keys reliably may cause loss of idempotency guarantees"
+              },
+              {
+                "kind": "forbidden",
+                "match": "guarantee",
+                "sentence": "What storage and consistency guarantees exist for key persistence?"
+              },
+              {
+                "kind": "forbidden",
+                "match": "guarantee",
+                "sentence": "To guarantee that repeated checks do not produce inconsistent or outdated responses."
+              }
+            ],
+            "citedKinds": [],
+            "refinements": [
+              "rest",
+              "if-004",
+              "duplicatePolicy"
+            ],
+            "brainChecks": [
+              "IF-001 Payment initiation: its wording is longer than the field's 120 characters.",
+              "IF-004 Check: its wording is longer than the field's 120 characters.",
+              "It proposes threats for a decision that does not take them."
+            ],
+            "brainCheckReasons": [
+              "other",
+              "proposals"
+            ],
+            "answer": {
+              "headline": "Refine idempotency implementation and duplicate request handling for IF-001 and IF-004.",
+              "reasoning": "Ensuring that IF-001 and IF-004 can be safely repeated enhances reliability and user experience by preventing double processing. The current duplicate policy is good in principle but needs clear definitions around what constitutes 'the same {key}', how to detect changes in requests under the same key, and ensuring that requests are atomic and consistent when repeated. Additionally, it's important to handle edge cases such as partial failures or timing issues. Specifying these details will ensure robust and predictable behavior.",
+              "risks": [
+                "Incorrect idempotency key handling can cause duplicate payments or inconsistent system state",
+                "Lack of atomicity may lead to partial updates during retries",
+                "Ambiguous duplicate policy may cause client confusion or errors",
+                "Failure to persist keys reliably may cause loss of idempotency guarantees"
+              ],
+              "questions": [
+                "How are idempotency keys generated and managed?",
+                "What storage and consistency guarantees exist for key persistence?",
+                "How to handle partial or failed repeated requests?",
+                "What client behaviors and retry patterns are expected?"
+              ],
+              "refinements": [
+                {
+                  "key": "rest",
+                  "value": "IF-001 Payment initiation and IF-004 Check endpoints must validate and persist idempotency keys linked to requests to detect duplicates accurately.",
+                  "why": "To correctly detect repeated requests and safely return previous outcomes, idempotency keys should be stored and verified at call time."
+                },
+                {
+                  "key": "if-004",
+                  "value": "Expand IF-004 Check to include validation of paymentReference state changes and ensure read consistency under repeated calls.",
+                  "why": "To guarantee that repeated checks do not produce inconsistent or outdated responses."
+                },
+                {
+                  "key": "duplicatePolicy",
+                  "value": "Define that a repeat with the same idempotency key and identical request parameters returns the original response without side effects; if parameters differ, respond with an error refusing the change.",
+                  "why": "Clarifies the treatment of duplicate keys with differing data to ensure data integrity and avoid unintended side effects."
+                }
+              ],
+              "proposals": [
+                {
+                  "title": "Implement persistent idempotency key storage and validation at IF-001 and IF-004 endpoints",
+                  "category": "Service disruption",
+                  "priority": "High",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "Clients retry requests due to network issues or uncertainty about request success",
+                  "consequence": "Prevents duplicate payments or inconsistent checks, improving system reliability and trust"
+                },
+                {
+                  "title": "Add strict request payload validation against stored keys to reject altered duplicate requests",
+                  "category": "Unauthorised action",
+                  "priority": "Moderate",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "Client attempts to modify a request under an existing idempotency key",
+                  "consequence": "Protects against unintended state changes or fraudulent manipulations"
+                }
+              ],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-03",
+        "domain": "bank-payment",
+        "ms": 3415,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 710,
+          "outputTokens": 463
+        },
+        "given": {
+          "characters": 917,
+          "recordedDecisions": 0
+        },
+        "assessments": [
+          {
+            "id": "F:observability:run-001",
+            "kind": "fix",
+            "verdict": "refine",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": null,
+            "preferredOk": null,
+            "addresses": true,
+            "forbidden": [],
+            "unsupportedNumbers": [],
+            "falseSupport": false,
+            "flags": [],
+            "citedKinds": [],
+            "refinements": [
+              "monitoring"
+            ],
+            "brainChecks": [
+              "It proposes threats for a decision that does not take them."
+            ],
+            "brainCheckReasons": [
+              "proposals"
+            ],
+            "answer": {
+              "headline": "Refine monitoring thresholds and clarify sensitive data handling for RUN-001 failure detection.",
+              "reasoning": "The current monitoring covers key metrics like request rate and error rate, and sets alerts for various conditions including reconciliation failures and performance thresholds. However, the alert threshold of half the allowed 43.2 minutes in 30 days for reconciliation effects is ambiguous and could be more explicit for operational clarity. Additionally, while it sensibly excludes credentials and payment details from telemetry payloads, it should explicitly define what constitutes sensitive data to prevent accidental exposure. Refining alert definitions and documentation will improve incident response and compliance.",
+              "risks": [
+                "Ambiguous alert thresholds leading to missed or false alerts.",
+                "Potential accidental logging of sensitive payment or credential data.",
+                "Delayed operational response due to unclear monitoring criteria.",
+                "Non-compliance with data privacy regulations due to incomplete data handling definitions."
+              ],
+              "questions": [
+                "What precisely constitutes a reconciliation effect in measurable terms?",
+                "How will refused access alerts handle different error scenarios?",
+                "Is there a documented data classification standard for telemetry payloads?",
+                "Who is responsible for maintaining monitoring definitions and alert thresholds?"
+              ],
+              "refinements": [
+                {
+                  "key": "monitoring",
+                  "value": "Define explicit thresholds for effect reconciliation (e.g., number of occurrences or percentage of successful reconciliations) rather than time spent. Include precise criteria for refused access alerts to avoid false positives. Include a data classification guide for telemetry to clearly identify prohibited fields.",
+                  "why": "Clearer thresholds aid timely and unambiguous alerting. Explicit data handling rules prevent inadvertent logging of sensitive information, ensuring privacy and compliance."
+                }
+              ],
+              "proposals": [
+                {
+                  "title": "Implement comprehensive monitoring with explicit thresholds and data classification for RUN-001",
+                  "category": "Missing evidence",
+                  "priority": "High",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "Failure of RUN-001 component characterized by degraded performance or data access issues.",
+                  "consequence": "Delayed detection of failures, potential privacy breaches, and operational inefficiency."
+                }
+              ],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-04",
+        "domain": "bank-payment",
+        "ms": 3323,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 587,
+          "outputTokens": 421
+        },
+        "given": {
+          "characters": 428,
+          "recordedDecisions": 0
+        },
+        "assessments": [
+          {
+            "id": "J:security:run-002",
+            "kind": "judgement",
+            "verdict": "judge",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": true,
+            "preferredOk": null,
+            "addresses": null,
+            "forbidden": [],
+            "unsupportedNumbers": [],
+            "falseSupport": false,
+            "flags": [],
+            "citedKinds": [],
+            "refinements": [],
+            "brainChecks": [],
+            "brainCheckReasons": [],
+            "answer": {
+              "headline": "RUN-002 requires architectural judgement due to protection scope and threat implications.",
+              "reasoning": "The decision RUN-002 involves protection measures critical to the security posture of multiple components including the risk engine, interfaces, and risk record. Without detailed implementation or scope, it is not possible to conclusively apply or refine. The architect must assess trade-offs including protection depth, performance impact, and compliance requirements. Evaluating these will clarify the best protections and controls to apply as the implications vary across targets and their threat models.",
+              "risks": [
+                "Unauthorized access to risk engine components",
+                "Data tampering of risk records",
+                "Replay attacks on transaction data",
+                "Disruption of service availability"
+              ],
+              "questions": [
+                "What specific protection mechanisms are planned or feasible for each component?",
+                "What are the compliance and audit requirements influencing protection design?",
+                "What are the expected threats and attacker capabilities targeting these components?",
+                "What performance trade-offs are acceptable for enhanced protection?"
+              ],
+              "refinements": [],
+              "proposals": [
+                {
+                  "title": "Implement multi-layer defense controls on risk-engine and interfaces",
+                  "category": "Unauthorised action",
+                  "priority": "Critical",
+                  "targetIds": [
+                    "risk-engine",
+                    "if-004",
+                    "if-005"
+                  ],
+                  "scenario": "Attempt to bypass input validation and execute unauthorized transactions",
+                  "consequence": "Potential fraudulent transactions and financial losses"
+                },
+                {
+                  "title": "Apply data integrity checks and access control on risk-record",
+                  "category": "Replay or tampering",
+                  "priority": "High",
+                  "targetIds": [
+                    "risk-record"
+                  ],
+                  "scenario": "Replay or modification of recorded risk data to hide fraudulent activities",
+                  "consequence": "Inaccurate risk assessments leading to poor decision making"
+                },
+                {
+                  "title": "Monitor and alert on suspicious access patterns",
+                  "category": "Service disruption",
+                  "priority": "Moderate",
+                  "targetIds": [
+                    "risk-engine",
+                    "risk-record"
+                  ],
+                  "scenario": "Denial of service attacks or attempts to overload the risk components",
+                  "consequence": "Degraded system availability impacting transaction processing"
+                }
+              ],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-05",
+        "domain": "bank-payment",
+        "ms": 3566,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 722,
+          "outputTokens": 427
+        },
+        "given": {
+          "characters": 1236,
+          "recordedDecisions": 1
+        },
+        "assessments": [
+          {
+            "id": "D:ADR-001",
+            "kind": "decision",
+            "verdict": "judge",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": null,
+            "preferredOk": true,
+            "addresses": null,
+            "forbidden": [],
+            "unsupportedNumbers": [],
+            "falseSupport": false,
+            "flags": [],
+            "citedKinds": [],
+            "refinements": [],
+            "brainChecks": [
+              "It proposes threats for a decision that does not take them."
+            ],
+            "brainCheckReasons": [
+              "proposals"
+            ],
+            "answer": {
+              "headline": "Decision requires business and operational priorities to balance user experience against system complexity and outcome clarity.",
+              "reasoning": "Synchronous acknowledgment offers immediate feedback but requires the API to handle bounded waits and deal with ambiguous outcomes like HTTP timeouts, potentially confusing customers. Asynchronous durable handoff simplifies the API's response mechanism but delays customer notification of final outcome, requiring separate processes and user notifications. The choice hinges on acceptable user experience, risk tolerance around unknown outcomes, and operational capacity to run asynchronous workflows and notifications.",
+              "risks": [
+                "Misinterpreting HTTP timeouts as failures leading to duplicate payments.",
+                "Increased complexity in user notification flows for asynchronous models.",
+                "Potential delays in informing the customer causing dissatisfaction.",
+                "Operational overhead maintaining durable handoff and settlement notification processes."
+              ],
+              "questions": [
+                "What is the acceptable maximum time a customer can wait for payment acknowledgement?",
+                "How critical is immediate feedback versus definitive confirmation of payment?",
+                "Can the system reliably handle asynchronous notifications in a timely manner?",
+                "What is the customer tolerance for ambiguity or intermediate states in payment processing?"
+              ],
+              "refinements": [],
+              "proposals": [
+                {
+                  "title": "Implement synchronous acknowledgment with explicit handling of timeout scenarios",
+                  "category": "Service disruption",
+                  "priority": "High",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "Customer experiences HTTP timeout; system must clarify outcome to avoid confusion.",
+                  "consequence": "Possible customer confusion and redundant payment attempts."
+                },
+                {
+                  "title": "Adopt asynchronous durable handoff with robust notification mechanisms",
+                  "category": "Missing evidence",
+                  "priority": "Moderate",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "Final settlement outcome needs separate delivery to customer.",
+                  "consequence": "Longer wait times for confirmation but clearer indication of payment success or failure."
+                }
+              ],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-06",
+        "domain": "bank-payment",
+        "ms": 4625,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 728,
+          "outputTokens": 460
+        },
+        "given": {
+          "characters": 1218,
+          "recordedDecisions": 1
+        },
+        "assessments": [
+          {
+            "id": "D:ADR-002",
+            "kind": "decision",
+            "verdict": "judge",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": null,
+            "preferredOk": true,
+            "addresses": null,
+            "forbidden": [
+              "\\bguarantee"
+            ],
+            "unsupportedNumbers": [],
+            "falseSupport": true,
+            "flags": [
+              {
+                "kind": "forbidden",
+                "match": "guarantee",
+                "sentence": "Enforcing the financial effect at the posting boundary ensures a durable, atomic, and authoritative guarantee, preventing duplicates even in network retries or concurrent requests."
+              },
+              {
+                "kind": "forbidden",
+                "match": "guarantee",
+                "sentence": "Improves performance and reduces processing but risks missing durability and correctness guarantees."
+              }
+            ],
+            "citedKinds": [],
+            "refinements": [],
+            "brainChecks": [
+              "It proposes threats for a decision that does not take them."
+            ],
+            "brainCheckReasons": [
+              "proposals"
+            ],
+            "answer": {
+              "headline": "Decision requires a business and architectural judgment between core ledger enforcement and application cache optimization for financial effect enforcement.",
+              "reasoning": "Enforcing the financial effect at the posting boundary ensures a durable, atomic, and authoritative guarantee, preventing duplicates even in network retries or concurrent requests. However, it may add complexity or performance overhead. Suppressing repeats in the application cache can reduce duplicate processing but doesn't guarantee durability or absolute correctness alone, risking possible financial inconsistencies if relied on as the source of truth. The choice depends on the business tolerance for complexity versus risk, and the system's performance constraints.",
+              "risks": [
+                "If only application cache suppression is used, financial integrity may be compromised under failure scenarios.",
+                "Enforcing at the posting boundary may impact performance or scalability due to atomicity constraints.",
+                "Assuming idempotency without rigorous concurrency control can cause duplicate effects.",
+                "Relying on a cache as source of truth risks inconsistency after cache eviction or crashes."
+              ],
+              "questions": [
+                "What are the business requirements for financial correctness and tolerance for duplicates?",
+                "Can the core ledger system support atomic idempotent enforcement with acceptable performance?",
+                "Are there retry or failure modes that challenge the chosen enforcement location?",
+                "What is the architecture’s capacity for handling concurrency and locking at the posting boundary?"
+              ],
+              "refinements": [],
+              "proposals": [
+                {
+                  "title": "Enforce the reference at the posting boundary",
+                  "category": "Missing evidence",
+                  "priority": "Critical",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "Concurrent retry or timeout triggers duplicate payment submission to the ledger system.",
+                  "consequence": "Prevents financial inconsistencies by idempotent ledger enforcement but may introduce processing latency."
+                },
+                {
+                  "title": "Suppress repeats in the application cache",
+                  "category": "Missing evidence",
+                  "priority": "Moderate",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "Application cache misses or volatility leads to repeated duplicate requests reaching the ledger.",
+                  "consequence": "Improves performance and reduces processing but risks missing durability and correctness guarantees."
+                }
+              ],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-07",
+        "domain": "bank-payment",
+        "ms": 3345,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 648,
+          "outputTokens": 439
+        },
+        "given": {
+          "characters": 752,
+          "recordedDecisions": 0
+        },
+        "assessments": [
+          {
+            "id": "F:switch:tr-003",
+            "kind": "switch",
+            "verdict": "refine",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": null,
+            "preferredOk": null,
+            "addresses": true,
+            "forbidden": [],
+            "unsupportedNumbers": [],
+            "falseSupport": false,
+            "flags": [],
+            "citedKinds": [],
+            "refinements": [
+              "context"
+            ],
+            "brainChecks": [
+              "It proposes threats for a decision that does not take them."
+            ],
+            "brainCheckReasons": [
+              "proposals"
+            ],
+            "answer": {
+              "headline": "Refine context to explicitly capture performance and scalability trade-offs between RabbitMQ and Apache Kafka",
+              "reasoning": "The draft identifies the current context, noting high concurrency on RabbitMQ and a leaning towards Apache Kafka due to driver weights. However, the decision would benefit from deeper contextual information on key requirements like message throughput, latency, fault tolerance, and operational complexity. This would clarify why a Chapter 3 decision (early architectural design choice) is appropriate and better justify the product switch by directly linking drivers and planning assumptions to documented requirements and constraints.",
+              "risks": [
+                "Insufficient context may lead to underestimating operational impacts or scaling constraints.",
+                "Choosing a messaging system without full requirement alignment can cause costly refactoring later.",
+                "Not documenting trade-offs explicitly may result in unclear decision rationale for stakeholders."
+              ],
+              "questions": [
+                "What are the explicit performance and scalability requirements driving this choice?",
+                "How do RabbitMQ and Apache Kafka compare on latency, fault tolerance, and operational overhead?",
+                "What assumptions underpin the driver scores assigned to each product?"
+              ],
+              "refinements": [
+                {
+                  "key": "context",
+                  "value": "Detail the performance metrics, scalability needs, operational complexity, fault tolerance demands, and the impact on downstream components associated with RabbitMQ and Apache Kafka to support this architectural product choice as a Chapter 3 decision.",
+                  "why": "This refinement provides a richer context that grounds the product choice decision in concrete criteria, aligning the evaluation with system requirements and risks."
+                }
+              ],
+              "proposals": [
+                {
+                  "title": "Adopt Apache Kafka due to superior scalability and performance for high-concurrency messaging",
+                  "category": "Service disruption",
+                  "priority": "High",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "System hitting RabbitMQ concurrency limits causing message delays and failures",
+                  "consequence": "Payment processing delays and potential transaction failures impacting customer trust and regulatory compliance"
+                }
+              ],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-08",
+        "domain": "bank-payment",
+        "ms": 4135,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 719,
+          "outputTokens": 551
+        },
+        "given": {
+          "characters": 1038,
+          "recordedDecisions": 0
+        },
+        "assessments": [
+          {
+            "id": "F:switch:tr-002",
+            "kind": "switch",
+            "verdict": "refine",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": null,
+            "preferredOk": null,
+            "addresses": true,
+            "forbidden": [],
+            "unsupportedNumbers": [],
+            "falseSupport": false,
+            "flags": [],
+            "citedKinds": [],
+            "refinements": [
+              "context"
+            ],
+            "brainChecks": [
+              "It proposes threats for a decision that does not take them."
+            ],
+            "brainCheckReasons": [
+              "proposals"
+            ],
+            "answer": {
+              "headline": "Refine the context to clarify scalability and technology implications for product choice.",
+              "reasoning": "The draft provides a useful context focusing on PostgreSQL's primary write limitations at high concurrency and alternatives like partitioning or using MongoDB sharding. However, it conflates technical scalability concerns with driver support ratings without clear linkage. The framing as a Chapter 3 decision is appropriate but should explicitly describe the trade-offs between the relational consistency of PostgreSQL and the sharding flexibility of MongoDB in terms of the business requirements. Also, mention the operational complexity and cost implications of multiple primaries or sharded clusters to provide a holistic assessment.",
+              "risks": [
+                "Misestimating write load causes unexpected bottlenecks",
+                "Operational complexity of multiple databases increases failure probability",
+                "Driver maturity ratings may not reflect real-world integration challenges",
+                "Data consistency could be compromised under sharded or multi-primary setups"
+              ],
+              "questions": [
+                "What are the business-critical consistency requirements for payment references?",
+                "Is there operational expertise available for managing MongoDB sharding or multi-primary PostgreSQL?",
+                "Are the cost implications of running multiple databases or shard clusters acceptable?",
+                "How will disaster recovery and backup strategies differ between options?"
+              ],
+              "refinements": [
+                {
+                  "key": "context",
+                  "value": "PostgreSQL single primary node limits writes above ≈75,000 concurrent users, pushing the need for partitioning by service or key or switching to MongoDB with sharding to spread load. Both technologies score equally on driver maturity (8/10). This decision frames the trade-offs between relational consistency and scalability, including operational cost and complexity, to guide product choice in Chapter 3.",
+                  "why": "Clarifies the scalability constraints and trade-offs explicitly, aiding stakeholder understanding and decision-making alignment with business needs."
+                }
+              ],
+              "proposals": [
+                {
+                  "title": "Adopt PostgreSQL with partitioning or multiple primaries where feasible",
+                  "category": "Service disruption",
+                  "priority": "Moderate",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "High concurrency write load could exceed single primary capacity, risking write delays or failures if not partitioned or using multi-primary configurations.",
+                  "consequence": "Possible degradation in write performance or outages impacting payment processing."
+                },
+                {
+                  "title": "Adopt MongoDB sharding approach for high scalability needs",
+                  "category": "Service disruption",
+                  "priority": "Moderate",
+                  "targetIds": [
+                    "none"
+                  ],
+                  "scenario": "MongoDB sharding spreads writes across shards but may introduce eventual consistency or complexity issues.",
+                  "consequence": "Consistency concerns might impact transaction accuracy or reconciliation processes, requiring compensating controls."
+                }
+              ],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-09",
+        "domain": "bank-payment",
+        "ms": 2497,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "usage": {
+          "inputTokens": 702,
+          "outputTokens": 262
+        },
+        "given": {
+          "characters": 1033,
+          "recordedDecisions": 0
+        },
+        "assessments": [
+          {
+            "id": "M:2:QD-003",
+            "kind": "record",
+            "verdict": "apply",
+            "withheld": false,
+            "verdictAgrees": true,
+            "citesOwnReading": null,
+            "citesExpectedKinds": null,
+            "numbersInBand": null,
+            "proposalsOk": null,
+            "preferredOk": null,
+            "addresses": null,
+            "forbidden": [
+              "\\bguarantee"
+            ],
+            "unsupportedNumbers": [],
+            "falseSupport": true,
+            "flags": [
+              {
+                "kind": "forbidden",
+                "match": "guarantee",
+                "sentence": "Dependencies availability is assumed; outages could invalidate the acknowledgment guarantee."
+              }
+            ],
+            "citedKinds": [],
+            "refinements": [],
+            "brainChecks": [],
+            "brainCheckReasons": [],
+            "answer": {
+              "headline": "Risk-aware acknowledgment under peak load is well defined and measurable.",
+              "reasoning": "The decision clearly defines the stimulus, conditions, response, and measurable performance metric, allowing for predictable system behavior during peak loads. It distinguishes acknowledgment from final settlement, which supports operational clarity. The latency metric and measurement method are appropriate to monitor and ensure system responsiveness. This decision provides a sound basis for system design and monitoring under the expected loads.",
+              "risks": [
+                "Latency might degrade unpredictably beyond 95th percentile under unexpected peak conditions.",
+                "Hold responses could introduce customer dissatisfaction if frequent without clear communication.",
+                "Dependencies availability is assumed; outages could invalidate the acknowledgment guarantee.",
+                "Measurement at the 95th percentile may mask tail latency spikes affecting some users."
+              ],
+              "questions": [
+                "What are the escalation or fallback procedures if dependencies become unavailable?",
+                "Is the 95th percentile latency target aligned with customer SLA expectations?",
+                "How will hold responses be communicated to customers to minimize confusion or support costs?",
+                "Are there plans to monitor acknowledgment quality continuously to detect degradation early?"
+              ],
+              "refinements": [],
+              "proposals": [],
+              "preferred": "none",
+              "sourceRefs": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-10",
+        "domain": "bank-payment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 2196
+      },
+      {
+        "id": "BP-11",
+        "domain": "bank-payment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 69
+      },
+      {
+        "id": "BP-12",
+        "domain": "bank-payment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 77
+      },
+      {
+        "id": "BP-13",
+        "domain": "bank-payment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 66
+      },
+      {
+        "id": "BP-14",
+        "domain": "bank-payment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 270
+      },
+      {
+        "id": "SP-01",
+        "domain": "service-permits",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 57
+      },
+      {
+        "id": "SP-02",
+        "domain": "service-permits",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 46
+      },
+      {
+        "id": "SP-03",
+        "domain": "service-permits",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 34
+      },
+      {
+        "id": "SP-04",
+        "domain": "service-permits",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 32
+      },
+      {
+        "id": "SP-05",
+        "domain": "service-permits",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 30
+      },
+      {
+        "id": "SP-06",
+        "domain": "service-permits",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 44
+      },
+      {
+        "id": "WF-01",
+        "domain": "warehouse-fulfilment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 39
+      },
+      {
+        "id": "WF-02",
+        "domain": "warehouse-fulfilment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 42
+      },
+      {
+        "id": "WF-03",
+        "domain": "warehouse-fulfilment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 35
+      },
+      {
+        "id": "WF-04",
+        "domain": "warehouse-fulfilment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 33
+      },
+      {
+        "id": "WF-05",
+        "domain": "warehouse-fulfilment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 38
+      },
+      {
+        "id": "WF-06",
+        "domain": "warehouse-fulfilment",
+        "error": "provider_unavailable",
+        "detail": "The provider connection was interrupted.",
+        "ms": 29
+      }
+    ]
+  },
+  "comparison": {
+    "rows": [
+      {
+        "id": "BP-01",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "F:capacity:run-001",
+            "brain": {
+              "verdict": "refine",
+              "withheld": false,
+              "agrees": true,
+              "falseSupport": false
+            },
+            "direct": {
+              "verdict": "refine",
+              "agrees": true,
+              "falseSupport": false,
+              "failsBrainChecks": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-02",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "F:integrity:if-004+rest",
+            "brain": {
+              "verdict": "apply",
+              "withheld": false,
+              "agrees": true,
+              "falseSupport": true
+            },
+            "direct": {
+              "verdict": "refine",
+              "agrees": true,
+              "falseSupport": true,
+              "failsBrainChecks": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-03",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "F:observability:run-001",
+            "brain": {
+              "verdict": "apply",
+              "withheld": false,
+              "agrees": true,
+              "falseSupport": false
+            },
+            "direct": {
+              "verdict": "refine",
+              "agrees": true,
+              "falseSupport": false,
+              "failsBrainChecks": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-04",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "J:security:run-002",
+            "brain": {
+              "verdict": null,
+              "withheld": true,
+              "agrees": null,
+              "falseSupport": null
+            },
+            "direct": {
+              "verdict": "judge",
+              "agrees": true,
+              "falseSupport": false,
+              "failsBrainChecks": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-05",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "D:ADR-001",
+            "brain": {
+              "verdict": null,
+              "withheld": true,
+              "agrees": null,
+              "falseSupport": null
+            },
+            "direct": {
+              "verdict": "judge",
+              "agrees": true,
+              "falseSupport": false,
+              "failsBrainChecks": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-06",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "D:ADR-002",
+            "brain": {
+              "verdict": null,
+              "withheld": true,
+              "agrees": null,
+              "falseSupport": null
+            },
+            "direct": {
+              "verdict": "judge",
+              "agrees": true,
+              "falseSupport": true,
+              "failsBrainChecks": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-07",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "F:switch:tr-003",
+            "brain": {
+              "verdict": "apply",
+              "withheld": false,
+              "agrees": true,
+              "falseSupport": false
+            },
+            "direct": {
+              "verdict": "refine",
+              "agrees": true,
+              "falseSupport": false,
+              "failsBrainChecks": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-08",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "F:switch:tr-002",
+            "brain": {
+              "verdict": "apply",
+              "withheld": false,
+              "agrees": true,
+              "falseSupport": false
+            },
+            "direct": {
+              "verdict": "refine",
+              "agrees": true,
+              "falseSupport": false,
+              "failsBrainChecks": true
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-09",
+        "domain": "bank-payment",
+        "assessments": [
+          {
+            "id": "M:2:QD-003",
+            "brain": {
+              "verdict": "refine",
+              "withheld": false,
+              "agrees": true,
+              "falseSupport": false
+            },
+            "direct": {
+              "verdict": "apply",
+              "agrees": true,
+              "falseSupport": true,
+              "failsBrainChecks": false
+            }
+          }
+        ]
+      },
+      {
+        "id": "BP-10",
+        "domain": "bank-payment",
+        "assessments": []
+      },
+      {
+        "id": "BP-11",
+        "domain": "bank-payment",
+        "assessments": []
+      },
+      {
+        "id": "BP-12",
+        "domain": "bank-payment",
+        "assessments": []
+      },
+      {
+        "id": "BP-13",
+        "domain": "bank-payment",
+        "assessments": []
+      },
+      {
+        "id": "BP-14",
+        "domain": "bank-payment",
+        "assessments": []
+      },
+      {
+        "id": "SP-01",
+        "domain": "service-permits",
+        "assessments": []
+      },
+      {
+        "id": "SP-02",
+        "domain": "service-permits",
+        "assessments": []
+      },
+      {
+        "id": "SP-03",
+        "domain": "service-permits",
+        "assessments": []
+      },
+      {
+        "id": "SP-04",
+        "domain": "service-permits",
+        "assessments": []
+      },
+      {
+        "id": "SP-05",
+        "domain": "service-permits",
+        "assessments": []
+      },
+      {
+        "id": "SP-06",
+        "domain": "service-permits",
+        "assessments": []
+      },
+      {
+        "id": "WF-01",
+        "domain": "warehouse-fulfilment",
+        "assessments": []
+      },
+      {
+        "id": "WF-02",
+        "domain": "warehouse-fulfilment",
+        "assessments": []
+      },
+      {
+        "id": "WF-03",
+        "domain": "warehouse-fulfilment",
+        "assessments": []
+      },
+      {
+        "id": "WF-04",
+        "domain": "warehouse-fulfilment",
+        "assessments": []
+      },
+      {
+        "id": "WF-05",
+        "domain": "warehouse-fulfilment",
+        "assessments": []
+      },
+      {
+        "id": "WF-06",
+        "domain": "warehouse-fulfilment",
+        "assessments": []
+      }
+    ],
+    "assessments": 9,
+    "advised": {
+      "brain": 6,
+      "direct": 9
+    },
+    "agreesWithExpected": {
+      "brain": 6,
+      "direct": 9
+    },
+    "soundAsScored": {
+      "brain": 5,
+      "direct": 6,
+      "directAndPassesBrainChecks": 2
+    },
+    "whereBothAdvised": {
+      "bothAgree": 6,
+      "onlyBrainAgrees": 0,
+      "onlyDirectAgrees": 0,
+      "neither": 0
+    },
+    "whereBrainWithheld": {
+      "assessments": 3,
+      "directAgrees": 3,
+      "directFailsBrainChecks": 2
+    }
+  },
+  "limitations": [
+    "Expectations are implementation-authored and need independent architect review.",
+    "Metrics are automated proxies: they detect grounding and structural failures and disagreement with the expected class of advice, not the quality of architectural judgement.",
+    "The designs are reference and teaching examples, not a production system.",
+    "The control arm is one plain prompt to the same model; a different prompt or model would answer differently."
+  ],
+  "mode": "live-provider"
+}
