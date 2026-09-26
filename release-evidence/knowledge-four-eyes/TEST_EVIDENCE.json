@@ -1,0 +1,301 @@
+{
+  "schemaVersion": "aiw-test-evidence-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.6",
+  "packageLine": "AIW V5 Local Source v20.2 (four eyes, candidate knowledge and the Brain chain, on v20.1)",
+  "sourceCommit": "f435e61d6336861599b181678b010f46e46522d3",
+  "generatedAt": "2026-09-26T14:44:42.702Z",
+  "workstation": {
+    "os": "Windows 11 Enterprise 10.0.26200",
+    "node": "v24.18.0",
+    "browser": "Playwright 1.56.0 · Chromium headless shell 141.0.7390.37 (revision 1194)"
+  },
+  "gates": {
+    "syntax": {
+      "command": "npm run check",
+      "status": "passed",
+      "seconds": 201.9,
+      "output": "Syntax checks passed for 336 application, service and verification modules."
+    },
+    "build": {
+      "command": "npm run build",
+      "status": "passed",
+      "seconds": 6.1,
+      "output": "Built private project Worker, static assets, and D1 migrations; packaged imports verified."
+    },
+    "focusedSuites": {
+      "where": "A clean extract of the v20.2 package with no node_modules.",
+      "suites": [
+        {
+          "name": "test",
+          "status": "passed",
+          "seconds": 0.6,
+          "checks": 11,
+          "checkNames": [
+            "unique objects and resolved endpoints",
+            "eight layer toggles",
+            "chapter and tab context rendering",
+            "object selection",
+            "ghost preview / acceptance / undo",
+            "validation and export invalidation",
+            "complete payment journey",
+            "risk hold stops before posting",
+            "timeout stops before confirmation",
+            "candidate relationship integrity",
+            "open governance findings retained"
+          ]
+        },
+        {
+          "name": "test:brain-reasoning",
+          "status": "passed",
+          "seconds": 6.3,
+          "checks": 8,
+          "checkNames": [
+            "the packet: 6 decisions, each as the instruments read it — its reading, draft, knobs with their bounds and simulated effect — then the objective and assumptions, the documented product mechanisms with receipts, the quality drivers and the SA Playbook's tactics; 22 sources within the 22-source, 28,000-character bound",
+            "the contract: only the packet's decisions and sources; verdicts that fit each kind; refinements only on the draft's own knobs and within their bounds; threats only on listed targets; no number the readings do not contain, and nothing guaranteed",
+            "settling: an assessment the second pass does not support, or one Sol did not reach, is withheld — its reading stands and no advice is invented",
+            "size, duplicates and wording never cost the batch: advice over its limit is cut at the last whole sentence and named, a duplicated or unknown decision is set aside, a foreign citation withholds only its own assessment, and a drafted value whose wording guarantees an outcome is set aside and shown while the rest of the advice stands; only a broken structure fails the response",
+            "the provider path: one call drafts the assessments against a strict schema, the guard and a second call check them, nothing is stored by the provider; an enterprise gateway may replace the endpoint only over https (or loopback, for tests)",
+            "through the server: the packet is prepared and shown without sending anything; only the packet that was shown is sent, and only when the provider is configured; the design is unchanged and a replay is not billed again; the architect's use, application or dismissal (with a reason) is recorded with the model and the sources it rested on, and an applied fix leaves the advice as history",
+            "governed knowledge reaches the models: withdrawing the product mechanisms stops the product suggestions and single-unit limits, Sol no longer receives them, their receipts go stale, and the withdrawal names the assessments that rested on them",
+            "reading, reasoning and simulating change nothing in the project"
+          ]
+        },
+        {
+          "name": "test:chapter-reasoning",
+          "status": "passed",
+          "seconds": 4.7,
+          "checks": 9,
+          "checkNames": [
+            "what Sol can be asked about: every chapter's own records — drivers, responsibilities, components, capabilities, realisations and their options, contracts and data, threats and controls, runtime plans; Chapter 3's decisions and alternatives as the desk's decisions; a part seen from Chapter 9 as what could go wrong; a What if move with only its target and priority",
+            "each chapter's reading: the chapter model's own words, the record's fields and what it does not record, the journey's checks on it, the desk's vitals for the parts it touches, and what the chapter knows besides — a driver's carriers and tactics, a What if's reach and arithmetic, a realisation's options, a contract's ends, a part's recorded threats and what a threat on it may target",
+            "what identifies a reading: the record and the checks and vitals of what it touches, so an edit makes earlier advice history — for the record and for the records whose vitals it moves — while the rest keep theirs; in What if, the move itself",
+            "refinements become the chapter's own change command: each of 44 knobs across 10 record types changes its own field and nothing else — the component's allocations, the capability's and realisation's mappings and the contract's exchanges are kept — and no other field can be named",
+            "the instruments read the design again with the refinements: which checks clear and which appear, and which vitals move (monitoring turns RUN-001's observability from critical to normal; a duplicate policy clears IF-001's check); a value the chapter's own rules reject fails here, before any review",
+            "the packet: the chapter's reading first and whole, fitted to its share (six in a round), then the objective only where capacity is read, the documented product mechanisms, the drivers and the playbook's tactics; a What if carries its move and cannot be refined; the disclosure policy and knowledge withdrawals apply as on the desk",
+            "the contract per kind: a record may be refined within its knobs, a move may not; a part seen from Chapter 9 takes proposed threats on its listed targets; a realisation may name a preferred option; refined wording that guarantees an outcome is set aside, never applied, while the rest of the advice stands; and a refinement the chapter's own rules reject is withheld, while one that passes carries the instruments' re-reading",
+            "through the server: chapter records, a Chapter 9 part and a What if move in one request; the refinement arrives with the instruments' re-reading; use, agreement and application are recorded with the chapter and the chapter reading they rested on; once the record changes, the advice is history",
+            "reading, reasoning, re-reading and adopting change nothing in the project itself"
+          ]
+        },
+        {
+          "name": "test:stewardship",
+          "status": "passed",
+          "seconds": 3.3,
+          "checks": 8,
+          "checkNames": [
+            "a disagreement reaches the stewards' queue with the record it concerned and the knowledge the advice rested on",
+            "Sol advises the stewards through the same reasoning task: the disagreement, the advice it answered, the record as it reads now, and the project's knowledge on it; a capture is drafted in the knobs and Sol may reword it",
+            "captured: the disagreement becomes an original source — the project's own record of it, the architect's words on line 4 — and a candidate claim with where it applies and its limits; nothing is reviewed or active yet, and a disagreement is handled once",
+            "the governed path, followed on the queue: reviewed, released, activated, linked to IF-001 — only then does Sol read it, with that record, as knowledge the project learned; asked again, Sol does not repeat the advice the project ruled out",
+            "the stewards may record that the knowledge and design stand, or send a record back for a revisit; advice acted on whose knowledge is later withdrawn returns to the queue, and Sol weighs whether the change still holds without being sent the withdrawn text",
+            "a withdrawal made from the queue handles its item, and the stewards' decisions change what Sol read, so earlier stewardship advice becomes history",
+            "through the server: the disagreement, Sol's stewardship advice, its use and the capture are ordinary requests and commands, recorded with the project",
+            "the stewards' queue, its readings and Sol's advice change nothing until a steward records a decision"
+          ]
+        },
+        {
+          "name": "test:sol-evaluation",
+          "status": "passed",
+          "seconds": 4.1,
+          "checks": 6,
+          "checkNames": [
+            "every held-out case builds its packet from a real reference design and runs the full reasoning path",
+            "the teaching-domain capacity drafts expose advice that takes the Playbook example objective at face value",
+            "injected faults are caught: guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements",
+            "the metrics catch what the guards let through: a wrong verdict and advice missing its expected support",
+            "false-support proxy: numbers not in the cited sources and overclaiming words are flagged",
+            "adoption rates come from what architects did with advice in a real project, not from this harness"
+          ]
+        },
+        {
+          "name": "test:brain-ahead",
+          "status": "passed",
+          "seconds": 2.8,
+          "checks": 5,
+          "checkNames": [
+            "SDD: the architecture reasoning record carries the vitals, product choices, Sol’s advice with outcomes and what the project learned",
+            "the reasoning record escapes table and list text, and stays inert in the HTML SDD",
+            "Mind Factory from the desk: each product with its documented mechanisms and the governed claims that name it",
+            "the comparison renders in Mind Factory, opened by the desk’s public entry point",
+            "Sol at a switch point: recall anchors on the Chapter 7 realisation; leads are worded from what Sol reads"
+          ]
+        },
+        {
+          "name": "test:repository-service",
+          "status": "passed",
+          "seconds": 3.4,
+          "checks": 12,
+          "checkNames": [
+            "identities: node SHA-256 equals the Site SHA-256 and revision identity follows the packet contract",
+            "manifest stream: identical to JSON.parse at hostile chunk boundaries, artefact arrays skipped, raw SHA-256 recorded",
+            "segmentation: front matter, fenced hashes, setext/AsciiDoc/RST headings; exact line ranges with CR and BOM kept",
+            "baseline build: policy gating, verified bytes, retrieval decisions, no notices before the baseline",
+            "search: ranked passages, phrases, prefixes, filters, two per file, and hostile query text never reaches FTS syntax",
+            "exact originals: BOM and CRLF preserved so the Site hash matches; refused with a reason when not retrievable",
+            "resumable build: a crashed job resumes after its last completed connector; store identity never changes",
+            "HTTP service: loopback host, bearer token and no browser origin; bounded JSON routes",
+            "Site retrieval through the corpus transport: same origin and identity as a GitHub read, re-verified, idempotent",
+            "candidate packet: accepted unchanged by the Site packet validator; locators carry exact knowledge.fetch commands",
+            "refresh after the baseline: successors, same-content commits, removals and withdrawals become contiguous notices",
+            "signed notices: verified by the Site with a notices-only key, applied to withdraw the invalidated project source"
+          ]
+        },
+        {
+          "name": "test:repository-acquire",
+          "status": "passed",
+          "seconds": 1.3,
+          "checks": 5,
+          "checkNames": [
+            "path policy: allowed globs admit, denied globs win",
+            "dry run: the moved branch is resolved and the refresh planned without writing anything",
+            "fails closed: a truncated tree, a redirect and bytes that do not match the tree write nothing",
+            "acquisition: changed and new files downloaded and verified, unchanged reused, credentials quarantined without bytes",
+            "refresh: the new snapshot becomes successor revisions and notices; exact originals come from the new snapshot"
+          ]
+        },
+        {
+          "name": "test:knowledge-repository",
+          "status": "passed",
+          "seconds": 2.8,
+          "checks": 4,
+          "checkNames": [
+            "discovery routes: status, ranked search and verified passages; never offered for unregistered or metadata-only files",
+            "retrieval and interpretation: the exact original through /api/commands, then a claim on the same line range",
+            "automatic revocation: a changed original becomes a signed invalidation, verified and applied when the project is read",
+            "Sources rendering: the connected repository surface, its receipts and actions; offline locators folded away"
+          ]
+        },
+        {
+          "name": "test:repository-sync",
+          "status": "passed",
+          "seconds": 1.8
+        },
+        {
+          "name": "test:knowledge-ingestion",
+          "status": "passed",
+          "seconds": 0.7
+        },
+        {
+          "name": "test:local-accounts",
+          "status": "passed",
+          "seconds": 2.9,
+          "checks": 3,
+          "checkNames": [
+            "signing in: nothing is served until a person signs in with their own secret; wrong secrets, unknown accounts, other origins, and tampered or re-used sessions are refused; the session cookie is HttpOnly and SameSite=Strict",
+            "four eyes through the server: the claim's author is refused when verifying it; the owner adds a second person to the project team, who signs in with their own secret and verifies it; the claim records both identities",
+            "signing out clears the session cookie and returns to the sign-in page"
+          ]
+        },
+        {
+          "name": "test:brain-chain",
+          "status": "passed",
+          "seconds": 6.1,
+          "checks": 4,
+          "checkNames": [
+            "a candidate set built against the corpus imports as exact originals and candidate claims on the anchored lines, authored by the signed-in architect; a dry run changes nothing, a second run adds nothing, and an asset whose evidence the corpus cannot supply is reported instead of imported",
+            "four eyes: the importing architect is refused when verifying the claim; the owner adds a second person, who signs in and verifies it",
+            "the verified claim is released, its signed release receipt is verified and applied, the release is activated, and the claim is linked to IF-001",
+            "Sol reads it: the packet for IF-001 carries the released, activated and linked claim, the request to the provider sends it, and the claim still a candidate reaches neither"
+          ]
+        }
+      ]
+    },
+    "cleanInstall": {
+      "command": "npm ci --offline --ignore-scripts --no-audit --no-fund",
+      "status": "passed",
+      "seconds": 220.8,
+      "output": "added 17 packages in 4m"
+    },
+    "fullRegression": {
+      "runner": "release-checks.mjs",
+      "timeoutMs": 1500000,
+      "concurrency": 2,
+      "sourceCommit": "f435e61d6336861599b181678b010f46e46522d3",
+      "suites": 87,
+      "passed": 87,
+      "failed": 0,
+      "evidence": "REGRESSION_RESULTS.json",
+      "newOrChanged": [
+        {
+          "name": "test:brain-chain",
+          "status": "passed"
+        },
+        {
+          "name": "test:local-accounts",
+          "status": "passed"
+        },
+        {
+          "name": "test:stewardship-browser",
+          "status": "passed"
+        },
+        {
+          "name": "test:knowledge-ingestion",
+          "status": "passed"
+        },
+        {
+          "name": "test:knowledge-design",
+          "status": "passed"
+        },
+        {
+          "name": "test:brain-integration",
+          "status": "passed"
+        },
+        {
+          "name": "test:brain-ahead",
+          "status": "passed"
+        },
+        {
+          "name": "test:stewardship",
+          "status": "passed"
+        },
+        {
+          "name": "test:repository-service",
+          "status": "passed"
+        }
+      ]
+    },
+    "package": {
+      "archive": "release-evidence/knowledge-four-eyes/AIW-V5-Local-Source-v20.2.zip",
+      "bytes": 3312915,
+      "sha256": "02aa08998a5b031ebeb04a00d2c54ac041a715799d450ebfe43ca72eaecf0988",
+      "reproducible": true,
+      "fileCount": 499,
+      "byteIdenticalToCommit": true,
+      "forbiddenPathCount": 0,
+      "secretFindings": 0,
+      "personalDataFindings": 0,
+      "result": "passed",
+      "evidence": "PACKAGE_SHA256.json"
+    },
+    "candidateSet": {
+      "evidence": "CANDIDATE_SET_EVIDENCE.json",
+      "claims": 16,
+      "notImported": 2,
+      "verifiedAgainst": "this laptop's knowledge repository store ebb8387e-72a7-429e-894d-3fb0c264c48b",
+      "importedIntoSponsorProject": false
+    },
+    "brainChain": {
+      "suite": "test:brain-chain",
+      "checks": 4,
+      "identities": "two synthetic local accounts",
+      "signingKey": "synthetic Ed25519 key generated by the test",
+      "provider": "loopback test double",
+      "proves": "corpus → candidate → second-person review → release → signed receipt → activation → link → Sol packet → provider request; a candidate claim reaches neither"
+    }
+  },
+  "notRun": [
+    {
+      "what": "A live provider call",
+      "why": "Uses the sponsor's key and costs money; needs their go-ahead."
+    },
+    {
+      "what": "Import of BK-P2 into the sponsor's project",
+      "why": "The sponsor's decision; the command is in KNOWLEDGE-REPOSITORY.md."
+    },
+    {
+      "what": "Review by real people or release under a production key",
+      "why": "Needs two real reviewers and the organisation's signing key."
+    }
+  ],
+  "productionAccepted": false
+}

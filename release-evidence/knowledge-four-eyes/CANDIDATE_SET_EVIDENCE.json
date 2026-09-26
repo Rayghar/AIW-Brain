@@ -1,0 +1,521 @@
+{
+  "schemaVersion": "aiw-candidate-set-evidence-v1",
+  "setId": "BK-P2-20260911",
+  "origin": {
+    "archive": "AIW_R0_R7_REVIEWER_REPAIRS_FULLSOURCE.zip",
+    "archiveSha256": "14cf69805000c5b56e6899dd5cf8cf30fd246513a8dfb03f70a28d52727159f3",
+    "corpusFile": "data/candidate-knowledge/BK-P2-20260911/corpus.json",
+    "corpusSha256": "b86d5fc60ffd7ea089ab2d67dccdfbf28cc8d0279971c493adf5873c794c146d",
+    "corpusFingerprint": "f3b5367b3b8b5288eb45f6314b23b806e88366863caecbe52789834a9c4e0841",
+    "baseRuntimeRelease": "AKR-0.10.73.5",
+    "candidateAuthority": {
+      "status": "candidate-only",
+      "permittedUse": "internal-review-only",
+      "semanticReview": "pending",
+      "rightsReview": "pending",
+      "independentlyApproved": false,
+      "runtimeActivated": false,
+      "canScore": false,
+      "canConstrain": false,
+      "canConform": false,
+      "canMutateDesign": false
+    }
+  },
+  "builtAgainst": {
+    "storeId": "ebb8387e-72a7-429e-894d-3fb0c264c48b",
+    "builtAt": "2026-09-26T13:16:06.552Z"
+  },
+  "counts": {
+    "sources": 15,
+    "retrievableSources": 12,
+    "assets": 18,
+    "claims": 16,
+    "notImported": 2
+  },
+  "method": "scripts/build-candidate-set.mjs read the earlier backend corpus.json, derived each source's contract-v1 revision identity, read the verified original from this laptop's knowledge repository store, and kept an asset only when its mechanism passage's exact lines in that original matched the curator's passage.",
+  "sources": [
+    {
+      "id": "retry",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/retry-content.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "c3535d92df0b7655850706ba97ba99fa45ee703d4c2ed5de6f8d2d94459d52bb",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "storm",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/antipatterns/retry-storm/index.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "98feecb59e6f7d5bd095cf780938e6432c09791f5333d6eb31fcbab67909e34c",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "breaker",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/circuit-breaker.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "71c85ce8efa70acd17d50f87ef4f23f4e804639571fd4c6b45b24800ef138fe4",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "bulkhead",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/bulkhead.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "b96254e60926d27ad0b10b6e9404cd97a3d0176161d5c9eb7dd37d74cb681a87",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "async",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/asynchronous-request-reply.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "3b8b32367463926ca80269522499f9e02c3b582ee2e1c6bfeb3c006ffed9f1ee",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "queue",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/queue-based-load-leveling.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "1c18bc696f7329645d0b4d37643f8e00bdaf1f0eff4480d27a17fc2f704c6c4f",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "consumers",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/competing-consumers.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "b9bace078f3cf6f7036bc2a260f2c19448b249b2355b190acbe2c15fb4240ee9",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "pubsub",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/publisher-subscriber.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "c270e897cab537581850b70ace2eb457f60ecfc2a6c41726511e84f784980f72",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "compensation",
+      "repository": "MicrosoftDocs/architecture-center",
+      "path": "docs/patterns/compensating-transaction.md",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "fileSha256": "f52e6f156e1fb6654b3b536116c1c4c6145abe817e68d816501f19781d81655a",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "idempotent",
+      "repository": "apache/camel",
+      "path": "core/camel-core-model/src/generated/resources/META-INF/org/apache/camel/model/idempotentConsumer.json",
+      "commit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "fileSha256": "e50d843ca2a2c7446ec692652656edd6912f4ccf837f116241c577569e5910cc",
+      "retrievable": false,
+      "reason": "not a documentation file in the knowledge repository",
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "ingest-with-attribution",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "deadletter",
+      "repository": "apache/camel",
+      "path": "core/camel-core-model/src/generated/resources/META-INF/org/apache/camel/model/errorhandler/deadLetterChannel.json",
+      "commit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "fileSha256": "bd1f24f2ca393219e42db39808e69af8bc6f32d341138f741a46c5c4641ba621",
+      "retrievable": false,
+      "reason": "not a documentation file in the knowledge repository",
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "ingest-with-attribution",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "events",
+      "repository": "spring-projects/spring-modulith",
+      "path": "src/docs/antora/modules/ROOT/pages/events.adoc",
+      "commit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "fileSha256": "c09ca2ab52c7f7945fc3aa4a3acb9ec065e28d0bbadfed6b81bbb541357e76de",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "modules",
+      "repository": "spring-projects/spring-modulith",
+      "path": "src/docs/antora/modules/ROOT/pages/fundamentals.adoc",
+      "commit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "fileSha256": "b3f1f1add9aa58f6c6af31d7f6389707c8ad83da16b3f75e336a454f754ae165",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "verify",
+      "repository": "spring-projects/spring-modulith",
+      "path": "src/docs/antora/modules/ROOT/pages/verification.adoc",
+      "commit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "fileSha256": "183020187e07c85f83b7e247a217b1a6470e6adf53ca1dce6469fc4168084882",
+      "retrievable": true,
+      "reason": null,
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "correlation",
+      "repository": "asyncapi/spec",
+      "path": "spec/asyncapi.md",
+      "commit": "e59928aee75a566a3f96d8cad78a9a92ea96f829",
+      "fileSha256": "983a9c0ccb35412d4f6f254ab1ae9ea09a560664b1e41efb0109b12d0cd91869",
+      "retrievable": false,
+      "reason": "too-large-for-project-source",
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "ingest-with-attribution",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "assetId": "P2-RETRY",
+      "title": "Bounded retry for transient faults",
+      "subjectId": "PAT-RETRY-WITH-BACKOFF",
+      "claimType": "mitigation",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "retry",
+        "passageId": "retry-strategies",
+        "lines": "22-30",
+        "excerptSha256": "c97d7e9633dc1e7a35f2b5d3b620cf68f7b7b7f6bfcc29dfaee1010403e83385"
+      },
+      "conditions": 3,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-TIMEOUT",
+      "title": "Unknown outcome after a lost response",
+      "subjectId": "ANTI-MISSING-IDEMPOTENCY",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "anchor": {
+        "sourceId": "retry",
+        "passageId": "timeout-ambiguity",
+        "lines": "50-52",
+        "excerptSha256": "b9fdc8782d59aeab18fc12311595d2e04f9292c736dd93792eaf21cf13a7ae76"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-RETRY-STORM",
+      "title": "Retry-storm investigation and containment",
+      "subjectId": "ANTI-RETRY-STORM",
+      "claimType": "anti-pattern-signal",
+      "polarity": "limits",
+      "anchor": {
+        "sourceId": "storm",
+        "passageId": "storm-treatment",
+        "lines": "39-44",
+        "excerptSha256": "3212251f926c50cba82c856289a524d9a1e7521a48fdcd77669ff9daa7d8a95a"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-BREAKER",
+      "title": "Circuit breaker with controlled recovery probes",
+      "subjectId": "PAT-CIRCUIT-BREAKER",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "breaker",
+        "passageId": "breaker-mechanism",
+        "lines": "29-48",
+        "excerptSha256": "2738761539aafc26c78f3f8c0b703d470ede1b138ecbf4d8214ee7d639ecea94"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-BULKHEAD",
+      "title": "Partition scarce resources to contain failure",
+      "subjectId": "PAT-BULKHEAD",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "bulkhead",
+        "passageId": "bulkhead-pressure",
+        "lines": "20-30",
+        "excerptSha256": "fcb37948b5dffd0fe35e3c5c82f47c760ad30b921e98470fb0ed3fa7195d1cec"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-DEADLETTER",
+      "title": "Dead-letter isolation and controlled recovery",
+      "subjectId": "PAT-DEAD-LETTER-CHANNEL",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "consumers",
+        "passageId": "consumer-correctness",
+        "lines": "50-62",
+        "excerptSha256": "264b4f8db895ad90a5d8bbdf4addba24c80c661cd6797df3ffbc51d60ed24f02"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-ASYNC-STATUS",
+      "title": "Asynchronous request acceptance and status contract",
+      "subjectId": "PAT-CORRELATION-ID",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "anchor": {
+        "sourceId": "async",
+        "passageId": "async-flow",
+        "lines": "44-57",
+        "excerptSha256": "303f8a6eb59b1a9d094cbfca74937ea873c8e30edf360814d9a02c124870003e"
+      },
+      "conditions": 3,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-QUEUE",
+      "title": "Queue-based load leveling with bounded downstream pressure",
+      "subjectId": "PAT-QUEUE-BASED-LOAD-LEVELING",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "queue",
+        "passageId": "queue-mechanism",
+        "lines": "25-31",
+        "excerptSha256": "86ccf06eccb1fbe92e9878663c833f882f469c19d3d49f10e4ddcabad8f89658"
+      },
+      "conditions": 3,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-CONSUMERS",
+      "title": "Competing consumers for independently processable work",
+      "subjectId": "PAT-COMPETING-CONSUMERS",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "consumers",
+        "passageId": "consumer-correctness",
+        "lines": "50-62",
+        "excerptSha256": "264b4f8db895ad90a5d8bbdf4addba24c80c661cd6797df3ffbc51d60ed24f02"
+      },
+      "conditions": 3,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-PUBSUB",
+      "title": "Publish-subscribe with explicit subscriber obligations",
+      "subjectId": "PAT-PUBLISH-SUBSCRIBE",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "pubsub",
+        "passageId": "pubsub-mechanism",
+        "lines": "26-35",
+        "excerptSha256": "8dbb6efb169e9d1bc038e64dcfc714acadabeb03686bdf1734c8fc44fbaea1eb"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-COMPENSATE",
+      "title": "Business-specific compensating transactions",
+      "subjectId": "P2-COMPENSATE",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "compensation",
+        "passageId": "compensating-mechanism",
+        "lines": "27-49",
+        "excerptSha256": "03a98dc2788495054e95f253e18b0db703bd130c42f74ad352b4bc5fd01711fe"
+      },
+      "conditions": 3,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-EVENT-REGISTRY",
+      "title": "Spring Modulith transactional publication registry",
+      "subjectId": "PAT-TRANSACTIONAL-OUTBOX",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "events",
+        "passageId": "event-registry",
+        "lines": "199-211",
+        "excerptSha256": "892831ecde886e28c3a8183b433b6b5654bcea80bb9417d657c399a50e947f5a"
+      },
+      "conditions": 3,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-EXTERNALIZATION",
+      "title": "Spring Modulith event externalisation and ordering",
+      "subjectId": "PAT-PUBLISH-SUBSCRIBE",
+      "claimType": "mitigation",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "events",
+        "passageId": "event-externalization",
+        "lines": "455-469",
+        "excerptSha256": "0a1975382f6b20649b657e1b0298401f4c7b198963b9a05b56cc1dd0fb6d03e5"
+      },
+      "conditions": 3,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-MODULES",
+      "title": "Explicit module APIs and implementation boundaries",
+      "subjectId": "PAT-MODULAR-MONOLITH",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "anchor": {
+        "sourceId": "modules",
+        "passageId": "module-model",
+        "lines": "14-18",
+        "excerptSha256": "63b0cc25fe5cb0632693346a69be6f03120ab8f2bb730cf855b5ee17245a1d45"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-MODULE-DAG",
+      "title": "Verify module dependency cycles and API access",
+      "subjectId": "PAT-MODULAR-MONOLITH",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "anchor": {
+        "sourceId": "verify",
+        "passageId": "module-verification",
+        "lines": "22-30",
+        "excerptSha256": "4a7c1315d53945f48054d36ca9a50e8e1339749bd27e34025beda14337773bff"
+      },
+      "conditions": 2,
+      "limitations": 2
+    },
+    {
+      "assetId": "P2-MODULE-ALLOWLIST",
+      "title": "Opt-in module dependency allowlists",
+      "subjectId": "PAT-MODULAR-MONOLITH",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "anchor": {
+        "sourceId": "verify",
+        "passageId": "module-verification",
+        "lines": "22-30",
+        "excerptSha256": "4a7c1315d53945f48054d36ca9a50e8e1339749bd27e34025beda14337773bff"
+      },
+      "conditions": 3,
+      "limitations": 2
+    }
+  ],
+  "notImported": [
+    {
+      "assetId": "P2-IDEMPOTENT",
+      "title": "Camel idempotent consumer: identity and repository semantics",
+      "reason": "Its mechanism rests only on passages the knowledge repository cannot retrieve as project sources (idempotent-settings: not a documentation file in the knowledge repository)."
+    },
+    {
+      "assetId": "P2-CORRELATION",
+      "title": "Message correlation is not duplicate-effect control",
+      "reason": "Its mechanism rests only on passages the knowledge repository cannot retrieve as project sources (correlation-contract: too-large-for-project-source; idempotent-mechanism: not a documentation file in the knowledge repository)."
+    }
+  ],
+  "authority": "Candidate only. Importing creates candidate claims authored by the person who imports them; a different signed-in person must verify each one, and nothing is released or activated by the import.",
+  "importedIntoAProject": false,
+  "note": "The pack was built and verified against this laptop's corpus. It was not imported into the sponsor's project: that is the sponsor's decision (npm run candidates:import). The import path itself is proven by test:brain-chain on the synthetic corpus.",
+  "productionAccepted": false
+}
