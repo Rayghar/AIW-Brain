@@ -19,7 +19,17 @@ The first visit loads an illustrative Bank Payment Journey. Choose **All project
 
 If port 4173 is busy, run `npm start -- --port 5173` and open **http://localhost:5173**. For automatic server restarts while editing files, use `npm run dev`.
 
-The server accepts connections from this computer only (`127.0.0.1`). To try AIW from a phone or another device on the same network, start it with `npm start -- --host 0.0.0.0` (or set `AIW_HOST`) and stop it when you finish. The local backend has no sign-in: anyone who can reach it can open and change your projects as the development architect and use a configured OpenAI key.
+The server accepts connections from this computer only (`127.0.0.1`). To try AIW from a phone or another device on the same network, start it with `npm start -- --host 0.0.0.0` (or set `AIW_HOST`) and stop it when you finish. Without local accounts the backend has no sign-in: anyone who can reach it can open and change your projects as the development architect and use a configured OpenAI key.
+
+## Two people on one machine (local accounts)
+
+A knowledge claim is used only after someone other than its author has verified it (four eyes). By default the local server serves everyone as one architect, so a claim cannot complete its review locally. To let two people work on one machine, add named accounts to `.env`:
+
+```sh
+AIW_LOCAL_ACCOUNTS={"architect":"a-long-private-secret","reviewer":"another-long-private-secret"}
+```
+
+Each secret must be at least 16 characters, and each person keeps their own. Start with `node --env-file=.env server.js`. Each person then signs in at `/local/sign-in` and signs out at `/local/sign-out`. Sessions last 12 hours and end when the server restarts. The owner of a project adds the other person as an **editor** in Project team, and that person then reviews claims in Mind Factory. Two accounts are two people only when two different people hold them. `npm run test:local-accounts` checks sign-in and four eyes through the server.
 
 ## Where the code lives
 

@@ -19,6 +19,8 @@ export function knowledgeEligibility(p,claim,release=null){
  const s=knowledgeState(p),source=s.sources.find(x=>x.id===claim?.sourceId),reasons=[];
  if(!claim||!source)return {eligible:false,reasons:['The original source is unavailable.']};
  if(claim.review?.decision!=='verified')reasons.push('The claim has not passed an explicit source and interpretation review.');
+ // Four eyes, re-checked on every read: the authenticated identity that verified a claim is not its author's.
+ else if(!claim.actor||!claim.review.actor||claim.review.actor===claim.actor)reasons.push('Its author verified it. Another authenticated person must review the claim before it is used.');
  if(claim.review?.claimHash!==digest({...claim,review:undefined}))reasons.push('The review does not match this exact claim.');
  if(claim.sourceHash!==source.hash||sha256(source.body)!==source.hash||sha256(claim.excerpt)!==claim.excerptHash||source.body.split('\n').slice(claim.lineStart-1,claim.lineEnd).join('\n')!==claim.excerpt)reasons.push('The source or passage identity does not match.');
  if(s.sources.some(x=>x.supersedes===source.id&&x.hash!==source.hash))reasons.push('A changed source revision superseded this evidence. Review and release a successor claim.');
@@ -137,6 +139,7 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  case 'knowledge.review':{
   assertReview(r);const c=s.claims.find(x=>x.id===r.id);if(!c)throw Error('Choose a candidate claim.');if(s.releases.some(x=>x.claims.some(x=>x.id===c.id)))throw Error('Published reviews are immutable. Withdraw the claim or prepare a successor.');
   if(!['verified','rejected','disputed'].includes(r.decision))throw Error('Record a review outcome.');
+  if(r.decision==='verified'&&c.actor===actor)throw Error('You wrote this claim. Another authenticated person must verify it.');
   if(r.decision==='verified'&&(!r.sourceChecked||!r.rightsChecked||!r.conditionsChecked))throw Error('Review the original passage, permitted use and applicability conditions.');
   if(r.decision==='verified'&&s.contradictions.some(x=>x.status==='open'&&x.claimIds.includes(c.id)))throw Error('Resolve the possible contradiction before verifying this claim.');
   c.review={decision:r.decision,reviewer:text(r.reviewer,180),actor,at,reason:text(r.reason),sourceChecked:r.sourceChecked===true,rightsChecked:r.rightsChecked===true,conditionsChecked:r.conditionsChecked===true,claimHash:digest({...c,review:undefined})};selected=c.id;break;

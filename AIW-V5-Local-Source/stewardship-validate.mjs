@@ -19,7 +19,7 @@ const at = () => new Date(Date.UTC(2026, 8, 25, 12, clock++)).toISOString();
 // A saved run, as the service stores it, from the test double.
 const reason = (p, ids, values = {}) => { const packet = reasoningPacket(p, {task: 'decisions', ids, values}), raw = mockAssessment(packet), r = guardReasoning(packet, validateReasoningOutput(raw, packet)); return {id: 'run-' + clock++, status: 'completed', provider: 'OpenAI', model: 'mock-sol', createdAt: at(), packet, result: settleReasoning(packet, r, mockReview({candidate: raw}))}; };
 const adopt = (p, run, itemId, outcome, why = '') => adoptReasoning(p, {itemId, outcome, reason: why}, run, at()).document;
-const K = (p, type, payload) => applyKnowledgeCommand(p, {type: 'knowledge.' + type, payload}, at(), 'steward-test').document;
+const K = (p, type, payload) => applyKnowledgeCommand(p, {type: 'knowledge.' + type, payload}, at(), type === 'review' ? 'second-steward' : 'steward-test').document;
 const review = {reviewed: true, reviewer: 'Knowledge steward', reason: 'Checked against the architect’s record and the design.'};
 
 // 1. A disagreement reaches the stewards, with what the advice rested on.

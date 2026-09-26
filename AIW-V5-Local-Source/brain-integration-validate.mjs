@@ -15,7 +15,7 @@ import worker from './worker.js';
 const at='2026-09-20T21:00:00.000Z',review={reviewed:true,reviewer:'Synthetic acceptance reviewer',reason:'Synthetic test of conditions and source trace; not a real knowledge approval.'};
 export function brainFixture(){let p=createProject({name:'Workshop equipment',template:'blank',brief:'Reserve equipment safely.'},'brain-integration-fixture');p=applyCommand(p,{type:'artefact',payload:{type:'requirement',title:'Read equipment descriptions',description:'Repeated catalogue reads may use an older equipment description for up to thirty seconds. Reservation writes require current authoritative state.',acceptance:'A stale description must never authorise a conflicting reservation.',owner:'Facilities',source:'Synthetic workshop',confirmed:true}},at).document;return withFinalReview(p);}
 let p=brainFixture();
-const command=(type,payload={})=>{const r=applyKnowledgeCommand(p,{type:'knowledge.'+type,payload},at,'synthetic-actor');p=r.document;return r.selected;};
+const command=(type,payload={})=>{const r=applyKnowledgeCommand(p,{type:'knowledge.'+type,payload},at,type==='review'?'synthetic-reviewer':'synthetic-actor');p=r.document;return r.selected;};
 for(const value of ['', 'abc','🌲\n'.repeat(500)])assert.equal(sha256(value),createHash('sha256').update(value).digest('hex'));
 assert.equal(BRAIN_CATALOGUE.records.length,328);assert.equal(BRAIN_CATALOGUE.repositories.length,30);
 const source=command('source',{title:'Synthetic cache reference',body:'Cache copy\nA cached description may lag its authority when the use tolerates bounded staleness.\nNever use a stale description to authorise a conflicting reservation.\n',path:'synthetic/cache.md',revision:'fixture-1'});

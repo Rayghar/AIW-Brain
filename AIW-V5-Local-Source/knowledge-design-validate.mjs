@@ -9,7 +9,7 @@ import {intelligencePacket} from './public/intelligence-context.js';
 import {exportSDD} from './public/review-domain.js';
 const at='2026-09-20T22:15:00.000Z',review={reviewed:true,reviewer:'Synthetic reviewer',reason:'Synthetic integration check; not a real source approval.'};
 let p=interactionFixture();
-const knowledge=(type,payload)=>{const r=applyKnowledgeCommand(p,{type:'knowledge.'+type,payload},at,'synthetic-actor');p=r.document;return r.selected;};
+const knowledge=(type,payload)=>{const r=applyKnowledgeCommand(p,{type:'knowledge.'+type,payload},at,type==='review'?'synthetic-reviewer':'synthetic-actor');p=r.document;return r.selected;};
 const source=knowledge('source',{title:'Synthetic queue reference',body:'Durable buffering requires bounded backlog and a named recovery owner.',path:'fixture/queue.md',revision:'1'});
 const claim=knowledge('claim',{sourceId:source,lineStart:1,lineEnd:1,subjectId:'ARCH-MESSAGE-BROKER-CAPABILITY',claimType:'obligation',predicate:'requires bounded backlog',polarity:'requires',statement:'An owned queue needs a bounded backlog and recovery owner.',conditions:['Delayed processing is acceptable.'],limitations:['Does not establish actual broker capacity.']});
 knowledge('review',{...review,id:claim,decision:'verified',sourceChecked:true,rightsChecked:true,conditionsChecked:true});const release=knowledge('release',{...review,title:'Synthetic queue conditions',claimIds:[claim]});knowledge('activate',{...review,id:release,stamp:knowledgeStamp(p)});const link=knowledge('link',{...review,objectId:'REQ-001',claimId:claim,releaseId:release});

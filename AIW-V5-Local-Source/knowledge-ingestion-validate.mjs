@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {createProject} from './public/projects-domain.js';
 import {applyCommand} from './public/requirements-domain.js';
 import {withFinalReview} from './public/review-domain.js';
-import {BRAIN_CATALOGUE,applyKnowledgeCommand,knowledgeStamp,releasedClaims} from './public/knowledge-governance.js';
+import {BRAIN_CATALOGUE,applyKnowledgeCommand,knowledgeStamp,releasedClaims,knowledgeEligibility} from './public/knowledge-governance.js';
 import {AKR_DISCOVERY} from './public/akr-discovery.js';
 import {renderKnowledgeSources} from './public/knowledge-sources-ui.js';
 import {sha256} from './public/brain-integrity.js';
@@ -74,7 +74,12 @@ assert.throws(()=>applyKnowledgeCommand(tampered,{type:'knowledge.claim',payload
 const claim=command('claim',{sourceId,suggestionId:first.id,lineStart:first.lineStart,lineEnd:first.lineEnd,subjectId:'PAT-CACHE-ASIDE',claimType:'applicability',predicate:'permits a stale copy',polarity:'supports',statement:'Equipment descriptions may use a bounded stale copy for read views.',conditions:['Callers tolerate a bounded delay.'],limitations:['Reservation writes still use authoritative state.']});
 assert.equal(p.knowledge.suggestions[0].claimId,claim);
 assert.equal(releasedClaims(p).length,0);
+// Four eyes: the claim's author cannot verify it; the check is repeated on every read.
+assert.throws(()=>applyKnowledgeCommand(p,{type:'knowledge.review',payload:{...review,id:claim,decision:'verified',sourceChecked:true,rightsChecked:true,conditionsChecked:true}},at,actor),/Another authenticated person must verify it/);
 command('review',{...review,id:claim,decision:'verified',sourceChecked:true,rightsChecked:true,conditionsChecked:true});
+const reviewed=p.knowledge.claims.find(x=>x.id===claim);assert.equal(knowledgeEligibility(p,reviewed).eligible,true,'verified by another person');
+const selfReviewed=structuredClone(p);selfReviewed.knowledge.claims.find(x=>x.id===claim).review.actor=actor;
+assert.match(knowledgeEligibility(selfReviewed,selfReviewed.knowledge.claims.find(x=>x.id===claim)).reasons.join(' '),/Its author verified it/,'a claim its author verified is not used, whenever it was saved');
 const release=command('release',{...review,title:'Synthetic catalogue reads',claimIds:[claim]});
 assert.throws(()=>command('activate',{...review,id:release,stamp:knowledgeStamp(p)}),/signed repository release/);
 // Isolated cryptographic fixture; no production key or source approval is used.

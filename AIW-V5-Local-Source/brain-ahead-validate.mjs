@@ -14,7 +14,8 @@ import {brainContext} from './public/aiw-brain.js';
 const checks=[],started=Date.now();
 async function check(name,fn){await fn();checks.push(name);console.log('PASS',name);}
 const at='2026-09-26T10:00:00.000Z',review={reviewed:true,reviewer:'Architecture reviewer',reason:'Checked against the original passage and conditions.'};
-const k=(p,type,payload)=>applyKnowledgeCommand(p,{type,payload},at,'local-architect');
+// A second authenticated person reviews: an author cannot verify their own claim.
+const k=(p,type,payload)=>applyKnowledgeCommand(p,{type,payload},at,type==='knowledge.review'?'independent-reviewer':'local-architect');
 
 // A governed claim that names RabbitMQ, taken through source, interpretation, review, release and activation.
 function governed(p){
