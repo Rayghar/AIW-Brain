@@ -15,6 +15,7 @@ import {TRAITS} from './public/product-knowledge.js';
 import {reasoningRequest, reasoningPacket, reasoningSchema, validateReasoningOutput, guardReasoning, settleReasoning, reasoningCurrency, decisionPoints, adoptReasoning, MAX_DECISIONS} from './public/brain-reasoning.js';
 import {requestReasoning, llmEndpoint} from './intelligence-provider.js';
 import {mockAssessment, mockReview, envelope} from './mock-llm-provider.mjs';
+import {assessmentHTML} from './public/brain-reasoning-ui.js';
 
 const checks = [], pass = n => checks.push(n);
 const project = withFinalReview(seedProject()), before = JSON.stringify(project);
@@ -46,7 +47,7 @@ pass(`the packet: ${packet.items.length} decisions, each as the instruments read
 const good = mockAssessment(packet);
 const result = guardReasoning(packet, validateReasoningOutput(good, packet));
 assert.ok(result.assessments.every(a => !a.problems.length), JSON.stringify(result.assessments.map(a => a.problems)));
-assert.throws(() => validateReasoningOutput({...good, assessments: [{...good.assessments[0], id: 'F:elsewhere'}]}, packet), /outside the packet/);
+assert.deepEqual(validateReasoningOutput({...good, assessments: [{...good.assessments[0], id: 'F:elsewhere'}]}, packet).setAside.map(x => x.id), ['F:elsewhere'], 'a decision outside the packet is set aside, never assessed');
 assert.throws(() => validateReasoningOutput({...good, sourceRefs: ['S99']}, packet), /outside the reviewed packet/);
 assert.throws(() => validateReasoningOutput({...good, extra: 1}, packet), /unsupported response/);
 const bad = structuredClone(good);
@@ -72,6 +73,43 @@ const partial = settleReasoning(packet, {...result, assessments: result.assessme
 assert.equal(partial.assessments.filter(a => a.withheld).length, 4, 'decisions Sol did not reach are withheld, not invented');
 pass('settling: an assessment the second pass does not support, or one Sol did not reach, is withheld — its reading stands and no advice is invented');
 
+// 3b. Size, duplicates and drafted wording never cost the batch. Advice text over its limit is cut at the
+// last sentence that fits, and named; a duplicated decision, or one outside the packet, is set aside; an
+// assessment citing a source outside the packet is withheld on its own; a drafted value whose wording
+// guarantees an outcome is set aside while the rest of the advice stands. Only a broken structure fails.
+const prose = n => Array.from({length: n}, () => 'The arithmetic follows the reading and names what still needs evidence.').join(' ');
+const long = structuredClone(good);
+long.assessments[0].reasoning = prose(40);
+long.assessments[0].risks = ['The rate is an assumption.', 'A rolling release takes a replica away.', 'The queue may grow.', 'The database may saturate.', 'A fifth risk the desk cannot hold.'];
+long.assessments[1].headline = 'A headline that runs on and on '.repeat(12).trim() + '.';
+long.assessments[3].sourceRefs = [...long.assessments[3].sourceRefs, 'S99'];
+long.assessments.push(structuredClone(long.assessments[2]), {...structuredClone(long.assessments[4]), id: 'F:elsewhere'});
+const sized = guardReasoning(packet, validateReasoningOutput(long, packet));
+assert.equal(sized.assessments.length, packet.items.length, 'each decision in the packet, once');
+const [s0, s1, , s3] = sized.assessments;
+assert.ok(s0.reasoning.length <= 1800 && s0.reasoning.endsWith('evidence.'), 'cut after the last sentence that fits');
+assert.deepEqual(s0.trimmed, ['reasoning', 'risks']); assert.equal(s0.risks.length, 4); assert.deepEqual(s0.problems, []);
+assert.ok(s1.headline.length <= 240 && s1.headline.endsWith('…')); assert.deepEqual(s1.trimmed, ['headline']); assert.deepEqual(s1.problems, []);
+assert.match(s3.problems.join(' '), /outside the reviewed packet/);
+assert.deepEqual(sized.setAside.map(x => x.id), [packet.items[2].id, 'F:elsewhere']);
+assert.match(sized.setAside[0].reason, /twice/); assert.match(sized.setAside[1].reason, /not in the packet/);
+assert.throws(() => validateReasoningOutput({...good, assessments: [{...good.assessments[0], extra: 1}]}, packet), /unsupported assessment structure/);
+assert.throws(() => validateReasoningOutput({...good, assessments: [{...good.assessments[0], risks: 'one risk'}]}, packet), /unsupported/);
+const worded = structuredClone(good);
+worded.assessments[0].refinements = [{key: 'maxReplicas', value: '26', why: 'Headroom for a rolling release.'}, {key: 'scalingPolicy', value: 'Horizontal Pod Autoscaler on CPU at 70 %, from 3 to 26 replicas, to ensure availability during the peak.', why: 'Names the policy the reading implies.'}];
+const w0 = guardReasoning(packet, validateReasoningOutput(worded, packet)).assessments[0];
+assert.deepEqual(w0.problems, [], 'the rest of the advice stands');
+assert.deepEqual(w0.refinements.map(r => r.key), ['maxReplicas']);
+assert.deepEqual(w0.setAside.map(r => r.key), ['scalingPolicy']); assert.match(w0.setAside[0].reason, /guarantee/i);
+const claims = structuredClone(good); claims.assessments[0].reasoning += ' Twenty-six replicas ensure availability at the peak.';
+assert.match(guardReasoning(packet, validateReasoningOutput(claims, packet)).assessments[0].problems.join(' '), /guaranteeing a verified outcome/, 'the advice itself may still guarantee nothing');
+const one = a => settleReasoning(packet, {summary: '', sourceRefs: [], assessments: [a]}, null).assessments.find(x => x.id === a.id);
+const card = a => assessmentHTML({run: {id: 'run-x', model: 'mock-sol', createdAt: '2026-09-26T09:00:00Z', packet}, a, item: packet.items.find(i => i.id === a.id), current: true}, {id: a.id});
+const setAsideHTML = card(one(w0)), trimmedHTML = card(one(s0));
+assert.match(setAsideHTML, /Sol’s refinements · 1</); assert.match(setAsideHTML, /Set aside · 1[\s\S]*to ensure availability[\s\S]*never applied/);
+assert.match(trimmedHTML, /Shortened to fit: reasoning, risks/);
+pass('size, duplicates and wording never cost the batch: advice over its limit is cut at the last whole sentence and named, a duplicated or unknown decision is set aside, a foreign citation withholds only its own assessment, and a drafted value whose wording guarantees an outcome is set aside and shown while the rest of the advice stands; only a broken structure fails the response');
+
 // 4. The provider path: draft, guard, second pass, settled result — with a stand-in provider.
 let calls = [];
 const fetcher = async (url, options) => { const body = JSON.parse(options.body); calls.push([url, body.text.format.name, body.store]); const input = JSON.parse(body.input[0].content); return new Response(JSON.stringify(envelope(body.text.format.name === 'aiw_desk_assessment' ? mockAssessment(input) : mockReview(input)))); };
@@ -83,6 +121,13 @@ await assert.rejects(requestReasoning({}, packet, {fetcher}), /not configured/);
 assert.equal(llmEndpoint({AIW_LLM_BASE_URL: 'http://127.0.0.1:9/v1/'}, 'responses'), 'http://127.0.0.1:9/v1/responses');
 assert.throws(() => llmEndpoint({AIW_LLM_BASE_URL: 'http://example.com/v1'}, 'responses'), /https, or http on loopback/);
 assert.equal(llmEndpoint({AIW_LLM_BASE_URL: 'https://gateway.example/v1'}, 'responses'), 'https://gateway.example/v1/responses');
+// One oversized field in a live answer no longer costs every decision in the request.
+const bulky = async (url, options) => { const body = JSON.parse(options.body), input = JSON.parse(body.input[0].content); let out;
+  if (body.text.format.name === 'aiw_desk_assessment') { out = mockAssessment(input); out.assessments[0].reasoning = prose(40); out.assessments[1].risks = ['One risk.', 'Another risk.', 'A third risk.', 'A fourth risk.', 'A fifth risk.']; } else out = mockReview(input);
+  return new Response(JSON.stringify(envelope(out))); };
+const survived = await requestReasoning(env0, packet, {fetcher: bulky});
+assert.equal(survived.result.assessments.filter(a => a.withheld).length, 0, 'no decision is lost to size'); assert.deepEqual(survived.result.assessments[0].trimmed, ['reasoning']); assert.deepEqual(survived.result.assessments[1].trimmed, ['risks']);
+assert.ok(reasoningSchema(packet).properties.assessments.items.properties.risks.maxItems === 4, 'the schema bounds the lists at source');
 pass('the provider path: one call drafts the assessments against a strict schema, the guard and a second call check them, nothing is stored by the provider; an enterprise gateway may replace the endpoint only over https (or loopback, for tests)');
 
 // 5. Through the server: prepare and show, then send only the packet that was shown.
@@ -92,7 +137,8 @@ await env.DB.prepare('INSERT INTO projects (owner_id,id,document,revision,update
 const req = async (path, body, {origin = 'https://aiw.test', bindings = env} = {}) => { const r = await worker.fetch(new Request('https://aiw.test' + path + (path.includes('?') ? '&' : '?') + 'project=' + id, {method: body ? 'POST' : 'GET', headers: {'oai-authenticated-user-id': owner, Origin: origin, 'Content-Type': 'application/json'}, body: body ? JSON.stringify(body) : undefined}), bindings); return {status: r.status, data: await r.json()}; };
 const previous = globalThis.fetch;
 calls = [];
-globalThis.fetch = async (url, options) => { const body = JSON.parse(options.body); calls.push(body.text.format.name); const input = JSON.parse(body.input[0].content); return new Response(JSON.stringify(envelope(body.text.format.name === 'aiw_desk_assessment' ? mockAssessment(input) : mockReview(input)))); };
+let broken = false;
+globalThis.fetch = async (url, options) => { const body = JSON.parse(options.body); calls.push(body.text.format.name); const input = JSON.parse(body.input[0].content); return new Response(JSON.stringify(envelope(body.text.format.name === 'aiw_desk_assessment' ? (broken ? {summary: 'Half an answer.'} : mockAssessment(input)) : mockReview(input)))); };
 try {
   const raw = {task: 'decisions', ids: ['F:capacity:run-001', 'J:security:run-002'], scope: 'item'};
   assert.equal((await req('/api/intelligence/reasoning-context', raw, {origin: 'https://other.test'})).status, 403);
@@ -131,6 +177,11 @@ try {
   assert.throws(() => adoptReasoning(fresh, {itemId: 'F:capacity:run-001', outcome: 'used'}, runDoc), /reading changed/);
   const applied = adoptReasoning(changed, {itemId: 'F:capacity:run-001', outcome: 'applied'}, runDoc, '2026-09-25T12:01:00Z');
   assert.equal(applied.document.coauthoring.assessments.at(-1).outcome, 'applied');
+  // A broken answer fails the request, and the architect is told why.
+  broken = true;
+  const failedRun = await req('/api/intelligence/reason', {...raw, packetStamp: prepared.data.packet.stamp, requestId: crypto.randomUUID()});
+  broken = false;
+  assert.equal(failedRun.status, 502); assert.equal(failedRun.data.status, 'failed'); assert.match(failedRun.data.detail || '', /unsupported response structure/, JSON.stringify(failedRun.data));
   pass('through the server: the packet is prepared and shown without sending anything; only the packet that was shown is sent, and only when the provider is configured; the design is unchanged and a replay is not billed again; the architect\'s use, application or dismissal (with a reason) is recorded with the model and the sources it rested on, and an applied fix leaves the advice as history');
 } finally { globalThis.fetch = previous; }
 

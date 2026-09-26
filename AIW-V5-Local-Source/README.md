@@ -1,5 +1,18 @@
 # AIW V5 Live Model Explorer
 
+## Sol's checks keep the advice (v20.1) — 26 September 2026
+
+- **One oversized field no longer costs a whole batch.** Before this fix, one of these made the output validator throw, and every decision in the request (up to eight) went unanswered:
+  - a long reasoning or headline;
+  - a fifth risk;
+  - a decision assessed twice.
+
+  Now advice text over its limit is cut after the last whole sentence that fits and marked *Shortened to fit*, and a duplicate or unknown decision is set aside. Only a broken structure fails a request, and the workbench then says which check failed.
+- **A drafted value that guarantees an outcome is set aside on its own.** Wording such as "…to ensure availability" in a proposed scaling policy used to withhold the whole assessment, correct numbers included. Now that refinement is shown as *Set aside* and can never be applied, and the rest of the advice stands. Advice whose own reasoning guarantees an outcome is still withheld.
+- **The second check reviews the advice, not the design.** Its instructions now say three things are not defects in the advice: gaps in the design itself, evidence still to be gathered, and refinements not yet applied. Only a live model can show the effect, and none has been run here.
+
+The defects were reported from a live evaluation of a v19-based build. Each was reproduced on v20 before it was fixed. Run `npm run test:brain-reasoning` and `npm run test:chapter-reasoning`. No live provider call was made here.
+
 ## The knowledge repository, connected — 26 September 2026
 
 - **The whole acquired corpus is searchable in Mind Factory → Sources.** On the laptop that holds it, the knowledge repository service covers 47 GitHub repositories at pinned commits: 18,961 documentation files, every byte verified, as 45,517 passages. Search it, read a passage (always from its verified original), and retrieve the exact original into the project. *Interpret this passage* opens the claim form on its exact lines.

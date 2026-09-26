@@ -111,7 +111,8 @@ async function handleReasoning(request,env,owner,projectId,action,url){
   await operationStatement(env,owner,projectId,'ai',{id:run.id,actor:run.actor,status:'completed',usage:run.usage,model:run.model,groundingAccepted:run.groundingReview.accepted}).run();
   return json(run);
  }catch(e){
-  const code=e.code||'storage',failed={...run,status:'failed',updatedAt:new Date().toISOString(),error:genericError(code)};
+  // A response that fails the structure checks says which check (the validator's own words, never model text).
+  const code=e.code||'storage',failed={...run,status:'failed',updatedAt:new Date().toISOString(),error:genericError(code),...(code==='invalid_output'&&e.message?{detail:String(e.message).slice(0,300)}:{})};
   try{await env.FILES.put(key,JSON.stringify({...failed,result:undefined}),{httpMetadata:{contentType:'application/json'}});}catch{}
   await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,failed.updatedAt,owner,run.id).run();
   return json({...failed,result:undefined},code==='provider_limit'?429:502);

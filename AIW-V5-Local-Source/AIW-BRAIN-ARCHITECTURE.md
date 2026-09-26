@@ -80,6 +80,12 @@ The companion and the panel share one state and tell each other when it changes 
 
 - Sol's advice never changes the design. Refinements become draft values or a chapter's change command. They and proposed threats reach the design only through a chapter's change review, which changes only the refined fields.
 - Numbers come from instruments. Sol may propose a number only inside a knob's bounds, and the instruments re-check it. A number Sol states that is not in the packet withholds that assessment.
+- A failed check costs only what failed it:
+  - an assessment that invents a number, claims a guaranteed or verified outcome in its own words, or cites outside the packet is withheld;
+  - a drafted value worded as a guarantee is set aside and never applied, while the rest of the advice stands;
+  - advice text over its limit is shortened at a whole sentence and marked;
+  - a decision assessed twice, or one outside the packet, is set aside;
+  - only a broken response fails the request, and the architect is told which check it failed.
 - Business targets stay the architect's: recovery points, service levels, quality driver targets and priorities, and sites. Sol frames the options and questions, and in *What if* it weighs the architect's move without proposing one of its own.
 - What the project learns reaches Sol only through its governance. A captured disagreement is an original source and a candidate claim. Sol reads it only once it is reviewed, released, activated and linked to its record, and then only with that record, not wherever its words match. Withdrawn knowledge is never sent to Sol again, including when Sol weighs a change that rested on it.
 - Knowledge is used at its authority level:
@@ -94,7 +100,7 @@ The companion and the panel share one state and tell each other when it changes 
 ## Verified, and not yet verified
 
 - **Verified:**
-  - 7 model checks (`npm run test:brain-reasoning`) cover the packet, the contract, settling, the provider path, the server routes and adoption, and knowledge governance.
+  - 8 model checks (`npm run test:brain-reasoning`) cover the packet, the contract, settling, what size, duplicates and drafted wording may cost (only their own part), the provider path, the server routes and adoption, and knowledge governance.
   - 9 model checks (`npm run test:chapter-reasoning`) cover what can be asked about in each chapter, each chapter's reading and what identifies it, change commands that keep a record's links (44 knobs across 10 record types), the instruments' re-reading, the packet, the contract per kind, the server and adoption.
   - 8 model checks (`npm run test:stewardship`) cover the queue, Sol's stewardship advice, capture, the governed path to a link, Sol reading what was learned (and only with its record), the other decisions, a withdrawal from the queue, and the server.
   - 5 rendered checks (`npm run test:stewardship-browser`) cover the whole loop. A disagreement in Chapter 8 reaches the queue. Sol advises the stewards, and the capture uses Sol's wording. The claim is reviewed, released, activated and linked to IF-001. Asked again about IF-001, Sol reads the learned claim and does not repeat the advice.
@@ -106,6 +112,7 @@ The companion and the panel share one state and tell each other when it changes 
   - The knowledge repository's own suites and rendered checks are listed in [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md).
 - **Not yet verified:**
   - No live provider call was made in this workspace; `npm run evaluate:sol:live` runs the held-out set against a configured provider.
+  - The second check's instructions say that the design's own gaps, evidence still to be gathered and unapplied refinements are not defects in the advice. Only a live model can show whether a model follows them.
   - The quality of Sol's advice on real designs has not been evaluated. Against the test double the held-out set gives 26 cases, 28 assessments, none withheld and 93% verdict agreement. The two disagreements are the cases built to catch advice that takes an example objective at face value. That measures the harness, not Sol's judgement.
   - The expected advice is implementation-authored; an architect should review and amend it before any result is relied on.
   - The test double proves the plumbing and the guards, not the judgement.

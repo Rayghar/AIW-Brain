@@ -141,9 +141,12 @@ assert.equal(ae.assessments[0].verdict, 'judge'); assert.deepEqual(ae.assessment
 const kr = reasoningPacket(project, {task: 'decisions', ids: ['M:7:tr-001']}), ar = settle(kr);
 assert.equal(ar.assessments[0].preferred, 'TO-002', 'a preferred option, as advice');
 const guarantee = mockAssessment(k1); guarantee.assessments[0].refinements = [{key: 'scalingPolicy', value: 'Scale out on CPU; this guarantees zero loss of capacity.', why: 'Scale.'}];
-assert.match(guardReasoning(k1, validateReasoningOutput(guarantee, k1)).assessments[0].problems.join(' '), /guaranteeing a verified outcome/, 'refined wording may not guarantee an outcome');
+const g0 = guardReasoning(k1, validateReasoningOutput(guarantee, k1)).assessments[0];
+assert.deepEqual(g0.refinements, [], 'refined wording that guarantees an outcome is never offered for use');
+assert.deepEqual(g0.setAside.map(r => r.key), ['scalingPolicy']); assert.match(g0.setAside[0].reason, /guaranteeing an outcome[\s\S]*never applied/);
+assert.deepEqual(g0.problems, [], 'the rest of the advice stands');
 assert.deepEqual([verdictText('record', 'apply').short, verdictText('whatif', 'apply').short, verdictText('exposure', 'apply').short, verdictText('fix', 'apply').short], ['Sound', 'Holds up', 'Covered', 'Apply']);
-pass('the contract per kind: a record may be refined within its knobs, a move may not; a part seen from Chapter 9 takes proposed threats on its listed targets; a realisation may name a preferred option; refined wording may not guarantee an outcome; and a refinement the chapter\'s own rules reject is withheld, while one that passes carries the instruments\' re-reading');
+pass('the contract per kind: a record may be refined within its knobs, a move may not; a part seen from Chapter 9 takes proposed threats on its listed targets; a realisation may name a preferred option; refined wording that guarantees an outcome is set aside, never applied, while the rest of the advice stands; and a refinement the chapter\'s own rules reject is withheld, while one that passes carries the instruments\' re-reading');
 
 // 8. Through the server, and what the architect did with it.
 const files = new Map(), owner = 'chapter-sol-test', id = project.id;

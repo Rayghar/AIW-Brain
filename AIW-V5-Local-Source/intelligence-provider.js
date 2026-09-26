@@ -96,7 +96,9 @@ export async function requestReasoning(env,packet,{fetcher=fetch,timeoutMs=60000
  try{
   const draft=await responsesCall(env,status,{instructions:REASONING_INSTRUCTIONS,input:packet,schema:reasoningSchema(packet),name:'aiw_desk_assessment'},abort.signal,fetcher);
   let result;try{result=guardReasoning(packet,validateReasoningOutput(draft.raw,packet));}catch(e){throw Object.assign(Error(e.message),{code:'invalid_output'});}
-  const review=await responsesCall(env,status,{instructions:REVIEW_INSTRUCTIONS,input:{packet,candidate:result},schema:DECISION_REVIEW_SCHEMA,name:'aiw_desk_assessment_check'},abort.signal,fetcher);
+  // The second pass checks the advice as it will be shown: what was set aside is not advice.
+  const candidate={...result,setAside:undefined,trimmed:undefined,assessments:result.assessments.map(({setAside,trimmed,...a})=>a)};
+  const review=await responsesCall(env,status,{instructions:REVIEW_INSTRUCTIONS,input:{packet,candidate},schema:DECISION_REVIEW_SCHEMA,name:'aiw_desk_assessment_check'},abort.signal,fetcher);
   const r=review.raw;if(!r||!Array.isArray(r.assessments)||r.assessments.some(x=>!x||typeof x.id!=='string'||typeof x.supported!=='boolean'||!Array.isArray(x.issues)||x.issues.some(i=>typeof i!=='string'||i.length>1600)))throw Object.assign(Error('The source check returned an unsupported assessment.'),{code:'invalid_output'});
   const settled=check?check(settleReasoning(packet,result,r)):settleReasoning(packet,result,r);
   return {result:settled,provider:status.provider,model:draft.model,usage:{inputTokens:draft.usage.inputTokens+review.usage.inputTokens,outputTokens:draft.usage.outputTokens+review.usage.outputTokens},providerResponseId:draft.providerResponseId,
