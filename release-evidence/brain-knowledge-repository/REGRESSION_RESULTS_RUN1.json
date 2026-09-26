@@ -1,0 +1,428 @@
+[
+  {
+    "name": "test",
+    "status": "passed",
+    "ms": 617
+  },
+  {
+    "name": "test:anatomy",
+    "status": "passed",
+    "ms": 3274
+  },
+  {
+    "name": "test:anatomy-browser",
+    "status": "passed",
+    "ms": 168941
+  },
+  {
+    "name": "test:architecture",
+    "status": "passed",
+    "ms": 3546
+  },
+  {
+    "name": "test:architecture-case",
+    "status": "passed",
+    "ms": 5801
+  },
+  {
+    "name": "test:architecture-drafting",
+    "status": "passed",
+    "ms": 3076
+  },
+  {
+    "name": "test:brain",
+    "status": "passed",
+    "ms": 2495
+  },
+  {
+    "name": "test:brain-ahead",
+    "status": "passed",
+    "ms": 7992
+  },
+  {
+    "name": "test:brain-integration",
+    "status": "passed",
+    "ms": 2361
+  },
+  {
+    "name": "test:brain-reasoning",
+    "status": "passed",
+    "ms": 6017
+  },
+  {
+    "name": "test:brain-reasoning-browser",
+    "status": "passed",
+    "ms": 239589
+  },
+  {
+    "name": "test:changes",
+    "status": "passed",
+    "ms": 24411
+  },
+  {
+    "name": "test:chapter-reasoning",
+    "status": "passed",
+    "ms": 6605
+  },
+  {
+    "name": "test:chapter-sol-browser",
+    "status": "passed",
+    "ms": 312094
+  },
+  {
+    "name": "test:composition",
+    "status": "passed",
+    "ms": 15003
+  },
+  {
+    "name": "test:connected-model",
+    "status": "passed",
+    "ms": 13059
+  },
+  {
+    "name": "test:decisions",
+    "status": "passed",
+    "ms": 2582
+  },
+  {
+    "name": "test:deploy",
+    "status": "passed",
+    "ms": 1708
+  },
+  {
+    "name": "test:deploy-browser",
+    "status": "passed",
+    "ms": 213910
+  },
+  {
+    "name": "test:design-spec",
+    "status": "passed",
+    "ms": 839
+  },
+  {
+    "name": "test:design-tasks",
+    "status": "passed",
+    "ms": 4524
+  },
+  {
+    "name": "test:desk",
+    "status": "passed",
+    "ms": 4195
+  },
+  {
+    "name": "test:desk-browser",
+    "status": "failed",
+    "ms": 202624,
+    "error": "Command failed: desk-browser-validate.mjs\nnode:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: The input did not match the regular expression /Applied through Chapter 10's change review: 12 drafted fixes\\. 12 vitals change: 12 to normal/. Input:\r\n\r\n\"Applied through Chapter 10's change review: Let RUN-001 grow to 13 replicas. 1 vital change: 1 to normal.\\n\" +\r\n  '×'\r\n\r\n    at file:///C:/AIW/aiw/AIW-V5-Local-Source/desk-browser-validate.mjs:220:10 {\r\n  generatedMessage: true,\r\n  code: 'ERR_ASSERTION',\r\n  actual: \"Applied through Chapter 10's change review: Let RUN-001 grow to 13 replicas. 1 vital change: 1 to normal.\\n\" +\r\n    '×',\r\n  expected: /Applied through Chapter 10's change review: 12 drafted fixes\\. 12 vitals change: 12 to normal/,\r\n  operator: 'match',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v24.18.0\r\n"
+  },
+  {
+    "name": "test:desk-fixes",
+    "status": "passed",
+    "ms": 7015
+  },
+  {
+    "name": "test:development",
+    "status": "passed",
+    "ms": 3619
+  },
+  {
+    "name": "test:enhancements",
+    "status": "passed",
+    "ms": 4336
+  },
+  {
+    "name": "test:evidence",
+    "status": "passed",
+    "ms": 7196
+  },
+  {
+    "name": "test:exchange",
+    "status": "passed",
+    "ms": 2060
+  },
+  {
+    "name": "test:exchange-browser",
+    "status": "passed",
+    "ms": 312520
+  },
+  {
+    "name": "test:exchange-design",
+    "status": "passed",
+    "ms": 6492
+  },
+  {
+    "name": "test:grounding-review",
+    "status": "passed",
+    "ms": 1352
+  },
+  {
+    "name": "test:intelligence",
+    "status": "passed",
+    "ms": 2031
+  },
+  {
+    "name": "test:interface-impact",
+    "status": "passed",
+    "ms": 6588
+  },
+  {
+    "name": "test:interfaces",
+    "status": "passed",
+    "ms": 3758
+  },
+  {
+    "name": "test:investigation",
+    "status": "passed",
+    "ms": 4079
+  },
+  {
+    "name": "test:journey",
+    "status": "passed",
+    "ms": 1123
+  },
+  {
+    "name": "test:knowledge-design",
+    "status": "passed",
+    "ms": 5356
+  },
+  {
+    "name": "test:knowledge-ingestion",
+    "status": "passed",
+    "ms": 1229
+  },
+  {
+    "name": "test:knowledge-repository",
+    "status": "passed",
+    "ms": 4902
+  },
+  {
+    "name": "test:knowledge-repository-browser",
+    "status": "passed",
+    "ms": 252486
+  },
+  {
+    "name": "test:knowledge-second-brain",
+    "status": "passed",
+    "ms": 2626
+  },
+  {
+    "name": "test:logical",
+    "status": "passed",
+    "ms": 2612
+  },
+  {
+    "name": "test:model-alternatives",
+    "status": "passed",
+    "ms": 30404
+  },
+  {
+    "name": "test:model-impact",
+    "status": "passed",
+    "ms": 25452
+  },
+  {
+    "name": "test:operations",
+    "status": "passed",
+    "ms": 6716
+  },
+  {
+    "name": "test:persistence",
+    "status": "passed",
+    "ms": 7128
+  },
+  {
+    "name": "test:platform",
+    "status": "passed",
+    "ms": 1773
+  },
+  {
+    "name": "test:platform-browser",
+    "status": "passed",
+    "ms": 289289
+  },
+  {
+    "name": "test:product-choice",
+    "status": "passed",
+    "ms": 2783
+  },
+  {
+    "name": "test:projects",
+    "status": "passed",
+    "ms": 4208
+  },
+  {
+    "name": "test:quality",
+    "status": "passed",
+    "ms": 2259
+  },
+  {
+    "name": "test:readiness",
+    "status": "passed",
+    "ms": 2317
+  },
+  {
+    "name": "test:reads",
+    "status": "passed",
+    "ms": 5077
+  },
+  {
+    "name": "test:realisation",
+    "status": "passed",
+    "ms": 2704
+  },
+  {
+    "name": "test:realise",
+    "status": "passed",
+    "ms": 1663
+  },
+  {
+    "name": "test:realise-browser",
+    "status": "passed",
+    "ms": 221035
+  },
+  {
+    "name": "test:reconciliation",
+    "status": "passed",
+    "ms": 12432
+  },
+  {
+    "name": "test:repository-acquire",
+    "status": "passed",
+    "ms": 2527
+  },
+  {
+    "name": "test:repository-service",
+    "status": "passed",
+    "ms": 3447
+  },
+  {
+    "name": "test:repository-sync",
+    "status": "passed",
+    "ms": 4717
+  },
+  {
+    "name": "test:requirements",
+    "status": "passed",
+    "ms": 3023
+  },
+  {
+    "name": "test:responsibility",
+    "status": "passed",
+    "ms": 1005
+  },
+  {
+    "name": "test:responsibility-browser",
+    "status": "passed",
+    "ms": 197373
+  },
+  {
+    "name": "test:reversal",
+    "status": "passed",
+    "ms": 5154
+  },
+  {
+    "name": "test:review",
+    "status": "passed",
+    "ms": 75514
+  },
+  {
+    "name": "test:runtime",
+    "status": "passed",
+    "ms": 4237
+  },
+  {
+    "name": "test:security",
+    "status": "passed",
+    "ms": 3589
+  },
+  {
+    "name": "test:security-design",
+    "status": "passed",
+    "ms": 7602
+  },
+  {
+    "name": "test:sol-evaluation",
+    "status": "passed",
+    "ms": 7822
+  },
+  {
+    "name": "test:stack",
+    "status": "passed",
+    "ms": 3582
+  },
+  {
+    "name": "test:stack-browser",
+    "status": "passed",
+    "ms": 293433
+  },
+  {
+    "name": "test:stewardship",
+    "status": "passed",
+    "ms": 5398
+  },
+  {
+    "name": "test:stewardship-browser",
+    "status": "passed",
+    "ms": 155608
+  },
+  {
+    "name": "test:story",
+    "status": "passed",
+    "ms": 1000
+  },
+  {
+    "name": "test:story-browser",
+    "status": "passed",
+    "ms": 224949
+  },
+  {
+    "name": "test:technology",
+    "status": "passed",
+    "ms": 4071
+  },
+  {
+    "name": "test:technology-realisation",
+    "status": "passed",
+    "ms": 11764
+  },
+  {
+    "name": "test:threat",
+    "status": "passed",
+    "ms": 2436
+  },
+  {
+    "name": "test:threat-browser",
+    "status": "passed",
+    "ms": 324381
+  },
+  {
+    "name": "test:tradeoff",
+    "status": "passed",
+    "ms": 2246
+  },
+  {
+    "name": "test:tradeoff-browser",
+    "status": "passed",
+    "ms": 267390
+  },
+  {
+    "name": "test:utility",
+    "status": "passed",
+    "ms": 1225
+  },
+  {
+    "name": "test:utility-browser",
+    "status": "passed",
+    "ms": 324404
+  },
+  {
+    "name": "test:validate-browser",
+    "status": "passed",
+    "ms": 242363
+  },
+  {
+    "name": "test:workspace",
+    "status": "passed",
+    "ms": 838
+  }
+]

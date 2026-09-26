@@ -21,6 +21,7 @@ release-evidence/rc10.73.7/*_SOURCE_INVENTORY.json
 release-evidence/rc10.73.7/MACHINE_READABLE_MODEL_INVENTORY.json
 release-evidence/rc10.73.7/CROSS_FILE_ARCHITECTURE_GROUPS.json
 release-evidence/rc10.73.7/*_FULLDIST.zip
+release-evidence/brain-knowledge-repository/*.zip
 
 # Local dependency, package-manager and browser caches.
 .npm/

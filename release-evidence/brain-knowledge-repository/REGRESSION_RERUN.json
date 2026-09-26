@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "aiw-regression-rerun-v1",
+  "sourceCommit": "3a6a336450c175f9158c7840ed548a191b0766bc",
+  "runAt": "2026-09-26T05:51:02.218Z",
+  "why": "The final full run on this commit was suspended by laptop standby from 03:17 to 06:07 (local time), about a minute after it started. Two suites in flight at the time outlived their 25-minute timers across the standby, and one browser suite timed out loading its first page two minutes after wake-up. Each is re-run here alone on the same commit.",
+  "suites": [
+    {
+      "name": "test:model-alternatives",
+      "status": "passed",
+      "seconds": 21.5,
+      "exitCode": 0,
+      "output": "PASS Model alternatives: durable drafts without model mutation; comparison; coordinated application; unrelated-edit preservation; overlap disclosure; already-applied detection; explicit review; private blob persistence; CAS; storage failure atomicity; retained history and frozen SDD."
+    },
+    {
+      "name": "test:review",
+      "status": "passed",
+      "seconds": 35.7,
+      "exitCode": 0,
+      "output": "PASS Review & Realize: explicit findings and owned actions; five-stage traceability; separate architect/governance/implementation evidence; immutable working and reviewed baselines; source and outcome invalidation; attainable conditional handoff; escaped SDD exports; private R2 snapshots, bounded D1 rows, owner isolation, CAS, failure preservation, and durable reopening."
+    },
+    {
+      "name": "test:anatomy-browser",
+      "status": "passed",
+      "seconds": 74.6,
+      "exitCode": 0,
+      "output": "    \"on a 390 px phone the anatomy has a usable canvas and no horizontal page scroll\",\n    \"no page errors\"\n  ]\n}"
+    }
+  ]
+}

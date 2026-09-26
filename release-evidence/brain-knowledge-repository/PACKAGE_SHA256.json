@@ -1,0 +1,169 @@
+{
+  "schemaVersion": "aiw-v5-local-source-package-sha256-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.6",
+  "packageLine": "AIW V5 Local Source v20 (successor to the supplied v19)",
+  "generatedAt": "2026-09-26T05:57:46.256Z",
+  "archive": "release-evidence/brain-knowledge-repository/AIW-V5-Local-Source-v20.zip",
+  "builtWith": "git archive --format=zip 3a6a336450c175f9158c7840ed548a191b0766bc AIW-V5-Local-Source",
+  "sourceCommit": "3a6a336450c175f9158c7840ed548a191b0766bc",
+  "sourceTree": "e3e76e696ee147e705053e47aff5a2608238a1e7",
+  "archiveBytes": 3276524,
+  "sha256": "b8183e3585638201897e42ab559c2511d1d947bb2d04634e5403229d715e6efa",
+  "reproducible": true,
+  "fileCount": 494,
+  "byteIdentityWithCommit": {
+    "mismatched": [],
+    "missing": [],
+    "symlinks": []
+  },
+  "forbiddenPathCount": 0,
+  "forbiddenPaths": [],
+  "secretFindings": [],
+  "personalDataFindings": [],
+  "deltaFromV19": {
+    "suppliedSha256": "1f4876421119fd15c464049a55e5356f03cc2aeec7ed5e3d31784c1c11c79ff1",
+    "added": 33,
+    "changed": 24,
+    "removed": 0,
+    "unchanged": 437,
+    "addedPaths": [
+      ".gitattributes",
+      "KNOWLEDGE-REPOSITORY.md",
+      "brain-ahead-validate.mjs",
+      "evaluation/sol-heldout-v1.json",
+      "evidence/brain-evaluation/sol-test-double-2026-09-25.json",
+      "knowledge-repository-browser-validate.mjs",
+      "knowledge-repository-validate.mjs",
+      "knowledge-repository.js",
+      "public/product-comparison.js",
+      "public/reasoning-record.js",
+      "public/repository-corpus-ui.js",
+      "repository-acquire-validate.mjs",
+      "repository-service-validate.mjs",
+      "repository-service/README.md",
+      "repository-service/acquire.js",
+      "repository-service/build.js",
+      "repository-service/cli.mjs",
+      "repository-service/concepts.js",
+      "repository-service/config.json",
+      "repository-service/corpus.js",
+      "repository-service/fixture.mjs",
+      "repository-service/ids.js",
+      "repository-service/manifest-stream.js",
+      "repository-service/passages.js",
+      "repository-service/reader.js",
+      "repository-service/refresh.ps1",
+      "repository-service/register-refresh-task.ps1",
+      "repository-service/server.js",
+      "repository-service/store.js",
+      "repository-service/sync.js",
+      "scripts/evaluate-sol-decisions.mjs",
+      "sol-evaluation-validate.mjs",
+      "sol-evaluation.js"
+    ],
+    "changedPaths": [
+      "AIW-BRAIN-ARCHITECTURE.md",
+      "BRAIN-INTEGRATION-REGISTER.md",
+      "LOCAL-RUN.md",
+      "README.md",
+      "SECOND-BRAIN-STATUS.md",
+      "architecture-explorer-validate.mjs",
+      "build.mjs",
+      "desk-browser-validate.mjs",
+      "knowledge-service.js",
+      "mock-llm-provider.mjs",
+      "package.json",
+      "public/brain-reasoning-ui.js",
+      "public/brain-reasoning.js",
+      "public/desk-view.js",
+      "public/knowledge-sources-ui.js",
+      "public/knowledge-workspace-ui.js",
+      "public/knowledge-workspace.css",
+      "public/repository-pilot-ui.js",
+      "public/review-domain.js",
+      "release-checks.mjs",
+      "repository-packet.js",
+      "repository-sync.js",
+      "server.js",
+      "worker.js"
+    ],
+    "removedPaths": []
+  },
+  "cleanExtract": {
+    "installedDependencies": "none while the suites ran (no node_modules; the runtime and these suites use Node built-ins only); then npm ci --offline installed the lockfile's development tools from the local cache",
+    "node": "v24.18.0",
+    "results": [
+      {
+        "name": "check",
+        "status": "passed",
+        "seconds": 107.6
+      },
+      {
+        "name": "build",
+        "status": "passed",
+        "seconds": 5.8
+      },
+      {
+        "name": "test",
+        "status": "passed",
+        "seconds": 0.5,
+        "checkCount": 11
+      },
+      {
+        "name": "test:repository-service",
+        "status": "passed",
+        "seconds": 3,
+        "checkCount": 12
+      },
+      {
+        "name": "test:repository-acquire",
+        "status": "passed",
+        "seconds": 1.5,
+        "checkCount": 5
+      },
+      {
+        "name": "test:knowledge-repository",
+        "status": "passed",
+        "seconds": 2.7,
+        "checkCount": 4
+      },
+      {
+        "name": "test:brain-ahead",
+        "status": "passed",
+        "seconds": 3.2,
+        "checkCount": 5
+      },
+      {
+        "name": "test:sol-evaluation",
+        "status": "passed",
+        "seconds": 5.2,
+        "checkCount": 6
+      },
+      {
+        "name": "test:repository-sync",
+        "status": "passed",
+        "seconds": 1.8
+      },
+      {
+        "name": "test:knowledge-second-brain",
+        "status": "passed",
+        "seconds": 1.4
+      },
+      {
+        "name": "evaluate:sol",
+        "status": "passed",
+        "seconds": 4
+      },
+      {
+        "name": "npm ci --offline",
+        "status": "passed",
+        "seconds": 173.9
+      }
+    ]
+  },
+  "packageVerificationResult": "passed",
+  "rawRepositoryContentIncluded": false,
+  "quarantineContentIncluded": false,
+  "redistributionApproved": false,
+  "productionAccepted": false
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "aiw-browser-evidence-v1",
+  "suite": "AIW-V5-Local-Source/knowledge-repository-browser-validate.mjs",
+  "engine": "Playwright 1.56.0 · Chromium headless shell 141.0.7390.37 (revision 1194) · Windows 11",
+  "viewports": [
+    "1440x900",
+    "390x844 mobile"
+  ],
+  "environment": "The real AIW server on loopback, with the synthetic fixture repository service and the provider test double; a disposable SQLite database.",
+  "passed": 6,
+  "checks": [
+    "Sources: the connected repository is searched, a passage is read from its verified original, and only an explicit retrieval saves the exact original — with no claim made",
+    "interpreting the passage opens the claim form on its exact lines; the saved claim is a candidate awaiting review",
+    "a desk switch point opens Mind Factory on the product comparison: the weighing, each product's documented mechanisms and the reviewed claims about it",
+    "beside what Sol will read, repository leads are shown and marked not sent to Sol; a lead opens its passage in Mind Factory sources",
+    "on a 390 px phone the repository search keeps a usable column and no horizontal page scroll",
+    "no page errors"
+  ],
+  "screenshots": [
+    {
+      "file": "screenshots/knowledge-repository-phone.png",
+      "sha256": "288b59477089611bfd9170fe0d04baf3a41972c290a95d10c31431a9d1903996"
+    },
+    {
+      "file": "screenshots/knowledge-repository-product-comparison.png",
+      "sha256": "8805cd96952d99e999edc2e2b109f2b9632df72c226646abbf324c07ef260e6c"
+    },
+    {
+      "file": "screenshots/knowledge-repository-reader.png",
+      "sha256": "42eee3f8884febf67b665247a9c5a9404fd0183ff1d9dd526417aa9606e7709b"
+    }
+  ],
+  "limitations": [
+    "Rendered against a synthetic fixture corpus of original text, not the acquired corpus. The workbench was also run against the real repository service on this laptop, where a search in Mind Factory → Sources for “transactional outbox” returned 8 passages; that check is recorded in RELEASE_REPORT.md, not as a screenshot.",
+    "Provider answers come from the loopback test double."
+  ],
+  "alsoPassedIn": [
+    "REGRESSION_RESULTS_RUN1.json (commit 8173665)",
+    "REGRESSION_RESULTS.json (commit 3a6a336)"
+  ]
+}

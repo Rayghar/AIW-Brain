@@ -1,0 +1,470 @@
+{
+  "schemaVersion": "aiw-test-evidence-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.6",
+  "packageLine": "AIW V5 Local Source v20 (successor to the supplied v19)",
+  "sourceCommit": "3a6a336450c175f9158c7840ed548a191b0766bc",
+  "generatedAt": "2026-09-26T05:58:26.865Z",
+  "workstation": {
+    "os": "Windows 11 Enterprise 10.0.26200",
+    "node": "v24.18.0",
+    "browser": "Playwright 1.56.0 · Chromium headless shell 141.0.7390.37 (revision 1194) · Windows 11"
+  },
+  "gates": {
+    "syntax": {
+      "command": "npm run check",
+      "status": "passed",
+      "seconds": 107.6,
+      "output": "Syntax checks passed for 334 application, service and verification modules."
+    },
+    "build": {
+      "command": "npm run build",
+      "status": "passed",
+      "seconds": 5.8,
+      "output": "Built private project Worker, static assets, and D1 migrations; packaged imports verified."
+    },
+    "focusedSuites": {
+      "where": "A clean extract of the v20 package with no node_modules: no installed dependencies.",
+      "suites": [
+        {
+          "name": "test",
+          "status": "passed",
+          "seconds": 0.5,
+          "checks": 11,
+          "checkNames": [
+            "unique objects and resolved endpoints",
+            "eight layer toggles",
+            "chapter and tab context rendering",
+            "object selection",
+            "ghost preview / acceptance / undo",
+            "validation and export invalidation",
+            "complete payment journey",
+            "risk hold stops before posting",
+            "timeout stops before confirmation",
+            "candidate relationship integrity",
+            "open governance findings retained"
+          ]
+        },
+        {
+          "name": "test:repository-service",
+          "status": "passed",
+          "seconds": 3,
+          "checks": 12,
+          "checkNames": [
+            "identities: node SHA-256 equals the Site SHA-256 and revision identity follows the packet contract",
+            "manifest stream: identical to JSON.parse at hostile chunk boundaries, artefact arrays skipped, raw SHA-256 recorded",
+            "segmentation: front matter, fenced hashes, setext/AsciiDoc/RST headings; exact line ranges with CR and BOM kept",
+            "baseline build: policy gating, verified bytes, retrieval decisions, no notices before the baseline",
+            "search: ranked passages, phrases, prefixes, filters, two per file, and hostile query text never reaches FTS syntax",
+            "exact originals: BOM and CRLF preserved so the Site hash matches; refused with a reason when not retrievable",
+            "resumable build: a crashed job resumes after its last completed connector; store identity never changes",
+            "HTTP service: loopback host, bearer token and no browser origin; bounded JSON routes",
+            "Site retrieval through the corpus transport: same origin and identity as a GitHub read, re-verified, idempotent",
+            "candidate packet: accepted unchanged by the Site packet validator; locators carry exact knowledge.fetch commands",
+            "refresh after the baseline: successors, same-content commits, removals and withdrawals become contiguous notices",
+            "signed notices: verified by the Site with a notices-only key, applied to withdraw the invalidated project source"
+          ]
+        },
+        {
+          "name": "test:repository-acquire",
+          "status": "passed",
+          "seconds": 1.5,
+          "checks": 5,
+          "checkNames": [
+            "path policy: allowed globs admit, denied globs win",
+            "dry run: the moved branch is resolved and the refresh planned without writing anything",
+            "fails closed: a truncated tree, a redirect and bytes that do not match the tree write nothing",
+            "acquisition: changed and new files downloaded and verified, unchanged reused, credentials quarantined without bytes",
+            "refresh: the new snapshot becomes successor revisions and notices; exact originals come from the new snapshot"
+          ]
+        },
+        {
+          "name": "test:knowledge-repository",
+          "status": "passed",
+          "seconds": 2.7,
+          "checks": 4,
+          "checkNames": [
+            "discovery routes: status, ranked search and verified passages; never offered for unregistered or metadata-only files",
+            "retrieval and interpretation: the exact original through /api/commands, then a claim on the same line range",
+            "automatic revocation: a changed original becomes a signed invalidation, verified and applied when the project is read",
+            "Sources rendering: the connected repository surface, its receipts and actions; offline locators folded away"
+          ]
+        },
+        {
+          "name": "test:brain-ahead",
+          "status": "passed",
+          "seconds": 3.2,
+          "checks": 5,
+          "checkNames": [
+            "SDD: the architecture reasoning record carries the vitals, product choices, Sol’s advice with outcomes and what the project learned",
+            "the reasoning record escapes table and list text, and stays inert in the HTML SDD",
+            "Mind Factory from the desk: each product with its documented mechanisms and the governed claims that name it",
+            "the comparison renders in Mind Factory, opened by the desk’s public entry point",
+            "Sol at a switch point: recall anchors on the Chapter 7 realisation; leads are worded from what Sol reads"
+          ]
+        },
+        {
+          "name": "test:sol-evaluation",
+          "status": "passed",
+          "seconds": 5.2,
+          "checks": 6,
+          "checkNames": [
+            "every held-out case builds its packet from a real reference design and runs the full reasoning path",
+            "the teaching-domain capacity drafts expose advice that takes the Playbook example objective at face value",
+            "injected faults are caught: guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements",
+            "the metrics catch what the guards let through: a wrong verdict and advice missing its expected support",
+            "false-support proxy: numbers not in the cited sources and overclaiming words are flagged",
+            "adoption rates come from what architects did with advice in a real project, not from this harness"
+          ]
+        },
+        {
+          "name": "test:repository-sync",
+          "status": "passed",
+          "seconds": 1.8,
+          "output": "PASS signed project release, independent authenticated review, exact source binding, scope, origin, replay, tamper, invalidation and Brain withdrawal. Inputs are synthetic; no real repository claim was approved."
+        },
+        {
+          "name": "test:knowledge-second-brain",
+          "status": "passed",
+          "seconds": 1.4,
+          "output": "PASS linked evidence graph, two-hop backlinks, governed graph retrieval, duplicate refresh, changed-source invalidation, and source lineage. Provider responses are synthetic."
+        }
+      ]
+    },
+    "cleanInstall": {
+      "command": "npm ci --offline --ignore-scripts --no-audit --no-fund",
+      "status": "passed",
+      "seconds": 173.9,
+      "output": "added 17 packages in 3m",
+      "note": "Installs the lockfile's development tools (drizzle-kit, drizzle-orm) from the local npm cache without contacting the network, which proves the lockfile agrees with package.json. The runtime and the suites need no installed dependency."
+    },
+    "browser": {
+      "suite": "test:knowledge-repository-browser",
+      "passed": 6,
+      "checks": [
+        "Sources: the connected repository is searched, a passage is read from its verified original, and only an explicit retrieval saves the exact original — with no claim made",
+        "interpreting the passage opens the claim form on its exact lines; the saved claim is a candidate awaiting review",
+        "a desk switch point opens Mind Factory on the product comparison: the weighing, each product's documented mechanisms and the reviewed claims about it",
+        "beside what Sol will read, repository leads are shown and marked not sent to Sol; a lead opens its passage in Mind Factory sources",
+        "on a 390 px phone the repository search keeps a usable column and no horizontal page scroll",
+        "no page errors"
+      ],
+      "viewports": [
+        "1440x900",
+        "390x844 mobile"
+      ],
+      "screenshots": [
+        "screenshots/knowledge-repository-phone.png",
+        "screenshots/knowledge-repository-product-comparison.png",
+        "screenshots/knowledge-repository-reader.png"
+      ],
+      "evidence": "BROWSER_EVIDENCE.json"
+    },
+    "fullRegression": {
+      "runner": "release-checks.mjs",
+      "timeoutMs": 1500000,
+      "concurrency": 2,
+      "sourceCommit": "3a6a336450c175f9158c7840ed548a191b0766bc",
+      "suites": 85,
+      "passed": 82,
+      "failed": 3,
+      "failures": [
+        {
+          "name": "test:anatomy-browser",
+          "seconds": 693,
+          "firstLine": "Command failed: anatomy-browser-validate.mjs",
+          "classification": "timed out loading its first page two minutes after wake-up; passed when re-run alone on the same commit",
+          "reason": "Started at 06:09, two minutes after the laptop woke from standby on a nearly empty battery that had just begun charging; the 8 s wait for the anatomy view expired. It passed in the first full run, and re-run alone it passed in 74.6 s."
+        },
+        {
+          "name": "test:model-alternatives",
+          "seconds": 10208,
+          "firstLine": "Timed out after 1500000 ms: model-alternatives-validate.mjs",
+          "classification": "interrupted by laptop standby; passed when re-run alone on the same commit",
+          "reason": "In flight when the laptop entered standby at 03:17, about a minute into the run; its 25-minute timer expired across the 2 h 50 min standby (10,208 s elapsed). Re-run alone: passed in 21.5 s."
+        },
+        {
+          "name": "test:review",
+          "seconds": 10278,
+          "firstLine": "Timed out after 1500000 ms: review-validate.mjs",
+          "classification": "interrupted by laptop standby; passed when re-run alone on the same commit",
+          "reason": "In flight when the laptop entered standby at 03:17, about a minute into the run; its 25-minute timer expired across the 2 h 50 min standby (10,278 s elapsed). Re-run alone: passed in 35.7 s."
+        }
+      ],
+      "newSuites": [
+        {
+          "name": "test:repository-service",
+          "status": "passed"
+        },
+        {
+          "name": "test:repository-acquire",
+          "status": "passed"
+        },
+        {
+          "name": "test:knowledge-repository",
+          "status": "passed"
+        },
+        {
+          "name": "test:knowledge-repository-browser",
+          "status": "passed"
+        },
+        {
+          "name": "test:brain-ahead",
+          "status": "passed"
+        },
+        {
+          "name": "test:sol-evaluation",
+          "status": "passed"
+        }
+      ],
+      "evidence": "REGRESSION_RESULTS.json",
+      "interruption": "The laptop entered standby at 03:17 local time, about a minute into this run, and woke at 06:07; the runner resumed after waking.",
+      "rerunAlone": {
+        "evidence": "REGRESSION_RERUN.json",
+        "runAt": "2026-09-26T05:51:02.218Z",
+        "suites": [
+          {
+            "name": "test:model-alternatives",
+            "status": "passed",
+            "seconds": 21.5
+          },
+          {
+            "name": "test:review",
+            "status": "passed",
+            "seconds": 35.7
+          },
+          {
+            "name": "test:anatomy-browser",
+            "status": "passed",
+            "seconds": 74.6
+          }
+        ]
+      },
+      "outcome": {
+        "passedInFullRun": 82,
+        "passedWhenReRunAlone": 3,
+        "of": 85
+      },
+      "earlierRun": {
+        "sourceCommit": "8173665",
+        "evidence": "REGRESSION_RESULTS_RUN1.json",
+        "suites": 85,
+        "passed": 84,
+        "failures": [
+          {
+            "name": "test:desk-browser",
+            "seconds": 203,
+            "firstLine": "Command failed: desk-browser-validate.mjs",
+            "classification": "pre-existing test race (present in the supplied v19); fixed in the suite, assertions unchanged",
+            "reason": "After a drafted fix is applied, the desk's flash stays until the next one replaces it. The suite waited for any .dk-flash and read it 300 ms later, so a slower 12-command change review was read as the previous flash (line 220), or, when the first apply took longer than 8 s, the wait timed out (line 205). The supplied v19, run alone from its verified archive on this laptop, fails at the same assertion with the same text. The suite now waits up to 20 s for the flash that reports each action and notes the cell's pulse at the same moment; v19 and v20 then both pass all 16 checks."
+          }
+        ],
+        "control": {
+          "what": "test:desk-browser run alone on this laptop against the supplied v19, extracted from its verified archive, and against v20.",
+          "beforeFix": [
+            {
+              "version": "v19 (supplied archive)",
+              "result": "failed after 11 checks at the same assertion (line 220), reading the previous flash"
+            },
+            {
+              "version": "v20 (repository)",
+              "result": "failed after 10 checks at line 205: the first apply's flash took longer than the 8 s wait"
+            }
+          ],
+          "afterFix": [
+            {
+              "version": "v20 (repository)",
+              "exitCode": 0,
+              "seconds": 105,
+              "checks": 16
+            },
+            {
+              "version": "v19 (supplied archive)",
+              "exitCode": 0,
+              "seconds": 77.4,
+              "checks": 16
+            },
+            {
+              "version": "v20 (repository)",
+              "exitCode": 0,
+              "seconds": 79.2,
+              "checks": 16
+            }
+          ]
+        }
+      }
+    },
+    "solEvaluation": {
+      "mode": "test-double",
+      "model": "mock-sol",
+      "dataset": {
+        "title": "Held-out decisions for evaluating Sol's advice",
+        "digest": "eefa96c59a04b91632e1b7aca53e10e986f7748905a893def19544160e3b6347",
+        "cases": 26,
+        "authority": "Implementation-authored expectations. They were written from the designs' own readings before Sol was run on these cases, and none of these cases was used to write Sol's instructions, the guards or the provider test double. They are not independent expert review: an architect should review and amend them before any result is relied on."
+      },
+      "summary": {
+        "cases": 26,
+        "requestFailures": 0,
+        "assessments": 28,
+        "withheld": {
+          "rate": 0,
+          "of": 28,
+          "reasons": {}
+        },
+        "verdictAgreement": {
+          "rate": 0.929,
+          "of": 28
+        },
+        "ownReadingCited": {
+          "rate": 1,
+          "of": 28
+        },
+        "expectedSupportCited": {
+          "rate": 0.75,
+          "of": 8
+        },
+        "addressesTheIssue": {
+          "rate": 0.167,
+          "of": 12
+        },
+        "numbersWithinBand": {
+          "rate": 1,
+          "of": 2
+        },
+        "proposalsValid": {
+          "rate": 1,
+          "of": 1
+        },
+        "preferenceWithinOptions": {
+          "rate": 1,
+          "of": 4
+        },
+        "falseSupport": {
+          "rate": 0,
+          "of": 28
+        },
+        "tokens": 83200,
+        "latencyMs": {
+          "p50": 63,
+          "p95": 398
+        },
+        "byDomain": {
+          "bank-payment": {
+            "verdictAgreement": {
+              "rate": 1,
+              "of": 16
+            },
+            "addressesTheIssue": {
+              "rate": 0.286,
+              "of": 7
+            }
+          },
+          "service-permits": {
+            "verdictAgreement": {
+              "rate": 0.833,
+              "of": 6
+            },
+            "addressesTheIssue": {
+              "rate": 0,
+              "of": 3
+            }
+          },
+          "warehouse-fulfilment": {
+            "verdictAgreement": {
+              "rate": 0.833,
+              "of": 6
+            },
+            "addressesTheIssue": {
+              "rate": 0,
+              "of": 2
+            }
+          }
+        }
+      },
+      "limitations": [
+        "Test double: the answers are canned. This run verifies the path, the guards and the metrics, not the quality of advice.",
+        "Expectations are implementation-authored and need independent architect review.",
+        "Metrics are automated proxies: they detect grounding and structural failures and disagreement with the expected class of advice, not the quality of architectural judgement.",
+        "The designs are reference and teaching examples, not a production system."
+      ],
+      "evidence": "AIW-V5-Local-Source/evidence/brain-evaluation/sol-test-double-2026-09-25.json",
+      "reRunInCleanExtract": "passed"
+    },
+    "package": {
+      "archive": "release-evidence/brain-knowledge-repository/AIW-V5-Local-Source-v20.zip",
+      "bytes": 3276524,
+      "sha256": "b8183e3585638201897e42ab559c2511d1d947bb2d04634e5403229d715e6efa",
+      "reproducible": true,
+      "fileCount": 494,
+      "byteIdenticalToCommit": true,
+      "forbiddenPathCount": 0,
+      "secretFindings": 0,
+      "personalDataFindings": 0,
+      "result": "passed",
+      "evidence": "PACKAGE_SHA256.json"
+    },
+    "securityAndIntegrity": [
+      {
+        "gate": "Repository service boundary",
+        "result": "passed",
+        "by": "test:repository-service",
+        "what": "Loopback bind, bearer token, Host check, browser Origin refused; search input cannot inject FTS syntax."
+      },
+      {
+        "gate": "Purpose-bound keys",
+        "result": "passed",
+        "by": "test:repository-service, test:knowledge-repository",
+        "what": "The Site verifies and applies notices signed with a notices-only key, and that key cannot make a release receipt verify."
+      },
+      {
+        "gate": "Signed update path",
+        "result": "passed",
+        "by": "test:repository-sync",
+        "what": "Signed release, independent authenticated review, exact source binding, scope, origin, replay, tamper, invalidation and Brain withdrawal."
+      },
+      {
+        "gate": "Content policy",
+        "result": "passed",
+        "by": "test:repository-service",
+        "what": "Quarantined and metadata-only text is never searchable; excerpts are re-verified against the original on every request; the store keeps no second copy of third-party text."
+      },
+      {
+        "gate": "Live refresh safety",
+        "result": "passed",
+        "by": "test:repository-acquire",
+        "what": "Blob-verified downloads, credential quarantine, fail-closed truncation, redirects and tampering, and an untouched original root (loopback fake; no network)."
+      },
+      {
+        "gate": "Package secret and exclusion scan",
+        "result": "passed",
+        "by": "PACKAGE_SHA256.json",
+        "what": "No private keys, provider, GitHub, AWS or Slack tokens; no .env, databases, key material, repository store or corpus files; no personal data."
+      },
+      {
+        "gate": "Corpus integrity",
+        "result": "passed",
+        "by": "CORPUS_EVIDENCE.json",
+        "what": "Every documentation revision verified against its manifest hash; catalogue checked against SHA256SUMS; zero unavailable, zero build errors."
+      }
+    ]
+  },
+  "notRun": [
+    {
+      "what": "Live GitHub acquisition",
+      "why": "Contacts GitHub; needs the sponsor's explicit go-ahead. The adapter is verified against a loopback fake."
+    },
+    {
+      "what": "Live provider evaluation (npm run evaluate:sol:live)",
+      "why": "Uses the sponsor's provider key and incurs cost; needs explicit go-ahead."
+    },
+    {
+      "what": "Registering the daily refresh task",
+      "why": "Persistent system configuration; needs explicit go-ahead."
+    },
+    {
+      "what": "Legacy backend/ and frontend builds of the monorepo",
+      "why": "Not part of this deliverable, which is the V5 Local Source: its single build produces the Worker (server) and the static client. Those trees hold earlier uncommitted work that this release does not touch."
+    }
+  ],
+  "productionAccepted": false
+}
