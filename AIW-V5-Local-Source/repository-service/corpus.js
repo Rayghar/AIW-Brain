@@ -18,8 +18,13 @@ export async function loadConfig(file){
  const raw=JSON.parse(await readFile(file,'utf8')),base=path.dirname(path.resolve(file)),at=p=>p&&path.resolve(base,expand(p));
  const config={snapshotRoot:at(raw.snapshotRoot),manifestIndex:at(raw.manifestIndex),catalogue:at(raw.catalogue),catalogueSums:at(raw.catalogueSums),store:at(raw.store),secrets:at(raw.secrets),port:Number(raw.port)||4180};
  for(const k of ['snapshotRoot','manifestIndex','catalogue','catalogueSums','store','secrets'])if(!config[k])throw Error('Configuration needs '+k+'.');
+ // Snapshots acquired after the governed acquisition live beside the store, never inside the original
+ // acquisition root; the overlay says which newer snapshot replaces a connector's pinned one.
+ config.acquiredRoot=at(raw.acquiredRoot)||path.join(path.dirname(config.store),'acquired');
+ config.overlay=at(raw.overlay)||path.join(path.dirname(config.store),'selection-overlay.json');
  return config;
 }
+export const snapshotDirOf=(config,connectorId,snapshotId,acquired=false)=>path.join(acquired?config.acquiredRoot:config.snapshotRoot,'snapshots',connectorId,snapshotId);
 
 // Connector registry from the AKR catalogue, trusted only when its bytes match the release checksum list.
 export async function loadRegistry(config){
@@ -27,7 +32,7 @@ export async function loadRegistry(config){
  const listed=sums.split(/\r?\n/).map(l=>/^([a-f0-9]{64}) [ *]?(.+)$/.exec(l.trim())).find(m=>m&&path.basename(m[2])===path.basename(config.catalogue));
  if(!listed||listed[1]!==hash)throw Error('The connector catalogue does not match its release checksum list.');
  const catalogue=JSON.parse(bytes.toString('utf8')),connectors=new Map();
- for(const c of catalogue.connectors||[])connectors.set(c.id,{connectorId:c.id,name:c.name,owner:c.owner,repository:c.repository,lifecycle:c.lifecycleStatus,trustTier:c.trustTier,categories:c.categories||[],contentUses:c.contentUses||[],allowedPaths:c.allowedPaths||[],deniedPaths:c.deniedPaths||[],maxFileBytes:c.maxFileBytes||null,licence:{reviewStatus:c.license?.reviewStatus||'requires-review',usePolicy:c.license?.usePolicy||'metadata-only',note:c.license?.note||''}});
+ for(const c of catalogue.connectors||[])connectors.set(c.id,{connectorId:c.id,name:c.name,owner:c.owner,repository:c.repository,lifecycle:c.lifecycleStatus,trustTier:c.trustTier,categories:c.categories||[],contentUses:c.contentUses||[],allowedPaths:c.allowedPaths||[],deniedPaths:c.deniedPaths||[],maxFileBytes:c.maxFileBytes||null,defaultBranch:c.defaultBranch||null,maxFilesPerRefresh:c.maxFilesPerRefresh||null,licence:{reviewStatus:c.license?.reviewStatus||'requires-review',usePolicy:c.license?.usePolicy||'metadata-only',note:c.license?.note||''}});
  return {connectors,receipt:{file:path.basename(config.catalogue),sha256:hash,checksumList:path.basename(config.catalogueSums),generatedAt:catalogue.generatedAt||null}};
 }
 
@@ -38,10 +43,23 @@ export async function loadSelection(config){
  if(!Array.isArray(index.manifests)||!index.manifests.length)throw Error('The manifest index lists no snapshots.');
  const seen=new Set(),snapshots=index.manifests.map(m=>{
   if(!/^GH-[A-Z0-9-]+$/.test(m.connectorId)||seen.has(m.connectorId)||!/^KSNAP-[A-Z0-9-]+-[a-f0-9]{12}$/.test(m.snapshotId)||!/^[a-f0-9]{40}$/.test(m.immutableCommit))throw Error('The manifest index has an invalid or duplicate snapshot for '+m.connectorId+'.');
-  seen.add(m.connectorId);const snapshotDir=path.join(config.snapshotRoot,'snapshots',m.connectorId,m.snapshotId);
-  return {connectorId:m.connectorId,repository:m.repository,commit:m.immutableCommit,snapshotId:m.snapshotId,manifestChecksum:m.manifestChecksum,snapshotChecksum:m.snapshotChecksum,snapshotDir,manifestFile:path.join(snapshotDir,'manifest.json')};
+  seen.add(m.connectorId);const snapshotDir=snapshotDirOf(config,m.connectorId,m.snapshotId);
+  return {connectorId:m.connectorId,repository:m.repository,commit:m.immutableCommit,snapshotId:m.snapshotId,manifestChecksum:m.manifestChecksum,snapshotChecksum:m.snapshotChecksum,snapshotDir,manifestFile:path.join(snapshotDir,'manifest.json'),acquired:false};
  });
- return {snapshots,receipt:{file:path.basename(config.manifestIndex),sha256:sha256(bytes),releaseId:index.releaseId||null,schemaVersion:index.schemaVersion||null}};
+ // Newer snapshots acquired locally replace the pinned one for their connector, with their own digests.
+ const overlay=await readOverlay(config);
+ for(const o of overlay.snapshots){
+  const i=snapshots.findIndex(s=>s.connectorId===o.connectorId);if(i<0||snapshots[i].repository!==o.repository)throw Error('The selection overlay names an unknown connector '+o.connectorId+'.');
+  if(!/^KSNAP-[A-Z0-9-]+-[a-f0-9]{12}$/.test(o.snapshotId)||!/^[a-f0-9]{40}$/.test(o.immutableCommit))throw Error('The selection overlay has an invalid snapshot for '+o.connectorId+'.');
+  const snapshotDir=snapshotDirOf(config,o.connectorId,o.snapshotId,true);
+  snapshots[i]={connectorId:o.connectorId,repository:o.repository,commit:o.immutableCommit,snapshotId:o.snapshotId,manifestChecksum:o.manifestChecksum,snapshotChecksum:o.snapshotChecksum,snapshotDir,manifestFile:path.join(snapshotDir,'manifest.json'),acquired:true,supersedesSnapshot:o.supersedesSnapshot||null};
+ }
+ return {snapshots,receipt:{file:path.basename(config.manifestIndex),sha256:sha256(bytes),releaseId:index.releaseId||null,schemaVersion:index.schemaVersion||null,overlay:overlay.snapshots.length?{file:path.basename(config.overlay),sha256:overlay.sha256,snapshots:overlay.snapshots.length}:null}};
+}
+export async function readOverlay(config){
+ let bytes;try{bytes=await readFile(config.overlay);}catch(e){if(e.code==='ENOENT')return {snapshots:[],sha256:null};throw e;}
+ const o=JSON.parse(bytes.toString('utf8'));if(o.schema!=='aiw-selection-overlay-v1'||!Array.isArray(o.snapshots))throw Error('The selection overlay is not aiw-selection-overlay-v1.');
+ return {snapshots:o.snapshots,sha256:sha256(bytes)};
 }
 
 export const bareHash=v=>String(v||'').replace(/^sha256:/,'').toLowerCase();

@@ -8,6 +8,8 @@ import path from 'node:path';
 import {loadConfig} from './corpus.js';
 
 export const hash=b=>createHash('sha256').update(b).digest('hex');
+// Manifests record each file's git blob SHA-1, as GitHub's tree does.
+export const gitBlob=b=>createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');
 export const A='GH-MICROSOFT-ARCH-CENTER',AR='MicrosoftDocs/architecture-center',B='GH-AWESOME-SCALABILITY',BR='binhnguyennus/awesome-scalability';
 export const C1='1111111111111111111111111111111111111111',C2='2222222222222222222222222222222222222222';
 export const texts={
@@ -42,7 +44,7 @@ export async function createFixture(prefix='aiw-krs-'){
    if(['policy-excluded','rejected'].includes(f.status)){entries.push({path:f.path,sha:'0'.repeat(40),sizeBytes:10,status:f.status,dispositionReason:'fixture'});continue;}
    const bytes=Buffer.isBuffer(f.bytes)?f.bytes:Buffer.from(f.bytes,'utf8'),h=hash(bytes),store=f.status==='quarantined'?'quarantine':'objects',rel=store+'/sha256/'+h.slice(0,2)+'/'+h;
    await mkdir(path.join(dir,store,'sha256',h.slice(0,2)),{recursive:true});await writeFile(path.join(dir,...rel.split('/')),f.corrupt?Buffer.from('tampered bytes'):bytes);
-   entries.push({path:f.path,sha:'0'.repeat(40),sizeBytes:bytes.length,mediaType:'text/markdown',sourceFormat:f.path.split('.').at(-1),parserRequired:'fixture',status:f.status||'accepted',findings:f.findings||[],contentSha256:'sha256:'+h,...(store==='objects'?{contentAddressedObject:rel}:{}),securityDisposition:'fixture',claimCandidateCount:0,sectionCount:0,boundedEvidenceCount:0,parserStatus:'parsed'});
+   entries.push({path:f.path,sha:gitBlob(bytes),sizeBytes:bytes.length,mediaType:'text/markdown',sourceFormat:f.path.split('.').at(-1),parserRequired:'fixture',status:f.status||'accepted',findings:f.findings||[],contentSha256:'sha256:'+h,...(store==='objects'?{contentAddressedObject:rel}:{}),securityDisposition:'fixture',claimCandidateCount:0,sectionCount:0,boundedEvidenceCount:0,parserStatus:'parsed'});
   }
   const manifest={schemaVersion:'aiw-github-acquisition-v4',connectorId,repository,branch:'main',commitSha:commit,snapshotId,acquiredAt:'2026-07-15T10:00:00.000Z',repositoryMetadata:{htmlUrl:'https://github.com/'+repository},api:{contentTransport:'raw-immutable'},tree:{totalBlobs:entries.length},policy:{allowedPaths:['docs/**']},
    licenceEvidence:{repositoryApi:{spdxId:'CC-BY-4.0',name:'Creative Commons Attribution 4.0',path:'LICENSE'},dossierReviewStatus:'requires-review',dossierUsePolicy:usePolicy,finalDisposition:'requires-human-licence-review'},

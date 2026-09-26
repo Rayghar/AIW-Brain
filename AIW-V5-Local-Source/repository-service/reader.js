@@ -1,9 +1,9 @@
 // Read operations over the store. Every excerpt is re-read from the content-addressed original and
 // verified against the file hash and the stored excerpt hash at request time; a mismatch is reported,
 // never repaired silently. All results are discovery material, not approved knowledge.
-import path from 'node:path';
+import {existsSync} from 'node:fs';
 import {openStore} from './store.js';
-import {readAccepted,decodeText,RETRIEVAL_REASONS} from './corpus.js';
+import {readAccepted,decodeText,RETRIEVAL_REASONS,snapshotDirOf} from './corpus.js';
 import {excerptOf,sha256} from './ids.js';
 
 export const AUTHORITY='discovery-only';
@@ -33,7 +33,8 @@ function snippetOf(excerpt,q){
 
 export function openReader(config){
  const store=openStore(config.store),{db}=store;
- const snapshotDir=r=>path.join(config.snapshotRoot,'snapshots',r.connector_id,r.snapshot_id);
+ // A snapshot acquired after the governed acquisition lives under the acquired root, never the original one.
+ const snapshotDir=r=>{const acquired=snapshotDirOf(config,r.connector_id,r.snapshot_id,true);return existsSync(acquired)?acquired:snapshotDirOf(config,r.connector_id,r.snapshot_id);};
  const connectorRow=id=>db.prepare('SELECT * FROM connectors WHERE connector_id=?').get(id);
  const licence=c=>c?{usePolicy:c.use_policy,reviewStatus:c.review_status,finalDisposition:c.final_disposition,spdx:c.spdx,note:c.licence_note,clearance:'not-reviewed'}:null;
  const revisionOut=(r,c=connectorRow(r.connector_id))=>({revisionId:r.revision_id,connectorId:r.connector_id,repository:r.repository,commit:r.commit_sha,path:r.path,fileSha256:r.file_sha256,bytes:r.bytes,format:r.format,title:r.title,state:r.state,supersedes:r.supersedes,passages:r.passages,bodyIndexed:!!r.body_indexed,findings:json(r.findings),

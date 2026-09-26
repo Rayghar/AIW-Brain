@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // Operator commands for the AIW knowledge repository service. Run from AIW-V5-Local-Source:
-//   node repository-service/cli.mjs <init|build|status|search|withdraw|packet|serve> [options]
+//   node repository-service/cli.mjs <init|acquire|build|status|search|withdraw|packet|serve> [options]
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {randomBytes} from 'node:crypto';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {loadConfig} from './corpus.js';
 import {buildStore,withdrawRevision} from './build.js';
+import {acquireAll} from './acquire.js';
 import {openReader} from './reader.js';
 import {createNoticeKey,loadNoticeKey,candidatePacket} from './sync.js';
 import {startService} from './server.js';
@@ -37,6 +38,13 @@ else if(command==='build'){
  out({complete:summary.complete,storeId:summary.storeId,cursor:summary.cursor,errors:summary.errors,receipt:file});
  if(summary.errors.length)process.exitCode=1;
 }
+else if(command==='acquire'){
+ // Live documentation refresh from GitHub for approved connectors; AIW_GITHUB_TOKEN (optional) raises the API rate limit.
+ const results=await acquireAll(config,{only:opt('only')?opt('only').split(','):null,maxDownloads:opt('max')?Number(opt('max')):null,dryRun:argv.includes('--dry-run'),token:process.env.AIW_GITHUB_TOKEN||null});
+ for(const r of results)console.error(r.connectorId+' · '+r.status+(r.error?': '+r.error:r.status==='acquired'?' · '+r.commit.slice(0,12)+' · '+r.accepted+' accepted ('+r.reused+' reused, '+r.downloads+' downloaded), '+r.quarantined+' quarantined':r.status==='planned'?' · '+r.downloads+' to download, '+r.reused+' reused':r.reason?': '+r.reason:''));
+ out({acquired:results.filter(r=>r.status==='acquired').length,unchanged:results.filter(r=>r.status==='unchanged').length,planned:results.filter(r=>r.status==='planned').length,skipped:results.filter(r=>r.status==='skipped').length,failed:results.filter(r=>r.status==='failed').map(r=>({connectorId:r.connectorId,error:r.error})),next:results.some(r=>r.status==='acquired')?'node repository-service/cli.mjs build':null});
+ if(results.some(r=>r.status==='failed'))process.exitCode=1;
+}
 else if(command==='status'){const r=openReader(config);try{out(r.status());}finally{r.close();}}
 else if(command==='search'){
  const r=openReader(config);try{
@@ -57,4 +65,4 @@ else if(command==='serve'){
  console.log(`AIW knowledge repository service ready on ${service.url}`);
  const stop=()=>service.close().then(()=>process.exit(0));process.on('SIGINT',stop);process.on('SIGTERM',stop);
 }
-else{console.error('Usage: node repository-service/cli.mjs <init|build|status|search|withdraw|packet|serve> [--config file]');process.exitCode=2;}
+else{console.error('Usage: node repository-service/cli.mjs <init|acquire|build|status|search|withdraw|packet|serve> [--config file]');process.exitCode=2;}
