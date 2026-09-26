@@ -28,6 +28,11 @@ try {
   const panel = () => page.$eval('.cm-panel', e => e.innerText);
   const shown = sel => page.evaluate(s => { const e = document.querySelector(s); return !!e && getComputedStyle(e).display !== 'none'; }, sel);
   const rects = () => page.evaluate(() => [...document.querySelectorAll('.dk-cell,.dk-rh')].map(e => [e.dataset.card, e.style.left, e.style.top, e.style.width, e.style.height].join('|')));
+  // A flash stays until the next one replaces it: after an action, wait for the flash that reports it,
+  // not the one already showing, and note what shows with it (a cell's pulse lasts 2.6 s). A slower
+  // workstation needs longer for a many-command change review.
+  const flashNow = () => page.evaluate(() => document.querySelector('.dk-flash')?.innerText || '');
+  const nextFlash = async (was, withSel = '') => { const h = await page.waitForFunction(([w, sel]) => { const f = document.querySelector('.dk-flash'); return !!f && f.innerText !== w && {text: f.innerText, with: sel ? !!document.querySelector(sel) : null}; }, [was, withSel], {timeout: 20000}); const seen = await h.jsonValue(); await page.waitForTimeout(300); return seen; };
 
   // 1. Chapter 11 opens on the review desk.
   await open();
@@ -201,10 +206,11 @@ try {
   assert.match(await page.$eval('dialog[open]', e => e.innerText), /Review this design change[\s\S]*Drafted on the review desk[\s\S]*maxReplicas[\s\S]*I reviewed the changed definition/);
   await page.click('dialog[open] [data-wb-action="apply-preview"]'); await page.waitForTimeout(250);
   assert.match(await page.$eval('dialog[open] [data-error]', e => e.textContent), /Review the changed definition/, 'nothing is applied unreviewed');
+  let was = await flashNow();
   await page.check('dialog[open] [data-reviewed]'); await page.click('dialog[open] [data-wb-action="apply-preview"]');
-  await page.waitForSelector('.dk-flash', {timeout: 8000}); await page.waitForTimeout(300);
+  const applied = await nextFlash(was, '.dk-cell.ok.pulse[data-card="C:run-001:capacity"]');
   assert.match(await page.$eval('.dk-flash', e => e.innerText), /Applied through Chapter 10's change review: Let RUN-001 grow to [\d,]+ replicas\. 1 vital change: 1 to normal/);
-  assert.ok(await page.$('.dk-cell.ok.pulse[data-card="C:run-001:capacity"]'), 'the cell turns, and pulses');
+  assert.ok(applied.with, 'the cell turns, and pulses');
   assert.equal(await page.evaluate(() => window.aiwProjectStore.value.document.runtime.plans.find(r => r.id === 'run-001').maxReplicas), need);
   pass('a drafted fix: preview it and the cell reads as it would, ringed with the state it had; change its number and the desk reads it again; unreviewed it is refused; applied through Chapter 10\'s change review the cell turns normal and pulses');
 
@@ -215,15 +221,17 @@ try {
   await act(`.cm-panel [data-dk="fix-apply-step"][data-i="${step}"]`);
   await page.waitForSelector('dialog[open]', {timeout: 5000});
   assert.match(await page.$eval('dialog[open]', e => e.innerText), /12 changes[\s\S]*12 to normal/);
+  was = await flashNow();
   await page.check('dialog[open] [data-reviewed]'); await page.click('dialog[open] [data-wb-action="apply-preview"]');
-  await page.waitForSelector('.dk-flash', {timeout: 8000}); await page.waitForTimeout(300);
+  await nextFlash(was);
   assert.match(await page.$eval('.dk-flash', e => e.innerText), /Applied through Chapter 10's change review: 12 drafted fixes\. 12 vitals change: 12 to normal/);
   assert.match(await page.$eval('.dk-monitor', e => e.innerText), /12 of 14 monitored/);
   await act('[data-card="C:run-001:integrity"]');
   await act('.cm-panel .dk-fix [data-dk="fix-apply"]');
   await page.waitForSelector('dialog[open]', {timeout: 5000});
+  was = await flashNow();
   await page.click('dialog[open] [data-wb-action="retain-preview"]'); await page.fill('dialog[open] [name="title"]', 'Idempotency keys from the desk'); await page.click('dialog[open] [data-wb-action="retain-preview"]');
-  await page.waitForSelector('.dk-flash', {timeout: 8000}); await page.waitForTimeout(300);
+  await nextFlash(was);
   assert.match(await page.$eval('.dk-flash', e => e.innerText), /Kept as a design alternative, “Idempotency keys from the desk”: nothing changed in the working design/);
   assert.ok(await page.$('.dk-cell.bad[data-card="C:run-001:integrity"]'), 'kept, not applied');
   pass('a whole step at once: monitoring for 12 parts in one Chapter 10 review turns 12 readings normal; a draft kept as a design alternative leaves the working design as it was');
