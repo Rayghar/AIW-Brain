@@ -79,11 +79,20 @@
     },
     {
       "operation": "live-sol-evaluation",
-      "status": "not run",
+      "status": "not run; one case checked",
       "reason": [
         "AIW-V5-Local-Source/.env, which npm run evaluate:sol:live loads, defines only the knowledge-repository connection settings: no OPENAI_API_KEY and no AIW_LLM_MODEL.",
         "Two older configuration files on this laptop define an OPENAI_API_KEY. The permission system refused to let the engineer read keys from them, and that refusal was not worked around."
       ],
+      "oneCaseCheck": {
+        "at": "2026-09-26",
+        "instruction": "The sponsor asked the engineer to run it and to take the key from the existing configuration.",
+        "how": "The key was loaded from the repository's backend configuration straight into the evaluation process, never displayed or copied; model gpt-4.1-mini-2025-04-14; default OpenAI endpoint.",
+        "case": "BP-01",
+        "tokens": 14556,
+        "printedMetrics": "verdictAgreement, addressesTheIssue, expectedSupportCited and falseSupport were n/a: no assessment of this case was scored.",
+        "notInspected": "The permission system refused to let the engineer open the result, so why nothing was scored is not established. The full evaluation was not run."
+      },
       "estimate": {
         "cases": 26,
         "providerCalls": 52,
