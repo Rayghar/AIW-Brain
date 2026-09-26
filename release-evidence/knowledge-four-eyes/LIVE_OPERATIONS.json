@@ -1,0 +1,106 @@
+{
+  "schema": "aiw-live-operations-v1",
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "package": "AIW V5 Local Source v20.2",
+  "approval": "The sponsor approved these four operations in chat on 26 September 2026: a live Sol evaluation, pushing the branch to GitHub, a live refresh of the corpus from GitHub, and registering the daily task.",
+  "productionAccepted": false,
+  "operations": [
+    {
+      "operation": "push",
+      "status": "done",
+      "at": "2026-09-26T19:24:05Z",
+      "remote": "github.com/Rayghar/AIW-Brain",
+      "visibility": "private",
+      "branch": "release/aiw-v0.10.0-rc.10.73.6-knowledge-four-eyes",
+      "remoteHead": "7e1d7074500042df6ebbc0fe023a9f959b557279",
+      "newRemoteBranch": true,
+      "commits": 30,
+      "range": "440e02a..7e1d707",
+      "preflight": {
+        "filesChangedInRange": 596,
+        "largestBlob": {"path": "AIW-V5-Local-Source/public/brain-catalogue.js", "bytes": 1536256},
+        "secretPatternsInAddedLines": {"openaiKey": 0, "githubToken": 0, "privateKeyBlock": 0, "awsAccessKey": 0, "slackToken": 0, "jwkPrivateMember": 0, "bearerLiteral": 0},
+        "reviewedHits": [
+          "One key-shaped assignment: the synthetic test value in AIW-V5-Local-Source/intelligence-validate.mjs.",
+          "One e-mail address: a third-party copyright line in AIW-V5-Local-Source/THIRD-PARTY-NOTICES.md."
+        ],
+        "localUserPaths": 0,
+        "sensitiveFilePaths": 0,
+        "personalName": "Present only in 5 older knowledge files that are already on the remote and unchanged by this push."
+      },
+      "followUp": "The commit that adds this record is pushed to the same branch."
+    },
+    {
+      "operation": "register-daily-task",
+      "status": "registered; its runs wait for mains power",
+      "registeredAt": "2026-09-26T19:28:49Z",
+      "command": "powershell -NoProfile -File AIW-V5-Local-Source/repository-service/register-refresh-task.ps1",
+      "options": "defaults: daily at 06:30, without -Acquire (re-verifies the store, no network)",
+      "task": {
+        "name": "AIW Knowledge Repository Refresh",
+        "action": "powershell.exe -NoProfile -File AIW-V5-Local-Source/repository-service/refresh.ps1",
+        "workingDirectory": "AIW-V5-Local-Source",
+        "trigger": "daily 06:30 local time",
+        "runsAs": "the current user, not elevated (Limited), interactive logon",
+        "settings": {"startWhenAvailable": true, "executionTimeLimit": "PT2H", "multipleInstances": "IgnoreNew"},
+        "conditions": {"disallowStartIfOnBatteries": true, "stopIfGoingOnBatteries": true, "source": "Windows defaults of New-ScheduledTaskSettingsSet"}
+      },
+      "manualStart": {
+        "at": "2026-09-26T19:31:02Z",
+        "result": "Task Scheduler launched the instance (event 110) and queued it (event 325): the laptop was on battery. It runs when the laptop is next on mains power."
+      },
+      "nextScheduledRun": "2026-09-27 06:30 local time",
+      "executionPolicy": "CurrentUser RemoteSigned; refresh.ps1 carries no downloaded-file mark, so it runs.",
+      "remove": "powershell -NoProfile -File AIW-V5-Local-Source/repository-service/register-refresh-task.ps1 -Unregister"
+    },
+    {
+      "operation": "live-github-refresh",
+      "status": "done; 3 repositories failed closed",
+      "dryRun": {"finished": "2026-09-26T19:14:49Z", "planned": 19, "unchanged": 8, "failed": 3, "filesToDownload": 418, "githubApiCallsUsed": 51},
+      "run": {
+        "command": "powershell -NoProfile -File AIW-V5-Local-Source/repository-service/refresh.ps1 -Acquire",
+        "started": "2026-09-26T20:13:41Z",
+        "finished": "2026-09-26T20:20:36Z",
+        "exitCode": 1,
+        "exitCodeReason": "Three repositories failed closed; the build still ran and completed.",
+        "githubApiCallsUsed": 50,
+        "githubAuthenticated": false
+      },
+      "acquisition": {"acquired": 19, "unchanged": 8, "failed": 3, "documentsAccepted": 2487, "reusedByBlobHash": 2075, "downloaded": 418, "quarantined": 6, "quarantineReason": "AWS access-key-shaped strings in 6 documents of GH-AWS-SERVERLESS-PATTERNS"},
+      "failedClosed": [
+        {"connectorId": "GH-APACHE-CAMEL", "reason": "GitHub truncated the tree; this repository needs the governed acquisition process."},
+        {"connectorId": "GH-DDD-CREW", "reason": "GitHub answered 422."},
+        {"connectorId": "GH-MESHERY", "reason": "fetch failed (a network failure in this run; its tree was truncated in the dry run)."}
+      ],
+      "build": {"complete": true, "errors": 0, "storeId": "ebb8387e-72a7-429e-894d-3fb0c264c48b", "noticeCursor": 2773, "connectors": 47, "documents": 19004, "newRevisions": 2487, "verified": 16517, "passages": 22443, "invalidatedPassages": 369, "notices": 2773, "receipt": "knowledge-repository/store/build-receipts/build-2026-09-26T20-20-35-736Z.json"},
+      "untouched": "Checked after the run: none of the 285,543 files under the original acquisition root (knowledge-repository/AKR-0.10.73.7_) was written or created after the refresh began, and no directory's entries changed. New snapshots are written under knowledge-repository/store/acquired, which is git-ignored.",
+      "licence": "Each new manifest carries the licence evidence of the snapshot it supersedes and says it was not reviewed again for the new commit. Licence review remains with people.",
+      "evidence": "LIVE_REFRESH_EVIDENCE.json"
+    },
+    {
+      "operation": "live-sol-evaluation",
+      "status": "not run",
+      "reason": [
+        "AIW-V5-Local-Source/.env, which npm run evaluate:sol:live loads, defines only the knowledge-repository connection settings: no OPENAI_API_KEY and no AIW_LLM_MODEL.",
+        "Two older configuration files on this laptop define an OPENAI_API_KEY. The permission system refused to let the engineer read keys from them, and that refusal was not worked around."
+      ],
+      "estimate": {
+        "cases": 26,
+        "providerCalls": 52,
+        "basis": "Earlier live reasoning with gpt-4.1-mini-2025-04-14 used about 17,000 to 19,500 input and 600 to 1,300 output tokens per case, draft and check together.",
+        "inputTokens": "about 500,000",
+        "outputTokens": "about 30,000"
+      },
+      "toRun": [
+        "Add OPENAI_API_KEY and AIW_LLM_MODEL (gpt-4.1-mini-2025-04-14 matches the earlier live evidence) to AIW-V5-Local-Source/.env.",
+        "From AIW-V5-Local-Source: npm run evaluate:sol:live -- --out ../release-evidence/knowledge-four-eyes/LIVE_SOL_EVALUATION.json"
+      ]
+    }
+  ],
+  "findings": [
+    "Windows PowerShell 5.1 decodes node's UTF-8 output with the console code page, so refresh logs show '·' as '┬╖', and it wraps long lines at the console width. The logs stay readable and the evidence collector normalises both; refresh.ps1 could set UTF-8 console output to avoid it.",
+    "The daily task inherits Windows' mains-power conditions. On a laptop running on battery its runs wait until it is plugged in.",
+    "Without AIW_GITHUB_TOKEN one refresh uses about 50 of GitHub's 60 unauthenticated API calls per hour; a dry run and a real run cannot share one hour.",
+    "GH-DDD-CREW answers 422 and needs its connector checked; GH-APACHE-CAMEL and GH-MESHERY exceed what the refresh route can read and need the governed acquisition process."
+  ]
+}

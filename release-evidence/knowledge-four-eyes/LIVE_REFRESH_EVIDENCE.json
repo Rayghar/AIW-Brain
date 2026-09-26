@@ -1,0 +1,1317 @@
+{
+  "schema": "aiw-live-refresh-evidence-v1",
+  "collectedAt": "2026-09-26T20:23:10.449Z",
+  "command": "powershell -NoProfile -File AIW-V5-Local-Source/repository-service/refresh.ps1 -Acquire",
+  "log": {
+    "file": "knowledge-repository/store/logs/refresh-20260926-211345.log",
+    "sha256": "a9297a9790fdd3d850e55217ab9cbf54e6a2495c80b671a0b74796fffe26329c",
+    "finished": "Finished with exit code 1 at 2026-09-26T21:20:36.0168199+01:00"
+  },
+  "githubAccess": {
+    "authenticated": false,
+    "note": "No AIW_GITHUB_TOKEN was set: unauthenticated GitHub API (60 calls per hour); documents were read from raw.githubusercontent.com at immutable commits."
+  },
+  "acquisition": {
+    "summary": {
+      "acquired": 19,
+      "unchanged": 8,
+      "planned": 0,
+      "skipped": 0,
+      "failed": [
+        {
+          "connectorId": "GH-APACHE-CAMEL",
+          "error": "GitHub truncated the tree; this repository needs the governed acquisition process."
+        },
+        {
+          "connectorId": "GH-DDD-CREW",
+          "error": "GitHub answered 422."
+        },
+        {
+          "connectorId": "GH-MESHERY",
+          "error": "fetch failed"
+        }
+      ],
+      "next": "node repository-service/cli.mjs build"
+    },
+    "connectors": [
+      {
+        "connectorId": "GH-APACHE-CAMEL",
+        "status": "failed",
+        "detail": "GitHub truncated the tree; this repository needs the governed acquisition process. "
+      },
+      {
+        "connectorId": "GH-ARC42",
+        "status": "acquired",
+        "commit12": "29ca619d93a3",
+        "accepted": 15,
+        "reused": 14,
+        "downloaded": 1,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-ARCHUNIT",
+        "status": "acquired",
+        "commit12": "de7bc421d8ba",
+        "accepted": 80,
+        "reused": 67,
+        "downloaded": 13,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-ASYNCAPI",
+        "status": "acquired",
+        "commit12": "1dd65fd2c1ed",
+        "accepted": 4,
+        "reused": 4,
+        "downloaded": 0,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-AWS-SAAS-EKS",
+        "status": "acquired",
+        "commit12": "df40dd5750ce",
+        "accepted": 1,
+        "reused": 1,
+        "downloaded": 0,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+        "status": "acquired",
+        "commit12": "2cac4a2a67a7",
+        "accepted": 1107,
+        "reused": 1055,
+        "downloaded": 58,
+        "quarantined": 6
+      },
+      {
+        "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "status": "acquired",
+        "commit12": "7adf9f940847",
+        "accepted": 88,
+        "reused": 84,
+        "downloaded": 4,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-AZURE-RESOURCE-MODULES",
+        "status": "acquired",
+        "commit12": "7548c4b9e73a",
+        "accepted": 180,
+        "reused": 180,
+        "downloaded": 0,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-BACKSTAGE",
+        "status": "acquired",
+        "commit12": "43e352aa5b2c",
+        "accepted": 51,
+        "reused": 22,
+        "downloaded": 29,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-C4-PLANTUML",
+        "status": "acquired",
+        "commit12": "f998c46833da",
+        "accepted": 2,
+        "reused": 2,
+        "downloaded": 0,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-CNCF-TAG-SECURITY",
+        "status": "unchanged",
+        "detail": ""
+      },
+      {
+        "connectorId": "GH-CONTEXT-MAPPER-DSL",
+        "status": "unchanged",
+        "detail": ""
+      },
+      {
+        "connectorId": "GH-DDD-CREW",
+        "status": "failed",
+        "detail": "GitHub answered 422. "
+      },
+      {
+        "connectorId": "GH-FINOS-AI-RA",
+        "status": "unchanged",
+        "detail": ""
+      },
+      {
+        "connectorId": "GH-FINOS-CALM",
+        "status": "acquired",
+        "commit12": "501599877e3e",
+        "accepted": 104,
+        "reused": 86,
+        "downloaded": 18,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "status": "acquired",
+        "commit12": "23171949f616",
+        "accepted": 258,
+        "reused": 195,
+        "downloaded": 63,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+        "status": "acquired",
+        "commit12": "38e7348eb289",
+        "accepted": 21,
+        "reused": 19,
+        "downloaded": 2,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+        "status": "unchanged",
+        "detail": ""
+      },
+      {
+        "connectorId": "GH-JMOLECULES",
+        "status": "unchanged",
+        "detail": ""
+      },
+      {
+        "connectorId": "GH-JQASSISTANT",
+        "status": "acquired",
+        "commit12": "5cd843e17e82",
+        "accepted": 37,
+        "reused": 35,
+        "downloaded": 2,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-K8S-PATTERNS",
+        "status": "unchanged",
+        "detail": ""
+      },
+      {
+        "connectorId": "GH-LIKEC4",
+        "status": "acquired",
+        "commit12": "33dbc2d34c39",
+        "accepted": 45,
+        "reused": 21,
+        "downloaded": 24,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-MESHERY",
+        "status": "failed",
+        "detail": "fetch failed "
+      },
+      {
+        "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+        "status": "acquired",
+        "commit12": "abcf6c89aeac",
+        "accepted": 239,
+        "reused": 78,
+        "downloaded": 161,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-OAM-SPEC",
+        "status": "acquired",
+        "commit12": "0d2efb50599a",
+        "accepted": 20,
+        "reused": 20,
+        "downloaded": 0,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-OTEL-DEMO",
+        "status": "acquired",
+        "commit12": "6a89faba15c8",
+        "accepted": 33,
+        "reused": 22,
+        "downloaded": 11,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-SAP-ARCH-CENTER",
+        "status": "acquired",
+        "commit12": "d88c240b316f",
+        "accepted": 191,
+        "reused": 163,
+        "downloaded": 28,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-SERVICE-MESH-PATTERNS",
+        "status": "unchanged",
+        "detail": ""
+      },
+      {
+        "connectorId": "GH-SPRING-MODULITH",
+        "status": "acquired",
+        "commit12": "ce7cd2500b50",
+        "accepted": 11,
+        "reused": 7,
+        "downloaded": 4,
+        "quarantined": 0
+      },
+      {
+        "connectorId": "GH-STRUCTURIZR-JAVA",
+        "status": "unchanged",
+        "detail": ""
+      }
+    ]
+  },
+  "selectionOverlay": {
+    "file": "knowledge-repository/store/selection-overlay.json",
+    "sha256": "0d4212572ac1fbd915dfe71c64b3cd2f6e5177c56e836853619174b51debeb5e",
+    "snapshots": [
+      {
+        "connectorId": "GH-ARC42",
+        "repository": "arc42/arc42-template",
+        "immutableCommit": "29ca619d93a366780a2d727bef393c46911ba49e",
+        "snapshotId": "KSNAP-GH-ARC42-29ca619d93a3",
+        "manifestChecksum": "sha256:06eff4fac07df83c3bb048bbfc2e27d635463d238b4a1226f141f56958114732",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-ARC42/KSNAP-GH-ARC42-29ca619d93a3/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "29ca619d93a366780a2d727bef393c46911ba49e",
+          "supersedesSnapshot": "KSNAP-GH-ARC42-8dff0d9b1f96",
+          "acquiredAt": "2026-09-26T20:13:54.782Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 187,
+            "acceptedFiles": 15,
+            "reusedFiles": 14,
+            "downloadedFiles": 1,
+            "quarantinedFiles": 0,
+            "policyExclusions": 172,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:55a3359e92dac572fe9295fa4fe1eb9676f6f92a4b7185c4cfbb7c8e9ca431d1",
+          "manifestSha256": "sha256:06eff4fac07df83c3bb048bbfc2e27d635463d238b4a1226f141f56958114732",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-ARCHUNIT",
+        "repository": "TNG/ArchUnit",
+        "immutableCommit": "de7bc421d8ba09d6ea3d441783761cb0ace9b1b3",
+        "snapshotId": "KSNAP-GH-ARCHUNIT-de7bc421d8ba",
+        "manifestChecksum": "sha256:9fb4a65884e69e89618526398ad88d52eac12fa06a5774542461991daccab798",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-ARCHUNIT/KSNAP-GH-ARCHUNIT-de7bc421d8ba/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "de7bc421d8ba09d6ea3d441783761cb0ace9b1b3",
+          "supersedesSnapshot": "KSNAP-GH-ARCHUNIT-31ac54b1ebdc",
+          "acquiredAt": "2026-09-26T20:14:01.985Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 81,
+            "acceptedFiles": 80,
+            "reusedFiles": 67,
+            "downloadedFiles": 13,
+            "quarantinedFiles": 0,
+            "policyExclusions": 1,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:3c548af693385bc6dc4ca97a23b0819daa27f56a21c855e4090b2598178fee65",
+          "manifestSha256": "sha256:9fb4a65884e69e89618526398ad88d52eac12fa06a5774542461991daccab798",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-ASYNCAPI",
+        "repository": "asyncapi/spec",
+        "immutableCommit": "1dd65fd2c1ed13f06365c1e870c61cdc82d8a981",
+        "snapshotId": "KSNAP-GH-ASYNCAPI-1dd65fd2c1ed",
+        "manifestChecksum": "sha256:c1090f3c55e01e1e2d028d645d428da45864417752fe666902a0aef6ade0596f",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-ASYNCAPI/KSNAP-GH-ASYNCAPI-1dd65fd2c1ed/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "1dd65fd2c1ed13f06365c1e870c61cdc82d8a981",
+          "supersedesSnapshot": "KSNAP-GH-ASYNCAPI-e59928aee75a",
+          "acquiredAt": "2026-09-26T20:14:03.658Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 16,
+            "acceptedFiles": 4,
+            "reusedFiles": 4,
+            "downloadedFiles": 0,
+            "quarantinedFiles": 0,
+            "policyExclusions": 12,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:da30154d97e679b213d68db974db977560e12c41b438a7bdba9477d7d83acafb",
+          "manifestSha256": "sha256:c1090f3c55e01e1e2d028d645d428da45864417752fe666902a0aef6ade0596f",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-AWS-SAAS-EKS",
+        "repository": "aws-samples/aws-saas-factory-eks-reference-architecture",
+        "immutableCommit": "df40dd5750ce3a365df50d90abfaeb513ab32509",
+        "snapshotId": "KSNAP-GH-AWS-SAAS-EKS-df40dd5750ce",
+        "manifestChecksum": "sha256:ff143b25dd71caeb93a6b3bbd455101f1ae3a23292dc49296d8266e858e6806c",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-AWS-SAAS-EKS/KSNAP-GH-AWS-SAAS-EKS-df40dd5750ce/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "df40dd5750ce3a365df50d90abfaeb513ab32509",
+          "supersedesSnapshot": "KSNAP-GH-AWS-SAAS-EKS-add9bd7c5b25",
+          "acquiredAt": "2026-09-26T20:14:04.944Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 7,
+            "acceptedFiles": 1,
+            "reusedFiles": 1,
+            "downloadedFiles": 0,
+            "quarantinedFiles": 0,
+            "policyExclusions": 6,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:34ff62e48ea5245402f92cdb21d644404e1a4e577496a83a5a2cc8bc3c0e748d",
+          "manifestSha256": "sha256:ff143b25dd71caeb93a6b3bbd455101f1ae3a23292dc49296d8266e858e6806c",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+        "repository": "aws-samples/serverless-patterns",
+        "immutableCommit": "2cac4a2a67a70b8c56c9fc9fa962c4b3d7a53f5b",
+        "snapshotId": "KSNAP-GH-AWS-SERVERLESS-PATTERNS-2cac4a2a67a7",
+        "manifestChecksum": "sha256:bb7ea1b4935b1ead9b1a7467304f03b86530f5847c50bb1ec4819714e3560606",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-AWS-SERVERLESS-PATTERNS/KSNAP-GH-AWS-SERVERLESS-PATTERNS-2cac4a2a67a7/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "2cac4a2a67a70b8c56c9fc9fa962c4b3d7a53f5b",
+          "supersedesSnapshot": "KSNAP-GH-AWS-SERVERLESS-PATTERNS-cb0fc7315a5a",
+          "acquiredAt": "2026-09-26T20:14:49.668Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 1500,
+            "acceptedFiles": 1107,
+            "reusedFiles": 1055,
+            "downloadedFiles": 52,
+            "quarantinedFiles": 6,
+            "policyExclusions": 387,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:c341d9f34bf7f9f24a7c9fa95e8277426f24164d3ebe726912a3d6f9d47e13b9",
+          "manifestSha256": "sha256:bb7ea1b4935b1ead9b1a7467304f03b86530f5847c50bb1ec4819714e3560606",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": [
+            {
+              "path": "lambda-streaming-large-sam/README.md",
+              "findings": [
+                "AWS_ACCESS_KEY_SHAPE"
+              ]
+            },
+            {
+              "path": "lambda-streaming-ttfb-pipeline-sam/README.md",
+              "findings": [
+                "AWS_ACCESS_KEY_SHAPE"
+              ]
+            },
+            {
+              "path": "lambda-streaming-ttfb-write-sam-with-bedrock-streaming/README.md",
+              "findings": [
+                "AWS_ACCESS_KEY_SHAPE"
+              ]
+            },
+            {
+              "path": "lambda-streaming-ttfb-write-sam-with-dynamodb/README.md",
+              "findings": [
+                "AWS_ACCESS_KEY_SHAPE"
+              ]
+            },
+            {
+              "path": "lambda-streaming-ttfb-write-sam/README.md",
+              "findings": [
+                "AWS_ACCESS_KEY_SHAPE"
+              ]
+            },
+            {
+              "path": "parallel-e2e-pipeline-cdk/README.md",
+              "findings": [
+                "AWS_ACCESS_KEY_SHAPE"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "repository": "awslabs/aws-solutions-constructs",
+        "immutableCommit": "7adf9f940847d46b06b03ed436c102b632a97dd4",
+        "snapshotId": "KSNAP-GH-AWS-SOLUTIONS-CONSTRUCTS-7adf9f940847",
+        "manifestChecksum": "sha256:7d05f8e0365057a65d98a80e4bf77617aedd6676749354a579ce7f67f8c808f2",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-AWS-SOLUTIONS-CONSTRUCTS/KSNAP-GH-AWS-SOLUTIONS-CONSTRUCTS-7adf9f940847/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "7adf9f940847d46b06b03ed436c102b632a97dd4",
+          "supersedesSnapshot": "KSNAP-GH-AWS-SOLUTIONS-CONSTRUCTS-76b8fdd90033",
+          "acquiredAt": "2026-09-26T20:14:57.918Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 289,
+            "acceptedFiles": 88,
+            "reusedFiles": 84,
+            "downloadedFiles": 4,
+            "quarantinedFiles": 0,
+            "policyExclusions": 201,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:c2acfa5130561bfc3cf3a1dfc5d4948baca271c6f2ddb4437f7044e1a639c1e9",
+          "manifestSha256": "sha256:7d05f8e0365057a65d98a80e4bf77617aedd6676749354a579ce7f67f8c808f2",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-AZURE-RESOURCE-MODULES",
+        "repository": "Azure/ResourceModules",
+        "immutableCommit": "7548c4b9e73a6a60ce4d5e7e2377d177923e22fe",
+        "snapshotId": "KSNAP-GH-AZURE-RESOURCE-MODULES-7548c4b9e73a",
+        "manifestChecksum": "sha256:1855324e1184395ae0a8428d8804fa908293573817d1cd6d3f7bc33d94411d25",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-AZURE-RESOURCE-MODULES/KSNAP-GH-AZURE-RESOURCE-MODULES-7548c4b9e73a/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "7548c4b9e73a6a60ce4d5e7e2377d177923e22fe",
+          "supersedesSnapshot": "KSNAP-GH-AZURE-RESOURCE-MODULES-0342b24f9439",
+          "acquiredAt": "2026-09-26T20:15:02.653Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 190,
+            "acceptedFiles": 180,
+            "reusedFiles": 180,
+            "downloadedFiles": 0,
+            "quarantinedFiles": 0,
+            "policyExclusions": 10,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:71920ba05ae56e6d35ad0e2e57245223bc0820e15e0e75b01e1bfb1256f05ddb",
+          "manifestSha256": "sha256:1855324e1184395ae0a8428d8804fa908293573817d1cd6d3f7bc33d94411d25",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-BACKSTAGE",
+        "repository": "backstage/backstage",
+        "immutableCommit": "43e352aa5b2c1f5d739f8267389602fca1ecaf2c",
+        "snapshotId": "KSNAP-GH-BACKSTAGE-43e352aa5b2c",
+        "manifestChecksum": "sha256:72679aaad97c7614c2899a43dddfea4cc1fbb48338a50bbd634a9dd5bf938715",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-BACKSTAGE/KSNAP-GH-BACKSTAGE-43e352aa5b2c/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "43e352aa5b2c1f5d739f8267389602fca1ecaf2c",
+          "supersedesSnapshot": "KSNAP-GH-BACKSTAGE-1109abcbdc53",
+          "acquiredAt": "2026-09-26T20:15:18.397Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 2062,
+            "acceptedFiles": 51,
+            "reusedFiles": 22,
+            "downloadedFiles": 29,
+            "quarantinedFiles": 0,
+            "policyExclusions": 2011,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:7f8e4f44c910d2b312cb0af42b052c9718c938120697e8c63a34ee64207e3033",
+          "manifestSha256": "sha256:72679aaad97c7614c2899a43dddfea4cc1fbb48338a50bbd634a9dd5bf938715",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-C4-PLANTUML",
+        "repository": "plantuml-stdlib/C4-PlantUML",
+        "immutableCommit": "f998c46833daac592f3283ff08d7b8cd7e1558fb",
+        "snapshotId": "KSNAP-GH-C4-PLANTUML-f998c46833da",
+        "manifestChecksum": "sha256:33eacfd1e0d47409643457d7094d076a5366d2c37d639035879f6b0987b6bda5",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-C4-PLANTUML/KSNAP-GH-C4-PLANTUML-f998c46833da/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "f998c46833daac592f3283ff08d7b8cd7e1558fb",
+          "supersedesSnapshot": "KSNAP-GH-C4-PLANTUML-1edfb8a878ba",
+          "acquiredAt": "2026-09-26T20:15:19.848Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 8,
+            "acceptedFiles": 2,
+            "reusedFiles": 2,
+            "downloadedFiles": 0,
+            "quarantinedFiles": 0,
+            "policyExclusions": 6,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:25f78fe2b899eabfe5ba88caee3a5a4890767a79496099f273ad8db880058351",
+          "manifestSha256": "sha256:33eacfd1e0d47409643457d7094d076a5366d2c37d639035879f6b0987b6bda5",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-FINOS-CALM",
+        "repository": "finos/architecture-as-code",
+        "immutableCommit": "501599877e3e3be576087ee1c820d2a41c7af3a9",
+        "snapshotId": "KSNAP-GH-FINOS-CALM-501599877e3e",
+        "manifestChecksum": "sha256:b88401db0c780cbe3b7b002de7b1b9ad57414ca4b3a34b2ea8b834825b1a84f9",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-FINOS-CALM/KSNAP-GH-FINOS-CALM-501599877e3e/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "501599877e3e3be576087ee1c820d2a41c7af3a9",
+          "supersedesSnapshot": "KSNAP-GH-FINOS-CALM-b3e50665ec54",
+          "acquiredAt": "2026-09-26T20:15:33.517Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 331,
+            "acceptedFiles": 104,
+            "reusedFiles": 86,
+            "downloadedFiles": 18,
+            "quarantinedFiles": 0,
+            "policyExclusions": 227,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:5e8dc88404bb2e15d45da9edd3d9728d7ffa48d26d815674e091c28b571b6ace",
+          "manifestSha256": "sha256:b88401db0c780cbe3b7b002de7b1b9ad57414ca4b3a34b2ea8b834825b1a84f9",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "repository": "GoogleCloudPlatform/cloud-foundation-fabric",
+        "immutableCommit": "23171949f616be9f643e082e18770eab1bad3d85",
+        "snapshotId": "KSNAP-GH-GCP-CLOUD-FOUNDATION-FABRIC-23171949f616",
+        "manifestChecksum": "sha256:ed690e519d278d4b41119a0087a145ab5ed77e8efe5774b5c5ebf97e740e5f0d",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-GCP-CLOUD-FOUNDATION-FABRIC/KSNAP-GH-GCP-CLOUD-FOUNDATION-FABRIC-23171949f616/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "23171949f616be9f643e082e18770eab1bad3d85",
+          "supersedesSnapshot": "KSNAP-GH-GCP-CLOUD-FOUNDATION-FABRIC-276623922f0b",
+          "acquiredAt": "2026-09-26T20:16:08.520Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 323,
+            "acceptedFiles": 258,
+            "reusedFiles": 195,
+            "downloadedFiles": 63,
+            "quarantinedFiles": 0,
+            "policyExclusions": 65,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:12c1e68b31bdaa8e732147842dfa437208a4d410325b94ad982b4d3b197ef94d",
+          "manifestSha256": "sha256:ed690e519d278d4b41119a0087a145ab5ed77e8efe5774b5c5ebf97e740e5f0d",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+        "repository": "GoogleCloudPlatform/microservices-demo",
+        "immutableCommit": "38e7348eb289eb5b87c0c6e8cb19ced0449dc389",
+        "snapshotId": "KSNAP-GH-GCP-MICROSERVICES-DEMO-38e7348eb289",
+        "manifestChecksum": "sha256:79cabc5d1864b50fe09ecb21b434db7519f4275895d2eb9874cd25d98fa5d438",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-GCP-MICROSERVICES-DEMO/KSNAP-GH-GCP-MICROSERVICES-DEMO-38e7348eb289/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "38e7348eb289eb5b87c0c6e8cb19ced0449dc389",
+          "supersedesSnapshot": "KSNAP-GH-GCP-MICROSERVICES-DEMO-9a4616e77f0f",
+          "acquiredAt": "2026-09-26T20:16:11.579Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 52,
+            "acceptedFiles": 21,
+            "reusedFiles": 19,
+            "downloadedFiles": 2,
+            "quarantinedFiles": 0,
+            "policyExclusions": 31,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:aa848135582398b96bc8fa2a4b1294867ce65ac41e127cc8c3e79c9c10494f59",
+          "manifestSha256": "sha256:79cabc5d1864b50fe09ecb21b434db7519f4275895d2eb9874cd25d98fa5d438",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-JQASSISTANT",
+        "repository": "jQAssistant/jqassistant",
+        "immutableCommit": "5cd843e17e8261cb38aa819b52f095991b99642d",
+        "snapshotId": "KSNAP-GH-JQASSISTANT-5cd843e17e82",
+        "manifestChecksum": "sha256:f7c4df52c62d966c235e6879dd59425f30408785f1b46b4a0d2883b42c96df41",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-JQASSISTANT/KSNAP-GH-JQASSISTANT-5cd843e17e82/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "5cd843e17e8261cb38aa819b52f095991b99642d",
+          "supersedesSnapshot": "KSNAP-GH-JQASSISTANT-07912d0eb3d2",
+          "acquiredAt": "2026-09-26T20:16:17.699Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 72,
+            "acceptedFiles": 37,
+            "reusedFiles": 35,
+            "downloadedFiles": 2,
+            "quarantinedFiles": 0,
+            "policyExclusions": 35,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:003330d72b77f2b324a19b7c3109a09ac30fc489a0da7b788414829a87ac268e",
+          "manifestSha256": "sha256:f7c4df52c62d966c235e6879dd59425f30408785f1b46b4a0d2883b42c96df41",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-LIKEC4",
+        "repository": "likec4/likec4",
+        "immutableCommit": "33dbc2d34c399a99daf96e92fc28fe5d280a7fd5",
+        "snapshotId": "KSNAP-GH-LIKEC4-33dbc2d34c39",
+        "manifestChecksum": "sha256:802edfd585d7b860c458e573e30693de3812ff418c29088da4c7155a3dca47ae",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-LIKEC4/KSNAP-GH-LIKEC4-33dbc2d34c39/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "33dbc2d34c399a99daf96e92fc28fe5d280a7fd5",
+          "supersedesSnapshot": "KSNAP-GH-LIKEC4-5152f62edf2b",
+          "acquiredAt": "2026-09-26T20:16:35.184Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 159,
+            "acceptedFiles": 45,
+            "reusedFiles": 21,
+            "downloadedFiles": 24,
+            "quarantinedFiles": 0,
+            "policyExclusions": 114,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:4a4d2e91ee370f51d142234e921a9a46f2c8da9cfd077b2a087ecc0772834bff",
+          "manifestSha256": "sha256:802edfd585d7b860c458e573e30693de3812ff418c29088da4c7155a3dca47ae",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+        "repository": "MicrosoftDocs/architecture-center",
+        "immutableCommit": "abcf6c89aeac3bb269e0645b3d185001dfe36f84",
+        "snapshotId": "KSNAP-GH-MICROSOFT-ARCH-CENTER-abcf6c89aeac",
+        "manifestChecksum": "sha256:8d10a2d52f2a27bdcd53076bf31a9580aed68d48cf1c40a47058b9f240bfae4d",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-MICROSOFT-ARCH-CENTER/KSNAP-GH-MICROSOFT-ARCH-CENTER-abcf6c89aeac/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "abcf6c89aeac3bb269e0645b3d185001dfe36f84",
+          "supersedesSnapshot": "KSNAP-GH-MICROSOFT-ARCH-CENTER-caf11b78405e",
+          "acquiredAt": "2026-09-26T20:19:24.105Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 548,
+            "acceptedFiles": 239,
+            "reusedFiles": 78,
+            "downloadedFiles": 161,
+            "quarantinedFiles": 0,
+            "policyExclusions": 309,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:5f0a17efd66f15d93a777add8649fb75c8d7f917ea1ab52cea1854a311a1bfae",
+          "manifestSha256": "sha256:8d10a2d52f2a27bdcd53076bf31a9580aed68d48cf1c40a47058b9f240bfae4d",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-OAM-SPEC",
+        "repository": "oam-dev/spec",
+        "immutableCommit": "0d2efb50599afa4bf987ff1d7a1dfc5d3ce58441",
+        "snapshotId": "KSNAP-GH-OAM-SPEC-0d2efb50599a",
+        "manifestChecksum": "sha256:5d7e2171355b1cc9ecffbb8a55253bbb6a644c62977f60f55e8539758f728664",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-OAM-SPEC/KSNAP-GH-OAM-SPEC-0d2efb50599a/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "0d2efb50599afa4bf987ff1d7a1dfc5d3ce58441",
+          "supersedesSnapshot": "KSNAP-GH-OAM-SPEC-a64696e70e24",
+          "acquiredAt": "2026-09-26T20:19:25.802Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 24,
+            "acceptedFiles": 20,
+            "reusedFiles": 20,
+            "downloadedFiles": 0,
+            "quarantinedFiles": 0,
+            "policyExclusions": 4,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:ed73e2ff9a61cb21576535d43cf4d9c56d69138c6ae380251cf7fc4d05fd1f01",
+          "manifestSha256": "sha256:5d7e2171355b1cc9ecffbb8a55253bbb6a644c62977f60f55e8539758f728664",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-OTEL-DEMO",
+        "repository": "open-telemetry/opentelemetry-demo",
+        "immutableCommit": "6a89faba15c8097c4bd82bcc15d906ac70baccd9",
+        "snapshotId": "KSNAP-GH-OTEL-DEMO-6a89faba15c8",
+        "manifestChecksum": "sha256:018896347b457556b900a92f87aa27bfbe43e6526bced40af9d38e8b0d8376f3",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-OTEL-DEMO/KSNAP-GH-OTEL-DEMO-6a89faba15c8/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "6a89faba15c8097c4bd82bcc15d906ac70baccd9",
+          "supersedesSnapshot": "KSNAP-GH-OTEL-DEMO-ac6715420c93",
+          "acquiredAt": "2026-09-26T20:19:33.921Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 45,
+            "acceptedFiles": 33,
+            "reusedFiles": 22,
+            "downloadedFiles": 11,
+            "quarantinedFiles": 0,
+            "policyExclusions": 12,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:dd317f85438b2b9da8c8754ff8bed68e239399190353bec3ebdc560650e4de30",
+          "manifestSha256": "sha256:018896347b457556b900a92f87aa27bfbe43e6526bced40af9d38e8b0d8376f3",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-SAP-ARCH-CENTER",
+        "repository": "SAP/architecture-center",
+        "immutableCommit": "d88c240b316f1baca24e45cd6d886b648588e422",
+        "snapshotId": "KSNAP-GH-SAP-ARCH-CENTER-d88c240b316f",
+        "manifestChecksum": "sha256:c27351938cb3cf243777b96b7a03c825f67a29ad56f564ac93fdbb367b9e14e3",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-SAP-ARCH-CENTER/KSNAP-GH-SAP-ARCH-CENTER-d88c240b316f/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "d88c240b316f1baca24e45cd6d886b648588e422",
+          "supersedesSnapshot": "KSNAP-GH-SAP-ARCH-CENTER-4635f734f2f8",
+          "acquiredAt": "2026-09-26T20:19:48.915Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 224,
+            "acceptedFiles": 191,
+            "reusedFiles": 163,
+            "downloadedFiles": 28,
+            "quarantinedFiles": 0,
+            "policyExclusions": 33,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:f83822d6bf4204654fae11463b64ed965298d5e113e6995880eb81a993db9a82",
+          "manifestSha256": "sha256:c27351938cb3cf243777b96b7a03c825f67a29ad56f564ac93fdbb367b9e14e3",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      },
+      {
+        "connectorId": "GH-SPRING-MODULITH",
+        "repository": "spring-projects/spring-modulith",
+        "immutableCommit": "ce7cd2500b503a56486af4d547aad515d80d31d1",
+        "snapshotId": "KSNAP-GH-SPRING-MODULITH-ce7cd2500b50",
+        "manifestChecksum": "sha256:9bee6d61df26174960beb2366ec25225ec7d89b1a364cb85c8f2e9e7ff151217",
+        "refreshedInThisRun": true,
+        "manifest": {
+          "location": "knowledge-repository/store/acquired/snapshots/GH-SPRING-MODULITH/KSNAP-GH-SPRING-MODULITH-ce7cd2500b50/manifest.json",
+          "schemaVersion": "aiw-github-docs-refresh-v1",
+          "commitSha": "ce7cd2500b503a56486af4d547aad515d80d31d1",
+          "supersedesSnapshot": "KSNAP-GH-SPRING-MODULITH-c4f6d51365bd",
+          "acquiredAt": "2026-09-26T20:19:53.971Z",
+          "apiAuthenticated": false,
+          "contentTransport": "raw-immutable",
+          "coverage": {
+            "treeDocumentationFiles": 27,
+            "acceptedFiles": 11,
+            "reusedFiles": 7,
+            "downloadedFiles": 4,
+            "quarantinedFiles": 0,
+            "policyExclusions": 16,
+            "rejectedFiles": 0
+          },
+          "snapshotChecksum": "sha256:05b37f6c46cb46397c941ae0b7addd32cfe32ce9fec5d38da65137a6df23900b",
+          "manifestSha256": "sha256:9bee6d61df26174960beb2366ec25225ec7d89b1a364cb85c8f2e9e7ff151217",
+          "licenceNote": "Licence evidence carried from the previous snapshot; it was not reviewed again for this commit.",
+          "quarantined": []
+        }
+      }
+    ]
+  },
+  "build": {
+    "connectors": [
+      {
+        "connectorId": "GH-APACHE-CAMEL",
+        "documents": 1482,
+        "new": 0,
+        "verified": 1482,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-ARC42",
+        "documents": 15,
+        "new": 15,
+        "verified": 0,
+        "passages": 67,
+        "invalidated": 1,
+        "notices": 16
+      },
+      {
+        "connectorId": "GH-ARCHITECTURE-CATALOG",
+        "documents": 2,
+        "new": 0,
+        "verified": 2,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-ARCHUNIT",
+        "documents": 80,
+        "new": 80,
+        "verified": 0,
+        "passages": 233,
+        "invalidated": 11,
+        "notices": 91
+      },
+      {
+        "connectorId": "GH-ARDALIS-CLEAN-ARCH",
+        "documents": 14,
+        "new": 0,
+        "verified": 14,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-ASYNCAPI",
+        "documents": 4,
+        "new": 4,
+        "verified": 0,
+        "passages": 195,
+        "invalidated": 0,
+        "notices": 4
+      },
+      {
+        "connectorId": "GH-AWESOME-ANTIPATTERN",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-AWESOME-DESIGN-PATTERNS",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-AWESOME-SCALABILITY",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-AWESOME-SOFTWARE-ARCH",
+        "documents": 305,
+        "new": 0,
+        "verified": 305,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-AWESOME-SYSTEM-DESIGN-RESOURCES",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-AWS-SAAS-EKS",
+        "documents": 1,
+        "new": 1,
+        "verified": 0,
+        "passages": 36,
+        "invalidated": 0,
+        "notices": 1
+      },
+      {
+        "connectorId": "GH-AWS-SERVERLESS-PATTERNS",
+        "documents": 1107,
+        "new": 1107,
+        "verified": 0,
+        "passages": 8190,
+        "invalidated": 27,
+        "notices": 1134
+      },
+      {
+        "connectorId": "GH-AWS-SOLUTIONS-CONSTRUCTS",
+        "documents": 88,
+        "new": 88,
+        "verified": 0,
+        "passages": 1149,
+        "invalidated": 3,
+        "notices": 8
+      },
+      {
+        "connectorId": "GH-AZURE-RESOURCE-MODULES",
+        "documents": 180,
+        "new": 180,
+        "verified": 0,
+        "passages": 480,
+        "invalidated": 0,
+        "notices": 180
+      },
+      {
+        "connectorId": "GH-BACKSTAGE",
+        "documents": 51,
+        "new": 51,
+        "verified": 0,
+        "passages": 1283,
+        "invalidated": 26,
+        "notices": 77
+      },
+      {
+        "connectorId": "GH-C4-PLANTUML",
+        "documents": 2,
+        "new": 2,
+        "verified": 0,
+        "passages": 71,
+        "invalidated": 0,
+        "notices": 2
+      },
+      {
+        "connectorId": "GH-CNA-QUALITY-MODEL",
+        "documents": 2,
+        "new": 0,
+        "verified": 2,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-CNCF-LANDSCAPE-GRAPH",
+        "documents": 8,
+        "new": 0,
+        "verified": 8,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-CNCF-TAG-SECURITY",
+        "documents": 48,
+        "new": 0,
+        "verified": 48,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-CONTEXT-MAP-DISCOVERY",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-CONTEXT-MAPPER-DSL",
+        "documents": 0,
+        "new": 0,
+        "verified": 0,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-DDD-CREW",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-DEVELOPER-ROADMAP",
+        "documents": 10192,
+        "new": 0,
+        "verified": 10192,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-FINOS-AI-RA",
+        "documents": 16,
+        "new": 0,
+        "verified": 16,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-FINOS-CALM",
+        "documents": 104,
+        "new": 104,
+        "verified": 0,
+        "passages": 1350,
+        "invalidated": 17,
+        "notices": 121
+      },
+      {
+        "connectorId": "GH-GCP-CLOUD-FOUNDATION-FABRIC",
+        "documents": 258,
+        "new": 258,
+        "verified": 0,
+        "passages": 2222,
+        "invalidated": 53,
+        "notices": 311
+      },
+      {
+        "connectorId": "GH-GCP-MICROSERVICES-DEMO",
+        "documents": 21,
+        "new": 21,
+        "verified": 0,
+        "passages": 72,
+        "invalidated": 2,
+        "notices": 23
+      },
+      {
+        "connectorId": "GH-GCP-SOFTWARE-DELIVERY-BLUEPRINT",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-IBM-CLOUD-NATIVE-PATTERNS",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-ITATM-REFARCH",
+        "documents": 26,
+        "new": 0,
+        "verified": 26,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-JAVA-DESIGN-PATTERNS",
+        "documents": 516,
+        "new": 0,
+        "verified": 516,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-JMOLECULES",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-JQASSISTANT",
+        "documents": 37,
+        "new": 37,
+        "verified": 0,
+        "passages": 253,
+        "invalidated": 2,
+        "notices": 39
+      },
+      {
+        "connectorId": "GH-K8S-PATTERNS",
+        "documents": 2,
+        "new": 0,
+        "verified": 2,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-LIKEC4",
+        "documents": 45,
+        "new": 45,
+        "verified": 0,
+        "passages": 466,
+        "invalidated": 28,
+        "notices": 73
+      },
+      {
+        "connectorId": "GH-MESHERY",
+        "documents": 3822,
+        "new": 0,
+        "verified": 3822,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-MICROSOFT-AGENT-SKILLS",
+        "documents": 2,
+        "new": 0,
+        "verified": 2,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+        "documents": 239,
+        "new": 239,
+        "verified": 0,
+        "passages": 4270,
+        "invalidated": 160,
+        "notices": 399
+      },
+      {
+        "connectorId": "GH-OAM-SPEC",
+        "documents": 20,
+        "new": 20,
+        "verified": 0,
+        "passages": 132,
+        "invalidated": 0,
+        "notices": 20
+      },
+      {
+        "connectorId": "GH-OTEL-DEMO",
+        "documents": 33,
+        "new": 33,
+        "verified": 0,
+        "passages": 341,
+        "invalidated": 11,
+        "notices": 44
+      },
+      {
+        "connectorId": "GH-SAP-ARCH-CENTER",
+        "documents": 191,
+        "new": 191,
+        "verified": 0,
+        "passages": 1478,
+        "invalidated": 23,
+        "notices": 214
+      },
+      {
+        "connectorId": "GH-SERVICE-MESH-PATTERNS",
+        "documents": 8,
+        "new": 0,
+        "verified": 8,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-SPRING-MODULITH",
+        "documents": 11,
+        "new": 11,
+        "verified": 0,
+        "passages": 155,
+        "invalidated": 5,
+        "notices": 16
+      },
+      {
+        "connectorId": "GH-STRUCTURIZR-JAVA",
+        "documents": 45,
+        "new": 0,
+        "verified": 45,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-SYSTEM-DESIGN-101",
+        "documents": 1,
+        "new": 0,
+        "verified": 1,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      },
+      {
+        "connectorId": "GH-SYSTEM-DESIGN-PRIMER",
+        "documents": 17,
+        "new": 0,
+        "verified": 17,
+        "passages": 0,
+        "invalidated": 0,
+        "notices": 0
+      }
+    ],
+    "summary": {
+      "complete": true,
+      "storeId": "ebb8387e-72a7-429e-894d-3fb0c264c48b",
+      "cursor": 2773,
+      "errors": [],
+      "receipt": "build-2026-09-26T20-20-35-736Z.json"
+    },
+    "receipt": {
+      "file": "knowledge-repository/store/build-receipts/build-2026-09-26T20-20-35-736Z.json",
+      "sha256": "1f0198e747e0e2676eeee1e127063efd02f8a45b56170c89872e14c5ce06f044"
+    }
+  },
+  "notCopied": "No documentation text is in this evidence. The acquired originals stay in the git-ignored store and live roots on this laptop."
+}

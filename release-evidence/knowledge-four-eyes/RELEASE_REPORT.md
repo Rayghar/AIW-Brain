@@ -50,8 +50,21 @@ Still with people: real reviewers, a production signing key, a live provider run
 ## What was not done
 
 - **The BK-P2 set was not imported into your project.** It was built and verified against this laptop's corpus. Importing is your decision: `npm run candidates:import -- --dry-run`, then `npm run candidates:import`.
-- **No live provider call was made.**
+- **No live provider call was made.** The live Sol evaluation waits for an OpenAI key and model in the workbench's `.env`.
 - **Nothing was reviewed or approved by a real second person.**
+
+## Live operations, after the package
+
+The sponsor approved four live operations on 26 September 2026. They change no source file. The record is `LIVE_OPERATIONS.json`.
+
+| Operation | Result |
+|---|---|
+| Push | **Done.** The branch is on the private repository `github.com/Rayghar/AIW-Brain` at `7e1d707`, 30 commits. A scan beforehand found no secrets and no local paths; the largest file is 1.5 MB. |
+| Daily task | **Registered.** *AIW Knowledge Repository Refresh* re-verifies the store daily at 06:30, as the current user and not elevated. Windows' defaults keep it to mains power, so a test start on battery was queued until the laptop is plugged in. |
+| Live GitHub refresh | **Done.** 19 repositories moved to their latest commits: 2,487 documents, of which 418 were downloaded and 2,075 reused by blob hash. 6 were quarantined for key-shaped strings. 8 repositories were unchanged, and 3 failed closed: Apache Camel's tree is too large for this route, Meshery's was too large in the dry run and hit a network failure in the run, and DDD Crew answered 422. The rebuild completed with no errors: 22,443 passages, 369 invalidated and 2,773 signed notices. Details: `LIVE_REFRESH_EVIDENCE.json`. |
+| Live Sol evaluation | **Not run.** The workbench's `.env` has no OpenAI key or model. Reading keys from other configuration files was refused by the permission system and was not worked around. It runs once the sponsor adds them. |
+
+The new snapshots carry the licence evidence of the snapshots they replace, which was not reviewed again. Licence review remains with people.
 
 ## Commits
 
@@ -63,4 +76,4 @@ Still with people: real reviewers, a production signing key, a live provider run
 | `5d547ff` | The earlier backend's candidate knowledge imported, and the Brain chain proven end to end |
 | `f435e61` | Documentation |
 
-The evidence in this folder is committed on top of `f435e61`, which is the source of the v20.2 package.
+The evidence in this folder is committed on top of `f435e61`, which is the source of the v20.2 package. The live operations record is committed after `7e1d707`.
