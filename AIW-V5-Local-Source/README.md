@@ -1,5 +1,17 @@
 # AIW V5 Live Model Explorer
 
+## Four eyes, candidate knowledge and the whole chain (v20.2) — 26 September 2026
+
+- **Four eyes on every claim.** A claim is used only after an authenticated person other than its author has verified it. This is checked at review and again on every read, so a claim its author verified stops reaching Sol until someone else reviews it. Before, only repository claims needed a second person.
+- **Two people on one machine.** `AIW_LOCAL_ACCOUNTS` gives the local server named accounts, each with its own secret, a sign-in page and a signed session. See [LOCAL-RUN.md](LOCAL-RUN.md). Without it, the server behaves as before.
+- **Candidate knowledge from the earlier backend.**
+  - `candidate-sets/bk-p2-20260911.json` carries 16 curated candidate claims. Each is anchored on an exact passage that was verified in the laptop's corpus when the set was built.
+  - `npm run candidates:import` retrieves the exact originals and creates the candidates. They then need an independent review. See [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md).
+- **One identity for a file,** whether it is read from GitHub or from the corpus. A byte-order mark no longer changes its hash.
+- **The chain, proven end to end.** `npm run test:brain-chain` runs corpus → candidate → a second person's review → release → signed receipt → activation → link → Sol's packet → the provider request. It uses synthetic accounts, a synthetic signing key and the provider test double.
+
+Run `npm run test:brain-chain`, `npm run test:local-accounts` and `npm run test:stewardship-browser`. No live provider call was made here.
+
 ## Sol's checks keep the advice (v20.1) — 26 September 2026
 
 - **One oversized field no longer costs a whole batch.** Before this fix, one of these made the output validator throw, and every decision in the request (up to eight) went unanswered:

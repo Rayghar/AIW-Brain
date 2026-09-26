@@ -44,7 +44,11 @@ Candidate and discovery-only repositories can be searched but not retrieved unti
 - **Leads are not evidence.** Sol is shown what it will read before anything is sent. Beside that, the workbench lists repository passages that mention what the decisions touch. Sol does not receive them and cannot cite them.
 - **Purpose-bound keys.** `AIW_REPOSITORY_NOTICE_KEYS` holds keys that may sign notices only. `AIW_REPOSITORY_SYNC_KEYS` holds keys trusted for release receipts. The service's automated key belongs in the first. Keep the release signing key separate and offline.
 - **Licences.** The repository records what the GitHub API detected and what the acquisition dossier says. Neither is clearance: a reviewer checks permitted use in the claim review.
-- **Independent review.** Repository claims need a reviewer who is a different authenticated person from the author. The local server has one identity, so a repository claim cannot complete its review locally. Complete it on the hosted workbench, or with a second authenticated identity.
+- **Independent review (four eyes).**
+  - Every claim needs a reviewer who is a different authenticated person from its author. This is checked when the claim is reviewed and again on every read.
+  - A claim its author verified is not used until another person reviews it.
+  - Repository claims also need a current signed release receipt.
+  - On the laptop, local accounts let a second person sign in ([LOCAL-RUN.md](LOCAL-RUN.md)). Without them the local server has one identity, and no claim can complete its review there.
 
 ## Run it on the laptop
 
@@ -77,6 +81,24 @@ Then start the workbench with `node --env-file=.env server.js`. Mind Factory →
 
 A repository whose tree GitHub truncates fails closed, and so does a refresh with more changed files than the connector's limit (`--max` raises it deliberately). Such a repository needs the governed acquisition process.
 
+### Candidate sets
+
+`candidate-sets/bk-p2-20260911.json` holds 16 candidate claims from the earlier AIW backend's curated corpus BK-P2-20260911. They cover retry, time-outs, circuit breakers, bulkheads, queues, events and modules.
+- Each claim is anchored on an exact passage of a file in this corpus, checked against its verified original when the set was built.
+- Two of the 18 curated assets are not included: their evidence is a JSON model file and a specification too large for a project source.
+- The set carries the curator's interpretations, the locators and the licences. It carries no third-party text.
+
+With the service and the workbench running:
+
+```sh
+npm run candidates:import -- --dry-run      # shows what would be retrieved and created
+npm run candidates:import                   # into the default project; add --project <id> for another
+```
+
+- With local accounts, add `--account <id> --secret-env <VAR>` and put that account's secret in the named environment variable.
+- The import retrieves each exact original and creates each claim as a candidate authored by the importing account. It reviews, releases and activates nothing. A different signed-in person verifies each claim in Mind Factory before it can be released and read by Sol.
+- `npm run candidates:build -- <corpus.json>` rebuilds a set from such a corpus.
+
 ### Other commands
 
 | Command | Use |
@@ -94,6 +116,12 @@ A repository whose tree GitHub truncates fails closed, and so does a refresh wit
   - `npm run test:knowledge-repository`: 4 checks through the real Worker, SQLite and commands. They cover discovery routes, retrieval and interpretation on the same line range, automatic revocation on project read, the explicit sync route, and the Sources rendering.
   - `npm run test:repository-acquire`: 5 checks against a loopback fake of GitHub. They cover planning, reuse by git blob hash, blob-verified downloads, credential quarantine, fail-closed truncation, redirects and tampering, notices after the refresh, and an untouched original root.
   - `npm run test:knowledge-repository-browser`: rendered checks in Chromium. They cover search, read, retrieve, interpret; the desk switch point opened in Mind Factory; leads beside Sol; phone width.
+  - `npm run test:brain-chain`: 4 checks of the whole chain, on the local server with two synthetic accounts, the synthetic corpus and the provider test double.
+    - A candidate set is built against the corpus and imported.
+    - The author is refused and a second person verifies.
+    - The claim is released, its signed receipt applied, activated and linked to IF-001.
+    - Sol's packet for IF-001 carries the claim, and the request to the provider sends it. A claim still a candidate reaches neither.
+  - `npm run test:local-accounts`: sign-in, refusal of tampered and forged sessions, and four eyes through the server.
   - The real corpus was built, re-verified and searched on this laptop: 18,961 documentation revisions with zero unavailable, build receipts in `knowledge-repository/store/build-receipts`.
 - **Not yet verified:**
   - No live GitHub acquisition was run for this delivery; the adapter is verified against the loopback fake.

@@ -87,6 +87,7 @@ The companion and the panel share one state and tell each other when it changes 
   - a decision assessed twice, or one outside the packet, is set aside;
   - only a broken response fails the request, and the architect is told which check it failed.
 - Business targets stay the architect's: recovery points, service levels, quality driver targets and priorities, and sites. Sol frames the options and questions, and in *What if* it weighs the architect's move without proposing one of its own.
+- Four eyes on every claim: a claim is used only after a different authenticated person from its author has verified it. This is checked at review and again on every read.
 - What the project learns reaches Sol only through its governance. A captured disagreement is an original source and a candidate claim. Sol reads it only once it is reviewed, released, activated and linked to its record, and then only with that record, not wherever its words match. Withdrawn knowledge is never sent to Sol again, including when Sol weighs a change that rested on it.
 - Knowledge is used at its authority level:
   - playbook passages are method, not proof;
@@ -103,7 +104,19 @@ The companion and the panel share one state and tell each other when it changes 
   - 8 model checks (`npm run test:brain-reasoning`) cover the packet, the contract, settling, what size, duplicates and drafted wording may cost (only their own part), the provider path, the server routes and adoption, and knowledge governance.
   - 9 model checks (`npm run test:chapter-reasoning`) cover what can be asked about in each chapter, each chapter's reading and what identifies it, change commands that keep a record's links (44 knobs across 10 record types), the instruments' re-reading, the packet, the contract per kind, the server and adoption.
   - 8 model checks (`npm run test:stewardship`) cover the queue, Sol's stewardship advice, capture, the governed path to a link, Sol reading what was learned (and only with its record), the other decisions, a withdrawal from the queue, and the server.
-  - 5 rendered checks (`npm run test:stewardship-browser`) cover the whole loop. A disagreement in Chapter 8 reaches the queue. Sol advises the stewards, and the capture uses Sol's wording. The claim is reviewed, released, activated and linked to IF-001. Asked again about IF-001, Sol reads the learned claim and does not repeat the advice.
+  - 5 rendered checks (`npm run test:stewardship-browser`) cover the whole loop, in two browsers signed in as two people.
+    - A disagreement in Chapter 8 reaches the queue.
+    - Sol advises the stewards, and the capture uses Sol's wording.
+    - The architect who captured the claim is refused when verifying it; a second person reviews it.
+    - The claim is released, activated and linked to IF-001.
+    - Asked again about IF-001, Sol reads the learned claim and does not repeat the advice.
+  - 4 checks (`npm run test:brain-chain`) cover the chain from the knowledge repository to the LLM:
+    - a candidate set built against the corpus and imported;
+    - the author refused, and a second person verifying;
+    - release, a signed receipt, activation and a link to IF-001;
+    - Sol's packet for IF-001 carrying the claim, and the request to the provider sending it.
+
+    A claim still a candidate reaches neither.
   - 10 rendered checks (`npm run test:chapter-sol-browser`), one of them the one-Sol rule: one control in the companion, the panel's status of the same assessment, and the panel as the assessment on the Work tab. The other nine run in Chapters 2, 3, 7, 8, 9 and 10 against the test double. They cover a chapter's round, a refinement applied through Chapter 10's review, a What if move, leanings in Chapters 3 and 7, a threat proposed from Chapter 9, disagreement, persistence and the unconnected state.
   - 7 rendered checks (`npm run test:brain-reasoning-browser`) run against a loopback test double of the provider (`mock-llm-provider.mjs`). They cover asking, the packet shown before sending, assessments on cells, refinements through the change review, a proposed threat recorded in Chapter 9, disagreement, stale advice and persistence.
   - The desk's rendered checks cover the unconnected state.
@@ -128,4 +141,7 @@ The companion and the panel share one state and tell each other when it changes 
 
 1. **A live evaluation**, with the expectations and the results reviewed by an architect.
 2. **SEABaaS as a fourth domain**, once an architect has confirmed a representative scope and baseline from the private workbook.
-3. **A repository claim through the whole governed path**: retrieved on the laptop, reviewed by a second authenticated person on the hosted workbench, released under a production signing key, activated and cited by Sol.
+3. **A repository claim through the whole governed path, by real people.**
+   - The path is proven with synthetic accounts and a synthetic signing key (`npm run test:brain-chain`).
+   - Still needed: two real reviewers, local accounts or the hosted workbench, and a production signing key.
+   - The 16 claims of candidate set BK-P2 are ready to import for that review.
