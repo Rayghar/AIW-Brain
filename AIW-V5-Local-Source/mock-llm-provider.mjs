@@ -63,15 +63,16 @@ export function answer(body, opts = {}) {
 
 // A loopback HTTP server speaking the Responses API, for rendered tests.
 export async function startMockLLM(opts = {}) {
-  const calls = [];
+  // calls: the format name of each request; bodies: each request as sent, to check what reached the provider.
+  const calls = [], bodies = [];
   const server = http.createServer((req, res) => {
     let data = '';
     req.on('data', c => { data += c; });
     req.on('end', () => {
-      try { const body = JSON.parse(data || '{}'); calls.push(body.text?.format?.name); res.writeHead(200, {'Content-Type': 'application/json'}); res.end(JSON.stringify(answer(body, opts))); }
+      try { const body = JSON.parse(data || '{}'); calls.push(body.text?.format?.name); bodies.push(body); res.writeHead(200, {'Content-Type': 'application/json'}); res.end(JSON.stringify(answer(body, opts))); }
       catch (e) { res.writeHead(500); res.end('{}'); }
     });
   });
   await new Promise(r => server.listen(0, '127.0.0.1', r));
-  return {url: `http://127.0.0.1:${server.address().port}/v1`, calls, close: () => new Promise(r => server.close(r))};
+  return {url: `http://127.0.0.1:${server.address().port}/v1`, calls, bodies, close: () => new Promise(r => server.close(r))};
 }
