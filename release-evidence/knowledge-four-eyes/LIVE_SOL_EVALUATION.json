@@ -1,0 +1,1438 @@
+{
+  "schema": "aiw-sol-evaluation-v1",
+  "at": "2026-09-26T21:22:41.012Z",
+  "dataset": {
+    "title": "Held-out decisions for evaluating Sol's advice",
+    "digest": "eefa96c59a04b91632e1b7aca53e10e986f7748905a893def19544160e3b6347",
+    "cases": 26,
+    "authority": "Implementation-authored expectations. They were written from the designs' own readings before Sol was run on these cases, and none of these cases was used to write Sol's instructions, the guards or the provider test double. They are not independent expert review: an architect should review and amend them before any result is relied on."
+  },
+  "provider": "OpenAI",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "summary": {
+    "cases": 26,
+    "requestFailures": 0,
+    "assessments": 28,
+    "withheld": {
+      "rate": 0.464,
+      "of": 28,
+      "reasons": {
+        "guarantee": 5,
+        "refinement": 8,
+        "other": 6,
+        "proposals": 4,
+        "verdict": 1,
+        "number": 2
+      }
+    },
+    "verdictAgreement": {
+      "rate": 0.933,
+      "of": 15
+    },
+    "ownReadingCited": {
+      "rate": 1,
+      "of": 15
+    },
+    "expectedSupportCited": {
+      "rate": 1,
+      "of": 6
+    },
+    "addressesTheIssue": {
+      "rate": 1,
+      "of": 7
+    },
+    "numbersWithinBand": {
+      "rate": 1,
+      "of": 1
+    },
+    "proposalsValid": {
+      "rate": 1,
+      "of": 1
+    },
+    "preferenceWithinOptions": {
+      "rate": 1,
+      "of": 1
+    },
+    "falseSupport": {
+      "rate": 0.267,
+      "of": 15
+    },
+    "tokens": 337447,
+    "latencyMs": {
+      "p50": 7356,
+      "p95": 11311
+    },
+    "byDomain": {
+      "bank-payment": {
+        "verdictAgreement": {
+          "rate": 1,
+          "of": 11
+        },
+        "addressesTheIssue": {
+          "rate": 1,
+          "of": 5
+        }
+      },
+      "service-permits": {
+        "verdictAgreement": {
+          "rate": 0.5,
+          "of": 2
+        },
+        "addressesTheIssue": {
+          "rate": 1,
+          "of": 2
+        }
+      },
+      "warehouse-fulfilment": {
+        "verdictAgreement": {
+          "rate": 1,
+          "of": 2
+        },
+        "addressesTheIssue": {
+          "rate": null,
+          "of": 0
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "BP-01",
+      "domain": "bank-payment",
+      "ms": 11818,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13605,
+        "outputTokens": 861
+      },
+      "packet": {
+        "stamp": "bea64b24f78ad60242eeeab498b5d0942c8e3ef228b8f0ccbad9343c752a4d59",
+        "sources": 14,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14462
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "F:capacity:run-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-001",
+          "kind": "fix",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "guarantee",
+            "refinement",
+            "other"
+          ],
+          "issues": [
+            "It presents a mechanism or draft as guaranteeing a verified outcome.",
+            "The assessment's refinement to the scalingPolicy is consistent with the packet's draft but the assessment claims confirmation of autoscaler parameters and monitoring which are not evidenced by the packet, presenting them as if assured rather than proposed to be defined or tested.",
+            "The assessment mentions risks and questions appropriate for a draft; however, it states 'It presents a mechanism or draft as guaranteeing a verified outcome' which is a defect because the packet's draft does not guarantee the outcome nor includes measurement confirmation.",
+            "The assessment references numbers for CPU utilization (70%), replicas (1 to 24), and request rate (3,125 req/s) that appear in the packet or its arithmetic, which is acceptable, but it implies that the scaling policy parameters are confirmed and monitored, which is unsupported in the packet. This amounts to treating a draft as a verified result."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-02",
+      "domain": "bank-payment",
+      "ms": 6350,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12097,
+        "outputTokens": 527
+      },
+      "packet": {
+        "stamp": "d2a0ce063c5e65baaa57ef46eade6dd8d5df14840f3427a12955b13a813b2b36",
+        "sources": 11,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14346
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:integrity:if-004+rest",
+          "kind": "fix",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [
+            "\\bguarantee"
+          ],
+          "unsupportedNumbers": [],
+          "falseSupport": true,
+          "citedKinds": [
+            "instrument-reading",
+            "model"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-03",
+      "domain": "bank-payment",
+      "ms": 6229,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13682,
+        "outputTokens": 492
+      },
+      "packet": {
+        "stamp": "c74bee1220ebf4af7241c6d8962a52c40b1fdf994767382a2f5cd4c73ba1d983",
+        "sources": 14,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14985
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:observability:run-001",
+          "kind": "fix",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-04",
+      "domain": "bank-payment",
+      "ms": 7356,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12681,
+        "outputTokens": 849
+      },
+      "packet": {
+        "stamp": "03cdef21122eec97a2b734c8a8225b0b578aaddb5b7ed61420c6f028c268bfdf",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 13889
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "J:security:run-002",
+          "kind": "judgement",
+          "verdict": "judge",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": true,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "model",
+            "playbook-entry",
+            "brain-method"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-05",
+      "domain": "bank-payment",
+      "ms": 6170,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10375,
+        "outputTokens": 663
+      },
+      "packet": {
+        "stamp": "c8ef44ee054901a60fdf26b5b1a02eb200f09b97cd1a1c639c58f0610debf774",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 13451
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "D:ADR-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-001",
+          "kind": "decision",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "proposals"
+          ],
+          "issues": [
+            "It proposes threats for a decision that does not take them."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-06",
+      "domain": "bank-payment",
+      "ms": 6383,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10335,
+        "outputTokens": 724
+      },
+      "packet": {
+        "stamp": "12532673d07b2bc4055078b122530dfa8fa45e2ec378e74d5e309e586cb4d248",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 13287
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "D:ADR-002"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-002",
+          "kind": "decision",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "proposals"
+          ],
+          "issues": [
+            "It proposes threats for a decision that does not take them."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-07",
+      "domain": "bank-payment",
+      "ms": 6370,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12861,
+        "outputTokens": 533
+      },
+      "packet": {
+        "stamp": "d0a2a008676489bdce20f7b4dd0f22498984caf3f38737b569a8679b4ae978a5",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14967
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:switch:tr-003",
+          "kind": "switch",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "planning-assumptions",
+            "product-mechanism",
+            "model"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-08",
+      "domain": "bank-payment",
+      "ms": 9174,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12934,
+        "outputTokens": 900
+      },
+      "packet": {
+        "stamp": "cfa0b978efe45ac56479ae34f8896e6016e935af7ee14f34d055f37dd6701963",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14967
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "F:switch:tr-002"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "F:switch:tr-002",
+          "kind": "switch",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "verdict",
+            "proposals",
+            "refinement"
+          ],
+          "issues": [
+            "“judge” is not a verdict for this kind of decision.",
+            "It proposes threats for a decision that does not take them.",
+            "The assessment uses the verdict 'judge', which is not listed among allowed verdicts ['apply','refine','reconsider','insufficient'].",
+            "The assessment states risks that it does not apply as mitigations or changes, merely presenting them as threats rather than linked to any proposed decision refinements, which is a misuse per the guidelines."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-09",
+      "domain": "bank-payment",
+      "ms": 6929,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13632,
+        "outputTokens": 662
+      },
+      "packet": {
+        "stamp": "3f16dd5e4de310fff806fdbd6fb7d1a82408a10b4f01ea8edd59af8b97227237",
+        "sources": 11,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 16553
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "M:2:QD-003"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "M:2:QD-003",
+          "kind": "record",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "guarantee"
+          ],
+          "issues": [
+            "It presents a mechanism or draft as guaranteeing a verified outcome."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-10",
+      "domain": "bank-payment",
+      "ms": 11311,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 16944,
+        "outputTokens": 943
+      },
+      "packet": {
+        "stamp": "3a35f0a42443b22f25e4bb5e65a7b04fdefb541ccc7555f45a4173b744a9bb08",
+        "sources": 17,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 18239
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:7:tr-003",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": true,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "operationsPlan",
+            "resiliencePlan",
+            "dataPlan",
+            "accessPlan",
+            "interfacePlan",
+            "lifecyclePlan"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-11",
+      "domain": "bank-payment",
+      "ms": 10865,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 17672,
+        "outputTokens": 1114
+      },
+      "packet": {
+        "stamp": "5b9dd9acfd956f933ff44fd8dbcc506f10f40d1c3198664054a83349a73c2086",
+        "sources": 18,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 18786
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:10:run-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": true,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [
+            "13",
+            "14",
+            "15"
+          ],
+          "falseSupport": true,
+          "citedKinds": [
+            "chapter-reading",
+            "planning-assumptions",
+            "product-mechanism",
+            "model",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas",
+            "minReady",
+            "recoveryMinutes",
+            "scalingPolicy",
+            "recoveryPlan",
+            "monitoring"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-12",
+      "domain": "bank-payment",
+      "ms": 9046,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 14009,
+        "outputTokens": 1012
+      },
+      "packet": {
+        "stamp": "acadc9af66dbbf5ebc68be040b61dfee8c3b9cbc1871eb7fa3445792a30213f4",
+        "sources": 11,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 16632
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:8:if-004",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading",
+            "model",
+            "playbook-entry",
+            "brain-method"
+          ],
+          "refinements": [
+            "timeoutMs",
+            "timeoutPolicy",
+            "retryPolicy",
+            "idempotencyKey",
+            "duplicatePolicy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-13",
+      "domain": "bank-payment",
+      "ms": 8357,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12352,
+        "outputTokens": 724
+      },
+      "packet": {
+        "stamp": "889e80b74ab9c59222a42e2a809ffb546e90870ff81db4274bae6b75cec233d0",
+        "sources": 11,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14509
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:9:thr-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading",
+            "model",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "actor",
+            "scenario",
+            "consequence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-14",
+      "domain": "bank-payment",
+      "ms": 8179,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 17792,
+        "outputTokens": 936
+      },
+      "packet": {
+        "stamp": "fd8d420c4861c223ddb2bd32f16716d01c2c8e4a4d1fd95199bd944fb9e7a4d9",
+        "sources": 16,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 18218
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-002",
+          "kind": "fix",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [
+            "13"
+          ],
+          "falseSupport": true,
+          "citedKinds": [
+            "instrument-reading",
+            "planning-assumptions",
+            "product-mechanism",
+            "playbook-entry"
+          ],
+          "refinements": []
+        },
+        {
+          "id": "F:recovery:run-003",
+          "kind": "fix",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "product-mechanism",
+            "model"
+          ],
+          "refinements": []
+        },
+        {
+          "id": "F:latency:QD-003",
+          "kind": "fix",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "model"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "SP-01",
+      "domain": "service-permits",
+      "ms": 6393,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 11064,
+        "outputTokens": 655
+      },
+      "packet": {
+        "stamp": "23b9654f9531db8a31b041e631f802da47a7e0f3349e16f0ec2e725d2a557d75",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 12372
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-001",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": false,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "planning-assumptions",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "scalingPolicy"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-02",
+      "domain": "service-permits",
+      "ms": 6414,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9275,
+        "outputTokens": 653
+      },
+      "packet": {
+        "stamp": "aee5f07e9e5a75e5663548311787e4a9936e4ed357545bbb6cd9068f5e924d3a",
+        "sources": 6,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 11799
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "D:ADR-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-001",
+          "kind": "decision",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "proposals"
+          ],
+          "issues": [
+            "It proposes threats for a decision that does not take them."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-03",
+      "domain": "service-permits",
+      "ms": 6943,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 11625,
+        "outputTokens": 854
+      },
+      "packet": {
+        "stamp": "6364db3e4a39b6d7623528ff0c5341091ceda506e986bf6e3cc3c7e6189cf8d2",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14510
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "M:2:QD-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "M:2:QD-001",
+          "kind": "record",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "refinement",
+            "guarantee"
+          ],
+          "issues": [
+            "It asks to refine the draft but proposes no change within its knobs.",
+            "It presents a mechanism or draft as guaranteeing a verified outcome."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-04",
+      "domain": "service-permits",
+      "ms": 7684,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9660,
+        "outputTokens": 846
+      },
+      "packet": {
+        "stamp": "405d3b2d273dadd7eb5318fe536adac5c574ea007305635b52cd8a3640546979",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 12381
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "M:8:if-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "M:8:if-001",
+          "kind": "record",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "number",
+            "refinement",
+            "other"
+          ],
+          "issues": [
+            "It states 30, which no reading in the packet contains.",
+            "The candidate assigns a timeoutMs value of 30000 which is not present in the packet's readings and thus is an unsupported refinement.",
+            "The candidate proposes specific policies for timeoutPolicy, retryPolicy, idempotencyKey, and duplicatePolicy that are not present or documented in the packet; these are treated as refinements but the packet reading shows these knobs as empty, making these refinements unsupported as measured or verified results.",
+            "The candidate presents proposals about security controls and protocol assignments that are missing from the packet and which are not documented as assumptions or drafts; stating them as conditions in the reasoning without explicit framing as speculative is misleading.",
+            "The candidate's reasoning includes statements about retry policies and duplicate processing which are refinements not supported by evidence; without clear marking as tentative or draft from the source, this counts as defects.",
+            "Overall, the refinement values and policies proposed exceed the data present in the packet and are thus unsupported as assured readings or verified values."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-05",
+      "domain": "service-permits",
+      "ms": 5206,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8890,
+        "outputTokens": 573
+      },
+      "packet": {
+        "stamp": "e5e65ab3f7ad64d5beeb0e35f46c64805187536a56cf5c7e9299f9c91bb35228",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 11314
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:9:thr-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "actor",
+            "scenario",
+            "consequence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-06",
+      "domain": "service-permits",
+      "ms": 9424,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12842,
+        "outputTokens": 1016
+      },
+      "packet": {
+        "stamp": "6d327273e459039a1320a25275cc61bf75b8639df4d94a6e1f2c68cdc3ba3768",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "catalogue-description",
+          "brain-method"
+        ],
+        "chars": 15644
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "M:10:run-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "M:10:run-001",
+          "kind": "record",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "guarantee",
+            "refinement",
+            "other"
+          ],
+          "issues": [
+            "It presents a mechanism or draft as guaranteeing a verified outcome.",
+            "Refinement of maxReplicas to 23 and minReady to 2 is consistent with the reading and capacity assumptions in the packet.",
+            "Specifying recoveryMinutes as 30 and writing scalingPolicy, recoveryPlan, and monitoring as proposed are refinements within the allowed knobs and address the errors and warnings in the packet.",
+            "The assessment correctly highlights the critical capacity shortfall, ability to scale horizontally, and need for recovery and monitoring plans, all supported by the packet evidence.",
+            "However, the assessment's reasoning states 'It presents a mechanism or draft as guaranteeing a verified outcome,' which is a defect because the proposed plans and policies are drafts for review, not verified or guaranteed results.",
+            "Therefore, the claim that mechanism or draft is presented as verified or guaranteed is a defect."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-01",
+      "domain": "warehouse-fulfilment",
+      "ms": 7814,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10941,
+        "outputTokens": 777
+      },
+      "packet": {
+        "stamp": "2f36d7f66e7d38f2d462cd43abdc69b69c9cda0471292afd1441e88087832a79",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 12197
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "F:capacity:run-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-001",
+          "kind": "fix",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "guarantee",
+            "refinement",
+            "other"
+          ],
+          "issues": [
+            "It presents a mechanism or draft as guaranteeing a verified outcome.",
+            "The assessment states a scaling policy refinement with concrete CPU thresholds and scaling steps not present in the packet or reading (S1).",
+            "The assessment refers to the scaling policy text as too generic and proposes specific threshold values, which is a refinement and not yet verified or measured, but the conclusion that 'It presents a mechanism or draft as guaranteeing a verified outcome' is correct because the draft is treated as a decision rather than a proposal.",
+            "The reasoning includes a statement that the replica count and scaling have to be confirmed by load testing for real conditions, consistent with the packet disclaimer, indicating appropriate caution.",
+            "The candidate errs by including a refinement with exact thresholds (scale out at >70%, scale in <50%, step 1) presented as an improvement, which is outside the documented knobs or current proven results, so unsupported.",
+            "Otherwise, the candidate sticks to documented arithmetic and assumptions from S1 and S2, and references the relevant scaling practices (S3-S5) without contradiction."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-02",
+      "domain": "warehouse-fulfilment",
+      "ms": 5777,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9203,
+        "outputTokens": 570
+      },
+      "packet": {
+        "stamp": "5a2e1d8df00dc3e4f9393d04ac9ee16ab11f63ac247cb79006324d5e1b6e69e3",
+        "sources": 6,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 11609
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "D:ADR-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-001",
+          "kind": "decision",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "other"
+          ],
+          "issues": [
+            "It presents an assumption or drafted value as verified.",
+            "The assessment states 'It presents an assumption or drafted value as verified.' which is a defect because the packet explicitly marks the decision as draft and provides no measured confirmation for QD-001 or preference between alternatives. This means the assessment incorrectly treats the value or mechanism as verified rather than a proposal needing judgement."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-03",
+      "domain": "warehouse-fulfilment",
+      "ms": 6261,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 11662,
+        "outputTokens": 700
+      },
+      "packet": {
+        "stamp": "4a3064757262c7023ebdb34916b3887688893d297e67120123f6d20c81051fdb",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14303
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:2:QD-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [
+            "\\bguarantee"
+          ],
+          "unsupportedNumbers": [],
+          "falseSupport": true,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "conditions",
+            "response",
+            "measurement"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-04",
+      "domain": "warehouse-fulfilment",
+      "ms": 7555,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9681,
+        "outputTokens": 889
+      },
+      "packet": {
+        "stamp": "2040a8e49640efa288a5677bd7be65bd3a9e6e97ca6211cd454bcf2682f97a20",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 12187
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "M:8:if-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "M:8:if-001",
+          "kind": "record",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "number",
+            "refinement"
+          ],
+          "issues": [
+            "It states 30, which no reading in the packet contains.",
+            "Timeout value of 30000 ms is not present in the packet reading and is an invented refinement without explicit packet support.",
+            "The idempotency key 'fulfilmentRequestId' is not declared or supported by the packet excerpts; it is an invented refinement.",
+            "The retry policy specifying 'Retry up to 3 times with exponential backoff starting at 1 second' is not derived from the packet; it is a proposed refinement not backed by sources.",
+            "The duplicate policy stating rejection of duplicates and returning the original outcome reference is not given in the packet reading and is an invented refinement.",
+            "The reasoning states to clarify caller authority, access enforcement, and transport protection but no refinements or values are provided; incomplete support for resolving all errors."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-05",
+      "domain": "warehouse-fulfilment",
+      "ms": 5917,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8916,
+        "outputTokens": 666
+      },
+      "packet": {
+        "stamp": "06824e138f0c087c88deee995b7937c75037e8f1dafe243789abf74ccfc6d7b0",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 11150
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:9:thr-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "actor",
+            "scenario",
+            "consequence"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-06",
+      "domain": "warehouse-fulfilment",
+      "ms": 8202,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12625,
+        "outputTokens": 953
+      },
+      "packet": {
+        "stamp": "b043e0254775900fcd6d1a1d51e287533e17cc93a863898b6f8cfd03b8783c7c",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14678
+      },
+      "review": {
+        "accepted": false,
+        "withheld": [
+          "M:10:run-001"
+        ]
+      },
+      "assessments": [
+        {
+          "id": "M:10:run-001",
+          "kind": "record",
+          "verdict": "insufficient",
+          "withheld": true,
+          "withheldReasons": [
+            "other",
+            "refinement"
+          ],
+          "issues": [
+            "It presents an assumption or drafted value as verified.",
+            "The candidate assessment refines maxReplicas to 23, minReady to 2, and recoveryMinutes to 15, which are not recorded in the packet nor stated as verified refinements but are proposed values; refinements must be within the packet values or its own refinements clearly marked as proposals, not asserted as verified."
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Expectations are implementation-authored and need independent architect review.",
+    "Metrics are automated proxies: they detect grounding and structural failures and disagreement with the expected class of advice, not the quality of architectural judgement.",
+    "The designs are reference and teaching examples, not a production system."
+  ],
+  "mode": "live-provider"
+}

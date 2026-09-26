@@ -79,37 +79,56 @@
     },
     {
       "operation": "live-sol-evaluation",
-      "status": "not run; one case checked",
-      "reason": [
-        "AIW-V5-Local-Source/.env, which npm run evaluate:sol:live loads, defines only the knowledge-repository connection settings: no OPENAI_API_KEY and no AIW_LLM_MODEL.",
-        "Two older configuration files on this laptop define an OPENAI_API_KEY. The permission system refused to let the engineer read keys from them, and that refusal was not worked around."
+      "status": "done",
+      "history": [
+        "First blocked: AIW-V5-Local-Source/.env, which npm run evaluate:sol:live loads, has no OPENAI_API_KEY or AIW_LLM_MODEL, and the permission system refused to let the engineer read keys from two older configuration files. That refusal was not worked around.",
+        "At the sponsor's request, a one-case check (BP-01, 14,556 tokens) ran with the key from the repository's backend configuration, loaded straight into the process. Opening its result was refused, so the full run waited.",
+        "The sponsor then supplied an env file for the purpose. It was extracted to the session's temporary folder, loaded straight into the evaluation process with node --env-file, never displayed, and deleted after the run. The supplied zip is unchanged."
       ],
-      "oneCaseCheck": {
-        "at": "2026-09-26",
-        "instruction": "The sponsor asked the engineer to run it and to take the key from the existing configuration.",
-        "how": "The key was loaded from the repository's backend configuration straight into the evaluation process, never displayed or copied; model gpt-4.1-mini-2025-04-14; default OpenAI endpoint.",
-        "case": "BP-01",
-        "tokens": 14556,
-        "printedMetrics": "verdictAgreement, addressesTheIssue, expectedSupportCited and falseSupport were n/a: no assessment of this case was scored.",
-        "notInspected": "The permission system refused to let the engineer open the result, so why nothing was scored is not established. The full evaluation was not run."
+      "run": {
+        "command": "node --env-file=<supplied env> scripts/evaluate-sol-decisions.mjs --live --out release-evidence/knowledge-four-eyes/LIVE_SOL_EVALUATION.json",
+        "overrides": "AIW_LLM_MODEL=gpt-4.1-mini-2025-04-14; AIW_LLM_BASE_URL empty, so the default OpenAI endpoint",
+        "started": "2026-09-26T21:19:17Z",
+        "finished": "2026-09-26T21:22:42Z",
+        "provider": "OpenAI Responses API with store:false",
+        "model": "gpt-4.1-mini-2025-04-14",
+        "datasetDigest": "eefa96c59a04b91632e1b7aca53e10e986f7748905a893def19544160e3b6347"
       },
-      "estimate": {
+      "results": {
         "cases": 26,
-        "providerCalls": 52,
-        "basis": "Earlier live reasoning with gpt-4.1-mini-2025-04-14 used about 17,000 to 19,500 input and 600 to 1,300 output tokens per case, draft and check together.",
-        "inputTokens": "about 500,000",
-        "outputTokens": "about 30,000"
+        "requestFailures": 0,
+        "assessments": 28,
+        "withheldBySolsChecks": {"count": 13, "rate": 0.464, "reasons": {"refinement": 8, "other": 6, "guarantee": 5, "proposals": 4, "number": 2, "verdict": 1}},
+        "shown": 15,
+        "verdictAgreement": {"agree": 14, "of": 15, "disagreement": "SP-01: Sol advised refine where reconsider or insufficient was expected."},
+        "ownReadingCited": {"rate": 1, "of": 15},
+        "addressesTheIssue": {"rate": 1, "of": 7},
+        "expectedSupportCited": {"rate": 1, "of": 6},
+        "falseSupportAsScored": {"flagged": 4, "of": 15, "rate": 0.267},
+        "byDomain": {"bank-payment": {"verdictAgreement": "11 of 11"}, "service-permits": {"verdictAgreement": "1 of 2"}, "warehouse-fulfilment": {"verdictAgreement": "2 of 2"}},
+        "tokens": {"input": 317355, "output": 20092},
+        "latencyPerCaseMs": {"p50": 7356, "p95": 11311}
       },
-      "toRun": [
-        "Add OPENAI_API_KEY and AIW_LLM_MODEL (gpt-4.1-mini-2025-04-14 matches the earlier live evidence) to AIW-V5-Local-Source/.env.",
-        "From AIW-V5-Local-Source: npm run evaluate:sol:live -- --out ../release-evidence/knowledge-four-eyes/LIVE_SOL_EVALUATION.json"
-      ]
+      "reading": [
+        "No request failed, and every shown assessment cited its own reading.",
+        "Sol's own checks withheld 13 of 28 assessments, most often for a refinement outside the chapter's rules, guarantee language or proposals. They fail closed as designed, but an architect would see advice on only about half of these items.",
+        "Of the 15 shown assessments, 14 agree with the expected class of verdict.",
+        "The scorer flagged 4 of the 15 as false support, and at least half of that looks like the scorer, not Sol. BP-11 and BP-14 were flagged for the numbers 13 to 15 in packets with 18 and 16 sources, most likely the citation labels S13 to S15 read as numbers. BP-02 and WF-03 use the word guarantee, which the scorer forbids in any form while Sol's guard deliberately passes negated or hedged sentences such as 'does not guarantee'. The report keeps scores, not Sol's text, so none of the four is confirmed either way.",
+        "BP-01 was withheld in both the one-case check and the full run, for guarantee, refinement and other reasons, which explains the check's n/a metrics."
+      ],
+      "limitations": [
+        "The expectations are implementation-authored and need independent architect review before any result is relied on.",
+        "The metrics are automated proxies for grounding, structure and the expected class of advice, not the quality of architectural judgement.",
+        "The designs are reference and teaching examples, not a production system."
+      ],
+      "evidence": "LIVE_SOL_EVALUATION.json"
     }
   ],
   "findings": [
     "Windows PowerShell 5.1 decodes node's UTF-8 output with the console code page, so refresh logs show '·' as '┬╖', and it wraps long lines at the console width. The logs stay readable and the evidence collector normalises both; refresh.ps1 could set UTF-8 console output to avoid it.",
     "The daily task inherits Windows' mains-power conditions. On a laptop running on battery its runs wait until it is plugged in.",
     "Without AIW_GITHUB_TOKEN one refresh uses about 50 of GitHub's 60 unauthenticated API calls per hour; a dry run and a real run cannot share one hour.",
-    "GH-DDD-CREW answers 422 and needs its connector checked; GH-APACHE-CAMEL and GH-MESHERY exceed what the refresh route can read and need the governed acquisition process."
+    "GH-DDD-CREW answers 422 and needs its connector checked; GH-APACHE-CAMEL and GH-MESHERY exceed what the refresh route can read and need the governed acquisition process.",
+    "The Sol evaluation scorer reads citation labels such as S13 as numbers, forbids every use of 'guarantee' where Sol's guard passes negated or hedged ones, and keeps no text for a flagged assessment, so its false-support rate cannot be checked from the report."
   ]
 }
