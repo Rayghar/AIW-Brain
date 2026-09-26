@@ -27,7 +27,8 @@ try {
   const page = await context.newPage();
   page.on('pageerror', e => errors.push(e.message));
   const open = async (q, ready = '.cm-panel .cs-ask, .cm-panel .cs-round, .cm-panel .dk-sol') => { await page.goto(base + '/?' + q, {waitUntil: 'networkidle'}); await page.waitForSelector(ready, {timeout: 10000}); await page.waitForFunction(() => /Sol reads/.test(document.querySelector('.cm-panel .dk-solask small')?.innerText || ''), null, {timeout: 8000}); await page.waitForTimeout(300); };
-  const act = async sel => { await page.$eval(sel, e => e.click()); await page.waitForTimeout(300); };
+  // Find and click in one page task: a redraw between the two would leave the click on a replaced element.
+  const act = async sel => { await page.evaluate(s => { const e = document.querySelector(s); if (!e) throw Error('No element matches ' + s); e.click(); }, sel); await page.waitForTimeout(300); };
   const doc = () => page.evaluate(() => window.aiwProjectStore.value.document);
   const text = sel => page.$eval(sel, e => e.innerText);
   const ask = async (sel = '.cm-panel [data-dk="sol-ask"]') => { await act(sel); await page.waitForSelector('.cm-panel .dk-solpend [data-dk="sol-send"]:not([disabled])', {timeout: 8000}); };

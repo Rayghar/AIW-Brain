@@ -26,7 +26,8 @@ const pass = n => { checks.push(n); if (process.env.ST_DEBUG) console.error('PAS
 try {
   const page = await (await browser.newContext({viewport: {width: 1440, height: 900}})).newPage();
   page.on('pageerror', e => errors.push(e.message));
-  const act = async sel => { await page.$eval(sel, e => e.click()); await page.waitForTimeout(300); };
+  // Find and click in one page task: a redraw between the two would leave the click on a replaced element.
+  const act = async sel => { await page.evaluate(s => { const e = document.querySelector(s); if (!e) throw Error('No element matches ' + s); e.click(); }, sel); await page.waitForTimeout(300); };
   const text = sel => page.$eval(sel, e => e.innerText);
   const doc = () => page.evaluate(() => window.aiwProjectStore.value.document);
   const queue = () => text('#brain-panel .kw-steward');

@@ -36,7 +36,8 @@ const pass = n => { checks.push(n); if (process.env.KR_DEBUG) console.error('PAS
 try {
   const page = await (await browser.newContext({viewport: {width: 1440, height: 900}})).newPage();
   page.on('pageerror', e => errors.push(e.message));
-  const act = async sel => { await page.$eval(sel, e => e.click()); await page.waitForTimeout(250); };
+  // Find and click in one page task: a redraw between the two would leave the click on a replaced element.
+  const act = async sel => { await page.evaluate(s => { const e = document.querySelector(s); if (!e) throw Error('No element matches ' + s); e.click(); }, sel); await page.waitForTimeout(250); };
   const body = () => page.$eval('#brain-panel .kw-body', e => e.innerText);
   // Mind Factory opens through its public entry point, as the desk and the chapter companions open it.
   const openSources = async (p = page) => {

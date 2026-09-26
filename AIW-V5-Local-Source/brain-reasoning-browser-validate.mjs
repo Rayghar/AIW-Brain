@@ -25,7 +25,8 @@ try {
   const page = await (await browser.newContext({viewport: {width: 1440, height: 900}})).newPage();
   page.on('pageerror', e => errors.push(e.message));
   const open = async () => { await page.goto(base + '/?chapter=11&tab=model', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm.dk .dk-cell', {timeout: 8000}); if (!(await page.$('.cm.dk .cm-view[data-id="vitals"][aria-pressed="true"]'))) await page.click('.cm.dk .cm-view[data-id="vitals"]'); await page.waitForFunction(() => /mock-sol/.test(document.querySelector('.dk-solchip')?.innerText || ''), null, {timeout: 8000}); await page.waitForTimeout(300); };
-  const act = async sel => { await page.$eval(sel, e => e.click()); await page.waitForTimeout(300); };
+  // Find and click in one page task: a redraw between the two would leave the click on a replaced element.
+  const act = async sel => { await page.evaluate(s => { const e = document.querySelector(s); if (!e) throw Error('No element matches ' + s); e.click(); }, sel); await page.waitForTimeout(300); };
   const doc = () => page.evaluate(() => window.aiwProjectStore.value.document);
   // Sent means answered: the prepared packet is gone and the desk announces the assessment (a flash from an
   // earlier request may still be showing, so it is not enough to see one).
