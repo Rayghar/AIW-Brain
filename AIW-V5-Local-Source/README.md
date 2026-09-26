@@ -1,5 +1,34 @@
 # AIW V5 Live Model Explorer
 
+## The knowledge repository, connected — 26 September 2026
+
+- **The whole acquired corpus is searchable in Mind Factory → Sources.** On the laptop that holds it, the knowledge repository service covers 47 GitHub repositories at pinned commits: 18,961 documentation files, every byte verified, as 45,517 passages. Search it, read a passage (always from its verified original), and retrieve the exact original into the project. *Interpret this passage* opens the claim form on its exact lines.
+- **One path into the project.** A retrieved original is the same kind of source as a live GitHub read, with the same identity. Interpretation, independent review, a release with a current signed receipt, and activation still decide what Sol may read. The workbench re-verifies identity and bytes itself.
+- **What the licences allow, the repository respects.**
+  - Repositories whose licence dossier allows metadata only show file names, not text.
+  - Candidate and discovery-only repositories can be searched but not retrieved.
+  - Quarantined files are never opened.
+  - A licence is shown as detected, never as cleared.
+- **Revocations reach projects on their own.** The service signs its change notices with a notices-only key that can never sign a release. A project holding a changed or withdrawn original applies them when it is opened.
+- **Live refresh.** `node repository-service/cli.mjs acquire` fetches newer documentation from approved repositories at an immutable commit. Every download is checked against the git tree. `refresh.ps1` wraps the refresh, and `register-refresh-task.ps1` registers a daily task when you decide to.
+- **Leads beside Sol.** When Sol is asked, repository passages that mention what the decisions touch are listed beside what Sol will read. They are marked *not sent to Sol*, and one click opens a lead in Sources.
+
+Run `npm run test:repository-service`, `npm run test:knowledge-repository`, `npm run test:repository-acquire` and `npm run test:knowledge-repository-browser`. See [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md) and, to connect it, [LOCAL-RUN.md](LOCAL-RUN.md).
+
+## The Brain's open items, delivered — 26 September 2026
+
+- **The desk and Sol in the SDD.** A new *Architecture reasoning record* section holds:
+  - the vitals at review;
+  - every product choice and whether its switch point is framed;
+  - each piece of Sol's advice, with what the architect did and why, the packet it came from and the sources it rested on, marked where that knowledge has since been withdrawn;
+  - what the stewards learned, and how far each capture has come through review, release, activation and link.
+- **Mind Factory from the desk.** *Compare in Mind Factory* at a product switch point shows the options side by side: the weighing, what each product is documented to do, and the project's reviewed claims about each product, with any excluded claims and their reasons. Sol's advice on a switch point now recalls what the project knows about that realisation.
+- **Evaluation.** 26 held-out decisions across the bank payment reference, citizen service requests and warehouse fulfilment. The expected advice was written without running Sol on these cases, and an architect should review it. `npm run evaluate:sol` runs them through Sol's real path: packet, guard, second check, the chapter's own rules. It reports withheld rates, verdict agreement, citations, false-support proxies and, from an exported project, how often advice was taken or disagreed with.
+  - Against the test double: 26 cases, 28 assessments, 93% agreement. The two misses are the cases built to catch advice that takes an example objective at face value.
+  - `npm run evaluate:sol:live` runs the same set against a configured provider.
+
+Run `npm run test:brain-ahead` and `npm run test:sol-evaluation`. No live provider call was made here.
+
 ## One Sol — 25 September 2026
 
 - **Before this release a chapter model could show four different "Ask Sol" controls**, backed by two services with different answer shapes, answering in two panels side by side. Now each surface has one Sol control, and every one of them is the same Sol.

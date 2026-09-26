@@ -1,6 +1,6 @@
 # The AIW Brain: how the knowledge repository and the LLM are involved in every decision
 
-**Status:** v19 · 25 September 2026. This describes what is implemented and tested. It also marks what is still ahead.
+**Status:** v20 · 26 September 2026. This describes what is implemented and tested. It also marks what is still ahead.
 
 ## The idea
 
@@ -11,7 +11,8 @@ AIW is an architecture *intelligence* workbench. The architecture experience com
   - the SA Playbook, as exact passages and as structured tactics, styles and patterns;
   - the Architecture Knowledge Repository (AKR) catalogue;
   - the documented mechanisms of products;
-  - the project's governed claims, organisation guidance and project sources.
+  - the project's governed claims, organisation guidance and project sources;
+  - the acquired repository corpus: 18,961 documentation files from 47 GitHub repositories at pinned commits, searchable as 45,517 verified passages ([KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md)). Repository text is discovery material until it is retrieved, interpreted, reviewed, released and activated.
 
   Each item carries a receipt. Each can be withdrawn, and a withdrawal reaches every place that used it.
 - **Sol** reasons. It reads the instruments' output and the governed knowledge relevant to it. It judges the decision in front of the architect: apply, refine, reconsider, or a judgement to put to the architect. It explains why and cites what it rests on. It refines drafted wording and proposes numbers within bounds, and it proposes the scenarios the instruments cannot, such as threats nobody has recorded.
@@ -23,12 +24,12 @@ AIW is an architecture *intelligence* workbench. The architecture experience com
 |---|---|---|
 | **Sense** | The instruments read the design. On the desk: vital state, value and target, the arithmetic, the drafted fix, the cells it would change, and the knobs with their bounds. In a chapter model: the model's description of the selected record, its fields and what is not recorded, the journey's checks on it, the desk's vitals for the parts it touches, and the chapter's own extras (a What if's reach, a realisation's weighing, a threat's coverage). | `desk-vitals.js`, `desk-capacity.js`, `desk-fixes.js`, `product-choice.js`, `desk-model.js`, `chapter-reasoning.js` |
 | **Recall** | The Brain assembles a packet. It holds one reading per decision, then what the project has learned about those records (claims its stewards linked to them), then the objective and its planning assumptions (where capacity is read), the documented mechanisms of the products involved, the quality drivers the parts answer to, the SA Playbook's tactics for the vitals and drivers, and the project's governed claims and methods. A chapter reading is fitted to its share of the packet, dropping the least telling parts first. Every source carries a receipt, and withdrawn packs and releases are left out. The packet is capped at 22 sources and 28,000 characters. | `brain-reasoning.js` (`reasoningPacket`), `chapter-reasoning.js` (`fitReading`), `architecture-brain.js`, `model-knowledge.js` |
-| **Show** | The architect sees what Sol will read before anything is sent: every excerpt, whole, with its receipt. An optional question focuses Sol. | `brain-reasoning-ui.js` (`pendingHTML`), `/api/intelligence/reasoning-context` |
+| **Show** | The architect sees what Sol will read before anything is sent: every excerpt, whole, with its receipt. An optional question focuses Sol. Beside it, marked *not sent to Sol*, are leads: knowledge repository passages that mention what the decisions touch. A lead opens in Mind Factory → Sources, where it can be retrieved and taken through the governed path. | `brain-reasoning-ui.js` (`pendingHTML`, `leadQuery`), `/api/intelligence/reasoning-context`, `/api/knowledge/corpus` |
 | **Reason** | Sol answers a strict JSON contract for each decision. The answer has a verdict, a headline, reasoning, refinements on the draft's own knobs, proposed threats on the listed targets, a preferred alternative for a decision, risks, questions and citations. One request covers up to eight decisions. | `intelligence-provider.js` (`requestReasoning`), `/api/intelligence/reason` |
 | **Check** | Every assessment is checked twice. The deterministic check covers structure, citations, verdicts that fit the decision, refinements within bounds, numbers the packet does not contain, and guarantees of verified outcomes, including in refined wording. A second model pass then checks it against the same packet. A chapter record's refinements must also pass the chapter's own rules. An assessment that fails any check is withheld, and the reading stands. | `validateReasoningOutput`, `guardReasoning`, `settleReasoning`, `checkRecordRefinements` |
 | **Refine** | On the desk, "Use Sol's refinements" puts Sol's numbers and wording into the draft. In a chapter, Sol's refinements become the chapter's own change command. Either way, the instruments read the design again with them before the architect reviews anything. A number is only as good as the arithmetic that checks it. | `desk-view.js` (`solUse`), `chapter-reasoning.js` (`chapterCommands`, `chapterReread`) |
 | **Decide** | The draft or the refined record goes through the chapter's change review: apply, or keep as a design alternative. Only the refined fields change, and the record's links are kept. Sol's proposed threats go through Chapter 9's review. | `workbench-ui.js` (`reviewDesignChanges`), `chapter-sol.js` |
-| **Record** | The outcome is kept with the model, the chapter, the packet stamp and the sources the advice rested on: used or agreed, applied, or dismissed with the architect's reason. The advice shows what was done with it. Advice whose reading has since changed is shown as history, not advice. | `adoptReasoning`, `intelligence.adopt` (kind `assessment`), `p.coauthoring.assessments` |
+| **Record** | The outcome is kept with the model, the chapter, the packet stamp and the sources the advice rested on: used or agreed, applied, or dismissed with the architect's reason. The advice shows what was done with it. Advice whose reading has since changed is shown as history, not advice. The SDD's *Architecture reasoning record* carries the vitals at review, the product choices and switch points, every piece of advice with what was done with it and whether the knowledge it rested on was later withdrawn, and what the stewards learned. | `adoptReasoning`, `intelligence.adopt` (kind `assessment`), `p.coauthoring.assessments`, `reasoning-record.js` |
 | **Learn** | Every disagreement with Sol, and every change made on advice whose knowledge is later withdrawn, goes to the knowledge stewards' queue. Sol advises the stewards too. They capture a disagreement as project knowledge, which then takes the governed path: an original source and a candidate claim, review, release, activation, and a link to the record it concerns. Or they record that the knowledge and design stand, ask for a revisit, or withdraw what the advice rested on. Once linked, the claim is what Sol reads about that record from then on. | `knowledge-stewardship.js`, `stewardship-ui.js`, `knowledge.capture`, `knowledge.steward`, `knowledgeImpact` |
 
 ## One Sol
@@ -50,7 +51,7 @@ The companion and the panel share one state and tell each other when it changes 
 - **Review desk (Chapter 11 Model, and Validate on every chapter).** Sol is involved in every kind of decision on the desk:
   - every drafted fix: replicas, standbys, recovery objectives, nested timeouts, queue bounds, idempotency keys, controls and monitoring;
   - every judgement the instruments will not make: threats, recovery points, sites and drills;
-  - every product choice at a switch point;
+  - every product choice at a switch point, where Sol's recall anchors on the Chapter 7 realisation, and *Compare in Mind Factory* opens the options side by side with each product's documented mechanisms and the project's reviewed claims about it;
   - every Chapter 3 decision opened on the desk.
 
   You can ask Sol about one decision, a whole step of *Where to start*, or *Sol's rounds* (the first decision of each step). Verdicts appear on the cells and in the step summaries.
@@ -85,7 +86,8 @@ The companion and the panel share one state and tell each other when it changes 
   - playbook passages are method, not proof;
   - catalogue entries are descriptive;
   - product mechanisms paraphrase vendor pages and are not benchmarks;
-  - governed claims carry their conditions and limitations.
+  - governed claims carry their conditions and limitations;
+  - repository passages are discovery material: never sent to Sol, never citable, never support. They become knowledge only as a retrieved original that passes interpretation, independent review, a release with a current signed receipt, and activation.
 - What is sent is shown first, and the project's disclosure policy (excluded objects, contact redaction) applies. The provider is called with `store: false`. Budgets, replay protection and storage are those of every Sol request.
 - The endpoint is OpenAI by default. `AIW_LLM_BASE_URL` may point to an OpenAI-compatible gateway over https, or to loopback for tests.
 
@@ -99,13 +101,24 @@ The companion and the panel share one state and tell each other when it changes 
   - 10 rendered checks (`npm run test:chapter-sol-browser`), one of them the one-Sol rule: one control in the companion, the panel's status of the same assessment, and the panel as the assessment on the Work tab. The other nine run in Chapters 2, 3, 7, 8, 9 and 10 against the test double. They cover a chapter's round, a refinement applied through Chapter 10's review, a What if move, leanings in Chapters 3 and 7, a threat proposed from Chapter 9, disagreement, persistence and the unconnected state.
   - 7 rendered checks (`npm run test:brain-reasoning-browser`) run against a loopback test double of the provider (`mock-llm-provider.mjs`). They cover asking, the packet shown before sending, assessments on cells, refinements through the change review, a proposed threat recorded in Chapter 9, disagreement, stale advice and persistence.
   - The desk's rendered checks cover the unconnected state.
+  - 5 model checks (`npm run test:brain-ahead`) cover the SDD's reasoning record, the product comparison (mechanisms, claims naming each product, withdrawal), its rendering from the desk's entry point, switch points anchored on the realisation, and leads worded from what Sol reads.
+  - 6 model checks (`npm run test:sol-evaluation`) run every held-out case through the real reasoning path against the test double. Injected faults prove that the guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements, and that the metrics catch wrong verdicts and missing support.
+  - The knowledge repository's own suites and rendered checks are listed in [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md).
 - **Not yet verified:**
-  - No live provider call was made in this workspace: it has no key.
-  - The quality of Sol's advice on real designs has not been evaluated.
+  - No live provider call was made in this workspace; `npm run evaluate:sol:live` runs the held-out set against a configured provider.
+  - The quality of Sol's advice on real designs has not been evaluated. Against the test double the held-out set gives 26 cases, 28 assessments, none withheld and 93% verdict agreement. The two disagreements are the cases built to catch advice that takes an example objective at face value. That measures the harness, not Sol's judgement.
+  - The expected advice is implementation-authored; an architect should review and amend it before any result is relied on.
   - The test double proves the plumbing and the guards, not the judgement.
+
+## Delivered in v20
+
+1. **The desk and Sol in the SDD.** The *Architecture reasoning record* section: vitals at review, product choices and switch points, Sol's advice with what was done with it and its receipts, what the stewards learned, and withdrawn knowledge with its reach (`reasoning-record.js`).
+2. **Evaluation.** 26 held-out decisions across three domains (the bank payment reference, citizen service requests and warehouse fulfilment) with expected advice. They are run through the real reasoning path, and adoption rates come from exported projects (`evaluation/sol-heldout-v1.json`, `sol-evaluation.js`, `npm run evaluate:sol`).
+3. **Mind Factory from the desk.** *Compare in Mind Factory* at a switch point (`product-comparison.js`).
+4. **The knowledge repository connected.** Corpus search, verified passages, exact-original retrieval, signed revocations applied automatically, and leads beside Sol ([KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md)).
 
 ## Ahead
 
-1. **The desk and Sol in the SDD.** The vitals summary, product choices and anti-pattern treatments, plus Sol's advice that was used, applied or dismissed, and what the project learned from it, with their receipts.
-2. **Evaluation.** A held-out set of design decisions (reference, SEABaaS and a second domain) with expected advice. It will measure citation accuracy, false support, withheld rates and the architect's use and dismissal rates, against a live provider.
-3. **Mind Factory from the desk.** A switch point opens a Mind Factory comparison with the governed claims about the products compared.
+1. **A live evaluation**, with the expectations and the results reviewed by an architect.
+2. **SEABaaS as a fourth domain**, once an architect has confirmed a representative scope and baseline from the private workbook.
+3. **A repository claim through the whole governed path**: retrieved on the laptop, reviewed by a second authenticated person on the hosted workbench, released under a production signing key, activated and cited by Sol.

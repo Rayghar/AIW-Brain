@@ -59,3 +59,17 @@ The browser connection timed out on tab discovery during this delivery. Mounted 
 ## Subsequent composition delivery
 
 The composition and calibration-workflow gaps are addressed by `BRAIN-COMPLETION-REGISTER.md`: four additional concerns/eight alternatives, six explicit quantitative methods, source-bound observations, actual OpenAI evaluation, and source consistency checking with structured fallback. Earlier scope statements above describe the shared-integration increment. Independent source/architecture approval, production calibration and rendered-browser certification remain separate open gates; they have not been relabelled as completed.
+
+## Full-corpus repository integration (v20)
+
+The recovered-contract gap "a live read or an exact recorded original is required before interpretation review" is closed on the laptop. The knowledge repository service serves the exact recorded originals of the full pinned acquisition, and they are re-verified on every read. See [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md).
+
+| Capability | Implementation | Acceptance evidence |
+| --- | --- | --- |
+| Corpus index | `repository-service/` (manifest streaming, verified reads, deterministic passages, contentless FTS5, notices) | 18,961 documentation revisions from 47 snapshots, zero unavailable; `test:repository-service` (12 checks on an original synthetic corpus) |
+| Exact-original retrieval | `knowledge-service.js` corpus transport; `knowledge-repository.js` | Same `repository-fetch` identity as a GitHub read; tampered or mismatched responses refused; `test:knowledge-repository` |
+| Revocation | `repository-sync.js` notice keys; automatic application on project read | Notice keys cannot verify release receipts; invalidations withdraw project sources through `applyRepositorySync` |
+| Live refresh | `repository-service/acquire.js`, `refresh.ps1` | `test:repository-acquire` against a loopback fake of GitHub; no live acquisition claimed |
+| Interface | `public/repository-corpus-ui.js` in Mind Factory → Sources; leads in `brain-reasoning-ui.js` | `test:knowledge-repository-browser` (Chromium) |
+
+No repository claim has been independently reviewed, signed with a production key or activated. Licence clearance remains a human decision.

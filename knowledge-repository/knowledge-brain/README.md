@@ -1,5 +1,9 @@
 # AIW Knowledge Room
 
+> **Superseded for architects (26 September 2026).** The acquired corpus is now served to the workbench by the knowledge repository service in `AIW-V5-Local-Source/repository-service/` (see `AIW-V5-Local-Source/KNOWLEDGE-REPOSITORY.md`). It searches all 18,961 documentation files as verified passages in Mind Factory → Sources, and serves exact originals for retrieval, signed notices and a live refresh. The `repository-layer/` 24-file pilot is retired: its 24 revisions exist in the full store with identical contract-v1 identities. The tools here remain as the historical audit and discovery record; they are not a second path into project knowledge.
+>
+> Note: the full-collection index this tool built (`output/collection/collection.sqlite`, about 826 MB) contains the text of the 10 repositories whose licence dossier permits metadata only. The knowledge repository service does not index their text. Treat that derived file as restricted, or delete it: it is disposable, and rebuilding it is not needed for the workbench.
+
 A local second brain for understanding AIW's architecture knowledge: searchable records, source receipts, a linked Markdown vault, and a practical guide. Controlling baseline: **AIW v0.10.0-rc.10.73.6**.
 
 This is a standalone discovery workbench, not a new Brain execution entry point or an authority service. All projected records remain discovery-only, including historical records that contain approval labels. `productionAccepted` is false.

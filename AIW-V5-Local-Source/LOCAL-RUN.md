@@ -42,3 +42,15 @@ Run `npm run check`, `npm run test:connected-model`, and `npm run test:investiga
 The model and rule-based guidance work without an API key. To enable the OpenAI gateway locally, copy `.env.example` to `.env`, put your own key in `OPENAI_API_KEY`, and start with `node --env-file=.env server.js`. Do not put a key into browser code, commit it, or share the `.env` file. AIW shows **LLM not connected** until configured. With a key and `AIW_LLM_MODEL`, Sol also reasons at the review desk (Chapter 11 → Model, or Validate → Review desk) and in the companion of every chapter model, Chapters 2 to 10 (select a record, or ask for the chapter's round), and for the knowledge stewards (Mind Factory → Architecture in context → Stewards). *Ask Sol* shows what will be sent before anything leaves your machine. To route requests through an OpenAI-compatible gateway, set `AIW_LLM_BASE_URL` (https, or http on loopback).
 
 To carry a hosted project into your local workspace, export its connected project JSON from the hosted project's Chapter 11 Output, then use **All projects → Restore / import project** locally. Review the import preview before applying it; hosted project data is intentionally absent from this source download.
+
+## Optional knowledge repository (on the laptop that holds the corpus)
+
+The acquired architecture corpus becomes searchable in Mind Factory → Sources when the knowledge repository service runs beside the workbench. From this directory:
+
+```sh
+npm run repository:init     # once: a service token and a notice key under %LOCALAPPDATA%\AIW\repository-service
+npm run repository:build    # index or re-verify the corpus (about a minute)
+npm run repository:serve    # keep it running; it listens on http://127.0.0.1:4180 only
+```
+
+`repository:init` prints three settings. Add them to `.env` (never commit it) and start the workbench with `node --env-file=.env server.js`. Without them, Sources shows the bundled locators as before. Search results are unreviewed repository text: retrieving one saves the exact original into the project, and it becomes knowledge only through interpretation, review, release and activation. See [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md), including the live refresh from GitHub and the optional daily task.
