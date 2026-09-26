@@ -49,6 +49,18 @@ export function mockAssessment(packet, {refineBy = 0.1, faults = {}} = {}) {
 }
 export const mockReview = (input, {reject = []} = {}) => ({assessments: input.candidate.assessments.map(a => ({id: a.id, supported: !reject.includes(a.id), issues: reject.includes(a.id) ? ['It overstates what the reading shows.'] : []}))});
 
+// The evaluation's control arm (sol-evaluation.js): the same questions without the Brain. A general answer
+// that asserts a guaranteed outcome with a figure nobody recorded where a draft is numeric, and hedges
+// ("does not guarantee") elsewhere, so the scorer and the Brain's checks can be seen to tell them apart.
+export function mockDirect(input) {
+  return {summary: `Assessed ${input.decisions.length} decision${input.decisions.length === 1 ? '' : 's'}.`, assessments: input.decisions.map(d => {
+    const n = d.draft.find(k => typeof k.value === 'number'), verdict = d.verdicts.includes('apply') ? 'apply' : d.verdicts[0];
+    return {id: d.id, verdict, headline: 'Sound as drafted, following common practice for this kind of system.',
+      reasoning: n ? `${n.label} at ${n.value} ${n.unit || ''} is typical here. This configuration guarantees 99.99% availability.` : 'This follows common practice, but it does not guarantee any outcome on its own.',
+      refinements: [], proposals: [], preferred: d.decision?.alternatives?.[0]?.id || 'none', risks: ['Real load may differ from what is assumed.'], questions: ['What load has the team measured?']};
+  })};
+}
+
 // The Responses API envelope around a JSON answer.
 export const envelope = (answer, model = 'mock-sol') => ({id: 'mock-' + Math.random().toString(16).slice(2), model, status: 'completed', output: [{type: 'message', content: [{type: 'output_text', text: JSON.stringify(answer)}]}], usage: {input_tokens: 1200, output_tokens: 400}});
 
@@ -57,6 +69,7 @@ export function answer(body, opts = {}) {
   const name = body?.text?.format?.name, input = JSON.parse(body.input[0].content);
   if (name === 'aiw_desk_assessment') return envelope(mockAssessment(input, opts));
   if (name === 'aiw_desk_assessment_check') return envelope(mockReview(input, opts));
+  if (name === 'aiw_direct_assessment') return envelope(mockDirect(input));
   if (name === 'aiw_source_check') return envelope({supported: true, issues: []});
   return {id: 'mock', model: 'mock-sol', status: 'incomplete', output: []};
 }

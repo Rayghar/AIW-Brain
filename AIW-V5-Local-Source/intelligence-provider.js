@@ -105,3 +105,13 @@ export async function requestReasoning(env,packet,{fetcher=fetch,timeoutMs=60000
    groundingReview:{kind:'automated-source-consistency',accepted:settled.assessments.every(a=>!a.withheld),withheld:settled.assessments.filter(a=>a.withheld).map(a=>a.id),draft:result,draftModel:draft.model,reviewModel:review.model,reviewResponseId:review.providerResponseId,packetStamp:packet.stamp,authority:'Automated checks against the packet, not independent verification. A withheld assessment leaves the desk’s reading to stand; no model change follows from any assessment.'}};
  }catch(e){if(abort.signal.aborted)throw Object.assign(Error('The provider took too long. Your request is saved; nothing was applied.'),{code:'timeout'});if(e.code)throw e;throw Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable'});}finally{clearTimeout(timer);}
 }
+
+// The evaluation's control arm only (sol-evaluation.js): the same provider and model answer the same
+// question without the Brain — no packet, no Sol instructions, no guard, no second pass. The application
+// never calls it; requestReasoning stays the only way the product reasons (sol-evaluation-validate.mjs).
+export async function requestDirectBaseline(env,{instructions,input,schema,name},{fetcher=fetch,timeoutMs=60000}={}){
+ const status=intelligenceStatus(env);if(!status.configured)throw Object.assign(Error('LLM connection is not configured.'),{code:'not_configured'});
+ const abort=new AbortController(),timer=setTimeout(()=>abort.abort(),timeoutMs);
+ try{return await responsesCall(env,status,{instructions,input,schema,name},abort.signal,fetcher);}
+ catch(e){if(abort.signal.aborted)throw Object.assign(Error('The provider took too long.'),{code:'timeout'});if(e.code)throw e;throw Object.assign(Error('The provider connection was interrupted.'),{code:'provider_unavailable'});}finally{clearTimeout(timer);}
+}
