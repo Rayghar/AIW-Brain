@@ -1,0 +1,260 @@
+{
+  "schema": "aiw-test-evidence-v1",
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "package": "AIW V5 Local Source v20.5",
+  "branch": "release/aiw-v0.10.0-rc.10.73.6-model-views-4-8",
+  "gaps": {
+    "analysis": "AIW-V5-Local-Source/MODEL-VIEWS-CHAPTERS-4-8-GAPS.md",
+    "total": 31,
+    "closedInThisLine": 28,
+    "handedToTheSiteLine": [
+      1,
+      2,
+      3
+    ],
+    "recordedNotClaimed": [
+      24,
+      25
+    ],
+    "closureTable": "RELEASE_REPORT.md"
+  },
+  "fullRegression": {
+    "sourceCommit": "337a333d9ab0d382248bd45dc4c29b18567db795",
+    "command": "node release-checks.mjs",
+    "settings": {
+      "AIW_PLAYWRIGHT_MODULE": "C:\\AIW\\aiw\\v5\\node_modules\\playwright (Playwright 1.56.0)",
+      "AIW_REGRESSION_TIMEOUT_MS": "1500000",
+      "AIW_REGRESSION_CONCURRENCY": "2"
+    },
+    "started": "2026-09-27T19:13:07Z",
+    "finished": "2026-09-27T19:29:53Z",
+    "suites": 92,
+    "passed": 92,
+    "failed": [],
+    "browserSuites": 19,
+    "slowest": [
+      "test:model-views-browser 135s",
+      "test:chapter-sol-browser 125s",
+      "test:sol-coverage-browser 107s",
+      "test:validate-browser 103s",
+      "test:anatomy-browser 101s"
+    ],
+    "sourceChangedSince": {
+      "toPackageCommit": "337a333d9ab0d382248bd45dc4c29b18567db795",
+      "files": [],
+      "note": "The package is built from the regression commit: no source changed between them."
+    }
+  },
+  "newSuites": {
+    "test:model-views": {
+      "checks": 3,
+      "from": "the clean extract of the package"
+    },
+    "test:model-views-browser": {
+      "checks": 15,
+      "from": "the development run; the full regression re-ran it on the commit",
+      "regression": "passed"
+    }
+  },
+  "renderedSuitesDevelopmentRuns": {
+    "test:responsibility-browser": {
+      "checks": 10,
+      "suite": "chapter 4 model (rendered)"
+    },
+    "test:realise-browser": {
+      "checks": 9,
+      "suite": "chapter 5 model (rendered)"
+    },
+    "test:platform-browser": {
+      "checks": 8,
+      "suite": "chapter 6 model (rendered)"
+    },
+    "test:stack-browser": {
+      "checks": 8,
+      "suite": "chapter 7 model (rendered)"
+    },
+    "test:exchange-browser": {
+      "checks": 12,
+      "suite": "chapter 8 model (rendered)"
+    },
+    "test:model-views-browser": {
+      "checks": 15,
+      "suite": "chapter 4–8 model views (rendered)"
+    }
+  },
+  "cleanExtract": {
+    "installedDependencies": "none while the suites ran (no node_modules; the runtime and these suites use Node built-ins only); then npm ci --offline installed the lockfile's development tools from the local cache",
+    "node": "v24.18.0",
+    "results": [
+      {
+        "name": "check",
+        "status": "passed",
+        "seconds": 263.1
+      },
+      {
+        "name": "build",
+        "status": "passed",
+        "seconds": 15.6
+      },
+      {
+        "name": "test",
+        "status": "passed",
+        "seconds": 0.9,
+        "checkCount": 11
+      },
+      {
+        "name": "test:brain-reasoning",
+        "status": "passed",
+        "seconds": 8.7,
+        "checkCount": 8
+      },
+      {
+        "name": "test:chapter-reasoning",
+        "status": "passed",
+        "seconds": 10.7,
+        "checkCount": 9
+      },
+      {
+        "name": "test:stewardship",
+        "status": "passed",
+        "seconds": 7.5,
+        "checkCount": 8
+      },
+      {
+        "name": "test:sol-evaluation",
+        "status": "passed",
+        "seconds": 26.4,
+        "checkCount": 14
+      },
+      {
+        "name": "test:sol-checks",
+        "status": "passed",
+        "seconds": 3.3,
+        "checkCount": 6
+      },
+      {
+        "name": "test:sol-coverage",
+        "status": "passed",
+        "seconds": 75.8,
+        "checkCount": 5
+      },
+      {
+        "name": "test:model-views",
+        "status": "passed",
+        "seconds": 1.5,
+        "checkCount": 3
+      },
+      {
+        "name": "test:realise",
+        "status": "passed",
+        "seconds": 1.8,
+        "checkCount": 7
+      },
+      {
+        "name": "test:stack",
+        "status": "passed",
+        "seconds": 2.3,
+        "checkCount": 6
+      },
+      {
+        "name": "test:brain-ahead",
+        "status": "passed",
+        "seconds": 4.1,
+        "checkCount": 5
+      },
+      {
+        "name": "test:repository-service",
+        "status": "passed",
+        "seconds": 3,
+        "checkCount": 12
+      },
+      {
+        "name": "test:repository-acquire",
+        "status": "passed",
+        "seconds": 2,
+        "checkCount": 5
+      },
+      {
+        "name": "test:knowledge-repository",
+        "status": "passed",
+        "seconds": 4,
+        "checkCount": 4
+      },
+      {
+        "name": "test:repository-sync",
+        "status": "passed",
+        "seconds": 3.8
+      },
+      {
+        "name": "test:knowledge-ingestion",
+        "status": "passed",
+        "seconds": 1.2
+      },
+      {
+        "name": "test:local-accounts",
+        "status": "passed",
+        "seconds": 7.2,
+        "checkCount": 3
+      },
+      {
+        "name": "test:brain-chain",
+        "status": "passed",
+        "seconds": 10.8,
+        "checkCount": 4
+      },
+      {
+        "name": "evaluate:sol",
+        "status": "passed",
+        "seconds": 8.8
+      },
+      {
+        "name": "evaluate:sol:coverage",
+        "status": "passed",
+        "seconds": 8.5
+      },
+      {
+        "name": "npm ci --offline",
+        "status": "passed",
+        "seconds": 258.3
+      }
+    ]
+  },
+  "siteLine": {
+    "patch": "site-line.patch",
+    "against": "AIW-V5-Full-Source-2026-09-27.zip (the site's commit 664b974), this session's extract",
+    "probe": {
+      "what": "The site line (this session's extract of AIW-V5-Full-Source-2026-09-27.zip, the site's commit 664b974) with site-line.patch applied, served by its own server.js on a free port and opened in headless Chromium (Playwright 1.56.0) at 1440×900, fresh contexts with no saved preferences.",
+      "script": "scratchpad/probe-site.mjs (this session)",
+      "at": "2026-09-27",
+      "results": {
+        "ch5": {
+          "chapterModel": true,
+          "diagram": false,
+          "url": "?chapter=5&tab=model&object=api",
+          "reads": "Chapter 5's Model tab opens on the Chapter 5 model, not the architecture diagram."
+        },
+        "ch7": {
+          "chapterModel": true,
+          "diagram": false,
+          "url": "?chapter=7&tab=model&object=api",
+          "reads": "Chapter 7's Model tab opens on the Chapter 7 model."
+        },
+        "borrowed": {
+          "heading": "Chapter 05 · Application overview (a Chapter 4 scene) · Working design",
+          "url": "?chapter=5&tab=model&modelMode=architecture&object=api",
+          "reads": "When the reader chooses the diagram on Chapter 5, the borrowed scene says whose it is."
+        },
+        "carried": {
+          "chapter": "4",
+          "object": null,
+          "heading": "Chapter 04 · Application overview · Working design",
+          "reads": "?chapter=4&tab=model&modelMode=architecture&object=gateway (a Chapter 6 capability) stays on Chapter 4 and drops the carried selection instead of jumping to Chapter 6."
+        }
+      },
+      "verifiedOnTheSite": false,
+      "note": "The site's owner applies the patch with git apply -p1 and takes the shared files (the five views and the cm-* layer) from this branch."
+    },
+    "verifiedOnTheSite": false
+  },
+  "productionAccepted": false
+}

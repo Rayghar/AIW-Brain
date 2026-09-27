@@ -1,0 +1,19 @@
+{
+  "what": "Time from navigation (commit) until the chapter model is on screen, in ms, on this laptop over loopback, headless Chromium (Playwright 1.56.0) at 1440×900. 'cold' is the first load of the chapter in a fresh browser context; 'warm' the second and third. 'explorerToModel' is the exchange suite's step 9: on Chapter 8, switch to the connected explorer, reload, then click back to the chapter model. One run of each variant, three navigations; the numbers are noisy by a few hundred ms and are read for their direction, not their decimals.",
+  "script": "scratchpad/probe-load.mjs (this session)",
+  "at": "2026-09-27",
+  "variants": {
+    "baseline": {"source": "commit e4162e6 (v20.4): Cache-Control: no-store, no preloading", "cold": {"5": [5101], "8": [3124], "11": [3131]}, "warm": {"5": [3359, 2790], "8": [2503, 2793], "11": [3255, 2660]}, "explorerToModel": [488, 429, 474]},
+    "baseline2": {"source": "the same, run again after the others", "cold": {"5": [4418], "8": [4008], "11": [3303]}, "warm": {"5": [2207, 2142], "8": [2486, 2356], "11": [2668, 2307]}, "explorerToModel": [470, 420, 407]},
+    "B_revalidation_only": {"source": "ETag + Cache-Control: no-cache (304 when unchanged), no preloading", "cold": {"5": [4148], "8": [2523], "11": [2892]}, "warm": {"5": [2318, 2176], "8": [2237, 3303], "11": [2202, 2892]}, "explorerToModel": [506, 435, 442]},
+    "D_preload_only": {"source": "no-store as before, plus modulepreload of the page's closure in index.html and of a chapter view's closure alongside its import", "cold": {"5": [3564], "8": [3258], "11": [3148]}, "warm": {"5": [3669, 2735], "8": [2826, 3747], "11": [2876, 3311]}, "explorerToModel": [995, 959, 1010]},
+    "C_both": {"source": "the tests commit 951edae: revalidation and preloading together", "cold": {"5": [4629], "8": [2868], "11": [3199]}, "warm": {"5": [2689, 2732], "8": [3760, 4284], "11": [3505, 4165]}, "explorerToModel": [710, 968, 716]}
+  },
+  "reading": [
+    "Revalidation alone (B) is neutral on loopback: within the noise of the baseline on every measure.",
+    "Preloading (D, and C) is slower on loopback: the explorer-to-model switch doubles (about 1 s against about 0.45 s) and warm loads grow. The burst of parallel requests competes with the import's own chain, and loopback has no latency for the preload to hide.",
+    "Neither change shortens the 2–3 s a warm navigation takes to show a model: that time is the page's own boot, compile and render of about 5.6 MB of unbundled modules, not the network. A bundle is the lever, and is not part of this release."
+  ],
+  "shipped": "Revalidation (ETag + no-cache) and the loading placeholder. Preloading is not shipped. Revalidation's benefit is expected on a network, where the modules would otherwise travel on every navigation; it is reasoned, not measured here.",
+  "productionAccepted": false
+}

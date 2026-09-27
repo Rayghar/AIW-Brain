@@ -7,6 +7,7 @@
 | Branch | `release/aiw-v0.10.0-rc.10.73.6-model-views-4-8`, from `6ba454b` |
 | Date | 27 September 2026 |
 | Production acceptance | Not claimed. `productionAccepted` stays `false`. |
+| Outcome | See `RELEASE_REPORT.md`: 30 gaps closed and one (10, loading) partly; the site line's three as `site-line.patch`; the full regression 92/92 on `337a333`; the package `AIW-V5-Local-Source-v20.5.zip`. Step 2's preloading was built, measured slower on loopback (`LOAD_TIMINGS.json`) and removed; the revalidation and the placeholder stay. |
 
 ## What the sponsor asked
 

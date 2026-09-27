@@ -1,0 +1,462 @@
+[
+  {
+    "name": "test",
+    "status": "passed",
+    "ms": 1209
+  },
+  {
+    "name": "test:anatomy",
+    "status": "passed",
+    "ms": 3641
+  },
+  {
+    "name": "test:anatomy-browser",
+    "status": "passed",
+    "ms": 101111
+  },
+  {
+    "name": "test:architecture",
+    "status": "passed",
+    "ms": 4588
+  },
+  {
+    "name": "test:architecture-case",
+    "status": "passed",
+    "ms": 7946
+  },
+  {
+    "name": "test:architecture-drafting",
+    "status": "passed",
+    "ms": 2896
+  },
+  {
+    "name": "test:brain",
+    "status": "passed",
+    "ms": 2760
+  },
+  {
+    "name": "test:brain-ahead",
+    "status": "passed",
+    "ms": 3636
+  },
+  {
+    "name": "test:brain-chain",
+    "status": "passed",
+    "ms": 8550
+  },
+  {
+    "name": "test:brain-integration",
+    "status": "passed",
+    "ms": 2628
+  },
+  {
+    "name": "test:brain-reasoning",
+    "status": "passed",
+    "ms": 8391
+  },
+  {
+    "name": "test:brain-reasoning-browser",
+    "status": "passed",
+    "ms": 35892
+  },
+  {
+    "name": "test:changes",
+    "status": "passed",
+    "ms": 25246
+  },
+  {
+    "name": "test:chapter-reasoning",
+    "status": "passed",
+    "ms": 10040
+  },
+  {
+    "name": "test:chapter-sol-browser",
+    "status": "passed",
+    "ms": 125390
+  },
+  {
+    "name": "test:composition",
+    "status": "passed",
+    "ms": 22583
+  },
+  {
+    "name": "test:connected-model",
+    "status": "passed",
+    "ms": 13949
+  },
+  {
+    "name": "test:decisions",
+    "status": "passed",
+    "ms": 2691
+  },
+  {
+    "name": "test:deploy",
+    "status": "passed",
+    "ms": 1597
+  },
+  {
+    "name": "test:deploy-browser",
+    "status": "passed",
+    "ms": 50173
+  },
+  {
+    "name": "test:design-spec",
+    "status": "passed",
+    "ms": 1350
+  },
+  {
+    "name": "test:design-tasks",
+    "status": "passed",
+    "ms": 4035
+  },
+  {
+    "name": "test:desk",
+    "status": "passed",
+    "ms": 4071
+  },
+  {
+    "name": "test:desk-browser",
+    "status": "passed",
+    "ms": 91221
+  },
+  {
+    "name": "test:desk-fixes",
+    "status": "passed",
+    "ms": 9883
+  },
+  {
+    "name": "test:development",
+    "status": "passed",
+    "ms": 2979
+  },
+  {
+    "name": "test:enhancements",
+    "status": "passed",
+    "ms": 6020
+  },
+  {
+    "name": "test:evidence",
+    "status": "passed",
+    "ms": 8655
+  },
+  {
+    "name": "test:exchange",
+    "status": "passed",
+    "ms": 2898
+  },
+  {
+    "name": "test:exchange-browser",
+    "status": "passed",
+    "ms": 76564
+  },
+  {
+    "name": "test:exchange-design",
+    "status": "passed",
+    "ms": 7432
+  },
+  {
+    "name": "test:grounding-review",
+    "status": "passed",
+    "ms": 1504
+  },
+  {
+    "name": "test:intelligence",
+    "status": "passed",
+    "ms": 2786
+  },
+  {
+    "name": "test:interface-impact",
+    "status": "passed",
+    "ms": 7610
+  },
+  {
+    "name": "test:interfaces",
+    "status": "passed",
+    "ms": 2665
+  },
+  {
+    "name": "test:investigation",
+    "status": "passed",
+    "ms": 2551
+  },
+  {
+    "name": "test:journey",
+    "status": "passed",
+    "ms": 1017
+  },
+  {
+    "name": "test:knowledge-design",
+    "status": "passed",
+    "ms": 5317
+  },
+  {
+    "name": "test:knowledge-ingestion",
+    "status": "passed",
+    "ms": 1343
+  },
+  {
+    "name": "test:knowledge-repository",
+    "status": "passed",
+    "ms": 3501
+  },
+  {
+    "name": "test:knowledge-repository-browser",
+    "status": "passed",
+    "ms": 45060
+  },
+  {
+    "name": "test:knowledge-second-brain",
+    "status": "passed",
+    "ms": 1326
+  },
+  {
+    "name": "test:local-accounts",
+    "status": "passed",
+    "ms": 6315
+  },
+  {
+    "name": "test:logical",
+    "status": "passed",
+    "ms": 2776
+  },
+  {
+    "name": "test:model-alternatives",
+    "status": "passed",
+    "ms": 41076
+  },
+  {
+    "name": "test:model-impact",
+    "status": "passed",
+    "ms": 21122
+  },
+  {
+    "name": "test:model-views",
+    "status": "passed",
+    "ms": 1544
+  },
+  {
+    "name": "test:model-views-browser",
+    "status": "passed",
+    "ms": 134823
+  },
+  {
+    "name": "test:operations",
+    "status": "passed",
+    "ms": 7704
+  },
+  {
+    "name": "test:persistence",
+    "status": "passed",
+    "ms": 8572
+  },
+  {
+    "name": "test:platform",
+    "status": "passed",
+    "ms": 1462
+  },
+  {
+    "name": "test:platform-browser",
+    "status": "passed",
+    "ms": 50094
+  },
+  {
+    "name": "test:product-choice",
+    "status": "passed",
+    "ms": 2380
+  },
+  {
+    "name": "test:projects",
+    "status": "passed",
+    "ms": 2199
+  },
+  {
+    "name": "test:quality",
+    "status": "passed",
+    "ms": 2891
+  },
+  {
+    "name": "test:readiness",
+    "status": "passed",
+    "ms": 3108
+  },
+  {
+    "name": "test:reads",
+    "status": "passed",
+    "ms": 4752
+  },
+  {
+    "name": "test:realisation",
+    "status": "passed",
+    "ms": 3020
+  },
+  {
+    "name": "test:realise",
+    "status": "passed",
+    "ms": 1469
+  },
+  {
+    "name": "test:realise-browser",
+    "status": "passed",
+    "ms": 68658
+  },
+  {
+    "name": "test:reconciliation",
+    "status": "passed",
+    "ms": 10590
+  },
+  {
+    "name": "test:repository-acquire",
+    "status": "passed",
+    "ms": 2508
+  },
+  {
+    "name": "test:repository-service",
+    "status": "passed",
+    "ms": 3504
+  },
+  {
+    "name": "test:repository-sync",
+    "status": "passed",
+    "ms": 2739
+  },
+  {
+    "name": "test:requirements",
+    "status": "passed",
+    "ms": 4969
+  },
+  {
+    "name": "test:responsibility",
+    "status": "passed",
+    "ms": 1927
+  },
+  {
+    "name": "test:responsibility-browser",
+    "status": "passed",
+    "ms": 63759
+  },
+  {
+    "name": "test:reversal",
+    "status": "passed",
+    "ms": 5045
+  },
+  {
+    "name": "test:review",
+    "status": "passed",
+    "ms": 92030
+  },
+  {
+    "name": "test:runtime",
+    "status": "passed",
+    "ms": 6915
+  },
+  {
+    "name": "test:security",
+    "status": "passed",
+    "ms": 4956
+  },
+  {
+    "name": "test:security-design",
+    "status": "passed",
+    "ms": 6832
+  },
+  {
+    "name": "test:sol-checks",
+    "status": "passed",
+    "ms": 5076
+  },
+  {
+    "name": "test:sol-coverage",
+    "status": "passed",
+    "ms": 54840
+  },
+  {
+    "name": "test:sol-coverage-browser",
+    "status": "passed",
+    "ms": 107460
+  },
+  {
+    "name": "test:sol-evaluation",
+    "status": "passed",
+    "ms": 18671
+  },
+  {
+    "name": "test:stack",
+    "status": "passed",
+    "ms": 2121
+  },
+  {
+    "name": "test:stack-browser",
+    "status": "passed",
+    "ms": 70342
+  },
+  {
+    "name": "test:stewardship",
+    "status": "passed",
+    "ms": 6686
+  },
+  {
+    "name": "test:stewardship-browser",
+    "status": "passed",
+    "ms": 63329
+  },
+  {
+    "name": "test:story",
+    "status": "passed",
+    "ms": 1238
+  },
+  {
+    "name": "test:story-browser",
+    "status": "passed",
+    "ms": 48849
+  },
+  {
+    "name": "test:technology",
+    "status": "passed",
+    "ms": 6237
+  },
+  {
+    "name": "test:technology-realisation",
+    "status": "passed",
+    "ms": 22512
+  },
+  {
+    "name": "test:threat",
+    "status": "passed",
+    "ms": 1546
+  },
+  {
+    "name": "test:threat-browser",
+    "status": "passed",
+    "ms": 52280
+  },
+  {
+    "name": "test:tradeoff",
+    "status": "passed",
+    "ms": 1262
+  },
+  {
+    "name": "test:tradeoff-browser",
+    "status": "passed",
+    "ms": 53981
+  },
+  {
+    "name": "test:utility",
+    "status": "passed",
+    "ms": 1108
+  },
+  {
+    "name": "test:utility-browser",
+    "status": "passed",
+    "ms": 38577
+  },
+  {
+    "name": "test:validate-browser",
+    "status": "passed",
+    "ms": 103237
+  },
+  {
+    "name": "test:workspace",
+    "status": "passed",
+    "ms": 621
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "what": "The site line (this session's extract of AIW-V5-Full-Source-2026-09-27.zip, the site's commit 664b974) with site-line.patch applied, served by its own server.js on a free port and opened in headless Chromium (Playwright 1.56.0) at 1440×900, fresh contexts with no saved preferences.",
+  "script": "scratchpad/probe-site.mjs (this session)",
+  "at": "2026-09-27",
+  "results": {
+    "ch5": {"chapterModel": true, "diagram": false, "url": "?chapter=5&tab=model&object=api", "reads": "Chapter 5's Model tab opens on the Chapter 5 model, not the architecture diagram."},
+    "ch7": {"chapterModel": true, "diagram": false, "url": "?chapter=7&tab=model&object=api", "reads": "Chapter 7's Model tab opens on the Chapter 7 model."},
+    "borrowed": {"heading": "Chapter 05 · Application overview (a Chapter 4 scene) · Working design", "url": "?chapter=5&tab=model&modelMode=architecture&object=api", "reads": "When the reader chooses the diagram on Chapter 5, the borrowed scene says whose it is."},
+    "carried": {"chapter": "4", "object": null, "heading": "Chapter 04 · Application overview · Working design", "reads": "?chapter=4&tab=model&modelMode=architecture&object=gateway (a Chapter 6 capability) stays on Chapter 4 and drops the carried selection instead of jumping to Chapter 6."}
+  },
+  "verifiedOnTheSite": false,
+  "note": "The site's owner applies the patch with git apply -p1 and takes the shared files (the five views and the cm-* layer) from this branch."
+}
