@@ -398,9 +398,10 @@ export function validateReasoningOutput(raw, packet) {
         if (v === Number(k.value)) continue;
         out.refinements.push({key: k.key, label: k.label, value: v, why});
       } else {
-        // Wording the design would take keeps its field's limit: past it, the assessment is withheld.
+        // Wording the design would take keeps its field's limit, and is never cut: past it, or empty, the
+        // refinement is set aside and never applied, and the rest of the advice stands.
         const v = String(r.value).trim(), max = k.maxLength || 2400;
-        if (!v || v.length > max) { problems.push(`${k.label}: its wording is ${v ? `longer than the field's ${max} characters` : 'empty'}.`); continue; }
+        if (!v || v.length > max) { (out.setAside ||= []).push({key: k.key, label: k.label, value: v.length > 1200 ? v.slice(0, 1200) + '…' : v, why, reason: v ? `Its wording is longer than the field’s ${max} characters, so it is set aside and never applied; the rest of the advice stands.` : 'Its wording is empty, so it is set aside; the rest of the advice stands.'}); continue; }
         if (v === String(k.value ?? '').trim()) continue;
         out.refinements.push({key: k.key, label: k.label, value: v, why});
       }
@@ -458,12 +459,13 @@ function claims(sentence, m, drafted) {
   const word = m[0].toLowerCase(), form = BASE.has(word) ? 'base' : word.endsWith('ing') ? 'ing' : 'finite';
   const before = sentence.slice(0, m.index), words = before.split(/[;:—–(]/).pop().trim().split(/\s+/).filter(Boolean);
   if (/\b(?:verify|verifies|confirm|confirms|check|checks|test|tests|validate|validates|prove|proves|assess|evaluate|determine|establish|demonstrate|measure)\s+(?:that|whether|if|how)\b|\bwhether\b/i.test(before)) return false; // what is to be verified
+  if (/^\s*to\s+(?!date\b)\w+/i.test(before.split(/[;:—–]/).pop())) return false; // "To address the gaps, ensuring…" is a purpose
   while (words.length && ADVERB.test(words.at(-1).replace(/[^\w']/g, ''))) words.pop();
   const last = words.at(-1) || '', bare = last.toLowerCase().replace(/[^\w']/g, '');
   if (!words.length) return form === 'finite'; // "Ensure…" instructs and "Achieving…" names a goal; "Ensures…" claims
   if (last.endsWith(',') || bare === 'and' || bare === 'or') {
     if (form === 'finite') return true;
-    if (form === 'base') return !DIRECTS.test(before); // "…should add X and ensure Y" advises
+    if (form === 'base') return !DIRECTS.test(before) && !/\bto\s+(?!(?:the|a|an|at|its|their|this|that|these|those|up|about|around|over|under|within)\b)[a-z]+\b/i.test(words.join(' ')); // "…should add X and ensure Y", "…operations to handle load and ensure Y" advise
     return last.endsWith(',') || !/\b(?:for|of|to|in|on|about|toward|towards|at|before|without)\s+\w+ing\b/i.test(before); // "…, ensuring Y" claims
   }
   if (bare === 'be') return /\bwill\s+be$/i.test(words.slice(-2).join(' '));
@@ -506,14 +508,16 @@ export function guardReasoning(packet, result) {
     const unsupported = uniq((said.match(NUMBER) || []).map(norm).filter(n => Number(n) > 12 && !known.has(n) && !own.has(n)));
     if (unsupported.length) a.problems.push(`It states ${unsupported.slice(0, 3).join(', ')}, which no reading in the packet contains.`);
     // The advice itself may guarantee nothing: that withholds the assessment.
-    const claim = overclaim(said);
+    const claim = overclaim([a.headline, a.reasoning, ...a.risks, ...a.questions, ...a.proposals.flatMap(x => [x.title, x.scenario, x.consequence])].join('\n'));
     if (claim) a.problems.push(claim === 'guarantee' ? 'It presents a mechanism or draft as guaranteeing a verified outcome.' : 'It presents an assumption or drafted value as verified.');
-    // Refined wording may carry design numbers (a backoff, a retention), but never a guaranteed outcome:
-    // such a value is set aside on its own and never applied, and the rest of the advice stands.
+    // Refined wording may carry design numbers (a backoff, a retention), but neither it nor its reason may claim
+    // a guaranteed or verified outcome: such a refinement is set aside on its own and never applied, and the
+    // rest of the advice stands.
     a.refinements = a.refinements.filter(r => {
-      const kind = typeof r.value === 'string' ? overclaim(r.value, {drafted: true}) : null;
-      if (kind) (a.setAside ||= []).push({key: r.key, label: r.label, value: r.value, why: r.why, reason: kind === 'guarantee' ? 'Its wording presents the draft as guaranteeing an outcome, so it is set aside and never applied; the rest of the advice stands.' : 'Its wording presents a drafted value as verified, so it is set aside and never applied; the rest of the advice stands.'});
-      return !kind;
+      const worded = typeof r.value === 'string' ? overclaim(r.value, {drafted: true}) : null, reasoned = worded ? null : overclaim(r.why);
+      if (worded) (a.setAside ||= []).push({key: r.key, label: r.label, value: r.value, why: r.why, reason: worded === 'guarantee' ? 'Its wording presents the draft as guaranteeing an outcome, so it is set aside and never applied; the rest of the advice stands.' : 'Its wording presents a drafted value as verified, so it is set aside and never applied; the rest of the advice stands.'});
+      if (reasoned) (a.setAside ||= []).push({key: r.key, label: r.label, value: r.value, why: r.why, reason: reasoned === 'guarantee' ? 'Its reason claims the draft guarantees an outcome, so it is set aside and never applied; the rest of the advice stands.' : 'Its reason presents the draft as verified, so it is set aside and never applied; the rest of the advice stands.'});
+      return !worded && !reasoned;
     });
   }
   return result;

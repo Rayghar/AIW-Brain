@@ -7,7 +7,10 @@
 //    own value restated in another unit is not a new number;
 // 3. a second pass that contradicts itself is recorded, not relied on: its concrete defects decide;
 // 4. the SA Playbook's example objective is named as the example everywhere, and where a design records a
-//    workload of its own, advice that sizes it for the example is withheld.
+//    workload of its own, advice that sizes it for the example is withheld;
+// 5. Sol's panel always answers (the sponsor's requirement that every page can show a response);
+// 6. one refinement costs only itself: wording past its field's limit, or a reason that claims an outcome, sets
+//    that refinement aside (found by the final live coverage run).
 // Run: npm run test:sol-checks
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -62,7 +65,8 @@ await check('2 · the guard reads a claim as a claim: a guarantee in any tense, 
  for(const s of ['At least two ready replicas ensure availability during pod updates and failover.','Ensures exactly-once semantics and consistency.','Defining a minimum replica count ensures baseline availability under low load.','This will ensure zero data loss.','The measured latency is 120 ms in production.'])assert.notEqual(overclaim(s),null,s);
  // Advice the live run on the fixes withheld, which claims nothing: an instruction, a goal, a purpose or hedge,
  // an object that is not an outcome, missing evidence, and what a test should verify.
- for(const s of ['Ensure clear procedures for recovery and failover to maintain availability.','No tactics from the SA Playbook are yet named or realized, and the conditions include unavailable downstream services which add complexity to achieving the target.','Applying scaling horizontally (S3) and stateless principles (S4) is indicated to achieve needed capacity.','Lifecycle management ensures the messaging infrastructure aligns with capacity growth (S14) and orderly evolution to support long-term operation.','This ensures operational and cost efficiency and appropriate capacity planning aligned to real demand rather than example data.','Without measured evidence favoring latency or operational trade-off impacts, the choice depends on business priorities.','Lack of validated test results to confirm capacity sufficiency at proposed replica counts.','Refinements should increase maxReplicas, specify scalingPolicy and ensure minReady matches availability needs.','The standby is critical for detecting failure and ensuring timely recovery.','A load test should verify that the pool achieves the target before go-live.'])assert.equal(overclaim(s),null,s);
+ for(const s of ['Ensure clear procedures for recovery and failover to maintain availability.','No tactics from the SA Playbook are yet named or realized, and the conditions include unavailable downstream services which add complexity to achieving the target.','Applying scaling horizontally (S3) and stateless principles (S4) is indicated to achieve needed capacity.','Lifecycle management ensures the messaging infrastructure aligns with capacity growth (S14) and orderly evolution to support long-term operation.','This ensures operational and cost efficiency and appropriate capacity planning aligned to real demand rather than example data.','Without measured evidence favoring latency or operational trade-off impacts, the choice depends on business priorities.','Lack of validated test results to confirm capacity sufficiency at proposed replica counts.','Refinements should increase maxReplicas, specify scalingPolicy and ensure minReady matches availability needs.','The standby is critical for detecting failure and ensuring timely recovery.','A load test should verify that the pool achieves the target before go-live.','To address missing management, monitoring, and recovery coverage ensuring observability and availability.','Kafka requires proactive operations to handle load and ensure availability.'])assert.equal(overclaim(s),null,s);
+ for(const s of ['This ensures capacity matches demand under normal and failure conditions (S1, S2, S5).','Refinements increase maxReplicas to 23 and ensure availability.','To date, the ledger has guaranteed zero loss.'])assert.equal(overclaim(s),'guarantee',s);
  // A drafted value is written into the design: an outcome it says it ensures is set aside, a purpose included.
  const purpose='Horizontal Pod Autoscaler on CPU at 70 %, from 3 to 26 replicas, to ensure availability during the peak.';
  assert.equal(overclaim(purpose),null);assert.equal(overclaim(purpose,{drafted:true}),'guarantee');
@@ -171,6 +175,26 @@ await check('5 · Sol’s panel always answers: a long response is shortened and
  packet=ask('design');r=await run(packet,{...mockProposal(packet),sourceRefs:packet.sources.filter(s=>s.ref!=='S1').slice(0,1).map(s=>s.ref)});
  assert.equal(r.groundingReview.accepted,false);assert.match(r.groundingReview.issues[0],/did not fit the contract: The proposal must cite the selected saved object/);
  assert.match(r.result.title,/Structured guidance|Source review/);assert.match(html(r,packet),/Why structured guidance was used[\s\S]*did not fit the contract/);
+});
+
+await check('6 · one refinement costs only itself: wording past its field’s limit, or a reason that claims an outcome, sets that refinement aside, and the rest of the advice stands',async()=>{
+ // The final live coverage run withheld a Chapter 8 contract for an idempotency key past 120 characters, and a
+ // data definition for one reason saying its retention policy "ensures compliance"; the rest of each was sound.
+ const cp=packetFor(bank,['M:8:rest']),c=cp.items[0],key=c.knobs.find(k=>k.key==='idempotencyKey');
+ assert.equal(key.maxLength,120);
+ const long='Use a unique client-generated instruction identifier supplied in the request header and persisted with the payment instruction for its whole life.';
+ const contract=guardReasoning(cp,validateReasoningOutput(raw(cp,[assessment(c,{verdict:'refine',refinements:[{key:'timeoutMs',value:2000,why:'Fits the acknowledgement target.'},{key:'idempotencyKey',value:long,why:'Deduplicates repeats.'}]})]),cp)).assessments[0];
+ assert.deepEqual(contract.problems,[]);assert.deepEqual(contract.refinements.map(r=>r.key),['timeoutMs']);
+ assert.deepEqual(contract.setAside.map(r=>r.key),['idempotencyKey']);assert.match(contract.setAside[0].reason,/longer than the field’s 120 characters[\s\S]*never applied/);
+ const dp=packetFor(bank,['M:8:instruction']),d=dp.items[0];
+ const data=guardReasoning(dp,validateReasoningOutput(raw(dp,[assessment(d,{verdict:'refine',refinements:[{key:'protection',value:'Restrict access to the payment service; mask account fields in logs.',why:'Limits who can read the instruction.'},{key:'retentionPolicy',value:'Retain for the period the business and legal owners set, then delete.',why:'It clarifies responsibilities and ensures compliance and auditability.'}]})]),dp)).assessments[0];
+ assert.deepEqual(data.problems,[]);assert.deepEqual(data.refinements.map(r=>r.key),['protection']);
+ assert.deepEqual(data.setAside.map(r=>r.key),['retentionPolicy']);assert.match(data.setAside[0].reason,/Its reason claims the draft guarantees an outcome/);
+ const html=assessmentHTML({run:{id:'r6',createdAt:'2026-09-27T00:00:00Z',packet:dp,result:{assessments:[data]}},a:data,item:d,current:true},{id:d.id});
+ assert.match(html,/Set aside · 1[\s\S]*ensures compliance and auditability|Set aside · 1[\s\S]*Retain for the period/);assert.match(html,/Its reason claims the draft guarantees an outcome/);
+ // The same claim in the assessment's own reasoning still withholds it.
+ const own=guardReasoning(dp,validateReasoningOutput(raw(dp,[assessment(d,{verdict:'refine',reasoning:`The reading in ${d.ref} holds. The retention policy ensures compliance.`,refinements:[{key:'protection',value:'Restrict access to the payment service.',why:'Limits who can read it.'}]})]),dp)).assessments[0];
+ assert.match(own.problems.join(' '),/guaranteeing a verified outcome/);
 });
 
 console.log(JSON.stringify({status:'passed',checks:checks.length,seconds:Math.round((Date.now()-started)/1000),checksRun:checks},null,2));
