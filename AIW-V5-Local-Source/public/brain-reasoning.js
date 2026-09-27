@@ -432,14 +432,58 @@ export function validateReasoningOutput(raw, packet) {
 // Numbers Sol states must be in the packet or be its own refinements; nothing may be guaranteed.
 const NUMBER = /(?<![\w.])\d{1,3}(?:,\d{3})+(?:\.\d+)?|(?<![\w.,])\d+(?:\.\d+)?/g;
 const norm = s => String(Number(String(s).replace(/,/g, '')));
-// The first sentence that presents a guaranteed or verified outcome; negated or hedged sentences ("does
-// not guarantee", "until a load test replaces it") pass, and so does a question, which claims nothing.
-export function overclaim(text) {
+// A refinement's own value restated in another unit (timeoutMs 30000 as "30 seconds") is not a new number.
+const RESTATED = {ms: [v => v / 1000, v => v / 60000], min: [v => v * 60, v => v / 60]};
+export const restated = (value, unit) => [norm(value), ...(RESTATED[unit] || []).map(f => f(value)).filter(v => Number.isInteger(v * 10)).map(norm)];
+// The first sentence that claims a guaranteed or verified outcome. A claim says something ensures one
+// ("…, ensuring exactly-once processing", "three replicas ensure availability") or that one was verified
+// ("latency was measured at 180 ms in production"). Advice claims nothing: an instruction ("Ensure clear
+// recovery procedures"), a purpose or modal ("to ensure", "should ensure", "helps ensure"), a goal ("critical
+// for ensuring", "complexity to achieving the target"), missing evidence ("without measured evidence"), a
+// question, and a negated or hedged sentence ("does not guarantee", "until a load test replaces it").
+// A drafted value is read strictly, because it is written into the design: an outcome it says it ensures
+// is a claim even as a purpose ("…to ensure availability").
+const ENSURES = /\b(?:guarantee[sd]?|guaranteeing|ensure[sd]?|ensuring|achieve[sd]?|achieving|prove[sdn]?|proving)\b/gi;
+const BASE = new Set(['guarantee', 'ensure', 'achieve', 'prove']);
+const ADVISES = new Set(['to', 'should', 'must', 'would', 'could', 'can', 'may', 'might', 'shall', 'cannot', "can't", 'not', 'never', 'no', 'nor', 'help', 'helps', 'helped', 'helping', 'aim', 'aims', 'aimed', 'intended', 'designed', 'meant', 'need', 'needs', 'needed', 'required', 'requires', 'necessary', 'try', 'tries', 'trying', 'seek', 'seeks', 'for', 'of', 'in', 'on', 'about', 'toward', 'towards', 'at', 'before', 'without', 'whether', 'if', 'unless', 'until', 'be']);
+const ADVERB = /^(?:\w+ly|also|always|further|still|only|better|then|first|next|please|thus|therefore|hence|so)$/i;
+const DIRECTS = /^\s*(?:to|ensure|guarantee|achieve|prove|define|set|add|use|keep|specify|document|establish|implement|configure|introduce|make|consider|confirm|review|monitor|apply|adopt|limit|bound|increase|reduce|raise|lower|run|verify|validate|clarify|align|choose|select|assign|provide|treat|retain|deploy|capture|require|agree|decide|gather|obtain|replace|split|prefer|avoid|enforce|maintain|protect|record|name)\s|\b(?:should|must|needs? to|would|could|can|may|might|shall|helps?|in order to)\b/i;
+// What a claim may not ensure: a hard outcome anywhere in its clause, or a softer one as what it ensures.
+const HARD = /\b(?:zero|no loss|exactly.once|100 ?%|verified)\b/i;
+const SOFT = /^(?:\S+\s+){0,5}?(?<!\b(?:for|of|to|with|in|on|about|from|toward|towards|under|during|at|by|into)\s)(?:the (?:\w+ )?target|availability|recovery|capacity|compliance)\b(?!\s+(?:growth|planning|plans?|models?|drafts?|sizing|order|steps?|procedures?|runbooks?|paths?|needs|figures?|estimates?|assumptions?|reviews?|polic(?:y|ies)|strateg(?:y|ies)|authority|prerequisites)\b)/i;
+const VERIFIED = /\b(?:verified|proven|validated|measured)\b/gi;
+const UNPROVEN = /\b(?:without|lack|lacks|lacking|absent|missing|no|nor|none|until|before|once|when|if|unless|whether|pending|awaiting|requires?|required|requiring|needs?|needed|seek|gather|obtain|collect|record|provide|request|confirm|verify|validate|measure|test|yet)\b/i;
+function claims(sentence, m, drafted) {
+  if (drafted) return true;
+  const word = m[0].toLowerCase(), form = BASE.has(word) ? 'base' : word.endsWith('ing') ? 'ing' : 'finite';
+  const before = sentence.slice(0, m.index), words = before.split(/[;:—–(]/).pop().trim().split(/\s+/).filter(Boolean);
+  if (/\b(?:verify|verifies|confirm|confirms|check|checks|test|tests|validate|validates|prove|proves|assess|evaluate|determine|establish|demonstrate|measure)\s+(?:that|whether|if|how)\b|\bwhether\b/i.test(before)) return false; // what is to be verified
+  while (words.length && ADVERB.test(words.at(-1).replace(/[^\w']/g, ''))) words.pop();
+  const last = words.at(-1) || '', bare = last.toLowerCase().replace(/[^\w']/g, '');
+  if (!words.length) return form === 'finite'; // "Ensure…" instructs and "Achieving…" names a goal; "Ensures…" claims
+  if (last.endsWith(',') || bare === 'and' || bare === 'or') {
+    if (form === 'finite') return true;
+    if (form === 'base') return !DIRECTS.test(before); // "…should add X and ensure Y" advises
+    return last.endsWith(',') || !/\b(?:for|of|to|in|on|about|toward|towards|at|before|without)\s+\w+ing\b/i.test(before); // "…, ensuring Y" claims
+  }
+  if (bare === 'be') return /\bwill\s+be$/i.test(words.slice(-2).join(' '));
+  return !ADVISES.has(bare);
+}
+export function overclaim(text, {drafted = false} = {}) {
   for (const sentence of String(text).split(/(?<=[.!?])\s+|\n+/)) {
     if (/\?\s*$/.test(sentence)) continue;
     if (/\b(?:not|never|cannot|can't|doesn.t|isn.t|no guarantee|unverified|not yet|until)\b/i.test(sentence)) continue;
-    if (/\b(?:guarantee[sd]?|guaranteeing|ensure[sd]?|ensuring|achieve[sd]?|achieving|prove[sn]?|proving)\b.{0,90}\b(?:zero|no loss|exactly.once|100 ?%|verified|the target|availability|recovery|capacity|compliance)\b/i.test(sentence)) return 'guarantee';
-    if (/\b(?:verified|proven|validated|measured)\b.{0,60}\b(?:capacity|latency|throughput|recovery|availability|in production)\b/i.test(sentence)) return 'verified';
+    for (const m of sentence.matchAll(ENSURES)) {
+      if (!claims(sentence, m, drafted)) continue;
+      const after = sentence.slice(m.index + m[0].length).split(/[;:—–]|\s(?:but|while|whereas|although|though)\s/)[0].slice(0, 90).trimStart();
+      if (HARD.test(after) || SOFT.test(after)) return 'guarantee';
+    }
+    for (const m of sentence.matchAll(VERIFIED)) {
+      const clause = sentence.slice(0, m.index).split(/[;:—–(]/).pop(), after = sentence.slice(m.index + m[0].length);
+      if (UNPROVEN.test(clause)) continue; // "without measured evidence", "lack of validated results"
+      const asserted = /\b(?:is|are|was|were|been)\s+(?:\w+ly\s+)?$/i.test(clause) || /^\s+(?:capacity|latency|throughput|recovery|availability)\b/i.test(after);
+      if (asserted && /^.{0,60}\b(?:capacity|latency|throughput|recovery|availability|in production)\b/i.test(after)) return 'verified';
+    }
   }
   return null;
 }
@@ -451,11 +495,13 @@ export function guardReasoning(packet, result) {
   // taking or adjusting a capacity draft sized for the example, or setting a knob to one of its figures.
   const conflict = packet.objective?.conflict, example = new Set(packet.objective?.figures || []);
   for (const a of result.assessments) {
+    const item = packet.items.find(i => i.id === a.id);
     if (conflict && ['apply', 'refine'].includes(a.verdict)) {
-      const item = packet.items.find(i => i.id === a.id), sized = uniq(a.refinements.filter(r => typeof r.value === 'number').map(r => norm(r.value)).filter(n => example.has(n)));
+      const sized = uniq(a.refinements.filter(r => typeof r.value === 'number').map(r => norm(r.value)).filter(n => example.has(n)));
       if ((item?.kind === 'fix' && item.vital === 'capacity') || sized.length) a.problems.push(`It sizes for the SA Playbook’s example objective, but ${conflict.driverId} records ${conflict.text}${sized.length ? ` (${sized.join(', ')} come${sized.length === 1 ? 's' : ''} from the example)` : ''}; this project’s own objective must be recorded before sizing.`);
     }
-    const own = new Set(a.refinements.filter(r => typeof r.value === 'number').map(r => norm(r.value)));
+    const unit = key => list(item?.knobs).find(k => k.key === key)?.unit;
+    const own = new Set(a.refinements.filter(r => typeof r.value === 'number').flatMap(r => restated(r.value, unit(r.key))));
     const said = [a.headline, a.reasoning, ...a.risks, ...a.questions, ...a.refinements.map(r => r.why), ...a.proposals.flatMap(x => [x.title, x.scenario, x.consequence])].join('\n');
     const unsupported = uniq((said.match(NUMBER) || []).map(norm).filter(n => Number(n) > 12 && !known.has(n) && !own.has(n)));
     if (unsupported.length) a.problems.push(`It states ${unsupported.slice(0, 3).join(', ')}, which no reading in the packet contains.`);
@@ -465,7 +511,7 @@ export function guardReasoning(packet, result) {
     // Refined wording may carry design numbers (a backoff, a retention), but never a guaranteed outcome:
     // such a value is set aside on its own and never applied, and the rest of the advice stands.
     a.refinements = a.refinements.filter(r => {
-      const kind = typeof r.value === 'string' ? overclaim(r.value) : null;
+      const kind = typeof r.value === 'string' ? overclaim(r.value, {drafted: true}) : null;
       if (kind) (a.setAside ||= []).push({key: r.key, label: r.label, value: r.value, why: r.why, reason: kind === 'guarantee' ? 'Its wording presents the draft as guaranteeing an outcome, so it is set aside and never applied; the rest of the advice stands.' : 'Its wording presents a drafted value as verified, so it is set aside and never applied; the rest of the advice stands.'});
       return !kind;
     });

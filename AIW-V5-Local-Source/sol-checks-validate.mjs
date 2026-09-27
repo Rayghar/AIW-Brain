@@ -1,7 +1,10 @@
 // Sol's checks, as the live comparison of 27 September 2026 found they must behave
 // (release-evidence/sol-direct-comparison/ANSWER_REVIEW.md):
 // 1. threats proposed for a decision that takes none are set aside, and the rest of the advice stands;
-// 2. the guard reads a question as a question, and a guarantee in any tense ("ensuring exactly-once");
+// 2. the guard reads a question as a question, and a guarantee in any tense ("ensuring exactly-once"); after the
+//    live run on the fixes (LIVE_SOL_VS_DIRECT_AFTER_FIXES.json), it also reads advice as advice: an instruction,
+//    a purpose, a goal or missing evidence claims nothing, a drafted value is read strictly, and a refinement's
+//    own value restated in another unit is not a new number;
 // 3. a second pass that contradicts itself is recorded, not relied on: its concrete defects decide;
 // 4. the SA Playbook's example objective is named as the example everywhere, and where a design records a
 //    workload of its own, advice that sizes it for the example is withheld.
@@ -47,7 +50,7 @@ await check('1 · threats proposed for a decision that takes none are set aside;
  assert.equal(jr.proposals.length,1);assert.equal(jr.setAside,undefined);
 });
 
-await check('2 · the guard reads a question as a question, and a guarantee in any tense',async()=>{
+await check('2 · the guard reads a claim as a claim: a guarantee in any tense, not a question, an instruction, a purpose, a goal or missing evidence; a drafted value strictly; its own value in another unit',async()=>{
  assert.equal(overclaim('What is the current measured 95th percentile acknowledgement latency under peak load?'),null);
  assert.equal(overclaim('Does the plan ensure recovery within 15 minutes?'),null);
  assert.equal(overclaim('Use the submission id as the key, ensuring exactly-once processing.'),'guarantee');
@@ -55,6 +58,21 @@ await check('2 · the guard reads a question as a question, and a guarantee in a
  assert.equal(overclaim('Retries guaranteed zero loss.'),'guarantee');
  assert.equal(overclaim('An idempotency key does not ensure exactly-once processing on its own.'),null);
  assert.equal(overclaim('The latency was measured at 180 ms in production.'),'verified');
+ // Claims the live runs made, still caught.
+ for(const s of ['At least two ready replicas ensure availability during pod updates and failover.','Ensures exactly-once semantics and consistency.','Defining a minimum replica count ensures baseline availability under low load.','This will ensure zero data loss.','The measured latency is 120 ms in production.'])assert.notEqual(overclaim(s),null,s);
+ // Advice the live run on the fixes withheld, which claims nothing: an instruction, a goal, a purpose or hedge,
+ // an object that is not an outcome, missing evidence, and what a test should verify.
+ for(const s of ['Ensure clear procedures for recovery and failover to maintain availability.','No tactics from the SA Playbook are yet named or realized, and the conditions include unavailable downstream services which add complexity to achieving the target.','Applying scaling horizontally (S3) and stateless principles (S4) is indicated to achieve needed capacity.','Lifecycle management ensures the messaging infrastructure aligns with capacity growth (S14) and orderly evolution to support long-term operation.','This ensures operational and cost efficiency and appropriate capacity planning aligned to real demand rather than example data.','Without measured evidence favoring latency or operational trade-off impacts, the choice depends on business priorities.','Lack of validated test results to confirm capacity sufficiency at proposed replica counts.','Refinements should increase maxReplicas, specify scalingPolicy and ensure minReady matches availability needs.','The standby is critical for detecting failure and ensuring timely recovery.','A load test should verify that the pool achieves the target before go-live.'])assert.equal(overclaim(s),null,s);
+ // A drafted value is written into the design: an outcome it says it ensures is set aside, a purpose included.
+ const purpose='Horizontal Pod Autoscaler on CPU at 70 %, from 3 to 26 replicas, to ensure availability during the peak.';
+ assert.equal(overclaim(purpose),null);assert.equal(overclaim(purpose,{drafted:true}),'guarantee');
+ assert.equal(overclaim('Acknowledgement duration measured excluding delays caused by retries and recovery.',{drafted:true}),null,'a measurement definition is not a verified value');
+ // A refinement's own value, restated in another unit, is its own number; a new one still withholds.
+ const tp=packetFor(permits,['M:8:if-001']),t=tp.items[0];
+ assert.equal(t.knobs.find(k=>k.key==='timeoutMs')?.unit,'ms');
+ const timed=why=>guardReasoning(tp,validateReasoningOutput(raw(tp,[assessment(t,{verdict:'refine',refinements:[{key:'timeoutMs',value:30000,why}]})]),tp)).assessments[0];
+ assert.deepEqual(timed('A 30-second timeout bounds how long a caller waits.').problems,[]);
+ assert.match(timed('A 30-second timeout bounds how long a caller waits, and 47 seconds more for a retry.').problems.join(' '),/It states 47, which no reading/);
  // In an assessment: a question about a measurement no longer withholds it; an ensuring claim still does.
  const packet=packetFor(bank,['M:2:QD-003']),item=packet.items[0];
  const asked=guardReasoning(packet,validateReasoningOutput(raw(packet,[assessment(item,{questions:['What is the current measured 95th percentile acknowledgement latency under peak load?']})]),packet)).assessments[0];

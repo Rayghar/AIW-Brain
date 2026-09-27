@@ -6,7 +6,7 @@
 // so each score can be checked against the answer itself. Each assessment is scored against
 // implementation-authored expectations. The metrics are proxies: they detect structural and grounding
 // failures and disagreement with the expected class of advice; they do not certify architectural judgement.
-import {reasoningPacket,checkRecordRefinements,reasoningSchema,validateReasoningOutput,guardReasoning} from './public/brain-reasoning.js';
+import {reasoningPacket,checkRecordRefinements,reasoningSchema,validateReasoningOutput,guardReasoning,restated} from './public/brain-reasoning.js';
 import {requestReasoning,requestDirectBaseline} from './intelligence-provider.js';
 import {seedProject} from './public/requirements-domain.js';
 import {withFinalReview} from './public/review-domain.js';
@@ -69,7 +69,8 @@ export function domainProject(domain){
 }
 
 // One assessment against its case's expectations. For the Brain, a number is supported when a source it
-// cites, its draft or its own refinement holds it; for the control arm (known), when what it was given holds it.
+// cites, its draft or its own refinement holds it (in another unit too, as the guard reads it); for the control
+// arm (known), when what it was given holds it.
 export function scoreAssessment(a,packet,c,defaults={},{known:given=null}={}){
  const item=packet.items.find(i=>i.id===a.id),exp=c.expect||{},out={id:a.id,kind:item?.kind||null,verdict:a.verdict,withheld:!!a.withheld};
  if(a.withheld)return {...out,withheldReasons:reasonsOf(a.issues),issues:list(a.issues).slice(0,6)};
@@ -78,7 +79,8 @@ export function scoreAssessment(a,packet,c,defaults={},{known:given=null}={}){
  const claims=[a.headline,a.reasoning,...list(a.risks),...list(a.refinements).map(r=>r.why),...list(a.proposals).flatMap(x=>[x.title,x.scenario,x.consequence])].filter(Boolean).join('\n');
  const text=[claims,...list(a.questions)].filter(Boolean).join('\n');
  const forbidden=[...list(defaults.forbid),...list(exp.forbid)].flatMap(re=>asserted(claims,re));
- const known=new Set([...(given?[...given]:cited.flatMap(s=>numbers(s.excerpt))),...list(item?.knobs).flatMap(k=>numbers(k.value)),...list(a.refinements).flatMap(r=>numbers(r.value))]);
+ const known=new Set([...(given?[...given]:cited.flatMap(s=>numbers(s.excerpt))),...list(item?.knobs).flatMap(k=>numbers(k.value)),...list(a.refinements).flatMap(r=>numbers(r.value)),
+  ...list(a.refinements).filter(r=>typeof r.value==='number').flatMap(r=>restated(r.value,list(item?.knobs).find(k=>k.key===r.key)?.unit))]);
  const unsupported=unsupportedNumbers(text,known);
  return {...out,
   verdictAgrees:exp.verdicts?exp.verdicts.includes(a.verdict):null,
