@@ -24,6 +24,7 @@ release-evidence/rc10.73.7/*_FULLDIST.zip
 release-evidence/brain-knowledge-repository/*.zip
 release-evidence/sol-check-fixes/*.zip
 release-evidence/knowledge-four-eyes/*.zip
+release-evidence/sol-direct-comparison/*.zip
 
 # Local dependency, package-manager and browser caches.
 .npm/

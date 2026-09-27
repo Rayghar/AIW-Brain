@@ -1,0 +1,297 @@
+{
+  "schema": "aiw-test-evidence-v1",
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "package": "AIW V5 Local Source v20.3",
+  "branch": "release/aiw-v0.10.0-rc.10.73.6-sol-direct-comparison",
+  "fullRegression": {
+    "sourceCommit": "53eb9a23257524dc6a274875c449c866c4c0b6d7",
+    "command": "node release-checks.mjs",
+    "settings": {
+      "AIW_PLAYWRIGHT_MODULE": "C:\\AIW\\aiw\\v5\\node_modules\\playwright (Playwright 1.56.0), as for v20.2",
+      "AIW_REGRESSION_TIMEOUT_MS": 1500000,
+      "AIW_REGRESSION_CONCURRENCY": 2
+    },
+    "started": "2026-09-27T00:51:53Z",
+    "finished": "2026-09-27T01:02:16Z",
+    "suites": 87,
+    "passed": 87,
+    "failed": [],
+    "browserSuites": 17,
+    "report": "REGRESSION_RESULTS.json",
+    "firstAttempt": {
+      "started": "2026-09-27T00:45:33Z",
+      "finished": "2026-09-27T00:48:56Z",
+      "result": "70 of 87 passed. The 17 browser suites could not load Playwright, because AIW_PLAYWRIGHT_MODULE was not set as it was for v20.2. This was a setup error in the run, not a product failure; the run above repeats it with the v20.2 settings."
+    }
+  },
+  "solEvaluationSuite": {
+    "checks": 13,
+    "checkNames": [
+      "every held-out case builds its packet from a real reference design and runs the full reasoning path",
+      "the teaching-domain capacity drafts expose advice that takes the Playbook example objective at face value",
+      "injected faults are caught: guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements",
+      "the metrics catch what the guards let through: a wrong verdict and advice missing its expected support",
+      "false-support proxy: numbers not in the cited sources and overclaiming words are flagged",
+      "the scorer reads numbers as the guard does: a citation label is not a number, and every flag keeps its sentence",
+      "a negated or hedged guarantee passes, as in the guard; an asserted one is flagged with its sentence",
+      "the control arm asks the same model the same questions without the Brain’s packet, instructions or format of citations",
+      "the Brain’s checks run on the control arm’s answers to measure what it would withhold, and the comparison pairs every assessment",
+      "each withheld assessment is labelled by the check that raised its issue, not by the words in it",
+      "a kept report scores again to the same result without asking any model, and only while the design reads as it did",
+      "only the evaluation reaches the control arm: the application reasons through requestReasoning alone",
+      "adoption rates come from what architects did with advice in a real project, not from this harness"
+    ],
+    "status": "passed",
+    "from": "node sol-evaluation-validate.mjs on 53eb9a2; the clean extract of the package also passed it with 13 checks"
+  },
+  "cleanExtract": {
+    "installedDependencies": "none while the suites ran (no node_modules; the runtime and these suites use Node built-ins only); then npm ci --offline installed the lockfile's development tools from the local cache",
+    "node": "v24.18.0",
+    "results": [
+      {
+        "name": "check",
+        "status": "passed",
+        "seconds": 194.9
+      },
+      {
+        "name": "build",
+        "status": "passed",
+        "seconds": 10.9
+      },
+      {
+        "name": "test",
+        "status": "passed",
+        "seconds": 0.5,
+        "checkCount": 11
+      },
+      {
+        "name": "test:brain-reasoning",
+        "status": "passed",
+        "seconds": 4.7,
+        "checkCount": 8
+      },
+      {
+        "name": "test:chapter-reasoning",
+        "status": "passed",
+        "seconds": 7.9,
+        "checkCount": 9
+      },
+      {
+        "name": "test:stewardship",
+        "status": "passed",
+        "seconds": 6.1,
+        "checkCount": 8
+      },
+      {
+        "name": "test:sol-evaluation",
+        "status": "passed",
+        "seconds": 15.5,
+        "checkCount": 13
+      },
+      {
+        "name": "test:brain-ahead",
+        "status": "passed",
+        "seconds": 4.1,
+        "checkCount": 5
+      },
+      {
+        "name": "test:repository-service",
+        "status": "passed",
+        "seconds": 3.5,
+        "checkCount": 12
+      },
+      {
+        "name": "test:repository-acquire",
+        "status": "passed",
+        "seconds": 2.5,
+        "checkCount": 5
+      },
+      {
+        "name": "test:knowledge-repository",
+        "status": "passed",
+        "seconds": 4,
+        "checkCount": 4
+      },
+      {
+        "name": "test:repository-sync",
+        "status": "passed",
+        "seconds": 3.7
+      },
+      {
+        "name": "test:knowledge-ingestion",
+        "status": "passed",
+        "seconds": 1.2
+      },
+      {
+        "name": "test:local-accounts",
+        "status": "passed",
+        "seconds": 5.1,
+        "checkCount": 3
+      },
+      {
+        "name": "test:brain-chain",
+        "status": "passed",
+        "seconds": 12.2,
+        "checkCount": 4
+      },
+      {
+        "name": "evaluate:sol",
+        "status": "passed",
+        "seconds": 8
+      },
+      {
+        "name": "npm ci --offline",
+        "status": "passed",
+        "seconds": 215.8
+      }
+    ]
+  },
+  "liveRuns": [
+    {
+      "file": "LIVE_RUN_INTERRUPTED_2026-09-26.json",
+      "at": "2026-09-26T23:08:31.361Z",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "result": "BP-01 to BP-09 answered in both arms; from BP-10 every request failed as a connection interruption while the laptop, at 11% battery, lost its network.",
+      "requestFailures": {
+        "brain": 17,
+        "direct": 17
+      }
+    },
+    {
+      "file": "LIVE_SOL_VS_DIRECT.json",
+      "at": "2026-09-27T00:26:58.610Z",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "provider": "OpenAI Responses API, store:false",
+      "cases": 26,
+      "assessments": 28,
+      "requestFailures": {
+        "brain": 0,
+        "direct": 0
+      },
+      "tokens": {
+        "brain": {
+          "input": 317445,
+          "output": 19410
+        },
+        "direct": {
+          "input": 17955,
+          "output": 11325
+        }
+      }
+    },
+    {
+      "file": "LIVE_SOL_VS_DIRECT.rescored.json",
+      "at": "2026-09-27T00:39:15.613Z",
+      "note": "The same answers, scored again by this scorer; no model was asked.",
+      "summary": {
+        "brain": {
+          "withheld": {
+            "rate": 0.25,
+            "of": 28,
+            "reasons": {
+              "proposals": 3,
+              "verified": 2,
+              "second-pass": 4,
+              "guarantee": 1,
+              "number": 1
+            }
+          },
+          "verdictAgreement": {
+            "rate": 0.952,
+            "of": 21
+          },
+          "falseSupport": {
+            "rate": 0,
+            "of": 21
+          }
+        },
+        "direct": {
+          "verdictAgreement": {
+            "rate": 0.893,
+            "of": 28
+          },
+          "falseSupport": {
+            "rate": 0.036,
+            "of": 28
+          },
+          "brainChecks": {
+            "wouldWithhold": {
+              "rate": 0.607,
+              "of": 28
+            },
+            "onSubstance": {
+              "rate": 0.25,
+              "of": 28
+            },
+            "reasons": {
+              "guarantee": 5,
+              "proposals": 12,
+              "number": 4
+            }
+          }
+        },
+        "comparison": {
+          "advised": {
+            "brain": 21,
+            "direct": 28
+          },
+          "agreesWithExpected": {
+            "brain": 20,
+            "direct": 25
+          },
+          "soundAsScored": {
+            "brain": 20,
+            "direct": 23,
+            "directAndPassesBrainChecksOnSubstance": 20
+          }
+        }
+      }
+    }
+  ],
+  "keyHandling": "The sponsor supplied an env file for the purpose. For each run it was extracted to the session's temporary folder, loaded into the evaluation process with node --env-file, never displayed, and deleted after the run started or ended. The supplied zip is unchanged. The model was pinned for the runs with AIW_LLM_MODEL=gpt-4.1-mini-2025-04-14 and the endpoint left at the OpenAI default.",
+  "answerReview": {
+    "file": "ANSWER_REVIEW.md",
+    "rows": "ANSWER_REVIEW.json",
+    "reviewer": "The implementing engineer (Claude), reading every answer in the report. This is the engineer's reading, not an independent architecture review.",
+    "tally": {
+      "better": {
+        "sol": 13,
+        "direct": 8,
+        "equal": 4,
+        "neither": 3
+      },
+      "byDomain": {
+        "bank-payment": {
+          "assessments": 16,
+          "sol": 10,
+          "direct": 2,
+          "equal": 4,
+          "neither": 0
+        },
+        "teaching (service-permits, warehouse-fulfilment)": {
+          "assessments": 12,
+          "sol": 3,
+          "direct": 6,
+          "equal": 0,
+          "neither": 3
+        }
+      },
+      "sol": {
+        "right-grounded": 16,
+        "right-flawed": 1,
+        "partly-wrong": 2,
+        "wrong": 2,
+        "withheld-right-draft": 4,
+        "withheld-wrong-draft": 3
+      },
+      "direct": {
+        "right-generic": 18,
+        "plausible": 2,
+        "flawed": 2,
+        "materially-wrong": 3,
+        "wrong-verdict": 3
+      }
+    }
+  },
+  "productionAccepted": false
+}
