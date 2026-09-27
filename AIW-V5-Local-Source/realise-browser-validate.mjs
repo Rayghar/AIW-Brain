@@ -35,9 +35,10 @@ try {
   assert.equal(await count('.rz-lh.module'), 3, 'three modules as lanes');
   assert.equal(await count('.rz-card.component'), 5); assert.equal(await count('.rz-card.party'), 3);
   assert.equal(await count('.rz-card.component .rz-r'), 5, 'each component carries the responsibility it realises');
-  const stands = await page.$$eval('.rz-card.component .rz-strip', ss => ss.map(s => ({prods: s.querySelectorAll('.rz-n.prod').length, shown: s.querySelectorAll('.rz-n:not(.more)').length, more: +(s.querySelector('.rz-n.more')?.textContent.slice(1) || 0), fits: s.scrollWidth <= s.clientWidth + 1})));
+  const stands = await page.$$eval('.rz-card.component .rz-strip', ss => ss.map(s => ({prods: s.querySelectorAll('.rz-n.prod').length, open: s.querySelectorAll('button.rz-n.open').length, shown: s.querySelectorAll('.rz-n:not(.more)').length, more: +(s.querySelector('.rz-n.more')?.textContent.slice(1) || 0), fits: s.scrollWidth <= s.clientWidth + 1, tip: s.querySelector('.rz-n.open')?.title || ''})));
   assert.equal(stands.length, 5); assert.ok(stands.reduce((n, s) => n + s.shown + s.more, 0) >= 20, 'and the platform it stands on');
-  assert.ok(stands.every(s => s.prods >= 1 && s.fits), 'each names the Chapter 7 product it stands on first, with the rest behind +N, on one line');
+  assert.ok(stands.every(s => s.prods === 0 && s.open >= 1 && s.fits), 'no product is named while Chapter 7 has chosen none: the capabilities with open candidates are dashed, the rest behind +N, on one line ' + JSON.stringify(stands));
+  assert.match(stands[0].tip, /\d candidate products? in Chapter 7, none chosen/, 'and each says the choice is still open');
   assert.equal(await count('.rz-label'), 7, 'every interaction is labelled');
   assert.equal(await count('.cm-panel .cm-spec'), 0, 'nothing is selected on arrival');
   assert.match(await page.$eval('.cm-state', e => e.textContent), /5 components in 3 modules · 0 responsibilities not realised · 4 of 4 logical flows carried/);

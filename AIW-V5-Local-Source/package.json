@@ -74,6 +74,8 @@
     "test:stack-browser": "node stack-browser-validate.mjs",
     "test:responsibility": "node responsibility-validate.mjs",
     "test:responsibility-browser": "node responsibility-browser-validate.mjs",
+    "test:model-views": "node model-views-validate.mjs",
+    "test:model-views-browser": "node model-views-browser-validate.mjs",
     "test:readiness": "node readiness-validate.mjs",
     "test:validate-browser": "node validate-browser-validate.mjs",
     "test:story": "node story-validate.mjs",
