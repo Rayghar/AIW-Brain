@@ -62,3 +62,18 @@ The sponsor added one requirement: on every model and every page of every chapte
 ## Not in scope
 
 Changing the held-out expectations, independent review, and model pinning.
+
+## Added after the live runs
+
+The live runs on the fixes showed that the checks still cost right answers. Each change below was measured on the kept answers of every live run before it was committed.
+
+1. **The guard's reading.** The run on `d0fb283` withheld 11 of 28 answers. Eight of those were right drafts, withheld because the guard read advice as a claim, or read a draft's own value restated in another unit as an invented number.
+   - The guard now reads each use in its sentence.
+   - The restated value counts as the draft's own, in the guard and in the scorer.
+   - Checked against all 4,242 sentences of the four live runs; each sentence that now passes was read as advice (`5d0e67f`, `3a3ebce`).
+2. **One refinement costs only itself.** The coverage run on `4c89871` withheld two Chapter 8 assessments for one refinement each: an over-long key, and a reason claiming "ensures compliance". Such a refinement is now set aside (`3a3ebce`).
+3. **Kept evidence.**
+   - The coverage report keeps a withheld assessment's draft (`4c89871`).
+   - `--recheck` passes a kept report's answers through today's checks (`f7f563f`).
+   - The control arm's text values count as its own numbers in the scorer (`7082246`).
+4. **The final reading.** The last live run was on `4c89871`. Its kept answers were read with the final checks, and the engineer read every pair (`AFTER_FIXES_REVIEW.md`).

@@ -1,0 +1,307 @@
+{
+  "schemaVersion": "aiw-v5-local-source-package-sha256-v1",
+  "releaseId": "AIW v0.10.0-rc.10.73.6",
+  "packageLine": "AIW V5 Local Source v20.4 — Sol's checks, and Sol on every chapter, on v20.3",
+  "generatedAt": "2026-09-27T08:37:49.436Z",
+  "archive": "release-evidence/sol-checks-and-coverage/AIW-V5-Local-Source-v20.4.zip",
+  "builtWith": "git archive --format=zip 9bd6516998606a5799dfa1045dfc88e761e79981 AIW-V5-Local-Source",
+  "sourceCommit": "9bd6516998606a5799dfa1045dfc88e761e79981",
+  "sourceTree": "ee8e8a79b7d0acb270329b02e4a143b424f79de7",
+  "archiveBytes": 3354539,
+  "sha256": "c7f81b3bd9761b8631b01c9c496560968d19ede4ceac1404e4038916ed1fb18e",
+  "reproducible": true,
+  "fileCount": 503,
+  "byteIdentityWithCommit": {
+    "mismatched": [],
+    "missing": [],
+    "symlinks": []
+  },
+  "forbiddenPathCount": 0,
+  "forbiddenPaths": [],
+  "secretFindings": [],
+  "personalDataFindings": [],
+  "deltaFromV20.3": {
+    "baseSha256": "fb014b8f1bc33559bfe3bb3e317d268d54d8e4f20868f8e3c4bbe2fa30b7ed72",
+    "baseCommit": "53eb9a23257524dc6a274875c449c866c4c0b6d7",
+    "added": 4,
+    "changed": 31,
+    "removed": 0,
+    "unchanged": 468,
+    "addedPaths": [
+      "scripts/evaluate-sol-coverage.mjs",
+      "sol-checks-validate.mjs",
+      "sol-coverage-browser-validate.mjs",
+      "sol-coverage-validate.mjs"
+    ],
+    "changedPaths": [
+      "AIW-BRAIN-ARCHITECTURE.md",
+      "README.md",
+      "architecture-drafting-validate.mjs",
+      "grounding-review-validate.mjs",
+      "intelligence-provider.js",
+      "intelligence-service.js",
+      "intelligence-validate.mjs",
+      "mock-llm-provider.mjs",
+      "operations-validate.mjs",
+      "package.json",
+      "public/brain-reasoning-ui.js",
+      "public/brain-reasoning.js",
+      "public/chapter-reasoning.js",
+      "public/chapter-sol.js",
+      "public/deploy-view.js",
+      "public/desk-capacity.js",
+      "public/desk-fixes.js",
+      "public/desk-model.js",
+      "public/exchange-view.js",
+      "public/intelligence-context.js",
+      "public/intelligence-ui.js",
+      "public/platform-view.js",
+      "public/realise-view.js",
+      "public/responsibility-view.js",
+      "public/stack-view.js",
+      "public/threat-view.js",
+      "public/tradeoff-view.js",
+      "public/utility-view.js",
+      "scripts/evaluate-sol-decisions.mjs",
+      "sol-evaluation-validate.mjs",
+      "sol-evaluation.js"
+    ],
+    "removedPaths": []
+  },
+  "deltaFromV19": {
+    "suppliedSha256": "1f4876421119fd15c464049a55e5356f03cc2aeec7ed5e3d31784c1c11c79ff1",
+    "added": 42,
+    "changed": 58,
+    "removed": 0,
+    "unchanged": 403,
+    "addedPaths": [
+      ".gitattributes",
+      "KNOWLEDGE-REPOSITORY.md",
+      "brain-ahead-validate.mjs",
+      "brain-chain-validate.mjs",
+      "candidate-sets/bk-p2-20260911.json",
+      "evaluation/sol-heldout-v1.json",
+      "evidence/brain-evaluation/sol-test-double-2026-09-25.json",
+      "knowledge-repository-browser-validate.mjs",
+      "knowledge-repository-validate.mjs",
+      "knowledge-repository.js",
+      "local-accounts-validate.mjs",
+      "public/product-comparison.js",
+      "public/reasoning-record.js",
+      "public/repository-corpus-ui.js",
+      "repository-acquire-validate.mjs",
+      "repository-service-validate.mjs",
+      "repository-service/README.md",
+      "repository-service/acquire.js",
+      "repository-service/build.js",
+      "repository-service/cli.mjs",
+      "repository-service/concepts.js",
+      "repository-service/config.json",
+      "repository-service/corpus.js",
+      "repository-service/fixture.mjs",
+      "repository-service/ids.js",
+      "repository-service/manifest-stream.js",
+      "repository-service/passages.js",
+      "repository-service/reader.js",
+      "repository-service/refresh.ps1",
+      "repository-service/register-refresh-task.ps1",
+      "repository-service/server.js",
+      "repository-service/store.js",
+      "repository-service/sync.js",
+      "scripts/build-candidate-set.mjs",
+      "scripts/evaluate-sol-coverage.mjs",
+      "scripts/evaluate-sol-decisions.mjs",
+      "scripts/import-candidate-set.mjs",
+      "sol-checks-validate.mjs",
+      "sol-coverage-browser-validate.mjs",
+      "sol-coverage-validate.mjs",
+      "sol-evaluation-validate.mjs",
+      "sol-evaluation.js"
+    ],
+    "changedPaths": [
+      ".env.example",
+      "AIW-BRAIN-ARCHITECTURE.md",
+      "BRAIN-INTEGRATION-REGISTER.md",
+      "LOCAL-RUN.md",
+      "README.md",
+      "SECOND-BRAIN-STATUS.md",
+      "architecture-drafting-validate.mjs",
+      "architecture-explorer-validate.mjs",
+      "brain-integration-validate.mjs",
+      "brain-reasoning-browser-validate.mjs",
+      "brain-reasoning-validate.mjs",
+      "build.mjs",
+      "chapter-reasoning-validate.mjs",
+      "chapter-sol-browser-validate.mjs",
+      "desk-browser-validate.mjs",
+      "grounding-review-validate.mjs",
+      "intelligence-provider.js",
+      "intelligence-service.js",
+      "intelligence-validate.mjs",
+      "knowledge-design-validate.mjs",
+      "knowledge-ingestion-validate.mjs",
+      "knowledge-service.js",
+      "mock-llm-provider.mjs",
+      "operations-validate.mjs",
+      "package.json",
+      "public/brain-reasoning-ui.js",
+      "public/brain-reasoning.js",
+      "public/chapter-reasoning.js",
+      "public/chapter-sol.js",
+      "public/deploy-view.js",
+      "public/desk-capacity.js",
+      "public/desk-fixes.js",
+      "public/desk-model.js",
+      "public/desk-view.js",
+      "public/desk.css",
+      "public/exchange-view.js",
+      "public/intelligence-context.js",
+      "public/intelligence-ui.js",
+      "public/knowledge-governance.js",
+      "public/knowledge-sources-ui.js",
+      "public/knowledge-workspace-ui.js",
+      "public/knowledge-workspace.css",
+      "public/platform-view.js",
+      "public/realise-view.js",
+      "public/repository-pilot-ui.js",
+      "public/responsibility-view.js",
+      "public/review-domain.js",
+      "public/stack-view.js",
+      "public/threat-view.js",
+      "public/tradeoff-view.js",
+      "public/utility-view.js",
+      "release-checks.mjs",
+      "repository-packet.js",
+      "repository-sync.js",
+      "server.js",
+      "stewardship-browser-validate.mjs",
+      "stewardship-validate.mjs",
+      "worker.js"
+    ],
+    "removedPaths": []
+  },
+  "cleanExtract": {
+    "installedDependencies": "none while the suites ran (no node_modules; the runtime and these suites use Node built-ins only); then npm ci --offline installed the lockfile's development tools from the local cache",
+    "node": "v24.18.0",
+    "results": [
+      {
+        "name": "check",
+        "status": "passed",
+        "seconds": 213.7
+      },
+      {
+        "name": "build",
+        "status": "passed",
+        "seconds": 9.7
+      },
+      {
+        "name": "test",
+        "status": "passed",
+        "seconds": 1,
+        "checkCount": 11
+      },
+      {
+        "name": "test:brain-reasoning",
+        "status": "passed",
+        "seconds": 8.6,
+        "checkCount": 8
+      },
+      {
+        "name": "test:chapter-reasoning",
+        "status": "passed",
+        "seconds": 8.5,
+        "checkCount": 9
+      },
+      {
+        "name": "test:stewardship",
+        "status": "passed",
+        "seconds": 9.3,
+        "checkCount": 8
+      },
+      {
+        "name": "test:sol-evaluation",
+        "status": "passed",
+        "seconds": 37.6,
+        "checkCount": 14
+      },
+      {
+        "name": "test:sol-checks",
+        "status": "passed",
+        "seconds": 9.7,
+        "checkCount": 6
+      },
+      {
+        "name": "test:sol-coverage",
+        "status": "passed",
+        "seconds": 95.2,
+        "checkCount": 5
+      },
+      {
+        "name": "test:brain-ahead",
+        "status": "passed",
+        "seconds": 3.8,
+        "checkCount": 5
+      },
+      {
+        "name": "test:repository-service",
+        "status": "passed",
+        "seconds": 3.1,
+        "checkCount": 12
+      },
+      {
+        "name": "test:repository-acquire",
+        "status": "passed",
+        "seconds": 2.4,
+        "checkCount": 5
+      },
+      {
+        "name": "test:knowledge-repository",
+        "status": "passed",
+        "seconds": 3.8,
+        "checkCount": 4
+      },
+      {
+        "name": "test:repository-sync",
+        "status": "passed",
+        "seconds": 5.9
+      },
+      {
+        "name": "test:knowledge-ingestion",
+        "status": "passed",
+        "seconds": 1.3
+      },
+      {
+        "name": "test:local-accounts",
+        "status": "passed",
+        "seconds": 13,
+        "checkCount": 3
+      },
+      {
+        "name": "test:brain-chain",
+        "status": "passed",
+        "seconds": 24.2,
+        "checkCount": 4
+      },
+      {
+        "name": "evaluate:sol",
+        "status": "passed",
+        "seconds": 9.8
+      },
+      {
+        "name": "evaluate:sol:coverage",
+        "status": "passed",
+        "seconds": 6.3
+      },
+      {
+        "name": "npm ci --offline",
+        "status": "passed",
+        "seconds": 214.8
+      }
+    ]
+  },
+  "packageVerificationResult": "passed",
+  "rawRepositoryContentIncluded": false,
+  "quarantineContentIncluded": false,
+  "redistributionApproved": false,
+  "productionAccepted": false
+}

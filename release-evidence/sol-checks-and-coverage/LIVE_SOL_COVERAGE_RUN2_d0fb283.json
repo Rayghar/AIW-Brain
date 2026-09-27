@@ -1,0 +1,504 @@
+{
+  "schema": "aiw-sol-coverage-v1",
+  "at": "2026-09-27T06:25:34.189Z",
+  "mode": "live-provider",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "summary": {
+    "route2": {
+      "asked": 19,
+      "failed": 0,
+      "shown": 16,
+      "withheld": 3,
+      "rendered": 19,
+      "chapters": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "route1": {
+      "asked": 14,
+      "failed": 0,
+      "accepted": 14,
+      "fallback": 0,
+      "rendered": 14,
+      "chapters": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "modes": [
+        "design",
+        "mind",
+        "author",
+        "challenge"
+      ]
+    },
+    "tokens": {
+      "input": 469024,
+      "output": 33833
+    }
+  },
+  "route2": [
+    {
+      "project": "bank",
+      "chapter": 2,
+      "what": "quality driver",
+      "selection": "QD-001",
+      "id": "M:2:QD-001",
+      "kind": "record",
+      "ms": 10188,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine QD-001 to confirm target value and strengthen idempotency controls for critical integrity",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 2,
+      "what": "What if move",
+      "selection": "QD-001",
+      "id": "M:2:QD-001|whatif",
+      "kind": "whatif",
+      "ms": 7957,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Relaxing QD-001 to allow 2 extra debits per instruction requires business judgement on integrity risk tolerance",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 3,
+      "what": "decision",
+      "selection": "ADR-001",
+      "id": "D:ADR-001",
+      "kind": "decision",
+      "ms": 6782,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Customer payment acknowledgement timing requires business trade-off judgement between synchronous and asynchronous approaches",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 4,
+      "what": "responsibility",
+      "selection": "api",
+      "id": "M:4:api",
+      "kind": "record",
+      "ms": 15230,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Purpose and boundary are sound but critical capacity and security deficiencies require addressing, possibly refining boundary and purpose for clarity.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 5,
+      "what": "component",
+      "selection": "api-pod",
+      "id": "M:5:api-pod",
+      "kind": "record",
+      "ms": 10015,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Payment service design foundations sound but critical capacity, integrity, protection and observability gaps require refinement.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 6,
+      "what": "platform capability",
+      "selection": "tc-001",
+      "id": "M:6:tc-001",
+      "kind": "record",
+      "ms": 9452,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine TC-001 to address critical capacity, integrity, protection, observability gaps and add continuity plans",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 7,
+      "what": "realisation, selected by an option",
+      "selection": "tr-001/TO-001",
+      "id": "M:7:tr-001",
+      "kind": "record",
+      "ms": 9922,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "TR-001 lacks operational and resilience plans, capacity assumptions, and a preferred Kubernetes option with justification.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 8,
+      "what": "contract",
+      "selection": "rest",
+      "id": "M:8:rest",
+      "kind": "record",
+      "ms": 6186,
+      "shown": true,
+      "verdict": "reconsider",
+      "headline": "IF-001 lacks essential integrity and protection controls, requiring design reconsideration and definition of key policies and idempotency.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 8,
+      "what": "data definition",
+      "selection": "instruction",
+      "id": "M:8:instruction",
+      "kind": "record",
+      "ms": 8828,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Protection and retention policies must be explicitly defined for DAT-001 to uphold integrity and confidentiality",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "threat",
+      "selection": "thr-001",
+      "id": "M:9:thr-001",
+      "kind": "record",
+      "ms": 6654,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "THR-001 is a critical security risk currently uncovered; coverage requires business judgment on residual risk, control responsibility, and treatment plans",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "control",
+      "selection": "oauth",
+      "id": "M:9:oauth",
+      "kind": "record",
+      "ms": 7741,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "SEC-001 identity & consent control needs defined enforcement and operational specifics",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "exposure of a component",
+      "selection": "api-pod",
+      "id": "M:9:api-pod",
+      "kind": "exposure",
+      "ms": 8200,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Critical security threats remain uncovered for APP-001 Payment service, requiring explicit risk evaluation and mitigation planning",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "exposure, selected by a contract's link",
+      "selection": "C:rest",
+      "id": "M:9:rest",
+      "kind": "exposure",
+      "ms": 7139,
+      "shown": true,
+      "verdict": "reconsider",
+      "headline": "Payment initiation contract lacks required security controls and policies to cover critical threats",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 10,
+      "what": "runtime plan",
+      "selection": "run-001",
+      "id": "M:10:run-001",
+      "kind": "record",
+      "ms": 9920,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It presents a mechanism or draft as guaranteeing a verified outcome."
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk fix",
+      "selection": "F:availability:run-001",
+      "id": "F:availability:run-001",
+      "kind": "fix",
+      "ms": 7460,
+      "shown": true,
+      "verdict": "apply",
+      "headline": "Running RUN-001 in 2 zones with 1 active replica per zone is a sound design to improve availability",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk switch point",
+      "selection": "F:switch:tr-002",
+      "id": "F:switch:tr-002",
+      "kind": "switch",
+      "ms": 6651,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine context wording to clarify product choice rationale and write scaling strategies",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk judgement",
+      "selection": "J:security:run-002",
+      "id": "J:security:run-002",
+      "kind": "judgement",
+      "ms": 10040,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Protection coverage requires architect's assessment of possible threats from component interfaces and flows",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "service-permits",
+      "chapter": 11,
+      "what": "capacity fix sized for the Playbook example",
+      "selection": "F:capacity:run-001",
+      "id": "F:capacity:run-001",
+      "kind": "fix",
+      "ms": 7430,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It sizes for the SA Playbook’s example objective, but QD-001 records 10 applications a second; this project’s own objective must be recorded before sizing."
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "service-permits",
+      "chapter": 10,
+      "what": "runtime plan beside the Playbook example",
+      "selection": "run-001",
+      "id": "M:10:run-001",
+      "kind": "record",
+      "ms": 8067,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It sizes for the SA Playbook’s example objective, but QD-001 records 10 applications a second (23 comes from the example); this project’s own objective must be recorded before sizing."
+      ],
+      "rendered": true,
+      "contradictions": 0
+    }
+  ],
+  "route1": [
+    {
+      "chapter": 4,
+      "mode": "design",
+      "objectId": "initiate",
+      "title": "Initiate payment",
+      "ms": 8226,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Initiate payment",
+      "rendered": true
+    },
+    {
+      "chapter": 5,
+      "mode": "design",
+      "objectId": "api-pod",
+      "title": "Payment service",
+      "ms": 12975,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment service design explanation and next decision",
+      "rendered": true
+    },
+    {
+      "chapter": 6,
+      "mode": "design",
+      "objectId": "tc-001",
+      "title": "Application execution",
+      "ms": 10481,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Application execution",
+      "rendered": true
+    },
+    {
+      "chapter": 7,
+      "mode": "design",
+      "objectId": "tr-001",
+      "title": "Application execution realization",
+      "ms": 14111,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Application execution realization",
+      "rendered": true
+    },
+    {
+      "chapter": 8,
+      "mode": "design",
+      "objectId": "ext-channel",
+      "title": "Initiating channel",
+      "ms": 5803,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Initiating channel",
+      "rendered": true
+    },
+    {
+      "chapter": 9,
+      "mode": "design",
+      "objectId": "oauth",
+      "title": "Identity & consent",
+      "ms": 7229,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Identity & consent",
+      "rendered": true
+    },
+    {
+      "chapter": 10,
+      "mode": "design",
+      "objectId": "env-001",
+      "title": "Payment production design",
+      "ms": 5700,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment production design",
+      "rendered": true
+    },
+    {
+      "chapter": 1,
+      "mode": "design",
+      "objectId": "OUT-001",
+      "title": "A payment with a known outcome",
+      "ms": 7955,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "A payment with a known outcome",
+      "rendered": true
+    },
+    {
+      "chapter": 2,
+      "mode": "design",
+      "objectId": "QD-001",
+      "title": "Preserve one financial effect",
+      "ms": 13896,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Preserve one financial effect",
+      "rendered": true
+    },
+    {
+      "chapter": 3,
+      "mode": "design",
+      "objectId": "ADR-001",
+      "title": "When should the customer receive a payment acknowledgement?",
+      "ms": 12628,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "When should the customer receive a payment acknowledgement?",
+      "rendered": true
+    },
+    {
+      "chapter": 2,
+      "mode": "mind",
+      "objectId": "QD-001",
+      "title": "Preserve one financial effect",
+      "ms": 13346,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Explain QD-001: Preserve one financial effect",
+      "rendered": true
+    },
+    {
+      "chapter": 1,
+      "mode": "author",
+      "objectId": "OUT-001",
+      "title": "A payment with a known outcome",
+      "ms": 8055,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "A payment with a known outcome",
+      "rendered": true
+    },
+    {
+      "chapter": 8,
+      "mode": "challenge",
+      "objectId": "ext-channel",
+      "title": "Initiating channel",
+      "ms": 9084,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Conflict analysis for 'Initiating channel' sources",
+      "rendered": true
+    },
+    {
+      "chapter": 11,
+      "mode": "design",
+      "objectId": "api-pod",
+      "title": "Payment service",
+      "ms": 9327,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment service design explanation and architect decision context",
+      "rendered": true
+    }
+  ],
+  "limitations": [
+    "One target of each kind per chapter, from the reference designs; not every record.",
+    "A withheld assessment is displayed as withheld: the architect sees that Sol's advice did not pass the checks, and the reading stands.",
+    "A panel response that fails its source check is displayed as structured guidance from the reviewed method, not as Sol's response."
+  ]
+}

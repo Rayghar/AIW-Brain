@@ -1,0 +1,27 @@
+{
+  "schema": "aiw-rendered-coverage-v1",
+  "suite": "npm run test:sol-coverage-browser (sol-coverage-browser-validate.mjs)",
+  "commit": "9bd6516",
+  "at": "2026-09-27T08:30:18.926Z",
+  "browser": "Playwright 1.56.0 (AIW_PLAYWRIGHT_MODULE, as for the regression), test double of the provider",
+  "passed": 5,
+  "checks": [
+    "Chapters 4, 5 and 6: a record selected in its chapter model is read as that chapter's reading, assessed by Sol and displayed beside the model; where the second pass contradicts itself, the advice is shown and says its flag was not relied on",
+    "a record selected from another chapter's model is read as its own chapter's reading (no driver is drawn in Chapter 4 of this design; covered by the model check)",
+    "every element Chapters 4 to 10 draw, in each view, has Sol in its companion: 88 to ask about, 7 assessed, 7 to explain, 35 only drawn and saying so",
+    "a Chapter 7 option offers Sol on its realisation; no view of this design draws a contract's link as its own selection, and the link mapping is covered by the model check",
+    "no page errors"
+  ],
+  "sweep": {
+    "chapters": "4 to 10",
+    "elements": 137,
+    "toAskAbout": 88,
+    "assessed": 7,
+    "toExplain": 7,
+    "onlyDrawnAndSayingSo": 35
+  },
+  "coveredByTheModelCheckInstead": [
+    "a driver read from another chapter: no driver is drawn in Chapter 4 of this design",
+    "a contract's link as its own selection: no view of this design draws one"
+  ]
+}

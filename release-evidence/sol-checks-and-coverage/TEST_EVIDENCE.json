@@ -1,0 +1,691 @@
+{
+  "schema": "aiw-test-evidence-v1",
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "package": "AIW V5 Local Source v20.4",
+  "branch": "release/aiw-v0.10.0-rc.10.73.6-sol-checks-and-coverage",
+  "fullRegression": {
+    "sourceCommit": "f7f563f13c3780e78b30153720349062245757ba",
+    "command": "node release-checks.mjs",
+    "settings": {
+      "AIW_PLAYWRIGHT_MODULE": "C:\\AIW\\aiw\\v5\\node_modules\\playwright (Playwright 1.56.0), as for v20.2 and v20.3",
+      "AIW_REGRESSION_TIMEOUT_MS": 1500000,
+      "AIW_REGRESSION_CONCURRENCY": 2
+    },
+    "started": "2026-09-27T07:32:00Z",
+    "finished": "2026-09-27T08:24:12Z",
+    "suites": 90,
+    "passed": 90,
+    "failed": [],
+    "browserSuites": 18,
+    "report": "REGRESSION_RESULTS.json",
+    "earlierRuns": [
+      {
+        "file": "REGRESSION_RESULTS_54ab9da.json",
+        "commit": "54ab9da",
+        "suites": 90,
+        "passed": 90
+      },
+      {
+        "file": "REGRESSION_RESULTS_d0fb283.json",
+        "commit": "d0fb283",
+        "suites": 90,
+        "passed": 90
+      }
+    ],
+    "sourceChangedSince": {
+      "toPackageCommit": "9bd6516998606a5799dfa1045dfc88e761e79981",
+      "files": [
+        "AIW-V5-Local-Source/AIW-BRAIN-ARCHITECTURE.md",
+        "AIW-V5-Local-Source/README.md",
+        "AIW-V5-Local-Source/sol-evaluation-validate.mjs",
+        "AIW-V5-Local-Source/sol-evaluation.js"
+      ],
+      "covered": "The evaluation scorer and its suite, and documentation; test:sol-evaluation passes from the clean extract of the package."
+    }
+  },
+  "newSuites": {
+    "test:sol-checks": {
+      "checks": 6,
+      "from": "the clean extract of the package"
+    },
+    "test:sol-coverage": {
+      "checks": 5,
+      "from": "the clean extract of the package"
+    },
+    "test:sol-evaluation": {
+      "checks": 14,
+      "from": "the clean extract of the package"
+    }
+  },
+  "cleanExtract": {
+    "installedDependencies": "none while the suites ran (no node_modules; the runtime and these suites use Node built-ins only); then npm ci --offline installed the lockfile's development tools from the local cache",
+    "node": "v24.18.0",
+    "results": [
+      {
+        "name": "check",
+        "status": "passed",
+        "seconds": 213.7
+      },
+      {
+        "name": "build",
+        "status": "passed",
+        "seconds": 9.7
+      },
+      {
+        "name": "test",
+        "status": "passed",
+        "seconds": 1,
+        "checkCount": 11
+      },
+      {
+        "name": "test:brain-reasoning",
+        "status": "passed",
+        "seconds": 8.6,
+        "checkCount": 8
+      },
+      {
+        "name": "test:chapter-reasoning",
+        "status": "passed",
+        "seconds": 8.5,
+        "checkCount": 9
+      },
+      {
+        "name": "test:stewardship",
+        "status": "passed",
+        "seconds": 9.3,
+        "checkCount": 8
+      },
+      {
+        "name": "test:sol-evaluation",
+        "status": "passed",
+        "seconds": 37.6,
+        "checkCount": 14
+      },
+      {
+        "name": "test:sol-checks",
+        "status": "passed",
+        "seconds": 9.7,
+        "checkCount": 6
+      },
+      {
+        "name": "test:sol-coverage",
+        "status": "passed",
+        "seconds": 95.2,
+        "checkCount": 5
+      },
+      {
+        "name": "test:brain-ahead",
+        "status": "passed",
+        "seconds": 3.8,
+        "checkCount": 5
+      },
+      {
+        "name": "test:repository-service",
+        "status": "passed",
+        "seconds": 3.1,
+        "checkCount": 12
+      },
+      {
+        "name": "test:repository-acquire",
+        "status": "passed",
+        "seconds": 2.4,
+        "checkCount": 5
+      },
+      {
+        "name": "test:knowledge-repository",
+        "status": "passed",
+        "seconds": 3.8,
+        "checkCount": 4
+      },
+      {
+        "name": "test:repository-sync",
+        "status": "passed",
+        "seconds": 5.9
+      },
+      {
+        "name": "test:knowledge-ingestion",
+        "status": "passed",
+        "seconds": 1.3
+      },
+      {
+        "name": "test:local-accounts",
+        "status": "passed",
+        "seconds": 13,
+        "checkCount": 3
+      },
+      {
+        "name": "test:brain-chain",
+        "status": "passed",
+        "seconds": 24.2,
+        "checkCount": 4
+      },
+      {
+        "name": "evaluate:sol",
+        "status": "passed",
+        "seconds": 9.8
+      },
+      {
+        "name": "evaluate:sol:coverage",
+        "status": "passed",
+        "seconds": 6.3
+      },
+      {
+        "name": "npm ci --offline",
+        "status": "passed",
+        "seconds": 214.8
+      }
+    ]
+  },
+  "renderedCoverage": {
+    "file": "RENDERED_COVERAGE.json",
+    "commit": "9bd6516",
+    "passed": 5,
+    "sweep": {
+      "chapters": "4 to 10",
+      "elements": 137,
+      "toAskAbout": 88,
+      "assessed": 7,
+      "toExplain": 7,
+      "onlyDrawnAndSayingSo": 35
+    },
+    "coveredByTheModelCheckInstead": [
+      "a driver read from another chapter: no driver is drawn in Chapter 4 of this design",
+      "a contract's link as its own selection: no view of this design draws one"
+    ],
+    "checks": [
+      "Chapters 4, 5 and 6: a record selected in its chapter model is read as that chapter's reading, assessed by Sol and displayed beside the model; where the second pass contradicts itself, the advice is shown and says its flag was not relied on",
+      "a record selected from another chapter's model is read as its own chapter's reading (no driver is drawn in Chapter 4 of this design; covered by the model check)",
+      "every element Chapters 4 to 10 draw, in each view, has Sol in its companion: 88 to ask about, 7 assessed, 7 to explain, 35 only drawn and saying so",
+      "a Chapter 7 option offers Sol on its realisation; no view of this design draws a contract's link as its own selection, and the link mapping is covered by the model check",
+      "no page errors"
+    ]
+  },
+  "liveRuns": {
+    "coverage": [
+      {
+        "file": "LIVE_SOL_COVERAGE_RUN1_54ab9da.json",
+        "commit": "54ab9da",
+        "at": "2026-09-27T02:55:17.524Z",
+        "model": "gpt-4.1-mini-2025-04-14",
+        "summary": {
+          "route2": {
+            "asked": 19,
+            "failed": 0,
+            "shown": 15,
+            "withheld": 4,
+            "rendered": 19,
+            "chapters": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ]
+          },
+          "route1": {
+            "asked": 14,
+            "failed": 3,
+            "accepted": 11,
+            "fallback": 0,
+            "rendered": 11,
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "modes": [
+              "design",
+              "mind",
+              "author",
+              "challenge"
+            ]
+          },
+          "tokens": {
+            "input": 421835,
+            "output": 31034
+          }
+        }
+      },
+      {
+        "file": "LIVE_SOL_COVERAGE_RUN2_d0fb283.json",
+        "commit": "d0fb283",
+        "at": "2026-09-27T06:25:34.189Z",
+        "model": "gpt-4.1-mini-2025-04-14",
+        "summary": {
+          "route2": {
+            "asked": 19,
+            "failed": 0,
+            "shown": 16,
+            "withheld": 3,
+            "rendered": 19,
+            "chapters": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ]
+          },
+          "route1": {
+            "asked": 14,
+            "failed": 0,
+            "accepted": 14,
+            "fallback": 0,
+            "rendered": 14,
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "modes": [
+              "design",
+              "mind",
+              "author",
+              "challenge"
+            ]
+          },
+          "tokens": {
+            "input": 469024,
+            "output": 33833
+          }
+        }
+      },
+      {
+        "file": "LIVE_SOL_COVERAGE.json",
+        "commit": "4c89871",
+        "at": "2026-09-27T07:10:32.171Z",
+        "model": "gpt-4.1-mini-2025-04-14",
+        "summary": {
+          "route2": {
+            "asked": 19,
+            "failed": 0,
+            "shown": 14,
+            "withheld": 5,
+            "rendered": 19,
+            "chapters": [
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ]
+          },
+          "route1": {
+            "asked": 14,
+            "failed": 0,
+            "accepted": 13,
+            "fallback": 1,
+            "rendered": 14,
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11
+            ],
+            "modes": [
+              "design",
+              "mind",
+              "author",
+              "challenge"
+            ]
+          },
+          "tokens": {
+            "input": 469768,
+            "output": 35963
+          }
+        }
+      }
+    ],
+    "comparison": [
+      {
+        "file": "LIVE_SOL_VS_DIRECT_RUN1_54ab9da.json",
+        "commit": "54ab9da",
+        "at": "2026-09-27T03:00:28.185Z",
+        "model": "gpt-4.1-mini-2025-04-14",
+        "cases": 26,
+        "assessments": 28,
+        "requestFailures": {
+          "brain": 0,
+          "direct": 0
+        },
+        "tokens": {
+          "brain": {
+            "input": 322926,
+            "output": 24218
+          },
+          "direct": {
+            "input": 17971,
+            "output": 11836
+          }
+        },
+        "asRun": {
+          "withheld": {
+            "rate": 0.286,
+            "of": 28,
+            "reasons": {
+              "verdict": 1,
+              "second-pass": 3,
+              "example-objective": 4,
+              "guarantee": 2,
+              "verified": 1,
+              "refinement": 1,
+              "number": 1
+            }
+          },
+          "verdictAgreement": {
+            "rate": 1,
+            "of": 20
+          }
+        },
+        "recheckedWithFinalChecks": {
+          "file": "LIVE_SOL_VS_DIRECT_RUN1_54ab9da.rechecked.json",
+          "withheld": {
+            "rate": 0.286,
+            "of": 28,
+            "reasons": {
+              "verdict": 1,
+              "second-pass": 3,
+              "example-objective": 4,
+              "refinement": 1,
+              "number": 1
+            }
+          },
+          "verdictAgreement": {
+            "rate": 1,
+            "of": 20
+          },
+          "falseSupport": {
+            "rate": 0.05,
+            "of": 20
+          },
+          "direct": {
+            "verdictAgreement": {
+              "rate": 0.893,
+              "of": 28
+            },
+            "falseSupport": {
+              "rate": 0.071,
+              "of": 28
+            },
+            "brainChecks": {
+              "wouldWithhold": {
+                "rate": 0.143,
+                "of": 28
+              },
+              "onSubstance": {
+                "rate": 0.107,
+                "of": 28
+              },
+              "reasons": {
+                "verdict": 1,
+                "example-objective": 2,
+                "number": 1
+              }
+            }
+          },
+          "soundAsScored": {
+            "brain": 19,
+            "direct": 23,
+            "directAndPassesBrainChecksOnSubstance": 22
+          }
+        },
+        "note": "Before the second pass stopped seeing the guard’s own findings; its three second-pass withholdings stand in the recheck."
+      },
+      {
+        "file": "LIVE_SOL_VS_DIRECT_RUN2_d0fb283.json",
+        "commit": "d0fb283",
+        "at": "2026-09-27T06:30:53.635Z",
+        "model": "gpt-4.1-mini-2025-04-14",
+        "cases": 26,
+        "assessments": 28,
+        "requestFailures": {
+          "brain": 0,
+          "direct": 0
+        },
+        "tokens": {
+          "brain": {
+            "input": 323613,
+            "output": 24830
+          },
+          "direct": {
+            "input": 17971,
+            "output": 11694
+          }
+        },
+        "asRun": {
+          "withheld": {
+            "rate": 0.393,
+            "of": 28,
+            "reasons": {
+              "verdict": 1,
+              "guarantee": 5,
+              "number": 3,
+              "verified": 1,
+              "example-objective": 3
+            }
+          },
+          "verdictAgreement": {
+            "rate": 1,
+            "of": 17
+          }
+        },
+        "recheckedWithFinalChecks": {
+          "file": "LIVE_SOL_VS_DIRECT_RUN2_d0fb283.rechecked.json",
+          "withheld": {
+            "rate": 0.179,
+            "of": 28,
+            "reasons": {
+              "verdict": 1,
+              "number": 1,
+              "example-objective": 3
+            }
+          },
+          "verdictAgreement": {
+            "rate": 1,
+            "of": 23
+          },
+          "falseSupport": {
+            "rate": 0.087,
+            "of": 23
+          },
+          "direct": {
+            "verdictAgreement": {
+              "rate": 0.893,
+              "of": 28
+            },
+            "falseSupport": {
+              "rate": 0.214,
+              "of": 28
+            },
+            "brainChecks": {
+              "wouldWithhold": {
+                "rate": 0.179,
+                "of": 28
+              },
+              "onSubstance": {
+                "rate": 0.179,
+                "of": 28
+              },
+              "reasons": {
+                "number": 2,
+                "guarantee": 1,
+                "example-objective": 2
+              }
+            }
+          },
+          "soundAsScored": {
+            "brain": 21,
+            "direct": 19,
+            "directAndPassesBrainChecksOnSubstance": 18
+          }
+        }
+      },
+      {
+        "file": "LIVE_SOL_VS_DIRECT_AFTER_FIXES.json",
+        "commit": "4c89871",
+        "at": "2026-09-27T07:16:03.234Z",
+        "model": "gpt-4.1-mini-2025-04-14",
+        "cases": 26,
+        "assessments": 28,
+        "requestFailures": {
+          "brain": 0,
+          "direct": 0
+        },
+        "tokens": {
+          "brain": {
+            "input": 322706,
+            "output": 23687
+          },
+          "direct": {
+            "input": 17971,
+            "output": 11585
+          }
+        },
+        "asRun": {
+          "withheld": {
+            "rate": 0.179,
+            "of": 28,
+            "reasons": {
+              "guarantee": 2,
+              "example-objective": 4
+            }
+          },
+          "verdictAgreement": {
+            "rate": 1,
+            "of": 23
+          }
+        },
+        "recheckedWithFinalChecks": {
+          "file": "LIVE_SOL_VS_DIRECT_AFTER_FIXES.rechecked.json",
+          "withheld": {
+            "rate": 0.143,
+            "of": 28,
+            "reasons": {
+              "example-objective": 4
+            }
+          },
+          "verdictAgreement": {
+            "rate": 1,
+            "of": 24
+          },
+          "falseSupport": {
+            "rate": 0.083,
+            "of": 24
+          },
+          "direct": {
+            "verdictAgreement": {
+              "rate": 0.929,
+              "of": 28
+            },
+            "falseSupport": {
+              "rate": 0.214,
+              "of": 28
+            },
+            "brainChecks": {
+              "wouldWithhold": {
+                "rate": 0.179,
+                "of": 28
+              },
+              "onSubstance": {
+                "rate": 0.179,
+                "of": 28
+              },
+              "reasons": {
+                "guarantee": 1,
+                "number": 2,
+                "example-objective": 2
+              }
+            }
+          },
+          "soundAsScored": {
+            "brain": 22,
+            "direct": 21,
+            "directAndPassesBrainChecksOnSubstance": 19
+          }
+        }
+      }
+    ]
+  },
+  "keyHandling": "The sponsor supplied an env file for the purpose. For each run it was extracted to the session's temporary folder, loaded into the evaluation process with node --env-file, never displayed, and deleted once the process had started and again when the run ended. The supplied zip is unchanged. The model was pinned with AIW_LLM_MODEL=gpt-4.1-mini-2025-04-14 and the endpoint left at the OpenAI default.",
+  "answerReview": {
+    "file": "AFTER_FIXES_REVIEW.md",
+    "rows": "AFTER_FIXES_REVIEW.json",
+    "reviewer": "The implementing engineer (Claude), reading every answer in the report. This is the engineer's reading, not an independent architecture review.",
+    "tally": {
+      "better": {
+        "sol": 17,
+        "direct": 3,
+        "equal": 8,
+        "neither": 0
+      },
+      "byDomain": {
+        "bank-payment": {
+          "assessments": 16,
+          "sol": 11,
+          "direct": 0,
+          "equal": 5,
+          "neither": 0
+        },
+        "teaching (service-permits, warehouse-fulfilment)": {
+          "assessments": 12,
+          "sol": 6,
+          "direct": 3,
+          "equal": 3,
+          "neither": 0
+        }
+      },
+      "sol": {
+        "right-grounded": 16,
+        "right-flawed": 5,
+        "partly-wrong": 3,
+        "withheld-wrong-draft": 4
+      },
+      "direct": {
+        "right-generic": 16,
+        "plausible": 5,
+        "flawed": 4,
+        "materially-wrong": 2,
+        "wrong-verdict": 1
+      }
+    }
+  },
+  "productionAccepted": false
+}

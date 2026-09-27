@@ -1,0 +1,650 @@
+{
+  "schema": "aiw-sol-coverage-v1",
+  "at": "2026-09-27T07:10:32.171Z",
+  "mode": "live-provider",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "summary": {
+    "route2": {
+      "asked": 19,
+      "failed": 0,
+      "shown": 14,
+      "withheld": 5,
+      "rendered": 19,
+      "chapters": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "route1": {
+      "asked": 14,
+      "failed": 0,
+      "accepted": 13,
+      "fallback": 1,
+      "rendered": 14,
+      "chapters": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "modes": [
+        "design",
+        "mind",
+        "author",
+        "challenge"
+      ]
+    },
+    "tokens": {
+      "input": 469768,
+      "output": 35963
+    }
+  },
+  "route2": [
+    {
+      "project": "bank",
+      "chapter": 2,
+      "what": "quality driver",
+      "selection": "QD-001",
+      "id": "M:2:QD-001",
+      "kind": "record",
+      "ms": 11409,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Preserve one financial effect QD-001 is critical and well stated but lacks confirmed target and current critical gaps in idempotency handling.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 2,
+      "what": "What if move",
+      "selection": "QD-001",
+      "id": "M:2:QD-001|whatif",
+      "kind": "whatif",
+      "ms": 7178,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Loosening the 'at most 0 extra debits' target to allow 2 impacts financial integrity critically and requires business judgement",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 3,
+      "what": "decision",
+      "selection": "ADR-001",
+      "id": "D:ADR-001",
+      "kind": "decision",
+      "ms": 7370,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Choose between synchronous acknowledgement and asynchronous durable handoff based on priority tradeoffs in availability, latency, and traceability",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 4,
+      "what": "responsibility",
+      "selection": "api",
+      "id": "M:4:api",
+      "kind": "record",
+      "ms": 11957,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine LR-001 Payment API to address critical operational deficiencies while purpose and boundary stand",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 5,
+      "what": "component",
+      "selection": "api-pod",
+      "id": "M:5:api-pod",
+      "kind": "record",
+      "ms": 12444,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "APP-001 Payment service concept is sound but critical scaling, integrity, protection, and observability controls are incomplete and need explicit confirmation and enhancement.",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 6,
+      "what": "platform capability",
+      "selection": "tc-001",
+      "id": "M:6:tc-001",
+      "kind": "record",
+      "ms": 9309,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine TC-001 to explicitly address capacity shortfall, integrity, protection, observability, and recovery plans.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 7,
+      "what": "realisation, selected by an option",
+      "selection": "tr-001/TO-001",
+      "id": "M:7:tr-001",
+      "kind": "record",
+      "ms": 8451,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "TR-001 lacks operational, resilience, access, data, interface, and lifecycle plans and no preferred option is selected; refinement needed",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 8,
+      "what": "contract",
+      "selection": "rest",
+      "id": "M:8:rest",
+      "kind": "record",
+      "ms": 9273,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "Idempotency key: its wording is longer than the field's 120 characters."
+      ],
+      "withheldDraft": {
+        "verdict": "refine",
+        "headline": "Refine payment initiation contract to define timeout and retry policies, idempotency key, and duplicate handling to secure integrity and protection",
+        "reasoning": "The current IF-001 contract has essential missing definitions: timeoutMs, timeoutPolicy, retryPolicy, failurePolicy, idempotencyKey, and duplicatePolicy are all unspecified (S1). This leads to critical integrity vital and protection vital failures, risking multiple financial debits from repeated requests and unauthorized operations (S1). Relevant quality drivers (QD-001 for single effect, QD-005 for authorization rejection, QD-003 for acknowledgement timing) set explicit targets that these knobs must support (S2,S4,S5). Without defined timeout and retries, calls may hang or repeat unpredictably, causing inconsistency (S1). To meet these quality needs, the contract must specify a reasonable timeout (e.g., up to a few seconds), a retry policy with limits, an idempotency key for deduplication, and precise duplicate request handling (S1).",
+        "risks": [
+          "Repeated payment effect due to missing idempotency key and duplicate policy.",
+          "Unauthorized payments possible without caller authority enforcement and monitoring.",
+          "Indefinite blocking without timeout specifications hurting availability.",
+          "Unrestricted retries increase risk of repeated or conflicting effects."
+        ],
+        "refinements": [
+          {
+            "key": "timeoutMs",
+            "value": 2000,
+            "why": "2 seconds timeout aligns with performance target QD-003 and typical user expectations for payment acknowledgement (S4)."
+          },
+          {
+            "key": "timeoutPolicy",
+            "value": "On timeout, return an explicit timeout error to caller; do not retry automatically to avoid duplicate effects; log timeout events for monitoring.",
+            "why": "Explicit timeout handling prevents indefinite waits and uncontrolled retries, supporting availability and integrity (S1,S3)."
+          },
+          {
+            "key": "retryPolicy",
+            "value": "Allow up to 2 automatic retries on transient network failures only, spaced by exponential backoff to 1 second; manual retries require idempotency key usage.",
+            "why": "Limited retries balance availability desires and integrity risk, conforming to recorded absence of retry policy (S1,S3)."
+          },
+          {
+            "key": "failurePolicy",
+            "value": "On failure, return descriptive error including cause; no automatic retry unless caller initiates; failures due to authorization are rejected immediately.",
+            "why": "Clear failure policy supports operational visibility and security goal QD-005 (S1,S5)."
+          },
+          {
+            "key": "duplicatePolicy",
+            "value": "Duplicate requests identified by idempotency key are acknowledged with same prior response without reprocessing; duplicates logged for audit.",
+            "why": "Explicit duplicate handling prevents re-execution of payments, crucial to preserve integrity and meet QD-001 (S1,S2)."
+          }
+        ]
+      },
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 8,
+      "what": "data definition",
+      "selection": "instruction",
+      "id": "M:8:instruction",
+      "kind": "record",
+      "ms": 9100,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It presents a mechanism or draft as guaranteeing a verified outcome."
+      ],
+      "withheldDraft": {
+        "verdict": "refine",
+        "headline": "Refine payment instruction protections and retention to cover critical integrity and confidentiality risks",
+        "reasoning": "The payment instruction data record is currently missing key protection and retention policies, which is flagged as critical in the Chapter 8 reading (S1). The vital integrity is critically weak because the data does not enforce idempotency keys or duplicate request policies, risking repeated payment effects that violate the financial integrity quality driver QD-001 (S2). Also, the lack of any protection leaves open the critical threats THR-001 (unauthorized payment) and THR-003 (data leakage), showing no coverage on protection controls (S1). Chapter 8 errors require classifying the data with explicit access, masking, and storage controls and defining retention and deletion policies, avoiding assumptions about legal durations (S1). The SA Playbook (S6,S7,S8) suggests limiting access, validating inputs, and detecting intrusions—all relevant controls to mitigate these risks. Therefore, the draft's protection knob should specify these controls, minimal access regimes, encryption or masking of sensitive fields, input validation requirements, and monitoring/detection mechanisms. The retentionPolicy knob should specify retention durations, deletion procedures, legal hold management, and role responsibilities. This refinement aligns the record with both Chapter 8 compliance and security quality drivers. Further evidence or decision on the exact retention period and masking techniques should be collected from the business and legal teams to complete the policy. The existing secure communication proxy pattern (S9) and layering (S11) do not replace direct protection of this data record itself.",
+        "risks": [
+          "Duplicate payment effects due to missing idempotency controls",
+          "Unauthorized payment creation or modification",
+          "Exposure of confidential payment instruction data",
+          "Non-compliance with data retention and deletion regulations"
+        ],
+        "refinements": [
+          {
+            "key": "protection",
+            "value": "Access to DAT-001 is restricted to authorized Payment API components and personnel using strong authentication and role-based access control. Sensitive fields within the instruction are masked or encrypted in storage and transit. All input fields undergo validation against a strict schema to prevent injection or tampering. Intrusion detection and anomaly monitoring are applied to all operations involving this data. Audit logs record access and modifications. Storage is on encrypted volumes with key management policies in place.",
+            "why": "These controls address the identified critical risks to integrity and confidentiality, comply with Chapter 8 errors noted in S1, and apply SA Playbook tactics (S6,S7,S8). Limiting access and masking secure payment info directly mitigate THR-001 and THR-003 threats."
+          },
+          {
+            "key": "retentionPolicy",
+            "value": "DAT-001 data is retained in secure storage for a configurable period as defined by legal and business requirements, with documented deletion procedures after expiry. A legal hold process is established to suspend deletion upon appropriate notification. Retention periods and proof of deletion must be audited regularly. The Payment API maintains ownership and responsibility for enforcement of these policies.",
+            "why": "Explicitly stating retention duration, deletion, and legal hold fulfills Chapter 8 error on retention definition (S1) without assuming legal defaults. It clarifies responsibilities and ensures compliance and auditability."
+          }
+        ]
+      },
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "threat",
+      "selection": "thr-001",
+      "id": "M:9:thr-001",
+      "kind": "record",
+      "ms": 7743,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "THR-001 is a critical unauthorised action risk unaddressed by existing controls; business judgement is needed on residual risk, control ownership, and treatment.",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "control",
+      "selection": "oauth",
+      "id": "M:9:oauth",
+      "kind": "record",
+      "ms": 9414,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "The SEC-001 Identity & consent control is incomplete without specifying its mechanism, failure response, telemetry, and verification plan; refinement is required to close coverage gaps and enable verification.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "exposure of a component",
+      "selection": "api-pod",
+      "id": "M:9:api-pod",
+      "kind": "exposure",
+      "ms": 8264,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Critical protection exposure in APP-001 Payment service demands architectural judgement on controls and threat coverage",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "exposure, selected by a contract's link",
+      "selection": "C:rest",
+      "id": "M:9:rest",
+      "kind": "exposure",
+      "ms": 8636,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Payment initiation exposure shows critical unaddressed threats representing significant security risk",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 10,
+      "what": "runtime plan",
+      "selection": "run-001",
+      "id": "M:10:run-001",
+      "kind": "record",
+      "ms": 9674,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "RUN-001 Payment service must define and apply scaling, recovery, and monitoring to meet capacity and availability needs.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk fix",
+      "selection": "F:availability:run-001",
+      "id": "F:availability:run-001",
+      "kind": "fix",
+      "ms": 6669,
+      "shown": true,
+      "verdict": "apply",
+      "headline": "Running RUN-001 in 2 zones with 1 active replica each is a sound foundational fix for availability.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk switch point",
+      "selection": "F:switch:tr-002",
+      "id": "F:switch:tr-002",
+      "kind": "switch",
+      "ms": 8531,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "“judge” is not a verdict for this kind of decision."
+      ],
+      "withheldDraft": {
+        "verdict": "judge",
+        "headline": "Choice between PostgreSQL and MongoDB at scale requires business trade-offs judgement",
+        "reasoning": "PostgreSQL has a documented scalability ceiling: one primary can handle about 10,000 writes per second, corresponding to roughly 75,000 concurrent users; beyond that, MongoDB’s sharding approach can scale writes by partitioning data. Both products have equal scores on the drivers presented, so architectural and operational factors must be weighed. The designed limit and scaling assumptions come from the SA Playbook example of 100,000 concurrent users (S2) but no project-specific objective is recorded, so actual demand and tolerance for complexity vary. The architectural choice is therefore not purely technical but also business-driven, balancing complexity of sharding, operational ownership, and consistency guarantees constrained by the one-primary model (S5).",
+        "risks": [
+          "Scaling writes past one primary's capacity risks performance degradation or failures",
+          "Partitioning writes increases system complexity and consistency risks",
+          "Switching database products entails operational and integration changes",
+          "Unconfirmed project workload means design may not fit actual demand"
+        ],
+        "refinements": []
+      },
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk judgement",
+      "selection": "J:security:run-002",
+      "id": "J:security:run-002",
+      "kind": "judgement",
+      "ms": 9538,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "No threats are recorded but the critical security role of the risk engine calls for architect judgement on threat scenarios and controls",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "service-permits",
+      "chapter": 11,
+      "what": "capacity fix sized for the Playbook example",
+      "selection": "F:capacity:run-001",
+      "id": "F:capacity:run-001",
+      "kind": "fix",
+      "ms": 7881,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It sizes for the SA Playbook’s example objective, but QD-001 records 10 applications a second; this project’s own objective must be recorded before sizing."
+      ],
+      "withheldDraft": {
+        "verdict": "apply",
+        "headline": "Scaling RUN-001 to 23 replicas for the SA Playbook example load is appropriate as drafted for illustrative purposes",
+        "reasoning": "The draft increases maximum replicas from 2 to 23 based on computed 3,125 req/s demand from 100,000 concurrent users per the SA Playbook example (S1). The scaling policy and sizing are consistent with horizontal scaling principles (S3) and calculated capacity needs. However, this is an example load, not this project's real load, recorded instead as 10 applications/s (S2). The draft is a sound demonstration fix for the example scenario and includes a sensible scaling policy triggered on CPU at 70%. There is no evidence of actual load measurements here, and the draft cautions against applying it directly to this project's load. Therefore, this draft should be applied as a design example but not conflated with this project's real requirements.",
+        "risks": [
+          "Resource over-provisioning if applied without workload adjustment",
+          "Potential cost inefficiency due to excess replicas",
+          "Scaling policy may not fit real workload dynamics",
+          "Lack of evidence for normal operation load and failure modes"
+        ],
+        "refinements": []
+      },
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "service-permits",
+      "chapter": 10,
+      "what": "runtime plan beside the Playbook example",
+      "selection": "run-001",
+      "id": "M:10:run-001",
+      "kind": "record",
+      "ms": 8723,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It sizes for the SA Playbook’s example objective, but QD-001 records 10 applications a second (23 comes from the example); this project’s own objective must be recorded before sizing."
+      ],
+      "withheldDraft": {
+        "verdict": "refine",
+        "headline": "RUN-001 is under-provisioned and incomplete; refine capacity, recovery, and monitoring to meet load and operational needs",
+        "reasoning": "The current maxReplicas=2 is critically insufficient against the illustrative need for 23 replicas to handle 3,125 req/sec for 100,000 concurrent users (S1,S2). Scaling policy, recoveryMinutes, recoveryPlan, and monitoring are empty, leaving major operational risks unaddressed (S1). The design assumes a single failure domain, creating a single point of failure risk (S1). The readiness and runbook descriptions lack detail to assure operability (S1,S6). These gaps and errors must be addressed to meet availability, scaling, and recovery quality attributes.",
+        "risks": [
+          "Capacity shortfall causing outage or degraded service under load.",
+          "Single failure domain risking total service outage.",
+          "Lack of recovery plan delaying restoration after failure.",
+          "Insufficient monitoring delaying detection of faults."
+        ],
+        "refinements": [
+          {
+            "key": "maxReplicas",
+            "value": 23,
+            "why": "Match the recorded capacity need of 23 replicas calculated for the 100k concurrent user scenario, to address critical capacity shortfall (S1,S2)."
+          },
+          {
+            "key": "minReady",
+            "value": 2,
+            "why": "At least two ready replicas increase availability during scaling or failure (S1)."
+          },
+          {
+            "key": "recoveryMinutes",
+            "value": 30,
+            "why": "Set a recovery target to restore capacity within 30 minutes, a common moderate recovery SLA, absent recorded value (S1)."
+          },
+          {
+            "key": "scalingPolicy",
+            "value": "Scale horizontally by adding application replicas in response to sustained CPU usage above 70% or request latency above 500 ms; scale down when metrics stabilize below these thresholds for 10 minutes.",
+            "why": "Defines an operational scaling policy to trigger growth and shrinkage based on runtime metrics, supporting capacity planning (S3,S5)."
+          },
+          {
+            "key": "recoveryPlan",
+            "value": "On failure detection, alert on-call owner; initiate restart of failed replicas; if datastore state is impacted, reconcile pending work before resuming. Use rollback procedures to halt promotion if failures increase.",
+            "why": "Provides explicit recovery steps addressing failure detection, owner alerting, and state reconciliation, aligning with runbook and rollback notes (S1,S6)."
+          },
+          {
+            "key": "monitoring",
+            "value": "Monitor application health, CPU and memory usage, request rates, error rates, and datastore access latency; alert on-call for anomalies. Include readiness probes to verify service accessibility.",
+            "why": "Establishes monitoring scope for operability and early failure detection to improve resilience (S6)."
+          }
+        ]
+      },
+      "rendered": true,
+      "contradictions": 0
+    }
+  ],
+  "route1": [
+    {
+      "chapter": 4,
+      "mode": "design",
+      "objectId": "initiate",
+      "title": "Initiate payment",
+      "ms": 7563,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Initiate payment",
+      "rendered": true
+    },
+    {
+      "chapter": 5,
+      "mode": "design",
+      "objectId": "api-pod",
+      "title": "Payment service",
+      "ms": 12652,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment service",
+      "rendered": true
+    },
+    {
+      "chapter": 6,
+      "mode": "design",
+      "objectId": "tc-001",
+      "title": "Application execution",
+      "ms": 9361,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Application execution",
+      "rendered": true
+    },
+    {
+      "chapter": 7,
+      "mode": "design",
+      "objectId": "tr-001",
+      "title": "Application execution realization",
+      "ms": 12709,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Application execution realization",
+      "rendered": true
+    },
+    {
+      "chapter": 8,
+      "mode": "design",
+      "objectId": "ext-channel",
+      "title": "Initiating channel",
+      "ms": 8298,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Initiating channel",
+      "rendered": true
+    },
+    {
+      "chapter": 9,
+      "mode": "design",
+      "objectId": "oauth",
+      "title": "Identity & consent",
+      "ms": 6765,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Identity & consent",
+      "rendered": true
+    },
+    {
+      "chapter": 10,
+      "mode": "design",
+      "objectId": "env-001",
+      "title": "Payment production design",
+      "ms": 7595,
+      "accepted": false,
+      "shownAs": "structured guidance from the reviewed method (the response did not pass the source check)",
+      "title_": "Source review · Payment production design",
+      "issues": [
+        "The candidate recommends that the architect should prioritize establishing missing items and confirming ownership and isolation assumptions before proceeding, which is a reasonable interpretation and not contradicted.",
+        "However, the candidate claims the architect must gather and record formal requirements, define measurable quality indicators, and articulate reasoning—these instructions or obligations are not explicitly stated in the sources and exceed the evidence.",
+        "The candidate also suggests that doing less risks misalignment and doing more risks complexity as a rationale, which is an interpretive addition not supported by the sources."
+      ],
+      "contradiction": "In the source check, 2 of the defects it named read as support and were taken as notes.",
+      "rendered": true
+    },
+    {
+      "chapter": 1,
+      "mode": "design",
+      "objectId": "OUT-001",
+      "title": "A payment with a known outcome",
+      "ms": 8706,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "A payment with a known outcome",
+      "rendered": true
+    },
+    {
+      "chapter": 2,
+      "mode": "design",
+      "objectId": "QD-001",
+      "title": "Preserve one financial effect",
+      "ms": 10994,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Preserve one financial effect",
+      "rendered": true
+    },
+    {
+      "chapter": 3,
+      "mode": "design",
+      "objectId": "ADR-001",
+      "title": "When should the customer receive a payment acknowledgement?",
+      "ms": 15107,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "When should the customer receive a payment acknowledgement?",
+      "rendered": true
+    },
+    {
+      "chapter": 2,
+      "mode": "mind",
+      "objectId": "QD-001",
+      "title": "Preserve one financial effect",
+      "ms": 12804,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Preserve one financial effect",
+      "rendered": true
+    },
+    {
+      "chapter": 1,
+      "mode": "author",
+      "objectId": "OUT-001",
+      "title": "A payment with a known outcome",
+      "ms": 7662,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "A payment with a known outcome",
+      "rendered": true
+    },
+    {
+      "chapter": 8,
+      "mode": "challenge",
+      "objectId": "ext-channel",
+      "title": "Initiating channel",
+      "ms": 10653,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Initiating Channel Design Challenges",
+      "rendered": true
+    },
+    {
+      "chapter": 11,
+      "mode": "design",
+      "objectId": "api-pod",
+      "title": "Payment service",
+      "ms": 9919,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment service design explanation and next architect decisions",
+      "rendered": true
+    }
+  ],
+  "limitations": [
+    "One target of each kind per chapter, from the reference designs; not every record.",
+    "A withheld assessment is displayed as withheld: the architect sees that Sol's advice did not pass the checks, and the reading stands.",
+    "A panel response that fails its source check is displayed as structured guidance from the reviewed method, not as Sol's response."
+  ]
+}

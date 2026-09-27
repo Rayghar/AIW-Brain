@@ -1,0 +1,614 @@
+{
+  "schema": "aiw-answer-review-v1",
+  "report": "LIVE_SOL_VS_DIRECT_AFTER_FIXES.rechecked.json",
+  "liveRun": {
+    "file": "LIVE_SOL_VS_DIRECT_AFTER_FIXES.json",
+    "at": "2026-09-27T07:16:03.234Z",
+    "commit": "4c89871",
+    "model": "gpt-4.1-mini-2025-04-14"
+  },
+  "checkedBy": "7082246 (npm run evaluate:sol -- --recheck); the second pass was not asked again",
+  "reviewer": "The implementing engineer (Claude), reading every answer in the report. This is the engineer's reading, not an independent architecture review.",
+  "method": "Each assessment was read in full: Sol's answer as shown or, when withheld, the draft its checks withheld, and the direct arm's answer. Each was judged against the case's expectation and reason, the design's recorded facts as the packet presents them, and whether a value would mislead an architect who took it. Sol’s answers are read as today’s checks show them: the live run’s kept answers, checked again without asking the model.",
+  "scales": {
+    "sol": {
+      "right-grounded": "right, and built from the design's recorded facts",
+      "right-flawed": "right in substance with a minor fault",
+      "partly-wrong": "a consequential fault in otherwise sound advice",
+      "wrong": "wrong advice shown to the architect",
+      "withheld-right-draft": "withheld although the draft was right",
+      "withheld-wrong-draft": "withheld, and the draft was wrong or unsupported"
+    },
+    "direct": {
+      "right-generic": "right, from general practice only",
+      "plausible": "right in the value that matters, with a minor fault",
+      "flawed": "a consequential fault",
+      "materially-wrong": "a value that would mislead an architect who took it",
+      "wrong-verdict": "the wrong class of advice"
+    },
+    "better": {
+      "sol": "Sol's advice serves the architect better",
+      "direct": "the direct answer serves the architect better",
+      "equal": "about the same",
+      "neither": "both fail the case"
+    }
+  },
+  "assessments": [
+    {
+      "case": "BP-01",
+      "item": "F:capacity:run-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-grounded",
+        "note": "Keeps the desk’s 24 replicas and fills the policy from the draft (70% CPU, 1 to 24). Says the objective is the Playbook’s example, and asks for the project’s own and a load test."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Keeps 24 “as it aligns with expected capacity growth”, with no basis; sets 4 to 24 at 70%."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-02",
+      "item": "F:integrity:if-004+rest",
+      "sol": {
+        "shown": true,
+        "verdict": "apply",
+        "judgement": "right-grounded",
+        "note": "Takes the recorded key (paymentReference) and duplicate policy against QD-001, and asks for test evidence."
+      },
+      "direct": {
+        "verdict": "apply",
+        "judgement": "right-generic",
+        "note": "Right in general; works from a placeholder key, not the recorded one."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-03",
+      "item": "F:observability:run-001",
+      "sol": {
+        "shown": true,
+        "verdict": "apply",
+        "judgement": "right-grounded",
+        "note": "Takes the drafted monitoring: rate, errors, latency and readiness, with payloads kept out of telemetry."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Adds recovery-time metrics and alert severity; sound and generic."
+      },
+      "better": "equal"
+    },
+    {
+      "case": "BP-04",
+      "item": "J:security:run-002",
+      "sol": {
+        "shown": true,
+        "verdict": "judge",
+        "judgement": "right-grounded",
+        "note": "Puts the judgement to the architect and proposes three threats on the listed targets: the risk engine, IF-004 and IF-005, and the risk record."
+      },
+      "direct": {
+        "verdict": "judge",
+        "judgement": "plausible",
+        "note": "Right class of advice; its two proposals are titled as controls, not threats."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-05",
+      "item": "D:ADR-001",
+      "sol": {
+        "shown": true,
+        "verdict": "judge",
+        "judgement": "right-grounded",
+        "note": "Weighs both alternatives against QD-002, QD-003 and QD-006, and leans to ALT-002 with reasons, leaving the choice.",
+        "preferred": "ALT-002"
+      },
+      "direct": {
+        "verdict": "judge",
+        "judgement": "right-generic",
+        "note": "Right framing, from general practice."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-06",
+      "item": "D:ADR-002",
+      "sol": {
+        "shown": true,
+        "verdict": "judge",
+        "judgement": "right-grounded",
+        "note": "Frames enforcement at the posting boundary against a volatile cache for QD-001. The scorer’s three “guarantee” flags are nouns describing the options (“stronger guarantees”), not claims."
+      },
+      "direct": {
+        "verdict": "judge",
+        "judgement": "right-generic",
+        "note": "The same framing; “ensures the core ledger reliably avoids duplicates” overstates."
+      },
+      "better": "equal"
+    },
+    {
+      "case": "BP-07",
+      "item": "F:switch:tr-003",
+      "sol": {
+        "shown": true,
+        "verdict": "apply",
+        "judgement": "right-grounded",
+        "note": "Frames RabbitMQ against Kafka on the documented limits (about 220,000 users on one queue, 10,000 msg/s) and the drivers’ weighing, and asks for the project’s confirmed load."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Asks for more context; uses no mechanism."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-08",
+      "item": "F:switch:tr-002",
+      "sol": {
+        "shown": true,
+        "verdict": "apply",
+        "judgement": "right-flawed",
+        "note": "Frames PostgreSQL’s single-primary ceiling (about 75,000 users) against MongoDB’s sharding, but calls the Playbook’s example “the project planning assumptions” without naming it. The scorer’s “guarantee” flag is a noun (“transaction guarantees”)."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Rewrites the context with the draft’s figures; sound."
+      },
+      "better": "equal"
+    },
+    {
+      "case": "BP-09",
+      "item": "M:2:QD-003",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-grounded",
+        "note": "Keeps the 2-second target, adds enforced timeouts to the conditions and response, and says the target is unconfirmed."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Defines “representative peak load” and the hold response; sound."
+      },
+      "better": "equal"
+    },
+    {
+      "case": "BP-10",
+      "item": "M:7:tr-003",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-flawed",
+        "note": "Grounds the trade-off in the products’ mechanisms (one leader per queue and no replayable history in RabbitMQ, replay in Kafka). Its six plan refinements say what to define rather than giving plans, and it sizes for 100,000 users without naming the example. The live run withheld it for a purpose clause; today’s checks show it.",
+        "wasWithheld": [
+          "guarantee"
+        ]
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "plausible",
+        "note": "Concrete Kafka plans and a preference consistent with the drivers; one misplaced “threat” is a recommendation.",
+        "preferred": "TO-006"
+      },
+      "better": "equal"
+    },
+    {
+      "case": "BP-11",
+      "item": "M:10:run-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-grounded",
+        "note": "24 replicas from the desk’s arithmetic, two ready copies, recovery within 10 minutes (inside QD-004’s 15), an autoscaling policy, a recovery plan and the design’s own monitoring stack."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "flawed",
+        "note": "3 replicas with no basis, an eighth of what the design’s only objective calls for (within the case’s band); generic plans."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-12",
+      "item": "M:8:if-004",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "partly-wrong",
+        "note": "The recorded key (paymentReference), duplicate policy and retries are right. A 5-second timeout on the risk check exceeds the 2-second target it cites; the instruments’ re-reading warns of it: taken, it turns RUN-001 and RUN-002 latency critical."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "flawed",
+        "note": "The same 5-second timeout with nothing to catch it, a generic key and no duplicate policy."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-13",
+      "item": "M:9:thr-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-grounded",
+        "note": "Sharpens actor, scenario and consequence against QD-005 and SEC-001."
+      },
+      "direct": {
+        "verdict": "apply",
+        "judgement": "plausible",
+        "note": "Keeps the threat as it is; its three “threats” are controls on no target."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-14",
+      "item": "F:capacity:run-002",
+      "sol": {
+        "shown": true,
+        "verdict": "apply",
+        "judgement": "right-grounded",
+        "note": "Rebuilds 23 replicas and a spare from 3,125 req/s, and says the objective is the Playbook’s example."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Keeps 24; autoscaling at 50%, 4 to 24."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-14",
+      "item": "F:recovery:run-003",
+      "sol": {
+        "shown": true,
+        "verdict": "apply",
+        "judgement": "right-grounded",
+        "note": "Recovery within 15 minutes against QD-004, by restart and reconciliation, drafted as an objective to prove."
+      },
+      "direct": {
+        "verdict": "apply",
+        "judgement": "plausible",
+        "note": "The right value; “ensures state consistency” overstates."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "BP-14",
+      "item": "F:latency:QD-003",
+      "sol": {
+        "shown": true,
+        "verdict": "apply",
+        "judgement": "right-flawed",
+        "note": "Takes the nested timeouts (2,000, 1,300 and 650 ms) but says they sum; they nest."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "materially-wrong",
+        "note": "Adds the nested timeouts to 3,950 ms and concludes the path is too slow; would mislead an architect."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "SP-01",
+      "item": "F:capacity:run-001",
+      "sol": {
+        "shown": false,
+        "verdict": null,
+        "judgement": "withheld-wrong-draft",
+        "note": "The draft takes the example-sized 23 replicas “as a design example”. Withheld, telling the architect the project records 10 applications a second and its own objective must be recorded first.",
+        "withheld": [
+          "example-objective"
+        ],
+        "draftVerdict": "apply"
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "wrong-verdict",
+        "note": "Calls 23 replicas for the example load “appropriate”."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "SP-02",
+      "item": "D:ADR-001",
+      "sol": {
+        "shown": true,
+        "verdict": "judge",
+        "judgement": "right-grounded",
+        "note": "Weighs both boundaries against the 2-second target and the recorded 10 applications a second."
+      },
+      "direct": {
+        "verdict": "judge",
+        "judgement": "right-generic",
+        "note": "Right framing, from general practice."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "SP-03",
+      "item": "M:2:QD-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-flawed",
+        "note": "Links responsibilities and tactics, but its conditions wording replaces the recorded workload (10 applications a second) with a note to confirm it."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Keeps the workload and sharpens the failure condition."
+      },
+      "better": "direct"
+    },
+    {
+      "case": "SP-04",
+      "item": "M:8:if-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "partly-wrong",
+        "note": "Key and duplicate policy right. A 30-second timeout is not tied to the 2-second acknowledgement target, and nothing in this design re-reads it."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "flawed",
+        "note": "The same 30-second timeout; a caller-supplied key."
+      },
+      "better": "equal"
+    },
+    {
+      "case": "SP-05",
+      "item": "M:9:thr-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-grounded",
+        "note": "Connects the replay to one-time checks and duplicate outcomes; adds “financial loss”, which the design does not record."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Similar refinements; one misplaced “threat” is a control."
+      },
+      "better": "equal"
+    },
+    {
+      "case": "SP-06",
+      "item": "M:10:run-001",
+      "sol": {
+        "shown": false,
+        "verdict": null,
+        "judgement": "withheld-wrong-draft",
+        "note": "The draft sizes the permits service at 23 replicas for the example. Withheld, with the recorded workload named; the architect gets no advice here.",
+        "withheld": [
+          "example-objective"
+        ],
+        "draftVerdict": "refine"
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "4 replicas, two ready and 5-minute recovery, for the recorded 10 requests a second."
+      },
+      "better": "direct"
+    },
+    {
+      "case": "WF-01",
+      "item": "F:capacity:run-001",
+      "sol": {
+        "shown": false,
+        "verdict": null,
+        "judgement": "withheld-wrong-draft",
+        "note": "The draft applies the example sizing “as a design example”. Withheld, naming the recorded 20 requests a second.",
+        "withheld": [
+          "example-objective"
+        ],
+        "draftVerdict": "apply"
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "materially-wrong",
+        "note": "Invents test evidence (“Testing shows 15 replicas can handle the load”) and confuses the example with 20 requests a second."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "WF-02",
+      "item": "D:ADR-001",
+      "sol": {
+        "shown": true,
+        "verdict": "judge",
+        "judgement": "right-grounded",
+        "note": "Weighs both boundaries against the recorded 20 requests a second and the 2-second target, and leans to ALT-001.",
+        "preferred": "ALT-001"
+      },
+      "direct": {
+        "verdict": "judge",
+        "judgement": "plausible",
+        "note": "Right framing; its three “threats” restate the options."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "WF-03",
+      "item": "M:2:QD-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-flawed",
+        "note": "Keeps the workload and target and defines the metric, but its conditions wording calls the illustrative workload “validated … confirmed by performance testing”, which nothing supports."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Clarifies durability and duplicate handling."
+      },
+      "better": "equal"
+    },
+    {
+      "case": "WF-04",
+      "item": "M:8:if-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "partly-wrong",
+        "note": "Key and duplicate policy right. A 30-second timeout is not tied to the 2-second target."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "flawed",
+        "note": "A 5-second timeout, closer to the target, but “idempotencyKey = true” names no key."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "WF-05",
+      "item": "M:9:thr-001",
+      "sol": {
+        "shown": true,
+        "verdict": "refine",
+        "judgement": "right-grounded",
+        "note": "Refines actor, scenario and consequence around freshness and uniqueness checks."
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "Refines the actor only; three misplaced “threats” are controls."
+      },
+      "better": "sol"
+    },
+    {
+      "case": "WF-06",
+      "item": "M:10:run-001",
+      "sol": {
+        "shown": false,
+        "verdict": null,
+        "judgement": "withheld-wrong-draft",
+        "note": "The draft sizes 23 replicas for the example. Withheld, naming the recorded 20 requests a second; the architect gets no advice here.",
+        "withheld": [
+          "example-objective"
+        ],
+        "draftVerdict": "refine"
+      },
+      "direct": {
+        "verdict": "refine",
+        "judgement": "right-generic",
+        "note": "4 replicas, two ready and 5-minute recovery."
+      },
+      "better": "direct"
+    }
+  ],
+  "tally": {
+    "better": {
+      "sol": 17,
+      "direct": 3,
+      "equal": 8,
+      "neither": 0
+    },
+    "byDomain": {
+      "bank-payment": {
+        "assessments": 16,
+        "sol": 11,
+        "direct": 0,
+        "equal": 5,
+        "neither": 0
+      },
+      "teaching (service-permits, warehouse-fulfilment)": {
+        "assessments": 12,
+        "sol": 6,
+        "direct": 3,
+        "equal": 3,
+        "neither": 0
+      }
+    },
+    "sol": {
+      "right-grounded": 16,
+      "right-flawed": 5,
+      "partly-wrong": 3,
+      "withheld-wrong-draft": 4
+    },
+    "direct": {
+      "right-generic": 16,
+      "plausible": 5,
+      "flawed": 4,
+      "materially-wrong": 2,
+      "wrong-verdict": 1
+    }
+  },
+  "comparedWithV20_3": {
+    "v20_3": {
+      "better": {
+        "sol": 13,
+        "direct": 8,
+        "equal": 4,
+        "neither": 3
+      },
+      "byDomain": {
+        "bank-payment": {
+          "assessments": 16,
+          "sol": 10,
+          "direct": 2,
+          "equal": 4,
+          "neither": 0
+        },
+        "teaching (service-permits, warehouse-fulfilment)": {
+          "assessments": 12,
+          "sol": 3,
+          "direct": 6,
+          "equal": 0,
+          "neither": 3
+        }
+      },
+      "sol": {
+        "right-grounded": 16,
+        "right-flawed": 1,
+        "partly-wrong": 2,
+        "wrong": 2,
+        "withheld-right-draft": 4,
+        "withheld-wrong-draft": 3
+      },
+      "direct": {
+        "right-generic": 18,
+        "plausible": 2,
+        "flawed": 2,
+        "materially-wrong": 3,
+        "wrong-verdict": 3
+      }
+    },
+    "note": "v20.3 read its own live run on v20.2’s checks; this reads a different run of the same model. The changes that follow the fixes: no right draft is withheld (4 in v20.3); every withholding is a teaching design sized for the Playbook’s example; the direct model is better in 3 of 28 (8 in v20.3)."
+  },
+  "findings": {
+    "fixesHold": [
+      "No right draft is withheld by today’s checks; in v20.3, four were.",
+      "Every withholding (4 of 28) is a teaching design sized for the Playbook’s example, withheld with the recorded workload named.",
+      "On the bank reference, Sol says the objective is the Playbook’s example (BP-01, BP-14), as the packet now asks.",
+      "Threats on a decision, self-contradicting second passes and questions no longer withhold answers."
+    ],
+    "brainAdds": [
+      "Sol works from the design’s recorded keys, drivers, mechanisms and arithmetic; the direct model from general practice.",
+      "The instruments re-read Sol’s refinements: Sol’s own 5-second timeout on the bank’s risk check (BP-12) is flagged before the architect applies it; the direct model’s identical value is not.",
+      "The direct model invented test evidence (WF-01), read nested timeouts as a sum and concluded the path is too slow (BP-14), sized a teaching design for the example (SP-01), and gave 3 replicas with no basis (BP-11)."
+    ],
+    "remaining": [
+      "Contract timeouts are not tied to the path’s target: 5 seconds on the bank’s 2-second path (caught by the re-reading), 30 seconds on the teaching designs’ 2-second acknowledgement (SP-04, WF-04), where no arithmetic re-reads it.",
+      "Where a teaching runtime plan sits beside the example (SP-06, WF-06), Sol still sized for the example, so the architect gets a withholding and no advice, while the direct model answered for the recorded load.",
+      "Sol described nested timeouts as summing (BP-14) and called the example “the project planning assumptions” (BP-08).",
+      "A drafted condition called an illustrative workload “validated … confirmed by performance testing” (WF-03). The guard reads verified, proven, validated or measured only before capacity, latency, throughput, recovery or availability.",
+      "The scorer reads the noun “guarantee” as a claim (BP-06, BP-08); by this reading neither is false support."
+    ]
+  },
+  "limits": [
+    "The control arm is one plain prompt; another prompt or model would answer differently.",
+    "The expectations are implementation-authored and need an architect's review.",
+    "This reading is the engineer's, not independent review.",
+    "One run of one model per release; answers differ from run to run: the three v20.4 runs withheld 8, 5 and 4 of 28 under today’s checks.",
+    "Today’s checks are applied to kept answers; the second pass is a model and was not asked again, so its recorded defects stand."
+  ]
+}

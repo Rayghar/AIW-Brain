@@ -1,0 +1,497 @@
+{
+  "schema": "aiw-sol-coverage-v1",
+  "at": "2026-09-27T02:55:17.524Z",
+  "mode": "live-provider",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "summary": {
+    "route2": {
+      "asked": 19,
+      "failed": 0,
+      "shown": 15,
+      "withheld": 4,
+      "rendered": 19,
+      "chapters": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "route1": {
+      "asked": 14,
+      "failed": 3,
+      "accepted": 11,
+      "fallback": 0,
+      "rendered": 11,
+      "chapters": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "modes": [
+        "design",
+        "mind",
+        "author",
+        "challenge"
+      ]
+    },
+    "tokens": {
+      "input": 421835,
+      "output": 31034
+    }
+  },
+  "route2": [
+    {
+      "project": "bank",
+      "chapter": 2,
+      "what": "quality driver",
+      "selection": "QD-001",
+      "id": "M:2:QD-001",
+      "kind": "record",
+      "ms": 24554,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine the record to clarify conditions, response and measurable controls for idempotent financial effect preservation",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 2,
+      "what": "What if move",
+      "selection": "QD-001",
+      "id": "M:2:QD-001|whatif",
+      "kind": "whatif",
+      "ms": 6746,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Relaxing extra debits tolerance from 0 to 2 changes correctness criteria and eases some decisions but risks integrity on critical financial effects",
+      "setAside": [
+        "Proposed threats"
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 3,
+      "what": "decision",
+      "selection": "ADR-001",
+      "id": "D:ADR-001",
+      "kind": "decision",
+      "ms": 8313,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It presents an assumption or drafted value as verified.",
+        "It presents an assumption or drafted value as verified."
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 4,
+      "what": "responsibility",
+      "selection": "api",
+      "id": "M:4:api",
+      "kind": "record",
+      "ms": 9564,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Payment API design requires explicit refinements for critical capacity, integrity, security, and observability aspects.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 5,
+      "what": "component",
+      "selection": "api-pod",
+      "id": "M:5:api-pod",
+      "kind": "record",
+      "ms": 9520,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine APP-001 Payment service specification to address critical capacity, integrity, protection, observability, and availability deficiencies",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 6,
+      "what": "platform capability",
+      "selection": "tc-001",
+      "id": "M:6:tc-001",
+      "kind": "record",
+      "ms": 6750,
+      "shown": true,
+      "verdict": "insufficient",
+      "headline": "Missing continuity and recovery plans; critical capacity and protection shortfall; single failure domain is a major risk",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 7,
+      "what": "realisation, selected by an option",
+      "selection": "tr-001/TO-001",
+      "id": "M:7:tr-001",
+      "kind": "record",
+      "ms": 9604,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine application execution realization by selecting preferred option and documenting operational, resilience, data, access, interface, and lifecycle plans",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 8,
+      "what": "contract",
+      "selection": "rest",
+      "id": "M:8:rest",
+      "kind": "record",
+      "ms": 9699,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Refine payment initiation contract to specify idempotency key, duplicate, timeout, retry, failure policies, and authorization to meet critical quality drivers",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 8,
+      "what": "data definition",
+      "selection": "instruction",
+      "id": "M:8:instruction",
+      "kind": "record",
+      "ms": 9292,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It states 105, which no reading in the packet contains.",
+        "It states 105, which no reading in the packet contains."
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "threat",
+      "selection": "thr-001",
+      "id": "M:9:thr-001",
+      "kind": "record",
+      "ms": 7188,
+      "shown": true,
+      "verdict": "apply",
+      "headline": "THR-001 correctly identifies a critical unauthorised payment risk needing full control coverage",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "control",
+      "selection": "oauth",
+      "id": "M:9:oauth",
+      "kind": "record",
+      "ms": 7844,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "Define and document enforcement mechanism, failure response, telemetry, and verification plan to make SEC-001 operable and testable",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "exposure of a component",
+      "selection": "api-pod",
+      "id": "M:9:api-pod",
+      "kind": "exposure",
+      "ms": 24171,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Critical security exposures persist in APP-001 Payment service requiring design decisions on threat mitigations and control implementations",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 9,
+      "what": "exposure, selected by a contract's link",
+      "selection": "C:rest",
+      "id": "M:9:rest",
+      "kind": "exposure",
+      "ms": 7253,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "Critical exposure of payment initiation contract due to missing controls and incomplete security definition",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 10,
+      "what": "runtime plan",
+      "selection": "run-001",
+      "id": "M:10:run-001",
+      "kind": "record",
+      "ms": 8425,
+      "shown": true,
+      "verdict": "refine",
+      "headline": "The RUN-001 Payment service plan must increase capacity and define operational and recovery behaviors to meet critical scalability and security drivers.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk fix",
+      "selection": "F:availability:run-001",
+      "id": "F:availability:run-001",
+      "kind": "fix",
+      "ms": 7444,
+      "shown": true,
+      "verdict": "apply",
+      "headline": "Running RUN-001 in 2 zones with 1 active replica each improves availability appropriately",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk switch point",
+      "selection": "F:switch:tr-002",
+      "id": "F:switch:tr-002",
+      "kind": "switch",
+      "ms": 6447,
+      "shown": true,
+      "verdict": "apply",
+      "headline": "Product choice for TR-002 between PostgreSQL and MongoDB is soundly framed but rests on planning assumptions needing validation",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "bank",
+      "chapter": 11,
+      "what": "desk judgement",
+      "selection": "J:security:run-002",
+      "id": "J:security:run-002",
+      "kind": "judgement",
+      "ms": 7694,
+      "shown": true,
+      "verdict": "judge",
+      "headline": "No threats recorded but protection requires architect's security judgement.",
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "service-permits",
+      "chapter": 11,
+      "what": "capacity fix sized for the Playbook example",
+      "selection": "F:capacity:run-001",
+      "id": "F:capacity:run-001",
+      "kind": "fix",
+      "ms": 6689,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It sizes for the SA Playbook’s example objective, but QD-001 records 10 applications a second; this project’s own objective must be recorded before sizing.",
+        "It presents an assumption or drafted value as verified.",
+        "Assumption presented as verified: The candidate treats the drafted maxReplicas=23 and related load calculations as verified results, but the packet states these are drafts and proposals, not measurements or decisions.",
+        "Number not in packet nor a refinement: The candidate proposes maxReplicas=3 as a refinement not directly supported by any reported capacity measurement or calculation in the packet; it appears as an assumption to match recorded load without backing data."
+      ],
+      "rendered": true,
+      "contradictions": 0
+    },
+    {
+      "project": "service-permits",
+      "chapter": 10,
+      "what": "runtime plan beside the Playbook example",
+      "selection": "run-001",
+      "id": "M:10:run-001",
+      "kind": "record",
+      "ms": 8037,
+      "shown": false,
+      "verdict": null,
+      "headline": "Sol’s reasoning was withheld; the desk’s reading stands.",
+      "withheldFor": [
+        "It sizes for the SA Playbook’s example objective, but QD-001 records 10 applications a second (23 comes from the example); this project’s own objective must be recorded before sizing."
+      ],
+      "rendered": true,
+      "contradictions": 0
+    }
+  ],
+  "route1": [
+    {
+      "chapter": 4,
+      "mode": "design",
+      "objectId": "initiate",
+      "title": "Initiate payment",
+      "ms": 6210,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Initiate payment",
+      "rendered": true
+    },
+    {
+      "chapter": 5,
+      "mode": "design",
+      "objectId": "api-pod",
+      "title": "Payment service",
+      "ms": 12462,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment service boundary and next design decisions",
+      "rendered": true
+    },
+    {
+      "chapter": 6,
+      "mode": "design",
+      "objectId": "tc-001",
+      "error": "invalid_output",
+      "detail": "The model returned an oversized list.",
+      "ms": 9822
+    },
+    {
+      "chapter": 7,
+      "mode": "design",
+      "objectId": "tr-001",
+      "title": "Application execution realization",
+      "ms": 10490,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Application execution realization",
+      "rendered": true
+    },
+    {
+      "chapter": 8,
+      "mode": "design",
+      "objectId": "ext-channel",
+      "title": "Initiating channel",
+      "ms": 5026,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Initiating channel",
+      "rendered": true
+    },
+    {
+      "chapter": 9,
+      "mode": "design",
+      "objectId": "oauth",
+      "title": "Identity & consent",
+      "ms": 10757,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Identity & consent control",
+      "rendered": true
+    },
+    {
+      "chapter": 10,
+      "mode": "design",
+      "objectId": "env-001",
+      "title": "Payment production design",
+      "ms": 6886,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment production design",
+      "rendered": true
+    },
+    {
+      "chapter": 1,
+      "mode": "design",
+      "objectId": "OUT-001",
+      "error": "invalid_output",
+      "detail": "The model returned an oversized list.",
+      "ms": 5380
+    },
+    {
+      "chapter": 2,
+      "mode": "design",
+      "objectId": "QD-001",
+      "title": "Preserve one financial effect",
+      "ms": 11455,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Preserve one financial effect",
+      "rendered": true
+    },
+    {
+      "chapter": 3,
+      "mode": "design",
+      "objectId": "ADR-001",
+      "title": "When should the customer receive a payment acknowledgement?",
+      "ms": 10540,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "When should the customer receive a payment acknowledgement?",
+      "rendered": true
+    },
+    {
+      "chapter": 2,
+      "mode": "mind",
+      "objectId": "QD-001",
+      "title": "Preserve one financial effect",
+      "ms": 11498,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Preserve one financial effect",
+      "rendered": true
+    },
+    {
+      "chapter": 1,
+      "mode": "author",
+      "objectId": "OUT-001",
+      "title": "A payment with a known outcome",
+      "ms": 8185,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "A payment with a known outcome",
+      "rendered": true
+    },
+    {
+      "chapter": 8,
+      "mode": "challenge",
+      "objectId": "ext-channel",
+      "error": "invalid_output",
+      "detail": "Every challenge needs an exact passage from each cited source.",
+      "ms": 7466
+    },
+    {
+      "chapter": 11,
+      "mode": "design",
+      "objectId": "api-pod",
+      "title": "Payment service",
+      "ms": 8117,
+      "accepted": true,
+      "shownAs": "Sol’s response",
+      "title_": "Payment service design explanation and decisions",
+      "rendered": true
+    }
+  ],
+  "limitations": [
+    "One target of each kind per chapter, from the reference designs; not every record.",
+    "A withheld assessment is displayed as withheld: the architect sees that Sol's advice did not pass the checks, and the reading stands.",
+    "A panel response that fails its source check is displayed as structured guidance from the reviewed method, not as Sol's response."
+  ]
+}
