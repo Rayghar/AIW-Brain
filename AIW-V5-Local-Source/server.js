@@ -13,10 +13,31 @@ const root=path.resolve('public'),DB=localDatabase(process.env.AIW_LOCAL_DB||'.a
 // The laptop knowledge repository service: its token may be read from the service's own token file.
 const repositoryToken=process.env.AIW_KNOWLEDGE_REPOSITORY_TOKEN||(process.env.AIW_KNOWLEDGE_REPOSITORY_TOKEN_FILE?(await readFile(process.env.AIW_KNOWLEDGE_REPOSITORY_TOKEN_FILE,'utf8').catch(()=>'')).trim():'');
 const types={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8'};
+// The static import closure of a module under public/: the page preloads it so a chain of imports
+// thirty deep is fetched in parallel rather than discovered one level at a time.
+async function moduleClosure(entry){
+  const seen=new Set(),queue=[entry];
+  while(queue.length){
+    const name=queue.shift();if(seen.has(name))continue;
+    const file=path.resolve(root,name);if(!file.startsWith(root+path.sep))continue;
+    let src;try{src=await readFile(file,'utf8');}catch{continue;}
+    seen.add(name);
+    for(const m of src.matchAll(/^\s*(?:import|export)\s(?:[^;]*?\sfrom\s*)?['"]\.\/([^'"]+)['"]/gm))queue.push(m[1]);
+  }
+  return [...seen];
+}
+const preloadLinks=list=>list.map(p=>`<link rel="modulepreload" href="/${p}">`).join('');
+// Static files are revalidated, never re-downloaded unchanged: an ETag from the bytes, and no-cache so
+// each navigation asks before reusing what the browser holds. The modules a page loads then travel
+// once per change rather than once per visit.
 const ASSETS={async fetch(req){const url=new URL(req.url);try{
   if(url.searchParams.get('preview')==='mobile')return new Response('<!doctype html><html><body style="margin:0;background:#dbe3d4"><iframe title="Mobile chapter preview" src="/?chapter='+(['1','2','3','4','5','6','7','8','9','10','11'].includes(url.searchParams.get('chapter'))?url.searchParams.get('chapter'):'1')+'&project='+encodeURIComponent(url.searchParams.get('project')||'bank-payment')+'&tab='+encodeURIComponent(url.searchParams.get('tab')||'work')+'&view='+encodeURIComponent(url.searchParams.get('view')||'')+'&preview=frame" style="display:block;width:390px;height:844px;border:0;margin:16px auto"></iframe></body></html>',{headers:{'Content-Type':'text/html'}});
+  if(url.pathname==='/local/module-graph'){const entry=url.searchParams.get('entry')||'';if(!/^[a-z0-9-]+\.js$/.test(entry))return new Response('Not found',{status:404});return new Response(JSON.stringify(await moduleClosure(entry)),{headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-cache'}});}
   const file=path.resolve(root,'.'+(url.pathname==='/'?'/index.html':decodeURIComponent(url.pathname)));if(!file.startsWith(root+path.sep))throw Error();let data=await readFile(file);
-  return new Response(data,{headers:{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-store'}});
+  if(path.basename(file)==='index.html')data=Buffer.from(String(data).replace('</head>',preloadLinks(await moduleClosure('entry.js'))+'</head>'));
+  const etag='"'+createHash('sha256').update(data).digest('base64url').slice(0,27)+'"';
+  if(req.headers.get('if-none-match')===etag)return new Response(null,{status:304,headers:{ETag:etag,'Cache-Control':'no-cache'}});
+  return new Response(data,{headers:{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-cache',ETag:etag}});
 }catch{return new Response('Not found',{status:404})}}};
 
 // Local accounts (opt-in). AIW_LOCAL_ACCOUNTS is a JSON object of account ID → secret of at least 16

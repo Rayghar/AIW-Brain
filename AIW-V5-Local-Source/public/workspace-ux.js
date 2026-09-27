@@ -150,14 +150,28 @@ function syncValidate(tab, selection){
 // connected explorer stays one click away ("Explore all perspectives") and remembers the choice.
 // Each view module exports mountChapterModel(selection, {explore}) and leaveChapterModel().
 const CHAPTER_MODELS = {1: () => import('./story-view.js'), 2: () => import('./utility-view.js'), 3: () => import('./tradeoff-view.js'), 4: () => import('./responsibility-view.js'), 5: () => import('./realise-view.js'), 6: () => import('./platform-view.js'), 7: () => import('./stack-view.js'), 8: () => import('./exchange-view.js'), 9: () => import('./threat-view.js'), 10: () => import('./deploy-view.js'), 11: () => import('./desk-view.js')};
-const chapterModules = new Map(), chapterLoading = new Map();
+const CHAPTER_ENTRIES = {1: 'story-view.js', 2: 'utility-view.js', 3: 'tradeoff-view.js', 4: 'responsibility-view.js', 5: 'realise-view.js', 6: 'platform-view.js', 7: 'stack-view.js', 8: 'exchange-view.js', 9: 'threat-view.js', 10: 'deploy-view.js', 11: 'desk-view.js'};
+const chapterModules = new Map(), chapterLoading = new Map(), preloaded = new Set();
 let lastModelSelection = null;
+// While a chapter model's modules load, the stage says so in the model's own frame, never a blank.
+function showChapterLoading(chapter) { const host = document.querySelector('.studio > .stage.tab-content'); if (!host || host.querySelector(':scope > .cm-loading')) return; host.insertAdjacentHTML('afterbegin', `<section class="cm cm-loading" aria-busy="true" aria-label="Chapter ${chapter} model, loading"><p>Preparing the Chapter ${chapter} model…</p></section>`); }
+function hideChapterLoading() { document.querySelectorAll('.studio > .stage.tab-content > .cm-loading').forEach(el => el.remove()); }
+// A chapter model's import closure is fetched in parallel, not discovered one level at a time: the
+// server lists it, and the browser preloads what it does not hold. Without the list, the import
+// still discovers the chain itself.
+async function preloadChapter(chapter) {
+  const entry = CHAPTER_ENTRIES[chapter]; if (!entry || preloaded.has(entry)) return; preloaded.add(entry);
+  try {
+    const r = await fetch('/local/module-graph?entry=' + encodeURIComponent(entry)); if (!r.ok) return;
+    for (const p of await r.json()) { if (typeof p !== 'string' || document.querySelector(`link[rel="modulepreload"][href="/${CSS.escape(p)}"]`)) continue; const l = document.createElement('link'); l.rel = 'modulepreload'; l.href = '/' + p; document.head.append(l); }
+  } catch { /* the import discovers its chain itself */ }
+}
 const liveDocument = () => typeof window !== 'undefined' && window.document === document;
 const modelModeKey = () => projectPreferenceKey('aiw-chapter-model-mode');
 function chapterModelMode(chapter) { try { return JSON.parse(localStorage.getItem(modelModeKey()) || '{}')[chapter] || 'chapter'; } catch { return 'chapter'; } }
 function setChapterModelMode(chapter, mode) { try { const v = JSON.parse(localStorage.getItem(modelModeKey()) || '{}'); v[chapter] = mode; localStorage.setItem(modelModeKey(), JSON.stringify(v)); } catch { /* preference only */ } }
 function wantsChapterModel(tab, selection) { return tab === 'model' && !!CHAPTER_MODELS[selection?.chapter] && liveDocument() && chapterModelMode(selection.chapter) === 'chapter'; }
-function leaveChapterModels(except = null) { for (const [chapter, m] of chapterModules) if (chapter !== except) { try { m.leaveChapterModel(); } catch { /* already gone */ } } }
+function leaveChapterModels(except = null) { hideChapterLoading(); for (const [chapter, m] of chapterModules) if (chapter !== except) { try { m.leaveChapterModel(); } catch { /* already gone */ } } }
 function openChapterModel(chapter) {
   setChapterModelMode(chapter, 'chapter'); leaveArchitectureExplorer();
   if (syncChapterModel('model', lastModelSelection || {chapter})) document.body.classList.add('am-active');
@@ -178,8 +192,9 @@ function syncChapterModel(tab, selection) {
   document.body.classList.add('cm-active');
   const mount = () => { try { if (document.body.dataset.workspaceTab === 'model' && wantsChapterModel('model', lastModelSelection) && Number(lastModelSelection.chapter) === chapter) chapterModules.get(chapter)?.mountChapterModel(lastModelSelection, {explore: exploreAllPerspectives}); } catch (e) { console.warn('The chapter model could not open.', e?.message); } };
   if (chapterModules.has(chapter)) { mount(); return true; }
-  if (!chapterLoading.has(chapter)) chapterLoading.set(chapter, CHAPTER_MODELS[chapter]().then(m => { chapterModules.set(chapter, m); }).catch(e => { chapterLoading.delete(chapter); document.body.classList.remove('cm-active'); setChapterModelMode(chapter, 'explore'); console.warn('The chapter model could not load.', e?.message); }));
-  chapterLoading.get(chapter).then(mount);
+  showChapterLoading(chapter);
+  if (!chapterLoading.has(chapter)) chapterLoading.set(chapter, preloadChapter(chapter).then(() => CHAPTER_MODELS[chapter]()).then(m => { chapterModules.set(chapter, m); }).catch(e => { chapterLoading.delete(chapter); hideChapterLoading(); document.body.classList.remove('cm-active'); setChapterModelMode(chapter, 'explore'); console.warn('The chapter model could not load.', e?.message); }));
+  chapterLoading.get(chapter).then(() => { hideChapterLoading(); mount(); });
   return true;
 }
 // A deep link (for example the anatomy's "Open in Chapter N model") names an object in the URL.
