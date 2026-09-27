@@ -137,6 +137,22 @@ await check('a kept report scores again to the same result without asking any mo
  assert.throws(()=>rescoreReport({...report,schema:'aiw-sol-evaluation-v1'},dataset),/keeps its answers/);
 });
 
+await check('a kept report checked again by today’s checks: a withholding they no longer raise is shown, with what they set aside, and a defect the second pass named stands',async()=>{
+ const kept=JSON.parse(JSON.stringify(report)),at=id=>kept.results.find(r=>r.id===id).assessments[0];
+ // As the guard read it before: a claim in one refinement's reason withheld the whole assessment.
+ const old=at('BP-12');assert.equal(old.answerIs,'shown');assert(old.answer.refinements.length>0);
+ old.answer.refinements[0].why='It clarifies responsibilities and ensures compliance and auditability.';
+ Object.assign(old,{withheld:true,verdict:null,draftVerdict:old.verdict,answerIs:'withheld-draft',issues:['It presents a mechanism or draft as guaranteeing a verified outcome.']});
+ // A defect the second pass named, in its own words.
+ const second=at('BP-09');Object.assign(second,{withheld:true,verdict:null,draftVerdict:second.verdict,answerIs:'withheld-draft',issues:['It restates the 2-second target as if it had been measured.']});
+ const again=rescoreReport(kept,dataset,{recheck:true}),now=id=>again.results.find(r=>r.id===id).assessments[0];
+ assert.equal(now('BP-12').withheld,false);assert.deepEqual(now('BP-12').recheck.was,['guarantee']);assert.deepEqual(now('BP-12').setAside,[old.answer.refinements[0].key]);
+ assert.equal(now('BP-09').withheld,true);assert.deepEqual(now('BP-09').withheldReasons,['second-pass']);
+ // What was right before is still right, and what the example objective withheld still is.
+ assert.equal(now('BP-01').withheld,false);assert.equal(now('SP-01').withheld,true);assert.deepEqual(now('SP-01').withheldReasons,['example-objective']);
+ assert.match(again.rescored.note,/checked again[\s\S]*second pass named stand/);assert.equal(again.rescored.recheck,true);
+});
+
 await check('only the evaluation reaches the control arm: the application reasons through requestReasoning alone',async()=>{
  const files=[];
  const walk=dir=>{for(const e of readdirSync(dir,{withFileTypes:true})){if(['node_modules','dist','.git','evidence','test-results'].includes(e.name))continue;const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else if(/\.m?js$/.test(e.name))files.push(p.replace(/\\/g,'/'));}};

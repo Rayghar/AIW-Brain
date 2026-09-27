@@ -3,6 +3,8 @@
 //   node scripts/evaluate-sol-decisions.mjs                         test double: plumbing, guards and metrics; no network
 //   node --env-file=.env scripts/evaluate-sol-decisions.mjs --live  the configured provider (sends each case's packet, and the control arm's question)
 //   node scripts/evaluate-sol-decisions.mjs --rescore report.json    the kept answers of an earlier report, scored again by this scorer; no model is asked
+//   node scripts/evaluate-sol-decisions.mjs --recheck report.json    as --rescore, and the Brain's kept answers pass today's deterministic checks again;
+//                                                                    the second pass is not asked again, so the defects it named stand
 // Options: --cases BP-01,SP-01  --brain-only  --project exported-project.json (adds real adoption rates)  --out report.json
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
@@ -19,8 +21,8 @@ const brief=(out,report)=>{const s=report.summary,d=report.direct?.summary,c=rep
  brain:{requestFailures:s.requestFailures,assessments:s.assessments,withheld:pct(s.withheld),withheldReasons:s.withheld.reasons,verdictAgreement:pct(s.verdictAgreement),addressesTheIssue:pct(s.addressesTheIssue),expectedSupportCited:pct(s.expectedSupportCited),falseSupport:pct(s.falseSupport),tokens:s.tokens},
  ...(d?{direct:{requestFailures:d.requestFailures,assessments:d.assessments,missing:d.missing,verdictAgreement:pct(d.verdictAgreement),addressesTheIssue:pct(d.addressesTheIssue),falseSupport:pct(d.falseSupport),wouldFailBrainChecks:pct(d.brainChecks.wouldWithhold),failsBrainChecksOnSubstance:pct(d.brainChecks.onSubstance),brainCheckReasons:d.brainChecks.reasons,tokens:d.tokens},
   comparison:{assessments:c.assessments,advised:c.advised,agreesWithExpected:c.agreesWithExpected,soundAsScored:c.soundAsScored,whereBothAdvised:c.whereBothAdvised,whereBrainWithheld:c.whereBrainWithheld}}:{})},null,2);};
-if(opt('rescore')){
- const from=opt('rescore'),report=rescoreReport(JSON.parse(await readFile(from,'utf8')),dataset),out=opt('out')||from.replace(/\.json$/,'')+'.rescored.json';
+if(opt('rescore')||opt('recheck')){
+ const recheck=!!opt('recheck'),from=opt('recheck')||opt('rescore'),report=rescoreReport(JSON.parse(await readFile(from,'utf8')),dataset,{recheck}),out=opt('out')||from.replace(/\.json$/,'')+(recheck?'.rechecked.json':'.rescored.json');
  await writeFile(out,JSON.stringify(report,null,2)+'\n');console.log(brief(out,report));process.exit(0);
 }
 let env,fetcher;

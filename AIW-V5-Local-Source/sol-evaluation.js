@@ -164,18 +164,30 @@ export async function evaluateDirect(p,c,env,{fetcher=fetch,defaults={},descript
 
 // Scores a kept report again with this scorer, without asking any model: each packet is rebuilt and must
 // carry the stamp it had when the answers were given, so the answers are scored against what they saw.
-export function rescoreReport(report,dataset){
+// With recheck, every kept answer of the Brain also passes today's deterministic checks again, so a change to
+// them is measured on answers a model already gave. The second pass is a model and is not asked again: the
+// defects it named stand, including any about a part today's checks set aside.
+export function rescoreReport(report,dataset,{recheck=false}={}){
  if(dataset?.schema!=='aiw-sol-heldout-v1')throw Error('Expected an aiw-sol-heldout-v1 dataset.');
  if(report?.schema!==EVALUATION_VERSION)throw Error('Only a report that keeps its answers ('+EVALUATION_VERSION+') can be scored again.');
  if(report.dataset?.digest!==digest(dataset))throw Error('The report was produced from a different dataset.');
  const projects=new Map(),defaults=dataset.defaults||{},packets=new Map();
  const packetOf=c=>{if(!packets.has(c.id)){if(!projects.has(c.domain))projects.set(c.domain,domainProject(dataset.domains[c.domain]));packets.set(c.id,reasoningPacket(projects.get(c.domain),{task:'decisions',ids:c.ids,scope:'evaluation:'+c.id,prompt:c.prompt||''}));}return packets.get(c.id);};
  const asAssessment=(a)=>({id:a.id,verdict:a.verdict,...a.answer});
+ const checkAgain=(a,packet,c)=>{
+  const was=a.withheld?reasonsOf(a.issues):[],second=list(a.issues).filter(i=>['second-pass','not-reached'].includes(reasonOf(i)));
+  let now;
+  try{now=checkRecordRefinements(projects.get(c.domain),packet,guardReasoning(packet,validateReasoningOutput({summary:'',sourceRefs:[],assessments:[{...asAssessment(a),verdict:a.withheld?a.draftVerdict:a.verdict}]},packet))).assessments[0];}
+  catch(e){now={withheld:true,issues:['Its answer does not fit the desk’s contract: '+e.message]};}
+  const issues=[...list(now.withheld?now.issues:now.problems),...second];
+  if(issues.length)return {id:a.id,kind:a.kind,verdict:null,withheld:true,withheldReasons:reasonsOf(issues),issues:issues.slice(0,6),answerIs:'withheld-draft',draftVerdict:a.withheld?a.draftVerdict:a.verdict,answer:a.answer,recheck:{was}};
+  return {...scoreAssessment(now,packet,c,defaults),answerIs:'shown',answer:a.answer,...(now.setAside?{setAside:now.setAside.map(x=>x.key)}:{}),recheck:{was}};
+ };
  const results=report.results.map(r=>{
   if(r.error)return r;
   const c=dataset.cases.find(x=>x.id===r.id),packet=packetOf(c);
   if(packet.stamp!==r.packet?.stamp)throw Error(r.id+': the design no longer reads as it did when Sol answered; this report cannot be scored again.');
-  return {...r,assessments:r.assessments.map(a=>a.withheld?{...a,withheldReasons:reasonsOf(a.issues)}:{...scoreAssessment(asAssessment(a),packet,c,defaults),answerIs:a.answerIs,answer:a.answer})};
+  return {...r,assessments:r.assessments.map(a=>recheck&&a.answerIs!=='not-assessed'?checkAgain(a,packet,c):a.withheld?{...a,withheldReasons:reasonsOf(a.issues)}:{...scoreAssessment(asAssessment(a),packet,c,defaults),answerIs:a.answerIs,answer:a.answer})};
  });
  const control=report.direct?report.direct.results.map(r=>{
   if(r.error)return r;
@@ -183,7 +195,7 @@ export function rescoreReport(report,dataset){
   const given=new Set(numbers(JSON.stringify(input))),checks=brainChecks(packet,{summary:'',assessments:r.assessments.filter(a=>!a.missing).map(a=>({id:a.id,verdict:a.verdict,headline:a.answer.headline,reasoning:a.answer.reasoning,refinements:a.answer.refinements,proposals:a.answer.proposals,preferred:a.answer.preferred,risks:a.answer.risks,questions:a.answer.questions}))});
   return {...r,assessments:r.assessments.map(a=>{if(a.missing)return a;const problems=checks.get(a.id)||[];return {...scoreAssessment(asAssessment(a),packet,c,defaults,{known:given}),brainChecks:problems,brainCheckReasons:reasonsOf(problems),answer:a.answer};})};
  }):null;
- return {...report,rescored:{at:new Date().toISOString(),scorer:EVALUATION_VERSION,note:'The same answers, scored again by this scorer; no model was asked.'},
+ return {...report,rescored:{at:new Date().toISOString(),scorer:EVALUATION_VERSION,recheck,note:recheck?'The same answers, checked again by today’s deterministic checks and scored again by this scorer; no model was asked, so the defects the second pass named stand.':'The same answers, scored again by this scorer; no model was asked.'},
   summary:summarise(results),results,...(control?{direct:{...report.direct,summary:summariseDirect(control),results:control},comparison:compareArms(results,control)}:{})};
 }
 
