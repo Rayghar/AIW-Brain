@@ -2,17 +2,27 @@
 // answering the same questions without the Brain (the control arm; --brain-only skips it).
 //   node scripts/evaluate-sol-decisions.mjs                         test double: plumbing, guards and metrics; no network
 //   node --env-file=.env scripts/evaluate-sol-decisions.mjs --live  the configured provider (sends each case's packet, and the control arm's question)
+//   node scripts/evaluate-sol-decisions.mjs --rescore report.json    the kept answers of an earlier report, scored again by this scorer; no model is asked
 // Options: --cases BP-01,SP-01  --brain-only  --project exported-project.json (adds real adoption rates)  --out report.json
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {runEvaluation,adoptionMetrics} from '../sol-evaluation.js';
+import {runEvaluation,rescoreReport,adoptionMetrics} from '../sol-evaluation.js';
 import {answer} from '../mock-llm-provider.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..'),argv=process.argv.slice(2);
 const opt=name=>{const i=argv.indexOf('--'+name);return i>=0?argv[i+1]:null;};
 const live=argv.includes('--live'),only=opt('cases')?opt('cases').split(','):null,direct=!argv.includes('--brain-only');
 const dataset=JSON.parse(await readFile(path.join(root,'evaluation','sol-heldout-v1.json'),'utf8'));
+const pct=x=>x.rate==null?'n/a':Math.round(x.rate*100)+'% of '+x.of;
+const brief=(out,report)=>{const s=report.summary,d=report.direct?.summary,c=report.comparison;return JSON.stringify({report:out,mode:report.mode,model:report.model,cases:s.cases,...(report.rescored?{rescored:report.rescored}:{}),
+ brain:{requestFailures:s.requestFailures,assessments:s.assessments,withheld:pct(s.withheld),withheldReasons:s.withheld.reasons,verdictAgreement:pct(s.verdictAgreement),addressesTheIssue:pct(s.addressesTheIssue),expectedSupportCited:pct(s.expectedSupportCited),falseSupport:pct(s.falseSupport),tokens:s.tokens},
+ ...(d?{direct:{requestFailures:d.requestFailures,assessments:d.assessments,missing:d.missing,verdictAgreement:pct(d.verdictAgreement),addressesTheIssue:pct(d.addressesTheIssue),falseSupport:pct(d.falseSupport),wouldFailBrainChecks:pct(d.brainChecks.wouldWithhold),failsBrainChecksOnSubstance:pct(d.brainChecks.onSubstance),brainCheckReasons:d.brainChecks.reasons,tokens:d.tokens},
+  comparison:{assessments:c.assessments,advised:c.advised,agreesWithExpected:c.agreesWithExpected,soundAsScored:c.soundAsScored,whereBothAdvised:c.whereBothAdvised,whereBrainWithheld:c.whereBrainWithheld}}:{})},null,2);};
+if(opt('rescore')){
+ const from=opt('rescore'),report=rescoreReport(JSON.parse(await readFile(from,'utf8')),dataset),out=opt('out')||from.replace(/\.json$/,'')+'.rescored.json';
+ await writeFile(out,JSON.stringify(report,null,2)+'\n');console.log(brief(out,report));process.exit(0);
+}
 let env,fetcher;
 if(live){
  if(!process.env.OPENAI_API_KEY||!process.env.AIW_LLM_MODEL)throw Error('A live evaluation needs OPENAI_API_KEY and AIW_LLM_MODEL (for example node --env-file=.env ...).');
@@ -29,8 +39,4 @@ if(!live)report.limitations.unshift('Test double: the answers are canned. This r
 if(opt('project')){const raw=JSON.parse(await readFile(opt('project'),'utf8'));report.adoption=adoptionMetrics(raw.project||raw.document||raw);}
 const out=opt('out')||path.join(root,'evidence','brain-evaluation',`sol-${report.mode}-${report.at.slice(0,10)}.json`);
 await mkdir(path.dirname(out),{recursive:true});await writeFile(out,JSON.stringify(report,null,2)+'\n');
-const pct=x=>x.rate==null?'n/a':Math.round(x.rate*100)+'% of '+x.of,s=report.summary,d=report.direct?.summary,c=report.comparison;
-console.log(JSON.stringify({report:out,mode:report.mode,model:report.model,cases:s.cases,
- brain:{requestFailures:s.requestFailures,assessments:s.assessments,withheld:pct(s.withheld),verdictAgreement:pct(s.verdictAgreement),addressesTheIssue:pct(s.addressesTheIssue),expectedSupportCited:pct(s.expectedSupportCited),falseSupport:pct(s.falseSupport),tokens:s.tokens},
- ...(d?{direct:{requestFailures:d.requestFailures,assessments:d.assessments,missing:d.missing,verdictAgreement:pct(d.verdictAgreement),addressesTheIssue:pct(d.addressesTheIssue),falseSupport:pct(d.falseSupport),wouldFailBrainChecks:pct(d.brainChecks.wouldWithhold),tokens:d.tokens},
-  comparison:{assessments:c.assessments,advised:c.advised,agreesWithExpected:c.agreesWithExpected,soundAsScored:c.soundAsScored,whereBothAdvised:c.whereBothAdvised,whereBrainWithheld:c.whereBrainWithheld}}:{})},null,2));
+console.log(brief(out,report));

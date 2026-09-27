@@ -8,8 +8,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
 import path from 'node:path';
-import {runEvaluation,adoptionMetrics,summarise,scoreAssessment,DIRECT_INSTRUCTIONS} from './sol-evaluation.js';
-import {answer} from './mock-llm-provider.mjs';
+import {runEvaluation,rescoreReport,adoptionMetrics,summarise,scoreAssessment,DIRECT_INSTRUCTIONS} from './sol-evaluation.js';
+import {answer,envelope} from './mock-llm-provider.mjs';
 
 const checks=[],started=Date.now();
 async function check(name,fn){await fn();checks.push(name);console.log('PASS',name);}
@@ -73,7 +73,10 @@ await check('the scorer reads numbers as the guard does: a citation label is not
 });
 
 await check('a negated or hedged guarantee passes, as in the guard; an asserted one is flagged with its sentence',async()=>{
- for(const t of ['An outbox does not guarantee ordering.','There is no guarantee of delivery until a load test confirms the rate.','Nothing here is proven.','It cannot be certified from the design alone.'])assert.equal(score(t).falseSupport,false,t);
+ for(const t of ['An outbox does not guarantee ordering.','There is no guarantee of delivery until a load test confirms the rate.','Nothing here is proven.','It cannot be certified from the design alone.','The target is drafted as an objective to be proven in testing.','Are there atomicity guarantees around the duplicate policy?'])assert.equal(score(t).falseSupport,false,t);
+ // A question asserts nothing, but a figure nobody recorded is still flagged in one.
+ assert.equal(scoreAssessment({...base,questions:['Is every repeat guaranteed to return the first outcome?']},packet,{expect:{}},dataset.defaults).falseSupport,false);
+ assert.deepEqual(scoreAssessment({...base,questions:['Should it carry 48,000 req/s?']},packet,{expect:{}},dataset.defaults).unsupportedNumbers,['48000']);
  const g=score('Keep it. This design guarantees the target.');
  assert.equal(g.falseSupport,true);assert.deepEqual(g.flags,[{kind:'forbidden',match:'guarantee',sentence:'This design guarantees the target.'}]);
  // A negation in another clause does not excuse the assertion.
@@ -109,6 +112,26 @@ await check('the Brain’s checks run on the control arm’s answers to measure 
  assert.equal(hedged.falseSupport,false);assert.deepEqual(hedged.brainChecks,[]);
  assert(d.summary.brainChecks.wouldWithhold.rate>0&&d.summary.brainChecks.reasons.guarantee>0);
  assert.equal(c.soundAsScored.brain,report.results.flatMap(r=>r.assessments).filter(a=>!a.withheld&&a.verdictAgrees&&!a.falseSupport).length);
+});
+
+await check('each withheld assessment is labelled by the check that raised its issue, not by the words in it',async()=>{
+ // The second pass words its own issue freely: this one names a target and a threat.
+ const fetcher=async(url,init)=>{const b=JSON.parse(init.body);let out=answer(b,{faults:{'F:capacity:run-001':'invented-number'}});
+  if(b.text.format.name==='aiw_desk_assessment_check'){const input=JSON.parse(b.input[0].content);out=envelope({assessments:input.candidate.assessments.map(a=>({id:a.id,supported:a.id!=='M:2:QD-003',issues:a.id==='M:2:QD-003'?['It restates the 2-second target as if a threat had been measured.']:[]}))});}
+  return new Response(JSON.stringify(out),{status:200,headers:{'Content-Type':'application/json'}});};
+ const r=await runEvaluation(dataset,env,{only:['BP-01','BP-09'],direct:false,fetcher});
+ const bp01=r.results.find(x=>x.id==='BP-01').assessments[0],bp09=r.results.find(x=>x.id==='BP-09').assessments[0];
+ assert.deepEqual(bp01.withheldReasons,['number']);
+ assert.equal(bp09.withheld,true);assert.deepEqual(bp09.withheldReasons,['second-pass'],'a second-pass issue is not a proposal because it says "target"');
+});
+
+await check('a kept report scores again to the same result without asking any model, and only while the design reads as it did',async()=>{
+ const again=rescoreReport(JSON.parse(JSON.stringify(report)),dataset);
+ assert.deepEqual(again.summary,report.summary);assert.deepEqual(again.direct.summary,report.direct.summary);assert.deepEqual(again.comparison,report.comparison);
+ assert.match(again.rescored.note,/no model was asked/);
+ const moved=JSON.parse(JSON.stringify(report));moved.results[0].packet.stamp='sha256:0';
+ assert.throws(()=>rescoreReport(moved,dataset),/no longer reads as it did/);
+ assert.throws(()=>rescoreReport({...report,schema:'aiw-sol-evaluation-v1'},dataset),/keeps its answers/);
 });
 
 await check('only the evaluation reaches the control arm: the application reasons through requestReasoning alone',async()=>{

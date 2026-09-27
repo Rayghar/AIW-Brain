@@ -19,13 +19,15 @@ const list=v=>Array.isArray(v)?v:[];
 const NUMBER=/(?<![\w.])\d{1,3}(?:,\d{3})+(?:\.\d+)?|(?<![\w.,])\d+(?:\.\d+)?/g;
 const numbers=text=>[...String(text).matchAll(NUMBER)].map(m=>String(Number(m[0].replace(/,/g,'')))).filter(n=>Number(n)>=13);
 const SENTENCE=/(?<=[.!?])\s+|\n+/;
-// A negation or hedge earlier in the same clause: "does not guarantee", "no guarantee", "until a load test replaces it".
-const NEGATED=/\b(?:not|never|no|none|nothing|cannot|can't|can’t|doesn't|doesn’t|isn't|isn’t|won't|won’t|without|nor|neither|unverified|until|unless)\b/i;
+// A negation or hedge earlier in the same clause: "does not guarantee", "no guarantee", "until a load test
+// replaces it", "an objective to be proven in testing".
+const NEGATED=/\b(?:not|never|no|none|nothing|cannot|can't|can’t|doesn't|doesn’t|isn't|isn’t|won't|won’t|without|nor|neither|unverified|until|unless|to be|yet|awaits?|awaiting|pending|subject to)\b/i;
 const CLAUSE=/[,;:()—–]|\b(?:but|however|although|though|while|whereas)\b/i;
-// Each clause that asserts a forbidden phrase, with its sentence.
+// Each clause that asserts a forbidden phrase, with its sentence. A question asserts nothing.
 function asserted(text,pattern){
  const hits=[];
  for(const sentence of String(text).split(SENTENCE)){
+  if(/\?\s*$/.test(sentence))continue;
   const re=new RegExp(pattern,'gi');let m;
   while((m=re.exec(sentence))){
    if(!NEGATED.test(sentence.slice(0,m.index).split(CLAUSE).pop()))hits.push({pattern,match:m[0],sentence:sentence.trim().slice(0,400)});
@@ -40,9 +42,19 @@ function unsupportedNumbers(text,known){
  for(const sentence of String(text).split(SENTENCE))for(const n of numbers(sentence))if(!known.has(n)&&!hits.some(h=>h.number===n))hits.push({number:n,sentence:sentence.trim().slice(0,400)});
  return hits;
 }
-// Why an assessment was withheld, from the guard's own wording (brain-reasoning.js), most specific first.
-const WITHHELD=[['number',/states [\d,.]+|which no reading|not in the packet/i],['guarantee',/guarantee|verified outcome|\bproves?\b/i],['citation',/does not cite|\bcit(?:e|es|ation)\b/i],['bounds',/outside [\d.,]+/i],['refinement',/proposes no change|unknown knob|refin/i],['verdict',/verdict/i],['proposals',/threat|target/i],['second-pass',/second|not supported|overstate/i],['chapter-rules',/chapter|rule|reject/i]];
-const reasonsOf=issues=>[...new Set(list(issues).map(i=>(WITHHELD.find(([,re])=>re.test(i))||['other'])[0]))];
+// Why an assessment was withheld: which check raised each issue, read from the deterministic checks' own
+// sentences (brain-reasoning.js); anything else is the second pass's own wording.
+const CHECKS=[['number',/^It states [\d., ]+, which no reading in the packet contains\.$/],['guarantee',/^It presents a mechanism or draft as guaranteeing a verified outcome\.$/],['verified',/^It presents an assumption or drafted value as verified\.$/],
+ ['citation',/^It (?:cites a source outside the reviewed packet|does not cite the decision’s own reading)\.$/],['bounds',/ is outside [\d.,-]+–[\d.,-]+\.$/],
+ ['refinement',/^It (?:asks to refine the draft but proposes no change within its knobs|refines “.*”, which this draft does not have)\.$|: its wording is (?:longer than|empty)/],
+ ['proposals',/^(?:It proposes threats for a decision that does not take them|A proposed threat (?:names no listed target, or an unknown category or priority|has no title, scenario or consequence))\.$/],
+ ['preference',/^It prefers an alternative this decision does not have\.$/],['verdict',/^“.*” is not a verdict for this kind of decision\.$/],['structure',/^It gives no headline or no reasoning\.$/],
+ ['chapter-rules',/^The chapter’s own rules reject its refinements/],['not-reached',/^The source check did not reach it\.$/]];
+const reasonOf=issue=>(CHECKS.find(([,re])=>re.test(String(issue)))||['second-pass'])[0];
+const reasonsOf=issues=>[...new Set(list(issues).map(reasonOf))];
+// Failures of substance (an unsupported number, a guaranteed or verified outcome, a value out of bounds)
+// against failures of the desk's contract (a field misused, a verdict the decision does not take).
+const SUBSTANTIVE=new Set(['number','guarantee','verified','bounds']);
 // The wording of an assessment, as shown or as withheld.
 const answerOf=a=>({headline:a.headline||'',reasoning:a.reasoning||'',risks:list(a.risks),questions:list(a.questions),
  refinements:list(a.refinements).map(r=>({key:r.key,value:r.value,why:r.why})),
@@ -61,8 +73,10 @@ export function scoreAssessment(a,packet,c,defaults={},{known:given=null}={}){
  const item=packet.items.find(i=>i.id===a.id),exp=c.expect||{},out={id:a.id,kind:item?.kind||null,verdict:a.verdict,withheld:!!a.withheld};
  if(a.withheld)return {...out,withheldReasons:reasonsOf(a.issues),issues:list(a.issues).slice(0,6)};
  const cited=given?[]:list(a.sourceRefs).map(r=>packet.sources.find(s=>s.ref===r)).filter(Boolean);
- const text=[a.headline,a.reasoning,...list(a.risks),...list(a.questions),...list(a.refinements).map(r=>r.why),...list(a.proposals).flatMap(x=>[x.title,x.scenario,x.consequence])].filter(Boolean).join('\n');
- const forbidden=[...list(defaults.forbid),...list(exp.forbid)].flatMap(re=>asserted(text,re));
+ // Claims are what the advice asserts; its questions assert nothing, but a figure in one still counts.
+ const claims=[a.headline,a.reasoning,...list(a.risks),...list(a.refinements).map(r=>r.why),...list(a.proposals).flatMap(x=>[x.title,x.scenario,x.consequence])].filter(Boolean).join('\n');
+ const text=[claims,...list(a.questions)].filter(Boolean).join('\n');
+ const forbidden=[...list(defaults.forbid),...list(exp.forbid)].flatMap(re=>asserted(claims,re));
  const known=new Set([...(given?[...given]:cited.flatMap(s=>numbers(s.excerpt))),...list(item?.knobs).flatMap(k=>numbers(k.value)),...list(a.refinements).flatMap(r=>numbers(r.value))]);
  const unsupported=unsupportedNumbers(text,known);
  return {...out,
@@ -145,6 +159,31 @@ export async function evaluateDirect(p,c,env,{fetcher=fetch,defaults={},descript
    const problems=checks.get(it.id)||[];return {...scoreAssessment(a,packet,c,defaults,{known:given}),brainChecks:problems,brainCheckReasons:reasonsOf(problems),answer:answerOf(a)};})};
 }
 
+// Scores a kept report again with this scorer, without asking any model: each packet is rebuilt and must
+// carry the stamp it had when the answers were given, so the answers are scored against what they saw.
+export function rescoreReport(report,dataset){
+ if(dataset?.schema!=='aiw-sol-heldout-v1')throw Error('Expected an aiw-sol-heldout-v1 dataset.');
+ if(report?.schema!==EVALUATION_VERSION)throw Error('Only a report that keeps its answers ('+EVALUATION_VERSION+') can be scored again.');
+ if(report.dataset?.digest!==digest(dataset))throw Error('The report was produced from a different dataset.');
+ const projects=new Map(),defaults=dataset.defaults||{},packets=new Map();
+ const packetOf=c=>{if(!packets.has(c.id)){if(!projects.has(c.domain))projects.set(c.domain,domainProject(dataset.domains[c.domain]));packets.set(c.id,reasoningPacket(projects.get(c.domain),{task:'decisions',ids:c.ids,scope:'evaluation:'+c.id,prompt:c.prompt||''}));}return packets.get(c.id);};
+ const asAssessment=(a)=>({id:a.id,verdict:a.verdict,...a.answer});
+ const results=report.results.map(r=>{
+  if(r.error)return r;
+  const c=dataset.cases.find(x=>x.id===r.id),packet=packetOf(c);
+  if(packet.stamp!==r.packet?.stamp)throw Error(r.id+': the design no longer reads as it did when Sol answered; this report cannot be scored again.');
+  return {...r,assessments:r.assessments.map(a=>a.withheld?{...a,withheldReasons:reasonsOf(a.issues)}:{...scoreAssessment(asAssessment(a),packet,c,defaults),answerIs:a.answerIs,answer:a.answer})};
+ });
+ const control=report.direct?report.direct.results.map(r=>{
+  if(r.error)return r;
+  const c=dataset.cases.find(x=>x.id===r.id),packet=packetOf(c),input=directQuestion(packet,dataset.domains[c.domain].description||'');
+  const given=new Set(numbers(JSON.stringify(input))),checks=brainChecks(packet,{summary:'',assessments:r.assessments.filter(a=>!a.missing).map(a=>({id:a.id,verdict:a.verdict,headline:a.answer.headline,reasoning:a.answer.reasoning,refinements:a.answer.refinements,proposals:a.answer.proposals,preferred:a.answer.preferred,risks:a.answer.risks,questions:a.answer.questions}))});
+  return {...r,assessments:r.assessments.map(a=>{if(a.missing)return a;const problems=checks.get(a.id)||[];return {...scoreAssessment(asAssessment(a),packet,c,defaults,{known:given}),brainChecks:problems,brainCheckReasons:reasonsOf(problems),answer:a.answer};})};
+ }):null;
+ return {...report,rescored:{at:new Date().toISOString(),scorer:EVALUATION_VERSION,note:'The same answers, scored again by this scorer; no model was asked.'},
+  summary:summarise(results),results,...(control?{direct:{...report.direct,summary:summariseDirect(control),results:control},comparison:compareArms(results,control)}:{})};
+}
+
 // ---------------------------------------------------------------- summaries and the paired comparison
 
 const rate=(xs,f)=>{const ys=xs.filter(x=>f(x)!==null&&f(x)!==undefined);return ys.length?{rate:Number((ys.filter(f).length/ys.length).toFixed(3)),of:ys.length}:{rate:null,of:0};};
@@ -163,21 +202,23 @@ export function summariseDirect(results){
  const all=results.flatMap(r=>list(r.assessments)).filter(a=>!a.missing),reasons={};
  for(const a of all)for(const k of list(a.brainCheckReasons))reasons[k]=(reasons[k]||0)+1;
  const {withheld,ownReadingCited,expectedSupportCited,...s}=summarise(results);
- return {...s,missing:results.flatMap(r=>list(r.assessments)).filter(a=>a.missing).length,brainChecks:{wouldWithhold:rate(all,a=>list(a.brainChecks).length>0),reasons}};
+ return {...s,missing:results.flatMap(r=>list(r.assessments)).filter(a=>a.missing).length,
+  brainChecks:{wouldWithhold:rate(all,a=>list(a.brainChecks).length>0),onSubstance:rate(all,a=>list(a.brainCheckReasons).some(k=>SUBSTANTIVE.has(k))),reasons}};
 }
 // Assessment by assessment: the Brain's advice, or its withholding, beside the control arm's answer.
 export function compareArms(brain,direct){
  const rows=brain.map(b=>{const d=direct.find(x=>x.id===b.id);return {id:b.id,domain:b.domain,assessments:list(b.assessments).map(x=>{const y=list(d?.assessments).find(z=>z.id===x.id);return {id:x.id,
-  brain:{verdict:x.withheld?null:x.verdict,withheld:!!x.withheld,agrees:x.withheld?null:x.verdictAgrees,falseSupport:x.withheld?null:x.falseSupport},
-  direct:y&&!y.missing?{verdict:y.verdict,agrees:y.verdictAgrees,falseSupport:y.falseSupport,failsBrainChecks:list(y.brainChecks).length>0}:null};})};});
+  brain:{verdict:x.withheld?null:x.verdict,withheld:!!x.withheld,agrees:x.withheld?null:x.verdictAgrees,falseSupport:x.withheld?null:x.falseSupport,inBand:x.withheld?null:x.numbersInBand},
+  direct:y&&!y.missing?{verdict:y.verdict,agrees:y.verdictAgrees,falseSupport:y.falseSupport,inBand:y.numbersInBand,failsBrainChecks:list(y.brainChecks).length>0,failsOnSubstance:list(y.brainCheckReasons).some(k=>SUBSTANTIVE.has(k))}:null};})};});
  const pairs=rows.flatMap(r=>r.assessments),n=f=>pairs.filter(f).length;
- const sound=s=>!!s&&s.agrees===true&&s.falseSupport===false;
+ // Sound as scored: the expected class of verdict, no flagged claim, and any number the case bounds inside its band.
+ const sound=s=>!!s&&s.agrees===true&&s.falseSupport===false&&s.inBand!==false;
  return {rows,assessments:pairs.length,
   advised:{brain:n(x=>!x.brain.withheld),direct:n(x=>!!x.direct)},
   agreesWithExpected:{brain:n(x=>x.brain.agrees===true),direct:n(x=>x.direct?.agrees===true)},
-  soundAsScored:{brain:n(x=>sound(x.brain)),direct:n(x=>sound(x.direct)),directAndPassesBrainChecks:n(x=>sound(x.direct)&&!x.direct.failsBrainChecks)},
+  soundAsScored:{brain:n(x=>sound(x.brain)),direct:n(x=>sound(x.direct)),directAndPassesBrainChecksOnSubstance:n(x=>sound(x.direct)&&!x.direct.failsOnSubstance)},
   whereBothAdvised:{bothAgree:n(x=>x.brain.agrees===true&&x.direct?.agrees===true),onlyBrainAgrees:n(x=>x.brain.agrees===true&&x.direct?.agrees===false),onlyDirectAgrees:n(x=>x.brain.agrees===false&&x.direct?.agrees===true),neither:n(x=>x.brain.agrees===false&&x.direct?.agrees===false)},
-  whereBrainWithheld:{assessments:n(x=>x.brain.withheld),directAgrees:n(x=>x.brain.withheld&&x.direct?.agrees===true),directFailsBrainChecks:n(x=>x.brain.withheld&&!!x.direct?.failsBrainChecks)}};
+  whereBrainWithheld:{assessments:n(x=>x.brain.withheld),directAgrees:n(x=>x.brain.withheld&&x.direct?.agrees===true),directFailsBrainChecksOnSubstance:n(x=>x.brain.withheld&&!!x.direct?.failsOnSubstance)}};
 }
 
 // What architects did with Sol's advice in a real project (its exported JSON), not in this harness.
