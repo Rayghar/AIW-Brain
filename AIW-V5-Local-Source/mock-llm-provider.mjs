@@ -49,10 +49,12 @@ export function mockAssessment(packet, {refineBy = 0.1, faults = {}} = {}) {
 }
 // The second pass: concrete defects decide, anything else is a note. contradict lists ids for which it answers
 // as a real model sometimes has — unsupported, with only notes that confirm support in its defects.
+// An id ending in * stands for every id it begins ("M:5:*" is every Chapter 5 record).
+const listed = (xs, id) => xs.some(x => x.endsWith('*') ? id.startsWith(x.slice(0, -1)) : x === id);
 export const mockReview = (input, {reject = [], contradict = []} = {}) => ({assessments: input.candidate.assessments.map(a => ({id: a.id,
-  supported: !reject.includes(a.id) && !contradict.includes(a.id),
-  defects: reject.includes(a.id) ? ['It overstates what the reading shows.'] : contradict.includes(a.id) ? ['The refinement is a proposal, not a claim of a measurement, so it is supported.'] : [],
-  notes: reject.includes(a.id) || contradict.includes(a.id) ? [] : ['Each statement follows from the cited reading.']}))});
+  supported: !listed(reject, a.id) && !listed(contradict, a.id),
+  defects: listed(reject, a.id) ? ['It overstates what the reading shows.'] : listed(contradict, a.id) ? ['The refinement is a proposal, not a claim of a measurement, so it is supported.'] : [],
+  notes: listed(reject, a.id) || listed(contradict, a.id) ? [] : ['Each statement follows from the cited reading.']}))});
 
 // The evaluation's control arm (sol-evaluation.js): the same questions without the Brain. A general answer
 // that asserts a guaranteed outcome with a figure nobody recorded where a draft is numeric, and hedges
