@@ -1,5 +1,19 @@
 # AIW V5 Live Model Explorer
 
+## The Chapter 4–8 models: room, honesty, one vocabulary (v20.5) — 27 September 2026
+
+The 31 gaps the engineer observed in the Chapter 4 to 8 model views (`MODEL-VIEWS-CHAPTERS-4-8-GAPS.md`) are closed in the repository line; the two that belong to the private site's own source are handed over as a patch.
+
+- **Room.** The title row is one line, the lens row hides when it has nothing to say, and the Key and zoom controls stand in the footer beside the walk, never over the canvas or the label rail. The status line is whole (two lines at most) instead of cut. The companion opens as a column on a wide window, as a drawer over the canvas below 1200 px, and starts closed there; its toggle says *Hide the companion panel* or *Show the companion panel · N observations*. The stage's four edges say where more of the model lies and move there on a click; arrow keys pan.
+- **Loading.** While a chapter model's modules load, its frame says *Preparing the Chapter N model…* instead of a blank. Static files carry an ETag and are revalidated (304) rather than re-sent on every navigation; the page preloads its own import closure, and a chapter model's closure is listed by `/local/module-graph` and preloaded before the import, so a chain thirty deep is fetched in parallel.
+- **Honesty.** Chapter 5 names a product only where Chapter 7 has chosen one; a capability whose candidates are still open is dashed and says so. Chapters 5, 6 and 7 of a blank project say in place what is missing and offer the next action; no observation is invented. When Sol is not connected, its round says so and stands last in the companion.
+- **Defects.** *Propose a realisation* targets the capability it was asked for. A walk's progress belongs to one project. A Chapter 7 family opens from its heading; the stack has no duplicate *realises* column; the options share the stage's width. Chapter 5's *Not placed in a module* and column lanes, Chapter 4's bundled flow labels and Chapter 5's proposal card all select and read in the companion. Every selection, however it was made, reaches the address (`object=`) and Sol.
+- **One vocabulary.** Every key explains every mark its model draws: unowned steps, proposals and changes in Chapter 4; data, products, dependencies, gaps and the outside in Chapter 5; plates per lens and what lost, degraded and stopped look like in Chapter 6; suggested, lean, preview, proposed and stale in Chapter 7; lost answers, missing contracts and unsourced data in Chapter 8. Each chapter's key styles are scoped to that chapter.
+- **Keyboard and phones.** Every chip that selects is a button, reachable with Tab and Enter. A card is a group that says what Enter does: select, then focus or open. On a phone the fit keeps the cards' lens lines.
+- **Site line.** `release-evidence/model-views-4-8/site-line.patch` makes a chapter's Model tab open on the chapter's own model, labels a borrowed scene, and stops a selection carried in the address from moving the reader to another chapter.
+
+Run `npm run test:model-views` and `npm run test:model-views-browser`; the five chapter suites and their rendered variants cover the rest.
+
 ## Sol's checks, and Sol on every chapter (v20.4) — 27 September 2026
 
 - **Threats on a decision are set aside, not the advice.** Before this fix, a model that filled the threat field on a decision, which takes none, had the whole assessment withheld. Now the threats are listed as *Set aside* and never recorded, and the rest of the advice stands.
