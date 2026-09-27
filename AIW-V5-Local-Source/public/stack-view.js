@@ -13,10 +13,10 @@ import {stackSource, foldStack, stackScope, optionsFor, stackInsights, describeR
 import {stackLayout, stackHead, optionsLayout, optionsHead, SX, OX} from './stack-layout.js';
 import {FAMILIES} from './platform-model.js';
 import {categoryName} from './technology-domain.js';
-import {modelStage, sizeModel, placeTip} from './model-stage.js';
+import {modelStage, sizeModel, placeTip, edgesHTML, toolsHTML, defaultPanel, panelToggle, setState, emptyCard, showFailure, announceObject, focusKey, refocus} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
-import {specPanelHTML, runsOnLabel, productLabels} from './spec-panel.js';
+import {specPanelHTML} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -59,7 +59,7 @@ export function mountChapterModel(selection, callbacks = {}) {
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'sel', 'rec']) if (typeof v[k] === 'string') V[k] = v[k];
     if (v.scope && typeof v.scope === 'object') V.scope = v.scope;
-    if (typeof v.panel === 'boolean') V.panel = v.panel;
+    V.panel = defaultPanel(v.panel);
     if (!['stack', 'options'].includes(V.view)) V.view = 'stack';
     if (!LENSES.some(l => l.id === V.lens)) V.lens = 'structure';
     if (!['realisations', 'options'].includes(V.depth)) V.depth = 'realisations';
@@ -105,16 +105,14 @@ function shell() {
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-tr-action="new">New realisation</button><p>To add an option to a realisation, select it first and use “Add an option”.</p></div></details>
     <button type="button" class="cm-btn" data-sk="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-sk="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
-    <button type="button" class="cm-btn icon" data-sk="panel" aria-pressed="true" aria-label="Show the companion panel" title="Companion">${icon('panel')}</button></div></header>
-  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><label class="cm-scn" hidden><span>Realisation</span><select data-sk-field="rec"></select></label><div class="cm-depth" role="group" aria-label="Rows"></div><p class="cm-state" role="status" aria-live="polite"></p></div>
+    <button type="button" class="cm-btn icon" data-sk="panel" aria-pressed="true" aria-label="Hide the companion panel" title="Companion">${icon('panel')}</button></div></header>
+  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><label class="cm-scn" hidden><span>Realisation</span><select data-sk-field="rec"></select></label><div class="cm-depth" role="group" aria-label="Rows"></div></div>
   <div class="cm-banner"></div>
-  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Technology canvas. Drag or scroll to move; Ctrl or Command and scroll to zoom.">
+  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Technology canvas. Drag or scroll to move; arrow keys pan; Ctrl or Command and scroll to zoom.">
     <div class="cm-world"><svg class="cm-svg" aria-hidden="true"></svg><div class="cm-html"></div></div>
-    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>
-    <div class="cm-key cm-min"><button type="button" class="cm-kt" data-sk="key" aria-expanded="false">Key</button><div class="cm-legend"></div></div>
-    <div class="cm-zoom"><button type="button" data-sk="zout" aria-label="Zoom out">−</button><button type="button" data-sk="zin" aria-label="Zoom in">+</button><button type="button" data-sk="fit" aria-label="Fit the width">${icon('fit')}</button></div>
+    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>${edgesHTML()}
   </div><aside class="cm-panel" aria-label="Companion"></aside></div>
-  <footer class="cm-walk"></footer><div class="cm-tip" role="tooltip" hidden></div>`;
+  <footer class="cm-walk" aria-label="Status and tools"><div class="cm-walk-in"></div><p class="cm-state" role="status" aria-live="polite"></p>${toolsHTML('sk')}</footer><div class="cm-tip" role="tooltip" hidden></div>`;
 }
 
 // ---------------------------------------------------------------- render
@@ -127,18 +125,25 @@ const capChip = id => { const c = S.Pf.capabilities.get(id); return c ? `<i clas
 
 function render() {
   if (!root) return;
-  if (!S) { root.querySelector('.cm-html').innerHTML = '<p class="cm-empty">The technology model could not be prepared for this project.</p>'; return; }
+  if (!S) { showFailure(root, 'The technology model could not be prepared for this project.'); return; }
+  const fk = focusKey(root);
+  if (V.sel !== announced) announce();
   root.classList.remove('cm-lens-structure', 'cm-lens-operation', 'cm-lens-reasoning');
   root.classList.add('cm-lens-' + V.lens);
   root.classList.toggle('sk-opts', optView());
   root.querySelector('.cm-body').classList.toggle('no-panel', !V.panel);
-  root.querySelector('[data-sk="panel"]').setAttribute('aria-pressed', String(V.panel));
   // Geometry follows the recorded realisations, the scope, the rows shown and a pending proposal —
-  // never the lens.
-  if (optView()) { G = optionsFor(S, V.rec, {proposal: previewing()}); L = G ? optionsLayout(G) : null; CH = G ? choiceForDesign(project(), V.rec) : null; }
+  // never the lens. The options share the stage's width.
+  if (optView()) { G = optionsFor(S, V.rec, {proposal: previewing()}); L = G ? optionsLayout(G, {viewW: stage.box().w}) : null; CH = G ? choiceForDesign(project(), V.rec) : null; }
   else { F = foldStack(S, stackScope(S, V.scope), V.depth, {proposal: proposal()}); L = stackLayout(F); }
-  if (!L) { root.querySelector('.cm-html').innerHTML = '<p class="cm-empty">No realisation is recorded yet. Create one from a Chapter 6 capability.</p>'; chrome(); return; }
   const world = root.querySelector('.cm-world'), svg = root.querySelector('.cm-svg');
+  const empty = !L || (!optView() && !F.rows.length);
+  if (empty) {
+    for (const s of ['.cm-svg', '.cm-heads-in', '.cm-rail-in']) root.querySelector(s).innerHTML = '';
+    root.querySelector('.cm-rail').style.width = '0px'; root.querySelector('.cm-html').innerHTML = emptyHTML();
+    world.style.width = '900px'; world.style.height = '420px';
+    chrome(); panel(); stage.use({W: 900, H: 420, rail: 0}, 'empty'); stage.fit(); stage.apply(); return;
+  }
   world.style.width = L.W + 'px'; world.style.height = L.H + 'px';
   svg.setAttribute('width', L.W); svg.setAttribute('height', L.H); svg.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
   const hl = highlight();
@@ -148,6 +153,15 @@ function render() {
   stage.use(L, JSON.stringify([V.view, V.scope?.id || '', V.depth, V.rec]));
   if (fitPending) { fitPending = false; stage.fit(); } else stage.clamp();
   stage.apply();
+  refocus(root, fk);
+}
+
+// Nothing to draw: no realisation and no capability to realise. The next action stands in place.
+function emptyHTML() {
+  const caps = S.Pf.capabilities.size;
+  if (optView()) return emptyCard({title: 'No realisation to compare', text: 'Options belong to a realisation: the product layer chosen for one Chapter 6 capability. Record a realisation first, then its options.', x: 40, y: optionsHead() + 30, actions: `<button type="button" class="cm-btn" data-sk="scope">Back to the stack</button>`});
+  return emptyCard({title: 'No realisation yet', text: 'A realisation chooses the product that provides one Chapter 6 capability, with its options, obligations, sizing and cost.' + (caps ? '' : ' There is no capability to realise yet: the platform in Chapter 6 comes first.'), x: 40, y: stackHead() + 30,
+    actions: `${caps ? tact('new', '', icon('plus') + 'New realisation', 'primary') : ''}<a class="cm-btn${caps ? '' : ' primary'}" href="${esc(projectURL('/?chapter=6&tab=' + (caps ? 'model' : 'work')))}">${caps ? 'The capabilities in Chapter 6' : 'Define capabilities in Chapter 6'}</a>`});
 }
 
 function highlight() {
@@ -176,20 +190,18 @@ function stackSVG(hl) {
 function cellHTML(row, col, box, hl) {
   const r = row.rec, pos = `style="left:${box.x}px;top:${box.y}px;width:${box.w}px;height:${box.h}px"`, cls = `sk-c g-${col.group}${dimCls(hl, row.id)}`;
   if (row.kind === 'hole' || row.kind === 'proposed') {
-    if (col.id === 'realises') return `<div class="${cls}" ${pos}>${capChip(row.capability)}</div>`;
-    if (col.id === 'choice') return row.kind === 'proposed' ? `<button type="button" class="${cls} sk-prod proposed" data-tr-action="edit-ghost" ${pos}><small>Proposed realisation · not saved</small><b>${esc(row.title)}</b></button>` : `<div class="${cls} sk-prod none" ${pos}><small>No realisation</small><button type="button" class="cm-mini gold" data-tr-action="ghost" data-tr-key="missing">Propose a realisation</button></div>`;
+    // The proposal names the capability this row stands for, so it never lands on another one.
+    if (col.id === 'choice') return row.kind === 'proposed' ? `<button type="button" class="${cls} sk-prod proposed" data-tr-action="edit-ghost" ${pos}><small>Proposed realisation · not saved</small><b>${esc(row.title)}</b></button>` : `<div class="${cls} sk-prod none" ${pos}><small>No realisation</small><button type="button" class="cm-mini gold" data-tr-action="ghost" data-tr-key="missing" data-tr-id="${esc(row.capability)}">Propose a realisation</button></div>`;
     return '';
   }
   if (row.kind === 'option') {
     const o = row.option, n = k => r.criteria.filter(c => (o.assessments[c.id]?.effect || 'unknown') === k).length;
-    if (col.id === 'realises') return `<div class="${cls} sk-optref" ${pos}><small>Option · ${esc(o.id)}</small></div>`;
-    if (col.id === 'choice') return `<button type="button" class="${cls} sk-prod opt${row.chosen ? ' chosen' : ''}${row.preview ? ' preview' : ''}" data-sel="${esc(row.id)}" ${pos}><b>${esc(o.product || o.title)}</b><small>${esc([o.version, o.vendor].filter(Boolean).join(' · ') || o.title)}</small><i class="sk-om">${esc(o.operatingModel || 'No operating model')}</i></button>`;
+    if (col.id === 'choice') return `<button type="button" class="${cls} sk-prod opt${row.chosen ? ' chosen' : ''}${row.preview ? ' preview' : ''}" data-sel="${esc(row.id)}" ${pos}><small>Option · ${esc(o.id)}</small><b>${esc(o.product || o.title)}</b><span>${esc([o.version, o.vendor].filter(Boolean).join(' · ') || o.title)}</span><i class="sk-om">${esc(o.operatingModel || 'No operating model')}</i></button>`;
     if (col.id === 'serves') return `<div class="${cls} sk-ass" ${pos} title="${esc(`${n('supports')} support · ${n('tension')} trade-offs · ${n('unknown')} need evidence`)}"><i class="sup">✓ ${n('supports')}</i><i class="ten">! ${n('tension')}</i><i class="unk">? ${n('unknown')}</i></div>`;
     if (col.id === 'selection') return row.chosen ? `<div class="${cls} sk-sel" ${pos}><span class="sk-st preferred">Preferred</span></div>` : `<div class="${cls} sk-sel" ${pos}><button type="button" class="cm-mini" data-sk="prefer" data-id="${esc(r.id)}" data-option="${esc(o.id)}">Prefer this option</button></div>`;
     return '';
   }
   // A realisation.
-  if (col.id === 'realises') return `<div class="${cls}${marked.has(r.id) ? ' changed' : ''}" ${pos}>${r.caps.map(capChip).join('') || '<em class="miss">realises no capability</em>'}</div>`;
   if (col.id === 'choice') {
     const pv = row.preview ? optionOf(r, row.preview) : null, o = pv || optionOf(r, r.chosen);
     if (!o) return `<button type="button" class="${cls} sk-prod none" data-sel="${esc(r.id)}" ${pos}><small>Choice not made</small><b>${r.options.length} option${r.options.length === 1 ? '' : 's'}</b><span>${esc(r.options.map(x => x.product || x.title).join(' · '))}</span></button>`;
@@ -207,7 +219,8 @@ function cellHTML(row, col, box, hl) {
 }
 function stackHTML(hl) {
   const out = [], C = new Map(L.cols.map(c => [c.id, c])), R = new Map(L.rows.map(r => [r.id, r]));
-  for (const gr of L.groups) { const f = FAMILIES.find(x => x.id === gr.family); out.push(`<div class="sk-mg" style="left:${L.x0 + 4}px;top:${gr.y + 5}px">${esc(gr.title)}<small>${esc(f?.sub || '')}</small></div>`); }
+  // A family heading opens that family; the crumb leads back.
+  for (const gr of L.groups) { const f = FAMILIES.find(x => x.id === gr.family); out.push(`<button type="button" class="sk-mg" data-sk="family" data-id="${esc(gr.family)}" style="left:${L.x0 + 4}px;top:${gr.y + 3}px" title="Open the ${esc(gr.title.toLowerCase())} family">${esc(gr.title)}<small>${esc(f?.sub || '')}</small></button>`); }
   for (const b of L.cells) { const html = cellHTML(R.get(b.row).row, C.get(b.col), b, hl); if (html) out.push(html); }
   return out.join('');
 }
@@ -222,11 +235,12 @@ function stackRail(hl) {
   const box = root.querySelector('.cm-rail-in');
   box.innerHTML = L.rows.map(row => {
     const x = row.row, pos = `style="top:${row.y + 4}px;height:${row.h - 8}px"`, lit = dimCls(hl, row.id);
-    if (x.kind === 'hole' || x.kind === 'proposed') return `<div class="sk-rec ${x.kind}${lit}" ${pos}><small>${x.kind === 'proposed' ? 'Proposal · not saved' : 'Not realised'}</small><b>${esc(x.kind === 'proposed' ? x.title : capTitle(S, x.capability))}</b></div>`;
+    if (x.kind === 'hole' || x.kind === 'proposed') return `<button type="button" class="sk-rec ${x.kind}${V.sel === x.capability ? ' sel' : ''}${lit}" data-sel="${esc(x.capability || '')}" ${pos}><small>${x.kind === 'proposed' ? 'Proposal · not saved' : 'Not realised'}${x.capability && S.Pf.capabilities.get(x.capability) ? ' · realises ' + esc(S.Pf.capabilities.get(x.capability).ref) : ''}</small><b>${esc(x.kind === 'proposed' ? x.title : capTitle(S, x.capability))}</b></button>`;
     const r = x.rec;
     if (x.kind === 'option') return `<button type="button" class="sk-rec opt${x.chosen ? ' chosen' : ''}${V.sel === x.id ? ' sel' : ''}${lit}" data-sel="${esc(x.id)}" ${pos}><b>${esc(x.option.title)}</b><small>${esc(x.option.operatingModel || '')}${x.chosen ? ' · preferred' : ''}</small></button>`;
-    const n = OBLIGATIONS.filter(o => r.plans[o.id]).length;
-    return `<button type="button" class="sk-rec f-${r.family}${V.sel === r.id ? ' sel' : ''}${marked.has(r.id) ? ' changed' : ''}${r.state === 'none' ? ' open' : ''}${lit}" data-sel="${esc(r.id)}" ${pos}><small>${esc(r.ref)} · ${esc(r.owner || 'no owner')}</small><b>${esc(r.title)}</b><span class="sk-l st">${esc(r.caps.map(c => S.Pf.capabilities.get(c).ref).join(', ') || 'no capability')} · ${r.options.length} option${r.options.length === 1 ? '' : 's'}</span><span class="sk-l op">${n} of ${OBLIGATIONS.length} obligations · ${r.sized ? 'sized' : 'no sizing'} · ${r.costed ? 'costed' : 'no cost'}</span><span class="sk-l rs">${esc(STATE_LABEL[r.state])}${r.chosen ? ` · ${r.assessed} of ${r.criteria.length} criteria assessed` : ''}</span></button>`;
+    // The rail says what the realisation realises; the columns start at the choice.
+    const n = OBLIGATIONS.filter(o => r.plans[o.id]).length, caps = r.caps.map(c => S.Pf.capabilities.get(c)).filter(Boolean);
+    return `<button type="button" class="sk-rec f-${r.family}${V.sel === r.id ? ' sel' : ''}${marked.has(r.id) ? ' changed' : ''}${r.state === 'none' ? ' open' : ''}${lit}" data-sel="${esc(r.id)}" ${pos} title="${esc(r.ref + ' · realises ' + (caps.map(c => c.ref + ' ' + c.title).join(', ') || 'no capability') + ' · owner ' + (r.owner || 'not named'))}"><small>${esc(r.ref)} · realises ${esc(caps.map(c => c.ref).join(', ') || 'nothing')}</small><b>${esc(r.title)}</b><span class="sk-l st">${esc(caps.map(c => c.title).join(', ') || 'no capability')} · ${r.options.length} option${r.options.length === 1 ? '' : 's'}</span><span class="sk-l op">${n} of ${OBLIGATIONS.length} obligations · ${r.sized ? 'sized' : 'no sizing'} · ${r.costed ? 'costed' : 'no cost'} · ${esc(r.owner || 'no owner')}</span><span class="sk-l rs">${esc(STATE_LABEL[r.state])}${r.chosen ? ` · ${r.assessed} of ${r.criteria.length} criteria assessed` : ''}</span></button>`;
   }).join('');
   box.style.height = L.H + 'px'; box.style.width = L.rail + 'px';
 }
@@ -293,16 +307,17 @@ function chrome() {
   if (optView()) scn.querySelector('select').innerHTML = [...S.R.values()].map(r => `<option value="${esc(r.id)}"${r.id === V.rec ? ' selected' : ''}>${esc(r.ref + ' · ' + r.title)}</option>`).join('');
   root.querySelector('.cm-depth').innerHTML = !optView() ? `<span>Rows</span>${[['realisations', 'Realisations'], ['options', 'With options']].map(([id, t]) => `<button type="button" class="cm-dep" data-sk="depth" data-id="${id}" aria-pressed="${V.depth === id}">${t}</button>`).join('')}` : '';
   const rs = [...S.R.values()];
-  root.querySelector('.cm-state').textContent = optView() && G
+  setState(root, optView() && G
     ? `${G.cols.length} option${G.cols.length === 1 ? '' : 's'} · ${G.rows.length} criteria · ${G.cells.filter(c => c.complete).length} of ${G.cells.length} judgements with evidence`
-    : `${rs.length} realisations · ${rs.filter(r => r.chosen).length} chosen · ${rs.filter(r => ['recorded', 'approved'].includes(r.state)).length} recorded · ${rs.reduce((n, r) => n + r.planned, 0)} of ${rs.length * OBLIGATIONS.length} obligations written${S.holes.length ? ' · ' + S.holes.length + ' capabilities unrealised' : ''}`;
+    : !rs.length ? (S.holes.length ? `No realisation recorded yet · ${S.holes.length} capabilit${S.holes.length === 1 ? 'y' : 'ies'} to realise` : 'No realisation recorded yet')
+    : `${rs.length} realisations · ${rs.filter(r => r.chosen).length} chosen · ${rs.filter(r => ['recorded', 'approved'].includes(r.state)).length} recorded · ${rs.reduce((n, r) => n + r.planned, 0)} of ${rs.length * OBLIGATIONS.length} obligations written${S.holes.length ? ' · ' + S.holes.length + ' capabilities unrealised' : ''}`);
   const g = ghost(), pv = previewing(), imp = pending();
   root.querySelector('.cm-banner').innerHTML = imp ? imp.banner()
     : g ? `<section class="dp-banner"><span class="ip-kicker">Implementation proposal · not saved</span><b>${esc(g.record.title)}</b><small>${esc(g.reason || '')}</small><button type="button" class="cm-btn gold" data-tr-action="edit-ghost">Review &amp; edit</button><button type="button" class="cm-btn" data-tr-action="dismiss">Dismiss</button></section>`
     : pv ? `<section class="dp-banner"><span class="ip-kicker">Option preview · not saved</span><b>${esc((optionOf(S.R.get(pv.recordId), pv.optionId)?.title || '') + ' for ' + (S.R.get(pv.recordId)?.ref || ''))}</b><small>Shown in place of the current choice. Saving it records only a draft preference.</small><button type="button" class="cm-btn gold" data-sk="prefer" data-id="${esc(pv.recordId)}" data-option="${esc(pv.optionId)}">Prefer this option</button><button type="button" class="cm-btn" data-tr-action="dismiss">Dismiss</button></section>` : '';
   root.querySelector('.cm-legend').innerHTML = optView()
-    ? `<p><i class="k-as supports">✓</i>Supports the criterion</p><p><i class="k-as tension">!</i>Creates a trade-off</p><p><i class="k-as unknown">?</i>Needs evidence</p><p><i class="k-as thin">✓</i>Judged, but reason or evidence missing</p>`
-    : `<p><span class="k-prod none"></span>Choice not made</p><p><span class="k-prod"></span>Preferred option</p><p><i class="k-ob done">✓</i>Obligation written</p><p><i class="k-ob open"></i>Obligation not written</p><p><span class="k-steps"><i class="on"></i><i class="on"></i><i></i></span>Preferred · recorded · approved</p>`;
+    ? `<p><i class="k-as supports">✓</i>Supports the criterion</p><p><i class="k-as tension">!</i>Creates a trade-off</p><p><i class="k-as unknown">?</i>Needs evidence</p><p><i class="k-as thin">✓</i>Judged, but reason or evidence missing</p><p><i class="k-as sug">✓</i>Suggested from what the product is documented to do; not recorded</p><p><i class="k-lean">★</i>The option the drivers lean to, with the suggestions counted; a lean, never a choice</p><p><span class="k-prod preview"></span>Previewed in place of the choice; not saved</p>`
+    : `<p><span class="k-prod none"></span>Choice not made</p><p><span class="k-prod"></span>Preferred option</p><p><span class="k-prod preview"></span>Option previewed in place of the choice; not saved</p><p><i class="k-ob done">✓</i>Obligation written</p><p><i class="k-ob open"></i>Obligation not written</p><p><i class="k-ob proposed">+</i>Obligation a proposal would write; not saved</p><p><span class="k-steps"><i class="on"></i><i class="on"></i><i></i></span>Preferred · recorded · approved</p><p><span class="k-steps"><i class="on"></i><i class="stale"></i><i></i></span>Recorded on inputs that have since changed</p>`;
 }
 
 // ---------------------------------------------------------------- companion
@@ -324,19 +339,18 @@ function specimenOption(id) {
 }
 function specimenCapability(id) {
   const c = S.Pf.capabilities.get(id), rs = [...S.R.values()].filter(r => r.caps.includes(id));
-  return `<section class="cm-spec"><h4>Capability · Chapter 6 · ${esc(c.ref)}</h4><p class="cm-spec-t"><b>${esc(c.title)}</b></p><p>${esc(c.purpose)}</p><dl class="cm-dl"><div><dt>Realised by</dt><dd>${rs.map(r => `<button type="button" class="cm-link" data-sel="${esc(r.id)}">${esc(r.ref + ' ' + r.title)}</button>`).join('') || '<em>Nothing yet</em>'}</dd></div><div><dt>Serves</dt><dd>${c.users.length} components · ${c.blast.stops.length} stop if it fails</dd></div><div><dt>Continuity</dt><dd>${esc(c.continuity)} · ${esc(c.failureDomain || 'no failure domain')}</dd></div></dl><div class="cm-acts">${rs.length ? '' : tact('ghost', 'data-tr-key="missing"', 'Propose a realisation', 'gold')}<a class="cm-btn" href="${esc(projectURL('/?chapter=6&tab=model&object=' + encodeURIComponent(id)))}">Capability in Chapter 6</a></div></section>`;
+  return `<section class="cm-spec"><h4>Capability · Chapter 6 · ${esc(c.ref)}</h4><p class="cm-spec-t"><b>${esc(c.title)}</b></p><p>${esc(c.purpose)}</p><dl class="cm-dl"><div><dt>Realised by</dt><dd>${rs.map(r => `<button type="button" class="cm-link" data-sel="${esc(r.id)}">${esc(r.ref + ' ' + r.title)}</button>`).join('') || '<em>Nothing yet</em>'}</dd></div><div><dt>Serves</dt><dd>${c.users.length} components · ${c.blast.stops.length} stop if it fails</dd></div><div><dt>Continuity</dt><dd>${esc(c.continuity)} · ${esc(c.failureDomain || 'no failure domain')}</dd></div></dl><div class="cm-acts">${rs.length ? '' : tact('ghost', `data-tr-key="missing" data-tr-id="${esc(id)}"`, 'Propose a realisation', 'gold')}<a class="cm-btn" href="${esc(projectURL('/?chapter=6&tab=model&object=' + encodeURIComponent(id)))}">Capability in Chapter 6</a></div></section>`;
 }
 function specimenCriterion(id) {
   const r = S.R.get(V.rec), c = r?.criteria.find(x => x.id === id.slice(5)); if (!c) return '';
-  return `<section class="cm-spec"><h4>Criterion${c.kind === 'driver' ? ' · quality driver' : ''}</h4><p class="cm-spec-t"><b>${esc(c.title)}</b></p><p>${esc(c.detail)}</p><dl class="cm-dl">${r.options.map(o => { const a = o.assessments[c.id]; return `<div class="${a && a.effect !== 'unknown' ? '' : 'none'}"><dt>${esc(o.product || o.title)}</dt><dd>${esc(a ? (EFFECT[a.effect] || EFFECT.unknown)[1] + (a.reason ? ' — ' + a.reason : '') : 'Needs evidence')}</dd></div>`; }).join('')}</dl><p class="cm-muted">No score is calculated: each judgement needs a reason and evidence, and an unknown stays an open item.</p></section>`;
+  return `<section class="cm-spec"><h4>Criterion${c.kind === 'driver' ? ' · quality driver' : ''}</h4><p class="cm-spec-t"><b>${esc(c.title)}</b></p><p>${esc(c.detail)}</p><dl class="cm-dl">${r.options.map(o => { const a = o.assessments[c.id]; return `<div class="${a && a.effect !== 'unknown' ? '' : 'none'}"><dt>${esc(o.product || o.title)}</dt><dd>${esc(a ? (EFFECT[a.effect] || EFFECT.unknown)[1] + (a.reason ? ' — ' + a.reason : '') : 'Needs evidence')}</dd></div>`; }).join('')}</dl><p class="cm-muted">The weighing beneath the criteria (Σ priority × effect) is a lean, never a choice: each judgement still needs a reason and evidence, and an unknown stays an open item.</p></section>`;
 }
 function reading() {
   if (optView()) return `<section><h4>Reading this view</h4><p>Each column is an option for the realisation; each row a criterion it should be chosen by — first the quality drivers of the components that depend on it, then operation, recovery, exit and cost. A cell is a judgement: <b>✓</b> supports, <b>!</b> a trade-off, <b>?</b> needs evidence. Select a cell to record the judgement, its reason and its evidence.</p></section>`;
   return `<section><h4>Reading this view</h4><p>Each row is a realisation — the product layer beneath one Chapter 6 capability — in the platform's order. Read across: what it realises, the option preferred (hatched where no choice is made yet), who depends on it and what stops if it fails, the six implementation obligations, sizing and cost, and how far the selection has gone.</p><p>Choose <b>With options</b> to see every alternative in place.</p></section>`;
 }
-function insightsHTML() {
-  if (optView()) return '';
-  const list = stackInsights(S, stackScope(S, V.scope)).slice(0, 8);
+const insightsList = () => (optView() ? [] : stackInsights(S, stackScope(S, V.scope)).slice(0, 8));
+function insightsHTML(list = insightsList()) {
   if (!list.length) return '';
   return `<section><h4>What the model shows<span>${list.length}</span></h4>${list.map(x => `<button type="button" class="cm-ins ${x.kind}" data-sel="${esc(x.id || '')}"><span>${esc(x.text)}</span>${x.ask ? `<small>Ask: ${esc(x.ask)}</small>` : ''}</button>`).join('')}<p class="cm-muted">Drawn from recorded realisations, options and the Chapter 6 platform. Prompts for review, not verdicts.</p></section>`;
 }
@@ -352,8 +366,9 @@ function choicePanel() {
   return `<section class="cm-spec sk-choice"><h4>The choice · ${esc(CH.record.ref)}<span>${CH.counts.recorded ? CH.counts.recorded + ' recorded' : CH.counts.suggested + ' suggested'}</span></h4>${choiceSummaryHTML(CH)}<div class="cm-acts">${n ? `<button type="button" class="cm-btn gold" data-sk="record-suggestions">Record ${n} suggested judgement${n === 1 ? '' : 's'}</button>` : ''}<a class="cm-btn" href="${esc(projectURL('/?chapter=11&tab=model&object=' + encodeURIComponent(CH.record.id)))}">What the objective asks of it</a></div><p class="cm-muted">Suggestions come from what each product is documented to do, with the source on each cell. They count only in the "with suggestions" weighing until they are recorded.</p></section>`;
 }
 function panel() {
-  const box = root.querySelector('.cm-panel');
+  const box = root.querySelector('.cm-panel'), ins = insightsList();
   solMark(root, project(), 7);
+  panelToggle(root, '[data-sk="panel"]', V.panel, ins.length);
   if (!V.panel) { box.innerHTML = ''; return; }
   const s = V.sel;
   let spec = '';
@@ -361,8 +376,7 @@ function panel() {
   else if (s && recOf(s)) spec = specimenOption(s);
   else if (s && S.Pf.capabilities.has(s)) spec = specimenCapability(s);
   else if (s?.startsWith?.('CRIT:')) spec = specimenCriterion(s);
-  box.innerHTML = (optView() && CH ? choicePanel() : '') + solInto(spec, solSection(project(), 7, s)) + reading() + insightsHTML() + findingsHTML();
-  root.querySelector('.cm-walk').innerHTML = `<p class="cm-walk-text">${optView() ? 'Select a judgement to record it with its reason and evidence; select an option to prefer it or preview it in the stack.' : 'Select a realisation to read its choice, obligations and selection; open Options to compare its alternatives.'}</p>`;
+  box.innerHTML = (optView() && CH ? choicePanel() : '') + solInto(spec, solSection(project(), 7, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
 
 // ---------------------------------------------------------------- interaction
@@ -372,12 +386,18 @@ function revealSelection() {
   const r = L.rows.find(x => x.id === V.sel || x.id === recOf(V.sel)?.id || 'CRIT:' + x.id === V.sel);
   if (r) stage.reveal(L.rail, r.y, 300, r.h);
 }
+// Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
+let announced;
+const selTarget = () => { const r = recOf(V.sel); return r ? r.id : S.Pf.capabilities.has(V.sel) ? V.sel : null; };
+function announce() {
+  announced = V.sel;
+  const p = project(), target = selTarget();
+  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, V.sel) || 'project', chapter: 7}, 'model'); } catch { /* assistance is optional */ } }
+  announceObject(target);
+}
 function select(id, {reveal = false} = {}) {
   V.sel = id || null;
   const r = recOf(V.sel); if (r) V.rec = r.id;
-  const p = project(), target = r ? r.id : S.Pf.capabilities.has(V.sel) ? V.sel : null;
-  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, V.sel) || 'project', chapter: 7}, 'model'); } catch { /* assistance is optional */ } }
-  if (window.history) { const url = new URL(location.href); if (target) url.searchParams.set('object', target); else url.searchParams.delete('object'); window.history.replaceState(window.history.state, '', url.pathname + url.search); }
   if (V.sel && !V.panel) V.panel = true;
   save(); render();
   if (reveal) revealSelection();
@@ -422,8 +442,7 @@ function bind() {
       if (twice && S.R.has(id)) { lastClick = {id: null, t: 0}; V.rec = id; V.view = 'options'; fitPending = true; save(); render(); return; }
       select(id, {reveal: !!s.closest('.cm-panel')}); return;
     }
-    if (e.target.closest('.sk-mg')) return;
-    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && V.sel) select(null);
+    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-edge') && V.sel) select(null);
   });
   root.addEventListener('change', e => { if (e.target.dataset.skField === 'rec') { V.rec = e.target.value; V.sel = e.target.value; fitPending = true; save(); render(); } });
   document.addEventListener('keydown', e => {

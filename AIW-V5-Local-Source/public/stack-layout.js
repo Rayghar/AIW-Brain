@@ -6,20 +6,20 @@
 // realisation's options are columns and its criteria are rows. Guarantees are checked in
 // stack-validate.mjs; neither layout reads the lens.
 
-export const SX = {RAIL: 290, HEAD_H: 118, BAND: 22, ROW_H: 64, OPT_H: 46, GROUP_H: 26};
+// The rail names what each realisation realises, so the columns start at the choice.
+export const SX = {RAIL: 268, HEAD_H: 118, BAND: 22, ROW_H: 64, OPT_H: 46, GROUP_H: 26};
 export const STACK_COLS = [
-  {id: 'realises', title: 'Realises', sub: 'Chapter 6 capability', w: 196, group: 'structure'},
-  {id: 'choice', title: 'Choice', sub: 'the preferred option', w: 236, group: 'structure'},
+  {id: 'choice', title: 'Choice', sub: 'the preferred option', w: 250, group: 'structure'},
   {id: 'serves', title: 'Depends on it', sub: 'components · stop if it fails', w: 132, group: 'structure'},
-  {id: 'operations', title: 'Operate', w: 66, group: 'operation', obligation: true},
-  {id: 'access', title: 'Access', w: 66, group: 'operation', obligation: true},
-  {id: 'data', title: 'Data', w: 66, group: 'operation', obligation: true},
-  {id: 'resilience', title: 'Recover', w: 66, group: 'operation', obligation: true},
-  {id: 'interface', title: 'Interfaces', w: 66, group: 'operation', obligation: true},
-  {id: 'lifecycle', title: 'Lifecycle', w: 66, group: 'operation', obligation: true},
+  {id: 'operations', title: 'Operate', w: 70, group: 'operation', obligation: true},
+  {id: 'access', title: 'Access', w: 70, group: 'operation', obligation: true},
+  {id: 'data', title: 'Data', w: 70, group: 'operation', obligation: true},
+  {id: 'resilience', title: 'Recover', w: 70, group: 'operation', obligation: true},
+  {id: 'interface', title: 'Interfaces', w: 70, group: 'operation', obligation: true},
+  {id: 'lifecycle', title: 'Lifecycle', w: 70, group: 'operation', obligation: true},
   {id: 'sizing', title: 'Sizing', w: 70, group: 'operation'},
   {id: 'cost', title: 'Cost', w: 70, group: 'operation'},
-  {id: 'selection', title: 'Selection', sub: 'preferred · recorded · approved', w: 206, group: 'reasoning'}
+  {id: 'selection', title: 'Selection', sub: 'preferred · recorded · approved', w: 190, group: 'reasoning'}
 ];
 export const BANDS = {structure: 'What it provides, and to whom', operation: 'Implementation obligations', reasoning: 'Decision'};
 export function stackHead() { return SX.HEAD_H + 10; }
@@ -44,9 +44,11 @@ export function stackLayout(F) {
 }
 
 // One realisation: options are columns, criteria rows, with what each option brings and costs.
-export const OX = {RAIL: 300, HEAD_H: 128, COL_W: 196, ROW_H: 58, GROUP_H: 26, NOTE_H: 92};
+// The columns share the stage's width, between a readable minimum and a sensible maximum.
+export const OX = {RAIL: 300, HEAD_H: 136, COL_W: 196, COL_MAX: 380, ROW_H: 58, GROUP_H: 26, NOTE_H: 92};
 export function optionsHead() { return OX.HEAD_H + 10; }
-export function optionsLayout(G) {
+export function optionsLayout(G, {viewW = 0} = {}) {
+  const colW = G.cols.length && viewW ? Math.max(OX.COL_W, Math.min(OX.COL_MAX, Math.floor((viewW - OX.RAIL - 34) / G.cols.length))) : OX.COL_W;
   let y = optionsHead() + 6, grp;
   const rows = [], groups = [];
   for (const r of G.rows) { if (r.group !== grp) { grp = r.group; const g = G.groups.find(x => x.group === grp); groups.push({group: grp, title: g?.title || grp, y, h: OX.GROUP_H}); y += OX.GROUP_H; } rows.push({id: r.id, row: r, y, h: OX.ROW_H}); y += OX.ROW_H; }
@@ -56,11 +58,11 @@ export function optionsLayout(G) {
   groups.push({group: 'notes', title: 'What each option brings and costs', y, h: OX.GROUP_H}); y += OX.GROUP_H;
   const notes = [{id: 'benefits', title: 'Benefits', y, h: OX.NOTE_H}, {id: 'drawbacks', title: 'Drawbacks and limits', y: y + OX.NOTE_H, h: OX.NOTE_H}];
   y += OX.NOTE_H * 2;
-  const cols = G.cols.map((c, i) => ({id: c.id, col: c, x: OX.RAIL + 10 + i * OX.COL_W, w: OX.COL_W}));
+  const cols = G.cols.map((c, i) => ({id: c.id, col: c, x: OX.RAIL + 10 + i * colW, w: colW}));
   const K = new Map(cols.map(c => [c.id, c])), R = new Map(rows.map(r => [r.id, r]));
   const cells = G.cells.map(c => { const k = K.get(c.col), r = R.get(c.row); return {...c, x: k.x + 6, y: r.y + 6, w: k.w - 12, h: r.h - 12}; });
   const noteCells = notes.flatMap(n => cols.map(k => ({note: n.id, col: k.id, x: k.x + 6, y: n.y + 6, w: k.w - 12, h: n.h - 12})));
   const weighCells = cols.map(k => ({col: k.id, x: k.x + 6, y: weigh.y + 6, w: k.w - 12, h: weigh.h - 12}));
-  const W = OX.RAIL + 10 + cols.length * OX.COL_W + 24, H = y + 24;
+  const W = OX.RAIL + 10 + cols.length * colW + 24, H = y + 24;
   return {kind: 'options', W, H, top: optionsHead(), rail: OX.RAIL, rows, groups, notes, cols, cells, noteCells, weigh, weighCells};
 }

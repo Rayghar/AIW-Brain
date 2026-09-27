@@ -12,10 +12,10 @@
 // through the Chapter 4 editors and responsibility proposals.
 import {responsibilitySource, foldResponsibilities, responsibilityScope, coverage, journeyWalk, describeWalk, describeResponsibility, describeFlow, responsibilityInsights, defaultDepth, laneInfo, bandInfo, PROPOSED, UNGROUPED, UNOWNED, ACROSS} from './responsibility-model.js';
 import {responsibilityLayout, mapHead, coverageLayout, coverageHead, RX, CX} from './responsibility-layout.js';
-import {modelStage, sizeModel, placeTip} from './model-stage.js';
+import {modelStage, sizeModel, placeTip, edgesHTML, toolsHTML, defaultPanel, panelToggle, setState, showFailure, announceObject, focusKey, refocus} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
-import {specPanelHTML, runsOnLabel, productLabels} from './spec-panel.js';
+import {specPanelHTML} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -59,7 +59,7 @@ export function mountChapterModel(selection, callbacks = {}) {
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'sel', 'scn']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
-    if (typeof v.panel === 'boolean') S.panel = v.panel;
+    S.panel = defaultPanel(v.panel);
     if (!['map', 'coverage'].includes(S.view)) S.view = 'map';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'structure';
   }
@@ -93,8 +93,10 @@ function rebuild(p) {
 }
 function known(id) {
   if (!id || !LM) return false;
-  return LM.R.has(id) || LM.flows.some(f => f.id === id) || LM.steps.some(s => s.id === id) || LM.groups.has(id) || (id === UNGROUPED && LM.bands.includes(UNGROUPED)) || LM.Q.has(id) || LM.D.has(id) || LM.A.has(id) || LM.C.has(id) || LM.O.has(id) || (id === PROPOSED && !!ghost());
+  return LM.R.has(id) || LM.flows.some(f => f.id === id) || LM.steps.some(s => s.id === id) || LM.groups.has(id) || (id === UNGROUPED && LM.bands.includes(UNGROUPED)) || LM.Q.has(id) || LM.D.has(id) || LM.A.has(id) || LM.C.has(id) || LM.O.has(id) || (id === PROPOSED && !!ghost()) || (String(id).startsWith('LINK:') && !!F?.links.some(l => l.id === id.slice(5)));
 }
+// A label that bundles several flows selects the bundle: the companion lists each flow.
+const bundled = id => (String(id).startsWith('LINK:') ? F?.links.find(l => l.id === id.slice(5)) : null);
 // A proposal previewed from the companion or an insight: select what it would add.
 function followGhost() {
   const g = ghost(), key = g ? g.key : '';
@@ -111,16 +113,14 @@ function shell() {
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div class="lr-addmenu"></div></details>
     <button type="button" class="cm-btn" data-lr="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-lr="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
-    <button type="button" class="cm-btn icon" data-lr="panel" aria-pressed="true" aria-label="Show the companion panel" title="Companion">${icon('panel')}</button></div></header>
-  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Elements"></div><label class="cm-scn"><span>Journey</span><select data-lr-field="scn" aria-label="Journey to walk"></select></label><p class="cm-state" role="status" aria-live="polite"></p></div>
+    <button type="button" class="cm-btn icon" data-lr="panel" aria-pressed="true" aria-label="Hide the companion panel" title="Companion">${icon('panel')}</button></div></header>
+  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Elements"></div><label class="cm-scn"><span>Journey</span><select data-lr-field="scn" aria-label="Journey to walk"></select></label></div>
   <div class="cm-banner"></div>
-  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Logical application canvas. Drag or scroll to move; Ctrl or Command and scroll to zoom.">
+  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Logical application canvas. Drag or scroll to move; arrow keys pan; Ctrl or Command and scroll to zoom.">
     <div class="cm-world"><svg class="cm-svg" aria-hidden="true"></svg><div class="cm-html"></div></div>
-    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>
-    <div class="cm-key cm-min"><button type="button" class="cm-kt" data-lr="key" aria-expanded="false">Key</button><div class="cm-legend"></div></div>
-    <div class="cm-zoom"><button type="button" data-lr="zout" aria-label="Zoom out">−</button><button type="button" data-lr="zin" aria-label="Zoom in">+</button><button type="button" data-lr="fit" aria-label="Fit the width">${icon('fit')}</button></div>
+    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>${edgesHTML()}
   </div><aside class="cm-panel" aria-label="Companion"></aside></div>
-  <footer class="cm-walk" aria-label="Walk a journey through the responsibilities"></footer><div class="cm-tip" role="tooltip" hidden></div>`;
+  <footer class="cm-walk" aria-label="Walk a journey through the responsibilities"><div class="cm-walk-in"></div><p class="cm-state" role="status" aria-live="polite"></p>${toolsHTML('lr')}</footer><div class="cm-tip" role="tooltip" hidden></div>`;
 }
 
 // ---------------------------------------------------------------- render
@@ -144,13 +144,15 @@ function rState(r) { return r.changed ? 'changed' : !r.defined || !r.reqs.length
 
 function render() {
   if (!root) return;
-  if (!LM) { root.querySelector('.cm-html').innerHTML = '<p class="cm-empty">The logical model could not be prepared for this project.</p>'; return; }
+  if (!LM) { showFailure(root, 'The logical model could not be prepared for this project.'); return; }
+  const fk = focusKey(root);
+  if (S.sel !== announced) announce();
   root.classList.remove('cm-lens-structure', 'cm-lens-flow', 'cm-lens-reasoning');
   root.classList.add('cm-lens-' + S.lens);
   root.classList.toggle('lr-matrix', covView());
   root.classList.toggle('lr-walking', S.walk >= 0 && !covView());
+  root.classList.toggle('cm-walking', S.walk >= 0 && !covView());
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
-  root.querySelector('[data-lr="panel"]').setAttribute('aria-pressed', String(S.panel));
   // Geometry depends on the records, the scope, the depth and a pending proposal — never the lens.
   F = foldResponsibilities(LM, scope(), depth(), {proposal: logicalGhost()});
   if (covView()) { G = coverage(LM, scope(), {proposal: logicalGhost()}); L = coverageLayout(G); } else L = responsibilityLayout(F, {measure});
@@ -165,6 +167,7 @@ function render() {
   stage.use(L, JSON.stringify([S.view, S.scope?.kind || 'system', S.scope?.id || '', depth()]));
   if (fitPending) { fitPending = false; stage.fit(); } else stage.clamp();
   stage.apply();
+  refocus(root, fk);
 }
 function emptyHTML() {
   return `<div class="lr-empty" style="left:${RX.RAIL + 30}px;top:${mapHead() + 30}px"><b>No responsibility yet</b><p>A responsibility names a behaviour the design owns, the journey step it serves and the requirement that justifies it.</p><button type="button" class="cm-btn primary" data-l-action="new">${icon('plus')}New responsibility</button>${LM.proposals.filter(q => !q.existingId).map(q => `<button type="button" class="cm-btn gold" data-l-action="preview" data-l-key="${esc(q.key)}">Propose: ${esc(q.title)}</button>`).join('')}</div>`;
@@ -184,6 +187,7 @@ function concerns(id) {
   else if (LM.C.has(id)) { for (const r of LM.R.values()) if (r.realisedBy.includes(id)) addR(r.id); }
   else if (LM.O.has(id)) { for (const r of LM.R.values()) if (r.context.some(c => c.object === id)) addR(r.id); }
   else if (id === PROPOSED) { out.rows.add(PROPOSED); const g = logicalGhost(); if (g?.source && R(g.source)) addR(g.source); }
+  else if (bundled(id)) { for (const f of bundled(id).flows) { out.flows.add(f); addR(flowOf(f).from); addR(flowOf(f).to); } }
   return out;
 }
 function highlight() {
@@ -233,28 +237,29 @@ function mapSVG(hl) {
   }
   return out.join('');
 }
-const chipD = c => `<i class="cm-d lr-o ${c.layer}" data-sel="${esc(c.object)}" title="${esc((c.outward ? c.label + ' ' : c.label + ' ← ') + c.title)}">${esc(c.title)}</i>`;
+// Chips are buttons: what can be selected can be reached with the keyboard.
+const chipD = c => `<button type="button" class="cm-chip cm-d lr-o ${c.layer}" data-sel="${esc(c.object)}" title="${esc((c.outward ? c.label + ' ' : c.label + ' ← ') + c.title)}">${esc(c.title)}</button>`;
 function structureLines(r) {
   const own = r.context.filter(c => c.layer === 'data'), faces = r.context.filter(c => c.layer === 'interface'), guard = r.context.filter(c => c.layer === 'security'), other = r.context.filter(c => !['data', 'interface', 'security'].includes(c.layer));
-  const g = ghost(), pro = g && g.layer === 'data' && g.source === r.id ? `<i class="cm-d lr-o proposed" data-l-action="edit-ghost" title="${esc('Proposed · not saved: ' + g.title)}">+ ${esc(g.title)}</i>` : '';
-  const l1 = pro + [...own.map(chipD), ...faces.map(c => `<i class="lr-f" data-sel="${esc(c.object)}" title="${esc(c.label + ' ' + c.title)}">${esc(c.label === 'uses' ? 'uses ' : '')}${esc(c.title)}</i>`), ...guard.map(c => `<i class="lr-g" data-sel="${esc(c.object)}" title="${esc('Protected by ' + c.title)}">${esc(c.title)}</i>`), ...other.map(chipD)].join('') || '<em>owns nothing recorded</em>';
+  const g = ghost(), pro = g && g.layer === 'data' && g.source === r.id ? `<button type="button" class="cm-chip cm-d lr-o proposed" data-l-action="edit-ghost" title="${esc('Proposed · not saved: ' + g.title)}">+ ${esc(g.title)}</button>` : '';
+  const l1 = pro + [...own.map(chipD), ...faces.map(c => `<button type="button" class="cm-chip lr-f" data-sel="${esc(c.object)}" title="${esc(c.label + ' ' + c.title)}">${esc(c.label === 'uses' ? 'uses ' : '')}${esc(c.title)}</button>`), ...guard.map(c => `<button type="button" class="cm-chip lr-g" data-sel="${esc(c.object)}" title="${esc('Protected by ' + c.title)}">${esc(c.title)}</button>`), ...other.map(chipD)].join('') || '<em>owns nothing recorded</em>';
   return `<span class="lr-l1">${l1}</span><span class="lr-l2">${r.boundary ? `<span class="lr-bd" title="${esc('Owns: ' + r.boundary)}">${esc(r.boundary)}</span>` : '<em class="miss">boundary not recorded</em>'}</span>`;
 }
 function flowLines(r) {
   const ins = r.in.map(flowOf), outs = r.out.map(flowOf);
-  const chip = (f, dir) => { const o = R(dir === 'in' ? f.from : f.to); return `<i class="lr-x${f.condition ? ' cond' : ''}" data-sel="${esc(f.id)}" title="${esc(describeFlow(LM, f.id))}">${dir === 'in' ? '←' : '→'} <b>${esc(o.ref)}</b> ${esc(f.label)}${f.condition ? ' ◇' : ''}</i>`; };
+  const chip = (f, dir) => { const o = R(dir === 'in' ? f.from : f.to); return `<button type="button" class="cm-chip lr-x${f.condition ? ' cond' : ''}" data-sel="${esc(f.id)}" title="${esc(describeFlow(LM, f.id))}">${dir === 'in' ? '←' : '→'} <b>${esc(o.ref)}</b> ${esc(f.label)}${f.condition ? ' ◇' : ''}</button>`; };
   const first = r.stage === 0 && !r.offJourney;
   return `<span class="lr-l1">${ins.map(f => chip(f, 'in')).join('') || `<em>${first ? 'the journey starts here' : 'nothing hands it work'}</em>`}</span><span class="lr-l2">${outs.map(f => chip(f, 'out')).join('') || '<em>hands nothing on</em>'}</span>`;
 }
 function reasonLines(r) {
-  const reqs = r.reqs.map(id => `<i class="lr-w" data-sel="${esc(id)}" title="${esc(id + ' · ' + LM.Q.get(id).title)}">${esc(id)}</i>`).join('');
+  const reqs = r.reqs.map(id => `<button type="button" class="cm-chip lr-w" data-sel="${esc(id)}" title="${esc(id + ' · ' + LM.Q.get(id).title)}">${esc(id)}</button>`).join('');
   const qd = r.qds.length ? `<i class="lr-w q" title="${esc(r.qds.map(d => d.id + (d.direct ? '' : ' (inherited)')).join(', '))}">${r.qds.length} driver${r.qds.length === 1 ? '' : 's'}</i>` : '';
-  const adrs = r.adrs.map(id => { const d = LM.A.get(id); return `<i class="lr-w d${d.current ? '' : ' draft'}" data-sel="${esc(id)}" title="${esc(id + ' · ' + d.question + ' · ' + (d.current ? 'accepted' : d.status))}">${esc(id)}</i>`; }).join('');
+  const adrs = r.adrs.map(id => { const d = LM.A.get(id); return `<button type="button" class="cm-chip lr-w d${d.current ? '' : ' draft'}" data-sel="${esc(id)}" title="${esc(id + ' · ' + d.question + ' · ' + (d.current ? 'accepted' : d.status))}">${esc(id)}</button>`; }).join('');
   return `<span class="lr-l1">${reqs || '<i class="lr-w miss">no requirement</i>'}${qd}</span><span class="lr-l2">${adrs || '<i class="lr-w miss">no decision</i>'}</span>`;
 }
 function strip(r) {
-  const g = ghost(), pro = g && g.layer === 'physical' && g.source === r.id ? `<i class="lr-c proposed" data-l-action="edit-ghost" title="${esc('Proposed · not saved: ' + g.title)}">+ ${esc(g.title)}</i>` : '';
-  const cs = r.allocations.filter(a => a.known).map(a => { const c = LM.C.get(a.component); return `<i class="lr-c${a.status === 'reviewed' ? ' reviewed' : ''}${a.current ? '' : ' stale'}" data-sel="${esc(c.id)}" title="${esc(c.ref + ' · ' + c.title + (a.scope ? ' — ' + a.scope : '') + (a.current ? '' : ' · the responsibility changed since this mapping'))}"><b>${esc(c.ref)}</b>${esc(c.title)}</i>`; }).join('');
+  const g = ghost(), pro = g && g.layer === 'physical' && g.source === r.id ? `<button type="button" class="cm-chip lr-c proposed" data-l-action="edit-ghost" title="${esc('Proposed · not saved: ' + g.title)}">+ ${esc(g.title)}</button>` : '';
+  const cs = r.allocations.filter(a => a.known).map(a => { const c = LM.C.get(a.component); return `<button type="button" class="cm-chip lr-c${a.status === 'reviewed' ? ' reviewed' : ''}${a.current ? '' : ' stale'}" data-sel="${esc(c.id)}" title="${esc(c.ref + ' · ' + c.title + (a.scope ? ' — ' + a.scope : '') + (a.current ? '' : ' · the responsibility changed since this mapping'))}"><b>${esc(c.ref)}</b>${esc(c.title)}</button>`; }).join('');
   return `<div class="lr-strip"><small>realised by</small>${pro}${cs || (pro ? '' : '<em class="miss">no component yet</em>')}</div>`;
 }
 function stepsTag(r) {
@@ -267,19 +272,21 @@ function mapHTML(hl) {
   const out = [];
   for (const c of L.cards) {
     const row = c.row, pos = `style="left:${c.x}px;top:${c.y}px;width:${c.w}px;height:${c.h}px"`;
+    // A card is a group of what it carries; its chips are the buttons inside it. Enter or Space on
+    // the card selects it, and Enter on the selected card opens it.
     if (row.kind === 'hole') {
       const s = stepOf(row.step);
-      out.push(`<div class="lr-card hole${cardCls(hl, row.id)}${S.sel === s.id ? ' sel' : ''}" data-card="${esc(row.id)}" ${pos} tabindex="0" role="button" aria-label="${esc('Nobody owns step ' + s.num + ' ' + s.title)}"><small>Step ${esc(s.num)} · nobody owns it</small><b class="lr-t">${esc(s.title)}</b><div class="lr-lens"><p>${esc(s.description || 'No responsibility serves this journey step.')}</p></div><div class="lr-strip"><button type="button" class="cm-mini gold" data-l-action="new">Add a responsibility</button></div></div>`);
+      out.push(`<div class="lr-card hole${cardCls(hl, row.id)}${S.sel === s.id ? ' sel' : ''}" data-card="${esc(row.id)}" ${pos} tabindex="0" role="group" aria-label="${esc('Nobody owns step ' + s.num + ' ' + s.title)}"><small>Step ${esc(s.num)} · nobody owns it</small><b class="lr-t">${esc(s.title)}</b><div class="lr-lens"><p>${esc(s.description || 'No responsibility serves this journey step.')}</p></div><div class="lr-strip"><button type="button" class="cm-mini gold" data-l-action="new">Add a responsibility</button></div></div>`);
       continue;
     }
     if (row.kind === 'empty') {
       const g = LM.groups.get(row.group);
-      out.push(`<div class="lr-card empty${cardCls(hl, row.id)}" data-card="${esc(row.id)}" ${pos} tabindex="0" role="button" aria-label="${esc('Empty group ' + g.title)}"><small>Group · no responsibility yet</small><b class="lr-t">${esc(g.title)}</b><div class="lr-lens"><p>${esc(g.purpose || 'Place a responsibility in this group, or remove it.')}</p></div><div class="lr-strip"><button type="button" class="cm-mini gold" data-l-action="new">Add a responsibility</button></div></div>`);
+      out.push(`<div class="lr-card empty${cardCls(hl, row.id)}" data-card="${esc(row.id)}" ${pos} tabindex="0" role="group" aria-label="${esc('Empty group ' + g.title)}"><small>Group · no responsibility yet</small><b class="lr-t">${esc(g.title)}</b><div class="lr-lens"><p>${esc(g.purpose || 'Place a responsibility in this group, or remove it.')}</p></div><div class="lr-strip"><button type="button" class="cm-mini gold" data-l-action="new">Add a responsibility</button></div></div>`);
       continue;
     }
     if (row.kind === 'proposed') {
       const g = logicalGhost(), reqs = row.requirementIds.map(id => `<i class="lr-w">${esc(id)}</i>`).join('');
-      out.push(`<div class="lr-card proposed${S.sel === PROPOSED ? ' sel' : ''}${cardCls(hl, row.id)}" data-card="${PROPOSED}" ${pos} tabindex="0" role="button" aria-label="${esc('Proposal, not saved: ' + row.title)}"><small>Proposal · not saved</small><b class="lr-t">${esc(row.title)}</b><div class="lr-lens"><div class="st"><span class="lr-l1"><span class="lr-bd">${esc(g?.boundary || g?.purpose || '')}</span></span><span class="lr-l2"><button type="button" class="cm-mini gold" data-l-action="edit-ghost">Review &amp; edit</button></span></div><div class="fl"><span class="lr-l1">${row.source ? `<i class="lr-x">← <b>${esc(R(row.source)?.ref || '')}</b> ${esc(row.relationship)}</i>` : '<em>linked on review</em>'}</span><span class="lr-l2"><button type="button" class="cm-mini gold" data-l-action="edit-ghost">Review &amp; edit</button></span></div><div class="rs"><span class="lr-l1">${reqs || '<em>requirements on review</em>'}</span><span class="lr-l2"><button type="button" class="cm-mini gold" data-l-action="edit-ghost">Review &amp; edit</button></span></div></div><div class="lr-strip"><small>realised by</small><em>planned in Chapter 5</em></div></div>`);
+      out.push(`<div class="lr-card proposed${S.sel === PROPOSED ? ' sel' : ''}${cardCls(hl, row.id)}" data-card="${PROPOSED}" ${pos} tabindex="0" role="group" aria-label="${esc('Proposal, not saved: ' + row.title)}"><small>Proposal · not saved</small><b class="lr-t">${esc(row.title)}</b><div class="lr-lens"><div class="st"><span class="lr-l1"><span class="lr-bd">${esc(g?.boundary || g?.purpose || '')}</span></span><span class="lr-l2"><button type="button" class="cm-mini gold" data-l-action="edit-ghost">Review &amp; edit</button></span></div><div class="fl"><span class="lr-l1">${row.source ? `<i class="lr-x">← <b>${esc(R(row.source)?.ref || '')}</b> ${esc(row.relationship)}</i>` : '<em>linked on review</em>'}</span><span class="lr-l2"><button type="button" class="cm-mini gold" data-l-action="edit-ghost">Review &amp; edit</button></span></div><div class="rs"><span class="lr-l1">${reqs || '<em>requirements on review</em>'}</span><span class="lr-l2"><button type="button" class="cm-mini gold" data-l-action="edit-ghost">Review &amp; edit</button></span></div></div><div class="lr-strip"><small>realised by</small><em>planned in Chapter 5</em></div></div>`);
       continue;
     }
     if (row.kind === 'cell') {
@@ -287,11 +294,11 @@ function mapHTML(hl) {
       const ins = LM.flows.filter(f => row.members.includes(f.to) && !row.members.includes(f.from)).length, outs = LM.flows.filter(f => row.members.includes(f.from) && !row.members.includes(f.to)).length;
       const reqs = new Set(rs.flatMap(r => r.reqs)), adrs = new Set(rs.flatMap(r => r.adrs));
       const spans = [...new Set(rs.flatMap(r => r.steps.map(s => stepOf(s).num)))].sort();
-      out.push(`<div class="lr-card cell${rs.some(r => marked.has(r.id)) ? ' changed' : ''}${S.sel === row.band ? ' sel' : ''}${cardCls(hl, row.id)}" data-card="${esc(row.id)}" ${pos} tabindex="0" role="button" aria-label="${esc(band.title + ', ' + rs.length + ' responsibilities')}"><small><span class="lr-own">Group · ${rs.length} responsibilit${rs.length === 1 ? 'y' : 'ies'}</span>${spans.length ? `<i class="lr-tag">step${spans.length === 1 ? '' : 's'} ${esc(spans.join(' · '))}</i>` : '<i class="lr-tag off">off the journey</i>'}</small><b class="lr-t">${esc(band.title)}</b><div class="lr-lens"><div class="st"><span class="lr-l1">${rs.map(r => `<i class="lr-rr" data-sel="${esc(r.id)}" title="${esc(r.ref + ' · ' + r.title)}">${esc(r.ref)}</i>`).join('')}</span><span class="lr-l2"><em>${esc(rs.map(r => r.title).join(', '))}</em></span></div><div class="fl"><span class="lr-l1"><em>${ins} flow${ins === 1 ? '' : 's'} in</em></span><span class="lr-l2"><em>${outs} flow${outs === 1 ? '' : 's'} out</em></span></div><div class="rs"><span class="lr-l1"><i class="lr-w">${reqs.size} requirement${reqs.size === 1 ? '' : 's'}</i></span><span class="lr-l2">${adrs.size ? `<i class="lr-w d">${adrs.size} decision${adrs.size === 1 ? '' : 's'}</i>` : '<i class="lr-w miss">no decision</i>'}</span></div></div><div class="lr-strip"><small>realised by</small><em${open ? ' class="miss"' : ''}>${realised.size} component${realised.size === 1 ? '' : 's'}${open ? ` · ${open} not realised` : ''}</em></div></div>`);
+      out.push(`<div class="lr-card cell${rs.some(r => marked.has(r.id)) ? ' changed' : ''}${S.sel === row.band ? ' sel' : ''}${cardCls(hl, row.id)}" data-card="${esc(row.id)}" ${pos} tabindex="0" role="group" aria-label="${esc(band.title + ', ' + rs.length + ' responsibilities')}"><small><span class="lr-own">Group · ${rs.length} responsibilit${rs.length === 1 ? 'y' : 'ies'}</span>${spans.length ? `<i class="lr-tag">step${spans.length === 1 ? '' : 's'} ${esc(spans.join(' · '))}</i>` : '<i class="lr-tag off">off the journey</i>'}</small><b class="lr-t">${esc(band.title)}</b><div class="lr-lens"><div class="st"><span class="lr-l1">${rs.map(r => `<button type="button" class="cm-chip lr-rr" data-sel="${esc(r.id)}" title="${esc(r.ref + ' · ' + r.title)}">${esc(r.ref)}</button>`).join('')}</span><span class="lr-l2"><em>${esc(rs.map(r => r.title).join(', '))}</em></span></div><div class="fl"><span class="lr-l1"><em>${ins} flow${ins === 1 ? '' : 's'} in</em></span><span class="lr-l2"><em>${outs} flow${outs === 1 ? '' : 's'} out</em></span></div><div class="rs"><span class="lr-l1"><i class="lr-w">${reqs.size} requirement${reqs.size === 1 ? '' : 's'}</i></span><span class="lr-l2">${adrs.size ? `<i class="lr-w d">${adrs.size} decision${adrs.size === 1 ? '' : 's'}</i>` : '<i class="lr-w miss">no decision</i>'}</span></div></div><div class="lr-strip"><small>realised by</small><em${open ? ' class="miss"' : ''}>${realised.size} component${realised.size === 1 ? '' : 's'}${open ? ` · ${open} not realised` : ''}</em></div></div>`);
       continue;
     }
     const r = R(row.id), st = rState(r);
-    out.push(`<div class="lr-card resp${marked.has(r.id) ? ' changed' : ''}${row.ctx ? ' ctx' : ''}${row.subject ? ' subject' : ''}${S.sel === r.id ? ' sel' : ''}${cardCls(hl, row.id)}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="button" aria-label="${esc('Responsibility ' + r.ref + ' ' + r.title)}"><small><b class="lr-ref">${esc(r.ref)}</b><span class="lr-own">${esc(r.owner || 'owner not named')}</span>${stepsTag(r)}<i class="lr-st ${st}">${STATE[st]}</i></small><b class="lr-t">${esc(r.title)}</b><div class="lr-lens"><div class="st">${structureLines(r)}</div><div class="fl">${flowLines(r)}</div><div class="rs">${reasonLines(r)}</div></div>${strip(r)}</div>`);
+    out.push(`<div class="lr-card resp${marked.has(r.id) ? ' changed' : ''}${row.ctx ? ' ctx' : ''}${row.subject ? ' subject' : ''}${S.sel === r.id ? ' sel' : ''}${cardCls(hl, row.id)}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="group" aria-label="${esc('Responsibility ' + r.ref + ' ' + r.title + (S.sel === r.id ? '. Selected; press Enter to focus on it' : '. Press Enter to select it'))}"><small><b class="lr-ref">${esc(r.ref)}</b><span class="lr-own">${esc(r.owner || 'owner not named')}</span>${stepsTag(r)}<i class="lr-st ${st}">${STATE[st]}</i></small><b class="lr-t">${esc(r.title)}</b><div class="lr-lens"><div class="st">${structureLines(r)}</div><div class="fl">${flowLines(r)}</div><div class="rs">${reasonLines(r)}</div></div>${strip(r)}</div>`);
   }
   for (const lb of L.labels) {
     const l = lb.link, lit = hl.links.has(l.id), cls = `lr-label${l.proposed ? ' proposed' : ''}${lit ? ' lit' : hl.stops.has(l.id) ? ' stop' : hl.on ? ' dim' : ''}${l.dim ? ' out' : ''}`, pos = `style="left:${lb.x}px;top:${lb.y}px;width:${lb.w}px;height:${lb.h}px"`;
@@ -308,7 +315,7 @@ function mapHTML(hl) {
 }
 function mapHeads(hl) {
   const box = root.querySelector('.cm-heads-in'), out = [], walk = S.walk >= 0 ? scenario() : null, ws = walk ? walkSteps() : [];
-  const on = new Set(ws.map(w => w.step)), done = visited.get(walk?.id) || new Set();
+  const on = new Set(ws.map(w => w.step)), done = (walk && visited.get(visitKey(walk))) || new Set();
   for (const ln of L.lanes) {
     const s = ln.step ? stepOf(ln.step) : null;
     const w = walk ? (hl.now === ln.step ? ' now' : on.has(ln.step) ? (done.has(LM.steps.indexOf(s)) ? ' done' : ' on') : ' out') : '';
@@ -416,20 +423,22 @@ function chrome() {
   root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === S.view)));
   root.querySelector('.cm-lenses').innerHTML = LENSES.map(l => `<button type="button" class="cm-lens" data-lr="lens" data-id="${l.id}" aria-pressed="${S.lens === l.id}" title="${esc(l.q + ' Like the ' + l.like + '.')}">${icon(l.id)}<span>${l.label}</span></button>`).join('');
   const dp = depth();
-  root.querySelector('.cm-depth').innerHTML = !covView() && sc.kind === 'system' ? `<span>Elements</span>${[['groups', 'Groups'], ['responsibilities', 'Responsibilities']].map(([id, t]) => `<button type="button" class="cm-dep" data-lr="depth" data-id="${id}" aria-pressed="${dp === id}">${t}</button>`).join('')}` : '';
+  // One group folds to nothing: the control appears once there is something to fold.
+  root.querySelector('.cm-depth').innerHTML = !covView() && sc.kind === 'system' && LM.groups.size > 1 ? `<span>Elements</span>${[['groups', 'Groups'], ['responsibilities', 'Responsibilities']].map(([id, t]) => `<button type="button" class="cm-dep" data-lr="depth" data-id="${id}" aria-pressed="${dp === id}">${t}</button>`).join('')}` : '';
   const scn = root.querySelector('.cm-scn'), sel = scn.querySelector('select');
   scn.hidden = covView() || !LM.scenarios.length || !LM.steps.length;
   sel.innerHTML = LM.scenarios.map(s => `<option value="${esc(s.id)}"${s.id === scenario()?.id ? ' selected' : ''}>${esc(s.title)}${s.reviewed ? ' ✓' : ''}</option>`).join('');
   const rs = [...LM.R.values()], holes = LM.steps.filter(s => s.hole).length, uncarried = LM.flows.filter(f => f.realised && !f.carried).length;
-  if (covView()) { const reqs = G.rows.filter(r => r.kind === 'req'), qd = G.rows.filter(r => r.kind === 'qd'), adr = G.rows.filter(r => r.kind === 'adr'); root.querySelector('.cm-state').textContent = `${reqs.length} requirement${reqs.length === 1 ? '' : 's'} · ${reqs.filter(r => r.state === 'open').length} not covered · ${qd.length} quality driver${qd.length === 1 ? '' : 's'} · ${adr.length} decision${adr.length === 1 ? '' : 's'} (${adr.filter(r => r.state === 'draft').length} draft${adr.filter(r => r.state === 'draft').length === 1 ? '' : 's'})`; }
-  else root.querySelector('.cm-state').textContent = `${rs.length} responsibilit${rs.length === 1 ? 'y' : 'ies'} in ${LM.groups.size} group${LM.groups.size === 1 ? '' : 's'} · ${LM.steps.length} journey step${LM.steps.length === 1 ? '' : 's'} · ${holes} unowned · ${LM.flows.length} logical flow${LM.flows.length === 1 ? '' : 's'} · ${uncarried} not carried`;
+  if (covView()) { const reqs = G.rows.filter(r => r.kind === 'req'), qd = G.rows.filter(r => r.kind === 'qd'), adr = G.rows.filter(r => r.kind === 'adr'); setState(root, `${reqs.length} requirement${reqs.length === 1 ? '' : 's'} · ${reqs.filter(r => r.state === 'open').length} not covered · ${qd.length} quality driver${qd.length === 1 ? '' : 's'} · ${adr.length} decision${adr.length === 1 ? '' : 's'} (${adr.filter(r => r.state === 'draft').length} draft${adr.filter(r => r.state === 'draft').length === 1 ? '' : 's'})`); }
+  else if (!rs.length) setState(root, LM.steps.length ? `No responsibility recorded yet · ${LM.steps.length} journey step${LM.steps.length === 1 ? '' : 's'} waiting for an owner` : 'No responsibility recorded yet');
+  else setState(root, `${rs.length} responsibilit${rs.length === 1 ? 'y' : 'ies'} in ${LM.groups.size} group${LM.groups.size === 1 ? '' : 's'} · ${LM.steps.length} journey step${LM.steps.length === 1 ? '' : 's'} · ${holes} unowned · ${LM.flows.length} logical flow${LM.flows.length === 1 ? '' : 's'} · ${uncarried} not carried`);
   const g = ghost(), imp = pending();
   root.querySelector('.cm-banner').innerHTML = imp ? imp.banner() : g ? `<section class="dp-banner"><span class="ip-kicker">${g.layer === 'logical' ? 'Responsibility' : g.layer === 'data' ? 'Data' : 'Component'} proposal · not saved</span><b>${esc(g.title)}</b><small>${esc(g.effect || '')}</small><button type="button" class="cm-btn gold" data-l-action="edit-ghost">Review &amp; edit</button><button type="button" class="cm-btn" data-l-action="dismiss-ghost">Dismiss</button></section>` : '';
   const sr = S.sel && R(S.sel) ? R(S.sel) : null;
   root.querySelector('.lr-addmenu').innerHTML = `<button type="button" data-l-action="new">New responsibility</button><button type="button" data-l-action="new-group">New responsibility group</button>${sr ? `<button type="button" data-l-action="connect" data-l-id="${esc(sr.id)}">Connect ${esc(sr.ref)} to…</button><button type="button" data-l-action="map" data-l-id="${esc(sr.id)}">Link ${esc(sr.ref)} to a component</button>` : '<p>Select a responsibility to connect it or link it to the component that realises it.</p>'}`;
   root.querySelector('.cm-legend').innerHTML = covView()
-    ? `<p><i class="k-cell linked"></i>Covers the requirement</p><p><i class="k-cell direct"></i>Carries the quality driver by name</p><p><i class="k-cell inherited"></i>Inherits it through a requirement or decision</p><p><i class="k-cell accepted"></i>Decision linked and accepted</p><p><i class="k-cell draft"></i>Decision linked, still a draft</p><p><i class="k-cell considered"></i>An alternative names it; no link recorded</p>`
-    : `<p><span class="k-card"></span>Responsibility, at the journey step it serves</p><p><span class="k-band"></span>Responsibility group</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#286954" stroke-width="1.8" marker-end="url(#lr-a-n)"/></svg>Hands work on</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#7d8b78" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#lr-a-t)"/></svg>Relates to</p><p><i class="lr-dia">◇</i>Carries a condition</p><p><i class="lr-c k"><b>APP</b>component</i> realises it (Chapter 5)</p><p><span class="k-hole"></span>Journey step nobody owns</p>`;
+    ? `<p><i class="k-cell linked"></i>Covers the requirement</p><p><i class="k-cell direct"></i>Carries the quality driver by name</p><p><i class="k-cell inherited"></i>Inherits it through a requirement or decision</p><p><i class="k-cell accepted"></i>Decision linked and accepted</p><p><i class="k-cell draft"></i>Decision linked, still a draft</p><p><i class="k-cell considered"></i>An alternative names it; no link recorded</p><p><i class="k-cell chosen"></i>Named by the chosen alternative</p><p><i class="k-cell proposed"></i>Would cover it once the proposal is accepted</p><p><i class="k-plus">+</i>A link to record, from the selection</p>`
+    : `<p><span class="k-card"></span>Responsibility, at the journey step it serves</p><p><span class="k-band"></span>Responsibility group</p><p><span class="k-band unowned"></span>Steps nobody owns</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#286954" stroke-width="1.8" marker-end="url(#lr-a-n)"/></svg>Hands work on</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#7d8b78" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#lr-a-t)"/></svg>Relates to</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#b5832f" stroke-width="2.1" marker-end="url(#lr-a-w)"/></svg>Flow no Chapter 5 interaction carries (Structure lens)</p><p><i class="lr-dia">◇</i>Carries a condition</p><h5>On a card</h5><p><i class="cm-d lr-o k">data</i>Data it owns · <i class="lr-f k">interface</i>exposed · <i class="lr-g k">control</i>protected by (Structure)</p><p><i class="lr-x k">← LR</i>Where its work comes from and goes (Flow)</p><p><i class="lr-w k">REQ</i><i class="lr-w d k">ADR</i>Requirement and decision behind it; dashed, a draft (Reasoning)</p><p><i class="lr-c k"><b>APP</b>component</i>Realises it (Chapter 5)</p><h5>States</h5><p><span class="k-hole"></span>Journey step nobody owns</p><p><span class="k-card proposed"></span>Proposed, not saved</p><p><span class="k-card changed"></span>Changed by the open proposal</p>`;
 }
 
 // ---------------------------------------------------------------- companion
@@ -476,6 +485,11 @@ function specimenOther(id) {
   const layer = c ? 'physical' : o?.layer || 'other', ch = CH[layer];
   return `<section class="cm-spec"><h4>${esc(LAYER[layer] || 'Object')}</h4><p class="cm-spec-t"><b>${esc(refTitle(id))}</b></p><dl class="cm-dl"><div><dt>${c ? 'Realises' : 'Linked to'}</dt><dd>${rs.map(r => link(r.id)).join('') || '<em>No responsibility</em>'}</dd></div>${c ? `<div><dt>State</dt><dd>${esc(c.status || '—')}</dd></div>` : ''}</dl><div class="cm-acts">${ch ? `<a class="cm-btn" href="${esc(projectURL('/?chapter=' + ch + '&tab=' + (ch >= 5 ? 'model' : 'work') + '&object=' + encodeURIComponent(id)))}">Open in Chapter ${ch}</a>` : ''}${brain()}</div></section>`;
 }
+// Several flows on one label: the bundle reads as a list, each flow selectable.
+function specimenBundle(id) {
+  const l = bundled(id); if (!l) return '';
+  return `<section class="cm-spec"><h4>Flows between the same two ends<span>${l.flows.length}</span></h4><p class="cm-spec-t"><b>${esc(l.label)}</b></p><p>One label stands for ${l.flows.length} logical flows drawn along the same route. Select one to read it.</p><dl class="cm-dl"><div><dt>Flows</dt><dd>${l.flows.map(f => `<button type="button" class="cm-link" data-sel="${esc(f)}">${esc(f)} · ${esc(flowOf(f)?.label || '')}${flowOf(f)?.condition ? '<em> · on a condition</em>' : ''}</button>`).join('')}</dd></div></dl></section>`;
+}
 function specimenProposal() {
   const g = logicalGhost(); if (!g) return '';
   return `<section class="cm-spec"><h4>Proposal · not saved</h4><p class="cm-spec-t"><b>${esc(g.title)}</b></p><p>${esc(g.reason || '')}</p><dl class="cm-dl"><div><dt>Would</dt><dd>${esc(g.effect || '')}</dd></div><div><dt>Owns</dt><dd>${esc(g.boundary || '—')}</dd></div>${g.source && R(g.source) ? `<div><dt>Works with</dt><dd>${link(g.source)}<small>${esc(g.relationship || '')}</small></dd></div>` : ''}</dl><div class="cm-acts">${act('edit-ghost', '', icon('edit') + 'Review &amp; edit', 'gold')}${act('dismiss-ghost', '', 'Dismiss')}</div></section>`;
@@ -484,8 +498,8 @@ function reading() {
   if (covView()) return `<section><h4>Reading this view</h4><p>Each row is a reason the design exists — a requirement, a quality driver or a decision. Each column is a responsibility. A dot means the responsibility carries the reason; a ring means it inherits it, or that the link is still a draft.</p><p>Select a responsibility or a requirement to offer the missing links; each opens the Chapter 4 editor.</p></section>`;
   return `<section><h4>Reading this view</h4><p>The <b>journey</b> runs across the top; <b>responsibility groups</b> run down the left. Each card stands at the step it serves and carries, along its foot, the <b>component that realises it</b> in Chapter 5 — the logical design seen inside the physical one.</p><p>Solid arrows hand work on; ◇ marks a flow that runs only on a condition.${LM.scenarios.length && LM.steps.length ? ' <b>Walk a journey</b> to follow one scenario step by step.' : ''}</p></section>`;
 }
-function insightsHTML() {
-  const list = responsibilityInsights(LM, scope()).slice(0, 8);
+const insightsList = () => responsibilityInsights(LM, scope()).slice(0, 8);
+function insightsHTML(list = insightsList()) {
   if (!list.length) return '';
   const g = ghost();
   return `<section><h4>What the model shows<span>${list.length}</span></h4>${list.map(x => `<div class="lr-insw"><button type="button" class="cm-ins ${x.kind}" ${x.walk ? `data-lr="walk-from" data-scn="${esc(x.walk)}"` : x.scenario ? `data-lr="walk-from" data-scn="${esc(x.scenario)}" data-end="1"` : `data-sel="${esc(x.id || '')}"`}><span>${esc(x.text)}</span>${x.ask ? `<small>Ask: ${esc(x.ask)}</small>` : ''}</button>${x.proposal && g?.key !== x.proposal ? `<button type="button" class="cm-mini gold lr-inp" data-l-action="preview" data-l-key="${esc(x.proposal)}">Propose ${esc((LM.proposals.find(q => q.key === x.proposal)?.title || '').toLowerCase())}</button>` : ''}</div>`).join('')}<p class="cm-muted">Drawn from recorded responsibilities, flows, journey steps, reasons and Chapter 5 links. Prompts for review, not verdicts.</p></section>`;
@@ -500,36 +514,42 @@ function findingsHTML() {
   return `<section><h4>Chapter 4 checks<span>${fs.length}</span></h4>${[...groups].sort((a, b) => b[1].length - a[1].length).slice(0, 8).map(([k, g]) => `<button type="button" class="cm-fg ${g.some(f => f.level === 'error') ? 'error' : ''}" data-sel="${esc(known(g[0].objectId) ? g[0].objectId : '')}"><b>${esc(k)}</b><small>${g.length} · ${esc([...new Set(g.map(f => refOf(f.objectId) || f.objectId))].slice(0, 4).join(', '))}${g.length > 4 ? '…' : ''}</small></button>`).join('')}<a class="cm-muted" href="${esc(projectURL('/?chapter=4&tab=validate&validate=readiness'))}">All checks on Validate →</a></section>`;
 }
 function panel() {
-  const box = root.querySelector('.cm-panel');
+  const box = root.querySelector('.cm-panel'), ins = insightsList();
   solMark(root, project(), 4);
+  panelToggle(root, '[data-lr="panel"]', S.panel, ins.length);
   if (!S.panel) { box.innerHTML = ''; return; }
   const s = S.sel;
   let spec = '';
   if (s === PROPOSED) spec = specimenProposal();
+  else if (bundled(s)) spec = specimenBundle(s);
   else if (s && R(s)) spec = specimenResponsibility(s) + specPanelHTML(project(), s);
   else if (s && flowOf(s)) spec = specimenFlow(s);
   else if (s && stepOf(s)) spec = specimenStep(s);
   else if (s && (LM.groups.has(s) || s === UNGROUPED)) spec = specimenGroup(s);
   else if (s && (LM.Q.has(s) || LM.D.has(s) || LM.A.has(s))) spec = specimenReason(s);
   else if (s && known(s)) spec = specimenOther(s);
-  box.innerHTML = solInto(spec, solSection(project(), 4, s)) + reading() + insightsHTML() + findingsHTML();
+  box.innerHTML = solInto(spec, solSection(project(), 4, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
 
 // ---------------------------------------------------------------- walking a journey
 
+// The footer: the walk's controls and, while walking, its text; otherwise the status line beside them.
 function walkBar() {
-  const bar = root.querySelector('.cm-walk'), sc = scenario(), ws = walkSteps();
-  if (covView() || !sc || !ws.length) { bar.innerHTML = `<p class="cm-walk-text">${covView() ? 'Select a responsibility to see the reasons it carries; select a requirement or decision to see what covers it.' : 'Select a responsibility to read what it owns, where its work goes, and why it exists.'}</p>`; return; }
-  const cur = S.walk >= 0 ? ws[S.walk] : null, seen = visited.get(sc.id) || new Set(), complete = ws.every(w => seen.has(w.index));
+  const bar = root.querySelector('.cm-walk-in'), sc = scenario(), ws = walkSteps();
+  if (covView() || !sc || !ws.length) { bar.innerHTML = ''; return; }
+  const cur = S.walk >= 0 ? ws[S.walk] : null, seen = visited.get(visitKey(sc)) || new Set(), complete = ws.every(w => seen.has(w.index));
   const record = sc.reviewed ? '<span class="lr-rec ok">✓ Walk recorded for this model</span>' : complete ? `<button type="button" class="cm-btn gold" data-lr="record">Record this walk</button>` : '';
-  bar.innerHTML = `<button type="button" class="cm-btn" data-lr="walk-prev" aria-label="Previous step" ${S.walk <= 0 ? 'disabled' : ''}>‹</button><button type="button" class="cm-btn" data-lr="walk-next">${S.walk < 0 ? icon('play') + '<span>Walk the journey</span>' : S.walk >= ws.length - 1 ? 'Done' : 'Next ›'}</button><p class="cm-walk-text">${cur ? `<b>${S.walk + 1} / ${ws.length}</b> ${esc(describeWalk(LM, cur))}` : `<b>${esc(sc.title)}</b> · ${ws.length} of ${LM.steps.length} steps. At each one: who serves it, and which flow brought the work there.`}</p>${record}${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-lr="walk-stop" aria-label="Stop the walk">×</button>' : ''}`;
+  const walkTitle = `${sc.title} · ${ws.length} of ${LM.steps.length} steps. At each one: who serves it, and which flow brought the work there.`;
+  bar.innerHTML = `${S.walk >= 0 ? `<button type="button" class="cm-btn" data-lr="walk-prev" aria-label="Previous step" ${S.walk <= 0 ? 'disabled' : ''}>‹</button>` : ''}<button type="button" class="cm-btn" data-lr="walk-next" title="${esc(walkTitle)}">${S.walk < 0 ? icon('play') + '<span>Walk the journey</span>' : S.walk >= ws.length - 1 ? 'Done' : 'Next ›'}</button>${cur ? `<p class="cm-walk-text"><b>${S.walk + 1} / ${ws.length}</b> ${esc(describeWalk(LM, cur))}</p>` : ''}${record}${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-lr="walk-stop" aria-label="Stop the walk">×</button>' : ''}`;
 }
+// Walk progress belongs to one project's scenario, never to the next project opened.
+const visitKey = sc => `${project()?.id || ''}|${sc.id}`;
 function walkTo(i) {
   const ws = walkSteps(); if (!ws.length) return;
   if (S.view !== 'map') { S.view = 'map'; fitPending = true; }
   if (scope().kind !== 'system') { S.scope = {kind: 'system'}; fitPending = true; }
   S.walk = Math.max(-1, Math.min(ws.length - 1, i));
-  if (S.walk >= 0) { const sc = scenario(); if (!visited.has(sc.id)) visited.set(sc.id, new Set()); visited.get(sc.id).add(ws[S.walk].index); }
+  if (S.walk >= 0) { const k = visitKey(scenario()); if (!visited.has(k)) visited.set(k, new Set()); visited.get(k).add(ws[S.walk].index); }
   render(); revealWalk();
 }
 function revealWalk() {
@@ -558,18 +578,24 @@ function revealSelection() {
   const h = highlight(), row = S.sel === PROPOSED ? PROPOSED : F.rowOf(S.sel), card = L.cards.find(c => c.id === row) || L.cards.find(c => h.cards.has(c.id));
   if (card) stage.reveal(card.x, card.y, card.w, card.h);
 }
+// Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
+let announced;
+const selTarget = () => (S.sel && S.sel !== PROPOSED && !/^(G:|LINK:)/.test(String(S.sel)) ? S.sel : null);
+function announce() {
+  announced = S.sel;
+  const p = project(), target = selTarget();
+  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 4}, 'model'); } catch { /* assistance is optional */ } }
+  announceObject(target);
+}
 function select(id, {reveal = false} = {}) {
   S.sel = id || null; S.walk = -1;
-  const p = project(), target = S.sel && S.sel !== PROPOSED && !String(S.sel).startsWith('G:') ? S.sel : null;
-  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 4}, 'model'); } catch { /* assistance is optional */ } }
-  if (window.history) { const url = new URL(location.href); if (target) url.searchParams.set('object', target); else url.searchParams.delete('object'); window.history.replaceState(window.history.state, '', url.pathname + url.search); }
   if (S.sel && !S.panel) S.panel = true;
   save(); render();
   if (reveal) revealSelection();
 }
 function setScope(sc) { const r = responsibilityScope(LM, sc); S.scope = r.kind === 'system' ? {kind: 'system'} : {kind: r.kind, id: r.id}; S.walk = -1; fitPending = true; save(); render(); }
 function up() { const sc = scope(); if (sc.kind === 'part') { const g = R(sc.id)?.group; setScope(g ? {kind: 'group', id: g} : {kind: 'system'}); } else if (sc.kind === 'group') setScope({kind: 'system'}); }
-const linkFlow = id => { const l = F.links.find(x => x.id === id); if (!l || l.proposed) return null; return l.flows.length === 1 ? l.flows[0] : l.from; };
+const linkFlow = id => { const l = F.links.find(x => x.id === id); if (!l || l.proposed) return null; return l.flows.length === 1 ? l.flows[0] : 'LINK:' + l.id; };
 // Record a link from the coverage matrix through the Chapter 4 responsibility editor.
 function studioClick(action, data) { const b = document.createElement('button'); b.type = 'button'; b.hidden = true; b.dataset.lAction = action; for (const [k, v] of Object.entries(data)) b.dataset[k] = v; document.body.appendChild(b); b.click(); b.remove(); }
 function linkReason(row, col) {
@@ -625,10 +651,17 @@ function bind() {
     }
     const s = e.target.closest('[data-sel]');
     if (s && s.dataset.sel) { e.stopPropagation(); select(s.dataset.sel, {reveal: !!s.closest('.cm-panel')}); return; }
-    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
+    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-edge') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
   root.addEventListener('change', e => { const f = e.target.closest('[data-lr-field="scn"]'); if (!f) return; S.scn = f.value; S.walk = -1; save(); render(); });
-  root.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); const id = e.target.dataset.card; select(id.startsWith('HOLE:') ? id.slice(5) : id.startsWith('EMPTY:') ? id.slice(6) : id.startsWith('G:') ? id.slice(2) : id); } });
+  // Enter or Space on a card selects it; Enter on the selected card opens it, as a double-click does.
+  root.addEventListener('keydown', e => {
+    if ((e.key !== 'Enter' && e.key !== ' ') || !e.target.matches('[data-card]')) return;
+    e.preventDefault();
+    const raw = e.target.dataset.card, id = raw.startsWith('HOLE:') ? raw.slice(5) : raw.startsWith('EMPTY:') ? raw.slice(6) : raw.startsWith('G:') ? raw.slice(2) : raw;
+    if (e.key === 'Enter' && S.sel === id) { if (raw.startsWith('G:')) setScope({kind: 'group', id}); else if (R(id)) setScope({kind: 'part', id}); return; }
+    select(id);
+  });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !root?.isConnected || document.querySelector('dialog[open]')) return;
     const a = document.activeElement;
@@ -649,7 +682,7 @@ function tip(e) {
   const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.lr-card,.lr-label,.lr-sh,.lr-bt');
   if (!t || !root.contains(t)) { box.hidden = true; return; }
   let html = '';
-  if (t.dataset.link) { const id = linkFlow(t.dataset.link); html = flowOf(id) ? `<b>${esc(id + ' · ' + flowOf(id).label)}</b>${esc(describeFlow(LM, id))}` : ''; }
+  if (t.dataset.link) { const id = linkFlow(t.dataset.link), b = bundled(id); html = flowOf(id) ? `<b>${esc(id + ' · ' + flowOf(id).label)}</b>${esc(describeFlow(LM, id))}` : b ? `<b>${esc(b.label)}</b>${b.flows.length} flows along one route: ${esc(b.flows.join(', '))}<small class="h">Select to read each</small>` : ''; }
   else if (t.dataset.card) { const id = t.dataset.card; html = R(id) ? `<b>${esc(refTitle(id))}</b>${esc(describeResponsibility(LM, id))}<small class="h">Double-click to focus on it</small>` : id.startsWith('G:') ? `<b>${esc(bandInfo(LM, id.slice(2)).title)}</b>${esc(bandInfo(LM, id.slice(2)).sub || '')}<small class="h">Double-click to open the group</small>` : id.startsWith('HOLE:') ? `<b>${esc(stepOf(id.slice(5)).title)}</b>No responsibility serves this journey step yet.` : ''; }
   else if (t.dataset.lane) { const s = stepOf(t.dataset.lane); html = s ? `<b>${esc('Step ' + s.num + ' · ' + s.title)}</b>${esc(s.description || '')}` : ''; }
   else if (t.dataset.band) { const b = bandInfo(LM, t.dataset.band); html = `<b>${esc(b.title)}</b>${esc(b.sub || '')}${b.kind === 'group' ? '<small class="h">Double-click to open the group</small>' : ''}`; }

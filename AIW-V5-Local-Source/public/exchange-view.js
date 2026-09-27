@@ -10,11 +10,11 @@
 // and goes through the existing reviewable proposal. Navigation is a view preference only.
 import {exchangeSource, foldScenario, foldData, exchangeScope, exchangeInsights, describeEvent, defaultDepth} from './exchange-model.js';
 import {sequenceLayout, dataLayout, SEQ} from './exchange-layout.js';
-import {modelStage, sizeModel, placeTip} from './model-stage.js';
+import {modelStage, sizeModel, placeTip, edgesHTML, toolsHTML, defaultPanel, panelToggle, setState, showFailure, announceObject, focusKey, refocus} from './model-stage.js';
 import {anatomyFindings} from './anatomy-model.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
-import {specPanelHTML, runsOnLabel, productLabels} from './spec-panel.js';
+import {specPanelHTML} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -55,7 +55,7 @@ export function mountExchangeModel(selection, callbacks = {}) {
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'scenario', 'sel']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
-    if (typeof v.panel === 'boolean') S.panel = v.panel;
+    S.panel = defaultPanel(v.panel);
     if (!['sequence', 'data'].includes(S.view)) S.view = 'sequence';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'flow';
   }
@@ -103,16 +103,14 @@ function shell() {
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-i-action="new-contract">New interface contract</button><button type="button" data-i-action="new-data">New data definition</button><button type="button" data-i-action="party">New external participant</button><p>New records are saved to your private project. Edits to existing ones are previewed as a reviewable proposal.</p></div></details>
     <button type="button" class="cm-btn" data-cm="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-cm="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
-    <button type="button" class="cm-btn icon" data-cm="panel" aria-pressed="true" aria-label="Show the companion panel" title="Companion">${icon('panel')}</button></div></header>
-  <div class="cm-bar"><label class="cm-scn"><span>Scenario</span><select data-cm-field="scenario" aria-label="Scenario"></select></label><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Lifelines"></div><p class="cm-state" role="status" aria-live="polite"></p></div>
+    <button type="button" class="cm-btn icon" data-cm="panel" aria-pressed="true" aria-label="Hide the companion panel" title="Companion">${icon('panel')}</button></div></header>
+  <div class="cm-bar"><label class="cm-scn"><span>Scenario</span><select data-cm-field="scenario" aria-label="Scenario"></select></label><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Lifelines"></div></div>
   <div class="cm-banner"></div>
-  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Model canvas. Drag or scroll to move; Ctrl or Command and scroll to zoom.">
+  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Model canvas. Drag or scroll to move; arrow keys pan; Ctrl or Command and scroll to zoom.">
     <div class="cm-world"><svg class="cm-svg" aria-hidden="true"></svg><div class="cm-html"></div></div>
-    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>
-    <div class="cm-key cm-min"><button type="button" class="cm-kt" data-cm="key" aria-expanded="false">Key</button><div class="cm-legend"></div></div>
-    <div class="cm-zoom"><button type="button" data-cm="zout" aria-label="Zoom out">−</button><button type="button" data-cm="zin" aria-label="Zoom in">+</button><button type="button" data-cm="fit" aria-label="Fit the width">${icon('fit')}</button></div>
+    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>${edgesHTML()}
   </div><aside class="cm-panel" aria-label="Companion"></aside></div>
-  <footer class="cm-walk" aria-label="Walk through the scenario"></footer><div class="cm-tip" role="tooltip" hidden></div>`;
+  <footer class="cm-walk" aria-label="Walk through the scenario"><div class="cm-walk-in"></div><p class="cm-state" role="status" aria-live="polite"></p>${toolsHTML('cm')}</footer><div class="cm-tip" role="tooltip" hidden></div>`;
 }
 
 // ---------------------------------------------------------------- render
@@ -132,13 +130,15 @@ function measure(e) {
 }
 function render() {
   if (!root) return;
-  if (!X) { root.querySelector('.cm-html').innerHTML = '<p class="cm-empty">The interfaces model could not be prepared for this project.</p>'; return; }
+  if (!X) { showFailure(root, 'The interfaces model could not be prepared for this project.'); return; }
+  const fk = focusKey(root);
+  if (S.sel !== announced) announce();
   const sc = scope(), dp = depth(), box = stage.box();
   root.classList.remove('cm-lens-flow', 'cm-lens-signals', 'cm-lens-information');
   root.classList.add('cm-lens-' + S.lens);
   root.classList.toggle('cm-data', S.view === 'data');
+  root.classList.toggle('cm-walking', S.walk >= 0 && S.view === 'sequence');
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
-  root.querySelector('[data-cm="panel"]').setAttribute('aria-pressed', String(S.panel));
   // Geometry depends on the scope, the scenario and the stage width only — never on the lens.
   if (S.view === 'sequence') { F = foldScenario(X, scenario(), sc, dp); L = sequenceLayout(F, {viewW: Math.max(640, box.w), measure}); }
   else { G = foldData(X, sc, dp); L = dataLayout(G, {viewW: Math.max(640, box.w)}); }
@@ -153,6 +153,7 @@ function render() {
   stage.use(L, JSON.stringify([S.view, S.scope?.kind || 'system', S.scope?.id || '', S.view === 'sequence' ? S.scenario : '', depth()]));
   if (fitPending) { fitPending = false; stage.fit(); } else stage.clamp();
   stage.apply();
+  refocus(root, fk);
 }
 
 // What is lit: the selection and everything it touches in this view.
@@ -210,7 +211,7 @@ function badges(c, narrow) {
   const it = (ok, word, glyph, detail, na = false) => na ? '' : `<i class="${ok ? 'ok' : 'miss'}" title="${esc(word + ': ' + (detail || 'not recorded'))}">${narrow ? glyph : word}</i>`;
   return it(!!c.timeout, 'timeout', '⏱', c.timeout, c.async) + it(!!(c.retry || c.failure), 'failure', '↻', c.failure || c.retry) + it(!!(c.idempotency || c.duplicate), 'repeats', '≡', c.idempotency || c.duplicate, c.async);
 }
-function chips(ids, cls = '', unsourced = []) { return ids.map(id => { const d = X.D.get(id), q = unsourced.includes(id); return d ? `<i class="cm-d ${clsOf(d.classification)} ${cls}${q ? ' q' : ''}${S.sel === id ? ' lit' : ''}" data-sel="${esc(id)}" title="${esc(d.ref + ' · ' + d.title + (d.classification ? ' · ' + d.classification : '') + (q ? ' · sent without a recorded source' : ''))}">${q ? '? ' : ''}${esc(d.title)}</i>` : ''; }).join(''); }
+function chips(ids, cls = '', unsourced = []) { return ids.map(id => { const d = X.D.get(id), q = unsourced.includes(id); return d ? `<button type="button" class="cm-chip cm-d ${clsOf(d.classification)} ${cls}${q ? ' q' : ''}${S.sel === id ? ' lit' : ''}" data-sel="${esc(id)}" title="${esc(d.ref + ' · ' + d.title + (d.classification ? ' · ' + d.classification : '') + (q ? ' · sent without a recorded source' : ''))}">${q ? '? ' : ''}${esc(d.title)}</button>` : ''; }).join(''); }
 
 function seqHTML(hl) {
   const out = [];
@@ -267,7 +268,9 @@ function dataHTML(hl) {
   for (const m of L.moves) {
     const c = X.C.get(m.contract), on = hl.on ? (hl.data.has(m.data) || hl.contracts.has(m.contract) ? ' lit' : ' dim') : '';
     if (m.lw < 36) continue;
-    out.push(`<button type="button" class="cm-mvl${on}${m.dim ? ' out' : ''}${c?.gaps.length ? ' has-gaps' : ''}" data-sel="${esc(m.contract)}" style="left:${m.lx}px;top:${m.y - 19}px;max-width:${m.lw}px" title="${esc((c ? c.ref + ' ' + c.title : m.contract) + ' · ' + m.role)}"><span class="cm-op">${esc(c ? c.ref + ' ' + c.title : m.contract)}</span><span class="cm-sig">${esc(c ? c.ref : '')} ${c ? (c.gaps.length ? '· no ' + c.gaps.join(', ') : '· complete') : ''}</span><span class="cm-inf">${esc(c ? c.ref : '')} · ${m.role}</span></button>`);
+    // A short movement carries the contract's reference only; the whole name is in its title and companion.
+    const short = m.lw < 110, name = c ? (short ? c.ref : c.ref + ' ' + c.title) : m.contract;
+    out.push(`<button type="button" class="cm-mvl${on}${m.dim ? ' out' : ''}${c?.gaps.length ? ' has-gaps' : ''}" data-sel="${esc(m.contract)}" style="left:${m.lx}px;top:${m.y - 19}px;max-width:${m.lw}px" title="${esc((c ? c.ref + ' ' + c.title : m.contract) + ' · ' + m.role)}"><span class="cm-op">${esc(name)}</span><span class="cm-sig">${esc(c ? c.ref : '')} ${c ? (c.gaps.length ? '· no ' + c.gaps.join(', ') : '· complete') : ''}</span><span class="cm-inf">${esc(c ? c.ref : '')} · ${m.role}</span></button>`);
   }
   for (const k of L.marks) {
     const d = X.D.get(k.data), on = hl.on ? (hl.data.has(k.data) ? ' lit' : ' dim') : '';
@@ -323,10 +326,13 @@ function chrome() {
   const dp = depth();
   root.querySelector('.cm-depth').innerHTML = sc.kind === 'system' && X.M.modules.length > 1 ? `<span>${seq ? 'Lifelines' : 'Columns'}</span><button type="button" class="cm-dep" data-cm="depth" data-id="modules" aria-pressed="${dp === 'modules'}">Modules</button><button type="button" class="cm-dep" data-cm="depth" data-id="components" aria-pressed="${dp === 'components'}">Components</button>` : '';
   const st = seq ? s?.stats : null;
-  root.querySelector('.cm-state').textContent = seq ? (s ? `${s.title} · ${st.messages} message${st.messages === 1 ? '' : 's'}${st.external ? ' · ' + st.external + ' external' : ''}${st.lost ? ' · 1 lost answer' : ''}${st.gaps ? ' · ' + st.gaps + ' missing interaction' + (st.gaps === 1 ? '' : 's') : ''}` : 'No interactions recorded yet') : `${G.rows.length} data definition${G.rows.length === 1 ? '' : 's'} · ${G.rows.reduce((n, r) => n + r.moves.length, 0)} movements`;
+  setState(root, seq ? (s ? `${s.title} · ${st.messages} message${st.messages === 1 ? '' : 's'}${st.external ? ' · ' + st.external + ' external' : ''}${st.lost ? ' · 1 lost answer' : ''}${st.gaps ? ' · ' + st.gaps + ' missing interaction' + (st.gaps === 1 ? '' : 's') : ''}` : 'No interactions recorded yet') : (G.rows.length ? `${G.rows.length} data definition${G.rows.length === 1 ? '' : 's'} · ${G.rows.reduce((n, r) => n + r.moves.length, 0)} movements` : 'No data definition recorded yet'));
   const i = pending();
   root.querySelector('.cm-banner').innerHTML = i ? i.banner() : '';
-  root.querySelector('.cm-legend').innerHTML = seq ? `<p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#2c5446" stroke-width="1.6" marker-end="url(#cm-c-n)"/></svg>Request — the caller waits</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#2c5446" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#cm-o-n)"/></svg>Answer</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#2c5446" stroke-width="1.6" marker-end="url(#cm-o-n)"/></svg>Event — the sender does not wait</p><p><i class="k-bar"></i>Busy: handling a request or waiting for one</p><p><i class="k-end done"></i>Outcome reached</p><p><i class="k-end uncertain"></i>Outcome unknown — waiting on an enquiry</p><p><i class="k-end stopped"></i>Stopped</p><p><i class="k-frame"></i>What the contract says when the answer never arrives</p>` : `<p><span class="k-auth">★</span>Authority — the system of record</p><p><span class="k-copy"></span>Holds a copy it received</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#2c5446" stroke-width="1.6" marker-end="url(#cm-c-n)"/></svg>Sent with a request</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#2c5446" stroke-width="1.4" stroke-dasharray="4 3" marker-end="url(#cm-o-n)"/></svg>Returned in an answer</p>`;
+  const line = (dash, marker, colour = '#2c5446') => `<svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="${colour}" stroke-width="1.6"${dash ? ` stroke-dasharray="${dash}"` : ''} marker-end="url(#cm-${marker})"/></svg>`;
+  root.querySelector('.cm-legend').innerHTML = seq
+    ? `<p>${line('', 'c-n')}Request — the caller waits</p><p>${line('4 3', 'o-n')}Answer</p><p>${line('', 'o-n')}Event — the sender does not wait</p><p>${line('5 4', 'o-w', '#b0493a')}<i class="k-lost">✕</i>Answer that never arrives</p><p>${line('3 4', 'c-n', '#b5832f')}No recorded interaction for a step; a contract is missing</p><p>${line('2 3', 'c-n', '#b88830')}Proposed change, not saved</p><p><i class="k-bar"></i>Busy: handling a request or waiting for one</p><p><i class="k-end done"></i>Outcome reached</p><p><i class="k-end uncertain"></i>Outcome unknown — waiting on an enquiry</p><p><i class="k-end stopped"></i>Stopped</p><p><i class="k-frame"></i>What the contract says when the answer never arrives</p><p><i class="cm-d confidential k">?</i>Data sent without a recorded source</p>`
+    : `<p><span class="k-auth">★</span>Authority — the system of record</p><p><span class="k-copy"></span>Holds a copy it received</p><p>${line('', 'c-n')}Sent with a request</p><p>${line('4 3', 'o-n')}Returned in an answer</p><p>${line('', 'c-w', '#b0493a')}Travels on a contract with gaps (Signals lens)</p><p><span class="k-unsourced">?</span>Sent by a part no recorded contract brings it to</p><p><span class="k-orphan">No authoritative system</span>A definition with no system of record; assign one</p><p>${line('2 3', 'c-n', '#b88830')}Proposed change, not saved</p>`;
 }
 
 // ---------------------------------------------------------------- companion panel
@@ -366,8 +372,8 @@ function reading() {
   const lines = F.events.filter(e => ['call', 'return', 'self', 'gap', 'recover', 'end'].includes(e.t)).slice(0, 14);
   return `<section><h4>Reading this scenario</h4><p>${s.kind === 'journey' ? `The business journey <b>${esc(s.title)}</b>, step by step, as the recorded components and contracts carry it.` : s.kind === 'entry' ? `The calls that follow when work arrives from outside. No business journey is recorded, so this is the recorded call tree.` : 'Every recorded interaction once, grouped by caller.'} Requests nest: each caller stays busy until its answer returns.</p><ol class="cm-read">${lines.map(e => `<li><button type="button" data-ev="${e.id}" class="${S.ev === e.id || (S.walk >= 0 && walkEvents()[S.walk]?.id === e.id) ? 'lit' : ''}">${esc(describeEvent(X, e, {gaps: S.lens === 'signals'}))}</button></li>`).join('')}</ol>${F.events.length > 14 ? '<p class="cm-muted">Walk through to read every step.</p>' : ''}</section>`;
 }
-function insightsHTML() {
-  const list = exchangeInsights(X, scope()).slice(0, 8);
+const insightsList = () => exchangeInsights(X, scope()).slice(0, 8);
+function insightsHTML(list = insightsList()) {
   if (!list.length) return '';
   return `<section><h4>What the model shows<span>${list.length}</span></h4>${list.map(x => `<button type="button" class="cm-ins ${x.kind}" data-sel="${esc(x.id)}" ${x.scenario ? `data-scenario="${esc(x.scenario)}"` : ''}><span>${esc(x.text)}</span>${x.ask ? `<small>Ask: ${esc(x.ask)}</small>` : ''}</button>`).join('')}<p class="cm-muted">Drawn from recorded contracts, data and journeys. They are prompts for review, not verdicts.</p></section>`;
 }
@@ -381,8 +387,9 @@ function findingsHTML() {
   return `<section><h4>Chapter 8 checks<span>${fs.length}</span></h4>${[...groups].slice(0, 8).map(([k, g]) => `<button type="button" class="cm-fg ${g.some(f => f.level === 'error') ? 'error' : ''}" data-sel="${esc(g[0].subject || g[0].host || '')}"><b>${esc(k)}</b><small>${g.length} · ${esc([...new Set(g.map(f => ref(f.subject || f.objectId)))].slice(0, 4).join(', '))}${g.length > 4 ? '…' : ''}</small></button>`).join('')}<a class="cm-muted" href="${esc(projectURL('/?chapter=8&tab=validate&validate=readiness'))}">All checks on Validate →</a></section>`;
 }
 function panel() {
-  const box = root.querySelector('.cm-panel');
+  const box = root.querySelector('.cm-panel'), ins = insightsList();
   solMark(root, project(), 8);
+  panelToggle(root, '[data-cm="panel"]', S.panel, ins.length);
   if (!S.panel) { box.innerHTML = ''; return; }
   const s = S.sel, t = T(s);
   let spec = '';
@@ -391,17 +398,18 @@ function panel() {
   else if (['component', 'party', 'module'].includes(t)) spec = specimenLane(s) + (t === 'component' ? specPanelHTML(project(), s) : '');
   else if (s && F?.events.some(e => e.t === 'step' && e.ref === s)) spec = specimenStep(s);
   else if (s && X.links.some(l => l.id === s)) { const l = X.links.find(x => x.id === s); spec = `<section class="cm-spec"><h4>Interaction without a contract</h4><p class="cm-spec-t"><b>${esc(title(l.from))} → ${esc(title(l.to))}</b></p><p>${esc(l.label)} is recorded as an interaction, but no contract says what it carries or how failures are handled.</p><div class="cm-acts"><button type="button" class="cm-btn primary" data-i-action="new-contract">Define a contract</button></div></section>`; }
-  box.innerHTML = solInto(spec, solSection(project(), 8, s)) + reading() + insightsHTML() + findingsHTML();
+  box.innerHTML = solInto(spec, solSection(project(), 8, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
 
 // ---------------------------------------------------------------- walk-through
 
 const walkEvents = () => (S.view === 'sequence' && F ? F.events.filter(e => ['call', 'return', 'self', 'gap', 'recover', 'end', 'guard'].includes(e.t)) : []);
+// The footer: the walk's controls and, while walking, its text; otherwise the status line beside them.
 function walkBar() {
-  const bar = root.querySelector('.cm-walk'), evs = walkEvents();
-  if (S.view !== 'sequence' || !evs.length) { bar.innerHTML = `<p class="cm-walk-text">${S.view === 'data' ? 'Select a data definition to follow it; select a contract to see everything it carries.' : ''}</p>`; return; }
+  const bar = root.querySelector('.cm-walk-in'), evs = walkEvents();
+  if (S.view !== 'sequence' || !evs.length) { bar.innerHTML = ''; return; }
   const cur = S.walk >= 0 ? evs[S.walk] : null;
-  bar.innerHTML = `<button type="button" class="cm-btn${timer ? ' on' : ''}" data-cm="walk" aria-pressed="${!!timer}">${icon(timer ? 'pause' : 'play')}<span>${timer ? 'Pause' : S.walk >= 0 ? 'Continue' : 'Walk through'}</span></button><button type="button" class="cm-btn icon" data-cm="prev" aria-label="Previous step" ${S.walk <= 0 ? 'disabled' : ''}>‹</button><button type="button" class="cm-btn icon" data-cm="next" aria-label="Next step" ${S.walk >= evs.length - 1 ? 'disabled' : ''}>›</button><p class="cm-walk-text">${cur ? `<b>${S.walk + 1} / ${evs.length}</b> ${esc(describeEvent(X, cur, {gaps: S.lens === 'signals'}))}` : `${evs.length} steps · Walk through the scenario one message at a time.`}</p>${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-cm="walk-stop" aria-label="Stop the walk-through">×</button>' : ''}`;
+  bar.innerHTML = `<button type="button" class="cm-btn${timer ? ' on' : ''}" data-cm="walk" aria-pressed="${!!timer}" title="${esc(evs.length + ' steps · Walk through the scenario one message at a time.')}">${icon(timer ? 'pause' : 'play')}<span>${timer ? 'Pause' : S.walk >= 0 ? 'Continue' : 'Walk through'}</span></button>${S.walk >= 0 ? `<button type="button" class="cm-btn icon" data-cm="prev" aria-label="Previous step" ${S.walk <= 0 ? 'disabled' : ''}>‹</button>` : ''}<button type="button" class="cm-btn icon" data-cm="next" aria-label="${S.walk >= 0 ? 'Next step' : 'First step'}" ${S.walk >= evs.length - 1 ? 'disabled' : ''}>›</button>${cur ? `<p class="cm-walk-text"><b>${S.walk + 1} / ${evs.length}</b> ${esc(describeEvent(X, cur, {gaps: S.lens === 'signals'}))}</p>` : ''}${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-cm="walk-stop" aria-label="Stop the walk-through">×</button>' : ''}`;
 }
 function walkTo(i) {
   const evs = walkEvents(); if (!evs.length) return;
@@ -433,12 +441,18 @@ function revealSelection() {
 }
 // ---------------------------------------------------------------- interaction
 
+// Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
+let announced;
+const selTarget = () => (S.sel && X.M.byId.has(S.sel) ? S.sel : null);
+function announce() {
+  announced = S.sel;
+  const p = project(), target = selTarget();
+  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 8}, 'model'); } catch { /* assistance is optional */ } }
+  announceObject(target);
+}
 function select(id, {reveal = false, ev = null} = {}) {
   stopWalk(); S.walk = -1;
   S.sel = id || null; S.ev = ev;
-  const p = project(), target = S.sel && X.M.byId.has(S.sel) ? S.sel : null;
-  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 8}, 'model'); } catch { /* assistance is optional */ } }
-  if (window.history) { const url = new URL(location.href); if (target) url.searchParams.set('object', target); else url.searchParams.delete('object'); window.history.replaceState(window.history.state, '', url.pathname + url.search); }
   if (S.sel && !S.panel) S.panel = true;
   save(); render();
   if (reveal) revealSelection();
@@ -501,7 +515,7 @@ function bind() {
     if (s && s.dataset.sel) { e.stopPropagation(); const ev = s.closest('[data-ev]')?.dataset.ev || null; select(S.sel === s.dataset.sel && S.ev === ev && !s.closest('.cm-panel') ? null : s.dataset.sel, {reveal: !!s.closest('.cm-panel'), ev}); return; }
     const evb = e.target.closest('[data-ev]');
     if (evb) { const ev = (F?.events || []).find(x => x.id === evb.dataset.ev); if (ev) { const id = ev.contract || ev.link || (ev.t === 'self' ? ev.lane : ev.t === 'gap' ? ev.to : null); select(id, {ev: ev.id}); if (evb.closest('.cm-panel')) revealEvent(ev.id); } return; }
-    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; stopWalk(); select(null); }
+    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-edge') && (S.sel || S.walk >= 0)) { S.walk = -1; stopWalk(); select(null); }
   });
   root.addEventListener('change', e => { if (e.target.dataset.cmField === 'scenario') { S.scenario = e.target.value; stopWalk(); S.walk = -1; S.ev = null; fitPending = true; save(); render(); } });
   // Escape steps back one thing at a time: the walk-through, the selection, the scope, the

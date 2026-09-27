@@ -13,10 +13,10 @@
 import {platformSource, foldPlatform, platformScope, platformInsights, failureOf, describeCapability, describeNeed, defaultDepth, boundaryTitle, FAMILIES, PROPOSED} from './platform-model.js';
 import {platformLayout, platformHead, PX} from './platform-layout.js';
 import {categoryName} from './technology-domain.js';
-import {modelStage, sizeModel, placeTip} from './model-stage.js';
+import {modelStage, sizeModel, placeTip, edgesHTML, toolsHTML, defaultPanel, panelToggle, setState, emptyCard, showFailure, announceObject, focusKey, refocus} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
-import {specPanelHTML, runsOnLabel, productLabels} from './spec-panel.js';
+import {specPanelHTML} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -62,7 +62,7 @@ export function mountChapterModel(selection, callbacks = {}) {
     for (const k of ['view', 'lens', 'depth', 'sel']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     if (v.fail && typeof v.fail === 'object') S.fail = v.fail;
-    if (typeof v.panel === 'boolean') S.panel = v.panel;
+    S.panel = defaultPanel(v.panel);
     if (!['platform', 'failure'].includes(S.view)) S.view = 'platform';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'structure';
   }
@@ -94,7 +94,7 @@ function rebuild(d) {
   if (key && key !== lastProposal && roots[0] && known(roots[0])) { S.sel = roots[0]; setTimeout(revealSelection, 60); }
   lastProposal = key;
 }
-const known = id => P.capabilities.has(id) || P.components.has(id) || P.needs.has(id) || P.modules.has(id) || P.deps.some(d => d.id === id) || P.boundaries.has(id);
+const known = id => P.capabilities.has(id) || P.components.has(id) || P.needs.has(id) || P.modules.has(id) || P.deps.some(d => d.id === id) || P.boundaries.has(id) || (String(id).startsWith('MISSING:') && P.unsupported.some(n => 'MISSING:' + n.category === id));
 
 // ---------------------------------------------------------------- shell
 
@@ -105,16 +105,14 @@ function shell() {
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-t-action="new">New capability</button><p>To connect two capabilities, select the one that depends on the other and use “Add a dependency”. Application needs are edited from each component.</p></div></details>
     <button type="button" class="cm-btn" data-pf="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-pf="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
-    <button type="button" class="cm-btn icon" data-pf="panel" aria-pressed="true" aria-label="Show the companion panel" title="Companion">${icon('panel')}</button></div></header>
-  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Columns"></div><p class="cm-state" role="status" aria-live="polite"></p></div>
+    <button type="button" class="cm-btn icon" data-pf="panel" aria-pressed="true" aria-label="Hide the companion panel" title="Companion">${icon('panel')}</button></div></header>
+  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Columns"></div></div>
   <div class="cm-banner"></div>
-  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Platform canvas. Drag or scroll to move; Ctrl or Command and scroll to zoom.">
+  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Platform canvas. Drag or scroll to move; arrow keys pan; Ctrl or Command and scroll to zoom.">
     <div class="cm-world"><svg class="cm-svg" aria-hidden="true"></svg><div class="cm-html"></div></div>
-    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>
-    <div class="cm-key cm-min"><button type="button" class="cm-kt" data-pf="key" aria-expanded="false">Key</button><div class="cm-legend"></div></div>
-    <div class="cm-zoom"><button type="button" data-pf="zout" aria-label="Zoom out">−</button><button type="button" data-pf="zin" aria-label="Zoom in">+</button><button type="button" data-pf="fit" aria-label="Fit the width">${icon('fit')}</button></div>
+    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>${edgesHTML()}
   </div><aside class="cm-panel" aria-label="Companion"></aside></div>
-  <footer class="cm-walk" aria-label="Walk through the failure"></footer><div class="cm-tip" role="tooltip" hidden></div>`;
+  <footer class="cm-walk" aria-label="Walk through the failure"><div class="cm-walk-in"></div><p class="cm-state" role="status" aria-live="polite"></p>${toolsHTML('pf')}</footer><div class="cm-tip" role="tooltip" hidden></div>`;
 }
 
 // ---------------------------------------------------------------- render
@@ -139,12 +137,14 @@ function defaultFail() {
 
 function render() {
   if (!root) return;
-  if (!P) { root.querySelector('.cm-html').innerHTML = '<p class="cm-empty">The platform model could not be prepared for this project.</p>'; return; }
+  if (!P) { showFailure(root, 'The platform model could not be prepared for this project.'); return; }
+  const fk = focusKey(root);
+  if (S.sel !== announced) announce();
   root.classList.remove('cm-lens-structure', 'cm-lens-operation', 'cm-lens-protection');
   root.classList.add('cm-lens-' + S.lens);
   root.classList.toggle('pf-failing', failing());
+  root.classList.toggle('cm-walking', S.walk >= 0 && failing());
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
-  root.querySelector('[data-pf="panel"]').setAttribute('aria-pressed', String(S.panel));
   // Geometry depends on the recorded model, the scope, the depth and a pending proposal — never on
   // the lens or the failure explored.
   F = foldPlatform(P, scope(), depth(), {proposal: ghost()});
@@ -154,12 +154,20 @@ function render() {
   world.style.width = L.W + 'px'; world.style.height = L.H + 'px';
   svg.setAttribute('width', L.W); svg.setAttribute('height', L.H); svg.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
   const hl = highlight();
-  svg.innerHTML = defs() + stackSVG(hl);
-  root.querySelector('.cm-html').innerHTML = stackHTML(hl);
-  heads(hl); rail(hl); chrome(); panel(); walkBar();
+  if (!P.capabilities.size && !P.needs.size) { svg.innerHTML = ''; root.querySelector('.cm-html').innerHTML = emptyHTML(); root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = ''; root.querySelector('.cm-rail').style.width = '0px'; }
+  else { svg.innerHTML = defs() + stackSVG(hl); root.querySelector('.cm-html').innerHTML = stackHTML(hl); heads(hl); rail(hl); }
+  chrome(); panel(); walkBar();
   stage.use(L, JSON.stringify([S.scope?.kind || 'system', S.scope?.id || '', depth()]));
   if (fitPending) { fitPending = false; stage.fit(); } else stage.clamp();
   stage.apply();
+  refocus(root, fk);
+}
+
+// Nothing to draw: no capability and no need. The next action stands in place.
+function emptyHTML() {
+  const comps = P.components.size;
+  return emptyCard({title: 'No platform yet', text: 'Capabilities are the vendor-neutral services the components stand on: where the software runs, how it keeps state, connects, trusts and is operated. Each component records its needs; a capability supports them.' + (comps ? '' : ' There is no component yet to stand on it: the realisation in Chapter 5 comes first.'), x: 40, y: platformHead() + 30,
+    actions: `<button type="button" class="cm-btn primary" data-t-action="new">${icon('plus')}New capability</button><a class="cm-btn" href="${esc(projectURL('/?chapter=5&tab=' + (comps ? 'model' : 'work')))}">${comps ? 'The components in Chapter 5' : 'Define components in Chapter 5'}</a>`});
 }
 
 // Failure state of a row, a column, and what the walk stage lights.
@@ -181,6 +189,8 @@ function highlight() {
   const id = S.sel; if (!id) return out;
   out.on = true;
   if (P.capabilities.has(id)) { out.rows.add(id); for (const d of F.deps) if (d.from === id || d.to === id) { out.deps.add(d.id); out.rows.add(d.from); out.rows.add(d.to); } for (const c of L.cells) if (c.row === id) { out.cells.add(c.row + '|' + c.col); out.cols.add(c.col); } }
+  // A row of needs waiting for support lights itself and the components that wait.
+  else if (id.startsWith('MISSING:')) { out.rows.add(id); for (const c of L.cells) if (c.row === id) { out.cells.add(c.row + '|' + c.col); out.cols.add(c.col); } }
   else if (P.components.has(id) || id.startsWith('MOD:') || P.modules.has(id)) { const col = P.components.has(id) ? F.colOf(id) : id.startsWith('MOD:') ? id : 'MOD:' + id; const cs = L.cols.filter(c => c.id === col || (P.modules.has(id) && c.col.module === id)); for (const c of cs) out.cols.add(c.id); for (const c of L.cells) if (out.cols.has(c.col)) { out.cells.add(c.row + '|' + c.col); out.rows.add(c.row); } }
   else if (P.needs.has(id)) { const n = P.needs.get(id), col = F.colOf(n.component); out.cols.add(col); for (const c of L.cells) if (c.col === col && c.needs.includes(id)) { out.cells.add(c.row + '|' + c.col); out.rows.add(c.row); } }
   else if (P.deps.some(d => d.id === id)) { const d = P.deps.find(x => x.id === id); out.deps.add(id); out.rows.add(d.from); out.rows.add(d.to); }
@@ -276,12 +286,17 @@ function chrome() {
   if (failing() && S.fail) { const cap = P.capabilities.get(S.fail.id); bar += `<span>Lose</span><button type="button" class="cm-dep" data-pf="mode" data-id="capability" aria-pressed="${S.fail.mode !== 'domain'}">${esc(cap?.title || 'this capability')}</button><button type="button" class="cm-dep" data-pf="mode" data-id="domain" aria-pressed="${S.fail.mode === 'domain'}" ${cap?.failureDomain ? '' : 'disabled'}>Its failure domain</button>`; }
   root.querySelector('.cm-depth').innerHTML = bar;
   const unsup = P.unsupported.length, single = [...P.capabilities.values()].filter(c => c.single).length;
-  root.querySelector('.cm-state').textContent = FA
+  setState(root, FA
     ? `${FA.mode === 'domain' ? FA.title + ' lost' : FA.title + ' lost'} · ${FA.caps.length} capabilit${FA.caps.length === 1 ? 'y' : 'ies'} down · ${FA.stops.length} of ${P.components.size} components stop${FA.degrades.length ? ' · ' + FA.degrades.length + ' degraded' : ''}`
-    : `${P.capabilities.size} capabilities support ${P.components.size} components through ${P.needs.size} needs · ${unsup} unsupported · ${single} single path${single === 1 ? '' : 's'} · ${P.domains.size} failure domain${P.domains.size === 1 ? '' : 's'}`;
+    : !P.capabilities.size ? (P.needs.size ? `No capability recorded yet · ${P.needs.size} need${P.needs.size === 1 ? '' : 's'} waiting for support` : 'No capability recorded yet')
+    : `${P.capabilities.size} capabilities support ${P.components.size} components through ${P.needs.size} needs · ${unsup} unsupported · ${single} single path${single === 1 ? '' : 's'} · ${P.domains.size} failure domain${P.domains.size === 1 ? '' : 's'}`);
   const g = ghost(), imp = pending();
   root.querySelector('.cm-banner').innerHTML = imp ? imp.banner() : g ? `<section class="dp-banner"><span class="ip-kicker">Capability proposal · not saved</span><b>${esc(g.record.title)}</b><small>${esc(g.effect || g.reason || '')}</small><button type="button" class="cm-btn gold" data-t-action="edit-ghost">Review &amp; edit</button><button type="button" class="cm-btn" data-t-action="dismiss">Dismiss</button></section>` : '';
-  root.querySelector('.cm-legend').innerHTML = `<p><i class="k-cell essential"></i>Essential need, supported</p><p><i class="k-cell degraded"></i>Need it can run degraded without</p><p><i class="k-cell unsupported"></i>Need no capability supports</p><p><span class="k-plate"></span>Plate: components standing on one capability</p><p><svg width="40" height="12"><path d="M34 2H8V10H34" fill="none" stroke="#4d6a5c" stroke-width="1.8" marker-end="url(#pf-a-n)"/></svg>Depends on (critical: thicker)</p><p><i class="k-cell crossing"></i>Protection: the need crosses a trust boundary</p>`;
+  const plates = S.lens === 'operation'
+    ? `<p><span class="k-plate single"></span>Single path: one instance carries it</p><p><span class="k-plate redundant"></span>Redundant: more than one instance</p><p><span class="k-plate bypass"></span>A bypass is recorded for it</p>`
+    : S.lens === 'protection' ? `<p><span class="k-plate boundary"></span>Plate tinted by the trust boundary it sits in</p>`
+    : `<p><span class="k-plate"></span>Plate: components standing on one capability, tinted by its family</p>`;
+  root.querySelector('.cm-legend').innerHTML = `<h5>Needs</h5><p><i class="k-cell essential"></i>Essential need, supported</p><p><i class="k-cell degraded"></i>Need it can run degraded without</p><p><i class="k-cell unsupported"></i>Need no capability supports</p><p><i class="k-cell crossing"></i>Protection: the need crosses a trust boundary</p>${g ? '<p><i class="k-cell proposed"></i>Need the unsaved proposal would support</p>' : ''}<h5>Plates</h5>${plates}<p><span class="k-plate missing"></span>Nothing recorded supports these needs</p><p><span class="k-plate proposed"></span>Proposed capability, not saved</p><p><svg width="40" height="12"><path d="M34 2H8V10H34" fill="none" stroke="#4d6a5c" stroke-width="1.8" marker-end="url(#pf-a-n)"/></svg>Depends on (critical: thicker)</p>${failing() ? `<h5>While ${esc(S.fail?.mode === 'domain' ? 'the failure domain' : 'the capability')} is down</h5><p><span class="k-plate lost"></span>Lost: the failure reaches it</p><p><span class="k-plate degraded"></span>Runs degraded</p><p><i class="k-cell stopped"></i>Stops: an essential need is lost</p><p><i class="k-st unavailable">unavailable</i><i class="k-st degraded">degraded</i><i class="k-st available">available</i>A component’s state on its head</p>` : ''}`;
 }
 
 // ---------------------------------------------------------------- companion
@@ -336,8 +351,8 @@ function failureHTML() {
 function reading() {
   return `<section><h4>Reading this view</h4><p>Each row is a platform <b>capability</b>, grouped by what it does; each column a component that stands on the platform. A dot is a need where the two meet — filled when essential, half when the component can run degraded without it — and neighbouring needs join into a <b>plate</b>.</p><p>Brackets beside the capabilities are dependencies: a critical one carries a failure upward. The last column says what stops if the capability fails.</p></section>`;
 }
-function insightsHTML() {
-  const list = platformInsights(P, scope()).slice(0, 8);
+const insightsList = () => platformInsights(P, scope()).slice(0, 8);
+function insightsHTML(list = insightsList()) {
   if (!list.length) return '';
   return `<section><h4>What the model shows<span>${list.length}</span></h4>${list.map(x => `<button type="button" class="cm-ins ${x.kind}" data-sel="${esc(x.id || '')}"><span>${esc(x.text)}</span>${x.ask ? `<small>Ask: ${esc(x.ask)}</small>` : ''}</button>`).join('')}<p class="cm-muted">Drawn from recorded needs, capabilities, dependencies and Chapter 6's simulation. Prompts for review, not verdicts.</p></section>`;
 }
@@ -348,9 +363,15 @@ function findingsHTML() {
   for (const f of fs) { const k = f.title.replace(/(TC|TN|TM|TD|APP|TB)-\d+/g, '…').replace(/ · .*$/, ''); if (!groups.has(k)) groups.set(k, []); groups.get(k).push(f); }
   return `<section><h4>Chapter 6 checks<span>${fs.length}</span></h4>${[...groups].sort((a, b) => b[1].length - a[1].length).slice(0, 8).map(([k, g]) => `<button type="button" class="cm-fg ${g.some(f => f.level === 'error') ? 'error' : ''}" data-sel="${esc(g[0].objectId)}"><b>${esc(k)}</b><small>${g.length} · ${esc([...new Set(g.map(f => refOf(f.objectId) || f.objectId))].slice(0, 4).join(', '))}${g.length > 4 ? '…' : ''}</small></button>`).join('')}<a class="cm-muted" href="${esc(projectURL('/?chapter=6&tab=validate&validate=readiness'))}">All checks on Validate →</a></section>`;
 }
+// A category whose needs wait without support: the needs, and the ways to support them.
+function specimenMissing(id) {
+  const cat = id.slice(8), ns = [...P.needs.values()].filter(n => !n.capabilities.length && n.category === cat);
+  return `<section class="cm-spec"><h4>Needs without support<span class="exposed">${ns.length}</span></h4><p class="cm-spec-t"><b>${esc(categoryName(cat))}</b></p><p>No capability supports these needs yet. Each component that needs ${esc(categoryName(cat).toLowerCase())} waits here until one does.</p><dl class="cm-dl"><div class="miss"><dt>Waiting</dt><dd>${ns.map(n => `<button type="button" class="cm-link" data-sel="${esc(n.id)}">${esc(titleOf(n.component))}<i> · ${esc(n.criticality)}</i></button>`).join('') || '<em>None</em>'}</dd></div></dl><div class="cm-acts">${tact('new', '', icon('plus') + 'New capability', 'primary')}${ns[0] && P.proposals.some(x => x.key === 'missing' && x.need === ns[0].id) ? tact('preview', `data-t-key="missing" data-t-id="${esc(ns[0].component)}" data-t-need="${esc(ns[0].id)}"`, 'Propose support', 'gold') : ''}</div></section>`;
+}
 function panel() {
-  const box = root.querySelector('.cm-panel');
+  const box = root.querySelector('.cm-panel'), ins = insightsList();
   solMark(root, project(), 6);
+  panelToggle(root, '[data-pf="panel"]', S.panel, ins.length);
   if (!S.panel) { box.innerHTML = ''; return; }
   const s = S.sel;
   let spec = '';
@@ -360,7 +381,8 @@ function panel() {
   else if (s && P.deps.some(d => d.id === s)) spec = specimenDep(s);
   else if (s && P.boundaries.has(s)) spec = specimenBoundary(s);
   else if (s && P.modules.has(s)) spec = specimenModule(s);
-  box.innerHTML = (failing() ? failureHTML() : '') + solInto(spec, solSection(project(), 6, s)) + reading() + insightsHTML() + findingsHTML();
+  else if (s?.startsWith?.('MISSING:')) spec = specimenMissing(s);
+  box.innerHTML = (failing() ? failureHTML() : '') + solInto(spec, solSection(project(), 6, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
 
 // ---------------------------------------------------------------- the failure walk
@@ -374,11 +396,12 @@ function stageText(st) {
   const deg = FA.caps.filter(x => x.state === 'degraded');
   return `${deg.length ? names(deg.map(x => x.id)) + ' continue degraded. ' : ''}${FA.degrades.length ? names(FA.degrades) + ' keep running degraded. ' : ''}${P.components.size - FA.stops.length - FA.degrades.length} component${P.components.size - FA.stops.length - FA.degrades.length === 1 ? '' : 's'} are unaffected.`;
 }
+// The footer: the failure walk's controls and, while walking, its text; otherwise the status line.
 function walkBar() {
-  const bar = root.querySelector('.cm-walk');
-  if (!FA) { bar.innerHTML = `<p class="cm-walk-text">Select a capability to see what it supports and depends on, and what stops if it fails.</p>`; return; }
+  const bar = root.querySelector('.cm-walk-in');
+  if (!FA) { bar.innerHTML = ''; return; }
   const cur = S.walk >= 0 ? STAGES[S.walk] : null;
-  bar.innerHTML = `<button type="button" class="cm-btn" data-pf="walk-prev" aria-label="Previous stage" ${S.walk <= 0 ? 'disabled' : ''}>‹</button><button type="button" class="cm-btn" data-pf="walk-next">${S.walk < 0 ? icon('play') + '<span>Walk the failure</span>' : S.walk >= STAGES.length - 1 ? 'Done' : 'Next ›'}</button><p class="cm-walk-text">${cur ? `<b>${S.walk + 1} / ${STAGES.length} · ${esc(cur[1])}</b> ${esc(stageText(cur[0]))}` : 'Four stages: it fails, what depends on it, the components that stop, and what could continue.'}</p>${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-pf="walk-stop" aria-label="Stop the walk-through">×</button>' : ''}`;
+  bar.innerHTML = `${S.walk >= 0 ? `<button type="button" class="cm-btn" data-pf="walk-prev" aria-label="Previous stage" ${S.walk <= 0 ? 'disabled' : ''}>‹</button>` : ''}<button type="button" class="cm-btn" data-pf="walk-next" title="Four stages: it fails, what depends on it, the components that stop, and what could continue.">${S.walk < 0 ? icon('play') + '<span>Walk the failure</span>' : S.walk >= STAGES.length - 1 ? 'Done' : 'Next ›'}</button>${cur ? `<p class="cm-walk-text"><b>${S.walk + 1} / ${STAGES.length} · ${esc(cur[1])}</b> ${esc(stageText(cur[0]))}</p>` : ''}${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-pf="walk-stop" aria-label="Stop the walk-through">×</button>' : ''}`;
 }
 
 // ---------------------------------------------------------------- interaction
@@ -388,11 +411,17 @@ function revealSelection() {
   const r = L.rows.find(x => x.id === S.sel), c = L.cols.find(x => x.id === S.sel || x.id === F.colOf(S.sel));
   if (r) stage.reveal(L.rail, r.y, 300, r.h); else if (c) stage.reveal(c.x, L.top, c.w, 120);
 }
+// Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
+let announced;
+const selTarget = () => (S.sel && !/^(MOD:|MISSING:)/.test(S.sel) ? S.sel : null);
+function announce() {
+  announced = S.sel;
+  const p = project(), target = selTarget();
+  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 6}, 'model'); } catch { /* assistance is optional */ } }
+  announceObject(target);
+}
 function select(id, {reveal = false} = {}) {
   S.sel = id || null; S.walk = -1;
-  const p = project(), target = S.sel && !S.sel.startsWith('MOD:') ? S.sel : null;
-  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 6}, 'model'); } catch { /* assistance is optional */ } }
-  if (window.history) { const url = new URL(location.href); if (target) url.searchParams.set('object', target); else url.searchParams.delete('object'); window.history.replaceState(window.history.state, '', url.pathname + url.search); }
   if (failing() && P.capabilities.has(S.sel) && S.fail?.id !== S.sel) S.fail = {id: S.sel, mode: S.fail?.mode || 'capability'};
   if (S.sel && !S.panel) S.panel = true;
   save(); render();

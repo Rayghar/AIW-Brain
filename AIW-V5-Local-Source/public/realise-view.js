@@ -10,10 +10,10 @@
 // component proposals.
 import {realiseSource, foldRealise, realiseScope, allocation, realiseInsights, describeFlow, describeComponent, describeLogical, realiseWalk, defaultDepth, laneInfo, KIND_LABEL, PROPOSED, OUT_L, OUT_R, NONE} from './realise-model.js';
 import {realiseLayout, realiseHead, allocationLayout, allocationHead, realLines, RL, AX} from './realise-layout.js';
-import {modelStage, sizeModel, placeTip} from './model-stage.js';
+import {modelStage, sizeModel, placeTip, edgesHTML, toolsHTML, defaultPanel, panelToggle, setState, emptyCard, showFailure, announceObject, focusKey, refocus} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
-import {specPanelHTML, runsOnLabel, productLabels} from './spec-panel.js';
+import {specPanelHTML, productLabels, productCandidates} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -58,7 +58,7 @@ export function mountChapterModel(selection, callbacks = {}) {
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'sel']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
-    if (typeof v.panel === 'boolean') S.panel = v.panel;
+    S.panel = defaultPanel(v.panel);
     if (!['components', 'allocation'].includes(S.view)) S.view = 'components';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'structure';
   }
@@ -90,7 +90,8 @@ function rebuild(p) {
   lastProposal = key;
 }
 const isData = id => V.M.T(id) === 'data';
-const known = id => V.elements.has(id) || V.R.has(id) || V.modules.has(id) || V.flows.some(f => f.id === id) || V.lflows.some(l => l.id === id) || isData(id) || V.M.T(id) === 'capability' || id === OUT_L || id === OUT_R;
+const isLane = id => id === OUT_L || id === OUT_R || id === NONE || (String(id).startsWith('COL:') && !!F?.lanes.some(l => l.id === id));
+const known = id => V.elements.has(id) || V.R.has(id) || V.modules.has(id) || V.flows.some(f => f.id === id) || V.lflows.some(l => l.id === id) || isData(id) || V.M.T(id) === 'capability' || isLane(id) || (id === PROPOSED && !!ghost());
 
 // ---------------------------------------------------------------- shell
 
@@ -101,16 +102,14 @@ function shell() {
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-a-action="new">New component</button><button type="button" data-a-action="connect">Connect components</button><p>To realise a particular responsibility, select it first and use “Create a component for it”.</p></div></details>
     <button type="button" class="cm-btn" data-rz="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-rz="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
-    <button type="button" class="cm-btn icon" data-rz="panel" aria-pressed="true" aria-label="Show the companion panel" title="Companion">${icon('panel')}</button></div></header>
-  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Elements"></div><p class="cm-state" role="status" aria-live="polite"></p></div>
+    <button type="button" class="cm-btn icon" data-rz="panel" aria-pressed="true" aria-label="Hide the companion panel" title="Companion">${icon('panel')}</button></div></header>
+  <div class="cm-bar"><div class="cm-lenses" role="group" aria-label="Lens"></div><div class="cm-depth" role="group" aria-label="Elements"></div></div>
   <div class="cm-banner"></div>
-  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Realisation canvas. Drag or scroll to move; Ctrl or Command and scroll to zoom.">
+  <div class="cm-body"><div class="cm-stage" tabindex="0" aria-label="Realisation canvas. Drag or scroll to move; arrow keys pan; Ctrl or Command and scroll to zoom.">
     <div class="cm-world"><svg class="cm-svg" aria-hidden="true"></svg><div class="cm-html"></div></div>
-    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>
-    <div class="cm-key cm-min"><button type="button" class="cm-kt" data-rz="key" aria-expanded="false">Key</button><div class="cm-legend"></div></div>
-    <div class="cm-zoom"><button type="button" data-rz="zout" aria-label="Zoom out">−</button><button type="button" data-rz="zin" aria-label="Zoom in">+</button><button type="button" data-rz="fit" aria-label="Fit the width">${icon('fit')}</button></div>
+    <div class="cm-heads"><div class="cm-heads-in"></div></div><div class="cm-rail"><div class="cm-rail-in"></div></div><div class="cm-corner"></div>${edgesHTML()}
   </div><aside class="cm-panel" aria-label="Companion"></aside></div>
-  <footer class="cm-walk" aria-label="Walk the logical flows through the components"></footer><div class="cm-tip" role="tooltip" hidden></div>`;
+  <footer class="cm-walk" aria-label="Walk the logical flows through the components"><div class="cm-walk-in"></div><p class="cm-state" role="status" aria-live="polite"></p>${toolsHTML('rz')}</footer><div class="cm-tip" role="tooltip" hidden></div>`;
 }
 
 // ---------------------------------------------------------------- render
@@ -127,12 +126,14 @@ function measure(l) { return Math.max(96, 24 + 6.6 * (String(l.label || '').leng
 
 function render() {
   if (!root) return;
-  if (!V) { root.querySelector('.cm-html').innerHTML = '<p class="cm-empty">The realisation model could not be prepared for this project.</p>'; return; }
+  if (!V) { showFailure(root, 'The realisation model could not be prepared for this project.'); return; }
+  const fk = focusKey(root);
+  if (S.sel !== announced) announce();
   root.classList.remove('cm-lens-structure', 'cm-lens-flow', 'cm-lens-reasoning');
   root.classList.add('cm-lens-' + S.lens);
   root.classList.toggle('rz-matrix', allocView());
+  root.classList.toggle('cm-walking', S.walk >= 0 && !allocView());
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
-  root.querySelector('[data-rz="panel"]').setAttribute('aria-pressed', String(S.panel));
   // Geometry depends on the elements, the scope, the depth and a pending proposal — never the lens.
   F = foldRealise(V, scope(), depth(), {proposal: ghost()});
   if (allocView()) { G = allocation(V, scope(), {proposal: ghost()}); L = allocationLayout(G); } else L = realiseLayout(F, {measure});
@@ -141,11 +142,21 @@ function render() {
   svg.setAttribute('width', L.W); svg.setAttribute('height', L.H); svg.setAttribute('viewBox', `0 0 ${L.W} ${L.H}`);
   const hl = highlight();
   if (allocView()) { svg.innerHTML = matrixSVG(hl); root.querySelector('.cm-html').innerHTML = matrixHTML(hl); matrixHeads(hl); matrixRail(hl); }
+  else if (isEmpty()) { svg.innerHTML = ''; root.querySelector('.cm-html').innerHTML = emptyHTML(); root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = ''; }
   else { svg.innerHTML = defs() + modelSVG(hl); root.querySelector('.cm-html').innerHTML = modelHTML(hl); modelHeads(hl); root.querySelector('.cm-rail-in').innerHTML = ''; }
   chrome(); panel(); walkBar();
   stage.use(L, JSON.stringify([S.view, S.scope?.kind || 'system', S.scope?.id || '', depth()]));
   if (fitPending) { fitPending = false; stage.fit(); } else stage.clamp();
   stage.apply();
+  refocus(root, fk);
+}
+
+// Nothing to draw: no component and no responsibility to realise. The next action stands in place.
+const isEmpty = () => ![...V.elements.values()].some(e => e.kind === 'component') && !V.R.size;
+function emptyHTML() {
+  const resp = V.R.size;
+  return emptyCard({title: 'No component yet', text: 'A component is a part of the software that realises one or more Chapter 4 responsibilities, owns data, and stands on the platform of Chapter 6.' + (resp ? '' : ' There is no responsibility to realise yet either: the logical design comes first.'), x: RL.PAD + 30, y: realiseHead() + 30,
+    actions: `<button type="button" class="cm-btn primary" data-a-action="new">${icon('plus')}New component</button><a class="cm-btn" href="${esc(projectURL('/?chapter=4&tab=' + (resp ? 'model' : 'work')))}">${resp ? 'The responsibilities in Chapter 4' : 'Define responsibilities in Chapter 4'}</a>`});
 }
 
 // What an object concerns, in the terms of the drawn model.
@@ -157,6 +168,8 @@ function concerns(id) {
   else if (V.flows.some(f => f.id === id)) { const f = V.flows.find(x => x.id === id); out.flows.add(id); comp(f.from); comp(f.to); f.logical.forEach(l => { const x = V.lflows.find(y => y.id === l); out.resp.add(x.from); out.resp.add(x.to); }); }
   else if (V.modules.has(id)) { out.lanes.add(id); for (const e of V.elements.values()) if (e.module === id && e.kind !== 'party') out.elements.add(e.id); for (const f of V.flows) if (out.elements.has(f.from) || out.elements.has(f.to)) out.flows.add(f.id); }
   else if (id === OUT_L || id === OUT_R) { out.lanes.add(id); for (const e of V.elements.values()) if (e.region === id) out.elements.add(e.id); }
+  else if (id === NONE) { out.lanes.add(id); for (const e of V.elements.values()) if (e.module === NONE && e.kind !== 'party') out.elements.add(e.id); }
+  else if (String(id).startsWith('COL:')) { out.lanes.add(id); for (const r of F?.rows || []) if (r.region === id) r.members.forEach(m => out.elements.add(m)); }
   else if (isData(id)) { out.data.add(id); for (const e of V.elements.values()) if ((e.data || []).includes(id)) out.elements.add(e.id); }
   else if (V.M.T(id) === 'capability') { for (const e of V.elements.values()) if ((e.needs || []).includes(id)) out.elements.add(e.id); }
   else if (V.elements.has(id)) { const e = V.elements.get(id); out.elements.add(id); (e.realises || []).forEach(r => out.resp.add(r)); for (const f of V.flows) if (f.from === id || f.to === id) { out.flows.add(f.id); out.elements.add(f.from); out.elements.add(f.to); } }
@@ -205,7 +218,7 @@ function modelSVG(hl) {
 }
 function chipR(id, hl, extra = '') {
   const r = V.R.get(id); if (!r) return '';
-  return `<i class="rz-r${hl.resp.has(id) ? ' lit' : ''}${extra}" data-sel="${esc(id)}" title="${esc(r.ref + ' · ' + r.title + (r.purpose ? ' — ' + r.purpose : ''))}"><b>${esc(r.ref)}</b>${esc(r.title)}</i>`;
+  return `<button type="button" class="cm-chip rz-r${hl.resp.has(id) ? ' lit' : ''}${extra}" data-sel="${esc(id)}" title="${esc(r.ref + ' · ' + r.title + (r.purpose ? ' — ' + r.purpose : ''))}"><b>${esc(r.ref)}</b>${esc(r.title)}</button>`;
 }
 function realises(row, hl) {
   const ids = row.realises || [], max = row.kind === 'module' ? RL.MAX_MOD : RL.MAX_REAL;
@@ -216,7 +229,7 @@ function realises(row, hl) {
 }
 function lensLine(row) {
   const es = row.members.map(id => V.elements.get(id)).filter(e => e?.kind === 'component');
-  const data = row.data.map(d => `<i class="cm-d ${clsOf(V.M.byId.get(d)?.classification)}" data-sel="${esc(d)}" title="${esc('Owns ' + titleOf(d))}">${esc(titleOf(d))}</i>`).join('') || '<em>owns no data</em>';
+  const data = row.data.map(d => `<button type="button" class="cm-chip cm-d ${clsOf(V.M.byId.get(d)?.classification)}" data-sel="${esc(d)}" title="${esc('Owns ' + titleOf(d))}">${esc(titleOf(d))}</button>`).join('') || '<em>owns no data</em>';
   let flow = '<em>—</em>', why = '<em>—</em>';
   if (row.kind === 'component') {
     const e = es[0];
@@ -236,8 +249,9 @@ function lensLine(row) {
 const STRIP_ORDER = ['transactional', 'messaging', 'caching', 'connectivity', 'identity', 'observability', 'backup', 'recovery', 'compute'];
 function strip(row, hl) {
   if (!row.needs.length) return `<div class="rz-strip"><small>stands on</small><em>no platform need recorded</em></div>`;
-  const prods = row.kind === 'component' ? productLabels(project(), row.members[0]) : new Map();
-  // What fits on one line: named products first, the ones that say most about the component (its
+  // A product is named only where Chapter 7 has chosen it; candidates still open are said to be open.
+  const prods = row.kind === 'component' ? productLabels(project(), row.members[0]) : new Map(), cands = row.kind === 'component' ? productCandidates(project(), row.members[0]) : new Map();
+  // What fits on one line: chosen products first, the ones that say most about the component (its
   // data, messaging and caching) before the compute every component shares; the rest behind "+N".
   const caps = new Map((project()?.technology?.capabilities || []).map(c => [c.id, c.category]));
   const rank = n => (prods.has(n) ? 0 : 20) + (STRIP_ORDER.includes(caps.get(n)) ? STRIP_ORDER.indexOf(caps.get(n)) : 10);
@@ -246,30 +260,34 @@ function strip(row, hl) {
   let used = 0, fit = 0;
   for (const it of items) { const w = chipW(it.text), more = items.length - fit - 1; if (fit && used + w + (more ? 28 : 0) > avail) break; used += w; fit++; }
   const shown = items.slice(0, fit), rest = items.slice(fit);
-  const chip = it => prods.get(it.n) ? `<i class="rz-n prod" data-sel="${esc(it.n)}" title="${esc(titleOf(it.n) + ' — ' + prods.get(it.n) + ' (Chapter 7)')}">${esc(prods.get(it.n))}</i>` : `<i class="rz-n" data-sel="${esc(it.n)}">${esc(titleOf(it.n))}</i>`;
-  return `<div class="rz-strip" title="${esc('Stands on: ' + row.needs.map(n => titleOf(n) + (prods.get(n) ? ' (' + prods.get(n) + ')' : '')).join(', '))}"><small>stands on</small>${shown.map(chip).join('')}${rest.length ? `<i class="rz-n more" data-sel="${esc(row.members[0] || row.id)}" title="${esc('Also: ' + rest.map(it => it.text).join(', '))}">+${rest.length}</i>` : ''}</div>`;
+  const note = n => prods.get(n) ? ` — ${prods.get(n)} (chosen in Chapter 7)` : cands.has(n) ? ` — ${cands.get(n)} candidate product${cands.get(n) === 1 ? '' : 's'} in Chapter 7, none chosen` : '';
+  const chip = it => prods.get(it.n) ? `<button type="button" class="cm-chip rz-n prod" data-sel="${esc(it.n)}" title="${esc(titleOf(it.n) + note(it.n))}">${esc(prods.get(it.n))}</button>` : `<button type="button" class="cm-chip rz-n${cands.has(it.n) ? ' open' : ''}" data-sel="${esc(it.n)}" title="${esc(titleOf(it.n) + note(it.n))}">${esc(titleOf(it.n))}</button>`;
+  return `<div class="rz-strip" title="${esc('Stands on: ' + row.needs.map(n => titleOf(n) + note(n)).join('; '))}"><small>stands on</small>${shown.map(chip).join('')}${rest.length ? `<button type="button" class="cm-chip rz-n more" data-sel="${esc(row.members[0] || row.id)}" title="${esc('Also: ' + rest.map(it => it.text).join(', '))}">+${rest.length}</button>` : ''}</div>`;
 }
 function modelHTML(hl) {
   const out = [];
   for (const c of L.cards) {
     const r = c.row, pos = `style="left:${c.x}px;top:${c.y}px;width:${c.w}px;height:${c.h}px"`;
+    // A card is a group of what it carries; its chips are the buttons inside it. Enter or Space on
+    // the card selects it, and Enter on the selected card opens it.
     if (r.kind === 'party' || (r.kind === 'module' && !r.module)) {
-      out.push(`<div class="rz-card party${r.ctx ? ' ctx' : ''}${S.sel === r.id ? ' sel' : ''}${cardCls(hl, r.id)}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="button" aria-label="${esc((r.kind === 'party' ? 'External participant ' : 'Outside ') + r.title)}"><small>${r.kind === 'party' ? 'External participant' : r.members.length + ' participant' + (r.members.length === 1 ? '' : 's')}</small><b>${esc(r.title)}</b></div>`);
+      out.push(`<div class="rz-card party${r.ctx ? ' ctx' : ''}${S.sel === r.id ? ' sel' : ''}${cardCls(hl, r.id)}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="group" aria-label="${esc((r.kind === 'party' ? 'External participant ' : 'Outside ') + r.title)}"><small>${r.kind === 'party' ? 'External participant' : r.members.length + ' participant' + (r.members.length === 1 ? '' : 's')}</small><b>${esc(r.title)}</b></div>`);
       continue;
     }
     if (r.kind === 'hole') {
       const res = V.R.get(r.realises[0]);
-      out.push(`<div class="rz-card hole${marked.has(res.id) || marked.has(r.id) ? ' changed' : ''}${cardCls(hl, r.id)}${S.sel === res.id ? ' sel' : ''}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="button" aria-label="${esc('Not realised: ' + res.ref + ' ' + res.title)}"><small>Not realised yet</small><b>${esc(res.ref)} · ${esc(res.title)}</b><div class="rz-real" style="height:${RL.LINE}px"><button type="button" class="cm-mini gold" data-a-action="new-for-logical" data-a-logical="${esc(res.id)}">Create a component for it</button></div>${lensLine(r)}</div>`);
+      out.push(`<div class="rz-card hole${marked.has(res.id) || marked.has(r.id) ? ' changed' : ''}${cardCls(hl, r.id)}${S.sel === res.id ? ' sel' : ''}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="group" aria-label="${esc('Not realised: ' + res.ref + ' ' + res.title)}"><small>Not realised yet</small><b>${esc(res.ref)} · ${esc(res.title)}</b><div class="rz-real" style="height:${RL.LINE}px"><button type="button" class="cm-mini gold" data-a-action="new-for-logical" data-a-logical="${esc(res.id)}">Create a component for it</button></div>${lensLine(r)}</div>`);
       continue;
     }
     if (r.kind === 'proposed') {
-      out.push(`<div class="rz-card proposed" data-card="${PROPOSED}" ${pos}><small>Proposal · not saved · ${esc(KIND_LABEL[r.ckind] || r.ckind)}</small><b>${esc(r.title)}</b>${realises(r, hl)}<div class="rz-lens"><span class="st"><button type="button" class="cm-mini gold" data-a-action="edit-ghost">Review &amp; edit</button></span><span class="fl"><button type="button" class="cm-mini gold" data-a-action="edit-ghost">Review &amp; edit</button></span><span class="rs"><button type="button" class="cm-mini gold" data-a-action="edit-ghost">Review &amp; edit</button></span></div><div class="rz-strip"><small>stands on</small><em>to be described on review</em></div></div>`);
+      out.push(`<div class="rz-card proposed${S.sel === PROPOSED ? ' sel' : ''}${cardCls(hl, r.id)}" data-card="${PROPOSED}" ${pos} tabindex="0" role="group" aria-label="${esc('Proposal, not saved: ' + r.title)}"><small>Proposal · not saved · ${esc(KIND_LABEL[r.ckind] || r.ckind)}</small><b>${esc(r.title)}</b>${realises(r, hl)}<div class="rz-lens"><span class="st"><button type="button" class="cm-mini gold" data-a-action="edit-ghost">Review &amp; edit</button></span><span class="fl"><button type="button" class="cm-mini gold" data-a-action="edit-ghost">Review &amp; edit</button></span><span class="rs"><button type="button" class="cm-mini gold" data-a-action="edit-ghost">Review &amp; edit</button></span></div><div class="rz-strip"><small>stands on</small><em>to be described on review</em></div></div>`);
       continue;
     }
     const e = r.kind === 'component' ? V.elements.get(r.element) : null;
     const head = r.kind === 'module' ? `<small>Module · ${r.components} component${r.components === 1 ? '' : 's'}${r.holes ? ` · <i class="rz-hole">${r.holes} not realised</i>` : ''}</small>` : `<small><span class="rz-k">${esc(KIND_LABEL[e.ckind] || e.ckind)}</span> ${esc(e.ref)}<i class="rz-st ${esc(e.status)}">${esc(e.status)}</i>${e.defined ? '' : '<i class="rz-st gap" title="Purpose, boundary, owner, inputs or outputs missing">incomplete</i>'}</small>`;
     const changed = r.members.some(id => marked.has(id)) || (r.realises || []).some(id => marked.has(id));
-    out.push(`<div class="rz-card ${r.kind}${e ? ' k-' + esc(e.ckind) : ''}${changed ? ' changed' : ''}${r.ctx ? ' ctx' : ''}${r.subject ? ' subject' : ''}${S.sel === r.id || S.sel === r.element ? ' sel' : ''}${cardCls(hl, r.id)}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="button" aria-label="${esc((r.kind === 'module' ? 'Module ' : 'Component ') + r.title)}">${head}<b class="rz-t">${esc(r.title)}</b>${realises(r, hl)}${lensLine(r)}${strip(r, hl)}</div>`);
+    const selected = S.sel === r.id || S.sel === r.element;
+    out.push(`<div class="rz-card ${r.kind}${e ? ' k-' + esc(e.ckind) : ''}${changed ? ' changed' : ''}${r.ctx ? ' ctx' : ''}${r.subject ? ' subject' : ''}${selected ? ' sel' : ''}${cardCls(hl, r.id)}" data-card="${esc(r.id)}" ${pos} tabindex="0" role="group" aria-label="${esc((r.kind === 'module' ? 'Module ' : 'Component ') + r.title + (selected ? '. Selected; press Enter to ' + (r.kind === 'module' ? 'open it' : 'focus on it') : '. Press Enter to select it'))}">${head}<b class="rz-t">${esc(r.title)}</b>${realises(r, hl)}${lensLine(r)}${strip(r, hl)}</div>`);
   }
   for (const lb of L.labels) {
     const l = lb.link, lit = hl.links.has(l.id), cls = `rz-label${l.proposed ? ' proposed' : ''}${lit ? ' lit' : hl.on ? ' dim' : ''}${l.dim ? ' out' : ''}`;
@@ -354,16 +372,18 @@ function chrome() {
   root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === S.view)));
   root.querySelector('.cm-lenses').innerHTML = LENSES.map(l => `<button type="button" class="cm-lens" data-rz="lens" data-id="${l.id}" aria-pressed="${S.lens === l.id}" title="${esc(l.q + ' Like the ' + l.like + '.')}">${icon(l.id)}<span>${l.label}</span></button>`).join('');
   const dp = depth();
-  root.querySelector('.cm-depth').innerHTML = !allocView() && sc.kind === 'system' ? `<span>Elements</span>${[['modules', 'Modules'], ['components', 'Components']].map(([id, t]) => `<button type="button" class="cm-dep" data-rz="depth" data-id="${id}" aria-pressed="${dp === id}">${t}</button>`).join('')}` : '';
+  // One module folds to nothing: the control appears once there is something to fold.
+  root.querySelector('.cm-depth').innerHTML = !allocView() && sc.kind === 'system' && V.modules.size > 1 ? `<span>Elements</span>${[['modules', 'Modules'], ['components', 'Components']].map(([id, t]) => `<button type="button" class="cm-dep" data-rz="depth" data-id="${id}" aria-pressed="${dp === id}">${t}</button>`).join('')}` : '';
   const comps = [...V.elements.values()].filter(e => e.kind === 'component'), holes = [...V.R.values()].filter(r => !r.realisedBy.length).length, gaps = V.flows.filter(f => f.gap).length;
-  root.querySelector('.cm-state').textContent = allocView()
-    ? `${G.rows.length} responsibilit${G.rows.length === 1 ? 'y' : 'ies'} · ${G.unrealised.length} not realised · ${G.cols.filter(c => !c.proposed).length} components${G.cols.some(c => c.orphan) ? ' · ' + G.cols.filter(c => c.orphan).length + ' realise nothing' : ''}`
-    : `${comps.length} components in ${V.modules.size} modules · ${holes} responsibilit${holes === 1 ? 'y' : 'ies'} not realised · ${V.lflows.filter(l => l.carried).length} of ${V.lflows.length} logical flows carried · ${gaps} without a failure policy`;
+  setState(root, allocView()
+    ? (G.rows.length ? `${G.rows.length} responsibilit${G.rows.length === 1 ? 'y' : 'ies'} · ${G.unrealised.length} not realised · ${G.cols.filter(c => !c.proposed).length} components${G.cols.some(c => c.orphan) ? ' · ' + G.cols.filter(c => c.orphan).length + ' realise nothing' : ''}` : 'No responsibility to allocate yet')
+    : !comps.length ? (holes ? `No component recorded yet · ${holes} responsibilit${holes === 1 ? 'y' : 'ies'} waiting to be realised` : 'No component recorded yet')
+    : `${comps.length} components in ${V.modules.size} modules · ${holes} responsibilit${holes === 1 ? 'y' : 'ies'} not realised · ${V.lflows.filter(l => l.carried).length} of ${V.lflows.length} logical flows carried · ${gaps} without a failure policy`);
   const g = ghost(), imp = pending();
   root.querySelector('.cm-banner').innerHTML = imp ? imp.banner() : g ? `<section class="dp-banner"><span class="ip-kicker">Component proposal · not saved</span><b>${esc(g.title)}</b><small>${esc(g.effect || '')}</small><button type="button" class="cm-btn gold" data-a-action="edit-ghost">Review &amp; edit</button><button type="button" class="cm-btn" data-a-action="dismiss">Dismiss</button></section>` : '';
   root.querySelector('.cm-legend').innerHTML = allocView()
     ? `<p><i class="k-cell allocated"></i>Realises it, with a recorded scope</p><p><i class="k-cell unscoped"></i>Realises it, but the scope is missing or out of date</p><p><i class="k-cell shared"></i>Shares the same scope with another component</p><p><i class="k-cell outside"></i>Realised from another module</p>${g ? '<p><i class="k-cell proposed"></i>The unsaved proposal</p>' : ''}`
-    : `<p><span class="k-card"></span>Component, carrying what it realises</p><p><i class="rz-r k"><b>LR</b>Responsibility</i> realised inside it</p><p><i class="rz-n k">capability</i> platform it stands on</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#3d5f52" stroke-width="1.7" marker-end="url(#rz-a-n)"/></svg>Request and answer</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#3f6d86" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#rz-a-e)"/></svg>Event or work handoff</p><p><span class="k-hole"></span>Responsibility not yet realised</p>`;
+    : `<p><span class="k-card"></span>Component, carrying what it realises</p><p><span class="k-card party"></span>External participant, outside the system</p><h5>On a card</h5><p><i class="rz-r k"><b>LR</b>Responsibility</i>Realised inside it (Chapter 4)</p><p><i class="cm-d k">data</i>Data it owns (Structure)</p><p><i class="rz-w k">REQ</i><i class="rz-w d k">ADR</i>Requirement and decision behind it (Reasoning)</p><p><i class="rz-n k">capability</i>Platform it stands on · <i class="rz-n prod k">Product</i>chosen in Chapter 7 · <i class="rz-n open k">capability</i>candidates still open</p><h5>Between cards</h5><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#3d5f52" stroke-width="1.7" marker-end="url(#rz-a-n)"/></svg>Request and answer</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#3f6d86" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#rz-a-e)"/></svg>Event or work handoff</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#3d5f52" stroke-width="1.7" stroke-dasharray="2 3" marker-end="url(#rz-a-n)"/></svg>Data dependency</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#6f7a58" stroke-width="1.7" marker-end="url(#rz-a-n)"/></svg>Contract with the outside</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#b0493a" stroke-width="2" marker-end="url(#rz-a-n)"/></svg>Interaction without a failure policy (Flow lens)</p><p><svg width="40" height="10"><line x1="2" y1="5" x2="32" y2="5" stroke="#b88830" stroke-width="2.4" stroke-dasharray="2 3" marker-end="url(#rz-a-p)"/></svg>Proposed interaction, not saved</p><h5>States</h5><p><span class="k-hole"></span>Responsibility not yet realised</p><p><span class="k-card proposed"></span>Proposed component, not saved</p><p><span class="k-card changed"></span>Changed by the open proposal</p>`;
 }
 
 // ---------------------------------------------------------------- companion
@@ -391,9 +411,20 @@ function specimenFlow(id) {
   return `<section class="cm-spec"><h4>${esc(f.recorded ? 'Interaction · ' + f.ref : 'Contract with the outside')}<span class="${f.gap ? 'exposed' : 'guarded'}">${f.gap ? 'No failure policy' : ['sync', 'event'].includes(f.kind) ? 'Failure policy' : IKIND[f.kind]}</span></h4><p class="cm-spec-t"><b>${esc(titleOf(f.from))} → ${esc(titleOf(f.to))}</b></p><p>${esc(describeFlow(V, id))}</p><dl class="cm-dl"><div><dt>Kind</dt><dd>${esc(IKIND[f.kind] || f.kind)}</dd></div><div class="${f.contractRef ? '' : 'miss'}"><dt>Contract</dt><dd>${esc(f.contractRef ? f.contractRef + ' · ' + (V.X.C.get(f.contract)?.title || '') : 'None in Chapter 8')}</dd></div><div class="${f.gap ? 'miss' : ''}"><dt>If it fails</dt><dd>${esc(f.failure || 'Not recorded')}</dd></div></dl>
   <div class="cm-acts">${f.recorded ? act('edit-interaction', `data-a-id="${esc(f.id)}"`, icon('edit') + 'Edit interaction', 'primary') : ''}${f.contract ? `<a class="cm-btn" href="${esc(projectURL('/?chapter=8&tab=model&object=' + encodeURIComponent(f.contract)))}">Contract in Chapter 8</a>` : ''}</div></section>`;
 }
+// A lane: a module, the outside, the components no module holds, or a column of modules.
 function specimenLane(id) {
-  const ln = laneInfo(V, id), inside = [...V.elements.values()].filter(e => (id === OUT_L || id === OUT_R ? e.region === id : e.module === id) && e.kind !== 'hole'), resp = [...V.R.values()].filter(r => r.module === id);
-  return `<section class="cm-spec"><h4>${ln.kind === 'module' ? 'Module · Chapter 4' : 'Outside the system'}</h4><p class="cm-spec-t"><b>${esc(ln.ref && ln.ref !== id ? ln.ref + ' · ' : '')}${esc(ln.title)}</b></p>${ln.sub ? `<p>${esc(ln.sub)}</p>` : ''}<dl class="cm-dl"><div><dt>${ln.kind === 'module' ? 'Components' : 'Participants'}</dt><dd>${inside.map(e => link(e.id)).join('') || '<em>None yet</em>'}</dd></div>${ln.kind === 'module' ? `<div><dt>Responsibilities</dt><dd>${resp.map(r => `<button type="button" class="cm-link" data-sel="${esc(r.id)}">${esc(r.ref + ' ' + r.title)}${r.realisedBy.length ? '' : '<i> · not realised</i>'}</button>`).join('')}</dd></div>` : ''}</dl><div class="cm-acts">${ln.kind === 'module' ? `<button type="button" class="cm-btn primary" data-rz="scope-module" data-id="${esc(id)}">${icon('dissect')}Open this module</button><a class="cm-btn" href="${esc(projectURL('/?chapter=4&tab=work'))}">Modules are defined in Chapter 4</a>` : ''}</div></section>`;
+  const stage = String(id).startsWith('COL:'), ln = stage ? (F?.lanes.find(l => l.id === id) || {id, kind: 'stage', title: id, sub: ''}) : laneInfo(V, id);
+  const inColumn = stage ? (F?.rows || []).filter(r => r.region === id && r.kind === 'module' && r.module).map(r => r.module) : [];
+  const inside = stage ? [] : [...V.elements.values()].filter(e => e.kind !== 'hole' && (id === OUT_L || id === OUT_R ? e.region === id : e.module === id)), resp = [...V.R.values()].filter(r => r.module === id);
+  const head = {module: 'Module · Chapter 4', outside: 'Outside the system', none: 'Not placed in a module', stage: 'Modules in one column'}[ln.kind] || 'Lane';
+  const note = ln.kind === 'none' ? 'These belong to no Chapter 4 module yet. Place each in a module from its editor; the model then draws it in that module’s lane.' : ln.kind === 'stage' ? 'Many modules stand in columns, in the order work flows through them. Open one module to see it alone.' : ln.sub;
+  return `<section class="cm-spec"><h4>${head}</h4><p class="cm-spec-t"><b>${esc(ln.ref && ln.ref !== id ? ln.ref + ' · ' : '')}${esc(ln.title)}</b></p>${note ? `<p>${esc(note)}</p>` : ''}<dl class="cm-dl">${stage ? `<div><dt>Modules</dt><dd>${inColumn.map(m => `<button type="button" class="cm-link" data-sel="${esc(m)}">${esc(refTitle(m))}</button>`).join('') || '<em>None</em>'}</dd></div>` : `<div><dt>${ln.kind === 'outside' ? 'Participants' : 'Components'}</dt><dd>${inside.map(e => link(e.id)).join('') || '<em>None yet</em>'}</dd></div>`}${['module', 'none'].includes(ln.kind) && resp.length ? `<div><dt>Responsibilities</dt><dd>${resp.map(r => `<button type="button" class="cm-link" data-sel="${esc(r.id)}">${esc(r.ref + ' ' + r.title)}${r.realisedBy.length ? '' : '<i> · not realised</i>'}</button>`).join('')}</dd></div>` : ''}</dl><div class="cm-acts">${ln.kind === 'module' ? `<button type="button" class="cm-btn primary" data-rz="scope-module" data-id="${esc(id)}">${icon('dissect')}Open this module</button><a class="cm-btn" href="${esc(projectURL('/?chapter=4&tab=work'))}">Modules are defined in Chapter 4</a>` : ln.kind === 'none' ? `<a class="cm-btn" href="${esc(projectURL('/?chapter=4&tab=work'))}">Modules are defined in Chapter 4</a>` : ''}</div></section>`;
+}
+// The unsaved proposal: what it would be, what it would realise, and the two ways out.
+function specimenProposal() {
+  const g = ghost(), row = F?.rows.find(r => r.id === PROPOSED); if (!g) return '';
+  const real = (row?.realises || []).map(link).join('') || '<em>No responsibility named yet</em>';
+  return `<section class="cm-spec"><h4>Proposal · not saved<span class="exposed">${esc(KIND_LABEL[g.kind] || g.kind || 'Component')}</span></h4><p class="cm-spec-t"><b>${esc(g.title)}</b></p>${g.effect ? `<p>${esc(g.effect)}</p>` : ''}<dl class="cm-dl"><div><dt>Would realise</dt><dd>${real}</dd></div><div><dt>Module</dt><dd>${esc(laneInfo(V, row?.module || NONE).title)}</dd></div>${g.sourceId && V.elements.has(g.sourceId) ? `<div><dt>Beside</dt><dd>${link(g.sourceId)}</dd></div>` : ''}</dl><p class="cm-muted">Nothing is recorded until the proposal is reviewed and saved.</p><div class="cm-acts">${act('edit-ghost', '', 'Review &amp; edit', 'primary gold')}${act('dismiss', '', 'Dismiss')}</div></section>`;
 }
 function specimenOther(id) {
   const o = V.M.byId.get(id), e = V.elements.get(id);
@@ -407,8 +438,8 @@ function reading() {
   const walk = realiseWalk(V).length;
   return `<section><h4>Reading this view</h4><p>Columns are the Chapter 4 <b>modules</b>. Each card is a component carrying the <b>responsibilities it realises</b> — the logical design embedded in the software — and, along its foot, the <b>platform it stands on</b> for Chapter 6.</p><p>Solid arrows ask and wait for an answer; dashed arrows hand work on. A dashed card is a responsibility nothing realises yet.</p>${walk ? `<p><b>Walk the logical flows</b> to see, flow by flow, which interaction carries each step of the Chapter 4 design.</p>` : ''}</section>`;
 }
-function insightsHTML() {
-  const list = realiseInsights(V, scope()).slice(0, 8);
+const insightsList = () => realiseInsights(V, scope()).slice(0, 8);
+function insightsHTML(list = insightsList()) {
   if (!list.length) return '';
   return `<section><h4>What the model shows<span>${list.length}</span></h4>${list.map(x => `<button type="button" class="cm-ins ${x.kind}" data-sel="${esc(x.id || '')}"><span>${esc(x.text)}</span>${x.ask ? `<small>Ask: ${esc(x.ask)}</small>` : ''}</button>`).join('')}<p class="cm-muted">Drawn from recorded components, allocations, interactions and the Chapter 4 design. Prompts for review, not verdicts.</p></section>`;
 }
@@ -420,27 +451,30 @@ function findingsHTML() {
   return `<section><h4>Chapter 5 checks<span>${fs.length}</span></h4>${[...groups].sort((a, b) => b[1].length - a[1].length).slice(0, 8).map(([k, g]) => `<button type="button" class="cm-fg ${g.some(f => f.level === 'error') ? 'error' : ''}" data-sel="${esc(g[0].objectId)}"><b>${esc(k)}</b><small>${g.length} · ${esc([...new Set(g.map(f => refOf(f.objectId) || f.objectId))].slice(0, 4).join(', '))}${g.length > 4 ? '…' : ''}</small></button>`).join('')}<a class="cm-muted" href="${esc(projectURL('/?chapter=5&tab=validate&validate=readiness'))}">All checks on Validate →</a></section>`;
 }
 function panel() {
-  const box = root.querySelector('.cm-panel');
+  const box = root.querySelector('.cm-panel'), ins = insightsList();
   solMark(root, project(), 5);
+  panelToggle(root, '[data-rz="panel"]', S.panel, ins.length);
   if (!S.panel) { box.innerHTML = ''; return; }
   const s = S.sel;
   let spec = '';
-  if (s && V.elements.get(s)?.kind === 'component') spec = specimenComponent(s) + specPanelHTML(project(), s);
+  if (s === PROPOSED) spec = specimenProposal();
+  else if (s && V.elements.get(s)?.kind === 'component') spec = specimenComponent(s) + specPanelHTML(project(), s);
   else if (s && V.R.has(s)) spec = specimenResponsibility(s);
   else if (s && V.flows.some(f => f.id === s)) spec = specimenFlow(s);
-  else if (s && (V.modules.has(s) || s === OUT_L || s === OUT_R)) spec = specimenLane(s);
+  else if (s && (V.modules.has(s) || isLane(s))) spec = specimenLane(s);
   else if (s?.startsWith?.('MOD:')) spec = specimenLane(s.slice(4));
   else if (s && known(s)) spec = specimenOther(s);
-  box.innerHTML = solInto(spec, solSection(project(), 5, s)) + reading() + insightsHTML() + findingsHTML();
+  box.innerHTML = solInto(spec, solSection(project(), 5, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
 
 // ---------------------------------------------------------------- walk the logical flows
 
+// The footer: the walk's controls and, while walking, its text; otherwise the status line beside them.
 function walkBar() {
-  const bar = root.querySelector('.cm-walk'), ls = realiseWalk(V);
-  if (allocView() || !ls.length) { bar.innerHTML = `<p class="cm-walk-text">${allocView() ? 'Select a responsibility to see what realises it; select a component to see what it realises.' : 'Select a component to read what it realises, owns and needs.'}</p>`; return; }
-  const cur = S.walk >= 0 ? ls[S.walk] : null;
-  bar.innerHTML = `<button type="button" class="cm-btn" data-rz="walk-prev" aria-label="Previous flow" ${S.walk <= 0 ? 'disabled' : ''}>‹</button><button type="button" class="cm-btn" data-rz="walk-next">${S.walk < 0 ? icon('play') + '<span>Walk the logical flows</span>' : S.walk >= ls.length - 1 ? 'Done' : 'Next ›'}</button><p class="cm-walk-text">${cur ? `<b>${S.walk + 1} / ${ls.length}</b> ${esc(describeLogical(V, cur.id))}` : `${ls.length} logical flows from Chapter 4. At each one: which components realise its ends, and which interaction carries it.`}</p>${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-rz="walk-stop" aria-label="Stop the walk">×</button>' : ''}`;
+  const bar = root.querySelector('.cm-walk-in'), ls = realiseWalk(V);
+  if (allocView() || !ls.length) { bar.innerHTML = ''; return; }
+  const cur = S.walk >= 0 ? ls[S.walk] : null, walkTitle = `${ls.length} logical flows from Chapter 4. At each one: which components realise its ends, and which interaction carries it.`;
+  bar.innerHTML = `${S.walk >= 0 ? `<button type="button" class="cm-btn" data-rz="walk-prev" aria-label="Previous flow" ${S.walk <= 0 ? 'disabled' : ''}>‹</button>` : ''}<button type="button" class="cm-btn" data-rz="walk-next" title="${esc(walkTitle)}">${S.walk < 0 ? icon('play') + '<span>Walk the logical flows</span>' : S.walk >= ls.length - 1 ? 'Done' : 'Next ›'}</button>${cur ? `<p class="cm-walk-text"><b>${S.walk + 1} / ${ls.length}</b> ${esc(describeLogical(V, cur.id))}</p>` : ''}${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-rz="walk-stop" aria-label="Stop the walk">×</button>' : ''}`;
 }
 function revealWalk() {
   const h = highlight(), cs = L.cards.filter(c => h.cards.has(c.id)); if (!cs.length) return;
@@ -456,11 +490,17 @@ function revealSelection() {
   const h = highlight(), card = L.cards.find(c => h.cards.has(c.id));
   if (card) stage.reveal(card.x, card.y, card.w, card.h);
 }
+// Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
+let announced;
+const selTarget = () => (S.sel && S.sel !== PROPOSED && !/^(MOD:|L:|F:|OUT:|COL:)/.test(S.sel) && S.sel !== NONE ? S.sel : null);
+function announce() {
+  announced = S.sel;
+  const p = project(), target = selTarget();
+  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 5}, 'model'); } catch { /* assistance is optional */ } }
+  announceObject(target);
+}
 function select(id, {reveal = false} = {}) {
   S.sel = id || null; S.walk = -1;
-  const p = project(), target = S.sel && !S.sel.startsWith('MOD:') && !S.sel.startsWith('L:') && !S.sel.startsWith('F:') ? S.sel : null;
-  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 5}, 'model'); } catch { /* assistance is optional */ } }
-  if (window.history) { const url = new URL(location.href); if (target) url.searchParams.set('object', target); else url.searchParams.delete('object'); window.history.replaceState(window.history.state, '', url.pathname + url.search); }
   if (S.sel && !S.panel) S.panel = true;
   save(); render();
   if (reveal) revealSelection();
@@ -504,15 +544,21 @@ function bind() {
     if (card && !e.target.closest('[data-sel]')) {
       const id = card.dataset.card, now = Date.now(), twice = lastClick.id === id && now - lastClick.t < 420;
       lastClick = {id, t: now};
-      if (id === PROPOSED) return;
       if (twice) { lastClick = {id: null, t: 0}; if (id.startsWith('MOD:')) { const m = id.slice(4); if (V.modules.has(m)) setScope({kind: 'module', id: m}); } else if (V.elements.get(id)?.kind === 'component') setScope({kind: 'part', id}); return; }
       select(id.startsWith('HOLE:') ? id.slice(5) : id); return;
     }
     const s = e.target.closest('[data-sel]');
     if (s && s.dataset.sel) { e.stopPropagation(); select(s.dataset.sel, {reveal: !!s.closest('.cm-panel')}); return; }
-    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
+    if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-edge') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
-  root.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); const id = e.target.dataset.card; if (id !== PROPOSED) select(id.startsWith('HOLE:') ? id.slice(5) : id); } });
+  // Enter or Space on a card selects it; Enter on the selected card opens it, as a double-click does.
+  root.addEventListener('keydown', e => {
+    if ((e.key !== 'Enter' && e.key !== ' ') || !e.target.matches('[data-card]')) return;
+    e.preventDefault();
+    const raw = e.target.dataset.card, id = raw.startsWith('HOLE:') ? raw.slice(5) : raw;
+    if (e.key === 'Enter' && S.sel === id) { if (raw.startsWith('MOD:') && V.modules.has(raw.slice(4))) setScope({kind: 'module', id: raw.slice(4)}); else if (V.elements.get(id)?.kind === 'component') setScope({kind: 'part', id}); return; }
+    select(id);
+  });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !root?.isConnected || document.querySelector('dialog[open]')) return;
     const a = document.activeElement;
@@ -535,7 +581,7 @@ function tip(e) {
   let html = '';
   if (t.dataset.link) { const id = linkFlow(t.dataset.link), f = V.flows.find(x => x.id === id); html = f ? `<b>${esc(f.ref ? f.ref + ' · ' + f.label : f.label)}</b>${esc(describeFlow(V, f.id))}` : ''; }
   else if (t.dataset.card) { const id = t.dataset.card; html = V.elements.get(id)?.kind === 'component' ? `<b>${esc(refTitle(id))}</b>${esc(describeComponent(V, id))}<small class="h">Double-click to focus on it</small>` : id.startsWith('MOD:') && V.modules.has(id.slice(4)) ? `<b>${esc(titleOf(id.slice(4)))}</b>${esc(laneInfo(V, id.slice(4)).sub)}<small class="h">Double-click to open the module</small>` : id.startsWith('HOLE:') ? `<b>${esc(refTitle(id.slice(5)))}</b>No component realises this responsibility yet.` : ''; }
-  else if (t.dataset.lane) { const ln = laneInfo(V, t.dataset.lane); html = `<b>${esc(ln.title)}</b>${esc(ln.sub || '')}`; }
+  else if (t.dataset.lane) { const ln = F?.lanes.find(l => l.id === t.dataset.lane) || laneInfo(V, t.dataset.lane); html = `<b>${esc(ln.title)}</b>${esc(ln.sub || '')}`; }
   if (!html) { box.hidden = true; return; }
   box.innerHTML = html; box.hidden = false; placeTip(box, e);
 }
