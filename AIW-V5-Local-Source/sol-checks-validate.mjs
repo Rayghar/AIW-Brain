@@ -133,4 +133,26 @@ await check('4 · the Playbook example is named as the example; a design with it
  assert.deepEqual(deskModel(warehouse).cap.workload,{driverId:'QD-001',value:20,text:'20 requests a second'});
 });
 
+await check('5 · Sol’s panel always answers: a long response is shortened and says so, a part that fails its rule is set aside, and a response that does not fit is replaced by the method’s guidance with the reason',async()=>{
+ // The live check of 27 September lost three panel answers to an oversized list and an inexact challenge.
+ const p=readyComposition('delivery',{deliveryContract:'best-effort'}),ask=mode=>intelligencePacket(p,{chapter:2,objectId:'QD-001',mode,prompt:'Explain this record.',...(mode==='mind'?{architectureTaskId:p.coauthoring.designTasks[0].id}:{})});
+ const {mockProposal}=await import('./mock-llm-provider.mjs'),{resultHTML}=await import('./public/intelligence-ui.js');
+ const run=async(packet,draft)=>{let n=0;return requestIntelligence(env,packet,{fetcher:async(url,init)=>{const b=JSON.parse(init.body);return Response.json(envelope(++n===1?draft:answer(b).output?JSON.parse(answer(b).output[0].content[0].text):{supported:true,defects:[],notes:[]}));}});};
+ const html=(r,packet)=>resultHTML({run:{...r,id:'r5',status:'completed',createdAt:'2026-09-27T00:00:00Z',packet}},p);
+ // Twelve assumptions and a 300-character title: kept to eight and to 180 characters, and the panel says so.
+ let packet=ask('design');const long={...mockProposal(packet),title:'T'.repeat(300),assumptions:Array.from({length:12},(_,i)=>`Assumption ${i+1} about the record.`)};
+ let r=await run(packet,long);
+ assert.equal(r.result.assumptions.length,8);assert(r.result.title.length<=180);assert.deepEqual([...r.result.trimmed].sort(),['assumptions','title']);
+ assert.match(html(r,packet),/data-intel-trimmed>Shortened to fit: title, assumptions/);
+ // A challenge without an exact passage is set aside; the exact one stands.
+ packet=ask('challenge');const S1=packet.sources[0],other=packet.sources.find(s=>s.ref!=='S1');
+ const exact={title:'Scope to reconcile',kind:'applicability question',explanation:'The two passages may concern different scopes.',leftRef:'S1',leftQuote:S1.excerpt.slice(0,40),rightRef:other.ref,rightQuote:other.excerpt.slice(0,40),question:'Which scope applies?'};
+ r=await run(packet,{...mockProposal(packet),challenges:[exact,{...exact,rightQuote:'An invented quote that is not in the source.'}]});
+ assert.equal(r.result.challenges.length,1);assert.match(html(r,packet),/data-intel-set-aside>Set aside: 1 source challenge without an exact passage from each cited source/);
+ // A response that ignores the selected record does not fit: the method's structured guidance is shown, with the reason, not an error.
+ packet=ask('design');r=await run(packet,{...mockProposal(packet),sourceRefs:packet.sources.filter(s=>s.ref!=='S1').slice(0,1).map(s=>s.ref)});
+ assert.equal(r.groundingReview.accepted,false);assert.match(r.groundingReview.issues[0],/did not fit the contract: The proposal must cite the selected saved object/);
+ assert.match(r.result.title,/Structured guidance|Source review/);assert.match(html(r,packet),/Why structured guidance was used[\s\S]*did not fit the contract/);
+});
+
 console.log(JSON.stringify({status:'passed',checks:checks.length,seconds:Math.round((Date.now()-started)/1000),checksRun:checks},null,2));

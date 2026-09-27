@@ -32,7 +32,8 @@ try{
  assert(packet.sources.some(s=>s.kind==='project-source'));assert(packet.sources.some(s=>s.kind==='knowledge'));assert(!JSON.stringify(packet).includes('Bank Payment'));assert(packet.sources.reduce((n,s)=>n+s.excerpt.length,0)<=28000);
  assert.throws(()=>validateIntelligenceOutput({...valid(packet),sourceRefs:['S999']},packet),/outside/);
  assert.throws(()=>validateIntelligenceOutput({...valid(packet),commands:[{type:'review.accept'}]},packet),/structure/);
- assert.throws(()=>validateIntelligenceOutput({...valid(packet),assumptions:['S1']},packet),/citation labels/);
+ // An entry that only lists citation labels is set aside, and the rest of the response is kept.
+ {const labelled=validateIntelligenceOutput({...valid(packet),assumptions:['S1','A reasoned assumption.']},packet);assert.deepEqual(labelled.assumptions,['A reasoned assumption.']);assert.match(labelled.setAside.join(' '),/only listed citation labels/);}
  assert.equal(calls,0);
  const requestId=crypto.randomUUID(),generation={...raw,packetStamp:packet.stamp,requestId};
  assert.equal((await req('/api/intelligence/generate',generation,{bindings:{...env,OPENAI_API_KEY:undefined}})).status,503);assert.equal(calls,0);

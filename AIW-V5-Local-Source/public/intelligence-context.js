@@ -99,23 +99,46 @@ export function intelligenceSchema(packet){
 }
 
 function exactObject(v,keys){if(!v||typeof v!=='object'||Array.isArray(v)||Object.keys(v).some(k=>!keys.includes(k))||keys.some(k=>!(k in v)))throw Error('The model returned an unsupported proposal structure.');}
-function bounded(v,n,empty=false){if(typeof v!=='string'||v.length>n||(!empty&&!v.trim()))throw Error('The model returned incomplete or oversized text.');return v.trim();}
-function array(v,n,limit){if(!Array.isArray(v)||v.length>n)throw Error('The model returned an oversized list.');return v.map(x=>bounded(x,limit));}
+// A response is refused for its shape and its grounding; a text or list past its limit is kept to it and said so,
+// and a part that fails its own rule (a challenge without exact passages, an option the task does not take, a question
+// that is only citation labels) is set aside with the rest kept — one oversized or misplaced part never costs the answer.
 export function validateIntelligenceOutput(raw,packet){
  exactObject(raw,Object.keys(intelligenceSchema(packet).properties));
- const known=new Set(packet.sources.map(s=>s.ref)),refs=v=>{const xs=array(v,22,20);if(!xs.length||xs.some(x=>!known.has(x)))throw Error('The model cited a source outside the reviewed context.');return [...new Set(xs)];};
- const result={title:bounded(raw.title,180),summary:bounded(raw.summary,1800),passage:bounded(raw.passage,10000),sourceRefs:refs(raw.sourceRefs),assumptions:array(raw.assumptions,8,700),questions:array(raw.questions,8,700),options:[]};
+ const cut=new Set(),setAside=[];
+ const text=(v,n,name,empty=false)=>{if(typeof v!=='string'||(!empty&&!v.trim()))throw Error('The model returned incomplete text.');const t=v.trim();if(t.length<=n)return t;cut.add(name);return t.slice(0,n-1).trimEnd()+'…';};
+ const texts=(v,n,limit,name)=>{if(!Array.isArray(v))throw Error('The model returned an unsupported list.');if(v.length>n)cut.add(name);return v.slice(0,n).map(x=>text(x,limit,name));};
+ const known=new Set(packet.sources.map(s=>s.ref)),refs=v=>{if(!Array.isArray(v)||v.some(x=>typeof x!=='string'))throw Error('The model returned an unsupported citation list.');const xs=[...new Set(v.map(x=>x.trim()))].slice(0,22);if(!xs.length||xs.some(x=>!known.has(x)))throw Error('The model cited a source outside the reviewed context.');return xs;};
+ const labelsOnly=s=>/^S\d+(?:\s*[,;]\s*S\d+)*$/.test(s);
+ const result={title:text(raw.title,180,'title'),summary:text(raw.summary,1800,'summary'),passage:text(raw.passage,10000,'passage'),sourceRefs:refs(raw.sourceRefs),assumptions:texts(raw.assumptions,8,700,'assumptions'),questions:texts(raw.questions,8,700,'questions'),options:[]};
+ const bare=[...result.assumptions,...result.questions].filter(labelsOnly).length;
+ if(bare){result.assumptions=result.assumptions.filter(s=>!labelsOnly(s));result.questions=result.questions.filter(s=>!labelsOnly(s));setAside.push(`${bare} ${bare===1?'entry':'entries'} that only listed citation labels`);}
  if(packet.architectureDraft){result.architectureDraft=validateArchitectureDraft(raw.architectureDraft,packet);if(result.architectureDraft.some(s=>s.sourceRefs.some(ref=>!result.sourceRefs.includes(ref))))throw Error('Include the architectural suggestions’ citations in the response source list.');}
- if([...result.assumptions,...result.questions].some(s=>/^S\d+(?:\s*[,;]\s*S\d+)*$/.test(s)))throw Error('Assumptions and questions must explain the design, not contain only citation labels.');
  if(!result.sourceRefs.includes('S1'))throw Error('The proposal must cite the selected saved object.');
  for(const s of packet.sources.filter(s=>s.kind==='architecture-knowledge'))if(!result.sourceRefs.includes(s.ref))throw Error('The explanation must cite the reviewed architecture reasoning.');
- if(!Array.isArray(raw.options)||raw.options.length>2||((packet.request.mode==='author'||!packet.canDesign)&&raw.options.length))throw Error('The model proposed an unsupported design action.');
- for(const o of raw.options){
+ if(!Array.isArray(raw.options))throw Error('The model returned an unsupported list.');
+ const allowed=packet.request.mode!=='author'&&packet.canDesign;
+ if(raw.options.length&&!allowed)setAside.push(`${raw.options.length} design option${raw.options.length===1?'':'s'} this task does not take`);
+ for(const o of allowed?raw.options:[]){
   exactObject(o,['title','approach','rationale','tradeoffs','sourceRefs','answers']);exactObject(o.answers,SUGGESTED_FIELDS);
-  if(!['cohesive','separate'].includes(o.approach)||result.options.some(x=>x.approach===o.approach))throw Error('Choose distinct supported boundary alternatives.');
-  result.options.push({title:bounded(o.title,180),approach:o.approach,rationale:bounded(o.rationale,1800),tradeoffs:array(o.tradeoffs,6,700),sourceRefs:refs(o.sourceRefs),answers:Object.fromEntries(SUGGESTED_FIELDS.map(k=>[k,bounded(o.answers[k],k==='trustName'?180:1600,true)]))});
+  if(!['cohesive','separate'].includes(o.approach)||result.options.some(x=>x.approach===o.approach)||result.options.length>=2){setAside.push('a design option that repeats another or is not a boundary alternative');continue;}
+  result.options.push({title:text(o.title,180,'options'),approach:o.approach,rationale:text(o.rationale,1800,'options'),tradeoffs:texts(o.tradeoffs,6,700,'options'),sourceRefs:refs(o.sourceRefs),answers:Object.fromEntries(SUGGESTED_FIELDS.map(k=>[k,text(o.answers[k],k==='trustName'?180:1600,'options',true)]))});
  }
- if(packet.request.mode==='challenge'){if(!Array.isArray(raw.challenges)||raw.challenges.length>6)throw Error('Keep source challenges within six observations.');result.challenges=raw.challenges.map(f=>{exactObject(f,Object.keys(CHALLENGE_SCHEMA.properties.challenges.items.properties));if(!CHALLENGE_SCHEMA.properties.challenges.items.properties.kind.enum.includes(f.kind))throw Error('Use an advisory source challenge type.');const r={title:bounded(f.title,180),kind:f.kind,explanation:bounded(f.explanation,1600),question:bounded(f.question,700)};for(const side of ['left','right']){const ref=bounded(f[side+'Ref'],20),quote=bounded(f[side+'Quote'],600),source=packet.sources.find(s=>s.ref===ref);if(!source||quote.length<8||!source.excerpt.includes(quote))throw Error('Every challenge needs an exact passage from each cited source.');r[side+'Ref']=ref;r[side+'Quote']=quote;}if(f.kind==='possible contradiction'&&r.leftRef===r.rightRef&&r.leftQuote===r.rightQuote)throw Error('A contradiction needs two distinct source assertions.');return r;});}
+ if(packet.request.mode==='challenge'){
+  if(!Array.isArray(raw.challenges))throw Error('The model returned an unsupported list.');
+  if(raw.challenges.length>6)cut.add('challenges');
+  const kinds=CHALLENGE_SCHEMA.properties.challenges.items.properties.kind.enum;let inexact=0;
+  result.challenges=raw.challenges.slice(0,6).flatMap(f=>{
+   exactObject(f,Object.keys(CHALLENGE_SCHEMA.properties.challenges.items.properties));
+   if(!kinds.includes(f.kind)){inexact++;return [];}
+   const r={title:text(f.title,180,'challenges'),kind:f.kind,explanation:text(f.explanation,1600,'challenges'),question:text(f.question,700,'challenges')};
+   for(const side of ['left','right']){const ref=typeof f[side+'Ref']==='string'?f[side+'Ref'].trim():'',quote=typeof f[side+'Quote']==='string'?f[side+'Quote'].trim():'',source=packet.sources.find(s=>s.ref===ref);if(!source||quote.length<8||quote.length>600||!source.excerpt.includes(quote)){inexact++;return [];}r[side+'Ref']=ref;r[side+'Quote']=quote;}
+   if(f.kind==='possible contradiction'&&r.leftRef===r.rightRef&&r.leftQuote===r.rightQuote){inexact++;return [];}
+   return [r];
+  });
+  if(inexact)setAside.push(`${inexact} source challenge${inexact===1?'':'s'} without an exact passage from each cited source`);
+ }
+ if(cut.size)result.trimmed=[...cut];
+ if(setAside.length)result.setAside=setAside;
  return result;
 }
 export function generationReceipt(run){return {groundingReview:copy(run.groundingReview),brainReceipt:copy(run.packet.brainReceipt),retrieval:copy(run.packet.retrieval),runId:run.id,provider:run.provider,model:run.model,at:run.updatedAt,request:copy(run.packet.request),context:copy(run.packet.context),basisStamp:run.packet.basisStamp,packetStamp:run.packet.stamp,sources:copy(run.packet.sources),sourceRefs:copy(run.result.sourceRefs),assumptions:copy(run.result.assumptions),questions:copy(run.result.questions)};}

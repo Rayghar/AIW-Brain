@@ -502,7 +502,7 @@ export function settleReasoning(packet, result, review = null) {
     const found = reviewFinding(r);
     if (found.contradiction) contradictions.push({id: it.id, ...found.contradiction});
     if (found.notes.length) notes.push({id: it.id, notes: found.notes.slice(0, 8)});
-    const issues = [...a.problems, ...found.defects, ...(review && !r ? ['The source check did not reach it.'] : [])];
+    const issues = uniq([...a.problems, ...found.defects, ...(review && !r ? ['The source check did not reach it.'] : [])]);
     return issues.length ? withheld(packet, it.id, issues) : (({problems, ...x}) => ({...x, withheld: false, issues: [], ...(found.contradiction ? {checkNote: found.contradiction.note} : {})}))(a);
   });
   return {summary: result.summary, sourceRefs: result.sourceRefs, assessments, ...(contradictions.length ? {checkContradictions: contradictions} : {}), ...(notes.length ? {checkNotes: notes} : {}), ...(result.setAside ? {setAside: result.setAside} : {}), ...(result.trimmed ? {trimmed: result.trimmed} : {})};
