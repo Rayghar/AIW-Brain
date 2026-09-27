@@ -124,7 +124,7 @@ try {
   assert.ok(await page.$('.am-explorer') && !(await page.$('.cm')));
   await page.reload({waitUntil: 'networkidle'}); await page.waitForTimeout(800);
   assert.ok(await page.$('.am-explorer [data-am="chapter-model"]') && !(await page.$('.cm')), 'the explorer choice persists');
-  await click('.am-explorer [data-am="chapter-model"]'); await page.waitForTimeout(500);
+  await click('.am-explorer [data-am="chapter-model"]'); await page.waitForSelector('.cm .cm-msg', {timeout: 8000}); await page.waitForTimeout(200);
   assert.ok(await page.$('.cm .cm-msg'));
   pass('Explore all perspectives switches to the connected explorer, the choice persists, and the explorer returns to the Chapter 8 models');
 

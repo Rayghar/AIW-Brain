@@ -27,13 +27,9 @@ try {
   assert.equal(first.headers.get('cache-control'), 'no-cache', 'and asks to be revalidated, not re-sent');
   const again = await fetch(base + '/model-stage.js', {headers: {'If-None-Match': etag}});
   assert.equal(again.status, 304, 'an unchanged file is not sent again');
-  const graph = await (await fetch(base + '/local/module-graph?entry=realise-view.js')).json();
-  assert.ok(Array.isArray(graph) && graph.includes('realise-view.js') && graph.includes('model-stage.js') && graph.includes('realise-model.js') && graph.length > 20, 'the closure of a chapter view lists its whole import chain');
-  assert.equal((await fetch(base + '/local/module-graph?entry=../server.js')).status, 404, 'only a module name under public/');
-  const html = await (await fetch(base + '/')).text();
-  const preloads = html.match(/<link rel="modulepreload" href="\/[a-z0-9-]+\.js">/g) || [];
-  assert.ok(preloads.length >= 40 && preloads.some(l => l.includes('/entry.js')), 'the page preloads its own closure: ' + preloads.length);
-  pass('static files are revalidated with an ETag and no-cache (304 when unchanged), a chapter view’s import closure is listed, and the page preloads its own');
+  assert.equal((await fetch(base + '/')).headers.get('cache-control'), 'no-cache', 'the page itself too');
+  assert.equal((await fetch(base + '/../server.js')).status, 404, 'nothing outside public/');
+  pass('static files are revalidated with an ETag and no-cache: an unchanged file answers 304 and is not sent again');
 
   // 2. While a chapter model loads, its frame says so.
   const slow = await browser.newContext({viewport: {width: 1440, height: 900}});

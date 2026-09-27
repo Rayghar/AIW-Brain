@@ -128,7 +128,7 @@ try {
   assert.ok(await page.$('.am-explorer [data-am="chapter-model"]') && !(await page.$('.cm')));
   await click('.am-explorer [data-am="chapter-model"]'); await page.waitForTimeout(500);
   assert.ok(await page.$('.cm.rz .rz-card'));
-  await page.goto(base + '/?chapter=11&tab=model', {waitUntil: 'networkidle'}); await page.waitForTimeout(900); assert.ok(await page.$('.cm.dk .dk-cell') && !(await page.$('.cm.rz, .cm.pf')), 'chapter 11 opens on the review desk');
+  await page.goto(base + '/?chapter=11&tab=model', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm.dk .dk-cell', {timeout: 8000}); await page.waitForTimeout(200); assert.ok(await page.$('.cm.dk .dk-cell') && !(await page.$('.cm.rz, .cm.pf')), 'chapter 11 opens on the review desk');
   await open(9); assert.ok(await page.$('.cm.tm') && !(await page.$('.cm.rz')), 'Chapter 9 keeps its threat model');
   assert.equal(await count('.cm'), 1, 'only one chapter model is on the page');
   await open(5);
