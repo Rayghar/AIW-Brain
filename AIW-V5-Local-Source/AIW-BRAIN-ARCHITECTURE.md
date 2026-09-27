@@ -1,6 +1,6 @@
 # The AIW Brain: how the knowledge repository and the LLM are involved in every decision
 
-**Status:** v20 · 26 September 2026. This describes what is implemented and tested. It also marks what is still ahead.
+**Status:** v20.4 · 27 September 2026. This describes what is implemented and tested. It also marks what is still ahead.
 
 ## The idea
 
@@ -26,7 +26,7 @@ AIW is an architecture *intelligence* workbench. The architecture experience com
 | **Recall** | The Brain assembles a packet. It holds one reading per decision, then what the project has learned about those records (claims its stewards linked to them), then the objective and its planning assumptions (where capacity is read), the documented mechanisms of the products involved, the quality drivers the parts answer to, the SA Playbook's tactics for the vitals and drivers, and the project's governed claims and methods. A chapter reading is fitted to its share of the packet, dropping the least telling parts first. Every source carries a receipt, and withdrawn packs and releases are left out. The packet is capped at 22 sources and 28,000 characters. | `brain-reasoning.js` (`reasoningPacket`), `chapter-reasoning.js` (`fitReading`), `architecture-brain.js`, `model-knowledge.js` |
 | **Show** | The architect sees what Sol will read before anything is sent: every excerpt, whole, with its receipt. An optional question focuses Sol. Beside it, marked *not sent to Sol*, are leads: knowledge repository passages that mention what the decisions touch. A lead opens in Mind Factory → Sources, where it can be retrieved and taken through the governed path. | `brain-reasoning-ui.js` (`pendingHTML`, `leadQuery`), `/api/intelligence/reasoning-context`, `/api/knowledge/corpus` |
 | **Reason** | Sol answers a strict JSON contract for each decision. The answer has a verdict, a headline, reasoning, refinements on the draft's own knobs, proposed threats on the listed targets, a preferred alternative for a decision, risks, questions and citations. One request covers up to eight decisions. | `intelligence-provider.js` (`requestReasoning`), `/api/intelligence/reason` |
-| **Check** | Every assessment is checked twice. The deterministic check covers structure, citations, verdicts that fit the decision, refinements within bounds, numbers the packet does not contain, and guarantees of verified outcomes, including in refined wording. A second model pass then checks it against the same packet. A chapter record's refinements must also pass the chapter's own rules. An assessment that fails any check is withheld, and the reading stands. | `validateReasoningOutput`, `guardReasoning`, `settleReasoning`, `checkRecordRefinements` |
+| **Check** | Every assessment is checked twice. The deterministic check covers structure, citations, verdicts that fit the decision, refinements within bounds, numbers the packet does not contain, and claims of guaranteed or verified outcomes, including in refined wording. Where a design records a workload of its own, it also withholds advice that sizes the design for the SA Playbook's example. A second model pass then checks it against the same packet and names its defects; the defects decide, and a pass whose flag disagrees with them is shown, not relied on. A chapter record's refinements must also pass the chapter's own rules. An assessment that fails a check is withheld, and the reading stands; a part that fails its own rule is set aside, and the rest stands. | `validateReasoningOutput`, `guardReasoning`, `reviewFinding`, `settleReasoning`, `checkRecordRefinements` |
 | **Refine** | On the desk, "Use Sol's refinements" puts Sol's numbers and wording into the draft. In a chapter, Sol's refinements become the chapter's own change command. Either way, the instruments read the design again with them before the architect reviews anything. A number is only as good as the arithmetic that checks it. | `desk-view.js` (`solUse`), `chapter-reasoning.js` (`chapterCommands`, `chapterReread`) |
 | **Decide** | The draft or the refined record goes through the chapter's change review: apply, or keep as a design alternative. Only the refined fields change, and the record's links are kept. Sol's proposed threats go through Chapter 9's review. | `workbench-ui.js` (`reviewDesignChanges`), `chapter-sol.js` |
 | **Record** | The outcome is kept with the model, the chapter, the packet stamp and the sources the advice rested on: used or agreed, applied, or dismissed with the architect's reason. The advice shows what was done with it. Advice whose reading has since changed is shown as history, not advice. The SDD's *Architecture reasoning record* carries the vitals at review, the product choices and switch points, every piece of advice with what was done with it and whether the knowledge it rested on was later withdrawn, and what the stewards learned. | `adoptReasoning`, `intelligence.adopt` (kind `assessment`), `p.coauthoring.assessments`, `reasoning-record.js` |
@@ -67,10 +67,14 @@ The companion and the panel share one state and tell each other when it changes 
   - Chapter 10: a runtime plan.
 
   With nothing selected, *Sol's round* asks about the chapter's records with the most open checks. Verdicts are marked on the canvas. A record's refinements arrive already read again by the instruments, and are applied through the chapter's change review.
+
+  Every element a chapter model draws has Sol in its companion. A group, a gap or a link drawn from a record is asked about as that record, and a record from another chapter is read as its own chapter's reading. A saved object Sol does not assess, such as an outcome or an environment, is offered to Sol's panel to explain. A drawing with no record of its own says so, and names what to select.
 - **The knowledge stewards' queue (Mind Factory → Architecture in context → Stewards).** Each disagreement with Sol, with the architect's words and what the advice rested on, and each change made on knowledge since withdrawn. Sol advises on each queue item: what the disagreement should teach, worded as a project claim with where it applies and its limits, or whether the change still holds. The queue then leads the claim through review, release, activation and the link, one step at a time.
-- **The Sol and Mind Factory companions (Chapters 1–10).** They are unchanged from earlier releases:
+- **The Sol and Mind Factory companions (Chapters 1–11).** They serve:
   - grounded explanations, guided design proposals, source challenges and Mind Factory comparison drafting;
   - the same governed claims, playbook methods and catalogue records, through `/api/intelligence/generate`.
+
+  Sol's panel always answers. A long response is shortened at a whole sentence and says so. A part that fails its rule is set aside with the reason: a citation label alone, an option not allowed, a challenge without an exact passage. A response that does not fit its contract is replaced by the reviewed method's guidance, with the reason.
 - **Knowledge governance.** Withdrawing the product mechanisms (`AIW-PRODUCT-MECHANISMS-1`) or the SA Playbook (`SA-PLAYBOOK`, which covers `AIW-PLAYBOOK-2` and `AIW-PLAYBOOK-3`) stops their use everywhere:
   - product suggestions and single-unit limits stop in the models;
   - the desk stops offering the playbook's tactics;
@@ -79,12 +83,15 @@ The companion and the panel share one state and tell each other when it changes 
 ## Authority boundaries
 
 - Sol's advice never changes the design. Refinements become draft values or a chapter's change command. They and proposed threats reach the design only through a chapter's change review, which changes only the refined fields.
-- Numbers come from instruments. Sol may propose a number only inside a knob's bounds, and the instruments re-check it. A number Sol states that is not in the packet withholds that assessment.
+- Numbers come from instruments. Sol may propose a number only inside a knob's bounds, and the instruments re-check it. A number Sol states that is neither in the packet nor one of its own refinements withholds that assessment. A refinement restated in another unit of its knob, such as 30000 ms as "30 seconds", is still its own.
 - A failed check costs only what failed it:
-  - an assessment that invents a number, claims a guaranteed or verified outcome in its own words, or cites outside the packet is withheld;
-  - a drafted value worded as a guarantee is set aside and never applied, while the rest of the advice stands;
+  - an assessment that invents a number, claims a guaranteed or verified outcome in its own words, or cites outside the packet is withheld. A claim says something ensures an outcome ("…, ensuring exactly-once processing") or that one was verified. An instruction, a purpose, a goal, a question or a statement that evidence is missing claims nothing;
+  - where a design records a workload of its own, advice that sizes it for the SA Playbook's example objective is withheld, and the architect is told what the project records instead;
+  - a drafted value worded as a guarantee, a purpose included, is set aside and never applied, while the rest of the advice stands;
+  - threats proposed for a decision that takes none are set aside, and the rest of the advice stands;
   - advice text over its limit is shortened at a whole sentence and marked;
   - a decision assessed twice, or one outside the packet, is set aside;
+  - a second pass that marks advice supported while naming defects, or unsupported while naming none, is not relied on: its defects decide, and the architect sees the disagreement;
   - only a broken response fails the request, and the architect is told which check it failed.
 - Business targets stay the architect's: recovery points, service levels, quality driver targets and priorities, and sites. Sol frames the options and questions, and in *What if* it weighs the architect's move without proposing one of its own.
 - Four eyes on every claim: a claim is used only after a different authenticated person from its author has verified it. This is checked at review and again on every read.
@@ -121,19 +128,38 @@ The companion and the panel share one state and tell each other when it changes 
   - 7 rendered checks (`npm run test:brain-reasoning-browser`) run against a loopback test double of the provider (`mock-llm-provider.mjs`). They cover asking, the packet shown before sending, assessments on cells, refinements through the change review, a proposed threat recorded in Chapter 9, disagreement, stale advice and persistence.
   - The desk's rendered checks cover the unconnected state.
   - 5 model checks (`npm run test:brain-ahead`) cover the SDD's reasoning record, the product comparison (mechanisms, claims naming each product, withdrawal), its rendering from the desk's entry point, switch points anchored on the realisation, and leads worded from what Sol reads.
-  - 13 model checks (`npm run test:sol-evaluation`) run every held-out case through the real reasoning path against the test double. They cover:
+  - 14 model checks (`npm run test:sol-evaluation`) run every held-out case through the real reasoning path against the test double. They cover:
     - **Injected faults:** the guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements, and the metrics catch wrong verdicts and missing support.
-    - **The scorer:** it reads numbers, negations, hedges and questions as the guard does; every flag keeps its sentence; each withholding is labelled by the check that raised it.
-    - **Kept answers:** every answer is kept, with a withheld draft beside its issues, and a kept report scores again without asking a model.
+    - **The scorer:** it reads numbers, negations, hedges and questions as the guard does, and a refinement's own value in another unit as its own; every flag keeps its sentence; each withholding is labelled by the check that raised it.
+    - **Kept answers:** every answer is kept, with a withheld draft beside its issues. A kept report scores again without asking a model, and `--recheck` also passes its answers through today's checks.
     - **The control arm:** it asks the same model the same questions without the Brain, and only the evaluation can reach it.
+  - 6 model checks (`npm run test:sol-checks`) cover the fixes the live comparison called for:
+    - a threat proposed for a decision is set aside, not the advice;
+    - the guard reads a claim as a claim, in any tense, and passes a question, an instruction, a purpose, a goal or missing evidence;
+    - a second pass that contradicts itself is shown, not relied on;
+    - the Playbook's example is named as the example, and a design with its own workload is not sized for it;
+    - Sol's panel always answers;
+    - one refinement costs only itself.
+  - 5 model checks (`npm run test:sol-coverage`) build, answer, check and render a request, against the test double, for every record, selection and desk item in Chapters 2 to 11, every What if move, and every saved object in Chapters 1 to 11 on Sol's panel in each mode.
+  - 5 rendered checks (`npm run test:sol-coverage-browser`) run on the chapter pages. They cover a record assessed beside the model in Chapters 4, 5 and 6, a self-contradicting second pass shown as such, a record read from another chapter, a Chapter 7 option, and a sweep of every element Chapters 4 to 10 draw: each has Sol in its companion.
   - The knowledge repository's own suites and rendered checks are listed in [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md).
-- **Live, once, on 27 September 2026.** All 26 held-out cases ran on `gpt-4.1-mini-2025-04-14` through Sol and, as a control, through the same model without the Brain. The engineer then read all 28 answer pairs. See `release-evidence/sol-direct-comparison/ANSWER_REVIEW.md`.
-  - **Where the design records its facts** (the bank payment reference, 16 assessments), Sol was better in 10, the same in 4 and worse in 2. Both worse cases were right drafts its checks withheld. The direct model gave three values that would mislead an architect: 16 and 3 replicas where about 24 are needed, and a 10-second timeout on a 2-second path.
-  - **On the teaching designs** (12 assessments), the direct model was better in 6, Sol in 3, and neither in 3. The desk's capacity arithmetic there carries the Playbook's example objective, and Sol took it as the project's load in all four capacity assessments.
+- **Live, on 27 September 2026, for v20.3.** All 26 held-out cases ran on `gpt-4.1-mini-2025-04-14` through Sol and, as a control, through the same model without the Brain. The engineer then read all 28 answer pairs. See `release-evidence/sol-direct-comparison/ANSWER_REVIEW.md`.
+  - **On the bank payment reference** (16 assessments), Sol was better in 10, the same in 4 and worse in 2. Both worse cases were right drafts its checks withheld. The direct model gave three values that would mislead an architect: 16 and 3 replicas where the desk's arithmetic calls for about 24, and a 10-second timeout on a 2-second path.
+  - **On the teaching designs** (12 assessments), the direct model was better in 6, Sol in 3, and neither in 3. Sol took the Playbook's example objective as the project's load in all four capacity assessments.
   - **Withholding:** 7 of 28. Four of those drafts were right: three put threats on a decision, and one was a question the guard read as a claim, followed by a second pass that contradicted itself.
+  - **Corrected in v20.4:** that reading said the bank reference records its own objective. It does not. All three designs size for the Playbook's example, and the bank reference records no competing workload. The findings stand.
+- **Live, on 27 September 2026, for v20.4** (`release-evidence/sol-checks-and-coverage/`):
+  - **Every chapter.** One target of every kind in Chapters 1 to 11 was asked through both paths: 33 requests, each answered and displayed.
+    - Of 19 assessments, 14 were shown and 5 withheld. Two of the five cost a whole assessment for one refinement, which now sets aside only that refinement. One switch point was answered "judge", which a switch point does not take. Two sized a teaching design for the example.
+    - Of 14 panel responses, 13 passed their source check. One was shown as the reviewed method's guidance, with the reason.
+  - **The comparison after the fixes**, read with the final checks. Sol withheld 4 of 28 answers, each a teaching design sized for the example. It agreed with the expected verdict on all 24 it showed; the direct model agreed on 26 of 28. In the engineer's reading, Sol was better in 17, the same in 8 and worse in 3 (`AFTER_FIXES_REVIEW.md`). No right draft was withheld.
+  - Across the three v20.4 runs, today's checks withhold 8, 5 and 4 of 28.
 - **Not yet verified:**
-  - The results above come from one run of one model. The expected advice is implementation-authored, and an architect should review and amend it, with value bands per case, before any result is relied on.
-  - The second check's instructions say that the design's own gaps, evidence still to be gathered and unapplied refinements are not defects in the advice. The live run shows the model does not always follow them (BP-09, SP-06).
+  - The results above come from one run of one model per release. The expected advice is implementation-authored, and an architect should review and amend it, with value bands per case, before any result is relied on.
+  - A contract's timeout is not read against its path's target where the design records no nested-timeout arithmetic. On the teaching designs, Sol advised 30 seconds against a 2-second acknowledgement. On the bank reference, the instruments' re-reading caught Sol's 5 seconds.
+  - Beside the example load, Sol still sized two teaching runtime plans for it. They were withheld, so the architect got no advice where the direct model answered for the recorded load.
+  - The guard reads *verified*, *proven*, *validated* or *measured* only before capacity, latency, throughput, recovery or availability. A drafted condition called an illustrative workload "validated … confirmed by performance testing", and it passed.
+  - The second pass withheld three answers in the first v20.4 run and none in the next two, once it no longer saw the guard's own findings. One run each does not prove it.
   - The test double proves the plumbing and the guards, not the judgement.
 
 ## Delivered in v20
@@ -143,9 +169,16 @@ The companion and the panel share one state and tell each other when it changes 
 3. **Mind Factory from the desk.** *Compare in Mind Factory* at a switch point (`product-comparison.js`).
 4. **The knowledge repository connected.** Corpus search, verified passages, exact-original retrieval, signed revocations applied automatically, and leads beside Sol ([KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md)).
 
+## Delivered in v20.4
+
+1. **Sol's checks cost only what failed.** Threats on a decision and a refinement that fails its own rule are set aside, and the rest of the advice stands. The guard reads a claim as a claim. A second pass that contradicts itself is shown, not relied on.
+2. **The Playbook's example is named as the example.** Where a design records its own workload, advice that sizes it for the example is withheld (`desk-capacity.js`, `guardReasoning`).
+3. **Sol on every page.** Every element a chapter model draws has Sol, and Sol's panel always answers (`chapter-sol.js`, `chapter-reasoning.js`, `intelligence-provider.js`).
+4. **Evaluation tools.** A coverage run of every chapter (`npm run evaluate:sol:coverage`), and `--recheck` to measure a change to the checks on answers already kept.
+
 ## Ahead
 
-1. **Fix what the live evaluation found, then review it with an architect.** The checks should set aside threats on a decision rather than withhold the assessment, and pass questions. The desk should stop presenting a Playbook example as a teaching project's load. The expectations need value bands per case.
+1. **Review the evaluation with an architect.** The expectations need value bands per case. The remaining findings of the live runs are listed under *Not yet verified*: timeouts against their path's target, runtime plans beside the example load, and the scope of the guard's reading of *validated*.
 2. **SEABaaS as a fourth domain**, once an architect has confirmed a representative scope and baseline from the private workbook.
 3. **A repository claim through the whole governed path, by real people.**
    - The path is proven with synthetic accounts and a synthetic signing key (`npm run test:brain-chain`).

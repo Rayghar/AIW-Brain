@@ -1,5 +1,33 @@
 # AIW V5 Live Model Explorer
 
+## Sol's checks, and Sol on every chapter (v20.4) — 27 September 2026
+
+- **Threats on a decision are set aside, not the advice.** Before this fix, a model that filled the threat field on a decision, which takes none, had the whole assessment withheld. Now the threats are listed as *Set aside* and never recorded, and the rest of the advice stands.
+- **The guard reads a claim as a claim.**
+  - A claim in any tense is still withheld: "…, ensuring exactly-once processing", "three replicas ensure availability".
+  - Neither a question, an instruction, a purpose, a goal nor a statement that evidence is missing is a claim: "Ensure clear recovery procedures", "…to ensure availability", "critical for ensuring…", "without measured evidence…".
+  - A drafted value is still read strictly, because it is written into the design.
+  - A refinement's own value restated in another unit ("a 30-second timeout" for 30000 ms) is not a new number.
+- **One refinement costs only itself.** Wording past its field's limit, or a reason claiming an outcome, sets that refinement aside. The rest of the advice stands.
+- **A second pass that contradicts itself is not relied on.** It now reports defects and notes separately, and the defects decide. When its flag disagrees with them, the assessment shows the disagreement.
+- **The SA Playbook's example load is named as the example.**
+  - Every reason and basis on the desk says when the objective is the Playbook's example.
+  - Sol's packet says so, with what the project records instead.
+  - Where a design records its own workload (the teaching designs: 10 applications and 20 requests a second), advice that sizes it for the example is withheld, naming the recorded workload.
+  - The bank reference records no workload of its own. It keeps its advice, labelled as for the example.
+- **Sol on every page.**
+  - Every element Chapters 4 to 10 draw has Sol in its companion. A group, gap or link drawn from a record is asked about as that record.
+  - A saved object Sol does not assess is offered to Sol's panel to explain.
+  - Sol's panel always answers. A response that does not fit its contract is replaced by the reviewed method's guidance, with the reason.
+- **Correction to v20.3.** The v20.3 reading said the bank reference records its own objective. It does not: all three evaluation designs size for the Playbook's example. The v20.3 evidence carries a dated correction.
+- **Live.** The last runs were on the code before the final checks; their kept answers are read with the final checks (`--recheck`).
+  - One target of every kind in Chapters 1 to 11 was asked, 33 requests, and each was answered and displayed.
+  - In the comparison, Sol withheld 4 of 28 answers, each a teaching design sized for the example. It agreed with the expected verdict on all 24 it showed; the direct model agreed on 26 of 28.
+  - The engineer read every pair (`release-evidence/sol-checks-and-coverage/AFTER_FIXES_REVIEW.md`): Sol was better in 17, the same in 8, worse in 3.
+  - The runs used the key the sponsor supplied, loaded straight into the process.
+
+Run `npm run test:sol-checks`, `npm run test:sol-coverage` and `npm run test:sol-coverage-browser`. `npm run evaluate:sol:coverage` runs every chapter against the test double, and `npm run evaluate:sol -- --recheck report.json` measures today's checks on a kept report.
+
 ## Sol beside a direct LLM (v20.3) — 27 September 2026
 
 - **The evaluation reads answers as Sol's checks do.** Before this fix, the scorer counted six things as false support:
