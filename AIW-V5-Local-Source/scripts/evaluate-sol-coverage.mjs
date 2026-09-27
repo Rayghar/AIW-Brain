@@ -45,6 +45,8 @@ const targets=[
  ['bank',11,'desk fix',F.drafts.find(d=>!d.switchPoint)&&'F:'+F.drafts.find(d=>!d.switchPoint).id],['bank',11,'desk switch point',F.drafts.find(d=>d.switchPoint)&&'F:'+F.drafts.find(d=>d.switchPoint).id],
  ['bank',11,'desk judgement',first(F.judgements)&&'J:'+first(F.judgements).id],
  ['service-permits',11,'capacity fix sized for the Playbook example',perm.byId.get('capacity:run-001')&&'F:capacity:run-001'],['service-permits',10,'runtime plan beside the Playbook example',first(permits.runtime?.plans)?.id]];
+// A withheld assessment keeps the draft the checks read, so the withholding can be read too.
+const drafted=(run,id)=>{const d=list(run.groundingReview?.draft?.assessments).find(x=>x.id===id);return d?{verdict:d.verdict,headline:d.headline,reasoning:d.reasoning,risks:list(d.risks),refinements:list(d.refinements).map(r=>({key:r.key,value:r.value,why:r.why}))}:null;};
 const route2=[];
 for(const [name,chapter,what,sel,o={}] of targets){
  if(!sel){route2.push({project:name,chapter,what,skipped:'the design holds none'});continue;}
@@ -57,7 +59,7 @@ for(const [name,chapter,what,sel,o={}] of targets){
   const a=run.result.assessments[0],item=packet.items[0];
   const html=assessmentHTML({run:{...run,id:'coverage',createdAt:new Date().toISOString(),packet},a,item,current:true},{id,knobs:item.knobs});
   route2.push({project:name,chapter,what,selection:sel,id,kind:item.kind,ms:Date.now()-t0,shown:!a.withheld,verdict:a.withheld?null:a.verdict,headline:a.headline,
-   ...(a.withheld?{withheldFor:list(a.issues).slice(0,4)}:{}),...(a.setAside?{setAside:a.setAside.map(x=>x.label)}:{}),...(a.checkNote?{checkNote:a.checkNote}:{}),
+   ...(a.withheld?{withheldFor:list(a.issues).slice(0,4),withheldDraft:drafted(run,id)}:{}),...(a.setAside?{setAside:a.setAside.map(x=>x.label)}:{}),...(a.checkNote?{checkNote:a.checkNote}:{}),
    rendered:/Sol’s assessment/.test(html)&&/dk-solv /.test(html),contradictions:list(run.groundingReview?.contradictions).length});
  }catch(e){route2.push({project:name,chapter,what,selection:sel,id,error:e.code||'failed',detail:e.message,ms:Date.now()-t0});}
  console.error(`route 2 · Chapter ${chapter} · ${what} · ${route2.at(-1).error?'failed: '+route2.at(-1).detail:route2.at(-1).shown?route2.at(-1).verdict:'withheld'}`);
