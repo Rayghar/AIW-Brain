@@ -121,13 +121,19 @@ The companion and the panel share one state and tell each other when it changes 
   - 7 rendered checks (`npm run test:brain-reasoning-browser`) run against a loopback test double of the provider (`mock-llm-provider.mjs`). They cover asking, the packet shown before sending, assessments on cells, refinements through the change review, a proposed threat recorded in Chapter 9, disagreement, stale advice and persistence.
   - The desk's rendered checks cover the unconnected state.
   - 5 model checks (`npm run test:brain-ahead`) cover the SDD's reasoning record, the product comparison (mechanisms, claims naming each product, withdrawal), its rendering from the desk's entry point, switch points anchored on the realisation, and leads worded from what Sol reads.
-  - 6 model checks (`npm run test:sol-evaluation`) run every held-out case through the real reasoning path against the test double. Injected faults prove that the guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements, and that the metrics catch wrong verdicts and missing support.
+  - 13 model checks (`npm run test:sol-evaluation`) run every held-out case through the real reasoning path against the test double. They cover:
+    - **Injected faults:** the guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements, and the metrics catch wrong verdicts and missing support.
+    - **The scorer:** it reads numbers, negations, hedges and questions as the guard does; every flag keeps its sentence; each withholding is labelled by the check that raised it.
+    - **Kept answers:** every answer is kept, with a withheld draft beside its issues, and a kept report scores again without asking a model.
+    - **The control arm:** it asks the same model the same questions without the Brain, and only the evaluation can reach it.
   - The knowledge repository's own suites and rendered checks are listed in [KNOWLEDGE-REPOSITORY.md](KNOWLEDGE-REPOSITORY.md).
+- **Live, once, on 27 September 2026.** All 26 held-out cases ran on `gpt-4.1-mini-2025-04-14` through Sol and, as a control, through the same model without the Brain. The engineer then read all 28 answer pairs. See `release-evidence/sol-direct-comparison/ANSWER_REVIEW.md`.
+  - **Where the design records its facts** (the bank payment reference, 16 assessments), Sol was better in 10, the same in 4 and worse in 2. Both worse cases were right drafts its checks withheld. The direct model gave three values that would mislead an architect: 16 and 3 replicas where about 24 are needed, and a 10-second timeout on a 2-second path.
+  - **On the teaching designs** (12 assessments), the direct model was better in 6, Sol in 3, and neither in 3. The desk's capacity arithmetic there carries the Playbook's example objective, and Sol took it as the project's load in all four capacity assessments.
+  - **Withholding:** 7 of 28. Four of those drafts were right: three put threats on a decision, and one was a question the guard read as a claim, followed by a second pass that contradicted itself.
 - **Not yet verified:**
-  - No live provider call was made in this workspace; `npm run evaluate:sol:live` runs the held-out set against a configured provider.
-  - The second check's instructions say that the design's own gaps, evidence still to be gathered and unapplied refinements are not defects in the advice. Only a live model can show whether a model follows them.
-  - The quality of Sol's advice on real designs has not been evaluated. Against the test double the held-out set gives 26 cases, 28 assessments, none withheld and 93% verdict agreement. The two disagreements are the cases built to catch advice that takes an example objective at face value. That measures the harness, not Sol's judgement.
-  - The expected advice is implementation-authored; an architect should review and amend it before any result is relied on.
+  - The results above come from one run of one model. The expected advice is implementation-authored, and an architect should review and amend it, with value bands per case, before any result is relied on.
+  - The second check's instructions say that the design's own gaps, evidence still to be gathered and unapplied refinements are not defects in the advice. The live run shows the model does not always follow them (BP-09, SP-06).
   - The test double proves the plumbing and the guards, not the judgement.
 
 ## Delivered in v20
@@ -139,7 +145,7 @@ The companion and the panel share one state and tell each other when it changes 
 
 ## Ahead
 
-1. **A live evaluation**, with the expectations and the results reviewed by an architect.
+1. **Fix what the live evaluation found, then review it with an architect.** The checks should set aside threats on a decision rather than withhold the assessment, and pass questions. The desk should stop presenting a Playbook example as a teaching project's load. The expectations need value bands per case.
 2. **SEABaaS as a fourth domain**, once an architect has confirmed a representative scope and baseline from the private workbook.
 3. **A repository claim through the whole governed path, by real people.**
    - The path is proven with synthetic accounts and a synthetic signing key (`npm run test:brain-chain`).

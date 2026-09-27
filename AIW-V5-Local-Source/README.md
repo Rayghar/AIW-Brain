@@ -1,5 +1,27 @@
 # AIW V5 Live Model Explorer
 
+## Sol beside a direct LLM (v20.3) — 27 September 2026
+
+- **The evaluation reads answers as Sol's checks do.** Before this fix, the scorer counted six things as false support:
+  - citation labels such as S13, read as numbers;
+  - "does not guarantee";
+  - hedges such as "to be proven";
+  - questions;
+  - withholding reasons guessed from words;
+  - numbers outside a case's band, still counted as sound.
+
+  Now every flag keeps the sentence that raised it.
+- **Every answer is kept.** A withheld assessment keeps the draft that was withheld and its issues. `npm run evaluate:sol -- --rescore report.json` scores a kept report again without asking any model; each packet must still read as it did.
+- **A control arm.** The same model answers the same questions without the Brain. It gets the project's description, each decision's title and draft, and a recorded decision's alternatives, but no packet, instructions or checks.
+  - The same scorer scores it, and the Brain's checks measure what they would have withheld.
+  - Only the evaluation can reach it; the application still reasons through `requestReasoning` alone.
+  - `--brain-only` skips it.
+- **The first live comparison and its reading.** Details are in `release-evidence/sol-direct-comparison/ANSWER_REVIEW.md`, the engineer's reading and not independent review.
+  - On the bank payment reference, Sol was better in 10 of 16 assessments and worse only where its checks withheld right answers.
+  - On the teaching designs, the desk presents the Playbook's example load as the project's, and the direct model did better in 6 of 12.
+
+Run `npm run test:sol-evaluation`. The live run used the key the sponsor supplied, loaded straight into the process.
+
 ## Four eyes, candidate knowledge and the whole chain (v20.2) — 26 September 2026
 
 - **Four eyes on every claim.** A claim is used only after an authenticated person other than its author has verified it. This is checked at review and again on every read, so a claim its author verified stops reaching Sol until someone else reviews it. Before, only repository claims needed a second person.
