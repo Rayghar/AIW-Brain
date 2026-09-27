@@ -1,0 +1,45 @@
+diff --git a/public/architecture-diagram.js b/public/architecture-diagram.js
+index 37f6b06..690ec84 100644
+--- a/public/architecture-diagram.js
++++ b/public/architecture-diagram.js
+@@ -42,11 +42,12 @@ export function mountArchitectureDiagram(selection){
+       return;
+     }
+     if(object&&target){
+-      const chapter=complete?loc.chapter:Math.max(loc.chapter,object.chapter,DIAGRAM_SCENES.find(s=>s.id===target)?.chapter||4);
+-      changeModelLocation({chapter,scene:target,objectId:explicit},{push:false});
+-      if(chapter!==loc.chapter)window.dispatchEvent(new PopStateEvent('popstate'));
+-      else mountArchitectureDiagram({chapter,id:explicit});
+-      return;
++      // A selection carried in the address never moves the reader to another chapter. The scene
++      // follows it only when that scene belongs to this chapter or an earlier one; otherwise the
++      // chapter keeps its own scene and the carried selection is dropped.
++      const sceneChapter=DIAGRAM_SCENES.find(s=>s.id===target)?.chapter||4;
++      if(complete||sceneChapter<=loc.chapter){changeModelLocation({scene:target,objectId:explicit},{push:false});mountArchitectureDiagram({chapter:loc.chapter,id:explicit});return;}
++      changeModelLocation({objectId:null},{push:false});mountArchitectureDiagram({chapter:loc.chapter});return;
+     }
+     changeModelLocation({objectId:null},{push:false});
+   }
+@@ -65,7 +66,7 @@ function render(){
+     ?`${definition.name} begins in Chapter ${definition.chapter}. Open that chapter to record its parts, or show the completed design to inspect later records.`
+     :`No parts have been recorded in this scene at this stage. Open Chapter ${definition.chapter} Work to define them.`;
+   const assessment=count===0?'Not assessed · no parts in this scene':view.mappingChecks===0?'Not assessed · no applicable mapping checks':`${view.gaps.length} visible mapping gap${view.gaps.length===1?'':'s'} across ${view.mappingChecks} applicable check${view.mappingChecks===1?'':'s'}`;
+-  root.innerHTML=`<header class="ad-top"><div class="ad-heading"><small>Chapter ${String(view.chapter).padStart(2,'0')} · ${esc(definition.name)} · ${baselineId?'Frozen baseline':'Working design'}</small><h2>${esc(source()?.name||view.model.title||'Architecture')}</h2></div><div class="ad-actions"><button type="button" data-ad="fit" title="Fit diagram width">Fit width</button><button type="button" data-ad="panel" aria-pressed="${panelOpen}">${panelOpen?'Hide':'Show'} explanation</button><button type="button" data-ad="views">Saved views</button><button type="button" data-ad="save">Save view</button><button type="button" data-ad="export">Export SVG</button></div></header>
++  root.innerHTML=`<header class="ad-top"><div class="ad-heading"><small>Chapter ${String(view.chapter).padStart(2,'0')} · ${esc(definition.name)}${definition.chapter!==view.chapter&&!futureScene?' (a Chapter '+definition.chapter+' scene)':''} · ${baselineId?'Frozen baseline':'Working design'}</small><h2>${esc(source()?.name||view.model.title||'Architecture')}</h2></div><div class="ad-actions"><button type="button" data-ad="fit" title="Fit diagram width">Fit width</button><button type="button" data-ad="panel" aria-pressed="${panelOpen}">${panelOpen?'Hide':'Show'} explanation</button><button type="button" data-ad="views">Saved views</button><button type="button" data-ad="save">Save view</button><button type="button" data-ad="export">Export SVG</button></div></header>
+   <div class="ad-controls"><label>Diagram <select data-ad-field="scene">${DIAGRAM_SCENES.map(s=>`<option value="${s.id}" ${s.id===definition.id?'selected':''}>${esc(s.name)}</option>`).join('')}</select></label><label>Design state <select data-ad-field="baseline"><option value="">Working design</option>${baselines.map(b=>`<option value="${esc(b.id)}" ${b.id===baselineId?'selected':''}>Frozen · ${esc(b.title||b.id)}</option>`).join('')}</select></label><label class="ad-complete"><input type="checkbox" data-ad-field="complete" ${view.complete?'checked':''}> Show completed design</label><div class="ad-zoom"><button type="button" data-ad="zoom-out" aria-label="Zoom out">−</button><span aria-live="polite">${Math.round(zoom*100)}%</span><button type="button" data-ad="zoom-in" aria-label="Zoom in">+</button></div>${zoom<.7?'<small class="ad-scale-hint">Overview scale · zoom in to read labels</small>':''}</div>
+   <div class="ad-content ${panelOpen?'':'ad-wide'}"><div class="ad-viewport" tabindex="0" aria-label="${esc(definition.name)} architecture diagram. Scroll to move, select an element to inspect it."><div class="ad-canvas ${layout.sparse?'ad-sparse':''}" style="width:${Math.round(layout.width*zoom)}px;height:${Math.round(layout.height*zoom)}px">${svg()}</div>${count?'':`<div class="ad-empty" role="note"><h3>No recorded parts in this scene yet</h3><p>${esc(emptyExplanation)}</p>${baselineId?'<button type="button" data-ad="working">Open working design</button>':`<a href="${esc(projectURL('/?chapter='+definition.chapter+'&tab=work'))}">Open Chapter ${definition.chapter} Work</a>`}</div>`}</div>${panelOpen?`<aside class="ad-panel" aria-label="Architecture explanation">${panel(sel)}</aside>`:''}</div>
+   <footer class="ad-footer"><span><b>${count}</b> recorded parts · <b>${view.relations.length}</b> relationships in this diagram · ${esc(assessment)}</span><span>Selected: ${esc(sel?.title||'Whole design')} · ${view.complete?'Completed design':'As of Chapter '+view.chapter}</span></footer>`;
+diff --git a/public/model-location.js b/public/model-location.js
+index fcfc54e..354246f 100644
+--- a/public/model-location.js
++++ b/public/model-location.js
+@@ -14,7 +14,8 @@ export function modelLocation(chapter, fallbackId = null) {
+   const requested = route.get('modelMode');
+   return {
+     chapter: currentChapter,
+-    family: MODEL_FAMILIES.includes(requested) ? requested : MODEL_FAMILIES.includes(preference.family) ? preference.family : currentChapter >= 4 ? 'architecture' : 'chapter',
++    // A chapter's Model tab opens on the chapter's own model; the family the reader last chose there is kept.
++    family: MODEL_FAMILIES.includes(requested) ? requested : MODEL_FAMILIES.includes(preference.family) ? preference.family : 'chapter',
+     layout: ['landscape', 'layered'].includes(route.get('diagramLayout')) ? route.get('diagramLayout') : preference.layout || 'landscape',
+     scene: route.get('diagramScene') || preference.scene || 'overview',
+     objectId: route.get('object') || route.get('focus') || fallbackId || null
