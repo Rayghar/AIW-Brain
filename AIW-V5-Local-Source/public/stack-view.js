@@ -17,7 +17,7 @@ import {modelStage, sizeModel, placeTip} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {specPanelHTML, runsOnLabel, productLabels} from './spec-panel.js';
-import {solChapterMount, solChapterBind, solSection, solInto, solMark} from './chapter-sol.js';
+import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
@@ -376,7 +376,7 @@ function select(id, {reveal = false} = {}) {
   V.sel = id || null;
   const r = recOf(V.sel); if (r) V.rec = r.id;
   const p = project(), target = r ? r.id : S.Pf.capabilities.has(V.sel) ? V.sel : null;
-  if (p && target) { try { mountBrainContext(p, {id: target, chapter: 7}, 'model'); } catch { /* assistance is optional */ } }
+  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, V.sel) || 'project', chapter: 7}, 'model'); } catch { /* assistance is optional */ } }
   if (window.history) { const url = new URL(location.href); if (target) url.searchParams.set('object', target); else url.searchParams.delete('object'); window.history.replaceState(window.history.state, '', url.pathname + url.search); }
   if (V.sel && !V.panel) V.panel = true;
   save(); render();

@@ -36,6 +36,7 @@ import {realiseSource, describeComponent} from './realise-model.js';
 import {platformSource, describeCapability} from './platform-model.js';
 import {stackSource, describeRealisation} from './stack-model.js';
 import {deploySource, describePlan} from './deploy-model.js';
+import {journeyIndex} from './journey-context.js';
 
 const list = v => Array.isArray(v) ? v : [];
 const str = v => typeof v === 'string' ? v.trim() : v == null ? '' : String(v);
@@ -93,9 +94,22 @@ export const refOf = r => r ? `${r.ref || r.id}${r.title || r.question ? ' ' + (
 // A participant's name, including the parties outside the design that contracts reach.
 const nameOf = (p, id) => refOf(findRecord(p, id)?.record || list(p?.interfaces?.parties).find(x => x.id === id)) || id;
 
+// The record a drawn selection stands for: an option's realisation ("tr-001/TO-001"), a contract's link
+// ("C:if-004"), a group ("G:…"), or a placeholder's part ("HOLE:…", "EMPTY:…"); otherwise the id itself.
+export function drawnOwner(p, id) {
+  const s = String(id || ''), m = /^(?:G|HOLE|EMPTY|C):(.+)$/.exec(s) || /^([^/]+)\/[^/]+$/.exec(s);
+  return m && (findRecord(p, m[1]) || list(p?.logical?.groups).some(g => g.id === m[1])) ? m[1] : s;
+}
+// The saved record Sol's panel can explain for a selection in any chapter model — the record itself or the
+// record it is drawn from — or null for what is only drawn (a module, a link, a family of drivers).
+export function solOwner(p, sel) {
+  if (!p || !sel || sel === 'project') return null;
+  const id = drawnOwner(p, sel);
+  return findRecord(p, id) || journeyIndex(p).nodes.has(id) ? id : null;
+}
 // What Sol can be asked about for a selection in a chapter model, or null.
 export function solTarget(p, chapter, id, {whatIf = false} = {}) {
-  const t = findRecord(p, id);
+  const t = findRecord(p, id) || findRecord(p, drawnOwner(p, id));
   if (!t) return null;
   if (t.type === 'decision') return 'D:' + t.record.id;
   if (t.type === 'alternative') return 'D:' + t.parent.id;

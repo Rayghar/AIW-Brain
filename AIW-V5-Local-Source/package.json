@@ -100,6 +100,7 @@
     "test:brain-ahead": "node brain-ahead-validate.mjs",
     "test:sol-evaluation": "node sol-evaluation-validate.mjs",
     "test:sol-checks": "node sol-checks-validate.mjs",
+    "test:sol-coverage": "node sol-coverage-validate.mjs",
     "test:local-accounts": "node local-accounts-validate.mjs",
     "test:brain-chain": "node brain-chain-validate.mjs",
     "candidates:build": "node scripts/build-candidate-set.mjs",

@@ -66,6 +66,16 @@ export function mockDirect(input) {
   })};
 }
 
+// Sol's other path, for a selected saved object (intelligence-context.js): a proposal grounded in the
+// selected record (S1) and the governed knowledge, in the mode asked for.
+export function mockProposal(packet) {
+  const know = packet.sources.find(s => s.kind === 'architecture-knowledge')?.ref, refs = [...new Set(['S1', know].filter(Boolean))];
+  return {title: `Sol on ${String(packet.selectedTitle || 'the selected record').slice(0, 140)}`, summary: 'A reading of the saved record against the supplied sources. Nothing here changes the design.',
+    passage: `The record as saved is described in S1${know ? `, and the governed knowledge in ${know} bears on it` : ''}. What it still needs is named in the questions; the architect decides.`,
+    sourceRefs: refs, assumptions: ['The saved record is current.'], questions: ['Which evidence would confirm the record as it stands?'], options: [],
+    ...(packet.request?.mode === 'challenge' ? {challenges: []} : {}), ...(packet.architectureDraft ? {architectureDraft: []} : {})};
+}
+
 // The Responses API envelope around a JSON answer.
 export const envelope = (answer, model = 'mock-sol') => ({id: 'mock-' + Math.random().toString(16).slice(2), model, status: 'completed', output: [{type: 'message', content: [{type: 'output_text', text: JSON.stringify(answer)}]}], usage: {input_tokens: 1200, output_tokens: 400}});
 
@@ -76,6 +86,7 @@ export function answer(body, opts = {}) {
   if (name === 'aiw_desk_assessment_check') return envelope(mockReview(input, opts));
   if (name === 'aiw_direct_assessment') return envelope(mockDirect(input));
   if (name === 'aiw_source_check') return envelope({supported: true, defects: [], notes: []});
+  if (name === 'aiw_grounded_proposal') return envelope(mockProposal(input));
   return {id: 'mock', model: 'mock-sol', status: 'incomplete', output: []};
 }
 

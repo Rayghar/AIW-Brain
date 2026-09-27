@@ -37,8 +37,10 @@ export async function handleIntelligence(request,env,owner,projectId){
   const rows=await env.DB.prepare('SELECT * FROM intelligence_runs WHERE owner_id=? AND project_id=? AND object_id=? ORDER BY created_at DESC LIMIT 12').bind(owner,projectId,objectId).all();return json({runs:rows.results.map(metadata)});
  }
  if(action==='reasonings'&&request.method==='GET'){
-  const rows=await env.DB.prepare("SELECT * FROM intelligence_runs WHERE owner_id=? AND project_id=? AND mode='reason' AND status='completed' ORDER BY created_at DESC LIMIT 40").bind(owner,projectId).all();
-  const runs=[];for(const row of rows.results){try{const run=await readRun(env,owner,projectId,row);if(run.status==='completed')runs.push({id:run.id,createdAt:run.createdAt,provider:run.provider,model:run.model,packet:{stamp:run.packet.stamp,request:run.packet.request,items:run.packet.items,sources:run.packet.sources.map(s=>({ref:s.ref,kind:s.kind,objectId:s.objectId,title:s.title,posture:s.posture,receipt:s.receipt||null,excerpt:s.excerpt}))},result:run.result,groundingReview:{accepted:run.groundingReview?.accepted,withheld:run.groundingReview?.withheld||[]}});}catch{}}
+  // Every assessed item keeps its newest assessment on display, however many runs came after it: the newest
+  // runs are read in turn, and a run is returned when it holds the newest assessment of an item not yet seen.
+  const rows=await env.DB.prepare("SELECT * FROM intelligence_runs WHERE owner_id=? AND project_id=? AND mode='reason' AND status='completed' ORDER BY created_at DESC LIMIT 400").bind(owner,projectId).all();
+  const runs=[],seen=new Set();for(const row of rows.results){if(runs.length>=120)break;try{const run=await readRun(env,owner,projectId,row);const fresh=(run.result?.assessments||[]).map(a=>a.id).filter(id=>!seen.has(id));if(run.status!=='completed'||!fresh.length)continue;fresh.forEach(id=>seen.add(id));runs.push({id:run.id,createdAt:run.createdAt,provider:run.provider,model:run.model,packet:{stamp:run.packet.stamp,request:run.packet.request,items:run.packet.items,sources:run.packet.sources.map(s=>({ref:s.ref,kind:s.kind,objectId:s.objectId,title:s.title,posture:s.posture,receipt:s.receipt||null,excerpt:s.excerpt}))},result:run.result,groundingReview:{accepted:run.groundingReview?.accepted,withheld:run.groundingReview?.withheld||[]}});}catch{}}
   return json({runs});
  }
  if(['reasoning-context','reason'].includes(action)&&request.method==='POST')return handleReasoning(request,env,owner,projectId,action,url);

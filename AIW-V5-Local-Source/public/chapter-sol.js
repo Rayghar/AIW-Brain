@@ -17,7 +17,8 @@
 // solMark (after drawing) and solChapterBind (once per view). The overlay calls solOverlay.
 import {SOL, solLoad, solPrepare, solCancel, solSend, solRecord, solBadge, solChapterEntry, solOutcomes, pendingHTML, assessmentHTML, askHTML} from './brain-reasoning-ui.js';
 import {verdictText, VERDICTS} from './brain-reasoning.js';
-import {solTarget, parseTarget, chapterTitle, chapterCommands, chapterReread, describeReread, chapterRound, whatIfValues, findRecord} from './chapter-reasoning.js';
+export {solOwner} from './chapter-reasoning.js';
+import {solTarget, solOwner, parseTarget, chapterTitle, chapterCommands, chapterReread, describeReread, chapterRound, whatIfValues, findRecord} from './chapter-reasoning.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const list = v => Array.isArray(v) ? v : [];
@@ -44,7 +45,9 @@ function opts(p, id, chapter, e) {
     staleText: whatIf ? 'The move has changed since Sol assessed it, or the design has. The advice is kept as history; ask Sol about the move as it is now.' : 'The record or what it touches has changed since Sol assessed it. The advice is kept as history; ask Sol again for the design as it is now.',
     outcomes: e ? solOutcomes(p, e.run.id, id) : null};
 }
-const reads = chapter => `Chapter ${chapter}’s reading of it and the knowledge behind it`;
+// Whose reading Sol reads: the record's own chapter, wherever the record is selected from.
+const homeOf = (id, chapter) => id?.endsWith('|whatif') ? 2 : id?.startsWith('D:') ? 3 : parseTarget(id)?.chapter || chapter;
+const reads = (chapter, id) => `Chapter ${homeOf(id, chapter)}’s reading of it and the knowledge behind it`;
 
 // Sol's part of the companion for the selection in a chapter model.
 export function solSection(p, chapter, sel, {whatIf = null, inPanel = false} = {}) {
@@ -52,14 +55,15 @@ export function solSection(p, chapter, sel, {whatIf = null, inPanel = false} = {
   const more = inPanel ? () => '' : moreHTML;
   const move = moveOf(whatIf), id = sel ? solTarget(p, chapter, sel, {whatIf: !!move}) : null;
   const flash = NOTE.chapter === chapter && NOTE.text ? `<p class="cs-note" role="status"><span>${esc(NOTE.text)}${NOTE.stewards ? ' <button type="button" class="cm-link" data-dk="sol-stewards">Open the stewards’ queue</button>' : ''}</span><button type="button" class="cm-link" data-dk="sol-note-off" aria-label="Dismiss">×</button></p>` : '';
-  // A record Sol does not assess in this chapter still has Sol's panel: explain it, ask about it.
-  if (!id) return sel ? flash + (findRecord(p, sel) ? `<section class="cs-ask lite"><p><b>Sol</b> can explain this record and answer questions about it.</p>${more()}</section>` : '') : roundSection(p, chapter, flash);
+  // A selection Sol does not assess still has Sol's panel for the saved record it stands for; what is only
+  // drawn from the records says so, rather than leaving Sol on an earlier selection.
+  if (!id) return sel ? flash + (solOwner(p, sel) ? `<section class="cs-ask lite" data-sol-explain><p><b>Sol</b> can explain this and answer questions about it.</p>${more()}</section>` : `<section class="cs-ask lite" data-sol-drawn><p><b>Sol</b> answers about saved records. This is drawn from them: select one of its records to ask Sol about it.</p></section>`) : roundSection(p, chapter, flash);
   if (SOL.pending && SOL.pending.request.ids.length === 1 && SOL.pending.request.ids[0] === id) return flash + pendingHTML();
   const values = id.endsWith('|whatif') ? move : null, e = solChapterEntry(p, id, values), title = chapterTitle(p, id, values || {});
-  if (e) return flash + assessmentHTML(e, opts(p, id, chapter, e)) + `<section class="dk-solagain">${askHTML([id], {title, label: e.current ? 'Ask Sol again' : 'Ask Sol about it as it is now', reads: reads(chapter)})}${more()}</section>`;
+  if (e) return flash + assessmentHTML(e, opts(p, id, chapter, e)) + `<section class="dk-solagain">${askHTML([id], {title, label: e.current ? 'Ask Sol again' : 'Ask Sol about it as it is now', reads: reads(chapter, id)})}${more()}</section>`;
   const what = id.endsWith('|whatif') ? 'this move' : id.startsWith('D:') ? 'this decision' : id.startsWith('M:9:') && !['threat', 'control'].includes(findRecord(p, objectOf(id))?.type) ? 'what could go wrong here' : 'this record';
-  const reading = id.startsWith('D:') ? 'the decision as the desk reads it — its alternatives against the drivers, and what it reaches in earlier and later chapters —' : id.endsWith('|whatif') ? 'what the move would reach — the decisions, plans, platform and products that carry the driver —' : `Chapter ${chapter}’s reading of it — its checks, the vitals of the parts it touches —`;
-  return flash + `<section class="cs-ask"><h4>Sol · the attending architect</h4><p>Sol reads ${reading} and the knowledge behind them, and advises on ${esc(what)}. You see everything it will read before anything is sent; you decide.</p>${SOL.error && !SOL.pending ? `<p class="dk-verdict bad" role="alert">${esc(SOL.error)}</p>` : ''}${askHTML([id], {title, label: 'Ask Sol to assess it', reads: reads(chapter)})}${more()}</section>`;
+  const reading = id.startsWith('D:') ? 'the decision as the desk reads it — its alternatives against the drivers, and what it reaches in earlier and later chapters —' : id.endsWith('|whatif') ? 'what the move would reach — the decisions, plans, platform and products that carry the driver —' : `Chapter ${homeOf(id, chapter)}’s reading of it — its checks, the vitals of the parts it touches —`;
+  return flash + `<section class="cs-ask"><h4>Sol · the attending architect</h4><p>Sol reads ${reading} and the knowledge behind them, and advises on ${esc(what)}. You see everything it will read before anything is sent; you decide.</p>${SOL.error && !SOL.pending ? `<p class="dk-verdict bad" role="alert">${esc(SOL.error)}</p>` : ''}${askHTML([id], {title, label: 'Ask Sol to assess it', reads: reads(chapter, id)})}${more()}</section>`;
 }
 // Sol's own panel (the overlay). Beside an open chapter model it shows the status of the same
 // assessment, never a second one; anywhere else — the Work tabs, Validate — it is the assessment.

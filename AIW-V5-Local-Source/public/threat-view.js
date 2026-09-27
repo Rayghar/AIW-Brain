@@ -14,7 +14,7 @@ import {threatLayout, threatHead, matrixLayout, matrixHead, TM, MX} from './thre
 import {modelStage, sizeModel, placeTip} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
-import {solChapterMount, solChapterBind, solSection, solInto, solMark} from './chapter-sol.js';
+import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
@@ -392,7 +392,7 @@ function revealSelection() {
 function select(id, {reveal = false} = {}) {
   S.sel = id || null; S.walk = -1;
   const p = project(), target = S.sel && !S.sel.startsWith('REG:') && !S.sel.startsWith('L:') ? (T.flows.find(f => f.id === S.sel)?.contract || S.sel) : null;
-  if (p && target) { try { mountBrainContext(p, {id: target, chapter: 9}, 'model'); } catch { /* assistance is optional */ } }
+  if (p) { try { mountBrainContext(p, {id: target || solOwner(p, S.sel) || 'project', chapter: 9}, 'model'); } catch { /* assistance is optional */ } }
   if (window.history) { const url = new URL(location.href); if (target) url.searchParams.set('object', target); else url.searchParams.delete('object'); window.history.replaceState(window.history.state, '', url.pathname + url.search); }
   if (S.sel && !S.panel) S.panel = true;
   save(); render();
