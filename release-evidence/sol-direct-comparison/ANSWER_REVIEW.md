@@ -113,3 +113,16 @@ Each of these changes what architects see, so each waits for the sponsor.
 - **One control prompt.** The control arm is a single plain prompt; another prompt or model would answer differently.
 - **Expectations.** They are implementation-authored and need an architect's review.
 - **Reviewer.** This reading is the engineer's, not independent review.
+
+## Correction, 27 September 2026 (v20.4)
+
+This reading said the bank payment reference records its own objective, and that Sol works from "the design's own figures". That is wrong about the capacity figures.
+
+All three evaluation designs size for the SA Playbook's example objective of 100,000 concurrent users. None records a scalability objective of its own.
+
+- **The bank reference** records its drivers, interfaces, keys and targets: the 2-second QD-003, `paymentReference`, the 75,000-user single-primary ceiling. Its replica counts are the desk's arithmetic for the example, against which it records no competing load.
+- **The two teaching designs** record their own illustrative workloads, 10 and 20 requests a second, which the example contradicts.
+
+The rest of the reading stands. On the bank reference, Sol's figures agree with the desk's arithmetic, and the direct model's do not: 16 and 3 replicas where the desk computes about 24, and a 10-second timeout against QD-003's 2 seconds.
+
+v20.4 labels the example as the example everywhere. It withholds advice that sizes a design for the example where the design records a different workload.

@@ -108,6 +108,8 @@
     "candidates:import": "node scripts/import-candidate-set.mjs",
     "evaluate:sol": "node scripts/evaluate-sol-decisions.mjs",
     "evaluate:sol:live": "node --env-file=.env scripts/evaluate-sol-decisions.mjs --live",
+    "evaluate:sol:coverage": "node scripts/evaluate-sol-coverage.mjs",
+    "evaluate:sol:coverage:live": "node --env-file=.env scripts/evaluate-sol-coverage.mjs --live",
     "repository:init": "node repository-service/cli.mjs init",
     "repository:build": "node repository-service/cli.mjs build",
     "repository:acquire": "node repository-service/cli.mjs acquire",

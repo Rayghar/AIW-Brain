@@ -28,7 +28,13 @@ Suggested answers are editable narrative design suggestions only. Leave an answe
 const REVIEW_SCHEMA={type:'object',properties:{supported:{type:'boolean'},defects:{type:'array',items:{type:'string'},maxItems:8},notes:{type:'array',items:{type:'string'},maxItems:8}},required:['supported','defects','notes'],additionalProperties:false};
 // The second pass's own contract, for both of Sol's paths: concrete defects decide; anything else is a note.
 const NOTES_RULE=' Put anything else in notes, including what you checked and found supported. supported is true exactly when defects is empty.';
-const reviewShape=(x,keys)=>!!x&&typeof x.supported==='boolean'&&['defects','notes'].every(k=>Array.isArray(x[k])&&x[k].length<=8&&x[k].every(s=>typeof s==='string'&&s.length<=1600))&&Object.keys(x).every(k=>keys.includes(k));
+// A second pass's answer is refused only for its shape; a long list or a long note is kept to eight entries of
+// 1,600 characters, so a verbose check never costs the architect the advice.
+const reviewShape=(x,keys)=>{
+ if(!x||typeof x!=='object'||typeof x.supported!=='boolean'||!['defects','notes'].every(k=>Array.isArray(x[k])&&x[k].every(s=>typeof s==='string'))||!Object.keys(x).every(k=>keys.includes(k)))return false;
+ for(const k of ['defects','notes'])x[k]=x[k].slice(0,8).map(s=>s.slice(0,1600));
+ return true;
+};
 function groundedFallback(packet){
  const source=packet.sources.find(s=>s.kind==='architecture-knowledge');
  if(!source){const originals=packet.sources.filter(s=>['project-source','workbook-row'].includes(s.kind));return validateIntelligenceOutput({...(packet.request.mode==='challenge'?{challenges:[]}:{}),...(packet.architectureDraft?{architectureDraft:[]}:{}),title:'Source review · '+packet.selectedTitle.slice(0,150),summary:'The generated explanation was withheld because its claims did not pass the source checks.',passage:'The saved object “'+packet.selectedTitle+'” remains the working context (S1). '+(originals.length?'Original source assertions are available in '+originals.map(s=>s.ref).join(', ')+'. Compare their scope, dates and evidence before choosing which interpretation to adopt.':'No original evidence excerpt was supplied for this context. The saved model definition alone cannot establish implementation or measured performance.')+'\n\nKeep the requirement, delivery assertion, test observation and architect acceptance separate. Resolve the questions below before accepting an explanation.',sourceRefs:['S1',...originals.map(s=>s.ref)],assumptions:['Saved source and model records are assertions until supported by relevant evidence and review.'],questions:(packet.missing?.length?packet.missing:['Which original evidence and release support the assertion?','Who should reconcile the interpretation before it enters the SDD?']).slice(0,5).map(s=>String(s).slice(0,700)),options:[]},packet);}

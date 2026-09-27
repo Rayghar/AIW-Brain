@@ -83,6 +83,14 @@ await check('3 · a second pass that contradicts itself is recorded, not relied 
  const a=run.result.assessments[0];assert.equal(a.withheld,false);assert.match(a.checkNote,/read as support/);
  assert.equal(run.groundingReview.contradictions.length,1);assert.equal(run.groundingReview.contradictions[0].id,item.id);
  assert.match(assessmentHTML({run:{...run,id:'r2',createdAt:'2026-09-27T00:00:00Z',packet},a,item,current:true},{id:item.id}),/data-sol-check-note[^>]*>The source check marked it unsupported but named no defect, and 1 of the defects it named read as support/);
+ // A verbose second pass — twelve notes, one of 2,000 characters — is kept to eight notes of 1,600 and costs nothing:
+ // the live check of 27 September lost four answers to it before this.
+ const verbose=async(url,init)=>{const b=JSON.parse(init.body);if(b.text.format.name!=='aiw_desk_assessment_check')return new Response(JSON.stringify(answer(b)));
+  const input=JSON.parse(b.input[0].content);return new Response(JSON.stringify(envelope({assessments:input.candidate.assessments.map(x=>({id:x.id,supported:true,defects:[],notes:[...Array(11).fill('Checked against S1.'),'x'.repeat(2000)]}))})));};
+ const long=await requestReasoning(env,packet,{fetcher:verbose});
+ assert.equal(long.result.assessments[0].withheld,false);assert.equal(long.groundingReview.notes[0].notes.length,8);assert(long.groundingReview.notes[0].notes.every(n=>n.length<=1600));
+ // A second pass with the wrong shape is still refused.
+ await assert.rejects(requestReasoning(env,packet,{fetcher:async(url,init)=>{const b=JSON.parse(init.body);return new Response(JSON.stringify(b.text.format.name==='aiw_desk_assessment_check'?envelope({assessments:[{id:item.id,supported:true,defects:'none',notes:[]}]}):answer(b)));}}),/unsupported assessment/);
  // And on Sol's other path, for a selected saved object: the defects decide there too.
  const p=readyComposition('delivery',{deliveryContract:'best-effort'});
  const ip=intelligencePacket(p,{chapter:2,objectId:'QD-001',mode:'mind',architectureTaskId:p.coauthoring.designTasks[0].id,prompt:'Compare publication choices and their delivery obligations.'});
