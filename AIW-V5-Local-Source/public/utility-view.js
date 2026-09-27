@@ -18,13 +18,14 @@ import {modelStage, sizeModel, placeTip} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
+import {createNotation} from './notation-view.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
 // Sol's advice changes the project only through a store command; the view then reads the new document.
 const solRefresh = () => { if (root?.isConnected) mountChapterModel({id: pageSel}, cbs); };
 const page = () => window.aiwQualityPage;
-const PATHS = {structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', tree: 'M4 12h4M8 5v14M8 5h4M8 12h4M8 19h4M12 5h8M12 12h8M12 19h8', tune: 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0M14 4v4M8 10v4M16 16v4', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', book: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M8 7h7', back: 'M15 5l-7 7 7 7'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', tree: 'M4 12h4M8 5v14M8 5h4M8 12h4M8 19h4M12 5h8M12 12h8M12 19h8', tune: 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0M14 4v4M8 10v4M16 16v4', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', book: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M8 7h7', back: 'M15 5l-7 7 7 7'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.tree}"/></svg>`;
 const LENSES = [
   {id: 'structure', label: 'Structure', like: 'skeleton', q: 'What carries each driver: the components, platform, products and runtime plans it reaches.'},
@@ -36,7 +37,11 @@ const OP = {'At least': '≥', 'At most': '≤', Exactly: '='};
 const EFFECT = {supports: ['✓', 'supports'], tension: ['⚠', 'creates tension'], neutral: ['·', 'little direct effect'], unknown: ['?', 'needs evidence']};
 
 let root = null, UM = null, lastDoc = null, cbs = {}, F = null, L = null, T = null, fitPending = true, stage = null, lastClick = {id: null, t: 0}, pageSel, lastGhost = '';
+let NT = null;
 let S = {view: 'tree', lens: 'reasoning', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1, tune: {driver: null, targetValue: null, priority: null}};
+// The standard diagram (notation-view.js) and the elements only it draws.
+const diagramView = () => S.view === 'diagram';
+const drawn = id => diagramView() && !!NT?.diagram()?.nodes.some(n => n.id === id);
 const seen = new Set();
 const pref = () => projectPreferenceKey('aiw-utility-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
@@ -52,8 +57,12 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm um'; root.setAttribute('aria-label', 'Chapter 2 model: quality drivers');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => (tuneView() ? tuneHead() : utilityHead()), railWidth: l => l.rail || 0, onHover: tip});
+    stage = modelStage(root, {headHeight: () => (S.view === 'diagram' ? 0 : tuneView() ? tuneHead() : utilityHead()), railWidth: l => l.rail || 0, onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 2, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['lens', 'depth']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
@@ -81,7 +90,8 @@ function rebuild(p) {
   if (S.scope?.id && utilityScope(UM, S.scope).kind === 'system') S.scope = {kind: 'system'};
   if (S.tune.driver && !UM.D.has(S.tune.driver)) S.tune = {driver: null, targetValue: null, priority: null};
 }
-const known = id => !!id && !!UM && (UM.D.has(id) || id === ROOT || (id.startsWith('A:') && UM.attrs.has(id.slice(2))) || (id.startsWith('F:') && UM.families.some(f => 'F:' + f.id === id)) || (id === PROPOSED && !!newGhost()));
+const knownBase = id => !!id && !!UM && (UM.D.has(id) || id === ROOT || (id.startsWith('A:') && UM.attrs.has(id.slice(2))) || (id.startsWith('F:') && UM.families.some(f => 'F:' + f.id === id)) || (id === PROPOSED && !!newGhost()));
+const known = id => drawn(id) || knownBase(id);
 const ghost = () => { const g = page()?.ghost; return g && g.record ? g : null; };
 const newGhost = () => { const g = ghost(); return g && g.mode === 'new' ? g : null; };
 function followGhost() {
@@ -96,7 +106,7 @@ function followGhost() {
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 2 · Model</small><strong>Quality drivers</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-um="view" data-id="tree">${icon('tree')}<span>Utility tree</span></button><button type="button" class="cm-view" data-um="view" data-id="tune">${icon('tune')}<span>What if</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-um="view" data-id="diagram" title="The quality drivers in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-um="view" data-id="tree">${icon('tree')}<span>Utility tree</span></button><button type="button" class="cm-view" data-um="view" data-id="tune">${icon('tune')}<span>What if</span></button></div>
    <div class="cm-actions"><button type="button" class="cm-btn" data-um="add">${icon('plus')}<span>Add driver</span></button>
     <button type="button" class="cm-btn" data-um="explore" title="Chapter 2's own quality map, with every perspective">${icon('explore')}<span>All perspectives</span></button>
     <button type="button" class="cm-btn icon" data-um="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -133,6 +143,16 @@ function render() {
   root.classList.toggle('um-tuning', tuneView());
   root.classList.toggle('um-walking', S.walk >= 0);
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
+  root.classList.toggle('nt-active', diagramView());
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: S.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel(); walkBar();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); return;
+  }
   root.querySelector('[data-um="panel"]').setAttribute('aria-pressed', String(S.panel));
   const world = root.querySelector('.cm-world'), svg = root.querySelector('.cm-svg');
   // Geometry depends on the records, the scope, the depth, an unsaved proposal and the tuning — never the lens.
@@ -308,6 +328,14 @@ function crumbs() {
   else if (sc.kind !== 'system') parts.push('<span>›</span>', `<button type="button" class="here" data-um="noop">${esc(sc.kind === 'attribute' ? UM.attrs.get(sc.id).name : family(sc.id)?.name || sc.id)}</button>`);
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   const sc = scope();
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
@@ -384,6 +412,7 @@ function specimenProposal() {
   return `<section class="cm-spec"><h4>Proposal · not saved</h4><p class="cm-spec-t"><b>${esc(r.title)}</b></p><p>${esc(g.reason || '')}</p><dl class="cm-dl"><div><dt>Attribute</dt><dd>${esc(UM.attrs.get(r.category)?.name || r.category)}</dd></div><div><dt>When</dt><dd>${esc(r.stimulus || '—')}</dd></div><div><dt>The system</dt><dd>${esc(r.response || '—')}</dd></div><div><dt>Measured</dt><dd>${esc(r.metric || '—')}<br>${r.targetValue ? target(r) : '<em>no target yet</em>'} ${esc(r.window || '')}</dd></div><div><dt>Tactic</dt><dd>${esc(r.tactic || '—')}</dd></div></dl><div class="cm-acts"><button type="button" class="cm-btn gold" data-q-action="edit-ghost">${icon('edit')}Review &amp; edit</button><button type="button" class="cm-btn" data-q-action="dismiss-ghost">Dismiss</button></div></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   if (tuneView()) return `<section><h4>Reading this view</h4><p>Move the <b>target</b> or the <b>priority</b> above. The driver stays on the left; everything it reaches stands to its right, by chapter: the <b>decisions</b> that weigh it, the <b>runtime</b> plans, <b>platform</b> and <b>products</b> that carry it.</p><p>Each card says whether the recorded design still meets it, and why — arithmetic on recorded facts, never a guess. Nothing is saved until you open the editor.</p></section>`;
   return `<section><h4>Reading this view</h4><p>A <b>utility tree</b>: from what good means, through the SA Playbook's qualities and attributes, to the <b>drivers</b> — scenarios you can measure, in priority order.</p><p>A dashed attribute is one the playbook treats as core that no driver covers. The meter on each driver shows how many of the playbook's tactics the design already names.</p></section>`;
 }
@@ -418,12 +447,14 @@ function panel() {
   if (tuneView()) { box.innerHTML = solInto(tunePanel(), solSection(project(), 2, tuneDriverId(), {whatIf: S.tune})) + reading(); return; }
   const s = S.sel;
   const spec = s === PROPOSED ? specimenProposal() : D(s) ? specimenDriver(s) : s?.startsWith('A:') ? specimenAttribute(s.slice(2)) : s ? specimenOther(s) : '';
+  if (!spec && s && drawn(s)) spec = NT.specimenHTML(s);
   box.innerHTML = solInto(spec, solSection(project(), 2, s)) + reading() + insightsHTML() + findingsHTML();
 }
 
 // ---------------------------------------------------------------- walking the priorities
 
 function walkBar() {
+  if (diagramView()) { root.querySelector('.cm-walk').innerHTML = ''; return; }
   const bar = root.querySelector('.cm-walk');
   if (tuneView()) { bar.innerHTML = `<button type="button" class="cm-btn" data-um="view" data-id="tree">${icon('back')}<span>Utility tree</span></button><p class="cm-walk-text">${esc(T ? describeTuning(T) : '')}</p>`; return; }
   const ids = utilityWalk(UM), n = ids.length;
@@ -445,6 +476,7 @@ function walkTo(i) {
 // ---------------------------------------------------------------- interaction
 
 function revealSelection() {
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === S.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (!S.sel || !L || !root) return;
   const c = (L.cards || []).find(x => x.id === S.sel || 'E:' + x.id === S.sel);
   if (c) stage.reveal(c.x, c.y, c.w, c.h);
@@ -476,6 +508,7 @@ function bind() {
   solChapterBind(root, 2, {refresh: solRefresh, whatIf: () => (tuneView() ? S.tune : null)});
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     if (e.target.closest('[data-brain-launch],[data-q-action],a')) return;
     const a = e.target.closest('[data-um]');
     if (a && !a.disabled && !a.matches('select,input')) {
@@ -516,12 +549,12 @@ function bind() {
     if (s && s.dataset.sel) { e.stopPropagation(); if (tuneView() && D(s.dataset.sel)) { openTune(s.dataset.sel); return; } if (tuneView()) { S.view = 'tree'; fitPending = true; } select(s.dataset.sel, {reveal: true}); return; }
     if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
-  root.addEventListener('change', e => {
+  root.addEventListener('change', e => { if (NT.change(e)) return;
     const t = e.target;
     if (t.matches('[data-um="tune-driver"]')) { S.tune = {driver: t.value, targetValue: null, priority: null}; S.sel = null; fitPending = true; render(); }
     if (t.matches('[data-um="tune-input"]')) { const v = t.value.trim(); S.tune.targetValue = v === '' || v === String(D(tuneDriverId()).targetValue) ? null : v; S.sel = null; render(); }
   });
-  root.addEventListener('keydown', e => {
+  root.addEventListener('keydown', e => { if (NT.keydown(e)) return;
     if (e.key === 'Enter' && e.target.matches('[data-um="tune-input"]')) { e.preventDefault(); e.target.dispatchEvent(new Event('change', {bubbles: true})); return; }
     if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); select(e.target.dataset.card); }
   });
@@ -543,7 +576,8 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.um-card,.um-rc');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.um-card,.um-rc,.nt-node');
+  if (t?.dataset?.ntNode && root.contains(t)) { box.innerHTML = NT.tipHTML(t.dataset.ntNode); box.hidden = !box.innerHTML; if (!box.hidden) placeTip(box, e); return; }
   if (!t || !root.contains(t)) { box.hidden = true; return; }
   const id = t.dataset.card;
   let html = '';

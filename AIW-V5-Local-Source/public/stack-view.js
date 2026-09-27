@@ -18,6 +18,7 @@ import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {specPanelHTML} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
+import {createNotation} from './notation-view.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
@@ -27,7 +28,7 @@ const studio = () => window.aiwLogicalStudio;
 // Chapter 7 edits that reach other chapters are staged as a reviewable model proposal; while one
 // is open, the model shows the proposed design and marks what it changes.
 const pending = () => { const i = window.aiwInterfaceImpact; return i?.pending && i.previewInChapter?.(7) ? i : null; };
-const PATHS = {structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', operation: 'M3 12h4l3-7 4 14 3-7h4', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', stack: 'M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 18l9 5 9-5', options: 'M4 4h16v16H4zM4 10h16M10 4v16M16 4v16', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', operation: 'M3 12h4l3-7 4 14 3-7h4', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', stack: 'M12 3 3 8l9 5 9-5zM3 13l9 5 9-5M3 18l9 5 9-5', options: 'M4 4h16v16H4zM4 10h16M10 4v16M16 4v16', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.stack}"/></svg>`;
 const LENSES = [
   {id: 'structure', label: 'Structure', like: 'skeleton', q: 'What each realisation provides, the product chosen for it, and who depends on it.'},
@@ -38,7 +39,11 @@ const EFFECT = {supports: ['✓', 'Supports'], tension: ['!', 'Trade-off'], unkn
 
 let marked = new Set(), lastProposal = '', lastClick = {id: null, t: 0};
 let root = null, S = null, lastDoc = null, cbs = {}, F = null, G = null, L = null, fitPending = true, stage = null, pageSel, CH = null;
-let V = {view: 'stack', lens: 'structure', scope: {kind: 'system'}, depth: 'realisations', sel: null, rec: null, panel: true};
+let NT = null;
+let V = {view: 'diagram', lens: 'structure', scope: {kind: 'system'}, depth: 'realisations', sel: null, rec: null, panel: true};
+// The standard diagram (notation-view.js) and the elements only it draws (the application itself, an external system, a placement).
+const diagramView = () => V.view === 'diagram';
+const drawn = id => diagramView() && !!NT?.diagram()?.nodes.some(n => n.id === id);
 const pref = () => projectPreferenceKey('aiw-stack-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
 function save() { try { localStorage.setItem(pref(), JSON.stringify({view: V.view, lens: V.lens, scope: V.scope, depth: V.depth, sel: V.sel, rec: V.rec, panel: V.panel})); } catch { /* preferences are optional */ } }
@@ -54,13 +59,17 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm sk'; root.setAttribute('aria-label', 'Chapter 7 model: technology realisation');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => (V.view === 'options' ? optionsHead() : stackHead()), railWidth: l => l.rail, onHover: tip});
+    stage = modelStage(root, {headHeight: () => (V.view === 'diagram' ? 0 : V.view === 'options' ? optionsHead() : stackHead()), railWidth: l => l.rail || 0, onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 7, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'sel', 'rec']) if (typeof v[k] === 'string') V[k] = v[k];
     if (v.scope && typeof v.scope === 'object') V.scope = v.scope;
     V.panel = defaultPanel(v.panel);
-    if (!['stack', 'options'].includes(V.view)) V.view = 'stack';
+    if (!['diagram', 'stack', 'options'].includes(V.view)) V.view = 'diagram';
     if (!LENSES.some(l => l.id === V.lens)) V.lens = 'structure';
     if (!['realisations', 'options'].includes(V.depth)) V.depth = 'realisations';
   }
@@ -92,7 +101,8 @@ function rebuild(d) {
   if (key && key !== lastProposal && roots[0] && known(roots[0])) { adopt(roots[0]); setTimeout(revealSelection, 60); }
   lastProposal = key;
 }
-const known = id => S.R.has(id) || S.Pf.capabilities.has(id) || !!recOf(id) || id?.startsWith?.('CRIT:');
+const knownBase = id => S.R.has(id) || S.Pf.capabilities.has(id) || !!recOf(id) || id?.startsWith?.('CRIT:');
+const known = id => drawn(id) || knownBase(id);
 // A selection can be a realisation, one of its options ("tr-001/TO-001"), or a criterion.
 function recOf(id) { if (!id) return null; if (S.R.has(id)) return S.R.get(id); const [r, o] = String(id).split('/'); return S.R.has(r) && optionOf(S.R.get(r), o) ? S.R.get(r) : null; }
 
@@ -101,7 +111,7 @@ function recOf(id) { if (!id) return null; if (S.R.has(id)) return S.R.get(id); 
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 7 · Model</small><strong>Technology realisation</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-sk="view" data-id="stack">${icon('stack')}<span>Stack</span></button><button type="button" class="cm-view" data-sk="view" data-id="options">${icon('options')}<span>Options</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-sk="view" data-id="diagram" title="The technology realization in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-sk="view" data-id="stack">${icon('stack')}<span>Stack</span></button><button type="button" class="cm-view" data-sk="view" data-id="options">${icon('options')}<span>Options</span></button></div>
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-tr-action="new">New realisation</button><p>To add an option to a realisation, select it first and use “Add an option”.</p></div></details>
     <button type="button" class="cm-btn" data-sk="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-sk="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -132,6 +142,16 @@ function render() {
   root.classList.add('cm-lens-' + V.lens);
   root.classList.toggle('sk-opts', optView());
   root.querySelector('.cm-body').classList.toggle('no-panel', !V.panel);
+  root.classList.toggle('nt-active', diagramView());
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: V.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); refocus(root, fk); return;
+  }
   // Geometry follows the recorded realisations, the scope, the rows shown and a pending proposal —
   // never the lens. The options share the stage's width.
   if (optView()) { G = optionsFor(S, V.rec, {proposal: previewing()}); L = G ? optionsLayout(G, {viewW: stage.box().w}) : null; CH = G ? choiceForDesign(project(), V.rec) : null; }
@@ -298,6 +318,14 @@ function crumbs() {
   else if (sc.kind === 'family') parts.push('<span>›</span>', `<button type="button" class="here" data-sk="noop">${esc(FAMILIES.find(f => f.id === sc.id)?.title || sc.id)}</button>`);
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
   root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === V.view)));
@@ -346,6 +374,7 @@ function specimenCriterion(id) {
   return `<section class="cm-spec"><h4>Criterion${c.kind === 'driver' ? ' · quality driver' : ''}</h4><p class="cm-spec-t"><b>${esc(c.title)}</b></p><p>${esc(c.detail)}</p><dl class="cm-dl">${r.options.map(o => { const a = o.assessments[c.id]; return `<div class="${a && a.effect !== 'unknown' ? '' : 'none'}"><dt>${esc(o.product || o.title)}</dt><dd>${esc(a ? (EFFECT[a.effect] || EFFECT.unknown)[1] + (a.reason ? ' — ' + a.reason : '') : 'Needs evidence')}</dd></div>`; }).join('')}</dl><p class="cm-muted">The weighing beneath the criteria (Σ priority × effect) is a lean, never a choice: each judgement still needs a reason and evidence, and an unknown stays an open item.</p></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   if (optView()) return `<section><h4>Reading this view</h4><p>Each column is an option for the realisation; each row a criterion it should be chosen by — first the quality drivers of the components that depend on it, then operation, recovery, exit and cost. A cell is a judgement: <b>✓</b> supports, <b>!</b> a trade-off, <b>?</b> needs evidence. Select a cell to record the judgement, its reason and its evidence.</p></section>`;
   return `<section><h4>Reading this view</h4><p>Each row is a realisation — the product layer beneath one Chapter 6 capability — in the platform's order. Read across: what it realises, the option preferred (hatched where no choice is made yet), who depends on it and what stops if it fails, the six implementation obligations, sizing and cost, and how far the selection has gone.</p><p>Choose <b>With options</b> to see every alternative in place.</p></section>`;
 }
@@ -376,19 +405,22 @@ function panel() {
   else if (s && recOf(s)) spec = specimenOption(s);
   else if (s && S.Pf.capabilities.has(s)) spec = specimenCapability(s);
   else if (s?.startsWith?.('CRIT:')) spec = specimenCriterion(s);
+  if (!spec && s && drawn(s)) spec = NT.specimenHTML(s);
   box.innerHTML = (optView() && CH ? choicePanel() : '') + solInto(spec, solSection(project(), 7, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
 
 // ---------------------------------------------------------------- interaction
 
 function revealSelection() {
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === V.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (!V.sel || !L) return;
   const r = L.rows.find(x => x.id === V.sel || x.id === recOf(V.sel)?.id || 'CRIT:' + x.id === V.sel);
   if (r) stage.reveal(L.rail, r.y, 300, r.h);
 }
 // Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
 let announced;
-const selTarget = () => { const r = recOf(V.sel); return r ? r.id : S.Pf.capabilities.has(V.sel) ? V.sel : null; };
+const selTargetBase = () => { const r = recOf(V.sel); return r ? r.id : S.Pf.capabilities.has(V.sel) ? V.sel : null; };
+const selTarget = () => { const t = selTargetBase(); return t && /^(system:|party:|unplaced:|lane:|family:)/.test(String(t)) ? null : t; };
 function announce() {
   announced = V.sel;
   const p = project(), target = selTarget();
@@ -408,8 +440,10 @@ function withSelection(id, action, data = {}) { studioAction('inspect', {trId: i
 
 function bind() {
   solChapterBind(root, 7, {refresh: solRefresh});
+  root.addEventListener('keydown', e => { NT.keydown(e); });
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     const add = root.querySelector('.cm-add');
     if (add?.open && !e.target.closest('.cm-add > summary')) add.open = false;
     if (e.target.closest('[data-brain-launch],[data-tr-action],a')) return;
@@ -444,7 +478,7 @@ function bind() {
     }
     if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-edge') && V.sel) select(null);
   });
-  root.addEventListener('change', e => { if (e.target.dataset.skField === 'rec') { V.rec = e.target.value; V.sel = e.target.value; fitPending = true; save(); render(); } });
+  root.addEventListener('change', e => { if (NT.change(e)) return; if (e.target.dataset.skField === 'rec') { V.rec = e.target.value; V.sel = e.target.value; fitPending = true; save(); render(); } });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !root?.isConnected || document.querySelector('dialog[open]')) return;
     const a = document.activeElement;
@@ -462,7 +496,8 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.sk-rec[data-sel]');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.sk-rec[data-sel],.nt-node');
+  if (t?.dataset?.ntNode && root.contains(t)) { box.innerHTML = NT.tipHTML(t.dataset.ntNode); box.hidden = !box.innerHTML; if (!box.hidden) placeTip(box, e); return; }
   if (!t || !root.contains(t) || !S.R.has(t.dataset.sel)) { box.hidden = true; return; }
   box.innerHTML = `<b>${esc(S.R.get(t.dataset.sel).ref + ' · ' + S.R.get(t.dataset.sel).title)}</b>${esc(describeRealisation(S, t.dataset.sel))}<small class="h">Double-click to compare its options</small>`; box.hidden = false; placeTip(box, e);
 }

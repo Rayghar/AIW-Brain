@@ -14,13 +14,14 @@ import {storySource, foldStory, foldContext, storyScope, storyInsights, describe
 import {proposals as requirementProposals} from './requirements-domain.js';
 import {storyLayout, mapHead, contextLayout, contextHead, SX, CT} from './story-layout.js';
 import {modelStage, sizeModel, placeTip} from './model-stage.js';
+import {createNotation} from './notation-view.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
 const page = () => window.aiwRequirementsPage;
-const PATHS = {structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', map: 'M3 5h4v4H3zM10 5h4v4h-4zM17 5h4v4h-4zM3 12h4v7H3zM10 12h4v4h-4zM17 12h4v2h-4z', context: 'M7 4h10v16H7zM2 9h3M2 15h3M19 9h3M19 15h3', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', link: 'M9 15 15 9M8 12l-2 2a3 3 0 0 0 4 4l2-2m4-4 2-2a3 3 0 0 0-4-4l-2 2', layers: 'm12 3 9 5-9 5-9-5 9-5m-9 9 9 5 9-5', person: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', map: 'M3 5h4v4H3zM10 5h4v4h-4zM17 5h4v4h-4zM3 12h4v7H3zM10 12h4v4h-4zM17 12h4v2h-4z', context: 'M7 4h10v16H7zM2 9h3M2 15h3M19 9h3M19 15h3', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', link: 'M9 15 15 9M8 12l-2 2a3 3 0 0 0 4 4l2-2m4-4 2-2a3 3 0 0 0-4-4l-2 2', layers: 'm12 3 9 5-9 5-9-5 9-5m-9 9 9 5 9-5', person: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.map}"/></svg>`;
 const LENSES = [
   {id: 'structure', label: 'Structure', like: 'skeleton', q: 'Who owns each requirement, its source, and the scope, constraints and assumptions that limit it.'},
@@ -32,7 +33,11 @@ const BAND = {Must: 'the journey cannot work without these', Should: 'important,
 const TYPE = {requirement: 'Requirement', journey: 'Journey step', actor: 'Actor', stakeholder: 'Stakeholder', outcome: 'Business outcome', scope: 'Scope boundary', constraint: 'Constraint', assumption: 'Assumption'};
 
 let root = null, SM = null, lastDoc = null, cbs = {}, F = null, L = null, fitPending = true, stage = null, lastClick = {id: null, t: 0}, pageSel, lastGhost = '';
+let NT = null;
 let S = {view: 'map', lens: 'structure', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1};
+// The standard diagram (notation-view.js) and the elements only it draws.
+const diagramView = () => S.view === 'diagram';
+const drawn = id => diagramView() && !!NT?.diagram()?.nodes.some(n => n.id === id);
 const seen = new Set();
 const pref = () => projectPreferenceKey('aiw-story-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
@@ -47,13 +52,17 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm sm'; root.setAttribute('aria-label', 'Chapter 1 model: requirements');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => (S.view === 'context' ? contextHead() : mapHead()), railWidth: l => l.rail || 0, onHover: tip});
+    stage = modelStage(root, {headHeight: () => (S.view === 'diagram' ? 0 : S.view === 'context' ? contextHead() : mapHead()), railWidth: l => l.rail || 0, onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 1, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['view', 'lens', 'depth']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     if (typeof v.panel === 'boolean') S.panel = v.panel;
-    if (!['map', 'context'].includes(S.view)) S.view = 'map';
+    if (!['diagram', 'map', 'context'].includes(S.view)) S.view = 'map';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'structure';
   }
   const first = !SM;
@@ -76,7 +85,8 @@ function rebuild(p) {
   if (S.sel && !known(S.sel)) S.sel = null;
   if (S.scope?.id && storyScope(SM, S.scope).kind === 'system') S.scope = {kind: 'system'};
 }
-const known = id => !!id && !!SM && (SM.A.has(id) || (id === PROPOSED && !!proposal()));
+const knownBase = id => !!id && !!SM && (SM.A.has(id) || (id === PROPOSED && !!proposal()));
+const known = id => drawn(id) || knownBase(id);
 const ghost = () => { const g = page()?.ghost; return g && g.record ? g : null; };
 const newGhost = () => { const g = ghost(); return g && g.mode === 'new' && g.record.type === 'requirement' ? g : null; };
 // A proposed scope, constraint or assumption is drawn among the limits in the context.
@@ -99,7 +109,7 @@ function followGhost() {
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 1 · Model</small><strong>Requirements</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-sm="view" data-id="map">${icon('map')}<span>Journey map</span></button><button type="button" class="cm-view" data-sm="view" data-id="context">${icon('context')}<span>Context</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-sm="view" data-id="diagram" title="The journey as a process diagram in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-sm="view" data-id="map">${icon('map')}<span>Journey map</span></button><button type="button" class="cm-view" data-sm="view" data-id="context">${icon('context')}<span>Context</span></button></div>
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div class="sm-addmenu"></div></details>
     <button type="button" class="cm-btn" data-sm="explore" title="Chapter 1's own requirements map, with every perspective">${icon('explore')}<span>All perspectives</span></button>
     <button type="button" class="cm-btn icon" data-sm="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -136,6 +146,16 @@ function render() {
   root.classList.toggle('sm-context', ctxView());
   root.classList.toggle('sm-walking', S.walk >= 0);
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
+  root.classList.toggle('nt-active', diagramView());
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: S.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel(); walkBar();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); return;
+  }
   root.querySelector('[data-sm="panel"]').setAttribute('aria-pressed', String(S.panel));
   // Geometry depends on the records, the scope, the depth and an unsaved proposal — never the lens.
   if (ctxView()) { F = foldContext(SM, scope(), {ghost: ghost()}); L = contextLayout(F, {measure}); }
@@ -325,6 +345,14 @@ function crumbs() {
   if (sc.kind !== 'system') parts.push('<span>›</span>', `<button type="button" class="here" data-sm="noop">${esc({step: 'Step ', actor: '', outcome: ''}[sc.kind] + (sc.kind === 'step' ? stepOf(sc.id).num + ' ' : '') + titleOf(sc.id))}</button>`);
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   const sc = scope();
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
@@ -382,6 +410,7 @@ function specimenProposal() {
   return `<section class="cm-spec"><h4>Proposal · not saved</h4><p class="cm-spec-t"><b>${esc(g.record.title)}</b></p><p>${esc(g.reason || '')}</p><dl class="cm-dl">${terms}<div><dt>Would connect</dt><dd>${(g.links || []).map(([f, k, t]) => esc((f === 'new' ? 'it' : refTitle(f)) + ' ' + k + ' ' + (t === 'new' ? 'it' : refTitle(t)))).join('<br>') || 'Nothing yet — connect it when you review it'}</dd></div></dl><div class="cm-acts"><button type="button" class="cm-btn gold" data-r-action="edit-ghost">${icon('edit')}Review &amp; edit</button><button type="button" class="cm-btn" data-r-action="dismiss-ghost">Dismiss</button></div></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   if (ctxView()) return `<section><h4>Reading this view</h4><p>The <b>system</b> is the boxed column: its journey steps, in order. <b>People</b> who take part stand to its left; the <b>outcomes</b> it exists for, and the <b>owners</b> who answer for them, to its right. Each line to an outcome names the requirements that deliver it.</p><p>Beneath: what limits the design — what is in and out of scope, constraints and assumptions.</p></section>`;
   return `<section><h4>Reading this view</h4><p>A <b>story map</b>. The journey's steps run across as the backbone; the <b>priority slices</b> run down — Must, then Should, then Could. Each requirement stands under the step that needs it and carries, along its foot, the <b>Chapter 4 responsibility</b> that covers it.</p><p>A dashed card is a step with no requirement; ⋯ between steps means their order is not recorded.${SM.steps.length ? ' <b>Walk the journey</b> to read it step by step.' : ''}</p></section>`;
 }
@@ -403,12 +432,14 @@ function panel() {
   if (!S.panel) { box.innerHTML = ''; return; }
   const s = S.sel, a = s && A(s);
   const spec = s === PROPOSED ? specimenProposal() : !a ? '' : a.type === 'requirement' ? specimenRequirement(s) : a.type === 'journey' ? specimenStep(s) : specimenOther(s);
+  if (!spec && s && drawn(s)) spec = NT.specimenHTML(s);
   box.innerHTML = spec + reading() + insightsHTML() + findingsHTML();
 }
 
 // ---------------------------------------------------------------- walking the journey
 
 function walkBar() {
+  if (diagramView()) { root.querySelector('.cm-walk').innerHTML = ''; return; }
   const bar = root.querySelector('.cm-walk'), n = SM.steps.length;
   if (!n) { bar.innerHTML = '<p class="cm-walk-text">Add journey steps to walk the journey.</p>'; return; }
   const cur = S.walk >= 0 ? SM.steps[S.walk] : null;
@@ -434,6 +465,7 @@ function revealWalk() {
 // ---------------------------------------------------------------- interaction
 
 function revealSelection() {
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === S.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (!S.sel || !L || !root) return;
   if (!ctxView()) { const col = L.cols.find(c => c.step === S.sel); if (col) { stage.reveal(col.x, L.top, col.w, 140); return; } }
   const c = (L.cards || []).find(x => x.id === S.sel) || (L.notes || []).find(x => x.id === S.sel);
@@ -460,8 +492,10 @@ function onAct(k, a) {
 }
 
 function bind() {
+  root.addEventListener('change', e => { NT.change(e); });
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     const add = root.querySelector('.cm-add');
     if (add?.open && !e.target.closest('.cm-add > summary')) add.open = false;
     // The page's own editors and proposals handle these; point it at the record first.
@@ -510,7 +544,7 @@ function bind() {
     if (s && s.dataset.sel) { e.stopPropagation(); select(s.dataset.sel, {reveal: !!s.closest('.cm-panel')}); return; }
     if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
-  root.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); const id = e.target.dataset.card; if (!id.startsWith('C:')) select(id.startsWith('HOLE:') ? id.slice(5) : id); } });
+  root.addEventListener('keydown', e => { if (NT.keydown(e)) return; if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); const id = e.target.dataset.card; if (!id.startsWith('C:')) select(id.startsWith('HOLE:') ? id.slice(5) : id); } });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !root?.isConnected || document.querySelector('dialog[open]')) return;
     const a = document.activeElement;
@@ -528,7 +562,8 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.sm-card,.sm-sh,.sm-note,.sm-label');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.sm-card,.sm-sh,.sm-note,.sm-label,.nt-node');
+  if (t?.dataset?.ntNode && root.contains(t)) { box.innerHTML = NT.tipHTML(t.dataset.ntNode); box.hidden = !box.innerHTML; if (!box.hidden) placeTip(box, e); return; }
   if (!t || !root.contains(t)) { box.hidden = true; return; }
   let html = '';
   const id = t.dataset.card || t.dataset.lane;

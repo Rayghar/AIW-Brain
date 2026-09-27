@@ -17,13 +17,14 @@ import {modelStage, sizeModel, placeTip} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
+import {createNotation} from './notation-view.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
 // Sol's advice changes the project only through a store command; the view then reads the new document.
 const solRefresh = () => { if (root?.isConnected) mountChapterModel({id: pageSel}, cbs); };
 const page = () => window.aiwDecisionsPage;
-const PATHS = {structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', map: 'M3 6h5v12H3zM10 4h5v6h-5zM10 14h5v6h-5zM17 4h4v4h-4zM17 10h4v4h-4zM17 16h4v4h-4z', matrix: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', book: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M8 7h7', check: 'M4 12l5 5L20 6', tune: 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M14 4v4M8 10v4M16 16v4'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', map: 'M3 6h5v12H3zM10 4h5v6h-5zM10 14h5v6h-5zM17 4h4v4h-4zM17 10h4v4h-4zM17 16h4v4h-4z', matrix: 'M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', book: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5M8 7h7', check: 'M4 12l5 5L20 6', tune: 'M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M14 4v4M8 10v4M16 16v4'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.map}"/></svg>`;
 const LENSES = [
   {id: 'structure', label: 'Structure', like: 'skeleton', q: 'What each alternative would change: the Chapter 4 responsibilities it touches and the relationships it adds.'},
@@ -35,7 +36,11 @@ const STATUS = {draft: 'Draft', recorded: 'Recorded', accepted: 'Accepted', supe
 const OP = {'At least': '≥', 'At most': '≤', Exactly: '='};
 
 let root = null, TM = null, lastDoc = null, cbs = {}, F = null, L = null, fitPending = true, stage = null, lastClick = {id: null, t: 0}, pageSel, lastProposal = '';
+let NT = null;
 let S = {view: 'map', lens: 'reasoning', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1};
+// The standard diagram (notation-view.js) and the elements only it draws.
+const diagramView = () => S.view === 'diagram';
+const drawn = id => diagramView() && !!NT?.diagram()?.nodes.some(n => n.id === id);
 const seen = new Set();
 const pref = () => projectPreferenceKey('aiw-tradeoff-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
@@ -51,13 +56,17 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm dx'; root.setAttribute('aria-label', 'Chapter 3 model: decisions');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => (matrixView() ? matrixHead() : mapHead()), railWidth: l => l.rail || 0, onHover: tip});
+    stage = modelStage(root, {headHeight: () => (S.view === 'diagram' ? 0 : matrixView() ? matrixHead() : mapHead()), railWidth: l => l.rail || 0, onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 3, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['view', 'lens', 'depth']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     if (typeof v.panel === 'boolean') S.panel = v.panel;
-    if (!['map', 'matrix'].includes(S.view)) S.view = 'map';
+    if (!['diagram', 'map', 'matrix'].includes(S.view)) S.view = 'map';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'reasoning';
   }
   const first = !TM;
@@ -80,7 +89,8 @@ function rebuild(p) {
   if (S.scope?.id && tradeoffScope(TM, S.scope).kind === 'system') S.scope = {kind: 'system'};
 }
 const proposal = () => page()?.proposal || null;
-const known = id => !!id && !!TM && (TM.D.has(id) || TM.A.has(id) || TM.R.driver(id) || id === STYLE_PROPOSAL || (id.startsWith('SUG:') && styleSuggestions(TM).some(s => s.id === id)) || (id.startsWith('STY:') && STYLES.some(s => 'STY:' + s.id === id)) || (id === PROPOSED_ALT && !!proposal()));
+const knownBase = id => !!id && !!TM && (TM.D.has(id) || TM.A.has(id) || TM.R.driver(id) || id === STYLE_PROPOSAL || (id.startsWith('SUG:') && styleSuggestions(TM).some(s => s.id === id)) || (id.startsWith('STY:') && STYLES.some(s => 'STY:' + s.id === id)) || (id === PROPOSED_ALT && !!proposal()));
+const known = id => drawn(id) || knownBase(id);
 function followProposal() {
   const g = proposal(), key = g ? (g.decisionId || '') + ':' + (g.existingId || 'new') + ':' + (g.record?.title || '') : '';
   if (key && key !== lastProposal) { S.sel = g.existingId || PROPOSED_ALT; S.walk = -1; if (matrixView()) { S.view = 'map'; fitPending = true; } setTimeout(revealSelection, 80); }
@@ -93,7 +103,7 @@ function followProposal() {
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 3 · Model</small><strong>Decisions</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-dx="view" data-id="map">${icon('map')}<span>Decision map</span></button><button type="button" class="cm-view" data-dx="view" data-id="matrix">${icon('matrix')}<span>Trade-offs</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-dx="view" data-id="diagram" title="The decisions in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-dx="view" data-id="map">${icon('map')}<span>Decision map</span></button><button type="button" class="cm-view" data-dx="view" data-id="matrix">${icon('matrix')}<span>Trade-offs</span></button></div>
    <div class="cm-actions"><button type="button" class="cm-btn" data-dx="new-question">${icon('plus')}<span>New decision</span></button>
     <button type="button" class="cm-btn" data-dx="explore" title="Chapter 3's own decision-impact map, with every perspective">${icon('explore')}<span>All perspectives</span></button>
     <button type="button" class="cm-btn icon" data-dx="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -130,6 +140,16 @@ function render() {
   root.classList.toggle('dx-matrix', matrixView());
   root.classList.toggle('dx-walking', S.walk >= 0);
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
+  root.classList.toggle('nt-active', diagramView());
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: S.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel(); walkBar();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); return;
+  }
   root.querySelector('[data-dx="panel"]').setAttribute('aria-pressed', String(S.panel));
   const g = proposal();
   // Geometry depends on the records, the scope, the depth and an unsaved proposal — never the lens.
@@ -311,6 +331,14 @@ function crumbs() {
   if (sc.kind !== 'system') parts.push('<span>›</span>', `<button type="button" class="here" data-dx="noop">${esc(sc.kind === 'decision' ? sc.id + ' ' + X(sc.id).question : sc.id + ' ' + Drv(sc.id).title)}</button>`);
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   const sc = scope();
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
@@ -372,6 +400,7 @@ function specimenProposal() {
   return `<section class="cm-spec"><h4>Proposal · not saved</h4><p class="cm-spec-t"><b>${esc(r.title || '')}</b></p><p>${esc(r.summary || '')}</p><dl class="cm-dl"><div><dt>Pattern</dt><dd>${esc(r.pattern || '—')}</dd></div><div><dt>Avoid</dt><dd>${esc(r.antiPattern || '—')}</dd></div></dl><div class="cm-acts"><button type="button" class="cm-btn gold" data-d-action="edit-proposal">${icon('edit')}Review &amp; edit</button><button type="button" class="cm-btn" data-d-action="dismiss-proposal">Dismiss</button></div></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   if (matrixView()) return `<section><h4>Reading this view</h4><p>Drivers run down, highest priority first, each with its <b>weight</b>. Alternatives run across under their decision. Each cell is the <b>judged effect</b> of an alternative on a driver — hover for the reason.</p><p>The bottom row adds priority × effect: a plain way to see which way the drivers lean, not a verdict.${TM.styleDecision ? '' : ' The last group is the SA Playbook\'s <b>style table</b> read against the same drivers.'}</p></section>`;
   return `<section><h4>Reading this view</h4><p>Each <b>decision</b> weighs the drivers on its left; its <b>alternatives</b> stand on its right, each with the <b>pattern</b> it follows, the <b>failure boundary</b> to avoid, and its effect on every driver.</p><p>★ marks what the drivers favour as weighted; ● the working choice. Names in boxes link to the pattern catalogue and the SA Playbook.</p></section>`;
 }
@@ -393,12 +422,14 @@ function panel() {
   if (!S.panel) { box.innerHTML = ''; return; }
   const s = S.sel;
   const spec = !s ? '' : s === PROPOSED_ALT ? specimenProposal() : X(s) ? specimenDecision(s) : Alt(s) ? specimenAlternative(s) : Drv(s) ? specimenDriver(s) : s === STYLE_PROPOSAL ? specimenStyleProposal() : s.startsWith('SUG:') || s.startsWith('STY:') ? specimenStyle(s) : '';
+  if (!spec && s && drawn(s)) spec = NT.specimenHTML(s);
   box.innerHTML = solInto(spec, solSection(project(), 3, s)) + reading() + insightsHTML() + findingsHTML();
 }
 
 // ---------------------------------------------------------------- walking the decisions
 
 function walkBar() {
+  if (diagramView()) { root.querySelector('.cm-walk').innerHTML = ''; return; }
   const bar = root.querySelector('.cm-walk'), ids = mapWalk(TM), n = ids.length;
   if (!n) { bar.innerHTML = '<p class="cm-walk-text">Frame a design question to walk the decisions.</p>'; return; }
   const cur = S.walk >= 0 ? ids[S.walk] : null;
@@ -419,6 +450,7 @@ function walkTo(i) {
 // ---------------------------------------------------------------- interaction
 
 function revealSelection() {
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === S.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (!S.sel || !L || !root) return;
   if (matrixView()) { const col = L.cols.find(c => c.id === S.sel), row = L.rows.find(r => r.id === S.sel); if (col) stage.reveal(col.x, L.top, col.w, 80); else if (row) stage.reveal(L.rail, row.y, 200, row.h); return; }
   const c = (L.cards || []).find(x => x.id === S.sel);
@@ -450,8 +482,10 @@ function onAct(k, a) {
 
 function bind() {
   solChapterBind(root, 3, {refresh: solRefresh});
+  root.addEventListener('change', e => { NT.change(e); });
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     if (e.target.closest('[data-brain-launch],[data-d-action],a')) return;
     const a = e.target.closest('[data-dx]');
     if (a && !a.disabled) {
@@ -484,7 +518,7 @@ function bind() {
     if (s && s.dataset.sel) { e.stopPropagation(); select(s.dataset.sel, {reveal: true}); return; }
     if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
-  root.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); select(e.target.dataset.card); } });
+  root.addEventListener('keydown', e => { if (NT.keydown(e)) return; if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); select(e.target.dataset.card); } });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !root?.isConnected || document.querySelector('dialog[open]')) return;
     const a = document.activeElement;
@@ -502,7 +536,8 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.dx-card,.dx-cell,.dx-ch,.dx-rh,.dx-foot');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.dx-card,.dx-cell,.dx-ch,.dx-rh,.dx-foot,.nt-node');
+  if (t?.dataset?.ntNode && root.contains(t)) { box.innerHTML = NT.tipHTML(t.dataset.ntNode); box.hidden = !box.innerHTML; if (!box.hidden) placeTip(box, e); return; }
   if (!t || !root.contains(t) || t.classList.contains('dx-cell') && !t.dataset.card) { box.hidden = true; return; }
   const id = t.dataset.card;
   let html = '';

@@ -15,6 +15,7 @@ import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {specPanelHTML, productLabels, productCandidates} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
+import {createNotation} from './notation-view.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
@@ -24,7 +25,7 @@ const studio = () => window.aiwLogicalStudio;
 // Chapter 5 edits that reach other chapters are staged as a reviewable model proposal; while one
 // is open, the model shows the proposed design and marks what it changes.
 const pending = () => { const i = window.aiwInterfaceImpact; return i?.pending && i.previewInChapter?.(5) ? i : null; };
-const PATHS = {structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', model: 'M3 4h8v7H3zM13 13h8v7h-8zM11 7h4v6', matrix: 'M4 4h16v16H4zM4 10h16M4 16h16M10 4v16M16 4v16', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', link: 'M9 15 15 9M8 12l-2 2a3 3 0 0 0 4 4l2-2m4-4 2-2a3 3 0 0 0-4-4l-2 2'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', reasoning: 'M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9M9 7h6M9 17h6', model: 'M3 4h8v7H3zM13 13h8v7h-8zM11 7h4v6', matrix: 'M4 4h16v16H4zM4 10h16M4 16h16M10 4v16M16 4v16', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', link: 'M9 15 15 9M8 12l-2 2a3 3 0 0 0 4 4l2-2m4-4 2-2a3 3 0 0 0-4-4l-2 2'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.model}"/></svg>`;
 const LENSES = [
   {id: 'structure', label: 'Structure', like: 'skeleton', q: 'What each component realises and owns, and which contract formalises each interaction.'},
@@ -36,8 +37,8 @@ const IKIND = {sync: 'Request and answer', event: 'Event / work handoff', data: 
 const clsOf = c => (/restricted|secret/i.test(c) ? 'restricted' : /confidential|personal|sensitive/i.test(c) ? 'confidential' : /internal/i.test(c) ? 'internal' : c ? 'public' : 'unclassified');
 
 let marked = new Set(), lastProposal = '';
-let root = null, V = null, lastDoc = null, cbs = {}, F = null, L = null, G = null, fitPending = true, stage = null, lastClick = {id: null, t: 0}, pageSel;
-let S = {view: 'components', lens: 'structure', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1};
+let root = null, V = null, lastDoc = null, cbs = {}, F = null, L = null, G = null, fitPending = true, stage = null, lastClick = {id: null, t: 0}, pageSel, NT = null;
+let S = {view: 'diagram', lens: 'structure', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1};
 const pref = () => projectPreferenceKey('aiw-realise-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
 function save() { try { localStorage.setItem(pref(), JSON.stringify({view: S.view, lens: S.lens, scope: S.scope, depth: S.depth, sel: S.sel, panel: S.panel})); } catch { /* preferences are optional */ } }
@@ -53,13 +54,17 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm rz'; root.setAttribute('aria-label', 'Chapter 5 model: application realisation');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => (S.view === 'allocation' ? allocationHead() : realiseHead()), railWidth: l => (l.kind === 'allocation' ? l.rail : 0), onHover: tip});
+    stage = modelStage(root, {headHeight: () => (S.view === 'diagram' ? 0 : S.view === 'allocation' ? allocationHead() : realiseHead()), railWidth: l => (l.kind === 'allocation' ? l.rail : 0), onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 5, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'sel']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     S.panel = defaultPanel(v.panel);
-    if (!['components', 'allocation'].includes(S.view)) S.view = 'components';
+    if (!['diagram', 'components', 'allocation'].includes(S.view)) S.view = 'diagram';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'structure';
   }
   const first = !V;
@@ -91,14 +96,17 @@ function rebuild(p) {
 }
 const isData = id => V.M.T(id) === 'data';
 const isLane = id => id === OUT_L || id === OUT_R || id === NONE || (String(id).startsWith('COL:') && !!F?.lanes.some(l => l.id === id));
-const known = id => V.elements.has(id) || V.R.has(id) || V.modules.has(id) || V.flows.some(f => f.id === id) || V.lflows.some(l => l.id === id) || isData(id) || V.M.T(id) === 'capability' || isLane(id) || (id === PROPOSED && !!ghost());
+const known = id => V.elements.has(id) || V.R.has(id) || V.modules.has(id) || V.flows.some(f => f.id === id) || V.lflows.some(l => l.id === id) || isData(id) || V.M.T(id) === 'capability' || isLane(id) || (id === PROPOSED && !!ghost()) || drawn(id);
+// An element only the standard diagram draws (the application itself, an external system).
+const drawn = id => S.view === 'diagram' && !!NT?.diagram()?.nodes.some(n => n.id === id);
+const diagramView = () => S.view === 'diagram';
 
 // ---------------------------------------------------------------- shell
 
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 5 · Model</small><strong>Application realisation</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-rz="view" data-id="components">${icon('model')}<span>Components</span></button><button type="button" class="cm-view" data-rz="view" data-id="allocation">${icon('matrix')}<span>Allocation</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-rz="view" data-id="diagram" title="The application architecture in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-rz="view" data-id="components">${icon('model')}<span>Components</span></button><button type="button" class="cm-view" data-rz="view" data-id="allocation">${icon('matrix')}<span>Allocation</span></button></div>
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-a-action="new">New component</button><button type="button" data-a-action="connect">Connect components</button><p>To realise a particular responsibility, select it first and use “Create a component for it”.</p></div></details>
     <button type="button" class="cm-btn" data-rz="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-rz="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -132,8 +140,18 @@ function render() {
   root.classList.remove('cm-lens-structure', 'cm-lens-flow', 'cm-lens-reasoning');
   root.classList.add('cm-lens-' + S.lens);
   root.classList.toggle('rz-matrix', allocView());
-  root.classList.toggle('cm-walking', S.walk >= 0 && !allocView());
+  root.classList.toggle('nt-active', diagramView());
+  root.classList.toggle('cm-walking', S.walk >= 0 && !allocView() && !diagramView());
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: S.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel(); walkBar();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); refocus(root, fk); return;
+  }
   // Geometry depends on the elements, the scope, the depth and a pending proposal — never the lens.
   F = foldRealise(V, scope(), depth(), {proposal: ghost()});
   if (allocView()) { G = allocation(V, scope(), {proposal: ghost()}); L = allocationLayout(G); } else L = realiseLayout(F, {measure});
@@ -366,6 +384,14 @@ function crumbs() {
   }
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   const sc = scope();
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
@@ -434,6 +460,7 @@ function specimenOther(id) {
   return `<section class="cm-spec"><h4>${kind}</h4><p class="cm-spec-t"><b>${esc(refTitle(id))}</b></p>${o?.description ? `<p>${esc(o.description)}</p>` : ''}<dl class="cm-dl"><div><dt>${V.M.T(id) === 'data' ? 'Owned by' : 'Needed by'}</dt><dd>${users.map(x => link(x.id)).join('') || '<em>No component</em>'}</dd></div></dl><div class="cm-acts"><a class="cm-btn" href="${esc(projectURL('/?chapter=' + (V.M.T(id) === 'data' ? 8 : 6) + '&tab=work&object=' + encodeURIComponent(id)))}">Open in Chapter ${V.M.T(id) === 'data' ? 8 : 6}</a></div></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   if (allocView()) return `<section><h4>Reading this view</h4><p>Each row is a Chapter 4 responsibility; each column a Chapter 5 component. A dot means the component realises the responsibility; hover it for the allocation scope. The rule: every responsibility needs a component that owns it, and every component needs a responsibility that justifies it.</p><p>An amber ring is an allocation without a current scope; a ring outlined in amber is realised from another module.</p></section>`;
   const walk = realiseWalk(V).length;
   return `<section><h4>Reading this view</h4><p>Columns are the Chapter 4 <b>modules</b>. Each card is a component carrying the <b>responsibilities it realises</b> — the logical design embedded in the software — and, along its foot, the <b>platform it stands on</b> for Chapter 6.</p><p>Solid arrows ask and wait for an answer; dashed arrows hand work on. A dashed card is a responsibility nothing realises yet.</p>${walk ? `<p><b>Walk the logical flows</b> to see, flow by flow, which interaction carries each step of the Chapter 4 design.</p>` : ''}</section>`;
@@ -463,6 +490,7 @@ function panel() {
   else if (s && V.flows.some(f => f.id === s)) spec = specimenFlow(s);
   else if (s && (V.modules.has(s) || isLane(s))) spec = specimenLane(s);
   else if (s?.startsWith?.('MOD:')) spec = specimenLane(s.slice(4));
+  else if (s && drawn(s)) spec = NT.specimenHTML(s);
   else if (s && known(s)) spec = specimenOther(s);
   box.innerHTML = solInto(spec, solSection(project(), 5, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
@@ -472,7 +500,7 @@ function panel() {
 // The footer: the walk's controls and, while walking, its text; otherwise the status line beside them.
 function walkBar() {
   const bar = root.querySelector('.cm-walk-in'), ls = realiseWalk(V);
-  if (allocView() || !ls.length) { bar.innerHTML = ''; return; }
+  if (diagramView() || allocView() || !ls.length) { bar.innerHTML = ''; return; }
   const cur = S.walk >= 0 ? ls[S.walk] : null, walkTitle = `${ls.length} logical flows from Chapter 4. At each one: which components realise its ends, and which interaction carries it.`;
   bar.innerHTML = `${S.walk >= 0 ? `<button type="button" class="cm-btn" data-rz="walk-prev" aria-label="Previous flow" ${S.walk <= 0 ? 'disabled' : ''}>‹</button>` : ''}<button type="button" class="cm-btn" data-rz="walk-next" title="${esc(walkTitle)}">${S.walk < 0 ? icon('play') + '<span>Walk the logical flows</span>' : S.walk >= ls.length - 1 ? 'Done' : 'Next ›'}</button>${cur ? `<p class="cm-walk-text"><b>${S.walk + 1} / ${ls.length}</b> ${esc(describeLogical(V, cur.id))}</p>` : ''}${S.walk >= 0 ? '<button type="button" class="cm-btn icon" data-rz="walk-stop" aria-label="Stop the walk">×</button>' : ''}`;
 }
@@ -486,13 +514,14 @@ function revealWalk() {
 
 function revealSelection() {
   if (!S.sel || !L) return;
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === S.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (allocView()) { const r = L.rows.find(x => x.id === S.sel), c = L.cols.find(x => x.id === S.sel); if (r) stage.reveal(L.rail, r.y, 300, r.h); else if (c) stage.reveal(c.x, L.top, c.w, 100); return; }
   const h = highlight(), card = L.cards.find(c => h.cards.has(c.id));
   if (card) stage.reveal(card.x, card.y, card.w, card.h);
 }
 // Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
 let announced;
-const selTarget = () => (S.sel && S.sel !== PROPOSED && !/^(MOD:|L:|F:|OUT:|COL:)/.test(S.sel) && S.sel !== NONE ? S.sel : null);
+const selTarget = () => (S.sel && S.sel !== PROPOSED && !/^(MOD:|L:|F:|OUT:|COL:|system:|party:|unplaced:)/.test(S.sel) && S.sel !== NONE ? S.sel : null);
 function announce() {
   announced = S.sel;
   const p = project(), target = selTarget();
@@ -513,6 +542,7 @@ function bind() {
   solChapterBind(root, 5, {refresh: solRefresh});
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     const add = root.querySelector('.cm-add');
     if (add?.open && !e.target.closest('.cm-add > summary')) add.open = false;
     if (e.target.closest('[data-brain-launch],[data-a-action],a')) return;
@@ -551,8 +581,10 @@ function bind() {
     if (s && s.dataset.sel) { e.stopPropagation(); select(s.dataset.sel, {reveal: !!s.closest('.cm-panel')}); return; }
     if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-edge') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
+  root.addEventListener('change', e => { NT.change(e); });
   // Enter or Space on a card selects it; Enter on the selected card opens it, as a double-click does.
   root.addEventListener('keydown', e => {
+    if (NT.keydown(e)) return;
     if ((e.key !== 'Enter' && e.key !== ' ') || !e.target.matches('[data-card]')) return;
     e.preventDefault();
     const raw = e.target.dataset.card, id = raw.startsWith('HOLE:') ? raw.slice(5) : raw;
@@ -576,9 +608,10 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.rz-card,.rz-label,.rz-lh');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.rz-card,.rz-label,.rz-lh,.nt-node');
   if (!t || !root.contains(t)) { box.hidden = true; return; }
   let html = '';
+  if (t.dataset.ntNode) html = NT.tipHTML(t.dataset.ntNode);
   if (t.dataset.link) { const id = linkFlow(t.dataset.link), f = V.flows.find(x => x.id === id); html = f ? `<b>${esc(f.ref ? f.ref + ' · ' + f.label : f.label)}</b>${esc(describeFlow(V, f.id))}` : ''; }
   else if (t.dataset.card) { const id = t.dataset.card; html = V.elements.get(id)?.kind === 'component' ? `<b>${esc(refTitle(id))}</b>${esc(describeComponent(V, id))}<small class="h">Double-click to focus on it</small>` : id.startsWith('MOD:') && V.modules.has(id.slice(4)) ? `<b>${esc(titleOf(id.slice(4)))}</b>${esc(laneInfo(V, id.slice(4)).sub)}<small class="h">Double-click to open the module</small>` : id.startsWith('HOLE:') ? `<b>${esc(refTitle(id.slice(5)))}</b>No component realises this responsibility yet.` : ''; }
   else if (t.dataset.lane) { const ln = F?.lanes.find(l => l.id === t.dataset.lane) || laneInfo(V, t.dataset.lane); html = `<b>${esc(ln.title)}</b>${esc(ln.sub || '')}`; }

@@ -18,6 +18,7 @@ import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {specPanelHTML} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
+import {createNotation} from './notation-view.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
@@ -27,7 +28,7 @@ const studio = () => window.aiwLogicalStudio;
 // Chapter 6 edits that reach other chapters are staged as a reviewable model proposal; while one
 // is open, the model shows the proposed design and marks what it changes.
 const pending = () => { const i = window.aiwInterfaceImpact; return i?.pending && i.previewInChapter?.(6) ? i : null; };
-const PATHS = {structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', operation: 'M3 12h4l3-7 4 14 3-7h4', protection: 'm12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z', platform: 'M3 5h18v4H3zM3 11h18v4H3zM3 17h18v3H3z', failure: 'M12 3 2 20h20zM12 10v4M12 17h.01', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', link: 'M9 15 15 9M8 12l-2 2a3 3 0 0 0 4 4l2-2m4-4 2-2a3 3 0 0 0-4-4l-2 2'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', structure: 'M6 3v18M18 3v18M6 8h12M6 16h12', operation: 'M3 12h4l3-7 4 14 3-7h4', protection: 'm12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z', platform: 'M3 5h18v4H3zM3 11h18v4H3zM3 17h18v3H3z', failure: 'M12 3 2 20h20zM12 10v4M12 17h.01', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z', link: 'M9 15 15 9M8 12l-2 2a3 3 0 0 0 4 4l2-2m4-4 2-2a3 3 0 0 0-4-4l-2 2'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.platform}"/></svg>`;
 const LENSES = [
   {id: 'structure', label: 'Structure', like: 'skeleton', q: 'Which capability supports which component, how essential each need is, and what each capability depends on.'},
@@ -40,7 +41,11 @@ const STAGES = [['fail', 'It fails'], ['spread', 'What depends on it'], ['stop',
 
 let marked = new Set(), lastProposal = '', lastClick = {id: null, t: 0};
 let root = null, P = null, lastDoc = null, cbs = {}, F = null, L = null, FA = null, fitPending = true, stage = null, pageSel;
-let S = {view: 'platform', lens: 'structure', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1, fail: null};
+let NT = null;
+let S = {view: 'diagram', lens: 'structure', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1, fail: null};
+// The standard diagram (notation-view.js) and the elements only it draws (the application itself, an external system, a placement).
+const diagramView = () => S.view === 'diagram';
+const drawn = id => diagramView() && !!NT?.diagram()?.nodes.some(n => n.id === id);
 const pref = () => projectPreferenceKey('aiw-platform-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
 function save() { try { localStorage.setItem(pref(), JSON.stringify({view: S.view, lens: S.lens, scope: S.scope, depth: S.depth, sel: S.sel, panel: S.panel, fail: S.fail})); } catch { /* preferences are optional */ } }
@@ -56,14 +61,18 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm pf'; root.setAttribute('aria-label', 'Chapter 6 model: logical technology');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => platformHead(), railWidth: l => l.rail, onHover: tip});
+    stage = modelStage(root, {headHeight: () => (S.view === 'diagram' ? 0 : platformHead()), railWidth: l => l.rail || 0, onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 6, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'sel']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     if (v.fail && typeof v.fail === 'object') S.fail = v.fail;
     S.panel = defaultPanel(v.panel);
-    if (!['platform', 'failure'].includes(S.view)) S.view = 'platform';
+    if (!['diagram', 'platform', 'failure'].includes(S.view)) S.view = 'diagram';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'structure';
   }
   const first = !P;
@@ -94,14 +103,15 @@ function rebuild(d) {
   if (key && key !== lastProposal && roots[0] && known(roots[0])) { S.sel = roots[0]; setTimeout(revealSelection, 60); }
   lastProposal = key;
 }
-const known = id => P.capabilities.has(id) || P.components.has(id) || P.needs.has(id) || P.modules.has(id) || P.deps.some(d => d.id === id) || P.boundaries.has(id) || (String(id).startsWith('MISSING:') && P.unsupported.some(n => 'MISSING:' + n.category === id));
+const knownBase = id => P.capabilities.has(id) || P.components.has(id) || P.needs.has(id) || P.modules.has(id) || P.deps.some(d => d.id === id) || P.boundaries.has(id) || (String(id).startsWith('MISSING:') && P.unsupported.some(n => 'MISSING:' + n.category === id));
+const known = id => drawn(id) || knownBase(id);
 
 // ---------------------------------------------------------------- shell
 
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 6 · Model</small><strong>Logical technology</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-pf="view" data-id="platform">${icon('platform')}<span>Platform</span></button><button type="button" class="cm-view" data-pf="view" data-id="failure">${icon('failure')}<span>What fails together</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-pf="view" data-id="diagram" title="The solution architecture in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-pf="view" data-id="platform">${icon('platform')}<span>Platform</span></button><button type="button" class="cm-view" data-pf="view" data-id="failure">${icon('failure')}<span>What fails together</span></button></div>
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-t-action="new">New capability</button><p>To connect two capabilities, select the one that depends on the other and use “Add a dependency”. Application needs are edited from each component.</p></div></details>
     <button type="button" class="cm-btn" data-pf="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-pf="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -145,6 +155,16 @@ function render() {
   root.classList.toggle('pf-failing', failing());
   root.classList.toggle('cm-walking', S.walk >= 0 && failing());
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
+  root.classList.toggle('nt-active', diagramView());
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: S.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel(); walkBar();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); refocus(root, fk); return;
+  }
   // Geometry depends on the recorded model, the scope, the depth and a pending proposal — never on
   // the lens or the failure explored.
   F = foldPlatform(P, scope(), depth(), {proposal: ghost()});
@@ -276,6 +296,14 @@ function crumbs() {
   if (sc.kind === 'capability') parts.push('<span>›</span>', `<button type="button" class="here" data-pf="noop">${esc(titleOf(sc.id))} and what it depends on</button>`);
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   const sc = scope();
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
@@ -349,6 +377,7 @@ function failureHTML() {
   return `<section class="cm-spec"><h4>What fails together<span class="exposed">${FA.stops.length} of ${P.components.size} stop</span></h4><p class="cm-spec-t"><b>${esc(FA.mode === 'domain' ? 'Lose ' + FA.title : 'Lose ' + FA.title)}</b></p><p>${FA.mode === 'domain' ? `Every capability in ${esc(FA.title)} is lost together` : `${esc(FA.title)} is lost`}; the chapter's simulation carries the loss along critical dependencies and to every component with an essential need on what is lost.</p><dl class="cm-dl"><div><dt>Capabilities</dt><dd>${FA.caps.map(x => `<button type="button" class="cm-link" data-sel="${esc(x.id)}">${esc(titleOf(x.id))}<i> · ${esc(x.state)}</i><small>${esc(x.reason)}</small></button>`).join('')}</dd></div><div class="miss"><dt>Stop</dt><dd>${stops}</dd></div>${deg ? `<div><dt>Degraded</dt><dd>${deg}</dd></div>` : ''}</dl><p class="cm-muted">A design simulation of declared support and dependencies, not a failover test. The Work tab's lab records a walkthrough with quality assumptions.</p></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   return `<section><h4>Reading this view</h4><p>Each row is a platform <b>capability</b>, grouped by what it does; each column a component that stands on the platform. A dot is a need where the two meet — filled when essential, half when the component can run degraded without it — and neighbouring needs join into a <b>plate</b>.</p><p>Brackets beside the capabilities are dependencies: a critical one carries a failure upward. The last column says what stops if the capability fails.</p></section>`;
 }
 const insightsList = () => platformInsights(P, scope()).slice(0, 8);
@@ -382,6 +411,7 @@ function panel() {
   else if (s && P.boundaries.has(s)) spec = specimenBoundary(s);
   else if (s && P.modules.has(s)) spec = specimenModule(s);
   else if (s?.startsWith?.('MISSING:')) spec = specimenMissing(s);
+  if (!spec && s && drawn(s)) spec = NT.specimenHTML(s);
   box.innerHTML = (failing() ? failureHTML() : '') + solInto(spec, solSection(project(), 6, s)) + reading() + insightsHTML(ins) + findingsHTML();
 }
 
@@ -398,6 +428,7 @@ function stageText(st) {
 }
 // The footer: the failure walk's controls and, while walking, its text; otherwise the status line.
 function walkBar() {
+  if (diagramView()) { const w = root.querySelector('.cm-walk-in'); if (w) w.innerHTML = ''; return; }
   const bar = root.querySelector('.cm-walk-in');
   if (!FA) { bar.innerHTML = ''; return; }
   const cur = S.walk >= 0 ? STAGES[S.walk] : null;
@@ -407,13 +438,15 @@ function walkBar() {
 // ---------------------------------------------------------------- interaction
 
 function revealSelection() {
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === S.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (!S.sel || !L) return;
   const r = L.rows.find(x => x.id === S.sel), c = L.cols.find(x => x.id === S.sel || x.id === F.colOf(S.sel));
   if (r) stage.reveal(L.rail, r.y, 300, r.h); else if (c) stage.reveal(c.x, L.top, c.w, 120);
 }
 // Whichever path changed the selection, the page and Sol hear of it once, as the model renders.
 let announced;
-const selTarget = () => (S.sel && !/^(MOD:|MISSING:)/.test(S.sel) ? S.sel : null);
+const selTargetBase = () => (S.sel && !/^(MOD:|MISSING:)/.test(S.sel) ? S.sel : null);
+const selTarget = () => { const t = selTargetBase(); return t && /^(system:|party:|unplaced:|lane:|family:)/.test(String(t)) ? null : t; };
 function announce() {
   announced = S.sel;
   const p = project(), target = selTarget();
@@ -432,8 +465,11 @@ function studioAction(action, data = {}) { const b = document.createElement('but
 
 function bind() {
   solChapterBind(root, 6, {refresh: solRefresh});
+  root.addEventListener('change', e => { NT.change(e); });
+  root.addEventListener('keydown', e => { NT.keydown(e); });
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     const add = root.querySelector('.cm-add');
     if (add?.open && !e.target.closest('.cm-add > summary')) add.open = false;
     if (e.target.closest('[data-brain-launch],[data-t-action],a')) return;
@@ -488,8 +524,9 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.pf-cap,.pf-ch');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.pf-cap,.pf-ch,.nt-node');
   if (!t || !root.contains(t)) { box.hidden = true; return; }
+  if (t.dataset.ntNode) { box.innerHTML = NT.tipHTML(t.dataset.ntNode); box.hidden = !box.innerHTML; if (!box.hidden) placeTip(box, e); return; }
   const id = t.dataset.sel;
   const html = P.capabilities.has(id) ? `<b>${esc(refTitle(id))}</b>${esc(describeCapability(P, id))}<small class="h">Double-click to focus on it and its dependencies</small>` : P.components.has(id) ? `<b>${esc(refTitle(id))}</b>${esc(P.components.get(id).needs.length + ' needs · ' + boundaryTitle(P, P.components.get(id).boundary))}` : P.modules.has(id) ? `<b>${esc(titleOf(id))}</b>Double-click to open the module` : '';
   if (!html) { box.hidden = true; return; }

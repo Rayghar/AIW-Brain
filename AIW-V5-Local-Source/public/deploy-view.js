@@ -14,13 +14,14 @@ import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {specPanelHTML, runsOnLabel, productLabels} from './spec-panel.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
+import {createNotation} from './notation-view.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
 // Sol's advice changes the project only through a store command; the view then reads the new document.
 const solRefresh = () => { if (root?.isConnected) mountChapterModel({id: pageSel}, cbs); };
 const studio = () => window.aiwLogicalStudio;
-const PATHS = {operation: 'M3 12h4l2-5 4 10 2-5h6', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', protection: 'm12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z', deploy: 'M3 4h18v6H3zM3 14h8v6H3zM13 14h8v6h-8z', fail: 'M12 3 2 21h20L12 3zm0 7v4m0 3h.01', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', operation: 'M3 12h4l2-5 4 10 2-5h6', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', protection: 'm12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z', deploy: 'M3 4h18v6H3zM3 14h8v6H3zM13 14h8v6h-8z', fail: 'M12 3 2 21h20L12 3zm0 7v4m0 3h.01', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.deploy}"/></svg>`;
 const LENSES = [
   {id: 'operation', label: 'Operation', like: 'vital signs', q: 'How many copies run where, and how each part recovers.'},
@@ -30,7 +31,11 @@ const LENSES = [
 const STAGES = [['zones', 'The zones fail'], ['direct', 'Parts that lose their copies'], ['carried', 'Parts stopped by what they need'], ['recovery', 'What could recover']];
 
 let root = null, V = null, lastDoc = null, lastEnv = null, cbs = {}, F = null, L = null, FA = null, fitPending = true, stage = null, lastRowClick = {id: null, t: 0}, pageSel;
-let S = {view: 'deploy', lens: 'operation', scope: {kind: 'system'}, depth: 'auto', scenario: null, sel: null, pl: null, panel: true, walk: -1};
+let NT = null;
+let S = {view: 'diagram', lens: 'operation', scope: {kind: 'system'}, depth: 'auto', scenario: null, sel: null, pl: null, panel: true, walk: -1};
+// The standard diagram (notation-view.js) and the elements only it draws.
+const diagramView = () => S.view === 'diagram';
+const drawn = id => diagramView() && !!NT?.diagram()?.nodes.some(n => n.id === id);
 const pref = () => projectPreferenceKey('aiw-deploy-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
 function save() { try { localStorage.setItem(pref(), JSON.stringify({view: S.view, lens: S.lens, scope: S.scope, depth: S.depth, scenario: S.scenario, sel: S.sel, panel: S.panel})); } catch { /* preferences are optional */ } }
@@ -47,13 +52,17 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm dp'; root.setAttribute('aria-label', 'Chapter 10 model: deployment and runtime');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => deployHead(), railWidth: l => l.rail, onHover: tip});
+    stage = modelStage(root, {headHeight: () => (S.view === 'diagram' ? 0 : deployHead()), railWidth: l => l.rail || 0, onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 10, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'scenario', 'sel']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     if (typeof v.panel === 'boolean') S.panel = v.panel;
-    if (!['deploy', 'failure'].includes(S.view)) S.view = 'deploy';
+    if (!['diagram', 'deploy', 'failure'].includes(S.view)) S.view = 'diagram';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'operation';
   }
   const first = !V;
@@ -88,7 +97,7 @@ function rebuild(p, e) {
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 10 · Model</small><strong>Deployment &amp; runtime</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-dp="view" data-id="deploy">${icon('deploy')}<span>Deployment</span></button><button type="button" class="cm-view" data-dp="view" data-id="failure">${icon('fail')}<span>What fails together</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-dp="view" data-id="diagram" title="The deployment in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-dp="view" data-id="deploy">${icon('deploy')}<span>Deployment</span></button><button type="button" class="cm-view" data-dp="view" data-id="failure">${icon('fail')}<span>What fails together</span></button></div>
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-rt-action="zone">New zone</button><button type="button" data-rt-action="new-environment">New environment</button><p>Place a part from its row. Saved changes go through the Chapter 10 editors, each with its own review confirmation.</p></div></details>
     <button type="button" class="cm-btn" data-dp="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-dp="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -120,6 +129,16 @@ function render() {
   root.classList.add('cm-lens-' + S.lens);
   root.classList.toggle('dp-failing', failing());
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
+  root.classList.toggle('nt-active', diagramView());
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: S.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel(); walkBar();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); return;
+  }
   root.querySelector('[data-dp="panel"]').setAttribute('aria-pressed', String(S.panel));
   // Geometry depends on the rows and the stage width — never on the lens or the failure explored.
   F = foldDeploy(V, scope(), depth());
@@ -276,6 +295,14 @@ function crumbs() {
   }
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   const sc = scope();
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
@@ -324,6 +351,7 @@ function specimenGroup(r) {
   return `<section class="cm-spec"><h4>${r.kind === 'module' ? 'Module' : 'Platform services'}</h4><p class="cm-spec-t"><b>${esc(r.title)}</b></p><dl class="cm-dl"><div><dt>Parts</dt><dd>${r.members.map(id => `<button type="button" class="cm-link" data-sel="${esc(id)}">${esc(title(id))}${V.plans.get(id).placed ? '' : ' <i>· not placed</i>'}</button>`).join('')}</dd></div></dl><div class="cm-acts">${r.kind === 'module' ? `<button type="button" class="cm-btn primary" data-dp="dissect" data-id="${esc(r.module)}">${icon('dissect')}Open this module</button>` : `<button type="button" class="cm-btn primary" data-dp="depth" data-id="all">Show every platform service</button>`}</div></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   if (!V.env) return `<section><h4>Start here</h4><p>No environment is designed yet. Create one to say where the design runs.</p><div class="cm-acts"><button type="button" class="cm-btn primary" data-rt-action="new-environment">New environment</button></div></section>`;
   if (!failing()) return `<section><h4>Reading this view</h4><p>Each row is a part that must run; each column is a zone of <b>${esc(V.env.title)}</b>. Zones under one bracket share a failure domain and fail together. A filled dot is a running copy, a ring a standby.</p><p>Read a row across to see where a part runs — and where it does not. Switch to <b>Flow</b> to see what each part needs, or to <b>What fails together</b> to remove a zone.</p></section>`;
   if (!FA) return '';
@@ -353,10 +381,12 @@ function panel() {
   if (s && V.plans.has(s)) spec = specimenPlan(s) + specPanelHTML(project(), s);
   else if (s && V.zones.some(z => z.id === s)) spec = specimenZone(s);
   else if (s && T(s) === 'party') spec = specimenParty(s);
-  else if (s) { const r = F.rows.find(x => x.id === s); if (r && (r.kind === 'module' || r.kind === 'platform-group')) spec = specimenGroup(r); }
+  else if (s) { const r = F?.rows?.find(x => x.id === s); if (r && (r.kind === 'module' || r.kind === 'platform-group')) spec = specimenGroup(r); }
+  if (!spec && s && drawn(s)) spec = NT.specimenHTML(s);
   box.innerHTML = solInto(spec, solSection(project(), 10, s)) + reading() + (V.env ? insightsHTML() + findingsHTML() : '');
 }
 function walkBar() {
+  if (diagramView()) { root.querySelector('.cm-walk').innerHTML = ''; return; }
   const bar = root.querySelector('.cm-walk');
   if (!failing() || !FA?.result) { bar.innerHTML = `<p class="cm-walk-text">${V.env ? 'Select a part to see where it runs, what it needs and how it recovers; select a zone to ask what happens if it fails.' : ''}</p>`; return; }
   const cur = S.walk >= 0 ? STAGES[S.walk] : null, lit = stageLit();
@@ -373,6 +403,7 @@ function stageText(st, n) {
 // ---------------------------------------------------------------- interaction
 
 function revealSelection() {
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === S.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (!S.sel || !L) return;
   const rid = F.rowOf(S.sel) || S.sel, r = L.rows.find(x => x.id === rid);
   if (r) stage.reveal(L.x0, r.y, Math.min(600, L.W - L.x0), r.h);
@@ -404,8 +435,10 @@ function propose(key, id) { try { studio()?.preview?.(key, id); } catch { /* the
 
 function bind() {
   solChapterBind(root, 10, {refresh: solRefresh});
+  root.addEventListener('keydown', e => { NT.keydown(e); });
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     const add = root.querySelector('.cm-add');
     if (add?.open && !e.target.closest('.cm-add > summary')) add.open = false;
     if (e.target.closest('[data-brain-launch],[data-rt-action],a')) return;
@@ -447,7 +480,7 @@ function bind() {
     if (s && s.dataset.sel) { e.stopPropagation(); select(s.dataset.sel, {reveal: !!s.closest('.cm-panel'), pl: s.dataset.pl || null}); return; }
     if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
-  root.addEventListener('change', e => { if (e.target.dataset.dpField === 'scenario') { S.scenario = e.target.value; S.walk = -1; save(); render(); } });
+  root.addEventListener('change', e => { if (NT.change(e)) return; if (e.target.dataset.dpField === 'scenario') { S.scenario = e.target.value; S.walk = -1; save(); render(); } });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !root?.isConnected || document.querySelector('dialog[open]')) return;
     const a = document.activeElement;
@@ -465,7 +498,8 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.dp-cell,.dp-row,.dp-zh');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.dp-cell,.dp-row,.dp-zh,.nt-node');
+  if (t?.dataset?.ntNode && root.contains(t)) { box.innerHTML = NT.tipHTML(t.dataset.ntNode); box.hidden = !box.innerHTML; if (!box.hidden) placeTip(box, e); return; }
   if (!t || !root.contains(t)) { box.hidden = true; return; }
   let html = '';
   if (t.dataset.row) { const r = F.rows.find(x => x.id === t.dataset.row); html = `<b>${esc(r.title)}</b>${r.plan ? esc(describePlan(V, r.plan)) : r.kind === 'party' ? 'Outside the environment.' : esc(r.planned + ' parts')}<small class="h">Double-click to focus on it</small>`; }

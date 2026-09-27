@@ -15,13 +15,14 @@ import {modelStage, sizeModel, placeTip} from './model-stage.js';
 import {projectPreferenceKey, projectURL} from './project-context.js';
 import {mountBrainContext} from './brain-context-ui.js';
 import {solChapterMount, solChapterBind, solSection, solInto, solMark, solOwner} from './chapter-sol.js';
+import {createNotation} from './notation-view.js';
 
 const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const project = () => window.aiwProjectStore?.value?.document || window.aiwCurrentProject;
 // Sol's advice changes the project only through a store command; the view then reads the new document.
 const solRefresh = () => { if (root?.isConnected) mountChapterModel({id: pageSel}, cbs); };
 const studio = () => window.aiwLogicalStudio;
-const PATHS = {protection: 'm12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z', information: 'M12 3c3 4 6 7 6 10.5A6 6 0 0 1 6 13.5C6 10 9 7 12 3z', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', model: 'M3 5h6v5H3zM15 14h6v5h-6zM9 7h3v10h3M6 3v18', matrix: 'M4 4h16v16H4zM4 10h16M4 16h16M10 4v16M16 4v16', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z'};
+const PATHS = {diagram: 'M4 4h6v5H4zM14 4h6v5h-6zM9 15h6v5H9zM7 9v3h10V9M12 12v3', protection: 'm12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z', information: 'M12 3c3 4 6 7 6 10.5A6 6 0 0 1 6 13.5C6 10 9 7 12 3z', flow: 'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6', model: 'M3 5h6v5H3zM15 14h6v5h-6zM9 7h3v10h3M6 3v18', matrix: 'M4 4h16v16H4zM4 10h16M4 16h16M10 4v16M16 4v16', expand: 'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5', panel: 'M3 4h18v16H3zM15 4v16', explore: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z', fit: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5', plus: 'M12 5v14M5 12h14', spark: 'm12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3z', mind: 'm3 7 9-4 9 4-9 4-9-4m0 5 9 4 9-4m-18 5 9 4 9-4', edit: 'M4 20h4L20 8l-4-4L4 16zM14 6l4 4', dissect: 'M11 4a7 7 0 1 0 0 14 7 7 0 1 0 0-14M21 21l-5-5M8 11h6', play: 'M7 4v16l13-8z'};
 const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${PATHS[n] || PATHS.model}"/></svg>`;
 const LENSES = [
   {id: 'protection', label: 'Protection', like: 'immune system', q: 'Where each flow crosses a trust boundary, and whether it is guarded, exposed or not yet examined.'},
@@ -33,7 +34,11 @@ const STATE = {exposed: 'Exposed — a threat is not covered here', guarded: 'Gu
 const clsOf = c => (/restricted|secret/i.test(c) ? 'restricted' : /confidential|personal|sensitive/i.test(c) ? 'confidential' : /internal/i.test(c) ? 'internal' : c ? 'public' : 'unclassified');
 
 let root = null, T = null, lastDoc = null, cbs = {}, F = null, L = null, G = null, fitPending = true, stage = null, lastClick = {id: null, t: 0}, pageSel;
-let S = {view: 'model', lens: 'protection', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1};
+let NT = null;
+let S = {view: 'diagram', lens: 'protection', scope: {kind: 'system'}, depth: 'auto', sel: null, panel: true, walk: -1};
+// The standard diagram (notation-view.js) and the elements only it draws.
+const diagramView = () => S.view === 'diagram';
+const drawn = id => diagramView() && !!NT?.diagram()?.nodes.some(n => n.id === id);
 const pref = () => projectPreferenceKey('aiw-threat-model-v1');
 function load() { try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); return v && typeof v === 'object' ? v : {}; } catch { return {}; } }
 function save() { try { localStorage.setItem(pref(), JSON.stringify({view: S.view, lens: S.lens, scope: S.scope, depth: S.depth, sel: S.sel, panel: S.panel})); } catch { /* preferences are optional */ } }
@@ -49,13 +54,17 @@ export function mountChapterModel(selection, callbacks = {}) {
   if (!root) {
     root = document.createElement('section'); root.className = 'cm tm'; root.setAttribute('aria-label', 'Chapter 9 model: security');
     root.innerHTML = shell();
-    stage = modelStage(root, {headHeight: () => (S.view === 'coverage' ? matrixHead() : threatHead()), railWidth: l => (l.kind === 'matrix' ? l.rail : 0), onHover: tip});
+    stage = modelStage(root, {headHeight: () => (S.view === 'diagram' ? 0 : S.view === 'coverage' ? matrixHead() : threatHead()), railWidth: l => (l.kind === 'matrix' ? l.rail : 0), onHover: tip});
     stage.bind(); bind();
+    // The standard diagram shares the stage, the companion and the selection with the chapter's own views.
+    NT = createNotation({chapter: 9, root, stage, project, onSelect: id => select(id)});
+    NT.onChange = full => { if (full) fitPending = true; render(); };
+    NT.bindDrag();
     const v = load();
     for (const k of ['view', 'lens', 'depth', 'sel']) if (typeof v[k] === 'string') S[k] = v[k];
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     if (typeof v.panel === 'boolean') S.panel = v.panel;
-    if (!['model', 'coverage'].includes(S.view)) S.view = 'model';
+    if (!['diagram', 'model', 'coverage'].includes(S.view)) S.view = 'diagram';
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'protection';
   }
   const first = !T;
@@ -78,14 +87,15 @@ function rebuild(p) {
   if (S.sel && !known(S.sel)) S.sel = null;
   if (S.scope?.id && threatScope(T, S.scope).kind === 'system') S.scope = {kind: 'system'};
 }
-const known = id => T.elements.has(id) || T.threats.has(id) || T.controls.has(id) || T.X.C.has(id) || T.X.D.has(id) || T.boundaries.some(b => b.id === id) || T.flows.some(f => f.id === id);
+const knownBase = id => T.elements.has(id) || T.threats.has(id) || T.controls.has(id) || T.X.C.has(id) || T.X.D.has(id) || T.boundaries.some(b => b.id === id) || T.flows.some(f => f.id === id);
+const known = id => drawn(id) || knownBase(id);
 
 // ---------------------------------------------------------------- shell
 
 function shell() {
   return `<header class="cm-top"><div class="cm-title"><small>Chapter 9 · Model</small><strong>Security</strong></div>
    <nav class="cm-crumbs" aria-label="Where you are"></nav>
-   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-tm="view" data-id="model">${icon('model')}<span>Threat model</span></button><button type="button" class="cm-view" data-tm="view" data-id="coverage">${icon('matrix')}<span>Threats &amp; controls</span></button></div>
+   <div class="cm-views" role="group" aria-label="Model"><button type="button" class="cm-view" data-tm="view" data-id="diagram" title="Security and trust in the standard notation">${icon('diagram')}<span>Diagram</span></button><button type="button" class="cm-view" data-tm="view" data-id="model">${icon('model')}<span>Threat model</span></button><button type="button" class="cm-view" data-tm="view" data-id="coverage">${icon('matrix')}<span>Threats &amp; controls</span></button></div>
    <div class="cm-actions"><details class="cm-add"><summary class="cm-btn" aria-label="Add to the model">${icon('plus')}<span>Add</span></summary><div><button type="button" data-sec-action="new-threat">New threat scenario</button><button type="button" data-sec-action="new-control">New control design</button><p>To record a threat on a particular part or flow, select it first and use “Record a threat here”.</p></div></details>
     <button type="button" class="cm-btn" data-tm="explore" title="The connected explorer: every perspective of the whole model">${icon('explore')}<span>Explore all perspectives</span></button>
     <button type="button" class="cm-btn icon" data-tm="expand" aria-pressed="false" aria-label="Expand the model" title="Expand">${icon('expand')}</button>
@@ -119,6 +129,16 @@ function render() {
   root.classList.add('cm-lens-' + S.lens);
   root.classList.toggle('tm-matrix', coverageView());
   root.querySelector('.cm-body').classList.toggle('no-panel', !S.panel);
+  root.classList.toggle('nt-active', diagramView());
+  if (diagramView()) {
+    // The standard diagram: the notation module draws; the chapter keeps its chrome, companion and camera.
+    L = NT.render({sel: S.sel, viewW: stage.box().w});
+    root.querySelector('.cm-heads-in').innerHTML = ''; root.querySelector('.cm-rail-in').innerHTML = '';
+    chromeDiagram(); panel(); walkBar();
+    stage.use(L, 'diagram|' + (NT.scene()?.id || '') + '|' + NT.arrangement());
+    if (fitPending) { fitPending = false; NT.fit(); } else stage.clamp();
+    stage.apply(); return;
+  }
   root.querySelector('[data-tm="panel"]').setAttribute('aria-pressed', String(S.panel));
   // Geometry depends on the elements, the scope and the depth — never on the lens.
   F = foldThreat(T, scope(), depth());
@@ -291,6 +311,14 @@ function crumbs() {
   }
   return parts.join('');
 }
+// The Diagram view's chrome: the view toggles, the arrange, layers and export controls, the status and the key.
+function chromeDiagram() {
+  root.querySelectorAll('.cm-view').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.id === 'diagram')));
+  root.querySelector('.cm-lenses').innerHTML = NT.barHTML(); const dp = root.querySelector('.cm-depth'); if (dp) dp.innerHTML = '';
+  const st = root.querySelector('.cm-state'); if (st && st.textContent !== NT.status()) st.textContent = NT.status();
+  const lg = root.querySelector('.cm-legend'); if (lg) lg.innerHTML = NT.legendHTML();
+  const bn = root.querySelector('.cm-banner'); if (bn && typeof pending === 'function') { const i = pending(); bn.innerHTML = i && i.banner ? i.banner() : ''; }
+}
 function chrome() {
   const sc = scope();
   root.querySelector('.cm-crumbs').innerHTML = crumbs();
@@ -336,6 +364,7 @@ function specimenLane(id) {
   return `<section class="cm-spec"><h4>${ln.kind === 'boundary' ? 'Trust boundary' : 'Outside the system'}</h4><p class="cm-spec-t"><b>${esc(ln.ref ? ln.ref + ' · ' : '')}${esc(ln.title)}</b></p>${ln.sub ? `<p>${esc(ln.sub)}</p>` : ''}<dl class="cm-dl">${ln.owner ? `<div><dt>Owner</dt><dd>${esc(ln.owner)}</dd></div>` : ''}<div><dt>Inside</dt><dd>${inside.map(e => `<button type="button" class="cm-link" data-sel="${esc(e.id)}">${esc(e.title)}</button>`).join('') || '<em>Nothing yet</em>'}</dd></div><div><dt>Crossings</dt><dd>${cross.length}${ents ? ` (${ents} into platform or stores)` : ''} · ${c('exposed')} exposed · ${c('guarded')} guarded · ${c('unexamined')} not examined</dd></div></dl><div class="cm-acts">${ln.kind === 'boundary' ? `<button type="button" class="cm-btn primary" data-tm="scope-boundary" data-id="${esc(id)}">${icon('dissect')}Open this boundary</button><a class="cm-btn" href="${esc(projectURL('/?chapter=6&tab=work'))}">Boundaries are defined in Chapter 6</a>` : ''}</div></section>`;
 }
 function reading() {
+  if (diagramView()) return NT.readingHTML();
   if (coverageView()) return `<section><h4>Reading this view</h4><p>Each row is a threat; each column a control. A filled dot means the control is linked to the threat <b>and</b> protects something the threat affects. The chapter's rule: every affected object needs such a control, or a recorded treatment.</p><p>A dashed ring points to a control that already protects the same object but is not linked — often the quickest way to close a gap.</p></section>`;
   const n = L.markers.length, entries = L.markers.filter(m => m.entry).length;
   return `<section><h4>Reading this view</h4><p>Columns are trust regions: outside, each <b>trust boundary</b>, outside. Parts share a row only where no flow would pass through them, so each flow reads across to the region it enters. Where a contract crosses a boundary, the round marker says whether that crossing is <b>guarded</b> (✓), <b>exposed</b> (!) or <b>not yet examined</b> (?).</p>${entries ? `<p>Where parts reach a platform service or store in another boundary, their flows join one trunk; the square marker is that <b>entry</b>.</p>` : ''}<p>${n} crossing${n === 1 ? '' : 's'} in view.${walkFlows().length ? ' <b>Walk the journey</b> to follow the payment across each boundary it crosses.' : ''}</p></section>`;
@@ -363,6 +392,7 @@ function panel() {
   else if (s && (T.boundaries.some(b => b.id === s) || s === OUT_L || s === OUT_R)) spec = specimenLane(s);
   else if (s?.startsWith?.('REG:')) spec = specimenLane(s.slice(4));
   else if (s && known(s)) spec = specimenObject(s);
+  if (!spec && s && drawn(s)) spec = NT.specimenHTML(s);
   box.innerHTML = solInto(spec, solSection(project(), 9, s)) + reading() + insightsHTML() + findingsHTML();
 }
 
@@ -370,6 +400,7 @@ function panel() {
 
 const walkFlows = () => T.journey.map(id => T.flows.find(f => f.id === id)).filter(f => f && F.rowOf(f.from) && F.rowOf(f.to) && F.rowOf(f.from) !== F.rowOf(f.to));
 function walkBar() {
+  if (diagramView()) { root.querySelector('.cm-walk').innerHTML = ''; return; }
   const bar = root.querySelector('.cm-walk'), fs = walkFlows();
   if (coverageView() || !fs.length) { bar.innerHTML = `<p class="cm-walk-text">${coverageView() ? 'Select a threat to see what it affects and what covers it; select a control to see what it protects.' : 'Select a crossing marker to read what protects it.'}</p>`; return; }
   const cur = S.walk >= 0 ? fs[S.walk] : null;
@@ -384,6 +415,7 @@ function revealWalk() {
 // ---------------------------------------------------------------- interaction
 
 function revealSelection() {
+  if (diagramView()) { const b = NT.layout()?.nodes.find(n => n.id === S.sel); if (b) stage.reveal(b.x, b.y, b.w, b.h); return; }
   if (!S.sel || !L) return;
   if (coverageView()) { const r = L.rows.find(x => x.id === S.sel), c = L.cols.find(x => x.id === S.sel); if (r) stage.reveal(L.rail, r.y, 300, r.h); else if (c) stage.reveal(c.x, L.top, c.w, 100); return; }
   const h = highlight(), card = L.cards.find(c => h.cards.has(c.id));
@@ -408,8 +440,10 @@ const linkFlow = id => { const l = F.links.find(x => x.id === id); if (!l) retur
 
 function bind() {
   solChapterBind(root, 9, {refresh: solRefresh});
+  root.addEventListener('change', e => { NT.change(e); });
   root.addEventListener('click', e => {
     if (root.dataset.suppress) return;
+    if (NT.handle(e)) return;
     const add = root.querySelector('.cm-add');
     if (add?.open && !e.target.closest('.cm-add > summary')) add.open = false;
     if (e.target.closest('[data-brain-launch],[data-sec-action],a')) return;
@@ -453,7 +487,7 @@ function bind() {
     if (s && s.dataset.sel) { e.stopPropagation(); select(s.dataset.sel, {reveal: !!s.closest('.cm-panel')}); return; }
     if (e.target.closest('.cm-stage') && !e.target.closest('.cm-heads,.cm-rail,.cm-zoom,.cm-key') && (S.sel || S.walk >= 0)) { S.walk = -1; select(null); }
   });
-  root.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); select(e.target.dataset.card); } });
+  root.addEventListener('keydown', e => { if (NT.keydown(e)) return; if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[data-card]')) { e.preventDefault(); select(e.target.dataset.card); } });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape' || !root?.isConnected || document.querySelector('dialog[open]')) return;
     const a = document.activeElement;
@@ -471,7 +505,8 @@ function bind() {
   if ('ResizeObserver' in window) new ResizeObserver(() => { if (!root?.isConnected || !L) return; clearTimeout(bind._ro); bind._ro = setTimeout(() => { const w = stage.box().w; if (Math.abs(w - (bind._w || 0)) > 24) { bind._w = w; fitPending = true; render(); } }, 90); }).observe(root.querySelector('.cm-stage'));
 }
 function tip(e) {
-  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.tm-card,.tm-x,.tm-label,.tm-lh');
+  const box = root.querySelector('.cm-tip'), t = e.target.closest?.('.tm-card,.tm-x,.tm-label,.tm-lh,.nt-node');
+  if (t?.dataset?.ntNode && root.contains(t)) { box.innerHTML = NT.tipHTML(t.dataset.ntNode); box.hidden = !box.innerHTML; if (!box.hidden) placeTip(box, e); return; }
   if (t?.dataset.entry) { const m = L.markers.find(x => x.entry && x.to === t.dataset.entry && t.style.left === (x.x - 10) + 'px'), id = rowTarget(t.dataset.entry), st = T.elements.get(id)?.protection; if (m && st) { box.innerHTML = `<b>Entry into ${esc(titleOf(id))}</b>${esc(`${m.count} part${m.count === 1 ? '' : 's'} in ${laneInfo(T, m.from).title} reach it across the boundary. ${st.state === 'unexamined' ? 'No threat or control is recorded for it.' : (st.threats.length ? 'Threats: ' + st.threats.map(x => T.threats.get(x)?.ref).join(', ') + '. ' : '') + (st.controls.length ? 'Controls: ' + st.controls.map(x => T.controls.get(x)?.ref).join(', ') + '.' : 'No control covers it.')}`)}<small class="h">Select to see what protects it</small>`; box.hidden = false; placeTip(box, e); return; } }
   if (!t || !root.contains(t)) { box.hidden = true; return; }
   let html = '';
