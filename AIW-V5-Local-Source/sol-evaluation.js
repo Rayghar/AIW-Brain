@@ -80,7 +80,7 @@ export function scoreAssessment(a,packet,c,defaults={},{known:given=null}={}){
  const text=[claims,...list(a.questions)].filter(Boolean).join('\n');
  const forbidden=[...list(defaults.forbid),...list(exp.forbid)].flatMap(re=>asserted(claims,re));
  const known=new Set([...(given?[...given]:cited.flatMap(s=>numbers(s.excerpt))),...list(item?.knobs).flatMap(k=>numbers(k.value)),...list(a.refinements).flatMap(r=>numbers(r.value)),
-  ...list(a.refinements).filter(r=>typeof r.value==='number').flatMap(r=>restated(r.value,list(item?.knobs).find(k=>k.key===r.key)?.unit))]);
+  ...list(a.refinements).filter(r=>String(r.value).trim()!==''&&Number.isFinite(Number(r.value))).flatMap(r=>restated(Number(r.value),list(item?.knobs).find(k=>k.key===r.key)?.unit))]);
  const unsupported=unsupportedNumbers(text,known);
  return {...out,
   verdictAgrees:exp.verdicts?exp.verdicts.includes(a.verdict):null,

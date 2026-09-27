@@ -73,6 +73,11 @@ await check('the scorer reads numbers as the guard does: a citation label is not
  assert.equal(labels.falseSupport,false);assert.deepEqual(labels.flags,[]);
  const invented=score('The draft holds. It will carry 48,000 req/s at peak.');
  assert.deepEqual(invented.unsupportedNumbers,['48000']);assert.deepEqual(invented.flags,[{kind:'number',match:'48000',sentence:'It will carry 48,000 req/s at peak.'}]);
+ // A refinement's own value restated in another unit of its knob is its own, whether the answer gives it as a
+ // number (the Brain) or as text (the control arm): timeoutMs 30000 as "a 30-second timeout".
+ const tp=(await import('./public/brain-reasoning.js')).reasoningPacket((await import('./sol-evaluation.js')).domainProject(dataset.domains['service-permits']),{task:'decisions',ids:['M:8:if-001'],scope:'test',prompt:''}),t=tp.items[0];
+ for(const value of [30000,'30000']){const s=scoreAssessment({id:t.id,verdict:'refine',headline:'Bound the wait.',reasoning:'The contract records no timeout.',risks:[],questions:[],refinements:[{key:'timeoutMs',value,why:'A 30-second timeout bounds how long a caller waits.'}],proposals:[],preferred:'none',sourceRefs:[t.ref]},tp,{expect:{}},dataset.defaults,typeof value==='string'?{known:new Set()}:{});
+  assert.deepEqual(s.unsupportedNumbers,[],String(typeof value));}
 });
 
 await check('a negated or hedged guarantee passes, as in the guard; an asserted one is flagged with its sentence',async()=>{
