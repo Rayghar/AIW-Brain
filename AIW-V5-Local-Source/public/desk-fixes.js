@@ -177,7 +177,7 @@ const DRAFTERS = {
       if (c.verdict.state === 'ok' || c.replicas == null) return null;
       const need = c.replicas;
       return draft({id: `capacity:${row.id}`, vital: 'capacity', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:capacity`],
-        title: `Let ${row.ref} grow to ${fmtN(need)} replicas`, why: `${c.demand.text} for ${D.cap.objText}: ${c.spec[0].d}. ${pl.ref} can grow to ${fmtN(num(pl.maxReplicas) ?? 0)}.`, math: c.math,
+        title: `Let ${row.ref} grow to ${fmtN(need)} replicas${D.cap.workload ? " for the SA Playbook's example load" : ""}`, why: `${c.demand.text} for ${D.cap.objBasis}: ${c.spec[0].d}. ${pl.ref} can grow to ${fmtN(num(pl.maxReplicas) ?? 0)}.`, math: c.math,
         knobs: [{key: 'maxReplicas', label: 'Grow to', type: 'number', min: 1, max: 10000, value: need, unit: 'replicas', hint: c.spec[0].d}, words('scalingPolicy', 'Scaling policy', `${on(row) ? 'Horizontal Pod Autoscaler' : 'Scale out'} on CPU at {utilisation} %, from {min} to {max} replicas.`)],
         build(p, k) {
           const pl = planRec(p, row.id), n = Math.max(1, Math.round(num(k.maxReplicas) || need)), min = Math.min(num(pl.minReady) || 1, n);
@@ -185,7 +185,7 @@ const DRAFTERS = {
           const u = Math.round((D.cap.objective.assume.utilisation || 70));
           return [planCmd(p, pl.id, {maxReplicas: n, minReady: min, capacityConfirmed: false,
             scalingPolicy: fill(said(k, 'scalingPolicy', `${on(row) ? 'Horizontal Pod Autoscaler' : 'Scale out'} on CPU at {utilisation} %, from {min} to {max} replicas.`), {utilisation: u, min: fmtN(min), max: fmtN(n)}),
-            capacityBasis: `${DRAFTED} for ${D.cap.objText}: ${steps(c.math)}. Replace the per-replica rate with a load test.`})];
+            capacityBasis: `${DRAFTED} for ${D.cap.objBasis}: ${steps(c.math)}. Replace the per-replica rate with a load test.`})];
         }});
     }
     if (c.kind === 'store') {
@@ -193,7 +193,7 @@ const DRAFTERS = {
       if ((num(pl.maxReplicas) ?? 0) >= nodes) return note.length ? judgement(row, 'capacity', note.join(' '), c.ceiling?.passed ? {chapter: 3, id: '', label: 'Frame the choice in Chapter 3'} : v.fix) : null;
       return draft({id: `capacity:${row.id}`, vital: 'capacity', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:capacity`], title: `Allow ${row.ref} ${fmtN(nodes)} nodes: a primary and a standby`, why: `${c.spec.find(s => s.k === 'Nodes')?.d || ''}.`, also: note.join(' '), math: c.math,
         knobs: [{key: 'nodes', label: 'Nodes', type: 'number', min: 1, max: 20, value: nodes, unit: 'nodes'}],
-        build(p, k) { const pl = planRec(p, row.id), n = Math.max(1, Math.round(num(k.nodes) || nodes)); return (num(pl.maxReplicas) ?? 0) >= n ? [] : [planCmd(p, pl.id, {maxReplicas: n, capacityConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objText}: ${c.spec.map(s => `${s.k} ${s.v}`).join('; ')}.`})]; }});
+        build(p, k) { const pl = planRec(p, row.id), n = Math.max(1, Math.round(num(k.nodes) || nodes)); return (num(pl.maxReplicas) ?? 0) >= n ? [] : [planCmd(p, pl.id, {maxReplicas: n, capacityConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objBasis}: ${c.spec.map(s => `${s.k} ${s.v}`).join('; ')}.`})]; }});
     }
     if (c.kind === 'queue') {
       if (c.backlog == null) return judgement(row, 'capacity', 'How long a consumer may be down is not recorded, so the backlog a queue must hold cannot be read. Record a recovery target in Chapter 2.', {chapter: 2, id: '', label: 'Record a recovery target in Chapter 2'});
@@ -203,7 +203,7 @@ const DRAFTERS = {
       return draft({id: `capacity:${row.id}`, vital: 'capacity', chapter: 7, target: {chapter: 7, id: row.assetId, ref: row.assetRef}, rows: [row.id], aims: [`${row.id}:capacity`], title: `Bound ${row.assetRef}'s queue at ${fmtN(bound)} messages`, why: `A consumer outage leaves ${fmtN(c.backlog)} messages waiting (${c.spec.find(s => s.k === 'Backlog to hold')?.d || ''}). The queue's bound must hold them — and say what the sender does when it is full.`, also: note.join(' '), math: c.math,
         knobs: [{key: 'bound', label: 'Hold up to', type: 'number', min: 1, max: 1e12, step: 1000, value: bound, unit: 'messages', hint: `the backlog is ${fmtN(c.backlog)}`}, words('whenFull', 'When it is full', full)],
         build(p, k) { const n = Math.max(1, Math.round(num(k.bound) || bound)), r = realRec(p, row.assetId); if (num(r.capacityValue) === n && /messag/i.test(str(r.capacityUnit))) return [];
-          return [realCmd(p, row.assetId, {capacityValue: n, capacityUnit: 'messages', estimatesConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objText}: ${steps(c.math)}. When it is full, ${said(k, 'whenFull', full).replace(/[.]\s*$/, '')}. Confirm with a load test.`})]; }});
+          return [realCmd(p, row.assetId, {capacityValue: n, capacityUnit: 'messages', estimatesConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objBasis}: ${steps(c.math)}. When it is full, ${said(k, 'whenFull', full).replace(/[.]\s*$/, '')}. Confirm with a load test.`})]; }});
     }
     if (c.kind === 'cluster' || c.kind === 'telemetry') {
       if (c.verdict.state === 'ok') return null;
@@ -214,7 +214,7 @@ const DRAFTERS = {
         why: cluster ? `${c.spec.find(s => s.k === 'Pods')?.v} pods need ${c.spec.find(s => s.k === 'vCPU · memory')?.v}: ${c.spec.find(s => s.k === 'Nodes')?.d}.` : `${c.spec.map(s => `${s.k}: ${s.v}`).join('; ')}. Sampling and retention are then sized from it.`, math: c.math,
         knobs: [{key: 'value', label: cluster ? 'Nodes' : 'Ingest', type: 'number', min: 1, max: 1e9, value, unit}],
         build(p, k) { const n = Math.max(1, Math.round(num(k.value) || value)), r = realRec(p, row.assetId); if (num(r.capacityValue) === n && str(r.capacityUnit) === unit) return [];
-          return [realCmd(p, row.assetId, {capacityValue: n, capacityUnit: unit, estimatesConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objText}: ${steps([...c.spec.map(s => `${s.k} ${s.v}${s.d ? ' (' + s.d + ')' : ''}`), ...c.math])}.`})]; }});
+          return [realCmd(p, row.assetId, {capacityValue: n, capacityUnit: unit, estimatesConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objBasis}: ${steps([...c.spec.map(s => `${s.k} ${s.v}${s.d ? ' (' + s.d + ')' : ''}`), ...c.math])}.`})]; }});
     }
     if (c.kind === 'cache') return judgement(row, 'capacity', `${c.verdict.why} A cache's memory follows the records read most, which only a measurement shows.`, v.fix);
     if (c.kind === 'backup') return judgement(row, 'capacity', `${c.verdict.why} How much data may be lost is the business's recovery-point objective; the desk sizes the backup once it is set.`, v.fix);
@@ -328,8 +328,8 @@ function switchDraft(D, C) {
   if (asked) return {judgement: {id: `switch:${r.id}`, row: row?.id || '', ref: r.ref, vital: 'capacity', text: `${asked.id} already frames this choice: ${asked.question}`, fix: {chapter: 3, id: asked.id, label: `Open ${asked.id} in Chapter 3`}}};
   const drivers = C.criteria.filter(c => c.kind === 'driver').map(c => c.id), reqs = uniq(drivers.flatMap(id => list(list(p.quality?.drivers).find(d => d.id === id)?.requirementIds))).filter(id => list(p.artefacts).some(a => a.id === id && a.type === 'requirement'));
   const scores = C.options.map(o => `${name(o.option.id)} ${o.score >= 0 ? '+' : ''}${o.score}`).join(', ');
-  const why = [C.ceiling?.passed ? `${C.ceiling.what}: at ${D.cap.objText} it needs ${fmtN(C.ceiling.demand)} ${C.ceiling.unitName} against ${fmtN(C.ceiling.threshold)} planned, past it above about ${C.ceiling.holdsText.replace('≈', '')}. ${C.ceiling.advice}` : '', `Weighed against the drivers: ${scores}.`].filter(Boolean).join(' ');
-  const question = `Should ${r.ref} ${r.title.replace(/ realization$/i, '')} stay on ${cur} for ${D.cap.objText}?`.slice(0, 200);
+  const why = [C.ceiling?.passed ? `${C.ceiling.what}: at ${D.cap.workload ? D.cap.objBasis : D.cap.objText} it needs ${fmtN(C.ceiling.demand)} ${C.ceiling.unitName} against ${fmtN(C.ceiling.threshold)} planned, past it above about ${C.ceiling.holdsText.replace('≈', '')}. ${C.ceiling.advice}` : '', `Weighed against the drivers: ${scores}.`].filter(Boolean).join(' ');
+  const question = `Should ${r.ref} ${r.title.replace(/ realization$/i, '')} stay on ${cur} for ${D.cap.objText}${D.cap.workload ? " (the SA Playbook's example)" : ""}?`.slice(0, 200);
   const contextWords = `${describeChoice(C)} ${why} Drafted on the review desk from Chapter 7's options, weighed against the drivers; the planning assumptions behind any limit are on the desk.`.slice(0, 2400);
   return draft({id: `switch:${r.id}`, vital: 'choice', chapter: 3, target: {chapter: 3, id: r.id, ref: r.ref}, rows: row ? [row.id] : [], aims: [], switchPoint: true,
     title: `Frame ${r.ref}'s product choice as a Chapter 3 decision`, why: `${describeChoice(C)} ${why}`.trim(), knobs: [words('context', 'The question\'s context', contextWords)],

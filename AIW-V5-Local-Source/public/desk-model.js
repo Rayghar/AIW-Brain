@@ -153,10 +153,10 @@ export function capacityReviewItems(D) {
   const items = [];
   for (const r of D.cap.rows.filter(r => r.verdict.state === 'bad')) {
     const target = r.plan ? {chapter: 10, id: r.plan.plan.id} : r.fix ? {chapter: r.fix.chapter, id: r.fix.id} : null;
-    if (target && !items.some(x => x.chapter === target.chapter && x.id === target.id)) items.push({...target, why: `${D.cap.objText} needs ${r.spec[0]?.v || ''} ${r.spec[0]?.k?.toLowerCase() || ''} of ${r.ref}: ${r.verdict.why}`});
+    if (target && !items.some(x => x.chapter === target.chapter && x.id === target.id)) items.push({...target, why: `${D.cap.workload ? D.cap.objBasis : D.cap.objText} needs ${r.spec[0]?.v || ''} ${r.spec[0]?.k?.toLowerCase() || ''} of ${r.ref}: ${r.verdict.why}`});
   }
   const scal = D.R.drivers.find(d => d.category === 'scalability');
-  if (scal) items.push({chapter: 2, id: scal.id, why: `The review desk plans for ${D.cap.objText}; review whether ${scal.id}'s target says the same.`});
+  if (scal) items.push({chapter: 2, id: scal.id, why: `The review desk plans for ${D.cap.workload ? D.cap.objBasis : D.cap.objText}; review whether ${scal.id}'s target says the same.`});
   return items;
 }
 

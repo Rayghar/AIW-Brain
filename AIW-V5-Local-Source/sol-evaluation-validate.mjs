@@ -25,13 +25,16 @@ await check('every held-out case builds its packet from a real reference design 
  assert.equal(report.summary.assessments,28);assert.equal(new Set(report.results.map(r=>r.domain)).size,3);
  assert(report.results.every(r=>r.packet.sources>0&&r.packet.kinds.includes(r.assessments[0].kind==='record'?'chapter-reading':'instrument-reading')||r.assessments[0].kind==='decision'));
  assert.equal(report.summary.ownReadingCited.rate,1);assert.match(report.dataset.authority,/not independent expert review/);
- // Every shown assessment keeps its wording, so its scores can be checked against the answer itself.
- assert(report.results.flatMap(r=>r.assessments).every(a=>a.answerIs==='shown'&&a.answer.headline&&a.answer.reasoning&&a.answer.sourceRefs.length));
+ // Every assessment keeps its wording, as shown or as the draft the checks withheld, so its scores can be checked against the answer itself.
+ assert(report.results.flatMap(r=>r.assessments).every(a=>(a.answerIs==='shown'||a.answerIs==='withheld-draft')&&a.answer.headline&&a.answer.reasoning&&a.answer.sourceRefs.length));
 });
 
-await check('the teaching-domain capacity drafts expose advice that takes the Playbook example objective at face value',async()=>{
- for(const id of ['SP-01','WF-01']){const a=report.results.find(r=>r.id===id).assessments[0];assert.equal(a.withheld,false);assert.equal(a.verdictAgrees,false,id+': the test double refines instead of questioning the objective');assert.equal(a.addresses,false);}
- assert(report.summary.verdictAgreement.rate<1&&report.summary.verdictAgreement.rate>0.5);
+await check('advice that sizes a teaching design for the Playbook example objective is withheld, where the design records its own workload',async()=>{
+ // The test double refines the capacity draft as drafted, taking the example at face value, as a model can.
+ for(const id of ['SP-01','WF-01']){const a=report.results.find(r=>r.id===id).assessments[0];assert.equal(a.withheld,true,id);assert.deepEqual(a.withheldReasons,['example-objective'],id);assert.equal(a.answerIs,'withheld-draft');assert.equal(a.draftVerdict,'refine');}
+ // The bank payment reference records no workload of its own, so the same advice there is shown, with the example named in the packet.
+ const bp=report.results.find(r=>r.id==='BP-01').assessments[0];assert.equal(bp.withheld,false);
+ assert.deepEqual(report.summary.withheld.reasons,{'example-objective':2});
 });
 
 await check('injected faults are caught: guards withhold invented numbers, guarantees, missing citations and out-of-bounds refinements',async()=>{
@@ -117,7 +120,7 @@ await check('the Brain’s checks run on the control arm’s answers to measure 
 await check('each withheld assessment is labelled by the check that raised its issue, not by the words in it',async()=>{
  // The second pass words its own issue freely: this one names a target and a threat.
  const fetcher=async(url,init)=>{const b=JSON.parse(init.body);let out=answer(b,{faults:{'F:capacity:run-001':'invented-number'}});
-  if(b.text.format.name==='aiw_desk_assessment_check'){const input=JSON.parse(b.input[0].content);out=envelope({assessments:input.candidate.assessments.map(a=>({id:a.id,supported:a.id!=='M:2:QD-003',issues:a.id==='M:2:QD-003'?['It restates the 2-second target as if a threat had been measured.']:[]}))});}
+  if(b.text.format.name==='aiw_desk_assessment_check'){const input=JSON.parse(b.input[0].content);out=envelope({assessments:input.candidate.assessments.map(a=>({id:a.id,supported:a.id!=='M:2:QD-003',defects:a.id==='M:2:QD-003'?['It restates the 2-second target as if a threat had been measured.']:[],notes:[]}))});}
   return new Response(JSON.stringify(out),{status:200,headers:{'Content-Type':'application/json'}});};
  const r=await runEvaluation(dataset,env,{only:['BP-01','BP-09'],direct:false,fetcher});
  const bp01=r.results.find(x=>x.id==='BP-01').assessments[0],bp09=r.results.find(x=>x.id==='BP-09').assessments[0];

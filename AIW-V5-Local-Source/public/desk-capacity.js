@@ -55,6 +55,14 @@ const DEF = Object.fromEntries(ASSUMPTIONS.map(a => [a.key, a.def]));
 const USERS = /concurrent|users?\b|sessions?/i, RATE = /(\/|per)\s*(s|sec|second)\b|\brps\b|\btps\b/i, SURGE = /×|\bx\b|times|normal peak/i;
 const PLAYBOOK_TARGET = {value: 100000, text: 'Scale to 100,000 concurrent users.', src: 'QR-Guidebook!F5'};
 
+// A workload the project records in its own words, in a driver's conditions ("10 applications per second").
+// It is not an objective, but it tells the SA Playbook's example apart from this project's load.
+const WORKLOAD = /(\d[\d,]*(?:\.\d+)?)\s+(requests?|applications?|submissions?|messages?|orders?|transactions?|calls?|events?)\s+(?:a|per)\s+second/i;
+export function recordedWorkload(R) {
+  for (const d of R.drivers || []) { const m = WORKLOAD.exec(String(d.conditions || '')); if (m) return {driverId: d.id, value: num(m[1].replace(/,/g, '')), text: `${m[1]} ${m[2]} a second`}; }
+  return null;
+}
+
 // What the desk plans for: the review's own objective, else a Chapter 2 scalability driver, else
 // the playbook's example target — always saying which.
 export function capacityObjective(R, saved = null, override = null) {
@@ -67,7 +75,7 @@ export function capacityObjective(R, saved = null, override = null) {
     : saved && num(saved.value) ? {kind: saved.kind === 'rate' ? 'rate' : 'users', value: num(saved.value), source: {kind: 'review', text: 'The review objective, saved in Chapter 11' + (saved.reviewer ? ' by ' + saved.reviewer : '')}}
     : byUsers ? {kind: 'users', value: num(byUsers.targetValue), source: {kind: 'driver', id: byUsers.id, text: `${byUsers.id} · ${byUsers.title}`}}
     : byRate ? {kind: 'rate', value: num(byRate.targetValue), source: {kind: 'driver', id: byRate.id, text: `${byRate.id} · ${byRate.title}`}}
-    : {kind: 'users', value: PLAYBOOK_TARGET.value, source: {kind: 'playbook', text: 'The SA Playbook\'s example scalability target: "' + PLAYBOOK_TARGET.text + '"', src: PLAYBOOK_TARGET.src}};
+    : {kind: 'users', value: PLAYBOOK_TARGET.value, source: {kind: 'playbook', text: 'The SA Playbook\'s example scalability target: "' + PLAYBOOK_TARGET.text + '"', src: PLAYBOOK_TARGET.src, workload: recordedWorkload(R)}};
   const assume = {...DEF, ...(saved?.assumptions || {}), ...(override?.assumptions || {})};
   for (const a of ASSUMPTIONS) if (a.options ? !a.options.some(([v]) => v === assume[a.key]) : num(assume[a.key]) == null) assume[a.key] = a.def;
   const useSurge = surgeD && (override?.surge ?? saved?.surge ?? true);
@@ -119,6 +127,10 @@ export function capacityPlan(R, objective) {
   const base = O.kind === 'rate' ? O.value : O.value / (think + resp);
   const lambda = base * surge;
   const objText = O.kind === 'rate' ? `${fmtN(O.value)} requests a second at the entry` : `${fmtN(O.value)} concurrent users`;
+  // Without a recorded objective the desk sizes for the SA Playbook's example. Every text that carries the
+  // objective says so, and where the project records a different workload, that it is not this project's load.
+  const example = O.source?.kind === 'playbook', workload = example ? O.source.workload || null : null;
+  const objBasis = !example ? objText : workload ? `${objText}, the SA Playbook's example — not this project's load: ${workload.driverId} records ${workload.text}` : `${objText}, the SA Playbook's example — this project records no objective of its own`;
   const lambdaMath = (O.kind === 'rate' ? `${fmtN(O.value)} req/s` : `${fmtN(O.value)} users ÷ (${fmtN(think)} s between requests + ${fmtN(resp, 1)} s response${O.response.driverId ? ' (' + O.response.driverId + ')' : ', assumed'}) = ${fmtN(base)} req/s`) + (surge !== 1 ? ` × ${fmtN(surge, 1)} for ${O.surge.driverId}'s surge = ${fmtN(lambda)} req/s` : '');
 
   // Rates along the recorded interactions: each interaction happens once per request.
@@ -292,7 +304,9 @@ export function capacityPlan(R, objective) {
   }
 
   const count = s => rows.filter(r => r.verdict.state === s).length;
-  return {objective: O, objText, lambda, base, lambdaMath, zones: Z, hops, rows, totals: {pods, vcpu, mem, nodes}, counts: {ok: count('ok'), warn: count('warn'), bad: count('bad'), none: count('none')},
+  // The figures computed from the example, so Sol's checks can tell sizing for it from sizing for this project.
+  const exampleFigures = example ? [...new Set([O.value, base, lambda, pods, nodes, ...rows.flatMap(r => [r.replicas, r.loadReplicas, r.demand?.value])].filter(n => Number.isFinite(n) && n > 12).map(n => String(Math.round(n))))] : [];
+  return {objective: O, objText, objBasis, example, workload, exampleFigures, lambda, base, lambdaMath, zones: Z, hops, rows, totals: {pods, vcpu, mem, nodes}, counts: {ok: count('ok'), warn: count('warn'), bad: count('bad'), none: count('none')},
     notes: [F.cyclic.length ? `The interactions among ${F.cyclic.map(id => R.comps.get(id)?.ref).join(', ')} form a loop; their rates count one pass.` : '', F.roots.length > 1 ? `${F.roots.length} entries share the arrival rate equally.` : '', 'Each recorded interaction is taken to happen once for each request that reaches its sender.'].filter(Boolean)};
 }
 

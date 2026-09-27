@@ -169,6 +169,7 @@ export function assessmentHTML(e, {knobs = [], id, names = {}, choiceIn = 'Chapt
    <details class="dk-solmore"><summary>What it rests on · ${a.sourceRefs.length}</summary>${sourcesHTML(run.packet.sources, a.sourceRefs)}</details>
    ${list(a.trimmed).length ? `<p class="cm-muted">Shortened to fit: ${esc(a.trimmed.join(', '))}. Sol wrote more than the desk keeps.</p>` : ''}
    ${doneText ? `<p class="dk-soldone">${esc(doneText)}</p>` : ''}
+   ${a.checkNote ? `<p class="cm-muted" data-sol-check-note>${esc(a.checkNote)}</p>` : ''}
    <div class="dk-solfoot"><small>Sol · ${esc(run.model)} · ${esc(when)} · source-checked</small><span>${bare && e.current && !last ? `<button type="button" class="cm-link" data-dk="sol-agree" data-run="${esc(run.id)}" data-item="${esc(id)}">Agree</button> · ` : ''}<button type="button" class="cm-link" data-dk="sol-dismiss" data-run="${esc(run.id)}" data-item="${esc(id)}">Disagree…</button></span></div>
    <form class="dk-soldis" data-sol-dismiss="${esc(id)}" hidden><label class="dk-in col"><span>Why doesn’t this advice hold?</span><textarea rows="2" maxlength="1000" name="reason" required></textarea></label><div class="cm-acts"><button type="submit" class="cm-btn">Record it</button></div></form></section>`;
 }

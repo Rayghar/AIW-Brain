@@ -17,10 +17,10 @@ const result=await requestIntelligence(env,packet,{fetcher:async(url,init)=>{
  if(body.text.format.schema.properties.assumptions)assert.equal(body.text.format.schema.properties.assumptions.items.enum,undefined);
  if(++calls===1){assert.deepEqual(input,packet);return response(draft,'draft-response');}
  assert.deepEqual(input.packet,packet);assert.deepEqual(input.candidate,draft);assert.equal(body.text.format.schema.properties.supported.type,'boolean');
- return response({supported:false,issues:['The interpretation exceeds the recorded conditions.']},'review-response');
+ return response({supported:false,defects:['The interpretation exceeds the recorded conditions.'],notes:[]},'review-response');
 }});
 assert.equal(calls,2);assert.equal(result.groundingReview.accepted,false);assert.match(result.result.title,/Structured guidance/);assert(!result.result.passage.includes('An initial draft candidate.'));assert.equal(result.usage.inputTokens,200);assert.equal(result.usage.outputTokens,100);
 assert.equal(result.groundingReview.packetStamp,packet.stamp);assert.equal(result.groundingReview.draftResponseId,'draft-response');assert.deepEqual(result.groundingReview.draft,draft);assert.equal(JSON.stringify(p),before);
-calls=0;await assert.rejects(requestIntelligence(env,packet,{fetcher:async()=>response(++calls===1?draft:{supported:true,issues:'not a reviewed list'},'bad-review')}),/unsupported assessment/);
+calls=0;await assert.rejects(requestIntelligence(env,packet,{fetcher:async()=>response(++calls===1?draft:{supported:true,defects:'not a reviewed list',notes:[]},'bad-review')}),/unsupported assessment/);
 calls=0;await assert.rejects(requestIntelligence(env,packet,{timeoutMs:20,fetcher:async(_url,{signal})=>++calls===1?response(draft,'draft'):new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(Error('test timeout'))))}),/too long/);
 console.log('PASS bounded source check: same packet, separate draft/final, structured fallback, aggregate usage, review provenance, invalid-review rejection, shared timeout and no model mutation. Mock provider only.');

@@ -47,7 +47,12 @@ export function mockAssessment(packet, {refineBy = 0.1, faults = {}} = {}) {
   }
   return {summary: `Sol assessed ${assessments.length} decision${assessments.length === 1 ? '' : 's'} on the desk.`, sourceRefs: [...new Set(assessments.flatMap(a => a.sourceRefs))], assessments};
 }
-export const mockReview = (input, {reject = []} = {}) => ({assessments: input.candidate.assessments.map(a => ({id: a.id, supported: !reject.includes(a.id), issues: reject.includes(a.id) ? ['It overstates what the reading shows.'] : []}))});
+// The second pass: concrete defects decide, anything else is a note. contradict lists ids for which it answers
+// as a real model sometimes has — unsupported, with only notes that confirm support in its defects.
+export const mockReview = (input, {reject = [], contradict = []} = {}) => ({assessments: input.candidate.assessments.map(a => ({id: a.id,
+  supported: !reject.includes(a.id) && !contradict.includes(a.id),
+  defects: reject.includes(a.id) ? ['It overstates what the reading shows.'] : contradict.includes(a.id) ? ['The refinement is a proposal, not a claim of a measurement, so it is supported.'] : [],
+  notes: reject.includes(a.id) || contradict.includes(a.id) ? [] : ['Each statement follows from the cited reading.']}))});
 
 // The evaluation's control arm (sol-evaluation.js): the same questions without the Brain. A general answer
 // that asserts a guaranteed outcome with a figure nobody recorded where a draft is numeric, and hedges
@@ -70,7 +75,7 @@ export function answer(body, opts = {}) {
   if (name === 'aiw_desk_assessment') return envelope(mockAssessment(input, opts));
   if (name === 'aiw_desk_assessment_check') return envelope(mockReview(input, opts));
   if (name === 'aiw_direct_assessment') return envelope(mockDirect(input));
-  if (name === 'aiw_source_check') return envelope({supported: true, issues: []});
+  if (name === 'aiw_source_check') return envelope({supported: true, defects: [], notes: []});
   return {id: 'mock', model: 'mock-sol', status: 'incomplete', output: []};
 }
 

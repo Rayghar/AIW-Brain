@@ -49,12 +49,13 @@ const CHECKS=[['number',/^It states [\d., ]+, which no reading in the packet con
  ['refinement',/^It (?:asks to refine the draft but proposes no change within its knobs|refines “.*”, which this draft does not have)\.$|: its wording is (?:longer than|empty)/],
  ['proposals',/^(?:It proposes threats for a decision that does not take them|A proposed threat (?:names no listed target, or an unknown category or priority|has no title, scenario or consequence))\.$/],
  ['preference',/^It prefers an alternative this decision does not have\.$/],['verdict',/^“.*” is not a verdict for this kind of decision\.$/],['structure',/^It gives no headline or no reasoning\.$/],
- ['chapter-rules',/^The chapter’s own rules reject its refinements/],['not-reached',/^The source check did not reach it\.$/]];
+ ['chapter-rules',/^The chapter’s own rules reject its refinements/],['not-reached',/^The source check did not reach it\.$/],
+ ['example-objective',/^It sizes for the SA Playbook’s example objective/]];
 const reasonOf=issue=>(CHECKS.find(([,re])=>re.test(String(issue)))||['second-pass'])[0];
 const reasonsOf=issues=>[...new Set(list(issues).map(reasonOf))];
 // Failures of substance (an unsupported number, a guaranteed or verified outcome, a value out of bounds)
 // against failures of the desk's contract (a field misused, a verdict the decision does not take).
-const SUBSTANTIVE=new Set(['number','guarantee','verified','bounds']);
+const SUBSTANTIVE=new Set(['number','guarantee','verified','bounds','example-objective']);
 // The wording of an assessment, as shown or as withheld.
 const answerOf=a=>({headline:a.headline||'',reasoning:a.reasoning||'',risks:list(a.risks),questions:list(a.questions),
  refinements:list(a.refinements).map(r=>({key:r.key,value:r.value,why:r.why})),
