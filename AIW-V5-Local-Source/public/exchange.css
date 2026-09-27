@@ -3,12 +3,15 @@
  --d-restricted:#8c3f5e;--d-confidential:#6f5a93;--d-internal:#3f6d86;--d-public:#5f7e4a;--d-unclassified:#8a8f82;
  display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;height:var(--cm-h,640px);min-height:520px;margin:0 0 14px;border:1px solid #c6d3c2;border-radius:12px;background:var(--cm-card);overflow:hidden;box-shadow:0 8px 30px #243d2e07;color:var(--cm-ink);font-size:13px;position:relative}
 .cm *{box-sizing:border-box}
-.cm button{font:inherit;color:inherit}
+.cm button:not(.cm-chip){font:inherit;color:inherit}
 .cm svg{flex:none}
-.cm-top{display:flex;align-items:center;gap:10px;padding:6px 12px;border-bottom:1px solid var(--cm-line);background:#f3f6ed;min-width:0}
-.cm-title{display:flex;flex-direction:column;line-height:1.15;flex:none}
-.cm-title small{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--cm-muted);font-weight:600}
-.cm-title strong{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:17px}
+.cm-top{display:flex;align-items:center;gap:10px;padding:4px 12px;border-bottom:1px solid var(--cm-line);background:#f3f6ed;min-width:0;min-height:44px}
+/* The title reads on one line: the page header above already names the chapter. */
+.cm-title{display:flex;align-items:baseline;gap:8px;line-height:1.15;flex:none;min-width:0}
+.cm-title small{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--cm-muted);font-weight:600;white-space:nowrap}
+.cm-title strong{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:17px;white-space:nowrap}
+.cm-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.cm-badge{font-style:normal;font-size:10px;font-weight:700;line-height:16px;min-width:16px;padding:0 4px;border-radius:8px;background:#95641c;color:#fff;text-align:center;margin-left:2px}
 .cm-crumbs{display:flex;align-items:center;gap:3px;min-width:0;overflow:hidden;white-space:nowrap;font-size:13.5px;flex:0 1 auto;padding-left:10px;border-left:1px solid var(--cm-line)}
 .cm-crumbs button{border:0;background:none;padding:3px 6px;border-radius:6px;cursor:pointer;color:var(--cm-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
 .cm-crumbs button:hover{background:#e6ecdf}
@@ -33,7 +36,8 @@
 .cm-add>div button{display:block;width:100%;text-align:left;border:0;background:none;border-radius:6px;padding:8px 9px;cursor:pointer;font-size:13px}
 .cm-add>div button:hover{background:#eef2e6}
 .cm-add>div p{font-size:11.5px;color:var(--cm-muted);margin:6px 8px 4px;line-height:1.4}
-.cm-bar{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid var(--cm-line);background:#fafbf5;min-width:0;flex-wrap:wrap}
+.cm-bar{display:flex;align-items:center;gap:8px;padding:4px 10px;border-bottom:1px solid var(--cm-line);background:#fafbf5;min-width:0;flex-wrap:wrap;min-height:40px}
+.cm-bar:empty{display:none}
 .cm-scn{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;color:var(--cm-muted)}
 .cm-scn[hidden]{display:none}
 .cm-scn span{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:600}
@@ -48,7 +52,9 @@
 .cm-dep{border:1px solid transparent;background:none;padding:3px 8px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--cm-ink2);min-height:28px}
 .cm-dep:hover{background:#edf1e6}
 .cm-dep[aria-pressed=true]{background:#fff;border-color:#c9d5c2;color:var(--cm-ink);font-weight:600}
-.cm-state{margin:0 0 0 auto;font-size:12px;color:var(--cm-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 0;text-align:right}
+/* The status line lives in the footer, where it has the width to say everything. */
+.cm-state{margin:0;font-size:12px;color:var(--cm-muted);min-width:0;flex:1 1 auto;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cm-walking .cm-walk .cm-state{display:none}
 @media(min-width:861px){.cm-bar{flex-wrap:nowrap}.cm-lenses,.cm-depth,.cm-scn{flex:none}}
 .cm-top{grid-row:1}.cm-bar{grid-row:2}.cm-banner{grid-row:3}.cm-body{grid-row:4}.cm-walk{grid-row:5}
 .cm-banner:empty{display:none}
@@ -62,9 +68,15 @@
 .cm .cm-banner .ip-model-switch{width:auto;border-top:0;padding-top:0;gap:4px;flex:none;flex-wrap:nowrap}
 .cm .cm-banner .ip-model-switch span{display:none}
 @media(max-width:860px){.cm .cm-banner .ip-banner{flex-wrap:wrap}.cm .cm-banner .ip-model-switch{order:3}}
-.cm-body{display:grid;grid-template-columns:minmax(0,1fr) 284px;min-height:0}
+.cm-body{display:grid;grid-template-columns:minmax(0,1fr) 284px;min-height:0;position:relative}
 .cm-body.no-panel{grid-template-columns:minmax(0,1fr) 0}
 .cm-body.no-panel .cm-panel{display:none}
+/* Loading: the shell appears at once; the model fills it when its module arrives. */
+.cm-loading{display:grid;place-items:center;min-height:320px;height:var(--cm-h,520px);border:1px solid #c6d3c2;border-radius:12px;background:#fbfbf6;background-image:radial-gradient(#e2e7da 1px,transparent 1px);background-size:20px 20px;color:var(--cm-muted);font-size:14px;margin:0 0 14px}
+.cm-loading p{display:flex;align-items:center;gap:10px;margin:0}
+.cm-loading p::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--cm-forest,#214d40);animation:cm-pulse 1.1s ease-in-out infinite}
+@keyframes cm-pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){.cm-loading p::before{animation:none;opacity:.7}}
 /* Stage */
 .cm-stage{position:relative;overflow:hidden;background-color:#fbfbf6;background-image:radial-gradient(#e2e7da 1px,transparent 1px);background-size:20px 20px;cursor:grab;touch-action:none;outline:none}
 .cm-stage.panning{cursor:grabbing}
@@ -230,14 +242,25 @@
 .cm-copy{position:absolute;width:12px;height:12px;border-radius:50%;border:2px solid #6f5a93;background:#fff;z-index:2}
 .cm-orphan{position:absolute;border:1px dashed #d09a4e;background:repeating-linear-gradient(135deg,#fff7ea 0 6px,#fdf0da 6px 12px);color:#7a4f12;border-radius:6px;font-size:11.5px;padding:2px 8px;cursor:pointer}
 .cm-far .cm-anno,.cm-far .cm-stephead small,.cm-far .cm-mvl{visibility:hidden}
-/* Key and zoom */
-.cm-zoom{position:absolute;right:10px;bottom:10px;display:flex;gap:4px;z-index:10}
-.cm-zoom button{width:32px;height:32px;border:1px solid var(--cm-line);background:#fff;border-radius:8px;cursor:pointer;font-size:16px;display:grid;place-items:center}
+/* Edges: where the world runs past the stage, the edge says so and nudges the camera. */
+.cm-edge{position:absolute;z-index:9;display:none;place-items:center;border:0;padding:0;cursor:pointer;color:var(--cm-ink2);font-size:18px;line-height:1;background:linear-gradient(90deg,transparent,#fbfbf6 70%)}
+.cm-edge-r{right:0;top:0;bottom:0;width:30px}
+.cm-edge-l{left:0;top:0;bottom:0;width:30px;background:linear-gradient(270deg,transparent,#fbfbf6 70%)}
+.cm-edge-b{left:0;right:0;bottom:0;height:24px;background:linear-gradient(180deg,transparent,#fbfbf6 70%)}
+.cm-edge-t{left:0;right:0;top:0;height:24px;background:linear-gradient(0deg,transparent,#fbfbf6 70%)}
+.cm-stage.cm-more-r .cm-edge-r,.cm-stage.cm-more-l .cm-edge-l,.cm-stage.cm-more-b .cm-edge-b,.cm-stage.cm-more-t .cm-edge-t{display:grid}
+.cm-edge:hover{color:var(--cm-ink)}
+/* Key and zoom: in the footer, beside the walk, never over the canvas. */
+.cm-tools{display:flex;align-items:center;gap:6px;flex:none;position:relative;margin-left:auto}
+.cm-zoom{display:flex;gap:4px}
+.cm-zoom button{width:30px;height:30px;border:1px solid var(--cm-line);background:#fff;border-radius:8px;cursor:pointer;font-size:16px;display:grid;place-items:center;padding:0}
 .cm-zoom svg{width:15px;height:15px}
-.cm-key{position:absolute;left:10px;bottom:10px;z-index:10;background:#fffefa;border:1px solid var(--cm-line);border-radius:9px;max-width:300px;font-size:11.5px;box-shadow:0 4px 14px #1f3d2e14}
-.cm-kt{border:0;background:none;padding:5px 10px;cursor:pointer;font-weight:600;font-size:11.5px;color:var(--cm-ink2)}
+.cm-key{position:relative}
+.cm-kt{border:1px solid var(--cm-line);background:#fff;border-radius:8px;min-height:30px;padding:4px 10px;cursor:pointer;font-weight:600;font-size:11.5px;color:var(--cm-ink2)}
+.cm-kt[aria-expanded=true]{background:#e6efe0;border-color:#9fb89b}
 .cm-key.cm-min .cm-legend{display:none}
-.cm-legend{padding:0 10px 8px}
+.cm-legend{position:absolute;right:0;bottom:calc(100% + 8px);z-index:30;width:300px;max-height:60vh;overflow:auto;padding:8px 12px 10px;background:#fffefa;border:1px solid var(--cm-line);border-radius:9px;font-size:11.5px;box-shadow:0 8px 24px #1f3d2e22}
+.cm-legend h5{margin:4px 0 2px;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--cm-muted)}
 .cm-legend p{display:flex;align-items:center;gap:6px;margin:3px 0;color:var(--cm-ink2);flex-wrap:wrap}
 .cm-legend .k-bar{width:8px;height:16px;border:1px solid #6f8f78;background:#e4ede0;border-radius:2px}
 .cm-legend .k-end{width:11px;height:11px;border-radius:50%;border:2px solid #2f6b4f;background:#2f6b4f}
@@ -246,8 +269,15 @@
 .cm-legend .k-frame{width:22px;height:12px;border:1.5px dashed #d6a95e;background:#fff7ea;border-radius:3px}
 .cm-legend .k-auth{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--d-confidential);color:#fff;font-size:10px}
 .cm-legend .k-copy{width:11px;height:11px;border-radius:50%;border:2px solid #6f5a93;background:#fff}
-/* Companion panel */
-.cm-panel{border-left:1px solid var(--cm-line);background:#fbfbf5;overflow:auto;min-width:0}
+.cm-legend .k-lost{font-style:normal;color:var(--cm-warn);font-weight:700}
+.cm-legend .k-unsourced{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;border:1.5px dashed #c98a2e;background:#fff7ea;color:#8b5e12;font-size:10px;font-weight:700}
+.cm-legend .k-orphan{border:1px dashed #d09a4e;background:repeating-linear-gradient(135deg,#fff7ea 0 6px,#fdf0da 6px 12px);color:#7a4f12;border-radius:6px;font-size:10px;padding:0 6px}
+.cm-legend .cm-d.k{cursor:default}
+/* Companion panel: a column of sections; a round that cannot be asked steps behind the rest. */
+.cm-panel{border-left:1px solid var(--cm-line);background:#fbfbf5;overflow:auto;min-width:0;display:flex;flex-direction:column}
+.cm-panel>*{flex:none}
+.cm-panel>.cs-round.lite{order:50;background:#f6f6ef}
+.cm-panel>.cs-round.lite p{margin:0}
 .cm-panel section{padding:12px 14px;border-bottom:1px solid var(--cm-line2)}
 .cm-panel h4{margin:0 0 6px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--cm-muted);font-weight:600;display:flex;align-items:center;gap:6px}
 .cm-panel h4 span{margin-left:auto;font-size:11px;letter-spacing:0;color:#95641c;background:#fff4dd;border-radius:8px;padding:0 7px;text-transform:none}
@@ -279,10 +309,17 @@
 .cm-fg small{font-size:11px;color:var(--cm-muted)}
 .cm-muted{font-size:11.5px!important;color:var(--cm-muted);display:block}
 .cm-note{font-size:12px;border-left:3px solid #c9a24c;background:#fff8e7;padding:6px 8px;border-radius:4px;margin:6px 0}
-/* Walk-through */
-.cm-walk{display:flex;align-items:center;gap:8px;padding:5px 12px;border-top:1px solid var(--cm-line);background:#fbfbf5;min-width:0;min-height:42px}
-.cm-walk-text{margin:0;font-size:13px;color:var(--cm-ink2);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+/* The footer: the walk, the status line and the tools. */
+.cm-walk{display:flex;align-items:center;gap:8px;padding:5px 12px;border-top:1px solid var(--cm-line);background:#fbfbf5;min-width:0;min-height:44px}
+.cm-walk-in{display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
+.cm-walk-in:empty{display:none}
+.cm-walking .cm-walk-in{flex:1 1 auto}
+.cm-walk-text{margin:0;font-size:13px;color:var(--cm-ink2);min-width:0;flex:1;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .cm-walk-text b{color:var(--cm-ink);margin-right:6px}
+.cm-empty-card{position:absolute;max-width:460px;padding:18px 20px;border:1px dashed #b9c4b1;border-radius:12px;background:#fffefa;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.cm-empty-card b{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:18px}
+.cm-empty-card p{margin:0;color:var(--cm-ink2);line-height:1.5}
+.cm-empty-card .cm-acts{margin-top:2px}
 .cm-tip{position:fixed;z-index:95;pointer-events:none;max-width:300px;background:#fffef9;border:1px solid #b7c9b4;border-top:3px solid #2d6450;border-radius:9px;padding:8px 10px;font-size:12px;line-height:1.4;box-shadow:0 10px 30px #17332633;color:#1f4336}
 .cm-tip b{display:block;font-size:13px;margin-bottom:2px}
 .cm-tip small{display:block;color:#76866f;margin-top:4px}
@@ -294,17 +331,28 @@ body.cm-active .studio>.stage>.canvas-card,body.cm-active .studio>.stage>.am-exp
 body.cm-active .studio{display:block!important;grid-template-columns:minmax(0,1fr)!important}
 body.cm-active .studio>.stage{width:100%!important;max-width:none!important;min-width:0}
 body.cm-expanded .cm{position:fixed;inset:8px;z-index:60;height:auto;margin:0;box-shadow:0 0 0 20px #f5f7ed}
-@media(max-width:1100px){.cm-body{grid-template-columns:minmax(0,1fr) 260px}.cm-views .cm-view span{display:none}.cm-actions .cm-btn span{display:none}}
+/* Icon-only controls keep their names for the screen reader: the words are hidden, not removed. */
+@media(max-width:1500px){.cm-body{grid-template-columns:minmax(0,1fr) 264px}}
+@media(max-width:1200px){
+ .cm-body{grid-template-columns:minmax(0,1fr)!important}
+ .cm-panel{position:absolute;right:0;top:0;bottom:0;width:min(340px,82%);box-shadow:-10px 0 28px #1f3d2e26;z-index:22}
+ .cm-body.no-panel .cm-panel{display:none}
+}
+@media(max-width:1100px){.cm-views .cm-view span,.cm-actions .cm-btn span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}.cm-views .cm-view,.cm-actions .cm-btn{position:relative}}
 @media(max-width:860px){
  .cm{height:auto;grid-template-rows:auto auto auto auto auto}
  .cm-top{flex-wrap:wrap;gap:6px}
  .cm-crumbs{order:3;flex-basis:100%;border-left:0;padding-left:0}
  .cm-body{grid-template-columns:minmax(0,1fr)!important}
  .cm-stage{height:min(560px,70vh)}
- .cm-panel{border-left:0;border-top:1px solid var(--cm-line);max-height:none}
+ .cm-panel{position:static;width:auto;box-shadow:none;border-left:0;border-top:1px solid var(--cm-line);max-height:none}
  .cm-body.no-panel .cm-panel{display:none}
+ .cm-walk{flex-wrap:wrap}
  .cm-state{flex-basis:100%;margin:0}
  .cm-scn select{max-width:200px}
 }
-@media(max-width:560px){.cm-title strong{font-size:15px}.cm-lens span{display:none}.cm-lens{padding:3px}.cm-depth>span{display:none}.cm-walk-text{white-space:normal;font-size:12px}}
+@media(max-width:560px){.cm-title strong{font-size:15px}.cm-title small{display:none}.cm-lens{padding:3px;position:relative}.cm-lens span,.cm-depth>span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}.cm-walk-text{font-size:12px}}
+/* Chips are buttons, so the keyboard reaches them; :where keeps each chip's own style in charge. */
+:where(button.cm-chip){font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;appearance:none;-webkit-appearance:none;text-align:left;font-family:inherit}
+button.cm-chip:focus-visible{outline:2px solid #b18d42;outline-offset:1px}
 @media (prefers-reduced-motion:reduce){.cm-world.cm-glide{transition:none}}

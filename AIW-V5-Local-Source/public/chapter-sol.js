@@ -15,7 +15,7 @@
 //
 // The views call four functions: solChapterMount (once per mount), solSection (in the companion),
 // solMark (after drawing) and solChapterBind (once per view). The overlay calls solOverlay.
-import {SOL, solLoad, solPrepare, solCancel, solSend, solRecord, solBadge, solChapterEntry, solOutcomes, pendingHTML, assessmentHTML, askHTML} from './brain-reasoning-ui.js';
+import {SOL, solLoad, solPrepare, solCancel, solSend, solRecord, solBadge, solChapterEntry, solOutcomes, solConnected, pendingHTML, assessmentHTML, askHTML} from './brain-reasoning-ui.js';
 import {verdictText, VERDICTS} from './brain-reasoning.js';
 export {solOwner} from './chapter-reasoning.js';
 import {solTarget, solOwner, parseTarget, chapterTitle, chapterCommands, chapterReread, describeReread, chapterRound, whatIfValues, findRecord} from './chapter-reasoning.js';
@@ -88,6 +88,9 @@ function roundSection(p, chapter, flash) {
   for (const k of Object.keys(VERDICTS)) for (const [, e] of es) if (!e.a.withheld && e.a.verdict === k) { const w = verdictText(e.item?.kind, k).short.toLowerCase(); counts.set(w, (counts.get(w) || 0) + 1); }
   const noun = chapter === 3 ? 'decisions' : 'records';
   const links = ids.map(id => { const x = findRecord(p, objectOf(id))?.record, e = es.find(([y]) => y === id)?.[1]; return `<button type="button" class="cm-link" data-sel="${esc(objectOf(id))}">${esc(x?.ref || x?.id || id)}${e ? ' ' + solBadge(e, 'inline') : ''}</button>`; }).join(' ');
+  // Without a connected Sol the round cannot be asked: it steps back behind what the model shows,
+  // as one line that says so, rather than taking the top of every companion.
+  if (!solConnected() && !es.length) return flash + `<section class="cs-round lite" data-sol-unconnected><h4>Sol’s round · Chapter ${chapter}<span>${ids.length}</span></h4><p class="cm-muted">Sol is not connected in this workspace. The ${ids.length} ${noun} with the most open checks: ${links}</p></section>`;
   return flash + `<section class="cs-round"><h4>Sol’s round · Chapter ${chapter}<span>${ids.length}</span></h4><p>The ${ids.length} ${noun} with the most open checks: ${links}</p>${es.length ? `<p class="cm-muted">Sol has assessed ${es.length} of them as they stand: ${[...counts].map(([w, n]) => `${n} ${esc(w)}`).join(', ') || 'all withheld'}. Select one to read its advice.</p>` : ''}${askHTML(ids, {title: `Sol’s round of Chapter ${chapter}: the ${noun} with the most open checks`, label: es.length === ids.length ? 'Ask Sol again' : `Ask Sol about the ${ids.length}`, reads: `Chapter ${chapter}’s readings of them and the knowledge behind them`})}</section>`;
 }
 // Sol's section goes straight after the selection's own heading section.

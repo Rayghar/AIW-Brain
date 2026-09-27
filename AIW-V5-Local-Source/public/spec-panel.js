@@ -46,6 +46,8 @@ export function antiPatternHTML(list, title = 'Anti-patterns in the design') {
 export function runsOnLabel(p, assetId) {
   try { const r = runsOn(reasoningFor(p), assetId); return r ? (r.via ? 'on ' : '') + r.label : ''; } catch { return ''; }
 }
+// The product a component stands on, per capability: only the option Chapter 7 has preferred or
+// recorded. A candidate nobody chose is not what the component stands on.
 export function productLabels(p, componentId) {
   try {
     const R = reasoningFor(p), out = new Map();
@@ -53,8 +55,22 @@ export function productLabels(p, componentId) {
       const map = (p.technology.mappings || []).find(x => x.needId === m.id), cap = map && R.caps.get(map.capabilityId);
       if (!cap) continue;
       const rid = (p.technologyRealisation?.mappings || []).find(x => x.capabilityId === cap.id)?.realizationId, r = rid && R.reals.get(rid);
-      const o = r && ((r.options || []).find(x => x.id === r.selectedOptionId) || (r.options || []).find(x => x.product));
+      const o = r && r.selectedOptionId ? (r.options || []).find(x => x.id === r.selectedOptionId) : null;
       if (o?.product) out.set(cap.id, o.product);
+    }
+    return out;
+  } catch { return new Map(); }
+}
+// How many candidate products Chapter 7 lists for each capability a component stands on, where
+// none is chosen yet.
+export function productCandidates(p, componentId) {
+  try {
+    const R = reasoningFor(p), out = new Map();
+    for (const m of (p.technology?.needs || []).filter(n => n.applicationId === componentId)) {
+      const map = (p.technology.mappings || []).find(x => x.needId === m.id), cap = map && R.caps.get(map.capabilityId);
+      if (!cap) continue;
+      const rid = (p.technologyRealisation?.mappings || []).find(x => x.capabilityId === cap.id)?.realizationId, r = rid && R.reals.get(rid);
+      if (r && !r.selectedOptionId) out.set(cap.id, (r.options || []).filter(x => x.product).length);
     }
     return out;
   } catch { return new Map(); }

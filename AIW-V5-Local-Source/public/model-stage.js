@@ -18,8 +18,21 @@ export function modelStage(root, {headHeight, railWidth, floor = () => (window.i
       q('.cm-rail-in').style.transform = `translate(0,${py}px) scale(${z})`;
       q('.cm-rail').style.width = Math.round(rw) + 'px';
       const corner = q('.cm-corner'); corner.style.width = Math.round(rw) + 'px'; corner.style.height = Math.round(headH) + 'px';
-      root.classList.toggle('cm-far', z < 0.62);
+      // Below the phone's first fit (0.6) the lens lines would vanish as soon as the model opened.
+      root.classList.toggle('cm-far', z < 0.58);
+      // Where the world runs past the stage, its edge says so and can be nudged.
+      const {w, h} = box(), stage = q('.cm-stage');
+      stage.classList.toggle('cm-more-r', L.W * z + px > w + 6);
+      stage.classList.toggle('cm-more-l', px < -6);
+      stage.classList.toggle('cm-more-b', L.H * z + py > h + 6);
+      stage.classList.toggle('cm-more-t', py < -6);
       cams.set(key, {...cam, sw: box().w});
+    },
+    // Nudge the camera by most of a screen in one direction.
+    nudge(dir) {
+      const {w, h} = box();
+      if (dir === 'r') cam.px -= w * 0.8; if (dir === 'l') cam.px += w * 0.8; if (dir === 'b') cam.py -= h * 0.8; if (dir === 't') cam.py += h * 0.8;
+      api.clamp(); const world = q('.cm-world'); world.classList.add('cm-glide'); api.apply(); setTimeout(() => world.classList.remove('cm-glide'), 420);
     },
     clamp() {
       if (!L) return;
@@ -68,9 +81,67 @@ export function modelStage(root, {headHeight, railWidth, floor = () => (window.i
         if (e.ctrlKey || e.metaKey) api.zoomAt(cam.z * Math.exp(-e.deltaY * 0.0022), e.clientX - r.left, e.clientY - r.top);
         else { cam.px -= e.shiftKey ? e.deltaY : e.deltaX; cam.py -= e.shiftKey ? 0 : e.deltaY; api.clamp(); api.apply(); }
       }, {passive: false});
+      // The edges nudge the camera; the arrow keys pan it when the canvas itself has focus.
+      stage.addEventListener('click', e => { const ed = e.target.closest('.cm-edge'); if (ed) { e.stopPropagation(); api.nudge(ed.dataset.edge); } });
+      stage.addEventListener('keydown', e => {
+        if (e.target !== stage || !L) return;
+        const step = e.shiftKey ? 240 : 60, k = e.key;
+        if (k === 'ArrowLeft') cam.px += step; else if (k === 'ArrowRight') cam.px -= step; else if (k === 'ArrowUp') cam.py += step; else if (k === 'ArrowDown') cam.py -= step; else return;
+        e.preventDefault(); api.clamp(); api.apply();
+      });
     }
   };
   return api;
+}
+
+// The stage's four edges, drawn only where the world runs past them.
+export const edgesHTML = () => ['l', 'r', 't', 'b'].map(d => `<button type="button" class="cm-edge cm-edge-${d}" data-edge="${d}" tabindex="-1" aria-label="${{l: 'More to the left', r: 'More to the right', t: 'More above', b: 'More below'}[d]}">${{l: '‹', r: '›', t: '˄', b: '˅'}[d]}</button>`).join('');
+// The key and the zoom controls, in the footer beside the walk: never over the canvas.
+export const toolsHTML = (k, keyLabel = 'Key') => `<div class="cm-tools"><div class="cm-key cm-min"><button type="button" class="cm-kt" data-${k}="key" aria-expanded="false">${keyLabel}</button><div class="cm-legend" role="region" aria-label="Key"></div></div><div class="cm-zoom"><button type="button" data-${k}="zout" aria-label="Zoom out">−</button><button type="button" data-${k}="zin" aria-label="Zoom in">+</button><button type="button" data-${k}="fit" aria-label="Fit the width" title="Fit the width"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></div></div>`;
+
+// The companion opens as a column on a wide window and as a drawer on a narrow one, unless the
+// reader has chosen for this project.
+export function defaultPanel(saved) { return typeof saved === 'boolean' ? saved : window.innerWidth > 1200; }
+// The companion toggle says what it does in each state, and how many observations wait behind it.
+export function panelToggle(root, selector, open, count = 0) {
+  const b = root.querySelector(selector); if (!b) return;
+  b.setAttribute('aria-pressed', String(open));
+  b.setAttribute('aria-label', open ? 'Hide the companion panel' : `Show the companion panel${count ? ` · ${count} observation${count === 1 ? '' : 's'}` : ''}`);
+  b.title = open ? 'Hide the companion' : 'Show the companion';
+  let badge = b.querySelector('.cm-badge');
+  if (!open && count) { if (!badge) { badge = document.createElement('i'); badge.className = 'cm-badge'; b.append(badge); } badge.textContent = String(count); }
+  else badge?.remove();
+}
+// A live status is announced only when it changes, not on every redraw.
+export function setState(root, text) { const el = root.querySelector('.cm-state'); if (el && el.textContent !== text) el.textContent = text; }
+// The page hears what the model selected through the URL's object=, whichever path selected it.
+export function announceObject(target) {
+  if (!window.history) return;
+  const url = new URL(location.href);
+  if (target) url.searchParams.set('object', target); else url.searchParams.delete('object');
+  window.history.replaceState(window.history.state, '', url.pathname + url.search);
+}
+// A redraw replaces the canvas's elements. The keyboard's place is kept by what it pointed at: the
+// element with the same data attributes is focused again, without scrolling.
+export function focusKey(root) {
+  const a = document.activeElement; if (!a || a === document.body || !root.contains(a)) return null;
+  const ds = Object.entries(a.dataset); return ds.length ? {el: a, tag: a.tagName, ds} : null;
+}
+export function refocus(root, key) {
+  if (!key || key.el.isConnected) return;
+  const attr = k => 'data-' + k.replace(/[A-Z]/g, c => '-' + c.toLowerCase());
+  const el = [...root.querySelectorAll(`${key.tag}[${attr(key.ds[0][0])}]`)].find(e => key.ds.every(([k, v]) => e.dataset[k] === v));
+  if (el) { try { el.focus({preventScroll: true}); } catch { /* not focusable */ } }
+}
+// What a model says when the project records nothing it can draw: the next action, in place.
+export function emptyCard({title, text, actions = '', x = 40, y = 40}) {
+  return `<div class="cm-empty-card" style="left:${x}px;top:${y}px"><b>${title}</b><p>${text}</p><div class="cm-acts">${actions}</div></div>`;
+}
+// A model that cannot be built leaves nothing of the last one on screen.
+export function showFailure(root, text) {
+  for (const s of ['.cm-svg', '.cm-heads-in', '.cm-rail-in', '.cm-walk-in', '.cm-panel', '.cm-legend']) { const el = root.querySelector(s); if (el) el.innerHTML = ''; }
+  root.querySelector('.cm-html').innerHTML = `<p class="cm-empty" role="alert">${text}</p>`;
+  setState(root, '');
 }
 
 // Size a chapter model to the space left in the window below it.
