@@ -40,3 +40,4 @@ release-evidence/sol-checks-and-coverage/*.zip
 # Knowledge repository service store: derived identities, locations and a contentless index of acquired content.
 knowledge-repository/store/
 release-evidence/model-views-4-8/*.zip
+release-evidence/standard-diagrams/*.zip

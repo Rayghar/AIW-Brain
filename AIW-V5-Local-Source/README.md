@@ -1,5 +1,18 @@
 # AIW V5 Live Model Explorer
 
+## Standard diagrams on every chapter (v20.6) — 27 September 2026
+
+Every chapter's Model tab now has a **Diagram**: the chapter's design drawn in the notation the sponsor's solution architecture documents use — typed elements with a kicker (PHYSICAL APPLICATION COMPONENT, LOGICAL APPLICATION COMPONENT, APPLICATION SERVICE, LOGICAL DATA COMPONENT, LOGICAL TECHNOLOGY COMPONENT, PHYSICAL TECHNOLOGY COMPONENT, TECHNOLOGY SERVICE, SECURITY CONTROL, THREAT, PLACEMENT …), connectors that carry their relationship (*realizes*, *implements*, *uses*, *is served by*, *implemented by*, *depends on*, *owns*, *exchanges*, *protects*, *mitigates*, numbered runtime paths), titled groups (the application, modules, external systems, capability families, trust zones, environments, zones, swimlanes) and a header strip with the model, template, author and dates the project records.
+
+- **Twelve scenes, one model.** Process swimlanes (1), quality drivers (2), decisions (3), the logical application (4), the application architecture (5), the solution architecture (6), the technology realization (7), integration and data & authority (8), security & trust (9), deployment per environment (10). Each is a projection of the connected model: nothing is drawn the project does not record; an unchosen realisation or an unplaced part is hatched; a position is never a fact.
+- **Smart arrange.** Tree, radial, orthogonal, layered, grouped and swimlanes; connectors pass between the elements, not through them; drag an element to pin it, *Release* to let go. The same input gives the same picture.
+- **Toggles.** The Diagram is the first view and opens by default on Chapters 4 to 10; the chapter's own views (Responsibilities, Components, Platform, Stack, Sequence, Threat model, Deployment, and their analyses) are one click away, and `?model=<view>` in the address opens a named one.
+- **Layers.** The sidebar's *Model layers* and the diagram's *Layers* menu are one setting: untick Data, Interface, Technology, Security … and the diagram is stripped to the rest, with the count of what is hidden.
+- **Export.** SVG (vectors, with the kickers, words and header) and PNG, named after the project, chapter and scene.
+- **The companion follows.** Selecting an element reads its record in the companion with Sol beside it; an element only the diagram draws (the application as a whole, an external system, a placement) reads as itself.
+
+Run `npm run test:notation`, `npm run test:notation-layout` and `npm run test:notation-browser`. Chapter 11's review desk keeps its own views; the document tables of the standard (application stack, drivers, boundaries, risks) belong to the Output tab and are not built here.
+
 ## The Chapter 4–8 models: room, honesty, one vocabulary (v20.5) — 27 September 2026
 
 The 31 gaps the engineer observed in the Chapter 4 to 8 model views (`MODEL-VIEWS-CHAPTERS-4-8-GAPS.md`) are closed in the repository line; the two that belong to the private site's own source are handed over as a patch.
