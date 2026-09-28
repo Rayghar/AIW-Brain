@@ -24,6 +24,9 @@ export function createNotation({chapter, root, stage, project, onSelect = null})
   try { const v = JSON.parse(localStorage.getItem(pref()) || '{}'); if (scenes.some(s => s.id === v.scene)) state.scene = v.scene; if (ARRANGEMENTS.some(a => a.id === v.arrangement)) state.arrangement = v.arrangement; if (Array.isArray(v.layers)) state.layers = v.layers.filter(l => LAYERS.includes(l)); if (v.pins && typeof v.pins === 'object') state.pins = v.pins; if (typeof v.environmentId === 'string') state.environmentId = v.environmentId; } catch { /* preferences are optional */ }
   const save = () => { try { localStorage.setItem(pref(), JSON.stringify({scene: state.scene, arrangement: state.arrangement, layers: state.layers, pins: state.pins, environmentId: state.environmentId})); } catch { /* optional */ } };
   let D = null, L = null, full = null, sel = null;
+  // The sidebar's model layers and the diagram's own Layers menu are one setting.
+  window.addEventListener('aiw:model-layers', e => { if (!root.isConnected || !Array.isArray(e.detail)) return; const next = LAYERS.filter(l => e.detail.includes(l)); if (next.join() === state.layers.join()) return; state.layers = next; save(); api.onChange?.(true); });
+  const tellSidebar = () => { try { window.aiwSetModelLayers?.(state.layers); } catch { /* the sidebar is optional */ } };
   const scene = () => scenes.find(s => s.id === state.scene) || scenes[0];
   const arrangement = () => state.arrangement || scene()?.arrangement || 'tree';
   const pinKey = () => `${state.scene}|${arrangement()}`;
@@ -52,7 +55,7 @@ export function createNotation({chapter, root, stage, project, onSelect = null})
     fit() { stage.fitAll(); if (stage.cam.z < 0.62) { stage.cam.z = 0.62; stage.cam.px = 0; stage.cam.py = 0; stage.clamp(); stage.apply(); } },
     render({sel: s = null, viewW = 0} = {}) {
       sel = s; const p = project();
-      build(p, viewW);
+      build(p, viewW); tellSidebar();
       const svg = root.querySelector('.cm-svg'), html = root.querySelector('.cm-html'), world = root.querySelector('.cm-world');
       if (!L) { svg.innerHTML = ''; html.innerHTML = '<p class="cm-empty">No diagram for this chapter.</p>'; return {W: 640, H: 320}; }
       world.style.width = L.W + 'px'; world.style.height = L.H + 'px';
@@ -102,8 +105,8 @@ export function createNotation({chapter, root, stage, project, onSelect = null})
       if (k === 'menu') { state.menu = state.menu === id ? null : id; api.onChange?.(); return true; }
       if (k === 'arrange') { state.arrangement = id; state.menu = null; save(); api.onChange?.(true); return true; }
       if (k === 'reset') { delete state.pins[pinKey()]; state.menu = null; save(); api.onChange?.(true); return true; }
-      if (k === 'layer') { state.layers = state.layers.includes(id) ? state.layers.filter(l => l !== id) : [...state.layers, id]; save(); api.onChange?.(true); return true; }
-      if (k === 'layers-all') { state.layers = [...LAYERS]; state.menu = null; save(); api.onChange?.(true); return true; }
+      if (k === 'layer') { state.layers = state.layers.includes(id) ? state.layers.filter(l => l !== id) : [...state.layers, id]; save(); tellSidebar(); api.onChange?.(true); return true; }
+      if (k === 'layers-all') { state.layers = [...LAYERS]; state.menu = null; save(); tellSidebar(); api.onChange?.(true); return true; }
       if (k === 'export') { if (id === 'png') api.exportPNG(); else api.exportSVG(); return true; }
       return false;
     },

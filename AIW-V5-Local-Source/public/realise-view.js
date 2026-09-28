@@ -65,6 +65,8 @@ export function mountChapterModel(selection, callbacks = {}) {
     if (v.scope && typeof v.scope === 'object') S.scope = v.scope;
     S.panel = defaultPanel(v.panel);
     if (!['diagram', 'components', 'allocation'].includes(S.view)) S.view = 'diagram';
+    // The address may open the model on a view (a deep link, and the rendered checks).
+    { const mv = window.aiwChapterModels?.takeView?.(5) || new URLSearchParams(location.search).get('model'); if (mv && ['diagram', 'components', 'allocation'].includes(mv)) S.view = mv; }
     if (!LENSES.some(l => l.id === S.lens)) S.lens = 'structure';
   }
   const first = !V;

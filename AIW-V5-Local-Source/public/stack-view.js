@@ -70,6 +70,8 @@ export function mountChapterModel(selection, callbacks = {}) {
     if (v.scope && typeof v.scope === 'object') V.scope = v.scope;
     V.panel = defaultPanel(v.panel);
     if (!['diagram', 'stack', 'options'].includes(V.view)) V.view = 'diagram';
+    // The address may open the model on a view (a deep link, and the rendered checks).
+    { const mv = window.aiwChapterModels?.takeView?.(7) || new URLSearchParams(location.search).get('model'); if (mv && ['diagram', 'stack', 'options'].includes(mv)) V.view = mv; }
     if (!LENSES.some(l => l.id === V.lens)) V.lens = 'structure';
     if (!['realisations', 'options'].includes(V.depth)) V.depth = 'realisations';
   }

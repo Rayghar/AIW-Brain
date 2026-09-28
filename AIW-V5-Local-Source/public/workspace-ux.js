@@ -189,8 +189,8 @@ function syncChapterModel(tab, selection) {
 // A deep link (for example the anatomy's "Open in Chapter N model") names an object in the URL.
 // The page may rewrite the URL before a chapter model loads, so the first route is kept here and
 // handed once to the chapter model it was meant for.
-const initialRoute = liveDocument() ? (() => { const q = new URLSearchParams(location.search); return {chapter: Number(q.get('chapter')), object: q.get('object') || q.get('focus') || q.get('artefact') || q.get('driver') || q.get('decision') || null}; })() : null;
-if (liveDocument()) window.aiwChapterModels = {has: chapter => !!CHAPTER_MODELS[chapter], open: openChapterModel, takeLink(chapter) { if (initialRoute?.object && initialRoute.chapter === Number(chapter)) { const id = initialRoute.object; initialRoute.object = null; return id; } return null; }};
+const initialRoute = liveDocument() ? (() => { const q = new URLSearchParams(location.search); return {chapter: Number(q.get('chapter')), object: q.get('object') || q.get('focus') || q.get('artefact') || q.get('driver') || q.get('decision') || null, model: q.get('model') || null}; })() : null;
+if (liveDocument()) window.aiwChapterModels = {has: chapter => !!CHAPTER_MODELS[chapter], open: openChapterModel, takeView(chapter) { if (initialRoute?.model && initialRoute.chapter === Number(chapter)) { const v = initialRoute.model; initialRoute.model = null; return v; } return null; }, takeLink(chapter) { if (initialRoute?.object && initialRoute.chapter === Number(chapter)) { const id = initialRoute.object; initialRoute.object = null; return id; } return null; }};
 export function refineWorkspace(tab, selection) {
   if (tab === 'model') lastModelSelection = selection || lastModelSelection;
   refineWorkspaceSurface(tab, selection);
