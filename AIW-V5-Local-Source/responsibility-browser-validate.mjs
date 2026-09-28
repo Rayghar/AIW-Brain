@@ -17,11 +17,13 @@ const base = 'http://127.0.0.1:' + port;
 const browser = await chromium.launch({executablePath: process.env.AIW_BROWSER_EXECUTABLE, headless: true});
 const checks = [], errors = [];
 const pass = n => checks.push(n);
+// The chapters' analytical views, which these checks read; the Diagram is the default since v20.6.
+const modelOf = ch => ({4: 'map', 5: 'components', 6: 'platform', 7: 'stack', 8: 'sequence', 9: 'model', 10: 'deploy'}[ch] ? '&model=' + {4: 'map', 5: 'components', 6: 'platform', 7: 'stack', 8: 'sequence', 9: 'model', 10: 'deploy'}[ch] : '');
 try {
   const ctx = await browser.newContext({viewport: {width: 1440, height: 900}});
   const page = await ctx.newPage();
   page.on('pageerror', e => errors.push(e.message));
-  const open = async (ch = 4) => { await page.goto(base + '/?chapter=' + ch + '&tab=model', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-head, .cm .dp-row, .cm .tm-card, .cm .rz-card, .cm .pf-cap, .cm .sk-rec, .cm .lr-card', {timeout: 8000}); await page.waitForTimeout(400); };
+  const open = async (ch = 4) => { await page.goto(base + '/?chapter=' + ch + '&tab=model' + modelOf(ch), {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-head, .cm .dp-row, .cm .tm-card, .cm .rz-card, .cm .pf-cap, .cm .sk-rec, .cm .lr-card', {timeout: 8000}); await page.waitForTimeout(400); };
   const click = async sel => { await page.click(sel); await page.waitForTimeout(250); };
   const count = async sel => (await page.$$(sel)).length;
   const crumbs = () => page.$eval('.cm-crumbs', e => e.innerText.replace(/\s+/g, ' ').trim());
@@ -145,7 +147,7 @@ try {
   assert.ok(await page.$('.cm.dk .dk-cell'), 'chapter 11 opens on the review desk');
   await open(5); assert.ok(await page.$('.cm.rz') && !(await page.$('.cm.lr')), 'Chapter 5 keeps its own models');
   assert.equal(await count('.cm'), 1, 'only one chapter model is on the page');
-  await page.goto(base + '/?chapter=4&tab=model&object=ledger', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .lr-card'); await page.waitForTimeout(500);
+  await page.goto(base + '/?chapter=4&tab=model&model=map&object=ledger', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .lr-card'); await page.waitForTimeout(500);
   assert.match(await spec(), /Responsibility · LR-003[\s\S]*Core ledger/i, 'a deep link opens on its object');
   await page.click('.workspace-bar [data-tab="validate"]'); await page.waitForTimeout(900);
   assert.ok(await page.$('.vx-ready') && !(await page.$('.cm')), 'Validate opens on SDD readiness');
@@ -154,7 +156,7 @@ try {
   // 9. Phone.
   const phone = await browser.newContext({viewport: {width: 390, height: 844}});
   const p2 = await phone.newPage(); p2.on('pageerror', e => errors.push(e.message));
-  await p2.goto(base + '/?chapter=4&tab=model', {waitUntil: 'networkidle'}); await p2.waitForSelector('.cm .lr-card'); await p2.waitForTimeout(400);
+  await p2.goto(base + '/?chapter=4&tab=model&model=map', {waitUntil: 'networkidle'}); await p2.waitForSelector('.cm .lr-card'); await p2.waitForTimeout(400);
   const m = await p2.evaluate(() => ({h: document.querySelector('.cm-stage').getBoundingClientRect().height, over: document.documentElement.scrollWidth > innerWidth}));
   assert.ok(m.h >= 360 && !m.over, 'phone ' + JSON.stringify(m));
   await phone.close();

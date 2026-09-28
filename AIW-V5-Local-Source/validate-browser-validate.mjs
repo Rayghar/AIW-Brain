@@ -72,7 +72,7 @@ try {
   pass('Chapters 1–3, with their own page, and Chapter 11\'s final review keep their checks under the same switch, and each chapter on the line opens that chapter\'s checks');
 
   // 5. Model-tab links to the checks ask for readiness.
-  await page.goto(base + '/?chapter=5&tab=model', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .rz-card'); await page.waitForTimeout(400);
+  await page.goto(base + '/?chapter=5&tab=model&model=components', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .rz-card'); await page.waitForTimeout(400);
   assert.match(await page.$eval('.cm-panel a[href*="tab=validate"]', e => e.getAttribute('href')), /validate=readiness/);
   pass('the chapter models\' "All checks on Validate" links open SDD readiness, whichever view was last chosen');
 

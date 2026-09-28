@@ -17,11 +17,13 @@ const base = 'http://127.0.0.1:' + port;
 const browser = await chromium.launch({executablePath: process.env.AIW_BROWSER_EXECUTABLE, headless: true});
 const checks = [], errors = [];
 const pass = n => checks.push(n);
+// The chapters' analytical views, which these checks read; the Diagram is the default since v20.6.
+const modelOf = ch => ({4: 'map', 5: 'components', 6: 'platform', 7: 'stack', 8: 'sequence', 9: 'model', 10: 'deploy'}[ch] ? '&model=' + {4: 'map', 5: 'components', 6: 'platform', 7: 'stack', 8: 'sequence', 9: 'model', 10: 'deploy'}[ch] : '');
 try {
   const ctx = await browser.newContext({viewport: {width: 1440, height: 900}});
   const page = await ctx.newPage();
   page.on('pageerror', e => errors.push(e.message));
-  const open = async (ch = 9) => { await page.goto(base + '/?chapter=' + ch + '&tab=model', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-head, .cm .dp-row, .cm .tm-card', {timeout: 8000}); await page.waitForTimeout(400); };
+  const open = async (ch = 9) => { await page.goto(base + '/?chapter=' + ch + '&tab=model' + modelOf(ch), {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-head, .cm .dp-row, .cm .tm-card', {timeout: 8000}); await page.waitForTimeout(400); };
   const click = async sel => { await page.click(sel); await page.waitForTimeout(250); };
   const crumbs = () => page.$eval('.cm-crumbs', e => e.innerText.replace(/\s+/g, ' '));
   const rects = () => page.evaluate(() => [...document.querySelectorAll('.tm-card, .tm-x, .tm-label, .tm-lh')].map(e => { const r = e.getBoundingClientRect(); return [e.className.split(' ')[0], e.dataset.card || e.dataset.link || e.dataset.entry || e.dataset.lane || '', Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)].join('|'); }));
@@ -122,7 +124,7 @@ try {
   // 8. Phone.
   const phone = await browser.newContext({viewport: {width: 390, height: 844}});
   const p2 = await phone.newPage(); p2.on('pageerror', e => errors.push(e.message));
-  await p2.goto(base + '/?chapter=9&tab=model', {waitUntil: 'networkidle'}); await p2.waitForSelector('.cm .tm-card'); await p2.waitForTimeout(400);
+  await p2.goto(base + '/?chapter=9&tab=model&model=model', {waitUntil: 'networkidle'}); await p2.waitForSelector('.cm .tm-card'); await p2.waitForTimeout(400);
   const m = await p2.evaluate(() => ({h: document.querySelector('.cm-stage').getBoundingClientRect().height, over: document.documentElement.scrollWidth > innerWidth}));
   assert.ok(m.h >= 360 && !m.over, 'phone ' + JSON.stringify(m));
   await phone.close();

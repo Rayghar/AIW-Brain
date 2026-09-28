@@ -19,6 +19,8 @@ const base = 'http://127.0.0.1:' + port;
 const browser = await chromium.launch({executablePath: process.env.AIW_BROWSER_EXECUTABLE, headless: true});
 const checks = [], errors = [];
 const pass = n => checks.push(n);
+// The chapters' analytical views, which these checks read; the Diagram is the default since v20.6.
+const modelOf = ch => ({4: 'map', 5: 'components', 6: 'platform', 7: 'stack', 8: 'sequence', 9: 'model', 10: 'deploy'}[ch] ? '&model=' + {4: 'map', 5: 'components', 6: 'platform', 7: 'stack', 8: 'sequence', 9: 'model', 10: 'deploy'}[ch] : '');
 const wait = ms => new Promise(r => setTimeout(r, ms));
 try {
   // 1. The server revalidates instead of re-sending, lists a module's closure, and preloads the page's own.
@@ -35,7 +37,7 @@ try {
   const slow = await browser.newContext({viewport: {width: 1440, height: 900}});
   const ps = await slow.newPage(); ps.on('pageerror', e => errors.push(e.message));
   await ps.route('**/realise-view.js', async route => { await wait(1500); await route.continue(); });
-  await ps.goto(base + '/?chapter=5&tab=model', {waitUntil: 'commit'});
+  await ps.goto(base + '/?chapter=5&tab=model&model=components', {waitUntil: 'commit'});
   await ps.waitForSelector('.cm-loading', {timeout: 15000});
   assert.match(await ps.$eval('.cm-loading', e => e.textContent), /Preparing the Chapter 5 model/);
   assert.equal(await ps.$eval('.cm-loading', e => e.getAttribute('aria-busy')), 'true');
@@ -47,7 +49,7 @@ try {
   const ctx = await browser.newContext({viewport: {width: 1440, height: 900}});
   const page = await ctx.newPage();
   page.on('pageerror', e => errors.push(e.message));
-  const open = async (ch, extra = '') => { await page.goto(base + '/?chapter=' + ch + '&tab=model' + extra, {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-stage', {timeout: 10000}); await page.waitForTimeout(400); };
+  const open = async (ch, extra = '') => { await page.goto(base + '/?chapter=' + ch + '&tab=model' + modelOf(ch) + extra, {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-stage', {timeout: 10000}); await page.waitForTimeout(400); };
   const click = async sel => { await page.click(sel); await page.waitForTimeout(250); };
   const count = async sel => (await page.$$(sel)).length;
   const objectParam = () => page.evaluate(() => new URL(location.href).searchParams.get('object'));
@@ -175,7 +177,7 @@ try {
   // 12. On a narrower window the companion starts closed, and the toolbar folds to its icons.
   const mid = await browser.newContext({viewport: {width: 1100, height: 800}});
   const pm = await mid.newPage(); pm.on('pageerror', e => errors.push(e.message));
-  await pm.goto(base + '/?chapter=5&tab=model', {waitUntil: 'networkidle'}); await pm.waitForSelector('.cm .rz-card'); await pm.waitForTimeout(400);
+  await pm.goto(base + '/?chapter=5&tab=model&model=components', {waitUntil: 'networkidle'}); await pm.waitForSelector('.cm .rz-card'); await pm.waitForTimeout(400);
   assert.ok(await pm.$('.cm-body.no-panel'), 'the companion starts closed on a 1100 px window');
   assert.match(await pm.$eval('[data-rz="panel"]', e => e.getAttribute('aria-label')), /^Show the companion panel/);
   assert.ok(await pm.$eval('.cm-view span', e => e.offsetWidth <= 1), 'the view labels fold to icons');
@@ -187,7 +189,7 @@ try {
   // 13. On a phone the fit keeps the cards legible: the lens lines stay.
   const phone = await browser.newContext({viewport: {width: 390, height: 844}});
   const pp = await phone.newPage(); pp.on('pageerror', e => errors.push(e.message));
-  await pp.goto(base + '/?chapter=5&tab=model', {waitUntil: 'networkidle'}); await pp.waitForSelector('.cm .rz-card'); await pp.waitForTimeout(400);
+  await pp.goto(base + '/?chapter=5&tab=model&model=components', {waitUntil: 'networkidle'}); await pp.waitForSelector('.cm .rz-card'); await pp.waitForTimeout(400);
   assert.equal(await pp.$('.cm.rz.cm-far'), null, 'the phone fit does not hide the lens lines');
   assert.equal(await pp.$eval('.rz-card.component .rz-lens', e => getComputedStyle(e).visibility), 'visible');
   assert.ok(await pp.$('.cm-walk .cm-tools .cm-zoom'), 'the tools are in the footer on a phone too');
@@ -207,12 +209,12 @@ try {
   assert.ok(pid, 'a blank project was created');
   const empties = {5: ['No component yet', 'New component'], 6: ['No platform yet', 'New capability'], 7: ['No realisation yet', 'Define capabilities in Chapter 6']};
   for (const [ch, [title, action]] of Object.entries(empties)) {
-    await page.goto(base + '/?chapter=' + ch + '&tab=model&project=' + encodeURIComponent(pid), {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-empty-card', {timeout: 10000}); await page.waitForTimeout(300);
+    await page.goto(base + '/?chapter=' + ch + '&tab=model' + modelOf(Number(ch)) + '&project=' + encodeURIComponent(pid), {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-empty-card', {timeout: 10000}); await page.waitForTimeout(300);
     const card = await page.$eval('.cm-empty-card', e => ({title: e.querySelector('b').textContent, acts: [...e.querySelectorAll('.cm-acts .cm-btn')].map(a => a.textContent.trim())}));
     assert.equal(card.title, title, 'Chapter ' + ch); assert.ok(card.acts.some(a => a.includes(action)), 'Chapter ' + ch + ' offers ' + action + ': ' + card.acts.join(' | '));
     assert.equal(await page.$('.cm-panel .cm-ins'), null, 'no observation is invented for an empty project');
   }
-  await page.goto(base + '/?chapter=4&tab=model&project=' + encodeURIComponent(pid), {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-stage'); await page.waitForTimeout(400);
+  await page.goto(base + '/?chapter=4&tab=model&model=map&project=' + encodeURIComponent(pid), {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-stage'); await page.waitForTimeout(400);
   assert.match(await page.$eval('.cm-walk .cm-state', e => e.textContent), /No responsibility recorded yet/);
   pass('a blank project’s Chapters 5, 6 and 7 say in place that nothing is recorded, offer the next action, invent no observation, and Chapter 4’s status says so too');
 

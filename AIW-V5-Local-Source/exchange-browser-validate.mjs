@@ -21,7 +21,7 @@ try {
   const ctx = await browser.newContext({viewport: {width: 1440, height: 900}});
   const page = await ctx.newPage();
   page.on('pageerror', e => errors.push(e.message));
-  const open = async (extra = '') => { await page.goto(base + '/?chapter=8&tab=model' + extra, {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-head', {timeout: 8000}); await page.waitForTimeout(400); };
+  const open = async (extra = '') => { await page.goto(base + '/?chapter=8&tab=model&model=sequence' + extra, {waitUntil: 'networkidle'}); await page.waitForSelector('.cm .cm-head', {timeout: 8000}); await page.waitForTimeout(400); };
   const crumbs = () => page.$eval('.cm-crumbs', e => e.innerText.replace(/\s+/g, ' '));
   const lanes = () => page.$$eval('.cm-head[data-lane]', els => els.map(e => e.dataset.lane));
   const rects = () => page.evaluate(() => [...document.querySelectorAll('.cm-head, .cm-msg, .cm-stephead, .cm-act, .cm-drow, .cm-auth, .cm-mv')].map(e => { const r = e.getBoundingClientRect(); return [String(e.className.baseVal ?? e.className).split(' ')[0], Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height)].join('|'); }));
@@ -136,14 +136,14 @@ try {
   await page.click('.workspace-bar [data-tab="model"]'); await page.waitForTimeout(700);
   assert.ok(await page.$('.cm .cm-msg'));
   await page.goto(base + '/?chapter=11&tab=model', {waitUntil: 'networkidle'}); await page.waitForTimeout(900); assert.ok(await page.$('.cm.dk .dk-cell') && !(await page.$('.cm.ex')), 'chapter 11 opens on the review desk');
-  await page.goto(base + '/?chapter=9&tab=model', {waitUntil: 'networkidle'}); await page.waitForTimeout(700);
+  await page.goto(base + '/?chapter=9&tab=model&model=model', {waitUntil: 'networkidle'}); await page.waitForTimeout(700);
   assert.ok(await page.$('.cm.tm') && !(await page.$('.cm-msg')), 'chapter 9 opens on its own models, not Chapter 8\'s');
   pass('Validate and Work are unchanged; Chapter 11 opens on the review desk, and Chapter 9 opens on its own');
 
   // 11. Phone.
   const phone = await browser.newContext({viewport: {width: 390, height: 844}});
   const p2 = await phone.newPage(); p2.on('pageerror', e => errors.push(e.message));
-  await p2.goto(base + '/?chapter=8&tab=model', {waitUntil: 'networkidle'}); await p2.waitForSelector('.cm .cm-head'); await p2.waitForTimeout(400);
+  await p2.goto(base + '/?chapter=8&tab=model&model=sequence', {waitUntil: 'networkidle'}); await p2.waitForSelector('.cm .cm-head'); await p2.waitForTimeout(400);
   const m = await p2.evaluate(() => ({h: document.querySelector('.cm-stage').getBoundingClientRect().height, over: document.documentElement.scrollWidth > innerWidth}));
   assert.ok(m.h >= 360 && !m.over, 'phone ' + JSON.stringify(m));
   await phone.close();
