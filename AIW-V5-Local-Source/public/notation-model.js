@@ -86,11 +86,11 @@ export function notationDiagram(p, sceneId, {environmentId = null} = {}) {
   const relsOf = (t, pred = () => true) => rels.filter(e => e.type === t && pred(e));
   const D = {scene, nodes: [], groups: [], edges: [], notes: [], header: header(p), environmentId: null};
   const seenN = new Set(), seenG = new Set(), seenE = new Set();
-  const node = (id, kind, title, {sub = '', group = null, hatched = false, ref = '', record = null, muted = false} = {}) => {
+  const node = (id, kind, title, {sub = '', group = null, hatched = false, ref = '', record = null, muted = false, sol = null} = {}) => {
     if (!id || seenN.has(id)) return D.nodes.find(n => n.id === id) || null;
     seenN.add(id);
     const k = KINDS[kind];
-    const n = {id, kind, kicker: k.kicker, family: k.family, layer: k.layer, level: k.level, title: text(title, 80) || id, sub: text(sub, 80), ref: text(ref, 24), group, hatched, muted, record};
+    const n = {id, kind, kicker: k.kicker, family: k.family, layer: k.layer, level: k.level, title: text(title, 80) || id, sub: text(sub, 80), ref: text(ref, 24), group, hatched, muted, record, sol};
     D.nodes.push(n); return n;
   };
   const group = (id, kind, title, {sub = '', parent = null} = {}) => {
@@ -239,11 +239,11 @@ export function notationDiagram(p, sceneId, {environmentId = null} = {}) {
       for (const pl of ofType('instance')) {
         const plan = plans.find(r => r.id === pl.record?.planId); if (!plan || !seenG.has(pl.record?.zoneId)) continue;
         const asset = O(plan.record?.assetId), tech = asset?.type === 'technology', pr = tech ? product(asset) : null;
-        node(pl.id, tech ? 'physicalTech' : 'physicalApp', tech ? (pr ? pr.title : asset.title) : (asset?.title || plan.title), {sub: `${pl.record?.replicas ?? 1} ${pl.record?.role || 'copy'}${pr?.sub ? ' · ' + pr.sub : ''}`, ref: asset?.ref || plan.ref, group: pl.record.zoneId, hatched: pl.record?.role === 'standby', record: pl.record});
+        node(pl.id, tech ? 'physicalTech' : 'physicalApp', tech ? (pr ? pr.title : asset.title) : (asset?.title || plan.title), {sub: `${pl.record?.replicas ?? 1} ${pl.record?.role || 'copy'}${pr?.sub ? ' · ' + pr.sub : ''}`, ref: asset?.ref || plan.ref, group: pl.record.zoneId, hatched: pl.record?.role === 'standby', record: pl.record, sol: plan.id});
         placed.add(plan.record?.assetId);
       }
       const unplaced = list(env.record?.assetIds).filter(id => !placed.has(id) && O(id));
-      if (unplaced.length) { group('unplaced:' + env.id, 'unplaced', 'Not placed', {sub: 'parts without a place to run', parent: env.id}); for (const id of unplaced) { const a = O(id), tech = a.type === 'technology', pr = tech ? product(a) : null; node('unplaced:' + id, tech ? 'physicalTech' : 'physicalApp', tech ? (pr ? pr.title : a.title) : a.title, {sub: 'Not placed', ref: a.ref, group: 'unplaced:' + env.id, hatched: true, record: a.record}); } }
+      if (unplaced.length) { group('unplaced:' + env.id, 'unplaced', 'Not placed', {sub: 'parts without a place to run', parent: env.id}); for (const id of unplaced) { const a = O(id), tech = a.type === 'technology', pr = tech ? product(a) : null; node('unplaced:' + id, tech ? 'physicalTech' : 'physicalApp', tech ? (pr ? pr.title : a.title) : a.title, {sub: 'Not placed', ref: a.ref, group: 'unplaced:' + env.id, hatched: true, record: a.record, sol: plans.find(r => r.record?.assetId === id)?.id || id}); } }
       // A runtime path realises a contract between two parts: it runs between their placements.
       const placementOf = assetId => D.nodes.find(n => n.record?.planId && plans.find(r => r.id === n.record.planId)?.record?.assetId === assetId)?.id || (seenN.has('unplaced:' + assetId) ? 'unplaced:' + assetId : null);
       let step = 0;
@@ -256,7 +256,7 @@ export function notationDiagram(p, sceneId, {environmentId = null} = {}) {
       // A part placed on a platform service stands on it: the copy of the technology it needs.
       for (const n of D.nodes.filter(n => n.kind === 'physicalApp' && n.record?.planId)) {
         const assetId = plans.find(r => r.id === n.record.planId)?.record?.assetId;
-        for (const e of relsOf('requires', x => x.from === assetId)) for (const i of relsOf('implementedBy', x => x.from === e.to)) { const t = placementOf(i.to); if (t) edge(n.id, t, 'stands on', {kind: 'servedBy', dashed: true}); }
+        for (const e of relsOf('requires', x => x.from === assetId)) for (const i of relsOf('implementedBy', x => x.from === e.to)) { const t = placementOf(i.to); if (t && !t.startsWith('unplaced:')) edge(n.id, t, 'stands on', {kind: 'servedBy', dashed: true}); }
       }
     } else D.notes.push('No environment is recorded yet.');
   }

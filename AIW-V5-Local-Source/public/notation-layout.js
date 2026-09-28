@@ -8,7 +8,7 @@
 // - lanes: swimlanes, one per lane, steps in sequence order (the BPMN page).
 // Deterministic: the same diagram and choices give the same picture. A pinned node keeps the place
 // the reader dragged it to; its group grows around it. A position is never a model fact.
-export const NL = {W: 168, H: 58, HG: 44, VG: 64, LEFT: 28, TOP: 84, GPAD: 18, GHEAD: 30, GGAP: 30, MAXW: 1500, EVENT: 40, GATE: 44, TASK_W: 150, TASK_H: 50};
+export const NL = {W: 168, H: 62, HG: 44, VG: 64, LEFT: 28, TOP: 84, GPAD: 18, GHEAD: 30, GGAP: 30, MAXW: 1500, EVENT: 40, GATE: 44, TASK_W: 150, TASK_H: 50};
 const LEVELS = [[0, 'Business'], [1, 'Process'], [2, 'Application'], [3, 'Services'], [4, 'Data'], [5, 'Technology'], [6, 'Technology (physical)'], [7, 'Deployment']];
 
 const sizeOf = n => (n.kind === 'event' ? {w: NL.EVENT, h: NL.EVENT} : n.kind === 'gateway' ? {w: NL.GATE, h: NL.GATE} : n.kind === 'task' ? {w: NL.TASK_W, h: NL.TASK_H} : {w: NL.W, h: NL.H});
@@ -217,7 +217,8 @@ export function notationLayout(D, {arrangement = D.scene.arrangement, pins = {},
   const edges = D.edges.map(e => { const a = P.get(e.from), b = P.get(e.to), n = lanesBy.get(e.from) || 0; lanesBy.set(e.from, n + 1); const pts = route(a, b, style, obstacles, n); return {...e, pts, ...labelAt(pts)}; });
   const boxes = [...nodes, ...groups];
   // The header strip needs its width even when the picture is small.
-  const W = Math.max(820, Math.ceil(Math.max(...boxes.map(b => b.x + b.w)) + NL.LEFT)), H = Math.max(320, Math.ceil(Math.max(...boxes.map(b => b.y + b.h)) + 40));
-  return {W, H, nodes, groups, edges, bands: bands.map(b => ({...b, x: NL.LEFT - 12, w: W - 2 * NL.LEFT + 24})), arrangement, header: {x: NL.LEFT, y: 14, w: W - 2 * NL.LEFT, h: 46}};
+  const bottom = Math.ceil(Math.max(...boxes.map(b => b.y + b.h))), notesY = bottom + 20;
+  const W = Math.max(820, Math.ceil(Math.max(...boxes.map(b => b.x + b.w)) + NL.LEFT)), H = Math.max(320, notesY + (D.notes.length ? 18 * D.notes.length + 16 : 20));
+  return {W, H, notesY, nodes, groups, edges, bands: bands.map(b => ({...b, x: NL.LEFT - 12, w: W - 2 * NL.LEFT + 24})), arrangement, header: {x: NL.LEFT, y: 14, w: W - 2 * NL.LEFT, h: 46}};
 }
 export const overlaps = (a, b, m = 0) => a.x < b.x + b.w - m && b.x < a.x + a.w - m && a.y < b.y + b.h - m && b.y < a.y + a.h - m;

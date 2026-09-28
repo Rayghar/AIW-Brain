@@ -42,7 +42,7 @@ export function createNotation({chapter, root, stage, project, onSelect = null})
     const k = KINDS[n.kind], bpmn = k.family.startsWith('bpmn');
     const cls = `nt-node nt-${k.family}${n.hatched ? ' hatched' : ''}${sel === n.id ? ' sel' : ''}${box.pinned ? ' pinned' : ''}${bpmn ? ' ' + k.family : ''}`;
     const body = bpmn ? (n.kind === 'task' ? `<b>${esc(n.title)}</b>` : `<span class="nt-mark" aria-hidden="true"></span><b class="nt-cap">${esc(n.title)}</b>`) : `<small class="nt-kicker">${iconSVG(k.family)}${esc(n.kicker)}</small><b>${esc(n.title)}</b>${n.sub ? `<span class="nt-sub">${esc(n.sub)}</span>` : ''}${n.ref ? `<i class="nt-ref">${esc(n.ref)}</i>` : ''}`;
-    return `<div class="${cls}" data-nt-node="${esc(n.id)}" data-sel="${esc(n.id)}" role="button" tabindex="0" aria-label="${esc((n.kicker || 'Step') + ' ' + n.title)}" style="left:${box.x}px;top:${box.y}px;width:${box.w}px;height:${box.h}px">${body}</div>`;
+    return `<div class="${cls}" data-nt-node="${esc(n.id)}" data-sel="${esc(n.id)}"${n.sol ? ` data-sol="${esc(n.sol)}"` : ''} role="button" tabindex="0" aria-label="${esc((n.kicker || 'Step') + ' ' + n.title)}" style="left:${box.x}px;top:${box.y}px;width:${box.w}px;height:${box.h}px">${body}</div>`;
   };
   const groupSVG = g => { const narrow = g.w < g.title.length * 7.5 + g.sub.length * 5.6 + 40; return `<g class="nt-group nt-g-${esc(g.kind)}" data-nt-group="${esc(g.id)}"><rect x="${g.x}" y="${g.y}" width="${g.w}" height="${g.h}" rx="6"/><text x="${g.x + 10}" y="${g.y + 19}" class="nt-gtitle">${esc(g.title)}</text>${g.sub && !narrow ? `<text x="${g.x + g.w - 10}" y="${g.y + 19}" class="nt-gsub" text-anchor="end">${esc(g.sub)}</text>` : ''}</g>`; };
   const edgeSVG = e => { const d = e.pts.map(([x, y], i) => (i ? 'L' : 'M') + x + ' ' + y).join(''); const lit = sel && (e.from === sel || e.to === sel); return `<g class="nt-edge nt-e-${esc(e.kind)}${e.dashed ? ' dashed' : ''}${lit ? ' lit' : sel ? ' dim' : ''}" data-nt-edge="${esc(e.id)}"><path d="${d}" marker-end="url(#nt-arrow)"/>${e.label || e.step ? `<text x="${e.lx}" y="${e.ly - 4}" class="nt-elabel" text-anchor="middle">${e.step ? `<tspan class="nt-step">${e.step}</tspan> ` : ''}${esc(e.label)}</text>` : ''}</g>`; };
@@ -66,7 +66,7 @@ export function createNotation({chapter, root, stage, project, onSelect = null})
         + L.bands.map(b => `<g class="nt-band"><rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}"/><text x="${b.x + 8}" y="${b.y + 14}">${esc(b.title)}</text></g>`).join('')
         + L.groups.map(groupSVG).join('') + L.edges.map(edgeSVG).join('');
       html.innerHTML = headerHTML(L.header) + L.nodes.map(b => nodeHTML(D.nodes.find(n => n.id === b.id), b)).join('')
-        + (D.notes.length ? `<div class="nt-notes" style="left:${NL.LEFT}px;top:${L.H - 30 - 18 * D.notes.length}px">${D.notes.map(t => `<p>${esc(t)}</p>`).join('')}</div>` : '')
+        + (D.notes.length ? `<div class="nt-notes" style="left:${NL.LEFT}px;top:${L.notesY ?? L.H - 30 - 18 * D.notes.length}px">${D.notes.map(t => `<p>${esc(t)}</p>`).join('')}</div>` : '')
         + (!D.nodes.length ? `<div class="cm-empty-card" style="left:${NL.LEFT + 20}px;top:${NL.TOP + 20}px"><b>Nothing to draw yet</b><p>${esc(D.notes[0] || 'This chapter records nothing this diagram shows.')}</p></div>` : '');
       return L;
     },

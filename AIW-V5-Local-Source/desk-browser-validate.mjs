@@ -112,7 +112,7 @@ try {
   assert.equal(await count('dialog.ch-dialog [name=s]'), 12); assert.equal(await count('dialog.ch-dialog [name=s]:checked'), 10, 'a product the playbook merely names is left unticked');
   await page.check('dialog.ch-dialog [name=reviewed]'); await page.click('dialog.ch-dialog button[type=submit]'); await page.waitForTimeout(2500);
   assert.match(await page.$eval('.dk-flash', e => e.innerText), /10 judgements recorded in Chapter 7 for TR-003/);
-  await page.goto(base + '/?chapter=7&tab=model', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm.sk'); await page.waitForTimeout(500);
+  await page.goto(base + '/?chapter=7&tab=model&model=stack', {waitUntil: 'networkidle'}); await page.waitForSelector('.cm.sk'); await page.waitForTimeout(500);
   await page.$eval('.sk-rec[data-sel="tr-003"]', e => e.click()); await page.waitForTimeout(400);
   await page.$eval('.cm-panel [data-sk="compare"]', e => e.click()); await page.waitForTimeout(800);
   assert.equal(await count('.sk-weigh'), 2); assert.ok(await page.$('.sk-weigh.lean') && await page.$('.sk-lean'));

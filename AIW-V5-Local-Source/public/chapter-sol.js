@@ -107,9 +107,10 @@ export function solMark(root, p, chapter) {
   if (!SOL.byItem.size) return;
   const done = new Set();
   // Cards and row labels first; then anything else drawn for the record.
-  for (const el of [...root.querySelectorAll('.cm-stage [data-card], .cm-stage [data-row]'), ...root.querySelectorAll('.cm-stage [data-sel]')]) {
+  // An element may name the record Sol reads for it (data-sol): a diagram's placement stands for its operating plan.
+  for (const el of [...root.querySelectorAll('.cm-stage [data-sol], .cm-stage [data-card], .cm-stage [data-row]'), ...root.querySelectorAll('.cm-stage [data-sel]')]) {
     if (el.matches('.cm-link, .cm-btn, .cm-ins, .cm-mini') || el.closest('.cm-zoom, .cm-key')) continue;
-    const key = el.dataset.card || el.dataset.sel || el.dataset.row, id = key ? solTarget(p, chapter, key) : null;
+    const key = el.dataset.sol || el.dataset.card || el.dataset.sel || el.dataset.row, id = key ? solTarget(p, chapter, key) : null;
     if (!id || done.has(id) || !SOL.byItem.has(id)) continue;
     const e = solChapterEntry(p, id);
     if (!e) continue;
