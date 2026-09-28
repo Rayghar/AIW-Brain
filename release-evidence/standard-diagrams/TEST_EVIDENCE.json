@@ -1,0 +1,268 @@
+{
+  "schema": "aiw-test-evidence-v1",
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "package": "AIW V5 Local Source v20.6",
+  "branch": "release/aiw-v0.10.0-rc.10.73.6-standard-diagrams",
+  "ask": "A page on each chapter that draws diagrams like the sponsor's five solution architecture documents; smart arrangement (radial, tree, orthogonal …); toggles between a chapter's views; model layers that strip a diagram.",
+  "fullRegression": {
+    "sourceCommit": "e51f6d97fb981fa94d9e6bda35e34f3bc697d826",
+    "command": "node release-checks.mjs",
+    "settings": {
+      "AIW_PLAYWRIGHT_MODULE": "C:\\AIW\\aiw\\v5\\node_modules\\playwright (Playwright 1.56.0)",
+      "AIW_REGRESSION_TIMEOUT_MS": "1500000",
+      "AIW_REGRESSION_CONCURRENCY": "2"
+    },
+    "started": "2026-09-28T10:51:07Z",
+    "finished": "2026-09-28T11:30:19Z",
+    "suites": 95,
+    "passed": 93,
+    "failed": [
+      "test:desk-browser",
+      "test:tradeoff-browser"
+    ],
+    "browserSuites": 20,
+    "sourceChangedSince": {
+      "toPackageCommit": "e51f6d97fb981fa94d9e6bda35e34f3bc697d826",
+      "files": [],
+      "note": "The package is built from the regression commit."
+    }
+  },
+  "ranIn": "/tmp/claude/C--AIW-aiw-knowledge-repository/657a5ec6-c3af-4ea2-8253-f09bc93ea683/scratchpad/w6/AIW-V5-Local-Source",
+  "ranInNote": "A clean git worktree of the regression commit, so the run tests exactly the committed code and not the working tree, which holds an untracked copy of the v20.5 package extracted into the source folder (it duplicates files that test:sol-evaluation counts). The worktree is removed afterwards.",
+  "stalledAndRerun": [
+    {
+      "suite": "test:tradeoff-browser",
+      "inFullRun": "failed (1505 s: timed out)",
+      "rerunAloneOnTheSameCommit": {
+        "passed": 9,
+        "where": "the same clean worktree"
+      }
+    },
+    {
+      "suite": "test:desk-browser",
+      "inFullRun": "failed (1504 s: timed out)",
+      "rerunAloneOnTheSameCommit": {
+        "passed": 16,
+        "where": "the same clean worktree"
+      }
+    }
+  ],
+  "stallNote": "The two suites ran side by side and both stopped responding for the regression runner’s whole 25-minute limit while every other browser suite took 40–110 s; run alone on the same commit in the same worktree they pass in 43 s and 84 s. Recorded as a transient stall of the machine, not a failure of the code.",
+  "earlierRun": {
+    "commit": "d735bd5",
+    "where": "the working tree",
+    "suites": 95,
+    "passed": 89,
+    "failures": {
+      "test": "CustomEvent used in app.js, absent in the suite’s Node sandbox: fixed in e51f6d9",
+      "test:chapter-sol-browser": "Sol’s verdicts had nowhere to land on Chapter 10’s diagram: fixed in e51f6d9 (data-sol)",
+      "test:desk-browser": "the suite read Chapter 7’s Stack view without naming it: fixed in e51f6d9",
+      "test:responsibility-browser": "load timeout under concurrency; passes alone",
+      "test:threat-browser": "load timeout under concurrency; passes alone",
+      "test:sol-evaluation": "counted duplicates in the untracked v20.5 extract in the working tree; passes in the clean worktree"
+    }
+  },
+  "newSuites": {
+    "test:notation": {
+      "checks": 5,
+      "from": "the clean extract of the package",
+      "regression": "passed"
+    },
+    "test:notation-layout": {
+      "checks": 3,
+      "from": "the clean extract of the package",
+      "regression": "passed"
+    },
+    "test:notation-browser": {
+      "checks": 8,
+      "suite": "standard diagrams (rendered)",
+      "names": [
+        "Chapters 1 to 10 each open their Diagram: the standard elements with their kickers, the words on the connectors, the header strip, and the arrangement the scene calls for (1:11 2:16 3:13 4:5 5:19 6:14 7:23 8:13 9:27 10:14)",
+        "the five arrangements each rearrange Chapter 5 without losing or overlapping an element, and the menu names the one in use",
+        "the Layers menu and the sidebar’s Model layers are one setting: each strips the diagram and the other says so",
+        "dragging pins an element (and Release lets go), a click or Enter selects into the companion and the address, and the application itself reads without pretending to be a record",
+        "Export SVG writes the diagram as vectors with its kickers, words and header; Export PNG writes a bitmap",
+        "a deep link opens a chapter model on a named view, Chapter 8 switches between Integration and Data & authority, and Chapter 10 draws zones, placements and numbered paths",
+        "a blank project’s Diagram draws nothing and says why",
+        "no page errors"
+      ],
+      "from": "the development run; the full regression re-ran it on the commit",
+      "regression": "passed"
+    }
+  },
+  "cleanExtract": {
+    "installedDependencies": "none while the suites ran (no node_modules; the runtime and these suites use Node built-ins only); then npm ci --offline installed the lockfile's development tools from the local cache",
+    "node": "v24.18.0",
+    "results": [
+      {
+        "name": "check",
+        "status": "passed",
+        "seconds": 234.6
+      },
+      {
+        "name": "build",
+        "status": "passed",
+        "seconds": 7.6
+      },
+      {
+        "name": "test",
+        "status": "passed",
+        "seconds": 0.7,
+        "checkCount": 11
+      },
+      {
+        "name": "test:brain-reasoning",
+        "status": "passed",
+        "seconds": 6.4,
+        "checkCount": 8
+      },
+      {
+        "name": "test:chapter-reasoning",
+        "status": "passed",
+        "seconds": 7,
+        "checkCount": 9
+      },
+      {
+        "name": "test:stewardship",
+        "status": "passed",
+        "seconds": 6.1,
+        "checkCount": 8
+      },
+      {
+        "name": "test:sol-evaluation",
+        "status": "passed",
+        "seconds": 17.8,
+        "checkCount": 14
+      },
+      {
+        "name": "test:sol-checks",
+        "status": "passed",
+        "seconds": 3.9,
+        "checkCount": 6
+      },
+      {
+        "name": "test:sol-coverage",
+        "status": "passed",
+        "seconds": 39.5,
+        "checkCount": 5
+      },
+      {
+        "name": "test:model-views",
+        "status": "passed",
+        "seconds": 1.7,
+        "checkCount": 3
+      },
+      {
+        "name": "test:notation",
+        "status": "passed",
+        "seconds": 1.8,
+        "checkCount": 5
+      },
+      {
+        "name": "test:notation-layout",
+        "status": "passed",
+        "seconds": 1.8,
+        "checkCount": 3
+      },
+      {
+        "name": "test:realise",
+        "status": "passed",
+        "seconds": 1.5,
+        "checkCount": 7
+      },
+      {
+        "name": "test:stack",
+        "status": "passed",
+        "seconds": 2.4,
+        "checkCount": 6
+      },
+      {
+        "name": "test:brain-ahead",
+        "status": "passed",
+        "seconds": 4.1,
+        "checkCount": 5
+      },
+      {
+        "name": "test:repository-service",
+        "status": "passed",
+        "seconds": 3.4,
+        "checkCount": 12
+      },
+      {
+        "name": "test:repository-acquire",
+        "status": "passed",
+        "seconds": 2.5,
+        "checkCount": 5
+      },
+      {
+        "name": "test:knowledge-repository",
+        "status": "passed",
+        "seconds": 4.5,
+        "checkCount": 4
+      },
+      {
+        "name": "test:repository-sync",
+        "status": "passed",
+        "seconds": 3.5
+      },
+      {
+        "name": "test:knowledge-ingestion",
+        "status": "passed",
+        "seconds": 1.5
+      },
+      {
+        "name": "test:local-accounts",
+        "status": "passed",
+        "seconds": 4.9,
+        "checkCount": 3
+      },
+      {
+        "name": "test:brain-chain",
+        "status": "passed",
+        "seconds": 11.3,
+        "checkCount": 4
+      },
+      {
+        "name": "evaluate:sol",
+        "status": "passed",
+        "seconds": 7.7
+      },
+      {
+        "name": "evaluate:sol:coverage",
+        "status": "passed",
+        "seconds": 6.6
+      },
+      {
+        "name": "npm ci --offline",
+        "status": "passed",
+        "seconds": 157.2
+      }
+    ]
+  },
+  "screenshots": {
+    "folder": "screenshots",
+    "files": [
+      "ch01-process-swimlanes.png",
+      "ch02-quality-drivers.png",
+      "ch03-decisions.png",
+      "ch04-logical-application.png",
+      "ch05-application-architecture.png",
+      "ch05-arrange-grouped.png",
+      "ch05-arrange-layered.png",
+      "ch05-arrange-orthogonal.png",
+      "ch05-arrange-radial.png",
+      "ch05-arrange-tree.png",
+      "ch06-solution-architecture.png",
+      "ch07-technology-realization.png",
+      "ch08-data-authority.png",
+      "ch08-integration.png",
+      "ch09-security-trust.png",
+      "ch10-deployment.png"
+    ],
+    "note": "Each chapter's Diagram (Chapters 1 to 10), Chapter 8's Data & authority scene, and Chapter 5 in each arrangement, from the working tree at the package commit, headless Chromium 1600×1000."
+  },
+  "standardDocuments": {
+    "note": "The five documents the sponsor supplied are read locally and are not copied into this repository or the package."
+  },
+  "productionAccepted": false
+}
