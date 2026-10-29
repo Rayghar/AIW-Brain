@@ -1,0 +1,208 @@
+{
+  "scope": "W4 Output plus delegated W5 Chapters 9-11; implementation review, not human architectural approval",
+  "base": "Existing private Site v88, 430b046",
+  "status": "Implementation and output scale verification complete; final integrated browser/build verification is tracked by the release owner",
+  "decisions": [
+    {
+      "rows": [
+        "R26-O-01",
+        "R26-O-02",
+        "R26-O-03",
+        "R26-O-06",
+        "R26-O-07",
+        "R26-O-08"
+      ],
+      "status": "Already present, preserved",
+      "detail": "One document registry, register/SDD passage previews, read-only record rows, central download actions, MADR, revision/date stamps and disabled empty register downloads."
+    },
+    {
+      "rows": [
+        "R26-O-04",
+        "R26-O-14"
+      ],
+      "status": "Implemented",
+      "detail": "All ten carry-forward dialogs show disabled actions beside unmet prerequisites; acknowledgement effect is explicit. Final implementation handoff lists the same baseline, independent approval and action prerequisites enforced by the server. Output displays historical check/handoff dates without treating them as current readiness."
+    },
+    {
+      "rows": [
+        "R26-O-09"
+      ],
+      "status": "Implemented",
+      "detail": "Chapter 3 downstream links explicitly open Work and select the saved linked object when exactly one exists; no arbitrary object is chosen when the relationship is ambiguous."
+    },
+    {
+      "rows": [
+        "R26-O-10"
+      ],
+      "status": "Implemented",
+      "detail": "OpenAPI recognizes a recorded METHOD /path followed by a separated qualifier, retaining the original and qualifier. Unparseable and duplicate paths and missing event addresses are explicit gaps. Data schemas have a separate named export. Logical money/reference types retain metadata and require a wire schema instead of emitting invalid JSON Schema type values or inventing representation. Empty contract fields say Not recorded."
+    },
+    {
+      "rows": [
+        "R26-O-11"
+      ],
+      "status": "Existing record counts and context explanation preserved",
+      "detail": "The Sol brief already explains its rule-based additional-item count through its context title; no extra store or duplicated counts added."
+    },
+    {
+      "rows": [
+        "R26-O-12"
+      ],
+      "status": "Implemented; export scale and exact-identity regressions passed, with earlier figure-integrity exit-receipt caveat below",
+      "detail": "Shared SDD figures retain C4/deployment and add canonical quality-driver, decision, logical, capability, technology, sequence/data, security and rationale/trace views. Empty chapters give omission reasons. Complementary body figures are bounded overviews; full records remain in chapter registers. Executive context is included when meaningful, with the figure-free option retained. A version marker preserves earlier frozen-baseline figure identity."
+    },
+    {
+      "rows": [
+        "R26-O-13"
+      ],
+      "status": "Proposal corrected: existing feature",
+      "detail": "Frozen versions and changes since the preceding/current baseline already exist. No parallel history model introduced."
+    },
+    {
+      "rows": [
+        "R26-O-14"
+      ],
+      "status": "Implemented",
+      "detail": "Word/PDF naming matches Working_SDD route naming, specification filenames differ by format, the HTML preview note directs users to the supported export formats, and blank SDDs identify themselves as empty templates in UI and document status. The executive label no longer promises a fixed two-page result."
+    },
+    {
+      "rows": [
+        "R26-W-26",
+        "R26-W-27"
+      ],
+      "status": "Implemented; integrated browser check pending",
+      "detail": "Standby exploration opens a plan-scoped failure scenario without assuming duration. New-plan actions cannot open an impossible form. Chapter11 evidence drafts remain NOT SAVED in Work with explicit edit/dismiss/Model actions and no model writes. Navigation labels name their destination."
+    },
+    {
+      "rows": [
+        "R26-W-28",
+        "R26-W-30"
+      ],
+      "status": "Existing behaviour retained; integrated browser verification pending",
+      "detail": "Source inspection shows the action object picker is grouped/searchable and preselects its finding or selected object. Recovery editing already opens step 1 and focuses the first field. No new domain judgment inferred."
+    },
+    {
+      "rows": [
+        "R26-W-31"
+      ],
+      "status": "Implemented",
+      "detail": "Blank security intake does not claim illustrative threats/controls exist, evidence empty state links to relevant Work stages, and runtime plan creation shows its environment prerequisite."
+    }
+  ],
+  "verification": {
+    "passed": [
+      "output-stage-validate.mjs: 8 groups",
+      "output-completion-validate.mjs: 5 groups including authenticated Worker specification exports and the additional logical money type assertion",
+      "sdd-architecture-validate.mjs: 12 groups",
+      "sdd-formats-validate.mjs: 4 groups, rich fixture Word/PDF with 12 figures and 40 A4 pages",
+      "work-review-continuity-validate.mjs: 3 groups covering unsaved contextual Work proposals and impossible/empty runtime plan actions",
+      "sdd-size-validate.mjs: all 8 groups, exact exit 0; unchanged 10-second export, 2-second cold executive, 30-second freeze, 150-page, 2 MB and 7 pt readability limits",
+      "sdd-layout-cache-validate.mjs: 2 groups; cached/uncached SVG and Mermaid equality, distinct renumbered identities, changed target/new-pass currentness, no document mutation",
+      "notation-validate.mjs: complete suite exit 0 after indexed diagram lookup changes",
+      "Exact pre/post optimization export identity: 4 legacy frozen-baseline figures, 12 current figures and 12 reduced-detail figures plus full SDD Markdown, manifests, captions, hashes and page-fit metadata remain byte-identical"
+    ],
+    "assertionsCompletedWithReceiptFailure": [
+      {
+        "suite": "figures-integrity-validate.mjs",
+        "groups": 10,
+        "durationSecondsThroughLastAssertion": 452,
+        "evidence": "evidence/round27/w4/2026-10-16T23-16-30.477Z/figures-integrity-validate.mjs.log",
+        "detail": "The saved log contains every PASS checkpoint, ending with the 40-module map. Source inspection confirms no assertions follow that checkpoint. Disk exhaustion (ENOSPC) interrupted the runner while appending the suite's final JSON output. The final JSON and child exit receipt were not captured; this is not recorded as a clean runner exit."
+      }
+    ],
+    "observedAndFixed": [
+      "Legacy exact-four-figure and zero-executive-figure expectations updated to compare the required canonical set and hashes",
+      "Large security overview exceeded portrait A4 by about 5 mm; smaller bounded chapter overviews passed all ten subsequent figure-integrity assertion groups",
+      "The sdd-size figure-family assertion now preserves the four C4 families and also requires the new complementary chapter models; its size, time, page and readability limits are unchanged",
+      "The isolated figures export exceeded its budget at 12,808 ms. Removed quadratic duplicate-node/group lookup and shared repeated chapter projection/print layout work only within the existing synchronous read-only document pass; no geometry, fit rule, output content or review state changed. Final isolated run: 8,895 ms.",
+      "A structured clone reused the content-addressed executive figure cache, so the cold test was not genuinely cold. The synthetic cold probe now has a unique project identity; the original 2-second cold limit and new-draw assertion are both retained and passed."
+    ],
+    "remaining": [
+      "Final integrated browser/export and build verification, handled by the release owner"
+    ],
+    "scale": {
+      "evidence": "evidence/round27/w4/2026-10-17T00-44-48-993Z/",
+      "exitCode": 0,
+      "passed": 8,
+      "durationMs": 173829,
+      "bounds": {
+        "markdownBytes": 2097152,
+        "pdfPages": 150,
+        "exportMs": 10000
+      },
+      "measurements": {
+        "records": 5572,
+        "requirements": 1400,
+        "groups": 60,
+        "markdownMs": 3418,
+        "markdownFiguresMs": 8895,
+        "htmlMs": 2761,
+        "docxMs": 3695,
+        "pdfMs": 3187,
+        "pdfPages": 92,
+        "pdfPagesWithFigures": 135,
+        "printedFigures": 38,
+        "minimumLabelPt": 7,
+        "executiveColdMs": 1878,
+        "freezeMs": [
+          17772,
+          6842
+        ],
+        "draftedArchitectureColdMs": 6113,
+        "draftedPdfPages": 84
+      },
+      "failedRuns": [
+        "evidence/round27/w4/2026-10-17T00-29-33-341Z/",
+        "evidence/round27/w4/2026-10-17T00-31-16-630Z/",
+        "evidence/round27/w4/2026-10-17T00-42-21-195Z/"
+      ]
+    },
+    "optimizationIdentity": {
+      "passed": true,
+      "checkedAt": "2026-10-17T00:49:10.584Z",
+      "beforeSha256": "184451097bd9664b7d7e85cd9cbecc416414e52e8ed9f7d1860e3fcc54beeabe",
+      "afterSha256": "184451097bd9664b7d7e85cd9cbecc416414e52e8ed9f7d1860e3fcc54beeabe",
+      "legacyFigures": 4,
+      "currentFigures": 12,
+      "reducedFigures": 12,
+      "includes": "Complete SVG, identity, captions, hashes, page fits, manifests and SDD Markdown",
+      "fixture": "Synthetic bank-payment fixture; no human approval",
+      "evidence": "evidence/round27/w4/export-identity/"
+    },
+    "finalRegressionReceipts": {
+      "evidence": "evidence/round27/w4/final-export-regressions/",
+      "results": [
+        {
+          "name": "exact-export-identity",
+          "startedAt": "2026-10-17T00:49:07.967Z",
+          "durationMs": 2695,
+          "exitCode": 0,
+          "signal": null,
+          "error": null
+        },
+        {
+          "name": "sdd-layout-cache",
+          "startedAt": "2026-10-17T00:49:10.680Z",
+          "durationMs": 2376,
+          "exitCode": 0,
+          "signal": null,
+          "error": null
+        },
+        {
+          "name": "notation",
+          "startedAt": "2026-10-17T00:49:13.059Z",
+          "durationMs": 17765,
+          "exitCode": 0,
+          "signal": null,
+          "error": null
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Figures and summaries are projections of saved records; they are not LLM-generated evidence of correctness.",
+    "No source corpus is uploaded, released, or activated by these changes.",
+    "These output suites made no provider calls. No independent architect review, external approval, real-world measurement or SDD sign-off was fabricated.",
+    "This artifact does not claim publication."
+  ]
+}

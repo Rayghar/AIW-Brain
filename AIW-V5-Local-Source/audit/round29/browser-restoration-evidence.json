@@ -1,0 +1,60 @@
+{
+  "status": "passed",
+  "build": [
+    {
+      "name": "/assets/theme-boot-141df46786a9.js",
+      "sha256": "141df46786a9cb49546473ac7c1c20f050dd1b5b1589d6c651f8f4b9f0e68b22"
+    },
+    {
+      "name": "/assets/app-NK6SZLFO.js",
+      "sha256": "974dabee82e39b9a4bba4703a77434745648f1a972cc1916b8bbb3572534bbb0"
+    },
+    {
+      "name": "/assets/app-32945c070bd2.css",
+      "sha256": "32945c070bd285c45f1007bdcb37de878c15f2509c60ecc91921b7d2d945f16e"
+    }
+  ],
+  "project": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "revision": 82,
+  "designSHA256": "e043582c032dc86eb406fafa5fd36f452124d8fb7b0566ae84f7d247d60470ed",
+  "designUnchanged": true,
+  "integratedChecks": 30,
+  "chapterTabSurfaces": 44,
+  "modelChecks": 18,
+  "shellChecks": 8,
+  "recordedClickEvents": {
+    "integratedCompleteRun": 180,
+    "boundedExportRetest": 3,
+    "model": 96
+  },
+  "downloads": [
+    {
+      "chapter": 4,
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Logical_Model.md",
+      "bytes": 4927,
+      "sha256": "1254bf5687e40bf370c25bd8397ebed1ffa00a75587b51a274370bcc227c4aee"
+    },
+    {
+      "chapter": 11,
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.md",
+      "bytes": 220947,
+      "sha256": "992848781c738fecff9b8ab27d9b61f6d2762d1aece51351184d1e8a921c747f"
+    },
+    {
+      "chapter": 11,
+      "baseline": "BL-001",
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_BL-001.md",
+      "bytes": 220250,
+      "sha256": "9381a78955e36f2f29fd5c1fe8655a17415a843c8a605095e4fbeceda1353462"
+    }
+  ],
+  "applicationErrors": [],
+  "scope": "Bounded restoration acceptance, not a fresh claim that every possible conditional application button was used. Round28 contains the broader command inventory.",
+  "evidence": [
+    "integrated/results.json",
+    "export-retest/results.json",
+    "model/results.json",
+    "shell/results.json"
+  ],
+  "interruptionClassification": "All recorded request interruptions are ERR_ABORTED during navigation/preview replacement. No failed document downloads; bytes and SHA256 validated. Initial selector/case/closed-menu/loading assumptions were corrected in test code only; raw interrupted receipts retained in test-results/restoration-harness outside the compact acceptance bundle."
+}

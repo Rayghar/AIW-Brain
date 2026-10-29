@@ -1,0 +1,362 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "storeId",
+    "tenantId",
+    "projectId",
+    "fromCursor",
+    "cursor",
+    "authority",
+    "productionAccepted",
+    "sources",
+    "claims",
+    "notices",
+    "release"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "aiw-repository-packet-v1"
+    },
+    "storeId": {
+      "type": "string",
+      "pattern": "^[a-f0-9-]{36}$"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 180
+    },
+    "projectId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "fromCursor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "cursor": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "authority": {
+      "const": "candidate"
+    },
+    "productionAccepted": {
+      "const": false
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repositoryId",
+          "repository",
+          "commit",
+          "path",
+          "hash",
+          "snapshot",
+          "object",
+          "manifestHash",
+          "licenceDisposition",
+          "exportDisposition",
+          "revisionId",
+          "supersedes",
+          "passages"
+        ],
+        "properties": {
+          "repositoryId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "repository": {
+            "type": "string",
+            "maxLength": 160,
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{40}$"
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 350
+          },
+          "hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "snapshot": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 350
+          },
+          "object": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 350
+          },
+          "manifestHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "licenceDisposition": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "exportDisposition": {
+            "const": "metadata-only"
+          },
+          "revisionId": {
+            "type": "string",
+            "pattern": "^revision-[a-f0-9]{32}$"
+          },
+          "supersedes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^revision-[a-f0-9]{32}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "passages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "lineStart",
+                "lineEnd",
+                "excerptHash",
+                "passageId"
+              ],
+              "properties": {
+                "lineStart": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "lineEnd": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "excerptHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "passageId": {
+                  "type": "string",
+                  "pattern": "^passage-[a-f0-9]{32}$"
+                }
+              }
+            },
+            "maxItems": 8
+          }
+        }
+      },
+      "maxItems": 100
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "claimId",
+          "revisionId",
+          "passageId",
+          "statement",
+          "reviewState",
+          "releaseState",
+          "eligible",
+          "edges",
+          "contextStatus"
+        ],
+        "properties": {
+          "claimId": {
+            "type": "string",
+            "pattern": "^claim-[a-f0-9]{32}$"
+          },
+          "revisionId": {
+            "type": "string",
+            "pattern": "^revision-[a-f0-9]{32}$"
+          },
+          "passageId": {
+            "type": "string",
+            "pattern": "^passage-[a-f0-9]{32}$"
+          },
+          "statement": {
+            "const": "Candidate interpretation pending human architecture review."
+          },
+          "reviewState": {
+            "const": "unreviewed"
+          },
+          "releaseState": {
+            "const": "unreleased"
+          },
+          "eligible": {
+            "const": false
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "target",
+                "label",
+                "status",
+                "inference"
+              ],
+              "properties": {
+                "type": {
+                  "enum": [
+                    "concept",
+                    "pattern",
+                    "tactic",
+                    "component",
+                    "interface",
+                    "prerequisite",
+                    "risk",
+                    "trade-off",
+                    "alternative",
+                    "contradiction"
+                  ]
+                },
+                "target": {
+                  "type": "string",
+                  "pattern": "^concept-[a-f0-9]{32}$"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60
+                },
+                "status": {
+                  "const": "suggestion"
+                },
+                "inference": {
+                  "const": "lexical-cue-only; applicability and semantics unverified"
+                }
+              }
+            },
+            "maxItems": 10
+          },
+          "contextStatus": {
+            "const": "conditions-limitations-and-polarity-unresolved"
+          }
+        }
+      },
+      "maxItems": 250
+    },
+    "notices": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cursor",
+              "kind",
+              "revisionId",
+              "supersedes"
+            ],
+            "properties": {
+              "cursor": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "kind": {
+                "const": "revision"
+              },
+              "revisionId": {
+                "type": "string",
+                "pattern": "^revision-[a-f0-9]{32}$"
+              },
+              "supersedes": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^revision-[a-f0-9]{32}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cursor",
+              "kind",
+              "revisionId",
+              "reason",
+              "dependentClaimsIneligible"
+            ],
+            "properties": {
+              "cursor": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "kind": {
+                "const": "invalidation"
+              },
+              "revisionId": {
+                "type": "string",
+                "pattern": "^revision-[a-f0-9]{32}$"
+              },
+              "reason": {
+                "enum": [
+                  "withdrawn",
+                  "superseded",
+                  "source-unavailable"
+                ]
+              },
+              "dependentClaimsIneligible": {
+                "const": true
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 500
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "const": "blocked"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aiw:repository-packet:v1"
+}

@@ -1,0 +1,1373 @@
+{
+  "schema": "aiw.sol-live-check/3",
+  "at": "2026-10-12T07:25:05.951Z",
+  "live": false,
+  "provider": "openai",
+  "model": "test-structured-model",
+  "modelDefaulted": false,
+  "effort": null,
+  "callTimeoutMs": 45000,
+  "connectionVerified": {
+    "at": "2026-10-12T07:24:59.143Z",
+    "ok": true,
+    "model": "test-structured-model"
+  },
+  "pins": [
+    "sol-field-2",
+    "sol-journey-1",
+    "sol-review-1",
+    "sol-architecture-1"
+  ],
+  "chapters": [
+    {
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "status": "completed",
+      "packetCharacters": 4287,
+      "sources": 10,
+      "neighbours": 5,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"OUT-001 Patients can book, move or cancel an appointment themselves at any time of day\",\"type\":\"artefact\",\"field\":{\"name\":\"description\",\"label\":\"Description / behaviour\"},\"recorded\":{\"title",
+      "error": null
+    },
+    {
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "status": "completed",
+      "packetCharacters": 4305,
+      "sources": 3,
+      "neighbours": 0,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"QD-001 Quality: Book an appointment at any time through the online service\",\"type\":\"quality",
+      "error": null
+    },
+    {
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "status": "completed",
+      "packetCharacters": 3192,
+      "sources": 6,
+      "neighbours": 3,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates",
+      "error": null
+    },
+    {
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "record": "LR-001 Appointment scheduling",
+      "status": "completed",
+      "packetCharacters": 3763,
+      "sources": 4,
+      "neighbours": 1,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"LR-001 Appointment scheduling\",\"type\":\"logical",
+      "error": null
+    },
+    {
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "record": "APP-001 Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 5024,
+      "sources": 5,
+      "neighbours": 1,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"APP-001 Appointment scheduling service\",\"type\":\"realisation",
+      "error": null
+    },
+    {
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 3715,
+      "sources": 4,
+      "neighbours": 1,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"TC-001 Compute for Appointment scheduling service\",\"type\":\"technology",
+      "error": null
+    },
+    {
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "status": "completed",
+      "packetCharacters": 4515,
+      "sources": 3,
+      "neighbours": 0,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"TR-001 Compute for Appointment scheduling service implementation\",\"type\":\"techrealisation",
+      "error": null
+    },
+    {
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "record": "IF-001 Hand over appointment",
+      "status": "completed",
+      "packetCharacters": 5202,
+      "sources": 7,
+      "neighbours": 2,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"IF-001 Hand over appointment\",\"type\":\"interfaces",
+      "error": null
+    },
+    {
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "record": "SEC-001 Limit access to Appointment",
+      "status": "completed",
+      "packetCharacters": 3400,
+      "sources": 4,
+      "neighbours": 1,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"SEC-001 Limit access to Appointment\",\"type\":\"security",
+      "error": null
+    },
+    {
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "record": "RUN-001 Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 5438,
+      "sources": 6,
+      "neighbours": 2,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"RUN-001 Appointment scheduling service\",\"type\":\"runtime",
+      "error": null
+    },
+    {
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "status": "completed",
+      "packetCharacters": 3467,
+      "sources": 4,
+      "neighbours": 2,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "{\"record\":\"SDD Sol live check · reference — Solution Design\",\"type\":\"review",
+      "error": null
+    }
+  ],
+  "runs": [
+    {
+      "mode": "field",
+      "id": "2f6394bc-db60-41cf-a1b3-e9d889a6de4d",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-776f105a90b66",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-cbf00351944c98",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "description",
+        "hasDraft": true,
+        "sourcesInPacket": 10
+      },
+      "error": null,
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "recordId": "OUT-001",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "packet": {
+        "characters": 4287,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 5,
+          "requirement": 3
+        },
+        "neighbours": [
+          "REQ-001 Book an appointment at any time through the online service",
+          "REQ-002 Register a phone booking and move or cancel it for a patient who calls",
+          "REQ-003 Send a reminder by text message or email two days before each appointment",
+          "REQ-004 Answer each reminder to confirm, move or cancel the appointment",
+          "REQ-006 Record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets"
+        ],
+        "omissions": [
+          "REQ-004 Answer each reminder to confirm, move or cancel the appointment"
+        ],
+        "help": "What this record says: a journey step as the user experiences it, a requirement as a behaviour, a constraint as a limit, an outcome as a change."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"OUT-001 Patients can book, move or cancel an appointment themselves at any time of day\",\"type\":\"artefact\",\"field\":{\"name\":\"description\",\"label\":\"Description / behaviour\"},\"recorded\":{\"title",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "124e20c8-3884-4bf2-ba5b-9ab0df42288b",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-4710adf71fc1",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-b14e0a7b5dc578",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "response",
+        "hasDraft": true,
+        "sourcesInPacket": 3
+      },
+      "error": null,
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "recordId": "QD-001",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "packet": {
+        "characters": 4305,
+        "maxCharacters": 12000,
+        "sources": 3,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1
+        },
+        "neighbours": [],
+        "omissions": [],
+        "help": "What the system must do when the stimulus arrives."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"QD-001 Quality: Book an appointment at any time through the online service\",\"type\":\"quality",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "1028cbee-c427-4425-bf95-c99810301f46",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-e73f3c22c3c158",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-2b336efa84e74",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "rationale",
+        "hasDraft": true,
+        "sourcesInPacket": 6
+      },
+      "error": null,
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "recordId": "ADR-001",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "packet": {
+        "characters": 3192,
+        "maxCharacters": 12000,
+        "sources": 6,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 3,
+          "quality-driver": 1
+        },
+        "neighbours": [
+          "ALT-001 Keep it within one owned boundary",
+          "ALT-002 Separate it into an independent boundary",
+          "CON-001 Patient personal data must be handled in line with the health data regulation that applies where the clinic operates"
+        ],
+        "omissions": [],
+        "help": "Why the chosen alternative answers the question, against the drivers compared."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "adbf548b-32b8-4480-a933-00566bb53a1b",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-5c2dbf204317e8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-d835755e573e38",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "purpose",
+        "hasDraft": true,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "recordId": "lr-001",
+      "record": "LR-001 Appointment scheduling",
+      "packet": {
+        "characters": 3763,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1
+        },
+        "neighbours": [
+          "APP-001 Appointment scheduling service"
+        ],
+        "omissions": [],
+        "help": "The behaviour this responsibility owns for the requirements it serves."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"LR-001 Appointment scheduling\",\"type\":\"logical",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "946b12eb-9d8e-4e70-91f1-cd88f6619861",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-0c67a310fe56a8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-6edaa57510322",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "boundary",
+        "hasDraft": true,
+        "sourcesInPacket": 5
+      },
+      "error": null,
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "recordId": "obj-001",
+      "record": "APP-001 Appointment scheduling service",
+      "packet": {
+        "characters": 5024,
+        "maxCharacters": 12000,
+        "sources": 5,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "requirement": 1
+        },
+        "neighbours": [
+          "TN-001 compute need"
+        ],
+        "omissions": [],
+        "help": "What this component owns, and what it leaves to other components."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"APP-001 Appointment scheduling service\",\"type\":\"realisation",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "adcf57ad-5e57-4d22-b9ef-e23f1e9b2732",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-9f48d9fbebddb",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-be2f709f7ae9f8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "purpose",
+        "hasDraft": true,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "recordId": "tc-001",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "packet": {
+        "characters": 3715,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1
+        },
+        "neighbours": [
+          "TR-001 Compute for Appointment scheduling service implementation"
+        ],
+        "omissions": [],
+        "help": "The support obligation this capability satisfies for the components that need it."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"TC-001 Compute for Appointment scheduling service\",\"type\":\"technology",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "4b9294ee-31f9-4353-8934-91a2f58a3149",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-de0d73fed59408",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-6644b20ccd029",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "operationsPlan",
+        "hasDraft": true,
+        "sourcesInPacket": 3
+      },
+      "error": null,
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "recordId": "tr-001",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "packet": {
+        "characters": 4515,
+        "maxCharacters": 12000,
+        "sources": 3,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1
+        },
+        "neighbours": [],
+        "omissions": [],
+        "help": "Who operates this, how it is monitored and how incidents are handled."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"TR-001 Compute for Appointment scheduling service implementation\",\"type\":\"techrealisation",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "109d126d-b89a-487a-b28c-59d51bcd0003",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-3138f312e2ddb8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-71c0304d78b5c",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "failurePolicy",
+        "hasDraft": true,
+        "sourcesInPacket": 7
+      },
+      "error": null,
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "recordId": "if-001",
+      "record": "IF-001 Hand over appointment",
+      "packet": {
+        "characters": 5202,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 2
+        },
+        "neighbours": [
+          "APP-002 Phone booking intake service",
+          "DAT-001 Appointment"
+        ],
+        "omissions": [],
+        "help": "What the caller does when the provider fails or does not answer."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"IF-001 Hand over appointment\",\"type\":\"interfaces",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "398ed8a0-fca0-4534-a3e4-4922dd348045",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-36d91eec43fba",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-a1d1c1cd9199d8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "mechanism",
+        "hasDraft": true,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "recordId": "sec-001",
+      "record": "SEC-001 Limit access to Appointment",
+      "packet": {
+        "characters": 3400,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1
+        },
+        "neighbours": [
+          "THR-001 Disclosure of Appointment"
+        ],
+        "omissions": [],
+        "help": "How the control works."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"SEC-001 Limit access to Appointment\",\"type\":\"security",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "e92b5f67-23bb-421c-a7c9-cc6a58ec1a9f",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-ef8c3ef10954f8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-cfc3f3033c565",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "readiness",
+        "hasDraft": true,
+        "sourcesInPacket": 6
+      },
+      "error": null,
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "recordId": "run-001",
+      "record": "RUN-001 Appointment scheduling service",
+      "packet": {
+        "characters": 5438,
+        "maxCharacters": 12000,
+        "sources": 6,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 1
+        },
+        "neighbours": [
+          "TC-001 Compute for Appointment scheduling service",
+          "ENV-001 Appointment scheduling service production design"
+        ],
+        "omissions": [],
+        "help": "What proves an instance is ready to serve."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"RUN-001 Appointment scheduling service\",\"type\":\"runtime",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "710f8c81-1f7f-417a-add8-cd7c4d3803a6",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "1b865c7b31c0df2d4f2b9eb7772a8889ae39d752bb2c965a4deaa4bb779a7cad"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-8d2f5b5ac10d78",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-24580ccd690b8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "summary",
+        "hasDraft": true,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "recordId": "SDD",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "packet": {
+        "characters": 3467,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "neighbour": 2
+        },
+        "neighbours": [
+          "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+          "OUT-002 Every freed slot is offered to the waiting list before the day of the appointment"
+        ],
+        "omissions": [],
+        "help": "The design in a few sentences a reviewer reads first."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "{\"record\":\"SDD Sol live check · reference — Solution Design\",\"type\":\"review",
+        "basis": "From the packet’s first source.",
+        "sourceRefs": [
+          "S1"
+        ]
+      }
+    },
+    {
+      "mode": "journey",
+      "id": "3126a8f2-cd28-48e0-a7f9-fe16fd177667",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-journey-1",
+        "sha256": "b1578b25091260eea5515abd813c50862a53f34da351b06c4f992092917aaed9"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-ee74088e06175",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-18a935a50aa99",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "chapter": 1,
+        "recordsInDraft": 24,
+        "fieldsInPacket": 53,
+        "answers": 36,
+        "fallback": null
+      },
+      "error": null
+    },
+    {
+      "mode": "review",
+      "id": "e3244cc8-2447-4597-b2ae-7130d1235e28",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-review-1",
+        "sha256": "6930bd984ea0996080f9699c5fccbdfb755f2e95c7b5cf987b1931315879c795"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-4d8daf76a1d268",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-2677ace6a63968",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "chapter": 4,
+        "elementsInPacket": 130,
+        "sourcesInPacket": 62,
+        "findings": 2
+      },
+      "error": null
+    },
+    {
+      "mode": "architecture",
+      "id": "mock-c77faf590b3278",
+      "status": "completed",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "prompt": {
+        "promptVersion": "sol-architecture-1",
+        "sha256": "d948255ac2a4a6e8bd083b26a0430f949fdda11b7cc12261f46ef5d1700b3fe4"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-c77faf590b3278",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "mock-sol",
+          "responseId": "mock-1c0fc1fa0f65e",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1200,
+            "outputTokens": 400
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "theme": "REQ:REQ-001",
+        "requirements": 1,
+        "proposalCount": 1,
+        "withheldCount": 0,
+        "packetStamp": "41dbdf902b806153cda7f39f789298c19eaf7c4aa42b37f7c65fdfa2407872be"
+      },
+      "error": null,
+      "theme": {
+        "key": "REQ:REQ-001",
+        "title": "Appointment"
+      },
+      "proposalRefs": [
+        {
+          "kind": "responsibility",
+          "title": "Appointment handling",
+          "requirements": [
+            "REQ-001"
+          ]
+        }
+      ],
+      "withheldReasons": [],
+      "packet": {
+        "requirements": 1,
+        "passages": 52,
+        "claims": 0,
+        "omissions": {
+          "requirements": 0,
+          "passages": 0,
+          "claims": 0,
+          "state": 0,
+          "skeleton": 0,
+          "excluded": 0
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "notes": [
+    "Run against the test double: it proves the probe, not the provider.",
+    "Receipts, field drafts and one synthetic architecture theme: packet counts, grounding result, accepted proposal titles and withheld reasons are recorded without prompt content or keys.",
+    "The architecture theme uses the model request path directly to bound this probe; it is not a persisted project job, applied decision, provider quality acceptance or evidence of scheduled continuation.",
+    "Advice only: nothing Sol returned was applied; the runs were read and discarded with the scratch database."
+  ],
+  "authority": "Acceptance evidence for the Sol connection on one day. It does not approve the design, calibrate Sol or accept the release for production."
+}

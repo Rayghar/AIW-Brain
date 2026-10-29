@@ -1,0 +1,454 @@
+{
+  "at": "2026-09-20T21:02:36.318Z",
+  "evaluation": "Eight synthetic counterfactual scenarios with primary-source methods and bounded project context",
+  "authority": "Implementation-author evaluation with explicit rubric; not independent human approval or production calibration",
+  "results": [
+    {
+      "id": "fulfilment-dual-write",
+      "passed": false,
+      "error": "The explanation must cite the actual architecture method",
+      "code": "ERR_ASSERTION"
+    },
+    {
+      "id": "advisory-notification",
+      "passed": false,
+      "error": "The model proposed an unsupported design action.",
+      "code": "invalid_output"
+    },
+    {
+      "id": "supplier-unknown-outcome",
+      "topic": "resilience",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9337,
+        "outputTokens": 519
+      },
+      "durationMs": 4540,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "catalogue:PAT-RETRY-WITH-BACKOFF",
+          "kind": "catalogue-description"
+        },
+        {
+          "ref": "S5",
+          "id": "catalogue:PAT-TIMEOUT",
+          "kind": "catalogue-description"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "playbook:PB-050",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S8",
+          "id": "akr:PAT-RETRY-WITH-BACKOFF",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "idempot|duplicat|repeat",
+          "passed": true
+        },
+        {
+          "criterion": "uncertain|unknown|outcome",
+          "passed": true
+        },
+        {
+          "criterion": "budget|deadline|bounded|limit",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Managing Retry of Non-Idempotent Operations after Timeouts",
+        "summary": "Retrying a supplier operation after a timeout needs careful evaluation to maintain the declared service contract, especially when the operation is non-idempotent and may have been accepted despite no immediate confirmation. Retry with backoff and circuit breaking can help control retry attempts and protect system resources, but must be applied only after confirming safety and bounding retry conditions.",
+        "passage": "The scenario entails a remote supplier operation that may timeout after the supplier possibly accepted the instruction, making automatic retry unsafe without additional control. To address this, the system must first establish whether the operation is idempotent or has a mechanism (e.g., idempotency key, duplicate suppression) that prevents duplicate business effects. Without such guarantees, blindly retrying risks violating the business integrity and service contract. Timeout should not be equated with outright failure, as the original request may still have succeeded at the supplier side. Retrying must therefore be bounded in attempt count, elapsed time, and coordinated with circuit breaker logic that can temporarily stop calls to a failing dependency to allow recovery and reduce overload. Retry with backoff applies delays between attempts to avoid aggressive load, and jitter can spread retries to prevent synchronized retries. Observability and telemetry are needed to monitor retry effects and inform operational decisions. Ownership and measurable acceptance criteria for the retry approach must be assigned to ensure governance and continuous validation. If retry safety or bounded retry policies cannot be established, fallback plans should return explicit unavailable status rather than risking unsafe repeats.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S5",
+          "S8"
+        ],
+        "assumptions": [
+          "The operation is potentially non-idempotent with side effects that must not be duplicated without confirmation.",
+          "A recorded reference or authoritative status is available to reconcile the result after retries.",
+          "Timeout events are observable and distinguishable from definitive failure.",
+          "Circuit breaker and backoff logic can be coordinated with the retry mechanism.",
+          "There is a defined maximum retry count and total retry time budget respecting the end-to-end deadline.",
+          "The service owner is accountable for specifying retry acceptance criteria and operating telemetry."
+        ],
+        "questions": [
+          "Is the operation idempotent or protected by idempotency keys or duplicate suppression?",
+          "What is the maximum allowed retry count and total retry time budget?",
+          "What failure outcomes qualify as transient and safe to retry?",
+          "What diagnostic telemetry is available to detect retry effects and support circuit breaker decisions?",
+          "What fallback response is delivered when retry limits or circuit breaker trips?",
+          "Who owns the retry mechanism's acceptance criteria and operating procedures?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "library-local-state",
+      "topic": "distribution",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8501,
+        "outputTokens": 492
+      },
+      "durationMs": 5359,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "akr:STYLE-LAYERED",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "session|state",
+          "passed": true
+        },
+        {
+          "criterion": "shared|dependen",
+          "passed": true
+        },
+        {
+          "criterion": "health|readiness|ready",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Assessment of Adding Load Balancer and Replicas for Library Catalogue Session Availability",
+        "summary": "Adding a load balancer and replicas to a service that holds session state only in local server memory introduces challenges related to session state management, shared dependencies, and readiness verification, which can compromise safe availability improvements.",
+        "passage": "The current library catalogue sessions exist only in each server's local memory, meaning session state is not shared across replicas. Introducing a load balancer with multiple replicas can enhance availability if the replicas are independent and have coordinated session state management; however, in this case, the unmanaged local session state poses significant challenges. Without sharing or persisting session state, routing user requests to different replicas risks session disruption or inconsistency, as each replica cannot retrieve prior session information. This violates the principle of safe recovery and maintaining the declared service contract requiring safe resolution and consistent results for interrupted operations (S1, S2).\n\nFurther, readiness concerns arise because health probes through the load balancer must verify application readiness beyond mere server availability, including session state readiness and coherent processing capability (S3). Also, shared dependencies such as data stores remain critical failure domains; replicas do not eliminate such bottlenecks, only redistribute load (S3).\n\nTherefore, simply adding a load balancer and replicas without addressing session state sharing or redesigning session management is insufficient to safely achieve availability goals. Alternatives include implementing session state replication, externalizing session storage, or redesigning the service for statelessness or idempotency before adding load balancing. This assessment aligns with existing architectural reasoning suggesting that unmanaged local session state blocks safe load-balancer-based request distribution (S3).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "assumptions": [
+          "Session state is stored only in local server memory, with no external persistence or replication.",
+          "Replicas are expected to serve any incoming request via the load balancer.",
+          "No current mechanism exists for session state synchronization or sharing.",
+          "The declared service contract requires maintaining operation consistency and recoverability under failure conditions."
+        ],
+        "questions": [
+          "Is the current session state data compatible with replication or external persistence?",
+          "Are client requests session-agnostic or require sticky sessions?",
+          "What readiness probe criteria are in place to assess replica health beyond basic availability?",
+          "Is there an existing shared data store or dependency that replicas share?",
+          "Can session state be externalized or made stateless to support true load-balanced operation?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "laboratory-local-transaction",
+      "passed": false,
+      "error": "The model proposed an unsupported design action.",
+      "code": "invalid_output"
+    },
+    {
+      "id": "bottleneck-calibration",
+      "topic": "distribution",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8185,
+        "outputTokens": 529
+      },
+      "durationMs": 4490,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "100",
+          "passed": true
+        },
+        {
+          "criterion": "assum|estimat|calculat|analyt",
+          "passed": true
+        },
+        {
+          "criterion": "measur|test|verif",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Capacity Calculation for Three Replicas with Shared Bottleneck",
+        "summary": "When three replicas each support 60 requests per second but share a downstream dependency capped at 100 requests per second, the balanced pool capacity calculation yields 100 requests/s. This calculation uses the formula min(workers × service × efficiency/100, downstream) = min(3 × 60 × 1, 100) = 100 requests/s. However, this computed pool limit is an analytical estimate based on inputs, not a guarantee of actual capacity or availability.",
+        "passage": "The balanced pool calculation assumes three identical replicas (workers=3), each capable of safely servicing 60 requests/s (service), with 100% distribution efficiency, and a shared downstream bottleneck capped at 100 requests/s (downstream). The useful pool capacity is therefore min(3×60×1, 100) = 100 requests/s. This formula reflects that while the replicas could theoretically handle up to 180 requests/s collectively, the shared dependency restricts the total throughput to 100 requests/s. Notably, this is a synthetic analytical estimate derived from declared inputs, without direct workload measurement or operational validation (S3). This calculation is useful for planning but does not prove achieved capacity or availability. Real operational capacity can be lower due to failures, uneven load distribution, routing inefficiencies, or unexpected bottlenecks. Additionally, availability depends on more than replicas; shared routers, dependencies, and network factors also influence it. Validation requires load-testing under representative scenarios and failover exercises to verify actual throughput and recovery behavior (S3). The calculation does not account for these dynamic factors and so is not conclusive evidence of capacity or availability achievement. Assumptions include equal replicas, independent serviceable requests, representative safe rate measurement, and the presence of the shared bottleneck (S3).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "assumptions": [
+          "Replicas are equal and can serve independent requests safely at 60 requests/s each.",
+          "Distribution efficiency is 100%, meaning load is perfectly balanced among replicas.",
+          "The shared downstream resource imposes a maximum capacity of 100 requests/s for the entire pool.",
+          "The synthetic analytical calculation is based on declared safe rates and bottleneck limits without measured workload or failure behavior.",
+          "Actual achieved capacity and availability must be established through operational testing, not just calculation."
+        ],
+        "questions": [
+          "What load balancing or routing mechanisms ensure even distribution across replicas?",
+          "How is failure of a replica and its impact on capacity handled operationally?",
+          "What is the observed throughput and availability in real workload scenarios?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "no-fabricated-result",
+      "topic": "resilience",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8175,
+        "outputTokens": 441
+      },
+      "durationMs": 3357,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-066",
+          "kind": "brain-method"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "cannot|must not|not.*success|fabricat|false",
+          "passed": true
+        },
+        {
+          "criterion": "reject|fail|unavailable|deferr",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Handling booking confirmation when the booking authority is unavailable",
+        "summary": "An open circuit cannot safely return a successful booking confirmation if the booking authority is unavailable because doing so would violate business correctness by reporting a false success. The permitted failure response is to explicitly report the unavailability without inventing a business result, preserving the declared service contract and data integrity.",
+        "passage": "The booking authority is the sole business owner and writer of booking status, so generating a successful confirmation without its input risks false success — a known business correctness problem. The quality scenario (QD-001) emphasizes maintaining the declared service contract by either resolving the operation safely with the original correct result or explicitly indicating failure. Returning a success without authoritative confirmation would break this contract, risking data inconsistency and misinforming clients. Hence, an open circuit must not return a false positive but should provide an explicit 'unavailable' status as fallback. This preserves operation integrity, rejects unsafe repeats, and defers reconciliation to controlled recovery procedures. This approach aligns with the stated failure and fallback plans (S3) that require retaining original references and returning explicit unavailable status without fabricating success, ensuring predictability and traceability of failures. The challenge lies in balancing user experience with correctness — reporting failure promptly supports safe system behavior despite user inconvenience. This design does not attempt to estimate or invent outcomes but favors refusing to confirm when authoritative input is missing, per the confirmed requirement REQ-001 and quality scenario QS-001 (S1, S2, S3).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "assumptions": [
+          "The booking authority is the only authoritative writer of the booking status record.",
+          "The system requires idempotency or atomic deduplication for retries.",
+          "The quality scenario requires at most 30 seconds recovery delay per interrupted operation.",
+          "Fallback on unavailability must not fabricate successful operations but explicitly report unavailability.",
+          "The failure management strategy retains original references and rejects unsafe repeats before controlled recovery."
+        ],
+        "questions": [
+          "What is the permitted response when the booking authority is unavailable during booking?",
+          "How does returning a false success impact business correctness?",
+          "What fallback mechanisms comply with the declared service contract in this scenario?"
+        ],
+        "options": []
+      }
+    },
+    {
+      "id": "serial-work-pool",
+      "topic": "distribution",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 8517,
+        "outputTokens": 446
+      },
+      "durationMs": 3700,
+      "sourceIdentities": [
+        {
+          "ref": "S1",
+          "id": "model:QD-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S2",
+          "id": "model:REQ-001",
+          "kind": "model"
+        },
+        {
+          "ref": "S3",
+          "id": "architecture:DES-001",
+          "kind": "architecture-knowledge"
+        },
+        {
+          "ref": "S4",
+          "id": "playbook:PB-104",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S5",
+          "id": "playbook:PB-105",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S6",
+          "id": "playbook:PB-154",
+          "kind": "brain-method"
+        },
+        {
+          "ref": "S7",
+          "id": "akr:STYLE-LAYERED",
+          "kind": "knowledge"
+        }
+      ],
+      "rubric": [
+        {
+          "criterion": "global|serial|order",
+          "passed": true
+        },
+        {
+          "criterion": "cannot|not|limit|constraint",
+          "passed": true
+        },
+        {
+          "criterion": "coordinat|partition|measur|test",
+          "passed": true
+        }
+      ],
+      "passed": true,
+      "result": {
+        "title": "Evaluate Throughput Gain from Three Replicas under Global Operation Ordering",
+        "summary": "The requirement to maintain one global operation order challenges straightforward throughput gain claims when using three replicas. While three replicas may improve capacity and availability, they do not inherently provide three times the useful throughput due to the coordination needed to preserve global ordering and integrity.",
+        "passage": "The quality scenario requires that every operation must follow one global order to maintain declared service contract integrity, specifically ensuring a single authoritative result without unsafe repeats (S1, S2). This global ordering constraint implies that operations cannot proceed concurrently in arbitrary order, which limits parallel processing scalability. The simplest current recipe, a single endpoint handling all requests serially, preserves order naturally but cannot leverage multiple replicas to triple throughput. Introducing multiple replicas into a load-balanced pool is effective only if they process requests independently without violating order, which the scenario blocks currently (S3). Without explicit coordination or partitioning, replicas cannot act truly in parallel on the same operation register without risking conflicting outcomes, thus throughput gain is sublinear. A different coordination design—such as explicit ordering partitions or a coordination service—is required to safely distribute operations across replicas while preserving global order. Such designs introduce complexity in routing, state management, and retry handling (S3). Therefore, achieving three times useful throughput with three replicas is not established by the current recipe and would need additional mechanisms to control operation sequencing and concurrency. This assessment assumes no relaxation of the global ordering requirement and that the business authority remains the single writer of the operation register (S1, S3).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ],
+        "assumptions": [
+          "Global order must be preserved for all operations to maintain the declared service contract.",
+          "The business authority (single writer) restricts concurrency on operation records.",
+          "Load balancing among replicas requires independent processing to improve throughput.",
+          "Current recipe does not include explicit coordination or partitioning design for globally serial work."
+        ],
+        "questions": [
+          "Is global ordering required for all operations without exception or can operations be partitioned to independent sequences?",
+          "Are there existing or planned coordination mechanisms to maintain order among distributed replicas?",
+          "Is the operation register sharded or partitioned to support independent concurrent operation sequences?"
+        ],
+        "options": []
+      }
+    }
+  ],
+  "passed": false
+}

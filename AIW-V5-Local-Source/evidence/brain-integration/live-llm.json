@@ -1,0 +1,59 @@
+{
+  "at": "2026-09-20T19:44:07.083Z",
+  "live": true,
+  "syntheticProject": true,
+  "provider": "OpenAI",
+  "model": "gpt-4.1-mini-2025-04-14",
+  "retrieval": {
+    "mode": "graph + lexical + semantic",
+    "model": "text-embedding-3-small",
+    "dimensions": 256,
+    "indexScope": "0e8f007a1951cd2dc5ee416d8b30d4d092956f8784b384d4270fcb56dff72546",
+    "eligibleRecords": 327,
+    "tokensUsed": 13897,
+    "ranking": "reciprocal rank fusion; relevance only",
+    "sourceIds": [
+      "playbook:PB-046",
+      "playbook:PB-086",
+      "playbook:PB-104",
+      "playbook:PB-105",
+      "playbook:PB-073",
+      "playbook:PB-041"
+    ]
+  },
+  "brain": {
+    "engine": "architecture-brain-1",
+    "policy": "evidence-before-proposal-1",
+    "projectId": "live-brain-qa",
+    "objectId": "REQ-001",
+    "graphFingerprint": "3456488339b43efc6c9918ffce6b53f4e2b475035e564cdab887c04b83e53277",
+    "knowledgeStamp": "1ed7084d49ef8d11f970d361dd83e072f87a15af705d5eef6f264d6483ef0a52",
+    "catalogueRelease": "AKR-0.10.73.5",
+    "playbookHash": "d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6",
+    "activeReleases": [],
+    "claimIds": [],
+    "retrieval": "graph + lexical + semantic",
+    "scoring": false
+  },
+  "sourceCount": 11,
+  "sourceRefs": [
+    "S1",
+    "S8",
+    "S9"
+  ],
+  "usage": {
+    "inputTokens": 8337,
+    "outputTokens": 477
+  },
+  "elapsedMs": 15864,
+  "responseTitle": "Authorization Safety of Cache-Aside for Reservation in Equipment Availability",
+  "summary": "Cache-aside caching pattern is not safe to authorize reservations because cached descriptions may be stale and do not reflect the authoritative write state. Cached data serves as a temporary read optimization but does not guarantee correctness for write authorization decisions. Authoritative validation must always occur against the definitive source before accepting reservations.",
+  "questions": [
+    "What is the maximum tolerable staleness of availability data for authorizing reservations?",
+    "Is there a quality scenario that measures the consistency and freshness of availability information?",
+    "Can the system enforce strong consistency semantics for write operations in the authoritative data store?",
+    "What monitoring and failure handling are in place to ensure cache invalidation aligns with source updates?"
+  ],
+  "modelChanges": 0,
+  "independentQualityEvaluation": false
+}

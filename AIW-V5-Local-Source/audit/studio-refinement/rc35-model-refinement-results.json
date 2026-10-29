@@ -1,0 +1,72 @@
+{
+  "schema": "aiw.focused-validation.v1",
+  "authority": "Authored native DOM, domain and export assertions against the rc35 working tree. No rendered browser, live provider or runtime performance claim.",
+  "scope": [
+    "Existing model dossier: actual driver kinds, current hard exclusions, historical supporting assessments, exact native destinations and no design writes.",
+    "Existing Arrange menu: focus retained on replacement controls or returned to the trigger when a command becomes unavailable.",
+    "Existing export menu: original static generator import and synchronous files API retained; one document/layout snapshot for exports and Manifest; asynchronous PNG context guards, URL cleanup and retry.",
+    "Integrated result-read and SDD review: accepted design source support remains distinct from an earlier Brain generation receipt."
+  ],
+  "checks": [
+    {
+      "command": "node model-dossier-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "Actual constraint and business driver descriptions; current hard-constraint violation excluded; stale support and exclusion judgements retained as earlier evidence with review required; exact source and comparison links; no project mutation."
+    },
+    {
+      "command": "node canvas-controls-dom-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "All-bounds and selection Fit, fixed zoom, keyboard scope, menu lifecycle, project cameras, multi-selection, guarded movement, sizing, undo, pointer cancellation and project isolation. Added Select shown, Clear selection, Release all and Undo focus assertions."
+    },
+    {
+      "command": "node model-journey-continuity-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "Diagram, Layers, Table and Matrix subject continuity; per-sheet zoom and scroll; Whole design camera; project isolation; hidden-layer recovery; scoped Escape; logical-to-physical handoff and outside-concern reading."
+    },
+    {
+      "command": "node architecture-arrangement-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "Ten domain and geometry checks for architecture arrangements."
+    },
+    {
+      "command": "node view-experience-dom-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "Model question destinations, current question, deliberate navigation, keyboard focus and no duplicate toolbar controls."
+    },
+    {
+      "command": "node notation-export-context-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "Passed after restoring the original import arrangement. Native clicks retain the initial format menu, synchronous editable-format downloads and synchronous files() API. Each supported format matches the real generator for the selected diagram and geometry. The file set preserves SVG and all supported scene formats; Manifest entries match independent SHA-256 and byte calculations. Project, document, revision, selection, relationship, layout, view, route, surface and attachment changes cancel late PNG decoding; a view change during encoding cancels the resulting download. Image URLs are released. Failed PNG decoding retries without a reload; stale failures stay silent; no project commands are issued."
+    },
+    {
+      "command": "node notation-code-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "Repeated after restoring the original import arrangement. Seven existing export, exchange and SDD checks passed, covering 106 diagram-code files across six formats and their supported scenes, exact identifiers and geometry, ArchiMate relationship validity, 21 SDD figures and deterministic SHA-256 manifests, reading packets, blank projects, and sequence/lifecycle/process formats."
+    },
+    {
+      "command": "node --input-type=module",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "Inline read-only integration audit using readOutcomeFixture, brainContext, generationCurrent, native case.save, resultReadContext, designBasisCurrent and sddDocument. Adding a related architecture case makes the earlier generation receipt stale while the accepted read declarations and SDD Source support: current declarations remain current. This found no disagreement between accepted source support and historical generation currentness."
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed",
+      "exitCode": 0,
+      "observation": "No whitespace errors in the shared working-tree diff after the static import restoration and retained PNG capture guard."
+    }
+  ],
+  "loadingCorrection": "An attempted extra export loading boundary was removed after the production metafile showed that notation-view and its original generators were already outside chapter opening. It added two scripts without reducing chapter-opening bytes. The original static generator import and metadata placement are restored; this pass makes no eager-byte savings claim. The replacement context suite covers only retained behavior.",
+  "limits": [
+    "DOM checks use Happy DOM and controlled asynchronous image and canvas callbacks; they do not establish rendered visual quality or actual PNG raster fidelity.",
+    "No full production build or opening-budget measurement was run by this pass. Final integrated build and existing budget gates remain separate release evidence.",
+    "No CSS, package scripts or build-budget caps were changed by this pass."
+  ]
+}

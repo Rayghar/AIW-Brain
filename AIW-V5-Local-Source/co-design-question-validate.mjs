@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {appendCoDesignQuestion,SOL_QUESTIONS} from './public/sol-question-presets.js';
+import {savedAssessmentHistoryHTML,intelligenceSources} from './public/intelligence-ui.js';
+import {SOL} from './public/brain-reasoning-ui.js';
+
+const original='Keep approval tied to the current request version.';
+const question='Which race should we test first?';
+assert.equal(appendCoDesignQuestion(original,question).prompt,original+'\n\n'+question);
+assert.equal(appendCoDesignQuestion(original+'\n\n'+question,question).prompt,original+'\n\n'+question);
+assert.equal(appendCoDesignQuestion('x'.repeat(1990),question).ok,false,'starter cannot silently replace or truncate an existing draft');
+assert.equal(appendCoDesignQuestion(original,' ').ok,false);
+assert.equal(new Set(SOL_QUESTIONS.map(x=>x[0])).size,8);
+assert(SOL_QUESTIONS.some(x=>x[0]==='patterns')&&SOL_QUESTIONS.some(x=>x[0]==='evidence')&&SOL_QUESTIONS.some(x=>x[0]==='impact'));
+
+const target='M:4:payment',p={id:'history-project'};
+const run=(id,withheld=false)=>({id,createdAt:'2026-10-13T09:00:00Z',model:'test-model',packet:{request:{prompt:original},items:[],sources:[{ref:'S1',title:'Exact original',revision:'v3',passage:'D269',posture:'Project source',excerpt:'Retained exact passage'}]},result:{assessments:[{id:target,headline:id+' <script>unsafe</script>',reasoning:'Explain the approval boundary.',sourceRefs:['S1'],risks:[],questions:[],refinements:[],verification:[],withheld}]}});
+SOL.projectId=p.id;SOL.runs=[run('newest')];
+const earlier=[run('newest'),run('older',true)];
+const before=JSON.stringify(earlier);
+const html=savedAssessmentHistoryHTML(p,target,{historyRuns:earlier,historyLoaded:true});
+assert.match(html,/data-saved-assessment="older"/,'older available response is readable instead of silently replaced by latest');
+assert.match(html,/Source basis changed/);assert.match(html,/Withheld/);
+assert.match(html,/Retained exact passage/);assert.match(html,/Revision v3/);assert.match(html,/Passage D269/);
+assert.doesNotMatch(html,/<script>/);assert.match(html,/&lt;script&gt;/);
+const untrustedReceipt=intelligenceSources([{ref:'S1',title:'Source',posture:'Candidate',revision:'<img src=x onerror=alert(1)>',passage:'<script>bad()</script>',excerpt:'Quoted text'}]);
+assert.doesNotMatch(untrustedReceipt,/<img|<script>/);assert.match(untrustedReceipt,/&lt;img/);assert.match(untrustedReceipt,/&lt;script&gt;/);
+assert.doesNotMatch(html,/data-dk="sol-(?:use|agree|dismiss)"|data-intel-action="adopt/,'read-only history cannot approve or apply advice');
+assert.equal(JSON.stringify(earlier),before);
+assert.equal(savedAssessmentHistoryHTML({id:'another-project'},target), '','no previous-project history leakage');
+assert.doesNotMatch(savedAssessmentHistoryHTML(p,'M:4:unrelated',{historyRuns:earlier}),/data-saved-assessment="older"/,'history remains target-scoped');
+console.log('PASS co-design question preservation, contextual starter coverage, read-only scoped/stale/withheld history and escaping. No provider calls.');

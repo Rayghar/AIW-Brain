@@ -1,0 +1,181 @@
+/* Shared workspace details and the compact model shell. */
+body[data-workspace-tab=model] .r-inspector-body{display:block;max-height:410px;overflow:auto;overscroll-behavior:contain}
+.ux-assist-role{font-size:12px!important;line-height:1.4!important;color:var(--green-11)!important;border-left:1px solid var(--green-5);padding-left:7px;margin-left:1px}
+.chapter-item.available{text-decoration:none}
+.chapter-item.available:hover b{text-decoration:underline;text-underline-offset:3px}
+.sidebar-bottom{margin-top:26px}
+#flow-panel{scroll-margin-top:85px}
+.flow-actions .action-row{flex-shrink:0}
+.flow-actions{margin:14px 0;min-height:44px}
+.flow-actions>small{max-width:52%;line-height:1.6}
+.logical-studio .canvas-tools button[data-action=sol],.logical-studio .canvas-tools button[data-action=mind],.logical-studio .cursor-switch{display:none}
+.logical-studio .canvas-viewport{height:380px;min-height:380px}
+@media(max-width:700px){
+ .logical-studio .top-actions{display:grid;gap:4px;justify-items:end}
+ .logical-studio .top-actions .save-state{display:flex;font-size:12px!important}
+ .logical-studio .top-actions .private{font-size:12px}
+ .logical-studio .top-actions .avatar{display:none}
+ body[data-workspace-tab=model] .r-inspector-body{max-height:none;overflow:visible}
+ #flow-panel{scroll-margin-top:125px}
+ .ux-assist-role{display:none}
+ .flow-actions>small{max-width:none;flex:1 0 100%}
+ .logical-studio .graph{min-width:0}
+ .logical-studio .canvas-viewport{height:360px;min-height:360px}
+}
+
+.f-subview-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 14px}
+.f-subview-tabs button{min-height:40px}
+.f-subview-tabs button[aria-pressed=true]{background:var(--green-3);border-color:var(--green-7)}
+.f-disclosure{border-top:1px solid var(--green-4);padding:12px 0;margin-top:12px}
+.f-disclosure>summary{font-size:15px;cursor:pointer;color:var(--green-11);font-weight:600;line-height:1.5;padding:4px 0}
+.f-disclosure[open]>summary{margin-bottom:12px}
+.f-criterion-picker{display:flex;align-items:center;gap:14px;margin:12px 0}
+.f-criterion-picker>span{font-size:14px;white-space:nowrap}
+
+
+.ux-toggle-state{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;font-size:12px;line-height:18px;font-weight:600;background:var(--green-3);color:var(--green-11)}[aria-pressed=true]>.ux-toggle-state{background:var(--green-10);color:var(--on-solid)}
+.about-glossary{margin:0 0 12px;display:grid;grid-template-columns:max-content 1fr;gap:6px 14px}.about-glossary dt{font-weight:650}.about-glossary dd{margin:0}@media(max-width:700px){.about-glossary{grid-template-columns:1fr}.about-glossary dd{margin-bottom:6px}}
+
+/* Toasts: top right, over nothing the person is working on, one message, 5 s (U2-15). */
+#toast{bottom:auto;top:84px;left:auto;right:22px;transform:translateY(-12px);font-size:var(--fs-2);border-radius:var(--r-2);max-width:min(380px,calc(100vw - 32px))}
+#toast.visible{transform:translateY(0)}
+@media(max-width:700px){#toast{top:auto;bottom:16px;left:16px;right:16px;max-width:none}}
+/* Readiness: the met segment, the re-check segment, and a phone disclosure (U2-06, U2-23). */
+.progress-track{position:relative}.progress-track>span{position:absolute;left:0;top:0;bottom:0;background:var(--green-10);border-radius:4px}
+.progress-track>.progress-recheck{background:repeating-linear-gradient(135deg,var(--gold-8) 0 3px,var(--gold-3) 3px 6px)}
+.r-progress-track{position:relative}.r-progress-track>.progress-recheck{position:absolute;top:0;bottom:0;border-radius:0;background:repeating-linear-gradient(135deg,var(--gold-8) 0 3px,var(--gold-3) 3px 6px)}
+/* Chapter links are anchors in both shells (U2-01). */
+a.chapter-item{text-decoration:none}a.chapter-item.current{color:var(--sage-12);background:var(--green-2)}
+/* The record just saved (U2-14). */
+.ux-just-saved{outline:2px solid var(--gold-8);outline-offset:3px;border-radius:var(--r-1);animation:ux-saved-fade 6s linear forwards}@keyframes ux-saved-fade{0%,70%{outline-color:var(--gold-8)}100%{outline-color:transparent}}
+/* Offline (U2-34). */
+.ux-offline .save-state,.ux-offline #r-save-state,.ux-offline #q-save-state,.ux-offline #d-save-state{color:var(--red-11);font-weight:600}.ux-offline .save-state .dot{background:var(--red-9)}
+.ux-retry{margin-left:8px}
+/* The treatment dialog (U2-13). */
+.treat-form label{display:grid;gap:5px;margin:0 0 12px;font-size:var(--fs-2)}.treat-form label span{color:var(--green-11)}.treat-form input,.treat-form select,.treat-form textarea{font:inherit;font-size:var(--fs-3);padding:8px 10px;border:1px solid var(--green-5);border-radius:var(--r-1);background:var(--sage-1);min-height:var(--h-2)}.treat-form .treat-check{display:flex;align-items:center;gap:8px}.treat-form .treat-check input{min-height:0}.treat-note{font-size:var(--fs-1);color:var(--green-11)}.treat-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}.treat-error{padding:8px 10px;border-radius:var(--r-1);background:var(--red-3);color:var(--red-11);font-size:var(--fs-2)}
+/* Validate: the chapter's checks lead; the journey line is a collapsed summary; findings are grouped with an index (U2-03, U2-11, U2-12, U2-13). */
+details.vx-ready>summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;cursor:pointer;list-style:none;min-height:var(--h-2)}details.vx-ready>summary::-webkit-details-marker{display:none}details.vx-ready>summary small{font-size:var(--fs-1);letter-spacing:.07em;text-transform:uppercase;color:var(--green-11);font-weight:600}details.vx-ready>summary b{font-family:var(--font-ui);font-weight:600;font-size:var(--fs-4)}details.vx-ready>summary .vx-more{margin-left:auto;font-size:var(--fs-1);color:var(--green-11);text-decoration:underline;text-underline-offset:3px}details.vx-ready[open]>summary .vx-more::after{content:" · hide"}details.vx-ready[open]>summary{margin-bottom:8px}
+.vx-index{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:12px 0 10px;padding:8px 10px;border:1px solid var(--green-5);border-radius:var(--r-1);background:var(--sage-2);font-size:var(--fs-1);color:var(--green-11)}.vx-index a{color:var(--green-11);text-decoration:none;padding:4px 8px;border-radius:999px;background:var(--green-2);min-height:28px;display:inline-flex;align-items:center;gap:4px}.vx-index a b{font-weight:650}.vx-index a:hover{background:var(--green-4)}
+.vx-group{margin:0 0 8px;border:1px solid var(--green-4);border-radius:var(--r-2);background:var(--sage-1);scroll-margin-top:90px}.vx-group>summary{cursor:pointer;padding:10px 12px;font-size:var(--fs-2);color:var(--sage-12);min-height:var(--h-2);display:flex;align-items:center}.vx-group>summary b{font-weight:650;margin-right:4px}.vx-group[open]>summary{border-bottom:1px solid var(--green-3)}.vx-group>.l-finding,.vx-group>.r-finding{margin:0;border-radius:0;border-left:0;border-right:0}.vx-group>.l-finding:last-child,.vx-group>.r-finding:last-child{border-bottom:0}
+.vx-index .vx-by{display:inline-flex;gap:2px;margin-right:6px;padding:2px;border:1px solid var(--green-5);border-radius:999px;background:var(--sage-1)}.vx-index .vx-by button{min-height:28px;padding:0 10px;border-radius:999px;font-size:var(--fs-1);color:var(--green-11)}.vx-index .vx-by button[aria-pressed=true]{background:var(--green-10);color:var(--on-solid)}
+.stage>.vx-obs,.r-surface>.vx-obs{margin:12px 0;padding:10px 12px;border:1px solid var(--green-4);border-radius:var(--r-2);background:var(--sage-1)}
+.vx-treat{min-height:var(--h-1);font-size:var(--fs-1)}.vx-treated{font-size:var(--fs-1);color:var(--green-11);background:var(--green-2);padding:4px 8px;border-radius:999px;align-self:center}
+/* Empty companion sections are not drawn; every empty state names its action (U2-36). */
+.inspector-body>.eyebrow:has(+ .attribute-list:empty),.inspector-body>.attribute-list:empty,.inspector-body>.relation-heading:has(+ .relation-list:empty),.inspector-body>.relation-list:empty{display:none}
+/* Mandatory fields carry a visible mark in every editor (U2-16). */
+.l-field:has(>[required])>span:first-child::after,.l-checkbox:has(>[required])::after,.treat-form label:has([required])>span::after{content:" *";color:var(--red-11);font-weight:700}.l-field [aria-invalid=true]{border-color:var(--red-11)}
+.l-dialog form:has([required])::before{content:"* required";display:block;font-size:var(--fs-1);color:var(--green-11);margin:0 0 8px}
+/* No inner scroll inside the companion: the connected journey folds per chapter instead (U2-10). */
+.journey-context-body{max-height:none!important;overflow:visible!important}
+/* The phone navigation drawer is a dialog: its close control is first and large (U2-24). */
+.journey-rail[role=dialog] .rail-close{min-height:var(--h-3)}
+/* Links that open a new tab say so (U2-32). */
+a[target=_blank]:not(.btn)::after,.btn[target=_blank]::after{content:" ↗";font-size:.85em}
+/* Model chrome respects reduced motion as the shell does (U2-31). */
+@media (prefers-reduced-motion:reduce){.cm,.cm *,.nt-node,.nt-edge,[class^=cm-],[class*=" cm-"],[class^=nt-],[class*=" nt-"],[class^=dk-],[class*=" dk-"],[class^=lr-],[class*=" lr-"],[class^=rz-],[class*=" rz-"],.ux-just-saved,#toast{transition:none!important;animation:none!important}}
+
+/* One kicker format in both shells (U2-29): "Ch. 04 / Work", whatever case a studio writes the tab in. */
+.l-assistance>span:first-child{text-transform:capitalize}
+
+/* Classes added by the frontend-core work (round 2, F2-01, F2-24, F2-25), drawn on the shared tokens. */
+.l-pager{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:10px 0 4px;font-size:var(--fs-2)}.l-pager small{color:var(--green-11);font-size:var(--fs-1)}.l-pager .btn{min-height:var(--h-2)}
+.field-message{display:block;margin:4px 0 0;font-size:var(--fs-1);line-height:1.4;color:var(--red-11)}
+[aria-invalid="true"]{border-color:var(--red-9)!important;box-shadow:0 0 0 1px var(--red-9)}
+[aria-invalid="true"]:focus-visible{outline:2px solid var(--red-9);outline-offset:2px}
+.dialog-status{margin:8px 0;padding:8px 10px;border-radius:var(--r-1);background:var(--sage-3);color:var(--sage-12);font-size:var(--fs-2)}.dialog-status:empty{display:none}
+.wb-review-step{margin:4px 0 0;padding:14px 0 0;border-top:1px solid var(--sage-5)}
+.wb-review-title{margin:0 0 10px;font-family:var(--font-ui);font-weight:600;font-size:var(--fs-4);color:var(--sage-12)}
+.dc-sol-draft{display:inline-block;margin:4px 0 0;padding:2px 8px;border-radius:999px;background:var(--prov-sol-bg);color:var(--prov-sol);font-size:var(--fs-1)}
+.field-help{display:block;margin:4px 0 0;font-size:var(--fs-1);line-height:1.45;color:var(--green-11)}
+.cm-companion{display:flex;flex-direction:column;min-width:0}
+.cm-companion>section:last-child{border-bottom:0}
+.cm.cm-docked{margin:0}
+.cm.cm-docked .cm-panel{display:none!important}
+.cm.cm-docked .cm-body{grid-template-columns:minmax(0,1fr)!important}
+.cm-open-work{margin:0;padding:8px 14px 10px;border-bottom:1px solid var(--green-3)}
+.cm-open-work .cm-btn{font-weight:600}
+/* The overview: the whole picture small in the stage's corner, with the window onto it. */
+.cm-minimap{position:absolute;right:10px;bottom:10px;z-index:8;background:color-mix(in srgb, var(--sage-1) 95%, transparent);border:1px solid var(--green-5);border-radius:8px;box-shadow:0 4px 14px color-mix(in srgb, var(--shadow) 12%, transparent);padding:3px;cursor:crosshair;line-height:0}
+.cm-minimap[hidden]{display:none}
+.cm-minimap .mg{fill:var(--sage-3);stroke:var(--sage-7);stroke-width:.6}
+.cm-minimap .mb{fill:var(--sage-8);stroke:none}
+.cm-minimap .mb.sel{fill:var(--gold-8)}
+.cm-minimap .mb.found{fill:var(--gold-8)}
+.cm-minimap .mv{fill:color-mix(in srgb, var(--green-9) 8%, transparent);stroke:var(--green-9);stroke-width:1.4}
+@media(max-width:700px){.cm-minimap{display:none}}
+/* The connected dossier reads the delivery observations after the designed claims. The
+   colours distinguish review state; they do not turn a source status into an AIW verdict. */
+.nt-dossier-observations{list-style:none;margin:8px 0 12px;padding:0;display:grid;gap:7px}
+.nt-dossier-observations li{padding:8px 10px;border:1px solid var(--green-4);border-radius:7px;background:var(--sage-1);font-size:12px;overflow-wrap:anywhere}
+.nt-dossier-observations li>b,.nt-dossier-observations li>small{display:block}
+.nt-dossier-observations li>small{margin:3px 0;color:var(--sage-10);line-height:1.45}
+.nt-dossier-observations li>p{margin:5px 0;line-height:1.5;white-space:pre-wrap}
+.nt-observed-basis{display:inline-block;border-radius:99px;padding:2px 7px;font-size:11px;background:var(--sage-3);color:var(--green-11)}
+.nt-observed-basis.reviewed-stale{background:var(--gold-3);color:var(--gold-11)}
+.nt-observed-basis.unreviewed{background:var(--state-confirm-bg);color:var(--state-confirm-fg)}
+.help-tray{margin:0;padding:0;list-style:none}
+.help-tray li{margin:0 0 3px}
+.help-tray i{font-style:normal;color:var(--sage-10)}
+.help-tray-wait{color:var(--sage-10)}
+.help-tray-later{margin:6px 0 0;color:var(--green-11)}
+/* First steps (round 5, Contract G): over the heading's text, clear of the chapter list, the tabs and readiness it
+   points at; the element a step names carries a ring. The card lets every click through except on its own buttons, so
+   it never stands in the way of the work. No motion. */
+.ux-coach{position:fixed;z-index:65;top:auto;bottom:24px;left:300px;right:auto;width:400px;pointer-events:none;padding:12px 14px 12px;border:1px solid var(--green-6);border-radius:var(--r-3);background:var(--sage-1);box-shadow:0 10px 30px color-mix(in srgb, var(--shadow) 18%, transparent);color:var(--sage-12);font-size:var(--fs-2);line-height:1.5}
+.ux-coach header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ux-coach header small{font-size:var(--fs-1);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green-11)}
+.ux-coach-x{min-width:var(--h-1);min-height:var(--h-1);border:0;border-radius:var(--r-1);background:transparent;font-size:var(--fs-4);line-height:1;color:var(--green-11)}
+.ux-coach-x:hover{background:var(--sage-3)}
+.ux-coach h2{margin:2px 0 4px;font-family:var(--font-ui);font-weight:600;font-size:var(--fs-4);color:var(--sage-12)}
+.ux-coach p{margin:0}
+.ux-coach footer{display:flex;align-items:center;gap:8px;margin-top:10px}
+.ux-coach footer .btn{min-height:var(--h-1);font-size:var(--fs-2)}
+.ux-coach-dots{display:inline-flex;gap:4px;margin-right:auto}
+.ux-coach-dots i{width:7px;height:7px;border-radius:50%;background:var(--green-5)}.ux-coach-dots i.on{background:var(--green-10)}
+.ux-coach-target{outline:3px solid var(--gold-8)!important;outline-offset:3px;border-radius:var(--r-1)}
+.ux-coach button{pointer-events:auto}
+@media(max-width:1100px){.ux-coach{top:auto;bottom:12px;left:12px;right:12px;width:auto;max-width:520px;margin:0 auto}}
+/* A phone has no spare corner for a floating guide. Keep the short tour in the page, directly after the tabs,
+   so it remains readable and selectable while the model and its controls can be scrolled without an overlay. */
+@media(max-width:700px){body.explorer-workspace .ux-coach{position:relative;top:auto;right:auto;bottom:auto;left:auto;z-index:auto;box-sizing:border-box;width:auto;max-width:none;margin:8px 0 12px;pointer-events:auto}}
+/* The help map: eleven chapters by the four tabs, one phrase each. */
+.help-dialog{width:min(980px,calc(100vw - 32px));max-width:none}
+.help-lead,.help-note{margin:4px 0 10px;font-size:var(--fs-2);color:var(--green-11)}
+.help-scroll{max-height:min(60vh,560px);overflow:auto;border:1px solid var(--sage-5);border-radius:var(--r-2)}
+.help-scroll:focus-visible{outline:2px solid var(--gold-8);outline-offset:2px}
+.help-map{width:100%;border-collapse:collapse;font-size:var(--fs-2);line-height:1.45}
+.help-map th,.help-map td{padding:7px 9px;border-top:1px solid var(--green-3);text-align:left;vertical-align:top}
+.help-map thead th{position:sticky;top:0;background:var(--sage-2);border-top:0;font-size:var(--fs-1);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green-11)}
+.help-map tbody th{font-weight:600;white-space:nowrap}
+.help-map tbody th span{display:inline-block;min-width:22px;color:var(--sage-10);font-weight:500}
+.help-map tr.here th,.help-map td.here{background:var(--green-2)}
+.help-map td.here{box-shadow:inset 0 0 0 2px var(--sage-8);font-weight:600}
+.help-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.help-actions .btn{min-height:var(--h-2)}
+@media(max-width:700px){.help-map tbody th{white-space:normal}}
+@media (prefers-reduced-motion:reduce){.ux-coach,.ux-coach *,.help-dialog,.help-dialog *,.you-are-here{transition:none!important;animation:none!important}}
+
+/* C · The companion's sections: one summary style, each collapsible, the state remembered (model-stage.js). */
+.cm-companion details.cp{border-bottom:1px solid var(--green-3)}
+.cm-companion details.cp>summary{display:flex;align-items:center;gap:6px;list-style:none;cursor:pointer;padding:9px 14px;min-height:36px;user-select:none}
+.cm-companion details.cp>summary::-webkit-details-marker{display:none}
+.cm-companion details.cp>summary h4{margin:0;flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.cm-companion details.cp>summary h4>span{flex:none;white-space:nowrap}
+.cm-companion details.cp>summary h4>.cp-label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.cm-companion details.cp-sol>summary h4 .sr-state{flex:none;margin-left:0;white-space:nowrap}
+.cm-companion details.cp>summary::after{content:"";flex:none;width:7px;height:7px;margin-left:4px;border-right:1.5px solid var(--sage-9);border-bottom:1.5px solid var(--sage-9);transform:rotate(-45deg);transition:transform .12s}
+.cm-companion details.cp[open]>summary::after{transform:rotate(45deg)}
+.cm-companion details.cp>summary:hover{background:var(--sage-2)}
+.cm-companion details.cp>section{border-bottom:0;padding-top:0}
+.cm-companion details.cp>section>h4.cp-folded-h4{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cm-companion details.cp-sol{--sol:var(--prov-sol);--solbg:var(--prov-sol-wash);--solline:var(--prov-sol-line)}
+.cm-companion details.cp-sol>summary{border-left:3px solid var(--prov-sol-line)}
+.cm-companion details.cp-sol[open]>summary{background:var(--sage-2)}
+.cm-companion details.cp-sol>summary h4 .cp-plain{text-transform:uppercase}
+.cm-companion details.cp-sol .sr>h4,.cm-companion details.cp-sol .brain-sol .sr>h4{display:none}
+.cm-companion details.cp-sol>:is(.cs-ask,.cs-round,.dk-sol,.dk-solpend,.dk-solagain,.sr,.brain-sol){margin:8px 12px}
+/* Round 12 (G, GR-UX-07): progress while waiting. A chapter being opened is marked in the shell and says it is building;
+   the chapter being left is dimmed and out of reach until the new one is drawn. Elapsed seconds keep their width. */
+.busy-clock{font-variant-numeric:tabular-nums}
+.shell-building-note{margin:0 0 8px;padding:7px 12px;border:1px solid var(--gold-5);border-radius:8px;background:var(--gold-2);color:var(--gold-11);font-size:13px;font-weight:600}
+body.shell-building #studio-surface,body.shell-building .r-assistant-bar,body.shell-building .cr-notice{opacity:.45;pointer-events:none;transition:opacity .2s}

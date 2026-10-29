@@ -1,0 +1,534 @@
+/* The standard notation on screen. The picture itself (elements, connectors, groups, bands, the Key in
+   an export) is drawn by notation-svg.js with its own styles, the same for the screen, the export and the
+   SDD figure; this sheet styles what only the screen has: the header strip, the notes, interaction states,
+   semantic zoom, the lens-row menus and the companion's Key. */
+.nt-header{position:absolute;display:flex;align-items:center;gap:18px;padding:0 12px;box-sizing:border-box;background:var(--sage-1);border:1px solid var(--sage-7);border-radius:6px;font-size:11px;color:var(--sage-11);overflow:hidden;white-space:nowrap}
+.nt-header b{font-family:var(--font-ui);font-weight:600;font-size:16px;color:var(--sage-12);margin-right:6px;flex:none}
+.nt-header span{display:inline-flex;flex-direction:column;line-height:1.2;min-width:0;flex:0 1 auto;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.nt-header span>small{overflow:hidden;text-overflow:ellipsis}
+.nt-header span small{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--sage-10)}
+/* The diagram is drawn in the SVG layer; the HTML layer above it carries only the header and notes, so it
+   lets the pointer through to the elements and connectors. */
+.cm-html:has(>.nt-header){pointer-events:none}
+.cm-html:has(>.nt-header)>*{pointer-events:auto}
+.cm-html:has(>.nt-header)>.nt-header{pointer-events:none}
+.cm-svg .nt-node{cursor:pointer;outline:none}
+.cm-svg .nt-node text{pointer-events:none;user-select:none}
+.cm-svg .nt-node:hover rect.nt-box{stroke-width:1.8}
+.cm-svg .nt-node:focus-visible rect.nt-box,.cm-svg .nt-node:focus-visible .nt-ev,.cm-svg .nt-node:focus-visible .nt-gw{stroke:var(--focus-outline);stroke-width:3}
+.cm-svg .nt-node.sel .nt-ev,.cm-svg .nt-node.sel .nt-gw{stroke:var(--gold-8);stroke-width:3}
+.cm-svg .nt-node.found rect.nt-box,.cm-svg .nt-node.found .nt-ev,.cm-svg .nt-node.found .nt-gw{stroke:var(--gold-8);stroke-width:3;stroke-dasharray:none}
+.cm-svg .nt-node.dragging{opacity:.85;cursor:grabbing}
+.cm-svg .nt-hit{pointer-events:stroke}
+.cm-svg .nt-hit:focus-visible{stroke:color-mix(in srgb, var(--focus-outline) 40%, transparent)}
+/* Round 10 (N6): a line drawn for several relationships takes the pointer along its runs (a click selects the element they
+   share); it is never a Tab stop. The lift (the whole route of what is selected, lit or traced) takes no pointer. */
+.cm-svg .nt-bhit{pointer-events:stroke}
+.cm-svg .nt-lift{pointer-events:none}
+/* Visible connection modes preserve the exact model while making their shown counts explicit.
+   Hidden lines have no pointer or keyboard targets. All has no selection-driven opacity treatment. */
+.cm-svg .nt-connection-hidden,.cm-svg.nt-connections-none :is(.nt-edge,.nt-trunk,.nt-hits,.nt-lift){display:none}
+.cm-svg.nt-connections-all :is(.nt-edge,.nt-trunk){opacity:1}
+.cm-svg.nt-connection-active :is(.nt-edge,.nt-trunk).nt-peek:not(.sel):not(.lit):not(.nt-mk-lit) path.nt-line{stroke:var(--gold-9);stroke-width:2.4}
+.cm-svg.nt-connection-active .nt-trunk.nt-peek:not(.sel):not(.lit):not(.nt-mk-lit) .nt-join{fill:var(--gold-9)}
+.cm-svg .nt-node.nt-peer:not(.sel) rect.nt-box{stroke:var(--gold-8);stroke-width:1.7}
+@media (forced-colors:active){.cm-svg.nt-connection-active :is(.nt-edge,.nt-trunk).nt-peek path.nt-line{stroke:Highlight;stroke-width:3}}
+.nt-notes{position:absolute;font-size:11px;color:var(--gold-11);max-width:640px}.nt-notes p{margin:0 0 2px}
+.nt-notes.nt-warn{color:var(--red-11)}
+/* Semantic zoom (round 5): the stage says how near the reader is (data-cm-z on the model, --cm-z on its world; the
+   record picture says the same of itself). Far out (under 0.8) only the names, drawn large, and the glyphs read; from
+   0.8 the element types, the second lines and the relationship words; from 1.2 the fields (references, qualifiers,
+   cardinalities). No word is drawn under 9 px on screen: a word that would be smaller is enlarged where it may grow
+   (inside its box's clip) or hidden, and the companion carries the full text of the element under the pointer. */
+[data-cm-z] svg .nt-kicker{font-size:max(9.5px,calc(9.2px / var(--cm-z,1)))}
+[data-cm-z] svg .nt-sub,[data-cm-z] svg .nt-cap,[data-cm-z] svg .nt-elabel,[data-cm-z] svg .nt-gsub,[data-cm-z] svg .nt-band text{font-size:max(10px,calc(9.2px / var(--cm-z,1)))}
+[data-cm-z] svg .nt-gtitle{font-size:max(12px,calc(9.2px / var(--cm-z,1)))}
+/* rc41 (lead): a group's count line far out (notation-svg.js, FAR × 0.78 = 14.82 px) keeps 10 px on screen as the other
+   second lines do — at the whole fit of Chapter 9 it read 9.3 px. */
+[data-cm-z] svg .nt-fgsub{font-size:max(14.82px,calc(10.2px / var(--cm-z,1)))}
+[data-cm-z=far] svg .nt-ftitle,[data-cm-z=far] svg .nt-mk-far{display:inline}
+[data-cm-z=far] svg .nt-kicker,[data-cm-z=far] svg .nt-title,[data-cm-z=far] svg .nt-sub,[data-cm-z=far] svg .nt-cap,[data-cm-z=far] svg .nt-elabel,[data-cm-z=far] svg .nt-gsub,[data-cm-z=far] svg .nt-mk-near,
+[data-cm-z=tiny] svg text,[data-cm-z=tiny] svg .nt-mk-near,
+[data-cm-z=far] svg .nt-ref,[data-cm-z=far] svg .nt-refbg,[data-cm-z=far] svg .nt-qual,[data-cm-z=far] svg .nt-card,
+[data-cm-z=mid] svg .nt-ref,[data-cm-z=mid] svg .nt-refbg,[data-cm-z=mid] svg .nt-qual,[data-cm-z=mid] svg .nt-card{display:none}
+[data-cm-z=tiny] svg .nt-mk-far,[data-cm-z=tiny] svg .nt-mk-glyph,[data-cm-z=tiny] svg .nt-co-s text,[data-cm-z=tiny] svg .nt-vbadge{display:inline}
+/* What carries a state keeps a legible size at any zoom: the marks' glyphs and words, the vitals count, a callout. */
+[data-cm-z] svg .nt-mk-s,[data-cm-z] svg .nt-vbadge-s,[data-cm-z] svg .nt-co-s{transform-box:fill-box;transform-origin:center;transform:scale(max(1,calc(1 / var(--cm-z,1))))}
+[data-cm-z] svg .nt-mk-near .nt-mk-s{transform-origin:left center}
+/* The rings and the lit path keep a visible weight far out. */
+[data-cm-z] svg .nt-mk-ring{stroke-width:max(2.6px,calc(2.2px / var(--cm-z,1)))}
+[data-cm-z] svg :is(.nt-edge,.nt-trunk).nt-mk-lit path.nt-line{stroke-width:max(2.6px,calc(2px / var(--cm-z,1)))}
+/* Round 10 (N6): on the stage, lines (a line drawn for several relationships included), join dots and hit bands follow the
+   zoom so the first fit keeps a visible weight: a plain line at least 1 screen px, a join dot 1.5 and a hit band 10, and
+   plain < lit < selected < traced at every zoom. Screen only: the export keeps the renderer's own widths. */
+[data-cm-z] .cm-svg :is(.nt-edge,.nt-trunk) path.nt-line{stroke-width:max(1.3px,calc(1px / var(--cm-z,1)))}
+[data-cm-z] .cm-svg :is(.nt-edge,.nt-trunk).lit path.nt-line,[data-cm-z] .cm-svg .nt-lift path.lit{stroke-width:max(2.2px,calc(1.7px / var(--cm-z,1)))}
+[data-cm-z] .cm-svg :is(.nt-edge,.nt-trunk).sel path.nt-line,[data-cm-z] .cm-svg .nt-lift path.sel{stroke-width:max(2.4px,calc(1.85px / var(--cm-z,1)))}
+[data-cm-z] .cm-svg :is(.nt-edge,.nt-trunk).nt-mk-lit path.nt-line,[data-cm-z] .cm-svg .nt-lift path.nt-mk-lit{stroke-width:max(2.6px,calc(2px / var(--cm-z,1)))}
+[data-cm-z] .cm-svg .nt-join{r:max(2.4px,calc(1.5px / var(--cm-z,1)))}
+[data-cm-z] .cm-svg :is(.nt-hit,.nt-bhit){stroke-width:max(12px,calc(10px / var(--cm-z,1)))}
+[data-cm-z] .cm-svg .nt-lift .nt-end{r:max(4px,calc(3px / var(--cm-z,1)));stroke-width:max(2px,calc(1.5px / var(--cm-z,1)))}
+/* The header strip and the notes over the picture keep their words legible too; far out the header keeps its title. */
+.cm-world .nt-header b{font-size:max(16px,calc(9.2px / var(--cm-z,1)))}
+.cm-world .nt-header span{font-size:max(1em,calc(9.2px / var(--cm-z,1)))}
+.cm-world .nt-header span small{font-size:max(10px,calc(9.2px / var(--cm-z,1)))}
+.cm-world .nt-notes p{font-size:max(1em,calc(9.2px / var(--cm-z,1)))}
+[data-cm-z=far] .cm-world .nt-header span,[data-cm-z=tiny] .cm-world .nt-header span,[data-cm-z=tiny] .cm-world .nt-notes{display:none}
+/* The Diagram view's controls in the lens row. */
+.nt-menu{position:relative;display:inline-flex;gap:4px}
+.nt-menu .cm-btn span{white-space:nowrap}
+.nt-pop{position:absolute;left:0;top:calc(100% + 6px);z-index:40;min-width:250px;max-height:70vh;overflow:auto;padding:6px;background:var(--sage-1);border:1px solid var(--green-5);border-radius:9px;box-shadow:0 8px 24px color-mix(in srgb, var(--shadow) 13%, transparent);display:flex;flex-direction:column;gap:2px}
+.nt-pop button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;text-align:left;border:0;background:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-size:12.5px;color:var(--green-12)}
+.nt-pop button:hover,.nt-pop label:hover,.nt-pop button:focus-visible{background:var(--sage-3)}
+.nt-pop button[aria-checked="true"]{background:var(--green-2);font-weight:600}
+.nt-pop button small{font-size:11px;color:var(--cm-muted,var(--sage-10));font-weight:400}
+.nt-pop button:disabled{opacity:.5;cursor:default}
+.nt-pop label.nt-layer{display:flex;align-items:center;gap:8px;padding:5px 8px;font-size:12.5px;border-radius:6px;cursor:pointer}
+.nt-pop label.nt-layer:focus-within{background:var(--sage-3);outline:2px solid var(--gold-9);outline-offset:1px}
+.nt-pop label.nt-layer small{margin-left:auto;color:var(--cm-muted,var(--sage-10))}
+.nt-pop label.nt-layer.none{opacity:.55}
+.nt-pop hr{width:100%;border:0;border-top:1px solid var(--green-3);margin:4px 0}
+.nt-pop .nt-hint{font-size:11.5px;color:var(--cm-muted,var(--sage-10));margin:4px 8px}
+.nt-pop .nt-find{display:flex;flex-direction:column;gap:3px;padding:4px 8px 6px;font-size:11px;color:var(--cm-muted,var(--sage-10))}
+.nt-pop .nt-find input{font-size:12.5px;padding:5px 7px;border:1px solid var(--green-5);border-radius:6px;background:var(--sage-1)}
+/* Arrange is one compact, nonmodal tool panel. Layout presets, selection tools and position
+   history share a hierarchy; disabled tools state the selection they need in their title. */
+/* The Key in the companion, built from what is drawn. */
+.cm-legend .nt-k{display:inline-grid;place-items:center;width:18px;height:14px;border:1px solid var(--sage-9);border-radius:2px;box-sizing:border-box;vertical-align:middle;margin-right:6px;flex:none}
+.cm-legend .nt-k svg{width:10px;height:10px}
+.cm-legend p>svg{vertical-align:middle;margin-right:6px;flex:none}
+.cm-legend .nt-k.nt-application{background:var(--blue-5)}.cm-legend .nt-k.nt-application-logical{background:var(--blue-7)}.cm-legend .nt-k.nt-service{background:var(--teal-4)}.cm-legend .nt-k.nt-data-logical{background:var(--violet-6)}.cm-legend .nt-k.nt-data{background:var(--gold-5)}.cm-legend .nt-k.nt-data-entity{background:var(--blue-4)}
+.cm-legend .nt-k.nt-technology{background:var(--green-6)}.cm-legend .nt-k.nt-technology-physical{background:var(--green-7)}.cm-legend .nt-k.nt-technology-service{background:var(--gold-5)}.cm-legend .nt-k.nt-business{background:var(--gold-5)}.cm-legend .nt-k.nt-business-dark{background:var(--blue-9);color:var(--on-solid)}
+.cm-legend .nt-k.nt-process{background:var(--blue-4)}.cm-legend .nt-k.nt-intent{background:var(--violet-3)}.cm-legend .nt-k.nt-decision{background:var(--violet-4)}.cm-legend .nt-k.nt-security{background:var(--violet-4)}.cm-legend .nt-k.nt-threat{background:var(--red-4)}.cm-legend .nt-k.nt-deployment{background:var(--blue-4)}
+.cm-legend .nt-k.bpmn-task{background:var(--sage-3);border-radius:5px}
+.cm-legend .nt-k.bpmn-event{width:14px;border-radius:50%;border:2px solid var(--green-9);background:var(--sage-1)}
+.cm-legend .nt-k.bpmn-gateway{width:12px;height:12px;border:1.6px solid var(--gold-9);background:var(--sage-1);transform:rotate(45deg) scale(.85)}
+.cm-legend .nt-k.group{background:var(--sage-2);border-color:var(--sage-8);width:24px}
+.cm-legend .nt-k.nt-m-hatched{background:repeating-linear-gradient(135deg,var(--gold-1) 0 4px,var(--gold-4) 4px 8px);border-style:dashed}
+.cm-legend .nt-k.nt-m-weak{border:0;height:0;border-top:1.4px solid color-mix(in srgb, var(--sage-11) 53%, transparent)}
+.cm-legend .nt-k.nt-m-crossing{width:11px;height:11px;border-radius:50%;border:1.4px solid var(--violet-8);background:var(--sage-1)}
+.cm-legend .nt-k.nt-m-step{border:0;color:var(--red-11);font-weight:700;font-style:normal}.cm-legend .nt-k.nt-m-step::before{content:'1'}
+.cm-legend .nt-k.nt-m-qualifier{border:0;font-size:9px;color:var(--sage-10)}.cm-legend .nt-k.nt-m-qualifier::before{content:'abc'}
+.cm-legend .nt-k.nt-m-cardinality{border:0;font-size:9px;font-weight:600;width:24px}.cm-legend .nt-k.nt-m-cardinality::before{content:'1:n'}
+.cm-legend .nt-k.nt-m-added{border:2px solid var(--green-9);background:var(--sage-1)}.cm-legend .nt-k.nt-m-removed{border:1px dashed var(--sage-9);background:var(--sage-1)}.cm-legend .nt-k.nt-m-changed{border:2px solid var(--gold-8);background:var(--sage-1)}
+/* Round 10 (N6): the Key's samples of lines drawn together: a T with a join dot, a plain T (composition, aggregation and
+   dot-ended fans), and one line for a fact recorded more than once. */
+.cm-legend .nt-k.nt-m-bundle,.cm-legend .nt-k.nt-m-tree{position:relative;border:0;background:linear-gradient(var(--sage-11),var(--sage-11)) 0 3px/100% 1.4px no-repeat,linear-gradient(var(--sage-11),var(--sage-11)) 50% 3px/1.4px calc(100% - 3px) no-repeat}
+.cm-legend .nt-k.nt-m-bundle::after{content:'';position:absolute;left:50%;top:3.7px;width:5px;height:5px;border-radius:50%;background:var(--sage-11);transform:translate(-50%,-50%)}
+.cm-legend .nt-k.nt-m-duplicate{border:0;border-bottom:1.4px solid var(--sage-11);border-radius:0}
+/* Under forced colours the gradient samples vanish: the T is drawn with borders and the dot with a border, in CanvasText. */
+@media (forced-colors:active){
+.cm-legend .nt-k.nt-m-bundle,.cm-legend .nt-k.nt-m-tree{background:none;border-top:1.4px solid CanvasText;border-radius:0}
+.cm-legend .nt-k.nt-m-bundle::before,.cm-legend .nt-k.nt-m-tree::before{content:'';position:absolute;left:50%;top:0;height:100%;border-left:1.4px solid CanvasText}
+.cm-legend .nt-k.nt-m-bundle::after{background:none;border:2.5px solid CanvasText;width:0;height:0}
+.cm-legend .nt-k.nt-m-duplicate{border-bottom-color:CanvasText}
+}
+.cm-legend .nt-selrel{background:var(--gold-2);border-radius:6px;padding:6px 8px}
+/* The companion's reading of the picture. */
+.nt-vp{margin:8px 0}
+.nt-read summary{cursor:pointer;font-weight:600;font-size:12px}
+.nt-read pre{white-space:pre-wrap;font:12px/1.55 inherit;max-height:320px;overflow:auto;background:var(--sage-1);border:1px solid var(--green-4);border-radius:6px;padding:8px}
+.nt-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.nt-notes-box summary{cursor:pointer;font-size:12px}
+.nt-notes-box form{display:flex;gap:6px;margin:6px 0}
+.nt-notes-box input{flex:1;min-width:0;font-size:12px;padding:5px 7px;border:1px solid var(--green-5);border-radius:6px}
+.nt-note-row{display:flex;justify-content:space-between;gap:6px;font-size:12px}
+.nt-vital{font-size:12px;border-left:3px solid var(--sage-9);padding-left:7px}.nt-vital.nt-v-bad{border-color:var(--red-9)}.nt-vital.nt-v-warn{border-color:var(--gold-8)}.nt-vital.nt-v-ok{border-color:var(--green-9)}
+/* The selection's contextual dossier reads the saved design in the companion. The overview stays
+   compact; each section opens independently so a long specification never crowds the diagram. */
+.nt-dossier{min-width:0;margin:12px 0;border:1px solid var(--green-5);border-radius:10px;background:var(--sage-1);overflow:hidden;color:var(--green-12)}
+.nt-dossier>header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:6px 12px;padding:12px 14px;background:var(--sage-2);border-bottom:1px solid var(--green-4)}
+.nt-dossier h4{margin:0;font:600 15px/1.3 var(--font-ui);color:var(--green-12)}
+.nt-dossier>header p{margin:4px 0 0;color:var(--sage-10);font-size:12px;overflow-wrap:anywhere}
+.nt-dossier>header a{font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.nt-dossier>details{border-bottom:1px solid var(--green-4);padding:0 14px}
+.nt-dossier>details:last-child{border-bottom:0}
+.nt-dossier>details>summary{cursor:pointer;list-style:revert;padding:11px 0;font-size:13px;font-weight:600;line-height:1.4}
+.nt-dossier>details>summary small{display:block;margin-left:16px;color:var(--sage-10);font-size:11px;font-weight:400;line-height:1.45}
+.nt-dossier>details>summary:focus-visible,.nt-dossier a:focus-visible{outline:2px solid var(--green-8);outline-offset:3px;border-radius:2px}
+.nt-dossier>details[open]>summary{border-bottom:1px solid var(--green-3)}
+.nt-dossier h5{font:600 12px/1.4 var(--font-ui);margin:13px 0 5px;color:var(--sage-11)}
+.nt-dossier-text{margin:10px 0;overflow-wrap:anywhere;font-size:12.5px;line-height:1.55}
+.nt-dossier-text>b{font-size:11px;color:var(--sage-11)}
+.nt-dossier-text p{margin:4px 0;white-space:pre-wrap}
+.nt-dossier-links,.nt-dossier-gaps,.nt-dossier-decisions{margin:5px 0 13px;padding-left:20px;font-size:12.5px;line-height:1.5;overflow-wrap:anywhere}
+.nt-dossier-links li,.nt-dossier-gaps li,.nt-dossier-decisions li{margin:5px 0}
+.nt-dossier-links a{display:inline-block;min-height:24px}
+.nt-dossier-links small,.nt-dossier-decisions small{display:block;color:var(--sage-10);font-size:11px;line-height:1.5}
+.nt-dossier-empty,.nt-dossier-more,.nt-dossier-foot{margin:8px 0 12px;color:var(--sage-10);font-size:12px;line-height:1.5}
+.nt-dossier-fields{margin:3px 0 13px}
+.nt-dossier-fields>div{display:grid;grid-template-columns:minmax(90px,35%) minmax(0,1fr);gap:8px;padding:7px 0;border-bottom:1px solid var(--green-3);font-size:12.5px;line-height:1.5}
+.nt-dossier-fields>div:last-child{border-bottom:0}
+.nt-dossier-fields dt{color:var(--sage-10)}
+.nt-dossier-fields dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.nt-dossier-end-link{margin:10px 0;font-size:12px}
+.nt-dossier>.nt-dossier-reading{padding:13px 14px 15px;border-bottom:1px solid var(--green-4);background:var(--paper);font-size:12.5px;line-height:1.5;overflow-wrap:anywhere}
+.nt-dossier-error{padding:12px 14px}.nt-dossier-error p{margin:0 0 9px;font-size:12px}.nt-dossier-error button{min-height:32px}
+.nt-dossier-reading .nt-dossier-eyebrow{display:block;color:var(--sage-10);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.nt-dossier-reading h5{margin:5px 0 2px;font:600 17px/1.25 var(--font-ui);color:var(--green-12)}
+.nt-dossier-reading p{margin:7px 0}
+.nt-dossier-reading .nt-dossier-state{display:inline-block;padding:3px 7px;border:1px solid var(--green-4);border-radius:6px;background:var(--sage-2);font-size:11px;font-weight:600}
+.nt-dossier-reading .nt-dossier-alert{padding:7px;border-left:3px solid var(--gold-8);background:var(--gold-2)}
+.nt-dossier-reading .nt-dossier-source{font-size:11px;color:var(--sage-10)}
+.nt-fit-heading{display:flex;flex-direction:column;gap:2px;margin:14px 0 5px;padding-top:10px;border-top:1px solid var(--green-3)}
+.nt-fit-heading small,.nt-fit-driver small,.nt-fit-option small{display:block;color:var(--sage-10);font-size:11px;line-height:1.45}
+.nt-fit-list,.nt-dossier-rest:has(.nt-fit-driver)>ul{list-style:none;margin:0 0 9px;padding:0;display:grid;gap:7px}
+.nt-fit-list>li,.nt-dossier-rest:has(.nt-fit-driver)>ul>li{padding:8px 9px;border:1px solid var(--green-4);border-radius:7px;background:var(--sage-1);min-width:0}
+.nt-fit-driver a{font-weight:600;line-height:1.4;overflow-wrap:anywhere}
+.nt-fit-option{margin-top:7px;padding-top:6px;border-top:1px solid var(--green-3)}
+.nt-fit-option>b{display:block;overflow-wrap:anywhere}
+.nt-fit-effect{display:inline-block;margin-top:3px;padding:2px 6px;border-radius:5px;background:var(--sage-2);color:var(--sage-11);font-size:11px}
+.nt-fit-effect.supports{background:var(--green-3);color:var(--green-11)}
+.nt-fit-effect.tension{background:var(--gold-2);color:var(--gold-11)}
+.nt-fit-option p{margin:4px 0}
+.nt-fit-other{margin-top:7px}
+.nt-fit-other>summary{cursor:pointer;font-size:11px;font-weight:600;color:var(--green-10);line-height:1.45}
+.nt-fit-other>.nt-fit-option{padding:8px 0 2px}
+.nt-dossier-compare{display:block;margin-top:11px;padding:8px 10px;border:1px solid var(--green-6);border-radius:7px;background:var(--sage-2);font-weight:600;text-align:center;line-height:1.4}
+.nt-dossier-rest{margin:7px 0 12px;border:1px solid var(--green-4);border-radius:6px;padding:0 9px}
+.nt-dossier-rest>summary{cursor:pointer;padding:7px 0;font-size:12px;line-height:1.45;font-weight:600}
+.nt-dossier-rest>ul{margin:0 0 8px}
+.nt-dossier-rest:has(.nt-dossier-observations)>.nt-dossier-observations{list-style:none;padding:0}
+.nt-dossier-fields>div{display:block}
+.nt-dossier-fields dt{font-size:11px;font-weight:600}
+.nt-dossier-fields dd{margin:2px 0 0}
+.nt-dossier :is(a,button,summary):focus-visible{outline:2px solid var(--green-8);outline-offset:2px}
+@media(max-width:700px){.nt-dossier>header{padding:12px}.nt-dossier>details{padding:0 12px}}
+@media(forced-colors:active){.nt-dossier,.nt-dossier>details,.nt-dossier>header{border-color:CanvasText}}
+/* Round 3 (D, phones): the menus keep their words; the lens row wraps. */
+.cm-bar{flex-wrap:wrap}
+/* The toolbar's find, its count, and the zoom and fit controls, always in reach. */
+.nt-bar-find{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--cm-muted,var(--sage-10));margin-left:auto}
+.nt-bar-find input{width:150px;min-height:30px;font-size:13px;padding:3px 8px;border:1px solid var(--green-5);border-radius:7px;background:var(--sage-1)}
+.nt-found-count{font-size:12px;color:var(--gold-11);min-width:0}
+.nt-found-count:empty{display:none}
+.nt-zoom{display:inline-flex;gap:2px}
+.nt-zoom .cm-btn{padding:4px 8px}
+.nt-zoom .cm-btn span{font-size:12px}
+.nt-lane-pick{min-width:180px}.nt-lane-pick select{min-width:170px;max-width:290px}
+.nt-connections{display:grid;grid-template-columns:auto auto auto;align-items:center;column-gap:8px;row-gap:2px;min-width:0;padding:2px 0}
+.nt-connections-label{font-size:11px;color:var(--sage-11)}
+.nt-connection-modes{grid-column:2/4;display:inline-flex;align-items:center;gap:2px;padding:2px;background:var(--sage-3);border:1px solid var(--sage-5);border-radius:7px}
+.cm .nt-connection-modes button{appearance:none;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--sage-11);font:500 11px var(--font-ui);line-height:1.2;padding:5px 8px;min-height:27px;cursor:pointer;white-space:nowrap}
+.cm .nt-connection-modes button:hover:not(:disabled){background:var(--sage-1);color:var(--green-12)}
+.cm .nt-connection-modes button[aria-pressed=true]{background:var(--sage-1);border-color:var(--sage-7);color:var(--green-11);box-shadow:0 1px 2px color-mix(in srgb,var(--shadow) 8%,transparent);font-weight:650}
+.cm .nt-connection-modes button:disabled{opacity:.42;cursor:default}
+.nt-connection-caption{grid-column:2;font-size:10px;line-height:1.2;color:var(--sage-11);white-space:nowrap;max-width:360px;overflow:hidden;text-overflow:ellipsis}
+.cm .nt-reveal-next{grid-column:3;border:0;background:transparent;color:var(--green-11);font:600 10px var(--font-ui);min-height:22px;padding:2px 0;cursor:pointer;white-space:nowrap;text-decoration:underline;text-underline-offset:3px}
+.nt-reveal-next:hover{color:var(--green-12)}
+/* The Drivers lens (rc39, W2 step 5): the reached elements lit with their state, three fills; the rest at the marks' dim
+   opacity; the Key's swatches carry the same fills. A paint over the drawn scene; nothing moves. */
+.cm-svg .nt-node.nt-dr-decided :is(.nt-box,.nt-ev,.nt-gw){fill:var(--green-4)!important;stroke:var(--green-9);stroke-width:1.6}
+.cm-svg .nt-node.nt-dr-draft :is(.nt-box,.nt-ev,.nt-gw){fill:var(--gold-3)!important;stroke:var(--gold-9);stroke-width:1.6}
+.cm-svg .nt-node.nt-dr-open :is(.nt-box,.nt-ev,.nt-gw){fill:var(--red-3,#fbe3e3)!important;stroke:var(--red-9,#c0392b);stroke-width:1.6}
+.cm-svg .nt-node.nt-dr-dim,.cm-svg :is(.nt-edge,.nt-trunk).nt-dr-dim{opacity:.22;transition:opacity .2s}
+.cm-legend .nt-k.nt-dr-k.decided{background:var(--green-4);border-color:var(--green-9)}.cm-legend .nt-k.nt-dr-k.draft{background:var(--gold-3);border-color:var(--gold-9)}.cm-legend .nt-k.nt-dr-k.open{background:var(--red-3,#fbe3e3);border-color:var(--red-9,#c0392b)}.cm-legend .nt-k.nt-dr-k.dim{opacity:.3}
+.nt-basis-list{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:8px}.nt-basis-q{padding:8px 10px;border:1px solid var(--green-5);border-left-width:4px;border-radius:6px;background:var(--sage-1)}.nt-basis-q.nt-dr-decided{border-left-color:var(--green-9)}.nt-basis-q.nt-dr-draft{border-left-color:var(--gold-9)}.nt-basis-q.nt-dr-open{border-left-color:var(--red-9,#c0392b)}
+.nt-basis-q b{display:block;font-size:13px}.nt-basis-state{display:block;font-size:11px;color:var(--sage-11);margin-top:2px}.nt-basis-story{margin:6px 0 0;font-size:12px;line-height:1.45}.nt-basis .nt-actions{margin:6px 0 0}
+.nt-drivers select{max-width:260px}
+/* The in-canvas selection toolbar (rc39): over the selection, following the camera. */
+.cm-stage>.nt-seltools{position:absolute;z-index:9;display:inline-flex;align-items:center;gap:2px;padding:3px 5px;border:1px solid var(--green-6);border-radius:8px;background:color-mix(in srgb, var(--sage-1) 96%, transparent);box-shadow:0 4px 14px color-mix(in srgb, var(--shadow) 12%, transparent);cursor:default}
+.cm-stage>.nt-seltools .nt-seltools-n{font-size:11px;font-weight:600;color:var(--green-11);padding:0 6px 0 3px;white-space:nowrap}
+.cm-stage>.nt-seltools button{display:grid;place-items:center;width:28px;height:28px;padding:0;border:1px solid transparent;border-radius:6px;background:none;color:var(--green-12);font-size:14px}
+.cm-stage>.nt-seltools button svg{width:16px;height:16px}
+.cm-stage>.nt-seltools button:hover:not(:disabled){background:var(--sage-3);border-color:var(--green-5)}
+.cm-stage>.nt-seltools button:focus-visible{outline:2px solid var(--green-10);outline-offset:1px}
+.cm-stage>.nt-seltools button:disabled{opacity:.35}
+.cm-fit-keep{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 8px;font-size:12.5px;color:var(--green-12);cursor:pointer}.cm-fit-keep small{flex-basis:100%;padding-left:22px;color:var(--studio-muted,var(--sage-11));font-size:11px}
+.nt-pending{pointer-events:none}.nt-pending rect{fill:var(--sage-2);stroke:var(--sage-7);stroke-width:.7}.nt-pending text{fill:var(--sage-11);font:500 10px var(--font-ui)}
+/* The "+N" pill keeps a legible size at every zoom (rc39), as the marks' glyphs do; the Key shows the same pill. */
+[data-cm-z] svg .nt-pending-s{transform-box:fill-box;transform-origin:center;transform:scale(max(1,calc(1 / var(--cm-z,1))))}
+.cm-legend .nt-k.nt-pending-k{width:auto;min-width:30px;padding:0 5px;border:1px solid var(--sage-7);border-radius:6px;background:var(--sage-2);color:var(--sage-11);font:500 10px var(--font-ui);text-align:center;line-height:15px}
+/* The connection level in the Key (rc40, W1): the control's own word as a pressed chip. */
+.cm-legend .nt-k.nt-level-k{width:auto;min-width:30px;padding:0 6px;border:1px solid var(--sage-7);border-radius:6px;background:var(--sage-1);color:var(--green-11);font:650 10px var(--font-ui);text-align:center;line-height:15px}
+.nt-connection-modes button:focus-visible,.nt-reveal-next:focus-visible,.nt-fold-note button:focus-visible{outline:3px solid var(--focus-outline);outline-offset:2px}
+.nt-controls-primary,.nt-controls-extra{display:contents}
+.nt-mobile-tools{display:none}
+.cm.nt-active .cm-walk .cm-zoom{display:none}
+/* What the layers hide, said over the picture, with the way back. */
+.nt-layer-note{position:absolute;right:14px;top:10px;z-index:9;display:flex;align-items:center;gap:4px;padding:5px 10px;background:color-mix(in srgb, var(--gold-1) 95%, transparent);border:1px solid var(--gold-6);border-radius:8px;font-size:12.5px;color:var(--gold-11);box-shadow:0 2px 8px color-mix(in srgb, var(--shadow) 8%, transparent)}
+.nt-layer-note button{border:0;background:none;padding:2px 4px;color:var(--green-12);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font:inherit;font-weight:600}
+/* Round 12 (P): a grouped picture says what it is and the way back, on the stage's other corner. */
+.nt-fold-note{position:absolute;left:14px;top:8px;z-index:9;display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;max-width:calc(100% - 28px);padding:4px 10px;line-height:1.4;background:color-mix(in srgb, var(--green-1) 95%, transparent);border:1px solid var(--green-6);border-radius:8px;font-size:12.5px;color:var(--green-11);box-shadow:0 2px 8px color-mix(in srgb, var(--shadow) 8%, transparent)}
+.nt-fold-note b{color:var(--green-12)}.nt-fold-note button{border:0;background:none;padding:0 4px;color:var(--green-12);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font:inherit;font-weight:600}
+/* Round 12 (G, GR-FIG-10, GR-FIG-12): the note keeps to one line where its words fit; how much of a grouped picture is in
+   view, with Fit to whole, wraps as one piece. */
+.nt-fold-viewline{display:inline-flex;align-items:center;gap:2px 6px;flex:none;color:var(--green-11)}.nt-fold-view{font-weight:600}
+.nt-pair-spec .nt-fold-members{max-height:360px;overflow:auto;overscroll-behavior:contain;padding-right:4px}
+.nt-pair-spec .nt-fold-members .cm-link{display:block;width:100%;text-align:left;white-space:normal;padding:7px 8px;border-bottom:1px solid var(--green-4);line-height:1.4}
+.nt-pair-spec .nt-fold-members .cm-link:focus-visible{outline:2px solid var(--gold-9);outline-offset:0}
+.cm-svg .nt-band-collapsed{cursor:pointer}
+.cm-svg .nt-band-collapsed:hover rect{fill:var(--sage-3)}
+/* A lane the chapter holds nothing in (round 4): a quieter strip, read rather than opened. */
+.cm-svg g.nt-band-none rect{fill:var(--sage-1);stroke:var(--green-5);stroke-dasharray:2 3}
+.cm-svg g.nt-band-none text{fill:var(--sage-9)}
+/* The ArchiMate layer tints on the concern lanes (rc40, W1; PLAN §3): motivation lilac, business yellow, application
+   blue (information, its passive structure, a lighter blue), technology green (deployment, its physical side, lighter),
+   security pink, strategy a lighter tan and Implementation & Migration a lighter rose (rc41) — AIW's tokens in both themes; the export carries the light values in its own style. The lane's title
+   keeps 11 px on screen at any zoom and the aspect headers 9 px. */
+.cm-svg .nt-band.nt-lane-motivation rect{fill:var(--violet-2);stroke:var(--violet-5)}
+.cm-svg .nt-band.nt-lane-business rect{fill:var(--gold-2);stroke:var(--gold-5)}
+.cm-svg .nt-band.nt-lane-application rect{fill:var(--blue-2);stroke:var(--blue-5)}
+.cm-svg .nt-band.nt-lane-information rect{fill:var(--blue-1);stroke:var(--blue-4)}
+.cm-svg .nt-band.nt-lane-technology rect{fill:var(--green-2);stroke:var(--green-5)}
+.cm-svg .nt-band.nt-lane-deployment rect{fill:var(--green-1);stroke:var(--green-4)}
+.cm-svg .nt-band.nt-lane-security rect{fill:var(--red-2);stroke:var(--red-5)}
+.cm-svg .nt-band.nt-lane-strategy rect{fill:var(--gold-1);stroke:var(--gold-4)}
+.cm-svg .nt-band.nt-lane-implementation rect{fill:var(--red-1);stroke:var(--red-4)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-motivation rect{fill:var(--violet-2);stroke:var(--violet-5)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-business rect{fill:var(--gold-2);stroke:var(--gold-5)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-application rect{fill:var(--blue-2);stroke:var(--blue-5)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-information rect{fill:var(--blue-1);stroke:var(--blue-4)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-technology rect{fill:var(--green-2);stroke:var(--green-5)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-deployment rect{fill:var(--green-1);stroke:var(--green-4)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-security rect{fill:var(--red-2);stroke:var(--red-5)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-strategy rect{fill:var(--gold-1);stroke:var(--gold-4)}
+:root[data-theme="dark"] .cm .cm-svg .nt-band.nt-lane-implementation rect{fill:var(--red-1);stroke:var(--red-4)}
+@media (prefers-color-scheme:dark){
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-motivation rect{fill:var(--violet-2);stroke:var(--violet-5)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-business rect{fill:var(--gold-2);stroke:var(--gold-5)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-application rect{fill:var(--blue-2);stroke:var(--blue-5)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-information rect{fill:var(--blue-1);stroke:var(--blue-4)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-technology rect{fill:var(--green-2);stroke:var(--green-5)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-deployment rect{fill:var(--green-1);stroke:var(--green-4)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-security rect{fill:var(--red-2);stroke:var(--red-5)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-strategy rect{fill:var(--gold-1);stroke:var(--gold-4)}
+  :root[data-theme="system"] .cm .cm-svg .nt-band.nt-lane-implementation rect{fill:var(--red-1);stroke:var(--red-4)}
+}
+.cm-svg .nt-band text.nt-lane-title{fill:var(--sage-12)}
+.cm-svg .nt-band .nt-aspect{fill:var(--sage-10)}.cm-svg .nt-band .nt-aspect-line{stroke:var(--sage-6)}
+[data-cm-z] svg .nt-band text.nt-lane-title{font-size:max(12px,calc(11px / var(--cm-z,1)))}
+[data-cm-z] svg .nt-band .nt-aspect{font-size:max(9px,calc(9px / var(--cm-z,1)))}
+/* The shared sheets (Table, Matrix, Whole design) take the stage's place below the model's toolbar. */
+.cm-sheet{display:none;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;background:var(--cm-card,var(--sage-1));grid-row:1;grid-column:1}
+.cm.nt-sheet-on .cm-sheet{display:block}
+/* Table and Matrix (round 4): the toolbar stays; the records scroll inside their own card, both ways, under a sticky
+   heading row and beside a sticky first column, with a shaded edge and a hint while more lies sideways. */
+.cm.nt-sheet-on[data-nt-view=table] .cm-sheet,.cm.nt-sheet-on[data-nt-view=cross] .cm-sheet{display:flex;flex-direction:column;overflow:hidden}
+.cm-sheet>.nt-sheet-bar,.cm-sheet>.nt-x-cap,.cm-sheet>.nt-x-key,.cm-sheet>.nt-tmore,.cm-sheet>.nt-sheet-empty{flex:none}
+.nt-tcard{position:relative;flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+.nt-table-wrap{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--sage-8) var(--green-2)}
+.nt-table-wrap:focus-visible{outline:2px solid var(--focus-outline);outline-offset:-2px}
+.nt-tcard::after{content:'';position:absolute;top:0;right:0;bottom:0;width:28px;pointer-events:none;background:linear-gradient(90deg,color-mix(in srgb, var(--sage-1) 0%, transparent),color-mix(in srgb, var(--green-10) 15%, transparent));opacity:0;transition:opacity .15s}
+.nt-tcard.nt-ovf-r::after{opacity:1}
+.nt-scroll-hint{display:none;flex:none;margin:0;padding:4px 12px;font-size:12px;color:var(--cm-muted,var(--sage-10));background:var(--sage-2);border-top:1px solid var(--green-3)}
+.nt-tcard.nt-ovf-r .nt-scroll-hint{display:block}
+.nt-tmore{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:8px 12px;border-top:1px solid var(--green-3);font-size:12.5px;color:var(--sage-11)}
+.nt-x-cap{margin:0;padding:5px 12px;font-size:12.5px;color:var(--gold-11);background:var(--gold-1);border-bottom:1px solid var(--gold-5)}
+.cm.nt-sheet-on .cm-stage{display:none}
+.cm.nt-sheet-on[data-nt-view=whole] .cm-sheet{overflow:hidden;padding:0}
+.nt-sheet-bar{position:relative;z-index:3;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;background:var(--sage-2);border-bottom:1px solid var(--green-5)}
+.nt-sheet-bar .nt-tfind{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--cm-muted,var(--sage-10))}
+.nt-sheet-bar .nt-tfind input{width:220px;max-width:60vw;min-height:30px;font-size:13px;padding:3px 8px;border:1px solid var(--green-5);border-radius:7px;background:var(--sage-1)}
+.nt-sheet-status{margin:0;font-size:12.5px;color:var(--sage-11)}
+.nt-sheet-empty{padding:28px;font-size:14px;color:var(--cm-muted,var(--sage-10))}
+.nt-table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+.nt-table th,.nt-table td{padding:7px 10px;border-bottom:1px solid var(--green-3);text-align:left;vertical-align:top}
+.nt-table thead th{position:sticky;top:0;z-index:2;background:var(--sage-1);font-weight:600;font-size:12px;color:var(--sage-11);white-space:nowrap}
+.nt-table thead th button{border:0;background:none;padding:2px 0;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.nt-table thead th button:hover{text-decoration:underline}
+.nt-table tbody tr{cursor:pointer}
+.nt-table tbody tr:hover{background:var(--sage-2)}
+.nt-table tbody tr.sel{background:var(--gold-2)}
+.nt-table tbody tr:focus-visible{outline:2px solid var(--focus-outline);outline-offset:-2px}
+.nt-table tbody th{font-weight:600;white-space:nowrap}
+.nt-tref{display:block}
+.nt-tlayer{display:block;font-weight:400;font-size:12px;color:var(--cm-muted,var(--sage-10))}
+/* The Table's first column (the reference) stays in view while the table scrolls sideways. */
+.nt-records tbody th,.nt-records thead th:first-child{position:sticky;left:0}
+.nt-records tbody th{z-index:1;background:var(--cm-card,var(--sage-1))}
+.nt-records thead th:first-child{z-index:3}
+.nt-records tbody tr:hover>th{background:var(--sage-2)}
+.nt-records tbody tr.sel>th{background:var(--gold-2)}
+.nt-tcard.nt-ovf-l .nt-records tbody th,.nt-tcard.nt-ovf-l .nt-records thead th:first-child,.nt-tcard.nt-ovf-l .nt-x tbody th,.nt-tcard.nt-ovf-l .nt-x-corner{box-shadow:5px 0 6px -5px color-mix(in srgb, var(--shadow) 33%, transparent)}
+.nt-sheet-bar .cm-scn span{font-size:12px}
+.nt-table td.num{text-align:right;white-space:nowrap}
+.nt-table td.warn{color:var(--state-confirm-fg);font-weight:600}
+.nt-table td.warn small{font-weight:400;color:var(--red-11)}
+.nt-none{color:var(--sage-10)}
+.nt-empty-row{color:var(--cm-muted,var(--sage-10));padding:18px 10px}
+/* The matrix: a filled mark is a recorded relationship, a hollow one a chain through the design; a gap is shaded. */
+.nt-x th,.nt-x td{padding:0;border:1px solid var(--green-3);text-align:center;vertical-align:middle}
+.nt-x thead th{min-width:72px;max-width:120px;vertical-align:bottom}
+.nt-x thead th button,.nt-x tbody th button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;border:0;background:none;padding:5px 7px;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.nt-x thead th small{font-size:12px;font-weight:400;color:var(--cm-muted,var(--sage-10));white-space:normal;overflow-wrap:break-word;text-align:left}
+.nt-x tbody th{position:sticky;left:0;z-index:1;background:var(--sage-1);text-align:left;max-width:260px;white-space:normal}
+.nt-x tbody th button{display:block;font-weight:400}
+.nt-x .nt-x-corner{position:sticky;left:0;top:0;z-index:4;background:var(--sage-1);font-size:12px;font-weight:600;color:var(--cm-muted,var(--sage-10));padding:6px 8px;text-align:left;white-space:normal}
+.nt-x td.hit button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:100%;min-width:64px;min-height:34px;border:0;background:none;padding:3px 5px;cursor:pointer;color:var(--green-11);font-size:12px;line-height:1.25;overflow-wrap:break-word}
+.nt-x td.hit button i{font-style:normal;font-size:14px;line-height:1}
+.nt-x td.hit button small{font-size:12px;color:var(--cm-muted,var(--sage-10))}
+.nt-x td.hit.via button{color:var(--gold-11)}
+.nt-x td.hit.chain button{color:var(--sage-10)}
+.nt-x td.hit button:hover,.nt-x td.on button{background:var(--green-2)}
+.nt-x .gap,.nt-x tr.gap>td,.nt-x tr.gap>th{background:var(--state-confirm-wash)}
+.nt-x th.gap{background:var(--state-confirm-bg)}
+.nt-gap{display:inline-block;margin:0 0 4px 7px;font-size:12px;color:var(--red-11);font-weight:600}
+.nt-x tr.sel>th,.nt-x th.sel{box-shadow:inset 3px 0 0 var(--gold-8)}
+.nt-x-key{display:flex;flex-wrap:wrap;gap:14px;margin:6px 12px;font-size:12px;color:var(--cm-muted,var(--sage-10))}
+.nt-x-key .gap{padding:0 6px;border-radius:4px}
+.nt-x-key i{font-style:normal}
+.nt-x-bar .nt-x-swap{flex:none}
+/* The Matrix's axes: each a set and a filter; the swap between them. */
+.nt-x-axis{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px}
+.nt-x-bar .nt-xfind{display:inline-flex}
+.nt-x-bar .nt-xfind input{width:132px;min-height:30px;font-size:13px;padding:3px 8px;border:1px solid var(--green-5);border-radius:7px;background:var(--sage-1)}
+.nt-lanes-read .nt-read-none dd{color:var(--cm-muted,var(--sage-10))}
+.nt-lanes-read .nt-read-hidden dd{color:var(--gold-11)}
+/* The selected element's open checks in the companion. */
+.nt-checks .nt-check{font-size:12.5px;border-left:3px solid var(--gold-8);padding-left:8px}
+.nt-checks .nt-check.error{border-color:var(--state-fix-solid)}
+.nt-cell-list{margin:4px 0 6px;padding-left:18px;font-size:13px}
+.cm-legend .nt-k.nt-lk{width:12px;height:12px;border-radius:3px}
+.cm-legend .nt-lk-process{background:var(--blue-4)}.cm-legend .nt-lk-logical{background:var(--blue-7)}.cm-legend .nt-lk-physical{background:var(--blue-5)}.cm-legend .nt-lk-data{background:var(--violet-6)}.cm-legend .nt-lk-technology{background:var(--green-6)}.cm-legend .nt-lk-interface{background:var(--teal-4)}.cm-legend .nt-lk-security{background:var(--violet-4)}.cm-legend .nt-lk-deployment{background:var(--blue-5)}
+@media(max-width:700px){.nt-bar-find{margin-left:0}.nt-bar-find input{width:120px}.nt-x tbody th{max-width:150px}}
+/* Where the model's frame takes its content's height (round 3, phones), Table and Matrix keep the stage's height and
+   scroll inside their card, so the heading row and the first column stay in view; past either end the page scrolls. */
+@media(max-width:860px){
+  .cm.nt-sheet-on[data-nt-view=table] .cm-sheet,.cm.nt-sheet-on[data-nt-view=cross] .cm-sheet{height:min(560px,70vh)}
+  .nt-table-wrap{overscroll-behavior-x:contain;overscroll-behavior-y:auto}
+}
+/* Phones (round 4): the Matrix's axes stack, each its own row; the filters take the width; every word wraps at the
+   12 px floor inside the scrolling card; nothing is cut. */
+@media(max-width:480px){
+  .nt-sheet-bar{padding:8px 10px;gap:6px}
+  .nt-sheet-bar .nt-tfind,.nt-x-bar .nt-x-axis{flex:1 1 100%;min-width:0}
+  .nt-sheet-bar .nt-tfind input{flex:1 1 auto;width:auto;max-width:none;min-width:0}
+  .nt-x-bar{row-gap:5px}
+  .nt-x-bar .nt-x-axis{display:flex;flex-wrap:nowrap}
+  .nt-x-bar .nt-x-axis .cm-scn{flex:1 1 auto;min-width:0}
+  .nt-x-bar .nt-x-axis .cm-scn span{flex:none;width:64px}
+  .nt-x-bar .nt-x-axis .cm-scn select{flex:1 1 auto;min-width:0;max-width:none;width:100%}
+  .nt-x-bar .nt-xfind{flex:0 0 96px;min-width:0}
+  .nt-x-bar .nt-xfind input{width:100%;min-width:0}
+  .nt-x-bar .nt-x-swap{order:9;margin-left:auto}
+  .nt-x-bar .nt-sheet-status{order:8;flex:1 1 0}
+  .nt-x-cap{padding:4px 10px;font-size:12px}
+  .nt-x-key{margin:4px 10px;gap:10px}
+  .nt-x-key .nt-long{display:none}
+  .nt-sheet-status{flex:1 1 100%;font-size:12px}
+  .nt-table{font-size:12px}
+  .nt-table th,.nt-table td{padding:6px 8px}
+  .nt-records thead th{white-space:normal}
+  .nt-records tbody th{white-space:normal;max-width:112px;overflow-wrap:break-word}
+  .nt-records td{min-width:92px;max-width:220px;overflow-wrap:break-word}
+  .nt-x tbody th{max-width:128px}
+  .nt-x tbody th button{overflow-wrap:break-word}
+  .nt-x thead th{min-width:76px}
+}
+
+/* The chapter's own views honour the layers where an element stands for a record (round 3, D). */
+.cm .nt-layer-off{display:none!important}
+.cm[data-nt-view=whole] .cm-walk{display:none}
+/* The shared views' toolbar takes the lens row's width and wraps, so Find and the zoom controls stay in reach. */
+.cm.nt-active .cm-bar .cm-lenses,.cm.nt-sheet-on .cm-bar .cm-lenses{flex:1 1 100%;flex-wrap:wrap;row-gap:4px;min-width:0}
+/* A phone gets one continuous, keyboard-scrollable view rail, then a short picture toolbar. Advanced picture
+   controls remain in the toolbar behind an explicit disclosure, rather than consuming the first screen of canvas. */
+@media(max-width:700px){
+  .cm-top>.cm-views{position:relative;flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;max-width:100%;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:var(--sage-8) var(--sage-2);padding:2px 32px 6px 2px;gap:5px;border-bottom:1px solid var(--green-5)}
+  .cm-top>.cm-views .cm-view{flex:none;scroll-snap-align:start}
+  .cm.nt-active .cm-bar .cm-lenses,.cm.nt-sheet-on .cm-bar .cm-lenses{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+  .nt-controls-primary{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0}
+  .nt-controls-primary :is(.nt-scene,.nt-env){order:0;flex:1 1 195px;min-width:0}
+  .nt-controls-primary :is(.nt-scene,.nt-env)>span{display:none}
+  .nt-controls-primary :is(.nt-scene,.nt-env) select{flex:1 1 auto;width:100%;min-width:0;max-width:none;min-height:44px}
+  .nt-controls-primary .nt-mobile-tools{display:inline-flex;order:1;flex:none;gap:5px;min-height:44px;margin-left:auto}
+  .nt-controls-primary .nt-bar-find{order:2;flex:1 1 128px;min-width:0;margin-left:0}
+  .nt-controls-primary .nt-bar-find input{flex:1 1 auto;min-width:0;width:96px;min-height:44px}
+  .nt-controls-primary .nt-zoom{order:3;flex:none}
+  .nt-controls-primary .nt-zoom .cm-btn{min-height:44px}
+  .nt-controls-primary .nt-connections{order:4;flex:1 1 100%;grid-template-columns:auto 1fr auto;padding:4px 0}
+  .nt-controls-primary .nt-connection-modes{justify-content:space-between}
+  .cm .nt-connection-modes button{min-height:36px;flex:1}
+  .nt-controls-primary .nt-connection-caption{max-width:none}
+  .nt-controls-extra{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-top:6px;border-top:1px solid var(--green-4)}
+  .nt-controls-extra[data-open=false]{display:none}
+  .cm-bar:has(.nt-controls-extra){position:relative}
+  .nt-controls-extra .nt-menu{position:static}
+  .nt-controls-extra .nt-pop{left:8px;right:8px;top:auto;min-width:0;width:auto;max-height:min(60vh,440px)}
+  .nt-pop label.nt-layer,.nt-pop button{min-height:44px}
+}
+
+/* Marks on the picture (round 5, Contract M): the same states on every view, and in the Key. The picture's own
+   painting (rings, badges, the lit path, dimming) is in the renderer's styles; this is the screen's part. */
+.cm-svg .nt-mk,.cm-svg .nt-ghost{pointer-events:none}
+.cm-svg .nt-mk-badge title{pointer-events:auto}
+.cm-svg .nt-node.nt-mk-dimmed,.cm-svg :is(.nt-edge,.nt-trunk).nt-mk-dim{transition:opacity .2s}
+.cm-legend .nt-mk-k{border:0;border-radius:50%;width:16px;height:16px;color:var(--on-solid);font-style:normal;font-weight:700;font-size:10.5px;line-height:1}
+.cm-legend .nt-mk-k.fix{background:var(--state-fix-solid)}.cm-legend .nt-mk-k.confirm{background:var(--state-confirm-solid)}.cm-legend .nt-mk-k.pass{background:var(--state-pass-solid)}
+.cm-legend .nt-mk-k.changed{background:var(--sage-1);border:2.4px solid var(--blue-9);border-radius:4px;width:18px;height:14px}
+.cm-legend .nt-mk-k.traced{background:var(--sage-1);border:2.4px solid var(--violet-9);border-radius:4px;width:18px;height:14px}
+.cm-legend .nt-mk-k.dimmed{background:var(--blue-5);opacity:.3;border:1px solid var(--sage-9);border-radius:2px;width:18px;height:14px}
+.cm-legend .nt-mk-k.ghost{background:repeating-linear-gradient(135deg,var(--gold-1) 0 4px,var(--gold-5) 4px 8px);border:1px dashed var(--gold-9);border-radius:2px;width:18px;height:14px}
+/* The same glyphs on the Table's rows and the Matrix's headings; the trace as row states. */
+.nt-mk-g{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;color:var(--on-solid);font-style:normal;font-weight:700;font-size:12px;line-height:1;vertical-align:-3px}
+.nt-mk-g.fix{background:var(--state-fix-solid)}.nt-mk-g.confirm{background:var(--state-confirm-solid)}.nt-mk-g.pass{background:var(--state-pass-solid)}
+.nt-table tr.nt-mk-dimmed>*,.nt-x th.nt-mk-dimmed{opacity:.45}
+.nt-table tr.nt-mk-traced>th,.nt-x th.nt-mk-traced{box-shadow:inset 3px 0 0 var(--violet-9)}
+.nt-table tr.nt-mk-changed>th{box-shadow:inset 3px 0 0 var(--blue-9)}
+/* The companion: the readings in two lines with More, the trace's chain, the element under the pointer, its marks. */
+.nt-lead{margin:4px 0}
+.nt-lead>span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-more>summary{cursor:pointer;font-size:12px;font-weight:600;color:var(--sage-11);margin:2px 0 4px}
+.nt-trace-read{border-left:3px solid var(--violet-9);padding-left:9px}
+.nt-trace-read .nt-chain{font-weight:600;overflow-wrap:anywhere;margin:4px 0}
+.nt-trace-read .nt-gaps{font-size:12.5px;color:var(--gold-11);margin:2px 0 6px}
+.nt-trace-read .nt-actions small{font-size:12px}
+.nt-hover-read{background:var(--sage-2);border:1px solid var(--green-3);border-radius:8px;padding:6px 9px}
+.nt-hover-read h4{margin-top:0}
+.nt-hover-list{margin:4px 0 0;padding-left:18px;font-size:12.5px;display:grid;gap:2px}
+/* Round 10 (N6): the lines drawn together in a reading: the line, then each relationship on it as a button that selects it. */
+.nt-lines p{margin:6px 0 2px;font-size:12.5px}
+.nt-lines ul{list-style:none;margin:4px 0;padding:0;display:grid;gap:6px;font-size:12.5px}
+.nt-picks{display:flex;flex-wrap:wrap;gap:3px 10px;margin-top:2px}
+.nt-pick{border:0;background:none;padding:1px 0;font:inherit;font-size:12.5px;text-align:left;color:var(--green-11);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.nt-pick:hover{color:var(--green-12)}
+.nt-pick:focus-visible{outline:2px solid var(--focus-outline);outline-offset:1px;border-radius:2px}
+.nt-mk-lines{list-style:none;margin:6px 0;padding:0;display:grid;gap:3px;font-size:12.5px}
+.nt-mk-line{border-left:3px solid var(--sage-9);padding-left:7px}
+.nt-mk-line.fix{border-color:var(--state-fix-solid)}.nt-mk-line.confirm{border-color:var(--state-confirm-solid)}.nt-mk-line.pass{border-color:var(--state-pass-solid)}.nt-mk-line.changed{border-color:var(--blue-9)}.nt-mk-line.traced{border-color:var(--violet-9)}
+.nt-mk-line i{font-style:normal;font-weight:700}
+.nt-trace-act{margin-top:4px}
+.nt-pop label.nt-checks-switch small{white-space:nowrap}
+.nt-pop .nt-find select{font-size:12.5px;padding:5px 7px;border:1px solid var(--green-5);border-radius:6px;background:var(--sage-1);max-width:300px}
+/* The record picture (round 5): a selected record's neighbourhood above the Work tab's details, drawn by the kit at a
+   fixed small size; its words follow the semantic zoom, its lines and the record's mark keep a legible weight. */
+.rp{margin:0 0 12px;padding:8px 10px 6px;background:var(--sage-1);border:1px solid var(--green-5);border-radius:10px;cursor:pointer}
+.rp:hover{border-color:var(--green-7);background:var(--sage-2)}
+.rp:focus-visible{outline:2px solid var(--focus-outline);outline-offset:2px}
+.rp figcaption{display:flex;flex-direction:column;gap:1px;margin:0 0 4px;font-size:12.5px;line-height:1.3;color:var(--sage-12)}
+.rp figcaption b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rp figcaption small{font-size:12px;color:var(--sage-10)}
+.rp-pic{display:flex;justify-content:center}
+.rp-pic > svg{display:block;max-width:100%;height:auto}
+.rp-pic svg .nt-line{stroke-width:calc(1.2px / var(--cm-z,1))}
+.rp-pic svg .nt-join{r:calc(2.2px / var(--cm-z,1))}
+.rp-pic svg rect.nt-box,.rp-pic svg .nt-ev,.rp-pic svg .nt-gw{stroke-width:calc(.9px / var(--cm-z,1))}
+.rp-pic svg .nt-node.sel rect.nt-box{stroke:var(--gold-8);stroke-width:calc(3px / var(--cm-z,1))}
+.rp-foot{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin:4px 0 0;font-size:12px;color:var(--sage-11)}
+.rp-k i{font-style:normal;font-weight:700}.rp-k.fix i{color:var(--state-fix-fg)}.rp-k.confirm i{color:var(--state-confirm-fg)}.rp-k.pass i{color:var(--state-pass-fg)}
+.rp-open{margin-left:auto;font-weight:600;color:var(--green-12)}
+/* Round 6 (Contract T): the BPMN glyphs and technology icons wait for a nearer zoom, like the element types; the sequence
+   picture's lifelines and responses; the states; the process companion's semantics and token walk. */
+[data-cm-z=far] svg .nt-icon,[data-cm-z=tiny] svg .nt-icon,[data-cm-z=far] svg .nt-glyph,[data-cm-z=tiny] svg .nt-glyph{display:none}
+.cm-svg .nt-lifeline line{pointer-events:none}
+.cm-svg .nt-node.nt-mk-traced .nt-ev,.cm-svg .nt-node.nt-mk-traced .nt-gw{stroke:var(--violet-9);stroke-width:2.6}
+.pe-semantics{font-size:12.5px;color:var(--sage-11);margin:2px 0 6px}
+.pe-sem{border:1px solid var(--sage-5);border-radius:7px;padding:4px 8px 6px;margin:6px 0}.pe-sem legend{font-size:12px;color:var(--cm-muted,var(--sage-10));padding:0 4px}.pe-sem[hidden]{display:none}
+.pe-walk{border-left:3px solid var(--violet-9);padding-left:8px;margin:6px 0}.pe-walk .cm-acts{margin:0 0 4px}.pe-walk-text{margin:0;font-size:12.5px}
+/* Round 24 (D-24-08): the module map, a shared sheet of every chapter's Model tab. */
+.mm{display:grid;gap:10px;padding:16px 18px 24px}.mm-head h3{margin:0;font:600 18px/1.3 var(--font-ui)}.mm-head p{margin:4px 0 0;font-size:13px;color:var(--sage-11)}
+.mm-band-title{margin:8px 0 0;font:600 12px/1.4 var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--sage-10)}
+.mm-grid,.mm-subs{list-style:none;margin:0;padding:0}.mm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:10px}
+.mm-band{padding:10px;border-radius:10px;background:var(--sage-3)}
+.mm-card{display:grid;gap:4px;align-content:start;padding:10px 12px;border:1px solid var(--green-4);border-radius:8px;background:var(--sage-1)}
+.mm-card.on{border-color:var(--green-8);box-shadow:0 0 0 1px var(--green-8)}
+.mm-card h5{margin:0;font:600 14px/1.35 var(--font-ui)}
+.mm-open,.mm-clear{padding:0;border:0;background:none;font:inherit;color:var(--green-12);text-align:left;text-decoration:underline;text-decoration-color:var(--green-6);text-underline-offset:3px;cursor:pointer}
+.mm-counts,.mm-ready,.mm-held{margin:0;font-size:12px;line-height:1.5;color:var(--sage-11)}
+.mm-r.fix{color:var(--state-fix-fg)}.mm-r.confirm{color:var(--state-confirm-fg)}.mm-r.pass{color:var(--state-pass-fg)}
+.mm-subs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.mm-sub{display:inline-flex;gap:6px;align-items:center;min-height:28px;padding:2px 8px;border:1px solid var(--green-4);border-radius:999px;background:var(--sage-1);font:12px/1.3 var(--font-ui);color:var(--sage-11);cursor:pointer}
+.mm-sub small{color:var(--sage-10)}.mm-sub:hover{background:var(--green-2)}
+.mm :is(.mm-sub,.mm-open)[aria-current=true]{background:var(--green-3);border-color:var(--green-7);color:var(--green-12);text-decoration:none}
+.mm :focus-visible{outline:2px solid var(--focus-outline);outline-offset:2px}

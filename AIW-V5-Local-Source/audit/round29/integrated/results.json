@@ -1,0 +1,2312 @@
+{
+  "suite": "Round 29 integrated restoration",
+  "started": "2026-10-18T13:42:09.101Z",
+  "build": [
+    {
+      "name": "/assets/theme-boot-141df46786a9.js",
+      "sha256": "141df46786a9cb49546473ac7c1c20f050dd1b5b1589d6c651f8f4b9f0e68b22"
+    },
+    {
+      "name": "/assets/app-NK6SZLFO.js",
+      "sha256": "974dabee82e39b9a4bba4703a77434745648f1a972cc1916b8bbb3572534bbb0"
+    },
+    {
+      "name": "/assets/app-32945c070bd2.css",
+      "sha256": "32945c070bd285c45f1007bdcb37de878c15f2509c60ecc91921b7d2d945f16e"
+    }
+  ],
+  "project": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "revision": 82,
+  "authority": "Isolated synthetic revision82 copy. No approval, provider call, canonical edit or handoff submission.",
+  "checks": [
+    {
+      "name": "All 44 chapter and tab surfaces retain location and native next task",
+      "status": "passed",
+      "surfaces": [
+        {
+          "chapter": 1,
+          "tab": "work"
+        },
+        {
+          "chapter": 1,
+          "tab": "model"
+        },
+        {
+          "chapter": 1,
+          "tab": "validate"
+        },
+        {
+          "chapter": 1,
+          "tab": "output"
+        },
+        {
+          "chapter": 2,
+          "tab": "work"
+        },
+        {
+          "chapter": 2,
+          "tab": "model"
+        },
+        {
+          "chapter": 2,
+          "tab": "validate"
+        },
+        {
+          "chapter": 2,
+          "tab": "output"
+        },
+        {
+          "chapter": 3,
+          "tab": "work"
+        },
+        {
+          "chapter": 3,
+          "tab": "model"
+        },
+        {
+          "chapter": 3,
+          "tab": "validate"
+        },
+        {
+          "chapter": 3,
+          "tab": "output"
+        },
+        {
+          "chapter": 4,
+          "tab": "work"
+        },
+        {
+          "chapter": 4,
+          "tab": "model"
+        },
+        {
+          "chapter": 4,
+          "tab": "validate"
+        },
+        {
+          "chapter": 4,
+          "tab": "output"
+        },
+        {
+          "chapter": 5,
+          "tab": "work"
+        },
+        {
+          "chapter": 5,
+          "tab": "model"
+        },
+        {
+          "chapter": 5,
+          "tab": "validate"
+        },
+        {
+          "chapter": 5,
+          "tab": "output"
+        },
+        {
+          "chapter": 6,
+          "tab": "work"
+        },
+        {
+          "chapter": 6,
+          "tab": "model"
+        },
+        {
+          "chapter": 6,
+          "tab": "validate"
+        },
+        {
+          "chapter": 6,
+          "tab": "output"
+        },
+        {
+          "chapter": 7,
+          "tab": "work"
+        },
+        {
+          "chapter": 7,
+          "tab": "model"
+        },
+        {
+          "chapter": 7,
+          "tab": "validate"
+        },
+        {
+          "chapter": 7,
+          "tab": "output"
+        },
+        {
+          "chapter": 8,
+          "tab": "work"
+        },
+        {
+          "chapter": 8,
+          "tab": "model"
+        },
+        {
+          "chapter": 8,
+          "tab": "validate"
+        },
+        {
+          "chapter": 8,
+          "tab": "output"
+        },
+        {
+          "chapter": 9,
+          "tab": "work"
+        },
+        {
+          "chapter": 9,
+          "tab": "model"
+        },
+        {
+          "chapter": 9,
+          "tab": "validate"
+        },
+        {
+          "chapter": 9,
+          "tab": "output"
+        },
+        {
+          "chapter": 10,
+          "tab": "work"
+        },
+        {
+          "chapter": 10,
+          "tab": "model"
+        },
+        {
+          "chapter": 10,
+          "tab": "validate"
+        },
+        {
+          "chapter": 10,
+          "tab": "output"
+        },
+        {
+          "chapter": 11,
+          "tab": "work"
+        },
+        {
+          "chapter": 11,
+          "tab": "model"
+        },
+        {
+          "chapter": 11,
+          "tab": "validate"
+        },
+        {
+          "chapter": 11,
+          "tab": "output"
+        }
+      ]
+    },
+    {
+      "name": "Chapter 1 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 1,
+      "causes": 1,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 2 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 3,
+      "causes": 3,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 3 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 5,
+      "causes": 5,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 4 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 16,
+      "causes": 6,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 5 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 4,
+      "causes": 4,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 6 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 9,
+      "causes": 8,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 7 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 13,
+      "causes": 13,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 8 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 5,
+      "causes": 4,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 9 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 11,
+      "causes": 10,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 10 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 13,
+      "causes": 13,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Chapter 11 grouped validation and cause rollup",
+      "status": "passed",
+      "findings": 81,
+      "causes": 68,
+      "groupViews": [
+        "object",
+        "cause"
+      ]
+    },
+    {
+      "name": "Inherited errors remain Awaiting assessment; canonical same-tab Inspect",
+      "status": "passed",
+      "id": "QD-001",
+      "context": "SELECTED RECORD \u00b7 CHAPTER 02\nQD-001 \u00b7 Return a booking outcome promptly\nThis panel follows a record from another chapter.\nOpen its Work view \u2192",
+      "preserved": {
+        "chapter": "11",
+        "tab": "validate",
+        "scope": null,
+        "scroll": 663
+      }
+    },
+    {
+      "name": "Chapter 1 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "REQ-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 01\nREQ-001 \u00b7 Book one available clinic slot exactly once\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 2 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "QD-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 02\nQD-001 \u00b7 Return a booking outcome promptly\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 3 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "ADR-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 03\nADR-001 \u00b7 How will the clinic prevent duplicate slot allocation?\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 4 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "lr-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 04\nLR-001 \u00b7 Allocate clinic appointment\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 5 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "obj-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 05\nAPP-001 \u00b7 Clinic Booking Service\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 6 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "tc-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 06\nTC-001 \u00b7 Transactional booking persistence\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 7 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "tr-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 07\nTR-001 \u00b7 Booking transactional datastore\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 8 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "if-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 08\nIF-001 \u00b7 Request clinic appointment\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 9 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "sec-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 09\nSEC-001 \u00b7 Authorize every booking read and change\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 10 Output source inspection and workflow access",
+      "status": "passed",
+      "inspected": "env-001",
+      "sourceContext": "SELECTED RECORD \u00b7 CHAPTER 10\nENV-001 \u00b7 Clinic synthetic staging\nThe main view compiles this chapter\u2019s output."
+    },
+    {
+      "name": "Chapter 11 Output source inspection and workflow access",
+      "status": "passed"
+    },
+    {
+      "name": "Native next task is present and usable in all four tabs",
+      "status": "passed",
+      "outcomes": [
+        {
+          "tab": "work",
+          "label": "Next task\nReview inherited inputs",
+          "url": "?chapter=4&tab=work&section=responsibilities&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+          "dialog": 1,
+          "where": "Chapter 4 \u00b7 Logical application \u00b7 Work \u00b7 Responsibilities"
+        },
+        {
+          "tab": "model",
+          "label": "Next task\nReview inherited inputs",
+          "url": "?chapter=4&tab=model&model=map&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+          "dialog": 1,
+          "where": "Chapter 4 \u00b7 Logical application \u00b7 Model \u00b7 Responsibilities"
+        },
+        {
+          "tab": "validate",
+          "label": "Next task\nReview inherited inputs",
+          "url": "?chapter=4&tab=validate&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+          "dialog": 1,
+          "where": "Chapter 4 \u00b7 Logical application \u00b7 Validate \u00b7 SDD readiness"
+        },
+        {
+          "tab": "output",
+          "label": "Next task\nReview inherited inputs",
+          "url": "?chapter=4&tab=output&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+          "dialog": 1,
+          "where": "Chapter 4 \u00b7 Logical application \u00b7 Output \u00b7 Its part of the SDD"
+        }
+      ]
+    },
+    {
+      "name": "Output native forwards retain Chapter 4 through 11 Work routes",
+      "status": "passed",
+      "routes": [
+        "4\u21925",
+        "5\u21926",
+        "6\u21927",
+        "7\u21928",
+        "8\u21929",
+        "9\u219210",
+        "10\u219211"
+      ]
+    },
+    {
+      "name": "Working and frozen output previews and actual downloads",
+      "status": "passed",
+      "downloads": 3,
+      "frozenBaseline": "BL-001",
+      "authority": "Working draft \u2014 not approved"
+    },
+    {
+      "name": "Desktop and phone Questions, location and responsive layout",
+      "status": "passed",
+      "phoneQuestion": "table",
+      "bounds": {
+        "x": 21,
+        "y": 663.859375,
+        "width": 348,
+        "height": 438.875
+      }
+    },
+    {
+      "name": "Authored revision82 design and baseline remain unchanged",
+      "status": "passed",
+      "unchanged": true
+    },
+    {
+      "name": "Blank project related documents state concrete missing inputs; warning gaps remain actionable",
+      "status": "passed",
+      "blankProject": "project-a25a0693-9ba8-4980-a215-0cca86be5c08",
+      "reasons": [
+        "Needs a saved design record in any chapter. Offered in Chapter 11; it reads this chapter."
+      ],
+      "warningGaps": [
+        "ambiguity",
+        "test-objective"
+      ],
+      "authority": "A new local test record only; authored revision82 untouched"
+    }
+  ],
+  "clicks": [
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 1 cause",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":confirmation"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":confirmation"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All3",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 3 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":responsibilities"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":responsibilities"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All5",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 5 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":assumptions"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":assumptions"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All16",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 6 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 11",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":disconnected-object"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":disconnected-object"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 6 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All4",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 4 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":isolated"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":isolated"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All9",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 8 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":trust"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":trust"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All13",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 13 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":choice"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":choice"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All5",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 4 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 2",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":assumptions"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":assumptions"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All11",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 10 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":failure"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":failure"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All13",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 13 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":recovery"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": ":recovery"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-set=\"source\"]",
+      "label": "Inherited findings 81",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-set": "source"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"all\"]",
+      "label": "All81",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "all"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"collapse\"]",
+      "label": "Collapse all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "collapse"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-groups=\"expand\"]",
+      "label": "Expand all",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-groups": "expand"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-causes]>summary",
+      "label": "Findings by cause \u00b7 68 causes",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick]",
+      "label": "Show 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": "2:responsibilities"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-cause-pick][aria-pressed=\"true\"]",
+      "label": "Show all causes",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-cause-pick": "2:responsibilities"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-set=\"source\"]",
+      "label": "Inherited findings 81",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-set": "source"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"review\"]",
+      "label": "Awaiting assessment81",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "review"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": "[data-validation-inspect]",
+      "label": "Inspect record",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-inspect": "QD-001",
+        "data-inspect-chapter": "2"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "validate",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 8",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect REQ-001 \u00b7 Book one available clinic slot exactly once",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "REQ-001",
+        "data-out-chapter": "1"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "2",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect QD-001 \u00b7 Return a booking outcome promptly",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "QD-001",
+        "data-out-chapter": "2"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "2",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "3",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect ADR-001 \u00b7 How will the clinic prevent duplicate slot allocation?",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "ADR-001",
+        "data-out-chapter": "3"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "3",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect LR-001 \u00b7 Allocate clinic appointment",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "lr-001",
+        "data-out-chapter": "4"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect LR-001 \u00b7 Allocate clinic appointment",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "lr-001",
+        "data-out-chapter": "4"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect APP-001 \u00b7 Clinic Booking Service",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "obj-001",
+        "data-out-chapter": "5"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 4",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect TC-001 \u00b7 Transactional booking persistence",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "tc-001",
+        "data-out-chapter": "6"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 1",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect TR-001 \u00b7 Booking transactional datastore",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "tr-001",
+        "data-out-chapter": "7"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 3",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect IF-001 \u00b7 Request clinic appointment",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "if-001",
+        "data-out-chapter": "8"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 2",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect SEC-001 \u00b7 Authorize every booking read and change",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "sec-001",
+        "data-out-chapter": "9"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 5",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "selector": "[data-out-inspect]",
+      "label": "Inspect ENV-001 \u00b7 Clinic synthetic staging",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-out-inspect": "env-001",
+        "data-out-chapter": "10"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "selector": ".workspace-tools [data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": "[data-output-panel=\"sources\"]",
+      "label": "Inspect sources \u00b7 0",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "sources"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Baseline & delivery workflow",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "selector": ".workspace-next",
+      "label": "Open next task: Review inherited inputs",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-action": "next"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "model",
+      "selector": ".workspace-next",
+      "label": "Open next task: Review inherited inputs",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-action": "next"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "selector": ".workspace-next",
+      "label": "Open next task: Review inherited inputs",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-action": "next"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": ".workspace-next",
+      "label": "Open next task: Review inherited inputs",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-action": "next"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "work",
+      "selector": ".output-handoff-panel [data-l-action=chapter5]",
+      "label": "Open Chapter 5 Work",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-l-action": "chapter5"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "work",
+      "selector": ".output-handoff-panel [data-a-action=technology-intake]",
+      "label": "Open Chapter 6 Work",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-a-action": "technology-intake"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "work",
+      "selector": ".output-handoff-panel [data-t-action=chapter7]",
+      "label": "Open Chapter 7 Work",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-t-action": "chapter7"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": ".output-handoff-panel [data-tr-action=chapter8]",
+      "label": "Open Interfaces & data",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-tr-action": "chapter8"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "work",
+      "selector": ".output-handoff-panel [data-i-action=chapter9]",
+      "label": "Open Security",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-i-action": "chapter9"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "selector": ".output-handoff-panel [data-sec-action=chapter10]",
+      "label": "Open Deployment / runtime",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-sec-action": "chapter10"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "selector": "[data-output-panel=\"handoff\"]",
+      "label": "Review handoff",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-panel": "handoff"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "work",
+      "selector": ".output-handoff-panel [data-rt-action=chapter11]",
+      "label": "Open Review & realize",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-rt-action": "chapter11"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": ".rv-export-form .rv-export-menu>summary",
+      "label": "Download or export",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": "[data-output-document=\"frozen\"]",
+      "label": "Frozen baselineImmutable edition",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-document": "frozen"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "model",
+      "selector": ".cm-qpick>summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "model",
+      "selector": "[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table \u00b7 listingThe chapter\u2019s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "chapter": null,
+      "tab": null,
+      "selector": "#new-project",
+      "label": "\uff0b Create a project",
+      "tag": "BUTTON",
+      "attributes": {}
+    },
+    {
+      "chapter": null,
+      "tab": null,
+      "selector": "#create-submit",
+      "label": "Create & open Chapter 1 \u2192",
+      "tag": "BUTTON",
+      "attributes": {}
+    },
+    {
+      "chapter": "1",
+      "tab": "output",
+      "selector": ".output-secondary>summary",
+      "label": "Related documents & backup",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "1",
+      "tab": "work",
+      "selector": "[data-r-section=\"requirement\"]",
+      "label": "Requirements",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-r-section": "requirement"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "work",
+      "selector": "[data-r-action=\"add\"]",
+      "label": "Add requirement",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-r-action": "add"
+      }
+    },
+    {
+      "chapter": "1",
+      "tab": "work",
+      "selector": "#r-artefact-form [type=submit]",
+      "label": "Save artefact",
+      "tag": "BUTTON",
+      "attributes": {}
+    },
+    {
+      "chapter": "1",
+      "tab": "validate",
+      "selector": "[data-validation-filter=\"gaps\"]",
+      "label": "Content gaps12",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-validation-filter": "gaps"
+      }
+    }
+  ],
+  "downloads": [
+    {
+      "chapter": 4,
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Logical_Model.md",
+      "bytes": 4927,
+      "sha256": "1254bf5687e40bf370c25bd8397ebed1ffa00a75587b51a274370bcc227c4aee"
+    },
+    {
+      "chapter": 11,
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.md",
+      "bytes": 220947,
+      "sha256": "992848781c738fecff9b8ab27d9b61f6d2762d1aece51351184d1e8a921c747f"
+    },
+    {
+      "chapter": 11,
+      "baseline": "BL-001",
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_BL-001.md",
+      "bytes": 220250,
+      "sha256": "9381a78955e36f2f29fd5c1fe8655a17415a843c8a605095e4fbeceda1353462"
+    }
+  ],
+  "screenshots": [
+    "desktop-validation-causes.png",
+    "desktop-validation-groups.png",
+    "phone-validation-groups.png",
+    "phone-validation-causes.png",
+    "desktop-inherited-details.png",
+    "desktop-output-details.png",
+    "phone-output-details.png",
+    "phone-output-sources.png",
+    "desktop-questions.png",
+    "phone-questions.png"
+  ],
+  "errors": [],
+  "requestFailures": [
+    {
+      "path": "/api/export",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/export",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/export",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/export",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/export",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/export",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "path": "/api/project",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "initialDocumentSHA256": "e043582c032dc86eb406fafa5fd36f452124d8fb7b0566ae84f7d247d60470ed",
+  "finalDocumentSHA256": "e043582c032dc86eb406fafa5fd36f452124d8fb7b0566ae84f7d247d60470ed",
+  "status": "passed",
+  "finished": "2026-10-18T13:42:44.640Z",
+  "receiptKind": "Consolidated acceptance: complete surface run plus bounded export loading-wait retest on identical built assets",
+  "acceptanceResolution": {
+    "check": "Working and frozen output previews and actual downloads",
+    "reason": "The first harness read a newly navigated iframe body before document load completed. The corrected test waits for the requested document URL and meaningful loaded content. No production change.",
+    "retest": "../export-retest/results.json",
+    "completeSurfaceRunFinished": "2026-10-18T13:42:44.640Z",
+    "retestFinished": "2026-10-18T13:43:46.914Z"
+  },
+  "requestInterruptionClassification": {
+    "expected": [
+      "net::ERR_ABORTED when leaving an in-progress generated preview or page; successful working and frozen downloads separately verified by nonempty bytes and SHA256"
+    ],
+    "unexpected": []
+  }
+}

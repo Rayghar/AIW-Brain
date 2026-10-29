@@ -1,0 +1,174 @@
+{
+  "budget": {
+    "entry": 8192,
+    "chunk": 377856,
+    "css": 837632,
+    "routes": {
+      "projects": 1242112,
+      "chapters": 3109888
+    },
+    "data": {
+      "brain-catalogue": 1576960,
+      "review-font": 1089536,
+      "vendor-docx": 430080,
+      "brain-playbook": 122880,
+      "brain-tradeoffs": 44032
+    },
+    "scripts": 146,
+    "tiny": 61
+  },
+  "entry": 4966,
+  "routes": {
+    "projects": {
+      "files": 10,
+      "code": 476181,
+      "data": 149751,
+      "eagerData": [
+        "brain-playbook",
+        "brain-tradeoffs"
+      ]
+    },
+    "chapters": {
+      "files": 77,
+      "code": 3085821,
+      "data": 149751,
+      "eagerData": [
+        "brain-playbook",
+        "brain-tradeoffs"
+      ]
+    }
+  },
+  "data": {
+    "vendor-docx": 399451,
+    "review-font": 1012970,
+    "brain-catalogue": 1523095,
+    "brain-playbook": 108378,
+    "brain-tradeoffs": 41373
+  },
+  "total": 8341341,
+  "scripts": 146,
+  "buckets": {
+    "under10k": 61,
+    "from10to50k": 45,
+    "over50k": 40
+  },
+  "largest": [
+    {
+      "file": "assets/chunks/brain-catalogue-4PQG3ABE.js",
+      "bytes": 1523179,
+      "code": 84,
+      "data": [
+        "brain-catalogue"
+      ],
+      "source": "public/brain-catalogue.js",
+      "importers": 2
+    },
+    {
+      "file": "assets/chunks/review-pdf-ZCRDOONZ.js",
+      "bytes": 1025699,
+      "code": 12729,
+      "data": [
+        "review-font"
+      ],
+      "source": "public/review-pdf.js",
+      "importers": 1
+    },
+    {
+      "file": "assets/chunks/chunk-QZRBHSUM.js",
+      "bytes": 502634,
+      "code": 352883,
+      "data": [
+        "brain-playbook",
+        "brain-tradeoffs"
+      ],
+      "source": null,
+      "importers": 109
+    },
+    {
+      "file": "assets/chunks/vendor-docx-37MLBVDF.js",
+      "bytes": 406448,
+      "code": 6997,
+      "data": [
+        "vendor-docx"
+      ],
+      "source": "public/vendor-docx.js",
+      "importers": 1
+    },
+    {
+      "file": "assets/chunks/chunk-EE552EAJ.js",
+      "bytes": 280485,
+      "code": 280485,
+      "data": [],
+      "source": null,
+      "importers": 75
+    },
+    {
+      "file": "assets/chunks/chunk-62F76ZDY.js",
+      "bytes": 250681,
+      "code": 250681,
+      "data": [],
+      "source": null,
+      "importers": 78
+    },
+    {
+      "file": "assets/chunks/chunk-MWYKMJKH.js",
+      "bytes": 240699,
+      "code": 240699,
+      "data": [],
+      "source": null,
+      "importers": 17
+    },
+    {
+      "file": "assets/chunks/chunk-6HFVM4RP.js",
+      "bytes": 204200,
+      "code": 204200,
+      "data": [],
+      "source": null,
+      "importers": 13
+    },
+    {
+      "file": "assets/chunks/chunk-RPFDP6VB.js",
+      "bytes": 195715,
+      "code": 195715,
+      "data": [],
+      "source": null,
+      "importers": 76
+    },
+    {
+      "file": "assets/chunks/chunk-PPG2O6XX.js",
+      "bytes": 147652,
+      "code": 147652,
+      "data": [],
+      "source": null,
+      "importers": 36
+    },
+    {
+      "file": "assets/chunks/knowledge-workspace-ui-VXGBUHSF.js",
+      "bytes": 128553,
+      "code": 128553,
+      "data": [],
+      "source": "public/knowledge-workspace-ui.js",
+      "importers": 1
+    },
+    {
+      "file": "assets/chunks/desk-view-GOXT4PY3.js",
+      "bytes": 120735,
+      "code": 120735,
+      "data": [],
+      "source": "public/desk-view.js",
+      "importers": 1
+    }
+  ],
+  "facades": [
+    "public/recovery-ui.js",
+    "public/discussion-ui.js",
+    "public/model-dossier.js",
+    "public/cursor-tip.js",
+    "public/model-exchange.js",
+    "public/project-store.js",
+    "public/review-documents.js",
+    "public/madr.js"
+  ],
+  "violations": [],
+  "css": 836993
+}

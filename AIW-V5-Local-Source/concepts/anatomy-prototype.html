@@ -1,0 +1,1103 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AIW Anatomy · concept</title>
+<meta name="description" content="Concept prototype: a layered, lens-based way to explore a solution architecture in AIW.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%23214d40'/%3E%3Cpath d='M10 28 20 10 30 28M14 22h12' fill='none' stroke='%23faf8ef' stroke-width='3'/%3E%3C/svg%3E">
+<style>:root{
+ --ink:#1f4336;--ink2:#4c6656;--muted:#76866f;--line:#d3dccb;--line2:#e3e9dc;--paper:#f6f5ec;--card:#fffefa;--forest:#214d40;--forest2:#2d6450;--gold:#b18d42;--gold2:#e9dcb8;
+ --c-intent:#8a6d3b;--c-req:#587448;--c-qd:#987431;--c-adr:#805d83;
+ --c-resp:#286954;--c-resp-bg:#eaf3ec;--c-comp:#2f6177;--c-comp-bg:#eaf2f5;--c-cap:#66733a;--c-cap-bg:#f0f2e2;--c-tech:#7a5f33;--c-tech-bg:#f6efe1;--c-run:#3f6d86;--c-run-bg:#e9f0f4;
+ --c-data:#6f5a93;--c-contract:#9b6643;--c-ctl:#8f5a76;--c-thr:#b0493a;--c-gap:#b5832f;
+ --z1:#3c7b8f;--z2:#7a6aa6;--z3:#b0843a;
+ font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink)
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--paper)}
+body{overflow:hidden;font-size:14px}
+button{font:inherit;color:inherit}
+.serif{font-family:Georgia,"Times New Roman",serif;font-weight:400}
+/* App frame */
+.app{display:grid;grid-template-rows:52px minmax(0,1fr) 62px;height:100vh;height:100dvh}
+.top{display:flex;align-items:center;gap:14px;padding:0 16px;border-bottom:1px solid var(--line);background:#fbfbf5;min-width:0}
+.mark{display:flex;align-items:center;gap:9px;font-family:Georgia,serif;font-size:22px;color:var(--forest);flex:none}
+.mark i{width:30px;height:30px;border-radius:8px;background:var(--forest);display:grid;place-items:center}
+.mark i svg{width:18px;height:18px}
+.mark small{font-family:ui-sans-serif,system-ui;font-size:11px;padding:1px 5px;border-radius:4px;background:#e7ecdf;color:var(--ink2)}
+.crumbs{display:flex;align-items:center;gap:6px;min-width:0;font-size:14px;overflow:hidden;white-space:nowrap}
+.crumbs button{border:0;background:none;padding:4px 6px;border-radius:6px;cursor:pointer;color:var(--ink2)}
+.crumbs button:hover{background:#eef2e7}
+.crumbs button.here{color:var(--ink);font-weight:600}
+.crumbs span{color:#a2ad98}
+.spacer{flex:1}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;flex:none}
+.seg button{border:0;background:none;padding:6px 11px;cursor:pointer;font-size:13px;color:var(--ink2);white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--forest);color:#fff}
+.tbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:13px;white-space:nowrap}
+.tbtn:hover{border-color:#a9bba3}
+.tbtn.primary{background:var(--forest);color:#fff;border-color:var(--forest)}
+.tbtn svg{width:15px;height:15px}
+select.tsel{border:1px solid var(--line);border-radius:8px;background:#fff;padding:6px 8px;font:inherit;font-size:13px;color:var(--ink);max-width:230px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 304px;min-height:0}
+.main.no-panel{grid-template-columns:minmax(0,1fr) 0}
+.center{display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0;min-height:0}
+.lensbar{display:flex;align-items:center;gap:6px;padding:7px 12px;border-bottom:1px solid var(--line);background:#f5f6ee;min-width:0;flex-wrap:wrap}
+.lensbar .lbl{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+.lensbar .lenses{display:flex;gap:4px;flex-wrap:wrap}
+.lensbar .sep{width:1px;height:24px;background:var(--line);margin:0 6px}
+.lensbar .depth{display:flex;gap:3px;flex-wrap:wrap;margin-left:auto}
+/* Lens chips */
+.lens{display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;background:none;border-radius:8px;padding:4px 9px 4px 5px;cursor:pointer;font-size:13px;color:var(--ink2);white-space:nowrap}
+.lens:hover{background:#e9eee1}
+.lens[aria-pressed=true]{background:#fff;border-color:#b9c9b3;color:var(--ink);font-weight:600;box-shadow:0 1px 0 #d9e2d2}
+.lens:disabled{opacity:.4;cursor:default}
+.lens i{width:24px;height:24px;border-radius:6px;display:grid;place-items:center;background:#e2e9db;color:var(--forest)}
+.lens[aria-pressed=true] i{background:var(--forest);color:#fff}
+.lens i svg{width:14px;height:14px}
+.dep{display:inline-flex;align-items:center;gap:5px;border:1px solid transparent;background:none;padding:4px 7px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--ink2);white-space:nowrap}
+.dep:hover{background:#eaeee1}
+.dep[aria-pressed=true]{background:#fff;border-color:#c9d5c2;color:var(--ink);font-weight:600}
+.dep:disabled{opacity:.4;cursor:default}
+.dep i{width:10px;height:10px;border-radius:3px;flex:none}
+/* Canvas */
+.stage{position:relative;overflow:hidden;background-color:#fbfbf6;background-image:radial-gradient(#dfe5d6 1px,transparent 1px);background-size:20px 20px;cursor:grab;touch-action:none}
+.stage.panning{cursor:grabbing}
+.world{position:absolute;left:0;top:0;transform-origin:0 0}
+.world svg.edges{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.n{position:absolute;transition:left .38s cubic-bezier(.2,.7,.2,1),top .38s cubic-bezier(.2,.7,.2,1),width .38s cubic-bezier(.2,.7,.2,1),height .38s cubic-bezier(.2,.7,.2,1),opacity .3s;cursor:pointer;overflow:hidden}
+.n.enter{opacity:0}
+.n.dim{opacity:.22}
+.n.bandbg{cursor:default;pointer-events:none;border-top:1px solid #e0e6d8;background:linear-gradient(#ffffff00,#ffffff00)}
+.n.bandbg.alt{background:#f4f6ee8c}
+.n.bandbg.peel{background:#fffdf4b0}
+.n.col{cursor:default;pointer-events:none;border-left:1px dashed #d6ddcf;border-right:1px dashed #d6ddcf;background:#ffffff38}
+.n.col.focus{background:#ffffff8a;border-color:#b9c7b0}
+.n.col.ext{background:repeating-linear-gradient(135deg,#f3f2ea 0 8px,#f7f6ef 8px 16px);opacity:.75}
+.n.blabel{cursor:pointer;padding:10px 12px;border-right:1px solid var(--line);background:#f7f7f0;display:flex;flex-direction:column;gap:3px}
+.n.blabel:hover{background:#eff2e6}
+.n.blabel.peel{background:#fff8e6;box-shadow:inset 3px 0 var(--gold)}
+.n.blabel b{font-size:13px;display:flex;align-items:center;gap:6px}
+.n.blabel b i{width:10px;height:10px;border-radius:3px}
+.n.blabel small{font-size:11px;color:var(--muted);line-height:1.3}
+.n.blabel em{font-style:normal;font-size:10.5px;color:#a39060;margin-top:auto}
+.n.blabel.future{opacity:.55}
+.n.mhead{padding:8px 10px;border-radius:10px;background:#fff;border:1px solid #cfd9c8;box-shadow:0 1px 0 #e1e7d9}
+.n.mhead:hover{border-color:#94ad8e}
+.n.mhead.focus{border-color:var(--forest);box-shadow:0 0 0 2px #21504033}
+.n.mhead b{display:block;font-family:Georgia,serif;font-weight:400;font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.n.mhead small{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.n.mhead .go{position:absolute;right:7px;top:7px;font-size:10.5px;padding:2px 6px;border-radius:5px;background:#eef3e8;color:var(--forest2);border:0;cursor:pointer}
+.n.mhead.ext{background:#f6f5ee;border-style:dashed}
+.n.mhead.ext b{font-size:14px}
+.n.mhead.narrow b{font-size:13px}
+/* Objects */
+.o{border-radius:9px;background:#fff;border:1px solid #d5dccd;padding:6px 9px;box-shadow:0 1px 2px #1f3d2e10}
+.o:hover{box-shadow:0 3px 10px #1f3d2e1f;z-index:3}
+.o.sel{outline:2.5px solid var(--gold);outline-offset:2px;z-index:4}
+.o.hl{box-shadow:0 0 0 2px #2d645055,0 3px 10px #1f3d2e1f}
+.o .t{display:block;font-weight:600;font-size:12.5px;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.o .k{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:2px;white-space:nowrap;overflow:hidden}
+.o .k svg{width:12px;height:12px;flex:none}
+.o .d{display:block;font-size:11.5px;color:var(--ink2);line-height:1.35;margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.o.compact{padding:3px 8px}
+.o.compact .k,.o.compact .d{display:none}
+.o.compact .t{font-size:11.5px;-webkit-line-clamp:1}
+.o.resp{border-radius:22px;background:var(--c-resp-bg);border-color:#b6d1bf;border-left:4px solid var(--c-resp);padding-left:12px}
+.o.resp .k{color:var(--c-resp)}
+.o.comp{background:var(--c-comp-bg);border-color:#b9cfd9;border-top:3px solid var(--c-comp);border-radius:6px}
+.o.comp .k{color:var(--c-comp)}
+.o.comp::before,.o.comp::after{content:"";position:absolute;left:-5px;width:9px;height:7px;border:1px solid #9fb9c6;background:#fff;border-radius:2px}
+.o.comp::before{top:12px}.o.comp::after{top:24px}
+.o.party{background:#f7f6f0;border:1px dashed #b8b39b;border-radius:14px}
+.o.party .k{color:#857d5c}
+.chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.chip{display:inline-flex;align-items:center;gap:4px;max-width:100%;font-size:10.5px;line-height:1.2;padding:2px 7px;border-radius:10px;border:1px solid #b6d1bf;background:#fff;color:var(--c-resp);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip.drop{border-color:#cfc3e4;color:var(--c-data);border-radius:10px 10px 10px 2px;background:#f6f2fb}
+.chip.gapc{border-style:dashed;border-color:var(--c-gap);color:var(--c-gap);background:#fffaf0}
+.o.cap{background:var(--c-cap-bg);border-color:#cdd3ac;border-radius:5px;border-bottom:3px solid var(--c-cap);display:flex;align-items:center;gap:8px;padding:4px 10px}
+.o.cap .k{margin:0;color:var(--c-cap)}
+.o.cap .t{-webkit-line-clamp:1;flex:0 1 auto}
+.o.cap .u{margin-left:auto;font-size:10.5px;color:var(--muted);white-space:nowrap}
+.o.tech{background:var(--c-tech-bg);border-color:#dccfae;border-radius:4px;display:flex;align-items:center;gap:8px;padding:4px 10px;border-left:3px solid var(--c-tech)}
+.o.tech .k{margin:0;color:var(--c-tech)}
+.o.tech .t{-webkit-line-clamp:1}
+.o.tech.unchosen{background:repeating-linear-gradient(135deg,#fbf6ea 0 6px,#f3ead6 6px 12px);border-style:dashed}
+.o.tech.unchosen .t{font-weight:500;color:#8b6f3d}
+.o.run{background:var(--c-run-bg);border-color:#bdd0dc;border-radius:6px;padding:4px 8px}
+.o.run .k{color:var(--c-run)}
+.o.run .pips{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px;font-size:10.5px;color:var(--ink2)}
+.o.run .pips span{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.o.run .pips i{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+.o.run .pips i.sb{background:#fff;border:1.5px solid currentColor}
+.o.run.unplaced{border-style:dashed;background:#f7f9fb}
+.o.intent{border-radius:6px;padding:3px 7px;display:flex;align-items:center;gap:6px;font-size:11px;background:#fff}
+.o.intent .t{font-weight:500;font-size:11px;-webkit-line-clamp:1}
+.o.intent b.tag{font-size:9.5px;font-weight:700;padding:1px 4px;border-radius:3px;color:#fff;flex:none}
+.o.intent.requirement{border-color:#c5d4b9}.o.intent.requirement b.tag{background:var(--c-req)}
+.o.intent.quality{border-color:#e2cfa2}.o.intent.quality b.tag{background:var(--c-qd)}
+.o.intent.decision{border-color:#d3c2d6}.o.intent.decision b.tag{background:var(--c-adr)}
+.o.count{background:transparent;border:1px dashed #d4dccb;box-shadow:none;font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;cursor:default}
+.o.socket{background:#fffbf1;border:1.5px dashed var(--c-gap);box-shadow:none;color:#9b7433;font-size:11px;display:flex;align-items:center;gap:6px;padding:4px 9px}
+.o.socket b{font-weight:600}
+.o.socket.next{border-color:#c8b27e;background:#fffcf4;color:#a38a50}
+.o.socket.next::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,#fff3d6,transparent);animation:sheen 2.6s infinite}
+@keyframes sheen{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+/* Badges */
+.badges{position:absolute;right:5px;top:4px;display:flex;gap:3px}
+.badge{font-size:9.5px;font-weight:700;padding:1px 4px;border-radius:4px;background:#eee;color:#555;line-height:1.3}
+.badge.ctl{background:#f3e4ec;color:var(--c-ctl)}
+.badge.thr{background:#fbe5e0;color:var(--c-thr)}
+.badge.thr.open{background:var(--c-thr);color:#fff}
+.badge.why{background:#efe8d7;color:#7c6433}
+.ring{position:absolute;pointer-events:none;border-radius:12px;border:2px solid;transition:all .38s cubic-bezier(.2,.7,.2,1)}
+.n.pill{cursor:pointer;font-size:10px;font-weight:600;padding:2px 6px;border-radius:9px;background:#fff;border:1px solid #d9c4a8;color:var(--c-contract);white-space:nowrap;box-shadow:0 1px 3px #0000001a;overflow:visible;z-index:6}
+.n.pill.ok{border-color:#a8c7ae;color:#2f6a4a}
+.n.pill.warn{border-color:#e0b36b;color:#95641c;background:#fff8ea}
+.n.pill.thr{border-color:#e6a197;color:var(--c-thr);background:#fff3f1}
+/* Edges */
+.edges path{fill:none;transition:opacity .3s}
+.e-line{stroke:#9bb3a3;stroke-width:1.2;opacity:.55}
+.e-line.hl{stroke:var(--gold);stroke-width:2.2;opacity:1}
+.e-line.dim{opacity:.1}
+.e-flow{stroke:#2d6450;stroke-width:1.8;opacity:.7}
+.e-flow.async{stroke-dasharray:6 4}
+.e-flow.hl{stroke:var(--gold);stroke-width:2.8;opacity:1}
+.e-flow.dim{opacity:.12}
+.e-flow.play{stroke:var(--gold);stroke-width:3.2;opacity:1;stroke-dasharray:10 7;animation:march .9s linear infinite}
+@keyframes march{to{stroke-dashoffset:-34}}
+.e-data{stroke:var(--c-data);stroke-width:1.6;stroke-dasharray:2 4;opacity:.75;stroke-linecap:round}
+.e-data.dim{opacity:.1}.e-data.hl{stroke-width:2.6;opacity:1}
+.e-why{stroke:#b9974f;stroke-width:1.3;opacity:.8;stroke-dasharray:3 3}
+.pillar{fill:#fff;stroke:#8a9a5a;stroke-width:1.4}
+/* Panel */
+.panel{border-left:1px solid var(--line);background:#fbfbf5;overflow:auto;min-width:0}
+.panel section{padding:14px 16px;border-bottom:1px solid var(--line2)}
+.panel h4{margin:0 0 7px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px}
+.panel p{margin:0 0 7px;line-height:1.5;font-size:13.5px}
+.panel .where{font-size:12.5px;color:var(--ink2);line-height:1.5}
+.panel .where b{color:var(--ink)}
+.narr{font-family:Georgia,serif;font-size:16px!important;line-height:1.45!important;color:var(--ink)}
+.ins{display:grid;gap:6px}
+.insight{display:grid;grid-template-columns:16px 1fr;gap:8px;align-items:start;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:7px 9px;font-size:12.5px;line-height:1.4;cursor:pointer;text-align:left;width:100%}
+.insight:hover{border-color:#b9c9b3}
+.insight i{width:9px;height:9px;border-radius:50%;margin-top:4px;background:var(--c-gap)}
+.insight.info i{background:#6e9b85}
+.insight.risk i{background:var(--c-thr)}
+.spec h5{margin:0;font-family:Georgia,serif;font-weight:400;font-size:19px;line-height:1.25}
+.spec .ref{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.lin{margin:10px 0 0;padding:0;list-style:none;border-left:2px solid #d9e2d2}
+.lin li{position:relative;padding:3px 0 7px 14px;font-size:12.5px;line-height:1.35}
+.lin li::before{content:"";position:absolute;left:-6px;top:7px;width:10px;height:10px;border-radius:3px;background:var(--dot,#9bb3a3)}
+.lin li small{display:block;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.lin li button{border:0;background:none;padding:0;color:var(--ink);text-align:left;cursor:pointer;font-size:12.5px}
+.lin li button:hover{text-decoration:underline}
+.lin li.gap{color:#9b7433}
+.asks{display:flex;flex-wrap:wrap;gap:6px}
+.asks button{border:1px solid #b9c9b3;background:#fff;border-radius:16px;padding:5px 10px;font-size:12px;cursor:pointer}
+.asks button.sol{background:var(--forest);color:#fff;border-color:var(--forest)}
+.answer{margin-top:10px;border:1px solid #d7e1d0;border-left:3px solid var(--forest);background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.5}
+.answer small{display:block;color:var(--muted);font-size:11px;margin-top:6px}
+.answer ol,.answer ul{margin:6px 0 0;padding-left:18px}
+/* Story bar */
+.story{display:flex;align-items:center;gap:12px;padding:0 14px;border-top:1px solid var(--line);background:#fbfbf5;min-width:0}
+.story .play{width:36px;height:36px;border-radius:50%;border:0;background:var(--forest);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.story .play svg{width:16px;height:16px}
+.steps{display:flex;gap:3px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.step{flex:1 0 74px;border:0;background:none;text-align:left;padding:5px 6px 4px;border-radius:7px;cursor:pointer;border-top:3px solid #dde4d4;min-width:0}
+.step small{display:block;font-size:10px;color:var(--muted)}
+.step span{display:block;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
+.step.done{border-top-color:#8fb09a}
+.step.cur{border-top-color:var(--gold);background:#fff8e6}
+.step.cur span{color:var(--ink);font-weight:600}
+.story .note{font-size:12px;color:var(--muted);max-width:260px;line-height:1.35;flex:none}
+/* Canvas overlays */
+.zoombar{position:absolute;right:12px;bottom:12px;display:flex;gap:4px;z-index:20}
+.zoombar button{width:32px;height:32px;border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;font-size:16px;display:grid;place-items:center}
+.legend{font-size:11px;color:var(--ink2);display:flex;flex-wrap:wrap;gap:4px 12px}
+.legend span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.legend i{display:inline-block;width:18px;height:10px;border-radius:3px}
+.legend i.l{height:0;border-top:2px solid}
+.key{position:absolute;left:12px;bottom:12px;z-index:20;background:#fffef9f2;border:1px solid var(--line);border-radius:10px;padding:8px 12px;max-width:min(680px,calc(100% - 140px));box-shadow:0 4px 14px #1f3d2e14}
+.key .cap b{font-size:12.5px}.key .cap span{display:block;font-size:12px;color:var(--ink2);margin-top:2px;line-height:1.4}
+.key .legend{position:static;border:0;background:none;padding:0;margin-top:6px;max-width:none}
+.key.min .cap span,.key.min .legend{display:none}
+.key .kt{position:absolute;right:6px;top:4px;border:0;background:none;cursor:pointer;color:var(--muted);font-size:12px}
+.scenario{position:absolute;right:12px;top:10px;z-index:20;background:#fffef9f2;border:1px solid var(--line);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;max-width:300px;box-shadow:0 4px 14px #1f3d2e14}
+.scenario .row{display:flex;gap:6px;align-items:center}
+.scenario p{margin:0;font-size:12px;line-height:1.4;color:var(--ink2)}
+/* Intro */
+.intro{position:fixed;inset:0;z-index:100;background:#1d3a2f66;display:grid;place-items:center;padding:16px}
+.intro .card{max-width:760px;width:100%;background:#fffef9;border-radius:16px;box-shadow:0 30px 80px #0f241b55;padding:28px 30px;max-height:calc(100dvh - 32px);overflow:auto}
+.intro h1{font-family:Georgia,serif;font-weight:400;font-size:30px;margin:0 0 8px;line-height:1.15}
+.intro p{line-height:1.55;color:var(--ink2);margin:0 0 12px}
+.intro .three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0 18px}
+.intro .three div{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.intro .three b{display:block;font-size:14px;margin-bottom:4px}
+.intro .three span{font-size:12.5px;color:var(--ink2);line-height:1.45}
+.intro .strata{display:flex;gap:4px;margin:6px 0 2px;flex-wrap:wrap}
+.intro .strata span{font-size:11px;padding:3px 7px;border-radius:5px;color:#fff}
+.intro .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.intro .fine{font-size:11.5px;color:var(--muted);margin-top:14px}
+.tip{position:fixed;z-index:90;pointer-events:none;max-width:280px;background:#fffef9;border:1px solid #b7c9b4;border-top:3px solid var(--forest2);border-radius:9px;padding:9px 11px;font-size:12px;line-height:1.4;box-shadow:0 10px 30px #17332633}
+.tip b{display:block;font-size:13px;margin-bottom:2px}
+.tip small{display:block;color:var(--muted);margin-top:4px}
+.mobile-panel-toggle{display:none}
+@media(max-width:1100px){.main{grid-template-columns:minmax(0,1fr) 300px}.story .note{display:none}}
+@media(max-width:860px){
+ body{overflow:auto}
+ .app{height:auto;min-height:100dvh;grid-template-rows:auto auto auto auto}
+ .top{flex-wrap:wrap;padding:8px 10px;gap:8px}
+ .main,.main.no-panel{grid-template-columns:1fr;grid-template-rows:auto 68vh auto}
+ .rail{border-right:0;border-bottom:1px solid var(--line);padding:8px;display:flex;gap:6px;overflow-x:auto}
+ .rail h3,.rail .hint,.rail .depth{display:none}
+ .lens{flex:0 0 auto;width:auto;grid-template-columns:24px auto;padding:5px 8px;margin:0}
+ .lens small,.lens em{display:none}.lens i{grid-row:auto;width:24px;height:24px}
+ .panel{border-left:0;border-top:1px solid var(--line)}
+ .legend{display:none}
+ .story{overflow-x:auto;padding:8px}
+ .intro .three{grid-template-columns:1fr}
+}
+
+[hidden]{display:none!important}
+.o.spine{padding:0;border-radius:4px;min-height:0}
+.o.spine>*{display:none!important}
+.o.resp.spine{border-left-width:3px}
+.n.mhead.spine{padding:6px 4px;text-align:center}
+.n.mhead.spine b{font-size:11px;white-space:normal;line-height:1.15;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;font-family:ui-sans-serif,system-ui}
+.n.mhead.spine small{display:none}
+@media(max-width:860px){.main,.main.no-panel{grid-template-columns:1fr;grid-template-rows:68vh auto}.center{grid-template-rows:auto minmax(0,1fr)}.lensbar{flex-wrap:nowrap;overflow-x:auto}.lensbar .depth{margin-left:0}.key{display:none}}
+
+.o.compact.two{padding:4px 7px}
+.o.compact.two .t{-webkit-line-clamp:2;font-size:11px;line-height:1.2}
+.o.resp.compact.two{padding-left:9px;border-radius:14px}
+.o.slim{padding:3px 6px;gap:4px}
+.o.slim .k,.o.slim .u{display:none}
+.o.slim .t{font-size:11px}
+.n.mhead.narrow{padding:6px 7px}
+.n.mhead.narrow b{font-family:ui-sans-serif,system-ui;font-weight:600;font-size:12px;white-space:normal;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.n.mhead.narrow small{font-size:10.5px}
+.key .cap span{display:none}
+
+.o.socket.two{align-items:flex-start;font-size:10.5px;line-height:1.2;padding:4px 6px}
+.o.socket b{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.key{padding:6px 10px}
+.key.min{padding:4px 10px}
+.key.min .cap{padding-right:16px}
+
+.n.pill{pointer-events:auto}
+.n.mhead .go.mini{right:4px;top:4px;padding:1px 5px}
+.n.mhead.narrow{padding-right:22px}
+
+.n.fade{opacity:.38}
+.e-flow.weak{stroke:#c08a2d}
+.e-flow.sound{stroke:#3d8a5c}
+
+.o.intent.two{align-items:flex-start;padding:3px 6px}
+.o.intent.two .t{-webkit-line-clamp:2;font-size:10.5px;line-height:1.2}
+.o.intent.two b.tag{font-size:8.5px}
+
+.n.mhead:not(.narrow):not(.spine):not(.ext) b{padding-right:62px}
+.n.mhead.focus:not(.narrow) b{padding-right:74px}
+@media(max-width:860px){.lensbar .lenses,.lensbar .depth{flex-wrap:nowrap}.lensbar{align-items:center}.lensbar .lbl{display:none}.lensbar .sep{display:none}.top .seg{order:5}.crumbs{flex:1 1 100%;order:6}}
+</style></head><body>
+<div class="app">
+ <header class="top"><div class="mark"><i><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M10 28 20 10 30 28M14 22h12" fill="none" stroke="#faf8ef" stroke-width="3"/></svg></i>aiw <small>V5 · concept</small></div><nav class="crumbs" aria-label="Where you are"></nav><div class="spacer"></div>
+  <div class="seg" role="group" aria-label="Model to explore"><button data-ds="core-banking">Core banking <span style="opacity:.7">(illustrative)</span></button><button data-ds="bank-payment">Bank Payment Journey</button></div>
+  <button class="tbtn" data-act="intro">How to read this</button><button class="tbtn" data-act="panel" aria-pressed="true">Companion</button></header>
+ <div class="main">
+  <div class="center"><div class="lensbar"><span class="lbl">Lens</span><div class="lenses"></div><div class="depth" aria-label="Depth"></div></div>
+  <div class="stage" aria-label="Architecture anatomy canvas"><div class="world"><div class="bg" style="position:absolute;inset:0"></div><svg class="edges under" width="1" height="1"></svg><div class="rings" style="position:absolute;inset:0;pointer-events:none"></div><div class="nodes" style="position:absolute;inset:0"></div><svg class="edges over" width="1" height="1"></svg><div class="pills" style="position:absolute;inset:0;pointer-events:none"></div></div>
+   <div class="scenario" hidden></div><div class="key min"><button class="kt" data-act="key" aria-label="Show key">▴</button><div class="cap"></div><div class="legend"></div></div>
+   <div class="zoombar"><button data-act="zout" aria-label="Zoom out">−</button><button data-act="zin" aria-label="Zoom in">+</button><button data-act="fit" aria-label="Fit to view" style="font-size:12px">fit</button></div></div></div>
+  <aside class="panel" aria-label="Companion"></aside>
+ </div>
+ <footer class="story" aria-label="The design story"><button class="play" data-act="play"></button><div class="steps"></div><div class="note"></div></footer>
+</div>
+<div class="tip" hidden></div>
+<div class="intro"><div class="card" role="dialog" aria-modal="true" aria-labelledby="intro-t">
+ <h1 id="intro-t">See the whole architecture — then cut into it.</h1>
+ <p>This concept treats a solution like a body you can study. The parts stay where they are. What changes is <b>how deep you cut</b> and <b>which system you look at</b>.</p>
+ <div class="three"><div><b>Parts stay put</b><span>Columns are the modules — the organs. They keep their place in every view, so you never lose your bearings.</span></div><div><b>Cut deeper</b><span>Each band is one layer down: what a part must do → the software that does it → the platform beneath → the products → where it runs.</span><div class="strata"><span style="background:#8a6d3b">Intent</span><span style="background:#286954">Logical</span><span style="background:#2f6177">Application</span><span style="background:#66733a">Platform</span><span style="background:#7a5f33">Product</span><span style="background:#3f6d86">Runtime</span></div></div><div><b>Switch lenses</b><span>Structure, Flow, Signals, Information, Protection, Operation and Reasoning run through the whole body — like skeleton, muscles, nerves, blood, immunity, vital signs and DNA.</span></div></div>
+ <div class="row"><button class="tbtn primary" data-act="intro-story">▶ Watch the design story (35 s)</button><button class="tbtn" data-act="intro-close">Explore on my own</button></div>
+ <p class="fine">Concept prototype, not part of the product yet. <b>Core banking</b> is a hypothetical model written for this concept — it is not SEABaaS’s recorded architecture. <b>Bank Payment Journey</b> is exported unchanged from the AIW V5 reference project. Companion answers here are rule-based previews.</p>
+</div></div>
+<script>window.AIW_DATASETS=[{"id":"bank-payment","title":"Bank Payment Journey","kind":"AIW reference project","note":"Exported from the AIW V5 reference project (illustrative content, not production architecture).","objects":[{"id":"ACT-001","ref":"ACT-001","type":"actor","title":"Bank customer","description":"Submits an instruction and needs to understand its current outcome.","owner":"Channels team","modules":[],"shared":false,"status":"Illustrative"},{"id":"ACT-002","ref":"ACT-002","type":"actor","title":"Operations analyst","description":"Investigates held instructions and uncertain settlement outcomes.","owner":"Operations lead","modules":[],"shared":false,"status":"Illustrative"},{"id":"JRN-001","ref":"JRN-001","type":"journey","title":"Initiate payment","description":"The customer submits an instruction with a destination, amount, and request reference.","owner":"Channels team","modules":[],"shared":false,"status":"Illustrative"},{"id":"JRN-002","ref":"JRN-002","type":"journey","title":"Screen the instruction","description":"Screen the instruction and choose whether to allow or hold it.","owner":"Risk team","modules":[],"shared":false,"status":"Illustrative"},{"id":"JRN-003","ref":"JRN-003","type":"journey","title":"Record the posting","description":"Record the authorised financial effect with the existing request reference.","owner":"Core banking team","modules":[],"shared":false,"status":"Illustrative"},{"id":"JRN-004","ref":"JRN-004","type":"journey","title":"Settle the payment","description":"Submit the external leg and track a confirmed or uncertain response.","owner":"Payments team","modules":[],"shared":false,"status":"Illustrative"},{"id":"JRN-005","ref":"JRN-005","type":"journey","title":"Communicate the outcome","description":"Expose the known status and the next action to the customer or operations.","owner":"Channels team","modules":[],"shared":false,"status":"Illustrative"},{"id":"REQ-001","ref":"REQ-001","type":"requirement","title":"Accept a traceable payment instruction","description":"The service shall accept a valid instruction and return a stable request reference.","owner":"Channels team","modules":[],"shared":false,"status":"Illustrative"},{"id":"REQ-002","ref":"REQ-002","type":"requirement","title":"Hold an instruction that needs review","description":"The service shall hold an instruction that requires additional screening and expose its reason.","owner":"Risk team","modules":[],"shared":false,"status":"Illustrative"},{"id":"REQ-003","ref":"REQ-003","type":"requirement","title":"Prevent duplicate financial effects","description":"The service shall recognise a repeated instruction reference and preserve one financial effect.","owner":"Core banking team","modules":[],"shared":false,"status":"Illustrative"},{"id":"REQ-004","ref":"REQ-004","type":"requirement","title":"Retain an uncertain settlement outcome","description":"The service shall keep an uncertain response pending until an enquiry resolves it.","owner":"Payments team","modules":[],"shared":false,"status":"Illustrative"},{"id":"REQ-005","ref":"REQ-005","type":"requirement","title":"Notify the customer quickly","description":"The service shall notify the customer quickly after the payment outcome is known.","owner":"Channels team","modules":[],"shared":false,"status":"Illustrative"},{"id":"QD-001","ref":"QD-001","type":"quality","title":"Preserve one financial effect","description":"","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","target":"Return the recorded outcome and prevent an additional debit."},{"id":"QD-002","ref":"QD-002","type":"quality","title":"Keep instruction intake available","description":"","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","target":"Accept the instruction or return an explicit unavailable response without losing its reference."},{"id":"QD-003","ref":"QD-003","type":"quality","title":"Acknowledge a payment predictably","description":"","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","target":"Return the accepted reference or an explicit hold response. This measures acknowledgement, not final settlement."},{"id":"QD-004","ref":"QD-004","type":"quality","title":"Resolve uncertainty without unsafe retries","description":"","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","target":"Keep the payment pending, enquire about its status, and assign unresolved cases for investigation."},{"id":"QD-005","ref":"QD-005","type":"quality","title":"Reject an unauthorised instruction","description":"","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","target":"Reject the operation and record the attempted access without exposing payment details."},{"id":"QD-006","ref":"QD-006","type":"quality","title":"Retain the payment trail across boundaries","description":"","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","target":"Retrieve correlated events and the recorded outcome using the original reference."},{"id":"ADR-001","ref":"ADR-001","type":"decision","title":"When should the customer receive a payment acknowledgement?","description":"Separate acceptance of an instruction from final settlement. Compare response time, durable handoff, and operational complexity.","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","question":"When should the customer receive a payment acknowledgement?","state":"draft"},{"id":"ADR-002","ref":"ADR-002","type":"decision","title":"Where should one financial effect be enforced?","description":"A timeout, network retry, or repeated instruction must be evaluated at the authoritative posting boundary.","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","question":"Where should one financial effect be enforced?","state":"draft"},{"id":"ADR-003","ref":"ADR-003","type":"decision","title":"What should happen after an uncertain settlement response?","description":"The external operation may have succeeded even when the response is missing. Compare safe investigation with an immediate retry.","owner":"Architecture / payments team","modules":[],"shared":false,"status":"Illustrative","question":"What should happen after an uncertain settlement response?","state":"draft"},{"id":"GRP-001","ref":"GRP-001","type":"module","title":"Channel & customer","description":"Instruction intake and communication.","owner":"","modules":["GRP-001"],"shared":false,"status":"Working definition"},{"id":"GRP-002","ref":"GRP-002","type":"module","title":"Control & accounting","description":"Risk decisions and authoritative financial records.","owner":"","modules":["GRP-002"],"shared":false,"status":"Working definition"},{"id":"GRP-003","ref":"GRP-003","type":"module","title":"Settlement","description":"External handoff and outcome investigation.","owner":"","modules":["GRP-003"],"shared":false,"status":"Working definition"},{"id":"api","ref":"LR-001","type":"responsibility","title":"Payment API","description":"Receives payment instructions, validates their shape, and assigns a traceable request reference. It coordinates the journey through downstream responsibilities.","owner":"Channels team","modules":["GRP-001"],"shared":false,"status":"Illustrative"},{"id":"risk","ref":"LR-002","type":"responsibility","title":"Risk screening","description":"Owns the decision to allow or hold a payment. It consumes risk signals and makes the decision explicit before ledger posting.","owner":"Risk technology","modules":["GRP-002"],"shared":false,"status":"Illustrative"},{"id":"ledger","ref":"LR-003","type":"responsibility","title":"Core ledger","description":"Owns the authoritative posting record. A repeated payment reference must not produce a second debit.","owner":"Core banking team","modules":["GRP-002"],"shared":false,"status":"Illustrative"},{"id":"hub","ref":"LR-004","type":"responsibility","title":"Settlement hub","description":"Translates an internal payment into the external settlement contract. A delayed response needs status enquiry before any retry.","owner":"Payments team","modules":["GRP-003"],"shared":false,"status":"Illustrative"},{"id":"notify","ref":"LR-005","type":"responsibility","title":"Notification service","description":"Explains the payment outcome to the customer using the confirmed status. Notification failure does not reverse settlement.","owner":"Channels team","modules":["GRP-001"],"shared":false,"status":"Illustrative"},{"id":"api-pod","ref":"APP-001","type":"component","title":"Payment service","description":"A candidate deployable service implementing the Payment API responsibility. Technology choices are illustrative.","owner":"Channels team","modules":["GRP-001"],"shared":false,"status":"Illustrative"},{"id":"risk-engine","ref":"APP-002","type":"component","title":"Risk engine","description":"Implements risk screening with a versioned ruleset and explicit allow or hold responses.","owner":"Risk technology","modules":["GRP-002"],"shared":false,"status":"Illustrative"},{"id":"core-adapter","ref":"APP-003","type":"component","title":"Core connector","description":"Maps the posting contract to the core banking interface and carries the original payment reference.","owner":"Core banking team","modules":["GRP-002"],"shared":false,"status":"Illustrative"},{"id":"worker","ref":"APP-004","type":"component","title":"Settlement worker","description":"Executes the settlement handoff and enquires about uncertain outcomes before retrying.","owner":"Payments team","modules":["GRP-003"],"shared":false,"status":"Illustrative"},{"id":"notify-worker","ref":"APP-005","type":"component","title":"Notification worker","description":"Consumes outcome events and sends customer notifications independently of the settlement path.","owner":"Channels team","modules":["GRP-001"],"shared":false,"status":"Illustrative"},{"id":"tc-001","ref":"TC-001","type":"capability","title":"Application execution","description":"Execute application responsibilities within bounded, observable workloads.","owner":"Platform architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative"},{"id":"postgres","ref":"TC-002","type":"capability","title":"Transactional persistence","description":"Retain authoritative application state with explicit consistency and commit boundaries.","owner":"Data platform architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative"},{"id":"queue","ref":"TC-003","type":"capability","title":"Durable work handoff","description":"Carry acknowledged work and events across independently running components.","owner":"Integration architecture","modules":["GRP-001","GRP-003"],"shared":true,"status":"Illustrative"},{"id":"tc-004","ref":"TC-004","type":"capability","title":"Disposable read acceleration","description":"Reduce repeated reads while keeping the source of truth explicit.","owner":"Application architecture","modules":[],"shared":false,"status":"Illustrative"},{"id":"gateway","ref":"TC-005","type":"capability","title":"Service connectivity","description":"Route controlled requests between channels, application services, and external boundaries.","owner":"Network architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative"},{"id":"tc-006","ref":"TC-006","type":"capability","title":"Identity and access decisions","description":"Establish caller identity and enforce the authority to act at each protected boundary.","owner":"Identity architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative"},{"id":"tc-007","ref":"TC-007","type":"capability","title":"Correlated operational evidence","description":"Retain and retrieve the evidence needed to explain behaviour across the payment journey.","owner":"Operations architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative"},{"id":"tc-008","ref":"TC-008","type":"capability","title":"Recoverable state copies","description":"Preserve restorable copies with an explicit retention and integrity policy.","owner":"Data protection architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative"},{"id":"tc-009","ref":"TC-009","type":"capability","title":"Controlled service recovery","description":"Coordinate restoration and reconciliation before a service resumes financial work.","owner":"Service continuity architecture","modules":["GRP-003"],"shared":false,"status":"Illustrative"},{"id":"tb-001","ref":"TB-001","type":"boundary","title":"Channel entry","description":"Authenticate the caller and authorise the instruction before crossing into payment services.","owner":"Channel security architecture","modules":[],"shared":false,"status":"Working definition"},{"id":"tb-002","ref":"TB-002","type":"boundary","title":"Payment services","description":"Use explicit service identities and least-privilege access across component boundaries.","owner":"Application security architecture","modules":[],"shared":false,"status":"Working definition"},{"id":"tb-003","ref":"TB-003","type":"boundary","title":"Restricted state","description":"Restrict state and key access to named authorities; retain auditable access evidence.","owner":"Data security architecture","modules":[],"shared":false,"status":"Working definition"},{"id":"tr-001","ref":"TR-001","type":"technology","title":"Application execution realization","description":"Execute application responsibilities within bounded, observable workloads.","owner":"Platform architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-002","ref":"TR-002","type":"technology","title":"Transactional persistence realization","description":"Retain authoritative application state with explicit consistency and commit boundaries.","owner":"Data platform architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-003","ref":"TR-003","type":"technology","title":"Durable work handoff realization","description":"Carry acknowledged work and events across independently running components.","owner":"Integration architecture","modules":["GRP-001","GRP-003"],"shared":true,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-004","ref":"TR-004","type":"technology","title":"Disposable read acceleration realization","description":"Reduce repeated reads while keeping the source of truth explicit.","owner":"Application architecture","modules":[],"shared":false,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-005","ref":"TR-005","type":"technology","title":"Service connectivity realization","description":"Route controlled requests between channels, application services, and external boundaries.","owner":"Network architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-006","ref":"TR-006","type":"technology","title":"Identity and access decisions realization","description":"Establish caller identity and enforce the authority to act at each protected boundary.","owner":"Identity architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-007","ref":"TR-007","type":"technology","title":"Correlated operational evidence realization","description":"Retain and retrieve the evidence needed to explain behaviour across the payment journey.","owner":"Operations architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-008","ref":"TR-008","type":"technology","title":"Recoverable state copies realization","description":"Preserve restorable copies with an explicit retention and integrity policy.","owner":"Data protection architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"tr-009","ref":"TR-009","type":"technology","title":"Controlled service recovery realization","description":"Coordinate restoration and reconciliation before a service resumes financial work.","owner":"Service continuity architecture","modules":["GRP-003"],"shared":false,"status":"Illustrative","product":"","selectedOptionId":""},{"id":"rest","ref":"IF-001","type":"contract","title":"Payment initiation","description":"Accept a traceable instruction or explain its rejection. Acceptance does not mean settlement.","owner":"Channels team","modules":[],"shared":false,"status":"Illustrative","style":"request","timeout":"","retry":"","failure":"","idempotency":""},{"id":"posting-api","ref":"IF-002","type":"contract","title":"Ledger posting","description":"Translate an allowed instruction into an authoritative posting outcome without creating a second financial effect.","owner":"To confirm with the provider","modules":[],"shared":false,"status":"Illustrative","style":"request","timeout":"","retry":"","failure":"","idempotency":""},{"id":"network","ref":"IF-003","type":"contract","title":"Settlement submission and enquiry","description":"Submit the authorised payment, retain the external reference, and resolve uncertain outcomes through enquiry.","owner":"To confirm with the provider","modules":[],"shared":false,"status":"Illustrative","style":"request","timeout":"","retry":"","failure":"","idempotency":""},{"id":"if-004","ref":"IF-004","type":"contract","title":"Check","description":"Define the payload and outcome obligations for Check.","owner":"Risk technology","modules":[],"shared":false,"status":"Illustrative","style":"request","timeout":"","retry":"","failure":"Illustrative policy: retain the original reference, preserve the known outcome, and escalate uncertainty before replay.","idempotency":""},{"id":"if-005","ref":"IF-005","type":"contract","title":"Allow","description":"Define the payload and outcome obligations for Allow.","owner":"Core banking team","modules":[],"shared":false,"status":"Illustrative","style":"request","timeout":"","retry":"","failure":"Illustrative policy: retain the original reference, preserve the known outcome, and escalate uncertainty before replay.","idempotency":""},{"id":"if-006","ref":"IF-006","type":"contract","title":"Handoff","description":"Define the payload and outcome obligations for Handoff.","owner":"Payments team","modules":[],"shared":false,"status":"Illustrative","style":"request","timeout":"","retry":"","failure":"Illustrative policy: retain the original reference, preserve the known outcome, and escalate uncertainty before replay.","idempotency":""},{"id":"if-007","ref":"IF-007","type":"contract","title":"Event","description":"Define the payload and outcome obligations for Event.","owner":"Channels team","modules":[],"shared":false,"status":"Illustrative","style":"event","timeout":"","retry":"","failure":"Illustrative policy: retain the original reference, preserve the known outcome, and escalate uncertainty before replay.","idempotency":""},{"id":"instruction","ref":"DAT-001","type":"data","title":"Payment instruction","description":"Stores the immutable customer instruction and its end-to-end reference.","owner":"Payment API","modules":[],"shared":false,"status":"Illustrative","authority":"api-pod","classification":"Confidential"},{"id":"risk-record","ref":"DAT-002","type":"data","title":"Risk decision","description":"Retains the risk decision and ruleset version for a later explanation or investigation.","owner":"Risk screening","modules":[],"shared":false,"status":"Illustrative","authority":"risk-engine","classification":"Restricted"},{"id":"posting","ref":"DAT-003","type":"data","title":"Ledger posting","description":"Links a unique payment reference to the authoritative debit or credit posting.","owner":"Core ledger","modules":[],"shared":false,"status":"Illustrative","authority":"ext-core","classification":"Restricted"},{"id":"settlement","ref":"DAT-004","type":"data","title":"Settlement status","description":"Records pending, settled, or failed state, including the external reference and reconciliation evidence.","owner":"Settlement hub","modules":[],"shared":false,"status":"Illustrative","authority":"worker","classification":"Confidential"},{"id":"ext-channel","ref":"EXT-001","type":"party","title":"Initiating channel","description":"The customer-facing caller submits the instruction and retains its reference.","owner":"To confirm with the provider","modules":[],"shared":false,"status":"Illustrative"},{"id":"ext-core","ref":"EXT-002","type":"party","title":"Core banking authority","description":"The authoritative ledger records financial effects; the application adapter translates its contract.","owner":"To confirm with the provider","modules":[],"shared":false,"status":"Illustrative"},{"id":"ext-network","ref":"EXT-003","type":"party","title":"External payment network","description":"A placeholder for submission and enquiry boundaries. This is not an actual NPS or network specification.","owner":"To confirm with the provider","modules":[],"shared":false,"status":"Illustrative"},{"id":"oauth","ref":"SEC-001","type":"control","title":"Identity & consent","description":"Checks the initiating identity and authority for the requested payment before processing.","owner":"Confirm control owner","modules":[],"shared":false,"status":"Illustrative"},{"id":"audit","ref":"SEC-002","type":"control","title":"Audit trail","description":"Correlates decisions, postings, and settlement responses with a payment reference.","owner":"Confirm control owner","modules":[],"shared":false,"status":"Illustrative"},{"id":"mtls","ref":"SEC-003","type":"control","title":"Service trust","description":"Authenticates service-to-service communication across the external handoff.","owner":"Confirm control owner","modules":[],"shared":false,"status":"Illustrative"},{"id":"thr-001","ref":"THR-001","type":"threat","title":"Payment without valid authority","description":"A caller submits or changes an instruction beyond the authority they hold.","owner":"Confirm accountable risk owner","modules":[],"shared":false,"status":"Illustrative"},{"id":"thr-002","ref":"THR-002","type":"threat","title":"Repeated instruction changes the financial effect","description":"An original payment reference is replayed with changed business content or processed twice.","owner":"Confirm accountable risk owner","modules":[],"shared":false,"status":"Illustrative"},{"id":"thr-003","ref":"THR-003","type":"threat","title":"Sensitive data escapes its intended audience","description":"Instruction or settlement details appear in a support view, export, or log beyond the approved purpose.","owner":"Confirm accountable risk owner","modules":[],"shared":false,"status":"Illustrative"},{"id":"thr-004","ref":"THR-004","type":"threat","title":"Payment activity cannot be reconstructed","description":"A decision, posting, or enquiry cannot be linked to its actor and original payment reference.","owner":"Confirm accountable risk owner","modules":[],"shared":false,"status":"Illustrative"},{"id":"env-001","ref":"ENV-001","type":"environment","title":"Payment production design","description":"Illustrative operating architecture for the Bank Payment Journey.","owner":"Confirm operating environment owner","modules":[],"shared":false,"status":"Working definition"},{"id":"zone-a","ref":"ZON-001","type":"zone","title":"Application zone","description":"Confirm shared power, network, storage, and control-plane dependencies.","owner":"Confirm primary operations owner","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Working definition"},{"id":"zone-b","ref":"ZON-002","type":"zone","title":"Recovery zone","description":"Confirm independence from the primary site and evidence for restoration.","owner":"Confirm recovery operations owner","modules":[],"shared":false,"status":"Working definition"},{"id":"run-001","ref":"RUN-001","type":"runtime","title":"Payment service","description":"Define how Payment service is placed and operated in Payment production design.","owner":"Channels team","modules":["GRP-001"],"shared":false,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"api-pod"},{"id":"run-002","ref":"RUN-002","type":"runtime","title":"Risk engine","description":"Define how Risk engine is placed and operated in Payment production design.","owner":"Risk technology","modules":["GRP-002"],"shared":false,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"risk-engine"},{"id":"run-003","ref":"RUN-003","type":"runtime","title":"Core connector","description":"Define how Core connector is placed and operated in Payment production design.","owner":"Core banking team","modules":["GRP-002"],"shared":false,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"core-adapter"},{"id":"run-004","ref":"RUN-004","type":"runtime","title":"Settlement worker","description":"Define how Settlement worker is placed and operated in Payment production design.","owner":"Payments team","modules":["GRP-003"],"shared":false,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"worker"},{"id":"run-005","ref":"RUN-005","type":"runtime","title":"Notification worker","description":"Define how Notification worker is placed and operated in Payment production design.","owner":"Channels team","modules":["GRP-001"],"shared":false,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"notify-worker"},{"id":"run-006","ref":"RUN-006","type":"runtime","title":"Application execution realization","description":"Define how Application execution realization is placed and operated in Payment production design.","owner":"Platform architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-001"},{"id":"run-007","ref":"RUN-007","type":"runtime","title":"Transactional persistence realization","description":"Define how Transactional persistence realization is placed and operated in Payment production design.","owner":"Data platform architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-002"},{"id":"run-008","ref":"RUN-008","type":"runtime","title":"Durable work handoff realization","description":"Define how Durable work handoff realization is placed and operated in Payment production design.","owner":"Integration architecture","modules":["GRP-001","GRP-003"],"shared":true,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-003"},{"id":"run-009","ref":"RUN-009","type":"runtime","title":"Disposable read acceleration realization","description":"Define how Disposable read acceleration realization is placed and operated in Payment production design.","owner":"Application architecture","modules":[],"shared":false,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-004"},{"id":"run-010","ref":"RUN-010","type":"runtime","title":"Service connectivity realization","description":"Define how Service connectivity realization is placed and operated in Payment production design.","owner":"Network architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-005"},{"id":"run-011","ref":"RUN-011","type":"runtime","title":"Identity and access decisions realization","description":"Define how Identity and access decisions realization is placed and operated in Payment production design.","owner":"Identity architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-006"},{"id":"run-012","ref":"RUN-012","type":"runtime","title":"Correlated operational evidence realization","description":"Define how Correlated operational evidence realization is placed and operated in Payment production design.","owner":"Operations architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-007"},{"id":"run-013","ref":"RUN-013","type":"runtime","title":"Recoverable state copies realization","description":"Define how Recoverable state copies realization is placed and operated in Payment production design.","owner":"Data protection architecture","modules":["GRP-001","GRP-002","GRP-003"],"shared":true,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-008"},{"id":"run-014","ref":"RUN-014","type":"runtime","title":"Controlled service recovery realization","description":"Define how Controlled service recovery realization is placed and operated in Payment production design.","owner":"Service continuity architecture","modules":["GRP-003"],"shared":false,"status":"Illustrative","minReady":1,"maxReplicas":1,"asset":"tr-009"},{"id":"PL-001","ref":"PL-001","type":"instance","title":"Payment service · active","description":"Illustrative placement inherited from the shared application model.","owner":"Channels team","modules":["GRP-001"],"shared":false,"status":"Working definition","replicas":1,"role":"active","zone":"zone-a"},{"id":"PL-002","ref":"PL-002","type":"instance","title":"Risk engine · active","description":"Illustrative placement inherited from the shared application model.","owner":"Risk technology","modules":["GRP-002"],"shared":false,"status":"Working definition","replicas":1,"role":"active","zone":"zone-a"},{"id":"PL-003","ref":"PL-003","type":"instance","title":"Settlement worker · active","description":"Illustrative placement inherited from the shared application model.","owner":"Payments team","modules":["GRP-003"],"shared":false,"status":"Working definition","replicas":1,"role":"active","zone":"zone-a"},{"id":"initiate","ref":"initiate","type":"journey","title":"Initiate payment","description":"The customer provides a beneficiary and amount. The request receives a unique reference before processing begins.","owner":"","modules":[],"shared":false,"status":"Illustrative"},{"id":"screen","ref":"screen","type":"journey","title":"Screen for risk","description":"Evaluate the instruction against risk rules before allowing a debit. A flagged payment stops for review.","owner":"","modules":[],"shared":false,"status":"Illustrative"},{"id":"post","ref":"post","type":"journey","title":"Post ledger entry","description":"Record the debit with the payment reference. The model distinguishes the ledger posting from external settlement.","owner":"","modules":[],"shared":false,"status":"Illustrative"},{"id":"settle","ref":"settle","type":"journey","title":"Settle payment","description":"Send the authorised payment to the external settlement network and retain the response.","owner":"","modules":[],"shared":false,"status":"Illustrative"},{"id":"confirm","ref":"confirm","type":"journey","title":"Confirm outcome","description":"Notify the customer of the recorded outcome. A timeout remains pending until its status is reconciled.","owner":"","modules":[],"shared":false,"status":"Illustrative"},{"id":"tr-001/option/TO-001","ref":"tr-001/option/TO-001","type":"option","title":"Kubernetes platform","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Kubernetes platform"},{"id":"tr-001/option/TO-002","ref":"tr-001/option/TO-002","type":"option","title":"Dedicated compute service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated compute service"},{"id":"tr-002/option/TO-003","ref":"tr-002/option/TO-003","type":"option","title":"PostgreSQL database service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"PostgreSQL database service"},{"id":"tr-002/option/TO-004","ref":"tr-002/option/TO-004","type":"option","title":"Dedicated transactional service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated transactional service"},{"id":"tr-003/option/TO-005","ref":"tr-003/option/TO-005","type":"option","title":"RabbitMQ messaging service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"RabbitMQ messaging service"},{"id":"tr-003/option/TO-006","ref":"tr-003/option/TO-006","type":"option","title":"Dedicated messaging service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated messaging service"},{"id":"tr-004/option/TO-007","ref":"tr-004/option/TO-007","type":"option","title":"Existing caching service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Existing caching service"},{"id":"tr-004/option/TO-008","ref":"tr-004/option/TO-008","type":"option","title":"Dedicated caching service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated caching service"},{"id":"tr-005/option/TO-009","ref":"tr-005/option/TO-009","type":"option","title":"Existing connectivity service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Existing connectivity service"},{"id":"tr-005/option/TO-010","ref":"tr-005/option/TO-010","type":"option","title":"Dedicated connectivity service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated connectivity service"},{"id":"tr-006/option/TO-011","ref":"tr-006/option/TO-011","type":"option","title":"Existing identity service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Existing identity service"},{"id":"tr-006/option/TO-012","ref":"tr-006/option/TO-012","type":"option","title":"Dedicated identity service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated identity service"},{"id":"tr-007/option/TO-013","ref":"tr-007/option/TO-013","type":"option","title":"Existing observability service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Existing observability service"},{"id":"tr-007/option/TO-014","ref":"tr-007/option/TO-014","type":"option","title":"Dedicated observability service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated observability service"},{"id":"tr-008/option/TO-015","ref":"tr-008/option/TO-015","type":"option","title":"Existing backup service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Existing backup service"},{"id":"tr-008/option/TO-016","ref":"tr-008/option/TO-016","type":"option","title":"Dedicated backup service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated backup service"},{"id":"tr-009/option/TO-017","ref":"tr-009/option/TO-017","type":"option","title":"Existing recovery service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Existing recovery service"},{"id":"tr-009/option/TO-018","ref":"tr-009/option/TO-018","type":"option","title":"Dedicated recovery service","description":"","owner":"","modules":[],"shared":false,"status":"Illustrative","product":"Dedicated recovery service"}],"rels":[{"type":"memberOf","from":"api","to":"GRP-001","label":"belongs to","condition":""},{"type":"fulfils","from":"REQ-001","to":"api","label":"fulfilled by","condition":""},{"type":"justifies","from":"ADR-001","to":"api","label":"justifies","condition":""},{"type":"justifies","from":"ADR-002","to":"api","label":"justifies","condition":""},{"type":"memberOf","from":"risk","to":"GRP-002","label":"belongs to","condition":""},{"type":"fulfils","from":"REQ-002","to":"risk","label":"fulfilled by","condition":""},{"type":"memberOf","from":"ledger","to":"GRP-002","label":"belongs to","condition":""},{"type":"fulfils","from":"REQ-003","to":"ledger","label":"fulfilled by","condition":""},{"type":"justifies","from":"ADR-002","to":"ledger","label":"justifies","condition":""},{"type":"justifies","from":"ADR-003","to":"ledger","label":"justifies","condition":""},{"type":"memberOf","from":"hub","to":"GRP-003","label":"belongs to","condition":""},{"type":"fulfils","from":"REQ-004","to":"hub","label":"fulfilled by","condition":""},{"type":"justifies","from":"ADR-001","to":"hub","label":"justifies","condition":""},{"type":"justifies","from":"ADR-003","to":"hub","label":"justifies","condition":""},{"type":"memberOf","from":"notify","to":"GRP-001","label":"belongs to","condition":""},{"type":"fulfils","from":"REQ-005","to":"notify","label":"fulfilled by","condition":""},{"type":"justifies","from":"ADR-001","to":"notify","label":"justifies","condition":""},{"type":"justifies","from":"ADR-003","to":"notify","label":"justifies","condition":""},{"type":"fulfils","from":"REQ-001","to":"api","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-002","to":"risk","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-003","to":"ledger","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-004","to":"hub","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-005","to":"notify","label":"fulfilled by","condition":""},{"type":"participates","from":"ACT-001","to":"JRN-001","label":"participates in","condition":""},{"type":"participates","from":"ACT-002","to":"JRN-002","label":"participates in","condition":""},{"type":"participates","from":"ACT-002","to":"JRN-004","label":"participates in","condition":""},{"type":"participates","from":"ACT-001","to":"JRN-005","label":"participates in","condition":""},{"type":"requires","from":"JRN-001","to":"REQ-001","label":"requires","condition":""},{"type":"precedes","from":"JRN-001","to":"JRN-002","label":"precedes","condition":""},{"type":"requires","from":"JRN-002","to":"REQ-002","label":"requires","condition":""},{"type":"precedes","from":"JRN-002","to":"JRN-003","label":"precedes","condition":""},{"type":"requires","from":"JRN-003","to":"REQ-003","label":"requires","condition":""},{"type":"precedes","from":"JRN-003","to":"JRN-004","label":"precedes","condition":""},{"type":"requires","from":"JRN-004","to":"REQ-004","label":"requires","condition":""},{"type":"precedes","from":"JRN-004","to":"JRN-005","label":"precedes","condition":""},{"type":"requires","from":"JRN-005","to":"REQ-005","label":"requires","condition":""},{"type":"implementedBy","from":"JRN-001","to":"api","label":"implemented by","condition":""},{"type":"implementedBy","from":"JRN-002","to":"risk","label":"implemented by","condition":""},{"type":"implementedBy","from":"JRN-003","to":"ledger","label":"implemented by","condition":""},{"type":"implementedBy","from":"JRN-004","to":"hub","label":"implemented by","condition":""},{"type":"implementedBy","from":"JRN-005","to":"notify","label":"implemented by","condition":""},{"type":"fulfils","from":"REQ-003","to":"QD-001","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-001","to":"ledger","label":"constrains","condition":""},{"type":"constrains","from":"QD-001","to":"api","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-001","to":"QD-002","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-002","to":"api","label":"constrains","condition":""},{"type":"constrains","from":"QD-002","to":"hub","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-001","to":"QD-003","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-002","to":"QD-003","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-003","to":"api","label":"constrains","condition":""},{"type":"constrains","from":"QD-003","to":"risk","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-004","to":"QD-004","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-004","to":"hub","label":"constrains","condition":""},{"type":"constrains","from":"QD-004","to":"ledger","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-001","to":"QD-005","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-002","to":"QD-005","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-005","to":"api","label":"constrains","condition":""},{"type":"constrains","from":"QD-005","to":"risk","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-001","to":"QD-006","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-005","to":"QD-006","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-006","to":"api","label":"constrains","condition":""},{"type":"constrains","from":"QD-006","to":"hub","label":"constrains","condition":""},{"type":"constrains","from":"QD-006","to":"notify","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-001","to":"ADR-001","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-002","to":"ADR-001","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-005","to":"ADR-001","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-002","to":"ADR-001","label":"constrains","condition":""},{"type":"constrains","from":"QD-003","to":"ADR-001","label":"constrains","condition":""},{"type":"constrains","from":"QD-006","to":"ADR-001","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-003","to":"ADR-002","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-001","to":"ADR-002","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-002","to":"ADR-002","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-001","to":"ADR-002","label":"constrains","condition":""},{"type":"constrains","from":"QD-003","to":"ADR-002","label":"constrains","condition":""},{"type":"constrains","from":"QD-005","to":"ADR-002","label":"constrains","condition":""},{"type":"fulfils","from":"REQ-003","to":"ADR-003","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-004","to":"ADR-003","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-001","to":"ADR-003","label":"fulfilled by","condition":""},{"type":"fulfils","from":"REQ-005","to":"ADR-003","label":"fulfilled by","condition":""},{"type":"constrains","from":"QD-001","to":"ADR-003","label":"constrains","condition":""},{"type":"constrains","from":"QD-004","to":"ADR-003","label":"constrains","condition":""},{"type":"constrains","from":"QD-006","to":"ADR-003","label":"constrains","condition":""},{"type":"realizedBy","from":"api","to":"api-pod","label":"realized by","condition":""},{"type":"realizedBy","from":"risk","to":"risk-engine","label":"realized by","condition":""},{"type":"realizedBy","from":"ledger","to":"core-adapter","label":"realized by","condition":""},{"type":"realizedBy","from":"hub","to":"worker","label":"realized by","condition":""},{"type":"realizedBy","from":"notify","to":"notify-worker","label":"realized by","condition":""},{"type":"interaction","from":"api","to":"risk","label":"Screen","condition":""},{"type":"interaction","from":"risk","to":"ledger","label":"Allow","condition":"Only an explicit allow decision permits posting."},{"type":"interaction","from":"ledger","to":"hub","label":"Submit","condition":""},{"type":"interaction","from":"hub","to":"notify","label":"Outcome","condition":""},{"type":"dependency","from":"initiate","to":"api","label":"served by","condition":""},{"type":"dependency","from":"screen","to":"risk","label":"served by","condition":""},{"type":"dependency","from":"post","to":"ledger","label":"served by","condition":""},{"type":"dependency","from":"settle","to":"hub","label":"served by","condition":""},{"type":"dependency","from":"confirm","to":"notify","label":"served by","condition":""},{"type":"dependency","from":"api","to":"instruction","label":"owns","condition":""},{"type":"dependency","from":"risk","to":"risk-record","label":"owns","condition":""},{"type":"dependency","from":"ledger","to":"posting","label":"owns","condition":""},{"type":"dependency","from":"hub","to":"settlement","label":"owns","condition":""},{"type":"dependency","from":"api","to":"rest","label":"exposes","condition":""},{"type":"dependency","from":"ledger","to":"posting-api","label":"exposes","condition":""},{"type":"dependency","from":"hub","to":"network","label":"uses","condition":""},{"type":"dependency","from":"oauth","to":"api","label":"protects","condition":""},{"type":"interaction","from":"api-pod","to":"risk-engine","label":"Check","condition":""},{"type":"interaction","from":"risk-engine","to":"core-adapter","label":"Allow","condition":""},{"type":"interaction","from":"core-adapter","to":"worker","label":"Handoff","condition":""},{"type":"interaction","from":"worker","to":"notify-worker","label":"Event","condition":""},{"type":"dependency","from":"api-pod","to":"gateway","label":"exposed through","condition":""},{"type":"dependency","from":"core-adapter","to":"postgres","label":"records status in","condition":""},{"type":"dependency","from":"worker","to":"queue","label":"publishes to","condition":""},{"type":"dependency","from":"queue","to":"notify-worker","label":"delivers to","condition":""},{"type":"dependency","from":"rest","to":"api-pod","label":"implemented by","condition":""},{"type":"dependency","from":"posting-api","to":"core-adapter","label":"implemented by","condition":""},{"type":"dependency","from":"network","to":"worker","label":"implemented by","condition":""},{"type":"dependency","from":"api-pod","to":"zone-a","label":"deployed in","condition":""},{"type":"dependency","from":"risk-engine","to":"zone-a","label":"deployed in","condition":""},{"type":"dependency","from":"worker","to":"zone-a","label":"deployed in","condition":""},{"type":"dependency","from":"tc-001","to":"gateway","label":"requires service reachability","condition":""},{"type":"owns","from":"api-pod","to":"instruction","label":"owns","condition":""},{"type":"owns","from":"risk-engine","to":"risk-record","label":"owns","condition":""},{"type":"owns","from":"worker","to":"settlement","label":"owns","condition":""},{"type":"requires","from":"api-pod","to":"tc-001","label":"requires","condition":""},{"type":"requires","from":"api-pod","to":"postgres","label":"requires","condition":""},{"type":"requires","from":"api-pod","to":"gateway","label":"requires","condition":""},{"type":"requires","from":"api-pod","to":"tc-006","label":"requires","condition":""},{"type":"requires","from":"api-pod","to":"tc-007","label":"requires","condition":""},{"type":"requires","from":"api-pod","to":"tc-008","label":"requires","condition":""},{"type":"requires","from":"risk-engine","to":"tc-001","label":"requires","condition":""},{"type":"requires","from":"risk-engine","to":"postgres","label":"requires","condition":""},{"type":"requires","from":"risk-engine","to":"tc-006","label":"requires","condition":""},{"type":"requires","from":"risk-engine","to":"tc-007","label":"requires","condition":""},{"type":"requires","from":"risk-engine","to":"tc-008","label":"requires","condition":""},{"type":"requires","from":"core-adapter","to":"tc-001","label":"requires","condition":""},{"type":"requires","from":"core-adapter","to":"gateway","label":"requires","condition":""},{"type":"requires","from":"core-adapter","to":"tc-006","label":"requires","condition":""},{"type":"requires","from":"core-adapter","to":"tc-007","label":"requires","condition":""},{"type":"requires","from":"worker","to":"tc-001","label":"requires","condition":""},{"type":"requires","from":"worker","to":"postgres","label":"requires","condition":""},{"type":"requires","from":"worker","to":"queue","label":"requires","condition":""},{"type":"requires","from":"worker","to":"gateway","label":"requires","condition":""},{"type":"requires","from":"worker","to":"tc-006","label":"requires","condition":""},{"type":"requires","from":"worker","to":"tc-007","label":"requires","condition":""},{"type":"requires","from":"worker","to":"tc-008","label":"requires","condition":""},{"type":"requires","from":"worker","to":"tc-009","label":"requires","condition":""},{"type":"requires","from":"notify-worker","to":"tc-001","label":"requires","condition":""},{"type":"requires","from":"notify-worker","to":"queue","label":"requires","condition":""},{"type":"requires","from":"notify-worker","to":"gateway","label":"requires","condition":""},{"type":"requires","from":"notify-worker","to":"tc-006","label":"requires","condition":""},{"type":"requires","from":"notify-worker","to":"tc-007","label":"requires","condition":""},{"type":"withinBoundary","from":"api-pod","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"risk-engine","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"core-adapter","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"worker","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"notify-worker","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"tc-001","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"postgres","to":"tb-003","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"queue","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"tc-004","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"gateway","to":"tb-001","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"tc-006","to":"tb-003","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"tc-007","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"tc-008","to":"tb-003","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"tc-009","to":"tb-002","label":"withinBoundary","condition":""},{"type":"implementedBy","from":"tc-001","to":"tr-001","label":"implemented by","condition":""},{"type":"implementedBy","from":"postgres","to":"tr-002","label":"implemented by","condition":""},{"type":"implementedBy","from":"queue","to":"tr-003","label":"implemented by","condition":""},{"type":"implementedBy","from":"tc-004","to":"tr-004","label":"implemented by","condition":""},{"type":"implementedBy","from":"gateway","to":"tr-005","label":"implemented by","condition":""},{"type":"implementedBy","from":"tc-006","to":"tr-006","label":"implemented by","condition":""},{"type":"implementedBy","from":"tc-007","to":"tr-007","label":"implemented by","condition":""},{"type":"implementedBy","from":"tc-008","to":"tr-008","label":"implemented by","condition":""},{"type":"implementedBy","from":"tc-009","to":"tr-009","label":"implemented by","condition":""},{"type":"considers","from":"tr-001","to":"tr-001/option/TO-001","label":"considers","condition":""},{"type":"considers","from":"tr-001","to":"tr-001/option/TO-002","label":"considers","condition":""},{"type":"considers","from":"tr-002","to":"tr-002/option/TO-003","label":"considers","condition":""},{"type":"considers","from":"tr-002","to":"tr-002/option/TO-004","label":"considers","condition":""},{"type":"considers","from":"tr-003","to":"tr-003/option/TO-005","label":"considers","condition":""},{"type":"considers","from":"tr-003","to":"tr-003/option/TO-006","label":"considers","condition":""},{"type":"considers","from":"tr-004","to":"tr-004/option/TO-007","label":"considers","condition":""},{"type":"considers","from":"tr-004","to":"tr-004/option/TO-008","label":"considers","condition":""},{"type":"considers","from":"tr-005","to":"tr-005/option/TO-009","label":"considers","condition":""},{"type":"considers","from":"tr-005","to":"tr-005/option/TO-010","label":"considers","condition":""},{"type":"considers","from":"tr-006","to":"tr-006/option/TO-011","label":"considers","condition":""},{"type":"considers","from":"tr-006","to":"tr-006/option/TO-012","label":"considers","condition":""},{"type":"considers","from":"tr-007","to":"tr-007/option/TO-013","label":"considers","condition":""},{"type":"considers","from":"tr-007","to":"tr-007/option/TO-014","label":"considers","condition":""},{"type":"considers","from":"tr-008","to":"tr-008/option/TO-015","label":"considers","condition":""},{"type":"considers","from":"tr-008","to":"tr-008/option/TO-016","label":"considers","condition":""},{"type":"considers","from":"tr-009","to":"tr-009/option/TO-017","label":"considers","condition":""},{"type":"considers","from":"tr-009","to":"tr-009/option/TO-018","label":"considers","condition":""},{"type":"provides","from":"api-pod","to":"rest","label":"provides","condition":""},{"type":"uses","from":"ext-channel","to":"rest","label":"uses","condition":""},{"type":"interaction","from":"ext-channel","to":"api-pod","label":"Payment initiation","condition":""},{"type":"exchanges","from":"rest","to":"instruction","label":"exchanges","condition":""},{"type":"provides","from":"ext-core","to":"posting-api","label":"provides","condition":""},{"type":"uses","from":"core-adapter","to":"posting-api","label":"uses","condition":""},{"type":"interaction","from":"core-adapter","to":"ext-core","label":"Ledger posting","condition":""},{"type":"exchanges","from":"posting-api","to":"instruction","label":"exchanges","condition":""},{"type":"exchanges","from":"posting-api","to":"posting","label":"exchanges","condition":""},{"type":"provides","from":"ext-network","to":"network","label":"provides","condition":""},{"type":"uses","from":"worker","to":"network","label":"uses","condition":""},{"type":"interaction","from":"worker","to":"ext-network","label":"Settlement submission and enquiry","condition":""},{"type":"exchanges","from":"network","to":"instruction","label":"exchanges","condition":""},{"type":"exchanges","from":"network","to":"settlement","label":"exchanges","condition":""},{"type":"provides","from":"risk-engine","to":"if-004","label":"provides","condition":""},{"type":"uses","from":"api-pod","to":"if-004","label":"uses","condition":""},{"type":"interaction","from":"api-pod","to":"risk-engine","label":"Check","condition":""},{"type":"exchanges","from":"if-004","to":"instruction","label":"exchanges","condition":""},{"type":"exchanges","from":"if-004","to":"risk-record","label":"exchanges","condition":""},{"type":"provides","from":"core-adapter","to":"if-005","label":"provides","condition":""},{"type":"uses","from":"risk-engine","to":"if-005","label":"uses","condition":""},{"type":"interaction","from":"risk-engine","to":"core-adapter","label":"Allow","condition":""},{"type":"exchanges","from":"if-005","to":"risk-record","label":"exchanges","condition":""},{"type":"provides","from":"worker","to":"if-006","label":"provides","condition":""},{"type":"uses","from":"core-adapter","to":"if-006","label":"uses","condition":""},{"type":"interaction","from":"core-adapter","to":"worker","label":"Handoff","condition":""},{"type":"exchanges","from":"if-006","to":"settlement","label":"exchanges","condition":""},{"type":"provides","from":"notify-worker","to":"if-007","label":"provides","condition":""},{"type":"uses","from":"worker","to":"if-007","label":"uses","condition":""},{"type":"interaction","from":"worker","to":"notify-worker","label":"Event","condition":""},{"type":"exchanges","from":"if-007","to":"settlement","label":"exchanges","condition":""},{"type":"owns","from":"api-pod","to":"instruction","label":"owns","condition":""},{"type":"owns","from":"risk-engine","to":"risk-record","label":"owns","condition":""},{"type":"owns","from":"ext-core","to":"posting","label":"owns","condition":""},{"type":"owns","from":"worker","to":"settlement","label":"owns","condition":""},{"type":"protects","from":"oauth","to":"rest","label":"protects","condition":""},{"type":"protects","from":"oauth","to":"api-pod","label":"protects","condition":""},{"type":"mitigates","from":"oauth","to":"thr-001","label":"mitigates","condition":""},{"type":"protects","from":"audit","to":"posting-api","label":"protects","condition":""},{"type":"protects","from":"audit","to":"network","label":"protects","condition":""},{"type":"protects","from":"audit","to":"posting","label":"protects","condition":""},{"type":"mitigates","from":"audit","to":"thr-004","label":"mitigates","condition":""},{"type":"protects","from":"mtls","to":"network","label":"protects","condition":""},{"type":"threatens","from":"thr-001","to":"rest","label":"threatens","condition":""},{"type":"threatens","from":"thr-001","to":"instruction","label":"threatens","condition":""},{"type":"threatens","from":"thr-002","to":"posting-api","label":"threatens","condition":""},{"type":"threatens","from":"thr-002","to":"posting","label":"threatens","condition":""},{"type":"threatens","from":"thr-003","to":"instruction","label":"threatens","condition":""},{"type":"threatens","from":"thr-003","to":"settlement","label":"threatens","condition":""},{"type":"threatens","from":"thr-004","to":"posting-api","label":"threatens","condition":""},{"type":"threatens","from":"thr-004","to":"network","label":"threatens","condition":""},{"type":"withinBoundary","from":"zone-a","to":"tb-002","label":"withinBoundary","condition":""},{"type":"withinBoundary","from":"zone-b","to":"tb-002","label":"withinBoundary","condition":""},{"type":"operatedAs","from":"api-pod","to":"run-001","label":"operated as","condition":""},{"type":"operatedAs","from":"risk-engine","to":"run-002","label":"operated as","condition":""},{"type":"operatedAs","from":"core-adapter","to":"run-003","label":"operated as","condition":""},{"type":"operatedAs","from":"worker","to":"run-004","label":"operated as","condition":""},{"type":"operatedAs","from":"notify-worker","to":"run-005","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-001","to":"run-006","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-002","to":"run-007","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-003","to":"run-008","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-004","to":"run-009","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-005","to":"run-010","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-006","to":"run-011","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-007","to":"run-012","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-008","to":"run-013","label":"operated as","condition":""},{"type":"operatedAs","from":"tr-009","to":"run-014","label":"operated as","condition":""},{"type":"placedAs","from":"run-001","to":"PL-001","label":"placed as","condition":""},{"type":"locatedIn","from":"PL-001","to":"zone-a","label":"located in","condition":""},{"type":"placedAs","from":"run-002","to":"PL-002","label":"placed as","condition":""},{"type":"locatedIn","from":"PL-002","to":"zone-a","label":"located in","condition":""},{"type":"placedAs","from":"run-004","to":"PL-003","label":"placed as","condition":""},{"type":"locatedIn","from":"PL-003","to":"zone-a","label":"located in","condition":""},{"type":"interaction","from":"initiate","to":"screen","label":"Instruction","condition":""},{"type":"interaction","from":"screen","to":"post","label":"Allowed","condition":""},{"type":"interaction","from":"post","to":"settle","label":"Posted","condition":""},{"type":"interaction","from":"settle","to":"confirm","label":"Outcome","condition":""}],"scenarios":[{"id":"payment","title":"Payment journey","steps":[["ext-channel","api-pod"],["api-pod","risk-engine"],["risk-engine","core-adapter"],["core-adapter","ext-core"],["core-adapter","worker"],["worker","ext-network"],["worker","notify-worker"]]}]}];</script>
+<script>// Illustrative core-banking model for the Anatomy concept.
+// Hypothetical structure only: it is NOT the recorded SEABaaS architecture. It exists to show
+// how AIW could dissect a larger system; every name here is generic.
+(function(){
+const objects=[],rels=[];
+const o=(type,id,title,extra={})=>{objects.push({id,ref:extra.ref||id,type,title,description:extra.d||'',owner:extra.owner||'',modules:extra.m?[extra.m]:[],...extra});return id;};
+const r=(type,from,to,label='',extra={})=>rels.push({type,from,to,label,...extra});
+
+// Modules (body segments) and external participants
+const M=[
+ ['M-CH','Digital channels','Mobile and web banking journeys for customers.'],
+ ['M-CU','Customer & onboarding','Party master data and verified identity.'],
+ ['M-AC','Accounts & deposits','Account lifecycle, balances, holds and interest.'],
+ ['M-LN','Lending','Origination, repayment schedules and collections.'],
+ ['M-PY','Payments','Payment orders, duplicate protection and interbank clearing.'],
+ ['M-GL','General ledger','Double-entry posting and daily close.'],
+ ['M-RC','Risk & compliance','Fraud screening, AML monitoring and regulatory reporting.'],
+ ['M-NT','Notifications','Customer messages and repayment reminders.']
+];
+for(const [id,t,d] of M)o('module',id,t,{d,m:id});
+o('party','X-DEV','Customer devices',{d:'Mobile app and browser used by the customer.'});
+o('party','X-IDV','Identity verification provider',{d:'External identity document and liveness checks.'});
+o('party','X-BUR','Credit bureau',{d:'External credit history and scores.'});
+o('party','X-NET','Interbank payment network',{d:'External clearing and settlement network.'});
+o('party','X-MSG','SMS & email provider',{d:'External message delivery service.'});
+
+// Logical application: responsibilities
+const LR=[
+ ['LR-01','Customer journeys','M-CH','Sessions, navigation and consent for mobile and web.'],
+ ['LR-02','Transfer initiation','M-CH','Capture and confirm a customer transfer.'],
+ ['LR-03','Statements & balances view','M-CH','Show balances, holds and statements.'],
+ ['LR-04','Customer profile','M-CU','Authoritative party record and contact preferences.'],
+ ['LR-05','Identity verification','M-CU','Verify identity before an account can be opened.'],
+ ['LR-06','Account lifecycle','M-AC','Open, change, freeze and close accounts.'],
+ ['LR-07','Balance & holds','M-AC','Available balance, reservations and holds.'],
+ ['LR-08','Interest accrual','M-AC','Accrue and capitalise interest daily.'],
+ ['LR-09','Loan origination','M-LN','Assess, approve and disburse loans.'],
+ ['LR-10','Repayment schedule','M-LN','Maintain each loan’s schedule of instalments.'],
+ ['LR-11','Collections & arrears','M-LN','Collect instalments and manage arrears.'],
+ ['LR-12','Payment order handling','M-PY','Accept, validate and track payment orders.'],
+ ['LR-13','Duplicate protection','M-PY','Guarantee one financial effect per payment reference.'],
+ ['LR-14','Interbank clearing','M-PY','Submit, enquire and reconcile with the network.'],
+ ['LR-15','Double-entry posting','M-GL','Post balanced entries to the ledger.'],
+ ['LR-16','End-of-day close','M-GL','Close the books and produce trial balances.'],
+ ['LR-17','Fraud screening','M-RC','Score payments before release.'],
+ ['LR-18','AML monitoring','M-RC','Detect suspicious patterns and open cases.'],
+ ['LR-19','Regulatory reporting','M-RC','Produce statutory returns.'],
+ ['LR-20','Customer notifications','M-NT','Send transactional messages.'],
+ ['LR-21','Repayment reminders','M-NT','Remind borrowers before an instalment is due.']
+];
+for(const [id,t,m,d] of LR){o('responsibility',id,t,{m,d});r('memberOf',id,m);}
+
+// Application realization: components
+const APP=[
+ ['APP-01','Mobile backend (BFF)','M-CH','Digital team',['LR-01','LR-02']],
+ ['APP-02','Web banking portal','M-CH','Digital team',['LR-03']],
+ ['APP-03','Customer service','M-CU','Customer team',['LR-04']],
+ ['APP-04','Onboarding service','M-CU','Customer team',['LR-05']],
+ ['APP-05','Account service','M-AC','Deposits team',['LR-06','LR-07']],
+ ['APP-06','Interest batch','M-AC','Deposits team',['LR-08']],
+ ['APP-07','Loan origination service','M-LN','Lending team',['LR-09']],
+ ['APP-08','Loan servicing engine','M-LN','Lending team',['LR-10','LR-11']],
+ ['APP-09','Payment hub','M-PY','Payments team',['LR-12','LR-13']],
+ ['APP-10','Clearing gateway','M-PY','Payments team',['LR-14']],
+ ['APP-11','Posting engine','M-GL','Finance systems',['LR-15']],
+ ['APP-12','End-of-day batch','M-GL','Finance systems',['LR-16']],
+ ['APP-13','Fraud engine','M-RC','Risk technology',['LR-17']],
+ ['APP-14','AML case manager','M-RC','Risk technology',['LR-18']],
+ ['APP-15','Notification service','M-NT','Engagement team',['LR-20','LR-21']]
+];
+for(const [id,t,m,owner,lrs] of APP){o('component',id,t,{m,owner});for(const l of lrs)r('realizedBy',l,id);}
+// LR-19 Regulatory reporting is deliberately left unrealized: a visible gap.
+
+// Logical technology: capabilities, and their technology realization
+const TC=[
+ ['TC-01','Container runtime','Run services with isolation, restart and scaling.','TR-01','Managed Kubernetes',true],
+ ['TC-02','Relational store','Transactional, authoritative records.','TR-02','PostgreSQL HA cluster',true],
+ ['TC-03','Event streaming','Durable, ordered event distribution.','TR-03','Kafka cluster',true],
+ ['TC-04','API gateway','Edge routing, throttling and token checks.','TR-04','',false],
+ ['TC-05','Identity & access','Customer and service identity, tokens.','TR-05','OIDC identity provider',true],
+ ['TC-06','Batch scheduling','Calendar-driven jobs with restart points.','TR-06','',false],
+ ['TC-07','Secrets & keys','Key custody, signing and encryption keys.','TR-07','HSM-backed key vault',true],
+ ['TC-08','Observability','Traces, metrics, logs and alerts.','TR-08','OpenTelemetry + metrics stack',true],
+ ['TC-09','Document store','Immutable storage for identity evidence.','TR-09','Object storage (WORM)',true],
+ ['TC-10','Cache','Disposable low-latency reads.',null,null,false],
+ ['TC-11','Message delivery','Hand messages to external carriers.','TR-11','External provider adapter',true]
+];
+const options={'TR-04':['Managed API gateway','Self-hosted gateway'],'TR-06':['Workflow scheduler','Cron on cluster'],'TR-01':['Managed Kubernetes','Virtual machines'],'TR-02':['PostgreSQL HA cluster','Commercial RDBMS'],'TR-03':['Kafka cluster','Managed streaming']};
+for(const [id,t,d,tr,product,chosen] of TC){
+ o('capability',id,t,{d,owner:'Platform architecture'});
+ if(tr){o('technology',tr,t+' realization',{owner:'Platform engineering',product:chosen?product:'',d:chosen?'Selected: '+product:'No product selected yet.'});r('implementedBy',id,tr);
+  for(const [i,opt] of (options[tr]||[]).entries()){const oid=tr+'/opt-'+i;o('option',oid,opt,{product:opt});r('considers',tr,oid);}}
+}
+const needs={
+ 'APP-01':['TC-01','TC-04','TC-05','TC-08','TC-10'],'APP-02':['TC-01','TC-04','TC-05','TC-08'],
+ 'APP-03':['TC-01','TC-02','TC-03','TC-07','TC-08'],'APP-04':['TC-01','TC-02','TC-09','TC-08'],
+ 'APP-05':['TC-01','TC-02','TC-03','TC-07','TC-08'],'APP-06':['TC-06','TC-02'],
+ 'APP-07':['TC-01','TC-02','TC-08'],'APP-08':['TC-01','TC-02','TC-03','TC-06','TC-08'],
+ 'APP-09':['TC-01','TC-02','TC-03','TC-07','TC-08'],'APP-10':['TC-01','TC-03','TC-07','TC-08'],
+ 'APP-11':['TC-01','TC-02','TC-03','TC-07','TC-08'],'APP-12':['TC-06','TC-02'],
+ 'APP-13':['TC-01','TC-03','TC-10','TC-08'],'APP-14':['TC-01','TC-02','TC-03'],
+ 'APP-15':['TC-01','TC-03','TC-11','TC-08']
+};
+for(const [a,cs] of Object.entries(needs))for(const c of cs)r('requires',a,c);
+
+// Runtime: zones, operating plans and placements
+o('zone','Z-APP','Primary site · application zone');o('zone','Z-DATA','Primary site · data zone');o('zone','Z-DR','Recovery site');
+const plan=(id,title,asset,minReady,max,places)=>{o('runtime',id,title,{asset,minReady,maxReplicas:max});r('operatedAs',asset,id);places.forEach(([z,n],i)=>{const pid=id+'/pl-'+i;o('instance',pid,title+' · '+(z==='Z-DR'?'standby':'active'),{replicas:n,zone:z,role:z==='Z-DR'?'standby':'active'});r('placedAs',id,pid);r('locatedIn',pid,z);});};
+plan('RUN-01','Mobile backend','APP-01',2,6,[['Z-APP',3],['Z-DR',1]]);
+plan('RUN-02','Web portal','APP-02',2,4,[['Z-APP',2]]);
+plan('RUN-03','Customer service','APP-03',2,4,[['Z-APP',2],['Z-DR',1]]);
+plan('RUN-04','Onboarding service','APP-04',1,3,[['Z-APP',1]]);
+plan('RUN-05','Account service','APP-05',3,8,[['Z-APP',3],['Z-DR',2]]);
+plan('RUN-06','Interest batch','APP-06',1,1,[['Z-APP',1]]);
+plan('RUN-07','Loan origination','APP-07',1,3,[['Z-APP',2]]);
+plan('RUN-08','Loan servicing','APP-08',2,4,[['Z-APP',2],['Z-DR',1]]);
+plan('RUN-09','Payment hub','APP-09',3,10,[['Z-APP',4],['Z-DR',2]]);
+plan('RUN-10','Clearing gateway','APP-10',2,4,[['Z-APP',2],['Z-DR',1]]);
+plan('RUN-11','Posting engine','APP-11',3,6,[['Z-APP',3],['Z-DR',2]]);
+plan('RUN-12','End-of-day batch','APP-12',1,1,[['Z-APP',1]]);
+plan('RUN-13','Fraud engine','APP-13',2,6,[['Z-APP',2]]);
+plan('RUN-14','AML case manager','APP-14',1,2,[]);
+plan('RUN-15','Notification service','APP-15',2,4,[['Z-APP',2],['Z-DR',1]]);
+plan('RUN-21','Kubernetes clusters','TR-01',2,2,[['Z-APP',1],['Z-DR',1]]);
+plan('RUN-22','PostgreSQL primary + replica','TR-02',1,2,[['Z-DATA',1],['Z-DR',1]]);
+plan('RUN-23','Kafka brokers','TR-03',3,3,[['Z-DATA',3]]);
+plan('RUN-25','Identity provider','TR-05',2,2,[['Z-APP',2]]);
+plan('RUN-27','Key vault','TR-07',2,2,[['Z-DATA',1],['Z-DR',1]]);
+plan('RUN-28','Observability stack','TR-08',1,1,[['Z-APP',1]]);
+plan('RUN-29','Object storage','TR-09',1,1,[['Z-DATA',1]]);
+
+// Interfaces & data: contracts on interactions, data authority and exchange
+const D=[['DAT-01','Customer','APP-03','Confidential'],['DAT-02','Account & balance','APP-05','Confidential'],['DAT-03','Loan & schedule','APP-08','Confidential'],['DAT-04','Payment order','APP-09','Confidential'],['DAT-05','Ledger entry','APP-11','Restricted'],['DAT-06','Identity evidence','APP-04','Restricted'],['DAT-07','Notification','APP-15','Internal'],['DAT-08','Fraud decision','APP-13','Confidential']];
+for(const [id,t,auth,cls] of D){o('data',id,t,{authority:auth,classification:cls});r('owns',auth,id);}
+let n=0;
+const call=(from,to,title,style,policy,data=[])=>{const id='IF-'+String(++n).padStart(2,'0');o('contract',id,title,{style,timeout:policy.t||'',retry:policy.r||'',failure:policy.f||'',idempotency:policy.i||''});r('provides',to,id);r('uses',from,id);r('interaction',from,to,title);for(const d of data)r('exchanges',id,d);return id;};
+call('X-DEV','APP-01','Mobile banking API','request',{t:'3 s',r:'Client retry with same key',f:'Show pending, never double-submit',i:'Idempotency key per transfer'},['DAT-04','DAT-02']);
+call('X-DEV','APP-02','Web banking pages','request',{t:'5 s',r:'None',f:'Error page'});
+call('APP-01','APP-09','Initiate transfer','request',{t:'2 s',r:'None — enquire by reference',f:'Return pending with reference',i:'Payment reference'},['DAT-04']);
+call('APP-09','APP-13','Screen payment','request',{t:'300 ms',r:'None',f:'Hold for manual review'},['DAT-04','DAT-08']);
+call('APP-09','APP-05','Reserve funds','request',{t:'500 ms',r:'Safe retry',f:'Reject with reason',i:'Hold ID'},['DAT-02']);
+call('APP-09','APP-11','Post entries','request',{t:'1 s',r:'Safe retry',f:'Keep order pending',i:'Posting reference'},['DAT-05']);
+call('APP-09','APP-10','Submit for clearing','event',{r:'At-least-once delivery',f:'Dead-letter and alert',i:'Payment reference'},['DAT-04']);
+call('APP-10','X-NET','Clearing message','request',{t:'30 s',r:'Enquire before resubmit',f:'Mark outcome unknown, investigate'},['DAT-04']);
+call('APP-11','APP-15','Posting completed','event',{r:'At-least-once delivery',f:'Dead-letter',i:'Event ID'},['DAT-05','DAT-07']);
+call('APP-11','APP-14','Transaction events','event',{r:'At-least-once delivery'},['DAT-05']);
+call('APP-08','APP-15','Repayment due','event',{r:'At-least-once delivery',f:'Dead-letter and alert',i:'Instalment ID'},['DAT-03','DAT-07']);
+call('APP-08','APP-05','Direct debit collection','request',{},['DAT-02']);
+call('APP-08','APP-11','Post repayment','request',{t:'1 s',r:'Safe retry',i:'Instalment ID'},['DAT-05']);
+call('APP-07','X-BUR','Credit report','request',{t:'10 s',r:'One retry',f:'Refer to underwriter'});
+call('APP-07','APP-08','Book new loan','request',{t:'2 s',i:'Application ID'},['DAT-03']);
+call('APP-04','X-IDV','Verify identity','request',{t:'20 s',r:'Poll result',f:'Keep application pending'},['DAT-06']);
+call('APP-04','APP-03','Create customer','request',{t:'1 s'},['DAT-01']);
+call('APP-05','APP-03','Customer lookup','request',{t:'200 ms',r:'Safe retry',f:'Serve cached profile'},['DAT-01']);
+call('APP-02','APP-05','Statements & balances','request',{t:'1 s',r:'Safe retry'},['DAT-02']);
+call('APP-06','APP-11','Accrual postings','request',{t:'1 s',r:'Safe retry',i:'Accrual run + account'},['DAT-05']);
+call('APP-12','APP-11','Close of day','request',{t:'60 s'});
+call('APP-15','X-MSG','Send message','request',{t:'5 s',r:'Backoff, 3 attempts',f:'Dead-letter',i:'Message ID'},['DAT-07']);
+call('APP-01','APP-04','Start onboarding','request',{t:'2 s',f:'Resume from saved step'},['DAT-06']);
+// Logical interactions between responsibilities (Chapter 4 view of the same flows)
+for(const [a,b,l] of [['LR-02','LR-12','Order'],['LR-12','LR-17','Screen'],['LR-12','LR-07','Reserve'],['LR-12','LR-15','Post'],['LR-12','LR-14','Clear'],['LR-15','LR-20','Notify'],['LR-10','LR-21','Remind'],['LR-11','LR-07','Collect'],['LR-05','LR-04','Create'],['LR-09','LR-10','Book'],['LR-15','LR-18','Monitor']])r('interaction',a,b,l);
+
+// Protection
+o('boundary','TB-01','Internet edge');o('boundary','TB-02','Core banking zone');o('boundary','TB-03','Restricted data');o('boundary','TB-04','Partner connections');
+for(const x of ['APP-01','APP-02','TC-04'])r('withinBoundary',x,'TB-01');
+for(const x of ['APP-03','APP-05','APP-06','APP-07','APP-08','APP-09','APP-11','APP-12','APP-13','APP-14','APP-15'])r('withinBoundary',x,'TB-02');
+for(const x of ['TC-02','TC-07','TC-09'])r('withinBoundary',x,'TB-03');
+for(const x of ['APP-04','APP-10'])r('withinBoundary',x,'TB-04');
+const ctl=(id,t,targets,mit=[])=>{o('control',id,t);for(const x of targets)r('protects',id,x);for(const x of mit)r('mitigates',id,x);};
+const thr=(id,t,targets)=>{o('threat',id,t);for(const x of targets)r('threatens',id,x);};
+thr('THR-01','Account takeover payment',['IF-01','IF-03']);
+thr('THR-02','Duplicate posting after retry',['IF-06','IF-13']);
+thr('THR-03','Identity evidence exfiltration',['DAT-06']);
+thr('THR-04','Replay of clearing messages',['IF-08']);
+ctl('SEC-01','Strong customer authentication',['IF-01'],['THR-01']);
+ctl('SEC-02','Fraud screening before release',['IF-03'],['THR-01']);
+ctl('SEC-03','Idempotent posting references',['IF-06','IF-13'],['THR-02']);
+ctl('SEC-04','Service-to-service mTLS',['IF-03','IF-04','IF-05','IF-06']);
+ctl('SEC-05','Field-level encryption',['DAT-01','DAT-02']);
+ctl('SEC-06','Ledger audit trail',['DAT-05']);
+ctl('SEC-07','Signed clearing messages',['IF-08'],['THR-04']);
+// THR-03 has no mitigating control: a visible protection gap.
+
+// Intent: requirements, quality scenarios, decisions
+const REQ=[['REQ-01','Customers can transfer money 24/7 from mobile',['LR-02','LR-12']],['REQ-02','Each payment posts exactly once',['LR-13','LR-15']],['REQ-03','Onboard customers with verified identity',['LR-05','LR-04']],['REQ-04','Remind borrowers before each repayment is due',['LR-10','LR-21']],['REQ-05','Screen payments for fraud before release',['LR-17']],['REQ-06','Close the books every day',['LR-16']],['REQ-07','Report suspicious activity to the regulator',['LR-18','LR-19']],['REQ-08','Accrue interest daily',['LR-08']]];
+for(const [id,t,lrs] of REQ){o('requirement',id,t);for(const l of lrs)r('fulfils',id,l);}
+const QD=[['QD-01','Transfer acknowledged within 2 s (p95)',['LR-02','LR-12'],'p95 ≤ 2 s at 300 TPS'],['QD-02','No duplicate financial effect under retries',['LR-13','LR-15'],'0 duplicates in fault injection'],['QD-03','Payments available 99.95%',['LR-12','LR-14'],'≤ 22 min downtime / month'],['QD-04','Reminder sent at least 3 days before due',['LR-21','LR-10'],'99.9% on time'],['QD-05','Ledger recovers in 15 min with no lost postings',['LR-15'],'RTO 15 min · RPO 0']];
+for(const [id,t,lrs,target] of QD){o('quality',id,t,{target});for(const l of lrs)r('constrains',id,l);}
+const ADR=[['ADR-01','Acknowledge transfers after durable acceptance; clear asynchronously',['LR-12','LR-14']],['ADR-02','Enforce one financial effect at the posting engine',['LR-13','LR-15']],['ADR-03','Publish repayment-due events instead of polling',['LR-10','LR-21']],['ADR-04','Share one event streaming platform across modules',['TC-03']]];
+for(const [id,t,targets] of ADR){o('decision',id,t,{question:t});for(const x of targets)r('justifies',id,x);}
+
+window.AIW_DATASETS=window.AIW_DATASETS||[];
+window.AIW_DATASETS.push({id:'core-banking',title:'Core banking (illustrative)',kind:'Hypothetical concept model',note:'A generic core-banking structure authored for this concept. It is not the recorded SEABaaS architecture; module boundaries, products and placements are hypotheses.',objects,rels,
+ scenarios:[
+  {id:'transfer',title:'Customer transfer',steps:[['X-DEV','APP-01'],['APP-01','APP-09'],['APP-09','APP-13'],['APP-09','APP-05'],['APP-09','APP-11'],['APP-09','APP-10'],['APP-10','X-NET'],['APP-11','APP-15'],['APP-15','X-MSG']]},
+  {id:'reminder',title:'Repayment reminder',steps:[['APP-08','APP-15'],['APP-15','X-MSG']]},
+  {id:'onboarding',title:'Customer onboarding',steps:[['X-DEV','APP-01'],['APP-01','APP-04'],['APP-04','X-IDV'],['APP-04','APP-03'],['APP-05','APP-03']]}
+ ]});
+})();
+</script>
+<script>// AIW Anatomy concept — model normalization and layout.
+// One stable body (modules as columns), depth as strata (bands), lenses as overlays.
+const AN={};
+(function(){
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+AN.esc=esc;
+AN.STRATA=[
+ {id:'intent',label:'Intent',sub:'Why it exists — requirements, qualities and decisions',ch:1,color:'#8a6d3b'},
+ {id:'logical',label:'Logical application',sub:'What each part must do',ch:4,color:'#286954'},
+ {id:'application',label:'Application realization',sub:'The software that does it',ch:5,color:'#2f6177'},
+ {id:'capability',label:'Logical technology',sub:'Platform support it stands on',ch:6,color:'#66733a'},
+ {id:'technology',label:'Technology realization',sub:'Products that provide that support',ch:7,color:'#7a5f33'},
+ {id:'runtime',label:'Runtime',sub:'Where it runs and what fails together',ch:10,color:'#3f6d86'}
+];
+AN.LENSES=[
+ {id:'structure',label:'Structure',q:'What holds it together?',anatomy:'Skeleton',ch:1},
+ {id:'flow',label:'Flow',q:'How does work move through it?',anatomy:'Muscles',ch:4},
+ {id:'signals',label:'Signals',q:'How do parts talk — and react when a call fails?',anatomy:'Nervous system',ch:8},
+ {id:'information',label:'Information',q:'Who owns which data, and where does it travel?',anatomy:'Circulation',ch:8},
+ {id:'protection',label:'Protection',q:'What defends it, and what is still exposed?',anatomy:'Immune system',ch:9},
+ {id:'operation',label:'Operation',q:'Where does it run, and what fails together?',anatomy:'Vital signs',ch:10},
+ {id:'reasoning',label:'Reasoning',q:'Why is it shaped this way?',anatomy:'DNA',ch:1}
+];
+AN.CHAPTERS=[
+ [1,'Requirements','It starts with needs. Requirements say what the solution must achieve — not yet how.'],
+ [2,'Quality drivers','Qualities make “good” measurable — speed, integrity, availability. They will shape every layer below.'],
+ [3,'Decisions','Decisions record the big choices and their trade-offs before any structure is drawn.'],
+ [4,'Logical application','The body takes shape: responsibilities grouped into modules — what each part must do, independent of technology.'],
+ [5,'Application realization','Software components wrap the responsibilities they realize. The logical design is now embedded in deployable parts.'],
+ [6,'Logical technology','Beneath the components sits the platform they stand on. Shared capabilities form the skeleton across modules.'],
+ [7,'Technology realization','Each capability is given a product. Hatched plates are choices not yet made.'],
+ [8,'Interfaces & data','The nervous system appears: a contract on every interaction and an owner for every piece of data.'],
+ [9,'Security','Protection wraps the body: trust boundaries, controls on contracts and data, and threats still uncovered.'],
+ [10,'Deployment & runtime','The body is placed in the world: where each part runs, how many copies, and what fails together.'],
+ [11,'Review & realize','The whole design with its remaining holes. Every gap is a question for the next design conversation.']
+];
+AN.CH={requirement:1,quality:2,decision:3,module:4,responsibility:4,component:5,party:5,capability:6,technology:7,contract:8,data:8,boundary:9,control:9,threat:9,runtime:10,instance:10,zone:10};
+AN.TYPE_LABEL={requirement:'Requirement',quality:'Quality scenario',decision:'Decision',module:'Module',responsibility:'Responsibility',component:'Application component',party:'External participant',capability:'Technology capability',technology:'Technology realization',runtime:'Operating plan',instance:'Placement',zone:'Zone',contract:'Interface contract',data:'Data',control:'Control',threat:'Threat',boundary:'Trust boundary',option:'Option'};
+
+AN.normalize=function(ds){
+ const byId=new Map(ds.objects.map(o=>[o.id,{...o}]));
+ const rels=[],seen=new Set();
+ for(const r of ds.rels){if(!byId.has(r.from)||!byId.has(r.to))continue;const k=r.type+'|'+r.from+'|'+r.to;if(seen.has(k))continue;seen.add(k);rels.push(r);}
+ const out=new Map(),inn=new Map(),push=(m,k,v)=>{if(!m.has(k))m.set(k,[]);m.get(k).push(v);};
+ for(const r of rels){push(out,r.type+'|'+r.from,r);push(inn,r.type+'|'+r.to,r);}
+ const O=(t,id)=>(out.get(t+'|'+id)||[]).map(r=>r.to),I=(t,id)=>(inn.get(t+'|'+id)||[]).map(r=>r.from),T=id=>byId.get(id)?.type;
+ const of=t=>ds.objects.filter(o=>o.type===t).map(o=>byId.get(o.id));
+ const M={ds,byId,rels,O,I,T,modules:of('module'),parties:of('party'),resp:of('responsibility'),comp:of('component'),cap:of('capability'),tech:of('technology'),run:of('runtime'),inst:of('instance'),zones:of('zone'),contracts:of('contract'),data:of('data'),controls:of('control'),threats:of('threat'),bounds:of('boundary'),reqs:of('requirement'),qds:of('quality'),adrs:of('decision')};
+ const modSet=new Set(M.modules.map(m=>m.id));
+ M.mod=new Map();
+ for(const r of M.resp){const m=(r.modules||[]).find(x=>modSet.has(x))||O('memberOf',r.id).find(x=>modSet.has(x));if(m)M.mod.set(r.id,m);}
+ for(const c of M.comp){let m=(c.modules||[]).find(x=>modSet.has(x));if(!m)m=M.mod.get(I('realizedBy',c.id)[0]);if(m)M.mod.set(c.id,m);}
+ M.realizedBy=new Map(M.resp.map(r=>[r.id,O('realizedBy',r.id).filter(x=>T(x)==='component')]));
+ M.realizes=new Map(M.comp.map(c=>[c.id,I('realizedBy',c.id).filter(x=>T(x)==='responsibility')]));
+ M.needs=new Map(M.comp.map(c=>[c.id,O('requires',c.id).filter(x=>T(x)==='capability')]));
+ M.capUsers=new Map(M.cap.map(c=>[c.id,I('requires',c.id).filter(x=>T(x)==='component')]));
+ M.techOf=new Map(M.cap.map(c=>[c.id,O('implementedBy',c.id).find(x=>T(x)==='technology')]));
+ M.capOf=new Map();for(const [c,t] of M.techOf)if(t)M.capOf.set(t,c);
+ M.runsOf=new Map();for(const r of M.run){const a=I('operatedAs',r.id).find(x=>byId.has(x))||r.asset;r.asset=a;push(M.runsOf,a,r.id);}
+ M.placements=new Map(M.run.map(r=>[r.id,O('placedAs',r.id).map(id=>byId.get(id)).filter(Boolean)]));
+ for(const pl of M.inst)pl.zoneId=O('locatedIn',pl.id)[0]||pl.zone;
+ const actor=id=>['component','party'].includes(T(id));
+ M.flows=[];const fk=new Set();
+ for(const r of rels.filter(r=>r.type==='interaction'&&actor(r.from)&&actor(r.to))){const k=r.from+'>'+r.to;if(fk.has(k))continue;fk.add(k);const c=M.contracts.find(c=>I('uses',c.id).includes(r.from)&&I('provides',c.id).includes(r.to));M.flows.push({id:'F:'+k,from:r.from,to:r.to,label:c?.title||r.label,contract:c?.id||null,async:/event|async/i.test(c?.style||'')});}
+ M.lflows=[];for(const r of rels.filter(r=>r.type==='interaction'&&T(r.from)==='responsibility'&&T(r.to)==='responsibility')){const k=r.from+'>'+r.to;if(fk.has(k))continue;fk.add(k);M.lflows.push({id:'L:'+k,from:r.from,to:r.to,label:r.label});}
+ M.owner=new Map();M.owned=new Map();for(const d of M.data){const a=I('owns',d.id).find(x=>byId.has(x))||d.authority;M.owner.set(d.id,a);if(a)push(M.owned,a,d.id);}
+ M.exch=new Map(M.contracts.map(c=>[c.id,O('exchanges',c.id).filter(x=>T(x)==='data')]));
+ M.protects=new Map();for(const c of M.controls)for(const t of O('protects',c.id))push(M.protects,t,c.id);
+ M.threatsOn=new Map();for(const t of M.threats)for(const x of O('threatens',t.id))push(M.threatsOn,x,t.id);
+ M.mitig=new Map(M.threats.map(t=>[t.id,I('mitigates',t.id)]));
+ M.inBound=new Map();for(const b of M.bounds)for(const x of I('withinBoundary',b.id))push(M.inBound,x,b.id);
+ M.why=id=>({reqs:I('fulfils',id).filter(x=>T(x)==='requirement'),qds:I('constrains',id).filter(x=>T(x)==='quality'),adrs:I('justifies',id).filter(x=>T(x)==='decision')});
+ M.options=new Map(M.tech.map(t=>[t.id,O('considers',t.id).map(id=>byId.get(id)).filter(Boolean)]));
+ const order=M.modules.map(m=>m.id);
+ const side=p=>{const peers=[...O('interaction',p.id),...I('interaction',p.id)].map(x=>order.indexOf(M.mod.get(x))).filter(i=>i>=0);const avg=peers.length?peers.reduce((a,b)=>a+b,0)/peers.length:order.length;return avg<(order.length-1)/2?'L':'R';};
+ const L=M.parties.filter(p=>side(p)==='L'),R=M.parties.filter(p=>side(p)==='R');
+ M.cols=[...(L.length?[{id:'EXT-L',ext:true,title:'Outside the system',parties:L}]:[]),...M.modules.map(m=>({id:m.id,title:m.title,desc:m.description,mod:m})),...(R.length?[{id:'EXT-R',ext:true,title:'Outside the system',parties:R}]:[])];
+ M.colOf=new Map();for(const c of M.cols)if(c.ext)for(const p of c.parties)M.colOf.set(p.id,c.id);
+ for(const [id,m] of M.mod)M.colOf.set(id,m);
+ M.zoneColor=new Map(M.zones.map((z,i)=>[z.id,['#3c7b8f','#7a6aa6','#b0843a','#5f8a4e'][i%4]]));
+ M.boundColor=new Map(M.bounds.map((b,i)=>[b.id,['#3f7fa0','#8f5a76','#b07a2a','#5d7f3e','#7b6aa8'][i%5]]));
+ M.scenarios=ds.scenarios||[];
+ return M;
+};
+
+// ---- Layout -------------------------------------------------------------------------------
+// Returns absolute rects in world coordinates for every drawable item.
+AN.layout=function(S,viewW){
+ const M=S.M,ch=S.chapter,shown=t=>ch>=(AN.CH[t]||1),G=150,GAP=10,items=[],R=new Map();
+ const add=(it)=>{items.push(it);if(it.id&&!R.has(it.id))R.set(it.id,it);return it;};
+ const cols=ch>=4?M.cols:[{id:'BRIEF',title:'The brief',brief:true}];
+ const nMod=cols.filter(c=>!c.ext).length,nExt=cols.length-nMod,avail=Math.max(760,viewW-G-40);
+ let base=Math.max(118,Math.min(330,(avail-nExt*160-GAP*(cols.length-1))/Math.max(1,nMod)));
+ const extW=base>=170?160:Math.max(110,base);if(base<170)base=Math.max(118,Math.min(330,(avail-nExt*extW-GAP*(cols.length-1))/Math.max(1,nMod)));
+ const others=(cols.length-1)*(72+GAP),focusW=Math.max(540,avail-others);
+ const width=c=>c.brief?Math.max(760,avail):S.focus?(c.id===S.focus?focusW:72):(c.ext?extW:base);
+ let x=G+14;const colX=new Map(),colW=new Map();
+ for(const c of cols){colX.set(c.id,x);colW.set(c.id,width(c));x+=width(c)+GAP;}
+ const worldW=x+20;
+ const narrow=id=>colW.get(id)<170,spine=id=>colW.get(id)<100;
+ const next=AN.STRATA.filter(s=>s.ch>ch).sort((a,b)=>a.ch-b.ch)[0]?.id||null;
+ const mode=s=>{if(s.id==='intent')return (S.lens==='reasoning'||ch<=3||S.peel==='intent')?'full':'summary';if(ch<s.ch)return s.id===next?'next':'future';if(S.peel&&S.peel!==s.id)return 'compact';if(S.peel===s.id||(S.lens==='operation'&&s.id==='runtime'))return 'peel';return 'normal';};
+ let y=12;
+ // module header band
+ const HH=S.focus?64:60;
+ for(const c of cols){add({kind:'mhead',id:'H:'+c.id,col:c,x:colX.get(c.id),y,w:colW.get(c.id),h:HH,spine:spine(c.id)});}
+ y+=HH+8;
+ const bands=[];
+ const inCol=(list,cid)=>list.filter(o=>M.colOf.get(o.id)===cid);
+ // helpers for stacking items inside a column
+ const stack=(cid,top,defs,itemH,m)=>{ // defs: [{obj,h}]
+  const sp=spine(cid),w=colW.get(cid)-(sp?10:16),perRow=(!narrow(cid)&&w>=560)?(w>=860?3:2):1,cw=(w-(perRow-1)*8)/perRow;let yy=top,rowH=0,k=0;const placed=[];
+  for(const d0 of defs){const d=sp?{...d0,spine:true,compact:true}:d0,h=sp?12:(d.h??itemH);const cx=colX.get(cid)+(sp?5:8)+(k%perRow)*(cw+8);placed.push({...d,x:cx,y:yy,w:cw,h});rowH=Math.max(rowH,h);k++;if(k%perRow===0){yy+=rowH+(sp?5:8);rowH=0;}}
+  if(k%perRow)yy+=rowH+(sp?5:8);return {placed,bottom:yy};
+ };
+ const chipRows=(n,w)=>n?Math.ceil(n/Math.max(1,Math.floor((w-16)/118))):0;
+ for(const s of AN.STRATA){
+  const md=mode(s),top=y,pad=12;let h=0;const bandItems=[];
+  if(md==='future'){h=30;}
+  else if(s.id==='intent'){
+   for(const c of cols){
+    let objs;
+    if(c.brief)objs=[...M.reqs,...M.qds,...M.adrs].filter(o=>shown(o.type));
+    else if(c.ext)objs=[];
+    else{const ids=new Set();for(const r of M.resp.filter(r=>M.mod.get(r.id)===c.id)){const w=M.why(r.id);[...w.reqs,...w.qds,...w.adrs].forEach(i=>ids.add(i));}
+     objs=[...ids].map(i=>M.byId.get(i)).filter(o=>shown(o.type)).sort((a,b)=>['requirement','quality','decision'].indexOf(a.type)-['requirement','quality','decision'].indexOf(b.type));}
+    if(md==='summary'){if(!objs.length)continue;const cnt={requirement:0,quality:0,decision:0};objs.forEach(o=>cnt[o.type]++);const label=[cnt.requirement&&cnt.requirement+' REQ',cnt.quality&&cnt.quality+' QD',cnt.decision&&cnt.decision+' ADR'].filter(Boolean).join(' · ');bandItems.push({kind:'count',id:'CNT:intent:'+c.id,x:colX.get(c.id)+8,y:top+pad,w:colW.get(c.id)-16,h:24,label,why:objs.map(o=>o.id)});h=Math.max(h,24);continue;}
+    const nar=narrow(c.id);const st=stack(c.id,top+pad,objs.map(o=>({kind:'intent',obj:o,id:o.id,two:nar})),nar?34:24);bandItems.push(...st.placed);h=Math.max(h,st.bottom-top-pad);
+   }
+  }
+  else if(s.id==='logical'){
+   if(md==='next'){for(const c of cols.filter(c=>!c.ext&&!c.brief))bandItems.push({kind:'socket',next:true,id:'S:logical:'+c.id,x:colX.get(c.id)+8,y:top+pad,w:colW.get(c.id)-16,h:36,label:'Chapter 4 · What must this part do?'});if(ch<4)bandItems.push({kind:'socket',next:true,id:'S:logical:all',x:colX.get(cols[0].id)+8,y:top+pad,w:colW.get(cols[0].id)-16,h:36,label:'Chapter 4 · Responsibilities are grouped into modules — the body takes shape'});h=36;}
+   else for(const c of cols.filter(c=>!c.ext)){const list=inCol(M.resp,c.id);const nar=narrow(c.id)&&md!=='compact',hh=md==='compact'?24:nar?36:md==='peel'?70:48;const st=stack(c.id,top+pad,list.map(o=>({kind:'resp',obj:o,id:o.id,compact:md==='compact'||nar,two:nar,peel:md==='peel'})),hh);bandItems.push(...st.placed);h=Math.max(h,st.bottom-top-pad);}
+  }
+  else if(s.id==='application'){
+   for(const c of cols){
+    if(c.ext){if(!shown('party'))continue;const nar=narrow(c.id)&&md!=='compact';const st=stack(c.id,top+pad,c.parties.map(o=>({kind:'party',obj:o,id:o.id,compact:md==='compact'||nar,two:nar})),md==='compact'?24:nar?36:44);bandItems.push(...st.placed);h=Math.max(h,st.bottom-top-pad);continue;}
+    if(md==='next'){const n=inCol(M.resp,c.id).length;if(n)bandItems.push({kind:'socket',next:true,id:'S:app:'+c.id,x:colX.get(c.id)+8,y:top+pad,w:colW.get(c.id)-16,h:40,label:'Chapter 5 · Which component realizes '+(n===1?'this responsibility':'these '+n+' responsibilities')+'?'});h=Math.max(h,40);continue;}
+    const list=inCol(M.comp,c.id),defs=[];const nar=narrow(c.id)&&md!=='compact',compact=md==='compact'||nar;const w=colW.get(c.id)-16;
+    for(const o of list){const emb=(M.realizes.get(o.id)||[]).length,data=S.lens==='information'&&shown('data')?(M.owned.get(o.id)||[]).length:0;const hh=nar?36:compact?24:(md==='peel'?62:44)+chipRows(emb,w)*21+chipRows(data,w)*21;defs.push({kind:'comp',obj:o,id:o.id,compact,two:nar,peel:md==='peel',h:hh});}
+    if(ch>=5)for(const r of inCol(M.resp,c.id))if(!(M.realizedBy.get(r.id)||[]).length)defs.push({kind:'socket',id:'GAP:realize:'+r.id,h:md==='compact'?24:nar?44:40,label:(nar?'No component for ':'No component realizes ')+r.title,gapFor:r.id,two:nar});
+    const st=stack(c.id,top+pad,defs,44);bandItems.push(...st.placed);h=Math.max(h,st.bottom-top-pad);
+   }
+  }
+  else if(s.id==='capability'||s.id==='technology'){
+   if(md==='next'&&s.id==='capability'){for(const c of cols.filter(c=>!c.ext&&!c.brief)){if(inCol(M.comp,c.id).length)bandItems.push({kind:'socket',next:true,id:'S:cap:'+c.id,x:colX.get(c.id)+8,y:top+pad,w:colW.get(c.id)-16,h:34,label:'Chapter 6 · What platform support do these components need?'});}h=34;}
+   else{
+    const lanes=AN.capLanes(M,cols,colX,colW,ch);
+    const hh=md==='compact'?22:md==='peel'?44:30;
+    for(const L of lanes){
+     const yy=top+pad+L.lane*(hh+6);
+     if(s.id==='capability')bandItems.push({kind:'cap',obj:L.cap,id:L.cap.id,x:L.x,y:yy,w:L.w,h:hh,compact:md==='compact',peel:md==='peel',users:L.users,orphan:L.orphan,attach:L.attach});
+     else{const t=M.techOf.get(L.cap.id);if(md==='next')bandItems.push({kind:'socket',next:true,id:'S:tech:'+L.cap.id,x:L.x,y:yy,w:L.w,h:hh,label:'Chapter 7 · Which product provides '+L.cap.title+'?'});
+      else if(t)bandItems.push({kind:'tech',obj:M.byId.get(t),id:t,x:L.x,y:yy,w:L.w,h:hh,compact:md==='compact',peel:md==='peel'});
+      else bandItems.push({kind:'socket',id:'GAP:tech:'+L.cap.id,x:L.x,y:yy,w:L.w,h:hh,label:'No technology realization for '+L.cap.title,gapFor:L.cap.id});}
+    }
+    h=lanes.length?(Math.max(...lanes.map(l=>l.lane))+1)*(hh+6)-6:24;
+   }
+  }
+  else if(s.id==='runtime'){
+   if(md==='next'){for(const c of cols.filter(c=>!c.ext&&!c.brief))if(inCol(M.comp,c.id).length)bandItems.push({kind:'socket',next:true,id:'S:run:'+c.id,x:colX.get(c.id)+8,y:top+pad,w:colW.get(c.id)-16,h:34,label:'Chapter 10 · Where will these run, and how many copies?'});h=34;}
+   else{
+    let colBottom=0;const compact=md==='compact';
+    for(const c of cols.filter(c=>!c.ext)){const defs=[];for(const comp of inCol(M.comp,c.id)){const runs=M.runsOf.get(comp.id)||[];if(!runs.length){defs.push({kind:'socket',id:'GAP:run:'+comp.id,h:compact||narrow(c.id)?22:34,label:comp.title+' is not operated yet',gapFor:comp.id});continue;}for(const rid of runs)defs.push({kind:'run',obj:M.byId.get(rid),id:rid,compact:compact||narrow(c.id),peel:md==='peel',h:compact||narrow(c.id)?22:(md==='peel'?58:44)});}
+     const st=stack(c.id,top+pad,defs,44);bandItems.push(...st.placed);colBottom=Math.max(colBottom,st.bottom-top-pad);}
+    const lanes=AN.capLanes(M,cols,colX,colW,ch),hh=compact?22:30;let used=0;
+    for(const L of lanes){const t=M.techOf.get(L.cap.id);const runs=t?(M.runsOf.get(t)||[]):[];if(!runs.length)continue;const yy=top+pad+colBottom+8+L.lane*(hh+6);bandItems.push({kind:'run',platform:true,obj:M.byId.get(runs[0]),extra:runs.slice(1),id:runs[0],x:L.x,y:yy,w:L.w,h:hh,compact:true});used=Math.max(used,L.lane+1);}
+    h=colBottom+(used?8+used*(hh+6):0);
+   }
+  }
+  h=Math.max(h,md==='future'?18:30);
+  const bh=h+pad*2;
+  bands.push({s,md,y:top,h:bh});
+  add({kind:'bandbg',id:'BG:'+s.id,s,md,x:0,y:top,w:worldW,h:bh});
+  add({kind:'blabel',id:'BL:'+s.id,s,md,x:0,y:top,w:G,h:bh});
+  for(const it of bandItems){it.band=s.id;add(it);}
+  y=top+bh;
+ }
+ for(const c of cols)add({kind:'col',id:'C:'+c.id,col:c,x:colX.get(c.id)-4,y:6,w:colW.get(c.id)+8,h:y-6});
+ return {items,R,bands,cols,colX,colW,W:worldW,H:y+30,G};
+};
+
+// Capability lanes: a capability spans every module whose components require it.
+// Narrow (module-specific) platforms sit nearest the components; widely shared ones form the base.
+AN.capLanes=function(M,cols,colX,colW,ch){
+ if(ch<6)return [];
+ const idx=new Map(cols.map((c,i)=>[c.id,i])),list=[];
+ for(const cap of M.cap){
+  const users=(M.capUsers.get(cap.id)||[]),ci=[...new Set(users.map(u=>idx.get(M.colOf.get(u))).filter(i=>i!==undefined))].sort((a,b)=>a-b);
+  let a,b,orphan=false;if(ci.length){a=ci[0];b=ci[ci.length-1];}else{orphan=true;const mods=cols.map((c,i)=>c.ext||c.brief?-1:i).filter(i=>i>=0);a=b=mods[mods.length-1];}
+  list.push({cap,a,b,users,orphan,span:b-a+1});
+ }
+ list.sort((p,q)=>p.span-q.span||p.a-q.a);
+ const lanes=[];
+ for(const it of list){let lane=0;while((lanes[lane]||[]).some(o=>!(it.b<o.a||it.a>o.b)))lane++;(lanes[lane]??=[]).push(it);it.lane=lane;}
+ for(const it of list){const A=cols[it.a],B=cols[it.b];it.x=colX.get(A.id)+6;it.w=colX.get(B.id)+colW.get(B.id)-6-it.x;it.attach=it.users;}
+ return list;
+};
+})();
+</script>
+<script>// AIW Anatomy concept — rendering, lenses, companion panel and story.
+(function(){
+const {esc,STRATA,LENSES,CHAPTERS,CH,TYPE_LABEL}=AN;
+const $=s=>document.querySelector(s);
+const P={structure:'M5 3h5v5H5zM14 16h5v5h-5zM7.5 8v5.5h9V16',flow:'M3 12h13m-4-5 5 5-5 5M3 5h6M3 19h6',signals:'M3 12h3l2-6 4 12 2-6h7',information:'M12 3c3 4 6 7 6 10.5A6 6 0 0 1 6 13.5C6 10 9 7 12 3z',protection:'m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z',operation:'M4 5h16v5H4zM4 14h16v5H4zM7 7.5h.01M7 16.5h.01',reasoning:'M8 3c0 6 8 6 8 12s-8 6-8 6M16 3c0 6-8 6-8 12s8 6 8 6M9 7h6M9 17h6',play:'M7 4v16l13-8z',pause:'M7 4h4v16H7zM13 4h4v16h-4z',component:'M6 4h14v16H6zM3 8h5v3H3zM3 13h5v3H3z',responsibility:'M4 6h16v12H4zM8 10h8M8 14h5',capability:'M3 15h18v4H3zM6 15V9h4v6M14 15V6h4v9',technology:'M4 5h16v6H4zM4 13h16v6H4zM8 8h.01M8 16h.01',runtime:'M5 4h14v5H5zM5 10h14v5H5zM5 16h14v4H5z',party:'M12 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6M6 20v-4a6 6 0 0 1 12 0v4',back:'m10 5-7 7 7 7M3 12h18',panel:'M4 4h16v16H4zM14 4v16',fit:'M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5'};
+const icon=n=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${P[n]||P.structure}"/></svg>`;
+const S=window.AN_STATE={M:null,ds:null,lens:'structure',chapter:11,focus:null,peel:null,sel:null,hover:null,scenario:null,step:-1,zoom:1,px:0,py:0,panel:true,answer:null,story:false,intro:true};
+let L=null,nodes=new Map(),animUntil=0,storyTimer=null,flowTimer=null,SCOPE=null;
+const shown=t=>S.chapter>=(CH[t]||1),T=id=>S.M.byId.get(id)?.type,title=id=>S.M.byId.get(id)?.title||id,ref=id=>S.M.byId.get(id)?.ref||id;
+const lensOk=l=>S.chapter>=l.ch;
+
+// ---- Lineage: everything above (why/what) and below (how/where) a selected object --------
+function lineage(id){
+ const M=S.M,set=new Set([id]);if(!id)return set;
+ const up=x=>{const t=T(x);let p=[];
+  if(t==='component')p=M.realizes.get(x)||[];else if(t==='capability')p=M.capUsers.get(x)||[];else if(t==='technology')p=[M.capOf.get(x)].filter(Boolean);else if(t==='runtime')p=[M.byId.get(x).asset].filter(Boolean);else if(t==='instance')p=M.I('placedAs',x);else if(t==='responsibility'){const w=M.why(x);p=[...w.reqs,...w.qds,...w.adrs];}
+  for(const q of p)if(!set.has(q)){set.add(q);up(q);}};
+ const down=x=>{const t=T(x);let c=[];
+  if(['requirement','quality','decision'].includes(t))c=[...M.O('fulfils',x),...M.O('constrains',x),...M.O('justifies',x)].filter(y=>['responsibility','capability'].includes(T(y)));
+  else if(t==='responsibility')c=M.realizedBy.get(x)||[];else if(t==='component')c=[...(M.needs.get(x)||[]),...(M.runsOf.get(x)||[])];else if(t==='capability')c=[M.techOf.get(x)].filter(Boolean);else if(t==='technology')c=M.runsOf.get(x)||[];else if(t==='runtime')c=(M.placements.get(x)||[]).map(p=>p.id);else if(t==='module')c=[...M.resp.filter(r=>M.mod.get(r.id)===x).map(r=>r.id)];
+  for(const q of c)if(!set.has(q)){set.add(q);down(q);}};
+ up(id);down(id);
+ if(T(id)==='module')for(const c of M.comp.filter(c=>M.mod.get(c.id)===id)){set.add(c.id);down(c.id);}
+ if(['flow','signals','information'].includes(S.lens))for(const f of M.flows)if(f.from===id||f.to===id){set.add(f.from);set.add(f.to);set.add(f.id);}
+ if(T(id)==='data'){set.add(M.owner.get(id));for(const f of M.flows)if(f.contract&&(M.exch.get(f.contract)||[]).includes(id)){set.add(f.from);set.add(f.to);set.add(f.id);}}
+ return set;
+}
+
+function highlightSet(){
+ const M=S.M;
+ if(S.scenario&&S.step>=0){const sc=M.scenarios.find(s=>s.id===S.scenario);if(sc){const set=new Set();sc.steps.slice(0,S.step+1).forEach(([a,b])=>{set.add(a);set.add(b);set.add('F:'+a+'>'+b);});return set;}}
+ if(S.sel)return lineage(S.sel);if(S.hover)return lineage(S.hover);return null;
+}
+function scopeSet(){
+ if(!S.focus)return null;const M=S.M,s=lineage(S.focus);s.add(S.focus);
+ for(const f of M.flows)if(M.mod.get(f.from)===S.focus||M.mod.get(f.to)===S.focus){s.add(f.from);s.add(f.to);s.add(f.id);}
+ return s;
+}
+// ---- Render --------------------------------------------------------------------------------
+function stageW(){return $('.stage').clientWidth;}
+function render(){
+ const M=S.M;L=AN.layout(S,stageW());
+ const hl=highlightSet();SCOPE=scopeSet();
+ const world=$('.world');world.style.width=L.W+'px';world.style.height=L.H+'px';
+ const keep=new Set();
+ for(const it of L.items){
+  const key=it.kind+'|'+it.id;keep.add(key);
+  let el=nodes.get(key);const fresh=!el;
+  if(fresh){el=document.createElement('div');el.dataset.key=key;nodes.set(key,el);$(['bandbg','col'].includes(it.kind)?'.bg':'.nodes').appendChild(el);el.classList.add('enter');requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.remove('enter')));}
+  const html=itemHTML(it);if(el._html!==html){el.innerHTML=html;el._html=html;}
+  el.className='n '+itemClass(it,hl)+(fresh?' enter':'');
+  if(it.obj||it.gapFor||it.kind==='mhead')el.dataset.id=it.obj?.id||it.gapFor||it.col.id;else delete el.dataset.id;
+  el.dataset.kind=it.kind;if(it.kind==='blabel')el.dataset.band=it.s.id;
+  Object.assign(el.style,{left:it.x+'px',top:it.y+'px',width:it.w+'px',height:it.h+'px'});
+ }
+ for(const [k,el] of nodes)if(!keep.has(k)){nodes.delete(k);el.classList.add('enter');setTimeout(()=>el.remove(),320);}
+ // contract / data / threat pills on flows are positioned after edges
+ animUntil=performance.now()+420;tick();
+ renderChrome();renderPanel(hl);
+}
+function itemClass(it,hl){
+ const o=it.obj,dim=hl&&o&&!hl.has(o.id)&&!(it.kind==='mhead')?' dim':(!hl&&SCOPE&&o&&!SCOPE.has(o.id)?' fade':'');
+ const sel=o&&S.sel===o.id?' sel':'',h=o&&hl&&hl.has(o.id)&&S.sel!==o.id?' hl':'';
+ switch(it.kind){
+  case 'bandbg':return 'bandbg'+(it.md==='peel'?' peel':'')+(STRATA.indexOf(it.s)%2?' alt':'');
+  case 'blabel':return 'blabel'+(it.md==='peel'?' peel':'')+(it.md==='future'||it.md==='next'?' future':'');
+  case 'col':return 'col'+(it.col.ext?' ext':'')+(S.focus===it.col.id?' focus':'');
+  case 'mhead':return 'mhead'+(it.col.ext?' ext':'')+(S.focus===it.col.id?' focus':'')+(it.w<170?' narrow':'')+(it.spine?' spine':'')+(hl&&!it.col.ext&&!it.col.brief&&!hl.has(it.col.id)&&S.sel&&T(S.sel)==='module'?' dim':'');
+  case 'resp':return 'o resp'+(it.compact?' compact':'')+(it.two?' two':'')+(it.spine?' spine':'')+sel+h+dim;
+  case 'comp':return 'o comp'+(it.compact?' compact':'')+(it.two?' two':'')+(it.spine?' spine':'')+sel+h+dim;
+  case 'party':return 'o party'+(it.compact?' compact':'')+(it.two?' two':'')+(it.spine?' spine':'')+sel+h+dim;
+  case 'cap':return 'o cap'+(it.w<170?' slim':'')+(it.compact?' compact':'')+(it.spine?' spine':'')+sel+h+dim;
+  case 'tech':return 'o tech'+(it.w<170?' slim':'')+(it.obj.product?'':' unchosen')+(it.compact?' compact':'')+sel+h+dim;
+  case 'run':return 'o run'+(it.spine?' spine':'')+((S.M.placements.get(it.obj.id)||[]).length?'':' unplaced')+(it.compact?' compact':'')+sel+h+dim;
+  case 'intent':return 'o intent '+it.obj.type+(it.two?' two':'')+sel+h+dim;
+  case 'count':return 'o count';
+  case 'socket':return 'o socket'+(it.next?' next':'')+(it.spine?' spine':'')+(hl&&it.gapFor&&!hl.has(it.gapFor)?' dim':'');
+ }
+ return '';
+}
+function badges(o){
+ const M=S.M,b=[];
+ if(S.lens==='protection'&&shown('control')){const c=(M.protects.get(o.id)||[]).length,t=(M.threatsOn.get(o.id)||[]);if(c)b.push(`<span class="badge ctl" title="${c} control(s)">⛨${c}</span>`);if(t.length){const open=t.filter(x=>!(M.mitig.get(x)||[]).length).length;b.push(`<span class="badge thr ${open?'open':''}" title="${t.length} threat(s)${open?', '+open+' without a control':''}">!${t.length}</span>`);}
+  for(const d of M.owned.get(o.id)||[]){const t=M.threatsOn.get(d)||[];if(t.some(x=>!(M.mitig.get(x)||[]).length))b.push('<span class="badge thr open" title="Owned data has an uncovered threat">!data</span>');}}
+ if(S.lens==='reasoning'&&o.type==='responsibility'){const w=M.why(o.id),n=w.reqs.length+w.qds.length+w.adrs.length;if(n)b.push(`<span class="badge why" title="${w.reqs.length} requirement(s), ${w.qds.length} quality scenario(s), ${w.adrs.length} decision(s)">${w.reqs.length}R ${w.qds.length}Q ${w.adrs.length}D</span>`);}
+ return b.length?`<span class="badges">${b.join('')}</span>`:'';
+}
+function itemHTML(it){
+ const M=S.M,o=it.obj;
+ switch(it.kind){
+  case 'bandbg':case 'col':return '';
+  case 'blabel':{const s=it.s;return `<b><i style="background:${s.color}"></i>${esc(s.label)}</b><small>${esc(s.sub)}</small><em>${it.md==='future'?'Designed in Chapter '+s.ch:it.md==='next'?'Next · Chapter '+s.ch:'Chapter '+s.ch+(s.id==='intent'?'–3':'')+(it.md==='peel'?' · opened':' · click to open')}</em>`;}
+  case 'mhead':{const c=it.col;if(c.brief)return `<b>The brief</b><small>Needs, qualities and decisions — before any structure</small>`;if(c.ext)return `<b>${esc(c.title)}</b><small>${c.parties.length} external participant${c.parties.length===1?'':'s'}</small>`;const nr=M.resp.filter(r=>M.mod.get(r.id)===c.id).length,nc=M.comp.filter(x=>M.mod.get(x.id)===c.id).length;return `<b title="${esc(c.title)}">${esc(c.title)}</b><small>${it.w<170?nr+' resp · '+nc+' comp':esc(c.desc||'')+' · '+nr+' responsibilities · '+nc+' components'}</small>${it.w>=170?`<button class="go" data-act="${S.focus===c.id?'unfocus':'focus'}" data-col="${esc(c.id)}">${S.focus===c.id?'Zoom out':'Dissect ↘'}</button>`:`<button class="go mini" data-act="focus" data-col="${esc(c.id)}" title="Dissect ${esc(c.title)}" aria-label="Dissect ${esc(c.title)}">↘</button>`}`;}
+  case 'resp':return `${badges(o)}<span class="k">${icon('responsibility')}${esc(o.ref)}</span><span class="t">${esc(o.title)}</span>${it.peel&&o.description?`<span class="d">${esc(o.description)}</span>`:''}`;
+  case 'party':return `<span class="k">${icon('party')}External</span><span class="t">${esc(o.title)}</span>`;
+  case 'comp':{const emb=(M.realizes.get(o.id)||[]).filter(x=>shown('responsibility')),data=S.lens==='information'&&shown('data')?(M.owned.get(o.id)||[]):[];return `${badges(o)}<span class="k">${icon('component')}${esc(o.ref)}${o.owner&&!it.compact?' · '+esc(o.owner):''}</span><span class="t">${esc(o.title)}</span>${it.peel&&o.description?`<span class="d">${esc(o.description)}</span>`:''}${!it.compact&&emb.length?`<span class="chips" title="Responsibilities this component realizes">${emb.map(r=>`<span class="chip" data-sel="${esc(r)}">◖ ${esc(title(r))}</span>`).join('')}</span>`:''}${!it.compact&&data.length?`<span class="chips">${data.map(d=>`<span class="chip drop" data-sel="${esc(d)}" title="Authoritative owner of ${esc(title(d))}">● ${esc(title(d))}</span>`).join('')}</span>`:''}`;}
+  case 'cap':{const u=it.users.length;return `${badges(o)}<span class="k">${icon('capability')}${esc(o.ref)}</span><span class="t">${esc(o.title)}</span><span class="u">${it.orphan?'no component uses it':u+' component'+(u===1?'':'s')}</span>`;}
+  case 'tech':{const opts=M.options.get(o.id)||[];return `<span class="k">${icon('technology')}${esc(o.ref)}</span><span class="t">${o.product?esc(o.product):'Choice not recorded'+(opts.length?' · '+opts.length+' options':'')}</span>`;}
+  case 'run':{const pls=M.placements.get(o.id)||[];const pip=pls.map(p=>{const c=M.zoneColor.get(p.zoneId)||'#557';const n=Math.min(8,Number(p.replicas)||1);return `<span style="color:${c}" title="${esc(title(p.zoneId))} · ${n} ${p.role==='standby'?'standby':'active'}">${Array.from({length:n},()=>`<i class="${p.role==='standby'?'sb':''}"></i>`).join('')}${it.compact?'':' '+esc(shortZone(title(p.zoneId)))}</span>`;}).join('');return `${badges(o)}${it.compact?'':`<span class="k">${icon('runtime')}${esc(o.ref)}</span>`}<span class="t">${esc(it.platform?title(o.asset).replace(/ realization$/,''):o.title)}${it.extra?.length?' +'+it.extra.length:''}</span><span class="pips">${pip||'<span style="color:#9b7433">not placed</span>'}</span>`;}
+  case 'intent':{const tag={requirement:'REQ',quality:'QD',decision:'ADR'}[o.type];return `<b class="tag">${tag}</b><span class="t" title="${esc(o.title)}">${esc(o.title)}</span>`;}
+  case 'count':return esc(it.label);
+  case 'socket':return `<span>${it.next?'◌':'○'}</span><b>${esc(it.label)}</b>`;
+ }
+ return '';
+}
+const shortZone=z=>String(z).replace(/^Primary site · /,'').replace(/ zone$/,'');
+
+// ---- Edges (drawn from live element positions so they follow transitions) ------------------
+let IDX=new Map();
+function indexNodes(){IDX=new Map();for(const el of nodes.values()){const id=el.dataset.id;if(!id||['mhead','socket','blabel','bandbg','col','count'].includes(el.dataset.kind)||IDX.has(id))continue;IDX.set(id,el);}}
+function rect(id){const el=IDX.get(id);if(!el||!el.isConnected)return null;return {x:el.offsetLeft,y:el.offsetTop,w:el.offsetWidth,h:el.offsetHeight,el};}
+function tick(){
+ drawEdges();
+ if(performance.now()<animUntil)requestAnimationFrame(tick);
+}
+function drawEdges(){
+ indexNodes();const M=S.M,under=[],over=[],pills=[],hl=highlightSet(),scope=SCOPE;
+ const cls=(base,a,b,extraId)=>{if(!hl)return base;const on=hl.has(a)&&hl.has(b)&&(!extraId||hl.has(extraId)||S.lens==='structure'||true);return base+(on?' hl':' dim');};
+ const V=(x1,y1,x2,y2)=>`M${x1} ${y1}C${x1} ${(y1+y2)/2} ${x2} ${(y1+y2)/2} ${x2} ${y2}`;
+ // lineage threads
+ if(shown('component'))for(const c of M.comp){const rc=rect(c.id);if(!rc)continue;for(const r of M.realizes.get(c.id)||[]){const rr=rect(r);if(!rr)continue;const p=`<path class="${cls('e-line',r,c.id)}" d="${V(rr.x+rr.w/2,rr.y+rr.h,rc.x+rc.w/2,rc.y)}"/>`;(hl&&hl.has(r)&&hl.has(c.id)?over:under).push(p);}}
+ if(shown('capability'))for(const c of M.comp){const rc=rect(c.id);if(!rc)continue;const needs=M.needs.get(c.id)||[];needs.forEach((cap,i)=>{const r2=rect(cap);if(!r2)return;let x=rc.x+rc.w*(i+1)/(needs.length+1);x=Math.max(r2.x+8,Math.min(r2.x+r2.w-8,x));const on=hl&&hl.has(c.id)&&hl.has(cap);const p=`<path class="${cls('e-line',c.id,cap)}" d="M${x} ${rc.y+rc.h}L${x} ${r2.y}"/>`;(on?over:under).push(p);if(!hl||on)over.push(`<circle class="pillar" cx="${x}" cy="${r2.y}" r="${on?3.6:2.6}"/>`);});}
+ if(shown('technology'))for(const cap of M.cap){const t=M.techOf.get(cap.id);const a=rect(cap.id),b=t&&rect(t);if(!a||!b)continue;const on=hl&&hl.has(cap.id)&&hl.has(t);(on?over:under).push(`<path class="${cls('e-line',cap.id,t)}" d="M${a.x+a.w/2} ${a.y+a.h}L${b.x+b.w/2} ${b.y}"/>`);}
+ if(shown('runtime')&&hl)for(const r of M.run){const a=rect(r.asset),b=rect(r.id);if(!a||!b)continue;if(hl.has(r.asset)&&hl.has(r.id))over.push(`<path class="e-line hl" d="M${a.x+a.w/2+6} ${a.y+a.h}L${b.x+b.w/2+6} ${b.y}"/>`);}
+ // why threads (reasoning)
+ if(S.lens==='reasoning'&&S.sel)for(const id of lineage(S.sel)){if(!['requirement','quality','decision'].includes(T(id)))continue;const a=rect(id);if(!a)continue;for(const t of [...M.O('fulfils',id),...M.O('constrains',id),...M.O('justifies',id)]){if(!lineage(S.sel).has(t))continue;const b=rect(t);if(b)over.push(`<path class="e-why" d="${V(a.x+a.w/2,a.y+a.h,b.x+b.w/2,b.y)}"/>`);}}
+ // flows between components / parties (and responsibilities)
+ const flowOn=shown('component');
+ const flows=flowOn&&!(S.lens==='flow'&&S.peel==='logical')?M.flows:[];const lf=S.chapter>=4&&(!shown('component')||(S.lens==='flow'&&S.peel==='logical'))?M.lflows:[];
+ const play=S.scenario&&S.step>=0?M.scenarios.find(s=>s.id===S.scenario)?.steps[S.step]:null;
+ const seen=new Map();
+ const flowPath=(a,b,k)=>{const off=(k%3-1)*7;if(Math.abs((a.x+a.w/2)-(b.x+b.w/2))<30){const x=Math.max(a.x+a.w,b.x+b.w)+18+k*6;return {d:`M${a.x+a.w} ${a.y+a.h/2}C${x} ${a.y+a.h/2} ${x} ${b.y+b.h/2} ${b.x+b.w} ${b.y+b.h/2}`,mx:x-4,my:(a.y+b.y+b.h)/2};}
+  const ltr=a.x<b.x,x1=ltr?a.x+a.w:a.x,x2=ltr?b.x:b.x+b.w,y1=a.y+Math.min(a.h/2,22)+off,y2=b.y+Math.min(b.h/2,22)+off,dx=Math.max(40,Math.abs(x2-x1)/2);return {d:`M${x1} ${y1}C${x1+(ltr?dx:-dx)} ${y1} ${x2-(ltr?dx:-dx)} ${y2} ${x2} ${y2}`,mx:(x1+x2)/2,my:(y1+y2)/2};};
+ for(const f of [...lf,...flows]){const a=rect(f.from),b=rect(f.to);if(!a||!b)continue;const k=(seen.get(f.from)||0);seen.set(f.from,k+1);const g=flowPath(a,b,k);
+  const playing=play&&play[0]===f.from&&play[1]===f.to,on=hl&&hl.has(f.from)&&hl.has(f.to)&&(!S.scenario||S.step<0||hl.has(f.id)),inScope=!scope||scope.has(f.id)||(scope.has(f.from)&&scope.has(f.to));
+  const detail=playing||on||(scope&&inScope&&!hl);
+  let c=S.lens==='information'?'e-data':'e-flow'+(f.async?' async':'');
+  if(S.lens==='signals'&&f.contract){const k=M.byId.get(f.contract);c+=(!k.timeout&&!f.async)||!(k.retry||k.failure)||!k.idempotency?' weak':' sound';}
+  if(playing)c='e-flow play';else if(hl)c+=on?' hl':' dim';else if(scope&&!inScope)c+=' dim';
+  const prominent=['flow','signals','information'].includes(S.lens)||playing||on;
+  const path=`<path class="${c}" d="${g.d}" marker-end="url(#${S.lens==='information'?'ad':'af'})" style="${prominent?'':'opacity:.28'}"/>`;
+  (prominent?over:under).push(path);
+  if(!detail&&!playing){}
+  else if(S.lens==='signals'&&f.contract&&shown('contract'))pills.push(contractPill(f,g));
+  else if(S.lens==='information'&&f.contract&&shown('data')){const ds=M.exch.get(f.contract)||[];if(ds.length)pills.push({id:'P:'+f.id,x:g.mx,y:g.my,cls:'',html:'● '+ds.map(d=>esc(title(d))).join(', '),sel:ds[0],dim:hl&&!on});}
+  else if(S.lens==='protection'&&f.contract&&shown('threat')){const t=S.M.threatsOn.get(f.contract)||[],c2=S.M.protects.get(f.contract)||[];if(t.length||c2.length){const open=t.filter(x=>!(M.mitig.get(x)||[]).length);pills.push({id:'P:'+f.id,x:g.mx,y:g.my,cls:open.length?'thr':'ok',html:(c2.length?'⛨'+c2.length+' ':'')+(t.length?'!'+t.length+(open.length?' open':''):''),sel:f.contract,dim:hl&&!on});}}
+  else if(playing||(S.lens==='flow'&&on))pills.push({id:'P:'+f.id,x:g.mx,y:g.my,cls:'',html:esc(f.label||''),sel:f.contract||f.to,dim:false});
+ }
+ // protection rings
+ const rings=[];
+ if(S.lens==='protection'&&shown('boundary'))for(const [id,bs] of M.inBound){const r=rect(id);if(!r)continue;bs.forEach((b,i)=>rings.push(`<div class="ring" style="left:${r.x-4-i*4}px;top:${r.y-4-i*4}px;width:${r.w+8+i*8}px;height:${r.h+8+i*8}px;border-color:${M.boundColor.get(b)}" title="${esc(title(b))}"></div>`));}
+ $('.edges.under').innerHTML=defs()+under.join('');
+ $('.edges.over').innerHTML=defs()+over.join('');
+ $('.rings').innerHTML=rings.join('');
+ $('.pills').innerHTML=pills.map(p=>`<div class="n pill ${p.cls}" data-pill="${esc(p.sel||'')}" style="left:${p.x}px;top:${p.y}px;transform:translate(-50%,-50%);${p.dim?'opacity:.2':''}">${p.html}</div>`).join('');
+}
+function contractPill(f,g){
+ const c=S.M.byId.get(f.contract),ok=[c.timeout,c.retry||c.failure,c.idempotency].filter(Boolean).length,need=f.async?2:3,missing=[!c.timeout&&!f.async&&'timeout',!(c.retry||c.failure)&&'failure policy',!c.idempotency&&'duplicate handling'].filter(Boolean);
+ const hl=S.sel?lineage(S.sel):null,on=!hl||(hl.has(f.from)&&hl.has(f.to));
+ return {id:'P:'+f.id,x:g.mx,y:g.my,cls:missing.length?'warn':'ok',html:(f.async?'⚡ ':'⇄ ')+esc(c.ref)+(missing.length?' · ?'+missing.length:' ✓'),sel:c.id,dim:!on};
+}
+const defs=()=>'<defs><marker id="af" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2d6450"/></marker><marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6f5a93"/></marker></defs>';
+
+// ---- Chrome: crumbs, lens rail, depth list, story bar, overlays -----------------------------
+function renderChrome(){
+ const M=S.M;
+ const sel=S.sel&&M.byId.get(S.sel);
+ $('.crumbs').innerHTML=`<button class="${!S.focus&&!sel?'here':''}" data-act="system">${esc(M.ds.title)}</button>${S.focus?`<span>›</span><button class="${sel?'':'here'}" data-act="focus" data-col="${esc(S.focus)}">${esc(M.byId.get(S.focus)?.title||'Outside')}</button>`:''}${sel?`<span>›</span><button class="here" data-act="noop">${esc(sel.ref&&sel.ref!==sel.id?sel.ref+' · ':'')}${esc(sel.title)}</button>`:''}`;
+ $('.lensbar .lenses').innerHTML=LENSES.map(l=>`<button class="lens" data-lens="${l.id}" aria-pressed="${S.lens===l.id}" ${lensOk(l)?'':'disabled'} title="${esc(l.q+' — like the '+l.anatomy.toLowerCase()+(lensOk(l)?'':' · available from Chapter '+l.ch))}"><i>${icon(l.id)}</i>${l.label}</button>`).join('');
+ $('.lensbar .depth').innerHTML='<span class="lbl">Open layer</span>'+`<button class="dep" data-peel="" aria-pressed="${!S.peel}" title="See every layer at once"><i style="background:linear-gradient(${STRATA.map(s=>s.color).join(',')})"></i>All</button>`+STRATA.map(s=>`<button class="dep" data-peel="${s.id}" aria-pressed="${S.peel===s.id}" ${S.chapter>=s.ch?'':'disabled'} title="${esc(s.label+' — '+s.sub)}"><i style="background:${s.color}"></i>${esc({intent:'Intent',logical:'Logical',application:'Application',capability:'Platform',technology:'Product',runtime:'Runtime'}[s.id])}</button>`).join('');
+ $('.steps').innerHTML=CHAPTERS.map(([n,t])=>`<button class="step ${n<S.chapter?'done':''} ${n===S.chapter?'cur':''}" data-ch="${n}" title="${esc(t)}"><small>${n}</small><span>${esc(t)}</span></button>`).join('');
+ $('.story .play').innerHTML=icon(S.story?'pause':'play');$('.story .play').setAttribute('aria-label',S.story?'Pause the design story':'Play the design story');
+ $('.story .note').textContent=CHAPTERS[S.chapter-1][2];
+ const l=LENSES.find(x=>x.id===S.lens);
+ $('.key .cap').innerHTML=`<b>${esc(l.label)} · ${esc(l.q)}</b>`;
+ const scen=S.lens==='flow'&&M.scenarios.length&&shown('component');
+ $('.scenario').hidden=!scen;
+ if(scen){const sc=M.scenarios.find(s=>s.id===S.scenario);const st=sc&&S.step>=0?sc.steps[S.step]:null;const f=st&&M.flows.find(f=>f.from===st[0]&&f.to===st[1]);const c=f?.contract&&M.byId.get(f.contract);
+  $('.scenario').innerHTML=`<div class="row"><select class="tsel" data-f="scenario"><option value="">Follow a scenario…</option>${M.scenarios.map(s=>`<option value="${s.id}" ${S.scenario===s.id?'selected':''}>${esc(s.title)}</option>`).join('')}</select>${sc?`<button class="tbtn" data-act="step-prev" aria-label="Previous step">‹</button><button class="tbtn primary" data-act="step-next">${S.step<0?'Start':S.step>=sc.steps.length-1?'Restart':'Next ›'}</button>`:''}</div>${st?`<p><b>Step ${S.step+1} of ${sc.steps.length}.</b> ${esc(title(st[0]))} → ${esc(title(st[1]))}${f?': '+esc(f.label):''}${c&&shown('contract')?` <span style="color:#76866f">(${esc(c.style||'request')}${c.timeout?', timeout '+esc(c.timeout):''}${c.failure?'; on failure: '+esc(c.failure):''})</span>`:''}</p>`:sc?'<p>Press Start to walk the path one interaction at a time.</p>':''}`;}
+ $('.legend').innerHTML=legend();
+ $('.main').classList.toggle('no-panel',!S.panel);
+ $('[data-act="panel"]').setAttribute('aria-pressed',S.panel);
+ document.querySelectorAll('[data-ds]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.ds===S.ds.id));
+}
+function lensCaption(){
+ const M=S.M;
+ switch(S.lens){
+  case 'structure':return 'Columns are the body’s parts (modules). Each band is one layer deeper: responsibilities, the components that realize them, the platform beneath, the products, and where it runs. Threads show what realizes what.';
+  case 'flow':return 'Arrows are recorded interactions. Pick a scenario to watch work move through the body step by step.';
+  case 'signals':return 'Every interaction carries a contract. ✓ means timeout, failure and duplicate handling are recorded; ?n counts what is still undefined.';
+  case 'information':return 'Droplets sit with the component that owns the data. Dotted lines show which data travels on each interaction.';
+  case 'protection':return 'Coloured rings are trust boundaries. ⛨ counts controls; ! marks threats — red when no control covers them.';
+  case 'operation':return 'The runtime layer is opened: dots are running copies per zone (hollow = standby). Dashed plans are not placed anywhere yet.';
+  case 'reasoning':return 'The intent layer is opened. Select a responsibility to trace the requirements, qualities and decisions that shaped it.';
+ }
+}
+function legend(){
+ const L=[['var(--c-resp)','Responsibility'],['var(--c-comp)','Component'],['var(--c-cap)','Capability'],['var(--c-tech)','Technology'],['var(--c-run)','Runtime']].filter((x,i)=>S.chapter>=[4,5,6,7,10][i]).map(([c,t])=>`<span><i style="background:${c}"></i>${t}</span>`);
+ L.push('<span><i class="l" style="border-color:#9bb3a3"></i>realized by / needs</span>');
+ if(S.chapter>=5)L.push('<span><i class="l" style="border-color:#2d6450"></i>interaction</span><span><i class="l" style="border-color:#2d6450;border-top-style:dashed"></i>event</span>');
+ L.push('<span><i style="border:1.5px dashed var(--c-gap);background:#fffaf0"></i>gap / next design question</span>');
+ if(S.lens==='protection')for(const b of S.M.bounds)L.push(`<span><i style="border:2px solid ${S.M.boundColor.get(b.id)};background:none"></i>${esc(b.title)}</span>`);
+ if(S.lens==='operation')for(const z of S.M.zones)L.push(`<span><i style="background:${S.M.zoneColor.get(z.id)};border-radius:50%;width:10px"></i>${esc(z.title)}</span>`);
+ return L.join('');
+}
+
+// ---- Companion panel: where you are, what you see, what is worth noticing ------------------
+function scopeIds(){const M=S.M;if(!S.focus)return null;return new Set([S.focus,...[...M.mod].filter(([,m])=>m===S.focus).map(([id])=>id)]);}
+function counts(scope){
+ const M=S.M,inS=id=>!scope||scope.has(id);
+ const resp=M.resp.filter(r=>inS(r.id)),comp=M.comp.filter(c=>inS(c.id)),caps=new Set(comp.flatMap(c=>M.needs.get(c.id)||[])),capList=scope?[...caps].map(id=>M.byId.get(id)):M.cap,techs=capList.map(c=>M.techOf.get(c.id)).filter(Boolean),chosen=techs.filter(t=>M.byId.get(t).product),runs=[...comp.flatMap(c=>M.runsOf.get(c.id)||[]),...(scope?[]:techs.flatMap(t=>M.runsOf.get(t)||[]))],placed=runs.filter(r=>(M.placements.get(r)||[]).length);
+ const shared=capList.filter(c=>new Set((M.capUsers.get(c.id)||[]).map(u=>M.mod.get(u))).size>1);
+ return {resp,comp,capList,techs,chosen,runs,placed,shared};
+}
+function narrative(){
+ const M=S.M,ch=S.chapter;
+ if(S.sel){const o=M.byId.get(S.sel);return selectionSentence(o);}
+ const scope=scopeIds(),c=counts(scope),name=S.focus?M.byId.get(S.focus)?.title:M.ds.title;
+ if(ch<4)return `${esc(M.ds.title)} is still a brief: ${M.reqs.length} requirements${ch>=2?', '+M.qds.length+' quality scenarios':''}${ch>=3?' and '+M.adrs.length+' decisions':''}. No structure exists yet — that begins in Chapter 4.`;
+ const parts=[`<b>${esc(name)}</b>: ${c.resp.length} responsibilit${c.resp.length===1?'y':'ies'}${!S.focus?' in '+M.modules.length+' modules':''}`];
+ if(ch>=5)parts.push(`realized by ${c.comp.length} component${c.comp.length===1?'':'s'}`);
+ if(ch>=6)parts.push(`standing on ${c.capList.length} platform capabilit${c.capList.length===1?'y':'ies'}${c.shared.length?' ('+c.shared.length+' shared with other modules)':''}`);
+ if(ch>=7)parts.push(`${c.chosen.length} of ${c.capList.length} with a chosen product`);
+ if(ch>=10)parts.push(`${c.placed.length} of ${c.runs.length} operating plans placed`);
+ let s=parts.join(', ')+'.';
+ const x=lensSentence(scope);if(x)s+=' '+x;
+ return s;
+}
+function lensSentence(scope){
+ const M=S.M,inS=id=>!scope||scope.has(id);
+ const fl=M.flows.filter(f=>inS(f.from)||inS(f.to));
+ switch(S.lens){
+  case 'flow':return fl.length?`${fl.length} interactions touch this scope${M.scenarios.length?'; follow a scenario to see them in order':''}.`:'';
+  case 'signals':{const cs=fl.filter(f=>f.contract).map(f=>M.byId.get(f.contract)),weak=cs.filter(c=>!c.timeout||!(c.retry||c.failure)||!c.idempotency);return cs.length?`${cs.length} contracts; ${weak.length} still miss a timeout, failure or duplicate rule.`:'';}
+  case 'information':{const ds=M.data.filter(d=>inS(M.owner.get(d.id))||!scope);const ext=ds.filter(d=>T(M.owner.get(d.id))==='party');return ds.length?`${ds.length} data definitions${ext.length?'; '+ext.map(d=>esc(d.title)).join(', ')+' is owned outside the system':''}.`:'';}
+  case 'protection':{const open=M.threats.filter(t=>!(M.mitig.get(t.id)||[]).length);return `${M.bounds.length} trust boundaries, ${M.controls.length} controls; ${open.length} threat${open.length===1?'':'s'} without a mitigating control.`;}
+  case 'operation':{const zones=new Set(M.inst.map(p=>p.zoneId));return `${zones.size} zone${zones.size===1?'':'s'} in use.`+(zones.size===1?' Everything placed runs in one failure domain.':'');}
+  case 'reasoning':return `${M.reqs.length} requirements, ${M.qds.length} quality scenarios and ${M.adrs.length} decisions shape this design.`;
+ }
+ return '';
+}
+function selectionSentence(o){
+ const M=S.M,t=o.type,list=ids=>ids.map(i=>'<b>'+esc(title(i))+'</b>').join(', ');
+ if(t==='responsibility'){const cs=M.realizedBy.get(o.id)||[];if(!cs.length)return `<b>${esc(o.title)}</b> is a responsibility no component realizes yet — a hole in the application layer.`;const caps=[...new Set(cs.flatMap(c=>M.needs.get(c)||[]))];return `<b>${esc(o.title)}</b> is realized by ${list(cs)}${S.chapter>=6&&caps.length?', which stands on '+caps.length+' platform capabilities':''}. Follow the gold thread down to see how it is implemented and where it runs.`;}
+ if(t==='component'){const r=M.realizes.get(o.id)||[],caps=M.needs.get(o.id)||[],runs=M.runsOf.get(o.id)||[];const pl=runs.flatMap(x=>M.placements.get(x)||[]);return `<b>${esc(o.title)}</b> realizes ${r.length?list(r):'no recorded responsibility'}. ${S.chapter>=6?'It needs '+caps.length+' capabilities'+(caps.length?' — '+caps.slice(0,4).map(c=>esc(title(c))).join(', ')+(caps.length>4?' and '+(caps.length-4)+' more':''):'')+'.':''} ${S.chapter>=10?(pl.length?'It runs as '+pl.reduce((a,p)=>a+(Number(p.replicas)||1),0)+' copies across '+new Set(pl.map(p=>p.zoneId)).size+' zone(s).':'It is not placed anywhere yet.'):''}`;}
+ if(t==='capability'){const u=M.capUsers.get(o.id)||[],mods=new Set(u.map(x=>M.mod.get(x))),tr=M.techOf.get(o.id),tech=tr&&M.byId.get(tr);return `<b>${esc(o.title)}</b> supports ${u.length} component${u.length===1?'':'s'} across ${mods.size} module${mods.size===1?'':'s'}${mods.size>2?' — a shared part of the skeleton; its failure is felt everywhere above it':''}. ${S.chapter>=7?(tech?(tech.product?'It is provided by <b>'+esc(tech.product)+'</b>.':'No product has been chosen yet.'):'No technology realization exists yet.'):''}`;}
+ if(t==='technology'){const opts=M.options.get(o.id)||[];return `<b>${esc(o.title)}</b> ${o.product?'uses <b>'+esc(o.product)+'</b>':'has no chosen product'}${opts.length?' · options considered: '+opts.map(x=>esc(x.title)).join(', '):''}.`;}
+ if(t==='runtime'){const pl=M.placements.get(o.id)||[];return `<b>${esc(o.title)}</b> ${pl.length?'runs in '+pl.map(p=>esc(title(p.zoneId))+' ×'+(p.replicas||1)+(p.role==='standby'?' (standby)':'')).join(', '):'has no placement yet'}${o.minReady?' · needs '+o.minReady+' ready':''}.`;}
+ if(['requirement','quality','decision'].includes(t)){const d=[...M.O('fulfils',o.id),...M.O('constrains',o.id),...M.O('justifies',o.id)].filter(x=>['responsibility','capability'].includes(T(x)));return `<b>${esc(o.title)}</b> shapes ${d.length?list(d):'no modelled part yet'}. Select one of them to follow it down through the layers.`;}
+ if(t==='party')return `<b>${esc(o.title)}</b> is outside the system. ${M.flows.filter(f=>f.from===o.id||f.to===o.id).length} recorded interactions cross the boundary here.`;
+ if(t==='data'){const ow=M.owner.get(o.id);return `<b>${esc(o.title)}</b> is owned by <b>${esc(title(ow))}</b>${o.classification?' · '+esc(o.classification):''}.`;}
+ if(t==='contract'){return `<b>${esc(o.ref)} · ${esc(o.title)}</b> (${esc(o.style||'request')}). Timeout: ${esc(o.timeout||'not recorded')}. On failure: ${esc(o.failure||o.retry||'not recorded')}. Duplicates: ${esc(o.idempotency||'not recorded')}.`;}
+ return `<b>${esc(o.title)}</b>`;
+}
+function insights(){
+ const M=S.M,ch=S.chapter,out=[],scope=scopeIds(),inS=id=>!scope||scope.has(id);
+ if(ch>=5)for(const r of M.resp.filter(r=>inS(r.id)&&!(M.realizedBy.get(r.id)||[]).length))out.push(['gap',`${r.title} has no implementing component.`,r.id,'Chapter 5']);
+ if(ch>=6){const hot=M.cap.map(c=>({c,n:new Set((M.capUsers.get(c.id)||[]).map(u=>M.mod.get(u))).size,u:(M.capUsers.get(c.id)||[]).length})).filter(x=>x.n>=3).sort((a,b)=>b.u-a.u).slice(0,2);for(const h of hot)out.push(['info',`${h.c.title} carries ${h.u} components in ${h.n} modules — a load-bearing part of the skeleton. Check its recovery and isolation.`,h.c.id]);
+  for(const c of M.cap.filter(c=>!(M.capUsers.get(c.id)||[]).length))out.push(['info',`${c.title} is not used by any component. Keep it, or remove it?`,c.id]);}
+ if(ch>=7){const un=M.cap.filter(c=>!M.techOf.get(c.id));for(const c of un)out.push(['gap',`${c.title} has no technology realization.`,c.id,'Chapter 7']);const nc=M.tech.filter(t=>!t.product);if(nc.length)out.push(['gap',`${nc.length} technology realization${nc.length===1?' has':'s have'} no chosen product yet.`,nc[0].id,'Chapter 7']);}
+ if(ch>=8){const weak=M.flows.filter(f=>f.contract&&(inS(f.from)||inS(f.to))).map(f=>M.byId.get(f.contract)).filter(c=>!c.timeout&&!/event/i.test(c.style||'')||!(c.retry||c.failure));if(weak.length)out.push(['gap',`${weak.length} contract${weak.length===1?' does':'s do'} not say what happens on timeout or failure (e.g. ${weak[0].ref} ${weak[0].title}).`,weak[0].id,'Chapter 8']);}
+ if(ch>=9){for(const t of M.threats.filter(t=>!(M.mitig.get(t.id)||[]).length))out.push(['risk',`Threat “${t.title}” has no mitigating control.`,M.O('threatens',t.id)[0]||t.id,'Chapter 9']);}
+ if(ch>=10){const unp=M.run.filter(r=>!(M.placements.get(r.id)||[]).length&&inS(r.asset));if(unp.length)out.push(['gap',`${unp.length} operating plan${unp.length===1?' is':'s are'} not placed in any zone.`,unp[0].id,'Chapter 10']);const zones=new Set(M.inst.map(p=>p.zoneId));if(zones.size===1)out.push(['risk','Every placement shares one zone: a single failure domain.',M.inst[0]?.id]);const single=M.run.filter(r=>{const pl=M.placements.get(r.id)||[];return pl.length&&new Set(pl.map(p=>p.zoneId)).size===1&&M.T(r.asset)==='component';}).filter(r=>inS(r.asset));if(single.length&&zones.size>1)out.push(['info',`${single.length} component plan${single.length===1?'':'s'} run in one zone only (no standby).`,single[0].id]);}
+ return out.slice(0,7);
+}
+function specimen(o){
+ const M=S.M,li=(label,ids,color)=>ids.length?`<li style="--dot:${color}"><small>${label}</small>${ids.map(i=>`<button data-sel="${esc(i)}">${esc(ref(i)!==i?ref(i)+' · ':'')}${esc(title(i))}</button>`).join('<br>')}</li>`:'',gap=(label,text)=>`<li class="gap" style="--dot:#e2c07f"><small>${label}</small>${esc(text)}</li>`;
+ const t=o.type,rows=[];
+ if(t==='responsibility'){const w=M.why(o.id);rows.push(li('Why · requirements',w.reqs,'#587448'),li('Why · quality',w.qds,'#987431'),li('Why · decisions',w.adrs,'#805d83'));const cs=M.realizedBy.get(o.id)||[];rows.push(cs.length?li('Realized by',cs,'#2f6177'):gap('Realized by','No component yet'));const caps=[...new Set(cs.flatMap(c=>M.needs.get(c)||[]))];rows.push(li('Stands on',caps,'#66733a'));}
+ if(t==='component'){rows.push(li('Realizes',M.realizes.get(o.id)||[],'#286954'),li('Needs',M.needs.get(o.id)||[],'#66733a'));const runs=M.runsOf.get(o.id)||[];rows.push(runs.length?li('Runs as',runs,'#3f6d86'):S.chapter>=10?gap('Runs as','Not operated yet'):'');rows.push(li('Owns data',M.owned.get(o.id)||[],'#6f5a93'),li('Calls',M.flows.filter(f=>f.from===o.id).map(f=>f.to),'#2d6450'),li('Called by',M.flows.filter(f=>f.to===o.id).map(f=>f.from),'#2d6450'));}
+ if(t==='capability'){rows.push(li('Supports',M.capUsers.get(o.id)||[],'#2f6177'));const tr=M.techOf.get(o.id);rows.push(tr?li('Provided by',[tr],'#7a5f33'):gap('Provided by','No technology realization'));}
+ if(t==='technology'){rows.push(li('Realizes',[M.capOf.get(o.id)].filter(Boolean),'#66733a'),li('Options considered',(M.options.get(o.id)||[]).map(x=>x.id),'#b18d42'),li('Runs as',M.runsOf.get(o.id)||[],'#3f6d86'));}
+ if(t==='runtime'){rows.push(li('Operates',[o.asset].filter(Boolean),'#2f6177'));rows.push(`<li style="--dot:#3f6d86"><small>Placements</small>${(M.placements.get(o.id)||[]).map(p=>esc(title(p.zoneId))+' · '+(p.replicas||1)+' '+(p.role||'active')).join('<br>')||'None yet'}</li>`);}
+ if(['requirement','quality','decision'].includes(t))rows.push(li('Shapes',[...M.O('fulfils',o.id),...M.O('constrains',o.id),...M.O('justifies',o.id)].filter(x=>['responsibility','capability'].includes(T(x))),'#286954'));
+ if(t==='party')rows.push(li('Interacts with',[...new Set(M.flows.filter(f=>f.from===o.id||f.to===o.id).map(f=>f.from===o.id?f.to:f.from))],'#2d6450'));
+ if(t==='data')rows.push(li('Owned by',[M.owner.get(o.id)].filter(Boolean),'#6f5a93'),li('Protected by',M.protects.get(o.id)||[],'#8f5a76'),li('Threatened by',M.threatsOn.get(o.id)||[],'#b0493a'));
+ if(t==='contract')rows.push(li('Provider',M.I('provides',o.id),'#2f6177'),li('Consumer',M.I('uses',o.id),'#2f6177'),li('Carries',M.exch.get(o.id)||[],'#6f5a93'),li('Protected by',M.protects.get(o.id)||[],'#8f5a76'),li('Threatened by',M.threatsOn.get(o.id)||[],'#b0493a'));
+ if(S.lens==='protection'||S.chapter>=9){if(['component','capability'].includes(t))rows.push(li('Inside boundary',M.inBound.get(o.id)||[],'#936180'));}
+ return `<div class="spec"><div class="ref">${esc(TYPE_LABEL[t]||t)}${o.ref&&o.ref!==o.id?' · '+esc(o.ref):''}${o.owner?' · '+esc(o.owner):''}</div><h5>${esc(o.title)}</h5>${o.description?`<p style="margin-top:6px;font-size:13px;color:var(--ink2)">${esc(o.description)}</p>`:''}<ul class="lin">${rows.join('')}</ul>${['component','responsibility','capability','technology'].includes(t)?`<div class="asks" style="margin-top:10px"><button data-act="dissect-sel">Dissect this part ↘</button></div>`:''}</div>`;
+}
+function renderPanel(){
+ const M=S.M,l=LENSES.find(x=>x.id===S.lens),o=S.sel&&M.byId.get(S.sel);
+ const depth=S.peel?STRATA.find(s=>s.id===S.peel).label+' opened':'all layers (cross-section)';
+ const ins=insights();
+ $('.panel').innerHTML=`<section><h4>Where you are</h4><div class="where"><b>${esc(S.focus?M.byId.get(S.focus)?.title||'Outside':'Whole system')}</b> · ${esc(depth)} · <b>${esc(l.label)}</b> lens · Chapter ${S.chapter} of 11</div><p class="where" style="margin-top:6px">${esc(lensCaption())}</p></section>
+ <section><h4>What you are looking at</h4><p class="narr">${narrative()}</p></section>
+ ${o?`<section><h4>Selected</h4>${specimen(o)}</section>`:''}
+ <section><h4>Design with AIW</h4><div class="asks"><button class="sol" data-ask="explain">Sol · explain this slice</button><button data-ask="missing">What’s missing here?</button><button data-ask="compare">Mind Factory · alternatives</button></div>${S.answer?`<div class="answer">${S.answer}<small>Concept preview · written from the model by rules. In AIW this runs through Sol’s reviewed source packet and never changes the model without your review.</small></div>`:''}</section>
+ <section><h4>Worth noticing</h4>${ins.length?`<div class="ins">${ins.map(([k,t,id,chap])=>`<button class="insight ${k==='info'?'info':k==='risk'?'risk':''}" data-sel="${esc(id||'')}"><i></i><span>${esc(t)}${chap?` <small style="color:#9b7433">· ${chap}</small>`:''}</span></button>`).join('')}</div>`:'<p style="color:var(--muted);font-size:13px">Nothing stands out at this stage.</p>'}</section>
+ <section><h4>About this model</h4><p style="font-size:12.5px;color:var(--ink2)">${esc(M.ds.note)}</p></section>`;
+}
+function ask(kind){
+ const M=S.M,o=S.sel&&M.byId.get(S.sel);
+ if(kind==='explain'){const lens=LENSES.find(x=>x.id===S.lens);S.answer=`<p><b>${esc(lens.label)} view of ${esc(o?o.title:S.focus?M.byId.get(S.focus).title:M.ds.title)}.</b> ${narrative()}</p><p>${esc(lensCaption())}</p>`;}
+ if(kind==='missing'){const ins=insights().filter(i=>i[0]!=='info');S.answer=ins.length?`<p><b>Open questions in this scope</b></p><ol>${ins.map(i=>`<li>${esc(i[1])}${i[3]?' <i>('+i[3]+')</i>':''}</li>`).join('')}</ol>`:'<p>No structural gaps are visible at this stage. Evidence and review still need to be recorded before approval.</p>';}
+ if(kind==='compare'){
+  if(o?.type==='technology'){const opts=M.options.get(o.id)||[];S.answer=opts.length?`<p><b>${esc(o.title)}</b> — options recorded:</p><ul>${opts.map(x=>`<li>${esc(x.title)}</li>`).join('')}</ul><p>Mind Factory would compare them against the qualities this capability carries (${esc([...new Set((M.capUsers.get(M.capOf.get(o.id))||[]).flatMap(c=>(M.realizes.get(c)||[]).flatMap(r=>M.why(r).qds)))].map(title).slice(0,3).join('; ')||'no linked quality yet')}) and show what each would change in the layers above.</p>`:`<p>No options are recorded for ${esc(o.title)} yet. Start by naming two candidates in Chapter 7.</p>`;}
+  else if(o?.type==='component'||o?.type==='responsibility'){const fl=M.flows.filter(f=>f.from===o.id||f.to===o.id);S.answer=`<p>For <b>${esc(o.title)}</b>, Mind Factory would compare a <b>direct request</b> with <b>durable queued work</b> on its ${fl.length} interaction${fl.length===1?'':'s'}, and a <b>cohesive</b> versus <b>separate</b> boundary — showing the proposed objects in place on this same canvas as ghosts before anything changes.</p>`;}
+  else S.answer='<p>Select a component, responsibility or technology realization to compare alternatives for that part.</p>';}
+ renderPanel();requestAnimationFrame(()=>$('.panel .answer')?.scrollIntoView({block:'nearest',behavior:'smooth'}));
+}
+
+// ---- Interaction -----------------------------------------------------------------------------
+function setView(){const w=$('.world');w.style.transform=`translate(${S.px}px,${S.py}px) scale(${S.zoom})`;}
+function revealBand(id){if(!L)return;const b=L.bands.find(x=>x.s.id===id);if(!b)return;const st=$('.stage'),z=S.zoom,top=b.y*z+S.py,bottom=(b.y+b.h)*z+S.py;if(top<0||bottom>st.clientHeight-40){S.py=Math.min(8,Math.max(st.clientHeight-40-L.H*z,-(b.y*z)+70));$('.world').style.transition='transform .45s cubic-bezier(.2,.7,.2,1)';setView();setTimeout(()=>{$('.world').style.transition='';},480);}}
+function fit(){const st=$('.stage');if(!L)return;const z=Math.min(1.15,Math.max(.35,(st.clientWidth-24)/L.W));S.zoom=z;S.px=Math.max(8,(st.clientWidth-L.W*z)/2);S.py=8;setView();}
+function select(id){S.sel=id&&S.M.byId.has(id)?id:null;S.answer=null;render();}
+function setChapter(n){S.chapter=Math.max(1,Math.min(11,n));const l=LENSES.find(x=>x.id===S.lens);if(!lensOk(l))S.lens='structure';if(S.peel&&S.chapter<STRATA.find(s=>s.id===S.peel).ch)S.peel=null;render();}
+function storyStep(){
+ if(S.chapter>=11){stopStory();return;}
+ const n=S.chapter+1;S.chapter=n;
+ S.peel=n<=3?'intent':n===4?'logical':n===5?'application':n===6?'capability':n===7?'technology':n===10?'runtime':null;
+ S.lens=n===8?'signals':n===9?'protection':n===10?'operation':n<=3?'reasoning':'structure';
+ if(n===11){S.peel=null;S.lens='structure';}
+ render();
+ if(n<11)storyTimer=setTimeout(storyStep,3200);else stopStory();
+}
+function startStory(){S.story=true;S.sel=null;S.focus=null;S.chapter=0;storyStep();requestAnimationFrame(fit);}
+function stopStory(){S.story=false;clearTimeout(storyTimer);renderChrome();}
+function loadDataset(id){
+ const ds=window.AIW_DATASETS.find(d=>d.id===id)||window.AIW_DATASETS[0];
+ S.ds=ds;S.M=AN.normalize(ds);S.sel=null;S.focus=null;S.peel=null;S.scenario=null;S.step=-1;S.answer=null;
+ for(const el of nodes.values())el.remove();nodes.clear();
+ render();requestAnimationFrame(()=>{fit();render();});
+}
+function tip(e){
+ const el=e.target.closest('[data-id]'),t=$('.tip');
+ if(!el||el.dataset.kind==='mhead'){t.hidden=true;if(S.hover){S.hover=null;if(!S.sel)softHighlight();}return;}
+ const id=el.dataset.id,o=S.M.byId.get(id);if(!o){t.hidden=true;return;}
+ t.innerHTML=`<b>${esc(o.title)}</b>${esc(TYPE_LABEL[o.type]||o.type)}${o.ref&&o.ref!==o.id?' · '+esc(o.ref):''}<small>${selectionSentence(o).replace(/<[^>]+>/g,'')}</small>`;
+ t.hidden=false;t.style.left=Math.min(innerWidth-300,e.clientX+14)+'px';t.style.top=Math.min(innerHeight-140,e.clientY+14)+'px';
+ if(!S.sel&&S.hover!==id){S.hover=id;softHighlight();}
+}
+function softHighlight(){ // hover highlight without re-layout
+ const hl=S.hover?lineage(S.hover):null;
+ for(const [,el] of nodes){const id=el.dataset.id;if(!id||['mhead','blabel','bandbg','col'].includes(el.dataset.kind))continue;el.classList.toggle('dim',!!hl&&!hl.has(id));el.classList.toggle('hl',!!hl&&hl.has(id)&&S.hover!==id);}
+ drawEdges();
+}
+function bind(){
+ const st=$('.stage');let drag=null,moved=false;
+ st.addEventListener('pointerdown',e=>{if(e.target.closest('.zoombar,.scenario,.key'))return;drag={x:e.clientX,y:e.clientY,px:S.px,py:S.py};moved=false;});
+ addEventListener('pointermove',e=>{if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>4){moved=true;st.classList.add('panning');}if(moved){S.px=drag.px+dx;S.py=drag.py+dy;setView();}}else tip(e);});
+ addEventListener('pointerup',()=>{drag=null;st.classList.remove('panning');});
+ st.addEventListener('wheel',e=>{e.preventDefault();if(e.ctrlKey||e.metaKey){const r=st.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,z0=S.zoom,z=Math.max(.3,Math.min(2,z0*Math.exp(-e.deltaY*.0022)));S.px=mx-(mx-S.px)*z/z0;S.py=my-(my-S.py)*z/z0;S.zoom=z;}else{S.px-=e.deltaX;S.py-=e.deltaY;}setView();},{passive:false});
+ document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-act]'),lens=e.target.closest('[data-lens]'),peel=e.target.closest('[data-peel]'),chb=e.target.closest('[data-ch]'),sel=e.target.closest('[data-sel]'),pill=e.target.closest('[data-pill]'),askb=e.target.closest('[data-ask]'),dsb=e.target.closest('[data-ds]');
+  if(dsb){loadDataset(dsb.dataset.ds);return;}
+  if(a){const act=a.dataset.act;
+   if(act==='focus'){S.focus=a.dataset.col;S.answer=null;render();requestAnimationFrame(fit);return;}
+   if(act==='unfocus'||act==='system'){S.focus=null;if(act==='system')S.sel=null;render();requestAnimationFrame(fit);return;}
+   if(act==='fit'){fit();return;}if(act==='zin'||act==='zout'){const z=Math.max(.3,Math.min(2,S.zoom*(act==='zin'?1.15:1/1.15)));const r=$('.stage').getBoundingClientRect(),mx=r.width/2,my=r.height/2;S.px=mx-(mx-S.px)*z/S.zoom;S.py=my-(my-S.py)*z/S.zoom;S.zoom=z;setView();return;}
+   if(act==='panel'){S.panel=!S.panel;render();requestAnimationFrame(fit);return;}
+   if(act==='play'){S.story?stopStory():startStory();return;}
+   if(act==='intro-close'){$('.intro').hidden=true;return;}
+   if(act==='intro-story'){$('.intro').hidden=true;startStory();return;}
+   if(act==='intro'){$('.intro').hidden=false;return;}
+   if(act==='dissect-sel'&&S.sel){const o=S.M.byId.get(S.sel);const col=S.M.colOf.get(o.id)||S.M.mod.get((S.M.capUsers.get(o.id)||[])[0])||S.M.mod.get((S.M.capUsers.get(S.M.capOf.get(o.id))||[])[0]);if(col&&!String(col).startsWith('EXT'))S.focus=col;S.peel={responsibility:'logical',component:'application',capability:'capability',technology:'technology'}[o.type]||null;render();requestAnimationFrame(fit);return;}
+   if(act==='step-next'||act==='step-prev'){const sc=S.M.scenarios.find(s=>s.id===S.scenario);if(!sc)return;S.step=act==='step-next'?(S.step>=sc.steps.length-1?0:S.step+1):Math.max(0,S.step-1);S.sel=null;render();return;}
+   if(act==='noop')return;
+   if(act==='key'){const k=$('.key');k.classList.toggle('min');a.textContent=k.classList.contains('min')?'▴':'▾';return;}
+  }
+  if(lens&&!lens.disabled){S.lens=lens.dataset.lens;S.answer=null;if(S.lens!=='flow'){S.scenario=null;S.step=-1;}render();const target={operation:'runtime',reasoning:'intent',signals:'application',information:'application',flow:'application',protection:'application'}[S.lens];if(target)setTimeout(()=>revealBand(target),60);return;}
+  if(peel&&!peel.disabled){S.peel=peel.dataset.peel||null;render();if(S.peel)setTimeout(()=>revealBand(S.peel),420);return;}
+  if(chb){stopStory();setChapter(Number(chb.dataset.ch));return;}
+  if(askb){ask(askb.dataset.ask);return;}
+  if(pill){select(pill.dataset.pill);return;}
+  if(sel){e.stopPropagation();select(sel.dataset.sel);return;}
+  const band=e.target.closest('[data-band]');if(band&&!moved){const s=STRATA.find(x=>x.id===band.dataset.band);if(S.chapter>=s.ch){S.peel=S.peel===s.id?null:s.id;render();}return;}
+  const node=e.target.closest('.stage [data-id]');
+  if(node&&!moved){if(node.dataset.kind==='mhead'){const c=node.dataset.id;if(c==='BRIEF'||String(c).startsWith('EXT'))return;select(S.sel===c?null:c);return;}select(S.sel===node.dataset.id?null:node.dataset.id);return;}
+  if(e.target.closest('.stage')&&!moved&&!e.target.closest('.zoombar,.scenario,.key')){if(S.sel)select(null);}
+ });
+ document.addEventListener('dblclick',e=>{const h=e.target.closest('.stage [data-kind="mhead"]');if(h&&!String(h.dataset.id).startsWith('EXT')&&h.dataset.id!=='BRIEF'){S.focus=S.focus===h.dataset.id?null:h.dataset.id;render();requestAnimationFrame(fit);}});
+ document.addEventListener('change',e=>{if(e.target.dataset.f==='scenario'){S.scenario=e.target.value||null;S.step=-1;render();}});
+ addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('.intro').hidden){$('.intro').hidden=true;return;}if(S.sel)select(null);else if(S.peel){S.peel=null;render();}else if(S.focus){S.focus=null;render();requestAnimationFrame(fit);}}
+  if(e.key==='ArrowRight'&&e.altKey)setChapter(S.chapter+1);if(e.key==='ArrowLeft'&&e.altKey)setChapter(S.chapter-1);});
+ let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{render();fit();},120);});
+}
+window.addEventListener('DOMContentLoaded',()=>{bind();loadDataset((window.AIW_DATASETS.find(d=>d.id==='core-banking')||window.AIW_DATASETS[0]).id);});
+})();
+</script>
+</body></html>

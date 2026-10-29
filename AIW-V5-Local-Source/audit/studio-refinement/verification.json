@@ -1,0 +1,383 @@
+{
+  "schema": "aiw.studio-refinement-verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.35+studio.20261020",
+  "recordedAt": "2026-10-20T21:31:00.652257+00:00",
+  "sourceParent": "a38d851793b67de5494e5ad0e7a0b80fbfbec3e3",
+  "releaseBaseline": "a38d851793b67de5494e5ad0e7a0b80fbfbec3e3",
+  "sourceIdentityNote": "The Sites publication receipt and matching Git source archive identify the final commit. SOURCE-MANIFEST.json verifies source content; its commit field is the checkout parent at generation.",
+  "scope": "Authored native-domain journeys, Happy DOM interactions, deterministic geometry/export parity, in-process private Worker and production package checks. No complete historical corpus, rendered browser or live-provider quality claim.",
+  "implementation": {
+    "methodVersion": 5,
+    "resultReadScope": "One saved submission, one linked authoritative status contract and one accepted direct-read or cache-aside design. Exact caller, authority and result-state dictionary; explicit strict or bounded consumer freshness. No event-freshness, recursive saga or measured runtime inference.",
+    "nativeFields": [
+      "execution.outcomeReadTaskId",
+      "execution.outcomeFreshness",
+      "execution.outcomeMaxAgeSeconds"
+    ],
+    "sourceClosure": "Canonical read basis/context retained for currentness. Actual inference operands plus compact accepted-task source carry all currentness dependency identities; source exclusion or insufficient budget withholds the whole deduction.",
+    "providerBounds": {
+      "characters": 28000,
+      "sources": 22,
+      "architectureMethodCharacters": 20000
+    },
+    "ui": "Existing disclosures and exact remedy targets; correct driver kind and quality navigation; current hard constraints versus stale assessments; Arrange focus; captured diagram/export context.",
+    "sdd": "Main flat/module SDD reads accepted native obligations, evidence state, source support and linked-result freshness. Scoped exports preserve component scope.",
+    "journeys": [
+      "Order fulfilment: accepted cache/persistence, scoped PostgreSQL choice, runtime/model/SDD and changed-driver review.",
+      "Payment: strict direct-read/persistence, scoped MySQL choice, no added cache and changed-driver review."
+    ],
+    "journeyAcceptance": "Both authored trails reach eight of nine declared steps; real implementation verification remains open and unsupported case approval is blocked.",
+    "loading": "Unchanged ordering helpers moved from anatomy layout into existing anatomy model; exchange model no longer imports optional geometry. Original layout API retained; no new module or dynamic entry for this change."
+  },
+  "focusedGate": {
+    "status": "passed",
+    "namedValidationSuites": 28,
+    "uniqueRecordedCommands": 33,
+    "detail": "rc35-focused-results.json",
+    "evidenceFiles": [
+      "rc35-driver-journey-results.json",
+      "rc35-model-refinement-results.json",
+      "rc35-native-integration-results.json",
+      "rc35-read-outcome-results.json"
+    ]
+  },
+  "checks": [
+    {
+      "command": "node driver-led-journey-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-grounding-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json",
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node read-design-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json",
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node persistence-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-case-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node payment-case-journey-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node --input-type=module (inline before/after ordering parity check)",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node anatomy-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node exchange-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node model-dossier-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node canvas-controls-dom-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node model-journey-continuity-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-arrangement-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node view-experience-dom-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node notation-export-context-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node notation-code-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node --input-type=module",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node interfaces-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node outcome-design-journey-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-operation-continuation-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node read-outcome-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-operation-group-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-operation-group-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node read-outcome-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node composition-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node execution-composition-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node outcome-contract-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node outcome-context-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-intelligence-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node check-syntax.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "modules": 836
+    },
+    {
+      "command": "node build.mjs",
+      "via": "Sites build-site.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "serverModules": 237,
+      "note": "Packaged imports, vendored provider loading, gzip/plain assets and ETag revalidation verified."
+    }
+  ],
+  "parity": {
+    "basisCases": 27,
+    "contextCases": 14,
+    "completeAnatomyLayouts": 252,
+    "exchangeProjections": 4,
+    "exchangeRoutes": 928,
+    "orderingSourceBlockBytes": 6172
+  },
+  "productionBuild": {
+    "status": "passed",
+    "scriptFiles": 146,
+    "serverModules": 237,
+    "stylesheetsCombined": 51,
+    "entryBytes": 4830,
+    "chapterOpeningBytes": 3101082,
+    "chapterOpeningLimit": 3109888,
+    "chapterOpeningHeadroom": 8806,
+    "changeFromRc34": -8749,
+    "cssBytes": 837537,
+    "cssLimit": 837632,
+    "budgetChanged": false,
+    "violations": [],
+    "evidence": "client-size-report.json"
+  },
+  "resolvedBuildAttempts": [
+    {
+      "attempt": 1,
+      "chapterOpeningBytes": 3121438,
+      "scriptFiles": 148,
+      "result": "failed existing byte and script limits"
+    },
+    {
+      "attempt": 2,
+      "chapterOpeningBytes": 3121337,
+      "scriptFiles": 146,
+      "result": "failed existing byte limit"
+    },
+    {
+      "attempt": 3,
+      "chapterOpeningBytes": 3101082,
+      "scriptFiles": 146,
+      "result": "passed all unchanged limits and packaged Worker checks"
+    }
+  ],
+  "remainingAcceptance": [
+    {
+      "gate": "Rendered browser, mobile and touch",
+      "status": "not performed",
+      "reason": "Supported control-browser capability absent. Sites managed-environment rules prohibit improvised preview/browser fallback; DOM and geometry checks are not pixel acceptance."
+    },
+    {
+      "gate": "Live-provider architectural quality",
+      "status": "not performed",
+      "reason": "No authorized live customer-session route available. Authored response and source-packet tests do not measure live model judgment."
+    },
+    {
+      "gate": "Orbus comparison",
+      "status": "not performed",
+      "reason": "Requires rendered representative customer-task comparison; no parity or superiority claim."
+    },
+    {
+      "gate": "Customer implementation outcomes",
+      "status": "pending",
+      "reason": "Runtime freshness, access isolation, recovery, failure behavior and performance require actual implementation evidence."
+    }
+  ],
+  "knownBaselineIssue": {
+    "test": "sdd-modules-validate.mjs",
+    "status": "previously reproduced on untouched baseline; not represented as fixed or passed",
+    "detail": "Section-5 fixture expects only five C4 headings, while the unchanged baseline includes eight additional chapter-model headings. rc35 targeted journeys separately verify main and module-scoped obligation/execution content.",
+    "evidence": "rc34-sdd-baseline.log"
+  },
+  "productionAccepted": false
+}

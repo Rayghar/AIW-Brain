@@ -1,0 +1,2036 @@
+{
+  "model": {
+    "families": [
+      {
+        "name": "Table sorting and empty columns",
+        "status": "passed",
+        "detail": {
+          "sortableColumns": [
+            "ref",
+            "title",
+            "kind",
+            "field:operation",
+            "field:protocol",
+            "field:requestData",
+            "field:responseData",
+            "field:idempotencyKey",
+            "field:failurePolicy",
+            "field:classification",
+            "field:owner",
+            "field:authorityId",
+            "field:retentionPolicy",
+            "details",
+            "checks",
+            "links"
+          ]
+        }
+      },
+      {
+        "name": "Matrix axes swap and cell inspection",
+        "status": "passed",
+        "detail": {
+          "rows": "journey",
+          "columns": "requirement",
+          "inspectedCell": "JRN-001|REQ-001"
+        }
+      },
+      {
+        "name": "Whole design chapter previews, lenses, depth and scope",
+        "status": "passed",
+        "detail": {
+          "chapters": 11,
+          "lenses": [
+            "structure",
+            "flow",
+            "signals",
+            "information",
+            "protection",
+            "operation",
+            "reasoning"
+          ],
+          "bands": [
+            "",
+            "intent",
+            "logical",
+            "application",
+            "capability",
+            "technology",
+            "runtime"
+          ],
+          "dissect": null
+        }
+      },
+      {
+        "name": "Build transport next, back, play, pause and stop",
+        "status": "passed",
+        "detail": {
+          "mode": "layer",
+          "modes": [
+            {
+              "id": "layer",
+              "disabled": false,
+              "label": "By layer\none step per model layer in the picture"
+            },
+            {
+              "id": "trace",
+              "disabled": true,
+              "label": "Along the trace\nLight a trace first (Trace menu)"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Build along an explicitly selected trace",
+        "status": "passed",
+        "detail": {
+          "requirement": "REQ-001",
+          "line": "Along the trace \u00b7 Step 1 of 3 \u00b7 responsibility: LR-001"
+        }
+      },
+      {
+        "name": "Label reader filter, exact selection and close",
+        "status": "passed",
+        "detail": {
+          "labels": 2,
+          "selectedLabel": "External participant Patient Booking Portal",
+          "selectedRecord": "ext-001"
+        }
+      },
+      {
+        "name": "Shared Start walkthrough and native step controls",
+        "status": "passed",
+        "detail": {
+          "activeView": "map",
+          "controls": [
+            {
+              "action": "prev",
+              "disabled": true,
+              "label": "\u2039"
+            },
+            {
+              "action": "next",
+              "disabled": false,
+              "label": "Finish"
+            },
+            {
+              "action": "stop",
+              "disabled": false,
+              "label": "\u00d7"
+            }
+          ]
+        }
+      },
+      {
+        "name": "Native Components focus and return from APP-001",
+        "status": "passed",
+        "detail": {
+          "record": "APP-001",
+          "id": "obj-001",
+          "focusedScope": "Whole system\n\u203a\nClinic Booking Service",
+          "returnedScope": "Whole system"
+        }
+      },
+      {
+        "name": "Native Exchange lenses, camera and key",
+        "status": "passed",
+        "detail": {
+          "lenses": [
+            "flow",
+            "signals",
+            "information"
+          ],
+          "camera": "100% \u2192 115% \u2192 100% \u2192 Fit",
+          "key": "open and close",
+          "scope": "whole system"
+        }
+      },
+      {
+        "name": "Native Platform failure modes and local walkthrough",
+        "status": "passed",
+        "detail": {
+          "lenses": [
+            "structure",
+            "operation",
+            "protection"
+          ],
+          "failedCapability": "tc-001",
+          "modes": [
+            {
+              "id": "capability",
+              "disabled": false,
+              "label": "Transactional booking persistence"
+            },
+            {
+              "id": "domain",
+              "disabled": false,
+              "label": "Its failure domain"
+            }
+          ],
+          "walk": "start, all four stages, previous, stop; no review receipt recorded"
+        }
+      }
+    ],
+    "errors": [],
+    "unavailable": [
+      {
+        "family": "Journey walk prev",
+        "reason": "No applicable step in the one-journey fixture/current walk position"
+      }
+    ],
+    "documentUnchanged": true,
+    "actualClickEvents": 117
+  },
+  "shell": {
+    "families": [
+      {
+        "name": "themes",
+        "status": "passed"
+      },
+      {
+        "name": "help-and-about",
+        "status": "passed"
+      },
+      {
+        "name": "resources-components",
+        "status": "passed"
+      },
+      {
+        "name": "resources-technology",
+        "status": "passed"
+      },
+      {
+        "name": "resources-knowledge",
+        "status": "passed"
+      },
+      {
+        "name": "project-sources",
+        "status": "passed"
+      },
+      {
+        "name": "review-plan",
+        "status": "passed"
+      },
+      {
+        "name": "sol-context-packet",
+        "status": "passed"
+      }
+    ],
+    "errors": [],
+    "limitations": [
+      "Single populated isolated project; no provider calls, source creation, approval or governance mutations."
+    ]
+  },
+  "conditionalVisible": {
+    "authority": "Local synthetic project clone only. Native editors, local routes and reversible commands. No external provider calls, approvals or execution evidence asserted.",
+    "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+    "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-c10-fixed",
+    "started": "2026-10-18T10:37:31.839Z",
+    "errors": [],
+    "attempts": [],
+    "blocked": [],
+    "selectorChecks": [
+      {
+        "family": "data-r-action=mind",
+        "selector": "[data-r-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-q-action=mind",
+        "selector": "[data-q-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-d-action=mind",
+        "selector": "[data-d-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-l-action=mind",
+        "selector": "[data-l-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-a-action=mind",
+        "selector": "[data-a-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-t-action=mind",
+        "selector": "[data-t-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-tr-action=mind",
+        "selector": "[data-tr-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-i-action=mind",
+        "selector": "[data-i-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-sec-action=mind",
+        "selector": "[data-sec-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-rt-action=mind",
+        "selector": "[data-rt-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      },
+      {
+        "family": "data-rv-action=mind",
+        "selector": "[data-rv-action=\"mind\"]",
+        "status": "actual native alias clicked",
+        "panelOpened": true
+      }
+    ],
+    "meaningfulSave": {
+      "before": "Own the decision to allocate an available appointment and return its stable booking outcome.",
+      "after": "Own the decision to allocate an available appointment and return its stable booking outcome.",
+      "saved": false
+    },
+    "aliasMappings": [
+      {
+        "family": "data-a-action=technology-intake",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+        "status": "unvisited_closed_disclosure",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+      },
+      {
+        "family": "data-i-action=chapter9",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+        "status": "unvisited_closed_disclosure",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+      },
+      {
+        "family": "data-l-action=chapter5",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+        "status": "unvisited_closed_disclosure",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+      },
+      {
+        "family": "data-sec-action=chapter10",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+        "status": "unvisited_closed_disclosure",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+      },
+      {
+        "family": "data-t-action=chapter7",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+        "status": "unvisited_closed_disclosure",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+      },
+      {
+        "family": "data-tr-action=chapter8",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+        "status": "unvisited_closed_disclosure",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+      },
+      {
+        "family": "data-rt-action=chapter11",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+        "status": "unvisited_closed_disclosure",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+      }
+    ],
+    "finished": "2026-10-18T10:37:51.024Z",
+    "coveredFamilies": [
+      "data-r-action=mind",
+      "data-brain-launch=mind",
+      "data-q-action=mind",
+      "data-d-action=mind",
+      "data-l-action=mind",
+      "data-a-action=mind",
+      "data-t-action=mind",
+      "data-tr-action=mind",
+      "data-i-action=mind",
+      "data-sec-action=mind",
+      "data-rt-action=mind",
+      "data-rv-action=mind",
+      "data-object-page=[record]",
+      "data-object-history=",
+      "data-rt-action=dismiss-seed",
+      "data-rt-action=keep-seed",
+      "data-rt-action=inspect"
+    ],
+    "remaining": [
+      {
+        "family": "data-brain-action=subject",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-cr-action=hide",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-brain-action=author",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-nt-row=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-action=all-layers",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-action=model-layer-filter",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-lane=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "label=Record treatment",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-layer=process",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-select=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-edge=b",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-edge=r",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-layer=logical",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-layer=physical",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-layer=technology",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-link=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-band=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-close-review=",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-edge=t",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-layer=data",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-r-action=show-model",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-row=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "label=Confirm selected after review",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-a-action=from-library",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-a-action=technology-intake",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-a-action=to-library",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-action=play",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-action=release-subject",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-action=restart-flow",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-action=step-flow",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-brain-action=unpin",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-i-action=chapter9",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-i-action=select-contract",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-l-action=chapter5",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-layer=deployment",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-layer=interface",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-layer=security",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-rv-action=content-report",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rv-action=delivery-stage",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rv-action=walk",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-sec-action=chapter10",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-stage=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-t-action=chapter7",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-tr-action=chapter8",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-tr-action=compare",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-tr-action=sensitivity",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-zone=[record]",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-guide-action=loop",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-guide-action=start",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-journey-draft=6",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-rt-action=chapter11",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-t-action=keep-component-needs",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-t-action=keep-seed",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-wb-action=baseline-diff",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-wb-action=delivery",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-wb-action=queue",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "data-wb-action=source-questions",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      },
+      {
+        "family": "label=Undo last saved input review",
+        "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+      }
+    ],
+    "classificationCorrection": "The earlier claim that output-workspace.js ignored context/handoff was incorrect, caused by inspecting truncated source output. Canonical code includes both inside output disclosures. No production omission was established.",
+    "saveOutcomeInterpretation": "Existing responsibility used Preview impact, so its stored purpose correctly remained unchanged; this was not a Save submission. Separate synthetic group Save persisted."
+  },
+  "outputForward": {
+    "source": "/workspace/scratch/8e11d52a9a55/rethink_qa/authored-final-revision82",
+    "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+    "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+    "authority": "Navigation only on a copied synthetic project. No save, approval, handoff submission or external service action.",
+    "started": "2026-10-18T10:44:36.951Z",
+    "routes": [
+      {
+        "chapter": 4,
+        "selector": "[data-l-action=\"chapter5\"]",
+        "label": "Open Chapter 5 Work",
+        "disclosureExpanded": true,
+        "destination": 5,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 5,
+        "selector": "[data-a-action=\"technology-intake\"]",
+        "label": "Open Chapter 6 Work",
+        "disclosureExpanded": true,
+        "destination": 6,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 6,
+        "selector": "[data-t-action=\"chapter7\"]",
+        "label": "Open Chapter 7 Work",
+        "disclosureExpanded": true,
+        "destination": 7,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 7,
+        "selector": "[data-tr-action=\"chapter8\"]",
+        "label": "Open Interfaces & data",
+        "disclosureExpanded": true,
+        "destination": 8,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 8,
+        "selector": "[data-i-action=\"chapter9\"]",
+        "label": "Open Security",
+        "disclosureExpanded": true,
+        "destination": 9,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 9,
+        "selector": "[data-sec-action=\"chapter10\"]",
+        "label": "Open Deployment / runtime",
+        "disclosureExpanded": true,
+        "destination": 10,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 10,
+        "selector": "[data-rt-action=\"chapter11\"]",
+        "label": "Open Review & realize",
+        "disclosureExpanded": true,
+        "destination": 11,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      }
+    ],
+    "errors": [],
+    "requests": [
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      },
+      {
+        "method": "POST",
+        "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      }
+    ],
+    "status": "passed",
+    "finished": "2026-10-18T10:44:41.615Z"
+  },
+  "conditionalMeaningfulSave": {
+    "title": "Synthetic QA conditional editor save",
+    "purpose": "Isolated test group created by the final button-family check; no production architecture or approval claim.",
+    "savedRecord": {
+      "id": "GRP-001",
+      "title": "Synthetic QA conditional editor save",
+      "purpose": "Isolated test group created by the final button-family check; no production architecture or approval claim.",
+      "provenance": {
+        "author": {
+          "kind": "person",
+          "by": "local-architect",
+          "at": "2026-10-18T10:39:45.737Z"
+        }
+      }
+    },
+    "saved": true
+  },
+  "modelRemaining": {
+    "suite": "Remaining 37 Model command families",
+    "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+    "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+    "authority": "Isolated synthetic fixture; no external provider calls or governance approvals",
+    "families": [
+      {
+        "family": "data-dk=sol-beside",
+        "chapter": 10,
+        "selector": "[data-dk=\"sol-beside\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "deploy",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "deploy",
+        "label": "Ask beside the model",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "Deployment & runtime\nDeployment\nDiagram\nIf a zone fails\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nClinic synthetic staging\nOperation\nFlow\nProtection\nROWS\nModules\nParts\nParts + platform\nNot in a module\nMODULE\nOutside the environment\nREACHED THROUGH RUNTIME PATHS\n1 active\n\u2014\n\u2014\nNo recovery chosen\nStateless process\nIF-001\nClinic synthetic stagingPre-production design\nClinic staging application domain\nSynthetic clinic application zone\n1 placed\nNot placedExpand\nRecovery\nstrategy and state\nClinic booking service operating plan\nRUN-001 \u00b7 1\u20132 copies\nPatient Booking Portal\nExternal system\nStart\n\n1 zone \u00b7 1 row placed \u00b7 0 not placed\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-dk=sort",
+        "chapter": 11,
+        "selector": "[data-dk=\"sort\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "vitals",
+            "domCount": 5,
+            "visible": true
+          }
+        ],
+        "view": "vitals",
+        "label": "PART\n\u2195",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "not recorded\tno recovery target\t\n\u00b7\nNot carried\nRUN-001\tData loss\tholds no state\tno recovery point\t\n\u00b7\nNot carried\nRUN-001\tLatency\tnot on a timed path\tno response target\t\n\u00b7\nNot carried\nRUN-001\tCapacity\tno load stated\tno load stated\t\n\u00b7\nNot carried\nRUN-001\tIntegrity\t1 request\tno integrity driver\t\n\u00b7\nNot carried\nRUN-001\tProtection\t1 of 1 threats covered\tevery threat covered where it lands\t\n\u25cf\nNormal\nRUN-001\tObservability\tMonitor request latency, conflict rate, failed outcomes and \u2026\tcarries no driver\t\n\u25cf\nNormal\n\u2039\nStart\n\n1 things to look at, the most critical first.\n\n1 running parts \u00b7 0 critical \u00b7 0 with no signal \u00b7 1 anti-pattern\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-sk=assess",
+        "chapter": 7,
+        "selector": "[data-sk=\"assess\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "stack",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "options",
+            "domCount": 5,
+            "visible": true
+          }
+        ],
+        "view": "options",
+        "label": "\u2713\nNAMED \u00b7 NOT WEIGHED The SA Playbook names Relational (MySQL, PostgreSQL) among the technologies for performance (Databases).",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "ol to assess it\nSol is not connected in this workspace; you can still see what it would read.\nAdd a second option to TR-001 in Chapter 7 Work before asking for a product comparison..\n\nMore with Sol\n\u00b7\nCo-design\nexplain it in words \u00b7 ask in your own words \u00b7 learn the next step \u00b7 develop the design\n\nSOL \u00b7 REVIEW OF CHAPTER 7\nnot run\n\nSol reads the chapter\u2019s records, their checks and the connected model; you see the packet first and decide.\n\nReview this chapter\nJudgements\n0 support \u00b7 0 trade-offs \u00b7 5 need evidence\nBrings\nTransactions and unique constraints support slot allocation.\nLimits\nOperational ownership and recovery evidence are required.\nEvidence\nSynthetic architectural reasoning only; runtime and governance verification remain open.\nEdit option\nPrefer this option\nPreview it in the stack\nCompare options\nCHAPTER 7 CHECKS\n13\nREADING THIS VIEW\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-um=propose",
+        "chapter": 2,
+        "selector": "[data-um=\"propose\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "tree",
+            "domCount": 6,
+            "visible": true
+          }
+        ],
+        "view": "tree",
+        "label": "Explore a availability driver",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [
+          "Chapter 02 / modelAdd a driverDriverMeasurementTraceability & priorityKind of driverBusinessFunctionalQualityConstraintOperationalDataTechnology evolutionBusiness continuityQuality concernTransaction integrityAvailabilityPerformanceRecoverabilitySecurityTraceabilityScalabilityMaintainabilityDeployabilityTestabilityUsabilityInteroperabilityCompliancePrivacyCostCapacityReliabilityOperabilityDriver titleThe driver in a few words; for a quality driver, what must hold under what stimulus.DescriptionWhat this driver says, in the words of its source.Impact on the architectureWhat this driver changes in the architecture.Stimulus \u2014 what happens?The event or load that triggers this scenario, and where it comes from.Operating conditionsThe state of the system and its surroundings when the stimulus arrives.Expected responseWhat the system must do when the stimulus arrives.Next: measurement Only a quality driver has a measured target. Continue to its links and priority.Numerical examples are editable assumptions. Confirm the metric and threshold against agreed evidence.Metric \u2014 what is measured?ComparatorAt mostAt leastExactlyTarget valueUnitMeasurement window / sampleHow will this be verified?How the response will be verified: the measure, the sample and who takes it.I confirm this target against agreed evidence.Next: traceability & priority Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groupsNo requirement group yet.Business outcomes it stands forOUT-001 Reduce manual appointment coordinationConstraints it stands forCON-001 Use fictional patient data during design reviewAffected application responsibilitiesAllocate clinic appointmentApplication components it applies toAPP-001 Clinic Booking ServicePriorityNot statedHighMediumLowPriority set byNot recordedSource bandPersonRuleOwnerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Why this priority?Why this scenario has the priority it has.Source / target evidenceThe requirement, agreement or evidence the target comes from.Candidate tactic \u2014 for evaluationavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Prevent faultsavailability \u00b7 Prevent faultsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsperformance \u00b7 Manage resourcesperformance \u00b7 Manage resourcesperformance \u00b7 Control resource demandperformance \u00b7 Manage resourcesperformance \u00b7 Design decisionsperformance \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionssecurity \u00b7 Detect attackssecurity \u00b7 Resist attackssecurity \u00b7 Resist attackstestability \u00b7 Control and observetestability \u00b7 Control and observetestability \u00b7 Limit complexitydeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsA tactic to evaluate against this scenario. Named for evaluation, not chosen.I have reviewed and confirm this scenario.A stable code of its kind is given on save. Confirmation records your review; it does not approve a design.CancelSave driverDiscard your unsaved changes?Keep editingDiscard changes"
+        ],
+        "afterExcerpt": "ge model is connected \u00b7 About this workbench\n\nCHAPTER 02 / MODEL\nAdd a driver\nDriver\nMeasurement\nTraceability & priority\nKind of driver\nBusiness\nFunctional\nQuality\nConstraint\nOperational\nData\nTechnology evolution\nBusiness continuity\nQuality concern\nTransaction integrity\nAvailability\nPerformance\nRecoverability\nSecurity\nTraceability\nScalability\nMaintainability\nDeployability\nTestability\nUsability\nInteroperability\nCompliance\nPrivacy\nCost\nCapacity\nReliability\nOperability\nDriver title\nThe driver in a few words; for a quality driver, what must hold under what stimulus.\nDescription\nWhat this driver says, in the words of its source.\nImpact on the architecture\nWhat this driver changes in the architecture.\nStimulus \u2014 what happens?\nThe event or load that triggers this scenario, and where it comes from.\nOperating conditions\nThe state of the system and its surroundings when the stimulus arrives.\nExpected response\nWhat the system must do when the stimulus arrives.\nNext: measurement\nCancel\nSave driver"
+      },
+      {
+        "family": "data-um=tune-target",
+        "chapter": 2,
+        "selector": "[data-um=\"tune-target\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "tree",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "tune",
+            "domCount": 5,
+            "visible": true
+          }
+        ],
+        "view": "tune",
+        "label": "8",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "al drivers \u00b7 Model \u00b7 What if\n\nCHAPTER 2 \u00b7 MODEL\nArchitectural drivers\nUtility tree\nDiagram\nWhat if\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd driver\nPerspectives\nUtility tree\n\u203a\nWhat if \u00b7 QD-001\nDRIVER\nQD-001 \u00b7 Return a booking outcome promptly\nTARGET \u2264\n8\n4\n2\n1\n0.5\nseconds\nPRIORITY\nHigh\nMedium\nLow\nReset\nADR-001\nEases\nHow will the clinic prevent duplicate slot allocation?\n\nA looser target makes the tension of Asynchronous provisional booking queue easier to accept.\n\nQD-001\nHIGH\n1 eases\nReturn a booking outcome promptly\n\u2264 2 seconds \u2192 \u2264 8 seconds A 15 minute synthetic load test\n\n8000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nMoving QD-001 from At most 2 to 8 seconds: nothing recorded changes.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-nt=edge-pick",
+        "chapter": 5,
+        "selector": "[data-nt=\"edge-pick\"]",
+        "status": "unavailable",
+        "attempts": [
+          {
+            "view": "diagram",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "components",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "specification",
+            "domCount": 0,
+            "visible": false
+          }
+        ],
+        "reason": "Conditional bundled-relationship picker. Current Chapter 5 diagram and selected APP-001 show no bundled-line selector; native and shared diagram scans did not expose it. No UI click claimed.",
+        "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nt=\"edge-pick\"]').filter({ visible: true }).first()\u001b[22m\n"
+      },
+      {
+        "family": "data-dk=filter",
+        "chapter": 11,
+        "selector": "[data-dk=\"filter\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "vitals",
+            "domCount": 3,
+            "visible": true
+          }
+        ],
+        "view": "vitals",
+        "label": "All 1",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "not recorded\tno recovery target\t\n\u00b7\nNot carried\nRUN-001\tData loss\tholds no state\tno recovery point\t\n\u00b7\nNot carried\nRUN-001\tLatency\tnot on a timed path\tno response target\t\n\u00b7\nNot carried\nRUN-001\tCapacity\tno load stated\tno load stated\t\n\u00b7\nNot carried\nRUN-001\tIntegrity\t1 request\tno integrity driver\t\n\u00b7\nNot carried\nRUN-001\tProtection\t1 of 1 threats covered\tevery threat covered where it lands\t\n\u25cf\nNormal\nRUN-001\tObservability\tMonitor request latency, conflict rate, failed outcomes and \u2026\tcarries no driver\t\n\u25cf\nNormal\n\u2039\nStart\n\n1 things to look at, the most critical first.\n\n1 running parts \u00b7 0 critical \u00b7 0 with no signal \u00b7 1 anti-pattern\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-um=tune-priority",
+        "chapter": 2,
+        "selector": "[data-um=\"tune-priority\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "tree",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "tune",
+            "domCount": 3,
+            "visible": true
+          }
+        ],
+        "view": "tune",
+        "label": "High",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "Validate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 2 \u00b7 Architectural drivers \u00b7 Model \u00b7 What if\n\nCHAPTER 2 \u00b7 MODEL\nArchitectural drivers\nUtility tree\nDiagram\nWhat if\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd driver\nPerspectives\nUtility tree\n\u203a\nWhat if \u00b7 QD-001\nDRIVER\nQD-001 \u00b7 Return a booking outcome promptly\nTARGET \u2264\n8\n4\n2\n1\n0.5\nseconds\nPRIORITY\nHigh\nMedium\nLow\nADR-001\nHolds\nHow will the clinic prevent duplicate slot allocation?\n\nAsynchronous provisional booking queue is in tension with QD-001.\n\nQD-001\nHIGH\n1 holds\nReturn a booking outcome promptly\n\u2264 2 seconds A 15 minute synthetic load test\n\n2000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nQD-001 as recorded: At most 2 seconds, High.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-cm-open-work=[record]",
+        "chapter": 5,
+        "selector": "[data-cm-open-work]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "diagram",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "components",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "components",
+        "label": "Open in Chapter 8 Work\n\u2192",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "ration remains to verify.\nChallenges\nNot stated\nFacilitation\nAPP-001 Clinic Booking Service answers it through IF-001 Request clinic appointment\nConnected contracts \u00b7 1\nIF-001 \u00b7 REQUEST\nRequest clinic appointment\n\nPatient Booking Portal \u2192 Clinic Booking Service\n\nOpen contract\nChapter progress \u00b7 7 / 8 milestones\nObject & backlinks\nHistory\n\u2190 Back\nEXT-001 \u00b7 CHAPTER 8\nPatient Booking Portal\ntarget\nWritten by local-architect \u00b7 confirmed by local-architect\nEdit boundary\n\u2191 Model\nContext\nSelected boundary\n\nLet patients request an appointment and view its outcome.\n\nInterface contracts\nIF-001 \u00b7 Request clinic appointment\nAuthoritative data\nContract & dictionary\nUpstream rationale\nProtection & lifecycle\nConnections \u00b7 1\nSources, reasoning & history\nRecord lifecycle\nONE PROJECT / CONNECTED JOURNEY\nNo cross-chapter links yet\n\u2197\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench\n\nChapter 8 \u00b7 Interfaces & data"
+      },
+      {
+        "family": "data-dk=ask",
+        "chapter": 11,
+        "selector": "[data-dk=\"ask\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "vitals",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "vitals",
+        "label": "Ask for review",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [
+          "Review deskAsk for review\u00d71 record will be asked to review. Each is reviewed in its own chapter, where the reviewer records whether it still holds, was revised, or needs a follow-up.\n   Ch 10 \u00b7 RUN-001 \u00b7 Clinic booking service operating planOn the review desk RUN-001 reads nothing critical.\n   Why the review is neededThe review desk reads RUN-001 Clinic booking service operating plan as normal: RUN-001 Clinic booking service operating plan: nothing critical.\n   Asked byThe signed-in account. Another person signs in with their own account.\n    I have read what the desk shows and want these records reviewed.\n   CancelAsk for review"
+        ],
+        "afterExcerpt": "no driver\t\n\u25cf\nNormal\n\u2039\nStart\n\n1 things to look at, the most critical first.\n\n1 running parts \u00b7 0 critical \u00b7 0 with no signal \u00b7 1 anti-pattern\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench\n\nREVIEW DESK\nAsk for review\n\u00d7\n\n1 record will be asked to review. Each is reviewed in its own chapter, where the reviewer records whether it still holds, was revised, or needs a follow-up.\n\nCh 10 \u00b7 RUN-001 \u00b7 Clinic booking service operating plan\nOn the review desk RUN-001 reads nothing critical.\nWhy the review is needed\nAsked by\nThe signed-in account. Another person signs in with their own account.\nI have read what the desk shows and want these records reviewed.\nCancel\nAsk for review"
+      },
+      {
+        "family": "data-dk=explore-example",
+        "chapter": 11,
+        "selector": "[data-dk=\"explore-example\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "vitals",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "load",
+            "domCount": 3,
+            "visible": true
+          }
+        ],
+        "view": "load",
+        "label": "Explore the playbook's example",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "t are reads\nOne primary\nholds to \u2248220,000 users\n10,000 writes a second assumed, planned at 70 %\nConnections\n230\nAPP-001 together\nNodes\n1\none primary\nGrowth\n515 GB a day\n3,125 writes a second \u00d7 2 KB\n\n230 connections needed; PostgreSQL allows 100 connections by default (max_connections). Put a connection pooler in front of it, such as PgBouncer, or raise max_connections with the memory it needs. No capacity or node count is recorded.\n\nStart walkthrough\n\nChange the objective or an assumption: every part is read again.\n\n100,000 users \u00f7 (30 s between requests + 2 s response (QD-001)) = 3,125 req/s, assumed (playbook example).\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-dp=panel",
+        "chapter": 10,
+        "selector": "[data-dp=\"panel\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "deploy",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "failure",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "diagram",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "diagram",
+        "label": "",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "am\nIf a zone fails\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd\nPerspectives\nDiagram\nDeployment\nTechnology usage\nFind\nArrange \u00b7 Grouped\nLayers\nFocus\nTrace\nBuild\nView options\nClinic synthetic staging\nSynthetic clinic application zone\nPHYSICAL APPLICATION COMPONENT\n1 active\nClinic Booking Service\nDeployment\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\n\nRP-001 realises IF-001, whose caller has no placement in this environment.\n\nStart\n\nDeployment \u00b7 1 element \u00b7 0 relationships \u00b7 2 groups \u00b7 Grouped\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-dp=scope",
+        "chapter": 10,
+        "selector": "[data-dp=\"scope\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "deploy",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "deploy",
+        "label": "Clinic synthetic staging",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "Deployment & runtime\nDeployment\nDiagram\nIf a zone fails\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nClinic synthetic staging\nOperation\nFlow\nProtection\nROWS\nModules\nParts\nParts + platform\nNot in a module\nMODULE\nOutside the environment\nREACHED THROUGH RUNTIME PATHS\n1 active\n\u2014\n\u2014\nNo recovery chosen\nStateless process\nIF-001\nClinic synthetic stagingPre-production design\nClinic staging application domain\nSynthetic clinic application zone\n1 placed\nNot placedExpand\nRecovery\nstrategy and state\nClinic booking service operating plan\nRUN-001 \u00b7 1\u20132 copies\nPatient Booking Portal\nExternal system\nStart\n\n1 zone \u00b7 1 row placed \u00b7 0 not placed\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-dp=unplaced",
+        "chapter": 10,
+        "selector": "[data-dp=\"unplaced\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "deploy",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "reason": "Pointer interception fixed; actual browser click expands and collapses the placement tray after Fit.",
+        "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-dp=\"unplaced\"]').filter({ visible: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"cm-link\" data-dp=\"unplaced\" aria-expanded=\"false\">\u2026</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 \u00d7 waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"cm-html\">\u2026</div> from <div class=\"cm-world\">\u2026</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 \u00d7 waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"cm-html\">\u2026</div> from <div class=\"cm-world\">\u2026</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    3 \u00d7 waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"cm-html\">\u2026</div> from <div class=\"cm-world\">\u2026</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n",
+        "retest": {
+          "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+          "expanded": true,
+          "collapsed": true,
+          "documentUnchanged": true
+        }
+      },
+      {
+        "family": "data-dp=walk-start",
+        "chapter": 10,
+        "selector": "[data-dp=\"walk-start\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "deploy",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "deploy",
+        "label": "Start",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "THROUGH RUNTIME PATHS\n1 active\nLOST\n\u2014\n\u2014\nDesign stops\nNot exercised\nClinic synthetic stagingPre-production design\nClinic staging application domain\nSynthetic clinic application zone\nRemoved in this design scenario\nNot placedExpand\nIf Synthetic clinic application zone fails\nstate \u2192 after declared recovery\nClinic booking service operating plan\nRUN-001 \u00b7 1\u20132 copies\nPatient Booking Portal\nExternal system\n\u2039\nNext \u203a\n\n1 / 4 \u00b7 The zones fail Synthetic clinic application zone is removed.\n\n\u00d7\n\nDeclared design exercise \u00b7 Synthetic clinic application zone fails \u00b7 1 stop or degrade \u00b7 0 unknown \u00b7 0 predicted to keep running \u00b7 not a failover test\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-dx=new-question",
+        "chapter": 3,
+        "selector": "[data-dx=\"new-question\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "map",
+        "label": "New decision",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [
+          "Chapter 03 / modelFrame a design questionQuestionTraceabilityReasoningDecision topicProcessing styleDuplicate protectionUncertain outcomesArchitecture styleOther design questionDecision categoryNot statedFoundational choiceStructural decisionCross-cutting concernTrade-offAdditional decisionDecision ownerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Design questionThe design question to answer, as a question.Context and decision scopeWhat shapes the choice: the constraints, drivers and requirements it must respect.Source / project evidenceThe project evidence this question rests on.Next: traceability Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groups it answersNo requirement group yet.Drivers / comparison criteriaQD1 Return a booking outcome promptlyHigh \u00b7 Target assumptionAssumptions recorded in Chapter 1ASM-001 Clinic has one authoritative appointment calendarUnconfirmedStakeholders and actors it concernsACT-001 PatientSTK-001 Clinic operations ownerHow it concerns themWho this decision concerns, and how.Decisions it depends onADR-001 How will the clinic prevent duplicate slot allocation?Other dependenciesWhat else this decision depends on, beyond the decisions named.Next: reasoning Decision rationale \u2014 why this choice?Why the chosen alternative answers the question, against the drivers compared.AssumptionsWhat this record takes as given but has not confirmed.Evidence resolving these assumptionsThe evidence that resolved the assumptions, or what is still open.I confirm these assumptions against the recorded evidence.Risks and consequences to manageWhat the choice puts at risk and what follows for the design.Risk treatment / mitigationHow those risks are treated.Impact: what it gains and what it costsWhat the chosen alternative gains and what it costs.LicensingThe licences the choice brings, and what they allow.Skills it asks forThe skills the choice asks of the people who build and run it.Where it is documentedWhere the decision and its evidence are written down.A stable ADR reference is assigned on save. Add at least two alternatives to compare.CancelSave working revisionDiscard your unsaved changes?Keep editingDiscard changes"
+        ],
+        "afterExcerpt": "ty points \u00b7 style not recorded\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench\n\nCHAPTER 03 / MODEL\nFrame a design question\nQuestion\nTraceability\nReasoning\nDecision topic\nProcessing style\nDuplicate protection\nUncertain outcomes\nArchitecture style\nOther design question\nDecision category\nNot stated\nFoundational choice\nStructural decision\nCross-cutting concern\nTrade-off\nAdditional decision\nDecision owner\nThe person or team accountable for this record. A name, not a role to confirm.\nDesign question\nThe design question to answer, as a question.\nContext and decision scope\nWhat shapes the choice: the constraints, drivers and requirements it must respect.\nSource / project evidence\nThe project evidence this question rests on.\nNext: traceability\n\nA stable ADR reference is assigned on save. Add at least two alternatives to compare.\n\nCancel\nSave working revision"
+      },
+      {
+        "family": "data-dx=panel",
+        "chapter": 3,
+        "selector": "[data-dx=\"panel\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "matrix",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "diagram",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "diagram",
+        "label": "",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "TER 3 \u00b7 MODEL\nDecisions\nDecision map\nDiagram\nTrade-offs\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nExplore changes\nNew decision\nPerspectives\nDiagram\nDecisions\nDesign rationale\nMotivation\nFind\nArrange \u00b7 Tree\nLayers\nFocus\nTrace\nBuild\nView options\nselects\nconsiders\njustifies\nDECISION\naccepted\nHow will the clinicprevent duplicate slotallocation?\n\u25cb\n\u25cb\nto confirm\nALTERNATIVE\nSelected\nTransactional bookingwith unique slot andrequest keys\nALTERNATIVE\nNot selected\nAsynchronous provisionalbooking queue\nLOGICAL APPLICATION COMPONENT\nAllocate clinic appointment\nDecisions\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\nStart walkthrough\n\nDecisions \u00b7 4 elements \u00b7 3 relationships \u00b7 Tree\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-dx=scope",
+        "chapter": 3,
+        "selector": "[data-dx=\"scope\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "map",
+        "label": "All decisions",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "recorded\nADR-001\nAccepted\nchoice made\nHow will the clinic prevent duplicate slot allocation?\nLeads on the drivers\nTransactional booking with unique slot and request keys\n2 alternatives \u00b7 1 driver\nNot recorded\nSA Playbook\nWhich architecture style should structure this design?\nNo decision records the style. The playbook compares 5 styles on the qualities they support.\nRecord the style decision\nQD-001\nHIGH\n\u00d73\nReturn a booking outcome promptly\n\u2264 2 seconds\nDRIVERS\nChapter 2 \u00b7 by priority, with weight\nDECISIONS\nChapter 3 \u00b7 the question and its state\nALTERNATIVES\npattern \u00b7 effect on each driver \u00b7 what to avoid\n\u2039\nStart\n\n1 decision. At each one: what it weighs, where the drivers lean, and what a person has chosen.\n\n1 decision \u00b7 2 alternatives \u00b7 1 with a working choice \u00b7 0 sensitivity points \u00b7 style not recorded\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-dx=style-decision",
+        "chapter": 3,
+        "selector": "[data-dx=\"style-decision\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 2,
+            "visible": true
+          }
+        ],
+        "view": "map",
+        "label": "Record the style decision",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [
+          "Chapter 03 / modelFrame a design questionQuestionTraceabilityReasoning1 suggestion from your project \u00b7 1 empty fieldFillFill copies the proposed values into 1 empty field. Use the suggestion button beside a field to review its question. Nothing is saved until you save this record.Decision topicProcessing styleDuplicate protectionUncertain outcomesArchitecture styleOther design questionDecision categoryNot statedFoundational choiceStructural decisionCross-cutting concernTrade-offAdditional decisionDecision ownerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Design questionThe design question to answer, as a question.Context and decision scopeCompare the SA Playbook's architecture styles against the quality drivers this design must meet. The playbook's marks are qualitative judgements; test each against the recorded design before choosing.What shapes the choice: the constraints, drivers and requirements it must respect.Source / project evidenceSA Playbook \u203a Arch Style Suitability Ass; Arch Style + Quality PropsThe project evidence this question rests on.Next: traceability Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groups it answersNo requirement group yet.Drivers / comparison criteriaQD1 Return a booking outcome promptlyHigh \u00b7 Target assumptionAssumptions recorded in Chapter 1ASM-001 Clinic has one authoritative appointment calendarUnconfirmedStakeholders and actors it concernsACT-001 PatientSTK-001 Clinic operations ownerHow it concerns themWho this decision concerns, and how.Decisions it depends onADR-001 How will the clinic prevent duplicate slot allocation?Other dependenciesWhat else this decision depends on, beyond the decisions named.Next: reasoning Decision rationale \u2014 why this choice?Why the chosen alternative answers the question, against the drivers compared.AssumptionsWhat this record takes as given but has not confirmed.Evidence resolving these assumptionsThe evidence that resolved the assumptions, or what is still open.I confirm these assumptions against the recorded evidence.Risks and consequences to manageWhat the choice puts at risk and what follows for the design.Risk treatment / mitigationHow those risks are treated.Impact: what it gains and what it costsWhat the chosen alternative gains and what it costs.LicensingThe licences the choice brings, and what they allow.Skills it asks forThe skills the choice asks of the people who build and run it.Where it is documentedWhere the decision and its evidence are written down.A stable ADR reference is assigned on save. Add at least two alternatives to compare.CancelSave working revisionDiscard your unsaved changes?Keep editingDiscard changes"
+        ],
+        "afterExcerpt": "h\n\nCHAPTER 03 / MODEL\nFrame a design question\nQuestion\nTraceability\nReasoning\n\n1 suggestion from your project \u00b7 1 empty field\n\nFill\nFill copies the proposed values into 1 empty field. Use the suggestion button beside a field to review its question. Nothing is saved until you save this record.\nDecision topic\nProcessing style\nDuplicate protection\nUncertain outcomes\nArchitecture style\nOther design question\nDecision category\nNot stated\nFoundational choice\nStructural decision\nCross-cutting concern\nTrade-off\nAdditional decision\nDecision owner\nThe person or team accountable for this record. A name, not a role to confirm.\nDesign question\nThe design question to answer, as a question.\nContext and decision scope\nWhat shapes the choice: the constraints, drivers and requirements it must respect.\nSource / project evidence\nThe project evidence this question rests on.\nNext: traceability\n\nA stable ADR reference is assigned on save. Add at least two alternatives to compare.\n\nCancel\nSave working revision"
+      },
+      {
+        "family": "data-dx=whatif-open",
+        "chapter": 3,
+        "selector": "[data-dx=\"whatif-open\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "map",
+        "label": "Explore changes",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [
+          "Chapter 3 \u00b7 architecture branchExplore changesChange several drivers or constraints together, then inspect the recorded design paths that need review. This comparison does not save or approve anything.\u00d7\n    Quality driversAdd driverSet a new priority, target, or both. Targets keep their recorded unit and measurement basis.Quality driverChoose a driverQD-001 \u00b7 Return a booking outcome promptly (High)PriorityUse recorded priorityHighMediumLowTarget\u00d7\n    ConstraintsAdd constraintChanged wording follows direct recorded requirement links. Its effect cannot be calculated from text alone.\n    Compare branchUp to 4 drivers and 2 constraints \u00b7 working choices stay as recorded"
+        ],
+        "afterExcerpt": " what a person has chosen.\n\n1 decision \u00b7 2 alternatives \u00b7 1 with a working choice \u00b7 0 sensitivity points \u00b7 style not recorded\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nCHAPTER 3 \u00b7 ARCHITECTURE BRANCH\nExplore changes\n\nChange several drivers or constraints together, then inspect the recorded design paths that need review. This comparison does not save or approve anything.\n\n\u00d7\nQuality drivers\nAdd driver\n\nSet a new priority, target, or both. Targets keep their recorded unit and measurement basis.\n\nQuality driver\nChoose a driver\nQD-001 \u00b7 Return a booking outcome promptly (High)\nPriority\nUse recorded priority\nHigh\nMedium\nLow\nTarget\n\u00d7\nConstraints\nAdd constraint\n\nChanged wording follows direct recorded requirement links. Its effect cannot be calculated from text alone.\n\nCompare branch\nUp to 4 drivers and 2 constraints \u00b7 working choices stay as recorded\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-ex=expand",
+        "chapter": 8,
+        "selector": "[data-ex=\"expand\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "data",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "data",
+        "label": "",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "data\n\nWhere does each piece of data come from and travel?\n\nInsights\n7/8 met\n\u2304\n13 reviews open across 3 causes\nLargest: DAT-001 changed \u00b7 6; REQ-001 changed \u00b7 4; ADR-001 changed \u00b7 3\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 8 \u00b7 Interfaces & data \u00b7 Model \u00b7 Data flow\n\nCHAPTER 8 \u00b7 MODEL\nInterfaces & data\nData flow\nDiagram\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole system\nFlow\nSignals\nInformation\nIF-001 Request clinic appointment\n\u2605\nOutside\nPatient Booking Portal\nClinic Booking Service\n\u2605 1\nClinic booking request\nDAT-001 \u00b7 Confidential \u00b7 1 fields\n\u2605 Clinic Booking Service\n\n1 data definition \u00b7 1 movements\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nCONTRACT DESIGN LAB\n\nTry a fictional payload and trace an ordinary exchange, repeated delivery, or missing acknowledgement.\n\nTry a sample payload\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-ex=noop",
+        "chapter": 8,
+        "selector": "[data-ex=\"noop\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "data",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "data",
+        "label": "Outside",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "data\n\nWhere does each piece of data come from and travel?\n\nInsights\n7/8 met\n\u2304\n13 reviews open across 3 causes\nLargest: DAT-001 changed \u00b7 6; REQ-001 changed \u00b7 4; ADR-001 changed \u00b7 3\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 8 \u00b7 Interfaces & data \u00b7 Model \u00b7 Data flow\n\nCHAPTER 8 \u00b7 MODEL\nInterfaces & data\nData flow\nDiagram\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole system\nFlow\nSignals\nInformation\nIF-001 Request clinic appointment\n\u2605\nOutside\nPatient Booking Portal\nClinic Booking Service\n\u2605 1\nClinic booking request\nDAT-001 \u00b7 Confidential \u00b7 1 fields\n\u2605 Clinic Booking Service\n\n1 data definition \u00b7 1 movements\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nCONTRACT DESIGN LAB\n\nTry a fictional payload and trace an ordinary exchange, repeated delivery, or missing acknowledgement.\n\nTry a sample payload\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench",
+        "reason": "Scope label deliberately uses noop; click has no domain operation."
+      },
+      {
+        "family": "data-lr=scope",
+        "chapter": 4,
+        "selector": "[data-lr=\"scope\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "map",
+        "label": "Whole journey",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "easoning\nJourney\nRecorded journey\nLR-001\nSynthetic clinic architecture team\noff the journey\nInputs changed\nAllocate clinic appointment\nowns nothing recorded\nOne appointment slot, one patient request, one definitive booking outcome.\nREALISED BY\nAPP-001\nClinic Booking Service\nStep 01 \u00b7 nobody owns it\nRequest a clinic appointment\n\nThe patient submits the selected slot with a stable request reference and receives a definitive booking outcome.\n\nAdd a responsibility\nSTEP 01 \u00b7 JRN-001\nRequest a clinic appointment\nnobody owns it\nNOT ON THE JOURNEY\nOff the journey\nserves no journey step\n1 UNGROUPED\nUngrouped\nplace these in a responsibility group\n1 STEP\nNobody owns these steps\njourney steps no responsibility serves\nStart\n\n1 responsibility in 0 groups \u00b7 1 journey step \u00b7 1 unowned \u00b7 0 logical flows \u00b7 0 not carried\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-nt=fold-fit",
+        "chapter": 5,
+        "selector": "[data-nt=\"fold-fit\"]",
+        "status": "unavailable",
+        "attempts": [
+          {
+            "view": "diagram",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "components",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "specification",
+            "domCount": 0,
+            "visible": false
+          }
+        ],
+        "reason": "Conditional grouped overview camera control. This project\u2019s Chapter 5 diagram was not grouped in the inspected scene; no UI click claimed.",
+        "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nt=\"zin\"],[data-cm-camera=\"zin\"]').filter({ visible: true }).first()\u001b[22m\n"
+      },
+      {
+        "family": "data-nt=story",
+        "chapter": 5,
+        "selector": "[data-nt=\"story\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "diagram",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "components",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "specification",
+            "domCount": 0,
+            "visible": false
+          }
+        ],
+        "followup": {
+          "traceStoryOpened": true
+        }
+      },
+      {
+        "family": "data-sk=family",
+        "chapter": 7,
+        "selector": "[data-sk=\"family\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "stack",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "stack",
+        "label": "KEEP STATE\ndurable, derived and recoverable data",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "\nKeep state\nStructure\nOperation\nReasoning\nROWS\nRealisations\nWith options\nKEEP STATE\ndurable, derived and recoverable data\nCHOICE NOT MADE\n1 option\nPostgreSQL\n1 component\nnone stop if it fails\n\u2014\n\u2014\nNo option preferred\nWhat it provides, and to whom\nImplementation obligations\nDecision\nChoice\nthe preferred option\nDepends on it\ncomponents \u00b7 stop if it fails\nOperate\nAccess\nData\nRecover\nInterfaces\nLifecycle\nSizing\nCost\nSelection\npreferred \u00b7 recorded \u00b7 approved\nTR-001 \u00b7 realises TC-001\nBooking transactional datastore\nTransactional booking persistence \u00b7 1 option\n\u203a\n\n1 realisations \u00b7 0 chosen \u00b7 0 recorded \u00b7 0 of 6 obligations written\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREALIZATION MODEL / DESIGN PREVIEW\n\nTechnology choices retain the Chapter 6 failure and recovery obligations. Compare their evidence before recording the selection.\n\nReview comparison\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-sk=noop",
+        "chapter": 7,
+        "selector": "[data-sk=\"noop\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "stack",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "options",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "options",
+        "label": "TR-001 \u00b7 Booking transactional datastore",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "al ownership\nWho operates, monitors, patches, and supports this choice?\nRecovery and isolation\nTC-001: single; recovery unspecified; data loss unspecified\nLifecycle and exit\nVersion support, upgrade path, licensing, and a usable exit route.\nCapacity and cost basis\nDocument the workload and quote or cost model behind the estimate. No automatic score is calculated.\n\u03a3 priority \u00d7 effect\ndrivers by priority (Critical 3, Important 2, Supporting 1), the rest \u00d71; suggestions fill the gaps\nBenefits\nwhat the option brings\nDrawbacks and limits\nknown drawbacks and constraints\n\u02c5\n\n1 option \u00b7 5 criteria \u00b7 0 of 5 judgements with evidence\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nREALIZATION MODEL / DESIGN PREVIEW\n\nTechnology choices retain the Chapter 6 failure and recovery obligations. Compare their evidence before recording the selection.\n\nReview comparison\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench",
+        "reason": "Scope label deliberately uses noop; click has no domain operation."
+      },
+      {
+        "family": "data-sk=scope",
+        "chapter": 7,
+        "selector": "[data-sk=\"scope\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "stack",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "stack",
+        "label": "Whole stack",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "Whole stack\nStructure\nOperation\nReasoning\nROWS\nRealisations\nWith options\nKEEP STATE\ndurable, derived and recoverable data\nCHOICE NOT MADE\n1 option\nPostgreSQL\n1 component\nnone stop if it fails\n\u2014\n\u2014\nNo option preferred\nWhat it provides, and to whom\nImplementation obligations\nDecision\nChoice\nthe preferred option\nDepends on it\ncomponents \u00b7 stop if it fails\nOperate\nAccess\nData\nRecover\nInterfaces\nLifecycle\nSizing\nCost\nSelection\npreferred \u00b7 recorded \u00b7 approved\nTR-001 \u00b7 realises TC-001\nBooking transactional datastore\nTransactional booking persistence \u00b7 1 option\n\u203a\n\n1 realisations \u00b7 0 chosen \u00b7 0 recorded \u00b7 0 of 6 obligations written\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREALIZATION MODEL / DESIGN PREVIEW\n\nTechnology choices retain the Chapter 6 failure and recovery obligations. Compare their evidence before recording the selection.\n\nReview comparison\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-sm=panel",
+        "chapter": 1,
+        "selector": "[data-sm=\"panel\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "boundary",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "diagram",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "diagram",
+        "label": "",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": " changed \u00b7 4; ADR-001 changed \u00b7 3\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 1 \u00b7 Requirements \u00b7 Model \u00b7 Diagram \u00b7 Process\n\nCHAPTER 1 \u00b7 MODEL\nRequirements\nJourney map\nDiagram\nBoundary\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd\nPerspectives\nDiagram\nProcess\nContext\nMotivation\nSequence\nModule map\nFind\nArrange \u00b7 Swimlanes\nLayers\nFocus\nTrace\nBuild\nView options\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nSynthetic clinic architecture team\nRequest a clinicappointment\n\u2713\n\u2713\npassing\nProcess\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\nStart walkthrough\n\nProcess \u00b7 1 element \u00b7 0 relationships \u00b7 2 groups \u00b7 Swimlanes\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-sm=scope",
+        "chapter": 1,
+        "selector": "[data-sm=\"scope\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "map",
+        "label": "Whole journey",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 1 \u00b7 Requirements \u00b7 Model \u00b7 Journey map\n\nCHAPTER 1 \u00b7 MODEL\nRequirements\nJourney map\nDiagram\nBoundary\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole journey\nStructure\nFlow\nReasoning\nELEMENTS\nSteps\nRequirements\nREQ-001\nConfirmed\nBook one available clinic slot exactly once\nSynthetic clinic architecture team\nSynthetic refinement walkthrough fixture; no production evidence\nnothing limits it\nCOVERED BY\nLR-001\nAllocate clinic appointment\nSTEP 01 \u00b7 JRN-001\nRequest a clinic appointment\nno person takes part\nMust\n1 REQUIREMENT\nthe journey cannot work without these\n\u2039\nStart\n\n1 journey steps. At each one: who takes part, what it needs, and why.\n\n1 requirement over 1 step \u00b7 0 steps without one \u00b7 0 not testable \u00b7 Must\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-tm=panel",
+        "chapter": 9,
+        "selector": "[data-tm=\"panel\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "model",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "coverage",
+            "domCount": 1,
+            "visible": false
+          },
+          {
+            "view": "diagram",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "diagram",
+        "label": "",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "Focus\nTrace\nBuild\nView options\nprotects\nthreatens\nmitigates\nPHYSICAL APPLICATION COMPONENT\nClinic Booking Service\nSECURITY CONTROL\nIdentity & access\nAuthorize every bookingread and change\n\u2715\n\u2715\nto fix\nTHREAT\nHigh priority\nUnauthorized access toclinic booking\n\u25cb\n\u25cb\nto confirm\nAPPLICATION SERVICE\nPOST /bookings \u00b7 HTTPS\u2026\nRequest clinicappointment\n\u25cb\n\u25cb\nto confirm\nSecurity & trust\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\nStart walkthrough\n\nSecurity & trust \u00b7 4 elements \u00b7 3 relationships \u00b7 Grouped\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nSECURITY DESIGN WALKTHROUGH / SIMULATION\n\nFollow a threat through intended enforcement, then make the control unavailable to inspect the written response.\n\nExplore the selected threat\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-tm=scope",
+        "chapter": 9,
+        "selector": "[data-tm=\"scope\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "model",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "model",
+        "label": "Whole system",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole system\nProtection\nInformation\nFlow\nELEMENTS\nBoundaries\nParts\nParts + platform\nEXTERNAL PARTICIPANT\nPatient Booking Portal\nAPPLICATION COMPONENT\nClinic Booking Service\nClinic booking request\n\u25cc\nIF-001\nRequest clinic appointment\nTHR-001\nSEC-001\nNOT OURS\nOutside\nwhere work comes from\nUNASSIGNED\nNo trust boundary\nnot assigned to a boundary\n\u2039\nStart\n\n1 crossing flow on From Patient Booking Portal. Each step identifies the boundary, a possible threat, designed coverage and control evidence to check.\n\n1 boundary crossing \u00b7 0 open design gaps \u00b7 1 addressed in design \u00b7 0 not examined\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nSECURITY DESIGN WALKTHROUGH / SIMULATION\n\nFollow a threat through intended enforcement, then make the control unavailable to inspect the written response.\n\nExplore the selected threat\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-um=add",
+        "chapter": 2,
+        "selector": "[data-um=\"add\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "tree",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "tree",
+        "label": "Add driver",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [
+          "Chapter 02 / modelAdd a driverDriverMeasurementTraceability & priorityKind of driverBusinessFunctionalQualityConstraintOperationalDataTechnology evolutionBusiness continuityQuality concernTransaction integrityAvailabilityPerformanceRecoverabilitySecurityTraceabilityScalabilityMaintainabilityDeployabilityTestabilityUsabilityInteroperabilityCompliancePrivacyCostCapacityReliabilityOperabilityDriver titleThe driver in a few words; for a quality driver, what must hold under what stimulus.DescriptionWhat this driver says, in the words of its source.Impact on the architectureWhat this driver changes in the architecture.Stimulus \u2014 what happens?The event or load that triggers this scenario, and where it comes from.Operating conditionsThe state of the system and its surroundings when the stimulus arrives.Expected responseWhat the system must do when the stimulus arrives.Next: measurement Only a quality driver has a measured target. Continue to its links and priority.Numerical examples are editable assumptions. Confirm the metric and threshold against agreed evidence.Metric \u2014 what is measured?ComparatorAt mostAt leastExactlyTarget valueUnitMeasurement window / sampleHow will this be verified?How the response will be verified: the measure, the sample and who takes it.I confirm this target against agreed evidence.Next: traceability & priority Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groupsNo requirement group yet.Business outcomes it stands forOUT-001 Reduce manual appointment coordinationConstraints it stands forCON-001 Use fictional patient data during design reviewAffected application responsibilitiesAllocate clinic appointmentApplication components it applies toAPP-001 Clinic Booking ServicePriorityNot statedHighMediumLowPriority set byNot recordedSource bandPersonRuleOwnerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Why this priority?Why this scenario has the priority it has.Source / target evidenceThe requirement, agreement or evidence the target comes from.Candidate tactic \u2014 for evaluationavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Prevent faultsavailability \u00b7 Prevent faultsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsperformance \u00b7 Manage resourcesperformance \u00b7 Manage resourcesperformance \u00b7 Control resource demandperformance \u00b7 Manage resourcesperformance \u00b7 Design decisionsperformance \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionssecurity \u00b7 Detect attackssecurity \u00b7 Resist attackssecurity \u00b7 Resist attackstestability \u00b7 Control and observetestability \u00b7 Control and observetestability \u00b7 Limit complexitydeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsA tactic to evaluate against this scenario. Named for evaluation, not chosen.I have reviewed and confirm this scenario.A stable code of its kind is given on save. Confirmation records your review; it does not approve a design.CancelSave driverDiscard your unsaved changes?Keep editingDiscard changes"
+        ],
+        "afterExcerpt": "ge model is connected \u00b7 About this workbench\n\nCHAPTER 02 / MODEL\nAdd a driver\nDriver\nMeasurement\nTraceability & priority\nKind of driver\nBusiness\nFunctional\nQuality\nConstraint\nOperational\nData\nTechnology evolution\nBusiness continuity\nQuality concern\nTransaction integrity\nAvailability\nPerformance\nRecoverability\nSecurity\nTraceability\nScalability\nMaintainability\nDeployability\nTestability\nUsability\nInteroperability\nCompliance\nPrivacy\nCost\nCapacity\nReliability\nOperability\nDriver title\nThe driver in a few words; for a quality driver, what must hold under what stimulus.\nDescription\nWhat this driver says, in the words of its source.\nImpact on the architecture\nWhat this driver changes in the architecture.\nStimulus \u2014 what happens?\nThe event or load that triggers this scenario, and where it comes from.\nOperating conditions\nThe state of the system and its surroundings when the stimulus arrives.\nExpected response\nWhat the system must do when the stimulus arrives.\nNext: measurement\nCancel\nSave driver"
+      },
+      {
+        "family": "data-um=noop",
+        "chapter": 2,
+        "selector": "[data-um=\"noop\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "tree",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "tune",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "tune",
+        "label": "What if \u00b7 QD-001",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "Validate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 2 \u00b7 Architectural drivers \u00b7 Model \u00b7 What if\n\nCHAPTER 2 \u00b7 MODEL\nArchitectural drivers\nUtility tree\nDiagram\nWhat if\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd driver\nPerspectives\nUtility tree\n\u203a\nWhat if \u00b7 QD-001\nDRIVER\nQD-001 \u00b7 Return a booking outcome promptly\nTARGET \u2264\n8\n4\n2\n1\n0.5\nseconds\nPRIORITY\nHigh\nMedium\nLow\nADR-001\nHolds\nHow will the clinic prevent duplicate slot allocation?\n\nAsynchronous provisional booking queue is in tension with QD-001.\n\nQD-001\nHIGH\n1 holds\nReturn a booking outcome promptly\n\u2264 2 seconds A 15 minute synthetic load test\n\n2000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nQD-001 as recorded: At most 2 seconds, High.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench",
+        "reason": "Scope label deliberately uses noop; click has no domain operation."
+      },
+      {
+        "family": "data-um=scope",
+        "chapter": 2,
+        "selector": "[data-um=\"scope\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "tree",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "tree",
+        "label": "All quality",
+        "documentChanged": false,
+        "pageChanged": false,
+        "dialogText": [],
+        "afterExcerpt": "deployment frequency \u00b7 deployment success rate\nExplore a deployability driver\nQUALITY\nChange\nCan it be changed, tested and released safely?\nNO DRIVER YET\nUsability\nMeasured by learnability (time to learn, error rate) \u00b7 efficiency (time to complete tasks, error rate) \u00b7 memorability (retention of knowledge)\nExplore a usability driver\nQUALITY\nUse and fit\nCan people use it, and can it work with others?\nUTILITY\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\n1 driver\nHIGH\n1\nUTILITY\nwhat good means here\nQUALITY\nthe families of quality\nATTRIBUTE\nas the SA Playbook names them\nDRIVER\na measurable scenario, by priority\n\u2039\nStart\n\n1 driver, High first. At each one: what it asks, what carries it, and which tactics the design names.\n\n1 driver \u00b7 1 High \u00b7 5 playbook attributes with no driver \u00b7 0 tactics named\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-um=tune",
+        "chapter": 2,
+        "selector": "[data-um=\"tune\"]",
+        "status": "clicked",
+        "attempts": [
+          {
+            "view": "tree",
+            "domCount": 1,
+            "visible": true
+          }
+        ],
+        "view": "tree",
+        "label": "What if\u2026",
+        "documentChanged": false,
+        "pageChanged": true,
+        "dialogText": [],
+        "afterExcerpt": "nute synthetic load test\n\n2000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nQD-001 as recorded: At most 2 seconds, High.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nQD-001 Return a booking outcome promptly\nQD-001 Return a booking outcome promptly \u2014 High, At most 2 seconds. The design names 0 of the playbook's 6 performance tactics. No component carries it yet.\nDouble-click to focus on it\nCheck \u00b7 error \u00b7 Identify affected responsibilities\nKnowledge rule \u00b7 PAT-RETRY-WITH-BACKOFF \u00b7 ADR-001 \u00b7 How will the clinic prevent duplicate slot allocation? mentions retrying a temporary failure. This is a topic to examine; suitability remains unconfirmed.\nContext \u00b7 1 requirement \u00b7 1 quality driver \u00b7 no reviewed claims in scope; inspect Sources and Releases\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+      },
+      {
+        "family": "data-sm=add-for-step",
+        "chapter": 1,
+        "selector": "[data-sm=\"add-for-step\"]",
+        "status": "unavailable",
+        "attempts": [
+          {
+            "view": "map",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "boundary",
+            "domCount": 0,
+            "visible": false
+          },
+          {
+            "view": "diagram",
+            "domCount": 0,
+            "visible": false
+          }
+        ],
+        "reason": "Requires a selected actual journey step. The current Chapter 1 map exposes the requirement group C:Must|S:0 rather than a recorded step; no UI click claimed.",
+        "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-sm=\"add-for-step\"]').filter({ visible: true }).first()\u001b[22m\n"
+      }
+    ],
+    "errors": [],
+    "requestFailures": [],
+    "retestedClient": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+    "documentUnchanged": true,
+    "clickCount": 45,
+    "summary": {
+      "targetFamilies": 37,
+      "clickedFamilies": 34,
+      "actualClicks": 45,
+      "unavailableFamilies": 3,
+      "applicationPointerFailures": 0,
+      "applicationExceptions": 0,
+      "documentUnchanged": true
+    }
+  },
+  "shellTargeted": {
+    "authority": "Actual Chromium clicks on isolated gap-shell clone and immutable client-c10-fixed; no provider sends or production changes.",
+    "families": [
+      {
+        "name": "direct-about",
+        "status": "passed",
+        "evidence": {
+          "openedAndClosed": true
+        }
+      },
+      {
+        "name": "hover-help",
+        "status": "passed",
+        "evidence": {
+          "before": "true",
+          "after": "false",
+          "restored": true
+        }
+      },
+      {
+        "name": "reviews-chip",
+        "status": "passed",
+        "evidence": {
+          "title": "Synthetic Clinic Booking \u00b7 integrated rethink walkthrough / Change review\n\nKeep the reasoning current.\n\u00d7\nArchitecture change\nCHG-007 \u00b7 DAT-001 \u00b7 Clinic booking request\nCHG-005 \u00b7 REQ-001 \u00b7 Book one available clinic slot exactly once\nCHG-001 \u00b7 ADR-001 ",
+          "closed": true
+        }
+      },
+      {
+        "name": "hide-review-notice",
+        "status": "passed",
+        "evidence": {
+          "noticeHidden": true,
+          "chipAvailable": true
+        }
+      },
+      {
+        "name": "explore-related-architecture",
+        "status": "passed",
+        "evidence": {
+          "text": "Sol\nYour architecture companion\n\u00d7\nAsk Sol\nExplain & challenge\nCo-design\nLearn & develop\nChapter 04 \u00b7 Logical Application / Work\nLR-001\nAllocate clinic appointment\nScope: Selected record + recorded connections \u00b7 Quality targets missing or unconfirmed.\nContext details\n\nCO-DESIGN GUIDE \u00b7 CHAPTER 4\n\nWhich responsibilities belong together, and how do they collaborate?\n\nClear ownership and boundaries reveal coupling before implementation choices hide it.\n\nChapter guidance from the saved model and expl",
+          "coDesignOpened": true,
+          "closed": true
+        }
+      },
+      {
+        "name": "subject-and-author",
+        "status": "passed",
+        "evidence": {
+          "subject": "lr-001",
+          "authorOpened": true,
+          "text": "Sol\nYour architecture companion\n\u00d7\nAsk Sol\nExplain & challenge\nCo-design\nLearn & develop\nChapter 04 \u00b7 Logical Application / Work\nLR-001\nAllocate clinic appointment\nScope: Selected record + recorded connections \u00b7 Quality targets missing or unconfirmed.\nContext details\n\u2190 Back to Ask Sol\nDesign explanation\nDraft with Sol\nSol is not connected in this workspace\n\nGive the design a clear explanation, with its assumptions intact.\n\nFrame the question\nReview sources\nExplore with Sol\nWhat should this passage explain?\n\nLoading your private draft...\n\nSol answers with a passage for the SDD, to edit and revie"
+        }
+      },
+      {
+        "name": "pin-and-unpin",
+        "status": "passed",
+        "evidence": {
+          "pinnedContext": "Pinned: a Chapter 6 record, read as Chapter 6 reads it, on a Chapter 4 page. Back to Chapter 4\u2019s own record",
+          "returnedToChapter": true
+        }
+      }
+    ],
+    "errors": [],
+    "evidenceFiles": [
+      "targeted-shell-coverage.json",
+      "targeted-shell-followup.json",
+      "targeted-shell-explore.json"
+    ],
+    "limitations": [
+      "One populated fixture, desktop1440x1000. Reviews chip tested with open reviews across3causes; zero/one-cause labels not separately instantiated.",
+      "Followups corrected test selectors for hidden duplicate cursor, Co-design aria-pressed, and actual technology record id. Earlier failed assertions retained in evidenceFiles, not app failures."
+    ]
+  },
+  "native": {
+    "title": "Native workflow family gap closure \u2014 isolated synthetic project",
+    "build": "app-N3STZ3PP.js",
+    "project": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+    "scope": "Equivalence sampling of native proposal, sample, simulation and selected-record controls; not exhaustive record/context or every template coverage.",
+    "runs": [
+      {
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-families-2026-10-18T10-24-28-850Z/results.json",
+        "summary": {
+          "families": 14,
+          "passed": 7,
+          "unavailable": 7,
+          "failed": 0,
+          "actualClicks": 67,
+          "errors": 0
+        },
+        "projectUnchanged": true,
+        "errors": [],
+        "requestFailures": []
+      },
+      {
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-proposal-followup-2026-10-18T10-26-21-167Z/results.json",
+        "summary": {
+          "families": 8,
+          "passed": 6,
+          "unavailable": 1,
+          "failed": 1,
+          "actualClicks": 72,
+          "errors": 0
+        },
+        "projectUnchanged": true,
+        "errors": [],
+        "requestFailures": []
+      },
+      {
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-final-gap-2026-10-18T10-28-58-447Z/results.json",
+        "summary": {
+          "families": 4,
+          "passed": 2,
+          "unavailable": 0,
+          "failed": 1,
+          "actualClicks": 41,
+          "errors": 0
+        },
+        "projectUnchanged": true,
+        "errors": [],
+        "requestFailures": []
+      },
+      {
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-c8-proposal-2026-10-18T10-29-32-044Z/results.json",
+        "summary": {
+          "families": 1,
+          "passed": 0,
+          "unavailable": 0,
+          "failed": 1,
+          "actualClicks": 9,
+          "errors": 0
+        },
+        "projectUnchanged": true,
+        "errors": [],
+        "requestFailures": []
+      },
+      {
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-c8-proposal-2026-10-18T10-30-28-638Z/results.json",
+        "summary": {
+          "families": 1,
+          "passed": 0,
+          "unavailable": 0,
+          "failed": 1,
+          "actualClicks": 10,
+          "errors": 0
+        },
+        "projectUnchanged": true,
+        "errors": [],
+        "requestFailures": []
+      }
+    ],
+    "aggregate": {
+      "actualClicksIncludingRetries": 199,
+      "disclosureOpens": 28,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "allProjectHashesUnchanged": true
+    },
+    "successfulFamilies": [
+      {
+        "chapters": [
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ],
+        "workflow": "Native rule proposal preview \u2192 review/edit editor \u2192 cancel \u2192 explicit dismiss",
+        "actions": [
+          "a.preview",
+          "a.edit-ghost",
+          "a.dismiss",
+          "t.preview",
+          "t.edit-ghost",
+          "t.dismiss",
+          "tr.ghost",
+          "tr.edit-ghost",
+          "tr.dismiss",
+          "sec.ghost",
+          "sec.edit-ghost",
+          "sec.dismiss",
+          "rt.ghost (recover)",
+          "rt.edit-ghost",
+          "rt.dismiss",
+          "rv.ghost",
+          "rv.edit-ghost",
+          "rv.dismiss"
+        ]
+      },
+      {
+        "chapters": [
+          8
+        ],
+        "workflow": "Dictionary sample and contract policy walkthrough; duplicate and timeout scenarios; every four-step stage; restart/next/play/pause; edit scenario; record-check dialog cancelled; close",
+        "actions": [
+          "i.probe",
+          "i.sample",
+          "i.lab-step",
+          "i.lab-restart",
+          "i.lab-next",
+          "i.lab-play",
+          "i.edit-probe",
+          "i.record-check",
+          "i.close-lab"
+        ]
+      },
+      {
+        "chapters": [
+          10
+        ],
+        "workflow": "Local zone and shared-domain simulations, all four stages, restart/next/play/pause; edit/rerun; record dialog cancelled; close",
+        "actions": [
+          "rt.simulate",
+          "rt.lab-step",
+          "rt.lab-restart",
+          "rt.lab-next",
+          "rt.lab-play",
+          "rt.record-simulation",
+          "rt.close-lab"
+        ]
+      },
+      {
+        "chapters": [
+          6,
+          8,
+          9,
+          10
+        ],
+        "workflow": "28 record disclosure opens, C6 continuity editor cancel, C9/C10 evidence editors cancel",
+        "actions": [
+          "t.edit-continuity",
+          "sec.evidence",
+          "rt.evidence"
+        ]
+      },
+      {
+        "chapters": [
+          4
+        ],
+        "workflow": "Four field suggestion popovers opened/read/closed: title, purpose, boundary, owner. No fill offered.",
+        "actions": [
+          "data-spark-for=title",
+          "data-spark-for=purpose",
+          "data-spark-for=boundary",
+          "data-spark-for=owner",
+          "spark.close"
+        ]
+      }
+    ],
+    "verifiedBlockers": [
+      {
+        "chapter": 8,
+        "action": "i.ghost reference creates an active proposal, but native review/edit/dismiss unavailable in data-flow companion even with Details open.",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-c8-proposal-2026-10-18T10-30-28-638Z/results.json",
+        "status": "Reported to parent and model owner; production unchanged by this pass.",
+        "resolution": {
+          "status": "Fixed and independently verified",
+          "build": "app-EGGGDY6S.js",
+          "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-c8-fixed-2026-10-18T10-37-39-975Z/results.json",
+          "outcome": "Native review/edit visible in Model Data flow; editor Cancel retains preview; explicit Dismiss clears preview; saved project unchanged; zero errors."
+        }
+      }
+    ],
+    "guardedOrUnavailable": [
+      {
+        "chapter": 4,
+        "action": "l.preview review",
+        "reason": "This proposal is already saved in the shared project. Existing saved responsibility remains; no proposal fabricated."
+      },
+      {
+        "chapter": 10,
+        "action": "rt.ghost isolate",
+        "reason": "No proposal created in this fixture; independent standby prerequisite not fulfilled. Controlled-restoration (recover) proposal succeeds."
+      },
+      {
+        "chapter": 4,
+        "action": "spark.fill",
+        "reason": "No eligible local field values offered in the empty responsibility editor; no field fill executed."
+      },
+      {
+        "chapter": 8,
+        "action": "i.field",
+        "reason": "Not exposed in sampled record disclosure context; not claimed clicked."
+      },
+      {
+        "chapter": 10,
+        "action": "rt.assumptions",
+        "reason": "Not clicked: script looked after final walkthrough stage, while this action belongs to quality/controls stage. Remains uncovered by this pass."
+      },
+      {
+        "chapter": 9,
+        "action": "sec.simulate",
+        "reason": "Not exercised by this bounded pass."
+      }
+    ],
+    "harnessCorrections": [
+      "Initial C4\u201310 proposal buttons were absent from first suggestion page; filtering Rule source exposed C5\u201310. Initial unavailable results are not feature removals.",
+      "Run2 C10 generic family status was mechanically passed after guarded isolate click; corrected here to guarded. C10 recover succeeded in Run3.",
+      "Run2 field suggestion timeout targeted hidden source field; visible four fields were tested successfully in Run3. No application page error.",
+      "C8 impact UI selectors were inappropriate for native ghost; subsequent correct native selector attempt verified missing proposal context in data-flow companion.",
+      "Run1 action tags and full attributes not captured; exact selectors retained. Runs2\u20135 capture actual tag/data attributes."
+    ],
+    "safety": "All five run copies have identical saved project hashes before/after. No live provider calls, evidence submissions, approvals, changes to canonical fixture, or production source edits.",
+    "distinctNativeActionAttributesClicked": [
+      "a-action:dismiss",
+      "a-action:edit-ghost",
+      "a-action:preview",
+      "i-action:close-lab",
+      "i-action:edit-probe",
+      "i-action:ghost",
+      "i-action:lab-next",
+      "i-action:lab-play",
+      "i-action:lab-restart",
+      "i-action:lab-step",
+      "i-action:probe",
+      "i-action:record-check",
+      "i-action:sample",
+      "l-action:new",
+      "l-action:preview",
+      "rt-action:close-lab",
+      "rt-action:dismiss",
+      "rt-action:edit-ghost",
+      "rt-action:evidence",
+      "rt-action:ghost",
+      "rt-action:lab-next",
+      "rt-action:lab-play",
+      "rt-action:lab-restart",
+      "rt-action:lab-step",
+      "rt-action:record-simulation",
+      "rt-action:simulate",
+      "rv-action:dismiss",
+      "rv-action:edit-ghost",
+      "sec-action:dismiss",
+      "sec-action:edit-ghost",
+      "sec-action:evidence",
+      "sec-action:ghost",
+      "spark-act:close",
+      "t-action:dismiss",
+      "t-action:edit-continuity",
+      "t-action:edit-ghost",
+      "t-action:preview",
+      "tr-action:dismiss",
+      "tr-action:edit-ghost",
+      "tr-action:ghost"
+    ],
+    "subsequentC8Resolution": {
+      "build": "app-EGGGDY6S.js",
+      "families": [
+        {
+          "family": "C8 native proposal in Data flow: review, cancel and dismiss",
+          "status": "passed",
+          "preview": {
+            "url": "http://127.0.0.1:41427/?chapter=8&tab=model&object=if-001&model=data&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+            "hasProposal": true
+          },
+          "dataView": true,
+          "panelBefore": "open",
+          "nativeReviewVisible": true,
+          "editorOpened": true,
+          "cancelRetainsProposal": true,
+          "dismissed": true,
+          "projectUnchanged": true,
+          "finalURL": "http://127.0.0.1:41427/?chapter=8&tab=model&object=if-001&model=data&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+        }
+      ],
+      "errors": [],
+      "projectUnchanged": true
+    }
+  },
+  "conditional": {
+    "authority": "Local synthetic project clone only. Native editors, local routes and reversible commands. No external provider calls, approvals or execution evidence asserted.",
+    "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-c10-fixed",
+    "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+    "actualClickCount": 707,
+    "distinctPreviouslyUnclickedFamilies": 107,
+    "remainingFamilies": [
+      {
+        "family": "label=Record treatment",
+        "reason": "Finding-treatment submission was not reached; native remedy navigation and editor validation were exercised, without recording an unsupported review disposition."
+      },
+      {
+        "family": "data-close-review=",
+        "reason": "Requires a valid changed editor submission to open the shared review-change confirmation; this pass exercised native editor open, steps, validation and cancel paths."
+      },
+      {
+        "family": "label=Confirm selected after review",
+        "reason": "Requires the shared review-change confirmation after a valid changed submission; no confirmation was asserted merely to increase coverage."
+      },
+      {
+        "family": "data-a-action=technology-intake",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-i-action=chapter9",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-i-action=select-contract",
+        "reason": "Requires the selected external party\u2019s related-contract list; that conditional party branch was not reached in this bounded pass."
+      },
+      {
+        "family": "data-l-action=chapter5",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rv-action=content-report",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rv-action=delivery-stage",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-sec-action=chapter10",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-t-action=chapter7",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-tr-action=chapter8",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-tr-action=compare",
+        "reason": "The current-plan Review comparison shortcut was not exposed on the visited plan/compare paths; the comparison section, assessment and preference controls were clicked."
+      },
+      {
+        "family": "data-rt-action=chapter11",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rt-action=inspect",
+        "reason": "Requires an environment/zone inspector or affected operating-plan list; this pass selected the operating record rather than that conditional inspector branch."
+      },
+      {
+        "family": "label=Undo last saved input review",
+        "reason": "Requires the transient undo notice immediately after a new Chapter 3 input-review save; that save was not executed during this pass."
+      }
+    ],
+    "applicationExceptions": [],
+    "harnessNavigationAborts": [
+      "Ch11/plateaus page.goto: net::ERR_ABORTED at http://127.0.0.1:33337/?project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c&chapter=11&tab=work&section=plateaus",
+      "Validate11 page.goto: net::ERR_ABORTED at http://127.0.0.1:33337/?project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c&chapter=11&tab=validate"
+    ],
+    "limitations": [
+      "An actual click is evidence of reaching a control, not proof of every repeated record or parameter combination.",
+      "Save controls were also exercised through required-field validation; no unsupported architecture acceptance, external provider send, production execution or delivery verification was recorded.",
+      "Two initial beforeunload navigation aborts were corrected by accepting discard navigation in follow-up passes."
+    ],
+    "classificationCorrection": "The earlier claim that output-workspace.js ignored context/handoff was incorrect, caused by inspecting truncated source output. Canonical code includes both inside output disclosures. No production omission was established."
+  }
+}

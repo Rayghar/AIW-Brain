@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {Window} from 'happy-dom';
+const w=new Window({url:'http://fixture.local/'});
+Object.assign(globalThis,{window:w,document:w.document,CustomEvent:w.CustomEvent});
+document.body.innerHTML='<div class="top-actions"><span class="save-state">Saved</span></div>';
+const {refreshActionUndo}=await import('./public/action-undo-ui.js');
+let complete,fail,redraws=0,notices=0;
+document.addEventListener('aiw:redraw',()=>redraws++);window.addEventListener('aiw:notice',()=>notices++);
+const store={value:{document:{id:'fixture-a'}},undoAvailable:{id:'receipt-1',type:'techrealisation.preference'},undoLastAction:()=>new Promise((resolve,reject)=>{complete=resolve;fail=reject;})};window.aiwProjectStore=store;
+refreshActionUndo();document.querySelector('#action-undo button').click();
+assert(document.querySelector('#action-undo button').disabled);assert.equal(redraws,0);assert.equal(notices,0);
+store.undoAvailable=null;complete();await new Promise(r=>setTimeout(r,0));
+assert.equal(redraws,1,'workspace refresh follows successful saved Undo');assert.equal(notices,1);assert(document.querySelector('#action-undo').hidden);assert.equal(document.activeElement,document.querySelector('.save-state'));
+store.undoAvailable={id:'receipt-2',type:'quality.intake'};refreshActionUndo();document.querySelector('#action-undo button').click();fail(Error('Revision changed; review current data.'));await new Promise(r=>setTimeout(r,0));
+assert.equal(redraws,1,'failed Undo does not redraw as success');assert.equal(notices,1);assert.match(document.querySelector('[role=alert]').textContent,/Revision changed/);
+store.value.document.id='fixture-b';store.undoAvailable=null;refreshActionUndo();assert(document.querySelector('#action-undo').hidden,'Undo errors from another project do not leak into this project');
+await w.happyDOM.close();console.log('Undo UI: save completion, redraw, focus, failure and project-change isolation passed.');

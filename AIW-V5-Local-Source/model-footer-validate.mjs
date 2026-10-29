@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {Window} from 'happy-dom';
+const window=new Window({url:'http://fixture.local/?chapter=4&tab=model'});
+Object.assign(globalThis,{window,document:window.document,location:window.location,CustomEvent:window.CustomEvent,requestAnimationFrame:cb=>queueMicrotask(cb)});
+const {modelChrome,toolsHTML}=await import('./public/model-stage.js');
+// The native frame and model utility assemble status and caption before shared chrome runs.
+document.body.innerHTML=`<section class="cm" data-chapter="4"><header class="cm-top" data-model-slot="views"><div class="cm-views"><button class="cm-view" data-id="map">Responsibilities</button><button class="cm-view" data-id="diagram" aria-pressed="true">Diagram</button></div></header><div class="cm-bar" data-model-slot="commands"><div class="cm-lenses"><button class="cm-lens" aria-pressed="true">Structure</button></div><div class="cm-depth"><button class="cm-dep" aria-pressed="true">Responsibilities</button></div></div><footer class="cm-walk" data-model-slot="status"><div class="cm-walk-in"></div><p class="cm-state">Saved records</p><div class="cm-model-utility"><span class="cm-reading-caption" hidden></span></div>${toolsHTML('fixture')}</footer></section>`;
+const root=document.querySelector('.cm'); let opened=0,visits=0,writes=0;
+window.aiwProjectStore={command:()=>writes++};
+root.querySelector('[data-id=map]').onclick=()=>{opened++;root.querySelector('[data-id=map]').setAttribute('aria-pressed','true');root.querySelector('[data-id=diagram]').setAttribute('aria-pressed','false');root.querySelector('.cm-walk-in').innerHTML='<button data-fixture="walk-next">Walk the journey</button>';root.querySelector('[data-fixture=walk-next]').onclick=()=>visits++;modelChrome(root);};
+modelChrome(root);
+assert.ok(root.querySelector('.cm-state').parentElement === root.querySelector('footer'), 'the source-owned status remains in its native footer');
+assert.match(root.querySelector('.cm-reading-caption').textContent,/Structure.*Responsibilities/);
+assert.equal(root.querySelectorAll('[data-model-export]').length,3);
+assert.equal(visits,0); assert.equal(writes,0);
+root.querySelector('[data-model-walk=open]').click();await new Promise(resolve=>setTimeout(resolve,0));
+assert.equal(opened,1);assert.equal(visits,1,'an explicit Start enters the actual registered walker');assert.equal(writes,0,'opening a walker does not record a review');
+assert.equal(root.querySelector('[data-walk=start]').textContent,'Start');
+modelChrome(root);assert.equal(root.querySelectorAll('.cm-reading-caption').length,1,'re-render does not duplicate chrome');
+await window.happyDOM.close();console.log('Model footer: shared status/key/export, explanatory lens caption, genuine Start handoff and zero implicit project writes passed.');

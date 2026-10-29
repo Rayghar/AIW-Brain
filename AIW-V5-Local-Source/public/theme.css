@@ -1,0 +1,57 @@
+/* AIW tokens (round 9, audit/round9/DESIGN.md §2 A). The one source of colour and type for the app: seven
+   twelve-step scales, each step one role in both themes (1 card surface, 2 app background, 3 subtle background,
+   4 hover, 5 pressed and soft divider, 6 border, 7 strong border, 8 quiet solid, 9 solid (white text on it reaches
+   4.5:1 in both themes), 10 solid under white text,
+   11 coloured or secondary text, 12 primary text), the constants, and the semantic names the product speaks in:
+   the five states, the provenance marks and Sol's violet for AI-originated content. Light is the default; the dark
+   values apply when the viewer chooses Dark, or chooses System on a dark operating system (theme-boot.js sets
+   data-theme before the first paint). Print and exported documents stay light. Fonts are served by the app
+   (font-src 'self'); IBM Plex is under the SIL Open Font License (fonts/OFL-IBM-Plex-Sans.txt, fonts/OFL-IBM-Plex-Mono.txt).
+   Written in round 9 by audit/round9/tools/gen_theme.py from its scales.py, which reproduce this round's version.
+   rc40 (W4): the --layer-* marks are the notation palette's family inks (notation-palette.js FAMILY_INK), one per
+   chapter, for the Work studio's rail, bars and tints only, never for text; they read the same in both themes. */
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:500;font-display:swap;src:url("/fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2")}
+@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:600;font-display:swap;src:url("/fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url("/fonts/ibm-plex-mono-latin-400-normal.woff2") format("woff2")}
+@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url("/fonts/ibm-plex-mono-latin-500-normal.woff2") format("woff2")}
+:root{color-scheme:light;
+--sage-1:#fdfdf9;--sage-2:#f6f6f0;--sage-3:#f0f1e9;--sage-4:#e9ece2;--sage-5:#e2e5dc;--sage-6:#d6dbd0;--sage-7:#c3cbbf;--sage-8:#a3aea2;--sage-9:#6a786d;--sage-10:#5d6d63;--sage-11:#4f5f55;--sage-12:#1b3a2e;
+--green-1:#f4f8f3;--green-2:#ebf2ea;--green-3:#e3ece4;--green-4:#d6e6dc;--green-5:#c6dccc;--green-6:#b0cdb8;--green-7:#8fb59b;--green-8:#5f8f70;--green-9:#2f6b4f;--green-10:#23573f;--green-11:#23603f;--green-12:#163b2a;
+--gold-1:#fdf9ef;--gold-2:#fbf3e1;--gold-3:#f8edd3;--gold-4:#f3e2bd;--gold-5:#ecd5a3;--gold-6:#e0c386;--gold-7:#ceaa63;--gold-8:#b8913f;--gold-9:#976d16;--gold-10:#86601a;--gold-11:#7f5300;--gold-12:#4f3505;--focus-outline:var(--gold-9);
+--red-1:#fdf6f5;--red-2:#fbefec;--red-3:#fbe7e3;--red-4:#f6d8d2;--red-5:#efc5bd;--red-6:#e5ada3;--red-7:#d48a7f;--red-8:#c16a5d;--red-9:#b3392b;--red-10:#a3352a;--red-11:#9b2f24;--red-12:#5e1d16;
+--blue-1:#f6f9fd;--blue-2:#edf3fb;--blue-3:#e6eef8;--blue-4:#d6e3f4;--blue-5:#c4d6ee;--blue-6:#b8cbe6;--blue-7:#94b1da;--blue-8:#6b8fc4;--blue-9:#2f5f9e;--blue-10:#2a5590;--blue-11:#2a5590;--blue-12:#183660;
+--violet-1:#faf7fb;--violet-2:#f4eef6;--violet-3:#efe6f2;--violet-4:#e6d8ea;--violet-5:#dbc8e1;--violet-6:#ccb3d4;--violet-7:#b391be;--violet-8:#9a72a6;--violet-9:#7b4b8c;--violet-10:#6d3f7e;--violet-11:#6a3d7a;--violet-12:#3f2149;
+--teal-1:#f3f9f9;--teal-2:#e9f4f4;--teal-3:#dfeeef;--teal-4:#cfe5e7;--teal-5:#bcdadd;--teal-6:#a3cbcf;--teal-7:#7fb2b8;--teal-8:#4f9199;--teal-9:#1f6f79;--teal-10:#17606a;--teal-11:#155b64;--teal-12:#0b3a40;
+--on-solid:#ffffff;--on-solid-muted:#dbe5de;--sage-solid:#1f2d27;--sage-solid-2:#2c3d35;--shadow:#1f3d2e;
+--ui-bg:var(--sage-2);--ui-surface:var(--sage-1);--ui-subtle:var(--sage-3);--ui-hover:var(--sage-4);--ui-line:var(--sage-5);--ui-border:var(--sage-6);--ui-ink:var(--sage-12);--ui-muted:var(--sage-11);--ui-faint:var(--sage-10);--ui-accent:var(--green-10);--ui-accent-text:var(--green-11);--ui-accent-soft:var(--green-3);
+--state-fix-wash:var(--red-2);--state-fix-bg:var(--red-3);--state-fix-line:var(--red-7);--state-fix-solid:var(--red-9);--state-fix-fg:var(--red-11);--state-confirm-wash:var(--gold-2);--state-confirm-bg:var(--gold-3);--state-confirm-line:var(--gold-7);--state-confirm-solid:var(--gold-9);--state-confirm-fg:var(--gold-11);--state-proposed-wash:var(--blue-2);--state-proposed-bg:var(--blue-3);--state-proposed-line:var(--blue-7);--state-proposed-solid:var(--blue-9);--state-proposed-fg:var(--blue-11);--state-pass-wash:var(--green-2);--state-pass-bg:var(--green-3);--state-pass-line:var(--green-7);--state-pass-solid:var(--green-9);--state-pass-fg:var(--green-11);--state-draft-wash:var(--sage-2);--state-draft-bg:var(--sage-4);--state-draft-line:var(--sage-6);--state-draft-solid:var(--sage-8);--state-draft-fg:var(--sage-11);--prov-stated:var(--green-11);--prov-stated-line:var(--green-7);--prov-inferred:var(--sage-11);--prov-inferred-line:var(--sage-7);--prov-open:var(--gold-11);--prov-open-line:var(--gold-7);--prov-sol:var(--violet-11);--prov-sol-wash:var(--violet-2);--prov-sol-bg:var(--violet-3);--prov-sol-line:var(--violet-7);--prov-sol-solid:var(--violet-9);
+--layer-intent:#587448;--layer-decision:#805d83;--layer-logical:#286954;--layer-application:#2f6177;--layer-capability:#66733a;--layer-product:#7a5f33;--layer-service:#9b6643;--layer-security:#99677e;--layer-deployment:#3f6d86;--layer-review:#687b66;
+--font-ui:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--font-doc:Georgia,"Times New Roman",serif;}
+:root[data-theme="dark"]{color-scheme:dark;
+--sage-1:#172024;--sage-2:#111719;--sage-3:#141b1e;--sage-4:#1d282d;--sage-5:#243035;--sage-6:#2b383e;--sage-7:#3a4a51;--sage-8:#4d5f66;--sage-9:#667970;--sage-10:#82948b;--sage-11:#a3b3aa;--sage-12:#e3ebe6;
+--green-1:#132019;--green-2:#16261e;--green-3:#1b3326;--green-4:#203a2e;--green-5:#24452f;--green-6:#2b5239;--green-7:#356548;--green-8:#43805b;--green-9:#32825d;--green-10:#2c6e51;--green-11:#7fd3a5;--green-12:#cfe9da;
+--gold-1:#1f1a10;--gold-2:#261f12;--gold-3:#33291a;--gold-4:#3b3018;--gold-5:#45381c;--gold-6:#544424;--gold-7:#6b572c;--gold-8:#8a6f36;--gold-9:#996c00;--gold-10:#7a5c1e;--gold-11:#f0c674;--gold-12:#f7e2b4;--focus-outline:var(--gold-11);
+--red-1:#1f1414;--red-2:#2a1816;--red-3:#3a201d;--red-4:#452420;--red-5:#522a25;--red-6:#63322b;--red-7:#7d3f36;--red-8:#a14f43;--red-9:#c44c40;--red-10:#a8443a;--red-11:#ff9b8c;--red-12:#ffd6cf;
+--blue-1:#121a24;--blue-2:#15202d;--blue-3:#1c2b42;--blue-4:#20304a;--blue-5:#263a57;--blue-6:#2e4669;--blue-7:#36507a;--blue-8:#4a6a9c;--blue-9:#4c75b6;--blue-10:#3e65a3;--blue-11:#93bdfc;--blue-12:#d3e4ff;
+--violet-1:#1a1520;--violet-2:#201a27;--violet-3:#2a2134;--violet-4:#31263d;--violet-5:#3a2d48;--violet-6:#463656;--violet-7:#574370;--violet-8:#7a5d96;--violet-9:#8966a5;--violet-10:#77589a;--violet-11:#d6b4ef;--violet-12:#efe0fa;
+--teal-1:#121c1e;--teal-2:#152325;--teal-3:#1a2e31;--teal-4:#1e363a;--teal-5:#234046;--teal-6:#2a4c53;--teal-7:#33606a;--teal-8:#3f7b86;--teal-9:#327f8a;--teal-10:#2f6f7a;--teal-11:#7fd0db;--teal-12:#cdeef2;
+--on-solid:#ffffff;--on-solid-muted:#dbe5de;--sage-solid:#0c1214;--sage-solid-2:#1a2428;--shadow:#000000;}
+@media (prefers-color-scheme:dark){:root[data-theme="system"]{color-scheme:dark;
+--sage-1:#172024;--sage-2:#111719;--sage-3:#141b1e;--sage-4:#1d282d;--sage-5:#243035;--sage-6:#2b383e;--sage-7:#3a4a51;--sage-8:#4d5f66;--sage-9:#667970;--sage-10:#82948b;--sage-11:#a3b3aa;--sage-12:#e3ebe6;
+--green-1:#132019;--green-2:#16261e;--green-3:#1b3326;--green-4:#203a2e;--green-5:#24452f;--green-6:#2b5239;--green-7:#356548;--green-8:#43805b;--green-9:#32825d;--green-10:#2c6e51;--green-11:#7fd3a5;--green-12:#cfe9da;
+--gold-1:#1f1a10;--gold-2:#261f12;--gold-3:#33291a;--gold-4:#3b3018;--gold-5:#45381c;--gold-6:#544424;--gold-7:#6b572c;--gold-8:#8a6f36;--gold-9:#996c00;--gold-10:#7a5c1e;--gold-11:#f0c674;--gold-12:#f7e2b4;--focus-outline:var(--gold-11);
+--red-1:#1f1414;--red-2:#2a1816;--red-3:#3a201d;--red-4:#452420;--red-5:#522a25;--red-6:#63322b;--red-7:#7d3f36;--red-8:#a14f43;--red-9:#c44c40;--red-10:#a8443a;--red-11:#ff9b8c;--red-12:#ffd6cf;
+--blue-1:#121a24;--blue-2:#15202d;--blue-3:#1c2b42;--blue-4:#20304a;--blue-5:#263a57;--blue-6:#2e4669;--blue-7:#36507a;--blue-8:#4a6a9c;--blue-9:#4c75b6;--blue-10:#3e65a3;--blue-11:#93bdfc;--blue-12:#d3e4ff;
+--violet-1:#1a1520;--violet-2:#201a27;--violet-3:#2a2134;--violet-4:#31263d;--violet-5:#3a2d48;--violet-6:#463656;--violet-7:#574370;--violet-8:#7a5d96;--violet-9:#8966a5;--violet-10:#77589a;--violet-11:#d6b4ef;--violet-12:#efe0fa;
+--teal-1:#121c1e;--teal-2:#152325;--teal-3:#1a2e31;--teal-4:#1e363a;--teal-5:#234046;--teal-6:#2a4c53;--teal-7:#33606a;--teal-8:#3f7b86;--teal-9:#327f8a;--teal-10:#2f6f7a;--teal-11:#7fd0db;--teal-12:#cdeef2;
+--on-solid:#ffffff;--on-solid-muted:#dbe5de;--sage-solid:#0c1214;--sage-solid-2:#1a2428;--shadow:#000000;}}
+@media print{:root[data-theme]{color-scheme:light;
+--sage-1:#fdfdf9;--sage-2:#f6f6f0;--sage-3:#f0f1e9;--sage-4:#e9ece2;--sage-5:#e2e5dc;--sage-6:#d6dbd0;--sage-7:#c3cbbf;--sage-8:#a3aea2;--sage-9:#6a786d;--sage-10:#5d6d63;--sage-11:#4f5f55;--sage-12:#1b3a2e;
+--green-1:#f4f8f3;--green-2:#ebf2ea;--green-3:#e3ece4;--green-4:#d6e6dc;--green-5:#c6dccc;--green-6:#b0cdb8;--green-7:#8fb59b;--green-8:#5f8f70;--green-9:#2f6b4f;--green-10:#23573f;--green-11:#23603f;--green-12:#163b2a;
+--gold-1:#fdf9ef;--gold-2:#fbf3e1;--gold-3:#f8edd3;--gold-4:#f3e2bd;--gold-5:#ecd5a3;--gold-6:#e0c386;--gold-7:#ceaa63;--gold-8:#b8913f;--gold-9:#976d16;--gold-10:#86601a;--gold-11:#7f5300;--gold-12:#4f3505;--focus-outline:var(--gold-9);
+--red-1:#fdf6f5;--red-2:#fbefec;--red-3:#fbe7e3;--red-4:#f6d8d2;--red-5:#efc5bd;--red-6:#e5ada3;--red-7:#d48a7f;--red-8:#c16a5d;--red-9:#b3392b;--red-10:#a3352a;--red-11:#9b2f24;--red-12:#5e1d16;
+--blue-1:#f6f9fd;--blue-2:#edf3fb;--blue-3:#e6eef8;--blue-4:#d6e3f4;--blue-5:#c4d6ee;--blue-6:#b8cbe6;--blue-7:#94b1da;--blue-8:#6b8fc4;--blue-9:#2f5f9e;--blue-10:#2a5590;--blue-11:#2a5590;--blue-12:#183660;
+--violet-1:#faf7fb;--violet-2:#f4eef6;--violet-3:#efe6f2;--violet-4:#e6d8ea;--violet-5:#dbc8e1;--violet-6:#ccb3d4;--violet-7:#b391be;--violet-8:#9a72a6;--violet-9:#7b4b8c;--violet-10:#6d3f7e;--violet-11:#6a3d7a;--violet-12:#3f2149;
+--teal-1:#f3f9f9;--teal-2:#e9f4f4;--teal-3:#dfeeef;--teal-4:#cfe5e7;--teal-5:#bcdadd;--teal-6:#a3cbcf;--teal-7:#7fb2b8;--teal-8:#4f9199;--teal-9:#1f6f79;--teal-10:#17606a;--teal-11:#155b64;--teal-12:#0b3a40;
+--on-solid:#ffffff;--on-solid-muted:#dbe5de;--sage-solid:#1f2d27;--sage-solid-2:#2c3d35;--shadow:#1f3d2e;}}

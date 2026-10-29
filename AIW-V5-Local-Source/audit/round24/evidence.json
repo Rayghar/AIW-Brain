@@ -1,0 +1,275 @@
+{
+  "schema": "aiw.round-evidence.v1",
+  "release": "AIW v0.10.0-rc.10.73.25",
+  "date": "2026-10-14",
+  "productionAccepted": false,
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "source": "Round 24 on the round-23 release (1b9af2d, AIW v0.10.0-rc.10.73.24)",
+  "plan": "audit/round24/PLAN.md",
+  "baseline": {
+    "commit": "1b9af2d",
+    "release": "AIW v0.10.0-rc.10.73.24"
+  },
+  "workstreams": {
+    "W1": {
+      "what": "modules and sub-modules over the requirements; the proposal, acceptance, record scope",
+      "decisions": [
+        "D-24-01",
+        "D-24-02",
+        "D-24-03"
+      ],
+      "commit": "5f1c35a",
+      "by": "lead"
+    },
+    "W2": {
+      "what": "drafting by module; contract sol-architecture-4; consolidation; drivers served",
+      "decisions": [
+        "D-24-03",
+        "D-24-04",
+        "D-24-05"
+      ],
+      "merge": "e43a112"
+    },
+    "W3": {
+      "what": "SDD format 2; each open question once; the SDD by module",
+      "decisions": [
+        "D-24-05",
+        "D-24-06",
+        "D-24-07"
+      ],
+      "merges": [
+        "c45b377",
+        "97e3c12",
+        "5fc7a84"
+      ]
+    },
+    "W4": {
+      "what": "figures: one SVG root, list boxes, typed C4; module map; figures by module; clarity at the register scale",
+      "decisions": [
+        "D-24-07"
+      ],
+      "merges": [
+        "95cfa62",
+        "4d49887",
+        "f616278"
+      ]
+    },
+    "W5": {
+      "what": "one module scope across the screens; module map view; Chapter 1 structure screen",
+      "decisions": [
+        "D-24-08"
+      ],
+      "merge": "a84a69b"
+    }
+  },
+  "auditOfEachMerge": {
+    "checksDeletedOrLoosened": 0,
+    "changedAssertionsReplacedAtLeastAsStrict": true,
+    "secrets": 0,
+    "clientText": 0,
+    "modelIdentifiers": 0
+  },
+  "tests": {
+    "install": {
+      "cleanInstall": true,
+      "command": "npm ci",
+      "packages": 112,
+      "seconds": 6,
+      "auditModerate": 4,
+      "auditProduction": 0,
+      "auditNote": "development dependencies only (drizzle-kit through esbuild); the lockfile is unchanged this round"
+    },
+    "check": {
+      "passed": true,
+      "syntaxModules": 703,
+      "lintExisting": 173,
+      "lintNew": 0,
+      "lintBaseline": 173
+    },
+    "build": {
+      "passed": true,
+      "serverModules": 220,
+      "scripts": 135,
+      "chaptersRouteBytes": 2926231,
+      "chaptersRouteBudgetBytes": 2928640,
+      "cssBytes": 769276,
+      "cssBudgetBytes": 770048,
+      "heaviestPageFiles": 86,
+      "heaviestPageFilesLimitBelow": 90
+    },
+    "regression": {
+      "commit": "5250059",
+      "suites": 234,
+      "passed": 234,
+      "failed": 0,
+      "failedSuites": [],
+      "concurrency": 2,
+      "browserSuitesIncluded": true,
+      "providerKeysEmpty": true,
+      "firstRun": {
+        "commit": "5250059",
+        "concurrency": 3,
+        "suites": 234,
+        "passed": 231,
+        "failedSuites": [
+          "test:model-views-browser",
+          "test:notation-browser",
+          "test:tradeoff-browser"
+        ],
+        "cause": "each failed at its first wait for a model canvas (10 s, 8 s for trade-off) beside two other suites; each passed alone",
+        "canvasMedianMs": {
+          "round23Release": {
+            "chapter1": 1504,
+            "chapter3": 1491,
+            "chapter4": 1541,
+            "chapter5": 1660,
+            "chapter9": 1699
+          },
+          "thisRelease": {
+            "chapter1": 1566,
+            "chapter3": 1564,
+            "chapter4": 1499,
+            "chapter5": 1515,
+            "chapter9": 1558
+          }
+        }
+      }
+    },
+    "newSuites": [
+      "test:module-model",
+      "test:architecture-modules",
+      "test:module-scope",
+      "test:module-scope-browser",
+      "test:figures-integrity",
+      "test:sdd-modules"
+    ]
+  },
+  "register": {
+    "clientMaterialKeptInScratch": true,
+    "reviewedByAPerson": false,
+    "countsOnly": true,
+    "moduleProposal": {
+      "businessModules": 11,
+      "platformModules": 9,
+      "newPlatformModules": 2,
+      "subModules": 40,
+      "groupsConvertedInPlace": 18,
+      "groupsCreated": 42,
+      "remaindersFlaggedForAPerson": 1,
+      "nearUniqueColumnDistinctValues": 1320,
+      "state": "proposed, not accepted"
+    },
+    "noModelCheck": {
+      "drafter": "rules, by module (no provider)",
+      "noYetLinesNote": "the 9 left are open decisions, each naming its alternatives",
+      "drafted": {
+        "components": 19,
+        "componentsInAModule": 19,
+        "extraComponentsRepeatingAConcernInAModule": 0,
+        "componentsNamingServedDriversWithReason": 19,
+        "chapter4GroupsRealisingAModule": 20,
+        "responsibilitiesInTheirModuleGroup": 50
+      },
+      "sameDesignExported": {
+        "before": {
+          "commit": "7706377",
+          "note": "W1, W2 and W4 part 1 merged; SDD format 1, before the module layout and figures by module",
+          "inlineOpenMarkers": 238,
+          "repeatedQuestions": 16,
+          "noYetLines": 74,
+          "openQuestionListLines": 0,
+          "figures": 9,
+          "pdfPages": 95
+        },
+        "release": {
+          "commit": "5250059",
+          "inlineOpenMarkers": 0,
+          "repeatedQuestions": 0,
+          "noYetLines": 9,
+          "openQuestionListLines": 69,
+          "figures": 13,
+          "pdfPages": 101
+        }
+      },
+      "moduleComponentFigure": {
+        "beforeFiguresPart3": {
+          "boxes": 21,
+          "lines": "34 to 38"
+        },
+        "release": {
+          "boxes": "5 to 11",
+          "lines": "4 to 10"
+        }
+      }
+    },
+    "liveModelRun": {
+      "done": false,
+      "reason": "the OpenAI project spend limit refused every call (HTTP 429 insufficient_quota, project_spend_limit_exceeded); no Anthropic key configured in the environment",
+      "callsRefused": 6,
+      "tokensBilled": 0,
+      "plan": {
+        "units": 24,
+        "platformUnits": 9,
+        "businessUnits": 15,
+        "partsOfLargeModules": 6,
+        "runs": 25,
+        "tokensEstimated": 1045580
+      },
+      "run3ForComparison": {
+        "units": 38,
+        "tokens": 1682069,
+        "components": 150,
+        "extraComponentsRepeatingAConcern": 56,
+        "inlineOpenMarkers": 904,
+        "repeatedQuestions": 54,
+        "noYetLines": 728,
+        "figures": 8,
+        "pdfPages": 384
+      }
+    }
+  },
+  "externalGates": [
+    {
+      "authority": "The owner",
+      "action": "Push the branch; raise the OpenAI project spend limit or configure an Anthropic key for the live run; rotate the API keys of the .env uploaded earlier",
+      "state": "not done"
+    },
+    {
+      "authority": "A person on the owner side",
+      "action": "Review and accept the proposed module structure of the register",
+      "state": "not done"
+    },
+    {
+      "authority": "The owner's architects and an independent reviewer",
+      "action": "Review a drafted design page by page (GR-GOV-21)",
+      "state": "not done"
+    },
+    {
+      "authority": "A four-eyes knowledge approver and licence counsel",
+      "action": "Release the core-banking knowledge pack (GR-DOM-10, GR-DOM-11)",
+      "state": "not done"
+    },
+    {
+      "authority": "The workbook owner",
+      "action": "Answer the open source questions (GR-SRC-08)",
+      "state": "not done"
+    },
+    {
+      "authority": "A named human reader",
+      "action": "Fill the SDD review gate's checklist for an export (C2-10)",
+      "state": "not done"
+    },
+    {
+      "authority": "Production acceptance",
+      "action": "Accept a release for production",
+      "state": "not done; productionAccepted false"
+    }
+  ],
+  "gapRegister": {
+    "reverifiedThisRound": false,
+    "note": "this round's findings F1 to F7 are tracked in ROUND24-RELEASE.md"
+  },
+  "commitsAfterBaseline": 56,
+  "roundBranchCommits": 19,
+  "workstreamMerges": 8
+}

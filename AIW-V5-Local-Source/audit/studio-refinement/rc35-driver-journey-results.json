@@ -1,0 +1,205 @@
+{
+  "release": "rc35",
+  "scope": "Synthetic authored native-domain acceptance scenarios and in-process verification. No customer data, live provider result, deployed infrastructure, rendered-browser acceptance or measured product performance is claimed.",
+  "changedFiles": [
+    {
+      "path": "driver-led-journey-fixtures.mjs",
+      "change": "Repeatable order-fulfilment cache-aside and payment direct-read fixtures, continued through native persistence, constrained product comparison, reviewed selection, runtime placement and saved architecture case."
+    },
+    {
+      "path": "driver-led-journey-validate.mjs",
+      "change": "Complete native journey, missing-context and hard-constraint gates, simpler-design outcome, explicit acceptance, immediate reversal and later reversal protection, model and SDD obligations, linked result read, changed-driver review, scoped exports and codec regressions."
+    },
+    {
+      "path": "public/architecture-case.js",
+      "change": "The quality-target journey check considers only quality-kind drivers and opens a satisfied quality scenario, otherwise a relevant unresolved quality scenario. Business-driver legacy numeric fields cannot satisfy this step."
+    },
+    {
+      "path": "public/architecture-knowledge.js",
+      "region": "compactGroundingContext",
+      "change": "Losslessly pool repeated driver scope path tuples. The rest of this shared file includes changes owned by another rc35 agent."
+    },
+    {
+      "path": "shared/architecture-grounding.js",
+      "change": "Decode pooled driver path references while preserving historical direct path tables and rejecting mixed forms or invalid references."
+    },
+    {
+      "path": "public/anatomy-model.js",
+      "change": "Holds the unchanged shared smartOrder/moduleOrder/componentOrder implementations and their private helpers, with their memoOff dependency."
+    },
+    {
+      "path": "public/anatomy-layout.js",
+      "change": "Imports shared ordering for geometry and re-exports the original helper API. Layout, scoping, geometry and generated ID logic are unchanged."
+    },
+    {
+      "path": "public/exchange-model.js",
+      "change": "Reads ordering directly from the shared anatomy model, removing its eager dependency on the anatomy geometry renderer."
+    }
+  ],
+  "observedGapsResolved": [
+    "The complete journey's quality-scenario link previously opened the first business driver instead of its actual measurable quality driver.",
+    "A normal combined three-driver read/persistence journey exceeded the existing 20,000-character method-source limit because identical driver scope tuples were repeated. Lossless path pooling makes this fixture fit without increasing either source cap.",
+    "Accepted read and persistence duties were absent from the main SDD. The parent agent implemented the accepted architecture obligations section; this suite verifies the duties, open evidence state, changed-source review and module scope."
+  ],
+  "tests": [
+    {
+      "command": "node driver-led-journey-validate.mjs",
+      "result": "pass",
+      "observed": [
+        "Fulfilment: business, quality and constraint drivers to accepted cache and persistence, PostgreSQL constrained selection, runtime/model/SDD, missing verification evidence, linked outcome-read conflicts and changed-driver review.",
+        "Payment: the same native trail with a strict direct read and MySQL selected by its authored operating constraint; no cache is added.",
+        "Scoped SDD exports retain only the active module's accepted design obligations.",
+        "Mixed-kind quality guidance routes to the actual current or unresolved quality scenario and rejects false completion from legacy business fields."
+      ]
+    },
+    {
+      "command": "node architecture-grounding-validate.mjs",
+      "result": "pass",
+      "observed": [
+        "Legacy and compact packets retain typed checks, blocked states, sources, implied nodes and graph edges.",
+        "Invalid indices, unsupported encodings, cyclic prose, missing answers and unsafe keys fail closed.",
+        "In-process mocked provider approvals, rejections and invalid responses retain prerequisites and bounded fallback."
+      ]
+    },
+    {
+      "command": "node read-design-validate.mjs",
+      "result": "pass",
+      "observed": [
+        "Read gates, authority/copy invariants, contracts, reuse, stale review, SDD and decoded graph closure.",
+        "In-process Worker commands, owner isolation, acceptance and retained lineage after reopening."
+      ],
+      "reportedAdoptedPacketCharacters": 18981
+    },
+    {
+      "command": "node persistence-validate.mjs",
+      "result": "pass",
+      "observed": [
+        "Persistence and recovery gates, source hashes, authority/copy invariants, reuse, stale review, SDD and decoded graph closure.",
+        "In-process Worker commands, revision conflict, owner isolation and retained model after reopening."
+      ],
+      "reportedAdoptedPacketCharacters": 19922
+    },
+    {
+      "command": "node architecture-case-validate.mjs",
+      "result": "pass",
+      "observed": [
+        "Focused graph coverage, review history, stale evidence, bounded picker, settlement investigation, persistence and authority checks."
+      ]
+    },
+    {
+      "command": "node payment-case-journey-validate.mjs",
+      "result": "pass",
+      "reportedTests": 6,
+      "reportedFailures": 0,
+      "observed": [
+        "Existing focused cases and evidence journeys retain their support gates, connected trail requirements and accepted source revision."
+      ]
+    },
+    {
+      "command": "node --input-type=module (inline before/after ordering parity check)",
+      "result": "pass",
+      "observed": [
+        "All three exported ordering function bodies match their before-extraction source byte-for-byte. Original anatomy-layout exports are identical function objects to the shared anatomy-model exports.",
+        "The complete 6,172-byte ordering source block, including private helpers, moved unchanged.",
+        "252 complete before/after anatomy layouts, four complete exchange projections and 928 exchange routes are identical.",
+        "Reference payment and hypothetical core-banking fixtures cover automatic and architect-fixed order, system/module/component/capability scope, and the memo-disabled ordering path."
+      ]
+    },
+    {
+      "command": "node anatomy-validate.mjs",
+      "result": "pass",
+      "reportedChecks": 14,
+      "observed": [
+        "1,386 layouts across 11 chapters, scopes and opened layers have no overlapping cards.",
+        "746 interaction routes remain orthogonal and avoid cards.",
+        "1,550 additional reference, core-banking and synthetic layouts preserve the component spine and lane geometry, including memo-disabled comparisons.",
+        "Source object IDs, layer progression, manual order, scope dissection and lineage checks pass."
+      ]
+    },
+    {
+      "command": "node exchange-validate.mjs",
+      "result": "pass",
+      "reportedChecks": 10,
+      "observed": [
+        "Actor and scenario ordering, generated journey events, current contract projection and family scope remain correct.",
+        "64 data-flow layouts retain authority and recorded movements with noncolliding tracks.",
+        "Automatic/fixed ordering and source-gap behavior remain unchanged."
+      ]
+    }
+  ],
+  "packetMeasurements": {
+    "units": "JavaScript string characters, matching the enforced packet limits",
+    "methodSourceLimit": 20000,
+    "totalSourceCharacterLimit": 28000,
+    "sourceCountLimit": 22,
+    "preFixFulfilmentMethodCharacters": 21011,
+    "scenarios": [
+      {
+        "domain": "fulfilment",
+        "readApproach": "cache-aside",
+        "selectedProduct": "PostgreSQL",
+        "methodCharacters": 19929,
+        "totalSourceCharacters": 27817,
+        "sourceCount": 11,
+        "driverPathReferences": 91,
+        "uniqueDriverPathTuples": 31,
+        "charactersSavedAtSameProjection": 1082,
+        "existingProseExcerptLimit": 64,
+        "methodExcerptsOmitted": true
+      },
+      {
+        "domain": "payment",
+        "readApproach": "direct-read",
+        "selectedProduct": "MySQL",
+        "methodCharacters": 19529,
+        "totalSourceCharacters": 27422,
+        "sourceCount": 11,
+        "driverPathReferences": 79,
+        "uniqueDriverPathTuples": 27,
+        "charactersSavedAtSameProjection": 932,
+        "existingProseExcerptLimit": 64,
+        "methodExcerptsOmitted": false
+      }
+    ],
+    "invariantsVerified": [
+      "Every decoded driver scope equals its canonical scope, including exact relationship kind, from, to and via tuples.",
+      "Driver kind, category, priority, confirmation and measurability are retained.",
+      "Historical direct path tables decode to the same canonical scopes.",
+      "Out-of-range references and mixed direct/indexed paths are rejected.",
+      "Decoding leaves the pinned source packet unchanged.",
+      "Existing bounded-prose and omitted-method-excerpt disclosure remains active; source hashes and locators remain available."
+    ]
+  },
+  "acceptanceLimits": [
+    "Each fully populated scenario reaches eight of nine declared journey steps. The recorded-test step remains open because no real execution evidence was supplied.",
+    "A case cannot conclude support from these authored declarations alone.",
+    "The database comparison is determined by a synthetic scoped operating constraint; it does not establish a universal PostgreSQL or MySQL preference.",
+    "Accepted obligations remain pending. No latency, freshness, durability, recovery or capacity target is asserted as achieved.",
+    "No browser or preview workaround was used. Rendered UI acceptance and live provider quality are outside this evidence."
+  ],
+  "orderingBoundaryExtraction": {
+    "productionChangeStatus": "Integrated and verified in the rc35 production build.",
+    "testStatus": "Exact before/after parity and existing anatomy/exchange suites passed.",
+    "buildStatus": "Final root production gate passed: 3,101,082 chapter-opening bytes, 146 scripts, unchanged limits. See verification.json and client-size-report.json.",
+    "observedBeforeBuildMetafile": {
+      "file": "dist/client-metafile.json",
+      "eagerLayoutBytes": 23261,
+      "layoutChunk": "dist/client/assets/chunks/chunk-MSOY7NSA.js",
+      "layoutProductionImporters": [
+        "public/exchange-model.js",
+        "public/anatomy-view.js"
+      ],
+      "existingLazyViewOutputBytes": 55677
+    },
+    "unchangedSourceBlockBytes": 6172,
+    "unchangedSourceBlockSha256": "2132c2012c82ccb5bb3449c132a3501f8ee90f0bb7e74a8ae7e7e03ce0fb3946",
+    "newModuleFiles": 0,
+    "newDynamicImports": 0,
+    "independentReadOnlyReview": "Model refinement agent confirmed exact source-block parity, complete private helper closure, original export function identity and the direct exchange import boundary.",
+    "limits": [
+      "No layout algorithm, generated ID, family scope or saved arrangement semantics were changed.",
+      "No bundle budget was increased.",
+      "No rendered-browser acceptance or live-provider result is inferred from geometry and domain tests."
+    ]
+  }
+}

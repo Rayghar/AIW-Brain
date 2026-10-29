@@ -1,0 +1,42 @@
+@startuml
+' Neighbourhood bike share · C4-PlantUML fixture (AIW authored teaching example).
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+LAYOUT_WITH_LEGEND()
+title Neighbourhood bike share · containers
+
+/' A block comment the reader skips
+   across two lines. '/
+
+Person(resident, "Resident", "Signs up, unlocks a bike, rides and pays the fee.")
+Person(transport, "Transport team", "Watches dock levels and asks the contractor to rebalance.", $tags="staff")
+System_Ext(payment, "Payment provider", "The council's existing provider holds the tokenised card.")
+System_Ext(email, "Email service", "Sends the sign-up confirmation.")
+
+System_Boundary(platform, "Bike share platform") {
+  Container(app, "Mobile app", "Mobile app", "Shows docks with available bikes and unlocks a bike.")
+  Container(tripservice, "Trip service", "Service", "Records each trip exactly once, from unlock to return.")
+  Container(pricing, "Pricing and payment service", "Service", "Calculates the fee and charges the saved payment method.")
+  Container(console, "Fleet console", "Web application", "Shows the transport team full and empty docks.")
+  ContainerDb(tripstore, "Trip store", "Relational database", "Keeps trips, members and dock status.")
+  ContainerQueue(events, "Trip events", "Message broker", "Carries unlock, return and charge events between services.")
+}
+
+Deployment_Node(cluster, "Application cluster", "Container platform") {
+  Deployment_Node(node1, "Worker node", "Virtual machine")
+}
+
+Rel(resident, app, "Finds a dock, unlocks a bike and sees receipts")
+Rel(transport, console, "Marks bikes out of service and reads dock levels")
+Rel(app, tripservice, "Asks for docks and unlocks a bike", "HTTPS")
+Rel_D(tripservice, tripstore, "Reads and writes trips", "SQL")
+Rel(tripservice, events, "Publishes trip completed", "Event")
+Rel_Back(pricing, events, "Subscribes to trip completed", "Event")
+Rel(console, tripstore, "Reads dock status", "SQL")
+Rel(pricing, payment, "Charges the fee to the tokenised card", "HTTPS", $tags="external")
+Rel(tripservice, email, "Sends the sign-up confirmation", "SMTP")
+Lay_R(app, console)
+
+SHOW_LEGEND()
+@enduml

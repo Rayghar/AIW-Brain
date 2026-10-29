@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';import{Window}from'happy-dom';
+import {seedProject} from './public/requirements-domain.js';import{withFinalReview}from'./public/review-domain.js';
+const w=new Window({url:'http://fixture.local/?chapter=1&tab=work'});Object.assign(globalThis,{window:w,document:w.document,location:w.location,Event:w.Event,CustomEvent:w.CustomEvent});
+const {structureHTML,moduleProposalAvailability}=await import('./public/module-ui.js');
+const p=withFinalReview(seedProject());p.requirementGroups={schemaVersion:1,counter:0,records:[]};p.artefacts=[];
+assert.match(structureHTML(p),/No requirements are recorded/);assert.match(structureHTML(p),/data-r-action="new-module"/);
+const sparse=structuredClone(p);sparse.artefacts=[{id:'REQ-FIXTURE-1',type:'requirement',title:'One synthetic requirement'}];
+assert.equal(moduleProposalAvailability(sparse).viable,false);
+let writes=0;window.aiwProjectStore={value:{document:sparse},command:async()=>writes++};document.body.innerHTML=structureHTML(sparse);
+let form=document.querySelector('[data-mu-form=propose]');assert.equal(form.querySelector('[type=submit]').disabled,true);assert.match(document.querySelector('.r-modules-prerequisite').textContent,/No imported column.*New module/);
+form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));assert.equal(writes,0,'no predictably invalid proposal reaches the API');
+const grouped=structuredClone(p);grouped.artefacts=Array.from({length:8},(_,i)=>({id:'REQ-FIXTURE-'+i,type:'requirement',title:'Synthetic requirement '+i,domain:i<4?'Intake':'Settlement'}));
+assert.equal(moduleProposalAvailability(grouped).viable,true);const before=JSON.stringify(grouped);window.aiwProjectStore.value.document=grouped;document.body.innerHTML=structureHTML(grouped);form=document.querySelector('[data-mu-form=propose]');
+assert.equal(form.querySelector('[type=submit]').disabled,false);form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));await new Promise(r=>setTimeout(r,0));assert.equal(writes,1,'a viable explicit submit retains the existing propose command');assert.equal(JSON.stringify(grouped),before);
+await w.happyDOM.close();console.log('Module proposal UI: blank and sparse prerequisites, manual path, disabled/guarded empty proposal, viable explicit command and no invented grouping passed.');

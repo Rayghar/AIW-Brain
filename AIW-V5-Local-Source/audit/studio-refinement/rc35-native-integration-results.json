@@ -1,0 +1,18 @@
+{
+  "schema": "aiw.focused-validation.v1",
+  "release": "AIW v0.10.0-rc.10.73.35+studio.20261020",
+  "authority": "Observed root integration checks on authored fixtures. No rendered browser, live provider or measured customer runtime result is claimed.",
+  "checks": [
+    {"command": "node interfaces-validate.mjs", "result": "passed", "exitCode": 0, "observation": "Existing interface and dictionary commands, ownership, lifecycle, review sources and export behavior remain valid."},
+    {"command": "node outcome-design-journey-validate.mjs", "result": "passed", "exitCode": 0, "observation": "Authored payment/status and fulfilment/event saved options continue through related drafts, combined impact, exact edit, acceptance, model and SDD, changed-source review and reversal. Typed draft links and legacy optional fields remain valid."},
+    {"command": "node architecture-operation-continuation-ui-validate.mjs", "result": "passed", "exitCode": 0, "observation": "Seven native operation forms retain explicit target choice, original intent, native fields and unsaved-edit guards; saved response continuation, edited draft and explicit acceptance pass without generation calls."},
+    {"command": "node read-outcome-ui-validate.mjs", "result": "passed", "exitCode": 0, "observation": "Real native result-read disclosure, exact repair focus, numeric draft, impact preview and edit, explicit acceptance, unchanged accepted read history, stricter freshness conflict, operation defaults/reference guards, linked-driver invalidation and main SDD explanation."},
+    {"command": "node architecture-operation-group-validate.mjs", "result": "passed", "exitCode": 0, "observation": "Six coordinated native operations, typed references, joined preview, atomic acceptance, original-operation history, complete reversal and guards; in-process private Worker owner isolation, saved response identity, idempotent resume, compare-and-swap and persistent receipts."},
+    {"command": "node architecture-operation-group-ui-validate.mjs", "result": "passed", "exitCode": 0, "observation": "Native grouped drafting, safe member navigation, saved values, joined impact, exact-member edit, sibling re-preview, explicit acceptance and navigable history without provider calls."}
+  ],
+  "harnessNotes": [
+    "Happy DOM selected-option attributes are restored in the test harness to account for its parser behavior. Production form behavior is not changed by that accommodation.",
+    "The Companion route is supplied by the native DOM harness; the actual action is re-resolved against current source receipts before the exact form field is opened.",
+    "No supported browser capability was available, and no preview server, improvised browser path or live model session was used."
+  ]
+}

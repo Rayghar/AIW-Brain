@@ -1,0 +1,134 @@
+{
+  "schema": "aiw.rc37.ui-refinement-verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.37+studio.20261021",
+  "sourceParent": "2faeb7f12620940312c087a4f3d1f65619ba660a",
+  "recordedAt": "2026-10-21T02:40:41.460986+00:00",
+  "sourceIdentityNote": "The publication receipt and exact Git source ZIP identify the final pushed commit; SOURCE-MANIFEST.json verifies source contents without a circular commit hash.",
+  "checks": [
+    {
+      "command": "node diagram-readability-ui-validate.mjs",
+      "status": "passed",
+      "scope": "6 groups; all 11 chapters, exact modes, independent connectivity, manual positions, ordered notation, lane exploration and Arrange"
+    },
+    {
+      "command": "node native-connection-ui-validate.mjs",
+      "status": "passed",
+      "scope": "5 groups; actual native drawings, labels, structural guides, control exclusivity, project preferences and zero writes"
+    },
+    {
+      "command": "node specification-reading-ui-validate.mjs",
+      "status": "passed",
+      "scope": "8 groups; lenses, canonical facts, scoped component choices, empty scopes, editor identities, project context and zero writes"
+    },
+    {
+      "command": "node architecture-arrangement-validate.mjs",
+      "status": "passed",
+      "scope": "10 checks"
+    },
+    {
+      "command": "node layers-overview-validate.mjs",
+      "status": "passed",
+      "scope": "12 checks"
+    },
+    {
+      "command": "node canvas-controls-dom-validate.mjs",
+      "status": "passed",
+      "scope": "Native visibility, selection, arrangement and camera controls"
+    },
+    {
+      "command": "node model-journey-continuity-ui-validate.mjs",
+      "status": "passed",
+      "scope": "Held subject and view continuity"
+    },
+    {
+      "command": "node notation-export-context-ui-validate.mjs",
+      "status": "passed",
+      "scope": "Exact export context and truthful grouped scope"
+    },
+    {
+      "command": "node model-chrome-validate.mjs",
+      "status": "passed",
+      "scope": "Shared model frame controls"
+    },
+    {
+      "command": "node view-experience-dom-validate.mjs",
+      "status": "passed",
+      "scope": "Native model experience and view integration"
+    },
+    {
+      "command": "node driver-spec-view-validate.mjs",
+      "status": "passed",
+      "scope": "Applied design trace, properties, all driver kinds, exact placements and read-only facts"
+    },
+    {
+      "command": "node design-spec-validate.mjs",
+      "status": "passed",
+      "scope": "11 specification groups of assertions"
+    },
+    {
+      "command": "node work-composition-validate.mjs",
+      "status": "passed",
+      "scope": "Native Work composition and record identity"
+    },
+    {
+      "command": "node work-editors-validate.mjs",
+      "status": "passed",
+      "scope": "28 native editor open/cancel paths"
+    },
+    {
+      "command": "node work-sections-validate.mjs",
+      "status": "passed",
+      "scope": "80 section transitions across reference and blank projects, all 11 chapters"
+    }
+  ],
+  "notationLayout": {
+    "command": "node notation-layout-validate.mjs",
+    "status": "geometry-passed-subprocess-gate-blocked",
+    "reason": "Runtime rejects spawnSync with EPERM while returning misleading child status0. The final child stdout digest assertion cannot complete through this wrapper.",
+    "alternateEvidence": "The exact digest workload was run in two independent supported tool processes; both matched the parent expected digest. Test source was not relaxed.",
+    "sha256": "1d73069ebc75a5768783eeaede244c61f9b30fe91928db73856041f5f96722ba"
+  },
+  "sourceValidation": {
+    "evidence": "source-validation.json",
+    "syntaxModules": 864,
+    "syntaxErrors": 0,
+    "lintFiles": 870,
+    "remainingLintFindings": 240,
+    "newLintFindingsRelativeToRc36": 0,
+    "removedLintFindings": 2,
+    "lintBaselineRaised": false,
+    "wholeRepositoryLintClean": false
+  },
+  "visual": {
+    "suppliedImagesInspected": 13,
+    "nativeSvgCapturesInspected": 7,
+    "nativeSvgEvidence": "visual/",
+    "browserAcceptance": "not verified",
+    "browserReason": "Supported managed preview was unreachable and subsequent browser operation was rejected by browser security policy. No alternate browser workaround used.",
+    "staticHtmlDiagnostics": "Work, Specification and Arrange inspected through pure WeasyPrint with native control/grid/viewport limitations recorded. These are not browser screenshots.",
+    "genuineCascadeFix": "Auto arrange now retains its intended light foreground against the shared native button rule."
+  },
+  "build": {
+    "command": "node /root/.codex/plugins/cache/openai-curated-remote/sites/1.0.1/scripts/build-site.mjs",
+    "status": "passed",
+    "serverModules": 243,
+    "scriptFiles": 139,
+    "stylesheetsCombined": 51,
+    "packagedImportsVerified": true,
+    "plainAndGzipAssetBytesVerified": true,
+    "etagRevalidationVerified": true
+  },
+  "performance": {
+    "evidence": "client-size-report.json",
+    "cssBytes": 854243,
+    "cssBaselineBytes": 837537,
+    "cssBudgetBytes": 855040,
+    "onlyBudgetChanged": "css",
+    "retiredWorkCssBytesRemoved": 1842,
+    "entryBytes": 4979,
+    "chapterStartupCodeBytes": 3099841,
+    "chapterStartupBudgetBytes": 3109888,
+    "scriptFiles": 139
+  },
+  "implementationAuthority": "View projections, contextual prompts and local display preferences. Existing canonical editors, records and project scope remain authoritative."
+}

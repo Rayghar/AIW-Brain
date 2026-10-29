@@ -1,0 +1,26 @@
+{
+  "revision": 82,
+  "counts": {
+    "requirements": 1,
+    "capabilities": 1,
+    "realizations": 1,
+    "parties": 1,
+    "contracts": 1,
+    "controls": 1,
+    "environments": 1,
+    "zones": 1,
+    "placements": 1,
+    "actions": 1,
+    "baselines": 1,
+    "governance": 0
+  },
+  "baseline": {
+    "id": "BL-001",
+    "title": "Synthetic QA baseline \u2014 not approved",
+    "classification": "Working draft"
+  },
+  "afterGracefulServerShutdown": true,
+  "governanceContextAfterFix": "CHAPTER 11 / OUTPUT\nRecord governance evidence for BL-001\n\u00d7\n\nSynthetic QA baseline \u2014 not approved \u00b7 Working draft\n\nRecord the actual external review evidence and its scope. Approval evidence requires an architect-reviewed baseline and a second signed-in person.\n\nNo architect review is recorded for this baseline. local-architect captured this baseline. Record an architect review and freeze a new architect-reviewed baseline before recording approval evidence.\n\nOn the local workbench, each person signs in with their own local account (LOCAL-RUN.md).\n\nRecorded governance outcome\nChoose the recorded outcome\nApproved\nApproved with conditions\nRejected\nWithdrawn\nExternal reviewer / review body\nThe person who did this review. A name, so the record can be traced.\nApproval or review record reference\nWhere the evidence is kept: a document, a ticket, a test report.\nScope, observations, and rationale\nConditions and how they will be discharged\nI reviewed the external evidence for this specific frozen baseline.\nCancel\nRecord governance evidence",
+  "nativeHandoffBlockers": "CHAPTER 11 / OUTPUT\nPrepare implementation handoff\n\u00d7\n\nBL-001 \u00b7 Synthetic QA baseline \u2014 not approved\n\nGovernance evidence needed \u00b7 1 actions awaiting current verification\n\nUse a current architect-reviewed baseline.\nRecord approval evidence for that baseline.\nReview each delivery action, owner, due date and acceptance criterion against the current design.\nRecord implementation handoff",
+  "sourceCheckpoint": "synthetic-authored-revision82.zip"
+}

@@ -1,0 +1,827 @@
+{
+  "suite": "Restored Model guidance",
+  "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-restoration-round29",
+  "checks": [
+    {
+      "chapter": 1,
+      "questions": 8,
+      "native": "map",
+      "shared": "table",
+      "caption": "Lens: Structure · Elements: Requirements",
+      "checks": "?chapter=1&tab=validate"
+    },
+    {
+      "chapter": 2,
+      "questions": 8,
+      "native": "tree",
+      "shared": "table",
+      "caption": "Lens: Reasoning · Elements: Drivers",
+      "checks": "?chapter=2&tab=validate"
+    },
+    {
+      "chapter": 3,
+      "questions": 8,
+      "native": "map",
+      "shared": "table",
+      "caption": "Lens: Reasoning · Elements: Alternatives",
+      "checks": "?chapter=3&tab=validate"
+    },
+    {
+      "chapter": 4,
+      "questions": 8,
+      "native": "map",
+      "shared": "table",
+      "caption": "Lens: Structure · Elements: Responsibilities",
+      "checks": "?chapter=4&tab=validate"
+    },
+    {
+      "chapter": 5,
+      "questions": 8,
+      "native": "components",
+      "shared": "table",
+      "caption": "Lens: Structure · Elements: Components",
+      "checks": "?chapter=5&tab=validate"
+    },
+    {
+      "chapter": 6,
+      "questions": 8,
+      "native": "platform",
+      "shared": "table",
+      "caption": "Lens: Structure · Columns: Components",
+      "checks": "?chapter=6&tab=validate"
+    },
+    {
+      "chapter": 7,
+      "questions": 8,
+      "native": "stack",
+      "shared": "table",
+      "caption": "Lens: Structure · Rows: Realisations",
+      "checks": "?chapter=7&tab=validate"
+    },
+    {
+      "chapter": 8,
+      "questions": 7,
+      "native": "data",
+      "shared": "table",
+      "caption": "Lens: Flow · Columns: Components",
+      "checks": "?chapter=8&tab=validate"
+    },
+    {
+      "chapter": 9,
+      "questions": 8,
+      "native": "model",
+      "shared": "table",
+      "caption": "Lens: Protection · Elements: Parts",
+      "checks": "?chapter=9&tab=validate"
+    },
+    {
+      "chapter": 10,
+      "questions": 8,
+      "native": "deploy",
+      "shared": "table",
+      "caption": "Lens: Operation · Rows: Parts + platform",
+      "checks": "?chapter=10&tab=validate"
+    },
+    {
+      "chapter": 11,
+      "questions": 10,
+      "native": "vitals",
+      "shared": "table",
+      "caption": "",
+      "checks": "?chapter=11&tab=validate"
+    },
+    {
+      "rememberedNativeView": "coverage",
+      "restoredWithoutModelQuery": true
+    },
+    {
+      "phoneQuestionNavigation": "table",
+      "bounds": {
+        "x": 21,
+        "y": 519,
+        "width": 348,
+        "height": 438.875
+      }
+    },
+    {
+      "expandedDetails": "close/reopen twice",
+      "before": {
+        "url": "http://127.0.0.1:42119/?chapter=4&tab=model&object=api&model=map",
+        "selected": "api",
+        "model": {
+          "chapter": 4,
+          "view": "map",
+          "label": "Responsibilities",
+          "text": "Who owns each responsibility?"
+        },
+        "zoom": "152%",
+        "transform": "translate(-219.028px, 0px) scale(1.52087)",
+        "panel": "open"
+      },
+      "after": {
+        "url": "http://127.0.0.1:42119/?chapter=4&tab=model&object=api&model=map",
+        "selected": "api",
+        "model": {
+          "chapter": 4,
+          "view": "map",
+          "label": "Responsibilities",
+          "text": "Who owns each responsibility?"
+        },
+        "zoom": "152%",
+        "transform": "translate(-219.028px, 0px) scale(1.52087)",
+        "panel": "open"
+      },
+      "savedDocumentUnchanged": true
+    },
+    {
+      "blankChapter": 2,
+      "disabled": "tune",
+      "explanation": "What changes if I move a target?\nWhat if · intervention\nWhat if once a quality driver is recorded"
+    },
+    {
+      "blankChapter": 4,
+      "disabled": "coverage",
+      "explanation": "Which needs have an owner and an implementation?\nCoverage · cross-section\nCoverage once a responsibility is recorded"
+    },
+    {
+      "blankChapter": 10,
+      "disabled": "failure",
+      "explanation": "What depends on a zone if it fails?\nIf a zone fails · intervention\nIf a zone fails once a zone is recorded"
+    },
+    {
+      "blankChapter": 11,
+      "disabled": "load",
+      "explanation": "What must each part carry?\nWhat it takes · intervention\nWhat it takes once an operating plan is recorded"
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "url": "/api/project",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "clicks": [
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"map\"]",
+      "label": "What happens in the journey?Journey map · overviewWhat must happen, for whom, and how important it is.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "map"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"tree\"]",
+      "label": "Which qualities matter, and what are their targets?Utility tree · overviewThe quality scenarios under their qualities, each with its target.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "tree"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"map\"]",
+      "label": "Why were these decisions made?Decision map · overviewEach decision, the alternatives it weighed and what it answers.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "map"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"map\"]",
+      "label": "Who owns each responsibility?Responsibilities · overviewThe responsibilities in their groups and the flows between them.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "map"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"components\"]",
+      "label": "What components realise the responsibilities?Components · overviewThe components in their modules, carrying what they realise and what they stand on.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "components"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"platform\"]",
+      "label": "What platform capabilities support the application?Platform · overviewThe capabilities by family, and the components each supports.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "platform"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"stack\"]",
+      "label": "Which named products realise the capabilities?Stack · overviewThe products that realise each capability, chosen or still open.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "stack"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"data\"]",
+      "label": "Where does each piece of data come from and travel?Data flow · behaviourEach data definition, its authority and every place it travels.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "data"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"model\"]",
+      "label": "Which threats and controls surround the design?Threat model · overviewThreats, the controls meant for them, and what each protects.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "model"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"deploy\"]",
+      "label": "Where do the parts run?Deployment · overviewEvery part that must run, placed in the zones of an environment.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "deploy"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"vitals\"]",
+      "label": "How do running parts compare with targets?Vitals · overviewEvery running part on the monitor: recorded values against targets.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "vitals"
+      }
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-model-utility .cm-connection > summary",
+      "label": "Sol: not connected",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"coverage\"]",
+      "label": "Which needs have an owner and an implementation?Coverage · cross-sectionRequirements, responsibilities and components held together: what covers what.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "coverage"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"map\"]",
+      "label": "Who owns each responsibility?Responsibilities · overviewThe responsibilities in their groups and the flows between them.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "map"
+      }
+    },
+    {
+      "selector": ".cm-zoom-value",
+      "label": "Zoom 105%; reset to 100%",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-camera": "actual"
+      }
+    },
+    {
+      "selector": ".cm-zoom [aria-label=\"Zoom in\"]",
+      "label": "Zoom in",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-lr": "zin"
+      }
+    },
+    {
+      "selector": ".cm-zoom [aria-label=\"Zoom in\"]",
+      "label": "Zoom in",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-lr": "zin"
+      }
+    },
+    {
+      "selector": ".cm-zoom [aria-label=\"Zoom in\"]",
+      "label": "Zoom in",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-lr": "zin"
+      }
+    },
+    {
+      "selector": "[data-lr=\"expand\"]",
+      "label": "Expand the model",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-lr": "expand"
+      }
+    },
+    {
+      "selector": ".cm-expanded-details[data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "selector": ".cm-expanded-details[data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "selector": ".cm-expanded-details[data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "selector": ".cm-expanded-details[data-panel-toggle]",
+      "label": "Details",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-panel-toggle": ""
+      }
+    },
+    {
+      "selector": ".cm-zoom [aria-label=\"Zoom out\"]",
+      "label": "Zoom out",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-lr": "zout"
+      }
+    },
+    {
+      "selector": "[data-lr=\"expand\"]",
+      "label": "Expand the model",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-lr": "expand"
+      }
+    },
+    {
+      "selector": ".cm-model-utility [data-model-checks]",
+      "label": "Open Chapter 4 checks on Validate",
+      "tag": "A",
+      "attributes": {
+        "data-model-checks": ""
+      }
+    },
+    {
+      "selector": "#new-project",
+      "label": "＋ Create a project",
+      "tag": "BUTTON",
+      "attributes": {}
+    },
+    {
+      "selector": "#create-submit",
+      "label": "Create & open Chapter 1 →",
+      "tag": "BUTTON",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    },
+    {
+      "selector": ".cm-qpick > summary",
+      "label": "Questions: choose what the model explains",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "selector": ".cm-qentry[data-cm-question=\"table\"]",
+      "label": "What has been recorded here?Table · listingThe chapter’s records as a sortable, filterable table.",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-cm-question": "table"
+      }
+    }
+  ],
+  "status": "passed"
+}

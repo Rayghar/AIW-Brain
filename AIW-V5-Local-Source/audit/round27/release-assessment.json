@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "assessedOn": "2026-10-17",
+  "timeZone": "Africa/Lagos",
+  "kind": "Source and recorded-evidence assessment; final execution and publication receipts are separate",
+  "baseline": {"siteVersion": 88, "commit": "430b04612f059638c4eb466ba1e0f5e748c1b469"},
+  "inputs": {
+    "documents": ["PLAN.md", "GAP-REGISTER.md", "W2.md", "W3.md", "W4.md", "W5.md"],
+    "assessment": "The edit/show/check/document contract and concrete usability defects are valid implementation goals. Historical branch identities, completed-work labels, timings and green-suite claims do not establish current source or execution. Each applicable proposal was reconciled with v88 and the current native domain model.",
+    "authority": "Attached documents are proposals and evidence, not independent permission to upload the corpus, invent a workload, act as a human reviewer, weaken an approval gate, or claim deployment."
+  },
+  "changeRegister": [
+    {"promise": "Understand what the solution contains", "change": "Canonical record selection now reaches records that are not graph nodes. Shared Work sections and record cards preserve exact object identity, native editors, direct findings, relationships and specialized instruments. Shared Table, Matrix and Layers views use meaningful chapter records and columns; waiting views explain their prerequisites.", "references": ["work-gap-register.json", "model-gap-register.json"]},
+    {"promise": "Understand why architecture and named technology were chosen", "change": "Chapter7 Work exposes the existing comparison, weights, uncertainty, bounds and sensitivity beside its recording actions. Model comparisons explain recorded or suggested judgements and link to Work. Draft preference, explicit architect selection and externally supplied approval remain distinct. Chapter5 shows the same structured Chapter6 needs, and Chapter7 explains its obligations for Chapter8 contracts.", "references": ["work-gap-register.json", "model-gap-register.json"]},
+    {"promise": "Understand quality effects and conditions", "change": "No capacity verdict is derived from an unrecorded example workload. Exact source/target changes reopen review rather than preserving an apparently current claim. Distinct walkthrough steps and blank required observations prevent a model traversal from masquerading as a runtime measurement.", "references": ["model-gap-register.json", "work-gap-register.json"]},
+    {"promise": "Inspect evidence and act on gaps", "change": "Validate uses one frame, cause groups, exact object links, visible inherited-finding scope and an actionable next-items block. Definition confirmation uses explicit selected records, authenticated identity, current revision and review basis; Chapter11 empty delivery obligations no longer pass by absence. Chapter8 owner checks expose known design-object names used as accountable owners without inventing a person.", "references": ["validation-gap-register.json"]},
+    {"promise": "Understand what changes and retain context", "change": "Receipt-based Undo applies only to the latest eligible native action for the same actor and current state. Stale/reused receipts fail; observation withdrawal retains history and does not recreate approval. Section/model/object routes, in-place proposals and exact editor destinations reduce silent navigation changes.", "references": ["work-gap-register.json", "validation-gap-register.json"]},
+    {"promise": "Carry the design into a reviewable deliverable", "change": "The existing document registry, previews and baseline history remain. OpenAPI parsing retains qualified recorded operations and exposes duplicates or missing fields; logical types require a recorded wire representation rather than invalid JSON Schema types. SDD figures now cover available canonical chapter models, with explicit omissions and a meaningful executive context figure; blank exports identify templates and handoffs expose prerequisites.", "references": ["output-work-gap-register.json"]},
+    {"promise": "Make the journey understandable", "change": "The v88 header is preserved. This pass standardizes navigation, arrival guidance, record cards, grouped searchable pickers, visible disabled reasons, empty states, readable model controls, view defaults and the shared footer. Native chapter-specific actions remain accessible instead of being forced into a second workflow.", "references": ["work-gap-register.json", "model-gap-register.json"]}
+  ],
+  "deliberateCorrections": [
+    "Keeping a proposed need records a draft; it does not confirm the need or turn a candidate source into design authority.",
+    "Undo is a guarded native command with persisted receipts, not deletion by a remembered client timestamp or restoration of stale acceptance.",
+    "Failure exploration does not assume a twenty-minute duration or a payment throughput target; observations require explicit input.",
+    "Chapter11 focused-case findings, whole-design review and external approval remain separate.",
+    "Existing frozen SDD baselines and comparison are preserved; the supplied claim that there was no version/compare feature is not applied blindly.",
+    "Full-graph Fit is an overview. A readable label navigator supplements it; no universal minimum font size at every possible graph size or zoom is claimed.",
+    "Inherited findings remain in the canonical checks and SDD totals with explicit scope, rather than being removed to make a chapter look complete.",
+    "The application models and diagrams remain projections of saved records and rules. LLM synthesis does not certify their accuracy."
+  ],
+  "verificationAtAssessment": {
+    "meaning": "Only receipts named in the per-workstream registers support passing claims. Final release-runner evidence supersedes pending notes without rewriting historical failures.",
+    "recordedBrowserEvidence": "Validate has a 17-check Chromium receipt covering all11 frames and selected actual actions, including phone keyboard operation. The earlier Work run passed its 88 chapter/tab visits and stopped at a canonical group selection defect; the source fix requires its final combined rerun.",
+    "recordedDomainEvidence": "Focused native, request/store, DOM and export suites are listed in the workstream registers. They include guarded Undo, multi-record definition confirmation, short needs-editor preservation, typed link filtering, model lifecycle/chrome and specification export semantics.",
+    "recovery": "ENOSPC interrupted a Chapter5 UI write. Root restored 57378 bytes with SHA-256 ceffa71f1f8ff2a32f16755f2a8071ce7e6b426ae0bde63b658977d4ccd98ed3, passed syntax checks and checked public for zero-byte files. Functional post-recovery checks remain required; see evidence/round27/source-recovery.json relative to the workspace.",
+    "figureIntegrityLimit": "All ten figure-integrity checkpoints are present in the saved log, but ENOSPC prevented a final JSON/child-exit receipt. This is not a clean runner pass.",
+    "provider": "No fresh provider request or answer-quality evaluation is established by this round's UI/domain audit.",
+    "deployment": "This assessment does not establish publication, final version, archive identity or hosted execution."
+  },
+  "remainingByImpact": [
+    {"impact": "release gate", "item": "Post-recovery combined focused suites, syntax and build; final Chromium Work/Model actions, mobile geometry, actual model downloads and saved-state checks; exact source/archive identity and private hosted deployment/error receipts.", "owner": "Implementation/release runner"},
+    {"impact": "high verification", "item": "Large SDD export time and size budgets need an isolated rerun after host memory/disk pressure. Earlier timings failed under contention; the limits were retained and must not be represented as passing without a clean receipt.", "owner": "Implementation/release runner"},
+    {"impact": "high product evidence", "item": "Fresh bounded OpenAI execution and a representative corpus-grounded relevance/accuracy evaluation remain unestablished this round. Ask Sol and Co-design UI checks alone cannot prove useful or correctly grounded LLM answers.", "owner": "Provider QA with eligible, permitted input"},
+    {"impact": "high human gate", "item": "The real payment requirement and concurrency rule are confirmed, but no workload/response-time target is agreed. Exact originals, release-qualified supporting passages, actual observations where available, independent authenticated review and any source-rights decisions must be evidenced rather than generated.", "owner": "User and independent authenticated review authority"},
+    {"impact": "medium usability", "item": "Very large fitted model overviews can still have small labels. Full label navigation and zoom mitigate this; universal label wrapping and minimum rendered text at arbitrary scale are not established.", "owner": "Future model rendering work"},
+    {"impact": "medium verification", "item": "Every possible finding-to-editor step, every keyboard/screen-reader path, dark theme, all model export/view combinations and hosted authenticated Undo are not covered by the limited source/DOM evidence. Report the exact final browser coverage and retain unexercised cases.", "owner": "QA"},
+    {"impact": "medium deferred", "item": "The chapter journey-drafter citation filter, stakeholder viewpoint catalogue, saved table filters/CSV, diagram baseline comparison, bulk owner/acceptance editing and other explicitly deferred product expansions are outside this tab repair. They must not be included in a blanket claim that all98 gaps are closed.", "owner": "Product follow-up"}
+  ],
+  "humanAndSourceBoundaries": [
+    "The laptop knowledge corpus is not the Site checkout and was not uploaded by these changes.",
+    "Source permission, independent review, release and project activation remain governed actions; candidate material is not promoted by a UI refactor.",
+    "No real payment test measurement, architect judgment, independent approval or SDD sign-off is fabricated.",
+    "Synthetic test identities and fixtures do not substitute for the user's review."
+  ]
+}

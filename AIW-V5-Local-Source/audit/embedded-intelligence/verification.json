@@ -1,0 +1,225 @@
+{
+  "schema": "aiw.embedded-intelligence-verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.31+intelligence.20261020",
+  "recordedAt": "2026-10-20T11:21:33.252849+00:00",
+  "sourceParent": "360bade18b662f1506411ccdbe5f6d954edce800",
+  "sourceIdentityNote": "The publication receipt and git archive identify the final committed source. SOURCE-MANIFEST.json verifies every delivered source file.",
+  "scope": "Focused local domain, packet, in-process DOM, Worker and synthetic-provider verification of this implementation; not a claim that the entire historical test corpus was rerun.",
+  "checks": [
+    {
+      "command": "node knowledge-structure-validate.mjs",
+      "result": "passed",
+      "covers": "Exact source identities, typed source structures, relations, seed leads, governance and immutability"
+    },
+    {
+      "command": "node repository-packet-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 19,
+      "covers": "Actual supplied 24-source packet; 149 candidates retained as unreviewed"
+    },
+    {
+      "command": "node architecture-intelligence-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 7,
+      "covers": "All 11 chapters, positive driver scope, false/zero/unknown, relationships, obligations/currentness and complete source bundles"
+    },
+    {
+      "command": "node embedded-intelligence-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 5,
+      "covers": "Unfamiliar migration patterns, main/field/review/journey packets, bounded source closure, nested exclusions and changed support"
+    },
+    {
+      "command": "node intelligence-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 11,
+      "covers": "Both synthetic provider protocols, native reviewed adoption, chapter review and large project packet bounds"
+    },
+    {
+      "command": "node field-spark-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 23,
+      "covers": "Native draft context, scoped driver kinds, exclusions, source and character budgets"
+    },
+    {
+      "command": "node journey-drafter-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 21,
+      "covers": "Three briefs through all 11 chapters, native imports and provider-double flow"
+    },
+    {
+      "command": "node brain-integration-validate.mjs",
+      "result": "passed",
+      "covers": "Source identity, withdrawal, native acceptance and retrieval isolation"
+    },
+    {
+      "command": "node brain-synthesis-retrieval-validate.mjs",
+      "result": "passed",
+      "covers": "Scope, full conditions, exclusion before embedding, cache and authority using synthetic embedding fetch"
+    },
+    {
+      "command": "node brain-reasoning-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 8,
+      "covers": "Native instrument basis before optional context; bounded multi-item packet and provider/Worker path"
+    },
+    {
+      "command": "node brain-validate.mjs",
+      "result": "passed",
+      "covers": "Exact catalogue receipts, narrative adoption/currentness, baseline, private persistence and save-failure recovery"
+    },
+    {
+      "command": "node chapter-reasoning-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 12,
+      "covers": "Chapter reading and native context integration"
+    },
+    {
+      "command": "node driver-applicability-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 7,
+      "covers": "Positive scope, direct component obligations and shared-component isolation"
+    },
+    {
+      "command": "node architecture-evaluation-validate.mjs",
+      "result": "passed",
+      "covers": "Typed architecture evaluations and original mechanism contracts"
+    },
+    {
+      "command": "node architecture-knowledge-unit-validate.mjs",
+      "result": "passed",
+      "covers": "Source adapter and knowledge unit contracts"
+    },
+    {
+      "command": "node intelligence-continuity-validate.mjs",
+      "result": "passed",
+      "covers": "Saved reasoning continuity"
+    },
+    {
+      "command": "node contextual-service-validate.mjs",
+      "result": "passed",
+      "covers": "Native contextual service contracts"
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "result": "passed",
+      "covers": "Accepted solution and driver trace"
+    },
+    {
+      "command": "node model-reversal-validate.mjs",
+      "result": "passed",
+      "covers": "Native reviewed reversal"
+    },
+    {
+      "command": "node contextual-intelligence-ui-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 7,
+      "covers": "Same guidance across native surfaces, retained edits/caret/disclosure/iframe, stale and dirty guards, exact packet and seed leads"
+    },
+    {
+      "command": "node co-design-guide-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 11,
+      "covers": "All 11 chapter contexts"
+    },
+    {
+      "command": "node chapter-header-validate.mjs",
+      "result": "passed",
+      "covers": "Native chapter-header context"
+    },
+    {
+      "command": "node validation-output-workspace-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 22,
+      "covers": "Populated and blank chapter combinations"
+    },
+    {
+      "command": "node design-task-ui-validate.mjs",
+      "result": "passed",
+      "covers": "Reference project: lazy open/cancellation, saved proposal return, dirty answers, explicit review of newly applicable QD004, immutable adoption"
+    },
+    {
+      "command": "AIW_BLANK=1 node design-task-ui-validate.mjs",
+      "result": "passed",
+      "covers": "Blank project: lazy open/cancellation, native acceptance, saved provenance reload"
+    },
+    {
+      "command": "node check-syntax.mjs",
+      "result": "passed",
+      "groupsOrItems": 802,
+      "covers": "Application, service, script and verification modules"
+    },
+    {
+      "command": "Python ast.parse",
+      "result": "passed",
+      "groupsOrItems": 2,
+      "covers": "Both changed repository importers"
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed",
+      "covers": "Whitespace/error check"
+    }
+  ],
+  "productionBuild": {
+    "command": "node /root/.codex/plugins/cache/openai-curated-remote/sites/1.0.1/scripts/build-site.mjs",
+    "result": "passed",
+    "serverImportGraphModules": 233,
+    "packagedImportsVerified": true,
+    "packagedAssetServingVerified": [
+      "plain bytes",
+      "gzip bytes",
+      "ETag"
+    ],
+    "scripts": 146,
+    "stylesheets": 1,
+    "budgetFileChanged": false,
+    "budget": {
+      "entry": 8192,
+      "chunk": 377856,
+      "css": 837632,
+      "routes": {
+        "projects": 1242112,
+        "chapters": 3109888
+      },
+      "data": {
+        "brain-catalogue": 1576960,
+        "review-font": 1089536,
+        "vendor-docx": 430080,
+        "brain-playbook": 122880,
+        "brain-tradeoffs": 44032
+      },
+      "scripts": 146,
+      "tiny": 61
+    },
+    "measured": {
+      "entryBytes": 4966,
+      "chapterOpeningCodeBytes": 3085821,
+      "largestCodeChunkBytes": 352883,
+      "cssBytes": 836993,
+      "catalogueDataBytes": 1523095,
+      "tinyScriptCount": 61
+    },
+    "violations": []
+  },
+  "suppliedKnowledge": {
+    "release": "AKR-0.10.73.5",
+    "catalogueRecords": 328,
+    "knowledgeObjects": 1326,
+    "duplicateDnaProjectionsReused": 328,
+    "editorialLineageIdentities": 984,
+    "atomicSourceReviewLeads": 14,
+    "pilotSourceFiles": 24,
+    "pilotCandidatePassages": 149,
+    "catalogueSHA256": "bdfb8975f8e1fad42ef30133c56413dfe3c9b385b49e7101b82555927ea919d6",
+    "knowledgeObjectsSHA256": "68b03987ec4d161e67df84cfcb3201a7268d43d8a387fb714473a727742f96d0"
+  },
+  "notPerformed": [
+    "Fresh rendered desktop/mobile browser inspection",
+    "Live LLM quality evaluation",
+    "Production load/latency benchmark",
+    "Fresh upstream repository crawl"
+  ],
+  "authorityNote": "Editorial records and discovery leads are not promoted to reviewed executable rules. Conditional applicability, saved adoption and measured outcomes remain separate.",
+  "publication": "Recorded separately after exact-source private deployment succeeds."
+}

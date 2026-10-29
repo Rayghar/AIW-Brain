@@ -1,0 +1,58 @@
+Neighbourhood bike share — project brief (AIW authored teaching example; no real organisation or figures)
+
+Context
+A town council wants a small bike-share service for its three neighbourhoods. Residents pick up a bike at a dock, ride, and return it to any dock. The council's transport team owns the service; a maintenance contractor services the bikes; the council's finance office collects the fees.
+
+Goals
+The goal is to cut short car trips within the town by making a bike available within a five-minute walk of most homes. We want residents to be able to join, unlock and pay without visiting an office, so that the service runs with a small team.
+
+Users and stakeholders
+- Residents who ride (members and occasional riders).
+- The transport team, who run the service day to day.
+- The maintenance contractor, who repairs and rebalances bikes.
+- The finance office, which reconciles payments.
+- The council's data protection officer, accountable for personal data.
+
+In scope
+- Membership sign-up and identity checks for adults.
+- Unlocking a bike at a dock with the mobile app or a member card.
+- Trip recording, pricing and payment.
+- Dock and bike status for the transport team and the contractor.
+Out of scope
+- E-scooters and cargo bikes.
+- Integration with the regional bus ticket.
+
+Journey
+1. A resident signs up in the app and confirms their email.
+2. The resident finds a dock with an available bike on the map.
+3. The resident unlocks a bike with the app or a card.
+4. The trip is recorded while the bike is away from a dock.
+5. The resident returns the bike to a dock, and the trip ends.
+6. The fee is calculated and charged to the saved payment method.
+7. The transport team sees docks that are full or empty and asks the contractor to rebalance.
+
+Requirements
+- The service must unlock a bike within three seconds of a valid request at the dock.
+- The app must show available bikes per dock, refreshed at least every thirty seconds.
+- A trip must be recorded exactly once, even if the dock loses its connection and reconnects.
+- The service must charge the correct fee for every completed trip and never charge twice.
+- Members must be able to see their trip history and receipts.
+- The transport team must be able to mark a bike as out of service and see which docks are empty or full.
+- The contractor should receive a rebalancing list each morning.
+- The finance office should be able to export a daily reconciliation of charges.
+- The service should keep working for unlocking when the central system is unreachable for up to ten minutes.
+
+Constraints
+- Personal data must be handled under GDPR; trip locations must not be kept longer than ninety days.
+- Payments must use the council's existing payment provider and must not store card numbers.
+- The first neighbourhood must go live before the start of the summer season.
+- The dock hardware is already chosen and speaks a vendor protocol over mobile data.
+
+Assumptions
+- We assume docks have mobile coverage at every site.
+- We assume the payment provider offers a tokenised card on file.
+- We expect fewer than two thousand trips a day in the first year.
+
+Open questions
+- Who is accountable for incidents out of office hours?
+- What is the target for the number of trips per bike per day?

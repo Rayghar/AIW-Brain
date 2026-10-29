@@ -1,0 +1,13 @@
+{
+  "results": [
+    "actor ACT-001: Table → Work (context) → correct saved editor",
+    "group GRP-001: Table → Work (groups) → correct saved editor",
+    "need TN-001: Table → Work (needs) → correct saved editor",
+    "boundary tb-001: Table → Work (dependencies) → correct saved editor",
+    "party ext-channel: Table → Work (parties) → correct saved editor",
+    "zone zone-a: Table → Work (placement) → correct saved editor",
+    "placement PL-001: Table → Work (placement) → correct saved editor",
+    "path RP-001: Table → Work (operate) → correct saved editor"
+  ],
+  "errors": []
+}

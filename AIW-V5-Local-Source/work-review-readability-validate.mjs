@@ -1,0 +1,63 @@
+// Review presentation and confirmation semantics. No provider or network is needed.
+import assert from 'node:assert/strict';
+const {Window} = await import(process.env.AIW_DOM_MODULE || 'happy-dom');
+const w = new Window({url: 'https://aiw.test/?chapter=1&tab=work', width: 1440, height: 900});
+for (const key of ['window', 'document', 'history', 'location', 'localStorage', 'CustomEvent', 'Event', 'FormData', 'Node', 'Element', 'HTMLElement', 'MutationObserver', 'navigator']) Object.defineProperty(globalThis, key, {value: key === 'window' ? w : w[key], configurable: true, writable: true});
+for (const key of ['matchMedia', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) globalThis[key] = w[key].bind(w);
+const {createProject} = await import('./shared/projects-domain.js');
+const {diffHTML, reviewChangeInDialog, reviewPreview} = await import('./public/workbench-ui.js');
+const project = createProject({name: 'Review fixture', template: 'blank'}, 'review-fixture');
+const before = JSON.stringify(project);
+const changes = {type: 'brief', payload: {problem: 'A <new> problem', goal: 'An observable outcome', source: 'Architect workshop', confirmed: true}};
+const q = reviewPreview(project, changes);
+assert(q?.brief, 'A changed brief must still require review');
+assert.equal(reviewPreview(project, {type: 'brief', payload: {...project.brief}}), null, 'An identical brief needs no false change review');
+try {
+  document.body.innerHTML = '<dialog open><form><textarea name="problem">Retain this unsaved draft</textarea><button type="submit">Save brief</button></form></dialog>';
+  const dialog = document.querySelector('dialog'), form = dialog.querySelector('form');
+  const pending = reviewChangeInDialog(dialog, project, changes);
+  const panel = dialog.querySelector('[data-dialog-review]');
+  assert(panel && form.hidden, 'Review stays in the editor');
+  assert.equal(panel.querySelectorAll('.wb-brief-change [data-change-field]').length, 4, 'Every changed brief field is visible');
+  assert.match(panel.textContent, /What problem are we solving\?/);
+  assert.match(panel.textContent, /What outcome should this project achieve\?/);
+  assert.match(panel.textContent, /Source \/ evidence/);
+  assert.equal(panel.querySelector('[data-change-field="confirmed"] ins span').textContent, 'Yes');
+  assert.deepEqual(JSON.parse(panel.querySelector('.wb-brief-change > .wb-exact pre').textContent), q.brief, 'The exact full brief remains available');
+  assert([...panel.querySelectorAll('.wb-exact')].every(d => !d.open), 'Exact data starts folded');
+  assert.equal(panel.querySelector('new'), null, 'Saved text is escaped');
+  panel.querySelector('[data-wb-action="apply-preview"]').click();
+  assert.match(panel.querySelector('[data-error]').textContent, /Review the changed definition/);
+  assert(panel.isConnected, 'Unticked confirmation cannot apply');
+  panel.querySelector('[data-reviewed]').checked = true;
+  panel.querySelector('[name="reason"]').value = 'Capture the agreed workshop framing.';
+  panel.querySelector('[data-wb-action="apply-preview"]').click();
+  const command = await pending;
+  assert.equal(command.type, 'workspace.apply');
+  assert.equal(command.payload.reviewed, true);
+  assert.equal(command.payload.stamp, q.stamp);
+  assert.deepEqual(command.payload.commands, [changes]);
+  assert.equal(command.payload.reason, 'Capture the agreed workshop framing.');
+  assert.equal(form.hidden, false);
+  assert.equal(form.querySelector('textarea').value, 'Retain this unsaved draft');
+  const back = reviewChangeInDialog(dialog, project, changes);
+  dialog.querySelector('[data-wb-action="back-to-editing"]').click();
+  assert.equal(await back, null);
+  assert.equal(form.querySelector('textarea').value, 'Retain this unsaved draft', 'Back retains editing input');
+
+  const long = '<img src=x onerror=bad()>' + 'Long narrative. '.repeat(200);
+  const fields = [{key: 'targetValue', before: 0, after: 20}, {key: 'assumptions', before: '', after: long}, {key: 'requirementIds', before: [], after: Array.from({length: 12}, (_, i) => 'REQ-' + i)}, {key: 'sourceSnapshot', before: {}, after: {exact: long}}];
+  const diff = {records: Array.from({length: 42}, (_, i) => ({id: 'R-' + i, chapter: 4, title: 'Record ' + i, kind: 'changed', fields})), edges: Array.from({length: 83}, (_, i) => ({kind: 'added', from: 'R-0', to: 'R-' + i, label: 'supports'}))};
+  document.body.innerHTML = diffHTML(diff);
+  assert.equal(document.querySelector('img,[onerror]'), null, 'All diff values are escaped');
+  assert.equal(document.querySelector('[data-change-field="targetValue"] > b').textContent, 'Target Value');
+  assert.equal(document.querySelector('[data-change-field="targetValue"] del span').textContent, '0', 'Zero is not mistaken for empty');
+  assert.equal(document.querySelector('[data-change-field="assumptions"] .wb-exact p').textContent, long, 'Long prose remains complete');
+  assert.deepEqual(JSON.parse(document.querySelector('[data-change-field="requirementIds"] ins pre').textContent), fields[2].after, 'All structured items remain reviewable');
+  assert.deepEqual(JSON.parse(document.querySelector('.wb-change-data pre').textContent), diff, 'Every record, edge and metadata change remains available beyond display limits');
+  assert.equal(diffHTML({records: [], edges: []}), '', 'Empty record diffs add no empty technical disclosure');
+  assert.equal(JSON.stringify(project), before, 'Reading or cancelling a review cannot mutate the project');
+  console.log('PASS: readable changed fields; full exact values/metadata beyond display limits; escaping; no false changes; unchanged acknowledgement, command stamp, reason and back-to-editing guards.');
+} finally {
+  await w.happyDOM.close();
+}

@@ -1,0 +1,474 @@
+{
+  "uniqueFiles": 41,
+  "files": [
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Requirements.md",
+      "bytes": 4015,
+      "sha256": "526132095188d4a3733c50cdb375c0fa06c1c195324b6a81cbb7e7407363bc44",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Requirements.html",
+      "bytes": 24464,
+      "sha256": "b0d9fae2898477f53948c083c4f1eb042ebdabddf3ecf1510b90ee36ae0bdc99",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Quality_Drivers.md",
+      "bytes": 2125,
+      "sha256": "9294cf1821137524fe7de499359cdc368783ec04aa815ae5eab7b267f92653e9",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Quality_Drivers.html",
+      "bytes": 24169,
+      "sha256": "2e60d28e01259c8348b34fdee6324abe119592452589f9c5ca4a9b78709aa0b5",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Architecture_Requirements_Specification.md",
+      "bytes": 5850,
+      "sha256": "42c0aad84b1adee9025676c6cb339178ba1cf4da968f4effe113e5538cf3b274",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Architecture_Requirements_Specification.html",
+      "bytes": 23129,
+      "sha256": "f2b94e576cb9e1945784487b16ae57bee128b89b16d58ac62c18f01291d6def8",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Architecture_Requirements_Specification.json",
+      "bytes": 9840,
+      "sha256": "994a67694cd77fee226c1593f931f92ee0d4da31fde854bb387822e7e60f878c",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Decisions.md",
+      "bytes": 4042,
+      "sha256": "350472ea33ef04914782bda36ce1585c7d1efa693b8d059a61b128f121b6d854",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Decisions.html",
+      "bytes": 31258,
+      "sha256": "37cd430a52ee7075afdfad1f3c7d0d4b96f0400387146000c7a8f1295353cb69",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Logical_Model.md",
+      "bytes": 4900,
+      "sha256": "6bfef18017baf1adf0a192f19a7a09836dd907ad9683eccf4d1b925781a7fcdd",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Logical_Model.html",
+      "bytes": 24593,
+      "sha256": "32e9e03ca6686950de15c293204016d6f1928c507c2aa189bd65ee1a2e3c1da3",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Application_Realisation.md",
+      "bytes": 2260,
+      "sha256": "2d0d4c6f9f7ccffba5b27f99c5e50053cce6bacace7b6e60055adb3b5e545f83",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Application_Realisation.html",
+      "bytes": 31137,
+      "sha256": "bf8a92d606cc349b1a9f9fded45a4921e94ee183bd19144209d3d5fec99a1d18",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Component_Specification_APP-001.md",
+      "bytes": 4128,
+      "sha256": "37e46c127167114c897991b576242023bc68977e97bcbbfdf72c07fc69f584f9",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Component_Specification_APP-001.html",
+      "bytes": 21594,
+      "sha256": "0df9f8fba836d31c536f72de819b4de1554ec40e8bafb456f4c9a7c0f37d669e",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Component_Specification_APP-001.json",
+      "bytes": 5134,
+      "sha256": "c5165594785afe88eff81a62954a72791bea29053b6394b5a4f35f0cdfb5ad1f",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Logical_Technology.md",
+      "bytes": 3684,
+      "sha256": "3890ba2a8605b463ebfd26ce74583821e6db67fa888a5b00e3793c38015dde08",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Logical_Technology.html",
+      "bytes": 26187,
+      "sha256": "31461b4809dd0595bb5f34f3f650c26dcb21510974f1d4acf22387a10fb146b6",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Technology_Realization.md",
+      "bytes": 4598,
+      "sha256": "855a1c5c230068b71973478b7049e435fe9c75de8237b26087f2c6ff4711076b",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Technology_Realization.html",
+      "bytes": 30569,
+      "sha256": "d61bf75140c368495937f69b47be762a0907455446c112e4843c081e951b711d",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Interfaces_Data.md",
+      "bytes": 4050,
+      "sha256": "189dc500df4168cf4740f261732a462de9d8cc42773ca10467ccd09a6116bde7",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Interfaces_Data.html",
+      "bytes": 28906,
+      "sha256": "c2a9087535858e539986bf49c6f1a5386ea7907a8dccfe68b923117910683f67",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_OpenAPI.json",
+      "bytes": 1844,
+      "sha256": "111f7a3d6bc3b938c43b5a5f0f898ebbf49505c67b5f93b16d706c9f6865d14b",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Data_Schemas.json",
+      "bytes": 893,
+      "sha256": "672c98d79aff2bde4e6dbf4288ffb84fd1ed8ec23fbc6a8239c7aa6408822324",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Security.md",
+      "bytes": 4033,
+      "sha256": "cdbb3957dd385bf279339d681bf46074c30ed04e10799b08342b7a022baff5cc",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Security.html",
+      "bytes": 31394,
+      "sha256": "c7d4c013b4e2d08b1d41be661b3d74fde542c434b760ba2dd88bdd88da6a87bb",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Deployment_Runtime.md",
+      "bytes": 5216,
+      "sha256": "dc387b8b4c57e1ae9bb10c600d14c36f8e0b2200e2b7c7a52c33a58d8e6f87b7",
+      "evidenceRun": "final-followup-2026-10-18T10-21-07-463Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Deployment_Runtime.html",
+      "bytes": 26181,
+      "sha256": "19a1e7afa1eb4db316ab9c824c2346968177dded3a85c584f4739fcda1ba063d",
+      "evidenceRun": "final-followup-2026-10-18T10-21-07-463Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.md",
+      "bytes": 220257,
+      "sha256": "7eccafa587e0055927128ffeb766b6f9193beafe3c8c075c77d1bbe8d0bf1ba3",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.html",
+      "bytes": 247083,
+      "sha256": "e1997b5d0ff991d3e07aa4437f6d67e42c0dfce91e73875c65f2dab3213746b5",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.json",
+      "bytes": 297049,
+      "sha256": "b202b2b9e2a2e64ff09e93df3c6039a60da856b290147b420f6a8cc8e543122f",
+      "evidenceRun": "final-followup-2026-10-18T10-21-07-463Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Delivery.json",
+      "bytes": 1252,
+      "sha256": "e1fcbd6219c2883e06ee21715319a56494613a433760aa2a1a1504ce8ff0f7ed",
+      "evidenceRun": "verify-2026-10-18T10-02-54-920Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.docx",
+      "bytes": 1319099,
+      "sha256": "d1f7977d2ec41b955a3ad59f101646684b07c70e9938de6f0c6429822b2b8f02",
+      "evidenceRun": "exports-2026-10-18T10-05-51-977Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "archiveEntries": 40,
+        "validContainer": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.pdf",
+      "bytes": 1995792,
+      "sha256": "59e7f894be0d795cc8a56aa46efea1a0ba3cbaf28b47efb2e63ee60432637a63",
+      "evidenceRun": "exports-2026-10-18T10-05-51-977Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "pdfHeader": true,
+        "pdfEOF": true
+      }
+    },
+    {
+      "file": "AIW_Recovery.ndjson",
+      "bytes": 80955,
+      "sha256": "87511712079062d540dc3f6e4e2796f137c59cd5a5134ee0b5cace05654f382e",
+      "evidenceRun": "exports-2026-10-18T10-05-51-977Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "manifestSchema": "aiw.recovery.v2"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Decision_Records_MADR.zip",
+      "bytes": 2640,
+      "sha256": "a2fe0231693afcfa1b4bd63febeb65c2a0399ab4c3f9a4860c7a817ad236215c",
+      "evidenceRun": "exports-2026-10-18T10-12-31-387Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "archiveEntries": 1,
+        "validContainer": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Project.json",
+      "bytes": 133627,
+      "sha256": "17b728eeb2520919477bce88459767281cdda05aeae7dc67deaab64bd5555896",
+      "evidenceRun": "exports-2026-10-18T10-12-31-387Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD_Mermaid.md",
+      "bytes": 40845,
+      "sha256": "17ae1033704456552e66c16ae2bd453f2ba498b436227ebd43c187cbba57ce0b",
+      "evidenceRun": "exports-2026-10-18T10-12-31-387Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 11
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_BL-001.md",
+      "bytes": 220250,
+      "sha256": "9381a78955e36f2f29fd5c1fe8655a17415a843c8a605095e4fbeceda1353462",
+      "evidenceRun": "final-followup-2026-10-18T10-21-07-463Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "UTF8Text": true,
+        "MermaidFigures": 0
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_BL-001.html",
+      "bytes": 247076,
+      "sha256": "0028baa8f26ca86b6278c5302447e643e5d36e55bb30309286dbabd77034d828",
+      "evidenceRun": "final-followup-2026-10-18T10-21-07-463Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "HTMLDocument": true
+      }
+    },
+    {
+      "file": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_BL-001.json",
+      "bytes": 397407,
+      "sha256": "58c1b046e0d853fafa828a0f7366159f41ab37ec46d57525101c8373fb6fefa9",
+      "evidenceRun": "final-followup-2026-10-18T10-21-07-463Z",
+      "validation": {
+        "nonempty": true,
+        "downloadError": null,
+        "parse": "JSON valid"
+      }
+    }
+  ]
+}

@@ -1,0 +1,278 @@
+{
+  "schemaVersion": "aiw-candidate-pack-v1",
+  "packId": "CB-CANDIDATE-1",
+  "title": "Core-banking candidate knowledge: patterns, tactics and anti-patterns",
+  "domain": "core-banking",
+  "lens": {"id": "core-banking", "version": 1},
+  "status": "candidate",
+  "approval": {"status": "pending", "fourEyes": false, "approvedBy": null, "approvedAt": null, "releaseId": null, "decision": null},
+  "productionAccepted": false,
+  "influence": {"scoring": false, "constraints": false, "conformance": false, "drafter": false, "brain": false, "lens": false},
+  "preparedBy": "Sol, AIW round 12 workstream C (drafted, not reviewed by a person)",
+  "preparedOn": "2026-10-07",
+  "reviewPack": "audit/round12/KNOWLEDGE-REVIEW-PACK.md",
+  "authority": "Candidate only. Nothing in this file is approved, released or active. No runtime module reads it: it informs no score, no hard constraint, no conformance result, no draft, no Brain retrieval and no lens reading. It becomes knowledge only when a four-eyes knowledge approver attaches the exact source passages, checks each statement against them, and releases the resulting claims through the governed path (knowledge.source, knowledge.claim, knowledge.review by another person, knowledge.release, knowledge.activate).",
+  "sourcePolicy": "A source is named only where its title, edition and section can be given precisely; otherwise source is null and sourceNeeded is true. No passage was retrieved, attached or hashed for any entry, and no rights were checked. 'located' says how the title and section were found: 'confirmed against public summaries on 2026-10-07' (the section's number and title were checked against public summaries of the text, not against the text itself), or 'from the drafter's reading, not confirmed'. 'supports' says what the entry relies on the passage for; the approver checks that the passage says it.",
+  "counts": {"entries": 58, "patterns": 17, "tactics": 23, "antiPatterns": 18, "sourced": 35, "sourceNeeded": 23, "references": 50},
+  "entries": [
+    {"id": "CB-PAT-POSTING-BALANCED", "kind": "pattern", "status": "candidate", "concernIds": ["posting"], "title": "Balanced, referenced posting",
+      "intent": "Record every financial event as one posting of two or more entries whose debits equal its credits in each currency, under one unique reference, and refuse a posting that does not balance.",
+      "source": [
+        {"title": "Summa de arithmetica, geometria, proportioni et proportionalita", "author": "Luca Pacioli", "publisher": "Paganino de Paganini", "edition": "First edition, Venice, 1494", "section": "Distinctio IX, Tractatus XI, Particularis de computis et scripturis", "supports": "The double-entry method: each transaction entered in the journal is posted twice in the ledger, once as a debit and once as a credit.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public domain text; the translation used must be checked"},
+        {"title": "Analysis Patterns: Reusable Object Models", "author": "Martin Fowler", "publisher": "Addison-Wesley", "edition": "First edition", "section": "Chapter 6, Inventory and Accounting, section 6.2, Transactions", "supports": "A transaction joins entries whose amounts balance, so money is moved between accounts and never created or lost.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-POSTING-REVERSAL", "kind": "tactic", "status": "candidate", "concernIds": ["posting", "audit"], "title": "Correct by reversal, never by edit",
+      "intent": "Never change or delete a posted entry; correct an error with a reversing posting and, where needed, a new correct posting, both linked to the original.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-TAC-POSTING-SUSPENSE", "kind": "tactic", "status": "candidate", "concernIds": ["posting", "operations"], "title": "Suspense with an owner and an age limit",
+      "intent": "Send entries that cannot be applied to their account to a suspense account with an owner, a reason and a deadline, and clear them by posting, not by editing.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-ANTI-POSTING-SINGLE-SIDED", "kind": "anti-pattern", "status": "candidate", "concernIds": ["posting"], "title": "Single-sided balance update",
+      "intent": "Changing an account balance directly, without a balancing entry and a reference, so that the ledger can no longer show where the money came from.",
+      "source": [
+        {"title": "Analysis Patterns: Reusable Object Models", "author": "Martin Fowler", "publisher": "Addison-Wesley", "edition": "First edition", "section": "Chapter 6, Inventory and Accounting, section 6.2, Transactions", "supports": "What a balanced transaction is; that a lone balance change breaks it is AIW's framing, to be checked.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-MONEY-AS-FLOAT", "kind": "anti-pattern", "status": "candidate", "concernIds": ["posting", "fx"], "title": "Money as a floating-point number",
+      "intent": "Holding amounts as binary floating-point numbers, so that sums drift by fractions of the minor unit and postings stop balancing.",
+      "source": [
+        {"title": "Patterns of Enterprise Application Architecture", "author": "Martin Fowler", "publisher": "Addison-Wesley", "edition": "First edition (2002)", "section": "Chapter 18, Base Patterns: Money", "supports": "The Money pattern keeps an amount with its currency and handles rounding and allocation explicitly.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-EOD-CHAIN", "kind": "pattern", "status": "candidate", "concernIds": ["eod"], "title": "Dated, ordered and restartable end-of-day chain",
+      "intent": "Run end of day as an ordered chain of steps under one business date, each step idempotent and checkpointed, so that a failed run restarts from the last completed step without posting twice.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-TAC-EOD-CUTOFF", "kind": "tactic", "status": "candidate", "concernIds": ["eod", "value-dating"], "title": "Cut-off, then date roll",
+      "intent": "Stop accepting postings for the closing business date at a stated cut-off, give later postings the next business date, and roll the date only after the closing steps finish.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-TAC-EOD-ONLINE", "kind": "tactic", "status": "candidate", "concernIds": ["eod", "channels"], "title": "Stay online while end of day runs",
+      "intent": "Keep the channels open during end of day by accepting transactions against the next business date and applying them in order once the run completes.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-ANTI-EOD-UNRESTARTABLE", "kind": "anti-pattern", "status": "candidate", "concernIds": ["eod"], "title": "End of day that can only start over",
+      "intent": "An end-of-day run that cannot restart from a failed step, so a failure late in the window forces a full rerun or a manual repair of postings.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-INTEREST-ACCRUAL", "kind": "pattern", "status": "candidate", "concernIds": ["interest"], "title": "Daily accrual on a stated day-count basis",
+      "intent": "Accrue interest every day on each account's stated day-count basis and rate, record each accrual as a posting, and capitalise or pay it on the product's schedule.",
+      "source": [
+        {"title": "2006 ISDA Definitions", "publisher": "International Swaps and Derivatives Association", "edition": "2006", "section": "Section 4.16, Day Count Fraction", "supports": "The day count fractions, such as Actual/365 (Fixed), Actual/360 and 30/360, that a stated basis names.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the text is not freely redistributable"},
+        {"title": "IFRS 9 Financial Instruments", "publisher": "IFRS Foundation (International Accounting Standards Board)", "edition": "Issued July 2014, as amended; the approver pins the text in force", "section": "Paragraph 5.4.1, interest revenue by the effective interest method", "supports": "Interest revenue on financial assets at amortised cost is calculated with the effective interest method.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-TARIFF-TABLES", "kind": "tactic", "status": "candidate", "concernIds": ["interest", "product-config"], "title": "Charges from dated tariff tables",
+      "intent": "Compute charges and fees from tariff tables keyed by product and event, each version with an effective date, so that a past charge can be recomputed with the tariff that applied then.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-ANTI-RATES-IN-CODE", "kind": "anti-pattern", "status": "candidate", "concernIds": ["interest", "product-config"], "title": "Rates and fees written into programs",
+      "intent": "Interest rates, fees and tax rates written into program code, so that every change needs a release and the values that applied in the past are lost.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-AMOUNT-WITH-CURRENCY", "kind": "pattern", "status": "candidate", "concernIds": ["fx"], "title": "Every amount with its currency",
+      "intent": "Keep every amount with its ISO 4217 currency code and that currency's minor unit, and never add amounts of different currencies without a conversion at a recorded rate.",
+      "source": [
+        {"title": "ISO 4217, Codes for the representation of currencies", "publisher": "International Organization for Standardization", "edition": "ISO 4217:2015", "section": "Table A.1, current currency and funds code list, with its minor unit column", "supports": "The three-letter currency codes and the number of decimal places of each currency's minor unit.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the code list is published by the maintenance agency"},
+        {"title": "Patterns of Enterprise Application Architecture", "author": "Martin Fowler", "publisher": "Addison-Wesley", "edition": "First edition (2002)", "section": "Chapter 18, Base Patterns: Money", "supports": "An amount is kept together with its currency, and arithmetic across currencies is refused.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-FX-TRANSACTION-RATE", "kind": "tactic", "status": "candidate", "concernIds": ["fx"], "title": "The rate of the transaction date",
+      "intent": "Record a foreign-currency transaction at the spot rate of its date, from a named rate source, and keep the rate used with the posting.",
+      "source": [
+        {"title": "IAS 21 The Effects of Changes in Foreign Exchange Rates", "publisher": "IFRS Foundation (International Accounting Standards Board)", "edition": "Revised 2003, as amended; the approver pins the text in force", "section": "Paragraph 21", "supports": "A foreign currency transaction is recorded on initial recognition at the spot exchange rate at the date of the transaction.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-FX-REVALUATION", "kind": "tactic", "status": "candidate", "concernIds": ["fx"], "title": "Revaluation at the closing rate",
+      "intent": "Translate foreign-currency monetary balances at the closing rate at each reporting date and post the exchange difference to a designated gain or loss account.",
+      "source": [
+        {"title": "IAS 21 The Effects of Changes in Foreign Exchange Rates", "publisher": "IFRS Foundation (International Accounting Standards Board)", "edition": "Revised 2003, as amended; the approver pins the text in force", "section": "Paragraphs 23 and 28", "supports": "Monetary items are translated at the closing rate at the end of each reporting period, and the exchange differences are recognised in profit or loss, with the stated exception.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-MIXED-CURRENCY-TOTALS", "kind": "anti-pattern", "status": "candidate", "concernIds": ["fx", "reporting"], "title": "Mixed-currency totals",
+      "intent": "Adding balances of different currencies as if they were one amount, in a total, a limit or a report.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-RISK-BASED-CDD", "kind": "pattern", "status": "candidate", "concernIds": ["kyc"], "title": "Risk-based customer due diligence",
+      "intent": "Identify and verify each customer before the account is used, rate the customer's risk, apply more checks to higher risks, and keep the evidence.",
+      "source": [
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 10, Customer due diligence", "supports": "Customer due diligence: identifying and verifying the customer and beneficial owner, understanding the purpose of the relationship, and ongoing due diligence.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"},
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 1, Assessing risks and applying a risk-based approach", "supports": "Measures proportionate to the risks identified.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-KYC-TIERED-LIMITS", "kind": "tactic", "status": "candidate", "concernIds": ["kyc"], "title": "Account limits bound to the checks done",
+      "intent": "Bind each account's limits to the level of identity checks completed, and raise the limits only when more checks are done.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-TAC-KYC-RECORD-KEEPING", "kind": "tactic", "status": "candidate", "concernIds": ["kyc", "audit"], "title": "Keep identification and transaction records",
+      "intent": "Keep identification data and transaction records for the period the law sets, retrievable for the authorities.",
+      "source": [
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 11, Record-keeping", "supports": "Records of transactions and of customer due diligence are kept for at least five years and made available to the authorities.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-ACCOUNT-BEFORE-CHECKS", "kind": "anti-pattern", "status": "candidate", "concernIds": ["kyc"], "title": "Account used before the checks finish",
+      "intent": "An account that can transact before the identity and due-diligence checks are complete.",
+      "source": [
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 10, Customer due diligence", "supports": "When due diligence must be done, including when a business relationship is established; the anti-pattern's framing is AIW's.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-SCREEN-CURRENT-LISTS", "kind": "pattern", "status": "candidate", "concernIds": ["aml"], "title": "Screening against the lists in force",
+      "intent": "Screen customers at onboarding and when the lists change, and screen payment parties before release, against the sanctions and watch lists in force, keeping the list version with each result.",
+      "source": [
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 6, Targeted financial sanctions related to terrorism and terrorist financing", "supports": "Targeted financial sanctions that a bank must be able to apply to the persons designated.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"},
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 12, Politically exposed persons", "supports": "Additional measures for politically exposed persons.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-TRANSACTION-MONITORING", "kind": "tactic", "status": "candidate", "concernIds": ["aml"], "title": "Monitoring rules with an investigation queue",
+      "intent": "Run monitoring rules over posted transactions and customer profiles, route alerts to an investigation queue, record every decision, and report suspicious transactions.",
+      "source": [
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 20, Reporting of suspicious transactions", "supports": "Suspicious transactions are reported promptly to the financial intelligence unit.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-WIRE-TRANSFER-DATA", "kind": "tactic", "status": "candidate", "concernIds": ["aml", "payments"], "title": "Originator and beneficiary on every transfer",
+      "intent": "Carry the required originator and beneficiary information with every wire transfer, and screen it.",
+      "source": [
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 16, Wire transfers", "supports": "Required and accurate originator and beneficiary information accompanies wire transfers.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-STALE-SCREENING-LIST", "kind": "anti-pattern", "status": "candidate", "concernIds": ["aml"], "title": "Screening against a stale list",
+      "intent": "Screening against a list that is not updated when the authorities change it, and not screening existing customers again after a change.",
+      "source": [
+        {"title": "International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation (The FATF Recommendations)", "publisher": "Financial Action Task Force", "edition": "Adopted February 2012, as updated; the approver pins the version", "section": "Recommendation 6, Targeted financial sanctions related to terrorism and terrorist financing", "supports": "Sanctions are applied without delay; the anti-pattern's framing is AIW's.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-RETURNS-FROM-LEDGER", "kind": "pattern", "status": "candidate", "concernIds": ["reporting"], "title": "Returns built from data reconciled to the ledger",
+      "intent": "Build every regulatory return from data that reconciles to the general ledger, record its lineage, and explain any difference.",
+      "source": [
+        {"title": "Principles for effective risk data aggregation and risk reporting (BCBS 239)", "publisher": "Basel Committee on Banking Supervision", "edition": "January 2013", "section": "Principle 3, Accuracy and Integrity", "supports": "Risk data is accurate and reliable, aggregated on a largely automated basis, and reconciled with accounting data.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"},
+        {"title": "Principles for effective risk data aggregation and risk reporting (BCBS 239)", "publisher": "Basel Committee on Banking Supervision", "edition": "January 2013", "section": "Principle 7, Accuracy", "supports": "Reports are reconciled and validated.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-RETURNS-CALENDAR", "kind": "tactic", "status": "candidate", "concernIds": ["reporting"], "title": "A calendar of returns with owners",
+      "intent": "Keep a calendar of each return with its authority, frequency, deadline and owner, and track each submission against it.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-ANTI-HAND-BUILT-RETURNS", "kind": "anti-pattern", "status": "candidate", "concernIds": ["reporting"], "title": "Returns assembled by hand",
+      "intent": "Returns assembled manually in spreadsheets from extracts, with no lineage to the ledger and no record of adjustments.",
+      "source": [
+        {"title": "Principles for effective risk data aggregation and risk reporting (BCBS 239)", "publisher": "Basel Committee on Banking Supervision", "edition": "January 2013", "section": "Principle 3, Accuracy and Integrity", "supports": "Data aggregated on a largely automated basis so as to minimise the probability of errors; the anti-pattern's framing is AIW's.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-MAKER-CHECKER", "kind": "pattern", "status": "candidate", "concernIds": ["maker-checker"], "title": "Maker-checker on money and master data",
+      "intent": "A second authorised person approves each financial transaction above a limit and each change to master data or parameters before it takes effect, and the platform refuses approval by the maker.",
+      "source": [
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control AC-5, Separation of Duties", "supports": "Duties of individuals are separated and the separation is supported by access authorisations.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"},
+        {"title": "Internal Control: Integrated Framework", "publisher": "Committee of Sponsoring Organizations of the Treadway Commission (COSO)", "edition": "May 2013", "section": "Principle 10, point of focus: addresses segregation of duties", "supports": "Management segregates incompatible duties and, where that is not practical, selects alternative control activities.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-INCOMPATIBLE-ROLES", "kind": "tactic", "status": "candidate", "concernIds": ["maker-checker"], "title": "Incompatible roles kept apart",
+      "intent": "Define the roles that must not meet in one person (enter and approve, configure and operate) and refuse any assignment that would join them.",
+      "source": [
+        {"title": "ISO/IEC 27002, Information security, cybersecurity and privacy protection: Information security controls", "publisher": "International Organization for Standardization and International Electrotechnical Commission", "edition": "ISO/IEC 27002:2022", "section": "Control 5.3, Segregation of duties", "supports": "Conflicting duties and conflicting areas of responsibility are segregated.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the text is not freely redistributable"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-SELF-APPROVAL", "kind": "anti-pattern", "status": "candidate", "concernIds": ["maker-checker"], "title": "Self-approval",
+      "intent": "A user who can approve their own entry, or an administrator account that can both create and approve.",
+      "source": [
+        {"title": "Internal Control: Integrated Framework", "publisher": "Committee of Sponsoring Organizations of the Treadway Commission (COSO)", "edition": "May 2013", "section": "Principle 10, point of focus: addresses segregation of duties", "supports": "Incompatible duties are segregated; the anti-pattern's framing is AIW's.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-AUDIT-TRAIL", "kind": "pattern", "status": "candidate", "concernIds": ["audit"], "title": "Append-only audit trail with old and new values",
+      "intent": "Record each change to money, master data and parameters with who, when, where and what, and the values before and after, in a store the actors cannot alter.",
+      "source": [
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control AU-3, Content of Audit Records", "supports": "What an audit record contains: the type of event, when and where it occurred, its source, its outcome and the identity involved.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"},
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control AU-9, Protection of Audit Information", "supports": "Audit information is protected from unauthorised access, modification and deletion.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"},
+        {"title": "ISO/IEC 27002, Information security, cybersecurity and privacy protection: Information security controls", "publisher": "International Organization for Standardization and International Electrotechnical Commission", "edition": "ISO/IEC 27002:2022", "section": "Control 8.15, Logging", "supports": "Logs that record activities are produced, stored, protected and analysed.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the text is not freely redistributable"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-AUDIT-RETENTION", "kind": "tactic", "status": "candidate", "concernIds": ["audit"], "title": "Audit retention set by the law",
+      "intent": "Keep audit and transaction records for the period the law and the bank's policy set, and keep them retrievable for an inspection.",
+      "source": [
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control AU-11, Audit Record Retention", "supports": "Audit records are retained for a defined period to support investigations and retention requirements.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-AUDIT-EDITABLE", "kind": "anti-pattern", "status": "candidate", "concernIds": ["audit"], "title": "An audit history the audited can change",
+      "intent": "Audit records kept in the same store and with the same rights as the data they describe, so that whoever changes the data can change its history.",
+      "source": [
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control AU-9, Protection of Audit Information", "supports": "Audit information is protected from unauthorised modification and deletion; the anti-pattern's framing is AIW's.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-PRODUCT-CONFIGURATION", "kind": "pattern", "status": "candidate", "concernIds": ["product-config"], "title": "Products as dated configuration",
+      "intent": "Define products and their parameters (rates, tariffs, limits, schedules) as versioned configuration with effective dates, approved before they take effect.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-ANTI-PRODUCT-NEEDS-RELEASE", "kind": "anti-pattern", "status": "candidate", "concernIds": ["product-config"], "title": "A new product needs a release",
+      "intent": "Product behaviour written into program code, so that each new product or change of terms needs development and a release.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-VALUE-AND-BOOKING-DATE", "kind": "pattern", "status": "candidate", "concernIds": ["value-dating"], "title": "Booking date and value date kept apart",
+      "intent": "Carry on every entry the date it was booked and the date from which it counts for interest, and calculate interest from the value date.",
+      "source": [
+        {"title": "ISO 20022 message definition camt.053.001.08, BankToCustomerStatementV08", "publisher": "ISO 20022 Registration Authority", "edition": "Version 08", "section": "Entry (Ntry): BookingDate (BookgDt) and ValueDate (ValDt)", "supports": "A statement entry carries a booking date and a value date, which may differ.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-BACKDATING-WINDOW", "kind": "tactic", "status": "candidate", "concernIds": ["value-dating", "maker-checker"], "title": "Backdating within a window, with approval",
+      "intent": "Allow a posting to be backdated only within a set number of days and with a checker's approval, and recalculate interest for the days affected.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-ANTI-UNLIMITED-BACKDATING", "kind": "anti-pattern", "status": "candidate", "concernIds": ["value-dating"], "title": "Unlimited backdating",
+      "intent": "Any user can post with any past date, so closed periods and interest change without control.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-IDEMPOTENT-PAYMENT", "kind": "pattern", "status": "candidate", "concernIds": ["payments"], "title": "Idempotent receipt of payment instructions",
+      "intent": "Recognise a repeated payment instruction by its unique end-to-end reference and return the recorded outcome instead of posting it again.",
+      "source": [
+        {"title": "Enterprise Integration Patterns: Designing, Building, and Deploying Messaging Solutions", "author": "Gregor Hohpe and Bobby Woolf", "publisher": "Addison-Wesley", "edition": "First edition (2003)", "section": "Chapter 10, Messaging Endpoints: Idempotent Receiver", "supports": "A receiver that can safely receive the same message more than once.", "located": "chapter confirmed against public summaries on 2026-10-07; the pattern's place in it from the drafter's reading", "rights": "not checked"},
+        {"title": "Enterprise Integration Patterns: Designing, Building, and Deploying Messaging Solutions", "author": "Gregor Hohpe and Bobby Woolf", "publisher": "Addison-Wesley", "edition": "First edition (2003)", "section": "Chapter 5, Message Construction: Correlation Identifier", "supports": "A unique identifier that ties a reply or a repeat to the request it belongs to.", "located": "chapter confirmed against public summaries on 2026-10-07; the pattern's place in it from the drafter's reading", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-ENQUIRE-BEFORE-RETRY", "kind": "tactic", "status": "candidate", "concernIds": ["payments"], "title": "Enquire before retry",
+      "intent": "When a switch does not answer in time, treat the outcome as unknown, ask for the status with the original reference, and retry only when the switch confirms it has no record.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-TAC-NAMED-MESSAGE-STANDARD", "kind": "tactic", "status": "candidate", "concernIds": ["payments"], "title": "A named message standard per interface",
+      "intent": "Name the message standard and version each payment interface uses, for example an ISO 20022 customer credit transfer, and validate messages against it.",
+      "source": [
+        {"title": "ISO 20022 message definition pacs.008.001.08, FIToFICustomerCreditTransferV08", "publisher": "ISO 20022 Registration Authority", "edition": "Version 08", "section": "The message definition as a whole", "supports": "An example of a named, versioned interbank customer credit transfer message.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-RETRY-ON-TIMEOUT", "kind": "anti-pattern", "status": "candidate", "concernIds": ["payments"], "title": "Sending a payment again after a timeout",
+      "intent": "Sending a payment again after a timeout without asking for its status, so that one instruction can settle twice.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-ONE-CHANNEL-LAYER", "kind": "pattern", "status": "candidate", "concernIds": ["channels"], "title": "One service layer for every channel",
+      "intent": "Expose accounts, payments and statuses to every channel through one service layer, so that each channel shows the same balance and applies the same limits.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-TAC-CHANNEL-AUTHENTICATION", "kind": "tactic", "status": "candidate", "concernIds": ["channels"], "title": "Strong authentication and bounded sessions",
+      "intent": "Authenticate channel users with more than one factor for sensitive actions, link a payment's approval to its amount and payee, and bound sessions in time.",
+      "source": [
+        {"title": "OWASP Application Security Verification Standard", "publisher": "OWASP Foundation", "edition": "Version 4.0.3 (October 2021)", "section": "V2 Authentication and V3 Session Management", "supports": "Verification requirements for authentication and for session management.", "located": "from the drafter's reading, not confirmed", "rights": "not checked; published under a Creative Commons licence"},
+        {"title": "Commission Delegated Regulation (EU) 2018/389, regulatory technical standards for strong customer authentication and common and secure open standards of communication", "publisher": "European Commission", "edition": "Adopted 27 November 2017", "section": "Article 4, Authentication code, and Article 5, Dynamic linking", "supports": "Strong customer authentication, and the link between an authentication and the amount and payee of a payment. Applies in the European Union only.", "located": "from the drafter's reading, not confirmed", "rights": "not checked", "jurisdiction": "European Union"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-RULES-PER-CHANNEL", "kind": "anti-pattern", "status": "candidate", "concernIds": ["channels"], "title": "Rules copied into each channel",
+      "intent": "Each channel keeps its own copy of limits and rules, so that one customer gets different answers in different channels.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-TARGETS-FROM-BIA", "kind": "pattern", "status": "candidate", "concernIds": ["availability"], "title": "Recovery targets from a business impact analysis",
+      "intent": "Set recovery time and recovery point targets per service from a business impact analysis, then design and test each running part against them.",
+      "source": [
+        {"title": "ISO 22301, Security and resilience: Business continuity management systems: Requirements", "publisher": "International Organization for Standardization", "edition": "ISO 22301:2019", "section": "Clause 8.2.2, Business impact analysis", "supports": "The analysis that sets prioritised time frames for resuming activities.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the text is not freely redistributable"},
+        {"title": "NIST Special Publication 800-34, Contingency Planning Guide for Federal Information Systems", "publisher": "National Institute of Standards and Technology", "edition": "Revision 1 (May 2010)", "section": "Section 3.2, Conduct the business impact analysis", "supports": "Maximum tolerable downtime, recovery time objective and recovery point objective, determined in the business impact analysis.", "located": "from the drafter's reading, not confirmed", "rights": "public text of the United States government"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-STANDBY-ELSEWHERE", "kind": "tactic", "status": "candidate", "concernIds": ["availability"], "title": "A standby in a separate failure domain",
+      "intent": "Keep a standby of the ledger and its runtime in a failure domain that does not fail with the primary, with replication that meets the recovery point target, and keep backups apart from both.",
+      "source": [
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control CP-7, Alternate Processing Site", "supports": "An alternate processing site to resume operations within defined time periods.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"},
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control CP-9, System Backup", "supports": "Backups of system-level and user-level information on a defined frequency.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-UNTESTED-RECOVERY", "kind": "anti-pattern", "status": "candidate", "concernIds": ["availability"], "title": "A recovery plan that was never tried",
+      "intent": "A recovery plan that has never been exercised, so that its recovery time is a hope rather than a measurement.",
+      "source": [
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control CP-4, Contingency Plan Testing", "supports": "The contingency plan is tested to determine its effectiveness; the anti-pattern's framing is AIW's.", "located": "confirmed against public summaries on 2026-10-07", "rights": "public text of the United States government"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-PERSONAL-DATA-PLACED", "kind": "pattern", "status": "candidate", "concernIds": ["privacy"], "title": "Personal data classified and kept in its place",
+      "intent": "Mark each data definition that holds personal data, state where it may be stored and processed, and keep it within those places.",
+      "source": [
+        {"title": "ISO/IEC 27002, Information security, cybersecurity and privacy protection: Information security controls", "publisher": "International Organization for Standardization and International Electrotechnical Commission", "edition": "ISO/IEC 27002:2022", "section": "Control 5.34, Privacy and protection of PII", "supports": "Requirements for the preservation of privacy and protection of personally identifiable information are identified and met.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the text is not freely redistributable"},
+        {"title": "Regulation (EU) 2016/679, General Data Protection Regulation", "publisher": "European Parliament and Council of the European Union", "edition": "27 April 2016", "section": "Article 5, Principles relating to processing of personal data, and Chapter V, Article 44, General principle for transfers", "supports": "The principles of processing, and the condition that personal data leaves the Union only under Chapter V. Applies in the European Union only; the project's own jurisdiction is to be named by the approver.", "located": "from the drafter's reading, not confirmed", "rights": "not checked", "jurisdiction": "European Union"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-ENCRYPT-AND-MASK", "kind": "tactic", "status": "candidate", "concernIds": ["privacy"], "title": "Encrypt, and mask outside production",
+      "intent": "Encrypt personal data at rest and in transit, and mask it in every environment outside production.",
+      "source": [
+        {"title": "ISO/IEC 27002, Information security, cybersecurity and privacy protection: Information security controls", "publisher": "International Organization for Standardization and International Electrotechnical Commission", "edition": "ISO/IEC 27002:2022", "section": "Control 8.11, Data masking", "supports": "Data masking applied in line with the access control policy and legal requirements.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the text is not freely redistributable"},
+        {"title": "Regulation (EU) 2016/679, General Data Protection Regulation", "publisher": "European Parliament and Council of the European Union", "edition": "27 April 2016", "section": "Article 32, Security of processing", "supports": "Appropriate technical measures, including encryption, for the security of processing. Applies in the European Union only.", "located": "from the drafter's reading, not confirmed", "rights": "not checked", "jurisdiction": "European Union"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-PRODUCTION-DATA-IN-TEST", "kind": "anti-pattern", "status": "candidate", "concernIds": ["privacy"], "title": "Customer data copied into test",
+      "intent": "Unmasked copies of customer data in test and development environments.",
+      "source": [
+        {"title": "ISO/IEC 27002, Information security, cybersecurity and privacy protection: Information security controls", "publisher": "International Organization for Standardization and International Electrotechnical Commission", "edition": "ISO/IEC 27002:2022", "section": "Control 8.11, Data masking", "supports": "Data masking; the anti-pattern's framing is AIW's.", "located": "confirmed against public summaries on 2026-10-07", "rights": "not checked; the text is not freely redistributable"}
+      ], "sourceNeeded": false},
+    {"id": "CB-PAT-PARALLEL-RUN", "kind": "pattern", "status": "candidate", "concernIds": ["migration"], "title": "Parallel run with daily reconciliation",
+      "intent": "Run the new platform beside the current one on the same inputs for a set period, and reconcile their balances and outputs every day before switching over.",
+      "source": [
+        {"title": "Monolith to Microservices: Evolutionary Patterns to Transform Your Monolith", "author": "Sam Newman", "publisher": "O'Reilly Media", "edition": "First edition (2019)", "section": "Chapter 3, Splitting the Monolith: Pattern: Parallel Run", "supports": "Running the old and the new implementation side by side and comparing their results before relying on the new one.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-INCREMENTAL-TAKEOVER", "kind": "tactic", "status": "candidate", "concernIds": ["migration"], "title": "Incremental takeover with a way back",
+      "intent": "Move functions from the current platform in steps, routing each one to the new platform when it is ready, with a way back for each step.",
+      "source": [
+        {"title": "Monolith to Microservices: Evolutionary Patterns to Transform Your Monolith", "author": "Sam Newman", "publisher": "O'Reilly Media", "edition": "First edition (2019)", "section": "Chapter 3, Splitting the Monolith: Pattern: Strangler Fig Application", "supports": "Moving functionality to the new system step by step while the old one keeps running.", "located": "from the drafter's reading, not confirmed", "rights": "not checked"}
+      ], "sourceNeeded": false},
+    {"id": "CB-TAC-MIGRATION-CONTROL-TOTALS", "kind": "tactic", "status": "candidate", "concernIds": ["migration"], "title": "Migration reconciled by control totals",
+      "intent": "Reconcile migrated accounts, balances and open items with control totals by product and currency, and sign off each wave before go-live.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-ANTI-BIG-BANG-NO-WAY-BACK", "kind": "anti-pattern", "status": "candidate", "concernIds": ["migration"], "title": "Big-bang cut-over with no way back",
+      "intent": "Switching every customer and balance at once, with no rehearsal, no reconciliation gate and no rollback.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-PAT-DAILY-RECONCILIATION", "kind": "pattern", "status": "candidate", "concernIds": ["operations", "payments"], "title": "Daily reconciliation with owned breaks",
+      "intent": "Reconcile the ledger with each switch, nostro account and sub-ledger every business day, and give every break an owner and an age limit.",
+      "source": null, "sourceNeeded": true},
+    {"id": "CB-TAC-MONITOR-EACH-PART", "kind": "tactic", "status": "candidate", "concernIds": ["operations"], "title": "Monitoring that warns before customers notice",
+      "intent": "Monitor each running part and each batch step, and alert the team on call before customers notice.",
+      "source": [
+        {"title": "NIST Special Publication 800-53, Security and Privacy Controls for Information Systems and Organizations", "publisher": "National Institute of Standards and Technology", "edition": "Revision 5", "section": "Control SI-4, System Monitoring", "supports": "The system is monitored to detect attacks, indicators of attacks and unauthorised activity; its use for operational health is AIW's extension.", "located": "from the drafter's reading, not confirmed", "rights": "public text of the United States government"}
+      ], "sourceNeeded": false},
+    {"id": "CB-ANTI-SUSPENSE-NOBODY-CLEARS", "kind": "anti-pattern", "status": "candidate", "concernIds": ["operations", "posting"], "title": "Suspense nobody clears",
+      "intent": "Suspense and exception items that grow without an owner or an age limit.",
+      "source": null, "sourceNeeded": true}
+  ]
+}

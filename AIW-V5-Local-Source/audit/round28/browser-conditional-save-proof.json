@@ -1,0 +1,55 @@
+{
+  "authority": "Local synthetic project clone only. Native editors, local routes and reversible commands. No external provider calls, approvals or execution evidence asserted.",
+  "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-c10-fixed",
+  "started": "2026-10-18T10:39:44.454Z",
+  "clicks": [
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Create group",
+      "tag": "BUTTON",
+      "selector": "button[data-l-action=\"new-group\"]",
+      "trusted": true,
+      "attributes": {
+        "data-l-action": "new-group"
+      },
+      "families": []
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Save group",
+      "tag": "BUTTON",
+      "selector": "button:text-is(\"Save group\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    }
+  ],
+  "errors": [],
+  "attempts": [],
+  "blocked": [],
+  "afterSubmit": {
+    "dialogText": [],
+    "invalid": []
+  },
+  "meaningfulSave": {
+    "title": "Synthetic QA conditional editor save",
+    "purpose": "Isolated test group created by the final button-family check; no production architecture or approval claim.",
+    "savedRecord": {
+      "id": "GRP-001",
+      "title": "Synthetic QA conditional editor save",
+      "purpose": "Isolated test group created by the final button-family check; no production architecture or approval claim.",
+      "provenance": {
+        "author": {
+          "kind": "person",
+          "by": "local-architect",
+          "at": "2026-10-18T10:39:45.737Z"
+        }
+      }
+    },
+    "saved": true
+  },
+  "coveredFamilies": []
+}

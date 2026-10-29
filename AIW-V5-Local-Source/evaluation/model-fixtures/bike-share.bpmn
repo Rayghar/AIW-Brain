@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Neighbourhood bike share · BPMN 2.0 fixture (AIW authored teaching example): three pools, two lanes, every task type the reader names, a message start event, a timer, an error boundary event, an exclusive and a parallel gateway, a sub-process, a data object and a data store. -->
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="defs-bike-share" targetNamespace="urn:aiw:fixtures">
+  <bpmn:collaboration id="collab-1">
+    <bpmn:participant id="pool-resident" name="Resident"/>
+    <bpmn:participant id="pool-platform" name="Bike share platform" processRef="process-trip"/>
+    <bpmn:participant id="pool-payment" name="Payment provider"/>
+    <bpmn:messageFlow id="mf-1" sourceRef="pool-resident" targetRef="start-unlock" name="Unlock request"/>
+    <bpmn:messageFlow id="mf-2" sourceRef="task-charge" targetRef="pool-payment" name="Charge instruction"/>
+  </bpmn:collaboration>
+  <bpmn:process id="process-trip" name="Hire a bike" isExecutable="false">
+    <bpmn:laneSet id="lanes-1">
+      <bpmn:lane id="lane-dock" name="Dock gateway">
+        <bpmn:flowNodeRef>start-unlock</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task-present</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task-validate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>gw-valid</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task-release</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end-refused</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="lane-trip" name="Trip service">
+        <bpmn:flowNodeRef>event-wait</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>sub-record</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>gw-fork</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task-charge</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task-receipt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>gw-join</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>end-done</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>boundary-charge-failed</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>task-retry</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start-unlock" name="Unlock requested">
+      <bpmn:outgoing>flow-1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="med-1"/>
+    </bpmn:startEvent>
+    <bpmn:userTask id="task-present" name="Present card or app at the dock">
+      <bpmn:incoming>flow-1</bpmn:incoming>
+      <bpmn:outgoing>flow-2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="task-validate" name="Validate the member">
+      <bpmn:incoming>flow-2</bpmn:incoming>
+      <bpmn:outgoing>flow-3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw-valid" name="Member valid?" default="flow-refused">
+      <bpmn:incoming>flow-3</bpmn:incoming>
+      <bpmn:outgoing>flow-valid</bpmn:outgoing>
+      <bpmn:outgoing>flow-refused</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="task-release" name="Release the lock">
+      <bpmn:incoming>flow-valid</bpmn:incoming>
+      <bpmn:outgoing>flow-4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="end-refused" name="Unlock refused">
+      <bpmn:incoming>flow-refused</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="event-wait" name="Bike returned">
+      <bpmn:incoming>flow-4</bpmn:incoming>
+      <bpmn:outgoing>flow-5</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="ted-1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="sub-record" name="Record the trip">
+      <bpmn:incoming>flow-5</bpmn:incoming>
+      <bpmn:outgoing>flow-6</bpmn:outgoing>
+      <bpmn:startEvent id="sub-start" name="">
+        <bpmn:outgoing>flow-s1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:scriptTask id="task-segment" name="Store the trip segment">
+        <bpmn:incoming>flow-s1</bpmn:incoming>
+        <bpmn:outgoing>flow-s2</bpmn:outgoing>
+        <bpmn:dataOutputAssociation id="doa-1"><bpmn:targetRef>data-trip</bpmn:targetRef></bpmn:dataOutputAssociation>
+      </bpmn:scriptTask>
+      <bpmn:endEvent id="sub-end" name="">
+        <bpmn:incoming>flow-s2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="flow-s1" sourceRef="sub-start" targetRef="task-segment"/>
+      <bpmn:sequenceFlow id="flow-s2" sourceRef="task-segment" targetRef="sub-end"/>
+    </bpmn:subProcess>
+    <bpmn:parallelGateway id="gw-fork" name="Charge and notify">
+      <bpmn:incoming>flow-6</bpmn:incoming>
+      <bpmn:outgoing>flow-7</bpmn:outgoing>
+      <bpmn:outgoing>flow-8</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="task-charge" name="Charge the fee">
+      <bpmn:incoming>flow-7</bpmn:incoming>
+      <bpmn:outgoing>flow-9</bpmn:outgoing>
+      <bpmn:dataInputAssociation id="dia-1"><bpmn:sourceRef>store-trips</bpmn:sourceRef></bpmn:dataInputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="boundary-charge-failed" name="Charge failed" attachedToRef="task-charge">
+      <bpmn:outgoing>flow-retry</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="eed-1"/>
+    </bpmn:boundaryEvent>
+    <bpmn:sendTask id="task-retry" name="Ask the member to update the card">
+      <bpmn:incoming>flow-retry</bpmn:incoming>
+      <bpmn:outgoing>flow-10</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="task-receipt" name="Send the receipt">
+      <bpmn:incoming>flow-8</bpmn:incoming>
+      <bpmn:outgoing>flow-11</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:parallelGateway id="gw-join" name="Both done">
+      <bpmn:incoming>flow-9</bpmn:incoming>
+      <bpmn:incoming>flow-10</bpmn:incoming>
+      <bpmn:incoming>flow-11</bpmn:incoming>
+      <bpmn:outgoing>flow-12</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="end-done" name="Trip complete">
+      <bpmn:incoming>flow-12</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:dataObjectReference id="data-trip-ref" name="Trip record" dataObjectRef="data-trip"/>
+    <bpmn:dataObject id="data-trip" name="Trip record"/>
+    <bpmn:dataStoreReference id="store-trips" name="Trip store"/>
+    <bpmn:sequenceFlow id="flow-1" sourceRef="start-unlock" targetRef="task-present"/>
+    <bpmn:sequenceFlow id="flow-2" sourceRef="task-present" targetRef="task-validate"/>
+    <bpmn:sequenceFlow id="flow-3" sourceRef="task-validate" targetRef="gw-valid"/>
+    <bpmn:sequenceFlow id="flow-valid" sourceRef="gw-valid" targetRef="task-release" name="Valid"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">member.valid == true</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow-refused" sourceRef="gw-valid" targetRef="end-refused" name="Not valid"/>
+    <bpmn:sequenceFlow id="flow-4" sourceRef="task-release" targetRef="event-wait"/>
+    <bpmn:sequenceFlow id="flow-5" sourceRef="event-wait" targetRef="sub-record"/>
+    <bpmn:sequenceFlow id="flow-6" sourceRef="sub-record" targetRef="gw-fork"/>
+    <bpmn:sequenceFlow id="flow-7" sourceRef="gw-fork" targetRef="task-charge"/>
+    <bpmn:sequenceFlow id="flow-8" sourceRef="gw-fork" targetRef="task-receipt"/>
+    <bpmn:sequenceFlow id="flow-9" sourceRef="task-charge" targetRef="gw-join"/>
+    <bpmn:sequenceFlow id="flow-retry" sourceRef="boundary-charge-failed" targetRef="task-retry"/>
+    <bpmn:sequenceFlow id="flow-10" sourceRef="task-retry" targetRef="gw-join"/>
+    <bpmn:sequenceFlow id="flow-11" sourceRef="task-receipt" targetRef="gw-join"/>
+    <bpmn:sequenceFlow id="flow-12" sourceRef="gw-join" targetRef="end-done"/>
+    <bpmn:textAnnotation id="note-1"><bpmn:text>Illustrative; the retry path is one of several the team may choose.</bpmn:text></bpmn:textAnnotation>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram-1">
+    <bpmndi:BPMNPlane id="plane-1" bpmnElement="collab-1">
+      <bpmndi:BPMNShape id="shape-pool-platform" bpmnElement="pool-platform" isHorizontal="true"><dc:Bounds x="0" y="0" width="1200" height="400"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-start" bpmnElement="start-unlock"><dc:Bounds x="40" y="60" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape-present" bpmnElement="task-present"><dc:Bounds x="120" y="40" width="120" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge-flow-1" bpmnElement="flow-1"><di:waypoint x="76" y="78"/><di:waypoint x="120" y="78"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

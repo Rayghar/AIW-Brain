@@ -1,0 +1,102 @@
+/* The Arrange panel (rc40, W2, audit/rc40/PLAN.md §4.2): docked at the right edge of the stage, 300 px wide, the picture
+   visible and live beside it; a bottom sheet on a phone. One surface for Layout (cards with a schematic preview),
+   Direction, Spacing, the selection tools and the history. Colours are the theme's tokens only (theme.css). */
+.cm .cm-body>.nt-arrange-panel{grid-column:1;grid-row:1;justify-self:end;align-self:stretch;width:300px;max-width:100%;min-height:0;z-index:12}
+.cm.nt-arrange-open .cm-body>.cm-stage{margin-right:300px}
+.nt-arrange-panel{display:flex;flex-direction:column;min-height:0;box-sizing:border-box;background:var(--sage-1);border-left:1px solid var(--green-5);color:var(--green-12);font:12px/1.4 var(--font-ui)}
+.nt-arrange-panel *{box-sizing:border-box}
+.nt-arrange-panel button{font:inherit;color:inherit;cursor:pointer}
+.nt-arrange-panel button:disabled{cursor:default}
+.nt-arrange-panel :is(button,input):focus-visible{outline:2px solid var(--focus-outline);outline-offset:2px}
+/* The header: the name, the current layout, Close. */
+.nt-arr-head{display:flex;align-items:center;gap:8px;padding:9px 10px 8px 14px;border-bottom:1px solid var(--sage-5)}
+.nt-arr-head h4{margin:0;font:600 14px/1.2 var(--font-ui);color:var(--green-12)}
+.nt-arr-current{margin-left:auto;font-size:11px;color:var(--sage-11);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-arr-close{flex:none;width:28px;height:28px;padding:0;border:1px solid transparent;border-radius:6px;background:none;color:var(--sage-11);font-size:19px;line-height:1}
+.nt-arr-close:hover{background:var(--sage-3);border-color:var(--green-5);color:var(--green-12)}
+/* The body scrolls when the stage is short; the footer stays in reach. */
+.nt-arr-body{flex:1 1 auto;min-height:0;overflow:auto;padding:0 14px;scrollbar-width:thin}
+.nt-arr-sec{padding:10px 0 11px;border-bottom:1px solid var(--sage-5)}
+.nt-arr-sec:last-child{border-bottom:0}
+.nt-arr-sec-head{display:flex;align-items:center;gap:6px;min-height:24px;margin-bottom:7px}
+.nt-arr-sec-head h5{margin:0;font:600 10.5px/1.2 var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--sage-11)}
+.nt-arr-k{font-size:11px;color:var(--sage-11);white-space:nowrap}
+/* Layout: the suggested layout and why, the cards (preview, name, one-line use), the current one pressed. */
+.nt-arr-suggest{margin-left:auto;max-width:100%;padding:3px 8px;border:1px solid var(--gold-6);border-radius:999px;background:var(--gold-2);color:var(--gold-11);font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-arr-suggest:hover:not(:disabled){background:var(--gold-3);border-color:var(--gold-8)}
+.nt-arr-suggest:disabled{opacity:.5}
+.nt-arr-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.nt-arr-cards:has(>.nt-arr-card:only-child){grid-template-columns:1fr}
+.nt-arr-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;min-height:84px;padding:6px 8px 7px;border:1px solid var(--sage-6);border-radius:8px;background:var(--sage-1);text-align:left}
+.nt-arr-card:hover{background:var(--sage-3);border-color:var(--green-7)}
+.nt-arr-card[aria-pressed=true]{background:var(--green-2);border-color:var(--green-8);box-shadow:inset 0 0 0 1px var(--green-8)}
+.nt-arr-card b{font-size:12px;font-weight:600;line-height:1.2;color:var(--green-12)}
+.nt-arr-card small{font-size:10.5px;line-height:1.3;color:var(--sage-11)}
+.nt-arr-badge{position:absolute;top:6px;right:6px;padding:1px 5px;border-radius:999px;background:var(--gold-3);color:var(--gold-11);font:600 9px/1.4 var(--font-ui);font-style:normal;letter-spacing:.04em;text-transform:uppercase}
+.nt-arr-pv{display:block;width:56px;height:36px;margin-bottom:3px}
+.nt-arr-pv-box{fill:var(--green-4);stroke:var(--green-9);stroke-width:1}
+.nt-arr-card[aria-pressed=true] .nt-arr-pv-box{fill:var(--green-6)}
+.nt-arr-pv-band{fill:var(--sage-3);stroke:var(--sage-7);stroke-width:.8}
+.nt-arr-pv-group{fill:var(--sage-2);stroke:var(--sage-8);stroke-width:.9;stroke-dasharray:2 1.5}
+.nt-arr-pv-line{fill:none;stroke:var(--sage-9);stroke-width:.9}
+.nt-arr-pv-life{fill:none;stroke:var(--sage-8);stroke-width:.9;stroke-dasharray:2 1.5}
+.nt-arr-pv-motivation{fill:var(--violet-3)}.nt-arr-pv-business{fill:var(--gold-3)}.nt-arr-pv-application{fill:var(--blue-3)}.nt-arr-pv-technology{fill:var(--green-3)}
+.nt-arr-why{margin:7px 0 0;font-size:11px;line-height:1.4;color:var(--sage-11);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Direction and spacing: segmented controls; Keep pinned positions: a switch. */
+.nt-arr-row{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;gap:8px;margin-bottom:6px}
+.nt-arr-seg{display:flex;border:1px solid var(--sage-6);border-radius:7px;overflow:hidden;background:var(--sage-2)}
+.nt-arr-seg>button{flex:1 1 0;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:30px;padding:3px 4px;border:0;border-left:1px solid var(--sage-6);background:none;color:var(--green-12);font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-arr-seg>button:first-child{border-left:0}
+.nt-arr-seg>button>svg{width:14px;height:14px;flex:none}
+.nt-arr-seg>button:hover:not(:disabled){background:var(--sage-3)}
+.nt-arr-seg>button[aria-pressed=true]{background:var(--green-9);color:var(--on-solid);font-weight:600}
+.nt-arr-seg>button:disabled{opacity:.45}
+.nt-arr-switch{display:flex;align-items:center;gap:6px;min-height:28px;margin:4px 0 0;font-size:11.5px;color:var(--green-12);cursor:pointer}
+.nt-arr-switch input{margin:0;width:15px;height:15px;accent-color:var(--green-9);cursor:pointer}
+.nt-arr-switch small{margin-left:auto;font-size:10.5px;color:var(--sage-11);text-align:right;white-space:nowrap}
+/* Selection: the count, Select shown and Clear, then the tool rows (icon buttons that say why they are disabled). */
+.nt-arr-n{font-size:11px;font-weight:600;color:var(--green-11);white-space:nowrap}
+.nt-arr-sec-head>button{margin-left:auto;padding:3px 7px;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);color:var(--green-11);font-size:11px;white-space:nowrap}
+.nt-arr-sec-head>button+button{margin-left:0}
+.nt-arr-sec-head>button:hover:not(:disabled){background:var(--sage-3);border-color:var(--green-7)}
+.nt-arr-sec-head>button:disabled{opacity:.45}
+.nt-arr-help{margin:0 0 8px;font-size:11px;line-height:1.4;color:var(--sage-11)}
+.nt-arr-tools{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;gap:8px;margin-bottom:5px}
+.nt-arr-icons{display:flex;gap:3px}
+.nt-arr-icons>button{display:grid;place-items:center;width:32px;height:30px;padding:0;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);color:var(--green-12)}
+.nt-arr-icons>button>svg{width:16px;height:16px}
+.nt-arr-icons>button:hover:not(:disabled){background:var(--sage-3);border-color:var(--green-7)}
+.nt-arr-icons>button:disabled{opacity:.38;background:var(--sage-2)}
+.nt-arr-text{display:flex;gap:4px;flex-wrap:wrap}
+.nt-arr-text>button{display:inline-flex;align-items:center;gap:3px;min-height:28px;padding:3px 8px;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);color:var(--green-12);font-size:11px;white-space:nowrap}
+.nt-arr-text>button>svg{width:14px;height:14px}
+.nt-arr-text>button:hover:not(:disabled){background:var(--sage-3);border-color:var(--green-7)}
+.nt-arr-text>button:disabled{opacity:.45}
+/* The footer: Snap to grid, Undo and Redo, Reset positions, the status line and any message. */
+.nt-arr-foot{flex:none;padding:8px 14px 10px;border-top:1px solid var(--sage-5);background:var(--sage-1)}
+.nt-arr-foot-row{display:flex;align-items:center;gap:8px}
+.nt-arr-foot-row .nt-arr-switch{margin:0;flex:1 1 auto;min-width:0}
+.nt-arr-foot-row .nt-arr-switch small{margin-left:4px}
+.nt-arr-history{display:flex;gap:3px;flex:none}
+.nt-arr-history>button,.nt-arr-reset{min-height:28px;padding:3px 9px;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);color:var(--green-12);font-size:11px;white-space:nowrap}
+.nt-arr-history>button:hover:not(:disabled),.nt-arr-reset:hover:not(:disabled){background:var(--sage-3);border-color:var(--green-7)}
+.nt-arr-history>button:disabled,.nt-arr-reset:disabled{opacity:.45}
+.nt-arr-reset{display:block;width:100%;margin-top:6px}
+.nt-arr-status{margin:7px 0 0;font-size:11px;color:var(--sage-11);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-arr-message{margin:6px 0 0;padding:6px 8px;border-radius:6px;background:var(--sage-3);font-size:11px;line-height:1.4;color:var(--green-11)}
+.nt-arr-message.nt-warn{background:var(--gold-2);color:var(--gold-11)}
+/* A phone: a bottom sheet over the picture; the stage keeps its width. */
+@media(max-width:700px){
+  .cm.nt-arrange-open .cm-body>.cm-stage{margin-right:0}
+  /* The body's own stacking context (model-round27.css, z-index 0) would keep the sheet under the workspace bar. */
+  .cm.nt-arrange-open:has(>.cm-top[data-model-slot])>[data-model-slot=content],.cm.nt-arrange-open .cm-body{z-index:80}
+  .cm .cm-body>.nt-arrange-panel,.nt-arrange-panel{position:fixed;left:0;right:0;bottom:0;width:auto;max-width:none;height:auto;max-height:min(72vh,640px);z-index:70;border-left:0;border-top:1px solid var(--green-5);border-radius:14px 14px 0 0;box-shadow:0 -8px 24px color-mix(in srgb,var(--shadow) 18%,transparent)}
+  .nt-arr-head{position:relative;padding-top:10px}
+  .nt-arr-head::before{content:"";position:absolute;left:50%;top:4px;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--sage-6)}
+  .nt-arrange-panel{position:fixed}
+  .nt-arr-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .nt-arr-card{min-height:88px;padding:6px}
+  .nt-arr-icons>button{width:36px;height:36px}
+  .nt-arr-seg>button,.nt-arr-text>button,.nt-arr-history>button,.nt-arr-reset,.nt-arr-sec-head>button{min-height:36px}
+}
+@media(forced-colors:active){.nt-arrange-panel{border-color:CanvasText}.nt-arr-card[aria-pressed=true],.nt-arr-seg>button[aria-pressed=true]{outline:2px solid Highlight;outline-offset:-2px}}

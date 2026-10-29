@@ -1,0 +1,1332 @@
+{
+  "authority": "Local synthetic project clone only. Native editors, local routes and reversible commands. No external provider calls, approvals or execution evidence asserted.",
+  "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-c10-fixed",
+  "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "rawEvidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks.json",
+  "actualClickCount": 707,
+  "distinctPreviouslyUnclickedFamilies": 107,
+  "familyClicks": [
+    {
+      "family": "data-r-action=close-dialog",
+      "chapter": "1",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-r-action": "close-dialog"
+      }
+    },
+    {
+      "family": "data-r-action=context",
+      "chapter": "1",
+      "tab": "work",
+      "label": "Define context",
+      "attributes": {
+        "data-r-action": "context"
+      }
+    },
+    {
+      "family": "data-r-select=[record]",
+      "chapter": "1",
+      "tab": "work",
+      "label": "ACT-001 \u00b7 ActorPatientRequests an available clinic appointment and receives the booking outcome.Synthetic clinic architecture team",
+      "attributes": {
+        "data-r-select": "ACT-001",
+        "data-r-insight": "ACT-001"
+      }
+    },
+    {
+      "family": "data-r-edit=[record]",
+      "chapter": "1",
+      "tab": "work",
+      "label": "Edit ACT-001",
+      "attributes": {
+        "data-r-edit": "ACT-001"
+      }
+    },
+    {
+      "family": "data-r-action=assurance",
+      "chapter": "1",
+      "tab": "work",
+      "label": "Review evidence",
+      "attributes": {
+        "data-r-action": "assurance"
+      }
+    },
+    {
+      "family": "label=Save group",
+      "chapter": "1",
+      "tab": "work",
+      "label": "Save group",
+      "attributes": {}
+    },
+    {
+      "family": "data-r-fix=[record]",
+      "chapter": "1",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-r-fix": "confirmation:ASM-001"
+      }
+    },
+    {
+      "family": "data-q-action=form-next",
+      "chapter": "2",
+      "tab": "work",
+      "label": "Next: measurement",
+      "attributes": {
+        "data-q-action": "form-next"
+      }
+    },
+    {
+      "family": "data-q-action=close",
+      "chapter": "2",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-q-action": "close"
+      }
+    },
+    {
+      "family": "data-q-action=review-intake",
+      "chapter": "2",
+      "tab": "work",
+      "label": "Record input review",
+      "attributes": {
+        "data-q-action": "review-intake"
+      }
+    },
+    {
+      "family": "data-q-edit=[record]",
+      "chapter": "2",
+      "tab": "work",
+      "label": "Edit quality scenario",
+      "attributes": {
+        "data-q-edit": "QD-001"
+      }
+    },
+    {
+      "family": "data-q-select=[record]",
+      "chapter": "2",
+      "tab": "work",
+      "label": "QD1 \u00b7 PerformanceReturn a booking outcome promptlyBooking response time p95 At most 2 seconds1 requirements \u00b7 0 responsibilities",
+      "attributes": {
+        "data-q-select": "QD-001",
+        "data-q-insight": "driver:QD-001"
+      }
+    },
+    {
+      "family": "data-q-fix=[record]",
+      "chapter": "2",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-q-fix": "responsibilities:QD-001"
+      }
+    },
+    {
+      "family": "data-d-action=next-step",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Next: traceability",
+      "attributes": {
+        "data-d-action": "next-step"
+      }
+    },
+    {
+      "family": "data-d-action=close",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-d-action": "close"
+      }
+    },
+    {
+      "family": "data-d-comparison-view=options",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Alternatives",
+      "attributes": {
+        "data-d-comparison-view": "options"
+      }
+    },
+    {
+      "family": "data-d-comparison-view=evidence",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Driver evidence",
+      "attributes": {
+        "data-d-comparison-view": "evidence"
+      }
+    },
+    {
+      "family": "data-d-action=model",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Review model impact",
+      "attributes": {
+        "data-d-action": "model"
+      }
+    },
+    {
+      "family": "data-d-fix=[record]",
+      "chapter": "3",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-d-fix": "assumptions:ADR-001"
+      }
+    },
+    {
+      "family": "data-l-action=close",
+      "chapter": "4",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-l-action": "close"
+      }
+    },
+    {
+      "family": "data-l-action=inspect",
+      "chapter": "4",
+      "tab": "work",
+      "label": "On model",
+      "attributes": {
+        "data-l-action": "inspect",
+        "data-l-id": "lr-001"
+      }
+    },
+    {
+      "family": "label=Save connection",
+      "chapter": "4",
+      "tab": "work",
+      "label": "Save connection",
+      "attributes": {}
+    },
+    {
+      "family": "data-l-action=fix",
+      "chapter": "4",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-l-action": "fix",
+        "data-l-id": "disconnected-object:if-001"
+      }
+    },
+    {
+      "family": "data-a-action=close",
+      "chapter": "5",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-a-action": "close"
+      }
+    },
+    {
+      "family": "data-a-action=inspect",
+      "chapter": "5",
+      "tab": "work",
+      "label": "On model",
+      "attributes": {
+        "data-a-action": "inspect",
+        "data-a-id": "obj-001"
+      }
+    },
+    {
+      "family": "data-a-action=fix",
+      "chapter": "5",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-a-action": "fix",
+        "data-a-id": "isolated:obj-001"
+      }
+    },
+    {
+      "family": "label=Save interaction",
+      "chapter": "5",
+      "tab": "validate",
+      "label": "Save interaction",
+      "attributes": {}
+    },
+    {
+      "family": "data-t-action=close",
+      "chapter": "6",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-t-action": "close"
+      }
+    },
+    {
+      "family": "data-t-action=need-context",
+      "chapter": "6",
+      "tab": "work",
+      "label": "TN-001 \u00b7 Compute",
+      "attributes": {
+        "data-t-action": "need-context",
+        "data-t-id": "TN-001"
+      }
+    },
+    {
+      "family": "data-t-action=inspect",
+      "chapter": "6",
+      "tab": "work",
+      "label": "On model",
+      "attributes": {
+        "data-t-action": "inspect",
+        "data-t-id": "obj-001"
+      }
+    },
+    {
+      "family": "label=Save trust boundary",
+      "chapter": "6",
+      "tab": "work",
+      "label": "Save trust boundary",
+      "attributes": {}
+    },
+    {
+      "family": "label=Save dependency",
+      "chapter": "6",
+      "tab": "work",
+      "label": "Save dependency",
+      "attributes": {}
+    },
+    {
+      "family": "data-t-action=fix",
+      "chapter": "6",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-t-action": "fix",
+        "data-t-id": "trust:tc-001"
+      }
+    },
+    {
+      "family": "data-tr-action=close",
+      "chapter": "7",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-tr-action": "close"
+      }
+    },
+    {
+      "family": "data-tr-action=choose-preference",
+      "chapter": "7",
+      "tab": "work",
+      "label": "Choose draft preference",
+      "attributes": {
+        "data-tr-action": "choose-preference"
+      }
+    },
+    {
+      "family": "data-tr-action=inspect",
+      "chapter": "7",
+      "tab": "work",
+      "label": "Explore on model",
+      "attributes": {
+        "data-tr-action": "inspect",
+        "data-tr-id": "tr-001"
+      }
+    },
+    {
+      "family": "data-tr-action=fix",
+      "chapter": "7",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-tr-action": "fix",
+        "data-tr-id": "choice:tr-001"
+      }
+    },
+    {
+      "family": "data-i-action=close",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-i-action": "close"
+      }
+    },
+    {
+      "family": "data-i-action=review",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Record design review",
+      "attributes": {
+        "data-i-action": "review",
+        "data-i-id": "if-001"
+      }
+    },
+    {
+      "family": "data-i-action=inspect",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Explore boundary \u2192 Model",
+      "attributes": {
+        "data-i-action": "inspect",
+        "data-i-id": "if-001"
+      }
+    },
+    {
+      "family": "data-i-action=remove-contract",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Remove this contract",
+      "attributes": {
+        "data-i-action": "remove-contract",
+        "data-i-id": "if-001"
+      }
+    },
+    {
+      "family": "data-i-action=open-data",
+      "chapter": "8",
+      "tab": "work",
+      "label": "DX-001 \u00b7 requestDAT-001 \u00b7 Clinic booking request1 fields \u00b7 Confidential",
+      "attributes": {
+        "data-i-action": "open-data",
+        "data-i-id": "dat-001"
+      }
+    },
+    {
+      "family": "data-i-action=remove-field",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Remove",
+      "attributes": {
+        "data-i-action": "remove-field",
+        "data-i-field": "DF-001"
+      }
+    },
+    {
+      "family": "data-i-action=invariant",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Add an invariant",
+      "attributes": {
+        "data-i-action": "invariant",
+        "data-i-data": "dat-001"
+      }
+    },
+    {
+      "family": "data-i-action=back-model",
+      "chapter": "8",
+      "tab": "work",
+      "label": "\u2191 Model",
+      "attributes": {
+        "data-i-action": "back-model"
+      }
+    },
+    {
+      "family": "data-i-action=fix",
+      "chapter": "8",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-i-action": "fix",
+        "data-i-id": "assumptions:if-001"
+      }
+    },
+    {
+      "family": "data-sec-action=close",
+      "chapter": "9",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-sec-action": "close"
+      }
+    },
+    {
+      "family": "data-sec-action=inspect",
+      "chapter": "9",
+      "tab": "work",
+      "label": "IF-001 \u00b7 Request clinic appointment",
+      "attributes": {
+        "data-sec-action": "inspect",
+        "data-sec-id": "if-001"
+      }
+    },
+    {
+      "family": "data-sec-action=risk",
+      "chapter": "9",
+      "tab": "work",
+      "label": "Record risk treatment",
+      "attributes": {
+        "data-sec-action": "risk"
+      }
+    },
+    {
+      "family": "data-sec-action=fix",
+      "chapter": "9",
+      "tab": "work",
+      "label": "Review",
+      "attributes": {
+        "data-sec-action": "fix",
+        "data-sec-id": "assumptions:thr-001"
+      }
+    },
+    {
+      "family": "data-sec-action=evidence",
+      "chapter": "9",
+      "tab": "work",
+      "label": "Record evidence",
+      "attributes": {
+        "data-sec-action": "evidence"
+      }
+    },
+    {
+      "family": "label=Create runtime plan",
+      "chapter": "10",
+      "tab": "work",
+      "label": "Create runtime plan",
+      "attributes": {}
+    },
+    {
+      "family": "data-rt-action=close",
+      "chapter": "10",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-rt-action": "close"
+      }
+    },
+    {
+      "family": "data-rt-action=remove-placement",
+      "chapter": "10",
+      "tab": "work",
+      "label": "Remove",
+      "attributes": {
+        "data-rt-action": "remove-placement",
+        "data-rt-id": "PL-001"
+      }
+    },
+    {
+      "family": "data-rt-action=remove-plan",
+      "chapter": "10",
+      "tab": "work",
+      "label": "Remove this plan",
+      "attributes": {
+        "data-rt-action": "remove-plan",
+        "data-rt-id": "run-001"
+      }
+    },
+    {
+      "family": "data-rt-action=fix",
+      "chapter": "10",
+      "tab": "work",
+      "label": "Review",
+      "attributes": {
+        "data-rt-action": "fix",
+        "data-rt-id": "capacity:run-001"
+      }
+    },
+    {
+      "family": "data-rv-action=filter-chapter",
+      "chapter": "11",
+      "tab": "work",
+      "label": "Review findings - Validate",
+      "attributes": {
+        "data-rv-action": "filter-chapter",
+        "data-rv-chapter": "1"
+      }
+    },
+    {
+      "family": "data-rv-action=close",
+      "chapter": "11",
+      "tab": "work",
+      "label": "Cancel",
+      "attributes": {
+        "data-rv-action": "close"
+      }
+    },
+    {
+      "family": "data-pick-remove=[record]",
+      "chapter": "11",
+      "tab": "work",
+      "label": "Remove REQ-001",
+      "attributes": {
+        "data-pick-remove": "REQ-001"
+      }
+    },
+    {
+      "family": "data-d-action=go-compare",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Compare alternatives \u2192 Work",
+      "attributes": {
+        "data-d-action": "go-compare"
+      }
+    },
+    {
+      "family": "label=Save implementation mapping",
+      "chapter": "4",
+      "tab": "work",
+      "label": "Save implementation mapping",
+      "attributes": {}
+    },
+    {
+      "family": "data-l-action=remove-mapping",
+      "chapter": "4",
+      "tab": "work",
+      "label": "Remove",
+      "attributes": {
+        "data-l-action": "remove-mapping",
+        "data-l-id": "MAP-001"
+      }
+    },
+    {
+      "family": "label=Save needs statement",
+      "chapter": "5",
+      "tab": "work",
+      "label": "Save needs statement",
+      "attributes": {}
+    },
+    {
+      "family": "data-t-action=back-model",
+      "chapter": "6",
+      "tab": "work",
+      "label": "\u2191 Model",
+      "attributes": {
+        "data-t-action": "back-model"
+      }
+    },
+    {
+      "family": "data-tr-action=assess",
+      "chapter": "7",
+      "tab": "work",
+      "label": "Review judgement",
+      "attributes": {
+        "data-tr-action": "assess",
+        "data-tr-option": "TO-001",
+        "data-tr-criterion": "QD-001"
+      }
+    },
+    {
+      "family": "data-tr-action=preference",
+      "chapter": "7",
+      "tab": "work",
+      "label": "Set draft preference",
+      "attributes": {
+        "data-tr-action": "preference",
+        "data-tr-option": "TO-001"
+      }
+    },
+    {
+      "family": "data-tr-action=record",
+      "chapter": "7",
+      "tab": "work",
+      "label": "Review & record selection",
+      "attributes": {
+        "data-tr-action": "record"
+      }
+    },
+    {
+      "family": "data-tr-action=back-model",
+      "chapter": "7",
+      "tab": "work",
+      "label": "\u2191 Model",
+      "attributes": {
+        "data-tr-action": "back-model"
+      }
+    },
+    {
+      "family": "data-tr-action=connection",
+      "chapter": "7",
+      "tab": "work",
+      "label": "New technology interface",
+      "attributes": {
+        "data-tr-action": "connection"
+      }
+    },
+    {
+      "family": "data-i-action=view-lineage",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Explore ownership & data flow",
+      "attributes": {
+        "data-i-action": "view-lineage"
+      }
+    },
+    {
+      "family": "data-sec-action=back-model",
+      "chapter": "9",
+      "tab": "work",
+      "label": "\u2191 Model",
+      "attributes": {
+        "data-sec-action": "back-model"
+      }
+    },
+    {
+      "family": "label=Save runtime path",
+      "chapter": "10",
+      "tab": "work",
+      "label": "Save runtime path",
+      "attributes": {}
+    },
+    {
+      "family": "data-rt-action=remove-path",
+      "chapter": "10",
+      "tab": "work",
+      "label": "Remove",
+      "attributes": {
+        "data-rt-action": "remove-path",
+        "data-rt-id": "RP-001"
+      }
+    },
+    {
+      "family": "data-rt-action=back-model",
+      "chapter": "10",
+      "tab": "work",
+      "label": "\u2191 Model",
+      "attributes": {
+        "data-rt-action": "back-model"
+      }
+    },
+    {
+      "family": "data-rv-action=case-new",
+      "chapter": "11",
+      "tab": "work",
+      "label": "Choose a case",
+      "attributes": {
+        "data-rv-action": "case-new",
+        "data-rv-id": ""
+      }
+    },
+    {
+      "family": "data-rv-action=delivery",
+      "chapter": "11",
+      "tab": "work",
+      "label": "Record progress",
+      "attributes": {
+        "data-rv-action": "delivery",
+        "data-rv-id": "RA-001"
+      }
+    },
+    {
+      "family": "data-rv-action=plateau-add",
+      "chapter": "11",
+      "tab": "work",
+      "label": "Add a plateau",
+      "attributes": {
+        "data-rv-action": "plateau-add"
+      }
+    },
+    {
+      "family": "data-rv-action=record",
+      "chapter": "11",
+      "tab": "validate",
+      "label": "Record architect review \u00b7 run checks first",
+      "attributes": {
+        "data-rv-action": "record"
+      }
+    },
+    {
+      "family": "data-rv-action=fix",
+      "chapter": "11",
+      "tab": "validate",
+      "label": "Open remedy",
+      "attributes": {
+        "data-rv-action": "fix",
+        "data-rv-id": "narrative:project"
+      }
+    },
+    {
+      "family": "data-r-action=run-checks-menu",
+      "chapter": "1",
+      "tab": "validate",
+      "label": "Run checks",
+      "attributes": {
+        "data-r-action": "run-checks-menu"
+      }
+    },
+    {
+      "family": "data-r-action=export-json",
+      "chapter": "1",
+      "tab": "output",
+      "label": "Export project JSON",
+      "attributes": {
+        "data-r-action": "export-json"
+      }
+    },
+    {
+      "family": "data-r-action=export-md",
+      "chapter": "1",
+      "tab": "output",
+      "label": "Export requirements brief",
+      "attributes": {
+        "data-r-action": "export-md"
+      }
+    },
+    {
+      "family": "data-q-action=go-model",
+      "chapter": "2",
+      "tab": "work",
+      "label": "Explore the driver map",
+      "attributes": {
+        "data-q-action": "go-model"
+      }
+    },
+    {
+      "family": "data-q-action=go-compare",
+      "chapter": "2",
+      "tab": "work",
+      "label": "Compare priorities",
+      "attributes": {
+        "data-q-action": "go-compare"
+      }
+    },
+    {
+      "family": "data-q-action=run-checks-menu",
+      "chapter": "2",
+      "tab": "validate",
+      "label": "Run checks",
+      "attributes": {
+        "data-q-action": "run-checks-menu"
+      }
+    },
+    {
+      "family": "data-q-action=go-work",
+      "chapter": "2",
+      "tab": "validate",
+      "label": "Review drivers",
+      "attributes": {
+        "data-q-action": "go-work"
+      }
+    },
+    {
+      "family": "data-q-action=export-md",
+      "chapter": "2",
+      "tab": "output",
+      "label": "Export driver register",
+      "attributes": {
+        "data-q-action": "export-md"
+      }
+    },
+    {
+      "family": "data-q-action=export-json",
+      "chapter": "2",
+      "tab": "output",
+      "label": "Export shared project",
+      "attributes": {
+        "data-q-action": "export-json"
+      }
+    },
+    {
+      "family": "data-d-action=compare-view",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Compare alternatives",
+      "attributes": {
+        "data-d-action": "compare-view"
+      }
+    },
+    {
+      "family": "data-d-action=record-view",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Open decision record",
+      "attributes": {
+        "data-d-action": "record-view"
+      }
+    },
+    {
+      "family": "data-d-action=export-md",
+      "chapter": "3",
+      "tab": "output",
+      "label": "Export decision register",
+      "attributes": {
+        "data-d-action": "export-md"
+      }
+    },
+    {
+      "family": "data-l-action=groups-view",
+      "chapter": "4",
+      "tab": "work",
+      "label": "Organise groups",
+      "attributes": {
+        "data-l-action": "groups-view"
+      }
+    },
+    {
+      "family": "data-l-action=fix-first",
+      "chapter": "4",
+      "tab": "validate",
+      "label": "Review the next gap",
+      "attributes": {
+        "data-l-action": "fix-first"
+      }
+    },
+    {
+      "family": "data-l-action=export-md",
+      "chapter": "4",
+      "tab": "output",
+      "label": "Export logical register",
+      "attributes": {
+        "data-l-action": "export-md"
+      }
+    },
+    {
+      "family": "data-a-action=fix-first",
+      "chapter": "5",
+      "tab": "validate",
+      "label": "Review the next gap",
+      "attributes": {
+        "data-a-action": "fix-first"
+      }
+    },
+    {
+      "family": "data-a-action=export-md",
+      "chapter": "5",
+      "tab": "output",
+      "label": "Export realisation register",
+      "attributes": {
+        "data-a-action": "export-md"
+      }
+    },
+    {
+      "family": "data-t-action=fix-first",
+      "chapter": "6",
+      "tab": "validate",
+      "label": "Review the next gap",
+      "attributes": {
+        "data-t-action": "fix-first"
+      }
+    },
+    {
+      "family": "data-t-action=export-md",
+      "chapter": "6",
+      "tab": "output",
+      "label": "Export technology register",
+      "attributes": {
+        "data-t-action": "export-md"
+      }
+    },
+    {
+      "family": "data-i-action=fix-next",
+      "chapter": "8",
+      "tab": "validate",
+      "label": "Resolve the next content gap",
+      "attributes": {
+        "data-i-action": "fix-next"
+      }
+    },
+    {
+      "family": "data-i-action=export-md",
+      "chapter": "8",
+      "tab": "output",
+      "label": "Export contracts & dictionary",
+      "attributes": {
+        "data-i-action": "export-md"
+      }
+    },
+    {
+      "family": "data-sec-action=fix-next",
+      "chapter": "9",
+      "tab": "validate",
+      "label": "Review the next content gap",
+      "attributes": {
+        "data-sec-action": "fix-next"
+      }
+    },
+    {
+      "family": "data-sec-action=export-md",
+      "chapter": "9",
+      "tab": "output",
+      "label": "Export security register",
+      "attributes": {
+        "data-sec-action": "export-md"
+      }
+    },
+    {
+      "family": "data-rt-action=fix-next",
+      "chapter": "10",
+      "tab": "validate",
+      "label": "Review the next content gap",
+      "attributes": {
+        "data-rt-action": "fix-next"
+      }
+    },
+    {
+      "family": "data-rt-action=export-md",
+      "chapter": "10",
+      "tab": "output",
+      "label": "Export operating register",
+      "attributes": {
+        "data-rt-action": "export-md"
+      }
+    },
+    {
+      "family": "data-d-action=add-relationship",
+      "chapter": "3",
+      "tab": "work",
+      "label": "Add proposed relationship",
+      "attributes": {
+        "data-d-action": "add-relationship"
+      }
+    },
+    {
+      "family": "label=Save data derivation",
+      "chapter": "8",
+      "tab": "work",
+      "label": "Save data derivation",
+      "attributes": {}
+    },
+    {
+      "family": "data-rv-action=output",
+      "chapter": "11",
+      "tab": "work",
+      "label": "Baselines & exports",
+      "attributes": {
+        "data-rv-action": "output"
+      }
+    }
+  ],
+  "remainingFamilies": [
+    {
+      "family": "label=Record treatment",
+      "reason": "Finding-treatment submission was not reached; native remedy navigation and editor validation were exercised, without recording an unsupported review disposition."
+    },
+    {
+      "family": "data-close-review=",
+      "reason": "Requires a valid changed editor submission to open the shared review-change confirmation; this pass exercised native editor open, steps, validation and cancel paths."
+    },
+    {
+      "family": "label=Confirm selected after review",
+      "reason": "Requires the shared review-change confirmation after a valid changed submission; no confirmation was asserted merely to increase coverage."
+    },
+    {
+      "family": "data-a-action=technology-intake",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-i-action=chapter9",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-i-action=select-contract",
+      "reason": "Requires the selected external party\u2019s related-contract list; that conditional party branch was not reached in this bounded pass."
+    },
+    {
+      "family": "data-l-action=chapter5",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-rv-action=content-report",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-rv-action=delivery-stage",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-sec-action=chapter10",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-t-action=chapter7",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-tr-action=chapter8",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-tr-action=compare",
+      "reason": "The current-plan Review comparison shortcut was not exposed on the visited plan/compare paths; the comparison section, assessment and preference controls were clicked."
+    },
+    {
+      "family": "data-rt-action=chapter11",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-rt-action=inspect",
+      "reason": "Requires an environment/zone inspector or affected operating-plan list; this pass selected the operating record rather than that conditional inspector branch."
+    },
+    {
+      "family": "label=Undo last saved input review",
+      "reason": "Requires the transient undo notice immediately after a new Chapter 3 input-review save; that save was not executed during this pass."
+    }
+  ],
+  "delegatedFamilies": [
+    {
+      "family": "data-brain-action=subject",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-sel=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-cr-action=hide",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-cr-action=open",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-brain-action=author",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-nt-row=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-action=all-layers",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-action=model-layer-filter",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-action=close-modal",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-lane=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-nt-cell=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=process",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-object-page=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-rv-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-select=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-a-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-d-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-i-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-l-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-q-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-r-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-sec-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-t-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-tr-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-edge=b",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-edge=r",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=logical",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=physical",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=technology",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-link=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-band=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-edge=t",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=data",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-object-history=",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-pf=mode",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-r-action=show-model",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-row=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-a-action=from-library",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-a-action=to-library",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-action=play",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-action=release-subject",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-action=restart-flow",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-action=step-flow",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-brain-action=unpin",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-brain-launch=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=deployment",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=interface",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-layer=security",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-pf=fail",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-pf=scope",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-pf=walk-start",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-rt-action=dismiss-seed",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-rt-action=keep-seed",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-rt-action=mind",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-rv-action=walk",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-stage=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-tr-action=sensitivity",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-zone=[record]",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-guide-action=loop",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-guide-action=start",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-journey-draft=6",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-t-action=keep-component-needs",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-t-action=keep-seed",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-wb-action=baseline-diff",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-wb-action=delivery",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-wb-action=queue",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    },
+    {
+      "family": "data-wb-action=source-questions",
+      "reason": "Delegated Model, shell/resource, proposal or simulation scope"
+    }
+  ],
+  "applicationExceptions": [],
+  "harnessNavigationAborts": [
+    "Ch11/plateaus page.goto: net::ERR_ABORTED at http://127.0.0.1:33337/?project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c&chapter=11&tab=work&section=plateaus",
+    "Validate11 page.goto: net::ERR_ABORTED at http://127.0.0.1:33337/?project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c&chapter=11&tab=validate"
+  ],
+  "limitations": [
+    "An actual click is evidence of reaching a control, not proof of every repeated record or parameter combination.",
+    "Save controls were also exercised through required-field validation; no unsupported architecture acceptance, external provider send, production execution or delivery verification was recorded.",
+    "Two initial beforeunload navigation aborts were corrected by accepting discard navigation in follow-up passes."
+  ],
+  "classificationCorrection": "The earlier claim that output-workspace.js ignored context/handoff was incorrect, caused by inspecting truncated source output. Canonical code includes both inside output disclosures. No production omission was established."
+}

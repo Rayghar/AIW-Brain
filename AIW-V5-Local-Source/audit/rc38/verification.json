@@ -1,0 +1,155 @@
+{
+  "schema": "aiw.rc38.ui-refinement-verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.38+studio.20261021",
+  "sourceParent": "83854ef635e4ad421b403804ad7778c060a673d8",
+  "recordedAt": "2026-10-21T05:40:57.113203+00:00",
+  "sourceIdentityNote": "The publication receipt and exact Git source ZIP identify the final pushed commit. SOURCE-MANIFEST.json verifies source bytes without a circular commit hash.",
+  "checks": [
+    {
+      "command": "node diagram-readability-ui-validate.mjs",
+      "status": "passed",
+      "scope": "6 groups; every offered diagram scene across 11 chapters, monotonic reveal, fixed geometry/camera, exact pending counts, unobscured badges, held subjects, legacy pins, exact visible assistant packet"
+    },
+    {
+      "command": "node layers-overview-validate.mjs",
+      "status": "passed",
+      "scope": "12 groups; concern/type projections, exact membership, exploration and line-only progressive controls"
+    },
+    {
+      "command": "node architecture-arrangement-validate.mjs",
+      "status": "passed",
+      "scope": "10 groups; conventional layout presets, direction and native Arrange commands"
+    },
+    {
+      "command": "node canvas-controls-dom-validate.mjs",
+      "status": "passed",
+      "scope": "Native visibility, selection, arrangement and camera controls"
+    },
+    {
+      "command": "node model-journey-continuity-ui-validate.mjs",
+      "status": "passed",
+      "scope": "Held subject and view continuity"
+    },
+    {
+      "command": "node notation-export-context-ui-validate.mjs",
+      "status": "passed",
+      "scope": "Exact export context and truthful grouped scope"
+    },
+    {
+      "command": "node notation-validate.mjs",
+      "status": "passed",
+      "scope": "14 groups"
+    },
+    {
+      "command": "node native-connection-ui-validate.mjs",
+      "status": "passed",
+      "scope": "10 groups; all 9 native drawings plus preferences, exact group membership including labels/heads/branches, monotonic reveal, no writes, unchanged geometry, Utility and Decision reading order"
+    },
+    {
+      "command": "node wire-merge-validate.mjs",
+      "status": "passed",
+      "scope": "Randomized geometry and canonical reference routing"
+    },
+    {
+      "command": "node work-sections-validate.mjs",
+      "status": "passed",
+      "scope": "80 reference and blank-project transitions; all 11 chapters / 40 sections, exact method destinations and record trace links"
+    },
+    {
+      "command": "node work-composition-validate.mjs",
+      "status": "passed",
+      "scope": "Canonical source IDs, native commands/scopes, escaped and bounded record context"
+    },
+    {
+      "command": "node work-editors-validate.mjs",
+      "status": "passed",
+      "scope": "28 editor entry/cancel paths; changed-field keep-editing/discard flow and focus return, zero canonical writes"
+    },
+    {
+      "command": "node design-spec-validate.mjs",
+      "status": "passed",
+      "scope": "11 checks; canonical design specifications and event-direction semantics"
+    },
+    {
+      "command": "node driver-spec-view-validate.mjs",
+      "status": "passed",
+      "scope": "Applied design trace, properties, driver kinds and exact placements"
+    },
+    {
+      "command": "node specification-reasoning-validate.mjs",
+      "status": "passed",
+      "scope": "5 relationship/evidence cases; decision rationale, mechanisms, platform choices, shared-driver scope and evidence currentness"
+    },
+    {
+      "command": "node specification-reading-ui-validate.mjs",
+      "status": "passed",
+      "scope": "8 native DOM/navigation/scope cases; Structure, Flow and Reasoning, canonical facts, empty scopes and source editor identities"
+    }
+  ],
+  "notationLayout": {
+    "command": "node notation-layout-validate.mjs",
+    "status": "not-fully-passed-environment-subprocess-gate",
+    "reason": "The second-process digest comparison receives empty captured output from spawnSync in this environment.",
+    "alternateEvidence": "The exact digest workload was run in two independent supported tool processes, both successful and equal. The test was not relaxed.",
+    "sha256": "1d73069ebc75a5768783eeaede244c61f9b30fe91928db73856041f5f96722ba"
+  },
+  "notRun": [
+    "realise-browser-validate.mjs (expectations updated; browser execution not available)",
+    "Full browser walkthrough / responsive viewport acceptance"
+  ],
+  "sourceValidation": {
+    "evidence": "source-validation.json",
+    "syntaxModules": 865,
+    "syntaxErrors": 0,
+    "wholeRepositoryLintClean": false,
+    "lintBaselineRaised": false
+  },
+  "visual": {
+    "suppliedImagesInspected": 13,
+    "nativeSvgCapturesInspected": 7,
+    "nativeSvgEvidence": "visuals/",
+    "nativeSvgClassification": "Native SVG raster diagnostics, not browser screenshots",
+    "workStaticFixturesRendered": 22,
+    "workChaptersRepresentedInVisualInspection": 11,
+    "specificationLensesInspected": 3,
+    "arrangeStatesInspected": 2,
+    "browserAcceptance": "not verified",
+    "browserReason": "The Sites managed-preview workflow requires control-browser, unavailable in this session. It instructs skipping browser QA without an alternate route. Earlier supported preview was unreachable and a subsequent browser operation was rejected by browser security policy.",
+    "staticLimitations": [
+      "WeasyPrint native form controls differ from browser controls",
+      "Fixed, scrolling and sticky regions and grid pagination are not browser-equivalent",
+      "Negative grid end reproduced a 22 px child inside a 900 px trace; equivalent positive grid ends used in diagnostic CSS only, production unchanged",
+      "SVG marker auto-start-reverse and ancestor-dependent browser CSS are not certified by raster diagnostics"
+    ]
+  },
+  "build": {
+    "command": "node /root/.codex/plugins/cache/openai-curated-remote/sites/1.0.1/scripts/build-site.mjs",
+    "status": "passed",
+    "serverModules": 243,
+    "scriptFiles": 139,
+    "stylesheetsCombined": 51,
+    "packagedImportsVerified": true,
+    "plainAndGzipAssetBytesVerified": true,
+    "etagRevalidationVerified": true,
+    "assetModule": "9.17 MB, compressed to 3.71 MB"
+  },
+  "performance": {
+    "evidence": "client-size-report.json",
+    "cssBytes": 866189,
+    "cssBaselineBytes": 854243,
+    "cssBudgetBytes": 866304,
+    "entryBytes": 4979,
+    "chapterStartupCodeBytes": 3114012,
+    "chapterStartupBaselineBytes": 3099841,
+    "chapterStartupBudgetBytes": 3115008,
+    "budgetsChanged": [
+      "css",
+      "routes.chapters"
+    ],
+    "budgetPolicy": "Next whole KiB above measured final size; all other budgets unchanged",
+    "newRuntimeDependencies": 0,
+    "scriptFiles": 139,
+    "violations": []
+  },
+  "implementationAuthority": "Read-only view projections, exact canonical links, contextual prompts and local display preferences; existing editors, records and scope remain authoritative."
+}

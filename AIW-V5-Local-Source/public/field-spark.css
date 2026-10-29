@@ -1,0 +1,59 @@
+/* The field spark, its popover and the fill action (round 2, I2-12; field-spark.js). The list that was the Co-author band
+   is Proposals now (round 5; brain-context.css).
+   A spark is quiet until the rules have something to offer for its field ("live"); it never pulses for nothing. */
+label:has(> .spark){position:relative}
+label:has(> .spark) > span{padding-right:36px}
+.spark{position:absolute;top:-4px;right:0;display:inline-grid;place-items:center;width:30px;height:30px;padding:0;border:1px solid transparent;border-radius:50%;background:transparent;color:var(--sage-10);cursor:pointer}
+.spark svg{width:16px;height:16px;fill:currentColor}
+.spark:hover{background:var(--sage-2);color:var(--green-11)}
+.spark:focus-visible{outline:2px solid var(--gold-8);outline-offset:2px}
+.spark.live{color:var(--gold-11);border-color:var(--gold-5);background:var(--sage-1)}
+.spark.live:hover{background:var(--gold-2)}
+.spark[aria-expanded="true"]{color:var(--gold-12);border-color:var(--gold-7);background:var(--gold-2)}
+
+.spark-mark,.spark-saved{display:block;margin:-2px 0 0;font-size:.75rem;line-height:1.4;color:var(--gold-11)}
+.spark-saved{color:var(--sage-10)}
+.spark-dismiss{display:grid;gap:6px;margin:4px 0 0;padding:8px 10px;border:1px dashed var(--gold-6);border-radius:8px;background:var(--sage-1)}
+.spark-dismiss .spark-field{display:grid;gap:4px;font-size:.8125rem;color:var(--sage-11)}
+.spark-dismiss .spark-field input{min-height:36px;padding:4px 8px;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);color:var(--sage-12);font:inherit}
+.spark-accepted{text-decoration:underline dotted var(--gold-8);text-underline-offset:3px;border-color:var(--gold-6)!important}
+.spark-pending,.spark-prefill{margin:10px 0;padding:8px 10px;border-left:3px solid var(--gold-7);background:var(--sage-1);font-size:.8125rem;color:var(--gold-12)}
+
+.spark-progress{font-weight:600;color:var(--violet-11)}
+.spark-pop{grid-column:1/-1;margin:-4px 0 14px;padding:12px 14px 10px;border:1px solid var(--gold-6);border-radius:10px;background:var(--sage-1);box-shadow:0 10px 26px color-mix(in srgb, var(--shadow) 14%, transparent);font-size:.875rem;line-height:1.5;color:var(--sage-12)}
+.spark-pop-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px}
+.spark-pop-head strong{font-size:.9375rem;color:var(--green-11)}
+.spark-pop-head .btn.icon-only{min-width:32px;min-height:32px;padding:0}
+.spark-band{margin:0 0 10px;padding:0 0 10px;border-bottom:1px solid var(--gold-4)}
+.spark-band:last-of-type{border-bottom:0}
+.spark-band-label{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;margin:0 0 6px;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--sage-10)}
+.spark-band-label b{color:var(--green-11);font-weight:600}
+.spark-band-label small{text-transform:none;letter-spacing:0;font-size:.75rem;color:var(--sage-10)}
+.spark-band-confirm .spark-band-label b{color:var(--green-11)}
+.spark-band-sol .spark-band-label b{color:var(--prov-sol)}
+.spark-offers{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.spark-offer{padding:8px 10px;border:1px solid var(--gold-4);border-radius:8px;background:var(--sage-1)}
+.spark-sol{border-color:var(--prov-sol-line);background:var(--sage-1)}
+.spark-value{margin:0 0 4px;white-space:pre-wrap;color:var(--sage-12)}
+.spark-question{margin:0 0 4px;font-weight:600;color:var(--green-11)}
+.spark-why,.spark-note,.spark-receipt,.spark-empty,.spark-foot{margin:0 0 6px;font-size:.8125rem;color:var(--sage-10)}
+.spark-ref{display:inline-block;margin-right:4px;padding:0 6px;border-radius:999px;background:var(--sage-3);color:var(--green-11);font-weight:600;font-size:.75rem}
+.spark-receipt{font-family:var(--font-mono);font-size:.75rem}
+.spark-error{margin:0 0 6px;color:var(--red-11);font-size:.8125rem}
+.spark-actions{display:flex;flex-wrap:wrap;gap:6px}
+.spark-actions .btn,.spark-band-sol>.btn{min-height:36px}
+.spark-sources{margin:4px 0 6px;padding-left:20px;font-size:.8125rem}
+.spark-sources small{color:var(--sage-10)}
+.spark-fill{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:8px 0 4px;padding:8px 10px;border-left:3px solid var(--gold-7);background:var(--sage-1)}
+.spark-fill-line{margin:0;font-size:.875rem;color:var(--sage-12)}
+.spark-fill-line b{color:var(--gold-12);font-weight:600}
+.spark-fill small{flex:1 1 100%;color:var(--sage-10);font-size:.8125rem}
+.spark-fill-report{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:8px 0;padding:8px 10px;border-left:3px solid var(--green-7);background:var(--sage-2);font-size:.8125rem;color:var(--sage-12)}
+.spark-fill-report p{margin:0;flex:1 1 260px}
+
+@media (max-width:700px){
+  .spark{width:36px;height:36px;top:-8px}
+  .spark-pop{margin-left:-4px;margin-right:-4px;padding:10px}
+  .spark-actions .btn{flex:1 1 auto}
+}
+@media (prefers-reduced-motion:reduce){.spark,.spark-pop{transition:none}}

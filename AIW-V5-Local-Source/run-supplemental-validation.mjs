@@ -1,0 +1,6 @@
+import {spawn} from 'node:child_process';
+import {mkdir,writeFile} from 'node:fs/promises';
+const checks=['knowledge-boundaries-validate.mjs','repository-transfer-validate.mjs','repository-service-validate.mjs','knowledge-second-brain-validate.mjs','knowledge-design-validate.mjs','focused-case-validate.mjs','architecture-case-validate.mjs','payment-case-journey-validate.mjs','technology-realisation-validate.mjs','sdd-architecture-validate.mjs','sdd-formats-validate.mjs','layers-overview-validate.mjs','layers-corridors-current-validate.mjs'];
+await mkdir('audit/end-to-end',{recursive:true});const results=[];
+for(const check of checks){const start=Date.now();const r=await new Promise(resolve=>{let output='';const p=spawn(process.execPath,[check]);p.stdout.on('data',x=>output+=x);p.stderr.on('data',x=>output+=x);p.on('close',code=>resolve({code,output}));});await writeFile('audit/end-to-end/'+check+'.log',r.output);results.push({check,exitCode:r.code,milliseconds:Date.now()-start});console.log(JSON.stringify(results.at(-1)));if(r.code)console.log(r.output.slice(-4000));}
+await writeFile('audit/end-to-end/supplemental-results.json',JSON.stringify(results,null,2));process.exitCode=results.some(r=>r.exitCode)?1:0;

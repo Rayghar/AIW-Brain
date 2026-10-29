@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-13",
+  "baseline": {
+    "siteVersion": 86,
+    "commit": "de9b18197666023005fffa7a476ace8cce056927"
+  },
+  "scope": "Ask Sol and Co-design user experience; retained answer access; contextual chapter teaching",
+  "changes": [
+    {
+      "area": "Ask Sol",
+      "change": "Question and source-preview action first; eight contextual question starters preserve existing drafts; chapter brief and review visible; same assessment shown in Model and companion."
+    },
+    {
+      "area": "Co-design",
+      "change": "Former Proposals entry now explains the current chapter decision, purpose, recorded context, gaps and next steps across all eleven chapters. Four tutorial prompts enter the existing scoped composer without sending."
+    },
+    {
+      "area": "Original content",
+      "change": "Drafts and suggestions, guided tasks, pattern/library exploration, sources and chapter tools remain available. New bounded read-only assessment history restores access to earlier saved answers."
+    },
+    {
+      "area": "Explain",
+      "change": "Toolbar annotation toggle renamed Hover help; its hover/focus/pin and On/Off behavior are unchanged. SDD explanation authoring remains a separate action."
+    },
+    {
+      "area": "Governance",
+      "change": "No new decision store or database migration. Co-design cannot approve, send automatically, alter a model or activate sources. History distinguishes source changes and withholding."
+    },
+    {
+      "area": "Source display",
+      "change": "Version and passage labels are escaped as untrusted source content."
+    },
+    {
+      "area": "Reasoning correctness",
+      "change": "Withhold unsupported structural-isolation claims about transaction consistency or concurrency, and payment verification that assumes an unresolved approver role. Replaying the saved OpenAI teaching answer now withholds it; this is not proof of general model accuracy."
+    },
+    {
+      "area": "Build size",
+      "change": "Measured chapter route growth of 6,947 B and CSS growth of 6,776 B over v86. Keep next whole-KB hard caps and unchanged unrelated budgets."
+    }
+  ],
+  "remaining": [
+    {
+      "priority": "P1",
+      "gap": "Semantic correctness: real provider responses can confuse architectural structure with transaction guarantees. Source-check acceptance alone does not establish technical accuracy."
+    },
+    {
+      "priority": "P1",
+      "gap": "Reviewed activated laptop-corpus contribution remains unproven in provider evaluations. Genuine permission, review/release and activation must be completed, then retrieval relevance evaluated."
+    },
+    {
+      "priority": "P1",
+      "gap": "Payment pilot still needs remaining authorization/retention rules, agreed quality targets, architect selection/review and actual protocol observations."
+    },
+    {
+      "priority": "P2",
+      "gap": "Authenticated hosted provider, persistence and export QA remain unverified because the browser bridge fails with Windows error 1385."
+    },
+    {
+      "priority": "P2",
+      "gap": "Actual-provider and protocol coverage across all seven typed architecture operation kinds remains limited."
+    }
+  ],
+  "authority": "Implementation and assistant QA only; no fabricated source-rights decision, independent architect review, payment measurements or SDD approval."
+}

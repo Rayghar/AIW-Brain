@@ -1,0 +1,158 @@
+/* Chapter 6 Model — logical technology: the platform stack and what fails together. Builds on the
+   .cm shell in exchange.css. Lens-specific content is switched by class only; nothing here changes
+   geometry. */
+.pf{--pf-run:var(--teal-10);--pf-state:var(--violet-9);--pf-connect:var(--green-9);--pf-trust:var(--violet-9);--pf-operate:var(--gold-9);--pf-warn:var(--red-9);--pf-amber:var(--gold-8)}
+/* Rows, groups and columns */
+.pf-group{fill:var(--green-2)}
+.pf-row{fill:var(--sage-1)}
+.pf-row.odd{fill:var(--sage-2)}
+.pf-row.lit{fill:var(--gold-2)}
+.pf-failing .pf-row.unavailable{fill:var(--red-2)}
+.pf-failing .pf-row.degraded{fill:var(--gold-2)}
+.pf-col{stroke:var(--green-3);stroke-width:1}
+.pf-col.lit{stroke:var(--gold-6);stroke-width:1.5}
+.pf-mg{position:absolute;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--sage-10);font-weight:600;white-space:nowrap;pointer-events:none;display:flex;gap:8px;align-items:baseline}
+.pf-mg small{font-size:11px;letter-spacing:0;text-transform:none;font-weight:400;color:var(--cm-muted)}
+/* Plates: the skeleton each capability forms under the components that stand on it */
+.pf-plate{fill:var(--sage-5);stroke:none;opacity:.9;transition:opacity .15s}
+.cm-lens-structure .pf-plate.f-run{fill:var(--teal-4)}.cm-lens-structure .pf-plate.f-state{fill:var(--violet-4)}.cm-lens-structure .pf-plate.f-connect{fill:var(--green-4)}.cm-lens-structure .pf-plate.f-trust{fill:var(--violet-3)}.cm-lens-structure .pf-plate.f-operate{fill:var(--gold-3)}
+.cm-lens-operation .pf-plate.c-single{fill:var(--gold-4)}.cm-lens-operation .pf-plate.c-redundant{fill:var(--green-4)}.cm-lens-operation .pf-plate.c-bypass{fill:var(--blue-4)}
+.cm-lens-protection .pf-plate{fill:var(--bc);opacity:.22}
+.pf-plate.missing{fill:var(--sage-1)!important;stroke:var(--state-confirm-line);stroke-width:1.5;stroke-dasharray:5 4;opacity:1}
+.pf-plate.proposed{fill:var(--state-proposed-wash)!important;stroke:var(--state-proposed-solid);stroke-width:1.5;stroke-dasharray:5 4;opacity:1}
+.pf-plate.changed{stroke:var(--gold-8);stroke-width:1.5;stroke-dasharray:5 4}
+.pf-failing .pf-plate{opacity:.35}
+.pf-failing .pf-plate.unavailable{fill:url(#pf-hatch)!important;opacity:1;stroke:var(--red-7);stroke-width:1.2}
+.pf-failing .pf-plate.degraded{fill:var(--gold-4)!important;opacity:1}
+.pf-plate.lit{opacity:1;stroke:var(--gold-6);stroke-width:1.5}
+.pf-plate.dim{opacity:.3}
+/* Dependencies */
+.pf-arc{fill:none;stroke:var(--sage-9);stroke-width:1.3;opacity:.75}
+.pf-arc.critical{stroke-width:2.1;opacity:.9}
+.pf-arc.trust{stroke:var(--violet-9)}
+.pf-arc.data{stroke-dasharray:2 3}
+.pf-arc.resilience{stroke-dasharray:6 3}
+.pf-arc.proposed{stroke:var(--state-proposed-solid);stroke-dasharray:3 3;stroke-width:2.2;opacity:1}
+.pf-arc.carries{stroke:var(--red-9);opacity:1;stroke-width:2.4}
+.pf-arc.lit{stroke:var(--gold-9);opacity:1;stroke-width:2.4}
+.pf-arc.dim{opacity:.15}
+.pf-arc-dot{fill:var(--sage-9);opacity:.7}
+.pf-arc-dot.lit{fill:var(--gold-9);opacity:1}
+/* Cells: a need where a component meets a capability */
+.pf-cell{position:absolute;width:26px;height:26px;border-radius:50%;padding:0;cursor:pointer;z-index:2;border:2px solid var(--green-9);background:var(--green-9);box-shadow:inset 0 0 0 3px var(--sage-2);display:grid;place-items:center}
+.pf-cell b{font-size:11px;color:var(--on-solid);font-weight:700;line-height:1}
+.pf-cell.degraded{background:linear-gradient(90deg,var(--green-9) 50%,var(--sage-1) 50%)}
+.pf-cell.degraded b{color:var(--green-11);text-shadow:0 0 2px var(--sage-1)}
+.pf-cell.mixed{background:var(--green-9)}
+/* Round 12 (GR-RUN-08): a need whose consequence is not stated, and a component the loss affects in a way no need states. */
+.pf-cell.not-stated{border:2px dashed var(--sage-9);background:var(--sage-1);box-shadow:none}
+.pf-cell.not-stated b{color:var(--sage-11)}
+.pf-cell.unsupported{border:2px dashed var(--red-9);background:repeating-linear-gradient(45deg,var(--red-3) 0 3px,var(--sage-1) 3px 6px);box-shadow:none}
+.pf-cell.unsupported b{color:var(--red-11)}
+.pf-cell.proposed{border:2px dashed var(--state-proposed-solid);background:var(--state-proposed-line);box-shadow:inset 0 0 0 3px var(--state-proposed-wash)}
+.pf-x{display:none;position:absolute;right:-9px;top:-9px;width:16px;height:16px;border-radius:50%;background:var(--violet-8);color:var(--on-solid);font-style:normal;font-size:9px;line-height:16px;text-align:center;box-shadow:0 0 0 1.5px var(--sage-2)}
+.cm-lens-protection .pf-cell.crossing .pf-x{display:block}
+.cm-lens-protection .pf-cell:not(.crossing){opacity:.55}
+.pf-failing .pf-cell.unavailable{border-color:var(--red-9);background:var(--red-9)}
+.pf-failing .pf-cell.degraded.degraded{border-color:var(--gold-8)}
+.pf-cell:hover{transform:scale(1.12)}
+.pf-cell:focus-visible{outline:2px solid var(--gold-8);outline-offset:2px}
+.pf-cell.lit{box-shadow:inset 0 0 0 3px var(--sage-2),0 0 0 3px var(--gold-6)}
+.pf-cell.dim{opacity:.22}
+/* If it fails */
+.pf-fail{position:absolute;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1px;padding:3px 10px;border-radius:8px;border:1px solid var(--green-4);border-left:4px solid var(--sage-8);background:var(--sage-1);overflow:hidden;text-align:left;cursor:default;font:inherit;color:inherit}
+button.pf-fail{cursor:pointer}
+.pf-fail b{font-size:13px;white-space:nowrap}
+.pf-fail small{font-size:11px;color:var(--cm-muted);line-height:1.25;max-width:100%;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pf-fail.wide{border-left-color:var(--red-9);background:var(--sage-2)}.pf-fail.wide b{color:var(--red-11)}
+.pf-fail.one{border-left-color:var(--gold-8);background:var(--sage-1)}.pf-fail.one b{color:var(--gold-11)}
+.pf-fail.ok b{color:var(--state-pass-fg)}
+.pf-fail.none{border-style:dashed;background:none}
+.pf-fail.unavailable{border-left-color:var(--red-9);background:var(--red-2)}.pf-fail.unavailable b{color:var(--red-11)}
+.pf-fail.degraded{border-left-color:var(--gold-8);background:var(--gold-2)}.pf-fail.degraded b{color:var(--gold-11)}
+button.pf-fail:hover{border-color:var(--green-6)}
+.pf-fail.lit{box-shadow:0 0 0 2px var(--gold-6)}
+.pf-fail.dim{opacity:.35}
+/* Heads */
+.pf-band{position:absolute;display:flex;align-items:center;justify-content:center;border-top:3px solid var(--green-9);font-size:11px;font-weight:600;color:var(--green-11);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+.pf-ch{position:absolute;display:flex;flex-direction:column;justify-content:flex-start;gap:2px;padding:6px 8px;border-radius:9px;background:var(--sage-1);border:1px solid var(--green-5);border-top:3px solid var(--teal-9);box-shadow:0 1px 0 var(--green-4);pointer-events:auto;cursor:pointer;text-align:left;overflow:hidden}
+.pf-ch small{font-size:10px;color:var(--cm-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-ch b{font-size:13px;font-weight:600;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pf-ch>span{font-size:11px;color:var(--sage-10);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:auto;display:flex;align-items:center;gap:4px}
+.pf-ch.module{border-top-color:var(--green-9);background:var(--sage-2)}
+.pf-ch.module b{font-family:var(--font-ui);font-weight:600;font-size:14px}
+.pf-kb{display:none!important}
+.cm-lens-protection .pf-kb{display:flex!important}
+.pf-bc{display:inline-block;width:9px;height:9px;border-radius:2px;flex:none;vertical-align:middle;margin-right:4px}
+.pf-st{font-weight:700;border-radius:8px;padding:0 6px;line-height:15px}
+.pf-st.unavailable{color:var(--on-solid);background:var(--red-9)}
+.pf-st.degraded{color:var(--gold-11);background:var(--gold-3)}
+.pf-st.not-stated{color:var(--sage-11);background:none;border:1px dashed var(--sage-9)}
+.pf-st.available{color:var(--green-11);background:var(--sage-2)}
+.pf-ch.unavailable{border-top-color:var(--red-9);background:var(--red-2)}
+.pf-ch.changed{outline:2px dashed var(--gold-8);outline-offset:2px}
+.pf-ch:hover{border-color:var(--sage-8)}
+.pf-ch.sel{outline:2.5px solid var(--gold-9);outline-offset:2px}
+.pf-ch.lit{box-shadow:0 0 0 2px var(--gold-6)}
+.pf-ch.dim{opacity:.45}
+.pf-th{position:absolute;display:flex;flex-direction:column;gap:2px;padding:8px 6px}
+.pf-th b{font-size:13px}
+.pf-th small{font-size:11px;color:var(--cm-muted);line-height:1.3}
+.pf-dh{position:absolute;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--cm-muted);text-align:center;white-space:nowrap;overflow:hidden}
+/* Rail: the capabilities */
+.pf-cap{position:absolute;left:8px;right:8px;display:flex;flex-direction:column;justify-content:center;gap:1px;border:1px solid var(--green-4);border-left:4px solid var(--teal-9);border-radius:8px;background:var(--sage-1);padding:3px 9px;pointer-events:auto;cursor:pointer;text-align:left;overflow:hidden}
+.pf-cap.f-state{border-left-color:var(--violet-9)}.pf-cap.f-connect{border-left-color:var(--green-9)}.pf-cap.f-trust{border-left-color:var(--violet-9)}.pf-cap.f-operate{border-left-color:var(--gold-9)}
+.pf-cap small{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--cm-muted);white-space:nowrap;overflow:hidden}
+.pf-cap b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-l{display:none;align-items:center;font-size:11px;color:var(--sage-11);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm-lens-structure .pf-l.st,.cm-lens-operation .pf-l.op,.cm-lens-protection .pf-l.pr{display:block}
+.pf-cap.missing .pf-l,.pf-cap.proposed .pf-l{display:block}
+.pf-l i.miss{color:var(--red-11);font-style:normal}
+.pf-prop{font-style:normal;color:var(--gold-11);font-weight:600}
+.pf-b{font-style:normal;font-size:10px;border-radius:8px;padding:0 5px;line-height:14px;border:1px solid;flex:none}
+.pf-b:first-of-type{margin-left:auto}
+.pf-b.ess{color:var(--green-11);border-color:var(--green-6);background:var(--sage-3)}
+.pf-b.sp{color:var(--gold-11);border-color:var(--gold-6);background:var(--gold-2)}
+.pf-b.un{color:var(--cm-muted);border-color:var(--sage-6);background:var(--sage-2)}
+.cm-lens-operation .pf-cap.single{background:var(--sage-1)}
+.pf-cap.unused{border-style:dashed;background:var(--sage-1)}
+.pf-cap.missing{border:1.5px dashed var(--state-confirm-line);border-left:4px dashed var(--state-confirm-solid);background:var(--state-confirm-wash)}
+.pf-cap.missing b{color:var(--state-confirm-fg)}
+.pf-cap.proposed{border:1.5px dashed var(--state-proposed-solid);border-left:4px dashed var(--state-proposed-solid);background:var(--state-proposed-wash)}
+.pf-cap.changed{outline:2px dashed var(--gold-8);outline-offset:1px}
+.pf-cap.ghosted{border-color:var(--gold-7);box-shadow:0 0 0 2px var(--gold-5)}
+.pf-failing .pf-cap.unavailable{border-left-color:var(--red-9);background:var(--red-2)}
+.pf-failing .pf-cap.degraded{border-left-color:var(--gold-8);background:var(--gold-2)}
+.pf-cap:hover{border-color:var(--green-6)}
+.pf-cap.sel{outline:2.5px solid var(--gold-9);outline-offset:1px}
+.pf-cap.lit{box-shadow:0 0 0 2px var(--gold-6)}
+.pf-cap.dim{opacity:.4}
+/* Companion and legend */
+.pf .cm-spec h4 span.exposed{color:var(--on-solid);background:var(--red-9)}
+.pf .cm-spec h4 span.guarded,.pf .cm-spec h4 span.reviewed{color:var(--green-11);background:var(--sage-2)}
+.pf .cm-spec h4 span.candidate,.pf .cm-spec h4 span.draft{color:var(--state-draft-fg);background:var(--state-draft-bg)}
+.pf-grounding{border-top:1px solid var(--green-4);padding-top:8px;margin-top:10px}
+.pf-grounding h5,.pf-grounding h6{margin:8px 0 4px}.pf-grounding h6,.pf-grounding p,.pf-grounding small{font-size:11px;color:var(--sage-11)}
+.pf-grounding ul{list-style:none;margin:0;padding:0}.pf-grounding li{padding:6px;margin:5px 0;background:var(--sage-2);border-radius:6px}
+.pf-grounding li small{display:block}.pf-grounding .cm-link{overflow-wrap:anywhere}
+.pf .cm-link i{font-style:normal;color:var(--cm-muted)}
+.pf .cm-link i.ess{color:var(--green-11)}
+.pf .cm-link small{display:block;color:var(--cm-muted);font-size:11px;line-height:1.35;margin:1px 0 3px}
+.pf-note{display:block;color:var(--cm-muted);font-size:11px;line-height:1.35;margin-top:3px}
+.pf .cm-legend .k-cell{display:inline-block;position:relative;width:16px;height:16px;border-radius:50%;border:2px solid var(--green-9);background:var(--green-9);box-shadow:inset 0 0 0 2px var(--sage-2)}
+.pf .cm-legend .k-cell.degraded{background:linear-gradient(90deg,var(--green-9) 50%,var(--sage-1) 50%);box-shadow:none}
+.pf .cm-legend .k-cell.not-stated{border:2px dashed var(--sage-9);background:var(--sage-1);box-shadow:none}
+.pf .cm-legend .k-cell.unsupported{border:2px dashed var(--red-9);background:var(--red-3);box-shadow:none}
+.pf .cm-legend .k-cell.crossing{background:var(--violet-8);border-color:var(--violet-8)}
+.pf .cm-legend .k-cell.proposed{border:2px dashed var(--state-proposed-solid);background:var(--state-proposed-line);box-shadow:none}
+.pf .cm-legend .k-cell.stopped{border-color:var(--red-9);background:var(--red-9)}
+.pf .cm-legend .k-plate{display:inline-block;width:30px;height:12px;border-radius:6px;background:var(--teal-4)}
+.pf .cm-legend .k-plate.single{background:var(--gold-4)}.pf .cm-legend .k-plate.redundant{background:var(--green-4)}.pf .cm-legend .k-plate.bypass{background:var(--blue-4)}
+.pf .cm-legend .k-plate.boundary{background:color-mix(in srgb, var(--violet-8) 22%, transparent)}
+.pf .cm-legend .k-plate.lost{background:repeating-linear-gradient(45deg,var(--red-3) 0 3px,var(--red-6) 3px 5px);border:1px solid var(--red-7)}
+.pf .cm-legend .k-plate.degraded{background:var(--gold-4)}
+.pf .cm-legend .k-plate.proposed{background:var(--state-proposed-wash);border:1.5px dashed var(--state-proposed-solid)}
+.pf .cm-legend .k-plate.missing{background:var(--sage-1);border:1.5px dashed var(--state-confirm-line)}
+.pf .cm-legend .k-st{font-style:normal;font-size:10px;font-weight:700;border-radius:8px;padding:0 6px;line-height:15px}
+.pf .cm-legend .k-st.unavailable{color:var(--on-solid);background:var(--red-9)}.pf .cm-legend .k-st.degraded{color:var(--gold-11);background:var(--gold-3)}.pf .cm-legend .k-st.available{color:var(--green-11);background:var(--sage-2)}
+.cm-far .pf-l{visibility:hidden}

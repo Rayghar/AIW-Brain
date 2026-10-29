@@ -1,0 +1,199 @@
+{
+  "schema": "aiw.round-evidence.v1",
+  "release": "AIW v0.10.0-rc.10.73.24",
+  "date": "2026-10-14",
+  "productionAccepted": false,
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "source": "Round 23 branch from the 2026-10-14 snapshot (checkpoint cf79560, supplied as rc.10.73.23)",
+  "baseline": {
+    "checkpoint": "cf79560",
+    "releaseAsSupplied": "AIW v0.10.0-rc.10.73.23",
+    "regression": {
+      "suites": 227,
+      "passed": 194,
+      "failed": 33
+    },
+    "requirements": {
+      "commit": "0d35183",
+      "total": 126,
+      "doneTested": 89,
+      "doneUntested": 6,
+      "partial": 24,
+      "missing": 7,
+      "testDoubleOnly": 18
+    }
+  },
+  "tests": {
+    "install": {
+      "cleanInstall": true,
+      "command": "npm ci",
+      "packages": 112,
+      "seconds": 12,
+      "commit": "cbe2ada"
+    },
+    "check": {
+      "passed": true,
+      "syntaxModules": 691,
+      "lintExisting": 173,
+      "lintNew": 0,
+      "lintBaselineBefore": 179
+    },
+    "build": {
+      "passed": true,
+      "scripts": 136,
+      "chaptersRouteBytes": 2907224,
+      "chaptersRouteBudgetBytes": 2908160
+    },
+    "regression": {
+      "commit": "1c18fc9",
+      "suites": 228,
+      "passed": 227,
+      "failed": 1,
+      "failedSuites": [
+        "test:model-import-browser"
+      ],
+      "concurrency": 3,
+      "browserSuitesIncluded": true,
+      "previous": {
+        "commit": "c4c5772",
+        "suites": 228,
+        "passed": 226,
+        "failed": 2,
+        "failedSuites": [
+          "test:bundle-browser",
+          "test:tradeoff-browser"
+        ],
+        "handling": {
+          "test:bundle-browser": "chapters route 88 B over its cap; cap moved to the next whole KB under the file policy (27965bd)",
+          "test:tradeoff-browser": "failed once under load; passed alone (10 checks); final regression: passed"
+        }
+      },
+      "openFailure": {
+        "suite": "test:model-import-browser",
+        "step": "Chapter 1 drafted from a model whose names hold markup",
+        "timeoutMs": 60000,
+        "checksPassedBefore": 6,
+        "checksTotal": 8,
+        "passedOnBaseline": true,
+        "passedInPrevious": true,
+        "runsSince": {
+          "alone": 3,
+          "besideFourCopiesAndABrowserSuite": 4,
+          "sixCopiesAtOnce": 18,
+          "afterDiagnostics": 1,
+          "failed": 0
+        },
+        "stepMsRange": [
+          900,
+          2500
+        ],
+        "ruledOut": [
+          "a project read held back 12 s still opens the draft surface"
+        ],
+        "rootCause": null,
+        "diagnosticsCommit": "cbe2ada",
+        "assertionsOrTimeoutsChanged": false
+      }
+    },
+    "solSdd": {
+      "passed": true,
+      "suite": "test:sol-sdd",
+      "syntheticThemes": 8,
+      "proposalKinds": 9,
+      "failsBeforeIntegrationFix": true
+    },
+    "scaleBrowserConsecutive": {
+      "runs": 8,
+      "passed": 8
+    },
+    "liveProviderCheck": {
+      "passed": true,
+      "runs": 14,
+      "tokens": 128615,
+      "provider": "openai",
+      "file": "evidence/sol-live/2026-10-14-openai.json",
+      "syntheticProjects": true
+    }
+  },
+  "liveRegisterRuns": {
+    "clientMaterialKeptInScratch": true,
+    "authorisedBy": "the owner, 2026-10-08",
+    "reviewedByAPerson": false,
+    "runs": 96,
+    "tokensRecorded": 4006581,
+    "runsBilledButUnrecorded": 4,
+    "costEstimated": false,
+    "fullRun2": {
+      "themeRuns": 38,
+      "accepted": 38,
+      "proposalsAccepted": 851,
+      "proposalsWithheld": 31,
+      "tokens": 1605591,
+      "recordsApplied": 1340,
+      "contentStandard": {
+        "records": 554,
+        "met": 0,
+        "skeletonSections": [
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "fullRun3": {
+      "themeRuns": 38,
+      "accepted": 38,
+      "proposalsAccepted": 841,
+      "proposalsWithheld": 29,
+      "tokens": 1682069,
+      "recordsApplied": 1192,
+      "interruptedRuns": 1,
+      "resumedFromCheckpoint": true,
+      "contentStandard": {
+        "records": 579,
+        "met": 477,
+        "score": 82,
+        "skeletonSections": [],
+        "bySection": {
+          "2": {
+            "records": 166,
+            "met": 82
+          },
+          "3": {
+            "records": 105,
+            "met": 101
+          },
+          "4": {
+            "records": 308,
+            "met": 294
+          }
+        }
+      }
+    },
+    "referenceComparison": {
+      "everyReferenceSectionPresent": true,
+      "automatedReadingNotAPersonsReview": true,
+      "tableKeptInScratch": true
+    }
+  },
+  "gapRegister": {
+    "items": 265,
+    "verifiedAt": "65a8d53",
+    "closedLaterAt": "73fabce",
+    "closed": 231,
+    "partial": 19,
+    "open": 6,
+    "external": 4,
+    "rejected": 5
+  },
+  "externalGates": {
+    "authorizedClientProviderRun": true,
+    "realClientSddContentAccepted": false,
+    "namedIndependentPageReview": false,
+    "rightsClearedBankingKnowledgeReleased": false,
+    "twoLiveProviderReceipts": false,
+    "hostedScheduledContinuationProven": false,
+    "productionAcceptance": false
+  },
+  "commitsAfterCheckpoint": 62
+}

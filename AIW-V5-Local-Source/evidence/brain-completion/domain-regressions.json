@@ -1,0 +1,72 @@
+{
+  "authority": "Automated application acceptance, not rendered-browser verification",
+  "results": [
+    {
+      "test": "architecture-design-validate.mjs",
+      "passed": true,
+      "seconds": 1.03,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nProject storage error Synthetic storage failure\n"
+    },
+    {
+      "test": "read-design-validate.mjs",
+      "passed": true,
+      "seconds": 1.5,
+      "output": "PASS read decisions, authority/copy invariants, conditional gates, visible contracts, reuse, stale classification, SDD and bounded LLM grounding.\nPASS read design Worker commands, owner isolation, acceptance and retained data lineage after reopen.\n"
+    },
+    {
+      "test": "persistence-validate.mjs",
+      "passed": true,
+      "seconds": 2.03,
+      "output": "PASS persistence boundaries, recovery gates, source hashes, authority/copy invariants, reuse, stale review, SDD and bounded LLM grounding.\nPASS persistence Worker commands, revision conflict, owner isolation and retained model after reopen.\n"
+    },
+    {
+      "test": "model-alternatives-validate.mjs",
+      "passed": true,
+      "seconds": 10.61,
+      "output": "PASS Model alternatives: durable drafts without model mutation; comparison; coordinated application; unrelated-edit preservation; overlap disclosure; already-applied detection; explicit review; private blob persistence; CAS; storage failure atomicity; retained history and frozen SDD.\nProject storage error Synthetic alternative storage failure\n"
+    },
+    {
+      "test": "model-reversal-validate.mjs",
+      "passed": true,
+      "seconds": 1.16,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nPASS composition reversal: exact previous model restored, counters preserved, current checks invalidated, original reasoning retained, later model edits and references block destructive reversal.\nProject storage error Synthetic storage failure\n"
+    },
+    {
+      "test": "review-validate.mjs",
+      "passed": true,
+      "seconds": 18.42,
+      "output": "PASS Review & Realize: explicit findings and owned actions; five-stage traceability; separate architect/governance/implementation evidence; immutable working and reviewed baselines; source and outcome invalidation; attainable conditional handoff; escaped SDD exports; private R2 snapshots, bounded D1 rows, owner isolation, CAS, failure preservation, and durable reopening.\nProject storage error Synthetic object storage outage\n"
+    },
+    {
+      "test": "knowledge-design-validate.mjs",
+      "passed": true,
+      "seconds": 1.13,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nPASS governed composition: active claim \u2192 model comparison \u2192 immutable acceptance receipt \u2192 SDD \u2192 withdrawal blocks pending adoption and marks accepted design stale; reviewed link retirement and source refresh recover the task. Withdrawn methods never enter LLM context.\nProject storage error Synthetic storage failure\n"
+    },
+    {
+      "test": "brain-integration-validate.mjs",
+      "passed": true,
+      "seconds": 0.41,
+      "output": "PASS Brain integration: exact source identity, untrusted catalogue, conditional claim review, contradictions, immutable releases, explicit pins, source withdrawal, model/SDD impact, saved-response rejection, repository boundaries, real embedding protocol validation, semantic cache isolation, truthful fallback and owner/revision guards. Provider transport is synthetic.\nProject storage error The knowledge does not match its exact saved reference.\nProject storage error Synthetic knowledge storage failure\n"
+    },
+    {
+      "test": "composition-validate.mjs",
+      "passed": true,
+      "seconds": 4.29,
+      "output": "PASS 8 composition alternatives, 10 architectural counterexamples, reasoning/LLM/SDD/reversal, 6 numerical methods and source-bound measurement calibration.\n"
+    },
+    {
+      "test": "intelligence-validate.mjs",
+      "passed": true,
+      "seconds": 0.44,
+      "output": "PASS LLM: reviewed context, bounded retrieval, server-only credentials, output/source validation, no automatic changes, durable runs, duplicate protection, owner isolation, draft/accepted provenance, stale sources, refusal, timeout, request budget and storage failure. Mock provider; no live LLM call.\n"
+    },
+    {
+      "test": "grounding-review-validate.mjs",
+      "passed": true,
+      "seconds": 0.24,
+      "output": "PASS bounded source revision: same packet, separate draft/final, aggregate usage, review provenance, citation rejection, shared timeout and no model mutation. Mock provider only.\n"
+    }
+  ],
+  "passed": true
+}

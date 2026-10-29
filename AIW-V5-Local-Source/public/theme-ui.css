@@ -1,0 +1,152 @@
+/* The theme's own interface (round 9, audit/round9/DESIGN.md §2 D and E): the theme setting in the top bars, and
+   the model's pictures in the dark theme. The pictures are drawn with their own embedded styles, which is also what
+   an export carries; in the dark theme the page re-colours the canvas furniture (the header, group frames, bands,
+   edge labels and their halos, the key, and since round 10 the captions a process's events and gateways carry below
+   them on the ground) and the edges, shared trunks and their join dots, matched by the colour the notation draws with,
+   to the scale step of the same role. Notation fills, the node boxes and the text inside them keep their colours, so a
+   picture means the same thing in both themes and an exported figure is unchanged. The light theme draws the
+   pictures exactly as they are exported. Forced colours (round 10) are at the end of this sheet. */
+.theme-switch{display:inline-flex;align-items:center;gap:0;flex:none;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);padding:1px}
+.theme-switch button{min-height:26px;padding:0 9px;border:0;border-radius:5px;background:transparent;color:var(--sage-11);font:inherit;font-size:12px;line-height:1;cursor:pointer}
+.theme-switch button:hover{background:var(--sage-4);color:var(--sage-12)}
+.theme-switch button[aria-pressed="true"]{background:var(--green-10);color:var(--on-solid)}
+.theme-switch button:focus-visible{outline:2px solid var(--green-7);outline-offset:1px}
+.theme-switch svg{display:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.theme-switch svg .fill{fill:currentColor;stroke:none}
+.top-actions{display:flex;align-items:center;gap:16px}
+.p-top .theme-switch{margin-left:auto}
+.p-top .theme-switch+small{margin-left:0}
+@media (max-width:700px){.theme-switch button{padding:0 6px;display:inline-grid;place-items:center}.theme-switch svg{display:block}
+.theme-switch .ts-label{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.top-actions .theme-switch{order:-1}
+.logical-studio .top-actions{grid-template-columns:auto auto;column-gap:8px;align-items:center}.logical-studio .top-actions .theme-switch{grid-row:1/span 2}
+body.explorer-workspace .topbar{padding-left:16px;padding-right:16px}.p-top{gap:14px}}
+@media print{.theme-switch{display:none}}
+:root[data-theme="dark"] .cm svg .nt-hd{fill:var(--sage-3);stroke:var(--sage-6)}
+:root[data-theme="dark"] .cm svg .nt-ht{fill:var(--sage-12)}
+:root[data-theme="dark"] .cm svg .nt-group rect{fill:var(--sage-3);stroke:var(--sage-7)}
+:root[data-theme="dark"] .cm svg .nt-g-boundary rect{fill:var(--violet-2);stroke:var(--violet-8)}
+:root[data-theme="dark"] .cm svg .nt-g-zone rect,:root[data-theme="dark"] .cm svg .nt-g-environment rect{fill:var(--gold-2);stroke:var(--gold-8)}
+:root[data-theme="dark"] .cm svg .nt-g-lane rect{fill:var(--sage-2);stroke:var(--sage-8)}
+:root[data-theme="dark"] .cm svg .nt-g-pool rect,:root[data-theme="dark"] .cm svg .nt-g-system rect{fill:var(--sage-3);stroke:var(--sage-9)}
+:root[data-theme="dark"] .cm svg .nt-g-unplaced rect{fill:var(--gold-2);stroke:var(--gold-9)}
+:root[data-theme="dark"] .cm svg .nt-g-family rect,:root[data-theme="dark"] .cm svg .nt-g-module rect{fill:var(--green-2);stroke:var(--green-7)}
+:root[data-theme="dark"] .cm svg .nt-g-node rect{fill:var(--sage-4);stroke:var(--sage-8)}
+:root[data-theme="dark"] .cm svg .nt-band rect{fill:var(--sage-3);stroke:var(--sage-5)}
+:root[data-theme="dark"] .cm svg .nt-lane:nth-of-type(even) rect{fill:var(--sage-2)}
+:root[data-theme="dark"] .cm svg .nt-band-collapsed rect{fill:var(--sage-3);stroke:var(--sage-6)}
+:root[data-theme="dark"] .cm svg .nt-band text,:root[data-theme="dark"] .cm svg .nt-band-collapsed text{fill:var(--sage-11)}
+:root[data-theme="dark"] .cm svg .nt-gtitle{fill:var(--sage-12)}
+:root[data-theme="dark"] .cm svg .nt-gsub{fill:var(--sage-11)}
+:root[data-theme="dark"] .cm svg .nt-cap,:root[data-theme="dark"] .cm svg :is(.nt-bpmn-event,.nt-bpmn-gateway) .nt-ftitle{fill:var(--sage-12)}
+:root[data-theme="dark"] .cm svg :is(.nt-bpmn-event,.nt-bpmn-gateway).removed :is(.nt-cap,.nt-ftitle){fill:var(--sage-9)}
+:root[data-theme="dark"] .cm svg .nt-elabel,:root[data-theme="dark"] .cm svg .nt-qual{fill:var(--sage-12);stroke:var(--sage-1)}
+:root[data-theme="dark"] .cm svg .nt-keybox,:root[data-theme="dark"] .cm svg .nt-cross,:root[data-theme="dark"] .cm svg .nt-callout circle{fill:var(--sage-1)}
+:root[data-theme="dark"] .cm svg .nt-keybox{stroke:var(--sage-6)}
+:root[data-theme="dark"] .cm svg .nt-lifeline line{stroke:var(--sage-9)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#3c4a44"],:root[data-theme="dark"] .cm svg marker [stroke="#3c4a44"],:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#778478"],:root[data-theme="dark"] .cm svg marker [stroke="#778478"]{stroke:var(--sage-10)}
+:root[data-theme="dark"] .cm svg marker [fill="#3c4a44"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#3c4a44"],:root[data-theme="dark"] .cm svg marker [fill="#778478"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#778478"]{fill:var(--sage-10)}
+:root[data-theme="dark"] .cm svg marker [fill="#fff"],:root[data-theme="dark"] .cm svg marker [fill="#ffffff"]{fill:var(--sage-1)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#2f6b4f"],:root[data-theme="dark"] .cm svg marker [stroke="#2f6b4f"],:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#587448"],:root[data-theme="dark"] .cm svg marker [stroke="#587448"]{stroke:var(--green-11)}
+:root[data-theme="dark"] .cm svg marker [fill="#2f6b4f"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#2f6b4f"],:root[data-theme="dark"] .cm svg marker [fill="#587448"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#587448"]{fill:var(--green-11)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#6f5a93"],:root[data-theme="dark"] .cm svg marker [stroke="#6f5a93"],:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#805d83"],:root[data-theme="dark"] .cm svg marker [stroke="#805d83"],:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#8a7f90"],:root[data-theme="dark"] .cm svg marker [stroke="#8a7f90"]{stroke:var(--violet-11)}
+:root[data-theme="dark"] .cm svg marker [fill="#6f5a93"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#6f5a93"],:root[data-theme="dark"] .cm svg marker [fill="#805d83"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#805d83"],:root[data-theme="dark"] .cm svg marker [fill="#8a7f90"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#8a7f90"]{fill:var(--violet-11)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#b0493a"],:root[data-theme="dark"] .cm svg marker [stroke="#b0493a"]{stroke:var(--red-11)}
+:root[data-theme="dark"] .cm svg marker [fill="#b0493a"],:root[data-theme="dark"] .cm svg .nt-trunk .nt-join[fill="#b0493a"]{fill:var(--red-11)}
+/* State colours at night (round 10 T1, audit/round10/DESIGN.md principle 8). The stroke-attribute rules above, at
+   (0,5,1), beat the embedded style's state rules at (0,3,1), so a selected, lit, traced or compared line kept the plain
+   line's colour and only its width changed. These rules, at (0,6,2), restore the state colour as a token reaching 3:1 on
+   the night canvas, in the embedded style's order (the last that applies wins, traced last), for every line drawn: a
+   relationship's own line and a shared trunk. The lift is recoloured with them. A trunk's join dot (round 10 T2) follows
+   its line: plain, by the palette colour it is drawn with (.nt-join[fill], at (0,6,1)), and in every state by the same
+   token as the line, at (0,6,2). */
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk):is(.sel,.lit) path.nt-line{stroke:var(--gold-11)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk).added path.nt-line{stroke:var(--green-11)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk).removed path.nt-line{stroke:var(--sage-9)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk).changed path.nt-line{stroke:var(--gold-9)}
+:root[data-theme="dark"] .cm svg :is(.nt-edge,.nt-trunk).nt-mk-lit path.nt-line{stroke:var(--violet-11)}
+:root[data-theme="dark"] .cm svg .nt-lift path:is(.sel,.lit),:root[data-theme="dark"] .cm svg .nt-lift .nt-end{stroke:var(--gold-11)}
+:root[data-theme="dark"] .cm svg .nt-lift path.nt-mk-lit{stroke:var(--violet-11)}
+:root[data-theme="dark"] .cm svg .nt-trunk:is(.sel,.lit) circle.nt-join{fill:var(--gold-11)}
+:root[data-theme="dark"] .cm svg .nt-trunk.added circle.nt-join{fill:var(--green-11)}
+:root[data-theme="dark"] .cm svg .nt-trunk.removed circle.nt-join{fill:var(--sage-9)}
+:root[data-theme="dark"] .cm svg .nt-trunk.changed circle.nt-join{fill:var(--gold-9)}
+:root[data-theme="dark"] .cm svg .nt-trunk.nt-mk-lit circle.nt-join{fill:var(--violet-11)}
+@media (prefers-color-scheme:dark){
+:root[data-theme="system"] .cm svg .nt-hd{fill:var(--sage-3);stroke:var(--sage-6)}
+:root[data-theme="system"] .cm svg .nt-ht{fill:var(--sage-12)}
+:root[data-theme="system"] .cm svg .nt-group rect{fill:var(--sage-3);stroke:var(--sage-7)}
+:root[data-theme="system"] .cm svg .nt-g-boundary rect{fill:var(--violet-2);stroke:var(--violet-8)}
+:root[data-theme="system"] .cm svg .nt-g-zone rect,:root[data-theme="system"] .cm svg .nt-g-environment rect{fill:var(--gold-2);stroke:var(--gold-8)}
+:root[data-theme="system"] .cm svg .nt-g-lane rect{fill:var(--sage-2);stroke:var(--sage-8)}
+:root[data-theme="system"] .cm svg .nt-g-pool rect,:root[data-theme="system"] .cm svg .nt-g-system rect{fill:var(--sage-3);stroke:var(--sage-9)}
+:root[data-theme="system"] .cm svg .nt-g-unplaced rect{fill:var(--gold-2);stroke:var(--gold-9)}
+:root[data-theme="system"] .cm svg .nt-g-family rect,:root[data-theme="system"] .cm svg .nt-g-module rect{fill:var(--green-2);stroke:var(--green-7)}
+:root[data-theme="system"] .cm svg .nt-g-node rect{fill:var(--sage-4);stroke:var(--sage-8)}
+:root[data-theme="system"] .cm svg .nt-band rect{fill:var(--sage-3);stroke:var(--sage-5)}
+:root[data-theme="system"] .cm svg .nt-lane:nth-of-type(even) rect{fill:var(--sage-2)}
+:root[data-theme="system"] .cm svg .nt-band-collapsed rect{fill:var(--sage-3);stroke:var(--sage-6)}
+:root[data-theme="system"] .cm svg .nt-band text,:root[data-theme="system"] .cm svg .nt-band-collapsed text{fill:var(--sage-11)}
+:root[data-theme="system"] .cm svg .nt-gtitle{fill:var(--sage-12)}
+:root[data-theme="system"] .cm svg .nt-gsub{fill:var(--sage-11)}
+:root[data-theme="system"] .cm svg .nt-cap,:root[data-theme="system"] .cm svg :is(.nt-bpmn-event,.nt-bpmn-gateway) .nt-ftitle{fill:var(--sage-12)}
+:root[data-theme="system"] .cm svg :is(.nt-bpmn-event,.nt-bpmn-gateway).removed :is(.nt-cap,.nt-ftitle){fill:var(--sage-9)}
+:root[data-theme="system"] .cm svg .nt-elabel,:root[data-theme="system"] .cm svg .nt-qual{fill:var(--sage-12);stroke:var(--sage-1)}
+:root[data-theme="system"] .cm svg .nt-keybox,:root[data-theme="system"] .cm svg .nt-cross,:root[data-theme="system"] .cm svg .nt-callout circle{fill:var(--sage-1)}
+:root[data-theme="system"] .cm svg .nt-keybox{stroke:var(--sage-6)}
+:root[data-theme="system"] .cm svg .nt-lifeline line{stroke:var(--sage-9)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#3c4a44"],:root[data-theme="system"] .cm svg marker [stroke="#3c4a44"],:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#778478"],:root[data-theme="system"] .cm svg marker [stroke="#778478"]{stroke:var(--sage-10)}
+:root[data-theme="system"] .cm svg marker [fill="#3c4a44"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#3c4a44"],:root[data-theme="system"] .cm svg marker [fill="#778478"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#778478"]{fill:var(--sage-10)}
+:root[data-theme="system"] .cm svg marker [fill="#fff"],:root[data-theme="system"] .cm svg marker [fill="#ffffff"]{fill:var(--sage-1)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#2f6b4f"],:root[data-theme="system"] .cm svg marker [stroke="#2f6b4f"],:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#587448"],:root[data-theme="system"] .cm svg marker [stroke="#587448"]{stroke:var(--green-11)}
+:root[data-theme="system"] .cm svg marker [fill="#2f6b4f"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#2f6b4f"],:root[data-theme="system"] .cm svg marker [fill="#587448"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#587448"]{fill:var(--green-11)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#6f5a93"],:root[data-theme="system"] .cm svg marker [stroke="#6f5a93"],:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#805d83"],:root[data-theme="system"] .cm svg marker [stroke="#805d83"],:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#8a7f90"],:root[data-theme="system"] .cm svg marker [stroke="#8a7f90"]{stroke:var(--violet-11)}
+:root[data-theme="system"] .cm svg marker [fill="#6f5a93"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#6f5a93"],:root[data-theme="system"] .cm svg marker [fill="#805d83"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#805d83"],:root[data-theme="system"] .cm svg marker [fill="#8a7f90"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#8a7f90"]{fill:var(--violet-11)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk) [stroke="#b0493a"],:root[data-theme="system"] .cm svg marker [stroke="#b0493a"]{stroke:var(--red-11)}
+:root[data-theme="system"] .cm svg marker [fill="#b0493a"],:root[data-theme="system"] .cm svg .nt-trunk .nt-join[fill="#b0493a"]{fill:var(--red-11)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk):is(.sel,.lit) path.nt-line{stroke:var(--gold-11)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk).added path.nt-line{stroke:var(--green-11)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk).removed path.nt-line{stroke:var(--sage-9)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk).changed path.nt-line{stroke:var(--gold-9)}
+:root[data-theme="system"] .cm svg :is(.nt-edge,.nt-trunk).nt-mk-lit path.nt-line{stroke:var(--violet-11)}
+:root[data-theme="system"] .cm svg .nt-lift path:is(.sel,.lit),:root[data-theme="system"] .cm svg .nt-lift .nt-end{stroke:var(--gold-11)}
+:root[data-theme="system"] .cm svg .nt-lift path.nt-mk-lit{stroke:var(--violet-11)}
+:root[data-theme="system"] .cm svg .nt-trunk:is(.sel,.lit) circle.nt-join{fill:var(--gold-11)}
+:root[data-theme="system"] .cm svg .nt-trunk.added circle.nt-join{fill:var(--green-11)}
+:root[data-theme="system"] .cm svg .nt-trunk.removed circle.nt-join{fill:var(--sage-9)}
+:root[data-theme="system"] .cm svg .nt-trunk.changed circle.nt-join{fill:var(--gold-9)}
+:root[data-theme="system"] .cm svg .nt-trunk.nt-mk-lit circle.nt-join{fill:var(--violet-11)}
+}
+/* Forced colours (round 10 T2, audit/round10/DESIGN.md principle 8). In forced-colours mode the browser paints the stage
+   behind a picture in the system Canvas but keeps the picture's own colours (an svg is forced-color-adjust:
+   preserve-parent-color), so its light bands and frames would sit on a Canvas that may be black, and its lines, joins and
+   selection would cross both. The canvas furniture the dark theme re-colours takes the system colours instead: every
+   ground the picture draws is Canvas; its frames, words, lines, heads and joins are CanvasText (a hollow head stays
+   hollow; only the heads of a picture that draws relationships, so a chapter view's own markers keep theirs), and so are
+   the captions an event or a gateway carries below it on the ground; a selected, lit or traced line and its joins (a
+   perspective's traced path too), the lift and its end rings, a selected element and keyboard focus are Highlight; a
+   removed line, and a removed event's or gateway's caption, are GrayText, the line with its dash. The notation's own
+   fills keep their colours, as in the dark theme. Each colour is !important so it holds over the light and dark rules,
+   in the embedded style's order (traced last); the heads' :has() rules stand alone, so a browser without :has() keeps
+   the rest. */
+@media (forced-colors:active){
+.cm svg :is(.nt-group,.nt-band,.nt-band-collapsed) rect,.cm svg .nt-hd,.cm svg .nt-keybox{fill:Canvas!important;stroke:CanvasText!important}
+.cm svg :is(.nt-band,.nt-band-collapsed) text,.cm svg :is(.nt-gtitle,.nt-gsub,.nt-ht,.nt-hk,.nt-hv){fill:CanvasText!important}
+.cm svg :is(.nt-elabel,.nt-qual,.nt-card){fill:CanvasText!important;stroke:Canvas!important}
+.cm svg .nt-cap,.cm svg :is(.nt-bpmn-event,.nt-bpmn-gateway) .nt-ftitle{fill:CanvasText!important}
+.cm svg :is(.nt-bpmn-event,.nt-bpmn-gateway).removed :is(.nt-cap,.nt-ftitle){fill:GrayText!important}
+.cm svg :is(.nt-edge,.nt-trunk) path.nt-line,.cm svg .nt-lifeline line{stroke:CanvasText!important}
+.cm svg .nt-trunk circle.nt-join{fill:CanvasText!important}
+.cm svg:has(.nt-edge) marker [stroke]{stroke:CanvasText!important}
+.cm svg:has(.nt-edge) marker [fill]:not([fill="none"],[fill="#fff"],[fill="#ffffff"]){fill:CanvasText!important}
+.cm svg:has(.nt-edge) marker :is([fill="#fff"],[fill="#ffffff"]){fill:Canvas!important}
+.cm svg :is(.nt-edge,.nt-trunk):is(.sel,.lit) path.nt-line,.cm svg .nt-lift :is(path,.nt-end){stroke:Highlight!important}
+.cm svg .nt-trunk:is(.sel,.lit) circle.nt-join{fill:Highlight!important}
+.cm svg :is(.nt-edge,.nt-trunk).removed path.nt-line{stroke:GrayText!important}
+.cm svg .nt-trunk.removed circle.nt-join{fill:GrayText!important}
+.cm svg :is(.nt-edge,.nt-trunk).nt-mk-lit path.nt-line{stroke:Highlight!important}
+.cm svg .nt-trunk.nt-mk-lit circle.nt-join{fill:Highlight!important}
+.cm .cm-svg.pe-tracing g.nt-edge.pe-on .nt-line{stroke:Highlight!important}
+.cm svg .nt-node:is(.sel,:focus-visible) :is(rect.nt-box,.nt-ev,.nt-gw){stroke:Highlight!important}
+.cm svg :is(.nt-hit,.nt-bhit):is(:hover,:focus-visible){stroke:Highlight!important;stroke-opacity:.5}
+}

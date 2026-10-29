@@ -1,0 +1,173 @@
+{
+  "currentCommit": "7d4577f5bc71b86002c4e031ad35e7966a3ede7c",
+  "rows": [
+    {
+      "file": "KNOWLEDGE-REPOSITORY.md",
+      "status": "different"
+    },
+    {
+      "file": "SOURCE-MANIFEST.json",
+      "status": "different"
+    },
+    {
+      "file": "brain-governance-ui-validate.mjs",
+      "status": "different"
+    },
+    {
+      "file": "brain-retrieval.js",
+      "status": "different"
+    },
+    {
+      "file": "client-bundle.mjs",
+      "status": "different"
+    },
+    {
+      "file": "design-resources-browser-validate.mjs",
+      "status": "different"
+    },
+    {
+      "file": "knowledge-repository.js",
+      "status": "different"
+    },
+    {
+      "file": "package.json",
+      "status": "different"
+    },
+    {
+      "file": "public/app.js",
+      "status": "different"
+    },
+    {
+      "file": "public/architecture-brain.js",
+      "status": "different"
+    },
+    {
+      "file": "public/architecture-knowledge.js",
+      "status": "different"
+    },
+    {
+      "file": "public/design-resources-ui.js",
+      "status": "different"
+    },
+    {
+      "file": "public/design-resources.css",
+      "status": "different"
+    },
+    {
+      "file": "public/index.html",
+      "status": "different"
+    },
+    {
+      "file": "public/intelligence-context.js",
+      "status": "different"
+    },
+    {
+      "file": "public/knowledge-governance.js",
+      "status": "different"
+    },
+    {
+      "file": "public/knowledge-sources-ui.js",
+      "status": "different"
+    },
+    {
+      "file": "public/knowledge-workspace-ui.js",
+      "status": "different"
+    },
+    {
+      "file": "public/knowledge-workspace.css",
+      "status": "different"
+    },
+    {
+      "file": "public/technology-catalogue.js",
+      "status": "different"
+    },
+    {
+      "file": "public/technology-realisation-ui.js",
+      "status": "different"
+    },
+    {
+      "file": "repository-service/README.md",
+      "status": "different"
+    },
+    {
+      "file": "repository-service/corpus.js",
+      "status": "different"
+    },
+    {
+      "file": "repository-service/reader.js",
+      "status": "different"
+    },
+    {
+      "file": "repository-service/server.js",
+      "status": "different"
+    },
+    {
+      "file": "repository-service/store.js",
+      "status": "different"
+    },
+    {
+      "file": "ARCHITECTURE-BRAIN-IMPLEMENTATION.md",
+      "status": "supplied-only"
+    },
+    {
+      "file": "architecture-knowledge-unit-validate.mjs",
+      "status": "supplied-only"
+    },
+    {
+      "file": "audit/round21/VIDEO-KNOWLEDGE-INTEGRATION.md",
+      "status": "supplied-only"
+    },
+    {
+      "file": "audit/round22/SOURCE-MEDIA-REMEDIATION.md",
+      "status": "supplied-only"
+    },
+    {
+      "file": "evaluation/payment-architecture-knowledge-pilot.json",
+      "status": "supplied-only"
+    },
+    {
+      "file": "PAYMENT-ARCHITECTURE-KNOWLEDGE-PILOT.md",
+      "status": "supplied-only"
+    },
+    {
+      "file": "payment-knowledge-pilot-validate.mjs",
+      "status": "supplied-only"
+    },
+    {
+      "file": "public/architecture-knowledge-unit.js",
+      "status": "supplied-only"
+    },
+    {
+      "file": "public/architecture-unit-authoring-ui.js",
+      "status": "supplied-only"
+    },
+    {
+      "file": "public/knowledge-explanation-ui.js",
+      "status": "supplied-only"
+    },
+    {
+      "file": "public/knowledge-explanation.css",
+      "status": "supplied-only"
+    },
+    {
+      "file": "public/source-media-areas.js",
+      "status": "supplied-only"
+    },
+    {
+      "file": "repository-service/import-video-pack.ps1",
+      "status": "supplied-only"
+    },
+    {
+      "file": "repository-service/video-evidence-cli.mjs",
+      "status": "supplied-only"
+    },
+    {
+      "file": "repository-service/video-evidence.js",
+      "status": "supplied-only"
+    },
+    {
+      "file": "repository-video-validate.mjs",
+      "status": "supplied-only"
+    }
+  ]
+}

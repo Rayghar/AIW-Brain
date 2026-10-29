@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Neighbourhood bike share · Archi native .archimate fixture (AIW authored teaching example): folders of elements, relationships as elements, one diagram. -->
+<archimate:model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:archimate="http://www.archimatetool.com/archimate" name="Neighbourhood bike share" id="model-1" version="5.0.0">
+  <folder name="Business" id="folder-business" type="business">
+    <element xsi:type="archimate:BusinessActor" name="Resident" id="el-resident"><documentation>Signs up, unlocks a bike, rides and pays the fee.</documentation></element>
+    <element xsi:type="archimate:BusinessProcess" name="Unlock a bike" id="el-unlock"/>
+  </folder>
+  <folder name="Application" id="folder-application" type="application">
+    <element xsi:type="archimate:ApplicationComponent" name="Trip service" id="el-trip"/>
+    <element xsi:type="archimate:ApplicationComponent" name="Pricing and payment service" id="el-pricing"/>
+    <element xsi:type="archimate:DataObject" name="Trip record" id="el-record"/>
+  </folder>
+  <folder name="Technology &amp; Physical" id="folder-technology" type="technology">
+    <element xsi:type="archimate:Node" name="Application cluster" id="el-cluster"/>
+  </folder>
+  <folder name="Relations" id="folder-relations" type="relations">
+    <element xsi:type="archimate:FlowRelationship" name="Trip completed" id="rel-1" source="el-trip" target="el-pricing"/>
+    <element xsi:type="archimate:AccessRelationship" id="rel-2" source="el-trip" target="el-record" accessType="3"/>
+    <element xsi:type="archimate:RealizationRelationship" id="rel-3" source="el-cluster" target="el-trip"/>
+    <element xsi:type="archimate:ServingRelationship" id="rel-4" source="el-trip" target="el-unlock"/>
+    <element xsi:type="archimate:AssignmentRelationship" id="rel-5" source="el-resident" target="el-unlock"/>
+  </folder>
+  <folder name="Views" id="folder-views" type="diagrams">
+    <element xsi:type="archimate:ArchimateDiagramModel" name="Application view" id="view-1">
+      <child xsi:type="archimate:DiagramObject" id="obj-1" archimateElement="el-trip"><bounds x="24" y="24" width="120" height="55"/></child>
+      <child xsi:type="archimate:DiagramObject" id="obj-2" archimateElement="el-pricing"><bounds x="240" y="24" width="120" height="55"/></child>
+    </element>
+  </folder>
+</archimate:model>

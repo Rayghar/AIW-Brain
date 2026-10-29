@@ -1,0 +1,983 @@
+{
+  "authority": "Local synthetic project clone only. Native editors, local routes and reversible commands. No external provider calls, approvals or execution evidence asserted.",
+  "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-c10-fixed",
+  "started": "2026-10-18T10:37:31.839Z",
+  "clicks": [
+    {
+      "chapter": "1",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "1",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-r-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-r-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-r-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "1",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "2",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "2",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-q-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-q-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-q-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "2",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "3",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "3",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-d-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-d-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-d-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "3",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-l-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-l-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-l-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "5",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "5",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-a-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-a-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-a-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "5",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "6",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "6",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-t-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-t-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-t-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "6",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "7",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "7",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-tr-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-tr-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-tr-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "7",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-i-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-i-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-i-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "9",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "9",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-sec-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-sec-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-sec-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "9",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-rt-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-rt-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-brain-launch=mind",
+        "data-rt-action=mind"
+      ]
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "11",
+      "tab": "work",
+      "label": "Chapter tools",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Chapter tools\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "11",
+      "tab": "work",
+      "label": "Co-design",
+      "tag": "BUTTON",
+      "selector": "button[data-rv-action=\"mind\"][data-brain-launch=\"mind\"]",
+      "trusted": true,
+      "attributes": {
+        "data-rv-action": "mind",
+        "data-brain-launch": "mind"
+      },
+      "families": [
+        "data-rv-action=mind",
+        "data-brain-launch=mind"
+      ]
+    },
+    {
+      "chapter": "11",
+      "tab": "work",
+      "label": "Close assistance",
+      "tag": "BUTTON",
+      "selector": "button[data-brain-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-brain-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Edit",
+      "tag": "BUTTON",
+      "selector": "button[data-l-action=\"edit\"][data-l-id=\"lr-001\"]",
+      "trusted": true,
+      "attributes": {
+        "data-l-action": "edit",
+        "data-l-id": "lr-001"
+      },
+      "families": []
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Review",
+      "tag": "BUTTON",
+      "selector": "button[data-l-action=\"step\"][data-l-step=\"2\"]",
+      "trusted": true,
+      "attributes": {
+        "data-l-action": "step",
+        "data-l-step": "2"
+      },
+      "families": []
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Preview impact",
+      "tag": "BUTTON",
+      "selector": "button:text-is(\"Preview impact\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "Object & backlinks",
+      "tag": "BUTTON",
+      "selector": "button[data-object-page=\"lr-001\"]",
+      "trusted": true,
+      "attributes": {
+        "data-object-page": "lr-001"
+      },
+      "families": [
+        "data-object-page=[record]"
+      ]
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "label": "History",
+      "tag": "BUTTON",
+      "selector": "button[data-object-history=\"\"]",
+      "trusted": true,
+      "attributes": {
+        "data-object-history": ""
+      },
+      "families": [
+        "data-object-history="
+      ]
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Environment zones \u00b7 1",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Environment zones \u00b7 1\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Dismiss RP-001",
+      "tag": "BUTTON",
+      "selector": "button[data-rt-action=\"dismiss-seed\"][data-rt-id=\"RP-001\"]",
+      "trusted": true,
+      "attributes": {
+        "data-rt-action": "dismiss-seed",
+        "data-rt-id": "RP-001"
+      },
+      "families": [
+        "data-rt-action=dismiss-seed"
+      ]
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Cancel",
+      "tag": "BUTTON",
+      "selector": "button[data-rt-action=\"close\"]",
+      "trusted": true,
+      "attributes": {
+        "data-rt-action": "close"
+      },
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Keep RP-001",
+      "tag": "BUTTON",
+      "selector": "button[data-rt-action=\"keep-seed\"][data-rt-id=\"RP-001\"]",
+      "trusted": true,
+      "attributes": {
+        "data-rt-action": "keep-seed",
+        "data-rt-id": "RP-001"
+      },
+      "families": [
+        "data-rt-action=keep-seed"
+      ]
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Object lens layout",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Operation & evidence",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Operation & evidence\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Upstream rationale",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Upstream rationale\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Connections \u00b7 1",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Connections \u00b7 1\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "Record lifecycle",
+      "tag": "SUMMARY",
+      "selector": "summary:text-is(\"Record lifecycle\")",
+      "trusted": true,
+      "attributes": {},
+      "families": []
+    },
+    {
+      "chapter": "10",
+      "tab": "work",
+      "label": "RUN-001 \u00b7 Clinic booking service operating plan",
+      "tag": "BUTTON",
+      "selector": "button[data-rt-action=\"inspect\"][data-rt-id=\"run-001\"]",
+      "trusted": true,
+      "attributes": {
+        "data-rt-action": "inspect",
+        "data-rt-id": "run-001"
+      },
+      "families": [
+        "data-rt-action=inspect"
+      ]
+    }
+  ],
+  "errors": [],
+  "attempts": [],
+  "blocked": [],
+  "selectorChecks": [
+    {
+      "family": "data-r-action=mind",
+      "selector": "[data-r-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-q-action=mind",
+      "selector": "[data-q-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-d-action=mind",
+      "selector": "[data-d-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-l-action=mind",
+      "selector": "[data-l-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-a-action=mind",
+      "selector": "[data-a-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-t-action=mind",
+      "selector": "[data-t-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-tr-action=mind",
+      "selector": "[data-tr-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-i-action=mind",
+      "selector": "[data-i-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-sec-action=mind",
+      "selector": "[data-sec-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-rt-action=mind",
+      "selector": "[data-rt-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    },
+    {
+      "family": "data-rv-action=mind",
+      "selector": "[data-rv-action=\"mind\"]",
+      "status": "actual native alias clicked",
+      "panelOpened": true
+    }
+  ],
+  "meaningfulSave": {
+    "before": "Own the decision to allocate an available appointment and return its stable booking outcome.",
+    "after": "Own the decision to allocate an available appointment and return its stable booking outcome.",
+    "saved": false
+  },
+  "aliasMappings": [
+    {
+      "family": "data-a-action=technology-intake",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+      "status": "unvisited_closed_disclosure",
+      "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+    },
+    {
+      "family": "data-i-action=chapter9",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+      "status": "unvisited_closed_disclosure",
+      "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+    },
+    {
+      "family": "data-l-action=chapter5",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+      "status": "unvisited_closed_disclosure",
+      "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+    },
+    {
+      "family": "data-sec-action=chapter10",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+      "status": "unvisited_closed_disclosure",
+      "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+    },
+    {
+      "family": "data-t-action=chapter7",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+      "status": "unvisited_closed_disclosure",
+      "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+    },
+    {
+      "family": "data-tr-action=chapter8",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+      "status": "unvisited_closed_disclosure",
+      "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+    },
+    {
+      "family": "data-rt-action=chapter11",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias.",
+      "status": "unvisited_closed_disclosure",
+      "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/conditional-family-clicks-compact.json"
+    }
+  ],
+  "finished": "2026-10-18T10:37:51.024Z",
+  "coveredFamilies": [
+    "data-r-action=mind",
+    "data-brain-launch=mind",
+    "data-q-action=mind",
+    "data-d-action=mind",
+    "data-l-action=mind",
+    "data-a-action=mind",
+    "data-t-action=mind",
+    "data-tr-action=mind",
+    "data-i-action=mind",
+    "data-sec-action=mind",
+    "data-rt-action=mind",
+    "data-rv-action=mind",
+    "data-object-page=[record]",
+    "data-object-history=",
+    "data-rt-action=dismiss-seed",
+    "data-rt-action=keep-seed",
+    "data-rt-action=inspect"
+  ],
+  "remaining": [
+    {
+      "family": "data-brain-action=subject",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-cr-action=hide",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-brain-action=author",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-nt-row=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-action=all-layers",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-action=model-layer-filter",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-lane=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "label=Record treatment",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-layer=process",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-select=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-edge=b",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-edge=r",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-layer=logical",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-layer=physical",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-layer=technology",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-link=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-band=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-close-review=",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-edge=t",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-layer=data",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-r-action=show-model",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-row=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "label=Confirm selected after review",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-a-action=from-library",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-a-action=technology-intake",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-a-action=to-library",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-action=play",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-action=release-subject",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-action=restart-flow",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-action=step-flow",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-brain-action=unpin",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-i-action=chapter9",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-i-action=select-contract",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-l-action=chapter5",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-layer=deployment",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-layer=interface",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-layer=security",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-rv-action=content-report",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-rv-action=delivery-stage",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-rv-action=walk",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-sec-action=chapter10",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-stage=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-t-action=chapter7",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-tr-action=chapter8",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-tr-action=compare",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-tr-action=sensitivity",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-zone=[record]",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-guide-action=loop",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-guide-action=start",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-journey-draft=6",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-rt-action=chapter11",
+      "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+    },
+    {
+      "family": "data-t-action=keep-component-needs",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-t-action=keep-seed",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-wb-action=baseline-diff",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-wb-action=delivery",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-wb-action=queue",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "data-wb-action=source-questions",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    },
+    {
+      "family": "label=Undo last saved input review",
+      "reason": "Not reachable in bounded current fixture path; may require another record type, relationship, lifecycle state or editor branch"
+    }
+  ],
+  "classificationCorrection": "The earlier claim that output-workspace.js ignored context/handoff was incorrect, caused by inspecting truncated source output. Canonical code includes both inside output disclosures. No production omission was established.",
+  "saveOutcomeInterpretation": "Existing responsibility used Preview impact, so its stored purpose correctly remained unchanged; this was not a Save submission. Separate synthetic group Save persisted."
+}

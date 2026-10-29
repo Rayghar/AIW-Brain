@@ -1,0 +1,42 @@
+[
+  {
+    "check": "payment-knowledge-pilot-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 3235
+  },
+  {
+    "check": "architecture-knowledge-unit-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 1076
+  },
+  {
+    "check": "brain-governance-ui-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 10003
+  },
+  {
+    "check": "brain-integration-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 2657
+  },
+  {
+    "check": "knowledge-retrieval-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 14326
+  },
+  {
+    "check": "technology-catalogue-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 1224
+  },
+  {
+    "check": "check-syntax.mjs",
+    "exitCode": 0,
+    "milliseconds": 691722
+  },
+  {
+    "check": "build.mjs",
+    "exitCode": 0,
+    "milliseconds": 8859
+  }
+]

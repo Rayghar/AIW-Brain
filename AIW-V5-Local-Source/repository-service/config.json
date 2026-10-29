@@ -1,0 +1,9 @@
+{
+  "snapshotRoot": "../../knowledge-repository/AKR-0.10.73.7_/github-live",
+  "manifestIndex": "../../release-evidence/rc10.73.7/CONTENT_SNAPSHOT_MANIFEST_INDEX.json",
+  "catalogue": "../../knowledge-repository/AKR-0.10.72.0/GITHUB-KNOWLEDGE-CATALOG.json",
+  "catalogueSums": "../../knowledge-repository/AKR-0.10.72.0/SHA256SUMS",
+  "store": "../../knowledge-repository/store/akr-store.sqlite",
+  "secrets": "${LOCALAPPDATA}/AIW/repository-service",
+  "port": 4180
+}

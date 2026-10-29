@@ -1,0 +1,205 @@
+{
+  "release": "rc35",
+  "recordedAt": "2026-10-20T21:30:11.050Z",
+  "scope": "Accepted read design linked to one authoritative status/result contract, with explicit consumer freshness, exact caller/authority/dictionary scope and current source support.",
+  "status": "passed",
+  "methodVersion": 5,
+  "observedCommands": [
+    {
+      "command": "node read-outcome-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node read-design-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node composition-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node execution-composition-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node outcome-contract-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node outcome-context-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node architecture-intelligence-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "command": "node architecture-grounding-validate.mjs",
+      "status": "passed",
+      "exitCode": 0
+    }
+  ],
+  "finalImportSeparationVerification": {
+    "command": "node read-outcome-validate.mjs",
+    "status": "passed",
+    "note": "Repeated only after pure context dependency separation; earlier unchanged regression results retained."
+  },
+  "extractionParity": {
+    "baselineCommit": "a38d851793b67de5494e5ad0e7a0b80fbfbec3e3",
+    "status": "passed",
+    "basisCases": 27,
+    "contextCases": 14,
+    "comparison": "Exact JSON including property order against baseline modules read with git show; covers requirement/context, contract/payload, security, interaction, read, persistence and all five composition families."
+  },
+  "canonicalContext": {
+    "readTaskId": "DES-001",
+    "currentnessDependencyCount": 31,
+    "inferenceSourceCount": 18,
+    "checks": 51,
+    "obligations": 5,
+    "sourceCurrent": true,
+    "methodCurrent": true
+  },
+  "packets": {
+    "narrowCachedResult": {
+      "sourceCharacters": 27703,
+      "sourceCount": 21,
+      "composition": [
+        {
+          "state": "context-match",
+          "checks": 51,
+          "obligations": 5
+        }
+      ]
+    },
+    "strictCacheConflict": {
+      "sourceCharacters": 27868,
+      "sourceCount": 21,
+      "composition": [
+        {
+          "state": "excluded",
+          "checks": 50,
+          "obligations": 5
+        }
+      ]
+    },
+    "tighterBoundConflict": {
+      "sourceCharacters": 27959,
+      "sourceCount": 21,
+      "composition": [
+        {
+          "state": "excluded",
+          "checks": 51,
+          "obligations": 5
+        }
+      ]
+    },
+    "directStrictResult": {
+      "sourceCharacters": 27286,
+      "sourceCount": 21,
+      "composition": [
+        {
+          "state": "context-match",
+          "checks": 50,
+          "obligations": 5
+        }
+      ]
+    },
+    "completeDriverJourney": {
+      "sourceCharacters": 27985,
+      "sourceCount": 22,
+      "composition": [
+        {
+          "state": "context-match",
+          "checks": 51,
+          "obligations": 5
+        }
+      ]
+    }
+  },
+  "unchangedLimits": {
+    "maxPacketSourceCharacters": 28000,
+    "maxPacketSources": 22,
+    "maxMethodSourceCharacters": 20000
+  },
+  "verifiedBehaviors": [
+    "Native acceptance, same caller, same authority and exact result dictionary are required; legacy contracts without read linkage acquire no new read obligations.",
+    "Known cache-aside/latest-committed or excessive-age contradictions stay excluded; absent, proposed, unaccepted, incomplete or obsolete support remains needs-context.",
+    "Role and freshness deductions use typed fields and exact identities, never product-name or prose heuristics.",
+    "Driver and currentness-only support changes invalidate read context, native contract review, derived model reading and generated-response receipts without rewriting original acceptance.",
+    "All currentness dependency identifiers remain in the projected task source receipt; excluding any operand or dependency withholds the whole deduction.",
+    "Native submission and result requests retain every check, placement and verification responsibility within the original source/character caps.",
+    "Explicit accepted-task queries keep both alternatives; an unapplied task retains its existing architecture drafting contract.",
+    "Insufficient packet budget withholds the complete deduction rather than dropping supporting checks or duties.",
+    "A linked accepted read does not override an explicit persistence/database or traffic-distribution question; the existing canonical selector controls both grounding and the bounded result-route preference."
+  ],
+  "limitations": [
+    "Authored synthetic scenarios and local commands; no customer workload or production execution is represented.",
+    "No live provider response or runtime freshness, finality, access-control or recovery measurement was performed.",
+    "All implementation verification obligations remain pending even where declarations are consistent.",
+    "Root owns the production build, bundle budget gate, private Site publication and release evidence.",
+    "The expanded accepted persistence fixture still exceeds the existing 20,000-character method-source guard and explicitly asks for narrower scope; this routing correction does not substitute result-read reasoning or enlarge that guard."
+  ],
+  "finalRequestRoutingVerification": {
+    "status": "passed",
+    "commands": [
+      "node read-outcome-validate.mjs",
+      "node architecture-grounding-validate.mjs"
+    ],
+    "selector": "One exported architectureTopicForPrompt function, extracted without changing the existing grounding taxonomy or precedence.",
+    "rule": "Implicit linked-result composition replaces automatic comparison only for reads or interaction. Other recognized topics retain their method or linked comparison. Explicit architectureTaskId remains authoritative.",
+    "cases": [
+      {
+        "promptTopic": "persistence",
+        "linkedRead": true,
+        "persistenceTask": false,
+        "source": "persistence-method",
+        "sourceCharacters": 6080,
+        "packetSourceCharacters": 27673
+      },
+      {
+        "promptTopic": "persistence",
+        "linkedRead": true,
+        "persistenceTask": "prepared comparison",
+        "source": "DES-002",
+        "alternatives": [
+          "relational-transaction",
+          "aggregate-document"
+        ],
+        "sourceCharacters": 19033,
+        "packetSourceCharacters": 27779
+      },
+      {
+        "promptTopic": "distribution",
+        "linkedRead": true,
+        "source": "distribution-method",
+        "status": "passed"
+      },
+      {
+        "explicitTask": "accepted read",
+        "alternatives": [
+          "direct-read",
+          "cache-aside"
+        ],
+        "status": "passed"
+      },
+      {
+        "explicitTask": "unapplied read",
+        "draftingContract": "retained",
+        "status": "passed"
+      }
+    ]
+  }
+}

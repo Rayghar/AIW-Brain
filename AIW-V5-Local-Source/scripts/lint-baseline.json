@@ -1,0 +1,269 @@
+{
+ "anatomy-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "anatomy-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "architecture-design-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "brain-ahead-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "brain-chain-validate.mjs": {
+  "no-empty": 1
+ },
+ "brain-governance-ui-validate.mjs": {
+  "no-unused-vars": 5
+ },
+ "brain-integration-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "brain-reasoning-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "brain-reasoning-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "brain-subject-browser-validate.mjs": {
+  "no-empty": 1,
+  "no-unused-vars": 1
+ },
+ "brain-ui-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "bundle-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "chapter-sol-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "composition-fixtures.mjs": {
+  "no-unused-vars": 17
+ },
+ "composition-ui-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "composition-validate.mjs": {
+  "no-unused-vars": 4
+ },
+ "deploy-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "design-task-ui-validate.mjs": {
+  "no-unused-vars": 4
+ },
+ "desk-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "desk-fixes-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "desk-validate.mjs": {
+  "no-unused-vars": 4
+ },
+ "enhancements-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "exchange-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "exchange-design-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "exchange-task-ui-validate.mjs": {
+  "no-unused-vars": 5
+ },
+ "grounding-review-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "intelligence-service.js": {
+  "no-empty": 3
+ },
+ "knowledge-design-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "knowledge-repository-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "knowledge-second-brain-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "local-accounts-validate.mjs": {
+  "no-empty": 1
+ },
+ "model-reversal-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "operations-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "persistence-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "platform-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "platform-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "projects-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "public/anatomy-layout.js": {
+  "no-unused-vars": 3
+ },
+ "public/anatomy-view.js": {
+  "no-unused-vars": 3
+ },
+ "public/architecture-design.js": {
+  "no-unused-vars": 1
+ },
+ "public/brain-reasoning-ui.js": {
+  "no-unused-vars": 1
+ },
+ "public/chapter-brief.js": {
+  "no-unused-vars": 2
+ },
+ "public/chapter-guide-ui.js": {
+  "no-empty": 1
+ },
+ "public/chapter-guide.js": {
+  "no-unused-vars": 2
+ },
+ "public/chapter-reasoning.js": {
+  "no-unused-vars": 1
+ },
+ "public/deploy-view.js": {
+  "no-unused-vars": 1
+ },
+ "public/desk-fixes.js": {
+  "no-unused-vars": 1
+ },
+ "public/desk-view.js": {
+  "no-unused-vars": 5
+ },
+ "public/interfaces-domain.js": {
+  "no-unused-vars": 2
+ },
+ "public/journey-context.js": {
+  "no-unused-vars": 1
+ },
+ "public/knowledge-ui.js": {
+  "no-unused-vars": 1
+ },
+ "public/logical-domain.js": {
+  "no-unused-vars": 2
+ },
+ "public/object-exploration.js": {
+  "no-unused-vars": 2
+ },
+ "public/platform-view.js": {
+  "no-unused-vars": 2
+ },
+ "public/quality-analysis-ui.js": {
+  "no-unused-vars": 1
+ },
+ "public/realisation-domain.js": {
+  "no-unused-vars": 2
+ },
+ "public/realise-view.js": {
+  "no-unused-vars": 2
+ },
+ "public/responsibility-view.js": {
+  "no-unused-vars": 2
+ },
+ "public/stack-view.js": {
+  "no-unused-vars": 5
+ },
+ "public/stewardship-ui.js": {
+  "no-unused-vars": 1
+ },
+ "public/story-view.js": {
+  "no-unused-vars": 1
+ },
+ "public/threat-view.js": {
+  "no-unused-vars": 1
+ },
+ "public/tradeoff-view.js": {
+  "no-unused-vars": 1
+ },
+ "public/utility-view.js": {
+  "no-unused-vars": 1
+ },
+ "realisation-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "reconciliation-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "release-checks.mjs": {
+  "no-unused-vars": 1,
+  "no-empty": 1
+ },
+ "repository-service-validate.mjs": {
+  "no-unused-vars": 3
+ },
+ "responsibility-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "responsibility-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "scripts/release-manifest.mjs": {
+  "no-unused-vars": 1
+ },
+ "security-task-ui-validate.mjs": {
+  "no-unused-vars": 5
+ },
+ "security-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "sol-coverage-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "sol-coverage-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "stack-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "stewardship-browser-validate.mjs": {
+  "no-empty": 1,
+  "no-unused-vars": 1
+ },
+ "stewardship-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "story-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "story-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "threat-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "threat-validate.mjs": {
+  "no-unused-vars": 1
+ },
+ "tradeoff-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "tradeoff-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "utility-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "utility-validate.mjs": {
+  "no-unused-vars": 2
+ },
+ "validate-browser-validate.mjs": {
+  "no-empty": 1
+ },
+ "xss-browser-validate.mjs": {
+  "no-empty": 1
+ }
+}

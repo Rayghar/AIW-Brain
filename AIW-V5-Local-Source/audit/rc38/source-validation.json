@@ -1,0 +1,25 @@
+{
+  "schema": "aiw.rc38.source-validation.v1",
+  "recordedAt": "2026-10-21T05:39:01.622Z",
+  "syntax": {
+    "method": "Direct Node SourceTextModule parsing of the same file selection as check-syntax.mjs, avoiding the environment child-process wrapper limitation",
+    "modules": 865,
+    "errors": 0,
+    "failures": []
+  },
+  "lint": {
+    "scope": "Changed Work, Specification and Diagram files were checked in their implementation tracks; this is not a whole-repository lint result",
+    "diagram": "Owned files passed direct ESLint",
+    "work": {
+      "newFindings": 0,
+      "preexistingFindings": 45,
+      "comparison": "Exact rc37 HEAD versions of changed files"
+    },
+    "specification": {
+      "newFindings": 0,
+      "comparison": "Changed-file baseline comparison"
+    },
+    "baselineRaised": false,
+    "wholeRepositoryLintClean": false
+  }
+}

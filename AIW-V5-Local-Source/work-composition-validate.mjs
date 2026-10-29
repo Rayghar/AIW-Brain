@@ -1,0 +1,63 @@
+// Presentation contract: no changes to domain records or acceptance criteria.
+import assert from 'node:assert/strict';
+import {Window} from 'happy-dom';
+const w=new Window({url:'https://aiw.test/?chapter=4&tab=work'});
+for(const key of ['window','document','location','history','localStorage','Node','Element','HTMLElement','MutationObserver','CustomEvent','Event'])Object.defineProperty(globalThis,key,{value:key==='window'?w:w[key],configurable:true});
+const {workFrameHTML,workTraceHTML}=await import('./public/work-frame.js');
+const {adoptProject,setShellScopeId}=await import('./public/project-context.js');
+const {recordDetailContent,recordCardHTML,renderStudioRecordCard}=await import('./public/record-card.js');
+const {withFinalReview}=await import('./public/review-domain.js');
+const {seedProject}=await import('./public/requirements-domain.js');
+const p=withFinalReview(seedProject()),before=JSON.stringify(p),id=p.logical.responsibilities[0].id,r=p.logical.responsibilities[0];
+const {esc}=await import('./public/html-escape.js');
+const make=html=>{const e=document.createElement('div');e.innerHTML=html;return e;};
+const source='<header class="inspector-top">Details</header><div class="inspector-body"><span class="eyebrow">Reference and revision</span><h2>'+esc(r.title)+'</h2><p>'+esc(r.purpose)+'</p><div class="l-inline-actions"><button data-l-action="edit" data-l-id="'+esc(id)+'">Edit</button><button data-l-action="map" data-l-id="'+esc(id)+'">Map implementation</button></div><section><h3>Specialist evidence</h3><p>Evidence text with nested <b>basis</b>.</p><button data-l-action="review-evidence">Review evidence</button></section><section class="lifecycle"><button data-l-action="lifecycle-retire" data-lifecycle-id="'+esc(id)+'">Retire</button></section></div>';
+try{
+ const cleaned=make(recordDetailContent(source,r.title));
+ assert.equal(cleaned.querySelectorAll('h2,.inspector-top,.inspector-body,.lifecycle').length,0);
+ assert.equal(cleaned.querySelectorAll('button').length,3,'Every non-lifecycle native command survives normalization');
+ assert.match(cleaned.textContent,/Evidence text with nested basis/);
+ const card=make(recordCardHTML(p,4,id,source,{nodes:[{id,title:r.title},{id:'REQ-001',title:'Source requirement'}],edges:[{from:'REQ-001',to:id,label:'informs boundary'}]}));
+ assert.match(card.querySelector('[data-card-section="history"]').textContent,/Source requirement · informs boundary/,'Incoming relationship meaning remains available with sources and history');
+ assert.equal(card.querySelectorAll('h2').length,1,'Only the selected record identity is rendered');
+ assert.equal(card.querySelectorAll('[data-l-action]').length,4,'Lifecycle returns exactly once alongside all native commands');
+ assert.equal(card.querySelectorAll('[data-l-action="lifecycle-retire"]').length,1);
+ assert(card.querySelector('[data-card-section="connections"] [data-record-picture-slot]'));
+ assert(!card.querySelector('[data-card-section="connections"]').open,'Connection illustration begins folded');
+ const empty=make(recordCardHTML(p,4,'project',source));
+ assert.equal(empty.querySelectorAll('h2,button,a').length,0,'No repeated chapter identity or navigation in an empty inspector');
+ assert(empty.textContent.length<120);
+ let lens='context';
+ const render=()=>'<div class="t-dock-head"><div><h2>'+esc(r.title)+'</h2></div><div class="t-dock-actions"><button data-t-action="edit">Edit capability</button></div></div><nav class="t-dock-tabs"><button data-t-lens="context">Context</button><button data-t-lens="recovery">Recovery</button></nav><div class="t-dock-body"><section><h3>'+lens+'</h3><div><button data-t-action="'+lens+'-action">Specialist action</button><p>Full '+lens+' content</p></div></section></div><section class="lifecycle"><button data-t-action="lifecycle-retire">Retire</button></section>';
+ const lenses=make(renderStudioRecordCard(p,4,id,render,{nodes:[],edges:[]},()=>lens,value=>{lens=value}));
+ assert.equal(lens,'context','Rendering all disclosures restores the held lens');
+ for(const action of ['edit','context-action','recovery-action','lifecycle-retire'])assert.equal(lenses.querySelectorAll('[data-t-action="'+action+'"]').length,1,action+' remains available exactly once');
+ assert.equal(lenses.querySelectorAll('.t-dock-tabs,.t-dock-head').length,0);
+ assert.equal(lenses.querySelectorAll('h2').length,1);
+ const frame=make(workFrameHTML({chapter:4,section:'groups',sections:[['responsibilities','Responsibilities'],['groups','Groups']],title:'Groups <unsafe>',description:'Owner & purpose',actions:'<button data-l-action="new-group">Create group</button>',body:'<input data-native-control>',context:'<select data-native-scope></select>'}));
+ assert.equal(frame.querySelector('h2').textContent,'Groups <unsafe>');
+ assert(frame.querySelector('[data-l-stage="groups"][data-l-action="work-stage"][aria-pressed="true"]'));
+ assert(!frame.querySelector('[data-stage]'),'Model journey attributes are never reused for Work sections');
+ assert(frame.querySelector('.work-body [data-native-control]')&&frame.querySelector('.work-context [data-native-scope]'));
+ adoptProject('work-fixture');setShellScopeId('module-a');
+ const scoped=make(workFrameHTML({project:{id:'work-fixture'},chapter:5,section:'components',sections:[['components','Components']],title:'Components'}));
+ for(const a of scoped.querySelectorAll('.work-connections a')){const u=new URL(a.href);assert.equal(u.searchParams.get('project'),'work-fixture');assert.equal(u.searchParams.get('scope'),'module-a','Method links preserve the held module scope');}
+ const linked=[...p.artefacts.slice(0,5).map(r=>({...r,chapter:1,section:'context',title:'<unsafe> & '+r.title}))];
+ const bounded=make(workTraceHTML([{label:'Actual linked records',records:[linked[0],...linked],more:'/?chapter=5&tab=model&object=api-pod'},{label:'No source',records:[],empty:'No relation recorded'}]));
+ assert.equal(bounded.querySelectorAll('[data-work-record]').length,3,'Repeated targets are deduplicated and visible examples are bounded');
+ assert.match(bounded.querySelector('.work-trace-more').textContent,/2 more/);
+ assert.equal(bounded.querySelectorAll('unsafe').length,0,'Record titles are escaped');
+ assert.match(bounded.querySelector('.work-trace-empty').textContent,/No relation recorded/);
+ for(const a of bounded.querySelectorAll('a')){const u=new URL(a.href);assert.equal(u.searchParams.get('project'),'work-fixture');assert.equal(u.searchParams.get('scope'),'module-a','Record context retains the held module scope');}
+ adoptProject('bank-payment');setShellScopeId('');
+ const {mountRecordPicture}=await import('./public/record-picture.js');
+ window.aiwProjectStore={value:{document:p}};let pictureRoute='';window.aiwRoute=href=>{pictureRoute=href;return true;};
+ const host=document.createElement('aside');host.innerHTML=card.innerHTML;document.body.append(host);
+ mountRecordPicture(host,()=>({chapter:4,id}));
+ assert.equal(host.querySelectorAll('.rp').length,0,'The closed disclosure does not mount a duplicate picture layer');
+ const connections=host.querySelector('[data-card-section="connections"]');connections.open=true;connections.dispatchEvent(new Event('toggle'));
+ assert(host.querySelector('[data-record-picture-slot] .rp'),'The native notation picture is available when requested');
+ host.querySelector('.rp').click();assert.match(pictureRoute,/tab=model/);assert.equal(new URL(pictureRoute,'https://aiw.test').searchParams.get('object'),id,'Picture opens the same selected record on Model');
+ assert.equal(JSON.stringify(p),before);
+ console.log('PASS: single Work/record identity; escaped headings; native commands, nested evidence, lifecycle and all lens actions preserved once; lens state restored; connection map deferred; project unchanged.');
+}finally{await w.happyDOM.close();}

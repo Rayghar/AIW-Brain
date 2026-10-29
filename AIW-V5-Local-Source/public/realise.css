@@ -1,0 +1,131 @@
+/* Chapter 5 Model — application realisation: components carrying what they realise, and the
+   allocation of responsibilities. Builds on the .cm shell in exchange.css. Lens-specific content
+   is switched by class only; nothing here changes geometry. */
+.rz{--rz-logical:var(--green-9);--rz-platform:var(--green-9);--rz-svc:var(--teal-10);--rz-wrk:var(--teal-9);--rz-adp:var(--gold-9);--rz-que:var(--violet-9);--rz-sto:var(--gold-10)}
+/* Module lanes */
+.rz-lane{fill:var(--sage-2);stroke:var(--green-5);stroke-width:1.2}
+.rz-lane.outside{fill:var(--sage-3);stroke:var(--gold-5);stroke-dasharray:3 5}
+.rz-lane.none{fill:var(--sage-2);stroke:var(--sage-7);stroke-dasharray:2 4}
+.rz-lane.stage{fill:var(--sage-2);stroke:var(--green-4)}
+.rz-lane.lit{fill:var(--gold-1);stroke:var(--gold-9)}
+/* Interactions */
+.rz-route{fill:none;stroke:var(--green-9);stroke-width:1.7;transition:opacity .15s}
+.rz-route.event{stroke:var(--blue-9);stroke-dasharray:6 4;stroke-width:1.6}
+.rz-route.data{stroke-dasharray:2 3}
+.rz-route.party{stroke:var(--green-8)}
+.cm-lens-flow .rz-route.gap{stroke:var(--red-9);stroke-width:2}
+.cm-lens-structure .rz-route.party,.cm-lens-reasoning .rz-route.party{opacity:.6}
+.rz-route.proposed{stroke:var(--state-proposed-solid);stroke-dasharray:2 3;stroke-width:2.4}
+.rz-route.out{opacity:.28}
+.rz-route.dim{opacity:.14!important}
+.rz-route.lit{opacity:1!important;stroke:var(--gold-9)!important;stroke-width:2.5!important}
+/* Component cards: skin (the component), organs (what it realises), skeleton (what it stands on). */
+.rz-card{position:absolute;padding:6px 10px 0;border:1px solid var(--green-5);border-left:4px solid var(--teal-9);border-radius:9px;background:var(--sage-1);cursor:pointer;text-align:left;box-shadow:0 1px 2px color-mix(in srgb, var(--shadow) 6%, transparent);overflow:hidden;z-index:1}
+.rz-card:hover{box-shadow:0 3px 10px color-mix(in srgb, var(--shadow) 12%, transparent)}
+.rz-card:focus-visible{outline:2px solid var(--gold-8);outline-offset:2px}
+.rz-card.k-worker{border-left-color:var(--teal-9)}.rz-card.k-adapter{border-left-color:var(--gold-9)}.rz-card.k-queue{border-left-color:var(--violet-9)}.rz-card.k-store{border-left-color:var(--gold-9)}
+.rz-card>small{display:flex;align-items:center;gap:5px;height:14px;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--cm-muted);white-space:nowrap;overflow:hidden}
+.rz-k{font-weight:700;color:var(--sage-11)}
+.rz-k::before{content:"«"}.rz-k::after{content:"»"}
+.rz-st{font-style:normal;font-size:10px;letter-spacing:0;text-transform:none;border-radius:8px;padding:0 6px;line-height:14px;border:1px solid var(--sage-6);color:var(--cm-muted);background:var(--sage-2);flex:none}
+.rz-st:first-of-type{margin-left:auto}
+.rz-st.reviewed{color:var(--green-11);border-color:var(--green-6);background:var(--sage-2)}
+.rz-st.gap{color:var(--state-confirm-fg);border-color:var(--state-confirm-line);background:var(--state-confirm-wash)}
+.rz-card .rz-t,.rz-card>b{display:block;height:20px;line-height:20px;margin:1px 0 1px;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rz-real{display:flex;flex-direction:column;overflow:hidden}
+.rz-real.none em{font-size:11px;color:var(--red-11);line-height:19px}
+.rz-r{display:flex;align-items:center;gap:6px;height:17px;margin-bottom:2px;padding:0 6px;border-left:3px solid var(--green-9);border-radius:3px;background:var(--sage-3);font-style:normal;font-size:12px;color:var(--green-12);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;flex:none}
+.rz-r b{font-size:10px;font-weight:700;color:var(--green-11);flex:none}
+.rz-r:hover{background:var(--green-3)}
+.rz-r.outside{border-left-color:var(--gold-8);background:var(--gold-2)}
+.rz-r.lit{background:var(--gold-3);box-shadow:inset 0 0 0 1px var(--gold-6)}
+.rz-more{font-style:normal;font-size:11px;color:var(--cm-muted);line-height:17px}
+.rz-lens{height:21px;display:flex;align-items:center;overflow:hidden;min-width:0}
+.rz-lens>span{display:none;align-items:center;gap:3px;min-width:0;overflow:hidden;white-space:nowrap;font-size:11px}
+.cm-lens-structure .rz-lens>.st,.cm-lens-flow .rz-lens>.fl,.cm-lens-reasoning .rz-lens>.rs{display:flex}
+.rz-lens em{color:var(--cm-muted);font-size:11px}
+.rz-lens em.miss{color:var(--red-11)}
+.rz-lens .cm-d{max-width:120px}
+.rz-io{overflow:hidden;text-overflow:ellipsis;color:var(--sage-11)}
+.rz-io b{color:var(--cm-muted);font-weight:400}
+.rz-w{font-style:normal;font-size:10px;border-radius:8px;padding:0 6px;line-height:15px;border:1px solid var(--gold-5);color:var(--gold-11);background:var(--gold-1);white-space:nowrap;flex:none;max-width:110px;overflow:hidden;text-overflow:ellipsis}
+.rz-w.q{border-color:var(--sage-6);color:var(--sage-11);background:var(--sage-2)}
+.rz-w.d{border-color:var(--violet-6);color:var(--violet-11);background:var(--violet-2)}
+.rz-w.miss{border-color:var(--red-6);color:var(--red-11);background:var(--sage-2)}
+.rz-strip{height:24px;display:flex;align-items:center;gap:3px;margin:0 -10px;padding:0 10px;background:var(--sage-3);border-top:1px dashed var(--gold-5);overflow:hidden;white-space:nowrap}
+.rz-strip small{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-11);margin-right:3px;flex:none}
+.rz-strip em{font-size:11px;color:var(--sage-10)}
+.rz-n{font-style:normal;font-size:10px;border:1px solid var(--gold-6);border-radius:8px;padding:0 6px;line-height:15px;white-space:nowrap;max-width:86px;overflow:hidden;text-overflow:ellipsis;color:var(--green-11);background:var(--sage-1);flex:none;cursor:pointer}
+.rz-n.prod{border-color:var(--blue-6);color:var(--teal-11);background:var(--sage-2);font-weight:600}
+.rz-n.open{border-style:dashed}.rz-strip .rz-n:not(.more){flex:0 1 auto;min-width:28px}
+.rz-n:hover{border-color:var(--gold-7)}
+.cm-lens-structure .rz-strip{background:var(--gold-2)}
+.rz-card.module{border-left-color:var(--green-9);background:var(--sage-2)}
+.rz-card.module .rz-t{font-family:var(--font-ui);font-weight:600;font-size:15px}
+.rz-hole{font-style:normal;color:var(--gold-11);text-transform:none;letter-spacing:0}
+.rz-card.party{border-style:dashed;border-left:4px dashed var(--gold-8);background:var(--sage-2);display:flex;flex-direction:column;justify-content:center;gap:3px;padding:5px 10px}
+.rz-card.party b{font-size:13px;font-weight:600;line-height:1.2}
+.rz-card.hole{border:1.5px dashed var(--state-confirm-line);border-left:4px dashed var(--state-confirm-solid);background:repeating-linear-gradient(135deg,var(--sage-1) 0 7px,var(--state-confirm-wash) 7px 14px)}
+.rz-card.hole>small{color:var(--state-confirm-fg);font-weight:600}
+.rz-card.hole>b{color:var(--state-confirm-fg)}
+.rz-card.hole .cm-mini,.rz-card.proposed .cm-mini{position:static;align-self:flex-start}
+.rz-card.proposed{border:1.5px dashed var(--state-proposed-solid);border-left:4px dashed var(--state-proposed-solid);background:var(--state-proposed-wash);cursor:default}
+.rz-card.proposed>small{color:var(--state-proposed-fg);font-weight:600}
+.rz-card.ctx{opacity:.78;border-style:dashed}
+.rz-card.subject{border-color:var(--gold-7);background:var(--sage-1);box-shadow:0 0 0 2px var(--gold-5)}
+.rz-card.sel{outline:2.5px solid var(--gold-9);outline-offset:2px}
+.rz-card.lit{box-shadow:0 0 0 2px var(--gold-6)}
+.rz-card.dim{opacity:.35}
+/* Interaction labels */
+.rz-label{position:absolute;display:flex;flex-direction:column;justify-content:center;gap:2px;border:0;background:color-mix(in srgb, var(--sage-1) 90%, transparent);border-radius:5px;padding:1px 4px;cursor:pointer;text-align:left;overflow:hidden;z-index:2}
+.rz-label:hover .rz-l1{text-decoration:underline;text-decoration-color:var(--sage-10);text-underline-offset:3px}
+.rz-label:focus-visible{outline:2px solid var(--gold-8)}
+.rz-l1{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:14px}
+.rz-l1 b{font-size:10px;font-weight:600;color:var(--on-solid);background:var(--green-9);border-radius:4px;padding:1px 5px;flex:none}
+.rz-l2{display:none;align-items:center;gap:3px;font-size:11px;line-height:14px;white-space:nowrap;overflow:hidden;min-width:0}
+.rz-l2 em{color:var(--cm-muted)}
+.rz-l2 em.miss{color:var(--gold-11)}
+.cm-lens-structure .rz-l2.st,.cm-lens-flow .rz-l2.fl,.cm-lens-reasoning .rz-l2.rs{display:flex}
+.rz-c{font-style:normal;font-size:10px;font-weight:600;border-radius:8px;padding:0 6px;line-height:14px;border:1px solid var(--blue-6);color:var(--blue-11);background:var(--sage-2);flex:none}
+.rz-g{font-style:normal;font-size:10px;font-weight:600;border-radius:8px;padding:0 6px;line-height:14px;color:var(--on-solid);background:var(--red-9);flex:none}
+.rz-ok{font-style:normal;font-size:10px;border-radius:8px;padding:0 6px;line-height:14px;border:1px solid var(--green-6);color:var(--green-11);background:var(--sage-2);flex:none}
+.rz-ok::before{content:"✓ "}
+.rz-lf{font-style:normal;font-size:10px;border-radius:8px;padding:0 6px;line-height:14px;border:1px solid var(--green-6);color:var(--green-11);background:var(--sage-3);flex:none;overflow:hidden;text-overflow:ellipsis}
+.rz-label.lit{background:var(--gold-2)}
+.rz-label.lit .rz-l1 b{background:var(--gold-9)}
+.rz-label.dim{opacity:.25}
+.rz-label.out{opacity:.4}
+.rz-label.proposed{background:var(--state-proposed-wash);box-shadow:inset 0 0 0 1px var(--state-proposed-solid)}
+.rz-label.proposed .rz-l2{display:flex}
+.rz-label.compact{padding:0 3px;background:color-mix(in srgb, var(--sage-1) 94%, transparent)}
+.rz-label.compact .rz-l1{line-height:16px}
+.cm-far .rz-l2,.cm-far .rz-lens,.cm-far .rz-strip .rz-n{visibility:hidden}
+/* Lane heads */
+.rz-lh{position:absolute;display:flex;flex-direction:column;justify-content:center;gap:1px;padding:4px 10px;border-radius:9px;background:var(--sage-1);border:1px solid var(--green-5);border-top:3px solid var(--green-9);box-shadow:0 1px 0 var(--green-4);pointer-events:auto;cursor:pointer;text-align:left;overflow:hidden}
+.rz-lh small{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--green-11);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rz-lh b{font-family:var(--font-ui);font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rz-lh span{font-size:11px;color:var(--cm-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rz-lh.outside{border:1px dashed var(--gold-6);border-top:3px dashed var(--gold-8);background:var(--sage-2)}
+.rz-lh.outside small{color:var(--gold-11)}
+.rz-lh.none,.rz-lh.stage{border-top:3px dotted var(--sage-8);background:var(--sage-2)}
+.rz-lh.none small,.rz-lh.stage small{color:var(--cm-muted)}
+.rz-lh:hover{border-color:var(--sage-8)}
+.rz-lh.sel{outline:2.5px solid var(--gold-9);outline-offset:2px}
+.rz-lh.lit{box-shadow:0 0 0 2px var(--gold-6)}
+/* Allocation matrix */
+/* Companion and legend */
+.rz .cm-spec h4 span.candidate,.rz .cm-spec h4 span.draft{color:var(--state-draft-fg);background:var(--state-draft-bg)}
+.rz .cm-spec h4 span.reviewed,.rz .cm-spec h4 span.guarded{color:var(--green-11);background:var(--sage-2)}
+.rz .cm-spec h4 span.exposed{color:var(--on-solid);background:var(--red-9)}
+.rz .cm-link small{display:block;color:var(--cm-muted);font-size:11px;line-height:1.35;margin:1px 0 3px}
+.rz-need{display:block;color:var(--cm-muted);font-size:11px;line-height:1.35;margin-top:3px}
+.cm-legend .k-card{display:inline-block;width:24px;height:16px;border:1px solid var(--green-5);border-left:3px solid var(--teal-9);border-radius:3px;background:var(--sage-1)}
+.cm-legend .k-hole{display:inline-block;width:24px;height:16px;border:1.5px dashed var(--gold-7);border-radius:3px;background:var(--gold-1)}
+.cm-legend .rz-r.k{display:inline-flex;height:16px;margin:0}
+.cm-legend .rz-n.k{cursor:default}
+.rz .cm-legend .k-card.proposed{border:1.5px dashed var(--state-proposed-solid);background:var(--state-proposed-wash)}
+.rz .cm-legend .k-card.party{border:1px dashed var(--gold-8);border-left:3px dashed var(--gold-8);background:var(--sage-2)}
+.rz .cm-legend .cm-d.k,.rz .cm-legend .rz-w.k,.rz .cm-legend .rz-r.k{cursor:default}
+.rz .cm-legend .k-card.changed{outline:2px dashed var(--gold-8);outline-offset:2px}
+.rz-card.changed{outline:2px dashed var(--gold-8);outline-offset:3px}
+.cm-note.gold{border-left-color:var(--gold-8)}

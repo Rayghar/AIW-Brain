@@ -1,0 +1,41 @@
+// Real SQLite and worker routes; provider responses are test doubles only.
+import assert from 'node:assert/strict';
+import worker from './worker.js';
+import {localDatabase} from './local-db.js';
+import {createProject} from './shared/projects-domain.js';
+import {applyCommand} from './public/requirements-domain.js';
+import {answer} from './mock-llm-provider.mjs';
+const owner='context-owner',projectId='context-project',files=new Map();
+const env={DB:localDatabase(':memory:'),OPENAI_API_KEY:'test-only',AIW_LLM_MODEL:'test-model',FILES:{async put(k,v){files.set(k,v)},async get(k){return files.has(k)?{text:async()=>files.get(k)}:null},async delete(k){files.delete(k)}},ASSETS:{fetch:()=>new Response('asset')}};
+let p=createProject({name:'Context isolation fixture',template:'blank'},projectId);
+for(const title of ['Reserve equipment','Inspect equipment'])p=applyCommand(p,{type:'artefact',payload:{type:'requirement',title,description:'Preserve the original request outcome. No workload target is agreed.',acceptance:'Review uncertain outcomes before repeating an action.',source:'Synthetic service test'}}).document;
+await env.DB.prepare('INSERT INTO projects (owner_id,id,document,revision,updated_at) VALUES (?,?,?,1,?)').bind(owner,projectId,JSON.stringify(p),new Date().toISOString()).run();
+const api=async(action,body)=>{const r=await worker.fetch(new Request('https://aiw.test/api/intelligence/'+action+(action.includes('?')?'&':'?')+'project='+projectId,{method:body?'POST':'GET',headers:{'oai-authenticated-user-id':owner,Origin:'https://aiw.test','Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}),env);return {status:r.status,...await r.json()};};
+const raw={chapter:4,objectId:'REQ-001',mode:'mind',prompt:'Explore responsibility and uncertain outcome handling.'};
+const previous=globalThis.fetch,requests=[];
+globalThis.fetch=async(url,init)=>{assert.equal(url,'https://api.openai.com/v1/responses');const body=JSON.parse(init.body);requests.push(body);return new Response(JSON.stringify(answer(body)),{headers:{'Content-Type':'application/json'}});};
+try{
+ const initial=await api('context',raw);assert.equal(initial.status,200,initial.error);
+ const first=await api('generate',{...raw,packetStamp:initial.packet.stamp,requestId:crypto.randomUUID()});assert.equal(first.status,'completed',first.error);
+ const follow={...raw,prompt:'Develop the failure boundary from the prior advice.',priorRunId:first.id};
+ const preview=await api('context',{...follow,advisoryHistory:{question:'CLIENT INJECTION'}});assert.equal(preview.status,200,preview.error);
+ assert.equal(preview.packet.advisoryHistory.runId,first.id);assert.equal(preview.packet.advisoryHistory.question,raw.prompt);assert(!JSON.stringify(preview.packet).includes('CLIENT INJECTION'));
+ assert.equal(preview.packet.advisoryHistory.sourceStatus,'previous-context-still-current');
+ const request={...follow,packetStamp:preview.packet.stamp,basePacketStamp:preview.packet.advisoryHistory.basePacketStamp,requestId:crypto.randomUUID()};
+ const next=await api('generate',request);assert.equal(next.status,'completed',next.error);assert.equal(next.packet.stamp,preview.packet.stamp);
+ const count=requests.length;assert.equal((await api('generate',request)).id,next.id);assert.equal(requests.length,count,'Replay must not issue another provider request');
+ assert(requests.some(b=>b.text.format.name==='aiw_design_response'&&b.input.some(x=>String(x.content).includes(first.id)))||requests.some(b=>JSON.stringify(b.input).includes('advisoryHistory')),'Actual provider input includes server-loaded advisory history');
+ assert.equal((await api('generate',{...request,requestId:crypto.randomUUID(),basePacketStamp:undefined})).status,400,'Fresh preview required on follow-up');
+ assert.equal((await api('context',{...follow,objectId:'REQ-002'})).status,400,'Cannot reuse another object history');
+ await env.DB.prepare('UPDATE intelligence_runs SET actor_id=? WHERE owner_id=? AND id=?').bind('another-actor',owner,first.id).run();
+ assert.equal((await api('context',follow)).status,400,'Cannot reuse another authenticated actor history');
+ await env.DB.prepare('UPDATE intelligence_runs SET actor_id=? WHERE owner_id=? AND id=?').bind(owner,owner,first.id).run();
+ const savedKey='intelligence/'+owner+'/'+projectId+'/'+first.id+'.json',saved=JSON.parse(files.get(savedKey));
+ files.set(savedKey,JSON.stringify({...saved,projectId:'other-project'}));assert.equal((await api('context',follow)).status,400,'R2 project identity mismatch fails closed');files.set(savedKey,JSON.stringify(saved));
+ p.artefacts[0].description+=' Current request version is now mandatory.';
+ await env.DB.prepare('UPDATE projects SET document=? WHERE owner_id=? AND id=?').bind(JSON.stringify(p),owner,projectId).run();
+ const changed=await api('context',follow);assert.equal(changed.status,200,changed.error);assert.equal(changed.packet.advisoryHistory.sourceStatus,'changed-or-unverified-use-current-sources');assert.notEqual(changed.packet.stamp,preview.packet.stamp);
+ assert.equal((await api('generate',{...request,requestId:crypto.randomUUID()})).status,409,'Changed context cannot silently send an old preview');
+ assert.equal(requests.length,count,'Rejected follow-ups do not call the provider');
+ console.log('PASS contextual worker: saved follow-up, authenticated scope, source freshness, exact preview, no injected history, replay and no-call failures');
+}finally{globalThis.fetch=previous;env.DB.close();}

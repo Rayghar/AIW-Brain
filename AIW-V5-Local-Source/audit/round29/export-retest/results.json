@@ -1,0 +1,85 @@
+{
+  "suite": "Round 29 integrated restoration",
+  "started": "2026-10-18T13:43:45.321Z",
+  "build": [
+    {
+      "name": "/assets/theme-boot-141df46786a9.js",
+      "sha256": "141df46786a9cb49546473ac7c1c20f050dd1b5b1589d6c651f8f4b9f0e68b22"
+    },
+    {
+      "name": "/assets/app-NK6SZLFO.js",
+      "sha256": "974dabee82e39b9a4bba4703a77434745648f1a972cc1916b8bbb3572534bbb0"
+    },
+    {
+      "name": "/assets/app-32945c070bd2.css",
+      "sha256": "32945c070bd285c45f1007bdcb37de878c15f2509c60ecc91921b7d2d945f16e"
+    }
+  ],
+  "project": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "revision": 82,
+  "authority": "Isolated synthetic revision82 copy. No approval, provider call, canonical edit or handoff submission.",
+  "checks": [
+    {
+      "name": "Working and frozen output previews and actual downloads",
+      "status": "passed",
+      "downloads": 3,
+      "frozenBaseline": "BL-001",
+      "authority": "Working draft — not approved"
+    }
+  ],
+  "clicks": [
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": ".rv-export-form .rv-export-menu>summary",
+      "label": "Download or export",
+      "tag": "SUMMARY",
+      "attributes": {}
+    },
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": "[data-output-document=\"frozen\"]",
+      "label": "Frozen baselineImmutable edition",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-output-document": "frozen"
+      }
+    },
+    {
+      "chapter": "11",
+      "tab": "output",
+      "selector": ".output-document .rv-export-menu>summary",
+      "label": "Download captured edition",
+      "tag": "SUMMARY",
+      "attributes": {}
+    }
+  ],
+  "downloads": [
+    {
+      "chapter": 4,
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Logical_Model.md",
+      "bytes": 4927,
+      "sha256": "1254bf5687e40bf370c25bd8397ebed1ffa00a75587b51a274370bcc227c4aee"
+    },
+    {
+      "chapter": 11,
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_Working_SDD.md",
+      "bytes": 220947,
+      "sha256": "992848781c738fecff9b8ab27d9b61f6d2762d1aece51351184d1e8a921c747f"
+    },
+    {
+      "chapter": 11,
+      "baseline": "BL-001",
+      "name": "AIW_Synthetic_Clinic_Booking_integrated_rethink_walkthrough_BL-001.md",
+      "bytes": 220250,
+      "sha256": "9381a78955e36f2f29fd5c1fe8655a17415a843c8a605095e4fbeceda1353462"
+    }
+  ],
+  "screenshots": [],
+  "errors": [],
+  "requestFailures": [],
+  "initialDocumentSHA256": "e043582c032dc86eb406fafa5fd36f452124d8fb7b0566ae84f7d247d60470ed",
+  "status": "passed",
+  "finished": "2026-10-18T13:43:46.914Z"
+}

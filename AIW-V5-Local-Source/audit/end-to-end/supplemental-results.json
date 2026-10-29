@@ -1,0 +1,67 @@
+[
+  {
+    "check": "knowledge-boundaries-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 1479
+  },
+  {
+    "check": "repository-transfer-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 2614
+  },
+  {
+    "check": "repository-service-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 3226
+  },
+  {
+    "check": "knowledge-second-brain-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 1401
+  },
+  {
+    "check": "knowledge-design-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 4360
+  },
+  {
+    "check": "focused-case-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 2010
+  },
+  {
+    "check": "architecture-case-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 5755
+  },
+  {
+    "check": "payment-case-journey-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 3193
+  },
+  {
+    "check": "technology-realisation-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 4725
+  },
+  {
+    "check": "sdd-architecture-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 15361
+  },
+  {
+    "check": "sdd-formats-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 18268
+  },
+  {
+    "check": "layers-overview-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 1128
+  },
+  {
+    "check": "layers-corridors-current-validate.mjs",
+    "exitCode": 0,
+    "milliseconds": 1238
+  }
+]

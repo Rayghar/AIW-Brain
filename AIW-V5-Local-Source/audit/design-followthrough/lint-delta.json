@@ -1,0 +1,25 @@
+{
+  "schema": "aiw-lint-delta-v1",
+  "baselineCommit": "629c33c7deb4623722eb1bb0b1c968cc7345793f",
+  "baselineFiles": 807,
+  "currentFiles": 818,
+  "baselineProblems": 245,
+  "currentProblems": 243,
+  "introduced": [],
+  "removed": [
+    {
+      "file": "public/architecture-intelligence.js",
+      "rule": "no-unused-vars",
+      "message": "'sourceIdFor' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+      "count": 1
+    },
+    {
+      "file": "public/review-ui.js",
+      "rule": "no-unused-vars",
+      "message": "'shortText' is defined but never used. Allowed unused vars must match /^_/u.",
+      "count": 1
+    }
+  ],
+  "fullLintClean": false,
+  "baselineFileChanged": false
+}

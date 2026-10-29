@@ -1,0 +1,6 @@
+/* Record content styles. Model frame geometry belongs to model-round27.css. */
+.cm-zoom button.cm-zoom-value{width:auto;min-width:48px;padding:3px 7px;font-size:12px;font-variant-numeric:tabular-nums}
+.nt-table-fields{display:grid;gap:4px;margin:0;min-width:200px;max-width:390px}
+.nt-table-fields>div{display:grid;grid-template-columns:minmax(90px,.8fr) minmax(100px,1fr);gap:8px}
+.nt-table-fields dt{color:var(--sage-10);font-size:12px;font-weight:500}
+.nt-table-fields dd{margin:0;overflow-wrap:anywhere;font-size:12px}

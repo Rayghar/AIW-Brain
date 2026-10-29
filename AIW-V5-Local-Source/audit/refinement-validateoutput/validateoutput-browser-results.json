@@ -1,0 +1,18 @@
+{
+  "passed": 12,
+  "checks": [
+    "1440: recommended finding opens the correct chapter source in Work",
+    "1440: MADR mapping is reachable beside the download, which stays visible",
+    "1440: downstream document status and link reach Chapter 5 Output",
+    "1440: register preview, Markdown download and disclosed JSON backup work",
+    "1440: blank explains missing records; environment-only project exports its register and SDD",
+    "1440: model-integrity chapter objects match selected module scope",
+    "390: recommended finding opens the correct chapter source in Work",
+    "390: MADR mapping is reachable beside the download, which stays visible",
+    "390: downstream document status and link reach Chapter 5 Output",
+    "390: register preview, Markdown download and disclosed JSON backup work",
+    "390: blank explains missing records; environment-only project exports its register and SDD",
+    "390: model-integrity chapter objects match selected module scope"
+  ],
+  "errors": []
+}

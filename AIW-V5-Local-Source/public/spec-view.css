@@ -1,0 +1,95 @@
+/* Chapter 5 Model — the Specification sheet (rc40 W3, PLAN §4.3): one component as a document template, read from the
+   records. The sheet replaces the Chapter 5 canvas inside the .cm frame (realise.css keeps the frame); a sticky
+   table of contents at the left replaces the lenses; sections are field grids and tables; every value is a link.
+   Tokens only (theme.css); the dark theme follows through them. */
+.rz-spec-sheet{display:none;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;container-type:inline-size;grid-row:1;grid-column:1;background:var(--sage-1)}
+.cm.rz-specv .cm-stage{display:none}.rz-specv .rz-spec-sheet{display:block}.rz-specv .cm-tools,.rz-specv .cm-walk-in{display:none}
+.rz-spec{box-sizing:border-box;width:100%;max-width:1280px;margin:0 auto;padding:20px clamp(16px,3vw,32px) 48px;font-size:13.5px;line-height:1.55;color:var(--green-12)}
+.rz-spec :is(button,a,summary,select):focus-visible{outline:2px solid var(--gold-9);outline-offset:3px}
+.rz-spec h2,.rz-spec h3,.rz-spec h4,.rz-spec h5{font-weight:600;line-height:1.3;margin:0}
+.rz-spec p{margin:0}
+/* Head: the title of the sheet and the component chooser. */
+.rz-spec-head{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;padding-bottom:12px;border-bottom:1px solid var(--sage-5)}
+.rz-spec-head>div{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;min-width:0}.rz-spec-head>div>span,.rz-spec-head>span{font-size:12px;font-weight:600;color:var(--sage-11)}.rz-spec-head small{font-size:11px;color:var(--sage-10)}
+.rz-spec-head>label{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--sage-11);flex:0 1 auto}.rz-spec-head select{min-width:220px;max-width:360px;font:inherit;font-size:13px;min-height:36px;padding:6px 30px 6px 10px;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);color:var(--green-12)}
+/* Body: the table of contents beside the sections. */
+.rz-spec-body{display:grid;grid-template-columns:176px minmax(0,1fr);gap:0 26px;align-items:start;padding-top:16px}
+.rz-spec-main{min-width:0}
+.rz-spec-toc{position:sticky;top:0;align-self:start;padding:6px 0 10px;font-size:12px}
+.rz-spec-toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px}
+.rz-spec-toc button{display:grid;grid-template-columns:24px minmax(0,1fr) 10px;align-items:center;gap:6px;width:100%;padding:6px 8px 6px 6px;border:0;border-left:2px solid transparent;border-radius:0 5px 5px 0;background:none;font:inherit;font-size:12px;line-height:1.35;text-align:left;color:var(--sage-12);cursor:pointer}
+.rz-spec-toc button:hover{background:var(--sage-3)}
+.rz-spec-toc button[aria-current="true"]{border-left-color:var(--green-10);background:var(--green-2);color:var(--green-12);font-weight:600}
+.rz-spec-toc .n{font-family:var(--font-mono);font-size:10.5px;color:var(--sage-10)}.rz-spec-toc .t{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rz-spec-toc-state{display:block;width:7px;height:7px;border-radius:50%;background:var(--sage-6)}.rz-spec-toc-state.done{background:var(--green-9)}.rz-spec-toc-state.open{background:var(--gold-9)}
+.rz-spec-toc-sum{margin:10px 0 0 8px;font-size:11px;color:var(--sage-10)}
+/* The header card: identity, the completeness ring, omissions and attention. */
+.rz-spec-c{display:grid;grid-template-columns:minmax(0,1fr) 236px;grid-template-areas:"identity ring" "acts ring" "omissions omissions" "review review";gap:14px 24px;padding:4px 0 22px;border-bottom:1px solid var(--sage-5)}
+.rz-spec-identity{grid-area:identity;min-width:0}.rz-spec-acts{grid-area:acts}.rz-spec-ring{grid-area:ring}.rz-spec-omissions{grid-area:omissions}.rz-spec-review{grid-area:review}
+.rz-spec-c h2{margin:4px 0 6px;font-size:26px;letter-spacing:-.02em}
+.rz-spec-eyebrow{display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:12px;color:var(--sage-11)}.rz-spec-eyebrow>span:first-child{font-family:var(--font-mono);font-size:11px}
+.rz-spec-purpose{max-width:82ch;font-size:14px;line-height:1.55;color:var(--sage-12)}
+.rz-spec-id{display:flex;flex-wrap:wrap;gap:6px 22px;margin:12px 0 0}.rz-spec-id>div{min-width:0}.rz-spec-id dt{font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--sage-10)}.rz-spec-id dd{margin:1px 0 0;font-size:12.5px}
+.rz-spec-acts{display:flex;flex-direction:row;flex-wrap:wrap;gap:7px 10px;align-items:center}.rz-spec .rz-spec-acts>.cm-btn{font-size:12px;padding:7px 12px;border-color:var(--green-7);background:var(--green-2);color:var(--green-11)}
+.rz-spec-download{position:relative;font-size:12px}.rz-spec-download>summary{padding:5px 8px;cursor:pointer;color:var(--sage-11);list-style:none}.rz-spec-download>summary::after{content:" ▾"}.rz-spec-download[open]>summary{background:var(--sage-3);border-radius:5px}.rz-spec-download>div{position:absolute;z-index:5;right:0;min-width:180px;padding:6px;border:1px solid var(--sage-6);border-radius:6px;background:var(--sage-1);box-shadow:0 6px 20px color-mix(in srgb,var(--shadow) 12%,transparent)}.rz-spec-download a{display:block;padding:8px;color:var(--green-12);text-decoration:none;border-radius:4px}.rz-spec-download a:hover{background:var(--sage-3)}
+.rz-spec-ring{display:flex;align-items:center;gap:14px;margin:0;padding:12px 14px;border:1px solid var(--sage-5);border-radius:8px;background:var(--sage-2);align-self:start;justify-self:stretch}
+.rz-spec-ring svg{flex:none}.rz-spec-ring-bg{fill:none;stroke:var(--sage-5);stroke-width:7}.rz-spec-ring-on{fill:none;stroke:var(--green-9);stroke-width:7;stroke-linecap:butt}
+.rz-spec-ring figcaption{display:flex;flex-direction:column;gap:1px;font-size:12px;color:var(--sage-11)}.rz-spec-ring figcaption b{font-size:22px;line-height:1.1;color:var(--green-12)}.rz-spec-ring figcaption b small{font-size:12px;margin-left:2px;color:var(--sage-11)}
+.rz-spec-omissions h4,.rz-spec-review h4{display:flex;align-items:baseline;gap:8px;font-size:12.5px;margin-bottom:6px}.rz-spec-omissions h4 span,.rz-spec-review h4 span{font-size:11px;font-weight:500;color:var(--sage-10)}
+.rz-spec-omissions ol{list-style:none;margin:0;padding:0;columns:2;column-gap:24px}.rz-spec-omissions li{break-inside:avoid;padding:5px 0;border-top:1px solid var(--sage-4);font-size:12px}
+.rz-spec-omissions li a{display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;color:var(--green-12);text-decoration:none}.rz-spec-omissions li a:hover b{text-decoration:underline;text-underline-offset:3px}.rz-spec-omissions li a b{font-weight:600}.rz-spec-omissions li a span{font-size:11px;color:var(--gold-11)}
+.rz-spec-omissions li small{display:block;margin-top:1px;font-size:11.5px;color:var(--sage-11);line-height:1.45}
+.rz-spec-review{padding:12px 16px 11px;border-left:3px solid var(--gold-7);background:var(--gold-1)}.rz-spec-review h4{color:var(--gold-12)}
+.rz-spec-review ol{list-style:none;margin:0;padding:0}.rz-spec-review li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;align-items:center;padding:7px 0}.rz-spec-review li+li{border-top:1px solid var(--gold-4)}.rz-spec-review li>div{min-width:0}.rz-spec-review li b{font-size:12.5px;font-weight:600}.rz-spec-review li p{margin:2px 0 0;font-size:12px;line-height:1.5;color:var(--sage-11);overflow-wrap:anywhere}.rz-spec-review .cm-btn{font-size:12px;max-width:220px;text-align:center;white-space:normal}
+/* Sections. */
+.rz-spec-section{padding:22px 0 18px;border-bottom:1px solid var(--sage-5)}
+.rz-spec-section>h3{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:4px 10px;align-items:baseline;margin-bottom:14px;font-size:16px}
+.rz-spec-no{font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--sage-10)}.rz-spec-h-t small{display:block;margin-top:2px;font-size:12px;font-weight:400;color:var(--sage-11)}
+.rz-spec-h-s{font-size:11px;font-weight:500;color:var(--green-11);white-space:nowrap}.rz-spec-h-s.open{color:var(--gold-11)}
+/* Fields: label and chapter at the left, value at the right; the state said only when it is not recorded. */
+.rz-spec-fields{margin:0 0 0 38px;display:grid;gap:0}
+.rz-spec-f{display:grid;grid-template-columns:minmax(150px,.26fr) minmax(0,1fr);gap:4px 18px;align-items:start;padding:9px 0;border-top:1px solid var(--sage-4);min-width:0}.rz-spec-fields>.rz-spec-f:first-child{border-top:0}
+.rz-spec-f>dt{font-size:12.5px;font-weight:600;color:var(--sage-12)}.rz-spec-f>dt small{display:block;font-size:10.5px;font-weight:500;color:var(--sage-10)}
+.rz-spec-f>dd{margin:0;min-width:0;font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+.rz-spec-f.wide{grid-template-columns:minmax(0,1fr);gap:6px}.rz-spec-f.wide>dt small{display:inline;margin-left:8px}
+.rz-spec-f.st-open>dt::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold-9);margin:0 6px 1px -12px}
+.rz-spec-value{max-width:90ch}.rz-spec-value small{color:var(--sage-11)}
+.rz-spec-values{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}.rz-spec-values li{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px}.rz-spec-values li small{font-size:11.5px;color:var(--sage-11)}.rz-spec-values li p{flex-basis:100%;font-size:12px;color:var(--sage-11);max-width:90ch}
+.rz-spec-empty-note{font-size:12px;line-height:1.5;color:var(--gold-12);max-width:90ch}.rz-spec-empty-note.inferred{color:var(--sage-11)}.rz-spec-where{color:var(--green-10);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+.rz-spec-none{font-size:12px;color:var(--sage-10)}.rz-spec-source{font-size:12px;line-height:1.55;color:var(--sage-11);overflow-wrap:anywhere;margin-top:6px}.rz-spec-source b{font-weight:500}
+.rz-sl{font:inherit;font-size:13px;line-height:1.5;color:var(--green-12);text-decoration:none;border:0;border-bottom:1px dotted var(--sage-7);background:none;padding:0;cursor:pointer;text-align:left;max-width:100%;overflow-wrap:anywhere;white-space:normal}.rz-sl:hover{border-bottom-style:solid;color:var(--green-10)}.cm .rz-spec .rz-sl.here{color:var(--green-11)}.rz-sl.miss{color:var(--red-11);cursor:default;border-bottom-color:transparent}.rz-sl[data-scope-link]::after{content:" ↗";font-size:11px}
+.rz-sk{display:block;margin:0 0 3px;font-size:11px;font-weight:600;color:var(--sage-11)}
+.rz-spec-state{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;font-size:10.5px;line-height:1.5;font-weight:500;color:var(--sage-11);background:var(--sage-3);white-space:normal;vertical-align:middle}.rz-spec-state.attention{color:var(--gold-12);background:var(--gold-3)}.rz-spec-state.inferred{color:var(--teal-11);background:var(--teal-3)}.rz-spec-state.draft{color:var(--blue-11);background:var(--blue-3)}
+.rz-spec-kv{margin:5px 0 0;display:grid;gap:3px}.rz-spec-kv>div{display:grid;grid-template-columns:minmax(110px,.3fr) minmax(0,1fr);gap:4px 12px;font-size:12.5px}.rz-spec-kv dt{color:var(--sage-11)}.rz-spec-kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.rz-spec-more{margin-top:8px;font-size:12px}.rz-spec-more>summary{cursor:pointer;color:var(--green-10);padding:2px 0;width:fit-content}.rz-spec-more[open]>summary{margin-bottom:6px}
+.cm .rz-spec .rz-spec-jump{font:inherit;font-size:11px;padding:0 3px;border:0;background:none;color:var(--green-10);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+/* Tables: interfaces, drivers, qualities, capabilities, plans. */
+.rz-spec-scroll{overflow-x:auto;max-width:100%}
+.rz-spec-table{width:100%;border-collapse:collapse;font-size:12.5px;line-height:1.45}
+.rz-spec-table th{padding:5px 10px 6px 0;text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--sage-10);border-bottom:1px solid var(--sage-6);white-space:nowrap}
+.rz-spec-table td{padding:8px 10px 8px 0;vertical-align:top;border-bottom:1px solid var(--sage-4);min-width:0;overflow-wrap:normal}.rz-spec-table tr:last-child td{border-bottom:0}
+.rz-spec-table td small{display:block;font-size:11.5px;color:var(--sage-11)}.rz-spec-table td b{font-weight:600}.rz-spec-table .rz-spec-state{white-space:nowrap}
+.rz-spec-table td.st-open{background:var(--gold-1)}.rz-spec-table td.st-open .rz-spec-none{color:var(--gold-11)}
+.rz-spec-table .cm-btn{font-size:11px;padding:3px 8px;margin-top:4px}
+.rz-spec-drivers td:nth-child(1){min-width:150px}.rz-spec-drivers td:nth-child(3),.rz-spec-drivers td:nth-child(4){min-width:150px}
+.rz-spec-contracts td:nth-child(1){min-width:120px}.rz-spec-contracts td:nth-child(2){min-width:150px}.rz-spec-contracts td:nth-child(3),.rz-spec-contracts td:nth-child(4){min-width:140px}.rz-spec-contracts td:nth-child(5){min-width:120px}
+.rz-spec-qualities td:nth-child(1){min-width:150px}.rz-spec-qualities td:nth-child(5),.rz-spec-qualities td:nth-child(6){min-width:190px}
+.rz-spec-needs td:nth-child(1),.rz-spec-needs td:nth-child(2){min-width:150px}.rz-spec-plans td{min-width:110px}
+/* Design questions (rc39): the state chip, the question, what opened and answers it, the Decide action. */
+.rz-spec-questions{list-style:none;margin:6px 0 0;padding:0}.rz-spec-q{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:8px 0;border-top:1px solid var(--sage-4)}.rz-spec-q>.rz-spec-state{margin-top:2px}.rz-spec-q b{display:block;font-weight:600}.rz-spec-q small{display:block;font-size:11.5px;color:var(--sage-11)}.rz-spec-q .rz-spec-confirm{color:var(--gold-11)}
+.rz-spec-answers{margin:3px 0;padding-left:16px;font-size:12px;color:var(--sage-12)}.rz-spec-story{font-size:12.5px;color:var(--green-11);margin-top:3px}
+.rz-spec-caution{font-size:11.5px;margin-top:3px}.rz-spec-caution>summary{cursor:pointer;color:var(--sage-10);width:fit-content}.rz-spec-caution p{margin-top:3px;color:var(--sage-11);max-width:80ch}
+.rz-spec-q>.cm-btn{font-size:12px;white-space:nowrap}
+/* Cards: product choices, decisions, threats, controls, obligations, invariants, applied designs. */
+.rz-spec-card{padding:10px 12px;margin-top:8px;border:1px solid var(--sage-5);border-radius:6px;background:var(--sage-2);font-size:12.5px}.rz-spec-card:first-child{margin-top:0}.rz-spec-card p{margin:4px 0;line-height:1.5;overflow-wrap:anywhere}.rz-spec-card>header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px 16px}.rz-spec-card>header>div{min-width:0}.rz-spec-card>header>div+div{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;max-width:240px}.rz-spec-card h5{font-size:13.5px;color:var(--green-12);margin:4px 0 2px}.rz-spec-card>header .rz-sl{font-weight:600}.rz-spec-card .cm-btn{font-size:11.5px;margin-top:8px}
+.rz-spec-card small{display:block;font-size:11.5px;color:var(--sage-11)}.rz-spec-covered{font-size:12px;color:var(--sage-11)}
+.rz-spec-effect,.rz-spec-mech{padding:6px 0}.rz-spec-effect+.rz-spec-effect,.rz-spec-mech+.rz-spec-mech{border-top:1px solid var(--sage-4)}.rz-spec-effect .rz-spec-state{margin-left:6px}
+.rz-spec-option{margin-top:10px;padding-top:10px;border-top:1px solid var(--sage-4)}.rz-spec-option>b{font-size:12.5px}.rz-spec-comparisons{margin-top:10px}
+.rz-spec-caution-line{color:var(--gold-11);font-size:12px}
+.rz-spec-obligation>div{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}.rz-spec-obligation .rz-sk{margin:0}
+/* Empty state. */
+.rz-spec-empty{padding:40px 0}.rz-spec-empty-mark{display:block;font-size:32px;color:var(--green-8);margin-bottom:12px}.rz-spec-empty h2{margin:0 0 10px;font-size:25px;letter-spacing:-.025em}.rz-spec-empty>p{max-width:70ch;margin:0 0 24px;color:var(--sage-11)}.rz-spec-empty>p>.cm-btn+.cm-btn{margin-left:8px}.rz-spec-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.rz-spec-choices>button{display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:18px;border:1px solid var(--sage-5);border-radius:8px;background:var(--sage-1);color:var(--green-12);font:inherit;cursor:pointer;min-width:0}.rz-spec-choices>button:hover{border-color:var(--green-8);background:var(--green-2)}.rz-spec-choices small{font-size:11px;color:var(--sage-10)}.rz-spec-choices b{font-size:15px}.rz-spec-choices span{font-size:12px;color:var(--sage-11);overflow-wrap:anywhere}
+/* Narrower: the table of contents becomes a strip above the sections; fields stack. */
+@container (max-width:700px){.rz-spec-omissions ol{columns:1}.rz-spec-c{grid-template-columns:minmax(0,1fr);grid-template-areas:"identity" "ring" "acts" "omissions" "review"}.rz-spec-body{grid-template-columns:minmax(0,1fr);gap:0}.rz-spec-toc{--rz-toc-strip:1;position:sticky;top:0;z-index:4;margin:0 -16px 8px;padding:6px 16px;background:var(--sage-1);border-bottom:1px solid var(--sage-5)}.rz-spec-toc ol{flex-direction:row;overflow-x:auto;gap:2px;scrollbar-width:none}.rz-spec-toc li{flex:none}.rz-spec-toc button{grid-template-columns:auto auto;width:auto;white-space:nowrap;border-left:0;border-bottom:2px solid transparent;border-radius:5px 5px 0 0;padding:6px 8px}.rz-spec-toc button[aria-current="true"]{border-bottom-color:var(--green-10)}.rz-spec-toc .t{overflow:visible;white-space:nowrap}.rz-spec-toc .rz-spec-toc-state{display:none}.rz-spec-toc-sum{display:none}.rz-spec-fields{margin-left:0}.rz-spec-section{scroll-margin-top:56px}.rz-spec-section>h3{grid-template-columns:28px minmax(0,1fr)}.rz-spec-h-s{grid-column:2}}
+@container (max-width:720px){.rz-spec{padding:16px}.rz-spec-head{align-items:flex-start;flex-direction:column;gap:10px}.rz-spec-head>label{width:100%}.rz-spec-head select{flex:1;min-width:0;max-width:none}.rz-spec-review li{grid-template-columns:minmax(0,1fr)}.rz-spec-review li>.cm-btn{justify-self:start}.rz-spec-card>header{flex-direction:column}.rz-spec-card>header>div+div{justify-content:flex-start;max-width:none}.rz-spec-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.rz-spec-q{grid-template-columns:auto minmax(0,1fr)}.rz-spec-q>.cm-btn{grid-column:2;justify-self:start;white-space:normal}}
+@container (max-width:460px){.rz-spec{padding:12px}.rz-spec-c h2{font-size:22px}.rz-spec-f{grid-template-columns:minmax(0,1fr);gap:2px}.rz-spec-f.st-open>dt::before{margin-left:0;margin-right:6px}.rz-spec-kv>div{grid-template-columns:minmax(0,1fr);gap:1px}.rz-spec-choices{grid-template-columns:minmax(0,1fr)}.rz-spec-ring{flex-wrap:wrap}.rz-spec-toc{margin:0 -12px 8px;padding:6px 12px}}

@@ -1,0 +1,105 @@
+import assert from 'node:assert/strict';
+import {spawn} from 'node:child_process';
+import {createRequire} from 'node:module';
+import {mkdir,rm} from 'node:fs/promises';
+import path from 'node:path';
+import net from 'node:net';
+
+const require=createRequire(import.meta.url),{chromium}=require(process.env.AIW_PLAYWRIGHT_MODULE||'playwright');
+const port=await new Promise(resolve=>{const s=net.createServer().listen(0,'127.0.0.1',()=>{const n=s.address().port;s.close(()=>resolve(n));});});
+const db='.aiw-local/focused-case-browser-'+port+'.sqlite',base='http://127.0.0.1:'+port;
+const server=spawn(process.execPath,['server.js','--port',String(port)],{env:{...process.env,AIW_LOCAL_DB:db,OPENAI_API_KEY:''},stdio:['ignore','pipe','inherit']});
+process.on('exit',()=>{try{server.kill('SIGKILL')}catch{/* stopped */}});
+await new Promise((resolve,reject)=>{server.stdout.on('data',chunk=>{if(String(chunk).includes('ready'))resolve();});server.on('exit',code=>reject(Error('Server exited '+code)));});
+const browser=await chromium.launch({executablePath:process.env.AIW_BROWSER_EXECUTABLE,headless:true});
+try{
+ const context=await browser.newContext({viewport:{width:1400,height:900}}),page=await context.newPage(),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base+'/?chapter=11&tab=work',{waitUntil:'networkidle'});
+ await page.locator('[data-rv-action="stage"][data-rv-stage="case"]').click();
+ await page.locator('[data-rv-action="case-new"]').click();
+ await page.locator('#rv-case-form [name="title"]').fill('Payment focused validation');
+ await page.locator('#rv-case-form [name="purpose"]').fill('Review connected payment evidence.');
+ await page.locator('#rv-case-form [name="caseRequirement"][value="REQ-001"]').check();
+ await page.locator('#rv-case-form [type="submit"]').click();
+ await page.locator('.ac-cover h3').filter({hasText:'Payment focused validation'}).waitFor();
+ await page.goto(base+'/?chapter=11&tab=validate&case=AC-001',{waitUntil:'networkidle'});
+ await page.locator('.vx-case-panel #vx-case-title').waitFor();
+ assert.equal(await page.locator('.studio.vx-case-reading>.inspector:visible').count(),0,'The case reading uses the full width without a redundant inspector');
+ const caseWidth=await page.locator('.studio.vx-case-reading').evaluate(e=>({container:e.clientWidth,stage:e.querySelector('.stage').getBoundingClientRect().width}));
+ assert.ok(caseWidth.stage>=caseWidth.container-4,'The focused case uses its available reading width: '+JSON.stringify(caseWidth));
+ assert.equal(await page.locator('.vx-switch [data-vx-lens-view="case"]').getAttribute('aria-pressed'),'true');
+ assert.equal(await page.locator('.vx-case-panel #vx-case-title').evaluate(e=>document.activeElement===e),true,'A case deep link focuses its case heading');
+ // rc38+ (rc41 W4): the whole-project checks header is the validation workspace's header and readiness summary; the case
+ // reading keeps the workspace attached but hidden.
+ assert.equal(await page.locator('[data-validation-workspace$=":11:"]').count(),1,'The chapter checks stay mounted behind the case');
+ assert.equal(await page.locator('[data-validation-workspace]:visible').count(),0,'The focused case does not show the whole-project checks header');
+ assert.equal(await page.getByRole('region',{name:'Chapter 11 validation'}).count(),0,'The chapter checks are out of the accessibility tree while the case reads');
+ assert.equal(await page.locator('[aria-label="Readiness summary"]:visible').count(),0,'Nor its readiness summary');
+ const reading=await page.locator('.vx-case-panel').innerText();
+ if(process.env.AIW_CASE_SCREENSHOTS){await mkdir(process.env.AIW_CASE_SCREENSHOTS,{recursive:true});await page.screenshot({path:path.join(process.env.AIW_CASE_SCREENSHOTS,'focused-case-desktop.png'),fullPage:true});}
+ for(const phrase of ['Payment focused validation','Selected requirements','Case worklist','Architect observations','Whole-project SDD · separate gate','No current architect-reviewed SDD baseline'])assert.match(reading,new RegExp(phrase,'i'));
+ const requirementLink=page.locator('.vx-case-work a[href*="chapter=1"][href*="REQ-001"]').first();
+ assert(await requirementLink.count()>0);
+ const requirementURL=new URL(await requirementLink.getAttribute('href'),page.url()).href;
+ await page.goto(requirementURL,{waitUntil:'networkidle'});
+ assert.match(await page.locator('#inspector').innerText(),/REQ-001/,'The case action opens the exact requirement inspector');
+ await page.goBack({waitUntil:'networkidle'});
+ await page.locator('.vx-case-panel #vx-case-title').waitFor();
+ await page.locator('.vx-case-filters [data-vx-case-history="historical"]').click();
+ assert.equal(await page.locator('.vx-case-filters [data-vx-case-history="historical"]').getAttribute('aria-pressed'),'true');
+ assert.match(await page.locator('.vx-case-review').innerText(),/No historical observations/);
+ await page.locator('.vx-switch [data-vx-lens-view="model"]').click();
+ assert.match(page.url(),/validate=integrity/);
+ await page.locator('.vx-model-panel .vx-model-summaries').waitFor();
+ assert.equal(await page.locator('.vx-switch [data-vx-lens-view="model"]').getAttribute('aria-pressed'),'true');
+ await page.locator('.vx-switch [data-vx-lens-view="sdd"]').click();
+ assert.match(page.url(),/validate=readiness/);
+ // rc38+ (rc41 W4): the SDD reading shows the chapter's validation workspace with its readiness summary again.
+ await page.locator('[data-validation-workspace$=":11:"][data-bound="1"]').waitFor();
+ assert.equal(await page.getByRole('region',{name:'Chapter 11 validation'}).isVisible(),true,'The SDD reading shows the whole-project checks');
+ assert.match(await page.locator('[data-validation-workspace] [aria-label="Readiness summary"]').innerText(),/\b\d+\/\d+ SDD passages passing\b/,'with its passage count');
+ assert.deepEqual(await page.locator('[data-validation-workspace] [data-validation-set]').evaluateAll(xs=>xs.map(x=>[x.dataset.validationSet,x.getAttribute('aria-pressed')])),[['final','true'],['source','false']],'Chapter 11 opens on its final review checks');
+ assert.notEqual(await page.locator('.validation-header').evaluate(e=>getComputedStyle(e).display),'none');
+ await page.goBack({waitUntil:'networkidle'});
+ await page.waitForFunction(()=>document.querySelector('.vx-switch [data-vx-lens-view="model"]')?.getAttribute('aria-pressed')==='true').catch(async error=>{console.error('Back diagnostic',JSON.stringify({url:page.url(),lens:await page.locator('.vx-switch').innerText(),pressed:await page.locator('.vx-switch [aria-pressed="true"]').getAttribute('data-vx-lens-view')}));throw error;});
+ assert.equal(await page.locator('.vx-switch [data-vx-lens-view="model"]').getAttribute('aria-pressed'),'true','Back restores the model lens');
+ await page.goBack({waitUntil:'networkidle'});
+ await page.waitForFunction(()=>document.querySelector('.vx-switch [data-vx-lens-view="case"]')?.getAttribute('aria-pressed')==='true').catch(async error=>{console.error('Case Back diagnostic',JSON.stringify({url:page.url(),pressed:await page.locator('.vx-switch [aria-pressed="true"]').getAttribute('data-vx-lens-view')}));throw error;});
+ assert.equal(await page.locator('.vx-switch [data-vx-lens-view="case"]').getAttribute('aria-pressed'),'true','Back restores the focused case lens');
+ assert.equal(await page.locator('.vx-case-panel #vx-case-title').evaluate(e=>document.activeElement===e),true,'Back into a case focuses its heading');
+ await page.locator('.vx-switch [data-vx-lens-view="sdd"]').click();
+ await page.locator('.vx-switch [data-vx-lens-view="case"]').click();
+ assert.match(page.url(),/validate=case/);
+ await page.locator('.vx-case-work a[href*="#ac-assessment"]').first().click();
+ await page.locator('#ac-assessment').waitFor();
+ // rc38+ (rc41 W4): the dossier address also carries the lens it came from (validate=case), so it is read by parameter.
+ {const u=new URL(page.url());assert.deepEqual([u.searchParams.get('chapter'),u.searchParams.get('tab'),u.searchParams.get('case'),u.hash],['11','work','AC-001','#ac-assessment'],'The worklist opens the case dossier at its assessment: '+u.search+u.hash);}
+ assert.equal(await page.locator('[data-rv-action="stage"][data-rv-stage="case"]').getAttribute('aria-pressed'),'true');
+ assert.equal(await page.locator('#ac-assessment').evaluate(e=>document.activeElement===e),true,'The case worklist destination receives focus');
+ await page.goBack({waitUntil:'networkidle'});
+ await page.waitForFunction(()=>document.querySelector('.vx-switch [data-vx-lens-view="case"]')?.getAttribute('aria-pressed')==='true');
+ assert.equal(await page.locator('.vx-switch [data-vx-lens-view="case"]').getAttribute('aria-pressed'),'true','Back from the dossier restores its focused case lens');
+ assert.match(await page.locator('.vx-case-panel').innerText(),/Payment focused validation/);
+ await page.goto(base+'/?chapter=11&tab=validate&case=AC-001&validate=readiness',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('.vx-switch [data-vx-lens-view="sdd"]').getAttribute('aria-pressed'),'true','Explicit SDD reading overrides a retained case id');
+ await page.goto(base+'/?chapter=11&tab=validate&case=AC-001&validate=integrity',{waitUntil:'networkidle'});
+ await page.locator('.vx-model-panel .vx-model-summaries').waitFor();
+ assert.equal(await page.locator('.vx-switch [data-vx-lens-view="model"]').getAttribute('aria-pressed'),'true','The model reading has an addressable deep link');
+ await page.evaluate(()=>window.aiwRoute('/?chapter=11&tab=validate&case=AC-001&validate=case'));
+ await page.waitForFunction(()=>document.querySelector('.vx-switch [data-vx-lens-view="case"]')?.getAttribute('aria-pressed')==='true');
+ assert.match(page.url(),/validate=case/,'An in-app case link keeps its requested lens');
+ await page.goBack({waitUntil:'networkidle'});
+ await page.waitForFunction(()=>document.querySelector('.vx-switch [data-vx-lens-view="model"]')?.getAttribute('aria-pressed')==='true');
+ assert.match(page.url(),/validate=integrity/,'Back from an in-app lens link returns to the previous reading');
+ const phone=await context.newPage();await phone.setViewportSize({width:390,height:844});phone.on('pageerror',e=>errors.push(e.message));
+ await phone.goto(base+'/?chapter=4&tab=validate&case=AC-001',{waitUntil:'networkidle'});
+ await phone.locator('.vx-switch [data-vx-lens-view="case"]').focus();await phone.keyboard.press('Enter');
+ await phone.locator('.vx-case-panel #vx-case-title').waitFor();
+ if(process.env.AIW_CASE_SCREENSHOTS)await phone.screenshot({path:path.join(process.env.AIW_CASE_SCREENSHOTS,'focused-case-phone.png'),fullPage:true});
+ const widths=await phone.evaluate(()=>({page:document.body.scrollWidth,view:innerWidth,panel:Math.ceil(document.querySelector('.vx-case-panel').getBoundingClientRect().width)}));
+ assert(widths.page<=widths.view+2,'Focused case must not overflow the phone: '+JSON.stringify(widths));
+ assert.equal(await phone.locator('.vx-switch [data-vx-lens-view="case"]').getAttribute('aria-pressed'),'true');
+ assert.deepEqual(errors,[]);
+ console.log('Focused case browser: addressable case/SDD/model lenses, action links, keyboard switch, SDD separation, case deep link/focus, Back, and phone width passed.');
+}finally{await browser.close();await new Promise(resolve=>{if(server.exitCode!==null||server.signalCode!==null)return resolve();server.once('exit',resolve);server.kill();});await rm(db,{force:true});}

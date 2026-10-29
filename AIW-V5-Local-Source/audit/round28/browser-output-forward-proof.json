@@ -1,0 +1,233 @@
+{
+  "source": "/workspace/scratch/8e11d52a9a55/rethink_qa/authored-final-revision82",
+  "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+  "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "authority": "Navigation only on a copied synthetic project. No save, approval, handoff submission or external service action.",
+  "started": "2026-10-18T10:44:36.951Z",
+  "clicks": [
+    {
+      "chapter": "4",
+      "tab": "output",
+      "label": "Review the handoffWhat carries forward and what remains open",
+      "trusted": true,
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "output",
+      "label": "Open Chapter 5 Work",
+      "trusted": true,
+      "attributes": {
+        "data-l-action": "chapter5"
+      }
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "label": "Review the handoffWhat carries forward and what remains open",
+      "trusted": true,
+      "attributes": {}
+    },
+    {
+      "chapter": "5",
+      "tab": "output",
+      "label": "Open Chapter 6 Work",
+      "trusted": true,
+      "attributes": {
+        "data-a-action": "technology-intake"
+      }
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "label": "Review the handoffWhat carries forward and what remains open",
+      "trusted": true,
+      "attributes": {}
+    },
+    {
+      "chapter": "6",
+      "tab": "output",
+      "label": "Open Chapter 7 Work",
+      "trusted": true,
+      "attributes": {
+        "data-t-action": "chapter7"
+      }
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "label": "Review the handoffWhat carries forward and what remains open",
+      "trusted": true,
+      "attributes": {}
+    },
+    {
+      "chapter": "7",
+      "tab": "output",
+      "label": "Open Interfaces & data",
+      "trusted": true,
+      "attributes": {
+        "data-tr-action": "chapter8"
+      }
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "label": "Review the handoffWhat carries forward and what remains open",
+      "trusted": true,
+      "attributes": {}
+    },
+    {
+      "chapter": "8",
+      "tab": "output",
+      "label": "Open Security",
+      "trusted": true,
+      "attributes": {
+        "data-i-action": "chapter9"
+      }
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "label": "Review the handoffWhat carries forward and what remains open",
+      "trusted": true,
+      "attributes": {}
+    },
+    {
+      "chapter": "9",
+      "tab": "output",
+      "label": "Open Deployment / runtime",
+      "trusted": true,
+      "attributes": {
+        "data-sec-action": "chapter10"
+      }
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "label": "Review the handoffWhat carries forward and what remains open",
+      "trusted": true,
+      "attributes": {}
+    },
+    {
+      "chapter": "10",
+      "tab": "output",
+      "label": "Open Review & realize",
+      "trusted": true,
+      "attributes": {
+        "data-rt-action": "chapter11"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "chapter": 4,
+      "selector": "[data-l-action=\"chapter5\"]",
+      "label": "Open Chapter 5 Work",
+      "disclosureExpanded": true,
+      "destination": 5,
+      "tab": "work",
+      "beforeRevision": 82,
+      "afterRevision": 82,
+      "unchanged": true
+    },
+    {
+      "chapter": 5,
+      "selector": "[data-a-action=\"technology-intake\"]",
+      "label": "Open Chapter 6 Work",
+      "disclosureExpanded": true,
+      "destination": 6,
+      "tab": "work",
+      "beforeRevision": 82,
+      "afterRevision": 82,
+      "unchanged": true
+    },
+    {
+      "chapter": 6,
+      "selector": "[data-t-action=\"chapter7\"]",
+      "label": "Open Chapter 7 Work",
+      "disclosureExpanded": true,
+      "destination": 7,
+      "tab": "work",
+      "beforeRevision": 82,
+      "afterRevision": 82,
+      "unchanged": true
+    },
+    {
+      "chapter": 7,
+      "selector": "[data-tr-action=\"chapter8\"]",
+      "label": "Open Interfaces & data",
+      "disclosureExpanded": true,
+      "destination": 8,
+      "tab": "work",
+      "beforeRevision": 82,
+      "afterRevision": 82,
+      "unchanged": true
+    },
+    {
+      "chapter": 8,
+      "selector": "[data-i-action=\"chapter9\"]",
+      "label": "Open Security",
+      "disclosureExpanded": true,
+      "destination": 9,
+      "tab": "work",
+      "beforeRevision": 82,
+      "afterRevision": 82,
+      "unchanged": true
+    },
+    {
+      "chapter": 9,
+      "selector": "[data-sec-action=\"chapter10\"]",
+      "label": "Open Deployment / runtime",
+      "disclosureExpanded": true,
+      "destination": 10,
+      "tab": "work",
+      "beforeRevision": 82,
+      "afterRevision": 82,
+      "unchanged": true
+    },
+    {
+      "chapter": 10,
+      "selector": "[data-rt-action=\"chapter11\"]",
+      "label": "Open Review & realize",
+      "disclosureExpanded": true,
+      "destination": 11,
+      "tab": "work",
+      "beforeRevision": 82,
+      "afterRevision": 82,
+      "unchanged": true
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    },
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:35321/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    }
+  ],
+  "status": "passed",
+  "finished": "2026-10-18T10:44:41.615Z"
+}

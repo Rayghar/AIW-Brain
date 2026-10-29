@@ -1,0 +1,523 @@
+{
+  "at": "2026-10-12T07:21:11.370Z",
+  "baseCommit": "f13d0ef05ec0c44df067c11f8724b6415c210bd9",
+  "applicationSha256": "dd9a9570d4cfe4bf4c382129351f064b858d08f30fe861d2e45853b278fdc949",
+  "authority": "Agent-prepared unconfirmed draft using the single user-permitted requirement; no source approval, architect selection, measurements or sign-off.",
+  "checks": [
+    {
+      "name": "Permitted requirement, bounded original and focused case saved through existing command API"
+    },
+    {
+      "name": "Real requirement case remains evidence-blocked; whole-project SDD gate stays separate"
+    },
+    {
+      "name": "Actual payment draft export downloaded"
+    },
+    {
+      "name": "Requirement and case persist after actual server restart; no confirmation invented"
+    },
+    {
+      "name": "Local missing credential is honestly reported"
+    },
+    {
+      "name": "No payment-case browser page errors"
+    }
+  ],
+  "errors": [],
+  "case": {
+    "project": "project-58efa650-abd7-4c01-b361-626cba6aaf15",
+    "caseId": "AC-001",
+    "requirement": "REQ-001",
+    "readiness": {
+      "caseId": "AC-001",
+      "projectId": "project-58efa650-abd7-4c01-b361-626cba6aaf15",
+      "measure": "Observed model links, including drafts; no generated design or independent quality score.",
+      "scope": "selected requirements",
+      "caseScope": {
+        "requirementIds": [
+          "REQ-001"
+        ],
+        "objectIds": [
+          "REQ-001"
+        ]
+      },
+      "journey": {
+        "mode": "end-to-end",
+        "anchorRequirementId": "REQ-001",
+        "checks": [
+          {
+            "key": "selected-links",
+            "label": "Connect every selected requirement",
+            "detail": "Each selected requirement needs an explicit link into the model; missing: REQ-001.",
+            "done": false,
+            "chapter": 1,
+            "objectId": "REQ-001"
+          },
+          {
+            "key": "continuous-trail",
+            "label": "Trace one requirement through design and runtime",
+            "detail": "Follow the same requirement through a quality driver, decision, responsibility, mapped application component, allocated technology capability, product realization and its runtime asset.",
+            "done": false,
+            "chapter": 1,
+            "objectId": "REQ-001"
+          },
+          {
+            "key": "quality-target",
+            "label": "Confirm the linked quality scenario",
+            "detail": "Review the measure, target and operating conditions for the linked requirement.",
+            "done": false,
+            "chapter": 2,
+            "objectId": null
+          },
+          {
+            "key": "decision-comparison",
+            "label": "Compare two architecture approaches",
+            "detail": "Assess both approaches against the same linked quality driver and explain their effects.",
+            "done": false,
+            "chapter": 3,
+            "objectId": null
+          },
+          {
+            "key": "decision-record",
+            "label": "Record the chosen rationale and assumptions",
+            "detail": "Keep the choice, rationale and open assumptions in a current recorded or architect-accepted decision.",
+            "done": false,
+            "chapter": 3,
+            "objectId": null
+          },
+          {
+            "key": "product-comparison",
+            "label": "Compare two named product options",
+            "detail": "Assess both product options against a linked driver with a reason and evidence reference for each.",
+            "done": false,
+            "chapter": 7,
+            "objectId": null
+          },
+          {
+            "key": "product-selection",
+            "label": "Record a specified technology choice",
+            "detail": "Name the selected product, version, service tier, operating model, topology, failure domains, workload and configuration basis; retain the selection rationale.",
+            "done": false,
+            "chapter": 7,
+            "objectId": null
+          },
+          {
+            "key": "deployment",
+            "label": "Place the selected technology in an operating environment",
+            "detail": "Connect the chosen technology realization to a runtime plan, environment and stated failure domain.",
+            "done": false,
+            "chapter": 10,
+            "objectId": null
+          },
+          {
+            "key": "recorded-test",
+            "label": "Link a current test or exercise",
+            "detail": "Record a current quality measurement, runtime exercise or control verification tied to this requirement trail and its exact evidence reference. Case opinions and imported pass counters do not count.",
+            "done": false,
+            "chapter": 10,
+            "objectId": null
+          }
+        ],
+        "complete": false,
+        "done": 0,
+        "total": 9,
+        "authority": "Linked records and architect-recorded evidence only; AIW has not tested the product, verified source rights or approved the whole SDD."
+      },
+      "missingRequirementIds": [],
+      "requirements": {
+        "inScope": 1,
+        "confirmed": 0,
+        "sourceLocated": 0,
+        "missingSourceLocation": 1
+      },
+      "sourceUse": {
+        "required": false,
+        "acknowledged": false,
+        "actor": null,
+        "observationId": null,
+        "authority": "Architect acknowledgement for the exact current case sources; AIW does not verify usage rights."
+      },
+      "chapters": [
+        {
+          "chapter": 1,
+          "title": "Requirements",
+          "done": 0,
+          "total": 6,
+          "errors": 11,
+          "warnings": 2
+        },
+        {
+          "chapter": 2,
+          "title": "Architectural drivers",
+          "done": 0,
+          "total": 6,
+          "errors": 1,
+          "warnings": 1
+        },
+        {
+          "chapter": 3,
+          "title": "Decisions",
+          "done": 0,
+          "total": 6,
+          "errors": 1,
+          "warnings": 1
+        },
+        {
+          "chapter": 4,
+          "title": "Logical application",
+          "done": 0,
+          "total": 8,
+          "errors": 2,
+          "warnings": 1
+        },
+        {
+          "chapter": 5,
+          "title": "Application realization",
+          "done": 0,
+          "total": 8,
+          "errors": 0,
+          "warnings": 1
+        },
+        {
+          "chapter": 6,
+          "title": "Logical technology",
+          "done": 0,
+          "total": 8,
+          "errors": 0,
+          "warnings": 1
+        },
+        {
+          "chapter": 7,
+          "title": "Technology realization",
+          "done": 0,
+          "total": 8,
+          "errors": 0,
+          "warnings": 1
+        },
+        {
+          "chapter": 8,
+          "title": "Interfaces & data",
+          "done": 0,
+          "total": 8,
+          "errors": 0,
+          "warnings": 1
+        },
+        {
+          "chapter": 9,
+          "title": "Security",
+          "done": 0,
+          "total": 8,
+          "errors": 0,
+          "warnings": 1
+        },
+        {
+          "chapter": 10,
+          "title": "Deployment / runtime",
+          "done": 0,
+          "total": 8,
+          "errors": 0,
+          "warnings": 2
+        },
+        {
+          "chapter": 11,
+          "title": "Review & realize",
+          "done": 0,
+          "total": 8,
+          "errors": 2,
+          "warnings": 4
+        }
+      ],
+      "chapterScope": "case",
+      "projectGate": {
+        "ready": false,
+        "chapterComplete": false,
+        "baseline": null,
+        "approval": null,
+        "blockers": [
+          "Project-wide chapter models and validation findings remain incomplete.",
+          "No current architect-reviewed SDD baseline.",
+          "No current external whole-project approval evidence."
+        ]
+      },
+      "requirementTrail": {
+        "quality": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "decisions": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "logicalApplication": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "applicationRealization": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "logicalTechnology": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "technologyRealization": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "interfaces": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "data": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "security": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        },
+        "runtime": {
+          "requirements": 0,
+          "confirmedRequirements": 0
+        }
+      },
+      "fullTrail": 0,
+      "eligibleSignedRepositoryClaims": 0,
+      "projectEligibleSignedRepositoryClaims": 0,
+      "knowledgeStatus": {
+        "current": 0,
+        "changed": 0,
+        "retired": 0
+      },
+      "knowledgeLinks": [],
+      "sourceEvidence": [],
+      "testObservations": [],
+      "rows": [
+        {
+          "id": "REQ-001",
+          "externalId": "REQ-001",
+          "found": true,
+          "title": "UATC-0197 · Create new transfer",
+          "confirmed": false,
+          "source": {
+            "sheet": null,
+            "row": null,
+            "workbookHash": null,
+            "cell": null
+          },
+          "linkedStages": {
+            "quality": [],
+            "decisions": [],
+            "logicalApplication": [],
+            "applicationRealization": [],
+            "logicalTechnology": [],
+            "technologyRealization": [],
+            "interfaces": [],
+            "data": [],
+            "security": [],
+            "runtime": []
+          }
+        }
+      ],
+      "sample": [],
+      "baseline": null,
+      "architectAssessment": {
+        "status": "assessment-incomplete",
+        "dimensions": [
+          {
+            "dimension": "Requirement correctness",
+            "outcome": "not-assessed",
+            "observationId": null,
+            "actor": null,
+            "independent": false,
+            "reference": null,
+            "sourceRightsReviewed": false,
+            "historical": false
+          },
+          {
+            "dimension": "Evidence precision",
+            "outcome": "not-assessed",
+            "observationId": null,
+            "actor": null,
+            "independent": false,
+            "reference": null,
+            "sourceRightsReviewed": false,
+            "historical": false
+          },
+          {
+            "dimension": "Context and applicability",
+            "outcome": "not-assessed",
+            "observationId": null,
+            "actor": null,
+            "independent": false,
+            "reference": null,
+            "sourceRightsReviewed": false,
+            "historical": false
+          },
+          {
+            "dimension": "Alternatives and trade-offs",
+            "outcome": "not-assessed",
+            "observationId": null,
+            "actor": null,
+            "independent": false,
+            "reference": null,
+            "sourceRightsReviewed": false,
+            "historical": false
+          },
+          {
+            "dimension": "Missing controls and obligations",
+            "outcome": "not-assessed",
+            "observationId": null,
+            "actor": null,
+            "independent": false,
+            "reference": null,
+            "sourceRightsReviewed": false,
+            "historical": false
+          },
+          {
+            "dimension": "Overall usefulness",
+            "outcome": "not-assessed",
+            "observationId": null,
+            "actor": null,
+            "independent": false,
+            "reference": null,
+            "sourceRightsReviewed": false,
+            "historical": false
+          }
+        ],
+        "missing": [
+          "Requirement correctness",
+          "Evidence precision",
+          "Context and applicability",
+          "Alternatives and trade-offs",
+          "Missing controls and obligations",
+          "Overall usefulness"
+        ],
+        "gaps": [],
+        "independent": [],
+        "reviewers": [],
+        "conclusion": null,
+        "authority": "Current authenticated architect observations only. A case conclusion does not approve the design or establish measured runtime quality."
+      },
+      "acceptance": "blocked",
+      "blockers": [
+        "Selected requirements still need architect confirmation and scope review.",
+        "Locate the original source for each selected requirement and review permitted use.",
+        "No connected architecture model objects are available for this case.",
+        "Connect every selected requirement. Each selected requirement needs an explicit link into the model; missing: REQ-001.",
+        "Trace one requirement through design and runtime. Follow the same requirement through a quality driver, decision, responsibility, mapped application component, allocated technology capability, product realization and its runtime asset.",
+        "Confirm the linked quality scenario. Review the measure, target and operating conditions for the linked requirement.",
+        "Compare two architecture approaches. Assess both approaches against the same linked quality driver and explain their effects.",
+        "Record the chosen rationale and assumptions. Keep the choice, rationale and open assumptions in a current recorded or architect-accepted decision.",
+        "Compare two named product options. Assess both product options against a linked driver with a reason and evidence reference for each.",
+        "Record a specified technology choice. Name the selected product, version, service tier, operating model, topology, failure domains, workload and configuration basis; retain the selection rationale.",
+        "Place the selected technology in an operating environment. Connect the chosen technology realization to a runtime plan, environment and stated failure domain.",
+        "Link a current test or exercise. Record a current quality measurement, runtime exercise or control verification tied to this requirement trail and its exact evidence reference. Case opinions and imported pass counters do not count."
+      ],
+      "worklist": [
+        {
+          "key": "confirm-requirements",
+          "text": "Selected requirements still need architect confirmation and scope review.",
+          "chapter": 1,
+          "objectId": "REQ-001",
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "locate-source",
+          "text": "Locate the original source for each selected requirement and review permitted use.",
+          "chapter": 1,
+          "objectId": "REQ-001",
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "connected-model",
+          "text": "No connected architecture model objects are available for this case.",
+          "chapter": 1,
+          "objectId": "REQ-001",
+          "tab": "model",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:selected-links",
+          "text": "Connect every selected requirement. Each selected requirement needs an explicit link into the model; missing: REQ-001.",
+          "chapter": 1,
+          "objectId": "REQ-001",
+          "tab": "model",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:continuous-trail",
+          "text": "Trace one requirement through design and runtime. Follow the same requirement through a quality driver, decision, responsibility, mapped application component, allocated technology capability, product realization and its runtime asset.",
+          "chapter": 1,
+          "objectId": "REQ-001",
+          "tab": "model",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:quality-target",
+          "text": "Confirm the linked quality scenario. Review the measure, target and operating conditions for the linked requirement.",
+          "chapter": 2,
+          "objectId": null,
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:decision-comparison",
+          "text": "Compare two architecture approaches. Assess both approaches against the same linked quality driver and explain their effects.",
+          "chapter": 3,
+          "objectId": null,
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:decision-record",
+          "text": "Record the chosen rationale and assumptions. Keep the choice, rationale and open assumptions in a current recorded or architect-accepted decision.",
+          "chapter": 3,
+          "objectId": null,
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:product-comparison",
+          "text": "Compare two named product options. Assess both product options against a linked driver with a reason and evidence reference for each.",
+          "chapter": 7,
+          "objectId": null,
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:product-selection",
+          "text": "Record a specified technology choice. Name the selected product, version, service tier, operating model, topology, failure domains, workload and configuration basis; retain the selection rationale.",
+          "chapter": 7,
+          "objectId": null,
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:deployment",
+          "text": "Place the selected technology in an operating environment. Connect the chosen technology realization to a runtime plan, environment and stated failure domain.",
+          "chapter": 10,
+          "objectId": null,
+          "tab": "work",
+          "anchor": "ac-readiness"
+        },
+        {
+          "key": "journey:recorded-test",
+          "text": "Link a current test or exercise. Record a current quality measurement, runtime exercise or control verification tied to this requirement trail and its exact evidence reference. Case opinions and imported pass counters do not count.",
+          "chapter": 10,
+          "objectId": null,
+          "tab": "work",
+          "anchor": "ac-readiness"
+        }
+      ]
+    }
+  },
+  "provider": {
+    "configured": false,
+    "provider": "anthropic",
+    "actualRequest": false
+  },
+  "passed": true
+}

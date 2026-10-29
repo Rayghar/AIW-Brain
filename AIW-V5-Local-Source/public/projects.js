@@ -1,0 +1,108 @@
+import {REFERENCE_PROJECTS} from './reference-projects.js';
+import {themeControl} from './theme.js';
+import {resumeProjectURL,projectURL,forgetProjectPreferences,pruneProjectPreferences} from './project-context.js';
+import {esc} from './html-escape.js';
+// The brief reader is small and its OOXML reader (workbook-reader.js) already loads with this page; the brief rules
+// (brief-interpreter.js, about 21 KB) load only once a brief is typed or read. BRIEF_LIMIT is theirs (20,000). The
+// model readers (model-interpreter.js, round 6) load only once a model file is chosen.
+import {readBrief,readModelFile,BRIEF_FILE_ACCEPT,MODEL_FILE_ACCEPT} from './brief-reader.js';
+const BRIEF_LIMIT=20000;
+let projects=[],showArchived=false;
+document.body.className='projects-app';
+document.querySelector('#app').innerHTML=`<header class="p-top"><a class="p-brand" href="/?view=projects"><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></svg></span> aiw <sup>V5</sup></a><span>Intelligent Architecture Workbench</span>${themeControl()}<small>▣ Private workspace</small></header><main id="workspace" class="p-main"><section class="p-hero"><div><p class="p-kicker">Your architecture practice</p><h1>Give the next idea<br>a clear path forward.</h1><p>Start with the problem. Keep the reasoning connected as your architecture takes shape.</p><div class="brain-actions"><button class="p-primary" id="new-project">＋ Create a project</button><button class="btn" id="organization-workspace">Organisation guidance</button><button class="btn" id="import-project">Restore / import project</button></div></div><aside class="p-principle"><p>One project. <br>Eleven chapters. <br><em>A continuous thread.</em></p><small>Work → Model → Validate → Output</small></aside></section><section class="p-projects" aria-labelledby="projects-heading"><header><div><p class="p-kicker">Pick up the thread</p><h2 id="projects-heading">Your projects <span id="project-count"></span></h2></div><label class="p-search">Find a project<input type="search" id="project-search" placeholder="Search by project name"></label></header><label class="p-confirmed"><input type="checkbox" id="show-archived"> Include archived projects</label><div id="project-list" class="p-grid" aria-live="polite"><p>Opening your private projects…</p></div></section><footer class="p-footer"><span>AIW V5 · Intelligent Architecture Workbench</span><span>Reference content remains labelled until you confirm it.</span></footer></main><dialog id="project-dialog" class="p-dialog" aria-labelledby="create-title"><form id="create-form"><header><p class="p-kicker">A new architecture journey</p><button type="button" id="close-project" aria-label="Close project creation">×</button></header><h2 id="create-title">What will you design?</h2><label>Project name<input name="name" maxlength="100" required placeholder="e.g. Customer onboarding" autocomplete="off"></label><fieldset><legend>Choose a starting point</legend><label class="p-template"><input type="radio" name="template" value="blank" checked><span><b>Start with a blank project</b><small>Your brief, your records. All eleven chapters are ready for authoring.</small></span></label><label class="p-template"><input type="radio" name="template" value="bank-payment"><span><b>Explore the Bank Payment Journey</b><small>A fresh reference copy with illustrative records and unconfirmed targets. Your existing projects stay separate.</small></span></label>${REFERENCE_PROJECTS.map(r=>`<label class="p-template" title="${esc(r.brief)}"><input type="radio" name="template" value="${esc(r.id)}"><span><b>${esc(r.title)}</b><small>${esc(r.description)}</small><small>Reference · drafted from its brief · confirm before use</small></span></label>`).join('')}</fieldset><label id="saved-template" hidden>Saved project template<select name="sourceProjectId"><option value="">Use the starting point above</option></select></label><label id="opening-brief" data-brief-step>Opening brief <small>Optional · up to 20,000 characters · you can refine it in Chapter 1</small><textarea name="brief" maxlength="20000" rows="4" placeholder="What problem are you solving, and for whom? Paste the brief, or read it from a file below."></textarea></label><label data-brief-step>Or read the brief from a file <small>.txt, .md or .docx, up to 12 MB · read in this browser; the file itself is not uploaded · PDF is not read in this version</small><input type="file" name="briefFile" accept="${BRIEF_FILE_ACCEPT}"></label><p id="brief-source" class="p-private-note" data-brief-step hidden></p><p id="brief-error" role="alert" data-brief-step hidden></p><p id="brief-reading" class="p-private-note" data-brief-step aria-live="polite" hidden></p><label data-brief-step>Or start from a model file <small>Structurizr .dsl, ArchiMate .xml or .archimate, .bpmn, .drawio, Mermaid .mmd, PlantUML .puml or a MADR .md, up to 2 MB · read in this browser; the text is kept with the project · a brief may be given beside it</small><input type="file" name="modelFile" accept="${MODEL_FILE_ACCEPT}"></label><p id="model-source" class="p-private-note" data-brief-step hidden></p><p id="model-error" role="alert" data-brief-step hidden></p><p id="model-reading" class="p-private-note" data-brief-step aria-live="polite" hidden></p><p class="p-private-note">Saved to your private workspace. The project opens in Chapter 1 — Requirements.</p><p id="project-error" role="alert" hidden></p><footer><button type="button" id="cancel-project">Cancel</button><button class="p-primary" id="create-submit" type="submit">Create & open Chapter 1 →</button></footer></form></dialog>`;
+const dialog=document.querySelector('#project-dialog'),form=document.querySelector('#create-form');
+document.querySelector('#new-project').onclick=()=>{document.querySelector('#project-error').hidden=true;dialog.showModal();form.elements.name.focus();};
+for(const id of ['close-project','cancel-project'])document.getElementById(id).onclick=()=>dialog.close();
+form.addEventListener('change',e=>{if(e.target===form.elements.briefFile||e.target===form.elements.modelFile)return;const reference=form.elements.template.value!=='blank';for(const el of form.querySelectorAll('[data-brief-step]'))el.hidden=reference||(el.tagName==='P'&&!el.textContent);form.elements.brief.disabled=reference;form.elements.briefFile.disabled=reference;form.elements.modelFile.disabled=reference;if(!form.elements.name.value&&reference)form.elements.name.value=REFERENCE_PROJECTS.find(r=>r.id===form.elements.template.value)?.title||'Bank Payment Journey';submitLabel();});
+// The brief step (round 4, Contract 1). A brief is typed, or read from a .txt, .md or .docx file in this browser
+// (brief-reader.js) into the same text box, where it can still be edited; the file's name and SHA-256 are shown and sent
+// with the text, and whether the text was edited after reading. As the text changes, the page counts what the brief
+// rules read in it (brief-interpreter.js). Counting creates nothing: the project starts with the brief alone, and every
+// chapter is drafted later for the person to review and commit.
+let briefFile=null,modelFile=null,readingTimer=0;
+const briefBox=form.elements.brief,briefNote=(id,text)=>{const el=document.querySelector(id);el.textContent=text||'';el.hidden=!text||form.elements.template.value!=='blank';return el;};
+const startsFromBrief=()=>form.elements.template.value==='blank'&&!!briefBox.value.trim();
+const startsFromModel=()=>form.elements.template.value==='blank'&&!!modelFile;
+function submitLabel(){const submit=document.querySelector('#create-submit');if(!submit.disabled)submit.textContent=startsFromBrief()&&startsFromModel()?'Start from this brief and model →':startsFromModel()?'Start from this model →':startsFromBrief()?'Start from this brief →':'Create & open Chapter 1 →';}
+const KIND_WORDS=[['requirements','requirement','requirements'],['actors','actor','actors'],['stakeholders','stakeholder','stakeholders'],['outcomes','outcome','outcomes'],['scope','scope boundary','scope boundaries'],['journeys','journey step','journey steps'],['constraints','constraint','constraints'],['assumptions','assumption','assumptions']];
+function showSource(){
+  if(!briefFile)return briefNote('#brief-source','');
+  const edited=briefBox.value.trim()!==briefFile.text.trim(),size=briefFile.bytes<1024?briefFile.bytes+' bytes':(briefFile.bytes/1024).toFixed(1)+' KB';
+  const el=briefNote('#brief-source',' ');el.innerHTML=`Read from <b>${esc(briefFile.name)}</b> · ${esc(size)} · SHA-256 <code style="overflow-wrap:anywhere">${esc(briefFile.hash)}</code>${edited?' · <em>edited since it was read: the hash describes the file, not this text</em>':''}`;
+}
+async function countBrief(){
+  const text=briefBox.value;
+  if(!text.trim()||form.elements.template.value!=='blank'){briefNote('#brief-reading','');return;}
+  try{
+    const {interpretBrief,briefCounts}=await import('./brief-interpreter.js');if(text!==briefBox.value)return;
+    const n=briefCounts(interpretBrief(text,{name:form.elements.name.value})),found=KIND_WORDS.filter(([k])=>n[k]).map(([k,one,many])=>n[k]+' '+(n[k]===1?one:many));
+    briefNote('#brief-reading',`The brief rules read ${n.passages} ${n.passages===1?'passage':'passages'}: ${found.join(' · ')||'no record they recognise'}; ${n.questions} ${n.questions===1?'question':'questions'} the brief leaves open. Nothing is created yet: each chapter is drafted later for you to review.`);
+  }catch(e){briefNote('#brief-reading',e.message);}
+}
+briefBox.addEventListener('input',()=>{if(briefFile&&!briefBox.value.trim()){briefFile=null;form.elements.briefFile.value='';}showSource();submitLabel();clearTimeout(readingTimer);readingTimer=setTimeout(countBrief,250);});
+// The model step (round 6, Contract I). A model file is read in this browser (brief-reader.js readModelFile) and counted
+// by the model reader (model-interpreter.js, loaded only now): the elements by kind, the relationships, the views, what
+// was stated and what inferred, and the report's lines on what was not read. The text is sent with the project and kept
+// as an evidence source; nothing is drafted here. A brief may be given beside it.
+const FORMAT_WORDS={structurizr:'Structurizr DSL',archimate:'an ArchiMate model',bpmn:'BPMN 2.0',drawio:'a draw.io diagram','mermaid-c4':'a Mermaid C4 diagram','plantuml-c4':'a C4-PlantUML diagram',madr:'MADR decision records'};
+function showModelSource(){
+  if(!modelFile)return briefNote('#model-source','');
+  const size=modelFile.bytes<1024?modelFile.bytes+' bytes':(modelFile.bytes/1024).toFixed(1)+' KB';
+  const el=briefNote('#model-source',' ');el.innerHTML=`Model <b>${esc(modelFile.name)}</b> · ${esc(size)} · SHA-256 <code style="overflow-wrap:anywhere">${esc(modelFile.hash)}</code>${modelFile.inflated?' · decompressed in this browser; the readable XML is what the project keeps':''}`;
+}
+form.elements.modelFile.addEventListener('change',async()=>{
+  const file=form.elements.modelFile.files?.[0];briefNote('#model-error','');briefNote('#model-reading','');
+  if(!file){modelFile=null;showModelSource();submitLabel();return;}
+  try{
+    const read=await readModelFile(file),{interpretModel,modelCounts}=await import('./model-interpreter.js');
+    const r=interpretModel(read.text,{name:file.name,format:read.kind}),n=modelCounts(r);
+    if(r.format==='unknown'||!r.elements.length)throw Error(`${file.name} was not read as a model: ${r.format==='unknown'?'':'no element was read; '}${r.report.omitted.map(o=>o.reason).join(' ')||'check the file and choose it again.'}`);
+    modelFile={name:file.name,hash:read.hash,kind:read.kind,bytes:read.bytes,text:read.text,format:r.format,inflated:read.inflated};
+    const kinds=Object.entries(n.kinds).map(([k,v])=>v+' '+k+(v===1?'':'s')).join(', '),lines=r.report.omitted.slice(0,4).map(o=>(o.id?o.id+': ':'')+o.reason);
+    briefNote('#model-reading',`Read as ${FORMAT_WORDS[r.format]||r.format}: ${n.elements} ${n.elements===1?'element':'elements'} (${kinds||'none'}), ${n.relationships} ${n.relationships===1?'relationship':'relationships'}, ${n.views} ${n.views===1?'view':'views'}; ${n.stated} ${n.stated===1?'name is':'names are'} stated in the file, ${n.inferred} inferred; ${n.questions} ${n.questions===1?'question':'questions'} the model leaves open.${lines.length?' Not read: '+lines.join(' '):''}${n.omitted>lines.length?` ${n.omitted-lines.length} more in the report.`:''}${read.note?' '+read.note:''} Nothing is created yet: each chapter is drafted from the model later for you to review.`);
+  }catch(e){modelFile=null;form.elements.modelFile.value='';briefNote('#model-error',e.message);}
+  showModelSource();submitLabel();(modelFile?document.querySelector('#model-reading'):document.querySelector('#model-error')).scrollIntoView({block:'center'});
+});
+form.elements.briefFile.addEventListener('change',async()=>{
+  const file=form.elements.briefFile.files?.[0];briefNote('#brief-error','');if(!file)return;
+  try{
+    const read=await readBrief(file);
+    if(!read.text.trim())throw Error('No text was found in '+file.name+'.');
+    if(read.text.length>BRIEF_LIMIT)throw Error(`${file.name} holds ${read.text.length.toLocaleString()} characters; a brief is read up to ${BRIEF_LIMIT.toLocaleString()}. Shorten it, or paste the part that matters.`);
+    briefFile={name:file.name,hash:read.hash,kind:read.kind,bytes:read.bytes,text:read.text};briefBox.value=read.text;
+  }catch(e){briefFile=null;form.elements.briefFile.value='';briefNote('#brief-error',e.message);}
+  showSource();submitLabel();countBrief();(briefFile?document.querySelector('#brief-source'):document.querySelector('#brief-error')).scrollIntoView({block:'center'});
+});
+function render(){
+  document.querySelector('#project-count').textContent=projects.length;
+  const query=document.querySelector('#project-search').value.toLowerCase(),shown=projects.filter(p=>p.name.toLowerCase().includes(query)&&(showArchived||p.status!=='archived'));
+  document.querySelector('#project-list').innerHTML=shown.map(p=>{const url=resumeProjectURL(p.id),chapter=Number(new URL(url,location.origin).searchParams.get('chapter')||1),date=new Intl.DateTimeFormat(undefined,{day:'numeric',month:'short',year:'numeric'}).format(new Date(p.updatedAt));return `<article class="p-project"><div class="p-project-meta"><span class="p-tag">${p.template==='blank'?'Your architecture':'Illustrative reference copy'}</span><small>Revision ${p.revision}</small></div><h3><a href="${esc(url)}">${esc(p.name)}</a></h3><p class="p-project-date">Saved ${esc(date)}</p><dl><div><dt>Requirements</dt><dd>${p.counts.requirements}</dd></div><div><dt>Drivers</dt><dd>${p.counts.drivers}</dd></div><div><dt>Decisions</dt><dd>${p.counts.decisions}</dd></div></dl><p class="p-confirmed">${p.confirmedRequirements} of ${p.counts.requirements} requirements confirmed · ${esc(p.status)} · ${esc(p.role||"owner")}</p><details class="p-ready" data-ready="${esc(p.id)}"><summary>SDD readiness and next milestone</summary><p class="p-ready-body" aria-live="polite">Reading the checks of this project…</p></details><footer><a class="p-open" href="${esc(url)}">${chapter===1?'Open Chapter 1':'Resume Chapter '+chapter} <span>↗</span></a><a class="p-overview-link" href="${esc(projectURL('/?chapter=11&tab=work',p.id))}">Review journey</a></footer>${p.role==='owner'?`<details class="p-project-manage"><summary>Manage project</summary><button data-life="rename" data-id="${esc(p.id)}">Rename</button><button data-life="${p.status==='archived'?'restore':'archive'}" data-id="${esc(p.id)}">${p.status==='archived'?'Restore':'Archive'}</button><button data-life="template" data-id="${esc(p.id)}">${p.reusableTemplate?'Remove template designation':'Use as a project template'}</button></details>`:''}</article>`;}).join('')||`<div class="p-empty"><h3>${query?'No matching projects.':'A new journey starts here.'}</h3><p>${query?'Try another project name.':'Create a blank project or explore a fresh Bank Payment reference.'}</p>${query?'':'<button class="p-primary" id="first-project">Create your first project →</button>'}</div>`;
+  document.querySelector('#first-project')?.addEventListener('click',()=>document.querySelector('#new-project').click());
+}
+document.querySelector('#project-search').addEventListener('input',render);
+async function load(){try{const response=await fetch('/api/projects',{credentials:'same-origin'}),data=await response.json();if(!response.ok)throw Error(data.error||'Projects are unavailable.');projects=data.projects;
+  // This browser's preferences for projects that no longer exist are dropped (F2-23).
+  try{pruneProjectPreferences(projects.map(p=>p.id));}catch{/* preferences only */}
+  const templates=projects.filter(p=>p.reusableTemplate&&p.role==='owner');form.elements.sourceProjectId.innerHTML='<option value="">Use the starting point above</option>'+templates.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');document.querySelector('#saved-template').hidden=!templates.length;render();}catch(e){document.querySelector('#project-list').innerHTML='<div class="p-empty"><h3>Your projects could not be opened.</h3><p>'+esc(e.message)+'</p><button id="retry-projects" class="p-primary">Try again</button></div>';document.querySelector('#retry-projects').onclick=load;}}
+form.addEventListener('submit',async event=>{
+  event.preventDefault();const submit=document.querySelector('#create-submit'),error=document.querySelector('#project-error');if(submit.disabled)return;
+  const fromBrief=startsFromBrief(),fromModel=startsFromModel(),input={sourceProjectId:form.elements.sourceProjectId.value||undefined,name:form.elements.name.value,template:form.elements.template.value,brief:form.elements.template.value==='blank'?briefBox.value:'',...(fromBrief&&briefFile?{briefFile:{name:briefFile.name,hash:briefFile.hash,kind:briefFile.kind,bytes:briefFile.bytes,edited:briefBox.value.trim()!==briefFile.text.trim()}}:{}),...(fromModel?{model:{text:modelFile.text,name:modelFile.name,kind:modelFile.kind,format:modelFile.format}}:{})};
+  submit.disabled=true;submit.textContent=fromBrief&&fromModel?'Starting from the brief and the model…':fromModel?'Starting from the model…':fromBrief?'Starting from the brief…':'Creating project…';error.hidden=true;
+  try{const response=await fetch('/api/projects',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)}),data=await response.json();if(!response.ok)throw Error(data.error||'The project could not be created.');location.href=projectURL('/?chapter=1&tab=work',data.document.id);}
+  catch(e){error.textContent=e.message;error.hidden=false;submit.disabled=false;submitLabel();}
+});
+document.querySelector('#show-archived').onchange=e=>{showArchived=e.target.checked;render();};
+// A card's readiness is read when asked for: the project's own checks and milestones, worked out in this browser
+// from its saved document by the same rules as Validate. It changes nothing (round 2, I2-23).
+const readiness=new Map();
+document.addEventListener('toggle',async e=>{const d=e.target;if(!d.matches?.('details.p-ready')||!d.open)return;const id=d.dataset.ready,body=d.querySelector('.p-ready-body');
+  try{if(!readiness.has(id)){const l=projects.find(x=>x.id===id)?.readiness;if(l)readiness.set(id,{R:{summary:l.summary},next:l.next});}
+  if(!readiness.has(id)){const r=await fetch('/api/project?project='+encodeURIComponent(id),{credentials:'same-origin'}),data=await r.json();if(!r.ok)throw Error(data.error||'The project could not be read.');const {sddReadiness,nextMilestone}=await import('./readiness-model.js');readiness.set(id,{R:sddReadiness(data.document),next:nextMilestone(data.document)});}
+    const {R,next}=readiness.get(id);body.innerHTML=`${esc(R.summary)}${next?` <a href="${esc(projectURL('/?chapter='+next.chapter+'&tab=work',id))}">Next: Chapter ${next.chapter} · ${esc(next.name)}</a>`:' Every milestone is met.'}`;}
+  catch(err){body.textContent=err.message;}},true);
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-life]');if(!b)return;const project=projects.find(p=>p.id===b.dataset.id),{modal}=await import('./workbench-ui.js'),d=modal('Manage '+project.name,`<form><p>${b.dataset.life==='archive'?'Archiving retains the design and history. Restore it before editing.':b.dataset.life==='template'?'Template copies retain definitions and reset evidence and acceptance for the new project.':'Update project details.'}</p>${b.dataset.life==='rename'?`<label class="brain-field">Project name<input name="name" value="${esc(project.name)}" maxlength="100" required></label>`:''}<button class="btn primary" type="submit">${esc(b.textContent)}</button></form>`);d.querySelector('form').onsubmit=async ev=>{ev.preventDefault();try{const r=await fetch(projectURL('/api/lifecycle',project.id),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:b.dataset.life,revision:project.revision,name:d.querySelector('[name=name]')?.value,enabled:!project.reusableTemplate})}),data=await r.json();if(!r.ok)throw Error(data.error);if(b.dataset.life==='delete')forgetProjectPreferences(project.id);d.closeView();await load();}catch(err){d.error(err);}};});
+await load();
+
+document.querySelector('#organization-workspace').onclick=()=>import('./organization-ui.js').then(m=>m.openOrganizations()).catch(e=>import('./workbench-ui.js').then(({modal})=>modal('Organisation guidance','<p>'+esc(e.message)+'</p>')));
+
+document.querySelector('#import-project').onclick=()=>import('./recovery-ui.js').then(m=>m.importProject());

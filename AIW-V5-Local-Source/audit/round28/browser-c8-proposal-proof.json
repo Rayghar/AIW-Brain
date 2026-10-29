@@ -1,0 +1,169 @@
+{
+  "stamp": "2026-10-18T10-37-39-975Z",
+  "dir": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-c8-fixed-2026-10-18T10-37-39-975Z",
+  "project": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "build": "app-EGGGDY6S.js",
+  "authority": "Isolated copy of synthetic authored project; local design previews and simulations only; no external approval or provider request.",
+  "actions": [
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": "[data-workspace-sol]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      },
+      "label": "Ask Sol",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": "#brain-panel [data-brain-action=\"mind\"]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-brain-action": "mind"
+      },
+      "label": "Co-design Learn & develop",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": "#brain-panel [data-brain-suggestions] > summary",
+      "tag": "SUMMARY",
+      "attributes": {},
+      "label": "Drafts and suggestions Review existing proposals, guided tasks and saved answers for this context",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": "#brain-panel .pp-advanced > summary",
+      "tag": "SUMMARY",
+      "attributes": {},
+      "label": "Search and filter suggestions",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": "#brain-panel .pp-source-filter > summary",
+      "tag": "SUMMARY",
+      "attributes": {},
+      "label": "Filter by source",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": "#brain-panel [data-proposal-act=\"scope\"][data-scope=\"all\"]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-proposal-act": "scope",
+        "data-scope": "all"
+      },
+      "label": "Whole chapter 6",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "work",
+      "selector": "#brain-panel [data-proposal-act=\"filter\"][data-source=\"rule\"]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-proposal-act": "filter",
+        "data-source": "rule"
+      },
+      "label": "Rule 3",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "model",
+      "selector": "#brain-panel [data-i-action=\"ghost\"][data-i-key=\"reference\"]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-i-action": "ghost",
+        "data-i-key": "reference"
+      },
+      "label": "Preview draft",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "model",
+      "selector": "#inspector [data-i-action=\"edit-ghost\"]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-i-action": "edit-ghost"
+      },
+      "label": "Review & edit proposal",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "model",
+      "selector": "dialog[open] [data-i-action=\"close\"]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-i-action": "close"
+      },
+      "label": "\u00d7",
+      "outcome": "clicked"
+    },
+    {
+      "chapter": "8",
+      "tab": "model",
+      "selector": "#inspector [data-i-action=\"dismiss\"]",
+      "tag": "BUTTON",
+      "attributes": {
+        "data-i-action": "dismiss"
+      },
+      "label": "Dismiss proposal",
+      "outcome": "clicked"
+    }
+  ],
+  "families": [
+    {
+      "family": "C8 native proposal in Data flow: review, cancel and dismiss",
+      "status": "passed",
+      "preview": {
+        "url": "http://127.0.0.1:41427/?chapter=8&tab=model&object=if-001&model=data&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+        "hasProposal": true
+      },
+      "dataView": true,
+      "panelBefore": "open",
+      "nativeReviewVisible": true,
+      "editorOpened": true,
+      "cancelRetainsProposal": true,
+      "dismissed": true,
+      "projectUnchanged": true,
+      "finalURL": "http://127.0.0.1:41427/?chapter=8&tab=model&object=if-001&model=data&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    }
+  ],
+  "errors": [],
+  "requestFailures": [],
+  "posts": [
+    {
+      "url": "http://127.0.0.1:41427/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    },
+    {
+      "url": "http://127.0.0.1:41427/api/knowledge/corpus?view=notices&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+    }
+  ],
+  "beforeHash": "e043582c032dc86eb406fafa5fd36f452124d8fb7b0566ae84f7d247d60470ed",
+  "afterHash": "e043582c032dc86eb406fafa5fd36f452124d8fb7b0566ae84f7d247d60470ed",
+  "projectUnchanged": true,
+  "summary": {
+    "families": 1,
+    "passed": 1,
+    "unavailable": 0,
+    "failed": 0,
+    "actualClicks": 11,
+    "errors": 0
+  },
+  "clientEntrySHA256": "2e9a1fd6d8a3918a0a81a2ed9e9dbfdeef78877f662cd8037e8a597ca3ab67c3",
+  "clientPath": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-c8"
+}

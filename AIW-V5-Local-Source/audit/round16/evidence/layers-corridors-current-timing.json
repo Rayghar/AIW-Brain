@@ -1,0 +1,3244 @@
+{
+ "generatedAt": "2026-10-10T23:19:47.697Z",
+ "node": "v24.19.0",
+ "documents": {
+  "source": "read from .aiw-local/notation-lines/documents",
+  "fetchMs": 47,
+  "files": [
+   {
+    "key": "bank-payment",
+    "sha256": "9145c5281868f1c9de8e80e490b5227897fd0138a4bf157b76afb2ac3ddc6fd8"
+   },
+   {
+    "key": "service-permits",
+    "sha256": "a26e6d58b5fbe3829db2b447a0e0ad6b60fb385da352a11534f803ea99b2d3da"
+   },
+   {
+    "key": "warehouse-fulfilment",
+    "sha256": "feb111247e360d6bf14c7f3363924402c37a181ee5fafc8cb2f647cee099eae0"
+   },
+   {
+    "key": "clinic-appointments",
+    "sha256": "e9e44664ac06af7f62a4e79d43bc5232f90585c129eeef494216b0382499399d"
+   },
+   {
+    "key": "parcel-lockers",
+    "sha256": "e34bd3fca520b36d43e4cce2d55454f0450cebfb87baea8a618f4f27f02a1a47"
+   },
+   {
+    "key": "library-reservations",
+    "sha256": "72b484ea6d4f17ba8062189bb0a89e8ade279fd44a5f0c1e3eb37ea72e9f4356"
+   },
+   {
+    "key": "scale-300",
+    "sha256": "1c0f2cec6912357b310bce69f46a39528c042d784b8ed3a08a7bf75886575635"
+   },
+   {
+    "key": "stress-44",
+    "sha256": "4fa5ee42f3e48e70ebbeb86d72aef23b706a7fe40e14febcad06787dadea0440"
+   }
+  ]
+ },
+ "totalMs": 32423,
+ "layoutMs": {
+  "control": 6775,
+  "after": 12042
+ },
+ "pictures": [
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 47,
+   "afterMs": 12,
+   "measureMs": 44
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 35,
+   "afterMs": 12,
+   "measureMs": 18
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 8,
+   "afterMs": 22,
+   "measureMs": 8
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 7,
+   "afterMs": 9,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 7,
+   "afterMs": 18,
+   "measureMs": 30
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 10,
+   "afterMs": 14,
+   "measureMs": 12
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 2,
+   "afterMs": 1,
+   "measureMs": 5
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 102,
+   "afterMs": 287,
+   "measureMs": 325
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 3,
+   "afterMs": 11,
+   "measureMs": 9
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 7,
+   "afterMs": 16,
+   "measureMs": 12
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 19,
+   "afterMs": 98,
+   "measureMs": 57
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 4,
+   "afterMs": 7,
+   "measureMs": 4
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 6,
+   "afterMs": 14,
+   "measureMs": 5
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 22,
+   "afterMs": 14,
+   "measureMs": 78
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 15,
+   "afterMs": 20,
+   "measureMs": 20
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 27,
+   "afterMs": 47,
+   "measureMs": 73
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 45,
+   "afterMs": 123,
+   "measureMs": 154
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 9,
+   "afterMs": 18,
+   "measureMs": 8
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 16,
+   "afterMs": 31,
+   "measureMs": 12
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 8,
+   "measureMs": 5
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 353,
+   "afterMs": 1160,
+   "measureMs": 445
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 12,
+   "afterMs": 26,
+   "measureMs": 16
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 37,
+   "afterMs": 80,
+   "measureMs": 22
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 187,
+   "afterMs": 395,
+   "measureMs": 185
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 11,
+   "afterMs": 19,
+   "measureMs": 15
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 48,
+   "afterMs": 49,
+   "measureMs": 25
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 16,
+   "afterMs": 28,
+   "measureMs": 16
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 5,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 5,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 8,
+   "afterMs": 22,
+   "measureMs": 8
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 4,
+   "afterMs": 8,
+   "measureMs": 2
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 10,
+   "measureMs": 18
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "lifecycle",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 1
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 51,
+   "afterMs": 99,
+   "measureMs": 79
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 13,
+   "afterMs": 31,
+   "measureMs": 5
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 5,
+   "afterMs": 14,
+   "measureMs": 3
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 10,
+   "afterMs": 21,
+   "measureMs": 7
+  },
+  {
+   "project": "bank-payment",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 13,
+   "afterMs": 11,
+   "measureMs": 67
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 4,
+   "measureMs": 4
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 8,
+   "measureMs": 3
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 2
+  },
+  {
+   "project": "service-permits",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 12,
+   "afterMs": 17,
+   "measureMs": 21
+  },
+  {
+   "project": "service-permits",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 2,
+   "afterMs": 6,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 10,
+   "measureMs": 2
+  },
+  {
+   "project": "service-permits",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 6,
+   "measureMs": 3
+  },
+  {
+   "project": "service-permits",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 3
+  },
+  {
+   "project": "service-permits",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 5,
+   "measureMs": 2
+  },
+  {
+   "project": "service-permits",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 10,
+   "measureMs": 8
+  },
+  {
+   "project": "service-permits",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 7,
+   "measureMs": 4
+  },
+  {
+   "project": "service-permits",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 4,
+   "afterMs": 7,
+   "measureMs": 7
+  },
+  {
+   "project": "service-permits",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 6,
+   "afterMs": 13,
+   "measureMs": 12
+  },
+  {
+   "project": "service-permits",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 25,
+   "afterMs": 53,
+   "measureMs": 36
+  },
+  {
+   "project": "service-permits",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 5,
+   "afterMs": 12,
+   "measureMs": 6
+  },
+  {
+   "project": "service-permits",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 2,
+   "afterMs": 5,
+   "measureMs": 4
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 6,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 4,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 5,
+   "measureMs": 1
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 4,
+   "measureMs": 3
+  },
+  {
+   "project": "service-permits",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 19,
+   "afterMs": 37,
+   "measureMs": 26
+  },
+  {
+   "project": "service-permits",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 13,
+   "afterMs": 35,
+   "measureMs": 3
+  },
+  {
+   "project": "service-permits",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 7,
+   "afterMs": 10,
+   "measureMs": 3
+  },
+  {
+   "project": "service-permits",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "service-permits",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 4
+  },
+  {
+   "project": "service-permits",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 26,
+   "afterMs": 82,
+   "measureMs": 63
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 5,
+   "afterMs": 6,
+   "measureMs": 3
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 7,
+   "measureMs": 3
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 15,
+   "afterMs": 27,
+   "measureMs": 22
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 4,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 6,
+   "measureMs": 3
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 3
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 6,
+   "measureMs": 4
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 5,
+   "afterMs": 10,
+   "measureMs": 6
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 7,
+   "afterMs": 8,
+   "measureMs": 4
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 8,
+   "afterMs": 18,
+   "measureMs": 23
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 8,
+   "afterMs": 14,
+   "measureMs": 5
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 6,
+   "afterMs": 13,
+   "measureMs": 8
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 7,
+   "afterMs": 16,
+   "measureMs": 7
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 206,
+   "afterMs": 299,
+   "measureMs": 103
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 8,
+   "afterMs": 21,
+   "measureMs": 8
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 4,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 7,
+   "measureMs": 6
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 6,
+   "measureMs": 2
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 9,
+   "measureMs": 2
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 8,
+   "afterMs": 6,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 33,
+   "afterMs": 72,
+   "measureMs": 117
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 12,
+   "afterMs": 28,
+   "measureMs": 7
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 7,
+   "afterMs": 13,
+   "measureMs": 5
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 4,
+   "measureMs": 3
+  },
+  {
+   "project": "warehouse-fulfilment",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 99,
+   "afterMs": 214,
+   "measureMs": 254
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 7,
+   "afterMs": 4,
+   "measureMs": 2
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 2
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 16,
+   "afterMs": 24,
+   "measureMs": 27
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 6,
+   "afterMs": 7,
+   "measureMs": 3
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 4,
+   "measureMs": 3
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 6,
+   "measureMs": 3
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 5,
+   "afterMs": 8,
+   "measureMs": 3
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 6,
+   "afterMs": 12,
+   "measureMs": 3
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 6,
+   "afterMs": 13,
+   "measureMs": 20
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 8,
+   "afterMs": 10,
+   "measureMs": 4
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 4,
+   "afterMs": 10,
+   "measureMs": 4
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 10,
+   "measureMs": 3
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 41,
+   "afterMs": 95,
+   "measureMs": 54
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 7,
+   "afterMs": 11,
+   "measureMs": 6
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 1
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 3,
+   "afterMs": 6,
+   "measureMs": 3
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 1
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 6,
+   "measureMs": 1
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 13,
+   "afterMs": 4,
+   "measureMs": 2
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 2
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 1
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 26,
+   "afterMs": 54,
+   "measureMs": 40
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 11,
+   "afterMs": 31,
+   "measureMs": 5
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 11,
+   "afterMs": 14,
+   "measureMs": 5
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 3,
+   "afterMs": 4,
+   "measureMs": 2
+  },
+  {
+   "project": "clinic-appointments",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 56,
+   "afterMs": 93,
+   "measureMs": 153
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 5,
+   "afterMs": 7,
+   "measureMs": 7
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 6,
+   "afterMs": 7,
+   "measureMs": 7
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 1
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 77,
+   "afterMs": 254,
+   "measureMs": 108
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 4,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 8,
+   "measureMs": 4
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 3,
+   "afterMs": 6,
+   "measureMs": 4
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 9,
+   "measureMs": 4
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 7,
+   "afterMs": 12,
+   "measureMs": 6
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 8,
+   "afterMs": 12,
+   "measureMs": 6
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 8,
+   "afterMs": 21,
+   "measureMs": 16
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 13,
+   "afterMs": 23,
+   "measureMs": 12
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 8,
+   "afterMs": 20,
+   "measureMs": 11
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 11,
+   "afterMs": 20,
+   "measureMs": 11
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 176,
+   "afterMs": 284,
+   "measureMs": 224
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 5,
+   "measureMs": 1
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 14,
+   "afterMs": 35,
+   "measureMs": 23
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 4,
+   "afterMs": 4,
+   "measureMs": 1
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 5,
+   "measureMs": 2
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 6,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 6,
+   "afterMs": 9,
+   "measureMs": 6
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 3
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 9,
+   "afterMs": 4,
+   "measureMs": 2
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 4,
+   "afterMs": 4,
+   "measureMs": 1
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 8,
+   "afterMs": 9,
+   "measureMs": 4
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 6,
+   "afterMs": 13,
+   "measureMs": 15
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 9,
+   "afterMs": 13,
+   "measureMs": 9
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 181,
+   "afterMs": 320,
+   "measureMs": 287
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 36,
+   "afterMs": 61,
+   "measureMs": 24
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 23,
+   "afterMs": 34,
+   "measureMs": 24
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 9,
+   "afterMs": 9,
+   "measureMs": 7
+  },
+  {
+   "project": "parcel-lockers",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 17,
+   "afterMs": 13,
+   "measureMs": 13
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 4,
+   "afterMs": 6,
+   "measureMs": 3
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 7,
+   "afterMs": 6,
+   "measureMs": 4
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 1
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 22,
+   "afterMs": 44,
+   "measureMs": 41
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 8,
+   "measureMs": 4
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 5
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 3
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 9,
+   "afterMs": 9,
+   "measureMs": 5
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 6,
+   "afterMs": 9,
+   "measureMs": 7
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 6,
+   "afterMs": 15,
+   "measureMs": 12
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 10,
+   "afterMs": 22,
+   "measureMs": 9
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 8,
+   "afterMs": 16,
+   "measureMs": 10
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 10,
+   "afterMs": 23,
+   "measureMs": 10
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 158,
+   "afterMs": 339,
+   "measureMs": 124
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 6,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 9,
+   "afterMs": 20,
+   "measureMs": 12
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 4,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 3,
+   "measureMs": 2
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 6,
+   "afterMs": 4,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 5,
+   "afterMs": 7,
+   "measureMs": 5
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 3,
+   "afterMs": 2,
+   "measureMs": 2
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 3,
+   "measureMs": 2
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 3,
+   "afterMs": 4,
+   "measureMs": 1
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 8,
+   "afterMs": 10,
+   "measureMs": 3
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 3
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 7,
+   "measureMs": 3
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 3
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 89,
+   "afterMs": 163,
+   "measureMs": 167
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 31,
+   "afterMs": 181,
+   "measureMs": 36
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 21,
+   "afterMs": 34,
+   "measureMs": 23
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 0
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 8,
+   "afterMs": 6,
+   "measureMs": 5
+  },
+  {
+   "project": "library-reservations",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 151,
+   "afterMs": 380,
+   "measureMs": 511
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 8,
+   "afterMs": 4,
+   "measureMs": 4
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 8,
+   "measureMs": 5
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 0,
+   "afterMs": 0,
+   "measureMs": 1
+  },
+  {
+   "project": "scale-300",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 17,
+   "afterMs": 14,
+   "measureMs": 202
+  },
+  {
+   "project": "scale-300",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 7,
+   "measureMs": 8
+  },
+  {
+   "project": "scale-300",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 5
+  },
+  {
+   "project": "scale-300",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 13,
+   "afterMs": 51,
+   "measureMs": 38
+  },
+  {
+   "project": "scale-300",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 491,
+   "afterMs": 234,
+   "measureMs": 634
+  },
+  {
+   "project": "scale-300",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 97,
+   "afterMs": 89,
+   "measureMs": 372
+  },
+  {
+   "project": "scale-300",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 420,
+   "afterMs": 277,
+   "measureMs": 982
+  },
+  {
+   "project": "scale-300",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 56,
+   "afterMs": 54,
+   "measureMs": 619
+  },
+  {
+   "project": "scale-300",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 27,
+   "afterMs": 34,
+   "measureMs": 281
+  },
+  {
+   "project": "scale-300",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 177,
+   "afterMs": 149,
+   "measureMs": 254
+  },
+  {
+   "project": "scale-300",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 77,
+   "afterMs": 33,
+   "measureMs": 262
+  },
+  {
+   "project": "scale-300",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 82,
+   "afterMs": 202,
+   "measureMs": 14
+  },
+  {
+   "project": "scale-300",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 95,
+   "afterMs": 262,
+   "measureMs": 14
+  },
+  {
+   "project": "scale-300",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 4
+  },
+  {
+   "project": "scale-300",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 273,
+   "afterMs": 819,
+   "measureMs": 379
+  },
+  {
+   "project": "scale-300",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 14,
+   "afterMs": 13,
+   "measureMs": 9
+  },
+  {
+   "project": "scale-300",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 25,
+   "afterMs": 42,
+   "measureMs": 17
+  },
+  {
+   "project": "scale-300",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 131,
+   "afterMs": 311,
+   "measureMs": 135
+  },
+  {
+   "project": "scale-300",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 9,
+   "afterMs": 14,
+   "measureMs": 14
+  },
+  {
+   "project": "scale-300",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 17,
+   "afterMs": 27,
+   "measureMs": 29
+  },
+  {
+   "project": "scale-300",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "scale-300",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "scale-300",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 12,
+   "afterMs": 29,
+   "measureMs": 11
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 3,
+   "measureMs": 1
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 6,
+   "afterMs": 4,
+   "measureMs": 3
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 9,
+   "measureMs": 4
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 4,
+   "measureMs": 3
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 7,
+   "measureMs": 2
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 1
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "lifecycle",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 1,
+   "measureMs": 0
+  },
+  {
+   "project": "scale-300",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 41,
+   "afterMs": 83,
+   "measureMs": 77
+  },
+  {
+   "project": "scale-300",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 7,
+   "afterMs": 20,
+   "measureMs": 4
+  },
+  {
+   "project": "scale-300",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 4,
+   "afterMs": 8,
+   "measureMs": 3
+  },
+  {
+   "project": "scale-300",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 4,
+   "measureMs": 0
+  },
+  {
+   "project": "scale-300",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 11,
+   "afterMs": 21,
+   "measureMs": 8
+  },
+  {
+   "project": "scale-300",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 16,
+   "afterMs": 22,
+   "measureMs": 151
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "lanes",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "process",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 4,
+   "measureMs": 1
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "tree",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "context",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 0
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 5,
+   "measureMs": 5
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "motivation",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 4,
+   "measureMs": 4
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "sequence",
+   "arrangement": "sequence",
+   "controlMs": 1,
+   "afterMs": 0,
+   "measureMs": 1
+  },
+  {
+   "project": "stress-44",
+   "chapter": 1,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 61,
+   "afterMs": 120,
+   "measureMs": 116
+  },
+  {
+   "project": "stress-44",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "tree",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 5
+  },
+  {
+   "project": "stress-44",
+   "chapter": 2,
+   "scene": "drivers",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 5,
+   "measureMs": 4
+  },
+  {
+   "project": "stress-44",
+   "chapter": 2,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 14,
+   "afterMs": 30,
+   "measureMs": 36
+  },
+  {
+   "project": "stress-44",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "tree",
+   "controlMs": 2,
+   "afterMs": 4,
+   "measureMs": 2
+  },
+  {
+   "project": "stress-44",
+   "chapter": 3,
+   "scene": "decisions",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 4,
+   "measureMs": 2
+  },
+  {
+   "project": "stress-44",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "tree",
+   "controlMs": 4,
+   "afterMs": 8,
+   "measureMs": 6
+  },
+  {
+   "project": "stress-44",
+   "chapter": 3,
+   "scene": "rationale",
+   "arrangement": "grouped",
+   "controlMs": 10,
+   "afterMs": 14,
+   "measureMs": 6
+  },
+  {
+   "project": "stress-44",
+   "chapter": 3,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 13,
+   "afterMs": 36,
+   "measureMs": 47
+  },
+  {
+   "project": "stress-44",
+   "chapter": 4,
+   "scene": "logical",
+   "arrangement": "grouped",
+   "controlMs": 237,
+   "afterMs": 235,
+   "measureMs": 117
+  },
+  {
+   "project": "stress-44",
+   "chapter": 4,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 7,
+   "afterMs": 8,
+   "measureMs": 16
+  },
+  {
+   "project": "stress-44",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "tree",
+   "controlMs": 8,
+   "afterMs": 22,
+   "measureMs": 9
+  },
+  {
+   "project": "stress-44",
+   "chapter": 5,
+   "scene": "application",
+   "arrangement": "grouped",
+   "controlMs": 23,
+   "afterMs": 78,
+   "measureMs": 15
+  },
+  {
+   "project": "stress-44",
+   "chapter": 5,
+   "scene": "container",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 8,
+   "measureMs": 3
+  },
+  {
+   "project": "stress-44",
+   "chapter": 5,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 325,
+   "afterMs": 723,
+   "measureMs": 378
+  },
+  {
+   "project": "stress-44",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "layered",
+   "controlMs": 8,
+   "afterMs": 16,
+   "measureMs": 15
+  },
+  {
+   "project": "stress-44",
+   "chapter": 6,
+   "scene": "solution",
+   "arrangement": "grouped",
+   "controlMs": 22,
+   "afterMs": 40,
+   "measureMs": 18
+  },
+  {
+   "project": "stress-44",
+   "chapter": 6,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 148,
+   "afterMs": 310,
+   "measureMs": 141
+  },
+  {
+   "project": "stress-44",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "layered",
+   "controlMs": 9,
+   "afterMs": 17,
+   "measureMs": 20
+  },
+  {
+   "project": "stress-44",
+   "chapter": 7,
+   "scene": "stack",
+   "arrangement": "grouped",
+   "controlMs": 49,
+   "afterMs": 54,
+   "measureMs": 30
+  },
+  {
+   "project": "stress-44",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "layered",
+   "controlMs": 5,
+   "afterMs": 7,
+   "measureMs": 2
+  },
+  {
+   "project": "stress-44",
+   "chapter": 7,
+   "scene": "usage",
+   "arrangement": "grouped",
+   "controlMs": 6,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "stress-44",
+   "chapter": 7,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 16,
+   "afterMs": 26,
+   "measureMs": 15
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "orthogonal",
+   "controlMs": 1,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "integration",
+   "arrangement": "grouped",
+   "controlMs": 5,
+   "afterMs": 4,
+   "measureMs": 1
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "radial",
+   "controlMs": 3,
+   "afterMs": 3,
+   "measureMs": 5
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "data",
+   "arrangement": "grouped",
+   "controlMs": 7,
+   "afterMs": 11,
+   "measureMs": 5
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "orthogonal",
+   "controlMs": 3,
+   "afterMs": 5,
+   "measureMs": 2
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "lineage",
+   "arrangement": "grouped",
+   "controlMs": 4,
+   "afterMs": 6,
+   "measureMs": 3
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "orthogonal",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "cooperation",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 2,
+   "measureMs": 1
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "lifecycle",
+   "arrangement": "grouped",
+   "controlMs": 1,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "stress-44",
+   "chapter": 8,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 59,
+   "afterMs": 114,
+   "measureMs": 97
+  },
+  {
+   "project": "stress-44",
+   "chapter": 9,
+   "scene": "security",
+   "arrangement": "grouped",
+   "controlMs": 9,
+   "afterMs": 32,
+   "measureMs": 5
+  },
+  {
+   "project": "stress-44",
+   "chapter": 9,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 6,
+   "afterMs": 21,
+   "measureMs": 4
+  },
+  {
+   "project": "stress-44",
+   "chapter": 10,
+   "scene": "deployment",
+   "arrangement": "grouped",
+   "controlMs": 2,
+   "afterMs": 3,
+   "measureMs": 0
+  },
+  {
+   "project": "stress-44",
+   "chapter": 10,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 13,
+   "afterMs": 22,
+   "measureMs": 8
+  },
+  {
+   "project": "stress-44",
+   "chapter": 11,
+   "scene": "connected",
+   "arrangement": "by-layer",
+   "controlMs": 17,
+   "afterMs": 31,
+   "measureMs": 70
+  }
+ ]
+}

@@ -1,0 +1,288 @@
+/* The shared studio shell. Chapter renderers own their content; this file owns
+   navigation, orientation, tools and the optional context panel. */
+:root{
+ --studio-bg:var(--sage-2);--studio-surface:var(--sage-1);--studio-line:var(--sage-5);
+ --studio-border:var(--sage-6);--studio-text:var(--sage-12);--studio-muted:var(--sage-11);
+ --studio-radius:8px;--studio-control:36px;--studio-rail:220px;--studio-inspector:320px;
+ --fs-1:12px;--fs-2:13px;--fs-3:14px;--fs-4:16px;--fs-5:21px;--fs-6:24px;
+ --h-1:32px;--h-2:36px;--h-3:44px;--r-1:6px;--r-2:8px;--r-3:12px;
+ --ink:var(--studio-text);--ink-muted:var(--studio-muted);--ink-faint:var(--sage-10);
+ --accent:var(--green-10);--accent-ink:var(--on-solid);--warn:var(--gold-10);--focus:var(--focus-outline)
+}
+body.studio-workspace{height:100dvh;overflow:hidden;background:var(--studio-bg);color:var(--studio-text);font-family:var(--font-ui);font-size:14px;line-height:1.45}
+body.studio-workspace #app{height:100%;min-height:0;display:flex;flex-direction:column}
+body.studio-workspace.explorer-workspace .topbar{height:48px;min-height:48px;flex:0 0 48px;padding:0 20px;border-bottom:1px solid var(--studio-line);background:var(--studio-surface);box-shadow:none}
+.studio-workspace .brand{gap:10px}
+.studio-workspace .brand-mark{width:28px;height:28px;border-radius:7px}
+.studio-workspace .brand-mark svg{width:18px;height:18px}
+.studio-workspace .brand-name{font-size:23px;letter-spacing:-1px}
+.studio-workspace .brand .v5{font-size:10px;letter-spacing:0;color:var(--studio-muted)}
+.studio-workspace .brand-caption{font-size:12px;color:var(--studio-muted)}
+.studio-workspace .top-actions{gap:16px;min-width:0}
+.studio-workspace .top-actions :is(.save-state,.private){font-size:12px;color:var(--studio-muted);white-space:nowrap}
+.studio-workspace .save-state-short{display:none}
+body.studio-workspace.explorer-workspace .shell{display:grid;grid-template-columns:var(--studio-rail) minmax(0,1fr);flex:1;min-height:0;height:0}
+body.studio-workspace.explorer-workspace .sidebar.journey-rail{padding:16px 12px;min-height:0;height:100%;overflow:auto;background:var(--studio-surface);border-right:1px solid var(--studio-line)}
+.studio-workspace .rail-project{margin-bottom:20px}
+.studio-workspace .rail-project-heading{margin:0 6px 8px;font-size:11px}
+.studio-workspace .rail-project-heading>span{letter-spacing:.08em}
+.studio-workspace .journey-rail .project-switch{padding:10px 8px;border-color:var(--studio-line);border-radius:var(--studio-radius);background:transparent}
+.studio-workspace .project-mark{width:28px;height:30px;flex-basis:28px;background:var(--sage-3);border-color:var(--studio-line);color:var(--studio-muted)}
+.studio-workspace .journey-rail .project-identity strong{font-size:13px;line-height:1.4;color:var(--studio-text)}
+.studio-workspace .journey-rail .project-identity small{font-size:11px;line-height:1.4;color:var(--studio-muted);margin-top:3px}
+.studio-workspace .rail-project-tools{margin-top:5px}
+.studio-workspace .rail-project-tools :is(button.cr-entry,button.ev-project-link){font-size:12px;min-height:28px}
+.studio-workspace .journey-route{margin-bottom:16px}
+.studio-workspace .journey-route>.eyebrow{font-size:11px;color:var(--studio-muted);letter-spacing:.08em;margin-bottom:8px}
+.studio-workspace .journey-rail nav.journey-chapters{gap:3px}
+.studio-workspace .journey-rail .chapter-item{min-height:37px;padding:6px 8px;gap:8px;border-radius:6px;border-color:transparent;color:var(--studio-muted)}
+.studio-workspace .journey-rail .chapter-item b{font-size:13px;line-height:1.35;font-weight:500}
+.studio-workspace .journey-rail .chapter-item small{display:none}
+.studio-workspace .journey-rail .chapter-number{font:11px/1 var(--font-mono);width:22px;flex-basis:22px;color:var(--sage-10)}
+.studio-workspace .journey-rail .chapter-item:hover{background:var(--sage-3);border-color:transparent}
+.studio-workspace .journey-rail .chapter-item.current{background:var(--green-3);border-color:transparent;color:var(--green-12)}
+.studio-workspace .journey-rail .chapter-item.current b{font-weight:600}
+.studio-workspace .journey-rail .chapter-item.current .chapter-number{background:var(--green-10);color:var(--on-solid)}
+.studio-workspace .journey-rail .chapter-item>.icon{width:13px;height:13px;flex:none}
+.studio-workspace .rail-resources,.studio-workspace .rail-modules{border-color:var(--studio-line)}
+.studio-workspace .journey-rail .sidebar-note{color:var(--studio-muted);font-size:11px;border-color:var(--studio-line);line-height:1.5}
+.studio-workspace .journey-rail .sidebar-bottom{font-size:11px;color:var(--studio-muted)}
+body.studio-workspace.explorer-workspace .main{padding:18px 20px 8px;display:flex;flex-direction:column;min-width:0;min-height:0;height:100%;overflow:hidden}
+body.studio-workspace.explorer-workspace .heading-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex:none;min-height:72px;margin:0 0 8px;position:relative}
+.studio-workspace .heading-row>.workspace-heading,.studio-workspace .heading-row>.chapter-heading-title{min-width:0;flex:1;border:0;padding:0}
+body.studio-workspace.explorer-workspace .heading-row .breadcrumb{display:flex;align-items:center;gap:5px;font-size:12px;line-height:16px;margin:0 0 5px;color:var(--studio-muted);letter-spacing:0}
+.studio-workspace .heading-row .breadcrumb .icon{width:11px;height:11px}
+body.studio-workspace.explorer-workspace .heading-row h1{font:600 24px/30px var(--font-ui);letter-spacing:-.5px;margin:0;color:var(--studio-text);max-width:none;white-space:normal}
+/* rc41 (close): the line carries .tab-purpose since W2; that class's own padding (exploration.css, the explorer's line under
+   the bar) stays out of the heading, so the heading keeps its round-8 height (≤ 80 px, ui-proportion). */
+body.studio-workspace.explorer-workspace .heading-row .subtitle{display:block;font:400 13px/19px var(--font-ui);color:var(--studio-muted);margin:4px 0 0;padding:0;max-width:80ch;white-space:normal}
+/* rc41 (W2): the glossary link flows in the purpose line as text, so the line keeps its 19 px (the Model's canvas is measured from it). */
+body.studio-workspace.explorer-workspace .heading-row .subtitle>[data-action=help-glossary]{display:inline;min-height:0;margin:0 0 0 8px;padding:0;border:0;background:none;font:inherit;line-height:inherit;vertical-align:baseline;color:var(--green-11);text-decoration:underline;text-underline-offset:3px}
+.studio-workspace .chapter-header-actions{display:flex;align-items:center;gap:12px;flex:none;max-width:42%}
+.studio-workspace .chapter-next{display:flex;flex-direction:column;gap:3px;min-width:0;max-width:220px;text-decoration:none;color:var(--studio-text);font-size:12px;line-height:17px}
+.studio-workspace .chapter-next small{font-size:10px;color:var(--studio-muted)}
+.studio-workspace .chapter-next span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.studio-workspace .chapter-next:hover span{text-decoration:underline;text-underline-offset:3px}
+.studio-workspace .you-are-here{font-size:11px;line-height:16px;color:var(--studio-muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.studio-workspace .breadcrumb-project{max-width:30%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:1}
+.studio-workspace .workspace-next{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:65%;min-height:34px;padding:5px 8px;border:1px solid var(--studio-border);border-radius:6px;background:var(--studio-surface);color:var(--studio-text);text-align:left}
+.studio-workspace .workspace-next>span{font-size:11px;color:var(--studio-muted);flex:none}
+.studio-workspace .workspace-next>strong{font-size:12px;font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.studio-workspace .workspace-next>.icon{width:14px;height:14px;flex:none}
+.studio-workspace .workspace-next:hover{border-color:var(--green-8);background:var(--sage-3)}
+.studio-workspace[data-workspace-tab=model] .workspace-next{min-height:24px;padding:1px 6px;border-color:transparent;background:transparent}
+.studio-workspace[data-workspace-tab=model] .workspace-next:hover{border-color:var(--studio-border);background:var(--sage-3)}
+body.studio-workspace.explorer-workspace .workspace-toolbar{display:flex;flex-direction:row;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0 16px;position:relative;z-index:12;flex:none;min-height:46px;margin:0 0 12px;padding:0;border:0;border-bottom:1px solid var(--studio-border);background:transparent}
+.studio-workspace .workspace-toolbar .tabs{display:flex;align-items:center;align-self:stretch;gap:24px;flex:none;margin:0;padding:0;border:0}
+body.studio-workspace.explorer-workspace .workspace-toolbar .tab{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:46px;padding:0 1px;margin:0 0 -1px;border:0;border-bottom:2px solid transparent;background:transparent;color:var(--studio-muted);font:500 14px/20px var(--font-ui);border-radius:0}
+.studio-workspace .workspace-toolbar .tab .icon{width:16px;height:16px}
+.studio-workspace .workspace-toolbar .tab:hover{color:var(--studio-text)}
+body.studio-workspace.explorer-workspace .workspace-toolbar .tab.active{color:var(--green-11);border-bottom-color:var(--green-10);font-weight:600}
+.studio-workspace .workspace-tools{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px;margin-left:auto;min-width:0;padding:5px 0}
+.studio-workspace .workspace-tools>:is(button,.btn),.studio-workspace .chapter-tools>summary{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:6px 10px;border:1px solid var(--studio-border);border-radius:6px;background:var(--studio-surface);font:500 12px/18px var(--font-ui);color:var(--studio-muted);cursor:pointer;white-space:nowrap}
+.studio-workspace .workspace-tools>:is(button,.btn):hover,.studio-workspace .chapter-tools>summary:hover{background:var(--sage-3);color:var(--studio-text)}
+.studio-workspace .workspace-tools [data-workspace-sol]{border-color:var(--prov-sol-line);color:var(--prov-sol);background:var(--studio-surface)}
+.studio-workspace .workspace-tools [data-workspace-sol]:hover{background:var(--prov-sol-wash)}
+.studio-workspace .workspace-tools [data-panel-toggle][aria-expanded=true]{background:var(--green-3);border-color:var(--green-6);color:var(--green-11)}
+.studio-workspace .workspace-tools .help-btn{width:32px;padding:0;border-radius:6px;margin:0;font-size:14px}
+.studio-workspace .workspace-tools .icon{width:15px;height:15px}
+.studio-workspace .workspace-tools .mobile-layers{display:none}
+/* rc41 (close): an unavailable Details toggle (the focused case holds the full width) keeps its focus and says why in
+   text beside it — its aria-describedby — while it has focus or the pointer; a tap focuses it, so touch reaches it too. */
+.studio-workspace .workspace-tools{position:relative}
+.studio-workspace [data-panel-toggle][aria-disabled=true]{opacity:.6;cursor:not-allowed}
+.studio-workspace .details-toggle-reason{position:absolute;top:calc(100% + 4px);right:0;z-index:76;display:none;width:max-content;max-width:min(280px,calc(100vw - 32px));padding:7px 10px;border:1px solid var(--studio-border);border-radius:6px;background:var(--studio-surface);color:var(--studio-text);font-size:12px;line-height:1.4;box-shadow:0 4px 12px color-mix(in srgb,var(--shadow) 13%,transparent)}
+.studio-workspace [data-panel-toggle][aria-disabled=true]:is(:hover,:focus)+.details-toggle-reason{display:block}
+.studio-workspace .chapter-tools{position:relative}
+.studio-workspace .chapter-tools>summary{list-style:none}
+.studio-workspace .chapter-tools>summary::-webkit-details-marker{display:none}
+.studio-workspace .chapter-tools>summary::after{content:'⌄';font-size:13px;color:var(--studio-muted)}
+.studio-workspace .chapter-tools-menu{position:absolute;right:0;top:calc(100% + 7px);z-index:75;width:min(380px,calc(100vw - 32px));padding:14px;border:1px solid var(--studio-border);border-radius:8px;background:var(--studio-surface);box-shadow:0 12px 36px color-mix(in srgb,var(--shadow) 15%,transparent);max-height:65vh;overflow:auto}
+.studio-workspace .chapter-tools:not([open])>.chapter-tools-menu{display:none}
+.studio-workspace .chapter-tools-menu :is(.r-assistant-bar,.l-assistance,.brain-assistance){display:flex;position:static;flex-direction:column;align-items:stretch;gap:12px;margin:0;padding:0;background:none;border:0;min-height:0}
+.studio-workspace .chapter-tools-menu :is(.r-assistant-bar>nav,.l-assistance>div:last-child){display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.studio-workspace .chapter-tools-menu :is(button,.btn,.r-btn){font-size:13px;min-height:36px;white-space:normal;text-align:left}
+.studio-workspace .chapter-tools-menu :is(.d-question-bar,.rt-environment-bar){display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;border:0;background:none}
+.studio-workspace .chapter-tools-menu :is(.d-question-bar,.rt-environment-bar) label{display:grid;gap:5px;width:100%;min-width:0}
+.studio-workspace .chapter-tools-menu select{max-width:100%;min-width:0}
+.studio-workspace .chapter-tools-menu .brain-brief-chip{margin:0;white-space:normal;width:100%}
+.studio-workspace .workspace-context{display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px;flex:none;min-width:0;margin:-8px 0 12px;padding:0;font-size:12px;color:var(--studio-muted)}
+.studio-workspace .workspace-context:empty,.studio-workspace .workspace-context:not(:has(> :not([hidden]))){display:none}
+.studio-workspace .workspace-context>[hidden],.studio-workspace .subject-strip[hidden]{display:none!important}
+.studio-workspace .workspace-context :is(.d-question-bar,.rt-environment-bar){display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;flex:1;min-width:0;min-height:36px;margin:0;padding:0;border:0;background:none}
+.studio-workspace .workspace-context :is(.d-question-bar,.rt-environment-bar) label{display:flex;align-items:center;gap:8px;min-width:0;flex:1;margin:0}
+.studio-workspace .workspace-context :is(.d-question-bar,.rt-environment-bar) label>span{font-size:12px;font-weight:500;letter-spacing:0;text-transform:none;white-space:nowrap;margin:0;color:var(--studio-muted)}
+.studio-workspace .workspace-context :is(.d-question-bar,.rt-environment-bar) select{min-height:34px;min-width:0;max-width:680px;flex:1;padding:6px 9px;font:13px var(--font-ui);border-color:var(--studio-border);border-radius:6px;background:var(--studio-surface)}
+.studio-workspace .workspace-context :is(.d-question-bar,.rt-environment-bar) :is(button,.btn,.r-btn){min-height:34px;font-size:12px;padding:6px 10px}
+
+.studio-workspace .workspace-context .scope-bar{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin:0;font-size:12px}
+.studio-workspace .scope-bar .scope-k,.studio-workspace .subject-strip .ss-k{font-size:11px;font-weight:500;color:var(--studio-muted);letter-spacing:0;text-transform:none;margin-right:2px}
+.studio-workspace .scope-bar .scope-crumb{padding:2px 0;min-height:26px;border:0;background:none;color:var(--green-11);font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.studio-workspace .scope-bar b{font-weight:500;color:var(--studio-text)}
+.studio-workspace .scope-sep{color:var(--sage-8)}
+.studio-workspace .subject-strip{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:0;padding:0;min-height:28px;min-width:0;font-size:12px;line-height:1.5;color:var(--studio-muted)}
+.studio-workspace .subject-strip b{color:var(--studio-text);font-weight:500;overflow-wrap:anywhere}
+.studio-workspace .subject-strip .ss-return{min-height:28px;max-width:100%;padding:3px 8px;border:1px solid var(--studio-border);border-radius:5px;background:var(--studio-surface);font:inherit;color:var(--green-11)}
+.ux-vh{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important;border:0!important}
+body.studio-workspace.explorer-workspace .main>.studio{display:grid!important;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:16px;align-items:stretch;flex:1;min-height:0;overflow:hidden;position:relative}
+body.studio-workspace.explorer-workspace[data-panel=open] .main>.studio{grid-template-columns:minmax(0,1fr) var(--studio-inspector)}
+body.studio-workspace.explorer-workspace .studio>.stage{height:100%;min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--sage-7) transparent;padding:0 1px 8px 0;animation:none}
+body.studio-workspace.explorer-workspace .studio>#inspector{display:block;position:relative!important;inset:auto!important;height:100%;min-height:0;min-width:0;max-height:none!important;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;background:var(--studio-surface);border:1px solid var(--studio-border);border-radius:8px;margin:0;padding:0;color:var(--studio-text);font-size:13px;box-shadow:none}
+body.studio-workspace.explorer-workspace[data-panel=collapsed] .studio>#inspector{display:none!important}
+body.studio-workspace.explorer-workspace[data-panel=open][data-lens-position=bottom] .main>.studio{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(220px,1fr) minmax(160px,.6fr)}
+body.studio-workspace.explorer-workspace[data-panel=open][data-lens-position=bottom] .studio>#inspector{position:relative!important;inset:auto!important;width:auto;height:100%;max-height:none!important;box-shadow:none}
+
+.studio-workspace #inspector::before,.studio-workspace #inspector::after{content:none}
+.studio-workspace #inspector>.panel-toggle{display:none}
+.studio-workspace #inspector>.panel-dismiss{position:sticky;top:0;z-index:10;display:none;align-items:center;justify-content:flex-end;gap:8px;width:100%;min-height:44px;margin:0;padding:10px 14px;border:0;border-bottom:1px solid var(--studio-line);border-radius:0;background:var(--studio-surface);color:var(--studio-muted);font:500 13px/20px var(--font-ui);cursor:pointer}
+body.studio-workspace.cm-expanded #inspector>.panel-dismiss{display:flex}
+.studio-workspace #inspector>.panel-dismiss:hover{background:var(--sage-3);color:var(--studio-text)}
+
+.studio-workspace #inspector>.lens-options{position:relative;inset:auto;display:flex;justify-content:flex-end;margin:0;padding:6px 8px;border-bottom:1px solid var(--studio-line)}
+.studio-workspace #inspector :is(.inspector-body,.r-inspector-body,.t-dock-body){display:block;max-height:none;overflow:visible}
+.studio-workspace #inspector :is(.r-inspector-head,.inspector-top,.t-dock-head){border-bottom-color:var(--studio-line);background:transparent}
+.studio-workspace #inspector .cm-companion{color:var(--studio-text)}
+.studio-workspace .cm-companion details.cp{border-bottom-color:var(--studio-line)}
+.studio-workspace .cm-companion details.cp>summary{min-height:42px;padding:10px 14px}
+.studio-workspace .cm-companion details.cp>summary h4{font-size:13px;color:var(--studio-text);white-space:normal}
+.studio-workspace .cm-companion details.cp>summary h4>.cp-label{white-space:normal}
+.studio-workspace .cm-companion .cm-open-work{border-bottom-color:var(--studio-line)}
+.studio-workspace .footer{display:flex;flex-wrap:wrap;flex:none;justify-content:space-between;gap:4px 16px;min-height:24px;margin:8px 0 0;padding:0;font-size:11px;line-height:18px;color:var(--studio-muted);border:0}
+.studio-workspace .footer>p{margin:0}
+.studio-workspace .footer button{font-size:11px;color:var(--studio-muted)}
+.studio-workspace .footer-id b{font-weight:500;color:var(--studio-muted)}
+.studio-workspace :is(button,a,summary,input,select,textarea):focus-visible{outline:2px solid var(--focus-outline);outline-offset:3px}
+/* Insights is one on-demand reading of progress and next work. */
+.studio-workspace .chapter-insights.progress-disclosure{position:relative;width:auto;min-width:0;flex:none;margin:0}
+.studio-workspace .chapter-insights>summary{display:flex;align-items:center;gap:8px;min-height:40px;padding:6px 10px;border:1px solid var(--studio-border);border-radius:8px;background:var(--studio-surface);color:var(--studio-muted);list-style:none;cursor:pointer}
+.studio-workspace .chapter-insights>summary::-webkit-details-marker{display:none}
+.studio-workspace .chapter-insights[open]>summary{border-color:var(--sage-8);background:var(--sage-3)}
+.studio-workspace .chapter-thought{display:grid;place-items:center;flex:none;width:22px;height:24px;color:var(--studio-muted)}
+.studio-workspace .chapter-thought svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.studio-workspace .chapter-insights-caption{display:flex;flex-direction:column;gap:1px;white-space:nowrap}
+.studio-workspace .chapter-insights-caption>span{font-size:12px;font-weight:600;line-height:16px;color:var(--studio-text)}
+.studio-workspace .chapter-insights-caption>small{font-size:11px;line-height:14px;color:var(--studio-muted)}
+.studio-workspace .chapter-insights-chevron{font-size:14px}
+.studio-workspace .chapter-insights.has-attention .chapter-thought{color:var(--gold-11)}
+.studio-workspace .chapter-insights-content{position:absolute;right:0;top:calc(100% + 8px);z-index:80;width:min(460px,calc(100vw - 32px));max-height:min(var(--chapter-insight-available,70vh),680px);overflow:auto;overscroll-behavior:contain;padding:20px;border:1px solid var(--studio-border);border-radius:10px;background:var(--studio-surface);box-shadow:0 16px 44px color-mix(in srgb,var(--shadow) 16%,transparent);font-size:13px;line-height:1.5;text-align:left}
+.studio-workspace .chapter-insights:not([open])>.chapter-insights-content{display:none}
+.studio-workspace .chapter-insights-content>header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.studio-workspace .chapter-insight-kicker{font-size:11px;color:var(--studio-muted);font-weight:500}
+.studio-workspace .chapter-insights-content h2{font:600 19px/26px var(--font-ui);margin:3px 0 0;letter-spacing:-.25px}
+.studio-workspace .chapter-insights-content [data-chapter-insights-close]{width:30px;height:30px;flex:none;border:1px solid var(--studio-line);border-radius:6px;background:none;font-size:20px;color:var(--studio-muted);cursor:pointer}
+.studio-workspace .chapter-insights-content h3{font:600 14px/20px var(--font-ui);margin:0 0 6px}
+.studio-workspace .chapter-insights-content p{margin:6px 0 10px}
+.studio-workspace .chapter-insight-origin{font-size:12px;color:var(--studio-muted);margin:7px 0 16px!important}
+.studio-workspace .chapter-insight-lead{padding:12px;background:var(--sage-3);border-radius:6px}
+.studio-workspace .chapter-next{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:var(--studio-text);text-decoration:none}
+.studio-workspace .chapter-next-copy{display:grid;gap:3px}
+.studio-workspace .chapter-next-copy small{font-size:11px;color:var(--studio-muted)}
+.studio-workspace .chapter-next-copy strong{font-size:13px;font-weight:600}
+.studio-workspace .chapter-next-arrow{margin-left:auto;color:var(--green-11)}
+.studio-workspace .chapter-open-link{display:inline-flex;align-items:center;gap:8px;min-height:32px;font-size:12px;font-weight:500;color:var(--green-11);text-decoration:none}
+.studio-workspace .chapter-open-link:hover{text-decoration:underline}
+.studio-workspace .chapter-rule>summary{cursor:pointer;min-height:28px;padding:4px 0;font-size:12px;color:var(--studio-muted)}
+.studio-workspace .chapter-rule small{color:var(--studio-muted)}
+.studio-workspace .chapter-insight-section{border-top:1px solid var(--studio-line);margin-top:16px;padding-top:16px}
+.studio-workspace .chapter-section-title{display:flex;align-items:baseline;flex-wrap:wrap;justify-content:space-between;gap:6px 10px}
+.studio-workspace .chapter-section-title>span{font-size:12px;color:var(--studio-muted)}
+.studio-workspace :is(.chapter-insight-actions,.chapter-decision-list){display:grid;gap:12px;list-style:none;padding:0;margin:8px 0}
+.studio-workspace :is(.chapter-insight-actions,.chapter-decision-list) a{display:flex;align-items:baseline;gap:8px;color:var(--green-11);text-decoration:none}
+.studio-workspace :is(.chapter-insight-actions,.chapter-decision-list) p{font-size:12px;color:var(--studio-muted);margin:4px 0 0}
+.studio-workspace .chapter-decision-state{display:flex;flex-wrap:wrap;gap:4px 8px;font-size:11px;color:var(--gold-11);margin-top:4px}
+.studio-workspace .chapter-insight-note{font-size:12px;color:var(--studio-muted)}
+.studio-workspace .chapter-insights .progress-wrap{width:auto;min-width:0;position:static;margin:8px 0 10px;padding:0;border:0;background:none;box-shadow:none}
+.studio-workspace .chapter-insights .progress-top{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--studio-muted)}
+.studio-workspace .chapter-insights .progress-top b{font:600 14px/20px var(--font-ui);color:var(--studio-text)}
+.studio-workspace .chapter-insights .progress-track{position:relative;height:4px;margin:6px 0;background:var(--sage-4);overflow:hidden}
+.studio-workspace .chapter-insights #progress-count{display:block;font-size:12px;color:var(--studio-muted)}
+.studio-workspace .chapter-project-progress{margin-top:16px;border-top:1px solid var(--studio-line);padding-top:12px}
+.studio-workspace .chapter-project-progress>summary{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;min-height:32px;cursor:pointer;font-size:12px}
+.studio-workspace .chapter-project-progress>summary>span{font-weight:600;margin-right:auto}
+.studio-workspace .chapter-progress-list>details{border-bottom:1px solid var(--studio-line)}
+.studio-workspace .chapter-progress-list>details>summary{display:grid;grid-template-columns:22px minmax(0,1fr) 42px;align-items:center;gap:4px 8px;padding:9px 0;min-height:46px;list-style:none;cursor:pointer;font-size:12px}
+.studio-workspace .chapter-progress-list>details>summary::-webkit-details-marker{display:none}
+.studio-workspace .chapter-progress-number{grid-row:1/3;font:11px var(--font-mono);color:var(--studio-muted)}
+.studio-workspace .chapter-progress-count{grid-row:1/3;grid-column:3;text-align:right;font-size:11px;color:var(--studio-muted)}
+.studio-workspace .chapter-progress-line{height:2px;background:var(--sage-4);overflow:hidden}
+.studio-workspace .chapter-progress-line>i{display:block;height:100%;background:var(--green-8)}
+.studio-workspace .chapter-progress-list ul{list-style:none;padding:0;margin:0 0 8px 30px}
+.studio-workspace .chapter-progress-list li>a,.studio-workspace .chapter-progress-list li>span{display:flex;align-items:baseline;gap:7px;min-height:30px;color:var(--studio-muted);font-size:12px;text-decoration:none}
+.studio-workspace .chapter-progress-list li a>span:nth-child(2){flex:1}
+.studio-workspace .chapter-progress-list li small{font-size:11px;white-space:nowrap}
+.studio-workspace .chapter-progress-list .is-met>a{color:var(--green-11)}
+.studio-workspace .chapter-insight-error{font-size:12px;color:var(--gold-11)}
+.studio-workspace .ux-coach{left:calc(var(--studio-rail) + 24px);bottom:36px;width:320px;max-width:calc(100vw - var(--studio-rail) - 48px)}
+/* Expanded diagrams retain their own viewport, including an explicitly open companion. */
+body.studio-workspace.cm-expanded .cm.cm-docked{right:8px}
+body.studio-workspace.cm-expanded[data-panel=open] .cm.cm-docked{right:340px}
+body.studio-workspace.cm-expanded[data-panel=open] .studio>#inspector.model-companion{position:fixed!important;inset:8px 8px 8px auto!important;width:320px;height:auto;z-index:61;box-shadow:0 0 0 8px var(--studio-bg)}
+@media(max-width:1179px){
+ :root{--studio-rail:200px}
+ .studio-workspace #inspector>.panel-dismiss{display:flex}
+
+ body.studio-workspace.explorer-workspace[data-panel=open] .main>.studio{grid-template-columns:minmax(0,1fr)}
+ body.studio-workspace.explorer-workspace[data-panel=open]:not([data-lens-position=bottom]) .studio>#inspector{position:fixed!important;inset:155px 20px 20px auto!important;z-index:45;width:min(360px,calc(100vw - 32px));height:auto;max-height:none!important;box-shadow:0 12px 40px color-mix(in srgb,var(--shadow) 20%,transparent)}
+ .studio-workspace .workspace-toolbar .tabs{gap:18px}
+ .studio-workspace .brand-caption{display:none}
+ .studio-workspace .workspace-tools{gap:5px}
+}
+@media(max-width:799px){
+ body.studio-workspace.explorer-workspace .shell{grid-template-columns:minmax(0,1fr)}
+ body.studio-workspace.explorer-workspace .sidebar.journey-rail{display:none}
+ body.studio-workspace.explorer-workspace .sidebar.journey-rail.open{display:flex;position:fixed;inset:48px auto 0 0;width:min(300px,calc(100vw - 40px));height:auto;z-index:70;box-shadow:12px 0 30px color-mix(in srgb,var(--shadow) 20%,transparent)}
+ .studio-workspace .sidebar.open .rail-close{display:flex;align-items:center;justify-content:space-between;min-height:40px;margin-bottom:12px}
+ body.studio-workspace.explorer-workspace .main{padding:14px 12px 8px;overflow:auto}
+ body.studio-workspace.explorer-workspace .heading-row{gap:12px;min-height:0;align-items:flex-start;margin-bottom:12px}
+ body.studio-workspace.explorer-workspace .heading-row h1{font-size:21px;line-height:27px}
+ body.studio-workspace.explorer-workspace .heading-row .subtitle{font-size:12px;line-height:18px;max-width:none}
+ /* rc41 (W2): the purpose line stays one line on a phone; the glossary stays a click away in Chapter tools. */
+ body.studio-workspace.explorer-workspace .heading-row .subtitle>[data-action=help-glossary]{display:none}
+ .studio-workspace .chapter-insights>summary{padding:6px 8px;gap:5px;min-height:38px}
+ .studio-workspace .chapter-thought{display:none}
+ .studio-workspace .chapter-header-actions{max-width:100%;width:100%;justify-content:space-between}
+ body.studio-workspace.explorer-workspace .heading-row{flex-wrap:wrap;gap:8px}
+ .studio-workspace .chapter-next{max-width:calc(100% - 110px);min-height:34px;justify-content:center}
+ .studio-workspace .chapter-next small{display:none}
+ .studio-workspace .breadcrumb-project{display:none}
+ .studio-workspace .heading-row .breadcrumb>.icon{display:none}
+ .studio-workspace .workspace-next{max-width:100%;width:100%;min-height:40px}
+ .studio-workspace .workspace-next>strong{white-space:normal}
+ .studio-workspace .footer .workspace-next{order:-1}
+ .studio-workspace .chapter-insights-caption>small{font-size:10px}
+ body.studio-workspace.explorer-workspace .workspace-toolbar{gap:0 12px;margin-bottom:12px}
+ .studio-workspace .workspace-toolbar .tabs{width:100%;justify-content:space-between;gap:14px}
+ body.studio-workspace.explorer-workspace .workspace-toolbar .tab{flex:1;font-size:13px;min-height:44px}
+ .studio-workspace .workspace-tools{width:100%;padding:7px 0;justify-content:flex-start;gap:6px}
+ .studio-workspace .workspace-tools .help-btn{margin-left:auto}
+ .studio-workspace .workspace-tools .mobile-layers{display:inline-flex}
+ .studio-workspace .workspace-tools>:is(button,.btn),.studio-workspace .chapter-tools>summary{min-height:36px;padding:7px 9px}
+ .studio-workspace .chapter-tools-menu{position:fixed;top:205px;right:12px;left:12px;width:auto;max-height:55vh}
+ .studio-workspace .workspace-context{margin:0 0 10px}
+ body.studio-workspace.explorer-workspace .main>.studio{flex:none;overflow:visible;min-height:400px;grid-template-rows:auto}
+ body.studio-workspace.explorer-workspace .studio>.stage{height:auto;overflow:visible;min-height:0;padding:0}
+ body.studio-workspace.explorer-workspace[data-panel=open][data-lens-position=bottom] .main>.studio{grid-template-rows:auto auto}
+ body.studio-workspace.explorer-workspace[data-panel=open][data-lens-position=bottom] .studio>#inspector{height:auto;max-height:70vh!important}
+ .studio-workspace .workspace-context :is(.d-question-bar,.rt-environment-bar) label{flex-wrap:wrap;gap:5px}
+
+ body.studio-workspace.explorer-workspace[data-panel=open]:not([data-lens-position=bottom]) .studio>#inspector{inset:100px 12px 12px auto!important;width:min(380px,calc(100vw - 24px))}
+ .studio-workspace .footer{margin-top:16px;font-size:11px}
+ .studio-workspace .top-actions{gap:8px}
+ .studio-workspace .save-state-full{display:none}
+ .studio-workspace .save-state-short{display:inline}
+ .studio-workspace .top-actions .save-state{display:flex;font-size:11px}
+ .studio-workspace .top-actions .private span{display:none}
+ .studio-workspace .top-actions .private{gap:0}
+ .studio-workspace .ux-coach{position:relative;inset:auto;width:auto;max-width:none;margin:0 0 12px}
+ .studio-workspace .chapter-insights-content{position:fixed;right:12px;top:135px;width:calc(100vw - 24px);max-height:calc(100dvh - 150px)}
+ body.studio-workspace.cm-expanded[data-panel=open] .cm.cm-docked{right:8px}
+ .f-criterion-picker{display:block}.f-criterion-picker>span{display:block;margin-bottom:6px}
+}
+@media(max-width:399px){
+ body.studio-workspace.explorer-workspace .topbar{padding:0 12px}
+ .studio-workspace .brand{gap:6px}.studio-workspace .brand-name{font-size:21px}
+ .studio-workspace .workspace-toolbar .tab .icon{display:none}
+ .studio-workspace .workspace-tools{gap:4px}.studio-workspace .workspace-tools>:is(button,.btn),.studio-workspace .chapter-tools>summary{padding-left:7px;padding-right:7px}
+}
+@media(prefers-reduced-motion:reduce){.studio-workspace *{scroll-behavior:auto!important}}
+

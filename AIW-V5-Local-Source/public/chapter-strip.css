@@ -1,0 +1,114 @@
+/* The chapter strip (rc41, W2): one component at the top of the four tabs of a chapter — Work's stages, Validate's
+   readings, Output's documents, the Model's views — with one meter (recorded · confirmed · open), one accent per
+   chapter (theme.css --layer-*, marks and tints only, never text), one keyboard model and one phone behaviour (the
+   strip scrolls sideways; the page never does). The one state line (.chapter-state) and the handoff cards it joins on
+   Validate and Output are styled here too. Tokens only; no colour literal here. */
+[data-chapter-accent="1"],[data-chapter-accent="2"]{--chapter-accent:var(--layer-intent)}
+[data-chapter-accent="3"]{--chapter-accent:var(--layer-decision)}
+[data-chapter-accent="4"]{--chapter-accent:var(--layer-logical)}
+[data-chapter-accent="5"]{--chapter-accent:var(--layer-application)}
+[data-chapter-accent="6"]{--chapter-accent:var(--layer-capability)}
+[data-chapter-accent="7"]{--chapter-accent:var(--layer-product)}
+[data-chapter-accent="8"]{--chapter-accent:var(--layer-service)}
+[data-chapter-accent="9"]{--chapter-accent:var(--layer-security)}
+[data-chapter-accent="10"]{--chapter-accent:var(--layer-deployment)}
+[data-chapter-accent="11"]{--chapter-accent:var(--layer-review)}
+[data-chapter-accent]{--chapter-accent-wash:color-mix(in srgb,var(--chapter-accent,var(--green-9)) 7%,var(--studio-surface));--chapter-accent-soft:color-mix(in srgb,var(--chapter-accent,var(--green-9)) 16%,var(--studio-surface))}
+
+/* The strip: a nav of items, each a button (its name is its accessible name) with its meta beside it. */
+.studio-workspace .chapter-strip{position:relative;min-width:0;margin:0 0 16px;padding:0 8px;border:1px solid var(--studio-border);border-radius:12px;background:var(--sage-2);overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:var(--sage-7) transparent}
+.chapter-strip-list{display:flex;gap:0;margin:0;padding:0;list-style:none;min-width:0}
+.chapter-strip-list>.chapter-strip-item{position:relative;flex:1 1 168px;min-width:168px;display:grid;grid-template-columns:28px minmax(0,1fr);grid-template-rows:auto auto;column-gap:12px;row-gap:4px;align-content:start;padding:16px 16px 12px 12px;border-bottom:3px solid transparent;transition:background .16s,border-color .16s}
+.chapter-strip-list>.chapter-strip-item+.chapter-strip-item{border-left:1px solid var(--studio-line)}
+.chapter-strip-list>.chapter-strip-item:hover{background:var(--sage-3)}
+.chapter-strip-list>.chapter-strip-item[data-chapter-strip-current]{background:var(--chapter-accent-wash);border-bottom-color:var(--chapter-accent)}
+.studio-workspace .chapter-strip-item>:is(button,a){grid-column:2;grid-row:1;position:static;display:block;width:auto;min-height:0;margin:0;padding:2px 0 0;border:0;border-radius:0;background:none;box-shadow:none;color:var(--studio-text);font:inherit;font-size:13px;font-weight:600;line-height:1.35;text-align:left;text-decoration:none;white-space:normal;cursor:pointer}
+/* The ring: the step's number on a strip of stages (Work), a mark elsewhere; the accent when current; when every record
+   of the item is confirmed, ✓ on the numbered strip and a filled mark elsewhere. The button stretches over the whole item
+   (::after), so the item is the target. */
+.studio-workspace .chapter-strip-item>:is(button,a)::before{content:"";position:absolute;left:12px;top:16px;display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--studio-border);border-radius:50%;background:var(--studio-surface);color:var(--studio-muted);font-size:11px;font-weight:650;transition:background .16s,color .16s,border-color .16s}
+.studio-workspace .chapter-strip[data-chapter-strip-numbered] .chapter-strip-item>:is(button,a)::before{content:attr(data-chapter-strip-step)}
+.studio-workspace .chapter-strip:not([data-chapter-strip-numbered]) .chapter-strip-item>:is(button,a)::before{width:12px;height:12px;left:20px;top:22px;border-width:2px}
+.studio-workspace .chapter-strip:not([data-chapter-strip-numbered]) .chapter-strip-item[data-chapter-strip-state=confirmed]:not([data-chapter-strip-current])>:is(button,a)::before{content:"";background:var(--chapter-accent-soft)}
+.studio-workspace .chapter-strip-item>:is(button,a)::after{content:"";position:absolute;inset:0}
+.chapter-strip-item[data-chapter-strip-current]>:is(button,a)::before{background:var(--chapter-accent);border-color:var(--chapter-accent);color:var(--on-solid)}
+.chapter-strip-item[data-chapter-strip-state=confirmed]:not([data-chapter-strip-current])>:is(button,a)::before{border-color:var(--chapter-accent);color:var(--chapter-accent)}
+/* rc41 (close): on the numbered strip (Work) a fully confirmed stage shows "✓" in place of its number — a shape, not a
+   hue alone, tells confirmed from recorded; scoped as the number's own rule is, so it outranks it. */
+.studio-workspace .chapter-strip[data-chapter-strip-numbered] .chapter-strip-item[data-chapter-strip-state=confirmed]:not([data-chapter-strip-current])>:is(button,a)::before{content:"✓"}
+.chapter-strip-item:has(> :is(button,a):focus-visible){outline:3px solid var(--focus-outline);outline-offset:-3px}
+.studio-workspace .chapter-strip-item>:is(button,a):focus-visible{outline:none}
+.studio-workspace .chapter-strip-item>:is(button,a):disabled{cursor:not-allowed;color:var(--studio-muted)}
+.chapter-strip-item>:is(button,a):disabled::after{content:none}
+.chapter-strip-meta{grid-column:2;grid-row:2;display:grid;gap:4px;min-width:0;font-size:11px;line-height:1.4;color:var(--studio-muted);pointer-events:none}
+.chapter-strip-purpose{display:block}
+/* The meter: the track is what is recorded (sage), the left fill what is confirmed (the chapter's accent), the right
+   fill what the checks hold open (the state's colour); an item with nothing recorded shows a dashed track. */
+.chapter-strip-meter{position:relative;display:block;height:4px;margin-top:4px;border-radius:2px;background:var(--sage-7);overflow:hidden}
+.chapter-strip-meter>i{position:absolute;top:0;bottom:0;display:block;border-radius:2px;transition:width .16s ease-out}
+.chapter-strip-meter>.chapter-strip-ok{left:0;width:var(--strip-ok,0%);background:var(--chapter-accent,var(--green-9))}
+.chapter-strip-meter>.chapter-strip-open{right:0;width:var(--strip-open,0%);background:var(--state-confirm-solid)}
+.chapter-strip-meter[data-chapter-strip-meter=fix]>.chapter-strip-open{background:var(--state-fix-solid)}
+.chapter-strip-meter[data-chapter-strip-meter=empty]{background:transparent;border:1px dashed var(--studio-border)}
+.chapter-strip-count{display:block;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.chapter-strip-item[data-chapter-strip-state=empty] .chapter-strip-count,.chapter-strip-count.chapter-strip-wait{font-style:italic}
+
+/* The one state line: a dot in the state's colour, the counts read from the records. */
+.chapter-state{display:inline-flex;align-items:center;gap:8px;margin:8px 0 0;font-size:12px;line-height:1.5;color:var(--studio-muted);font-variant-numeric:tabular-nums}
+.chapter-state::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--chapter-accent,var(--green-9))}
+.chapter-state[data-chapter-state=fix]::before{background:var(--state-fix-solid)}
+.chapter-state[data-chapter-state=confirm]::before{background:var(--state-confirm-solid)}
+.chapter-state[data-chapter-state=empty]::before{background:transparent;border:1px dashed var(--studio-border)}
+
+/* The footer's next task is the readiness model's: a link when it has a place to go, the same words on every tab. */
+.studio-workspace a.workspace-next{text-decoration:none;color:var(--studio-text)}
+.studio-workspace a.workspace-next:hover{text-decoration:none}
+
+/* Validate: the readings' strip stands on the workspace card as the stages' rail stands on the desk; the head holds
+   the title, the purpose, the state line and the checks' counts, the primary (Run checks) to the right. */
+.studio-workspace .chapter-strip.vx-switch{margin:0 0 -1px;border-radius:12px 12px 0 0;flex-wrap:nowrap;gap:0;align-items:stretch}
+.studio-workspace .chapter-strip.vx-switch>.chapter-strip-list{flex:1 1 auto}
+.studio-workspace .chapter-strip.vx-switch>.vx-reading-help{align-self:center;flex:none;margin:0 8px;font-size:11px}
+.studio-workspace .chapter-strip.vx-switch>.vx-reading-help[open]{flex:0 1 280px}
+.studio-workspace .chapter-strip.vx-switch>[data-vx-case-create]{align-self:center;flex:none;margin:0 8px;font-size:11px;white-space:nowrap}
+.studio-workspace .stage>.vx-switch+.validation-workspace,.studio-workspace .stage>.vx-switch~.vx-model-panel,.studio-workspace .stage>.vx-switch~.vx-case-panel{border-top-left-radius:0;border-top-right-radius:0}
+.validation-header .chapter-state{margin:8px 0 0}
+.validation-header .validation-readiness{padding:8px 0 0;margin:0;border:0;background:none;gap:6px 18px;font-size:12px}
+.validation-header .validation-readiness [data-validation-count]>b{font-size:13px;font-weight:650;margin-right:3px}
+.validation-header .validation-readiness [data-validation-count=fix]>b{color:var(--state-fix-fg)}
+.validation-header .validation-readiness [data-validation-count=confirm]>b{color:var(--state-confirm-fg)}
+.validation-header .validation-readiness [data-validation-count=pass]{color:inherit}
+.validation-header .validation-readiness>details{margin-left:auto}
+.studio-workspace .validation-workspace>.work-connections{margin:0 20px 16px}
+.studio-workspace .validation-workspace>.validation-workflow-actions:empty{display:none}
+
+/* Output: the documents' strip on the card, the hero with its state line and its actions, the handoff cards, the document.
+   The documents wrap on a wide window (a chapter offers up to nine); on a narrow one the strip scrolls like every strip. */
+.studio-workspace .output-workspace>.chapter-strip{margin:0;border:0;border-bottom:1px solid var(--studio-border);border-radius:var(--studio-radius,8px) var(--studio-radius,8px) 0 0}
+.studio-workspace .output-artifacts>.chapter-strip-list{flex-wrap:wrap}
+.studio-workspace .output-artifacts>.chapter-strip-list>.chapter-strip-item{flex:0 1 232px;min-width:200px;border-bottom:3px solid transparent}
+.studio-workspace .output-artifacts>.chapter-strip-list>.chapter-strip-item[data-chapter-strip-current]{border-bottom-color:var(--chapter-accent)}
+.studio-workspace .output-workspace>.work-connections{margin:0 20px 16px}
+
+/* The Model's view rail is the strip's flat form: the buttons are the items; the pressed view carries the accent. */
+.cm .cm-top>.cm-views.chapter-strip{margin:0;padding:0 0 2px;border:0;border-radius:0;background:none}
+.cm .cm-top>.cm-views.chapter-strip>.cm-view{border-bottom:3px solid transparent;border-radius:6px 6px 0 0}
+.cm .cm-top>.cm-views.chapter-strip>.cm-view[aria-pressed=true]{background:var(--chapter-accent-wash);border-color:transparent;border-bottom-color:var(--chapter-accent);color:var(--studio-text)}
+/* On the Model the state line stands in the shell footer beside the Next task (rc41 close; in the Model's own footer it
+   pushed the tools to a second row): it takes the room left on the footer's row and never wraps it to a second. */
+.studio-workspace .footer>.chapter-state{display:block;flex:1 1 0;min-width:0;margin:0;align-self:center;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.studio-workspace .footer>.chapter-state::before{display:inline-block;margin-right:8px;vertical-align:-1px}
+
+/* The work-frame's handoff cards (work-studio.css) read the accent of the chapter they stand in. */
+.work-connections[data-chapter-accent]{--work-accent:var(--chapter-accent)}
+
+@media(max-width:1000px){.studio-workspace .chapter-strip{padding:0 4px}.chapter-strip-list>.chapter-strip-item{min-width:152px;padding:12px 12px 10px 10px}.studio-workspace .chapter-strip-item>:is(button,a)::before{left:10px;top:12px}.studio-workspace .chapter-strip:not([data-chapter-strip-numbered]) .chapter-strip-item>:is(button,a)::before{left:18px;top:18px}}
+@media(max-width:760px){.studio-workspace .output-artifacts>.chapter-strip-list{flex-wrap:nowrap}.chapter-strip-list>.chapter-strip-item,.studio-workspace .output-artifacts>.chapter-strip-list>.chapter-strip-item{flex:1 1 140px;min-width:140px;grid-template-columns:24px minmax(0,1fr);column-gap:8px;padding:12px 10px 8px 8px}.studio-workspace .chapter-strip-item>:is(button,a)::before{left:8px;top:12px;width:24px;height:24px}.studio-workspace .chapter-strip:not([data-chapter-strip-numbered]) .chapter-strip-item>:is(button,a)::before{left:14px;top:18px;width:12px;height:12px}.chapter-strip-purpose{display:none}.validation-header .validation-readiness>details{margin-left:0}
+ /* rc41 (close): on a narrow screen (a phone, or 400 % zoom) Validate's readings scroll sideways in their own row and
+    "About these readings" and "Create focused case" wrap below them, so neither is lost on reflow. */
+ .studio-workspace .chapter-strip.vx-switch{flex-wrap:wrap;overflow-x:hidden}
+ .studio-workspace .chapter-strip.vx-switch>.chapter-strip-list{flex:1 1 100%;min-width:0;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+ .studio-workspace .chapter-strip.vx-switch>.vx-reading-help,.studio-workspace .chapter-strip.vx-switch>[data-vx-case-create]{align-self:center;margin:6px 8px 8px}
+ .studio-workspace .chapter-strip.vx-switch>.vx-reading-help[open]{flex:1 1 100%}}
+@media(max-width:700px){.studio-workspace .footer>.chapter-state{display:none}}
+@media(max-width:480px){.studio-workspace .chapter-strip{padding:0}.chapter-strip-list>.chapter-strip-item,.studio-workspace .output-artifacts>.chapter-strip-list>.chapter-strip-item{min-width:128px}}

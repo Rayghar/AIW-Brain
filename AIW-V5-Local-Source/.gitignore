@@ -1,0 +1,12 @@
+node_modules/
+node_modules
+dist/
+test-results/
+*.tar.gz
+.aiw-local/
+.sites-runtime/
+
+.env
+.env.*
+!.env.example
+*.pem

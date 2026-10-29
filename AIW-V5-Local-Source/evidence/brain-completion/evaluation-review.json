@@ -1,0 +1,49 @@
+{
+  "authority": "Implementation assistant reading the actual saved final responses; not independent human approval",
+  "sourceEvaluationAt": "2026-09-20T21:25:52.104Z",
+  "automatedRubricPassed": true,
+  "semanticCertification": false,
+  "findings": [
+    {
+      "id": "fulfilment-dual-write",
+      "assessment": "core-condition-preserved",
+      "finding": "Rejects separate transactions and distinguishes local intent from downstream delivery obligations."
+    },
+    {
+      "id": "advisory-notification",
+      "assessment": "core-condition-preserved",
+      "finding": "Retains best-effort with reconciliation and duplicate handling; no need to force an outbox for advisory notifications."
+    },
+    {
+      "id": "supplier-unknown-outcome",
+      "assessment": "core-condition-preserved",
+      "finding": "Does not equate timeout with failure; requires repeat safety and finite retry budgets."
+    },
+    {
+      "id": "library-local-state",
+      "assessment": "core-condition-preserved",
+      "finding": "Explicitly states affinity cannot recover memory lost with an instance. Availability benefits remain conditional."
+    },
+    {
+      "id": "laboratory-local-transaction",
+      "assessment": "architect-review-required",
+      "finding": "The local atomicity incompatibility is retained, but wording about a transaction being feasible only within one deployment overgeneralizes beyond this recipe. It is not a universal architecture theorem."
+    },
+    {
+      "id": "bottleneck-calibration",
+      "assessment": "core-condition-preserved",
+      "finding": "Calculates 100 requests/s rather than 180 and distinguishes declared rates from achieved measurements."
+    },
+    {
+      "id": "no-fabricated-result",
+      "assessment": "architect-review-required",
+      "finding": "Correctly rejects invented booking success. Calling the declared trust policy verified exceeds the available implementation evidence; the source checker did not catch that wording."
+    },
+    {
+      "id": "serial-work-pool",
+      "assessment": "architect-review-required",
+      "finding": "Rejects naive triple throughput. Statements about replica failover/reliability must remain design expectations, not proof of achieved availability; global ordering does not universally prohibit all pipelining or speculative execution."
+    }
+  ],
+  "interpretation": "The test set exercises concrete constraints and provider/schema wiring. It is not a held-out quality benchmark. Source consistency checking can miss overgeneralizations, so deterministic applicability gates and architect acceptance remain mandatory. No production target, blanket knowledge release approval, or universal recommendation accuracy is established."
+}

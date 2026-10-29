@@ -1,0 +1,263 @@
+{
+  "schema": "aiw.driver-design-verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.30+drivers.20261020",
+  "baseline": {
+    "release": "AIW v0.10.0-rc.10.73.29+journey.20261018",
+    "commit": "bfbdb579991cfb7aee4cd82e0825042b8babe2f3"
+  },
+  "verificationDate": "2026-10-20",
+  "scope": "Targeted development, domain, DOM and in-process Worker checks observed during this implementation and final integration. This is not an assertion that every historical suite ran.",
+  "checks": [
+    {
+      "command": "node architecture-knowledge-unit-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node driver-applicability-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node driver-kinds-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node driver-design-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node driver-knowledge-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node driver-product-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node driver-spec-view-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node product-choice-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node design-spec-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node technology-realisation-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node brain-reasoning-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node chapter-reasoning-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node design-task-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node exchange-design-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node security-design-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node brain-integration-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node architecture-whatif-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node architecture-design-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node read-design-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node persistence-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node composition-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node model-reversal-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node knowledge-design-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node architecture-grounding-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node architecture-evaluation-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node grounding-review-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node architecture-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "AIW_TOPIC=reads node architecture-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "AIW_TOPIC=persistence node architecture-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "AIW_TOPIC=resilience node composition-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node deferred-case-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node deferred-intake-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node requirements-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node work-review-continuity-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node architecture-case-ui-validate.mjs",
+      "status": "passed"
+    },
+    {
+      "command": "node focused-case-validate.mjs",
+      "status": "passed"
+    }
+  ],
+  "finalRootRun": [
+    {
+      "command": "node model-reversal-validate.mjs",
+      "exitCode": 0,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\n{\"at\":\"2026-10-20T07:25:36.893Z\",\"event\":\"storage-unavailable\",\"owner\":\"architecture-qa\",\"project\":\"project-9acb1e01-02d2-4f7a-ad1d-1325e7536744\",\"route\":\"/api/commands\",\"method\":\"POST\",\"message\":\"Synthetic storage failure\"}\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nPASS composition reversal: exact previous model restored, counters preserved, current checks invalidated, original reasoning retained, later model edits and references block destructive reversal.\n"
+    },
+    {
+      "command": "node knowledge-design-validate.mjs",
+      "exitCode": 0,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\n{\"at\":\"2026-10-20T07:25:36.828Z\",\"event\":\"storage-unavailable\",\"owner\":\"architecture-qa\",\"project\":\"project-2a72f8c4-a35a-470b-bd85-31181ad9c850\",\"route\":\"/api/commands\",\"method\":\"POST\",\"message\":\"Synthetic storage failure\"}\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nPASS governed composition: active claim → model comparison → immutable acceptance receipt → SDD → withdrawal blocks pending adoption and marks accepted design stale; reviewed link retirement and source refresh recover the task. Withdrawn methods never enter LLM context.\n"
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "exitCode": 0,
+      "output": "PASS driver solution journey: all-kind driver scope, concrete caller policy placement, full alternative trace, exact changed edges, reviewed adoption, specification and product obligations, SDD, changed-target reassessment and no invented measurement.\n"
+    },
+    {
+      "command": "node driver-design-ui-validate.mjs",
+      "exitCode": 0,
+      "output": "PASS driver-led task DOM: scoped entry, all driver kinds, conditions first, fact focus, blocked alternatives, resume continuity, exact caller placement, read-only inspection, native preview isolation, overlapping proxy/LB roles, hosted sharding verification and source-refresh draft preservation. No layout or live-provider claim.\n"
+    },
+    {
+      "command": "node architecture-grounding-validate.mjs",
+      "exitCode": 0,
+      "output": "PASS legacy and compact packets retain every check, blocked state, source, implied node and typed graph edge\nPASS invalid indices, encodings, cyclic prose, missing answers and unsafe keys fail closed\nPASS mocked approving/rejecting/invalid provider outputs retain prerequisites, unknown questions and bounded safe fallback for legacy, compact and corrupt packets\n"
+    }
+  ],
+  "syntax": {
+    "status": "passed",
+    "changedJavaScriptFilesChecked": 65,
+    "notes": "Every changed JavaScript module/test present at the 65-file syntax pass was checked directly with node --check. Later method-revision and deferred-loading additions are covered by their own syntax and executable regressions."
+  },
+  "whitespace": {
+    "command": "git diff --check",
+    "status": "passed"
+  },
+  "methodInterpretationRevision": 2,
+  "sourceIntegrity": {
+    "workbook": "SA Playbook_v2(2).xlsx",
+    "sha256": "d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6",
+    "notes": "Original publisher file identity and all source locators are preserved separately from the method interpretation revision."
+  },
+  "grounding": {
+    "limitCharacters": 20000,
+    "appliedReadCharacters": 18894,
+    "appliedPersistenceCharacters": 19835,
+    "largestAppliedCompositionCharacters": 19914,
+    "compositionAlternatives": 13,
+    "counterexamples": 17,
+    "notes": "Tests decode the bounded source packet and verify check states, alternatives, typed edges, concrete placements, obligation targets and source identities. Full prose/source passage hashes remain in saved receipts; excerpts may be shortened."
+  },
+  "build": {
+    "status": "passed",
+    "command": "node /root/.codex/plugins/cache/openai-curated-remote/sites/1.0.1/scripts/build-site.mjs",
+    "completedAt": "2026-10-20T07:42:05.823Z",
+    "verifies": [
+      "Production client bundling with all unchanged size and request-count gates",
+      "Packaged Worker import graph and provider imports",
+      "Every embedded asset served byte-for-byte in plain and gzip representations",
+      "ETag revalidation"
+    ]
+  },
+  "limitations": [
+    "No fresh desktop/mobile rendered browser review was available; UI checks use DOM interaction, in-process Worker tests and static responsive/accessibility review.",
+    "Provider integration was tested with mocked responses, including fallback and invalid context handling; no live-provider quality claim is made.",
+    "Declared applicability and adoption are separate from measured achievement. New implementation and verification obligations remain pending.",
+    "Generic product mechanisms require an explicit version/configuration; exact version restrictions exist only where a claim defines them. Other version compatibility needs source review."
+  ],
+  "performanceRefinement": {
+    "initialBuild": {
+      "status": "failed",
+      "chaptersCodeBytes": 3199853,
+      "largestCodeChunkBytes": 401929,
+      "stylesheetBytes": 841178
+    },
+    "unchangedBudgets": {
+      "chaptersCodeBytes": 3109888,
+      "largestCodeChunkBytes": 377856,
+      "stylesheetBytes": 837632,
+      "scripts": 146,
+      "scriptsUnder10KiB": 61
+    },
+    "changes": [
+      "Canonical method/source identity manifest removes a governance dependency on the full composition evaluator. Source projections and receipts for all eight built-in methods remain exactly unchanged.",
+      "Focused case evaluation and rendering load when that case surface or action is opened, with project/disposal/navigation guards and native load feedback.",
+      "Workbook intake and original-cell editors load on their existing actions, with late-load cancellation.",
+      "Unused and superseded architecture/Companion styling removed; current responsive and active markup rules retained.",
+      "Focused Work, Validate and dossier export share one existing case feature entry.",
+      "Workbook field descriptors and limits share one pure schema; command and parser APIs retain their existing reexports.",
+      "Chapter names and layer metadata share one pure table module; legacy chapter-layer exports remain compatible."
+    ],
+    "verification": "Focused DOM checks pass for native editor opening and late-load cancellation. Production code, stylesheet, data, file-count and small-file-count budgets all pass without raising or bypassing a budget.",
+    "finalBuild": {
+      "entryBytes": 4925,
+      "chaptersCodeBytes": 3102667,
+      "projectsCodeBytes": 475819,
+      "largestCodeChunkBytes": 357709,
+      "stylesheetBytes": 836993,
+      "scripts": 144,
+      "scriptsUnder10KiB": 61,
+      "violations": []
+    }
+  }
+}

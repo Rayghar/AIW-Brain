@@ -1,0 +1,2 @@
+# Preserve supplied bytes exactly; the workbench hashes several of its own data files.
+* -text

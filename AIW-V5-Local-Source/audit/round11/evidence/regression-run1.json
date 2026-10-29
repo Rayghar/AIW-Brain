@@ -1,0 +1,816 @@
+[
+  {
+    "name": "test",
+    "status": "passed",
+    "ms": 178
+  },
+  {
+    "name": "test:anatomy",
+    "status": "passed",
+    "ms": 5635
+  },
+  {
+    "name": "test:anatomy-browser",
+    "status": "passed",
+    "ms": 45397
+  },
+  {
+    "name": "test:architecture",
+    "status": "passed",
+    "ms": 1540
+  },
+  {
+    "name": "test:architecture-case",
+    "status": "passed",
+    "ms": 1200
+  },
+  {
+    "name": "test:architecture-drafting",
+    "status": "passed",
+    "ms": 1086
+  },
+  {
+    "name": "test:architecture-ui",
+    "status": "passed",
+    "ms": 2309
+  },
+  {
+    "name": "test:ars",
+    "status": "passed",
+    "ms": 1158
+  },
+  {
+    "name": "test:brain",
+    "status": "passed",
+    "ms": 1250
+  },
+  {
+    "name": "test:brain-ahead",
+    "status": "passed",
+    "ms": 960
+  },
+  {
+    "name": "test:brain-chain",
+    "status": "passed",
+    "ms": 2200
+  },
+  {
+    "name": "test:brain-companion",
+    "status": "passed",
+    "ms": 6180
+  },
+  {
+    "name": "test:brain-governance-ui",
+    "status": "passed",
+    "ms": 2657
+  },
+  {
+    "name": "test:brain-integration",
+    "status": "passed",
+    "ms": 978
+  },
+  {
+    "name": "test:brain-reasoning",
+    "status": "passed",
+    "ms": 1653
+  },
+  {
+    "name": "test:brain-reasoning-browser",
+    "status": "passed",
+    "ms": 14219
+  },
+  {
+    "name": "test:brain-subject-browser",
+    "status": "passed",
+    "ms": 91486
+  },
+  {
+    "name": "test:brain-tradeoffs",
+    "status": "passed",
+    "ms": 821
+  },
+  {
+    "name": "test:brain-ui",
+    "status": "passed",
+    "ms": 9025
+  },
+  {
+    "name": "test:brief-interpreter",
+    "status": "passed",
+    "ms": 621
+  },
+  {
+    "name": "test:browser",
+    "status": "passed",
+    "ms": 23138
+  },
+  {
+    "name": "test:bundle-browser",
+    "status": "passed",
+    "ms": 38807
+  },
+  {
+    "name": "test:changes",
+    "status": "passed",
+    "ms": 7536
+  },
+  {
+    "name": "test:chapter-lines",
+    "status": "passed",
+    "ms": 11684
+  },
+  {
+    "name": "test:chapter-reasoning",
+    "status": "passed",
+    "ms": 2253
+  },
+  {
+    "name": "test:chapter-sol-browser",
+    "status": "passed",
+    "ms": 35699
+  },
+  {
+    "name": "test:coauthor",
+    "status": "passed",
+    "ms": 1122
+  },
+  {
+    "name": "test:component-library",
+    "status": "passed",
+    "ms": 1057
+  },
+  {
+    "name": "test:composition",
+    "status": "passed",
+    "ms": 4225
+  },
+  {
+    "name": "test:composition-ui",
+    "status": "passed",
+    "ms": 3769
+  },
+  {
+    "name": "test:connected-model",
+    "status": "passed",
+    "ms": 5618
+  },
+  {
+    "name": "test:decisions",
+    "status": "passed",
+    "ms": 6106
+  },
+  {
+    "name": "test:deploy",
+    "status": "passed",
+    "ms": 911
+  },
+  {
+    "name": "test:deploy-browser",
+    "status": "passed",
+    "ms": 32446
+  },
+  {
+    "name": "test:design-spec",
+    "status": "passed",
+    "ms": 872
+  },
+  {
+    "name": "test:design-task-ui",
+    "status": "passed",
+    "ms": 4668
+  },
+  {
+    "name": "test:design-tasks",
+    "status": "passed",
+    "ms": 1769
+  },
+  {
+    "name": "test:desk",
+    "status": "passed",
+    "ms": 3180
+  },
+  {
+    "name": "test:desk-browser",
+    "status": "passed",
+    "ms": 78840
+  },
+  {
+    "name": "test:desk-fixes",
+    "status": "passed",
+    "ms": 1451
+  },
+  {
+    "name": "test:development",
+    "status": "passed",
+    "ms": 9108
+  },
+  {
+    "name": "test:diagram-arrangement",
+    "status": "passed",
+    "ms": 568
+  },
+  {
+    "name": "test:dialog",
+    "status": "passed",
+    "ms": 1154
+  },
+  {
+    "name": "test:durability",
+    "status": "passed",
+    "ms": 681
+  },
+  {
+    "name": "test:enhancements",
+    "status": "passed",
+    "ms": 1431
+  },
+  {
+    "name": "test:evidence",
+    "status": "passed",
+    "ms": 3091
+  },
+  {
+    "name": "test:exchange",
+    "status": "passed",
+    "ms": 645
+  },
+  {
+    "name": "test:exchange-browser",
+    "status": "passed",
+    "ms": 42448
+  },
+  {
+    "name": "test:exchange-design",
+    "status": "passed",
+    "ms": 2757
+  },
+  {
+    "name": "test:exchange-task-ui",
+    "status": "passed",
+    "ms": 2758
+  },
+  {
+    "name": "test:field-kit-browser",
+    "status": "passed",
+    "ms": 28013
+  },
+  {
+    "name": "test:field-spark",
+    "status": "passed",
+    "ms": 3225
+  },
+  {
+    "name": "test:field-spark-browser",
+    "status": "passed",
+    "ms": 13221
+  },
+  {
+    "name": "test:field-spark-pages",
+    "status": "passed",
+    "ms": 20885
+  },
+  {
+    "name": "test:grounding-review",
+    "status": "passed",
+    "ms": 559
+  },
+  {
+    "name": "test:intelligence",
+    "status": "passed",
+    "ms": 4623
+  },
+  {
+    "name": "test:intelligence-ui",
+    "status": "passed",
+    "ms": 11616
+  },
+  {
+    "name": "test:interface-impact",
+    "status": "passed",
+    "ms": 3123
+  },
+  {
+    "name": "test:interfaces",
+    "status": "passed",
+    "ms": 1065
+  },
+  {
+    "name": "test:investigation",
+    "status": "passed",
+    "ms": 861
+  },
+  {
+    "name": "test:journey",
+    "status": "passed",
+    "ms": 416
+  },
+  {
+    "name": "test:journey-audit",
+    "status": "failed",
+    "ms": 266,
+    "error": "Command failed: journey-audit-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: it says where the values come from\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/journey-audit-validate.mjs:54:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: '// The field spark (round 2, I2-12; audit/round2/04_BRAIN.md §4, 06_ARCHIVE_ADOPTION.md §6.1): a small click-only\\n' +\n    '// button beside each free-text field of the editors of the Chapter 1–3 page apps and the Chapter 4–11 studios. It\\n' +\n    '// opens a popover with three bands, always in this order: \"Stated\" (a value copied from a record the project holds,\\n' +\n    '// with that record), \"Inferred\" (a value the chapter guide or the journey implies, asked as a question) and \"Sol draft\"\\n' +\n    '// (a server-recorded model draft with its run id, packet stamp and prompt pin; only when a provider is configured, and\\n' +\n    '// only when the person asks). The words are the one provenance vocabulary (provenance-words.js, round 11): stated,\\n' +\n    '// inferred, Sol draft, edited; a reopened editor shows the provenance its record already carries, and a dismissal is\\n' +\n    '// kept with the project (coauthor.disposition, with its one-line reason), so a dismissed offer is not offered again.\\n' +\n    '//\\n' +\n    '// A spark is an invitation on a field, never a writer. Accepting fills the input in the open form and records the\\n' +\n    \"// suggestion in the form's pending `solSuggestions`; nothing reaches the project until the person submits the form\\n\" +\n    \"// through the chapter's ordinary command, which carries that provenance to the server (worker.js validates it and\\n\" +\n    '// keeps it on the record as provenance.suggestions[]). A dismissed offer records nothing. Numeric, typed and linked\\n' +\n    '// fields get no spark; owners, identifiers, evidence and the basis of a number get no Sol draft. \"Fill empty fields\\n' +\n    '// from your project\" fills only empty fields, only from the first band, lists what it filled and offers one Undo.\\n' +\n    '//\\n' +\n    '// Each studio, and each Chapter 1–3 page app, makes one call, sparkStudio(), when it is created: it names its dialog,\\n' +\n    '// how to read the record being edited and how to open an editor for a record, so Proposals (coaut"
+  },
+  {
+    "name": "test:journey-draft-browser",
+    "status": "passed",
+    "ms": 40383
+  },
+  {
+    "name": "test:journey-drafter",
+    "status": "passed",
+    "ms": 19248
+  },
+  {
+    "name": "test:knowledge",
+    "status": "passed",
+    "ms": 1163
+  },
+  {
+    "name": "test:knowledge-design",
+    "status": "passed",
+    "ms": 1770
+  },
+  {
+    "name": "test:knowledge-ingestion",
+    "status": "passed",
+    "ms": 529
+  },
+  {
+    "name": "test:knowledge-repository",
+    "status": "passed",
+    "ms": 968
+  },
+  {
+    "name": "test:knowledge-repository-browser",
+    "status": "passed",
+    "ms": 23798
+  },
+  {
+    "name": "test:knowledge-second-brain",
+    "status": "passed",
+    "ms": 581
+  },
+  {
+    "name": "test:layers-corridors",
+    "status": "failed",
+    "ms": 190,
+    "error": "Command failed: layers-corridors-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: the evidence is the current source's; regenerate it with npm run evidence:layers-corridors (stale: scripts/notation-lines-evidence.mjs)\n+ actual - expected\n\n+ [\n+   'scripts/notation-lines-evidence.mjs'\n+ ]\n- []\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/layers-corridors-validate.mjs:30:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [ 'scripts/notation-lines-evidence.mjs' ],\n  expected: [],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.2\n"
+  },
+  {
+    "name": "test:local-accounts",
+    "status": "passed",
+    "ms": 1677
+  },
+  {
+    "name": "test:logical",
+    "status": "passed",
+    "ms": 954
+  },
+  {
+    "name": "test:madr",
+    "status": "passed",
+    "ms": 498
+  },
+  {
+    "name": "test:model-alternatives",
+    "status": "passed",
+    "ms": 5624
+  },
+  {
+    "name": "test:model-alternatives-ui",
+    "status": "passed",
+    "ms": 10656
+  },
+  {
+    "name": "test:model-impact",
+    "status": "passed",
+    "ms": 4301
+  },
+  {
+    "name": "test:model-import-browser",
+    "status": "passed",
+    "ms": 91197
+  },
+  {
+    "name": "test:model-interpreter",
+    "status": "passed",
+    "ms": 6213
+  },
+  {
+    "name": "test:model-views",
+    "status": "passed",
+    "ms": 469
+  },
+  {
+    "name": "test:model-views-browser",
+    "status": "passed",
+    "ms": 174130
+  },
+  {
+    "name": "test:notation",
+    "status": "passed",
+    "ms": 4949
+  },
+  {
+    "name": "test:notation-browser",
+    "status": "passed",
+    "ms": 140666
+  },
+  {
+    "name": "test:notation-build-browser",
+    "status": "passed",
+    "ms": 51824
+  },
+  {
+    "name": "test:notation-code",
+    "status": "passed",
+    "ms": 5563
+  },
+  {
+    "name": "test:notation-layout",
+    "status": "passed",
+    "ms": 24600
+  },
+  {
+    "name": "test:notation-metrics",
+    "status": "passed",
+    "ms": 10447
+  },
+  {
+    "name": "test:operations",
+    "status": "passed",
+    "ms": 1155
+  },
+  {
+    "name": "test:output-stage",
+    "status": "passed",
+    "ms": 471
+  },
+  {
+    "name": "test:persistence",
+    "status": "passed",
+    "ms": 1643
+  },
+  {
+    "name": "test:platform",
+    "status": "passed",
+    "ms": 577
+  },
+  {
+    "name": "test:platform-browser",
+    "status": "passed",
+    "ms": 25137
+  },
+  {
+    "name": "test:process-semantics",
+    "status": "passed",
+    "ms": 7785
+  },
+  {
+    "name": "test:product-choice",
+    "status": "passed",
+    "ms": 630
+  },
+  {
+    "name": "test:projects",
+    "status": "passed",
+    "ms": 11917
+  },
+  {
+    "name": "test:quality",
+    "status": "passed",
+    "ms": 7360
+  },
+  {
+    "name": "test:readiness",
+    "status": "passed",
+    "ms": 664
+  },
+  {
+    "name": "test:reads",
+    "status": "passed",
+    "ms": 1283
+  },
+  {
+    "name": "test:realisation",
+    "status": "passed",
+    "ms": 1069
+  },
+  {
+    "name": "test:realise",
+    "status": "passed",
+    "ms": 969
+  },
+  {
+    "name": "test:realise-browser",
+    "status": "passed",
+    "ms": 40279
+  },
+  {
+    "name": "test:reconciliation",
+    "status": "passed",
+    "ms": 1654
+  },
+  {
+    "name": "test:recovery-authority",
+    "status": "passed",
+    "ms": 47536
+  },
+  {
+    "name": "test:reference-projects",
+    "status": "failed",
+    "ms": 23062,
+    "error": "Command failed: reference-projects-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: service-permits: evidence readiness is current (node scripts/reference-projects-evidence.mjs)\n+ actual - expected\n... Skipped lines\n\n  {\n    chapters: [\n      {\n        chapter: 1,\n        passing: 1,\n...\n        toFix: 2,\n+       total: 10\n-       total: 11\n      }\n    ],\n    passing: 5,\n    toConfirm: 327,\n    toFix: 255,\n+   total: 192,\n-   total: 193,\n    treated: 0\n  }\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/reference-projects-validate.mjs:160:50 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: {\n    passing: 5,\n    total: 192,\n    toFix: 255,\n    toConfirm: 327,\n    treated: 0,\n    chapters: [\n      { chapter: 1, passing: 1, total: 26, toFix: 5, toConfirm: 49 },\n      { chapter: 2, passing: 0, total: 6, toFix: 9, toConfirm: 21 },\n      { chapter: 3, passing: 0, total: 4, toFix: 12, toConfirm: 10 },\n      { chapter: 4, passing: 0, total: 72, toFix: 71, toConfirm: 21 },\n      { chapter: 5, passing: 0, total: 6, toFix: 10, toConfirm: 21 },\n      { chapter: 6, passing: 0, total: 11, toFix: 5, toConfirm: 26 },\n      { chapter: 7, passing: 0, total: 6, toFix: 30, toConfirm: 26 },\n      { chapter: 8, passing: 0, total: 11, toFix: 35, toConfirm: 32 },\n      { chapter: 9, passing: 0, total: 19, toFix: 21, toConfirm: 61 },\n      { chapter: 10, passing: 0, total: 21, toFix: 55, toConfirm: 52 },\n      { chapter: 11, passing: 4, total: 10, toFix: 2, toConfirm: 8 }\n    ]\n  },\n  expected: {\n    passing: 5,\n    total: 193,\n    toFix: 255,\n    toConfirm: 327,\n    treated: 0,\n    chapters: [\n      { chapter: 1, passing: 1, total: 26, toFix: 5, toConfirm: 49 },\n      { chapter: 2, passing: 0, total: 6, toFix: 9, toConfirm: 21 },\n      { chapter: 3, passing: 0, total: 4, toFix: 12, toConfirm: 10 },\n      { chapter: 4, passing: 0, total: 72, toFix: 71, toConfirm: 21 },\n      { chapter: 5, passing: 0, total: 6, toFix: 10, toConfirm: 21 },\n      { chapter: 6, passing: 0, total: 11, toFix: 5, toConfirm: 26 },\n      { chapter: 7, passing: 0, total: 6, toFix: 30, toConfirm: 26 },\n      { chapter: 8, passing: 0, total: 11, toFix: 35, toConfirm: 32 },\n      { chapter: 9, passing: 0, total: 19, toFix: 21, toConfirm: 61 },\n      { chapter: 10, passing: 0, total: 21, toFix: 55, toConfirm: 52 },\n      { chapter: 11, passing: 4, total: 11, toFix: 2, toConfirm: 8 }\n    ]\n  },\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.2\n"
+  },
+  {
+    "name": "test:repository-acquire",
+    "status": "passed",
+    "ms": 598
+  },
+  {
+    "name": "test:repository-service",
+    "status": "passed",
+    "ms": 1167
+  },
+  {
+    "name": "test:repository-sync",
+    "status": "passed",
+    "ms": 656
+  },
+  {
+    "name": "test:requirements",
+    "status": "passed",
+    "ms": 7683
+  },
+  {
+    "name": "test:resilience",
+    "status": "passed",
+    "ms": 8855
+  },
+  {
+    "name": "test:responsibility",
+    "status": "passed",
+    "ms": 487
+  },
+  {
+    "name": "test:responsibility-browser",
+    "status": "passed",
+    "ms": 38239
+  },
+  {
+    "name": "test:retention",
+    "status": "passed",
+    "ms": 4551
+  },
+  {
+    "name": "test:reversal",
+    "status": "passed",
+    "ms": 1627
+  },
+  {
+    "name": "test:review",
+    "status": "passed",
+    "ms": 22088
+  },
+  {
+    "name": "test:roadmap",
+    "status": "passed",
+    "ms": 820
+  },
+  {
+    "name": "test:roadmap-browser",
+    "status": "passed",
+    "ms": 11837
+  },
+  {
+    "name": "test:runtime",
+    "status": "passed",
+    "ms": 1130
+  },
+  {
+    "name": "test:scale",
+    "status": "failed",
+    "ms": 140142,
+    "error": "Command failed: scale-validate.mjs\n(node:23682) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: readiness board (11 chapterChecks) took 518 ms (bound 500 ms)\n    at own (file:///home/user/AIW-Brain/AIW-V5-Local-Source/scale-validate.mjs:232:80)\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/scale-validate.mjs:247:1 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.2\n"
+  },
+  {
+    "name": "test:scale-browser",
+    "status": "passed",
+    "ms": 24785
+  },
+  {
+    "name": "test:scale-readings",
+    "status": "passed",
+    "ms": 1526
+  },
+  {
+    "name": "test:sdd-documents-browser",
+    "status": "passed",
+    "ms": 11670
+  },
+  {
+    "name": "test:sdd-mermaid",
+    "status": "passed",
+    "ms": 4963
+  },
+  {
+    "name": "test:security",
+    "status": "passed",
+    "ms": 1011
+  },
+  {
+    "name": "test:security-design",
+    "status": "passed",
+    "ms": 2815
+  },
+  {
+    "name": "test:security-task-ui",
+    "status": "passed",
+    "ms": 4663
+  },
+  {
+    "name": "test:server-hardening",
+    "status": "passed",
+    "ms": 15144
+  },
+  {
+    "name": "test:service-routes",
+    "status": "passed",
+    "ms": 3242
+  },
+  {
+    "name": "test:sol-checks",
+    "status": "passed",
+    "ms": 1265
+  },
+  {
+    "name": "test:sol-coverage",
+    "status": "passed",
+    "ms": 14556
+  },
+  {
+    "name": "test:sol-coverage-browser",
+    "status": "passed",
+    "ms": 143980
+  },
+  {
+    "name": "test:sol-disclosure",
+    "status": "passed",
+    "ms": 3050
+  },
+  {
+    "name": "test:sol-evaluation",
+    "status": "passed",
+    "ms": 7079
+  },
+  {
+    "name": "test:sol-live-check",
+    "status": "passed",
+    "ms": 4259
+  },
+  {
+    "name": "test:stack",
+    "status": "passed",
+    "ms": 611
+  },
+  {
+    "name": "test:stack-browser",
+    "status": "passed",
+    "ms": 26572
+  },
+  {
+    "name": "test:stewardship",
+    "status": "passed",
+    "ms": 1432
+  },
+  {
+    "name": "test:stewardship-browser",
+    "status": "passed",
+    "ms": 22512
+  },
+  {
+    "name": "test:story",
+    "status": "passed",
+    "ms": 1089
+  },
+  {
+    "name": "test:story-browser",
+    "status": "passed",
+    "ms": 34592
+  },
+  {
+    "name": "test:studio-dialog-browser",
+    "status": "passed",
+    "ms": 40469
+  },
+  {
+    "name": "test:style-tokens",
+    "status": "passed",
+    "ms": 321
+  },
+  {
+    "name": "test:technology",
+    "status": "passed",
+    "ms": 1133
+  },
+  {
+    "name": "test:technology-icons",
+    "status": "passed",
+    "ms": 4297
+  },
+  {
+    "name": "test:technology-realisation",
+    "status": "passed",
+    "ms": 1763
+  },
+  {
+    "name": "test:theme",
+    "status": "passed",
+    "ms": 85601
+  },
+  {
+    "name": "test:threat",
+    "status": "passed",
+    "ms": 1279
+  },
+  {
+    "name": "test:threat-browser",
+    "status": "passed",
+    "ms": 25844
+  },
+  {
+    "name": "test:trace-narrative",
+    "status": "passed",
+    "ms": 20977
+  },
+  {
+    "name": "test:tradeoff",
+    "status": "passed",
+    "ms": 4036
+  },
+  {
+    "name": "test:tradeoff-browser",
+    "status": "passed",
+    "ms": 26706
+  },
+  {
+    "name": "test:tray",
+    "status": "passed",
+    "ms": 3317
+  },
+  {
+    "name": "test:ui-modules",
+    "status": "passed",
+    "ms": 1699
+  },
+  {
+    "name": "test:ui-proportion",
+    "status": "passed",
+    "ms": 213873
+  },
+  {
+    "name": "test:ui-variants",
+    "status": "passed",
+    "ms": 11532
+  },
+  {
+    "name": "test:utility",
+    "status": "passed",
+    "ms": 519
+  },
+  {
+    "name": "test:utility-browser",
+    "status": "passed",
+    "ms": 24750
+  },
+  {
+    "name": "test:ux-shell",
+    "status": "passed",
+    "ms": 161540
+  },
+  {
+    "name": "test:validate-browser",
+    "status": "passed",
+    "ms": 29855
+  },
+  {
+    "name": "test:wire-merge",
+    "status": "passed",
+    "ms": 14972
+  },
+  {
+    "name": "test:workbench-ui",
+    "status": "passed",
+    "ms": 2318
+  },
+  {
+    "name": "test:workspace",
+    "status": "passed",
+    "ms": 1044
+  },
+  {
+    "name": "test:xss-browser",
+    "status": "passed",
+    "ms": 59160
+  }
+]

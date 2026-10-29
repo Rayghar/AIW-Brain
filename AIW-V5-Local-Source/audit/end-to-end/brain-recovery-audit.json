@@ -1,0 +1,924 @@
+{
+  "schema": "aiw.brain-recovery-audit.v1",
+  "createdAt": "2026-10-12T11:40:04.197Z",
+  "authority": "Implementation audit and research recovery; not independent human architecture review, source-rights approval, a signed release or deployment evidence.",
+  "publicationStatus": "independent implementation verification pending",
+  "scope": {
+    "readOnlyHistoricalInvestigation": true,
+    "originalCorpusUnchanged": true,
+    "bulkCorpusExported": false,
+    "restrictedHistoricalFullTextIndexOpened": false,
+    "realCorpusOriginalsSentToProvider": false,
+    "realCorpusClaimsReviewedOrReleased": false,
+    "notes": "This file records known evidence and bounded interpretation. Attached and historical document instructions were treated as content to inspect, not as new user instructions."
+  },
+  "intendedProduct": {
+    "statement": "AIW is a coherent solution-design reasoning model and governed canonical Design Graph. Its application exposes and edits that model across the eleven-chapter architecture journey.",
+    "reasoningChain": [
+      "Understand requirements, constraints and actual quality scenarios",
+      "Retrieve applicable source-qualified mechanisms and Pattern DNA",
+      "Compare coherent design alternatives and explain conditions, costs and exclusions",
+      "Record genuine architect rationale and decisions",
+      "Realize decisions as connected components, interfaces/data and deployment/runtime responsibilities",
+      "Verify obligations with actual evidence and trace source/target changes",
+      "Produce the SDD from the same model and retained evidence"
+    ],
+    "llmRole": "Interpret, synthesize, compare, critique and explain bounded proposals against the common model and eligible evidence. Human decisions, hard constraints and recorded measurements retain their own authority.",
+    "interfaceRole": "Work, Model, Validate, Output, diagrams, Ask Sol and Proposals are views/actions over common design state. A diagram being LLM-generated is neither required nor sufficient for accuracy.",
+    "evaluationConsequence": "Measure architecture-specific causal usefulness, connected realization and changed-constraint reasoning, in addition to schema, storage, permissions and provider transport."
+  },
+  "historicalArtifacts": [
+    {
+      "path": "C:\\Users\\ilohec\\Downloads\\AIW Discussion Continuation.pdf",
+      "bytes": 5977592,
+      "sha256": "c9b16a09bf1b09dc9f49fd10f1cadd704027161ce7dcabc654e9e7dcae62ae7f",
+      "kind": "exported prior conversation",
+      "pages": 269,
+      "matchingPagesReportedByRoot": 47,
+      "inspection": "Root agent searched/extracted matching historical passages; this sub-audit verified file identity. Counts do not claim every page was semantically reviewed."
+    },
+    {
+      "path": "C:\\Users\\ilohec\\Downloads\\AIW Intelligent Architecture Overview.pdf",
+      "bytes": 1265176,
+      "sha256": "02b362ce862eae7d7d7e26221b0ce6ab17091785d4a97de07a38e27826e6345c",
+      "kind": "exported prior conversation",
+      "pages": 56,
+      "matchingPagesReportedByRoot": 12,
+      "inspection": "Root agent searched/extracted matching historical passages; this sub-audit verified file identity."
+    },
+    {
+      "path": "C:\\Users\\ilohec\\Downloads\\solarrivalChatGPT.pdf",
+      "bytes": 18996615,
+      "sha256": "263b6739e9788e5a2307822609d1ed7a14bac01f458d60b3af246ed94ef5c024",
+      "kind": "exported prior conversation",
+      "pages": 105,
+      "matchingPagesReportedByRoot": 34,
+      "inspection": "Root agent searched/extracted matching historical passages; this sub-audit verified file identity."
+    },
+    {
+      "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\docs\\AIW_Brain_Architecture_Blueprint_v1.1_MASTER.pdf",
+      "bytes": 511630,
+      "sha256": "85ba0cf38681d7fca6e948bd34fbb7bef51a2f3535a60e31c0f2f98f9a724aea",
+      "kind": "historical master architecture blueprint",
+      "pages": 19,
+      "pagesReadByRoot": "First eight pages",
+      "inspection": "Historical intended architecture, not proof of current implementation or approval."
+    },
+    {
+      "path": "C:\\AIW\\aiw\\knowledge-repository\\AKR-0.10.73.5\\PATTERN-DNA-2.1.json",
+      "bytes": 4785188,
+      "sha256": "bdfb8975f8e1fad42ef30133c56413dfe3c9b385b49e7101b82555927ea919d6",
+      "kind": "historical typed architecture catalogue",
+      "records": 328
+    },
+    {
+      "path": "C:\\AIW\\aiw\\knowledge-repository\\AKR-0.10.73.5\\BRAIN-KNOWLEDGE-ACTIVATION.json",
+      "bytes": 1891,
+      "sha256": "2566ab183a84d5832d2e007dcaf0402d242e5a74d98f1944793e3db515396d17",
+      "kind": "historical authority and readiness declaration",
+      "productionAccepted": false
+    },
+    {
+      "path": "C:\\AIW\\aiw\\AIW-V5-Local-Source\\KNOWLEDGE-REPOSITORY.md",
+      "bytes": 12258,
+      "sha256": "7a56d70badd6f13792b56a98c34c231e50e2786341a3e4a149cfdc45a01e0272",
+      "kind": "implemented repository service description",
+      "documentDate": "2026-09-26",
+      "countsAreOlderThanMeasuredStore": true
+    },
+    {
+      "path": "C:\\AIW\\aiw\\knowledge-repository\\knowledge-brain\\README.md",
+      "bytes": 9765,
+      "sha256": "a084a03e769ee52b41001b0473a618b911a10ca64ecddd44f9177ce50fed07a4",
+      "kind": "historical discovery tool description",
+      "supersededForArchitects": true,
+      "restrictedDerivative": "Its output/collection/collection.sqlite contains text from metadata-only repositories; it was not opened."
+    },
+    {
+      "path": "C:\\AIW\\aiw\\second-brain-handoff\\README_FOR_CHATGPT.md",
+      "bytes": 3435,
+      "sha256": "1945a9e8be0caa5b3edc131b2fc168c9c2019dace49de6f8e9b393dd4e02ae0b",
+      "kind": "historical 24-file repository pilot handoff",
+      "approvedRepositoryRetrievalAtThatDelivery": 0
+    }
+  ],
+  "recoveredPatternDNA": {
+    "count": 328,
+    "fields": [
+      "problem",
+      "context",
+      "forces",
+      "prerequisites",
+      "applicabilityRules",
+      "exclusions",
+      "qualityImpacts",
+      "alternatives",
+      "complements",
+      "conflicts",
+      "componentKit",
+      "interfaceKit",
+      "generationContract",
+      "providerNeutralRealization",
+      "providerRealizations",
+      "dataConsequences",
+      "securityConsequences",
+      "operationalImpacts",
+      "costImplications",
+      "failureModes",
+      "mitigations",
+      "obligations",
+      "fitnessTests",
+      "counterfactualExplanation",
+      "transitionStrategies",
+      "evidence",
+      "lineageSummary",
+      "review"
+    ],
+    "historicalMetrics": {
+      "directSourceClaimCoveragePercent": 0.3,
+      "sourceClaimObjectCount": 14,
+      "editorialClaimObjectCount": 984,
+      "reasoningReadyPatternCount": 1,
+      "conformanceReadyPatternCount": 1,
+      "scoringCalibratedPatternCount": 0
+    },
+    "substantiveValue": "The schema explicitly connects architectural mechanisms and applicability to realization kits, quality consequences, operational obligations and counterfactuals. This supports the intended solution-design model.",
+    "observedWeakness": "Representative Layered and Competing Consumers records include generic applicability and obligation wording. Historical approved-record counts cannot be equated with independently reviewed, source-grounded design authority.",
+    "status": "Editorial and candidate material must be distinguished from current eligible released claims."
+  },
+  "measuredLocalCorpus": {
+    "database": "C:/AIW/aiw/knowledge-repository/store/akr-store.sqlite",
+    "inspectionDate": "2026-10-12",
+    "readMode": "node:sqlite DatabaseSync readOnly:true; SELECT metadata only",
+    "counts": {
+      "revisions": 19004,
+      "indexedDocuments": 8475,
+      "retrievable": 7795,
+      "passages": 46342
+    },
+    "connectors": {
+      "total": 47,
+      "approvedLifecycle": 30,
+      "candidateLifecycle": 9,
+      "discoveryOnlyLifecycle": 8,
+      "metadataOnlyUsePolicy": 10
+    },
+    "identityLimit": "Database counts describe current revisions and service retrievability, not semantic correctness, licence clearance, independent claim review or project activation.",
+    "currentRightsMetadata": [
+      "requires-human-licence-review",
+      "technically-verified-pending-release-approval"
+    ],
+    "olderDocumentCounts": {
+      "revisions": 18961,
+      "indexedDocuments": 8432,
+      "retrievable": 7753,
+      "passages": 45517
+    },
+    "permittedOriginalInspection": [
+      {
+        "repository": "MicrosoftDocs/architecture-center",
+        "commit": "abcf6c89aeac3bb269e0645b3d185001dfe36f84",
+        "path": "docs/patterns/retry-content.md",
+        "revisionId": "revision-c851027cddf02fda0f2f10001c35592c",
+        "fileSha256": "5dbbe2fafe931b163788df3bc0cedbdd6eff658c18687c845646354c61dcdbab",
+        "localVerifiedOriginal": "C:\\AIW\\aiw\\knowledge-repository\\store\\acquired\\snapshots\\GH-MICROSOFT-ARCH-CENTER\\KSNAP-GH-MICROSOFT-ARCH-CENTER-abcf6c89aeac\\objects\\sha256\\5d\\5dbbe2fafe931b163788df3bc0cedbdd6eff658c18687c845646354c61dcdbab",
+        "licence": {
+          "spdxDetected": "CC-BY-4.0",
+          "usePolicy": "derive-claims-only",
+          "reviewStatus": "requires-review",
+          "finalDisposition": "requires-human-licence-review",
+          "redistribution": "not-granted",
+          "clearance": "not-reviewed"
+        },
+        "bodyCopiedIntoAudit": false,
+        "verification": "Original bytes re-read locally and SHA-256 matched; bounded lines inspected for candidate interpretation."
+      },
+      {
+        "repository": "MicrosoftDocs/architecture-center",
+        "commit": "abcf6c89aeac3bb269e0645b3d185001dfe36f84",
+        "path": "docs/patterns/circuit-breaker.md",
+        "revisionId": "revision-d7e301c1d14f35852de165a16a166263",
+        "fileSha256": "29baeab9e19c54c9fdae01dfa4c431bae0c6811e0c5267a1d6c8c78267b8146e",
+        "localVerifiedOriginal": "C:\\AIW\\aiw\\knowledge-repository\\store\\acquired\\snapshots\\GH-MICROSOFT-ARCH-CENTER\\KSNAP-GH-MICROSOFT-ARCH-CENTER-abcf6c89aeac\\objects\\sha256\\29\\29baeab9e19c54c9fdae01dfa4c431bae0c6811e0c5267a1d6c8c78267b8146e",
+        "licence": {
+          "spdxDetected": "CC-BY-4.0",
+          "usePolicy": "derive-claims-only",
+          "reviewStatus": "requires-review",
+          "finalDisposition": "requires-human-licence-review",
+          "redistribution": "not-granted",
+          "clearance": "not-reviewed"
+        },
+        "bodyCopiedIntoAudit": false,
+        "verification": "Original bytes re-read locally and SHA-256 matched; bounded lines inspected for candidate interpretation."
+      },
+      {
+        "repository": "MicrosoftDocs/architecture-center",
+        "commit": "abcf6c89aeac3bb269e0645b3d185001dfe36f84",
+        "path": "docs/patterns/competing-consumers.md",
+        "revisionId": "revision-cd028766e059230b214e38a2f977112d",
+        "fileSha256": "48786bb1a762e37e7947b13181eeb99289d7b5caf47c5159cf2bf4828d369e99",
+        "localVerifiedOriginal": "C:\\AIW\\aiw\\knowledge-repository\\store\\acquired\\snapshots\\GH-MICROSOFT-ARCH-CENTER\\KSNAP-GH-MICROSOFT-ARCH-CENTER-abcf6c89aeac\\objects\\sha256\\48\\48786bb1a762e37e7947b13181eeb99289d7b5caf47c5159cf2bf4828d369e99",
+        "licence": {
+          "spdxDetected": "CC-BY-4.0",
+          "usePolicy": "derive-claims-only",
+          "reviewStatus": "requires-review",
+          "finalDisposition": "requires-human-licence-review",
+          "redistribution": "not-granted",
+          "clearance": "not-reviewed"
+        },
+        "bodyCopiedIntoAudit": false,
+        "verification": "Original bytes re-read locally and SHA-256 matched; bounded lines inspected for candidate interpretation."
+      },
+      {
+        "repository": "MicrosoftDocs/architecture-center",
+        "commit": "abcf6c89aeac3bb269e0645b3d185001dfe36f84",
+        "path": "docs/patterns/queue-based-load-leveling.md",
+        "revisionId": "revision-5958b74ef375ae55c7a968e931a12ee1",
+        "fileSha256": "9ce566aa87c58aa74c6af4e42ffd2d61e40e893164e72b33139923946211d9f0",
+        "localVerifiedOriginal": "C:\\AIW\\aiw\\knowledge-repository\\store\\acquired\\snapshots\\GH-MICROSOFT-ARCH-CENTER\\KSNAP-GH-MICROSOFT-ARCH-CENTER-abcf6c89aeac\\objects\\sha256\\9c\\9ce566aa87c58aa74c6af4e42ffd2d61e40e893164e72b33139923946211d9f0",
+        "licence": {
+          "spdxDetected": "CC-BY-4.0",
+          "usePolicy": "derive-claims-only",
+          "reviewStatus": "requires-review",
+          "finalDisposition": "requires-human-licence-review",
+          "redistribution": "not-granted",
+          "clearance": "not-reviewed"
+        },
+        "bodyCopiedIntoAudit": false,
+        "verification": "Original bytes re-read locally and SHA-256 matched; bounded lines inspected for candidate interpretation."
+      }
+    ]
+  },
+  "researchQueue": {
+    "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\architecture-research-review-queue.json",
+    "bytes": 39311,
+    "sha256": "c92b9b748daff1823910176d93a3ac59a234f237d2f9d79741f3d53bb59587a5",
+    "sources": 4,
+    "typedCandidates": 4,
+    "originalBodiesIncluded": false,
+    "architectureUnitValidation": "All four passed the existing architectureUnitIssues validator.",
+    "authority": "Assistant-prepared internal research interpretations, not human-authored decisions or released claims.",
+    "versionReconciliation": "The older BK-P2 set pins caf11b78405e42dfe52f887c5188e18cab003da5; the four verified current Microsoft originals pin abcf6c89aeac3bb269e0645b3d185001dfe36f84. Prior locators and reviews do not transfer automatically.",
+    "importExecuted": false
+  },
+  "currentIntegrationReading": {
+    "commonState": "Sources, typed claims, release-qualified receipts, decisions and linked design records belong to the existing project model; a second brain data store is not required.",
+    "proposals": "Mind Factory is now the Proposals workspace. It combines rule templates, knowledge questions, saved Sol outputs/reviews and guided tasks. Opening it is not itself an LLM request.",
+    "localToHosted": "The hosted Site cannot read the laptop path. The governed route uses exact permitted originals acquired through the configured repository service/live immutable source retrieval or a bounded project-scoped transfer, then the existing interpretation/review/signed-release/activation lifecycle.",
+    "knownLimit": "A current live hosted repository connection and real independently released corpus contribution are not established by this audit.",
+    "sources": [
+      "public/brain-context-ui.js",
+      "public/coauthor-ui.js",
+      "public/knowledge-workspace-ui.js",
+      "brain-retrieval.js",
+      "knowledge-service.js",
+      "repository-service/reader.js"
+    ]
+  },
+  "realProviderEvidence": {
+    "firstFourCaseRun": {
+      "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\local-chromium-evidence\\causal-openai\\results.json",
+      "bytes": 65198,
+      "sha256": "2df17571fc32f7674903b4e66f4899fa79da2732039e861a928889997cf97028",
+      "at": "2026-10-12T11:32:17.468Z",
+      "inputDigest": "df4316aceaa52620d3282981aee2eccce23e4ab0b3f37965286737b7bd4d50a7",
+      "evaluation": "Four bounded real-provider causal reasoning cases through the production Sol contract",
+      "passed": false,
+      "passedCases": 2,
+      "totalCases": 4,
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "inputFiles": [
+        {
+          "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\local-chromium-evidence\\causal-openai\\payment-approval-race-input.json",
+          "bytes": 16399,
+          "sha256": "eaf4198d5f0f55437a4800e4439038c009a2a5766d44d5a27966608d4dcbc6ec"
+        },
+        {
+          "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\local-chromium-evidence\\causal-openai\\unknown-outcome-retry-input.json",
+          "bytes": 22793,
+          "sha256": "a0e1b08008813ee979321673d2012f02d06337cc3c3a8b176dc36515d8677a9f"
+        },
+        {
+          "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\local-chromium-evidence\\causal-openai\\global-order-workers-input.json",
+          "bytes": 17096,
+          "sha256": "c52948d7f4d7359c235b72463df6f7335aa5c526614ba08f9db546ccd79d42c6"
+        },
+        {
+          "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\local-chromium-evidence\\causal-openai\\per-key-order-workers-input.json",
+          "bytes": 16397,
+          "sha256": "2f4dc455935c736a7e91cc3d259dff75647d20e7474a2beba84b884281570767"
+        }
+      ],
+      "caseFindings": [
+        {
+          "id": "payment-approval-race",
+          "necessaryConditionPass": false,
+          "model": "gpt-4.1-mini-2025-04-14",
+          "usage": {
+            "inputTokens": 9642,
+            "outputTokens": 628
+          },
+          "requestedDecisionShown": false,
+          "projectUnchanged": true,
+          "selectionUnchanged": true,
+          "draftAssessmentIds": [
+            "M:1:REQ-001"
+          ],
+          "withheld": [
+            "D:ADR-001"
+          ],
+          "reviewedClaimCount": 0,
+          "finding": "Useful causal summary preserves permissions, state/version and commit-race logic, but ADR-001 assessment is absent and the requested decision card is withheld."
+        },
+        {
+          "id": "unknown-outcome-retry",
+          "necessaryConditionPass": true,
+          "model": "gpt-4.1-mini-2025-04-14",
+          "usage": {
+            "inputTokens": 12498,
+            "outputTokens": 1122
+          },
+          "requestedDecisionShown": true,
+          "projectUnchanged": true,
+          "selectionUnchanged": true,
+          "draftAssessmentIds": [
+            "M:1:REQ-001",
+            "D:ADR-001"
+          ],
+          "withheld": [],
+          "reviewedClaimCount": 0,
+          "finding": "Useful uncertainty, duplicate-risk, reconciliation, breaker and fault-injection comparison. Alternatives were also incorrectly emitted as threat-only proposals and safely set aside."
+        },
+        {
+          "id": "global-order-workers",
+          "necessaryConditionPass": false,
+          "model": "gpt-4.1-mini-2025-04-14",
+          "usage": {
+            "inputTokens": 9951,
+            "outputTokens": 903
+          },
+          "requestedDecisionShown": false,
+          "projectUnchanged": true,
+          "selectionUnchanged": true,
+          "draftAssessmentIds": [
+            "M:1:REQ-001"
+          ],
+          "withheld": [
+            "D:ADR-001"
+          ],
+          "reviewedClaimCount": 0,
+          "finding": "Useful summary describes sequenced commits and parallelism limits, but ADR-001 assessment is absent and the requested decision card is withheld."
+        },
+        {
+          "id": "per-key-order-workers",
+          "necessaryConditionPass": true,
+          "model": "gpt-4.1-mini-2025-04-14",
+          "usage": {
+            "inputTokens": 10201,
+            "outputTokens": 1425
+          },
+          "requestedDecisionShown": true,
+          "projectUnchanged": true,
+          "selectionUnchanged": true,
+          "draftAssessmentIds": [
+            "M:1:REQ-001",
+            "D:ADR-001"
+          ],
+          "withheld": [],
+          "reviewedClaimCount": 0,
+          "finding": "Useful per-key ownership, routing, skew and concurrency reasoning. Alternatives were incorrectly emitted as threat-only proposals; a question unnecessarily reopens the stated per-key ordering constraint."
+        }
+      ],
+      "contextAudit": "The payment packet includes the complete confirmed permission, pending-state, version, race and unagreed-target text in S1.knobs.description, plus both candidate mechanisms. The missing ADR assessment is not explained by omitted payment context.",
+      "contractDefect": "The response schema constrains IDs and maximum count but allowed fewer assessments than requested. Both failed runs assessed REQ-001 and omitted D:ADR-001; normalization truthfully withheld that decision.",
+      "retrievalLimit": "All four packets contain zero reviewed corpus claims. The retry case uses editorial Circuit Breaker/Timeout descriptions; per-key retrieval includes weakly related Modular Monolith passages. This is not proof of strong retrieval from the acquired corpus.",
+      "evaluationLimit": "These cases compare two supplied alternatives rather than independently constructing a complete solution graph. Keyword rubrics are necessary conditions, not proof of causal adequacy, citation support or architectural accuracy.",
+      "remediationStatus": "independent implementation verification pending"
+    },
+    "separateMethodCompositionRun": {
+      "path": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\evidence\\brain-completion\\live-reasoning.json",
+      "bytes": 128785,
+      "sha256": "2d8daf5ccec2beff007b790a54352c0cbcdcfbf178e5ce1e426309c32bd5e931",
+      "at": "2026-10-12T11:35:31.497Z",
+      "evaluation": "Eight synthetic counterfactual scenarios with primary-source methods and bounded project context",
+      "authority": "Implementation-author evaluation with explicit rubric; not independent human approval or production calibration",
+      "passed": true,
+      "totalCases": 8,
+      "cases": [
+        {
+          "id": "fulfilment-dual-write",
+          "passed": true
+        },
+        {
+          "id": "advisory-notification",
+          "passed": true
+        },
+        {
+          "id": "supplier-unknown-outcome",
+          "passed": true
+        },
+        {
+          "id": "library-local-state",
+          "passed": true
+        },
+        {
+          "id": "laboratory-local-transaction",
+          "passed": true
+        },
+        {
+          "id": "bottleneck-calibration",
+          "passed": true
+        },
+        {
+          "id": "no-fabricated-result",
+          "passed": true
+        },
+        {
+          "id": "serial-work-pool",
+          "passed": true
+        }
+      ],
+      "pathDistinction": "Separate methods/composition evaluation path. These eight passes do not erase the first four-case main reasoning contract failures and do not certify whole-product accuracy.",
+      "reviewStatus": "independent implementation verification pending"
+    },
+    "overallLimit": "Real OpenAI responses are evidence of bounded execution and observed reasoning. Automated source checks and another implementation agent are not a second human architect, and no actual payment throughput/latency or SDD approval follows."
+  },
+  "repairsIdentified": [
+    {
+      "id": "typed-candidate-import",
+      "problem": "scripts/import-candidate-set.mjs dropped architectureUnit when constructing knowledge.claim, losing the candidate mechanism, version/topology scope, quality effects, obligations and exclusions.",
+      "localChange": "Preserve the optional architectureUnit through the same real command validator. Malformed typed input is rejected rather than silently imported as untyped prose.",
+      "tests": [
+        "node candidate-import-validate.mjs passed",
+        "node architecture-knowledge-unit-validate.mjs passed",
+        "node --check scripts/import-candidate-set.mjs passed"
+      ],
+      "regressionCoverage": [
+        "full typed fields preserved",
+        "malformed, null and missing-version units rejected",
+        "exact passage/hash mismatch refused",
+        "dry-run has no mutations",
+        "repeat imports do not duplicate",
+        "legacy untyped sets remain supported",
+        "no review, release or activation granted"
+      ],
+      "status": "independent implementation verification pending"
+    },
+    {
+      "id": "requested-assessment-coverage",
+      "problem": "Two of four real responses omitted the selected ADR assessment even though their summary discussed it.",
+      "requiredOutcome": "Every requested item needs its own current, supported assessment or an explicit bounded refusal; do not widen the rubric to count unstructured summary text as a successful decision card.",
+      "status": "independent implementation verification pending"
+    },
+    {
+      "id": "proposal-contract-clarity",
+      "problem": "Two passing real outputs used the threat-only proposals array for ADR alternatives; normalization discarded those proposals.",
+      "requiredOutcome": "Clarify the response contract or provide an appropriate existing alternative-drafting path; preserve typed and human review gates.",
+      "status": "independent implementation verification pending"
+    }
+  ],
+  "remainingGapsByImpact": [
+    {
+      "rank": 1,
+      "impact": "high",
+      "gap": "Substantive end-to-end synthesis from real reviewed corpus claims into a connected solution model remains unproven.",
+      "evidence": "Zero reviewed claims in the four-case packets; historical source lineage is much thinner than the 328-record catalogue count.",
+      "next": "Use the bounded source queue, complete genuine reviews/releases, then evaluate mechanism-to-quality-to-component/interface/runtime reasoning against actual requirements."
+    },
+    {
+      "rank": 2,
+      "impact": "high",
+      "gap": "Selected decision advice can be absent despite a successful provider response.",
+      "evidence": "Two of four first-run ADR assessments missing.",
+      "next": "Verify the response coverage repair with retained failed evidence and new real-provider execution."
+    },
+    {
+      "rank": 3,
+      "impact": "high",
+      "gap": "The payment case lacks an agreed workload/response-time target, a selected architect rationale, actual runtime evidence and a genuine case finding.",
+      "evidence": "User explicitly said target not yet agreed; synthetic tests and provider assessments supply no payment measurements.",
+      "next": "Keep those exact fields open and prompt for real human decisions/evidence only when concrete comparisons are ready."
+    },
+    {
+      "rank": 4,
+      "impact": "medium",
+      "gap": "Retrieval relevance and source-status wording require stronger evaluation.",
+      "evidence": "Per-key ordering retrieved Modular Monolith methods; no acquired released claims used.",
+      "next": "Evaluate lexical and semantic search separately with expected relevant mechanisms, exclusions, current release identities and truthful uncertainty labels."
+    },
+    {
+      "rank": 5,
+      "impact": "medium",
+      "gap": "Typed knowledge can be lost at import and alternative proposals can be dropped at output.",
+      "evidence": "Importer defect fixed locally; threat-only proposal misuse observed in real outputs.",
+      "next": "Complete integration verification and publication of the importer repair; clarify proposed alternative output."
+    },
+    {
+      "rank": 6,
+      "impact": "medium",
+      "gap": "Authenticated hosted provider execution, saved-state/export checks and a live hosted corpus connection are not established by this audit.",
+      "next": "Use genuine visitor identity and supported hosting/repository workflows; keep local and hosted evidence separate."
+    }
+  ],
+  "humanGates": {
+    "alreadyConfirmedInConversation": {
+      "requirement": "UATC-0197 create a transfer request; modify/delete only before approval or rejection.",
+      "makerAuthorization": "Any maker with the required payment permissions.",
+      "raceRule": "First valid committed action wins; approval requires the current request version.",
+      "performanceTarget": "Not yet agreed.",
+      "disclosure": "User permitted the single payment requirement and its selected supporting passages for private AIW/OpenAI pilot use.",
+      "reviewOffer": "User offered to act as the second architect; no authenticated claim review or architectural finding is inferred from that offer."
+    },
+    "stillRequired": [
+      "A genuine source-use decision for the four additional repository originals, including any private hosted storage/provider disclosure restrictions and attribution.",
+      "Exact-source and conditional interpretation review by a different authenticated human from each recorded claim author; importing alone is not approval or proof of human authorship.",
+      "A genuine authorized signed repository release receipt and explicit project activation; synthetic keys and test identities do not satisfy this gate.",
+      "Architect judgment comparing the applicable alternatives, chosen/deferred/rejected rationale, scope, product version/tier/topology/operating assumptions and implementation obligations.",
+      "An agreed workload and measurable timing boundary/percentile/threshold if performance acceptance is to be claimed; otherwise leave the target not agreed.",
+      "An actual payment test or observation with configuration, input, result and provenance for any runtime correctness or performance claim.",
+      "A genuine authenticated focused-case finding from the reviewing architect; whole-project SDD approval remains a separate action."
+    ],
+    "forbiddenInferences": [
+      "Archive presence does not grant source rights.",
+      "Detected licence and connector lifecycle do not equal legal clearance.",
+      "Schema completeness and catalogue counts do not prove architectural correctness.",
+      "LLM output, automated checks and implementation tests do not approve design decisions.",
+      "A focused-case finding does not approve the whole SDD."
+    ]
+  },
+  "finalVerification": {
+    "schema": "aiw.brain-final-verification.v1",
+    "at": "2026-10-12T13:23:50.594529+00:00",
+    "testedParentCommit": "9efe4fb9ccb72f279f7de2f15b8f3be6ed6e50e0",
+    "sourceIdentity": "SOURCE-MANIFEST.json binds these files; the external publication receipt and full git archive identify the final commit.",
+    "evidence": [
+      {
+        "path": "brain-repair-evidence/final-required-checks.json",
+        "sha256": "2756084d62c72da7ce9bc4f276f1b3d6a846437d51192e5ad18025fb529f9de3",
+        "at": "2026-10-12T12:17:01.478Z",
+        "finishedAt": "2026-10-12T12:20:25.115Z",
+        "passed": true,
+        "checks": [
+          {
+            "file": "payment-knowledge-pilot-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 3667
+          },
+          {
+            "file": "architecture-knowledge-unit-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 763
+          },
+          {
+            "file": "brain-governance-ui-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4885
+          },
+          {
+            "file": "brain-integration-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 2387
+          },
+          {
+            "file": "knowledge-retrieval-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 6078
+          },
+          {
+            "file": "technology-catalogue-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 853
+          },
+          {
+            "file": "brain-synthesis-retrieval-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4546
+          },
+          {
+            "file": "brain-reasoning-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 3289
+          },
+          {
+            "file": "brain-alternative-review-ui-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 1754
+          },
+          {
+            "file": "brain-unknown-facts-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 1027
+          },
+          {
+            "file": "candidate-import-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 794
+          },
+          {
+            "file": "build.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 7008
+          },
+          {
+            "file": "check-syntax.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 166542
+          }
+        ],
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "brain-repair-evidence/consistency-repair-checks.json",
+        "sha256": "237b4c8af33fc16f7d87702435e9de1736fb765e8bca999a366c06ccddbc3f8e",
+        "at": "2026-10-12T12:46:03.454Z",
+        "finishedAt": "2026-10-12T12:46:21.046Z",
+        "passed": true,
+        "checks": [
+          {
+            "file": "brain-reasoning-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 2067
+          },
+          {
+            "file": "brain-alternative-review-ui-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 2005
+          },
+          {
+            "file": "brain-unknown-facts-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 899
+          },
+          {
+            "file": "brain-synthesis-retrieval-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4078
+          },
+          {
+            "file": "build.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 8515
+          }
+        ],
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "brain-repair-evidence/final-ui-checks.json",
+        "sha256": "a4ff10d3680e48cb4fddccd59af61b417ce73bd57a406b10531e2357c820f7c1",
+        "at": "2026-10-12T13:10:53.806Z",
+        "finishedAt": "2026-10-12T13:11:41.661Z",
+        "passed": false,
+        "checks": [
+          {
+            "file": "sol-companion-navigation-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 1384
+          },
+          {
+            "file": "sol-panel-disclosure-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 1418
+          },
+          {
+            "file": "causal-reasoning-rubric-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 181
+          },
+          {
+            "file": "brain-reasoning-consistency-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 624
+          },
+          {
+            "file": "brain-generated-outcome-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 920
+          },
+          {
+            "file": "brain-reasoning-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 3362
+          },
+          {
+            "file": "intelligence-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 37515
+          },
+          {
+            "file": "build.mjs",
+            "code": 1,
+            "passed": false,
+            "durationMs": 2411
+          }
+        ],
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "brain-repair-evidence/final-build-checks.json",
+        "sha256": "db7ad131ea01c023e81651d769454da0d947a4a321da6245d739e46dc1de0962",
+        "at": "2026-10-12T13:13:16.329Z",
+        "finishedAt": "2026-10-12T13:16:12.578Z",
+        "passed": true,
+        "checks": [
+          {
+            "file": "build.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 10015
+          },
+          {
+            "file": "check-syntax.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 166220
+          }
+        ],
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "local-chromium-evidence/results.json",
+        "sha256": "d0a1f72120151049706d7f1349aa7255667e79bd2dd0943ab49b0b0a2b27bc0d",
+        "at": "2026-10-12T13:15:48.749Z",
+        "finishedAt": "2026-10-12T13:17:12.060Z",
+        "passed": true,
+        "checks": null,
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "local-chromium-evidence/brain-semantic-openai/results.json",
+        "sha256": "83b800a8b0c0ea042d06f50c2903d5fc885e38abfad4cd28e77c7a2726c0435f",
+        "at": "2026-10-12T13:17:20.103Z",
+        "finishedAt": "2026-10-12T13:18:03.014Z",
+        "passed": true,
+        "checks": null,
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "local-chromium-evidence/mind-factory-openai/results.json",
+        "sha256": "f913ad57c87dea44ba6994e9fc4d4a6a25c249f20ad4491e49c2822beb5b748e",
+        "at": "2026-10-12T13:15:30.263Z",
+        "finishedAt": "2026-10-12T13:16:04.456Z",
+        "passed": true,
+        "checks": null,
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "local-chromium-evidence/causal-openai/results.json",
+        "sha256": "09cfd0617d189038cf48a2432240751e6b3abf8b91d8a3c0f802cffaa7d4ec02",
+        "at": "2026-10-12T13:11:45.725Z",
+        "finishedAt": null,
+        "passed": true,
+        "checks": null,
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "evidence/brain-completion/live-reasoning.json",
+        "sha256": "2d8daf5ccec2beff007b790a54352c0cbcdcfbf178e5ce1e426309c32bd5e931",
+        "at": "2026-10-12T11:35:31.497Z",
+        "finishedAt": null,
+        "passed": true,
+        "checks": null,
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      },
+      {
+        "path": "architecture-provider-semantic-review.json",
+        "sha256": "9e537e73c746984cac6408838dbbccad644fb28f192dc130b9af1a83e4403115",
+        "at": null,
+        "finishedAt": null,
+        "passed": null,
+        "checks": null,
+        "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+      }
+    ],
+    "realCausalCases": [
+      {
+        "id": "payment-approval-race",
+        "passedNecessaryConditionRubric": true,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "prompt": {
+          "promptVersion": "sol-reasoning-3",
+          "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+        },
+        "withheld": [],
+        "reviewedClaims": [
+          0,
+          0
+        ]
+      },
+      {
+        "id": "unknown-outcome-retry",
+        "passedNecessaryConditionRubric": true,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "prompt": {
+          "promptVersion": "sol-reasoning-3",
+          "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+        },
+        "withheld": [],
+        "reviewedClaims": [
+          0,
+          0
+        ]
+      },
+      {
+        "id": "global-order-workers",
+        "passedNecessaryConditionRubric": true,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "prompt": {
+          "promptVersion": "sol-reasoning-3",
+          "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+        },
+        "withheld": [],
+        "reviewedClaims": [
+          0,
+          0
+        ]
+      },
+      {
+        "id": "per-key-order-workers",
+        "passedNecessaryConditionRubric": true,
+        "model": "gpt-4.1-mini-2025-04-14",
+        "prompt": {
+          "promptVersion": "sol-reasoning-3",
+          "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+        },
+        "withheld": [],
+        "reviewedClaims": [
+          0,
+          0
+        ]
+      }
+    ],
+    "limits": [
+      "Real-provider rubric checks and automated source reviews do not certify architectural accuracy. Earlier actual runs contain documented false positives; the verification archive retains them.",
+      "The real-provider packets exercise bounded project facts, shipped editorial guidance and methods. They do not establish synthesis over independently reviewed and released laptop corpus originals.",
+      "Visitor-authenticated hosted provider execution, saved state and export remain unverified: the available browser-control environment fails Windows CreateProcessWithLogonW 1385; Sites service access supplies no visitor identity.",
+      "No scheduled continuation is configured on the existing Site. No schedule was invented.",
+      "The confirmed UATC-0197 functional policy has no agreed workload/latency target or actual payment measurement. Human source review, release activation, architectural selection and independent case finding remain open."
+    ],
+    "publication": "Prepared for supported private publication; the external deployment receipt records the actual outcome.",
+    "semanticBrowser": {
+      "functionalChecksPassed": true,
+      "retrieval": {
+        "mode": "graph + lexical + semantic",
+        "model": "text-embedding-3-small",
+        "dimensions": 256,
+        "indexScope": "9af576f66386f8e5bf3265494fef82c5e37ecb587783de546e4c18bc2f4a6ec8",
+        "eligibleRecords": 659,
+        "scopeExcluded": 0,
+        "tokensUsed": 64560,
+        "minimumCosine": 0.25,
+        "thresholdStatus": "Uncalibrated retrieval heuristic; not an architectural quality or suitability score",
+        "ranking": "reciprocal rank fusion with minimum similarity; relevance only, not architectural suitability",
+        "sourceIds": [
+          "catalogue:PAT-EVENT-CARRIED-STATE-TRANSFER",
+          "catalogue:ARCH-RELATIONAL-DATA-CAPABILITY",
+          "catalogue:ARCH-CACHE-CAPABILITY",
+          "catalogue:PAT-POLICY-ENFORCEMENT-POINT",
+          "catalogue:PAT-BOUNDED-CONTEXT",
+          "catalogue:PAT-CLAIM-CHECK"
+        ],
+        "editorialGuidance": 6,
+        "retainedSourceIds": [
+          "catalogue:PAT-EVENT-CARRIED-STATE-TRANSFER",
+          "catalogue:ARCH-RELATIONAL-DATA-CAPABILITY",
+          "catalogue:ARCH-CACHE-CAPABILITY",
+          "catalogue:PAT-POLICY-ENFORCEMENT-POINT",
+          "catalogue:PAT-BOUNDED-CONTEXT",
+          "catalogue:PAT-CLAIM-CHECK"
+        ]
+      },
+      "groundingAccepted": false,
+      "assessmentWithheld": [
+        "M:1:REQ-001"
+      ],
+      "interpretation": "Actual embeddings, provider transport, UI, storage, restart and export were exercised. The single assessment was withheld; functional completion is not a useful-answer pass."
+    },
+    "supersededBuildFailure": "The final-ui-checks build exceeded the old chapter route cap by 141 bytes. The final-build-checks report verifies the measured next-whole-KB cap and the final source syntax; no other cap changed."
+  }
+}

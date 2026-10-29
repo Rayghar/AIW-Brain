@@ -1,0 +1,2 @@
+CREATE INDEX `brain_retrieval_project_created` ON `brain_retrieval_runs` (`owner_id`,`project_id`,`created_at`);--> statement-breakpoint
+CREATE INDEX `intelligence_project_status_created` ON `intelligence_runs` (`owner_id`,`project_id`,`status`,`created_at`);

@@ -1,0 +1,101 @@
+/* Perspectives (round 5, R5-C: one picture world). Every chapter's Model switcher ends with a Perspectives group, and a
+   perspective draws in the chapter model's own frame (.cm, exchange.css; the notation kit, notation.css). This sheet has
+   only what the group, the perspective's bar and its companion add. */
+/* The group ends the model's title row, after its actions: the views keep their one row, the stage its height and the
+   toolbar its order. */
+.cm-actions>.pv-pick,.cm-actions>.cm-qpick{position:relative;flex:none;min-width:0;margin-left:4px}
+.pv-pick>summary,.cm-qpick>summary{list-style:none}
+.pv-pick>summary::-webkit-details-marker,.cm-qpick>summary::-webkit-details-marker{display:none}
+.pv-sum,.cm-qsum{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--green-5);border-radius:7px;padding:4px 10px;min-height:30px;cursor:pointer;font-size:13px;white-space:nowrap}
+.pv-sum{background:var(--sage-1);color:var(--sage-11);max-width:280px}
+.pv-sum svg{width:16px;height:16px}
+.pv-sum>span:first-of-type{overflow:hidden;text-overflow:ellipsis}
+.pv-sum::after{content:"▾";font-size:12px;margin-left:1px}
+.pv-pick[open]>.pv-sum::after{content:"▴"}
+.pv-sum.pv-on{border-color:var(--green-10);background:var(--green-10);color:var(--on-solid);font-weight:600}
+.pv-sum:focus-visible,.cm-qsum:focus-visible,.cm-qentry:focus-visible{outline:2px solid var(--gold-8);outline-offset:2px}
+.pv-count{font-size:12px;font-weight:700;line-height:16px;min-width:18px;padding:0 5px;border-radius:8px;background:var(--green-3);color:var(--sage-11);text-align:center}
+.pv-sum.pv-on .pv-count{background:color-mix(in srgb, var(--sage-1) 18%, transparent);color:var(--on-solid)}
+.pv-list,.cm-qlist{position:absolute;right:0;top:calc(100% + 4px);overflow:auto;border:1px solid var(--green-5);border-radius:10px;background:var(--sage-1);box-shadow:0 14px 34px color-mix(in srgb,var(--shadow) 18%,transparent)}
+.pv-list{z-index:45;display:flex;flex-direction:column;gap:3px;width:max-content;min-width:260px;max-width:min(380px,80vw);max-height:min(60vh,420px);padding:6px}
+.pv-list .pv-entry{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;min-height:30px;white-space:normal;text-align:left;padding:6px 10px;border:1px solid transparent;border-radius:7px;background:none;cursor:pointer;font-size:13px;color:var(--sage-11)}
+.pv-list .pv-entry:hover{background:var(--sage-2)}
+.pv-list .pv-entry:focus-visible{outline:2px solid var(--gold-8);outline-offset:1px}
+.pv-pick .pv-list .pv-entry[aria-pressed=true]{background:var(--green-10);border-color:var(--green-10);color:var(--on-solid);font-weight:600}
+.pv-list .pv-entry small{font-size:12px;color:var(--cm-muted);font-weight:400}
+.pv-list .pv-entry[aria-pressed=true] small{color:var(--on-solid)}
+.pv-list .pv-new{flex-direction:row!important;flex-wrap:wrap;align-items:center!important;column-gap:6px!important;border-top:1px solid var(--green-3)!important;border-radius:0 0 7px 7px!important;margin-top:2px}
+.pv-list .pv-new small{flex-basis:100%;padding-left:22px}
+.pv-entry svg{width:16px;height:16px;flex:none}
+.pv-none{margin:4px 10px;font-size:12.5px;color:var(--cm-muted)}
+/* A question chooses an existing chapter view. Both menus share the toolbar pattern. */
+.cm-qsum{background:var(--sage-2);font-weight:600;color:var(--green-11)}
+.cm-qsum:hover,.cm-qpick[open]>.cm-qsum{border-color:var(--green-8);background:var(--green-3)}
+.cm-qsum>span{color:var(--sage-10)}
+.cm-qlist{z-index:46;display:grid;gap:2px;width:min(410px,82vw);max-height:min(62vh,420px);padding:7px}
+.cm-qintro{margin:2px 8px 6px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--sage-10)}
+.cm-qentry{display:grid;gap:1px;width:100%;min-height:52px;text-align:left;padding:7px 10px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--green-12)}
+.cm-qentry:hover:not(:disabled){background:var(--sage-2)}
+.cm-qentry[aria-current=true]{border-color:var(--green-7);background:var(--green-2)}
+.cm-qentry b{font-size:13px;font-weight:600;line-height:1.35}
+.cm-qentry span{font-size:12px;color:var(--green-11)}
+.cm-qentry small{font-size:12px;line-height:1.4;color:var(--sage-10);overflow-wrap:anywhere}
+.cm-qentry:disabled{opacity:.65;cursor:default}
+.cm-qentry:disabled small{color:var(--gold-11)}
+.pv-frozen-note{margin:8px 12px 0;padding:6px 9px;border:1px solid var(--green-5);border-radius:6px;background:var(--green-2);color:var(--green-11);font-size:12px}
+/* The perspective's bar: the picture its concern draws, and Arrange. */
+.pv-picture{display:flex;align-items:baseline;gap:8px;min-width:0;font-weight:600;color:var(--green-12)}
+.pv-picture small{font-weight:400;font-size:12px;color:var(--cm-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm.pv .cm-bar .cm-lenses{display:flex;align-items:center;gap:12px;flex:1 1 auto;min-width:0;flex-wrap:wrap}
+.cm.pv .cm-title strong{overflow:hidden;text-overflow:ellipsis;max-width:340px}
+.cm.pv .cm-crumbs span{padding:0 2px;color:var(--sage-11)}
+/* The companion: the perspective (its form while it is new), the selection, the process, the reading and the exchange. */
+.cm-companion.pv>[data-pv-part]:empty{display:none}
+.pv-form form{display:grid;gap:8px;margin:0}
+.pv-field{display:grid;gap:3px;font-size:12px;color:var(--cm-muted);font-weight:600;letter-spacing:.02em}
+.pv-field small{font-weight:400;letter-spacing:0}
+.pv-field select,.pv-field input,.pv-field textarea{font:inherit;font-size:13px;font-weight:400;letter-spacing:0;color:var(--green-12);border:1px solid var(--green-5);border-radius:7px;background:var(--sage-1);padding:5px 8px;min-height:32px;width:100%}
+.pv-field textarea{resize:vertical;min-height:52px}
+.pv-field :focus-visible{outline:2px solid var(--gold-8);outline-offset:1px}
+.pv-hint{margin:-4px 0 0!important;font-size:12.5px!important;color:var(--sage-11)}
+.pv-error{margin:0!important;color:var(--red-11);font-size:12.5px!important}
+.pv-checks{margin:4px 0 6px;padding-left:18px;font-size:12.5px;line-height:1.45}
+.pv-reading details>summary{cursor:pointer;font-size:12px;font-weight:600;color:var(--sage-11);margin:2px 0 4px}
+/* The process's own authoring (process-editing.js), in the Process perspective's companion and Chapter 1's: the scenario
+   traced on the picture, its steps, the selected element's claims, and what can be added. */
+.pe-scenarios{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 6px}
+.pe-scenarios .cm-btn[aria-pressed=true]{background:var(--green-10);border-color:var(--green-10);color:var(--on-solid);font-weight:600}
+.pe-steps{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:3px}
+.pe-step{display:grid;grid-template-columns:22px 1fr;column-gap:6px;width:100%;text-align:left;border:1px solid transparent;border-radius:7px;background:none;padding:4px 6px;cursor:pointer;font:inherit;font-size:13px;color:var(--green-12)}
+.pe-step>span{grid-row:span 2;align-self:center;text-align:center;font-size:12px;font-weight:700;line-height:20px;border-radius:50%;background:var(--green-3);color:var(--sage-11)}
+.pe-step small{font-size:12px;color:var(--cm-muted)}
+.pe-step:hover{background:var(--sage-2)}
+.pe-step[aria-current=step]{border-color:var(--green-10);background:var(--sage-3)}
+.pe-step:focus-visible{outline:2px solid var(--gold-8);outline-offset:1px}
+.pe-claim{border-left:3px solid var(--gold-6);padding-left:8px;margin:4px 0}
+.pe-claim p{margin:0 0 3px}
+.pe-claim small{font-size:12px;color:var(--cm-muted)}
+.pe-question{border:1px solid var(--gold-5);background:var(--sage-1);border-radius:7px;padding:6px 8px;margin:6px 0}
+.pe-question p{margin:3px 0}
+.pe-question small{font-size:12px;color:var(--cm-muted)}
+.pe-conflict{color:var(--red-11);font-size:12.5px}
+/* The traced scenario on the picture: its flows drawn strong, the others recede. */
+.cm-svg.pe-tracing g.nt-edge:not(.pe-on):not(.sel){opacity:.42}
+.cm-svg.pe-tracing g.nt-edge.pe-on .nt-line{stroke:var(--gold-9)!important;stroke-width:2.6px}
+.cm-svg.pe-tracing g.nt-node.pe-on{filter:drop-shadow(0 0 2.5px var(--gold-8))}
+/* Phones: the list opens in the switcher's own flow, the full width of the frame. */
+@media(max-width:700px){
+ .cm-actions>.pv-pick,.cm-actions>.cm-qpick{margin-left:0}
+ .cm-actions>.pv-pick[open],.cm-actions>.cm-qpick[open]{flex:1 1 100%}
+ .cm-qlist{position:static;width:auto;max-width:none;max-height:48vh;box-shadow:none;margin-top:4px}
+ .pv-list{position:static;width:auto;max-width:none;min-width:0;margin-top:4px;box-shadow:none}
+ .cm.pv .cm-title strong{max-width:220px}
+}
+/* The Model tab's environment bar (Chapter 10) stays compact above whichever view the chapter shows. */
+body.cm-active .rt-environment-bar{margin:0 0 6px;padding:5px 10px;gap:10px}
+body.cm-active .rt-environment-bar>.l-field{display:flex;align-items:center;gap:8px}
+body.cm-active .rt-environment-bar>.l-field>span{flex:none;font-size:12px;margin:0}
+body.cm-active .rt-environment-bar select{min-height:30px;padding:3px 8px;font-size:13px;max-width:420px}
+body.cm-active .rt-environment-bar>div{margin-top:0}
+body.cm-active .rt-environment-bar .btn{min-height:30px;padding:4px 10px;font-size:13px}
+@media(max-width:700px){body.cm-active .rt-environment-bar{flex-direction:row;flex-wrap:wrap;padding:5px 8px;gap:6px}body.cm-active .rt-environment-bar>.l-field>span{display:none}body.cm-active .rt-environment-bar .btn{min-height:30px}}

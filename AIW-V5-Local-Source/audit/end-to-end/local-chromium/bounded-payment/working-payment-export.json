@@ -1,0 +1,760 @@
+{
+  "exportedAt": "2026-10-12T07:21:23.239Z",
+  "title": "UATC-0197 local draft · human review queue — Solution Design",
+  "edition": "architecture",
+  "audience": "all",
+  "status": {
+    "version": "0.1",
+    "status": "Working draft · not approved",
+    "date": "2026-10-12"
+  },
+  "provenance": {
+    "line": "Drafted by Sol from the records; not reviewed by a person.",
+    "detail": "Of 1 record: 1 drafted by Sol; none confirmed by a person. Approval is printed only from approval records.",
+    "by": {
+      "sol": 1,
+      "import": 0,
+      "rules": 0,
+      "person": 0,
+      "reference": 0,
+      "proposal": 0
+    },
+    "confirmed": 0,
+    "total": 1
+  },
+  "structure": [
+    {
+      "level": 1,
+      "title": "UATC-0197 LOCAL DRAFT · HUMAN REVIEW QUEUE",
+      "anchor": "uatc-0197-local-draft--human-review-queue"
+    },
+    {
+      "level": 2,
+      "title": "Document control",
+      "anchor": "document-control"
+    },
+    {
+      "level": 2,
+      "title": "Contents",
+      "anchor": "contents"
+    },
+    {
+      "level": 1,
+      "title": "1. Introduction: UATC-0197 local draft · human review queue",
+      "anchor": "1-introduction-uatc-0197-local-draft--human-review-queue"
+    },
+    {
+      "level": 2,
+      "title": "Purpose",
+      "anchor": "purpose"
+    },
+    {
+      "level": 2,
+      "title": "Key functionalities",
+      "anchor": "key-functionalities"
+    },
+    {
+      "level": 2,
+      "title": "Target users",
+      "anchor": "target-users"
+    },
+    {
+      "level": 2,
+      "title": "Business problems solved",
+      "anchor": "business-problems-solved"
+    },
+    {
+      "level": 2,
+      "title": "Stakeholder personas",
+      "anchor": "stakeholder-personas"
+    },
+    {
+      "level": 2,
+      "title": "Scope",
+      "anchor": "scope"
+    },
+    {
+      "level": 1,
+      "title": "2. Architectural drivers",
+      "anchor": "2-architectural-drivers"
+    },
+    {
+      "level": 1,
+      "title": "3. Architecture decisions",
+      "anchor": "3-architecture-decisions"
+    },
+    {
+      "level": 1,
+      "title": "4. Architectural components, interfaces, properties and composition",
+      "anchor": "4-architectural-components-interfaces-properties-and-composition"
+    },
+    {
+      "level": 1,
+      "title": "5. Architecture models",
+      "anchor": "5-architecture-models"
+    },
+    {
+      "level": 2,
+      "title": "Context diagram (Level 1)",
+      "anchor": "context-diagram-level-1"
+    },
+    {
+      "level": 2,
+      "title": "Container diagram (Level 2)",
+      "anchor": "container-diagram-level-2"
+    },
+    {
+      "level": 2,
+      "title": "Component diagrams (Level 3)",
+      "anchor": "component-diagrams-level-3"
+    },
+    {
+      "level": 2,
+      "title": "Deployment diagram",
+      "anchor": "deployment-diagram"
+    },
+    {
+      "level": 1,
+      "title": "6. Architecture model refinements",
+      "anchor": "6-architecture-model-refinements"
+    },
+    {
+      "level": 2,
+      "title": "Gap plan to the next version",
+      "anchor": "gap-plan-to-the-next-version"
+    },
+    {
+      "level": 1,
+      "title": "7. Appendix",
+      "anchor": "7-appendix"
+    },
+    {
+      "level": 2,
+      "title": "A. Requirements analysis and component mapping",
+      "anchor": "a-requirements-analysis-and-component-mapping"
+    },
+    {
+      "level": 3,
+      "title": "Requirements in no group",
+      "anchor": "requirements-in-no-group"
+    },
+    {
+      "level": 2,
+      "title": "B. Open items",
+      "anchor": "b-open-items"
+    },
+    {
+      "level": 3,
+      "title": "Chapter 1 · Requirements",
+      "anchor": "chapter-1--requirements"
+    },
+    {
+      "level": 3,
+      "title": "Chapter 11 · Review & realize",
+      "anchor": "chapter-11--review--realize"
+    },
+    {
+      "level": 3,
+      "title": "Checks to fix and to confirm",
+      "anchor": "checks-to-fix-and-to-confirm"
+    },
+    {
+      "level": 2,
+      "title": "C. Domain lens",
+      "anchor": "c-domain-lens"
+    },
+    {
+      "level": 2,
+      "title": "D. Annexes",
+      "anchor": "d-annexes"
+    },
+    {
+      "level": 2,
+      "title": "E. Provenance",
+      "anchor": "e-provenance"
+    }
+  ],
+  "figures": {
+    "schema": "aiw.sdd-figures/1",
+    "code": null,
+    "documentFingerprint": "7a270d254f4cf263b1830a7847426deea8ff915e0e586dcc2a1b0c42f9052202",
+    "manifest": [],
+    "omitted": [
+      {
+        "chapter": 1,
+        "scene": "context",
+        "title": "Context",
+        "reason": "No application component is recorded yet; the context has no system to draw."
+      },
+      {
+        "chapter": 5,
+        "scene": "container",
+        "title": "Containers",
+        "reason": "Nothing is recorded for this picture yet."
+      },
+      {
+        "chapter": 10,
+        "scene": "deployment",
+        "title": "Deployment",
+        "reason": "Nothing is placed in an environment yet."
+      }
+    ]
+  },
+  "openItems": {
+    "total": 6,
+    "causes": [
+      {
+        "chapter": 11,
+        "kind": "document",
+        "cause": "Authoring group (the SDD narrative owner)",
+        "state": "gap",
+        "count": 1,
+        "records": [
+          "SDD narrative"
+        ],
+        "questions": []
+      },
+      {
+        "chapter": 11,
+        "kind": "document",
+        "cause": "Audience of the SDD narrative",
+        "state": "gap",
+        "count": 1,
+        "records": [
+          "SDD narrative"
+        ],
+        "questions": []
+      },
+      {
+        "chapter": 11,
+        "kind": "document",
+        "cause": "summary of the SDD narrative",
+        "state": "not-stated",
+        "count": 1,
+        "records": [
+          "SDD narrative"
+        ],
+        "questions": []
+      },
+      {
+        "chapter": 1,
+        "kind": "brief",
+        "cause": "Problem statement of the brief",
+        "state": "gap",
+        "count": 1,
+        "records": [
+          "Brief"
+        ],
+        "questions": []
+      },
+      {
+        "chapter": 1,
+        "kind": "brief",
+        "cause": "goal of the brief",
+        "state": "not-stated",
+        "count": 1,
+        "records": [
+          "Brief"
+        ],
+        "questions": []
+      },
+      {
+        "chapter": 1,
+        "kind": "requirement",
+        "cause": "Requirement in no requirement group",
+        "state": "gap",
+        "count": 1,
+        "records": [
+          "REQ-001"
+        ],
+        "questions": []
+      }
+    ],
+    "checks": {
+      "toFix": 17,
+      "toConfirm": 16,
+      "treated": 0,
+      "unit": {
+        "fix": "finding to fix",
+        "confirm": "item to confirm"
+      },
+      "chapters": [
+        {
+          "chapter": 1,
+          "title": "Requirements",
+          "toFix": 11,
+          "toConfirm": 2
+        },
+        {
+          "chapter": 2,
+          "title": "Architectural drivers",
+          "toFix": 1,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 3,
+          "title": "Decisions",
+          "toFix": 1,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 4,
+          "title": "Logical application",
+          "toFix": 2,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 5,
+          "title": "Application realization",
+          "toFix": 0,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 6,
+          "title": "Logical technology",
+          "toFix": 0,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 7,
+          "title": "Technology realization",
+          "toFix": 0,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 8,
+          "title": "Interfaces & data",
+          "toFix": 0,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 9,
+          "title": "Security",
+          "toFix": 0,
+          "toConfirm": 1
+        },
+        {
+          "chapter": 10,
+          "title": "Deployment / runtime",
+          "toFix": 0,
+          "toConfirm": 2
+        },
+        {
+          "chapter": 11,
+          "title": "Review & realize",
+          "toFix": 2,
+          "toConfirm": 4
+        }
+      ],
+      "rules": [
+        {
+          "chapter": 1,
+          "level": "fix",
+          "rule": "C1:missing-type",
+          "title": "Add business outcome",
+          "detail": "Record at least one business outcome to define this project.",
+          "titles": 7,
+          "details": 7,
+          "refs": [],
+          "count": 7,
+          "label": "Add …"
+        },
+        {
+          "chapter": 1,
+          "level": "fix",
+          "rule": "C1:brief",
+          "title": "Complete the project brief",
+          "detail": "Capture the problem, intended outcome, and source.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "Brief"
+          ],
+          "count": 1,
+          "label": "Complete the project brief"
+        },
+        {
+          "chapter": 1,
+          "level": "confirm",
+          "rule": "C1:brief-review",
+          "title": "Confirm the project brief",
+          "detail": "Review the brief and its source before confirming it.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "Brief"
+          ],
+          "count": 1,
+          "label": "Confirm the project brief"
+        },
+        {
+          "chapter": 1,
+          "level": "fix",
+          "rule": "C1:accountability",
+          "title": "Name the owner and source",
+          "detail": "Every requirement needs an accountable owner and a traceable source.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "REQ-001"
+          ],
+          "count": 1,
+          "label": "Name the owner and source"
+        },
+        {
+          "chapter": 1,
+          "level": "fix",
+          "rule": "C1:journey-link",
+          "title": "Link a journey step",
+          "detail": "Show where this requirement is needed, or record why it belongs on no journey.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "REQ-001"
+          ],
+          "count": 1,
+          "label": "Link a journey step"
+        },
+        {
+          "chapter": 1,
+          "level": "fix",
+          "rule": "C1:outcome-link",
+          "title": "Link a business outcome",
+          "detail": "Show why this requirement matters.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "REQ-001"
+          ],
+          "count": 1,
+          "label": "Link a business outcome"
+        },
+        {
+          "chapter": 1,
+          "level": "confirm",
+          "rule": "C1:confirmation",
+          "title": "Review the draft",
+          "detail": "This record has not yet been confirmed by you.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "REQ-001"
+          ],
+          "count": 1,
+          "label": "Review the draft"
+        },
+        {
+          "chapter": 2,
+          "level": "fix",
+          "rule": "C2:empty",
+          "title": "Add a quality scenario",
+          "detail": "Start with a requirement and define the response you need to measure.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Add a quality scenario"
+        },
+        {
+          "chapter": 2,
+          "level": "confirm",
+          "rule": "C2:intake",
+          "title": "Review the current requirements",
+          "detail": "Chapter 1 has not been reviewed for this quality-driver revision.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review the current requirements"
+        },
+        {
+          "chapter": 3,
+          "level": "fix",
+          "rule": "C3:empty",
+          "title": "Frame a design question",
+          "detail": "Use a requirement or architectural driver to identify a choice.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Frame a design question"
+        },
+        {
+          "chapter": 3,
+          "level": "confirm",
+          "rule": "C3:intake",
+          "title": "Review the current inputs",
+          "detail": "Requirements or architectural drivers have not been reviewed for this decision revision.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review the current inputs"
+        },
+        {
+          "chapter": 4,
+          "level": "fix",
+          "rule": "C4:empty",
+          "title": "Define a logical responsibility",
+          "detail": "Start from a requirement and name the responsibility that fulfils it.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Define a logical responsibility"
+        },
+        {
+          "chapter": 4,
+          "level": "confirm",
+          "rule": "C4:intake",
+          "title": "Review the inherited inputs",
+          "detail": "Requirements, quality drivers, or decisions have not been reviewed for this logical model.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review the inherited inputs"
+        },
+        {
+          "chapter": 4,
+          "level": "fix",
+          "rule": "C4:uncovered",
+          "title": "Cover REQ-001 · UATC-0197 · Create new transfer",
+          "detail": "Assign this requirement to a responsibility and explain the boundary.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "REQ-001"
+          ],
+          "count": 1,
+          "label": "Cover REQ-001 · UATC-0197 · Create new transfer"
+        },
+        {
+          "chapter": 5,
+          "level": "confirm",
+          "rule": "C5:intake",
+          "title": "Review the inherited logical model",
+          "detail": "Review the current responsibilities, allocation scopes, and open Chapter 4 findings.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review the inherited logical model"
+        },
+        {
+          "chapter": 6,
+          "level": "confirm",
+          "rule": "C6:intake",
+          "title": "Review the application handoff",
+          "detail": "Application needs or their upstream rationale have changed.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review the application handoff"
+        },
+        {
+          "chapter": 7,
+          "level": "confirm",
+          "rule": "C7:intake",
+          "title": "Review Chapter 6 inputs",
+          "detail": "Logical capabilities or their upstream inputs have changed.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review Chapter 6 inputs"
+        },
+        {
+          "chapter": 8,
+          "level": "confirm",
+          "rule": "C8:intake",
+          "title": "Review inherited boundaries",
+          "detail": "Review the current application interactions and Chapter 7 handoff.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review inherited boundaries"
+        },
+        {
+          "chapter": 9,
+          "level": "confirm",
+          "rule": "C9:intake",
+          "title": "Review inherited protection obligations",
+          "detail": "Review contracts, classified data, trust boundaries, and the Chapter 8 handoff.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review inherited protection obligations"
+        },
+        {
+          "chapter": 10,
+          "level": "confirm",
+          "rule": "C10:intake",
+          "title": "Review the Security handoff",
+          "detail": "Review inherited control, evidence, and operating obligations.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review the Security handoff"
+        },
+        {
+          "chapter": 10,
+          "level": "confirm",
+          "rule": "C10:SCALE-NO-TARGET",
+          "title": "Record a scale target",
+          "detail": "No Chapter 2 driver carries a number for a rate, concurrent users or a data volume, so no request demand can be derived for any component. Record one on a scalability driver (requests per second, concurrent users, records or GB), or set the review objective on the Chapter 11 desk.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Record a scale target"
+        },
+        {
+          "chapter": 11,
+          "level": "confirm",
+          "rule": "intake",
+          "title": "Review the inherited project",
+          "detail": "Review Chapter 10 and the current cross-chapter findings.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Review the inherited project"
+        },
+        {
+          "chapter": 11,
+          "level": "fix",
+          "rule": "narrative",
+          "title": "Frame the solution design document",
+          "detail": "Name the document owner and audience, explain the scope and approach, and confirm the wording.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Frame the solution design document"
+        },
+        {
+          "chapter": 11,
+          "level": "fix",
+          "rule": "source-findings",
+          "title": "Assess 15 source findings to fix or treat",
+          "detail": "Repair them in their source chapters or record an explicit treatment with evidence. They remain visible in the SDD.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Assess 15 source findings to fix or treat"
+        },
+        {
+          "chapter": 11,
+          "level": "confirm",
+          "rule": "trace",
+          "title": "Review the REQ-001 architecture trail",
+          "detail": "Follow all five stages and record the traceability review.",
+          "titles": 1,
+          "details": 1,
+          "refs": [
+            "REQ-001"
+          ],
+          "count": 1,
+          "label": "Review the REQ-001 architecture trail"
+        },
+        {
+          "chapter": 11,
+          "level": "confirm",
+          "rule": "design-review",
+          "title": "Record the architecture review",
+          "detail": "Record the reviewer, evidence reference, rationale, and outcome.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Record the architecture review"
+        },
+        {
+          "chapter": 11,
+          "level": "confirm",
+          "rule": "baseline",
+          "title": "Freeze a reviewable baseline",
+          "detail": "The working SDD remains exportable. Freeze an immutable snapshot for review and governance.",
+          "titles": 1,
+          "details": 1,
+          "refs": [],
+          "count": 1,
+          "label": "Freeze a reviewable baseline"
+        }
+      ]
+    }
+  },
+  "content": {
+    "score": 0,
+    "pass": false,
+    "records": 0,
+    "met": 0,
+    "line": "0 % of the design records (0 of 0) meet the content standard; sections 2, 3 and 4 have incomplete design records.",
+    "sections": [
+      {
+        "n": 2,
+        "title": "Architectural drivers",
+        "present": true,
+        "banner": false,
+        "records": 0,
+        "met": 0,
+        "score": 0,
+        "statements": 0,
+        "open": 0,
+        "openShare": 0,
+        "rules": null,
+        "rulesShare": null,
+        "skeleton": false,
+        "reasons": [],
+        "faults": 0,
+        "pass": false
+      },
+      {
+        "n": 3,
+        "title": "Architecture decisions",
+        "present": true,
+        "banner": false,
+        "records": 0,
+        "met": 0,
+        "score": 0,
+        "statements": 0,
+        "open": 0,
+        "openShare": 0,
+        "rules": null,
+        "rulesShare": null,
+        "skeleton": false,
+        "reasons": [],
+        "faults": 0,
+        "pass": false
+      },
+      {
+        "n": 4,
+        "title": "Architectural components, interfaces, properties and composition",
+        "present": true,
+        "banner": false,
+        "records": 0,
+        "met": 0,
+        "score": 0,
+        "statements": 0,
+        "open": 0,
+        "openShare": 0,
+        "rules": null,
+        "rulesShare": null,
+        "skeleton": false,
+        "reasons": [],
+        "faults": 0,
+        "pass": false
+      }
+    ],
+    "findings": []
+  },
+  "changesSinceBaseline": null,
+  "markdown": "<!-- aiw:cover -->\n# UATC-0197 LOCAL DRAFT · HUMAN REVIEW QUEUE\n\nSolution Design Document\n\nAuthoring group: open: authoring group\n\nVersion 0.1 · Working draft · not approved\n\nDate: 2026-10-12 · Baseline: none frozen yet\n\nArchitecture edition · For everyone\n\nContent readiness: 0 % of the design records (0 of 0) meet the content standard; sections 2, 3 and 4 have incomplete design records.\n<!-- aiw:/cover -->\n\n## Document control\n\n| Version | Status | Owner | Audience | Date | Baseline |\n| --- | --- | --- | --- | --- | --- |\n| 0.1 | Working draft · not approved | open | open | 2026-10-12 | none frozen |\n\nApprovals: none recorded.\n\nProvenance: Drafted by Sol from the records; not reviewed by a person. Of 1 record: 1 drafted by Sol; none confirmed by a person. Approval is printed only from approval records.\n\nArchitect review: none recorded for the current design.\n\n## Contents\n\n<!-- aiw:contents -->\n[UATC-0197 LOCAL DRAFT · HUMAN REVIEW QUEUE](#uatc-0197-local-draft--human-review-queue): [Document control](#document-control) · [Contents](#contents)\n\n[1. Introduction: UATC-0197 local draft · human review queue](#1-introduction-uatc-0197-local-draft--human-review-queue): [Purpose](#purpose) · [Key functionalities](#key-functionalities) · [Target users](#target-users) · [Business problems solved](#business-problems-solved) · [Stakeholder personas](#stakeholder-personas) · [Scope](#scope)\n\n[2. Architectural drivers](#2-architectural-drivers)\n\n[3. Architecture decisions](#3-architecture-decisions)\n\n[4. Architectural components, interfaces, properties and composition](#4-architectural-components-interfaces-properties-and-composition)\n\n[5. Architecture models](#5-architecture-models): [Context diagram (Level 1)](#context-diagram-level-1) · [Container diagram (Level 2)](#container-diagram-level-2) · [Component diagrams (Level 3)](#component-diagrams-level-3) · [Deployment diagram](#deployment-diagram)\n\n[6. Architecture model refinements](#6-architecture-model-refinements): [Gap plan to the next version](#gap-plan-to-the-next-version)\n\n[7. Appendix](#7-appendix): [A. Requirements analysis and component mapping](#a-requirements-analysis-and-component-mapping) · [B. Open items](#b-open-items) · [C. Domain lens](#c-domain-lens) · [D. Annexes](#d-annexes) · [E. Provenance](#e-provenance)\n<!-- aiw:/contents -->\n\n# 1. Introduction: UATC-0197 local draft · human review queue\n\nStatus: Drafted by Sol, not reviewed by a person; not confirmed by a person.\n\nopen: summary of the SDD narrative not stated. Write it in Chapter 11 · Work · Frame the SDD.\n\n## Purpose\n\nopen: goal of the brief not stated. The brief records no goal (Chapter 1 · Work · Brief).\n\nThis document is for a readership the SDD narrative does not name yet (open: audience).\n\n## Key functionalities\n\n1 requirement is recorded and no requirement group holds them yet (Chapter 1 · Requirement groups); the first are:\n\n- REQ-001 · UATC-0197 · Create new transfer\n\n## Target users\n\nNone recorded: no actor or stakeholder (Chapter 1 · Work).\n\n## Business problems solved\n\nNone recorded: no business outcome (Chapter 1 · Work).\n\n## Stakeholder personas\n\nNone recorded: no stakeholder, and no actor with a persona (Chapter 1 · Work).\n\n## Scope\n\nNone recorded: no scope record (Chapter 1 · Work).\n\n# 2. Architectural drivers\n\nNone recorded: no architectural driver (Chapter 2 · Work).\n\n# 3. Architecture decisions\n\nNone recorded: no architecture decision (Chapter 3 · Work).\n\n# 4. Architectural components, interfaces, properties and composition\n\nNone recorded: no application component (Chapter 5 · Work).\n\n# 5. Architecture models\n\nThe models follow the C4 levels: the system in its context (level 1), the containers it runs in (level 2) and the components inside each container (level 3), with the deployment that runs them. Each figure is drawn from the saved records by the same model and renderer as the pictures on screen; positions are a projection, never facts.\n\n## Context diagram (Level 1)\n\nPurpose: The system, the people who take part in its journey and the external systems it exchanges with.\n\nNone recorded: no application component is recorded yet; the context has no system to draw.\n\n## Container diagram (Level 2)\n\nPurpose: The containers the system runs in, each with the components it holds, the stores they keep data in, the external systems they exchange with, and the contracts between them.\n\nNone recorded: no application component is recorded yet, so there is no container to draw.\n\n## Component diagrams (Level 3)\n\nPurpose: The components inside one container, the interactions and contracts between them, and the containers and external systems they reach.\n\nNone recorded: no container holds an application component (Chapter 5 · Work).\n\n## Deployment diagram\n\nPurpose: Per environment: trust boundaries, zones, the placements in them, what each stands on and the numbered runtime paths.\n\nNone recorded: nothing is placed in an environment yet; no environment is recorded.\n\n<!-- aiw:figure-manifest -->\n\n# 6. Architecture model refinements\n\nNone recorded: this is the first version; no refinement is recorded yet.\n\n## Gap plan to the next version\n\nNone recorded: no requirement carries a delivery assessment, so there is no gap to plan (Chapter 1 · Import).\n\n# 7. Appendix\n\n## A. Requirements analysis and component mapping\n\n1 requirement in scope: 0 in at least one of the 0 requirement groups below and 1 in none. 0 are realised by a component through a responsibility that names it or its group, or by a component that names it (a curated link); the derived trails beyond are in the traceability matrix, with every requirement (Appendix D).\n\n### Requirements in no group\n\n1 requirement: REQ-001. Each is in the requirement register (Appendix D).\n\n## B. Open items\n\nWhat is open, grouped by cause with its count and where to resolve it. The chapters’ checks leave 17 findings to fix and 16 items to confirm (the Output tab’s readiness board counts the same).\n\n6 open items in 6 causes.\n\n### Chapter 1 · Requirements\n\n**Goal of the brief** (brief, not stated): 1 record, Brief. Resolve in Chapter 1 · Work.\n\n**Problem statement of the brief** (brief, missing): 1 record, Brief. Resolve in Chapter 1 · Work · Brief.\n\n**Requirement in no requirement group** (requirement, missing): 1 record, REQ-001. Resolve in Chapter 1 · Requirement groups.\n\n### Chapter 11 · Review & realize\n\n**Audience of the SDD narrative** (document, missing): 1 record, SDD narrative. Resolve in Chapter 11 · Work · Frame the SDD.\n\n**Authoring group (the SDD narrative owner)** (document, missing): 1 record, SDD narrative. Resolve in Chapter 11 · Work · Frame the SDD.\n\n**Summary of the SDD narrative** (document, not stated): 1 record, SDD narrative. Resolve in Chapter 11 · Work.\n\n### Checks to fix and to confirm\n\n- Chapter 1 · Add business outcome and 6 similar checks — 7 findings to fix; each record’s detail is in Chapter 1 · Validate\n- Chapter 1 · Complete the project brief — 1 finding to fix (Brief): Capture the problem, intended outcome, and source.\n- Chapter 1 · Name the owner and source — 1 finding to fix (REQ-001): Every requirement needs an accountable owner and a traceable source.\n- Chapter 1 · Link a journey step — 1 finding to fix (REQ-001): Show where this requirement is needed, or record why it belongs on no journey.\n- Chapter 1 · Link a business outcome — 1 finding to fix (REQ-001): Show why this requirement matters.\n- Chapter 2 · Add a quality scenario — 1 finding to fix: Start with a requirement and define the response you need to measure.\n- Chapter 3 · Frame a design question — 1 finding to fix: Use a requirement or architectural driver to identify a choice.\n- Chapter 4 · Define a logical responsibility — 1 finding to fix: Start from a requirement and name the responsibility that fulfils it.\n- Chapter 4 · Cover REQ-001 · UATC-0197 · Create new transfer — 1 finding to fix (REQ-001): Assign this requirement to a responsibility and explain the boundary.\n- Chapter 11 · Frame the solution design document — 1 finding to fix: Name the document owner and audience, explain the scope and approach, and confirm the wording.\n- Chapter 11 · Assess 15 source findings to fix or treat — 1 finding to fix: Repair them in their source chapters or record an explicit treatment with evidence. They remain visible in the SDD.\n- Chapter 1 · Confirm the project brief — 1 item to confirm (Brief): Review the brief and its source before confirming it.\n\nAnd 15 more kinds of check, 15 more items (each chapter’s Validate).\n\n## C. Domain lens\n\nNone recorded: no domain lens is chosen for this project. A lens is chosen by a person; it informs and blocks nothing.\n\n## D. Annexes\n\nThe registers are separate exports, never printed in this document’s body. Each is read from the same saved records.\n\n| Annex | What it holds | How to export it |\n| --- | --- | --- |\n| Requirement register, by group | Every requirement with its external id, statement, priority and source assertions, group by group, a page at a time | /api/export?chapter=11&annex=requirements&format=md&page=1 (also csv, json) |\n| Traceability matrix | Every requirement against each layer of the design, the curated links apart from the trails derived from them | /api/export?chapter=11&annex=matrix&format=csv |\n| Change journal | Every recorded change with its fields before and after and its affected records, a page at a time | /api/export?chapter=11&document=changes&format=md&page=1 (also csv, json; a hundred changes a page) |\n| Architecture requirements specification | Each quality driver as a requirement with its scenario, target, verification and trace; constraints and assumptions | /api/export?chapter=2&document=ars&format=md |\n| Component specifications | One specification per component: responsibilities, interfaces, data, requirements, quality, technology, protection and runtime | /api/export?chapter=11&annex=specifications&format=md (one: chapter=5&document=spec&id=) |\n| Interface specifications | The contracts as OpenAPI and AsyncAPI documents | /api/export?chapter=8&format=openapi (and format=asyncapi) |\n| Figures | Every figure of section 5: each level’s overview with the detail of every group it folds, and the component diagram of every container, each fitting one page | /api/export?chapter=11&annex=figures&format=html (also pdf, and zip for the SVG files with their manifest) |\n| Chapter registers | Every record of each chapter with every field | /api/export?chapter=1&format=md (chapters 1 to 10) |\n| Review registers | The review records: findings and treatments, delivery obligations, change review, performance and reasoning records | /api/export?chapter=11&annex=registers&format=md |\n\n## E. Provenance\n\nDrafted by Sol from the records; not reviewed by a person. Of 1 record: 1 drafted by Sol; none confirmed by a person. Approval is printed only from approval records.\n\n| Chapter | Records | Drafted by Sol | Imported | Journey rules | By a person | AIW reference | Proposed by AIW | Confirmed |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 1 · Requirements | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 0 |\n\nPeople: no person is recorded against a change, an import or a review.\n\nSources: no source document is kept with the project.\n\nReviewed: 0 of 1 record confirmed by a person; no architect review recorded; 0 finding treatments recorded; no governance record. Nothing in this document is approved by being written down.\n\n",
+  "guidance": "An edition of the working SDD, assembled by rule from the saved records; the project document travels only when asked (embed=project). No independent evidence verification."
+}

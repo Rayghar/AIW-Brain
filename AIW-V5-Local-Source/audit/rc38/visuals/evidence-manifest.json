@@ -1,0 +1,164 @@
+{
+  "schema": "aiw.visual-evidence/1",
+  "release": "rc38",
+  "evidenceKind": "native-svg-diagnostic",
+  "browserScreenshot": false,
+  "pathsRelativeTo": "this manifest directory",
+  "renderedAt": "2026-10-21T05:34:28.710Z",
+  "capture": {
+    "source": "Native createNotation screen SVG from the reference project, mounted with Happy DOM and real connection controls.",
+    "geometryModifiedForRasterization": false,
+    "renderer": "@resvg/resvg-js",
+    "rendererVersion": "2.6.2",
+    "sourcePolicy": "Original SVG files are unchanged. Diagnostic input expands CSS font shorthand to equivalent longhands because resvg does not support the shorthand. No text, labels, shapes, coordinates, paths, routing or element counts are modified. Raster background supplied as a renderer option; original SVG dimensions."
+  },
+  "limitations": [
+    "Pure SVG rasterization, not a browser screenshot. Surrounding HTML, actual browser viewport/camera scaling, toolbar layout, interactions and responsive CSS are not exercised.",
+    "The real self-hosted IBM Plex Sans 400/500/600 and Mono 400/500 assets are losslessly decompressed from WOFF2 to TTF for this renderer. Declared source families remain unchanged. IBM Plex Sans is the sans fallback, while any source Georgia uses locally installed DejaVu Serif because Georgia is absent.",
+    "SVG/CSS behavior follows resvg. It warns that :nth-of-type, :focus-visible, :is, :not, forced-colors @media and auto-start-reverse marker orientation are unsupported. This default overview capture does not validate forced colors, focus/hover styles, All/None/Selected modes or arrowhead direction.",
+    "Screen SVG fixtures include their internal SVG styles and resolved visible-connection CSS; outside ancestor selectors, viewport-dependent typography and full native application styles are not captured. PNGs provide static geometry/content diagnostics, not browser pixel acceptance."
+  ],
+  "arrange": {
+    "notes": "arrange-capture-notes.json",
+    "bulkyHtmlFixturesIncluded": false,
+    "evidenceKind": "native-handler capture notes",
+    "browserScreenshot": false
+  },
+  "rendererManifest": "render-manifest.json",
+  "rendererManifestPaths": "Original absolute capture/font paths are retained as provenance; use the relative paths in this evidence manifest to locate copied assets.",
+  "images": [
+    {
+      "id": "diagram-application-screen",
+      "nativeSvg": "diagram-application-screen.svg",
+      "rasterDiagnostic": "diagram-application-screen.png",
+      "width": 860,
+      "height": 1124
+    },
+    {
+      "id": "diagram-solution-screen",
+      "nativeSvg": "diagram-solution-screen.svg",
+      "rasterDiagnostic": "diagram-solution-screen.png",
+      "width": 1231,
+      "height": 607
+    },
+    {
+      "id": "diagram-stack-screen",
+      "nativeSvg": "diagram-stack-screen.svg",
+      "rasterDiagnostic": "diagram-stack-screen.png",
+      "width": 1231,
+      "height": 1018
+    },
+    {
+      "id": "layers-ch1-detail-screen",
+      "nativeSvg": "layers-ch1-detail-screen.svg",
+      "rasterDiagnostic": "layers-ch1-detail-screen.png",
+      "width": 1204,
+      "height": 867
+    },
+    {
+      "id": "layers-ch1-screen",
+      "nativeSvg": "layers-ch1-screen.svg",
+      "rasterDiagnostic": "layers-ch1-screen.png",
+      "width": 1294,
+      "height": 1278
+    },
+    {
+      "id": "layers-ch5-screen",
+      "nativeSvg": "layers-ch5-screen.svg",
+      "rasterDiagnostic": "layers-ch5-screen.png",
+      "width": 1294,
+      "height": 1362
+    },
+    {
+      "id": "layers-ch7-screen",
+      "nativeSvg": "layers-ch7-screen.svg",
+      "rasterDiagnostic": "layers-ch7-screen.png",
+      "width": 1294,
+      "height": 524
+    }
+  ],
+  "files": [
+    {
+      "path": "arrange-capture-notes.json",
+      "bytes": 1438,
+      "sha256": "db35e17e4688f927542273bfb8d2764703b90e29ece649a64b0006fbea5d2152"
+    },
+    {
+      "path": "diagram-application-screen.png",
+      "bytes": 88203,
+      "sha256": "7c90d1cd5994e003a6a274f9740e6d82266388a958bd47fed8c4cc6355ecc0b7"
+    },
+    {
+      "path": "diagram-application-screen.svg",
+      "bytes": 76017,
+      "sha256": "f6a9f7ef04f0c761cf46fc215f24d82175891fa57ea4720cfa8a0857a1575c7a"
+    },
+    {
+      "path": "diagram-solution-screen.png",
+      "bytes": 76158,
+      "sha256": "e2d95643f43287515bc258e929090880ca5be9e90f1b264ae49402363900b5d2"
+    },
+    {
+      "path": "diagram-solution-screen.svg",
+      "bytes": 91853,
+      "sha256": "fb68103c539d794bb63be340dc566e6cc64b34714dcae790e02cb86a0d2a369a"
+    },
+    {
+      "path": "diagram-stack-screen.png",
+      "bytes": 167929,
+      "sha256": "8de5ab7c176f6a6396aee9662acbe3307c664b28a35be8163f990328d27fa9b3"
+    },
+    {
+      "path": "diagram-stack-screen.svg",
+      "bytes": 115611,
+      "sha256": "71980ce655a693025961f2772936d1079daf37179b964947eb31d4b125bce1fa"
+    },
+    {
+      "path": "layers-ch1-detail-screen.png",
+      "bytes": 87734,
+      "sha256": "b8e39f8ffbdb9c766de0a4271b41ff4d8214056bced850f12a12a4e2b0aa2643"
+    },
+    {
+      "path": "layers-ch1-detail-screen.svg",
+      "bytes": 70624,
+      "sha256": "45327c48ea051444a1311eba1033ea5527f98d33df88def502ef5dc0ed8e30d9"
+    },
+    {
+      "path": "layers-ch1-screen.png",
+      "bytes": 139963,
+      "sha256": "c1575726b167c9e634acc8903a81889618dc9dc79930ced56a20e270c9ca919c"
+    },
+    {
+      "path": "layers-ch1-screen.svg",
+      "bytes": 49954,
+      "sha256": "89567f6c8eb1d0774089a32e130e0e25faa393d02f479016e4b8e6d6e3109d1a"
+    },
+    {
+      "path": "layers-ch5-screen.png",
+      "bytes": 126966,
+      "sha256": "48d52ee4117375707e157d378b767b1067bcd5e8101fe82c81c8ed6f87d59b13"
+    },
+    {
+      "path": "layers-ch5-screen.svg",
+      "bytes": 45416,
+      "sha256": "25a02aceaeed1e86f4043c8bdbe5385716a1ffd69e7523e5d80bdcdf4f43513e"
+    },
+    {
+      "path": "layers-ch7-screen.png",
+      "bytes": 55967,
+      "sha256": "ef29b725bf2f9b25b09ba80f63c021ae250c02b8126e19381ee879b186d32d7b"
+    },
+    {
+      "path": "layers-ch7-screen.svg",
+      "bytes": 20943,
+      "sha256": "94abc03d157ca327fe249ad29e28b48cd64c33bc0fd0a7df59a3b7a13e859acb"
+    },
+    {
+      "path": "render-manifest.json",
+      "bytes": 10061,
+      "sha256": "a27ca5936f9256bc63895b5494da7d068e413e0435bc4adffc9b08d5818fa6d8"
+    }
+  ],
+  "payloadBytes": 1224837,
+  "hashScope": "SHA-256 covers every copied asset and supporting JSON file listed in files; this manifest excludes itself."
+}

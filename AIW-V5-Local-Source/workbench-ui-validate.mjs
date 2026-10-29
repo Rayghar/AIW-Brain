@@ -1,0 +1,60 @@
+// DOM and Worker integration checks. No browser, layout engine or production data.
+import assert from 'node:assert/strict';
+const {Window}=await import(process.env.AIW_DOM_MODULE||'happy-dom');
+import {pathToFileURL,fileURLToPath} from 'node:url';
+const root=fileURLToPath(new URL('.',import.meta.url)).replace(/\/$/,'');
+const ch=Number(process.argv[2]||1);
+const w=new Window({url:`https://aiw.test/?chapter=${ch}&tab=work`,width:1440,height:900});
+for(const key of ['window','document','history','location','localStorage','CustomEvent','Event','FormData','Node','Element','HTMLElement','SVGElement','MutationObserver','ResizeObserver','navigator'])Object.defineProperty(globalThis,key,{value:key==='window'?w:w[key],configurable:true,writable:true});
+for(const key of ['matchMedia','getComputedStyle','requestAnimationFrame','cancelAnimationFrame'])globalThis[key]=w[key].bind(w);
+w.document.body.innerHTML='<div id="app"></div><div id="cursor-tip" hidden></div><div id="toast"></div>';
+const {default:worker}=await import(pathToFileURL(root+'/worker.js'));
+const {localDatabase}=await import(pathToFileURL(root+'/local-db.js'));
+const files=new Map(),env={DB:localDatabase(':memory:'),FILES:{async put(k,v){files.set(k,v)},async get(k){return files.has(k)?{text:async()=>files.get(k)}:null},async delete(k){files.delete(k)}},ASSETS:{fetch:()=>new Response('asset')}};
+globalThis.fetch=(path,options={})=>worker.fetch(new Request(new URL(path,'https://aiw.test'),{...options,headers:{...options.headers,'oai-authenticated-user-id':'ux-test',Origin:'https://aiw.test'}}),env);
+const errors=[];w.addEventListener('error',e=>errors.push(e.message));
+const q=s=>document.querySelector(s),qa=s=>[...document.querySelectorAll(s)];
+const click=s=>{const el=q(s);assert.ok(el,'Missing '+s);el.focus();el.click();return el};
+const input=(name,value)=>{const el=q('.ev-dialog [name="'+name+'"]');assert.ok(el,'Missing field '+name);el.value=value;el.dispatchEvent(new Event('input',{bubbles:true}));return el};
+const submit=form=>{const el=q('.ev-dialog [data-ev-form="'+form+'"]');assert.ok(el,'Missing form '+form);el.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
+const waitFor=async(fn,message)=>{for(let i=0;i<120;i++){if(fn())return;await new Promise(r=>setTimeout(r,25));}throw Error(message+' '+q('#ev-error')?.textContent)};
+// The same user journey may run against the emitted, hashed production entry.
+await import(pathToFileURL(process.env.AIW_CLIENT_ENTRY||root+'/public/entry.js'));
+assert.equal(qa('.journey-chapters>*').length,11,'All chapters remain in navigation');
+assert.equal(qa('.journey-rail>section').length,3,'Exactly three navigation sections');
+assert.ok(q('.rail-project .project-switch'));
+assert.ok(q('.rail-project-tools [data-ev-action="open-sources"]'));
+assert.ok(q('.rail-project-tools .cr-entry'));
+assert.equal(qa('.ev-launcher,.lens-position-controls').length,0);
+assert.equal(qa('.lens-options').length,1,'Placement belongs to the context panel');
+assert.equal(qa('.r-assistant-bar .lens-options,.l-assistance .lens-options').length,0);
+click('button[data-lens-position="bottom"]');
+assert.equal(document.body.dataset.lensPosition,'bottom');
+assert.equal(JSON.parse(localStorage.getItem('aiw-lens-position-v1'))[ch],'bottom');
+if(ch>3){click('[data-ev-action="open-sources"]');await waitFor(()=>q('.ev-dialog [data-ev-form="source"]'),'First Sources click opens its lazy editor');click('[data-ev-action="close"]');assert.equal(qa('dialog[open]').length,0);assert.deepEqual(errors,[]);console.log('PASS Chapter '+ch+': three navigation sections, source access, lens preference and close.');await w.happyDOM.close();process.exit(0);}
+const prefix=ch===1?'r':ch===2?'q':'d';
+click('.tab[data-tab="output"]');await waitFor(()=>q('.studio .output-handoff-panel'),'Native Output handoff panel');click('[data-output-panel="handoff"]');assert.equal(q('.output-handoff-panel').open,true,'Review handoff reveals its current Output disclosure');assert.ok(q('.output-handoff-panel p'),q('.output-handoff-panel').outerHTML);assert.ok(q('.output-handoff-panel [data-'+prefix+'-action="handoff"]'));
+// Sol opens in the side panel; its "Work from project sources" controls open the evidence dialog, and the whole
+// source, draft and pattern flow stays in that one dialog. The panel is always titled Sol; its mode is the pressed
+// choice of Ask Sol and Co-design, the entry that replaced Proposals (audit/co-design-2026-10-13.json).
+click('[data-workspace-sol]');await waitFor(()=>q('#brain-panel .brain-native [data-ev-action="new-draft"]'),'Sol panel with project-source actions');assert.equal(q('#brain-panel #brain-title').textContent,'Sol');assert.equal(q('#brain-panel').dataset.role,'sol');assert.deepEqual(qa('#brain-panel .brain-modes [aria-pressed="true"]').map(b=>b.querySelector('b')?.textContent),['Ask Sol']);
+click('#brain-panel [data-ev-action="new-draft"]');await waitFor(()=>q('dialog[open]'),'Evidence dialog');const first=q('dialog[open]');assert.equal(qa('dialog[open]').length,1);
+click('[data-ev-action="add-source"]');
+input('title','Operations evidence');input('location','QA fixture · workshop');input('excerpt','Repeated instructions must not cause repeated effects.');
+click('[data-ev-action="back"]');assert.equal(q('.ev-leave').hidden,false,'Dirty edits are guarded');click('[data-ev-action="stay"]');assert.equal(q('.ev-dialog [name="title"]').value,'Operations evidence');
+submit('source');await waitFor(()=>q('[data-ev-form="new-task"]'),'Source save did not return to draft');
+assert.equal(q('dialog[open]'),first,'Saving preserves the existing dialog through chapter rerender');assert.equal(w.aiwProjectStore.value.document.coauthoring.sources.length,1);
+input('title','Duplicate protection');submit('new-task');await waitFor(()=>q('[data-ev-form="answers"]'),'Task create');
+input('title','Prevent repeated effects');input('need','Prevent repeated instructions from causing repeated financial effects.');input('acceptance','Repeated instructions are detected, linked to the original and recorded for review.');input('owner','Operations');submit('answers');await waitFor(()=>!q('.ev-dialog').hasAttribute('aria-busy'),'Save answers');
+click('[data-ev-action="prepare"]');await waitFor(()=>q('[data-ev-form="proposal"]'),'Prepare proposal');
+click('[data-ev-action="explore-patterns"]');assert.equal(q('#ev-title').textContent,'Co-design');assert.equal(q('dialog[open]'),first);
+input('reason','Compare prerequisites for duplicate protection against this source.');submit('pattern');await waitFor(()=>!q('.ev-dialog').hasAttribute('aria-busy'),'Save pattern');assert.equal(w.aiwProjectStore.value.document.coauthoring.tasks[0].patterns.length,1);
+click('[data-ev-action="back"]');assert.equal(q('#ev-title').textContent,'Sol');
+click('[data-ev-action="part-driver"]');input('stimulus','A repeated instruction is received.');input('conditions','During a retry after a response is lost.');input('response','Resolve the original outcome without repeating the effect.');submit('proposal');await waitFor(()=>!q('.ev-dialog').hasAttribute('aria-busy'),'Save scenario');click('[data-ev-action="step-apply"]');assert.ok(q('[data-ev-form="apply"]'));input('reviewer','QA architect');input('reason','Keep all assumptions open and verify the linked drafts.');q('.ev-dialog [name="reviewed"]').checked=true;submit('apply');await waitFor(()=>q('.ev-linked-records'),'Apply linked records');assert.equal(qa('.ev-linked-records a').length,3);
+const task=w.aiwProjectStore.value.document.coauthoring.tasks[0];assert.equal(task.status,'applied');assert.equal(task.patterns.length,1);
+// The evidence dialog stands alone (Sol's chapter actions are in the side panel): it closes back to the page.
+assert.equal(qa('dialog[open]').length,1);assert.equal(q('dialog[open] h2').textContent,'Sol');
+click('[data-ev-action="close"]');assert.equal(qa('dialog[open]').length,0);
+click('[data-ev-action="open-sources"]');await waitFor(()=>q('.ev-source-tasks'),'Sources reopens the saved task trail');click('[data-ev-action="source-task"]');assert.ok(q('.ev-linked-records'));click('[data-ev-action="close"]');assert.equal(document.activeElement.dataset.evAction,'open-sources');
+assert.deepEqual(errors,[]);console.log('PASS Chapter '+ch+': navigation, output handoff, lens preference, same-dialog Sol/source/draft/pattern flow, dirty guard, saves across renders, three applied records, trail access, return and focus.');
+await w.happyDOM.close();process.exit(0);

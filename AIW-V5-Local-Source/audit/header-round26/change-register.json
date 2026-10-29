@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-16",
+  "scope": "Complete the contextual chapter header on the supplied round26 source and preserve the existing private Site",
+  "incomingArchive": "AIW-V5-Local-Source-round26-merged-W1-W4-802090a.zip",
+  "incomingSha256": "5242aaf54789e498349a4959038e7d8baf559d5370d40411b820f0b1c69c21f8",
+  "siteBaseCommit": "385f67c78e4452c5b5dd53272a23f53e55def49f",
+  "changes": [
+    {"promise": "Know what to do next", "change": "A single next-focus action prioritizes changed reasoning, relevant open decisions and recorded findings, with a reason and an exact record or chapter destination."},
+    {"promise": "Understand why a choice needs attention", "change": "A highlighted thinking icon opens saved-model insights, rule provenance, a bounded action queue and open decision records. A new empty project stays quiet."},
+    {"promise": "Understand progress honestly", "change": "Current chapter and eleven-chapter project milestones are expandable, linked and explicitly distinct from architectural correctness, measured quality and external approval. Illustrative records and rechecks retain their existing semantics."},
+    {"promise": "Keep the active design context", "change": "Guidance respects the active module and selected record. Cross-project and whole-project destinations explicitly carry project identity and clear inappropriate scope."},
+    {"promise": "Make model work easier to use", "change": "Compact forest-and-gold header, responsive disclosure, visible focus states, keyboard dismissal and focus restoration; duplicate header progress widgets removed."},
+    {"promise": "Preserve useful tools and unsaved work", "change": "Work, Model, Validate, Output, Ask Sol, Co-design, companion, Explain and existing model controls remain. Header reads do not write model records, accept decisions or invoke a provider."},
+    {"promise": "Make verification reproducible", "change": "Added header selector and DOM regressions. Repaired the existing module-scope fixture to close SQLite before cleanup and supply actual module helpers and DOM dataset in its VM environment."}
+  ],
+  "dataCompatibility": "Existing Site identity and storage bindings retained. This header introduces no persistence model, database migration or runtime credential change.",
+  "verificationEntryPoint": "npm run test:chapter-header",
+  "bundleBudget": "The initial production build identified the new header size. Chapter-route budget is 2912 KiB for measured 2,981,510 bytes; CSS budget is 767 KiB for measured 784,773 bytes. Existing budget checks remain enabled; only measured growth rounded to 1 KiB was allowed.",
+  "verificationEvidence": "The delivered evidence archive contains actual command receipts, production browser captures and deployment provenance. This register makes no human architectural approval or performance claim.",
+  "remainingBoundaries": [
+    "The header provides rule-based orientation, not independent architectural judgment.",
+    "Candidate knowledge, architect acceptance, source-rights decisions and second-person review retain their existing human governance gates.",
+    "Provider answer quality and authenticated hosted saved-state/export execution are not established by this header change."
+  ]
+}

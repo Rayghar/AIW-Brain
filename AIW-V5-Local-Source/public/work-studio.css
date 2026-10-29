@@ -1,0 +1,149 @@
+/* The Work studio (rc40, PLAN §4.4): one intentional layout for the eleven chapters. Regions, top to bottom: the
+   journey rail (where the task sits in the chapter, with a progress mark per stage read from the records), the task
+   head (the question, the state line, the actions), the feeds (what earlier chapters give this task, what it gives
+   later ones — records with counts, not method links alone), the arrival card while the chapter is empty, the
+   register (scannable rows that open in place) and the support footer. The Details column holds the design at a
+   glance until a record is held. An 8-pt grid; one accent per chapter from the layer palette (theme.css); 160 ms
+   motion that prefers-reduced-motion switches off (styles.css). Tokens only; no colour literal here. */
+.studio-workspace .work-view{--work-accent:var(--chapter-accent,var(--green-9));--work-accent-wash:color-mix(in srgb,var(--work-accent) 7%,var(--studio-surface));--work-accent-soft:color-mix(in srgb,var(--work-accent) 16%,var(--studio-surface));min-width:0;max-width:1320px;margin:0 auto;color:var(--studio-text);font-size:14px;line-height:1.5;animation:work-rise .16s ease-out}
+/* The chapter's accent (one per chapter, theme.css --layer-*) is the chapter strip's table: [data-chapter-accent], chapter-strip.css. */
+@keyframes work-rise{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
+.studio-workspace .work-desk{min-width:0;padding:24px;border:1px solid var(--studio-border);border-radius:12px;background:var(--studio-surface)}
+
+/* The journey rail is the chapter strip (chapter-strip.css: the items, the ring, the meter, the counts, the keyboard
+   focus); here only its place on the desk: flush with the desk's top edge. */
+.studio-workspace .chapter-strip.work-stages{margin:-24px -24px 24px;border:0;border-bottom:1px solid var(--studio-border);border-radius:12px 12px 0 0}
+
+/* The task head: the question first, the state line read from the records (chapter-strip.css .chapter-state), the
+   primary action first. */
+.studio-workspace .work-task-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin:0 0 16px}
+.studio-workspace .work-task-head>div:first-child{min-width:0;flex:1}
+.studio-workspace .work-task-head h2{margin:0;font-family:var(--font-ui);font-size:22px;font-weight:650;line-height:1.3;color:var(--studio-text);letter-spacing:-.02em}
+.studio-workspace .work-task-head p{margin:8px 0 0;font-size:15px;line-height:1.55;color:var(--studio-text);max-width:68ch}
+.studio-workspace .work-task-head .work-task-state{margin:8px 0 0}
+.studio-workspace .work-task-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end;max-width:48%}
+.studio-workspace .work-task-actions>.primary,.studio-workspace .work-task-actions>.r-btn.primary{order:-1}
+.studio-workspace .work-view :is(.btn,.r-btn){min-height:36px;padding:8px 12px;border-radius:6px;font-size:13px;line-height:1.4}
+
+/* The context (the chapter's own scope controls) and the feeds: two cards, what this task reads and what it feeds,
+   each entry a method link with the records the project holds behind it. */
+.studio-workspace .work-context{margin:0 0 24px;font-size:12px;color:var(--studio-muted)}
+.work-context-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 16px;margin:0 0 16px;padding:0 0 16px;border-bottom:1px solid var(--studio-line)}
+.studio-workspace .work-context :is(.l-field,.r-field){margin:0;flex:1;min-width:220px;max-width:640px}
+.studio-workspace .work-context .d-question-bar,.studio-workspace .work-context .rt-environment-bar{display:flex;align-items:flex-end;gap:8px;flex:1;margin:0;padding:0;border:0;background:none;min-width:0}
+.studio-workspace .work-context .d-question-bar label{flex:1;margin:0}
+.studio-workspace .work-context-state{font-size:12px;line-height:1.5}
+.studio-workspace .work-context .rt-environment-bar{flex-wrap:wrap}
+.studio-workspace .work-context .rt-environment-bar>div{display:flex;gap:8px;flex:none}
+.studio-workspace .work-context .rt-plan-choice{flex:1;min-width:220px;margin:0;padding:0;border:0}
+.work-connections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:0;border:0;font-size:13px;line-height:1.5}
+.work-connections>div{position:relative;min-width:0;padding:12px 16px 12px 20px;border:1px solid var(--studio-line);border-radius:8px;background:var(--sage-2)}
+.work-connections>div::before{content:"";position:absolute;left:-1px;top:12px;bottom:12px;width:3px;border-radius:0 2px 2px 0;background:var(--sage-7)}
+.work-connections>.work-method-output::before{background:var(--work-accent)}
+.work-connections>div>span:first-child{display:block;margin:0 0 8px;font-size:10px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--studio-muted)}
+.work-feeds{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.work-feed{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:baseline;min-width:0}
+.work-feed>a,.work-feed>span:first-child{font-weight:600;color:var(--green-11);text-decoration:none;text-underline-offset:3px}
+.work-feed>span:first-child{color:var(--studio-text)}
+.work-feed>a:hover{text-decoration:underline}
+.work-feed>a:focus-visible{outline:3px solid var(--focus-outline);outline-offset:2px}
+.work-feed-count{font-size:12px;color:var(--studio-muted);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.work-feed-names{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:2px 10px;min-width:0;font-size:12px;line-height:1.4;color:var(--studio-muted)}
+.work-feed-name{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.work-feed-more{color:var(--green-11)}
+.work-feed-empty{font-style:italic}
+
+/* The arrival card: while the chapter holds nothing, what it produces, what it reads, and the one action that starts it. */
+.work-arrival{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;margin:0 0 24px;padding:24px;border:1px dashed var(--work-accent);border-radius:12px;background:var(--work-accent-wash)}
+.work-arrival .eyebrow{font-size:11px;letter-spacing:.06em;color:var(--studio-muted)}
+.studio-workspace .work-arrival h3{margin:4px 0 8px;font-family:var(--font-ui);font-size:20px;font-weight:650;line-height:1.3}
+.studio-workspace .work-arrival p{margin:0 0 4px;font-size:14px;line-height:1.5}
+.work-arrival-needs{color:var(--studio-muted)}
+.work-arrival ul{margin:0;padding:0 0 0 18px;font-size:13px;line-height:1.6}
+.work-arrival-action{display:grid;gap:8px;justify-items:end;text-align:right}
+.work-arrival-action small{font-size:12px;color:var(--studio-muted)}
+
+/* The register: rows a reader scans — ref, title, state, owner, the facts the chapter traces — opening in place
+   (data-work-open, set by the frame's keyboard and click model) to the full description, trace and actions. */
+.studio-workspace .work-body{min-width:0}
+.studio-workspace .work-body p{font-size:14px;line-height:1.55;margin:8px 0}
+.studio-workspace .work-body h3{font-family:var(--font-ui);font-size:16px;line-height:1.4;margin:16px 0 8px;color:var(--studio-text)}
+.studio-workspace .work-body small,.studio-workspace .work-body .eyebrow{font-size:12px;line-height:1.5}
+.studio-workspace .work-body .eyebrow{letter-spacing:.035em}
+.studio-workspace .work-body [data-register-key]{display:grid;grid-template-columns:minmax(240px,420px) minmax(100px,1fr);gap:8px 16px;align-items:end;margin:0 0 8px}
+.studio-workspace .work-body [data-register-key]>.l-field{display:flex;align-items:center;gap:8px;margin:0;font-size:12px}
+.studio-workspace .work-body [data-register-key]>.l-field>span{white-space:nowrap}
+.studio-workspace .work-body [data-register-summary]{margin:0;align-self:center;font-size:12px;color:var(--studio-muted);text-align:right}
+.studio-workspace .work-body [data-register-rows]{grid-column:1/-1;min-width:0}
+.studio-workspace .work-body :is(.r-register-tools,.q-register-tools){display:flex;align-items:flex-end;gap:8px;flex-wrap:wrap;padding:12px 16px;margin:0 0 16px;border-radius:8px;background:var(--sage-2)}
+.studio-workspace .work-body :is(.r-register-tools,.q-register-tools)>label{display:flex;flex-direction:column;gap:4px;margin:0;min-width:160px;font-size:12px;color:var(--studio-muted)}
+.studio-workspace .work-body :is(.r-register-tools,.q-register-tools)>label:has(input){flex:1;min-width:200px}
+.studio-workspace .work-body :is(.r-register-tools,.q-register-tools) :is(input,select),.studio-workspace .work-body [data-register-key]>.l-field input{width:100%;min-width:0;min-height:40px;margin:0;padding:8px 12px;border:1px solid var(--studio-border);border-radius:6px;background:var(--studio-surface);color:var(--studio-text);font:inherit;font-size:13px}
+.studio-workspace .work-body :is(.r-record,.q-driver-row,.l-record,.l-connection,.t-cap-card){position:relative;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;align-items:start;padding:12px 16px 12px 13px;margin:0 0 8px;border:1px solid var(--studio-line);border-left:3px solid transparent;border-radius:8px;background:var(--studio-surface);box-shadow:none;transition:border-color .16s,background .16s}
+.studio-workspace .work-body :is(.r-record,.q-driver-row,.l-record,.l-connection,.t-cap-card):hover{border-color:var(--green-7);border-left-color:var(--work-accent)}
+.studio-workspace .work-body :is(.r-record,.q-driver-row,.l-record,.l-connection,.t-cap-card):is([data-work-open],.selected){border-left-color:var(--work-accent);border-color:var(--green-7);background:var(--work-accent-wash)}
+.studio-workspace .work-body :is([data-work-record-row],.r-record,.q-driver-row,.l-record,.t-cap-card):focus-visible{outline:3px solid var(--focus-outline);outline-offset:2px}
+.studio-workspace .work-body .r-record:has(>.r-pick){grid-template-columns:18px minmax(0,1fr) auto}
+.studio-workspace .work-body :is(.r-record-main,.q-driver-main,.l-record-main,.l-connection>div:first-child){min-width:0;padding:0;text-align:left}
+.r-record-copy{min-width:0}
+.studio-workspace .work-body .r-record-copy>.r-record-main{display:block;width:100%;height:auto;max-height:none}
+.studio-workspace .work-body :is(.l-record-main,.r-record-main)>.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.02em;color:var(--studio-muted)}
+.studio-workspace .work-body :is(.r-record-main strong,.l-record-title){display:block;font:inherit;font-size:15px;line-height:1.4;font-weight:600;text-align:left;color:var(--studio-text);margin:2px 0;padding:0}
+.studio-workspace .work-body .l-record-title:hover{text-decoration:underline;text-underline-offset:3px}
+.studio-workspace .work-body :is(.l-record-main>p,.r-record-description){display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:80ch;font-size:13px;line-height:1.5;margin:4px 0;color:var(--studio-text)}
+.studio-workspace .work-body :is([data-work-open],.selected) :is(.l-record-main>p,.r-record-description){display:block;-webkit-line-clamp:unset;overflow:visible}
+.studio-workspace .work-body :is(.r-record-owner,.r-record-meta,.l-record-main>small){display:block;font-size:12px;color:var(--studio-muted);line-height:1.5}
+.studio-workspace .work-body :is(.r-record-actions,.q-driver-row-actions,.l-record-actions,.t-card-actions){display:flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;max-width:260px;min-width:0;margin:0;padding:0;opacity:.6;transition:opacity .16s}
+.studio-workspace .work-body :is(.r-record,.q-driver-row,.l-record,.l-connection,.t-cap-card):is(:hover,:focus-within,[data-work-open],.selected) :is(.r-record-actions,.q-driver-row-actions,.l-record-actions,.t-card-actions){opacity:1}
+.studio-workspace .work-body :is(.r-record-actions,.q-driver-row-actions)>.chip{font-size:11px}
+.studio-workspace .work-body :is(.r-record-actions,.l-record-actions,.t-card-actions) .btn{min-height:32px;padding:5px 10px;font-size:12px}
+.work-record-trace{display:flex;flex-wrap:wrap;gap:4px 20px;border-top:1px solid var(--studio-line);padding:8px 0 0;margin:8px 0 0;font-size:12px;line-height:1.5}
+.work-record-trace>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-width:0}
+.work-record-trace dt{margin:0;color:var(--studio-muted);font-size:10px;font-weight:650;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.work-record-trace dd{display:flex;flex-wrap:wrap;gap:2px 8px;margin:0;min-width:0}
+.work-record-trace a{max-width:100%;overflow-wrap:anywhere;color:var(--green-11);text-decoration:none;text-underline-offset:3px}
+.work-record-trace a:hover{text-decoration:underline}
+.work-record-trace a:focus-visible{outline:3px solid var(--focus-outline);outline-offset:2px}
+.work-trace-empty,.work-trace-more{color:var(--studio-muted);font-size:12px}
+.studio-workspace .work-body :is([data-work-open],.selected) .work-record-trace{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px}
+.studio-workspace .work-body :is([data-work-open],.selected) .work-record-trace>div{display:block}
+.studio-workspace .work-body :is([data-work-open],.selected) .work-record-trace dt{margin:0 0 4px}
+.studio-workspace .work-body :is([data-work-open],.selected) .work-record-trace dd{flex-direction:column;align-items:flex-start;gap:4px}
+.studio-workspace .work-body .l-status-line{display:flex;gap:4px;flex-wrap:wrap;margin:4px 0 0}
+.studio-workspace .work-support,.studio-workspace .work-progress{margin:16px 0 0;border-top:1px solid var(--studio-line);padding:8px 0 0;font-size:13px}
+.studio-workspace .work-support>summary,.studio-workspace .work-progress>summary{cursor:pointer;min-height:32px;font-weight:550;padding:4px 0}
+.studio-workspace footer.work-support{margin-top:24px;padding:0;border:0}
+.studio-workspace .work-progress .l-chapter-progress{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin:8px 0;padding:0;border:0}
+.studio-workspace .work-progress .l-chapter-progress button{font-size:13px;text-align:left;justify-content:flex-start;white-space:normal;padding:8px;border:1px solid var(--studio-line);background:none}
+.studio-workspace .work-progress .review-note{display:block;margin:8px 0}
+.studio-workspace .work-empty{padding:24px 0}
+.record-card a:focus-visible{outline:3px solid var(--focus-outline);outline-offset:2px}
+
+/* The design at a glance (the Details column while nothing is held; work-glance.js). */
+#inspector .work-glance{display:grid;gap:16px;padding:16px;border-top:1px solid var(--studio-line);font-size:13px;line-height:1.5;color:var(--studio-text)}
+.work-glance .eyebrow{display:block;font-size:10px;letter-spacing:.06em;color:var(--studio-muted)}
+.work-glance-head{display:grid;gap:2px}
+.work-glance-head strong{font-size:15px;font-weight:650;line-height:1.3}
+.work-glance-head small{font-size:12px;color:var(--studio-muted);font-variant-numeric:tabular-nums}
+.work-glance-picture{margin:0;border:1px solid var(--studio-line);border-radius:8px;overflow:hidden;background:var(--sage-1)}
+.work-glance-canvas{padding:4px}
+.work-glance-canvas svg{display:block;width:100%;height:auto;max-height:248px}
+.work-glance-note{margin:0;padding:16px;font-size:12px;color:var(--studio-muted)}
+.work-glance-picture figcaption{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 8px 8px 12px;border-top:1px solid var(--studio-line);font-size:11px;line-height:1.4;color:var(--studio-muted)}
+.work-glance-picture figcaption .btn{flex:none;min-height:32px;padding:5px 10px;font-size:12px}
+.work-glance-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px}
+.work-glance .chip.fix{background:var(--state-fix-bg);color:var(--state-fix-fg)}
+.work-glance-checks a{color:var(--green-11);font-weight:600;text-decoration:none;text-underline-offset:3px}
+.work-glance-checks a:hover{text-decoration:underline}
+.work-glance-sol{display:grid;gap:8px}
+.work-starter{display:grid;gap:2px;width:100%;margin:0;padding:8px 12px;border:1px solid var(--studio-line);border-radius:8px;background:var(--studio-surface);color:var(--studio-text);font:inherit;font-size:13px;line-height:1.4;text-align:left;cursor:pointer;transition:border-color .16s,background .16s}
+.work-starter:hover:not(:disabled){border-color:var(--prov-sol-line);background:var(--prov-sol-wash)}
+.work-starter b{font-weight:600}
+.work-starter small{font-size:11px;color:var(--studio-muted)}
+.work-starter:disabled{opacity:.55;cursor:default}
+.work-glance-sol-note{font-size:11px;color:var(--studio-muted)}
+
+/* Proportion: the rail and the feeds give way before the register does. */
+@media(max-width:1000px){.studio-workspace .work-desk{padding:16px}.studio-workspace .chapter-strip.work-stages{margin:-16px -16px 16px}.studio-workspace .work-task-head{flex-direction:column;gap:12px}.studio-workspace .work-task-actions{max-width:none;justify-content:flex-start}.studio-workspace .work-body :is(.r-record-actions,.q-driver-row-actions,.l-record-actions){max-width:200px}}
+@media(max-width:760px){.studio-workspace .work-desk{padding:16px}.studio-workspace .chapter-strip.work-stages{margin:-16px -16px 16px}.work-connections{grid-template-columns:1fr;gap:8px}.work-arrival{grid-template-columns:1fr}.work-arrival-action{justify-items:start;text-align:left}.studio-workspace .work-body [data-register-key],.studio-workspace .work-body :is([data-work-open],.selected) .work-record-trace{grid-template-columns:1fr}.studio-workspace .work-body [data-register-summary]{text-align:left}.studio-workspace .work-body :is(.r-record,.q-driver-row,.l-record,.l-connection,.t-cap-card){grid-template-columns:minmax(0,1fr)}.studio-workspace .work-body .r-record:has(>.r-pick){grid-template-columns:18px minmax(0,1fr)}.studio-workspace .work-body .r-record:has(>.r-pick)>.r-record-actions{grid-column:2}.studio-workspace .work-body :is(.r-record-actions,.q-driver-row-actions,.l-record-actions,.t-card-actions){max-width:none;justify-content:flex-start;opacity:1}.studio-workspace .work-context :is(.rt-environment-bar,.rt-plan-choice){min-width:0;flex-basis:100%}}
+@media(max-width:480px){.studio-workspace .work-desk{padding:12px}.studio-workspace .chapter-strip.work-stages{margin:-12px -12px 12px}.studio-workspace .work-body :is(.r-register-tools,.q-register-tools)>label{flex:1 1 100%;min-width:0}.studio-workspace .work-body [data-register-key]>.l-field{display:block}.studio-workspace .work-context .rt-environment-bar{flex-wrap:wrap}.work-connections>div{padding:12px 12px 12px 16px}#inspector .work-glance{padding:12px}}

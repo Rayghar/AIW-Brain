@@ -1,0 +1,333 @@
+{
+  "schema": "aiw.round-evidence.v1",
+  "release": "AIW v0.10.0-rc.10.73.26",
+  "date": "2026-10-15",
+  "productionAccepted": false,
+  "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+  "source": "Round 25 on the round-24 release (c346e2a, AIW v0.10.0-rc.10.73.25)",
+  "plan": "audit/round25/PLAN.md",
+  "baseline": {
+    "commit": "c346e2a",
+    "release": "AIW v0.10.0-rc.10.73.25"
+  },
+  "asked": "the first of the three steps named in answer to \"is AIW now a reasoning product?\": AIW weighs a decision's alternatives against the design's drivers, the choice staying with a person",
+  "workstreams": {
+    "W1": {
+      "what": "the decision reading: hard constraints, dominance, the order and how firmly it holds, unknown bounds, sensitivity, the working choice; suggestions; every caller migrated, the old tally retired; the doctrine fingerprint",
+      "decisions": [
+        "D-25-01",
+        "D-25-02",
+        "D-25-03",
+        "D-25-04",
+        "D-25-05",
+        "D-25-06",
+        "D-25-07",
+        "D-25-08",
+        "D-25-11",
+        "D-25-12"
+      ],
+      "commits": [
+        "7ee0c41",
+        "b9f4750"
+      ],
+      "by": "lead"
+    },
+    "W2": {
+      "what": "Chapter 3, the Work tab, the review desk, the what-if, the utility tree and Chapter 7 show the reading; suggestions recorded by a person; light, dark and forced colours",
+      "decisions": [
+        "D-25-03",
+        "D-25-05",
+        "D-25-06",
+        "D-25-07",
+        "D-25-08",
+        "D-25-11"
+      ],
+      "merge": "305db35"
+    },
+    "W3": {
+      "what": "the SDD prints the drivers' lean, AIW's reading of an alternative not chosen and the weighed trade-off analysis; the executive edition; the rules-drafted label",
+      "decisions": [
+        "D-25-05",
+        "D-25-06",
+        "D-25-07",
+        "D-25-09"
+      ],
+      "merge": "ee47a33"
+    },
+    "W4": {
+      "what": "the rules drafter drafts assessments from the Playbook's marks (E2); design-concern criteria tied to a quality category and a driver kind, consequences per criterion and the evidence each option needs (K2)",
+      "decisions": [
+        "D-25-09",
+        "D-25-10"
+      ],
+      "merge": "d9d04ba"
+    }
+  },
+  "auditOfEachMerge": {
+    "checksDeletedOrLoosened": 0,
+    "changedAssertionsReplacedAtLeastAsStrict": true,
+    "assertionLinesRemovedAndReplaced": 18,
+    "assertionLinesAdded": 394,
+    "secrets": 0,
+    "clientText": 0,
+    "modelIdentifiers": 0
+  },
+  "tests": {
+    "install": {
+      "cleanInstall": true,
+      "command": "npm ci",
+      "packages": 112,
+      "seconds": 4,
+      "auditModerate": 4,
+      "auditProduction": 0,
+      "auditNote": "development dependencies only (drizzle-kit through esbuild); npm audit --omit=dev finds none; the lockfile is unchanged this round",
+      "commit": "d0682ba (differs from d2626fb only in two test files)"
+    },
+    "check": {
+      "passed": true,
+      "syntaxModules": 706,
+      "lintExisting": 172,
+      "lintNew": 0,
+      "lintBaseline": 172
+    },
+    "build": {
+      "passed": true,
+      "serverModules": 221,
+      "scripts": 136,
+      "chaptersRouteBytes": 2949715,
+      "chaptersRouteBudgetBytes": 2950144,
+      "projectsRouteBytes": 491764,
+      "cssBytes": 771840,
+      "cssBudgetBytes": 772096
+    },
+    "regression": {
+      "commit": "d2626fb",
+      "suites": 235,
+      "passed": 235,
+      "failed": 0,
+      "failedSuites": [],
+      "concurrency": 2,
+      "browserSuitesIncluded": true,
+      "browserSuites": 50,
+      "firstRun": {
+        "commit": "d0682ba",
+        "concurrency": 2,
+        "suites": 235,
+        "passed": 233,
+        "failedSuites": [
+          "test:desk-browser",
+          "test:tradeoff-browser"
+        ],
+        "causes": {
+          "test:desk-browser": "expected the recorded range of a product choice as -18 to +18; 22074d7 took the objective, which holds no recorded judgement, out of that weighing, so the range is -16 to +16 (assertion moved to the new figures, no less strict)",
+          "test:tradeoff-browser": "read a dialog after a fixed 400 ms (a line from before this round); under load it opened later; it now waits for the dialog"
+        },
+        "fixedAt": "d2626fb"
+      }
+    },
+    "newSuites": [
+      "test:decision-reading"
+    ],
+    "outsideTheRegression": {
+      "suites": [
+        "shell-focus-browser",
+        "end-to-end-browser"
+      ],
+      "note": "not test: scripts; shell-focus-browser is flaky before and after this round; end-to-end-browser does not use AIW_BROWSER_EXECUTABLE"
+    }
+  },
+  "reading": {
+    "referenceProjects": {
+      "seed": {
+        "decisions": 3,
+        "state": {
+          "read": 3
+        },
+        "firmness": {
+          "level2": 1,
+          "level1": 2
+        },
+        "dominatedRobust": 1,
+        "dominatedProvisional": 0,
+        "sensitivityPoints": 2,
+        "leftOutDrivers": 0
+      },
+      "bank-payment": {
+        "decisions": 3,
+        "state": {
+          "read": 3
+        },
+        "firmness": {
+          "level2": 1,
+          "level1": 2
+        },
+        "dominatedRobust": 1,
+        "dominatedProvisional": 0,
+        "sensitivityPoints": 2,
+        "leftOutDrivers": 0
+      },
+      "service-permits": {
+        "decisions": 3,
+        "state": {
+          "unweighed": 3
+        },
+        "firmness": {},
+        "dominatedRobust": 0,
+        "dominatedProvisional": 0,
+        "sensitivityPoints": 0,
+        "leftOutDrivers": 3
+      },
+      "warehouse-fulfilment": {
+        "decisions": 4,
+        "state": {
+          "unweighed": 4
+        },
+        "firmness": {},
+        "dominatedRobust": 0,
+        "dominatedProvisional": 0,
+        "sensitivityPoints": 0,
+        "leftOutDrivers": 4
+      },
+      "clinic-appointments": {
+        "decisions": 4,
+        "state": {
+          "unweighed": 4
+        },
+        "firmness": {},
+        "dominatedRobust": 0,
+        "dominatedProvisional": 0,
+        "sensitivityPoints": 0,
+        "leftOutDrivers": 4
+      },
+      "parcel-lockers": {
+        "decisions": 5,
+        "state": {
+          "unweighed": 5
+        },
+        "firmness": {},
+        "dominatedRobust": 0,
+        "dominatedProvisional": 0,
+        "sensitivityPoints": 0,
+        "leftOutDrivers": 5
+      },
+      "library-reservations": {
+        "decisions": 5,
+        "state": {
+          "unweighed": 5
+        },
+        "firmness": {},
+        "dominatedRobust": 0,
+        "dominatedProvisional": 0,
+        "sensitivityPoints": 0,
+        "leftOutDrivers": 5
+      }
+    },
+    "referenceTotals": {
+      "decisions": 27,
+      "alternatives": 54,
+      "leads": 6,
+      "sensitivityPoints": 4,
+      "leftOutDrivers": 21
+    },
+    "oracle": "on the 27 decisions of the seven reference projects the reading's leads, totals and sensitivity points equal the retired tally's (test:decision-reading)"
+  },
+  "register": {
+    "clientMaterialKeptInScratch": true,
+    "reviewedByAPerson": false,
+    "countsOnly": true,
+    "drafter": "rules (no provider)",
+    "round24Drafter": {
+      "decisions": 9,
+      "alternatives": 37,
+      "effectsStatedOnWeighedDrivers": 0,
+      "effectsUnstated": 166,
+      "draftedByRules": 0,
+      "readable": 0,
+      "unjudged": 9,
+      "leads": 0,
+      "firmness": {},
+      "unknownsCouldChangeTheLead": 0,
+      "dominatedProvisional": 0,
+      "dominatedRobust": 0,
+      "suggestionCells": 3
+    },
+    "round25Drafter": {
+      "decisions": 9,
+      "alternatives": 37,
+      "effectsStatedOnWeighedDrivers": 3,
+      "effectsUnstated": 163,
+      "draftedByRules": 3,
+      "readable": 2,
+      "unjudged": 7,
+      "leads": 1,
+      "firmness": {
+        "level1": 1
+      },
+      "unknownsCouldChangeTheLead": 1,
+      "dominatedProvisional": 5,
+      "dominatedRobust": 0,
+      "suggestionCells": 0
+    },
+    "contentReadingOfTheRulesDraft": {
+      "score": 0,
+      "pass": false
+    },
+    "syntheticRegister": {
+      "source": "test:drafter-groups",
+      "decisions": 9,
+      "alternatives": 37,
+      "assessments": {
+        "supports": 4,
+        "unknown": 0
+      }
+    },
+    "liveModelRun": {
+      "done": false,
+      "reason": "set aside by the owner on 2026-10-14 after the Anthropic account asked for identity verification; the OpenAI project spend limit still refuses"
+    }
+  },
+  "externalGates": [
+    {
+      "authority": "The owner",
+      "action": "Push the branch; make a provider available for the live run; rotate the API keys of the .env uploaded earlier; revoke the Anthropic key pasted into the conversation on 2026-10-14 (deleted from the session)",
+      "state": "not done"
+    },
+    {
+      "authority": "A person on the owner side",
+      "action": "State the effects the register's decisions need, choose and accept decisions; review and accept the proposed module structure",
+      "state": "not done"
+    },
+    {
+      "authority": "The owner's architects and an independent reviewer",
+      "action": "Review a drafted design page by page (GR-GOV-21)",
+      "state": "not done"
+    },
+    {
+      "authority": "A four-eyes knowledge approver and licence counsel",
+      "action": "Release the core-banking knowledge pack (GR-DOM-10, GR-DOM-11)",
+      "state": "not done"
+    },
+    {
+      "authority": "The workbook owner",
+      "action": "Answer the open source questions (GR-SRC-08)",
+      "state": "not done"
+    },
+    {
+      "authority": "A named human reader",
+      "action": "Fill the SDD review gate's checklist for an export (C2-10)",
+      "state": "not done"
+    },
+    {
+      "authority": "Production acceptance",
+      "action": "Accept a release for production",
+      "state": "not done; productionAccepted false"
+    }
+  ],
+  "gapRegister": {
+    "reverifiedThisRound": false,
+    "note": "this round's findings are tracked in PLAN.md and ROUND25-RELEASE.md"
+  },
+  "commitsAfterBaseline": 29,
+  "roundBranchCommits": 19,
+  "workstreamMerges": 3
+}

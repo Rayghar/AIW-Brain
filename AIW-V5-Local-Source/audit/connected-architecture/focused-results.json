@@ -1,0 +1,233 @@
+{
+  "schema": "aiw.connected-architecture.verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.41+studio.20261022",
+  "started": "2026-10-23T06:49:52.151Z",
+  "completed": "2026-10-23T06:51:44.663Z",
+  "status": "passed",
+  "suites": [
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "execution-journey-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 4.189,
+      "log": "execution-journey-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "execution-journey-ui-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 5.969,
+      "log": "execution-journey-ui-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "architecture-scenarios-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 1.354,
+      "log": "architecture-scenarios-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "architecture-scenarios-ui-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 2.514,
+      "log": "architecture-scenarios-ui-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "architecture-verification-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 2.779,
+      "log": "architecture-verification-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "architecture-verification-ui-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 4.561,
+      "log": "architecture-verification-ui-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "knowledge-coverage-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 1.233,
+      "log": "knowledge-coverage-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "hosted-knowledge-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 0.636,
+      "log": "hosted-knowledge-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "model-reconciliation-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 0.709,
+      "log": "model-reconciliation-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "enterprise-references-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 1.192,
+      "log": "enterprise-references-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "connected-architecture-ui-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 2.444,
+      "log": "connected-architecture-ui-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "connected-design-projections-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 8.431,
+      "log": "connected-design-projections-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "model-dossier-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 0.769,
+      "log": "model-dossier-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "model-conformance-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 0.38,
+      "log": "model-conformance-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "sdd-architecture-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 12.573,
+      "log": "sdd-architecture-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "sdd-content-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 19.936,
+      "log": "sdd-content-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "sdd-modules-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 32.486,
+      "log": "sdd-modules-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "workbench-ui-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 5.353,
+      "log": "workbench-ui-validate.log"
+    },
+    {
+      "command": [
+        "/opt/node22/bin/node",
+        "brain-governance-ui-validate.mjs"
+      ],
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "seconds": 4.998,
+      "log": "brain-governance-ui-validate.log"
+    }
+  ],
+  "authority": "Authored fixtures and native DOM interaction with the actual Worker/SQLite/storage paths. No production design acceptance is inferred.",
+  "limits": {
+    "renderedBrowserAcceptance": false,
+    "liveProviderQualityBenchmark": false,
+    "independentOrbusComparison": false,
+    "wholeHistoricalSuiteRerun": false
+  },
+  "externalRepositoryRegression": {
+    "command": [
+      "node",
+      "knowledge-repository-validate.mjs"
+    ],
+    "status": "passed",
+    "scope": "Four synthetic fixture groups; temporary loopback service, actual Worker and SQLite. Separate invocation requires permission to bind localhost."
+  }
+}

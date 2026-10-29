@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import {Window} from 'happy-dom';
+import {walkVisits, recordModelWalk} from './public/model-walk.js';
+import {compose} from './public/desk-fixes.js';
+
+const visits = walkVisits();
+assert.deepEqual(visits.see('scenario-a',0),[0]);
+assert.deepEqual(visits.see('scenario-a',0),[0], 'repainting does not invent another visit');
+assert.deepEqual(visits.see('scenario-a',3),[0,3], 'jumping to the end does not invent intermediate visits');
+assert.deepEqual(visits.see('scenario-a',1),[0,1,3]);
+assert.deepEqual(visits.see('scenario-a',2),[0,1,2,3]);
+assert.deepEqual(visits.see('changed-model',2),[2], 'changed model/scenario invalidates the prior traversal');
+visits.clear(); assert.deepEqual(visits.see('changed-model',0),[0]);
+const empty = {id:'fixture'}; const stale = compose(empty,[undefined]);
+assert.deepEqual(stale.commands,[]); assert.equal(stale.errors.length,1); assert.deepEqual(empty,{id:'fixture'});
+
+const window = new Window({url:'http://fixture.local'});
+Object.assign(globalThis,{window,document:window.document,FormData:window.FormData});
+window.HTMLDialogElement.prototype.showModal = function(){this.open=true;};
+window.HTMLDialogElement.prototype.close = function(){this.open=false;};
+let current = true, saved = 0; const commands=[];
+window.aiwProjectStore={command:async c=>commands.push(c)};
+const command={type:'runtime.simulation',payload:{durationMinutes:60,visited:[0,1,2,3]}};
+recordModelWalk({title:'Synthetic traversal fixture',command,observations:true,current:()=>current,onSaved:()=>saved++});
+const dialog=document.querySelector('dialog'), form=dialog.querySelector('form'), notes=form.elements.namedItem('observations'), check=form.elements.namedItem('reviewed');
+assert.equal(notes.value,''); assert.equal(check.checked,false); assert.equal(commands.length,0,'opening is read-only');
+await form.onsubmit({preventDefault(){},currentTarget:form}); assert.equal(commands.length,0,'empty observation/review cannot record');
+notes.value='Synthetic fixture observation only.'; check.checked=true; current=false;
+await form.onsubmit({preventDefault(){},currentTarget:form}); assert.equal(commands.length,0,'stale traversal cannot record');
+assert.match(form.querySelector('[role=alert]').textContent,/changed/);
+current=true; await form.onsubmit({preventDefault(){},currentTarget:form});
+assert.equal(commands.length,1); assert.equal(saved,1); assert.equal(commands[0].payload.observations,notes.value);
+assert.equal(commands[0].payload.reviewed,true); assert.equal(document.querySelector('dialog'),null);
+assert.equal(command.payload.reviewed,undefined,'caller command was not mutated');
+await window.happyDOM.close();
+console.log('Model traversal: genuine distinct visits, stamp reset, explicit review/blank observations, stale-save prevention and unavailable desk draft safety passed.');

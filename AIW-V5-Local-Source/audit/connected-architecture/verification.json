@@ -1,0 +1,69 @@
+{
+  "schema": "aiw.connected-architecture.release-verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.36+studio.20261021",
+  "recordedAt": "2026-10-21T01:43:50.631286+00:00",
+  "baselineCommit": "fdca377e5f4e0125f2ae2da24494fc8e495e4f8c",
+  "functionalAcceptance": {
+    "status": "passed",
+    "passedSuites": 19,
+    "suiteCount": 19,
+    "report": "focused-results.json",
+    "initialFailurePreserved": true,
+    "scope": "Authored bounded architecture cases, native DOM controls, actual authenticated Worker/SQLite fixture paths and complete cross-feature projections."
+  },
+  "syntax": {
+    "status": "passed",
+    "modules": 861,
+    "log": "syntax.log"
+  },
+  "compiledNativeJourney": {
+    "status": "passed",
+    "command": [
+      "AIW_CLIENT_ENTRY=dist/client/assets/app-VBQ6P2MO.js",
+      "node",
+      "workbench-ui-validate.mjs"
+    ],
+    "log": "compiled-entry-ui.log",
+    "renderedBrowser": false
+  },
+  "productionBuild": {
+    "status": "passed",
+    "command": [
+      "node",
+      "/root/.codex/plugins/cache/openai-curated-remote/sites/1.0.1/scripts/build-site.mjs"
+    ],
+    "log": "worker-build.log",
+    "workerModuleCount": 243,
+    "actualEntry": "/assets/app-VBQ6P2MO.js",
+    "packagedImportGraph": "passed",
+    "everyEmbeddedAssetPlainGzipAndETag": "passed",
+    "clientReport": "client-size-report.json",
+    "budgetViolations": [],
+    "budgetCapsUnchanged": true
+  },
+  "lint": {
+    "releaseRegression": "passed",
+    "newProblems": 0,
+    "fullTreeRatchet": "failed on inherited violations",
+    "inheritedProblemCount": 242,
+    "previousProblemCount": 243,
+    "report": "lint-regression.json"
+  },
+  "separateRegression": {
+    "command": [
+      "node",
+      "knowledge-repository-validate.mjs"
+    ],
+    "status": "passed",
+    "scope": "Four synthetic fixture groups; temporary loopback service, actual Worker and SQLite. Separate invocation requires permission to bind localhost."
+  },
+  "acceptanceLimits": {
+    "renderedDesktopMobileTouch": false,
+    "liveProviderArchitectureQuality": false,
+    "independentOrbusBenchmark": false,
+    "productionDesignApproval": false,
+    "fullExternalCorpusDeployment": false,
+    "wholeHistoricalSuiteRerun": false
+  },
+  "sourceIntegrity": "SOURCE-MANIFEST.json lists the exact source content. The Sites publication and matching git source ZIP identify the final committed release. This evidence does not imply acceptance of a customer architecture."
+}

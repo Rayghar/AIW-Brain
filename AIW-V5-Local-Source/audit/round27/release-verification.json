@@ -1,0 +1,1466 @@
+{
+  "schema": 1,
+  "recordedAt": "2026-10-17T02:10:28.516Z",
+  "timeZone": "Africa/Lagos",
+  "kind": "Local release verification aggregation from exact saved receipts; no source synchronization or publication performed",
+  "base": {
+    "siteVersion": 88,
+    "commit": "430b04612f059638c4eb466ba1e0f5e748c1b469"
+  },
+  "status": "Required local checks passed; source/archive/deployment pending",
+  "scope": {
+    "requiredCommands": [
+      {
+        "command": "npm run test:payment-knowledge-pilot",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/knowledge-final/npm_run_test_payment-knowledge-pilot.log",
+        "receipt": "evidence/round27/checks/knowledge-final/results.json",
+        "durationMs": 9933
+      },
+      {
+        "command": "node architecture-knowledge-unit-validate.mjs",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/post-recovery/node_architecture-knowledge-unit-validate.mjs.log",
+        "receipt": "evidence/round27/checks/post-recovery/results.json",
+        "durationMs": 1985
+      },
+      {
+        "command": "node brain-governance-ui-validate.mjs",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/post-recovery/node_brain-governance-ui-validate.mjs.log",
+        "receipt": "evidence/round27/checks/post-recovery/results.json",
+        "durationMs": 14452
+      },
+      {
+        "command": "npm run test:brain-integration",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/knowledge-final/npm_run_test_brain-integration.log",
+        "receipt": "evidence/round27/checks/knowledge-final/results.json",
+        "durationMs": 5902
+      },
+      {
+        "command": "npm run test:knowledge-retrieval",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/knowledge-final/npm_run_test_knowledge-retrieval.log",
+        "receipt": "evidence/round27/checks/knowledge-final/results.json",
+        "durationMs": 15077
+      },
+      {
+        "command": "npm run test:technology-catalogue",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/knowledge-final/npm_run_test_technology-catalogue.log",
+        "receipt": "evidence/round27/checks/knowledge-final/results.json",
+        "durationMs": 2639
+      },
+      {
+        "command": "node check-syntax.mjs",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/syntax-final/node_check-syntax.mjs.log",
+        "receipt": "evidence/round27/checks/syntax-final/results.json",
+        "durationMs": 230758
+      },
+      {
+        "command": "npm run build",
+        "status": "passed",
+        "evidence": "evidence/round27/checks/build-browser/npm_run_build.log",
+        "receipt": "evidence/round27/checks/build-browser/results.json",
+        "durationMs": 17430
+      }
+    ],
+    "postRecoveryCommands": 10,
+    "knowledgeCommands": 7,
+    "domainCommands": [
+      {
+        "command": "npm run test:quality",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_quality.log",
+        "durationMs": 13151
+      },
+      {
+        "command": "npm run test:decisions",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_decisions.log",
+        "durationMs": 15758
+      },
+      {
+        "command": "npm run test:logical",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_logical.log",
+        "durationMs": 3747
+      },
+      {
+        "command": "npm run test:realisation",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_realisation.log",
+        "durationMs": 4215
+      },
+      {
+        "command": "npm run test:technology-realisation",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_technology-realisation.log",
+        "durationMs": 6566
+      },
+      {
+        "command": "npm run test:interfaces",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_interfaces.log",
+        "durationMs": 4695
+      },
+      {
+        "command": "npm run test:security",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_security.log",
+        "durationMs": 4477
+      },
+      {
+        "command": "npm run test:runtime",
+        "evidence": "evidence/round27/checks/domains-final/npm_run_test_runtime.log",
+        "durationMs": 5574
+      },
+      {
+        "command": "npm run test:requirements",
+        "evidence": "evidence/round27/checks/domains-repaired-2/npm_run_test_requirements.log",
+        "durationMs": 14100
+      },
+      {
+        "command": "npm run test:technology",
+        "evidence": "evidence/round27/checks/domains-repaired-2/npm_run_test_technology.log",
+        "durationMs": 6188
+      },
+      {
+        "command": "npm run test:review",
+        "evidence": "evidence/round27/checks/domains-repaired-2/npm_run_test_review.log",
+        "durationMs": 40074
+      }
+    ],
+    "browser": {
+      "client": "dist/client",
+      "checkpoints": [
+        {
+          "name": "Blank Chapter 1 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 2 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 3 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 4 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 5 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 6 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 7 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 8 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 9 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 10 four-tab navigation and guidance"
+        },
+        {
+          "name": "Blank Chapter 11 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 1 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 1 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 2 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 2 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 3 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 3 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 4 model has a readable searchable label view"
+        },
+        {
+          "name": "Visible model SVG export completes"
+        },
+        {
+          "name": "Visible model PNG export completes"
+        },
+        {
+          "name": "Visible model HTML export completes"
+        },
+        {
+          "name": "Illustrative Chapter 4 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 5 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 5 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 6 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 6 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 7 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 7 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 8 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 8 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 9 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 9 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 10 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 10 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 11 model has a readable searchable label view"
+        },
+        {
+          "name": "Illustrative Chapter 11 four-tab navigation and guidance"
+        },
+        {
+          "name": "Chapter 1 named record card retains source/findings/history/tools",
+          "id": "OUT-001"
+        },
+        {
+          "name": "Chapter 2 named record card retains source/findings/history/tools",
+          "id": "QD-001"
+        },
+        {
+          "name": "Chapter 3 named record card retains source/findings/history/tools",
+          "id": "ADR-001"
+        },
+        {
+          "name": "Chapter 4 named record card retains source/findings/history/tools",
+          "id": "GRP-001"
+        },
+        {
+          "name": "Chapter 5 named record card retains source/findings/history/tools",
+          "id": "api-pod"
+        },
+        {
+          "name": "Chapter 6 named record card retains source/findings/history/tools",
+          "id": "tc-001"
+        },
+        {
+          "name": "Chapter 7 named record card retains source/findings/history/tools",
+          "id": "tr-001"
+        },
+        {
+          "name": "Chapter 8 named record card retains source/findings/history/tools",
+          "id": "rest"
+        },
+        {
+          "name": "Chapter 9 named record card retains source/findings/history/tools",
+          "id": "oauth"
+        },
+        {
+          "name": "Chapter 10 named record card retains source/findings/history/tools",
+          "id": "env-001"
+        },
+        {
+          "name": "Chapter 11 has no canonical record for fixture detail check"
+        },
+        {
+          "name": "Chapter1 brief steps, visible Details, findings and sorting"
+        },
+        {
+          "name": "Existing artefact type is stable and non-requirement priority is hidden"
+        },
+        {
+          "name": "Chapter5 short needs editor preserves focused task"
+        },
+        {
+          "name": "Chapter6 selectively keeps one draft need without confirming it",
+          "id": "TN-029",
+          "component": "obj-001",
+          "unchangedCandidates": 3
+        },
+        {
+          "name": "Draft preference saves through native server and Undo restores its prior value"
+        },
+        {
+          "name": "Chapter7 weighing and preview remain in Work"
+        },
+        {
+          "name": "Chapter8 promise edits focus the field; actual sample stages stay in Work and require authored observations"
+        },
+        {
+          "name": "Output download completes",
+          "filename": "AIW_Round_27_implementation_QA_Technology_Realization.md"
+        },
+        {
+          "name": "390px Work fits Chapter 1"
+        },
+        {
+          "name": "390px Work fits Chapter 4"
+        },
+        {
+          "name": "390px Work fits Chapter 7"
+        },
+        {
+          "name": "390px Work fits Chapter 8"
+        },
+        {
+          "name": "390px Work fits Chapter 11"
+        },
+        {
+          "name": "Ask Sol and Co-design retain exact project, chapter and selected architecture record",
+          "id": "api"
+        }
+      ],
+      "pageErrors": [],
+      "apiErrors": [],
+      "finishedAt": "2026-10-17T02:09:35.542Z"
+    },
+    "exportScale": {
+      "bounds": {
+        "markdownBytes": 2097152,
+        "pdfPages": 150,
+        "exportMs": 10000
+      },
+      "measurements": {
+        "records": 5572,
+        "requirements": 1400,
+        "groups": 60,
+        "markdownMs": 3418,
+        "markdownFiguresMs": 8895,
+        "htmlMs": 2761,
+        "docxMs": 3695,
+        "pdfMs": 3187,
+        "pdfPages": 92,
+        "pdfPagesWithFigures": 135,
+        "printedFigures": 38,
+        "minimumLabelPt": 7,
+        "executiveColdMs": 1878,
+        "freezeMs": [
+          17772,
+          6842
+        ],
+        "draftedArchitectureColdMs": 6113,
+        "draftedPdfPages": 84
+      }
+    },
+    "exportIdentity": {
+      "passed": true,
+      "checkedAt": "2026-10-17T00:49:10.584Z",
+      "beforeSha256": "184451097bd9664b7d7e85cd9cbecc416414e52e8ed9f7d1860e3fcc54beeabe",
+      "afterSha256": "184451097bd9664b7d7e85cd9cbecc416414e52e8ed9f7d1860e3fcc54beeabe",
+      "legacyFigures": 4,
+      "currentFigures": 12,
+      "reducedFigures": 12,
+      "includes": "Complete SVG, identity, captions, hashes, page fits, manifests and SDD Markdown",
+      "fixture": "Synthetic bank-payment fixture; no human approval",
+      "evidence": "evidence/round27/w4/export-identity/"
+    }
+  },
+  "failuresAndFixes": [
+    {
+      "finding": "Exact record links could fail for canonical records absent from the diagram graph.",
+      "resolution": "Shell selection now resolves canonical records. The final built-client browser run passed its recorded named-card checks.",
+      "evidence": "evidence/round27/work-1792202846033/results.json"
+    },
+    {
+      "finding": "The Work Undo assertion observed the pending save before rollback completed.",
+      "resolution": "The assertion now waits for saved state and no Undo receipt; the UI awaits refresh. The final built-client native preference/Undo action passed.",
+      "evidence": "evidence/round27/work-1792202846033/results.json"
+    },
+    {
+      "finding": "The Co-design test selector matched two legitimate controls.",
+      "resolution": "The selector now names the mode control inside .brain-modes. The final built-client assistant-context checkpoint passed; no LLM answer was fabricated.",
+      "evidence": "evidence/round27/work-1792202846033/results.json"
+    },
+    {
+      "finding": "The shared Chapter 1 guidance card omitted the existing reference note and dismissal action.",
+      "resolution": "The original note, action and remembered dismissal were retained. The repaired requirements suite passed its explicit presence, dismissal and return assertions.",
+      "evidence": "evidence/round27/checks/domains-repaired-2/npm_run_test_requirements.log"
+    },
+    {
+      "finding": "Old technology/review fixtures contradicted explicit readiness and the new executive context figure.",
+      "resolution": "The technology fixture now explicitly reviews the needed records and visits the actual simulation stages. The review suite checks the required executive context instead of asserting that no figure exists. Both suites passed; no production approval was invented.",
+      "evidence": "evidence/round27/checks/domains-repaired-2/results.json"
+    },
+    {
+      "finding": "Large SDD figures and export work exceeded layout/time limits in earlier runs.",
+      "resolution": "Bounded chapter overviews, indexed lookups and reuse limited to the existing read-only document pass repaired the issues. Exact output identity was verified, and the final scale run passed unchanged budgets. The earlier ten-check figure-integrity run still lacks a clean exit receipt because of ENOSPC.",
+      "evidence": "evidence/round27/w4/post-recovery-handoff.json"
+    },
+    {
+      "finding": "C: exhausted free space and a Chapter 5 source write produced an empty file.",
+      "resolution": "The source was reconstructed from the v88 base and guarded recorded transformations, checked by hash/syntax and atomically restored. Post-recovery component-needs, the realisation domain and final built-client checks now have passing receipts.",
+      "evidence": "evidence/round27/source-recovery.json"
+    },
+    {
+      "finding": "The actual OpenAI operation returned 429 project_spend_limit_exceeded.",
+      "resolution": "The failed run and unchanged unconfirmed requirement are recorded. No generated answer or corpus-grounding assessment exists; this remains an external provider blocker.",
+      "evidence": "evidence/round27/bounded-provider-1792197451308/results.json"
+    },
+    {
+      "finding": "Supported CUA failed before returning the existing browser inventory.",
+      "resolution": "The initial Windows 1385 failure and trusted Node exit after reset are recorded. Authentication and tab availability remain unknown; this is not a sign-out finding.",
+      "evidence": "evidence/round27/hosted-browser-runtime.json"
+    }
+  ],
+  "retainedLimits": {
+    "fullRegression": {
+      "status": "not an exhaustive run of every existing suite",
+      "detail": "The eight required commands, ten post-recovery checks, seven knowledge/reasoning checks, all eleven native domain suites and the named browser/export checks have receipts. This does not claim 100% of every existing regression suite or every UI path was exercised."
+    },
+    "figureIntegrity": "All ten checkpoints were observed, but ENOSPC prevented a clean final child-exit receipt.",
+    "provider": {
+      "status": "blocked by provider project spend limit",
+      "evidence": "evidence/round27/bounded-provider-1792197451308/results.json",
+      "provider": "OpenAI",
+      "model": "gpt-4.1-mini",
+      "applicationOperations": 1,
+      "transportAttempts": "Existing transport permits up to 2 attempts; no second application operation started.",
+      "httpStatus": 429,
+      "upstreamType": "insufficient_quota",
+      "upstreamCode": "project_spend_limit_exceeded",
+      "packetCharacters": 4580,
+      "eligibleClaims": 0,
+      "generatedAnswers": 0,
+      "detail": "A real local application field operation prepared the selected UATC-0197 requirement and Chapter 1 reading, then OpenAI rejected execution. No draft or answer was returned. Read-only postflight confirmed unchanged, unconfirmed requirement content and a persisted failed run.",
+      "limit": "The packet had zero eligible governed claims and no corpus import or embeddings. This does not establish Ask Sol/Mind Factory synthesis quality, corpus retrieval relevance, chapter-wide accuracy or hosted provider execution.",
+      "next": "Resolve the existing OpenAI project's spend limit, then repeat the bounded request and run a separate eligible-source, citation-checked relevance evaluation. Do not substitute an invented answer."
+    },
+    "hostedBrowser": {
+      "status": "publication pending; authenticated browser inventory blocked",
+      "evidence": "evidence/round27/hosted-browser-runtime.json",
+      "detail": "Supported CUA failed before returning browser inventory: CreateProcessWithLogonW 1385, then trusted Node process exited after reset/retry. Existing tab availability and visitor authentication are unknown; this is not evidence that the user signed out. No tab, credentials or project was changed. Final deployed-version/worker-error smoke checks remain pending; authenticated hosted save/export/Undo and provider execution are not verified."
+    },
+    "payment": {
+      "status": "Confirmed requirement; independent evidence and review queue remains open",
+      "confirmed": [
+        "UATC-0197: create a transfer request; modification/deletion only before approval or rejection.",
+        "Any maker with the required payment permissions may modify or delete a pending request.",
+        "First valid committed action wins; approval requires the current request version.",
+        "The selected requirement and supporting passages may be stored in the private project and disclosed to OpenAI for this pilot."
+      ],
+      "reviewSteps": [
+        "Sign in personally to the existing private AIW Site and open the intended payment project. Use the actual focused Chapter 11 case linked to UATC-0197; if no case is prepared, leave case preparation open rather than approving a synthetic fixture.",
+        "Inspect the exact repository original and selected passages: version, locator, source hash, permission/use note and contradictions. Confirm only the source facts and reuse rights you can personally substantiate. The prior permission covers this selected pilot material, not the full laptop corpus.",
+        "Check independent source review, any required signed release, explicit activation in this project and withdrawal/currentness status. Candidate or unreleased material remains evidence to review, not design authority.",
+        "Inspect at least two viable payment handoff options with exact product version, tier, topology, operating model, assumptions and official version-specific source receipts. If that comparison is missing or unsupported, return it to preparation rather than accepting a default recommendation.",
+        "Record your own rationale against the confirmed pending-only authorization and current-version race rules. Mark the alternative rejected or deferred and the assumptions still open. Keep workload and response-time targets explicitly not agreed; do not approve invented numbers.",
+        "As the second architect, record your own authenticated case assessment, observations and any requested changes. Check traceability to components, interface/data contracts, deployment and actual evidence. Keep focused-case review distinct from whole-project SDD approval; attach no measurement or sign-off that did not occur."
+      ],
+      "open": [
+        "Workload, concurrent users, percentile, timing boundary and measurable response-time target are not agreed.",
+        "Establish exact permitted originals, passage locators, source hashes and the governed release/project activation evidence for the selected case.",
+        "Complete a version-specific comparison of at least two viable handoff options and architect-authored rationale, assumptions and obligations.",
+        "Attach an actual case test or observation where available; synthetic gate results do not count as payment operational evidence.",
+        "The user offered to act as the second architect: they must sign in and personally record the independent case review. No assistant-authored review or SDD sign-off substitutes for that action."
+      ]
+    },
+    "boundaries": [
+      "The laptop knowledge corpus was not uploaded or treated as the Site source checkout.",
+      "Candidate knowledge does not become design authority through keeping a proposal or refactoring a screen.",
+      "Models and diagrams project saved records and rules; LLM involvement does not certify architecture accuracy.",
+      "No human source-rights decision, architect judgment, payment measurement, external approval or SDD sign-off was fabricated."
+    ],
+    "remaining": [
+      {
+        "impact": "Release gate",
+        "item": "Synchronize the verified source through the supported Sites workflow, package an archive matching the pushed commit and publish to the existing private Site. Confirm deployment identity and supported hosted service/error checks; authenticated hosted UI remains subject to the separate recorded CUA runtime blocker."
+      },
+      {
+        "impact": "High",
+        "item": "Provider execution is blocked by project spend limit. Corpus-grounded Ask Sol and Mind Factory answer quality remains unverified by this round."
+      },
+      {
+        "impact": "High human gate",
+        "item": "Payment workload/latency targets, originals and release evidence, actual observations and independent authenticated review remain open."
+      },
+      {
+        "impact": "Medium",
+        "item": "Large fitted model overviews can still have small labels. Zoom and the readable label navigator help; universal wrapping and minimum font size at arbitrary scale are not established."
+      },
+      {
+        "impact": "Medium verification",
+        "item": "Coverage is bounded: every finding/editor path, screen-reader path, dark theme and model export combination has not been exhaustively exercised. Authenticated hosted UI inspection is separately blocked by the supported CUA runtime failing before browser inventory (Windows 1385 and trusted Node exit), not by a demonstrated sign-in failure."
+      },
+      {
+        "impact": "Deferred",
+        "item": "The chapter journey-drafter citation filter, viewpoint catalogue, saved table filters/CSV, picture baseline comparison and bulk owner/acceptance editing remain explicitly deferred product work. No blanket claim closes all 98 historical gaps."
+      }
+    ]
+  },
+  "sourceCommit": null,
+  "archive": null,
+  "deployment": null,
+  "packagingBuildAfterManifest": null,
+  "receipts": {
+    "finalBrowser": {
+      "path": "evidence/round27/work-1792202846033/results.json",
+      "sha256": "fbb30348c80a5ed642af8fba408bf4515cc4c5bdaf3c101d4d6188e927fb2a56",
+      "bytes": 5915,
+      "document": {
+        "at": "2026-10-17T02:07:26.075Z",
+        "authority": "Synthetic implementation QA; no architect approval, payment measurement or live provider execution.",
+        "checks": [
+          {
+            "name": "Blank Chapter 1 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 2 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 3 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 4 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 5 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 6 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 7 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 8 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 9 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 10 four-tab navigation and guidance"
+          },
+          {
+            "name": "Blank Chapter 11 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 1 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 1 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 2 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 2 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 3 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 3 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 4 model has a readable searchable label view"
+          },
+          {
+            "name": "Visible model SVG export completes"
+          },
+          {
+            "name": "Visible model PNG export completes"
+          },
+          {
+            "name": "Visible model HTML export completes"
+          },
+          {
+            "name": "Illustrative Chapter 4 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 5 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 5 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 6 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 6 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 7 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 7 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 8 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 8 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 9 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 9 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 10 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 10 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 11 model has a readable searchable label view"
+          },
+          {
+            "name": "Illustrative Chapter 11 four-tab navigation and guidance"
+          },
+          {
+            "name": "Chapter 1 named record card retains source/findings/history/tools",
+            "id": "OUT-001"
+          },
+          {
+            "name": "Chapter 2 named record card retains source/findings/history/tools",
+            "id": "QD-001"
+          },
+          {
+            "name": "Chapter 3 named record card retains source/findings/history/tools",
+            "id": "ADR-001"
+          },
+          {
+            "name": "Chapter 4 named record card retains source/findings/history/tools",
+            "id": "GRP-001"
+          },
+          {
+            "name": "Chapter 5 named record card retains source/findings/history/tools",
+            "id": "api-pod"
+          },
+          {
+            "name": "Chapter 6 named record card retains source/findings/history/tools",
+            "id": "tc-001"
+          },
+          {
+            "name": "Chapter 7 named record card retains source/findings/history/tools",
+            "id": "tr-001"
+          },
+          {
+            "name": "Chapter 8 named record card retains source/findings/history/tools",
+            "id": "rest"
+          },
+          {
+            "name": "Chapter 9 named record card retains source/findings/history/tools",
+            "id": "oauth"
+          },
+          {
+            "name": "Chapter 10 named record card retains source/findings/history/tools",
+            "id": "env-001"
+          },
+          {
+            "name": "Chapter 11 has no canonical record for fixture detail check"
+          },
+          {
+            "name": "Chapter1 brief steps, visible Details, findings and sorting"
+          },
+          {
+            "name": "Existing artefact type is stable and non-requirement priority is hidden"
+          },
+          {
+            "name": "Chapter5 short needs editor preserves focused task"
+          },
+          {
+            "name": "Chapter6 selectively keeps one draft need without confirming it",
+            "id": "TN-029",
+            "component": "obj-001",
+            "unchangedCandidates": 3
+          },
+          {
+            "name": "Draft preference saves through native server and Undo restores its prior value"
+          },
+          {
+            "name": "Chapter7 weighing and preview remain in Work"
+          },
+          {
+            "name": "Chapter8 promise edits focus the field; actual sample stages stay in Work and require authored observations"
+          },
+          {
+            "name": "Output download completes",
+            "filename": "AIW_Round_27_implementation_QA_Technology_Realization.md"
+          },
+          {
+            "name": "390px Work fits Chapter 1"
+          },
+          {
+            "name": "390px Work fits Chapter 4"
+          },
+          {
+            "name": "390px Work fits Chapter 7"
+          },
+          {
+            "name": "390px Work fits Chapter 8"
+          },
+          {
+            "name": "390px Work fits Chapter 11"
+          },
+          {
+            "name": "Ask Sol and Co-design retain exact project, chapter and selected architecture record",
+            "id": "api"
+          }
+        ],
+        "pageErrors": [],
+        "apiErrors": [],
+        "client": "dist/client",
+        "projects": {
+          "blank": "project-c2c30dd6-04ee-473d-a9d7-dd9369858e3a",
+          "illustrative": "project-f9087cd0-6de8-4d60-b684-631ef8bce518"
+        },
+        "passed": true,
+        "finishedAt": "2026-10-17T02:09:35.542Z"
+      }
+    },
+    "syntax": {
+      "path": "evidence/round27/checks/syntax-final/results.json",
+      "sha256": "fa2fe4ab5e9165d1a11bffdf08e3d146e8c50554b16125019fb337db206df6e3",
+      "bytes": 403,
+      "document": {
+        "at": "2026-10-17T01:59:42.622Z",
+        "authority": "Synthetic implementation verification; no human approval, payment measurement or live provider request.",
+        "checks": [
+          {
+            "command": "node check-syntax.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 230758,
+            "log": "node_check-syntax.mjs.log"
+          }
+        ],
+        "passed": true,
+        "finishedAt": "2026-10-17T02:03:33.394Z"
+      }
+    },
+    "build": {
+      "path": "evidence/round27/checks/build-browser/results.json",
+      "sha256": "0b89bb3311d762ca228fa6229ddfb6c58806515108c28736577ada51e3af090f",
+      "bytes": 386,
+      "document": {
+        "at": "2026-10-17T01:58:14.356Z",
+        "authority": "Synthetic implementation verification; no human approval, payment measurement or live provider request.",
+        "checks": [
+          {
+            "command": "npm run build",
+            "code": 0,
+            "passed": true,
+            "durationMs": 17430,
+            "log": "npm_run_build.log"
+          }
+        ],
+        "passed": true,
+        "finishedAt": "2026-10-17T01:58:31.803Z"
+      }
+    },
+    "postRecovery": {
+      "path": "evidence/round27/checks/post-recovery/results.json",
+      "sha256": "bb27e532fd94d1f3c18151a20d6951c08bbd2c73954693c73ead9985402e1089",
+      "bytes": 2107,
+      "document": {
+        "at": "2026-10-17T00:35:58.535Z",
+        "authority": "Synthetic implementation verification; no human approval, payment measurement or live provider request.",
+        "checks": [
+          {
+            "command": "node component-needs-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 5311,
+            "log": "node_component-needs-validate.mjs.log"
+          },
+          {
+            "command": "node chapter-insight-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 2791,
+            "log": "node_chapter-insight-validate.mjs.log"
+          },
+          {
+            "command": "node chapter-header-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 5958,
+            "log": "node_chapter-header-validate.mjs.log"
+          },
+          {
+            "command": "node readiness-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 2478,
+            "log": "node_readiness-validate.mjs.log"
+          },
+          {
+            "command": "node validation-confirmation-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 1704,
+            "log": "node_validation-confirmation-validate.mjs.log"
+          },
+          {
+            "command": "node action-undo-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4710,
+            "log": "node_action-undo-validate.mjs.log"
+          },
+          {
+            "command": "node action-undo-ui-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 3929,
+            "log": "node_action-undo-ui-validate.mjs.log"
+          },
+          {
+            "command": "node link-picker-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4383,
+            "log": "node_link-picker-validate.mjs.log"
+          },
+          {
+            "command": "node architecture-knowledge-unit-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 1985,
+            "log": "node_architecture-knowledge-unit-validate.mjs.log"
+          },
+          {
+            "command": "node brain-governance-ui-validate.mjs",
+            "code": 0,
+            "passed": true,
+            "durationMs": 14452,
+            "log": "node_brain-governance-ui-validate.mjs.log"
+          }
+        ],
+        "passed": true,
+        "finishedAt": "2026-10-17T00:36:46.302Z"
+      }
+    },
+    "knowledge": {
+      "path": "evidence/round27/checks/knowledge-final/results.json",
+      "sha256": "b14cb802f5f9a88805e04c469d2678a561daaedf93b0b6b0a84f41414deb5736",
+      "bytes": 1490,
+      "document": {
+        "at": "2026-10-17T00:37:29.456Z",
+        "authority": "Synthetic implementation verification; no human approval, payment measurement or live provider request.",
+        "checks": [
+          {
+            "command": "npm run test:payment-knowledge-pilot",
+            "code": 0,
+            "passed": true,
+            "durationMs": 9933,
+            "log": "npm_run_test_payment-knowledge-pilot.log"
+          },
+          {
+            "command": "npm run test:brain-integration",
+            "code": 0,
+            "passed": true,
+            "durationMs": 5902,
+            "log": "npm_run_test_brain-integration.log"
+          },
+          {
+            "command": "npm run test:knowledge-retrieval",
+            "code": 0,
+            "passed": true,
+            "durationMs": 15077,
+            "log": "npm_run_test_knowledge-retrieval.log"
+          },
+          {
+            "command": "npm run test:technology-catalogue",
+            "code": 0,
+            "passed": true,
+            "durationMs": 2639,
+            "log": "npm_run_test_technology-catalogue.log"
+          },
+          {
+            "command": "npm run test:co-design",
+            "code": 0,
+            "passed": true,
+            "durationMs": 8836,
+            "log": "npm_run_test_co-design.log"
+          },
+          {
+            "command": "npm run test:module-scope",
+            "code": 0,
+            "passed": true,
+            "durationMs": 19401,
+            "log": "npm_run_test_module-scope.log"
+          },
+          {
+            "command": "npm run test:decision-reading",
+            "code": 0,
+            "passed": true,
+            "durationMs": 16969,
+            "log": "npm_run_test_decision-reading.log"
+          }
+        ],
+        "passed": true,
+        "finishedAt": "2026-10-17T00:38:48.265Z"
+      }
+    },
+    "domainsEarlier": {
+      "path": "evidence/round27/checks/domains-final/results.json",
+      "sha256": "7f1f4bbdb750fa2610d4db9ffbb926ff2a1783368b8c9029f193e219d8d4ca2b",
+      "bytes": 2060,
+      "document": {
+        "at": "2026-10-17T00:50:42.669Z",
+        "authority": "Synthetic implementation verification; no human approval, payment measurement or live provider request.",
+        "checks": [
+          {
+            "command": "npm run test:requirements",
+            "code": 1,
+            "passed": false,
+            "durationMs": 6513,
+            "log": "npm_run_test_requirements.log"
+          },
+          {
+            "command": "npm run test:quality",
+            "code": 0,
+            "passed": true,
+            "durationMs": 13151,
+            "log": "npm_run_test_quality.log"
+          },
+          {
+            "command": "npm run test:decisions",
+            "code": 0,
+            "passed": true,
+            "durationMs": 15758,
+            "log": "npm_run_test_decisions.log"
+          },
+          {
+            "command": "npm run test:logical",
+            "code": 0,
+            "passed": true,
+            "durationMs": 3747,
+            "log": "npm_run_test_logical.log"
+          },
+          {
+            "command": "npm run test:realisation",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4215,
+            "log": "npm_run_test_realisation.log"
+          },
+          {
+            "command": "npm run test:technology",
+            "code": 1,
+            "passed": false,
+            "durationMs": 3252,
+            "log": "npm_run_test_technology.log"
+          },
+          {
+            "command": "npm run test:technology-realisation",
+            "code": 0,
+            "passed": true,
+            "durationMs": 6566,
+            "log": "npm_run_test_technology-realisation.log"
+          },
+          {
+            "command": "npm run test:interfaces",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4695,
+            "log": "npm_run_test_interfaces.log"
+          },
+          {
+            "command": "npm run test:security",
+            "code": 0,
+            "passed": true,
+            "durationMs": 4477,
+            "log": "npm_run_test_security.log"
+          },
+          {
+            "command": "npm run test:runtime",
+            "code": 0,
+            "passed": true,
+            "durationMs": 5574,
+            "log": "npm_run_test_runtime.log"
+          },
+          {
+            "command": "npm run test:review",
+            "code": 1,
+            "passed": false,
+            "durationMs": 16072,
+            "log": "npm_run_test_review.log"
+          }
+        ],
+        "passed": false,
+        "finishedAt": "2026-10-17T00:52:06.763Z"
+      }
+    },
+    "domainsRepaired": {
+      "path": "evidence/round27/checks/domains-repaired-2/results.json",
+      "sha256": "9e3023c9b1a8c777deecbe95043f4afc1284efdf3db5a01c26f8ff31b674556a",
+      "bytes": 733,
+      "document": {
+        "at": "2026-10-17T01:58:05.371Z",
+        "authority": "Synthetic implementation verification; no human approval, payment measurement or live provider request.",
+        "checks": [
+          {
+            "command": "npm run test:requirements",
+            "code": 0,
+            "passed": true,
+            "durationMs": 14100,
+            "log": "npm_run_test_requirements.log"
+          },
+          {
+            "command": "npm run test:technology",
+            "code": 0,
+            "passed": true,
+            "durationMs": 6188,
+            "log": "npm_run_test_technology.log"
+          },
+          {
+            "command": "npm run test:review",
+            "code": 0,
+            "passed": true,
+            "durationMs": 40074,
+            "log": "npm_run_test_review.log"
+          }
+        ],
+        "passed": true,
+        "finishedAt": "2026-10-17T01:59:05.760Z"
+      }
+    },
+    "domainsIntermediate": {
+      "path": "evidence/round27/checks/domains-repaired/results.json",
+      "sha256": "545782536f866f936b199274c3c6f0b94f5f0ec0d3a0528b3b44add48c5bcb86",
+      "bytes": 736,
+      "document": {
+        "at": "2026-10-17T01:55:02.561Z",
+        "authority": "Synthetic implementation verification; no human approval, payment measurement or live provider request.",
+        "checks": [
+          {
+            "command": "npm run test:requirements",
+            "code": 1,
+            "passed": false,
+            "durationMs": 7689,
+            "log": "npm_run_test_requirements.log"
+          },
+          {
+            "command": "npm run test:technology",
+            "code": 1,
+            "passed": false,
+            "durationMs": 3846,
+            "log": "npm_run_test_technology.log"
+          },
+          {
+            "command": "npm run test:review",
+            "code": 1,
+            "passed": false,
+            "durationMs": 32511,
+            "log": "npm_run_test_review.log"
+          }
+        ],
+        "passed": false,
+        "finishedAt": "2026-10-17T01:55:46.648Z"
+      }
+    },
+    "outputHandoff": {
+      "path": "evidence/round27/w4/post-recovery-handoff.json",
+      "sha256": "b3ef2a706a5b50a6311fb3e3782aee4e5c96fc3f3a85056ea9c7c98ef13c2019",
+      "bytes": 6150,
+      "document": {
+        "status": "passed",
+        "productionFiles": [
+          "public/notation-model.js",
+          "public/sdd-document.js",
+          "public/sdd-figures.js"
+        ],
+        "tests": [
+          "sdd-size-validate.mjs",
+          "sdd-layout-cache-validate.mjs",
+          "notation-validate.mjs"
+        ],
+        "verification": {
+          "passed": [
+            "output-stage-validate.mjs: 8 groups",
+            "output-completion-validate.mjs: 5 groups including authenticated Worker specification exports and the additional logical money type assertion",
+            "sdd-architecture-validate.mjs: 12 groups",
+            "sdd-formats-validate.mjs: 4 groups, rich fixture Word/PDF with 12 figures and 40 A4 pages",
+            "work-review-continuity-validate.mjs: 3 groups covering unsaved contextual Work proposals and impossible/empty runtime plan actions",
+            "sdd-size-validate.mjs: all 8 groups, exact exit 0; unchanged 10-second export, 2-second cold executive, 30-second freeze, 150-page, 2 MB and 7 pt readability limits",
+            "sdd-layout-cache-validate.mjs: 2 groups; cached/uncached SVG and Mermaid equality, distinct renumbered identities, changed target/new-pass currentness, no document mutation",
+            "notation-validate.mjs: complete suite exit 0 after indexed diagram lookup changes",
+            "Exact pre/post optimization export identity: 4 legacy frozen-baseline figures, 12 current figures and 12 reduced-detail figures plus full SDD Markdown, manifests, captions, hashes and page-fit metadata remain byte-identical"
+          ],
+          "assertionsCompletedWithReceiptFailure": [
+            {
+              "suite": "figures-integrity-validate.mjs",
+              "groups": 10,
+              "durationSecondsThroughLastAssertion": 452,
+              "evidence": "evidence/round27/w4/2026-10-16T23-16-30.477Z/figures-integrity-validate.mjs.log",
+              "detail": "The saved log contains every PASS checkpoint, ending with the 40-module map. Source inspection confirms no assertions follow that checkpoint. Disk exhaustion (ENOSPC) interrupted the runner while appending the suite's final JSON output. The final JSON and child exit receipt were not captured; this is not recorded as a clean runner exit."
+            }
+          ],
+          "observedAndFixed": [
+            "Legacy exact-four-figure and zero-executive-figure expectations updated to compare the required canonical set and hashes",
+            "Large security overview exceeded portrait A4 by about 5 mm; smaller bounded chapter overviews passed all ten subsequent figure-integrity assertion groups",
+            "The sdd-size figure-family assertion now preserves the four C4 families and also requires the new complementary chapter models; its size, time, page and readability limits are unchanged",
+            "The isolated figures export exceeded its budget at 12,808 ms. Removed quadratic duplicate-node/group lookup and shared repeated chapter projection/print layout work only within the existing synchronous read-only document pass; no geometry, fit rule, output content or review state changed. Final isolated run: 8,895 ms.",
+            "A structured clone reused the content-addressed executive figure cache, so the cold test was not genuinely cold. The synthetic cold probe now has a unique project identity; the original 2-second cold limit and new-draw assertion are both retained and passed."
+          ],
+          "remaining": [
+            "Final integrated browser/export and build verification, handled by the release owner"
+          ],
+          "scale": {
+            "evidence": "evidence/round27/w4/2026-10-17T00-44-48-993Z/",
+            "exitCode": 0,
+            "passed": 8,
+            "durationMs": 173829,
+            "bounds": {
+              "markdownBytes": 2097152,
+              "pdfPages": 150,
+              "exportMs": 10000
+            },
+            "measurements": {
+              "records": 5572,
+              "requirements": 1400,
+              "groups": 60,
+              "markdownMs": 3418,
+              "markdownFiguresMs": 8895,
+              "htmlMs": 2761,
+              "docxMs": 3695,
+              "pdfMs": 3187,
+              "pdfPages": 92,
+              "pdfPagesWithFigures": 135,
+              "printedFigures": 38,
+              "minimumLabelPt": 7,
+              "executiveColdMs": 1878,
+              "freezeMs": [
+                17772,
+                6842
+              ],
+              "draftedArchitectureColdMs": 6113,
+              "draftedPdfPages": 84
+            },
+            "failedRuns": [
+              "evidence/round27/w4/2026-10-17T00-29-33-341Z/",
+              "evidence/round27/w4/2026-10-17T00-31-16-630Z/",
+              "evidence/round27/w4/2026-10-17T00-42-21-195Z/"
+            ]
+          },
+          "optimizationIdentity": {
+            "passed": true,
+            "checkedAt": "2026-10-17T00:49:10.584Z",
+            "beforeSha256": "184451097bd9664b7d7e85cd9cbecc416414e52e8ed9f7d1860e3fcc54beeabe",
+            "afterSha256": "184451097bd9664b7d7e85cd9cbecc416414e52e8ed9f7d1860e3fcc54beeabe",
+            "legacyFigures": 4,
+            "currentFigures": 12,
+            "reducedFigures": 12,
+            "includes": "Complete SVG, identity, captions, hashes, page fits, manifests and SDD Markdown",
+            "fixture": "Synthetic bank-payment fixture; no human approval",
+            "evidence": "evidence/round27/w4/export-identity/"
+          },
+          "finalRegressionReceipts": {
+            "evidence": "evidence/round27/w4/final-export-regressions/",
+            "results": [
+              {
+                "name": "exact-export-identity",
+                "startedAt": "2026-10-17T00:49:07.967Z",
+                "durationMs": 2695,
+                "exitCode": 0,
+                "signal": null,
+                "error": null
+              },
+              {
+                "name": "sdd-layout-cache",
+                "startedAt": "2026-10-17T00:49:10.680Z",
+                "durationMs": 2376,
+                "exitCode": 0,
+                "signal": null,
+                "error": null
+              },
+              {
+                "name": "notation",
+                "startedAt": "2026-10-17T00:49:13.059Z",
+                "durationMs": 17765,
+                "exitCode": 0,
+                "signal": null,
+                "error": null
+              }
+            ]
+          }
+        },
+        "limits": [
+          "Figures and summaries are projections of saved records; they are not LLM-generated evidence of correctness.",
+          "No source corpus is uploaded, released, or activated by these changes.",
+          "These output suites made no provider calls. No independent architect review, external approval, real-world measurement or SDD sign-off was fabricated.",
+          "This artifact does not claim publication."
+        ]
+      }
+    },
+    "exportScale": {
+      "path": "evidence/round27/w4/2026-10-17T00-44-48-993Z/result.json",
+      "sha256": "c98de26a453a1907dadd9230188dd735f4c85480f70269e0fb9ac2a596b526b5",
+      "bytes": 383,
+      "document": {
+        "suite": "sdd-size-validate.mjs",
+        "startedAt": "2026-10-17T00:44:48.993Z",
+        "finishedAt": "2026-10-17T00:47:42.822Z",
+        "durationMs": 173829,
+        "exitCode": 0,
+        "signal": null,
+        "log": "C:\\Users\\ilohec\\Downloads\\AIW_R0_R7_REVIEWER_REPAIRS\\evidence\\round27\\w4\\2026-10-17T00-44-48-993Z\\sdd-size-validate.mjs.log",
+        "syntheticFixture": true,
+        "providerCalls": false
+      }
+    },
+    "exportScaleLog": {
+      "path": "evidence/round27/w4/2026-10-17T00-44-48-993Z/sdd-size-validate.mjs.log",
+      "sha256": "153dfc8866c53c4818fc3cf2ff389eaaa96fa00c34a05db0e603a98dc9806db1",
+      "bytes": 7791
+    },
+    "exportRegressions": {
+      "path": "evidence/round27/w4/final-export-regressions/results.json",
+      "sha256": "ff9560e43c6cde5976a7cdf97d1c1986f5f609d715d25f00b49ec1efdf8293cd",
+      "bytes": 501,
+      "document": [
+        {
+          "name": "exact-export-identity",
+          "startedAt": "2026-10-17T00:49:07.967Z",
+          "durationMs": 2695,
+          "exitCode": 0,
+          "signal": null,
+          "error": null
+        },
+        {
+          "name": "sdd-layout-cache",
+          "startedAt": "2026-10-17T00:49:10.680Z",
+          "durationMs": 2376,
+          "exitCode": 0,
+          "signal": null,
+          "error": null
+        },
+        {
+          "name": "notation",
+          "startedAt": "2026-10-17T00:49:13.059Z",
+          "durationMs": 17765,
+          "exitCode": 0,
+          "signal": null,
+          "error": null
+        }
+      ]
+    },
+    "figureReceiptRecovery": {
+      "path": "evidence/round27/w4/2026-10-16T23-16-30.477Z/recovery-receipt.json",
+      "sha256": "1b04898e17f7984723ebeecdada40a855ab33ebbebad90f34eb7814df8e31e01",
+      "bytes": 1214,
+      "document": {
+        "suite": "figures-integrity-validate.mjs",
+        "assertionGroupsCompleted": 10,
+        "secondsThroughLastAssertion": 452,
+        "lastCheckpoint": "40 modules, nothing designed: one-page module map, 7 pt labels, smallest modules folded into one box",
+        "sourceInspection": "The last checkpoint is followed only by final console.log(JSON.stringify(...)); no later assertions remain.",
+        "observedFailure": "The outer runner failed in appendFileSync while handling final stdout data: ENOSPC, no space left on device.",
+        "finalJsonCaptured": false,
+        "childExitReceiptCaptured": false,
+        "cleanRunnerExitClaimed": false,
+        "sddSizeStarted": false,
+        "processCleanup": "Verified that no run-round27-output-checks, figures-integrity-validate, or sdd-size-validate Node process remained. No user services or files were stopped or deleted.",
+        "coverage": [
+          "Large fixture: 130 SDD and 183 chapter figures",
+          "Drafted shape: 150 components, with and without modules",
+          "Shared component home placement and 21-module design",
+          "A container per module and post-import proposed module map",
+          "Register-scale 84 figures with clear labels and bounded relationships",
+          "25-module and 40-module one-page maps"
+        ]
+      }
+    },
+    "sourceRecovery": {
+      "path": "evidence/round27/source-recovery.json",
+      "sha256": "393d50e5980d04f8a4f660714ec3b745fc03e8dcd54dfc207b5cf0d893f75161",
+      "bytes": 842,
+      "document": {
+        "cause": "ENOSPC on C: interrupted the final Chapter 5 UI write.",
+        "diskAfterUserCleanupBytes": 12548358144,
+        "restored": "aiw-round27-current/public/realisation-ui.js",
+        "recoveryScript": "recover-round27-c5.cjs",
+        "base": "Existing v88 source HEAD plus guarded replay of recorded round27 transformations",
+        "bytes": 57378,
+        "sha256": "ceffa71f1f8ff2a32f16755f2a8071ce7e6b426ae0bde63b658977d4ccd98ed3",
+        "verification": [
+          "Expected empty target and empty recovery temporary file checked",
+          "Required feature guards passed",
+          "Node syntax check passed",
+          "Temporary file hash matched reconstructed bytes",
+          "Atomic replacement completed",
+          "Restored file hash matched reconstructed bytes"
+        ],
+        "remaining": "Functional C5 regression and final combined release checks must pass after recovery.",
+        "deployment": "Unchanged by recovery"
+      }
+    },
+    "provider": {
+      "path": "evidence/round27/bounded-provider-1792197451308/results.json",
+      "sha256": "0bdfe6eb1cdcf2bfa5a4ba28d8a3d588ef3bfbbf35e7256b1b39c4bf243576f0",
+      "bytes": 5197,
+      "document": {
+        "at": "2026-10-17T00:37:31.414Z",
+        "runtime": "v24.18.0",
+        "execution": "One field-context/field operation through the current application HTTP server on loopback, in a fresh isolated SQLite/files project. No browser was used in this bounded check.",
+        "authority": "User-confirmed requirement facts copied into an unconfirmed agent-authored test record. No human judgment, source review, design selection, measurement, confirmation, external approval or SDD sign-off was recorded.",
+        "inputBoundary": "Only the user-confirmed UATC-0197 facts below; no laptop corpus, repository original, external embedding or imported release. This checks one field path, not a corpus-grounded design evaluation.",
+        "checks": [
+          {
+            "check": "Fresh isolated project contains one unconfirmed payment requirement and no adopted draft"
+          },
+          {
+            "check": "Existing application OpenAI default is configured",
+            "model": "gpt-4.1-mini"
+          },
+          {
+            "check": "Exact bounded field packet prepared before provider execution",
+            "stamp": "3b1113809b7f9de8eac9d10131660b97df22a7cde1d6be6828f0db3d53ee07be",
+            "characters": 4580,
+            "sourceCount": 2,
+            "sourceKinds": [
+              "record",
+              "chapter-reading"
+            ],
+            "eligibleClaimCount": 0,
+            "disclosure": {
+              "version": 2,
+              "redactContacts": false,
+              "redactSecrets": true,
+              "excludedObjectCount": 0,
+              "withheldSources": 0
+            },
+            "omissions": []
+          },
+          {
+            "check": "Offline readback confirms the request remains unchanged and unconfirmed at revision 2; failure is persisted in the application run table"
+          }
+        ],
+        "sourceHashes": {
+          "intelligence-provider.js": "22d8813757ea32d9c1458f30734079636b76dc49317cd6a022b313e0325449a5",
+          "intelligence-service.js": "4d21fd6ee5ea283b9bac3f1943f9cf3872cdd42c115c6049e0694a7aaddc59be",
+          "public/field-suggestions.js": "cadfd97cf3381a24b7b397d7175cc74f6dae270e9e6180ebdd3a5d1ed10b62bb"
+        },
+        "project": "project-c114315b-bf69-4f5b-b11a-c8b3cb6386b8",
+        "requirement": "REQ-001",
+        "configuration": {
+          "provider": "openai",
+          "model": "gpt-4.1-mini",
+          "modelDefaulted": true,
+          "configured": true,
+          "endpoint": "Default official OpenAI endpoint; no gateway/model override"
+        },
+        "packet": {
+          "stamp": "3b1113809b7f9de8eac9d10131660b97df22a7cde1d6be6828f0db3d53ee07be",
+          "characters": 4580,
+          "sourceCount": 2,
+          "sourceKinds": [
+            "record",
+            "chapter-reading"
+          ],
+          "eligibleClaimCount": 0,
+          "disclosure": {
+            "version": 2,
+            "redactContacts": false,
+            "redactSecrets": true,
+            "excludedObjectCount": 0,
+            "withheldSources": 0
+          },
+          "omissions": []
+        },
+        "providerDurationMs": 32299,
+        "providerHttpStatus": 429,
+        "provider": {
+          "id": "477d70f2-1188-4a7b-9aaa-f08c24764648",
+          "status": "failed",
+          "provider": "OpenAI",
+          "model": "gpt-4.1-mini",
+          "error": "The provider request limit was reached.",
+          "providerFailure": {
+            "upstreamStatus": 429,
+            "upstreamRequestId": "req_3d6add3442944cf6927670bdd6e3c4e9",
+            "upstreamType": "insufficient_quota",
+            "upstreamCode": "project_spend_limit_exceeded"
+          }
+        },
+        "passed": false,
+        "failure": "AssertionError [ERR_ASSERTION]: The provider request limit was reached.\n    at file:///C:/Users/ilohec/Downloads/AIW_R0_R7_REVIEWER_REPAIRS/round27-bounded-provider-check.mjs:56:2",
+        "finishedAt": "2026-10-17T00:38:08.851Z",
+        "postflight": {
+          "method": "Read-only SQLite inspection after the local server closed; no provider call, project write or review operation.",
+          "projectRevision": 2,
+          "requirementUnchanged": true,
+          "requirementConfirmed": false,
+          "acceptanceStillBlank": true,
+          "storedRun": {
+            "id": "477d70f2-1188-4a7b-9aaa-f08c24764648",
+            "status": "failed",
+            "error_code": "provider_limit",
+            "reserved_tokens": 21830,
+            "used_tokens": null
+          }
+        },
+        "assessment": {
+          "inputRelevance": "The packet correctly identifies the selected payment requirement and requested acceptance field. It contains the stated permission rule, pending-only boundary, first-valid-commit race rule, current-version approval requirement, and explicitly unagreed workload/latency targets. Its Chapter 1 reading exposes missing ownership, acceptance, journey/outcome and responsibility coverage.",
+          "responseQuality": "Not assessable: OpenAI rejected the actual call before a draft or source-check response was returned. No generated answer, model response identifier, token usage or grounding assessment was obtained.",
+          "scopeLimit": "This was one field operation with zero eligible governed claims and no embeddings or repository import. It cannot establish corpus retrieval relevance, Ask Sol/Mind Factory synthesis quality, chapter-wide accuracy, or hosted provider execution.",
+          "blocker": "OpenAI HTTP 429: insufficient_quota / project_spend_limit_exceeded. No second application operation was started. The existing provider transport allows up to two attempts.",
+          "authority": "No adoption, selected architecture, human review, external approval, performance measurement or SDD sign-off was created."
+        }
+      }
+    },
+    "hostedBrowserRuntime": {
+      "path": "evidence/round27/hosted-browser-runtime.json",
+      "sha256": "d4e6a1df1aed457d61b0ccf46f75f6f2a78e31b9a01f0c96e9ea95f8f18f775b",
+      "bytes": 1549,
+      "document": {
+        "schema": 1,
+        "recordedOn": "2026-10-17",
+        "timeZone": "Africa/Lagos",
+        "scope": "Read-only attempt to discover an existing authenticated private AIW tab through supported CUA browser surfaces",
+        "site": "https://aiw-v5-model-explorer.chukwuneme522395.chatgpt.site",
+        "status": "blocked_before_browser_inventory",
+        "attempts": [
+          {
+            "operation": "mcp__cua_repl.js: await cua.getState();",
+            "result": "node_repl kernel exited unexpectedly",
+            "diagnostics": {
+              "kernelStatus": "exited(code=1)",
+              "stderr": "windows sandbox failed: CreateProcessWithLogonW failed: 1385",
+              "reason": "stdout_eof"
+            }
+          },
+          {
+            "operation": "mcp__cua_repl.js_reset, then mcp__cua_repl.js: await cua.getState();",
+            "resetResult": "js kernel reset",
+            "result": "trusted Node process exited unexpectedly; kernel reset, rerun your request"
+          }
+        ],
+        "inventoryReturned": false,
+        "tabAvailability": "unknown",
+        "visitorAuthentication": "unknown; failure is not evidence of sign-out",
+        "mutation": "None. No tab navigation, project write, credential access, cookie extraction or local Playwright interaction occurred.",
+        "consequence": "An authenticated hosted UI walkthrough cannot be claimed from this attempt. Local QA and supported deployment/service smoke checks remain separate evidence.",
+        "followUp": "No further browser attempt made. Restore the supported CUA runtime before inspecting the existing signed-in tab; do not infer that the user must sign in again from this runtime error."
+      }
+    }
+  },
+  "noClaims": [
+    "This script ran no tests and made no provider call.",
+    "No app code, database, credentials, Git state or hosted project was changed.",
+    "Receipt aggregation does not establish a pushed commit, matching archive or publication.",
+    "Synthetic fixtures are not architecture approval or payment operating evidence."
+  ]
+}

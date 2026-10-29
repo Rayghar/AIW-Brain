@@ -1,0 +1,284 @@
+{
+  "authority": "Actual Chromium clicks on isolated gap-shell clone and immutable client-c10-fixed; no provider sends or production changes.",
+  "families": [
+    {
+      "name": "direct-about",
+      "status": "passed",
+      "evidence": {
+        "openedAndClosed": true
+      }
+    },
+    {
+      "name": "hover-help",
+      "status": "passed",
+      "evidence": {
+        "before": "true",
+        "after": "false",
+        "restored": true
+      }
+    },
+    {
+      "name": "reviews-chip",
+      "status": "passed",
+      "evidence": {
+        "title": "Synthetic Clinic Booking \u00b7 integrated rethink walkthrough / Change review\n\nKeep the reasoning current.\n\u00d7\nArchitecture change\nCHG-007 \u00b7 DAT-001 \u00b7 Clinic booking request\nCHG-005 \u00b7 REQ-001 \u00b7 Book one available clinic slot exactly once\nCHG-001 \u00b7 ADR-001 ",
+        "closed": true
+      }
+    },
+    {
+      "name": "hide-review-notice",
+      "status": "passed",
+      "evidence": {
+        "noticeHidden": true,
+        "chipAvailable": true
+      }
+    },
+    {
+      "name": "explore-related-architecture",
+      "status": "passed",
+      "evidence": {
+        "text": "Sol\nYour architecture companion\n\u00d7\nAsk Sol\nExplain & challenge\nCo-design\nLearn & develop\nChapter 04 \u00b7 Logical Application / Work\nLR-001\nAllocate clinic appointment\nScope: Selected record + recorded connections \u00b7 Quality targets missing or unconfirmed.\nContext details\n\nCO-DESIGN GUIDE \u00b7 CHAPTER 4\n\nWhich responsibilities belong together, and how do they collaborate?\n\nClear ownership and boundaries reveal coupling before implementation choices hide it.\n\nChapter guidance from the saved model and expl",
+        "coDesignOpened": true,
+        "closed": true
+      }
+    },
+    {
+      "name": "subject-and-author",
+      "status": "passed",
+      "evidence": {
+        "subject": "lr-001",
+        "authorOpened": true,
+        "text": "Sol\nYour architecture companion\n\u00d7\nAsk Sol\nExplain & challenge\nCo-design\nLearn & develop\nChapter 04 \u00b7 Logical Application / Work\nLR-001\nAllocate clinic appointment\nScope: Selected record + recorded connections \u00b7 Quality targets missing or unconfirmed.\nContext details\n\u2190 Back to Ask Sol\nDesign explanation\nDraft with Sol\nSol is not connected in this workspace\n\nGive the design a clear explanation, with its assumptions intact.\n\nFrame the question\nReview sources\nExplore with Sol\nWhat should this passage explain?\n\nLoading your private draft...\n\nSol answers with a passage for the SDD, to edit and revie"
+      }
+    },
+    {
+      "name": "pin-and-unpin",
+      "status": "passed",
+      "evidence": {
+        "pinnedContext": "Pinned: a Chapter 6 record, read as Chapter 6 reads it, on a Chapter 4 page. Back to Chapter 4\u2019s own record",
+        "returnedToChapter": true
+      }
+    }
+  ],
+  "interactionEvents": [
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "About this workbench",
+      "attributes": {
+        "data-action": "about"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Close dialog",
+      "attributes": {
+        "data-action": "close-modal"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Reviews \u00b7 13 reviews open across 3 causes",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Hide this notice",
+      "attributes": {
+        "data-cr-action": "hide"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Ask Sol",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Explore related architecture",
+      "attributes": {
+        "data-k-action": "open"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Ask Sol",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "LR-001 Allocate clinic appointment",
+      "attributes": {
+        "data-brain-action": "subject",
+        "data-id": "lr-001"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Explain this in the SDD",
+      "attributes": {
+        "data-brain-action": "author"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Close assistance",
+      "attributes": {
+        "data-brain-action": "close"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "tag": "BUTTON",
+      "label": "Ask Sol",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "SUMMARY",
+      "label": "Chapter tools",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Hover help, on",
+      "attributes": {
+        "data-action": "cursor"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "SUMMARY",
+      "label": "Chapter tools",
+      "attributes": {}
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Hover help, off",
+      "attributes": {
+        "data-action": "cursor"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Ask Sol",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Explore related architecture",
+      "attributes": {
+        "data-k-action": "open"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "tag": "BUTTON",
+      "label": "Ask Sol",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "tag": "BUTTON",
+      "label": "Ask about TC-001 instead",
+      "attributes": {
+        "data-brain-action": "pin",
+        "data-id": "tc-001"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "validate",
+      "tag": "BUTTON",
+      "label": "Back to Chapter 4\u2019s own record",
+      "attributes": {
+        "data-brain-action": "unpin"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Ask Sol",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Explore related architecture",
+      "attributes": {
+        "data-k-action": "open"
+      }
+    },
+    {
+      "chapter": "4",
+      "tab": "work",
+      "tag": "BUTTON",
+      "label": "Close assistance",
+      "attributes": {
+        "data-brain-action": "close"
+      }
+    }
+  ],
+  "errors": [],
+  "evidenceFiles": [
+    "targeted-shell-coverage.json",
+    "targeted-shell-followup.json",
+    "targeted-shell-explore.json"
+  ],
+  "limitations": [
+    "One populated fixture, desktop1440x1000. Reviews chip tested with open reviews across3causes; zero/one-cause labels not separately instantiated.",
+    "Followups corrected test selectors for hidden duplicate cursor, Co-design aria-pressed, and actual technology record id. Earlier failed assertions retained in evidenceFiles, not app failures."
+  ]
+}

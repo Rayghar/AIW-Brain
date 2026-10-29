@@ -1,0 +1,239 @@
+{
+  "schema": "aiw.payment-case-readiness.v1",
+  "authority": "Read-only source inventory and in-memory case evaluation. No project was saved or reviewed.",
+  "sources": {
+    "workbook": {
+      "filename": "SEABaaS_Executive_Drilldown_Value_Realisation_Workbook_v3(1).xlsx",
+      "sha256": "0cf67cb88fcf1232ac0fd2855c1b76bf2220b7b2fda595407e0f5cc202675b6c",
+      "sheet": "11 Requirement Detail",
+      "headerRow": 5,
+      "selection": [
+        {
+          "id": "REQ-001",
+          "externalId": "FRD-011",
+          "row": 128,
+          "cell": "'11 Requirement Detail'!D128",
+          "confirmed": false,
+          "reportedDelivery": "Partially Delivered",
+          "sourceReportedUAT": {
+            "tests": 0,
+            "passed": 0,
+            "failed": 0,
+            "blocked": 0,
+            "cells": "'11 Requirement Detail'!R128:U128"
+          },
+          "evidenceReferencePresent": false,
+          "sourceReferencePresent": true
+        },
+        {
+          "id": "REQ-002",
+          "externalId": "UATC-0197",
+          "row": 269,
+          "cell": "'11 Requirement Detail'!D269",
+          "confirmed": false,
+          "reportedDelivery": "Delivered",
+          "sourceReportedUAT": {
+            "tests": 1,
+            "passed": 1,
+            "failed": 0,
+            "blocked": 0,
+            "cells": "'11 Requirement Detail'!R269:U269"
+          },
+          "evidenceReferencePresent": false,
+          "sourceReferencePresent": true
+        },
+        {
+          "id": "REQ-003",
+          "externalId": "UATC-0945",
+          "row": 273,
+          "cell": "'11 Requirement Detail'!D273",
+          "confirmed": false,
+          "reportedDelivery": "Delivered",
+          "sourceReportedUAT": {
+            "tests": 1,
+            "passed": 1,
+            "failed": 0,
+            "blocked": 0,
+            "cells": "'11 Requirement Detail'!R273:U273"
+          },
+          "evidenceReferencePresent": false,
+          "sourceReferencePresent": true
+        }
+      ]
+    },
+    "payHub": {
+      "filename": "SB PayHub Payments Ecosystem 1.0(1).pdf",
+      "sha256": "0befdc682531f29547e415b00436c2e06ab869c76aa00b1c77f1f552fb149e61",
+      "pages": 23,
+      "sourceAssertions": [
+        {
+          "pages": [
+            4,
+            6,
+            8,
+            9
+          ],
+          "topic": "Synchronous payment orchestration, asynchronous safety cluster and proposed quality targets"
+        },
+        {
+          "pages": [
+            11,
+            13
+          ],
+          "topic": "Kafka and relational PostgreSQL or SQL Server are named in solution stack; this is source assertion, not proof of selection or deployment"
+        },
+        {
+          "pages": [
+            14,
+            17,
+            18,
+            19,
+            20
+          ],
+          "topic": "OpenShift placement, PayHub.Central, routing switch, SEABaaS journal and outward payment path"
+        }
+      ]
+    },
+    "repository": {
+      "state": "No independently rights-cleared, retrieved, released and signed repository original linked to this case in this run. AKR metadata or an archive filename cannot supply a governed original."
+    }
+  },
+  "case": {
+    "scope": {
+      "requirementIds": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-003"
+      ],
+      "objectIds": [
+        "REQ-001",
+        "REQ-002",
+        "REQ-003"
+      ]
+    },
+    "requirements": {
+      "inScope": 3,
+      "confirmed": 0,
+      "sourceLocated": 3,
+      "missingSourceLocation": 0
+    },
+    "trail": {
+      "quality": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "decisions": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "logicalApplication": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "applicationRealization": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "logicalTechnology": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "technologyRealization": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "interfaces": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "data": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "security": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      },
+      "runtime": {
+        "requirements": 0,
+        "confirmedRequirements": 0
+      }
+    },
+    "linkedSignedClaims": 0,
+    "linkedObservations": 0,
+    "acceptance": "blocked",
+    "blockers": [
+      "Selected requirements still need architect confirmation and scope review.",
+      "A second architect must review permitted use and applicability of this case’s exact source originals in Evidence precision.",
+      "No connected architecture model objects are available for this case."
+    ],
+    "wholeProjectGate": {
+      "ready": false,
+      "chapterComplete": false,
+      "baseline": null,
+      "approval": null,
+      "blockers": [
+        "Project-wide chapter models and validation findings remain incomplete.",
+        "No current architect-reviewed SDD baseline.",
+        "No current external whole-project approval evidence."
+      ]
+    }
+  },
+  "comparisonToMake": {
+    "capability": "Asynchronous payment safety and reconciliation",
+    "options": [
+      "Kafka",
+      "RabbitMQ"
+    ],
+    "status": "Architect must compare against actual workload, recovery, retention, operation, privacy and cost evidence; PayHub document names Kafka but does not evaluate RabbitMQ or measure either.",
+    "qualityScenarios": [
+      {
+        "sourcePage": 8,
+        "question": "Routing decision within 200 ms at peak load; inspect provider-score staleness and routing overhead."
+      },
+      {
+        "sourcePage": 8,
+        "question": "Reversal within five minutes after mid-process failure; inspect timeout, uncertain outcome, duplicate and reconciliation controls."
+      },
+      {
+        "sourcePage": 5,
+        "question": "Settlement within ten minutes of file receipt; define workload, start/end and measured result."
+      }
+    ]
+  },
+  "journey": [
+    {
+      "stage": "Mind Factory",
+      "route": "?chapter=1&tab=work",
+      "next": "Open Proposals → Sources; review workbook cells and PDF pages, permitted repository original, source rights and claims"
+    },
+    {
+      "stage": "Sol",
+      "route": "?chapter=2&tab=work",
+      "next": "Open Sol from the chapter; preview its source packet and record assumptions. Provider execution is separate."
+    },
+    {
+      "stage": "Model",
+      "route": "?chapter=7&tab=model",
+      "next": "Trace requirement → driver → alternatives and decision → component → named product → placement"
+    },
+    {
+      "stage": "Validate",
+      "route": "?chapter=11&tab=work",
+      "next": "Open Architecture case; inspect linked evidence, record current observations and independent finding"
+    },
+    {
+      "stage": "Export",
+      "route": "?chapter=11&tab=output",
+      "next": "Export focused case dossier from Work; whole-project SDD remains a separate gate"
+    }
+  ],
+  "openDecisions": [
+    "Architect confirmation of the three requirement interpretations and relation to PayHub scope",
+    "Source rights for original workbook, PDF and any AKR retrieved passage",
+    "Versioned Kafka/RabbitMQ product evidence and two-option judgment against measurable drivers",
+    "Exact deployed configuration and failure domains",
+    "Original UAT execution artefacts and current runtime test or observation; workbook pass counters alone are assertions",
+    "Second authenticated architect assessment and case finding"
+  ]
+}

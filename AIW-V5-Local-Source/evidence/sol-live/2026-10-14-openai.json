@@ -1,0 +1,1511 @@
+{
+  "schema": "aiw.sol-live-check/3",
+  "at": "2026-10-14T02:19:09.716Z",
+  "live": true,
+  "provider": "openai",
+  "model": "gpt-4.1-mini",
+  "modelDefaulted": false,
+  "effort": null,
+  "callTimeoutMs": 600000,
+  "connectionVerified": {
+    "at": "2026-10-14T02:16:47.976Z",
+    "ok": true,
+    "model": "gpt-4.1-mini"
+  },
+  "pins": [
+    "sol-field-2",
+    "sol-journey-1",
+    "sol-review-1",
+    "sol-architecture-3"
+  ],
+  "chapters": [
+    {
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "status": "completed",
+      "packetCharacters": 4287,
+      "sources": 10,
+      "neighbours": 5,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "Patients can book, move, or cancel their appointments themselves through the online service at any time of day, ensuring convenient access to appointment management independently of clinic hours.",
+      "error": null
+    },
+    {
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "status": "completed",
+      "packetCharacters": 4296,
+      "sources": 3,
+      "neighbours": 0,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "The system must enable patients to book an appointment at any time through the online service, supporting continuous access without temporal restrictions, as described in REQ-001 acceptance criteria.",
+      "error": null
+    },
+    {
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "status": "completed",
+      "packetCharacters": 3188,
+      "sources": 6,
+      "neighbours": 3,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "The chosen design respects CON-001 by ensuring that patient personal data is managed fully within the health data regulation applicable to the clinic's location. Two alternatives were considered: keeping all data and operations within a single owned boundary to maintain transaction integrity and simpler ownership, or separating the governed work into an independent boundary to enable isolated change and failure handling. This rationale explains the trade-offs between simpler control and ownership versus increased modularity and isolation, guiding how the design aligns with regulations while addressing quality drivers such as data integrity.",
+      "error": null
+    },
+    {
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "record": "LR-001 Appointment scheduling",
+      "status": "completed",
+      "packetCharacters": 3763,
+      "sources": 4,
+      "neighbours": 1,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "Enables patients to book appointments anytime through the online service, providing a self-service scheduling capability outside the clinical records and prescription systems.",
+      "error": null
+    },
+    {
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "record": "APP-001 Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 5024,
+      "sources": 5,
+      "neighbours": 1,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "Owns the Appointment scheduling service, enabling patients to book appointments online at any time. Does not handle clinical records, prescriptions, phone bookings, reminders, or confirmation of reminders, which are outside its scope.",
+      "error": null
+    },
+    {
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 3715,
+      "sources": 4,
+      "neighbours": 1,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "Provide compute resources to enable the APP-001 Appointment scheduling service to operate its owned application logic and data, ensuring patients can book appointments at any time via the online service.",
+      "error": null
+    },
+    {
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "status": "completed",
+      "packetCharacters": 4515,
+      "sources": 3,
+      "neighbours": 0,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "The operation, monitoring, and support responsibilities for this compute implementation are currently unassigned and unresolved, as no details are specified in the design brief or upstream records. This remains an open question requiring definition before progressing.",
+      "error": null
+    },
+    {
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "record": "IF-001 Hand over appointment",
+      "status": "completed",
+      "packetCharacters": 5202,
+      "sources": 7,
+      "neighbours": 2,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "The contract currently does not specify a failure policy; this remains an open question without explicit guidance on handling failures or uncertain outcomes when delivering appointment booking responses.",
+      "error": null
+    },
+    {
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "record": "SEC-001 Limit access to Appointment",
+      "status": "completed",
+      "packetCharacters": 3400,
+      "sources": 4,
+      "neighbours": 1,
+      "groundingAccepted": false,
+      "withheld": true,
+      "draft": "",
+      "error": null
+    },
+    {
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "record": "RUN-001 Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 5438,
+      "sources": 6,
+      "neighbours": 2,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "The Appointment scheduling service is ready to serve when its compute capability (Compute for Appointment scheduling service) responds and is operational, confirming that the required single replica is active and ready within its trust boundary zone.",
+      "error": null
+    },
+    {
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "status": "completed",
+      "packetCharacters": 3467,
+      "sources": 4,
+      "neighbours": 2,
+      "groundingAccepted": true,
+      "withheld": false,
+      "draft": "This design enables patients to book, move, or cancel outpatient appointments at any time, with each freed slot being offered to the waiting list before the appointment day. It covers outpatient appointment management but excludes clinical records and prescriptions. Key assumptions include that most patients have mobile phones or email for reminders. Important unresolved architectural decisions relate to handling patient data in compliance with health data regulations, privacy in reminders, the target for the online booking go-live date, and balancing performance against transaction integrity.",
+      "error": null
+    }
+  ],
+  "runs": [
+    {
+      "mode": "field",
+      "id": "5b43e9dc-6b59-4567-8bb4-1604b4bd9281",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 5404,
+        "outputTokens": 197
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_091edbc3db33fb2f016acee612b55887d2b7675503120cbc07",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2805,
+            "outputTokens": 96
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_00adcb26409951e2016acee613e20c87d29480535a8089f0ef",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2599,
+            "outputTokens": 101
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "description",
+        "hasDraft": true,
+        "sourcesInPacket": 10
+      },
+      "error": null,
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "recordId": "OUT-001",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "packet": {
+        "characters": 4287,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 5,
+          "requirement": 3
+        },
+        "neighbours": [
+          "REQ-001 Book an appointment at any time through the online service",
+          "REQ-002 Register a phone booking and move or cancel it for a patient who calls",
+          "REQ-003 Send a reminder by text message or email two days before each appointment",
+          "REQ-004 Answer each reminder to confirm, move or cancel the appointment",
+          "REQ-006 Record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets"
+        ],
+        "omissions": [
+          "REQ-004 Answer each reminder to confirm, move or cancel the appointment"
+        ],
+        "help": "What this record says: a journey step as the user experiences it, a requirement as a behaviour, a constraint as a limit, an outcome as a change."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "Patients can book, move, or cancel their appointments themselves through the online service at any time of day, ensuring convenient access to appointment management independently of clinic hours.",
+        "basis": "This description restates and slightly expands the current text with reference to related requirement REQ-001 detailing booking at any time through the online service, supporting patient self-service at all hours (S1, S3).",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "d1a4842b-98fc-4205-83b1-397bcc783e5d",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4153,
+        "outputTokens": 188
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0e6145ee02a315af016acee616354c87d2b2061a45fceafcc7",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2168,
+            "outputTokens": 98
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_01c83d0a462b3f18016acee617724887d2939173c714163f82",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1985,
+            "outputTokens": 90
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "response",
+        "hasDraft": true,
+        "sourcesInPacket": 3
+      },
+      "error": null,
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "recordId": "QD-001",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "packet": {
+        "characters": 4296,
+        "maxCharacters": 12000,
+        "sources": 3,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1
+        },
+        "neighbours": [],
+        "omissions": [],
+        "help": "What the system must do when the stimulus arrives."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "The system must enable patients to book an appointment at any time through the online service, supporting continuous access without temporal restrictions, as described in REQ-001 acceptance criteria.",
+        "basis": "This value aligns with the core requirement from REQ-001 and the quality driver QD-001 that specifies patients must be able to book appointments at any time online, as confirmed in sources S1 and S3.",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "c7529405-31a8-4d51-a158-80f8a53ec6f2",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4278,
+        "outputTokens": 273
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0077f7ae98377303016acee618ab3087d2a4a067c042e0d0c1",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2192,
+            "outputTokens": 185
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0f1cb4dc080401c3016acee61b008487d28908b88dd826e5a7",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2086,
+            "outputTokens": 88
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "rationale",
+        "hasDraft": true,
+        "sourcesInPacket": 6
+      },
+      "error": null,
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "recordId": "ADR-001",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "packet": {
+        "characters": 3188,
+        "maxCharacters": 12000,
+        "sources": 6,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 3,
+          "quality-driver": 1
+        },
+        "neighbours": [
+          "ALT-001 Keep it within one owned boundary",
+          "ALT-002 Separate it into an independent boundary",
+          "CON-001 Patient personal data must be handled in line with the health data regulation that applies where the clinic operates"
+        ],
+        "omissions": [],
+        "help": "Why the chosen alternative answers the question, against the drivers compared."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "The chosen design respects CON-001 by ensuring that patient personal data is managed fully within the health data regulation applicable to the clinic's location. Two alternatives were considered: keeping all data and operations within a single owned boundary to maintain transaction integrity and simpler ownership, or separating the governed work into an independent boundary to enable isolated change and failure handling. This rationale explains the trade-offs between simpler control and ownership versus increased modularity and isolation, guiding how the design aligns with regulations while addressing quality drivers such as data integrity.",
+        "basis": "This rationale follows from the comparison of the two design alternatives ALT-001 and ALT-002 in the context of complying with CON-001 as mandated in the design question, supported by the descriptions and consequences provided in sources S1, S3, S4, and S5.",
+        "sourceRefs": [
+          "S1",
+          "S3",
+          "S4",
+          "S5"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "a818c5cd-b040-4e5a-a189-1dcd6346f07c",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4151,
+        "outputTokens": 172
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_05e64d476feadbfd016acee61c70c487d2ad06a9921c54206b",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2159,
+            "outputTokens": 117
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_03a99d38a955d367016acee61e13d087d2b2d255b86e7f8c33",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1992,
+            "outputTokens": 55
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "purpose",
+        "hasDraft": true,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "recordId": "lr-001",
+      "record": "LR-001 Appointment scheduling",
+      "packet": {
+        "characters": 3763,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1
+        },
+        "neighbours": [
+          "APP-001 Appointment scheduling service"
+        ],
+        "omissions": [],
+        "help": "The behaviour this responsibility owns for the requirements it serves."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "Enables patients to book appointments anytime through the online service, providing a self-service scheduling capability outside the clinical records and prescription systems.",
+        "basis": "This value reflects the responsibility's role to allow patients to book appointments at any time via the online service, as stated in LR-001 and its parent REQ-001, and acknowledges the boundary excluding clinical records and prescriptions, supported by the component APP-001 which realises this responsibility (S1, S3, S4).",
+        "sourceRefs": [
+          "S1",
+          "S3",
+          "S4"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "8b022bc2-fd0e-4a74-b4bd-9d63d3e1e08e",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4966,
+        "outputTokens": 217
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_06b638cafb4959e9016acee61f4b4c87d288b1d6c1c30b1045",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2566,
+            "outputTokens": 121
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_07877305fa910b06016acee620f7b087d283dd3feb9d24ef2e",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2400,
+            "outputTokens": 96
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "boundary",
+        "hasDraft": true,
+        "sourcesInPacket": 5
+      },
+      "error": null,
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "recordId": "obj-001",
+      "record": "APP-001 Appointment scheduling service",
+      "packet": {
+        "characters": 5024,
+        "maxCharacters": 12000,
+        "sources": 5,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "requirement": 1
+        },
+        "neighbours": [
+          "TN-001 compute need"
+        ],
+        "omissions": [],
+        "help": "What this component owns, and what it leaves to other components."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "Owns the Appointment scheduling service, enabling patients to book appointments online at any time. Does not handle clinical records, prescriptions, phone bookings, reminders, or confirmation of reminders, which are outside its scope.",
+        "basis": "This value reflects the component's ownership scope as defined in the record APP-001 and its parent LR-001, specifically referencing requirements REQ-002, REQ-003, and REQ-004 as excluded from its boundary (S1, S3, S5).",
+        "sourceRefs": [
+          "S1",
+          "S3",
+          "S5"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "b411f6b2-29e1-40e1-a7e4-935f2f00b877",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4092,
+        "outputTokens": 175
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_03aa2725d567303a016acee622670887d2b2b049b468093d6a",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2139,
+            "outputTokens": 98
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_066927b30d964250016acee623d33087d28b8aa32a6b07b267",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1953,
+            "outputTokens": 77
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "purpose",
+        "hasDraft": true,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "recordId": "tc-001",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "packet": {
+        "characters": 3715,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1
+        },
+        "neighbours": [
+          "TR-001 Compute for Appointment scheduling service implementation"
+        ],
+        "omissions": [],
+        "help": "The support obligation this capability satisfies for the components that need it."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "Provide compute resources to enable the APP-001 Appointment scheduling service to operate its owned application logic and data, ensuring patients can book appointments at any time via the online service.",
+        "basis": "This value refines the existing purpose by clarifying that the capability supplies compute resources needed for the application to function, reflecting S1 and S2 where the compute supports APP-001's owned logic and patient booking functionality.",
+        "sourceRefs": [
+          "S1",
+          "S2"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "750fc074-8e66-4701-8890-253bd93bbb95",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4316,
+        "outputTokens": 166
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0622098abc80ac97016acee6252a0c87d28691462948da5d50",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2249,
+            "outputTokens": 100
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0da890df9492fa0c016acee6266cb887d297a961269ff1ac0e",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2067,
+            "outputTokens": 66
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "operationsPlan",
+        "hasDraft": true,
+        "sourcesInPacket": 3
+      },
+      "error": null,
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "recordId": "tr-001",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "packet": {
+        "characters": 4515,
+        "maxCharacters": 12000,
+        "sources": 3,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1
+        },
+        "neighbours": [],
+        "omissions": [],
+        "help": "Who operates this, how it is monitored and how incidents are handled."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "The operation, monitoring, and support responsibilities for this compute implementation are currently unassigned and unresolved, as no details are specified in the design brief or upstream records. This remains an open question requiring definition before progressing.",
+        "basis": "The value is based on the explicit statement in TR-001 that the operations plan is an open question with no assignment or details given, as highlighted in sources S1 and S2.",
+        "sourceRefs": [
+          "S1",
+          "S2"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "d6ebe221-2859-42de-a134-7d51946dd376",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 5166,
+        "outputTokens": 182
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0b17eeafc0f039c2016acee627ab6487d2a230ad7af896dc34",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2667,
+            "outputTokens": 126
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0ce10f0419cacc49016acee62937a087d28ad8769dfc30a2e8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2499,
+            "outputTokens": 56
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "failurePolicy",
+        "hasDraft": true,
+        "sourcesInPacket": 7
+      },
+      "error": null,
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "recordId": "if-001",
+      "record": "IF-001 Hand over appointment",
+      "packet": {
+        "characters": 5202,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 2
+        },
+        "neighbours": [
+          "APP-002 Phone booking intake service",
+          "DAT-001 Appointment"
+        ],
+        "omissions": [],
+        "help": "What the caller does when the provider fails or does not answer."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "The contract currently does not specify a failure policy; this remains an open question without explicit guidance on handling failures or uncertain outcomes when delivering appointment booking responses.",
+        "basis": "The source record IF-001 explicitly leaves the failure policy as an open question, with no stated instructions or conditions for failure handling in the brief or upstream records, and no complementary policies evident from neighbouring components or related requirements (S1,S2,S3,S4,S5,S6,S7).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S5",
+          "S6",
+          "S7"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "d5227311-c64d-4508-bc80-ed965cec0f0c",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 3916,
+        "outputTokens": 338
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_08c31fc549960229016acee62a4a4087d2a71e97ec3f2ed222",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2025,
+            "outputTokens": 151
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_04dfad06e85eb626016acee62bb38487d2a6ee7b46c5ac9a8e",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 1891,
+            "outputTokens": 187
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": false,
+      "withheld": 0,
+      "checks": {
+        "field": "mechanism",
+        "hasDraft": false,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "recordId": "sec-001",
+      "record": "SEC-001 Limit access to Appointment",
+      "packet": {
+        "characters": 3400,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 1
+        },
+        "neighbours": [
+          "THR-001 Disclosure of Appointment"
+        ],
+        "omissions": [],
+        "help": "How the control works."
+      },
+      "grounding": {
+        "accepted": false,
+        "issues": [
+          "statement 'The control aims to limit access to Appointment data by restricting disclosure solely to authorized callers with a need to know' is not explicitly stated or supported in the packet; the packet only notes the control exists to limit access but does not specify this mechanism or the mention of 'authorized callers with a need to know'",
+          "statement 'as indicated by its role in mitigating the threat of Disclosure of Appointment' is supported but the detailed mechanism claimed is unsupported"
+        ],
+        "withheld": true
+      },
+      "draft": {
+        "value": "",
+        "basis": "",
+        "sourceRefs": []
+      }
+    },
+    {
+      "mode": "field",
+      "id": "ef9c9618-8709-4d1a-a523-43ab72133037",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 5122,
+        "outputTokens": 233
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_01a125fcc27a5489016acee62deeac87d28c11ad9cdd7e766d",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2653,
+            "outputTokens": 107
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_06c2ca7fb7723a61016acee62f1d3487d289b22a701bdc0fdb",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2469,
+            "outputTokens": 126
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "readiness",
+        "hasDraft": true,
+        "sourcesInPacket": 6
+      },
+      "error": null,
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "recordId": "run-001",
+      "record": "RUN-001 Appointment scheduling service",
+      "packet": {
+        "characters": 5438,
+        "maxCharacters": 12000,
+        "sources": 6,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 1
+        },
+        "neighbours": [
+          "TC-001 Compute for Appointment scheduling service",
+          "ENV-001 Appointment scheduling service production design"
+        ],
+        "omissions": [],
+        "help": "What proves an instance is ready to serve."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "The Appointment scheduling service is ready to serve when its compute capability (Compute for Appointment scheduling service) responds and is operational, confirming that the required single replica is active and ready within its trust boundary zone.",
+        "basis": "This value is based on the recorded readiness condition that the Appointment scheduling service is ready when its compute component answers, combined with the specification that it runs one active replica needing to be ready, as detailed in S1 and S2.",
+        "sourceRefs": [
+          "S1",
+          "S2"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "8d0291a6-98d1-4487-9132-ec8c4ad77381",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4122,
+        "outputTokens": 238
+      },
+      "prompt": {
+        "promptVersion": "sol-field-2",
+        "sha256": "514c2fde52a622c2d4b015837ef6b7fe5e6c7ce78d92e99b580b40ee91849832"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0159bfe31fa0df83016acee63090ac87d2808f6ddf6802b4bf",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2122,
+            "outputTokens": 162
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_06f847c2ec7a964c016acee632735887d2be6de2001fad5adc",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 2000,
+            "outputTokens": 76
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "field": "summary",
+        "hasDraft": true,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "recordId": "SDD",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "packet": {
+        "characters": 3467,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "chapter-reading": 1,
+          "neighbour": 2
+        },
+        "neighbours": [
+          "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+          "OUT-002 Every freed slot is offered to the waiting list before the day of the appointment"
+        ],
+        "omissions": [],
+        "help": "The design in a few sentences a reviewer reads first."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "withheld": false
+      },
+      "draft": {
+        "value": "This design enables patients to book, move, or cancel outpatient appointments at any time, with each freed slot being offered to the waiting list before the appointment day. It covers outpatient appointment management but excludes clinical records and prescriptions. Key assumptions include that most patients have mobile phones or email for reminders. Important unresolved architectural decisions relate to handling patient data in compliance with health data regulations, privacy in reminders, the target for the online booking go-live date, and balancing performance against transaction integrity.",
+        "basis": "This summary is based on the design scope, assumptions, approach, and unresolved architectural decisions as recorded in S1 and S2, and incorporates the outcomes the design serves described in S3 and S4.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4"
+        ]
+      }
+    },
+    {
+      "mode": "journey",
+      "id": "ff987cd7-bd7a-48fa-aab6-991143f9838f",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 4424,
+        "outputTokens": 2091
+      },
+      "prompt": {
+        "promptVersion": "sol-journey-1",
+        "sha256": "52830486f78d84222a4e39294eca9244c6e60ae7b7bc754a79d3f1a578d4a926"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0b34dee661c946ba016acee633f30087d28b6ea1fac86996d1",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 4424,
+            "outputTokens": 2091
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": false,
+      "withheld": 0,
+      "checks": {
+        "chapter": 1,
+        "recordsInDraft": 24,
+        "fieldsInPacket": 53,
+        "answers": 0,
+        "fallback": "Sol’s draft did not pass the checks; the deterministic draft stands for this chapter."
+      },
+      "error": null
+    },
+    {
+      "mode": "review",
+      "id": "2e29075a-6ec1-49d3-a052-364e28e0f4e0",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 44243,
+        "outputTokens": 1846
+      },
+      "prompt": {
+        "promptVersion": "sol-review-1",
+        "sha256": "b10dae087916dfe1817f8764b87368d3a60947a92ade0a1cead6379494405d42"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_06d37500282d2563016acee641d73887d2bf3559bd332ae807",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 21988,
+            "outputTokens": 1203
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0256d076b522a30a016acee64a8cd887d29f72c7cda522cea5",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 22255,
+            "outputTokens": 643
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "chapter": 4,
+        "elementsInPacket": 130,
+        "sourcesInPacket": 62,
+        "findings": 19
+      },
+      "error": null
+    },
+    {
+      "mode": "architecture",
+      "id": "resp_02daaba47b0154c3016acee65010f887d2b81239e24949a518",
+      "status": "completed",
+      "model": "gpt-5.5-2026-04-23",
+      "usage": {
+        "inputTokens": 14971,
+        "outputTokens": 8975
+      },
+      "prompt": {
+        "promptVersion": "sol-architecture-3",
+        "sha256": "7ca49bc0e186ba211796ebfca6da20381adc0d67ad3cfeb01c2bd26db31e1942"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-5.5-2026-04-23",
+          "responseId": "resp_02daaba47b0154c3016acee65010f887d2b81239e24949a518",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 6930,
+            "outputTokens": 7613
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-5.4-mini-2026-03-17",
+          "responseId": "resp_0344b9627f9c1de8016acee6984bbc87d29ea9302f8e5c2af8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 8041,
+            "outputTokens": 1362
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "groundingAccepted": true,
+      "withheld": 0,
+      "checks": {
+        "theme": "REQ:REQ-001",
+        "requirements": 1,
+        "proposalCount": 20,
+        "withheldCount": 0,
+        "packetStamp": "b77f42038d41b909f453102c74b7eba6c228398327e03217360435836e81c112"
+      },
+      "error": null,
+      "theme": {
+        "key": "REQ:REQ-001",
+        "title": "Appointment"
+      },
+      "proposalRefs": [
+        {
+          "kind": "driver",
+          "title": "QD1 — Quality: Book an appointment at any time through the online service",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "driver",
+          "title": "Reduce dependence on opening-hour phone booking",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "driver",
+          "title": "Handle patient personal data under applicable health data regulation",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "decision",
+          "title": "How should the online booking flow reserve appointment slots without double-booking?",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "decision",
+          "title": "How should online booking be sequenced to meet the end-of-year live constraint?",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "responsibility",
+          "title": "LR-001 — Appointment scheduling",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "Patient online booking channel",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "APP-001 — Appointment scheduling service",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "integration",
+          "title": "How are patients identified and authorised when booking online?",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "data",
+          "title": "",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "data",
+          "title": "",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "data",
+          "title": "",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "control",
+          "title": "Minimise clinical detail in booking and reminder content",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "control",
+          "title": "Prevent double-booking of appointment slots",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "control",
+          "title": "Dual control for changes that affect bookable availability",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "question",
+          "title": "How are patients identified and authorised before they can book an appointment online?",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "question",
+          "title": "Which existing system is the record of who the clinic's patients are?",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "question",
+          "title": "Should a patient be able to book for a family member through the online service?",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "question",
+          "title": "Which appointment types, clinicians and slot ranges are available for patient self-service booking?",
+          "requirements": [
+            "REQ-001"
+          ]
+        },
+        {
+          "kind": "question",
+          "title": "Which health data regulation applies where the clinic operates?",
+          "requirements": [
+            "REQ-001"
+          ]
+        }
+      ],
+      "withheldReasons": [],
+      "packet": {
+        "requirements": 1,
+        "passages": 52,
+        "claims": 0,
+        "omissions": {
+          "requirements": 0,
+          "passages": 0,
+          "claims": 0,
+          "state": 0,
+          "skeleton": 0,
+          "excluded": 0
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "notes": [
+    "Receipts, field drafts and one synthetic architecture theme: packet counts, grounding result, accepted proposal titles and withheld reasons are recorded without prompt content or keys.",
+    "The architecture theme uses the model request path directly to bound this probe; it is not a persisted project job, applied decision, provider quality acceptance or evidence of scheduled continuation.",
+    "Advice only: nothing Sol returned was applied; the runs were read and discarded with the scratch database."
+  ],
+  "authority": "Acceptance evidence for the Sol connection on one day. It does not approve the design, calibrate Sol or accept the release for production."
+}

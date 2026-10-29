@@ -1,0 +1,75 @@
+{
+  "at": "2026-10-12T07:26:35.253Z",
+  "baseCommit": "f13d0ef05ec0c44df067c11f8724b6415c210bd9",
+  "sourceFiles": {
+    "public/app.js": "dd9a9570d4cfe4bf4c382129351f064b858d08f30fe861d2e45853b278fdc949",
+    "payment-case-journey-browser-validate.mjs": "32e5655210805a9535c2dc560167ab4369d2af1577d6e4e283644a3bfafe6f28",
+    "focused-case-browser-validate.mjs": "da29deb8dac6d7916beb04c457d0f46c7b985ce5f95ec07006ffd22c004befe4",
+    "brain-reasoning-browser-validate.mjs": "46039a7737ebd3cded8ab169c222ceb90c2cb18160b24d77c5263137950caa71"
+  },
+  "runtime": "v24.18.0",
+  "browser": "Playwright Chromium; actual local server and isolated SQLite databases",
+  "realOpenAIExecution": false,
+  "providerLimit": "No local OpenAI credential. The test double is explicitly separate from real provider acceptance.",
+  "checks": [
+    {
+      "name": "eleven-chapter-walkthrough",
+      "code": 0,
+      "passed": true,
+      "durationMs": 95187,
+      "log": "eleven-chapter-walkthrough.log"
+    },
+    {
+      "name": "payment-evidence-journey",
+      "code": 0,
+      "passed": true,
+      "durationMs": 16184,
+      "log": "payment-evidence-journey.log"
+    },
+    {
+      "name": "focused-case-review",
+      "code": 0,
+      "passed": true,
+      "durationMs": 26433,
+      "log": "focused-case-review.log"
+    },
+    {
+      "name": "quality-target-change",
+      "code": 0,
+      "passed": true,
+      "durationMs": 15214,
+      "log": "quality-target-change.log"
+    },
+    {
+      "name": "technology-choice",
+      "code": 0,
+      "passed": true,
+      "durationMs": 45626,
+      "log": "technology-choice.log"
+    },
+    {
+      "name": "sol-browser",
+      "code": 0,
+      "passed": true,
+      "durationMs": 31129,
+      "log": "sol-browser.log"
+    },
+    {
+      "name": "sol-all-chapters-test-double",
+      "code": 0,
+      "passed": true,
+      "durationMs": 9235,
+      "log": "sol-all-chapters-test-double.log"
+    },
+    {
+      "name": "production-eleven-chapter-walkthrough",
+      "clientMode": "dist/client",
+      "code": 0,
+      "passed": true,
+      "durationMs": 59651,
+      "log": "production-eleven-chapter-walkthrough.log"
+    }
+  ],
+  "passed": true,
+  "finishedAt": "2026-10-12T07:27:34.914Z"
+}

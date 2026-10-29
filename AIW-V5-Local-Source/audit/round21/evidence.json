@@ -1,0 +1,31 @@
+{
+  "schema": "aiw.round-evidence.v1",
+  "release": "AIW v0.10.0-rc.10.73.21",
+  "date": "2026-10-11",
+  "productionAccepted": false,
+  "source": "Current Site source, not the historical attachment branch",
+  "tests": {
+    "check": {"passed": true, "syntaxModules": 640, "lintExisting": 179, "lintNew": 0},
+    "build": {"passed": true, "chapterRouteBytes": 2816932, "chapterRouteBudgetBytes": 2817024, "scripts": 137},
+    "solArchitecture": {"passed": true, "syntheticRequirements": 1400, "themes": 47, "mockPasses": 48, "fullModelDraftedSddContentPassProven": false},
+    "sddContent": {"passed": true, "richSyntheticRecordsPassed": 31, "richSyntheticRecordsTotal": 31, "rulesSkeletonRejected": true},
+    "providerContracts": {"passed": true, "syntheticWires": 3, "liveProviderReceipts": 0},
+    "baselineSize": {"passed": true, "freezeMilliseconds": 6484, "readGrowthPercent": 0.018},
+    "recoverySize": {"passed": true, "streamedPackageCharacters": 137087154, "entries": 81},
+    "scale": {"passed": true, "chapterCheckBoundMilliseconds": 300, "worstChapterMilliseconds": 113, "readinessMilliseconds": 268, "sddAssemblyMilliseconds": 1062},
+    "sddSize": {"passed": true, "requirements": 1400, "pdfPages": 96, "pdfPagesWithFigures": 122},
+    "focused": {
+      "passed": ["design-concern", "knowledge-retrieval", "architecture", "architecture-service", "drafter-groups", "sdd-architecture", "sdd-content", "figures-at-size", "screens-at-size-model", "providers", "sol-live-check-mock", "provenance", "review-plan", "recovery-authority", "security", "repository-transfer", "journal-archive", "coauthor", "workspace", "review", "model-conformance"],
+      "managedBrowserRerun": false
+    }
+  },
+  "externalGates": {
+    "authorizedClientProviderRun": false,
+    "realClientSddContentAccepted": false,
+    "namedIndependentPageReview": false,
+    "rightsClearedBankingKnowledgeReleased": false,
+    "twoLiveProviderReceipts": false,
+    "hostedScheduledContinuationProven": false,
+    "productionAcceptance": false
+  }
+}

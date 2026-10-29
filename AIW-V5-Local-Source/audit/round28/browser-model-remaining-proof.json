@@ -1,0 +1,1274 @@
+{
+  "suite": "Remaining 37 Model command families",
+  "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+  "authority": "Isolated synthetic fixture; no external provider calls or governance approvals",
+  "families": [
+    {
+      "family": "data-dk=sol-beside",
+      "chapter": 10,
+      "selector": "[data-dk=\"sol-beside\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "deploy",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "deploy",
+      "label": "Ask beside the model",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "Deployment & runtime\nDeployment\nDiagram\nIf a zone fails\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nClinic synthetic staging\nOperation\nFlow\nProtection\nROWS\nModules\nParts\nParts + platform\nNot in a module\nMODULE\nOutside the environment\nREACHED THROUGH RUNTIME PATHS\n1 active\n\u2014\n\u2014\nNo recovery chosen\nStateless process\nIF-001\nClinic synthetic stagingPre-production design\nClinic staging application domain\nSynthetic clinic application zone\n1 placed\nNot placedExpand\nRecovery\nstrategy and state\nClinic booking service operating plan\nRUN-001 \u00b7 1\u20132 copies\nPatient Booking Portal\nExternal system\nStart\n\n1 zone \u00b7 1 row placed \u00b7 0 not placed\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-dk=sort",
+      "chapter": 11,
+      "selector": "[data-dk=\"sort\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "vitals",
+          "domCount": 5,
+          "visible": true
+        }
+      ],
+      "view": "vitals",
+      "label": "PART\n\u2195",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "not recorded\tno recovery target\t\n\u00b7\nNot carried\nRUN-001\tData loss\tholds no state\tno recovery point\t\n\u00b7\nNot carried\nRUN-001\tLatency\tnot on a timed path\tno response target\t\n\u00b7\nNot carried\nRUN-001\tCapacity\tno load stated\tno load stated\t\n\u00b7\nNot carried\nRUN-001\tIntegrity\t1 request\tno integrity driver\t\n\u00b7\nNot carried\nRUN-001\tProtection\t1 of 1 threats covered\tevery threat covered where it lands\t\n\u25cf\nNormal\nRUN-001\tObservability\tMonitor request latency, conflict rate, failed outcomes and \u2026\tcarries no driver\t\n\u25cf\nNormal\n\u2039\nStart\n\n1 things to look at, the most critical first.\n\n1 running parts \u00b7 0 critical \u00b7 0 with no signal \u00b7 1 anti-pattern\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-sk=assess",
+      "chapter": 7,
+      "selector": "[data-sk=\"assess\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "stack",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "options",
+          "domCount": 5,
+          "visible": true
+        }
+      ],
+      "view": "options",
+      "label": "\u2713\nNAMED \u00b7 NOT WEIGHED The SA Playbook names Relational (MySQL, PostgreSQL) among the technologies for performance (Databases).",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "ol to assess it\nSol is not connected in this workspace; you can still see what it would read.\nAdd a second option to TR-001 in Chapter 7 Work before asking for a product comparison..\n\nMore with Sol\n\u00b7\nCo-design\nexplain it in words \u00b7 ask in your own words \u00b7 learn the next step \u00b7 develop the design\n\nSOL \u00b7 REVIEW OF CHAPTER 7\nnot run\n\nSol reads the chapter\u2019s records, their checks and the connected model; you see the packet first and decide.\n\nReview this chapter\nJudgements\n0 support \u00b7 0 trade-offs \u00b7 5 need evidence\nBrings\nTransactions and unique constraints support slot allocation.\nLimits\nOperational ownership and recovery evidence are required.\nEvidence\nSynthetic architectural reasoning only; runtime and governance verification remain open.\nEdit option\nPrefer this option\nPreview it in the stack\nCompare options\nCHAPTER 7 CHECKS\n13\nREADING THIS VIEW\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-um=propose",
+      "chapter": 2,
+      "selector": "[data-um=\"propose\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "tree",
+          "domCount": 6,
+          "visible": true
+        }
+      ],
+      "view": "tree",
+      "label": "Explore a availability driver",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [
+        "Chapter 02 / modelAdd a driverDriverMeasurementTraceability & priorityKind of driverBusinessFunctionalQualityConstraintOperationalDataTechnology evolutionBusiness continuityQuality concernTransaction integrityAvailabilityPerformanceRecoverabilitySecurityTraceabilityScalabilityMaintainabilityDeployabilityTestabilityUsabilityInteroperabilityCompliancePrivacyCostCapacityReliabilityOperabilityDriver titleThe driver in a few words; for a quality driver, what must hold under what stimulus.DescriptionWhat this driver says, in the words of its source.Impact on the architectureWhat this driver changes in the architecture.Stimulus \u2014 what happens?The event or load that triggers this scenario, and where it comes from.Operating conditionsThe state of the system and its surroundings when the stimulus arrives.Expected responseWhat the system must do when the stimulus arrives.Next: measurement Only a quality driver has a measured target. Continue to its links and priority.Numerical examples are editable assumptions. Confirm the metric and threshold against agreed evidence.Metric \u2014 what is measured?ComparatorAt mostAt leastExactlyTarget valueUnitMeasurement window / sampleHow will this be verified?How the response will be verified: the measure, the sample and who takes it.I confirm this target against agreed evidence.Next: traceability & priority Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groupsNo requirement group yet.Business outcomes it stands forOUT-001 Reduce manual appointment coordinationConstraints it stands forCON-001 Use fictional patient data during design reviewAffected application responsibilitiesAllocate clinic appointmentApplication components it applies toAPP-001 Clinic Booking ServicePriorityNot statedHighMediumLowPriority set byNot recordedSource bandPersonRuleOwnerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Why this priority?Why this scenario has the priority it has.Source / target evidenceThe requirement, agreement or evidence the target comes from.Candidate tactic \u2014 for evaluationavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Prevent faultsavailability \u00b7 Prevent faultsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsperformance \u00b7 Manage resourcesperformance \u00b7 Manage resourcesperformance \u00b7 Control resource demandperformance \u00b7 Manage resourcesperformance \u00b7 Design decisionsperformance \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionssecurity \u00b7 Detect attackssecurity \u00b7 Resist attackssecurity \u00b7 Resist attackstestability \u00b7 Control and observetestability \u00b7 Control and observetestability \u00b7 Limit complexitydeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsA tactic to evaluate against this scenario. Named for evaluation, not chosen.I have reviewed and confirm this scenario.A stable code of its kind is given on save. Confirmation records your review; it does not approve a design.CancelSave driverDiscard your unsaved changes?Keep editingDiscard changes"
+      ],
+      "afterExcerpt": "ge model is connected \u00b7 About this workbench\n\nCHAPTER 02 / MODEL\nAdd a driver\nDriver\nMeasurement\nTraceability & priority\nKind of driver\nBusiness\nFunctional\nQuality\nConstraint\nOperational\nData\nTechnology evolution\nBusiness continuity\nQuality concern\nTransaction integrity\nAvailability\nPerformance\nRecoverability\nSecurity\nTraceability\nScalability\nMaintainability\nDeployability\nTestability\nUsability\nInteroperability\nCompliance\nPrivacy\nCost\nCapacity\nReliability\nOperability\nDriver title\nThe driver in a few words; for a quality driver, what must hold under what stimulus.\nDescription\nWhat this driver says, in the words of its source.\nImpact on the architecture\nWhat this driver changes in the architecture.\nStimulus \u2014 what happens?\nThe event or load that triggers this scenario, and where it comes from.\nOperating conditions\nThe state of the system and its surroundings when the stimulus arrives.\nExpected response\nWhat the system must do when the stimulus arrives.\nNext: measurement\nCancel\nSave driver"
+    },
+    {
+      "family": "data-um=tune-target",
+      "chapter": 2,
+      "selector": "[data-um=\"tune-target\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "tree",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "tune",
+          "domCount": 5,
+          "visible": true
+        }
+      ],
+      "view": "tune",
+      "label": "8",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "al drivers \u00b7 Model \u00b7 What if\n\nCHAPTER 2 \u00b7 MODEL\nArchitectural drivers\nUtility tree\nDiagram\nWhat if\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd driver\nPerspectives\nUtility tree\n\u203a\nWhat if \u00b7 QD-001\nDRIVER\nQD-001 \u00b7 Return a booking outcome promptly\nTARGET \u2264\n8\n4\n2\n1\n0.5\nseconds\nPRIORITY\nHigh\nMedium\nLow\nReset\nADR-001\nEases\nHow will the clinic prevent duplicate slot allocation?\n\nA looser target makes the tension of Asynchronous provisional booking queue easier to accept.\n\nQD-001\nHIGH\n1 eases\nReturn a booking outcome promptly\n\u2264 2 seconds \u2192 \u2264 8 seconds A 15 minute synthetic load test\n\n8000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nMoving QD-001 from At most 2 to 8 seconds: nothing recorded changes.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-nt=edge-pick",
+      "chapter": 5,
+      "selector": "[data-nt=\"edge-pick\"]",
+      "status": "unavailable",
+      "attempts": [
+        {
+          "view": "diagram",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "components",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "specification",
+          "domCount": 0,
+          "visible": false
+        }
+      ],
+      "reason": "Conditional bundled-relationship picker. Current Chapter 5 diagram and selected APP-001 show no bundled-line selector; native and shared diagram scans did not expose it. No UI click claimed.",
+      "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nt=\"edge-pick\"]').filter({ visible: true }).first()\u001b[22m\n"
+    },
+    {
+      "family": "data-dk=filter",
+      "chapter": 11,
+      "selector": "[data-dk=\"filter\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "vitals",
+          "domCount": 3,
+          "visible": true
+        }
+      ],
+      "view": "vitals",
+      "label": "All 1",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "not recorded\tno recovery target\t\n\u00b7\nNot carried\nRUN-001\tData loss\tholds no state\tno recovery point\t\n\u00b7\nNot carried\nRUN-001\tLatency\tnot on a timed path\tno response target\t\n\u00b7\nNot carried\nRUN-001\tCapacity\tno load stated\tno load stated\t\n\u00b7\nNot carried\nRUN-001\tIntegrity\t1 request\tno integrity driver\t\n\u00b7\nNot carried\nRUN-001\tProtection\t1 of 1 threats covered\tevery threat covered where it lands\t\n\u25cf\nNormal\nRUN-001\tObservability\tMonitor request latency, conflict rate, failed outcomes and \u2026\tcarries no driver\t\n\u25cf\nNormal\n\u2039\nStart\n\n1 things to look at, the most critical first.\n\n1 running parts \u00b7 0 critical \u00b7 0 with no signal \u00b7 1 anti-pattern\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-um=tune-priority",
+      "chapter": 2,
+      "selector": "[data-um=\"tune-priority\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "tree",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "tune",
+          "domCount": 3,
+          "visible": true
+        }
+      ],
+      "view": "tune",
+      "label": "High",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "Validate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 2 \u00b7 Architectural drivers \u00b7 Model \u00b7 What if\n\nCHAPTER 2 \u00b7 MODEL\nArchitectural drivers\nUtility tree\nDiagram\nWhat if\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd driver\nPerspectives\nUtility tree\n\u203a\nWhat if \u00b7 QD-001\nDRIVER\nQD-001 \u00b7 Return a booking outcome promptly\nTARGET \u2264\n8\n4\n2\n1\n0.5\nseconds\nPRIORITY\nHigh\nMedium\nLow\nADR-001\nHolds\nHow will the clinic prevent duplicate slot allocation?\n\nAsynchronous provisional booking queue is in tension with QD-001.\n\nQD-001\nHIGH\n1 holds\nReturn a booking outcome promptly\n\u2264 2 seconds A 15 minute synthetic load test\n\n2000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nQD-001 as recorded: At most 2 seconds, High.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-cm-open-work=[record]",
+      "chapter": 5,
+      "selector": "[data-cm-open-work]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "diagram",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "components",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "components",
+      "label": "Open in Chapter 8 Work\n\u2192",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "ration remains to verify.\nChallenges\nNot stated\nFacilitation\nAPP-001 Clinic Booking Service answers it through IF-001 Request clinic appointment\nConnected contracts \u00b7 1\nIF-001 \u00b7 REQUEST\nRequest clinic appointment\n\nPatient Booking Portal \u2192 Clinic Booking Service\n\nOpen contract\nChapter progress \u00b7 7 / 8 milestones\nObject & backlinks\nHistory\n\u2190 Back\nEXT-001 \u00b7 CHAPTER 8\nPatient Booking Portal\ntarget\nWritten by local-architect \u00b7 confirmed by local-architect\nEdit boundary\n\u2191 Model\nContext\nSelected boundary\n\nLet patients request an appointment and view its outcome.\n\nInterface contracts\nIF-001 \u00b7 Request clinic appointment\nAuthoritative data\nContract & dictionary\nUpstream rationale\nProtection & lifecycle\nConnections \u00b7 1\nSources, reasoning & history\nRecord lifecycle\nONE PROJECT / CONNECTED JOURNEY\nNo cross-chapter links yet\n\u2197\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench\n\nChapter 8 \u00b7 Interfaces & data"
+    },
+    {
+      "family": "data-dk=ask",
+      "chapter": 11,
+      "selector": "[data-dk=\"ask\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "vitals",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "vitals",
+      "label": "Ask for review",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [
+        "Review deskAsk for review\u00d71 record will be asked to review. Each is reviewed in its own chapter, where the reviewer records whether it still holds, was revised, or needs a follow-up.\n   Ch 10 \u00b7 RUN-001 \u00b7 Clinic booking service operating planOn the review desk RUN-001 reads nothing critical.\n   Why the review is neededThe review desk reads RUN-001 Clinic booking service operating plan as normal: RUN-001 Clinic booking service operating plan: nothing critical.\n   Asked byThe signed-in account. Another person signs in with their own account.\n    I have read what the desk shows and want these records reviewed.\n   CancelAsk for review"
+      ],
+      "afterExcerpt": "no driver\t\n\u25cf\nNormal\n\u2039\nStart\n\n1 things to look at, the most critical first.\n\n1 running parts \u00b7 0 critical \u00b7 0 with no signal \u00b7 1 anti-pattern\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench\n\nREVIEW DESK\nAsk for review\n\u00d7\n\n1 record will be asked to review. Each is reviewed in its own chapter, where the reviewer records whether it still holds, was revised, or needs a follow-up.\n\nCh 10 \u00b7 RUN-001 \u00b7 Clinic booking service operating plan\nOn the review desk RUN-001 reads nothing critical.\nWhy the review is needed\nAsked by\nThe signed-in account. Another person signs in with their own account.\nI have read what the desk shows and want these records reviewed.\nCancel\nAsk for review"
+    },
+    {
+      "family": "data-dk=explore-example",
+      "chapter": 11,
+      "selector": "[data-dk=\"explore-example\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "vitals",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "load",
+          "domCount": 3,
+          "visible": true
+        }
+      ],
+      "view": "load",
+      "label": "Explore the playbook's example",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "t are reads\nOne primary\nholds to \u2248220,000 users\n10,000 writes a second assumed, planned at 70 %\nConnections\n230\nAPP-001 together\nNodes\n1\none primary\nGrowth\n515 GB a day\n3,125 writes a second \u00d7 2 KB\n\n230 connections needed; PostgreSQL allows 100 connections by default (max_connections). Put a connection pooler in front of it, such as PgBouncer, or raise max_connections with the memory it needs. No capacity or node count is recorded.\n\nStart walkthrough\n\nChange the objective or an assumption: every part is read again.\n\n100,000 users \u00f7 (30 s between requests + 2 s response (QD-001)) = 3,125 req/s, assumed (playbook example).\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREQ-001 / ARCHITECTURE REVIEW TRAIL\n\nFollow the obligation through quality, choices, responsibilities, supporting services, and runtime. This is a design walkthrough.\n\nFollow the trail\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-dp=panel",
+      "chapter": 10,
+      "selector": "[data-dp=\"panel\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "deploy",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "failure",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "diagram",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "diagram",
+      "label": "",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "am\nIf a zone fails\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd\nPerspectives\nDiagram\nDeployment\nTechnology usage\nFind\nArrange \u00b7 Grouped\nLayers\nFocus\nTrace\nBuild\nView options\nClinic synthetic staging\nSynthetic clinic application zone\nPHYSICAL APPLICATION COMPONENT\n1 active\nClinic Booking Service\nDeployment\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\n\nRP-001 realises IF-001, whose caller has no placement in this environment.\n\nStart\n\nDeployment \u00b7 1 element \u00b7 0 relationships \u00b7 2 groups \u00b7 Grouped\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-dp=scope",
+      "chapter": 10,
+      "selector": "[data-dp=\"scope\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "deploy",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "deploy",
+      "label": "Clinic synthetic staging",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "Deployment & runtime\nDeployment\nDiagram\nIf a zone fails\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nClinic synthetic staging\nOperation\nFlow\nProtection\nROWS\nModules\nParts\nParts + platform\nNot in a module\nMODULE\nOutside the environment\nREACHED THROUGH RUNTIME PATHS\n1 active\n\u2014\n\u2014\nNo recovery chosen\nStateless process\nIF-001\nClinic synthetic stagingPre-production design\nClinic staging application domain\nSynthetic clinic application zone\n1 placed\nNot placedExpand\nRecovery\nstrategy and state\nClinic booking service operating plan\nRUN-001 \u00b7 1\u20132 copies\nPatient Booking Portal\nExternal system\nStart\n\n1 zone \u00b7 1 row placed \u00b7 0 not placed\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-dp=unplaced",
+      "chapter": 10,
+      "selector": "[data-dp=\"unplaced\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "deploy",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "reason": "Pointer interception fixed; actual browser click expands and collapses the placement tray after Fit.",
+      "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-dp=\"unplaced\"]').filter({ visible: true }).first()\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"cm-link\" data-dp=\"unplaced\" aria-expanded=\"false\">\u2026</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 \u00d7 waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"cm-html\">\u2026</div> from <div class=\"cm-world\">\u2026</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 \u00d7 waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"cm-html\">\u2026</div> from <div class=\"cm-world\">\u2026</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    3 \u00d7 waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div class=\"cm-html\">\u2026</div> from <div class=\"cm-world\">\u2026</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 500ms\u001b[22m\n",
+      "retest": {
+        "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+        "expanded": true,
+        "collapsed": true,
+        "documentUnchanged": true
+      }
+    },
+    {
+      "family": "data-dp=walk-start",
+      "chapter": 10,
+      "selector": "[data-dp=\"walk-start\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "deploy",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "deploy",
+      "label": "Start",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "THROUGH RUNTIME PATHS\n1 active\nLOST\n\u2014\n\u2014\nDesign stops\nNot exercised\nClinic synthetic stagingPre-production design\nClinic staging application domain\nSynthetic clinic application zone\nRemoved in this design scenario\nNot placedExpand\nIf Synthetic clinic application zone fails\nstate \u2192 after declared recovery\nClinic booking service operating plan\nRUN-001 \u00b7 1\u20132 copies\nPatient Booking Portal\nExternal system\n\u2039\nNext \u203a\n\n1 / 4 \u00b7 The zones fail Synthetic clinic application zone is removed.\n\n\u00d7\n\nDeclared design exercise \u00b7 Synthetic clinic application zone fails \u00b7 1 stop or degrade \u00b7 0 unknown \u00b7 0 predicted to keep running \u00b7 not a failover test\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nRUNTIME FAILURE WALKTHROUGH / SIMULATION\n\nRemove a zone or shared failure domain, trace affected services, and inspect the prerequisites for recovery.\n\nExplore this environment\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-dx=new-question",
+      "chapter": 3,
+      "selector": "[data-dx=\"new-question\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "map",
+      "label": "New decision",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [
+        "Chapter 03 / modelFrame a design questionQuestionTraceabilityReasoningDecision topicProcessing styleDuplicate protectionUncertain outcomesArchitecture styleOther design questionDecision categoryNot statedFoundational choiceStructural decisionCross-cutting concernTrade-offAdditional decisionDecision ownerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Design questionThe design question to answer, as a question.Context and decision scopeWhat shapes the choice: the constraints, drivers and requirements it must respect.Source / project evidenceThe project evidence this question rests on.Next: traceability Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groups it answersNo requirement group yet.Drivers / comparison criteriaQD1 Return a booking outcome promptlyHigh \u00b7 Target assumptionAssumptions recorded in Chapter 1ASM-001 Clinic has one authoritative appointment calendarUnconfirmedStakeholders and actors it concernsACT-001 PatientSTK-001 Clinic operations ownerHow it concerns themWho this decision concerns, and how.Decisions it depends onADR-001 How will the clinic prevent duplicate slot allocation?Other dependenciesWhat else this decision depends on, beyond the decisions named.Next: reasoning Decision rationale \u2014 why this choice?Why the chosen alternative answers the question, against the drivers compared.AssumptionsWhat this record takes as given but has not confirmed.Evidence resolving these assumptionsThe evidence that resolved the assumptions, or what is still open.I confirm these assumptions against the recorded evidence.Risks and consequences to manageWhat the choice puts at risk and what follows for the design.Risk treatment / mitigationHow those risks are treated.Impact: what it gains and what it costsWhat the chosen alternative gains and what it costs.LicensingThe licences the choice brings, and what they allow.Skills it asks forThe skills the choice asks of the people who build and run it.Where it is documentedWhere the decision and its evidence are written down.A stable ADR reference is assigned on save. Add at least two alternatives to compare.CancelSave working revisionDiscard your unsaved changes?Keep editingDiscard changes"
+      ],
+      "afterExcerpt": "ty points \u00b7 style not recorded\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench\n\nCHAPTER 03 / MODEL\nFrame a design question\nQuestion\nTraceability\nReasoning\nDecision topic\nProcessing style\nDuplicate protection\nUncertain outcomes\nArchitecture style\nOther design question\nDecision category\nNot stated\nFoundational choice\nStructural decision\nCross-cutting concern\nTrade-off\nAdditional decision\nDecision owner\nThe person or team accountable for this record. A name, not a role to confirm.\nDesign question\nThe design question to answer, as a question.\nContext and decision scope\nWhat shapes the choice: the constraints, drivers and requirements it must respect.\nSource / project evidence\nThe project evidence this question rests on.\nNext: traceability\n\nA stable ADR reference is assigned on save. Add at least two alternatives to compare.\n\nCancel\nSave working revision"
+    },
+    {
+      "family": "data-dx=panel",
+      "chapter": 3,
+      "selector": "[data-dx=\"panel\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "matrix",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "diagram",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "diagram",
+      "label": "",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "TER 3 \u00b7 MODEL\nDecisions\nDecision map\nDiagram\nTrade-offs\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nExplore changes\nNew decision\nPerspectives\nDiagram\nDecisions\nDesign rationale\nMotivation\nFind\nArrange \u00b7 Tree\nLayers\nFocus\nTrace\nBuild\nView options\nselects\nconsiders\njustifies\nDECISION\naccepted\nHow will the clinicprevent duplicate slotallocation?\n\u25cb\n\u25cb\nto confirm\nALTERNATIVE\nSelected\nTransactional bookingwith unique slot andrequest keys\nALTERNATIVE\nNot selected\nAsynchronous provisionalbooking queue\nLOGICAL APPLICATION COMPONENT\nAllocate clinic appointment\nDecisions\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\nStart walkthrough\n\nDecisions \u00b7 4 elements \u00b7 3 relationships \u00b7 Tree\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-dx=scope",
+      "chapter": 3,
+      "selector": "[data-dx=\"scope\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "map",
+      "label": "All decisions",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "recorded\nADR-001\nAccepted\nchoice made\nHow will the clinic prevent duplicate slot allocation?\nLeads on the drivers\nTransactional booking with unique slot and request keys\n2 alternatives \u00b7 1 driver\nNot recorded\nSA Playbook\nWhich architecture style should structure this design?\nNo decision records the style. The playbook compares 5 styles on the qualities they support.\nRecord the style decision\nQD-001\nHIGH\n\u00d73\nReturn a booking outcome promptly\n\u2264 2 seconds\nDRIVERS\nChapter 2 \u00b7 by priority, with weight\nDECISIONS\nChapter 3 \u00b7 the question and its state\nALTERNATIVES\npattern \u00b7 effect on each driver \u00b7 what to avoid\n\u2039\nStart\n\n1 decision. At each one: what it weighs, where the drivers lean, and what a person has chosen.\n\n1 decision \u00b7 2 alternatives \u00b7 1 with a working choice \u00b7 0 sensitivity points \u00b7 style not recorded\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-dx=style-decision",
+      "chapter": 3,
+      "selector": "[data-dx=\"style-decision\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 2,
+          "visible": true
+        }
+      ],
+      "view": "map",
+      "label": "Record the style decision",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [
+        "Chapter 03 / modelFrame a design questionQuestionTraceabilityReasoning1 suggestion from your project \u00b7 1 empty fieldFillFill copies the proposed values into 1 empty field. Use the suggestion button beside a field to review its question. Nothing is saved until you save this record.Decision topicProcessing styleDuplicate protectionUncertain outcomesArchitecture styleOther design questionDecision categoryNot statedFoundational choiceStructural decisionCross-cutting concernTrade-offAdditional decisionDecision ownerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Design questionThe design question to answer, as a question.Context and decision scopeCompare the SA Playbook's architecture styles against the quality drivers this design must meet. The playbook's marks are qualitative judgements; test each against the recorded design before choosing.What shapes the choice: the constraints, drivers and requirements it must respect.Source / project evidenceSA Playbook \u203a Arch Style Suitability Ass; Arch Style + Quality PropsThe project evidence this question rests on.Next: traceability Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groups it answersNo requirement group yet.Drivers / comparison criteriaQD1 Return a booking outcome promptlyHigh \u00b7 Target assumptionAssumptions recorded in Chapter 1ASM-001 Clinic has one authoritative appointment calendarUnconfirmedStakeholders and actors it concernsACT-001 PatientSTK-001 Clinic operations ownerHow it concerns themWho this decision concerns, and how.Decisions it depends onADR-001 How will the clinic prevent duplicate slot allocation?Other dependenciesWhat else this decision depends on, beyond the decisions named.Next: reasoning Decision rationale \u2014 why this choice?Why the chosen alternative answers the question, against the drivers compared.AssumptionsWhat this record takes as given but has not confirmed.Evidence resolving these assumptionsThe evidence that resolved the assumptions, or what is still open.I confirm these assumptions against the recorded evidence.Risks and consequences to manageWhat the choice puts at risk and what follows for the design.Risk treatment / mitigationHow those risks are treated.Impact: what it gains and what it costsWhat the chosen alternative gains and what it costs.LicensingThe licences the choice brings, and what they allow.Skills it asks forThe skills the choice asks of the people who build and run it.Where it is documentedWhere the decision and its evidence are written down.A stable ADR reference is assigned on save. Add at least two alternatives to compare.CancelSave working revisionDiscard your unsaved changes?Keep editingDiscard changes"
+      ],
+      "afterExcerpt": "h\n\nCHAPTER 03 / MODEL\nFrame a design question\nQuestion\nTraceability\nReasoning\n\n1 suggestion from your project \u00b7 1 empty field\n\nFill\nFill copies the proposed values into 1 empty field. Use the suggestion button beside a field to review its question. Nothing is saved until you save this record.\nDecision topic\nProcessing style\nDuplicate protection\nUncertain outcomes\nArchitecture style\nOther design question\nDecision category\nNot stated\nFoundational choice\nStructural decision\nCross-cutting concern\nTrade-off\nAdditional decision\nDecision owner\nThe person or team accountable for this record. A name, not a role to confirm.\nDesign question\nThe design question to answer, as a question.\nContext and decision scope\nWhat shapes the choice: the constraints, drivers and requirements it must respect.\nSource / project evidence\nThe project evidence this question rests on.\nNext: traceability\n\nA stable ADR reference is assigned on save. Add at least two alternatives to compare.\n\nCancel\nSave working revision"
+    },
+    {
+      "family": "data-dx=whatif-open",
+      "chapter": 3,
+      "selector": "[data-dx=\"whatif-open\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "map",
+      "label": "Explore changes",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [
+        "Chapter 3 \u00b7 architecture branchExplore changesChange several drivers or constraints together, then inspect the recorded design paths that need review. This comparison does not save or approve anything.\u00d7\n    Quality driversAdd driverSet a new priority, target, or both. Targets keep their recorded unit and measurement basis.Quality driverChoose a driverQD-001 \u00b7 Return a booking outcome promptly (High)PriorityUse recorded priorityHighMediumLowTarget\u00d7\n    ConstraintsAdd constraintChanged wording follows direct recorded requirement links. Its effect cannot be calculated from text alone.\n    Compare branchUp to 4 drivers and 2 constraints \u00b7 working choices stay as recorded"
+      ],
+      "afterExcerpt": " what a person has chosen.\n\n1 decision \u00b7 2 alternatives \u00b7 1 with a working choice \u00b7 0 sensitivity points \u00b7 style not recorded\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nCHAPTER 3 \u00b7 ARCHITECTURE BRANCH\nExplore changes\n\nChange several drivers or constraints together, then inspect the recorded design paths that need review. This comparison does not save or approve anything.\n\n\u00d7\nQuality drivers\nAdd driver\n\nSet a new priority, target, or both. Targets keep their recorded unit and measurement basis.\n\nQuality driver\nChoose a driver\nQD-001 \u00b7 Return a booking outcome promptly (High)\nPriority\nUse recorded priority\nHigh\nMedium\nLow\nTarget\n\u00d7\nConstraints\nAdd constraint\n\nChanged wording follows direct recorded requirement links. Its effect cannot be calculated from text alone.\n\nCompare branch\nUp to 4 drivers and 2 constraints \u00b7 working choices stay as recorded\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-ex=expand",
+      "chapter": 8,
+      "selector": "[data-ex=\"expand\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "data",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "data",
+      "label": "",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "data\n\nWhere does each piece of data come from and travel?\n\nInsights\n7/8 met\n\u2304\n13 reviews open across 3 causes\nLargest: DAT-001 changed \u00b7 6; REQ-001 changed \u00b7 4; ADR-001 changed \u00b7 3\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 8 \u00b7 Interfaces & data \u00b7 Model \u00b7 Data flow\n\nCHAPTER 8 \u00b7 MODEL\nInterfaces & data\nData flow\nDiagram\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole system\nFlow\nSignals\nInformation\nIF-001 Request clinic appointment\n\u2605\nOutside\nPatient Booking Portal\nClinic Booking Service\n\u2605 1\nClinic booking request\nDAT-001 \u00b7 Confidential \u00b7 1 fields\n\u2605 Clinic Booking Service\n\n1 data definition \u00b7 1 movements\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nCONTRACT DESIGN LAB\n\nTry a fictional payload and trace an ordinary exchange, repeated delivery, or missing acknowledgement.\n\nTry a sample payload\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-ex=noop",
+      "chapter": 8,
+      "selector": "[data-ex=\"noop\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "data",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "data",
+      "label": "Outside",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "data\n\nWhere does each piece of data come from and travel?\n\nInsights\n7/8 met\n\u2304\n13 reviews open across 3 causes\nLargest: DAT-001 changed \u00b7 6; REQ-001 changed \u00b7 4; ADR-001 changed \u00b7 3\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 8 \u00b7 Interfaces & data \u00b7 Model \u00b7 Data flow\n\nCHAPTER 8 \u00b7 MODEL\nInterfaces & data\nData flow\nDiagram\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole system\nFlow\nSignals\nInformation\nIF-001 Request clinic appointment\n\u2605\nOutside\nPatient Booking Portal\nClinic Booking Service\n\u2605 1\nClinic booking request\nDAT-001 \u00b7 Confidential \u00b7 1 fields\n\u2605 Clinic Booking Service\n\n1 data definition \u00b7 1 movements\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nCONTRACT DESIGN LAB\n\nTry a fictional payload and trace an ordinary exchange, repeated delivery, or missing acknowledgement.\n\nTry a sample payload\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench",
+      "reason": "Scope label deliberately uses noop; click has no domain operation."
+    },
+    {
+      "family": "data-lr=scope",
+      "chapter": 4,
+      "selector": "[data-lr=\"scope\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "map",
+      "label": "Whole journey",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "easoning\nJourney\nRecorded journey\nLR-001\nSynthetic clinic architecture team\noff the journey\nInputs changed\nAllocate clinic appointment\nowns nothing recorded\nOne appointment slot, one patient request, one definitive booking outcome.\nREALISED BY\nAPP-001\nClinic Booking Service\nStep 01 \u00b7 nobody owns it\nRequest a clinic appointment\n\nThe patient submits the selected slot with a stable request reference and receives a definitive booking outcome.\n\nAdd a responsibility\nSTEP 01 \u00b7 JRN-001\nRequest a clinic appointment\nnobody owns it\nNOT ON THE JOURNEY\nOff the journey\nserves no journey step\n1 UNGROUPED\nUngrouped\nplace these in a responsibility group\n1 STEP\nNobody owns these steps\njourney steps no responsibility serves\nStart\n\n1 responsibility in 0 groups \u00b7 1 journey step \u00b7 1 unowned \u00b7 0 logical flows \u00b7 0 not carried\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-nt=fold-fit",
+      "chapter": 5,
+      "selector": "[data-nt=\"fold-fit\"]",
+      "status": "unavailable",
+      "attempts": [
+        {
+          "view": "diagram",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "components",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "specification",
+          "domCount": 0,
+          "visible": false
+        }
+      ],
+      "reason": "Conditional grouped overview camera control. This project\u2019s Chapter 5 diagram was not grouped in the inspected scene; no UI click claimed.",
+      "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-nt=\"zin\"],[data-cm-camera=\"zin\"]').filter({ visible: true }).first()\u001b[22m\n"
+    },
+    {
+      "family": "data-nt=story",
+      "chapter": 5,
+      "selector": "[data-nt=\"story\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "diagram",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "components",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "specification",
+          "domCount": 0,
+          "visible": false
+        }
+      ],
+      "followup": {
+        "traceStoryOpened": true
+      }
+    },
+    {
+      "family": "data-sk=family",
+      "chapter": 7,
+      "selector": "[data-sk=\"family\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "stack",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "stack",
+      "label": "KEEP STATE\ndurable, derived and recoverable data",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "\nKeep state\nStructure\nOperation\nReasoning\nROWS\nRealisations\nWith options\nKEEP STATE\ndurable, derived and recoverable data\nCHOICE NOT MADE\n1 option\nPostgreSQL\n1 component\nnone stop if it fails\n\u2014\n\u2014\nNo option preferred\nWhat it provides, and to whom\nImplementation obligations\nDecision\nChoice\nthe preferred option\nDepends on it\ncomponents \u00b7 stop if it fails\nOperate\nAccess\nData\nRecover\nInterfaces\nLifecycle\nSizing\nCost\nSelection\npreferred \u00b7 recorded \u00b7 approved\nTR-001 \u00b7 realises TC-001\nBooking transactional datastore\nTransactional booking persistence \u00b7 1 option\n\u203a\n\n1 realisations \u00b7 0 chosen \u00b7 0 recorded \u00b7 0 of 6 obligations written\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREALIZATION MODEL / DESIGN PREVIEW\n\nTechnology choices retain the Chapter 6 failure and recovery obligations. Compare their evidence before recording the selection.\n\nReview comparison\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-sk=noop",
+      "chapter": 7,
+      "selector": "[data-sk=\"noop\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "stack",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "options",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "options",
+      "label": "TR-001 \u00b7 Booking transactional datastore",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "al ownership\nWho operates, monitors, patches, and supports this choice?\nRecovery and isolation\nTC-001: single; recovery unspecified; data loss unspecified\nLifecycle and exit\nVersion support, upgrade path, licensing, and a usable exit route.\nCapacity and cost basis\nDocument the workload and quote or cost model behind the estimate. No automatic score is calculated.\n\u03a3 priority \u00d7 effect\ndrivers by priority (Critical 3, Important 2, Supporting 1), the rest \u00d71; suggestions fill the gaps\nBenefits\nwhat the option brings\nDrawbacks and limits\nknown drawbacks and constraints\n\u02c5\n\n1 option \u00b7 5 criteria \u00b7 0 of 5 judgements with evidence\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nREALIZATION MODEL / DESIGN PREVIEW\n\nTechnology choices retain the Chapter 6 failure and recovery obligations. Compare their evidence before recording the selection.\n\nReview comparison\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench",
+      "reason": "Scope label deliberately uses noop; click has no domain operation."
+    },
+    {
+      "family": "data-sk=scope",
+      "chapter": 7,
+      "selector": "[data-sk=\"scope\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "stack",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "stack",
+      "label": "Whole stack",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "Whole stack\nStructure\nOperation\nReasoning\nROWS\nRealisations\nWith options\nKEEP STATE\ndurable, derived and recoverable data\nCHOICE NOT MADE\n1 option\nPostgreSQL\n1 component\nnone stop if it fails\n\u2014\n\u2014\nNo option preferred\nWhat it provides, and to whom\nImplementation obligations\nDecision\nChoice\nthe preferred option\nDepends on it\ncomponents \u00b7 stop if it fails\nOperate\nAccess\nData\nRecover\nInterfaces\nLifecycle\nSizing\nCost\nSelection\npreferred \u00b7 recorded \u00b7 approved\nTR-001 \u00b7 realises TC-001\nBooking transactional datastore\nTransactional booking persistence \u00b7 1 option\n\u203a\n\n1 realisations \u00b7 0 chosen \u00b7 0 recorded \u00b7 0 of 6 obligations written\n\nKey\n\u2212\n100%\n+\nFit\nRead labels\nExport view\nREALIZATION MODEL / DESIGN PREVIEW\n\nTechnology choices retain the Chapter 6 failure and recovery obligations. Compare their evidence before recording the selection.\n\nReview comparison\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-sm=panel",
+      "chapter": 1,
+      "selector": "[data-sm=\"panel\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "boundary",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "diagram",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "diagram",
+      "label": "",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": " changed \u00b7 4; ADR-001 changed \u00b7 3\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 1 \u00b7 Requirements \u00b7 Model \u00b7 Diagram \u00b7 Process\n\nCHAPTER 1 \u00b7 MODEL\nRequirements\nJourney map\nDiagram\nBoundary\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd\nPerspectives\nDiagram\nProcess\nContext\nMotivation\nSequence\nModule map\nFind\nArrange \u00b7 Swimlanes\nLayers\nFocus\nTrace\nBuild\nView options\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nSynthetic clinic architecture team\nRequest a clinicappointment\n\u2713\n\u2713\npassing\nProcess\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\nStart walkthrough\n\nProcess \u00b7 1 element \u00b7 0 relationships \u00b7 2 groups \u00b7 Swimlanes\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-sm=scope",
+      "chapter": 1,
+      "selector": "[data-sm=\"scope\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "map",
+      "label": "Whole journey",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "\nOpen the review plan \u2192\n\u00d7\nWork\nModel\nValidate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 1 \u00b7 Requirements \u00b7 Model \u00b7 Journey map\n\nCHAPTER 1 \u00b7 MODEL\nRequirements\nJourney map\nDiagram\nBoundary\nLayers\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole journey\nStructure\nFlow\nReasoning\nELEMENTS\nSteps\nRequirements\nREQ-001\nConfirmed\nBook one available clinic slot exactly once\nSynthetic clinic architecture team\nSynthetic refinement walkthrough fixture; no production evidence\nnothing limits it\nCOVERED BY\nLR-001\nAllocate clinic appointment\nSTEP 01 \u00b7 JRN-001\nRequest a clinic appointment\nno person takes part\nMust\n1 REQUIREMENT\nthe journey cannot work without these\n\u2039\nStart\n\n1 journey steps. At each one: who takes part, what it needs, and why.\n\n1 requirement over 1 step \u00b7 0 steps without one \u00b7 0 not testable \u00b7 Must\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-tm=panel",
+      "chapter": 9,
+      "selector": "[data-tm=\"panel\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "model",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "coverage",
+          "domCount": 1,
+          "visible": false
+        },
+        {
+          "view": "diagram",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "diagram",
+      "label": "",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "Focus\nTrace\nBuild\nView options\nprotects\nthreatens\nmitigates\nPHYSICAL APPLICATION COMPONENT\nClinic Booking Service\nSECURITY CONTROL\nIdentity & access\nAuthorize every bookingread and change\n\u2715\n\u2715\nto fix\nTHREAT\nHigh priority\nUnauthorized access toclinic booking\n\u25cb\n\u25cb\nto confirm\nAPPLICATION SERVICE\nPOST /bookings \u00b7 HTTPS\u2026\nRequest clinicappointment\n\u25cb\n\u25cb\nto confirm\nSecurity & trust\nMODEL\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\nTEMPLATE\nAIW notation \u00b7 TOGAF element types \u00b7 ArchiMate relationships\nCREATED\n2026-10-18T09:48:57.815Z\nVERSION\nv12\nStart walkthrough\n\nSecurity & trust \u00b7 4 elements \u00b7 3 relationships \u00b7 Grouped\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nSECURITY DESIGN WALKTHROUGH / SIMULATION\n\nFollow a threat through intended enforcement, then make the control unavailable to inspect the written response.\n\nExplore the selected threat\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-tm=scope",
+      "chapter": 9,
+      "selector": "[data-tm=\"scope\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "model",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "model",
+      "label": "Whole system",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "\nTable\nMatrix\nWhole design\nAdd\nPerspectives\nWhole system\nProtection\nInformation\nFlow\nELEMENTS\nBoundaries\nParts\nParts + platform\nEXTERNAL PARTICIPANT\nPatient Booking Portal\nAPPLICATION COMPONENT\nClinic Booking Service\nClinic booking request\n\u25cc\nIF-001\nRequest clinic appointment\nTHR-001\nSEC-001\nNOT OURS\nOutside\nwhere work comes from\nUNASSIGNED\nNo trust boundary\nnot assigned to a boundary\n\u2039\nStart\n\n1 crossing flow on From Patient Booking Portal. Each step identifies the boundary, a possible threat, designed coverage and control evidence to check.\n\n1 boundary crossing \u00b7 0 open design gaps \u00b7 1 addressed in design \u00b7 0 not examined\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nSECURITY DESIGN WALKTHROUGH / SIMULATION\n\nFollow a threat through intended enforcement, then make the control unavailable to inspect the written response.\n\nExplore the selected threat\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-um=add",
+      "chapter": 2,
+      "selector": "[data-um=\"add\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "tree",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "tree",
+      "label": "Add driver",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [
+        "Chapter 02 / modelAdd a driverDriverMeasurementTraceability & priorityKind of driverBusinessFunctionalQualityConstraintOperationalDataTechnology evolutionBusiness continuityQuality concernTransaction integrityAvailabilityPerformanceRecoverabilitySecurityTraceabilityScalabilityMaintainabilityDeployabilityTestabilityUsabilityInteroperabilityCompliancePrivacyCostCapacityReliabilityOperabilityDriver titleThe driver in a few words; for a quality driver, what must hold under what stimulus.DescriptionWhat this driver says, in the words of its source.Impact on the architectureWhat this driver changes in the architecture.Stimulus \u2014 what happens?The event or load that triggers this scenario, and where it comes from.Operating conditionsThe state of the system and its surroundings when the stimulus arrives.Expected responseWhat the system must do when the stimulus arrives.Next: measurement Only a quality driver has a measured target. Continue to its links and priority.Numerical examples are editable assumptions. Confirm the metric and threshold against agreed evidence.Metric \u2014 what is measured?ComparatorAt mostAt leastExactlyTarget valueUnitMeasurement window / sampleHow will this be verified?How the response will be verified: the measure, the sample and who takes it.I confirm this target against agreed evidence.Next: traceability & priority Source requirementsREQ-001 Book one available clinic slot exactly onceConfirmedRequirement groupsNo requirement group yet.Business outcomes it stands forOUT-001 Reduce manual appointment coordinationConstraints it stands forCON-001 Use fictional patient data during design reviewAffected application responsibilitiesAllocate clinic appointmentApplication components it applies toAPP-001 Clinic Booking ServicePriorityNot statedHighMediumLowPriority set byNot recordedSource bandPersonRuleOwnerACT-001STK-001The person or team accountable for this record. A name, not a role to confirm.Why this priority?Why this scenario has the priority it has.Source / target evidenceThe requirement, agreement or evidence the target comes from.Candidate tactic \u2014 for evaluationavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Detect faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Recover from faultsavailability \u00b7 Prevent faultsavailability \u00b7 Prevent faultsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsavailability \u00b7 Design decisionsmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Localize changesmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Prevent ripple effectsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsmaintainability \u00b7 Design decisionsperformance \u00b7 Manage resourcesperformance \u00b7 Manage resourcesperformance \u00b7 Control resource demandperformance \u00b7 Manage resourcesperformance \u00b7 Design decisionsperformance \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionsscalability \u00b7 Design decisionssecurity \u00b7 Detect attackssecurity \u00b7 Resist attackssecurity \u00b7 Resist attackstestability \u00b7 Control and observetestability \u00b7 Control and observetestability \u00b7 Limit complexitydeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsdeployability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsusability \u00b7 Design decisionsA tactic to evaluate against this scenario. Named for evaluation, not chosen.I have reviewed and confirm this scenario.A stable code of its kind is given on save. Confirmation records your review; it does not approve a design.CancelSave driverDiscard your unsaved changes?Keep editingDiscard changes"
+      ],
+      "afterExcerpt": "ge model is connected \u00b7 About this workbench\n\nCHAPTER 02 / MODEL\nAdd a driver\nDriver\nMeasurement\nTraceability & priority\nKind of driver\nBusiness\nFunctional\nQuality\nConstraint\nOperational\nData\nTechnology evolution\nBusiness continuity\nQuality concern\nTransaction integrity\nAvailability\nPerformance\nRecoverability\nSecurity\nTraceability\nScalability\nMaintainability\nDeployability\nTestability\nUsability\nInteroperability\nCompliance\nPrivacy\nCost\nCapacity\nReliability\nOperability\nDriver title\nThe driver in a few words; for a quality driver, what must hold under what stimulus.\nDescription\nWhat this driver says, in the words of its source.\nImpact on the architecture\nWhat this driver changes in the architecture.\nStimulus \u2014 what happens?\nThe event or load that triggers this scenario, and where it comes from.\nOperating conditions\nThe state of the system and its surroundings when the stimulus arrives.\nExpected response\nWhat the system must do when the stimulus arrives.\nNext: measurement\nCancel\nSave driver"
+    },
+    {
+      "family": "data-um=noop",
+      "chapter": 2,
+      "selector": "[data-um=\"noop\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "tree",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "tune",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "tune",
+      "label": "What if \u00b7 QD-001",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "Validate\nOutput\nAsk Sol\nDetails\nChapter tools\n?\n\nChapter 2 \u00b7 Architectural drivers \u00b7 Model \u00b7 What if\n\nCHAPTER 2 \u00b7 MODEL\nArchitectural drivers\nUtility tree\nDiagram\nWhat if\nLayers\nTable\nMatrix\nWhole design\n\nReset view\n\nAdd driver\nPerspectives\nUtility tree\n\u203a\nWhat if \u00b7 QD-001\nDRIVER\nQD-001 \u00b7 Return a booking outcome promptly\nTARGET \u2264\n8\n4\n2\n1\n0.5\nseconds\nPRIORITY\nHigh\nMedium\nLow\nADR-001\nHolds\nHow will the clinic prevent duplicate slot allocation?\n\nAsynchronous provisional booking queue is in tension with QD-001.\n\nQD-001\nHIGH\n1 holds\nReturn a booking outcome promptly\n\u2264 2 seconds A 15 minute synthetic load test\n\n2000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nQD-001 as recorded: At most 2 seconds, High.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench",
+      "reason": "Scope label deliberately uses noop; click has no domain operation."
+    },
+    {
+      "family": "data-um=scope",
+      "chapter": 2,
+      "selector": "[data-um=\"scope\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "tree",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "tree",
+      "label": "All quality",
+      "documentChanged": false,
+      "pageChanged": false,
+      "dialogText": [],
+      "afterExcerpt": "deployment frequency \u00b7 deployment success rate\nExplore a deployability driver\nQUALITY\nChange\nCan it be changed, tested and released safely?\nNO DRIVER YET\nUsability\nMeasured by learnability (time to learn, error rate) \u00b7 efficiency (time to complete tasks, error rate) \u00b7 memorability (retention of knowledge)\nExplore a usability driver\nQUALITY\nUse and fit\nCan people use it, and can it work with others?\nUTILITY\nSynthetic Clinic Booking \u00b7 integrated rethink walkthrough\n1 driver\nHIGH\n1\nUTILITY\nwhat good means here\nQUALITY\nthe families of quality\nATTRIBUTE\nas the SA Playbook names them\nDRIVER\na measurable scenario, by priority\n\u2039\nStart\n\n1 driver, High first. At each one: what it asks, what carries it, and which tactics the design names.\n\n1 driver \u00b7 1 High \u00b7 5 playbook attributes with no driver \u00b7 0 tactics named\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-um=tune",
+      "chapter": 2,
+      "selector": "[data-um=\"tune\"]",
+      "status": "clicked",
+      "attempts": [
+        {
+          "view": "tree",
+          "domCount": 1,
+          "visible": true
+        }
+      ],
+      "view": "tree",
+      "label": "What if\u2026",
+      "documentChanged": false,
+      "pageChanged": true,
+      "dialogText": [],
+      "afterExcerpt": "nute synthetic load test\n\n2000 ms for the whole response; no synchronous calls are recorded among the parts that carry it.\n\nDecisions\nCHAPTER 3 \u00b7 1\n1\nStart walkthrough\nUtility tree\n\nQD-001 as recorded: At most 2 seconds, High.\n\nKey\n\u2212\n105%\n+\nFit\nRead labels\nExport view\nQD-001 Return a booking outcome promptly\nQD-001 Return a booking outcome promptly \u2014 High, At most 2 seconds. The design names 0 of the playbook's 6 performance tactics. No component carries it yet.\nDouble-click to focus on it\nCheck \u00b7 error \u00b7 Identify affected responsibilities\nKnowledge rule \u00b7 PAT-RETRY-WITH-BACKOFF \u00b7 ADR-001 \u00b7 How will the clinic prevent duplicate slot allocation? mentions retrying a temporary failure. This is a topic to examine; suitability remains unconfirmed.\nContext \u00b7 1 requirement \u00b7 1 quality driver \u00b7 no reviewed claims in scope; inspect Sources and Releases\n\nAIW V5 \u00b7 Synthetic Clinic Booking \u00b7 integrated rethink walkthrough\n\nRule-based guidance \u00b7 No language model is connected \u00b7 About this workbench"
+    },
+    {
+      "family": "data-sm=add-for-step",
+      "chapter": 1,
+      "selector": "[data-sm=\"add-for-step\"]",
+      "status": "unavailable",
+      "attempts": [
+        {
+          "view": "map",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "boundary",
+          "domCount": 0,
+          "visible": false
+        },
+        {
+          "view": "diagram",
+          "domCount": 0,
+          "visible": false
+        }
+      ],
+      "reason": "Requires a selected actual journey step. The current Chapter 1 map exposes the requirement group C:Must|S:0 rather than a recorded step; no UI click claimed.",
+      "followupFailure": "locator.click: Timeout 1800ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-sm=\"add-for-step\"]').filter({ visible: true }).first()\u001b[22m\n"
+    }
+  ],
+  "interactionEvents": [
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Ask Sol",
+      "attributes": {
+        "data-workspace-sol": "",
+        "data-brain-launch": "design"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Ask beside the model",
+      "attributes": {
+        "data-dk": "sol-beside"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Close assistance",
+      "attributes": {
+        "data-brain-action": "close"
+      }
+    },
+    {
+      "chapter": 11,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Part \u2195",
+      "attributes": {
+        "data-dk": "sort",
+        "data-view": "vitals",
+        "data-id": "part"
+      }
+    },
+    {
+      "chapter": 7,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "PostgreSQL candidate \u00b7 Return a booking outcome promptly: suggested \u2014 Supports: The SA Playbook names Relational (MySQL, PostgreSQL) among the technologies for performance (Databas",
+      "attributes": {
+        "data-sk": "assess",
+        "data-option": "TO-001",
+        "data-criterion": "QD-001"
+      }
+    },
+    {
+      "chapter": 2,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Explore a availability driver",
+      "attributes": {
+        "data-um": "propose",
+        "data-attr": "availability"
+      }
+    },
+    {
+      "chapter": 2,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "8",
+      "attributes": {
+        "data-um": "tune-target",
+        "data-v": "8"
+      }
+    },
+    {
+      "chapter": 11,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "All 1",
+      "attributes": {
+        "data-dk": "filter",
+        "data-id": "all"
+      }
+    },
+    {
+      "chapter": 2,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "High",
+      "attributes": {
+        "data-um": "tune-priority",
+        "data-v": "High"
+      }
+    },
+    {
+      "chapter": 5,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Open in Chapter 8 Work \u2192",
+      "attributes": {
+        "data-cm-open-work": "ext-001",
+        "data-cm-chapter": "8"
+      }
+    },
+    {
+      "chapter": 11,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Ask for review",
+      "attributes": {
+        "data-dk": "ask"
+      }
+    },
+    {
+      "chapter": 11,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Explore the playbook's example",
+      "attributes": {
+        "data-dk": "explore-example"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Show the companion panel",
+      "attributes": {
+        "data-dp": "panel"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Clinic synthetic staging",
+      "attributes": {
+        "data-dp": "scope",
+        "data-kind": "system"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Start",
+      "attributes": {
+        "data-dp": "walk-start",
+        "data-walk": "start"
+      }
+    },
+    {
+      "chapter": 3,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "New decision",
+      "attributes": {
+        "data-dx": "new-question"
+      }
+    },
+    {
+      "chapter": 3,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Show the companion panel",
+      "attributes": {
+        "data-dx": "panel"
+      }
+    },
+    {
+      "chapter": 3,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "All decisions",
+      "attributes": {
+        "data-dx": "scope",
+        "data-kind": "system"
+      }
+    },
+    {
+      "chapter": 3,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Record the style decision",
+      "attributes": {
+        "data-dx": "style-decision"
+      }
+    },
+    {
+      "chapter": 3,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Explore changes",
+      "attributes": {
+        "data-dx": "whatif-open"
+      }
+    },
+    {
+      "chapter": 8,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Expand the model",
+      "attributes": {
+        "data-ex": "expand"
+      }
+    },
+    {
+      "chapter": 8,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Expand the model",
+      "attributes": {
+        "data-ex": "expand"
+      }
+    },
+    {
+      "chapter": 8,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Outside",
+      "attributes": {
+        "data-ex": "noop"
+      }
+    },
+    {
+      "chapter": 4,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Whole journey",
+      "attributes": {
+        "data-lr": "scope",
+        "data-kind": "system"
+      }
+    },
+    {
+      "chapter": 7,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Keep statedurable, derived and recoverable data",
+      "attributes": {
+        "data-sk": "family",
+        "data-id": "state"
+      }
+    },
+    {
+      "chapter": 7,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "TR-001 \u00b7 Booking transactional datastore",
+      "attributes": {
+        "data-sk": "noop"
+      }
+    },
+    {
+      "chapter": 7,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Whole stack",
+      "attributes": {
+        "data-sk": "scope",
+        "data-kind": "system"
+      }
+    },
+    {
+      "chapter": 1,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Show the companion panel",
+      "attributes": {
+        "data-sm": "panel"
+      }
+    },
+    {
+      "chapter": 1,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Whole journey",
+      "attributes": {
+        "data-sm": "scope",
+        "data-kind": "system"
+      }
+    },
+    {
+      "chapter": 9,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Show the companion panel",
+      "attributes": {
+        "data-tm": "panel"
+      }
+    },
+    {
+      "chapter": 9,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Whole system",
+      "attributes": {
+        "data-tm": "scope",
+        "data-kind": "system"
+      }
+    },
+    {
+      "chapter": 2,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Add driver",
+      "attributes": {
+        "data-um": "add"
+      }
+    },
+    {
+      "chapter": 2,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "What if \u00b7 QD-001",
+      "attributes": {
+        "data-um": "noop"
+      }
+    },
+    {
+      "chapter": 2,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "All quality",
+      "attributes": {
+        "data-um": "scope",
+        "data-kind": "system"
+      }
+    },
+    {
+      "chapter": 2,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "What if\u2026",
+      "attributes": {
+        "data-um": "tune",
+        "data-id": "QD-001"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Fit the whole picture",
+      "attributes": {
+        "data-dp": "fit"
+      }
+    },
+    {
+      "chapter": 5,
+      "tab": "model",
+      "tag": "g",
+      "label": "Physical application component Clinic Booking Service APP-001",
+      "attributes": {
+        "data-nt-node": "obj-001",
+        "data-sel": "obj-001"
+      }
+    },
+    {
+      "chapter": 5,
+      "tab": "model",
+      "tag": "g",
+      "label": "Physical application component Synthetic Clinic Booking \u00b7 integrated rethink walkthrough",
+      "attributes": {
+        "data-nt-node": "system:project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+        "data-sel": "system:project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      }
+    },
+    {
+      "chapter": 5,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Trace through the design",
+      "attributes": {
+        "data-nt": "trace",
+        "data-id": "system:project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      }
+    },
+    {
+      "chapter": 5,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Read as a story",
+      "attributes": {
+        "data-nt": "story",
+        "data-id": "system:project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+      }
+    },
+    {
+      "chapter": 1,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Steps",
+      "attributes": {
+        "data-sm": "depth",
+        "data-id": "steps"
+      }
+    },
+    {
+      "chapter": 1,
+      "tab": "model",
+      "tag": "DIV",
+      "label": "Must requirements at Request a clinic appointment",
+      "attributes": {
+        "data-card": "C:Must|S:0"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Fit the whole picture",
+      "attributes": {
+        "data-dp": "fit"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Not placedExpand",
+      "attributes": {
+        "data-dp": "unplaced"
+      }
+    },
+    {
+      "chapter": 10,
+      "tab": "model",
+      "tag": "BUTTON",
+      "label": "Not placedCollapse",
+      "attributes": {
+        "data-dp": "unplaced"
+      }
+    }
+  ],
+  "errors": [],
+  "requestFailures": [],
+  "retestedClient": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-final-deployment",
+  "documentUnchanged": true,
+  "clickCount": 45,
+  "summary": {
+    "targetFamilies": 37,
+    "clickedFamilies": 34,
+    "actualClicks": 45,
+    "unavailableFamilies": 3,
+    "applicationPointerFailures": 0,
+    "applicationExceptions": 0,
+    "documentUnchanged": true
+  }
+}

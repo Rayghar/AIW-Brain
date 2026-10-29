@@ -1,0 +1,1398 @@
+{
+  "schemaVersion": "aiw-candidate-set-v1",
+  "setId": "BK-P2-20260911",
+  "title": "Phase 2 candidate architecture knowledge, from the earlier AIW backend",
+  "origin": {
+    "archive": "AIW_R0_R7_REVIEWER_REPAIRS_FULLSOURCE.zip",
+    "archiveSha256": "14cf69805000c5b56e6899dd5cf8cf30fd246513a8dfb03f70a28d52727159f3",
+    "corpusFile": "data/candidate-knowledge/BK-P2-20260911/corpus.json",
+    "corpusSha256": "b86d5fc60ffd7ea089ab2d67dccdfbf28cc8d0279971c493adf5873c794c146d",
+    "corpusFingerprint": "f3b5367b3b8b5288eb45f6314b23b806e88366863caecbe52789834a9c4e0841",
+    "baseRuntimeRelease": "AKR-0.10.73.5",
+    "candidateAuthority": {
+      "status": "candidate-only",
+      "permittedUse": "internal-review-only",
+      "semanticReview": "pending",
+      "rightsReview": "pending",
+      "independentlyApproved": false,
+      "runtimeActivated": false,
+      "canScore": false,
+      "canConstrain": false,
+      "canConform": false,
+      "canMutateDesign": false
+    }
+  },
+  "authority": "Candidate only. Importing creates candidate claims authored by the person who imports them; a different signed-in person must verify each one, and nothing is released or activated by the import.",
+  "builtAgainst": {
+    "storeId": "ebb8387e-72a7-429e-894d-3fb0c264c48b",
+    "builtAt": "2026-09-26T13:16:06.552Z"
+  },
+  "counts": {
+    "sources": 15,
+    "retrievableSources": 12,
+    "assets": 18,
+    "claims": 16,
+    "notImported": 2
+  },
+  "sources": [
+    {
+      "id": "retry",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/retry-content.md",
+      "fileSha256": "c3535d92df0b7655850706ba97ba99fa45ee703d4c2ed5de6f8d2d94459d52bb",
+      "gitBlobSha1": "f892f935a2e13863922f6860ef330ee48a3b6bf1",
+      "bytes": 11831,
+      "revisionId": "revision-ccb53ae08432b7ba052af7a2936a9c92",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "storm",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/antipatterns/retry-storm/index.md",
+      "fileSha256": "98feecb59e6f7d5bd095cf780938e6432c09791f5333d6eb31fcbab67909e34c",
+      "gitBlobSha1": "f8eaf87b802867ae7c27a102043b8487ea76da74",
+      "bytes": 10395,
+      "revisionId": "revision-dd70a393480c635e055d9b250ccdbbec",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "breaker",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/circuit-breaker.md",
+      "fileSha256": "71c85ce8efa70acd17d50f87ef4f23f4e804639571fd4c6b45b24800ef138fe4",
+      "gitBlobSha1": "e10964a9bdb2c15ced5a103f72d696ddedca5165",
+      "bytes": 25820,
+      "revisionId": "revision-936c56b1d6fc1cec9e115907e6c37fc6",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "bulkhead",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/bulkhead.md",
+      "fileSha256": "b96254e60926d27ad0b10b6e9404cd97a3d0176161d5c9eb7dd37d74cb681a87",
+      "gitBlobSha1": "d68c205d5f4508645ac60b420a2ce71df335ed7d",
+      "bytes": 10710,
+      "revisionId": "revision-a60379450cfbb3bcbb5b038bce7da21b",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "async",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/asynchronous-request-reply.md",
+      "fileSha256": "3b8b32367463926ca80269522499f9e02c3b582ee2e1c6bfeb3c006ffed9f1ee",
+      "gitBlobSha1": "fcc5a47c3ff37b401122652f956d204be791b864",
+      "bytes": 24379,
+      "revisionId": "revision-bf84fb9b8dc7dd8fd4bdbeb65682cebe",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "queue",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/queue-based-load-leveling.md",
+      "fileSha256": "1c18bc696f7329645d0b4d37643f8e00bdaf1f0eff4480d27a17fc2f704c6c4f",
+      "gitBlobSha1": "3361a7a61c7be04121aae029de4b0f9ddfda0509",
+      "bytes": 14220,
+      "revisionId": "revision-46f45aad5e7ccb5e4f044eb806093d4c",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "consumers",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/competing-consumers.md",
+      "fileSha256": "b9bace078f3cf6f7036bc2a260f2c19448b249b2355b190acbe2c15fb4240ee9",
+      "gitBlobSha1": "9a4d70e596605de15f53a94fdc1f1d0184217b85",
+      "bytes": 14847,
+      "revisionId": "revision-e64da41fadddbe3b1c55494bbd365905",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "pubsub",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/publisher-subscriber.md",
+      "fileSha256": "c270e897cab537581850b70ace2eb457f60ecfc2a6c41726511e84f784980f72",
+      "gitBlobSha1": "f3b16b00e7865cf1989ae5a645d60957c6fb16cb",
+      "bytes": 19121,
+      "revisionId": "revision-a01dd42e64e9e529bfb91f1ebe18f9c7",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "compensation",
+      "connectorId": "GH-MICROSOFT-ARCH-CENTER",
+      "repository": "MicrosoftDocs/architecture-center",
+      "commit": "caf11b78405e42dfe52f887c5188e18cab003da5",
+      "path": "docs/patterns/compensating-transaction.md",
+      "fileSha256": "f52e6f156e1fb6654b3b536116c1c4c6145abe817e68d816501f19781d81655a",
+      "gitBlobSha1": "195639a9a6b67459e956ed424b1ddee844d33e3e",
+      "bytes": 16554,
+      "revisionId": "revision-c8432d4340ecb037bbfcd697c52dc371",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "CC-BY-4.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "idempotent",
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "commit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "core/camel-core-model/src/generated/resources/META-INF/org/apache/camel/model/idempotentConsumer.json",
+      "fileSha256": "e50d843ca2a2c7446ec692652656edd6912f4ccf837f116241c577569e5910cc",
+      "gitBlobSha1": "d3d0c2ebd160421b3259e78719a587aa185693c0",
+      "bytes": 6049,
+      "revisionId": "revision-259f9880525de735eaff97f9e2fda646",
+      "retrievable": false,
+      "reason": "not a documentation file in the knowledge repository",
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "ingest-with-attribution",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "deadletter",
+      "connectorId": "GH-APACHE-CAMEL",
+      "repository": "apache/camel",
+      "commit": "c29ea1effbdfe5d963075292c2b5068ec1f8f099",
+      "path": "core/camel-core-model/src/generated/resources/META-INF/org/apache/camel/model/errorhandler/deadLetterChannel.json",
+      "fileSha256": "bd1f24f2ca393219e42db39808e69af8bc6f32d341138f741a46c5c4641ba621",
+      "gitBlobSha1": "f4c4f7aa8fa3d7755df4443c2cd580f3a164ea1e",
+      "bytes": 6910,
+      "revisionId": "revision-04aa6d258e48736bbbf61e2330c6e4fc",
+      "retrievable": false,
+      "reason": "not a documentation file in the knowledge repository",
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "ingest-with-attribution",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "events",
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "commit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "path": "src/docs/antora/modules/ROOT/pages/events.adoc",
+      "fileSha256": "c09ca2ab52c7f7945fc3aa4a3acb9ec065e28d0bbadfed6b81bbb541357e76de",
+      "gitBlobSha1": "826d8502e0bfbbbc50179a83eb1fc600852a7c72",
+      "bytes": 33512,
+      "revisionId": "revision-f4931fd3d0357949887687284e0c198f",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "modules",
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "commit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "path": "src/docs/antora/modules/ROOT/pages/fundamentals.adoc",
+      "fileSha256": "b3f1f1add9aa58f6c6af31d7f6389707c8ad83da16b3f75e336a454f754ae165",
+      "gitBlobSha1": "8340d92c476bdf16e8d1d52b7d592a92eeda2614",
+      "bytes": 25446,
+      "revisionId": "revision-f807d61a276197cba5095b597274ed32",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "verify",
+      "connectorId": "GH-SPRING-MODULITH",
+      "repository": "spring-projects/spring-modulith",
+      "commit": "c4f6d51365bdb7f943327392a9cd4e828a58af0f",
+      "path": "src/docs/antora/modules/ROOT/pages/verification.adoc",
+      "fileSha256": "183020187e07c85f83b7e247a217b1a6470e6adf53ca1dce6469fc4168084882",
+      "gitBlobSha1": "6f00a01676e907930d485ee96d44d84791345efc",
+      "bytes": 3081,
+      "revisionId": "revision-5a0ab1114b0d6d4fbe811a03d1070eb4",
+      "retrievable": true,
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "derive-claims-only",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    },
+    {
+      "id": "correlation",
+      "connectorId": "GH-ASYNCAPI",
+      "repository": "asyncapi/spec",
+      "commit": "e59928aee75a566a3f96d8cad78a9a92ea96f829",
+      "path": "spec/asyncapi.md",
+      "fileSha256": "983a9c0ccb35412d4f6f254ab1ae9ea09a560664b1e41efb0109b12d0cd91869",
+      "gitBlobSha1": "ea5c315677bd1d9bfec447d640857b2ae0d5ed66",
+      "bytes": 132656,
+      "revisionId": "revision-197c1ab9bea3d8e6bcae10469a9cfdbd",
+      "retrievable": false,
+      "reason": "too-large-for-project-source",
+      "licence": {
+        "spdxDetected": "Apache-2.0",
+        "usePolicy": "ingest-with-attribution",
+        "reviewStatus": "pending",
+        "redistribution": "not-granted"
+      }
+    }
+  ],
+  "claims": [
+    {
+      "assetId": "P2-RETRY",
+      "title": "Bounded retry for transient faults",
+      "kind": "tactic",
+      "family": "failure-recovery",
+      "subjectId": "PAT-RETRY-WITH-BACKOFF",
+      "predicate": "mitigates",
+      "claimType": "mitigation",
+      "polarity": "supports",
+      "statement": "Bounded retry for transient faults: Classify the failure, bound attempts and elapsed time, and space retries according to the dependency and caller budget. Preserve an exhausted outcome instead of retrying indefinitely.",
+      "conditions": [
+        "This candidate addresses transient rather than terminal faults.",
+        "A repeated operation needs an evidenced safe outcome, not merely an assumed lost request.",
+        "Retry duration and load must fit the actual caller requirements."
+      ],
+      "limitations": [
+        "Permanent validation or business-logic errors and persistent overload need another treatment; retry does not replace capacity work.",
+        "Additional attempts can increase latency and pressure on an already busy dependency; nested retry policies can amplify both."
+      ],
+      "anchor": {
+        "passageId": "retry-strategies",
+        "sourceId": "retry",
+        "lineStart": 22,
+        "lineEnd": 30,
+        "excerptSha256": "c97d7e9633dc1e7a35f2b5d3b620cf68f7b7b7f6bfcc29dfaee1010403e83385",
+        "candidatePassageSha256": "939a6a912df35357c125d0902c9aee402c675b2bb64b12d020e7013231ccd8be",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-RETRY",
+        "kind:tactic",
+        "family:failure-recovery",
+        "basis:curator-interpretation",
+        "anchor:retry-strategies",
+        "cites:retry-scope,timeout-ambiguity,retry-strategies,retry-cost,retry-proof",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "retry-scope",
+          "sourceId": "retry",
+          "lineStart": 72,
+          "lineEnd": 80,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "timeout-ambiguity",
+          "sourceId": "retry",
+          "lineStart": 50,
+          "lineEnd": 52,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "retry-strategies",
+          "sourceId": "retry",
+          "lineStart": 22,
+          "lineEnd": 30,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "retry-cost",
+          "sourceId": "retry",
+          "lineStart": 42,
+          "lineEnd": 52,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "retry-proof",
+          "sourceId": "retry",
+          "lineStart": 64,
+          "lineEnd": 66,
+          "role": "verification",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-TIMEOUT",
+      "title": "Unknown outcome after a lost response",
+      "kind": "contract",
+      "family": "information-contracts",
+      "subjectId": "ANTI-MISSING-IDEMPOTENCY",
+      "predicate": "requires",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "statement": "Unknown outcome after a lost response: Represent the outcome as unresolved until an authoritative status or repeat-safe operation protocol establishes what happened; do not convert transport failure into known business failure.",
+      "conditions": [
+        "The concern is consequential repeat execution, not a read-only request.",
+        "This investigation targets an unresolved first outcome."
+      ],
+      "limitations": [
+        "This does not invent a status endpoint, safe repeat guarantee or automatic compensating action.",
+        "Tracking operation identity and status adds contract, retention and reconciliation obligations; the authoritative owner must be established."
+      ],
+      "anchor": {
+        "passageId": "timeout-ambiguity",
+        "sourceId": "retry",
+        "lineStart": 50,
+        "lineEnd": 52,
+        "excerptSha256": "b9fdc8782d59aeab18fc12311595d2e04f9292c736dd93792eaf21cf13a7ae76",
+        "candidatePassageSha256": "65bc5a9c4a947d2f2cdab06b445aecc6f3511d27d920c8e3b0edbf3c7a6e6181",
+        "role": "condition"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-TIMEOUT",
+        "kind:contract",
+        "family:information-contracts",
+        "basis:curator-interpretation",
+        "anchor:timeout-ambiguity",
+        "cites:timeout-ambiguity,async-duplicate,async-flow",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "timeout-ambiguity",
+          "sourceId": "retry",
+          "lineStart": 50,
+          "lineEnd": 52,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "async-duplicate",
+          "sourceId": "async",
+          "lineStart": 112,
+          "lineEnd": 117,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "async-flow",
+          "sourceId": "async",
+          "lineStart": 44,
+          "lineEnd": 57,
+          "role": "contract",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-RETRY-STORM",
+      "title": "Retry-storm investigation and containment",
+      "kind": "anti-pattern",
+      "family": "failure-recovery",
+      "subjectId": "ANTI-RETRY-STORM",
+      "predicate": "signals",
+      "claimType": "anti-pattern-signal",
+      "polarity": "limits",
+      "statement": "Retry-storm investigation and containment: Investigate retry frequency and duration; bound attempts, introduce appropriate spacing, respect applicable server retry guidance, and stop when the caller no longer has a useful request.",
+      "conditions": [
+        "This is a grounded diagnostic, not a defect inferred from the mere presence of retry code.",
+        "The observed attempts must be connected to the affected dependency/recovery concern."
+      ],
+      "limitations": [
+        "An isolated failure or an invalid request alone does not demonstrate a retry storm.",
+        "Reducing attempts may expose failures sooner to callers; the desired degradation and recovery behaviour must be designed."
+      ],
+      "anchor": {
+        "passageId": "storm-treatment",
+        "sourceId": "storm",
+        "lineStart": 39,
+        "lineEnd": 44,
+        "excerptSha256": "3212251f926c50cba82c856289a524d9a1e7521a48fdcd77669ff9daa7d8a95a",
+        "candidatePassageSha256": "7e3d08d1092062a187d33dfe0e2600e7dea2ccd409e82fbbf90b6ef5e0e7bb0c",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-RETRY-STORM",
+        "kind:anti-pattern",
+        "family:failure-recovery",
+        "basis:curator-interpretation",
+        "anchor:storm-treatment",
+        "cites:storm-pressure,storm-treatment,storm-exclusions",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "storm-pressure",
+          "sourceId": "storm",
+          "lineStart": 14,
+          "lineEnd": 18,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "storm-treatment",
+          "sourceId": "storm",
+          "lineStart": 39,
+          "lineEnd": 44,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "storm-exclusions",
+          "sourceId": "storm",
+          "lineStart": 58,
+          "lineEnd": 66,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-BREAKER",
+      "title": "Circuit breaker with controlled recovery probes",
+      "kind": "pattern",
+      "family": "failure-recovery",
+      "subjectId": "PAT-CIRCUIT-BREAKER",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Circuit breaker with controlled recovery probes: Observe scoped failures, open to reject calls, and allow limited half-open probes before restoring normal calls. Retry policy must respect the open state.",
+      "conditions": [
+        "A prolonged or repeated dependency fault motivates this treatment.",
+        "The caller needs an explicit response when calls are rejected."
+      ],
+      "limitations": [
+        "A breaker does not fix the failed service or establish the business outcome of a request already sent.",
+        "An open breaker deliberately rejects work; thresholds, reset conditions and recovery probes require workload-specific evaluation."
+      ],
+      "anchor": {
+        "passageId": "breaker-mechanism",
+        "sourceId": "breaker",
+        "lineStart": 29,
+        "lineEnd": 48,
+        "excerptSha256": "2738761539aafc26c78f3f8c0b703d470ede1b138ecbf4d8214ee7d639ecea94",
+        "candidatePassageSha256": "65bb7ccb440c0d7c1b9da6d3a4131a51d85e6c306e12037273c56d0d27050b63",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-BREAKER",
+        "kind:pattern",
+        "family:failure-recovery",
+        "basis:curator-interpretation",
+        "anchor:breaker-mechanism",
+        "cites:breaker-scope,breaker-mechanism,breaker-recovery,timeout-ambiguity",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "breaker-scope",
+          "sourceId": "breaker",
+          "lineStart": 17,
+          "lineEnd": 25,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "breaker-mechanism",
+          "sourceId": "breaker",
+          "lineStart": 29,
+          "lineEnd": 48,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "breaker-recovery",
+          "sourceId": "breaker",
+          "lineStart": 56,
+          "lineEnd": 63,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "timeout-ambiguity",
+          "sourceId": "retry",
+          "lineStart": 50,
+          "lineEnd": 52,
+          "role": "condition",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-BULKHEAD",
+      "title": "Partition scarce resources to contain failure",
+      "kind": "pattern",
+      "family": "failure-recovery",
+      "subjectId": "PAT-BULKHEAD",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Partition scarce resources to contain failure: Partition the relevant service capacity, connection pools or resources so one workload cannot consume the entire shared pool.",
+      "conditions": [
+        "The candidate needs a recorded shared-resource pressure.",
+        "Isolation must refer to a named resource/boundary rather than just drawing separate boxes."
+      ],
+      "limitations": [
+        "Reject unnecessary partitions when their complexity or less efficient resource use is not justified.",
+        "Reserved capacity and more partitions can reduce utilisation efficiency and increase operating complexity."
+      ],
+      "anchor": {
+        "passageId": "bulkhead-pressure",
+        "sourceId": "bulkhead",
+        "lineStart": 20,
+        "lineEnd": 30,
+        "excerptSha256": "fcb37948b5dffd0fe35e3c5c82f47c760ad30b921e98470fb0ed3fa7195d1cec",
+        "candidatePassageSha256": "0c3091ad4692e35216ab05f5bb344c4d5fde071accc804b51da3ab024176576a",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-BULKHEAD",
+        "kind:pattern",
+        "family:failure-recovery",
+        "basis:curator-interpretation",
+        "anchor:bulkhead-pressure",
+        "cites:bulkhead-pressure,bulkhead-exclusions",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "bulkhead-pressure",
+          "sourceId": "bulkhead",
+          "lineStart": 20,
+          "lineEnd": 30,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "bulkhead-exclusions",
+          "sourceId": "bulkhead",
+          "lineStart": 78,
+          "lineEnd": 89,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-DEADLETTER",
+      "title": "Dead-letter isolation and controlled recovery",
+      "kind": "pattern",
+      "family": "failure-recovery",
+      "subjectId": "PAT-DEAD-LETTER-CHANNEL",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Dead-letter isolation and controlled recovery: After an explicit failure threshold, isolate the message with its failure context for analysis and controlled resubmission rather than immediate endless cycling.",
+      "conditions": [
+        "A recorded non-progressing message or persistent processing failure motivates isolation.",
+        "Stored failed work needs an accountable investigation/recovery path."
+      ],
+      "limitations": [
+        "Moving a message does not prove it was successfully processed or that resubmitting it is safe.",
+        "Failure storage needs monitoring, retention and controlled replay. In the captured Camel example, a failure sending to the dead-letter endpoint has its own configurable propagation behaviour."
+      ],
+      "anchor": {
+        "passageId": "consumer-correctness",
+        "sourceId": "consumers",
+        "lineStart": 50,
+        "lineEnd": 62,
+        "excerptSha256": "264b4f8db895ad90a5d8bbdf4addba24c80c661cd6797df3ffbc51d60ed24f02",
+        "candidatePassageSha256": "a33d30c812ae2a54441045e999bbd335711a1f77c0a44e809c1f5f237e2cb220",
+        "role": "limitation"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-DEADLETTER",
+        "kind:pattern",
+        "family:failure-recovery",
+        "basis:curator-interpretation",
+        "anchor:consumer-correctness",
+        "cites:consumer-correctness,queue-correctness,deadletter-mechanism,timeout-ambiguity,deadletter-failure",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "consumer-correctness",
+          "sourceId": "consumers",
+          "lineStart": 50,
+          "lineEnd": 62,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "queue-correctness",
+          "sourceId": "queue",
+          "lineStart": 58,
+          "lineEnd": 62,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "deadletter-mechanism",
+          "sourceId": "deadletter",
+          "lineStart": 6,
+          "lineEnd": 6,
+          "role": "mechanism",
+          "retrievable": false
+        },
+        {
+          "passageId": "timeout-ambiguity",
+          "sourceId": "retry",
+          "lineStart": 50,
+          "lineEnd": 52,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "deadletter-failure",
+          "sourceId": "deadletter",
+          "lineStart": 16,
+          "lineEnd": 20,
+          "role": "limitation",
+          "retrievable": false
+        }
+      ]
+    },
+    {
+      "assetId": "P2-ASYNC-STATUS",
+      "title": "Asynchronous request acceptance and status contract",
+      "kind": "contract",
+      "family": "information-contracts",
+      "subjectId": "PAT-CORRELATION-ID",
+      "predicate": "requires",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "statement": "Asynchronous request acceptance and status contract: Separate admission from completion: acknowledge accepted processing, return a status location and expose progress/completion through a defined status resource.",
+      "conditions": [
+        "The pattern addresses deferred completion.",
+        "The client must support the agreed status observation protocol.",
+        "A status resource needs an actual authoritative owner and lifecycle."
+      ],
+      "limitations": [
+        "An accepted response is not completed work; the pattern does not fabricate a status endpoint for an external system that lacks one.",
+        "Polling, retention, cancellation and resubmission introduce contracts and operating load; a lost initial response can still repeat work without suitable identity handling."
+      ],
+      "anchor": {
+        "passageId": "async-flow",
+        "sourceId": "async",
+        "lineStart": 44,
+        "lineEnd": 57,
+        "excerptSha256": "303f8a6eb59b1a9d094cbfca74937ea873c8e30edf360814d9a02c124870003e",
+        "candidatePassageSha256": "45274ac82b7dfe9c4e0e9efcf87ca7950cbb54ac8e8597482d300a6a1f6b808c",
+        "role": "contract"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-ASYNC-STATUS",
+        "kind:contract",
+        "family:information-contracts",
+        "basis:curator-interpretation",
+        "anchor:async-flow",
+        "cites:async-flow,async-status,async-duplicate",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "async-flow",
+          "sourceId": "async",
+          "lineStart": 44,
+          "lineEnd": 57,
+          "role": "contract",
+          "retrievable": true
+        },
+        {
+          "passageId": "async-status",
+          "sourceId": "async",
+          "lineStart": 77,
+          "lineEnd": 99,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "async-duplicate",
+          "sourceId": "async",
+          "lineStart": 112,
+          "lineEnd": 117,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-QUEUE",
+      "title": "Queue-based load leveling with bounded downstream pressure",
+      "kind": "pattern",
+      "family": "failure-recovery",
+      "subjectId": "PAT-QUEUE-BASED-LOAD-LEVELING",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Queue-based load leveling with bounded downstream pressure: Buffer admitted work and let consumers process it at a controlled rate, with explicit durability, capacity, retention and overload policy.",
+      "conditions": [
+        "Intake and processing must be separable.",
+        "A recorded burst pressure motivates load leveling.",
+        "Unbounded consumer autoscaling can move overload downstream."
+      ],
+      "limitations": [
+        "A queue cannot solve a sustained producer rate above sustainable service rate without capacity, admission or work-shedding changes.",
+        "Buffering adds latency and storage limits; durability, duplicate processing and ordering must be examined separately."
+      ],
+      "anchor": {
+        "passageId": "queue-mechanism",
+        "sourceId": "queue",
+        "lineStart": 25,
+        "lineEnd": 31,
+        "excerptSha256": "86ccf06eccb1fbe92e9878663c833f882f469c19d3d49f10e4ddcabad8f89658",
+        "candidatePassageSha256": "733e7e75b3520e6591e9197aeeb0d891ae986fe0c50601ee0895240c6053bdbd",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-QUEUE",
+        "kind:pattern",
+        "family:failure-recovery",
+        "basis:curator-interpretation",
+        "anchor:queue-mechanism",
+        "cites:queue-mechanism,queue-load,queue-correctness",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "queue-mechanism",
+          "sourceId": "queue",
+          "lineStart": 25,
+          "lineEnd": 31,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "queue-load",
+          "sourceId": "queue",
+          "lineStart": 48,
+          "lineEnd": 56,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "queue-correctness",
+          "sourceId": "queue",
+          "lineStart": 58,
+          "lineEnd": 62,
+          "role": "condition",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-CONSUMERS",
+      "title": "Competing consumers for independently processable work",
+      "kind": "pattern",
+      "family": "information-contracts",
+      "subjectId": "PAT-COMPETING-CONSUMERS",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Competing consumers for independently processable work: Let multiple worker instances receive work from an appropriate queue, while explicitly handling duplicates, poison messages, completion and ordering.",
+      "conditions": [
+        "The captured source limits this treatment where tasks are highly dependent.",
+        "Strict synchronous completion may rule out this pattern.",
+        "Strict sequence requirements need an explicit ordering mechanism or another design."
+      ],
+      "limitations": [
+        "Do not infer ordering correctness from idempotence alone. Independent handling and any required ordering mechanism need their own evidence.",
+        "More workers add downstream contention; duplicate delivery and poison-message policies remain necessary."
+      ],
+      "anchor": {
+        "passageId": "consumer-correctness",
+        "sourceId": "consumers",
+        "lineStart": 50,
+        "lineEnd": 62,
+        "excerptSha256": "264b4f8db895ad90a5d8bbdf4addba24c80c661cd6797df3ffbc51d60ed24f02",
+        "candidatePassageSha256": "a33d30c812ae2a54441045e999bbd335711a1f77c0a44e809c1f5f237e2cb220",
+        "role": "limitation"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-CONSUMERS",
+        "kind:pattern",
+        "family:information-contracts",
+        "basis:curator-interpretation",
+        "anchor:consumer-correctness",
+        "cites:consumer-scope,consumer-correctness",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "consumer-scope",
+          "sourceId": "consumers",
+          "lineStart": 66,
+          "lineEnd": 85,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "consumer-correctness",
+          "sourceId": "consumers",
+          "lineStart": 50,
+          "lineEnd": 62,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-PUBSUB",
+      "title": "Publish-subscribe with explicit subscriber obligations",
+      "kind": "pattern",
+      "family": "information-contracts",
+      "subjectId": "PAT-PUBLISH-SUBSCRIBE",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Publish-subscribe with explicit subscriber obligations: Publish a defined message to a channel and distribute it to interested subscriptions; declare subscription, security, ordering and reply semantics separately.",
+      "conditions": [
+        "The treatment is fan-out to interested subscribers, not task competition.",
+        "Subscribers receive through a separate asynchronous mechanism."
+      ],
+      "limitations": [
+        "A pub/sub label alone does not guarantee offline delivery, ordering or durable replay; those depend on the chosen infrastructure and subscription configuration.",
+        "Topic granularity, per-topic permissions, message compatibility and reverse status paths create additional responsibilities."
+      ],
+      "anchor": {
+        "passageId": "pubsub-mechanism",
+        "sourceId": "pubsub",
+        "lineStart": 26,
+        "lineEnd": 35,
+        "excerptSha256": "8dbb6efb169e9d1bc038e64dcfc714acadabeb03686bdf1734c8fc44fbaea1eb",
+        "candidatePassageSha256": "c3d717a6af0222eccfbf2c0b69d9a49f8693bda62d5e00e07042d8e5afd7d1a1",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-PUBSUB",
+        "kind:pattern",
+        "family:information-contracts",
+        "basis:curator-interpretation",
+        "anchor:pubsub-mechanism",
+        "cites:pubsub-mechanism,pubsub-contracts,queue-load",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "pubsub-mechanism",
+          "sourceId": "pubsub",
+          "lineStart": 26,
+          "lineEnd": 35,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "pubsub-contracts",
+          "sourceId": "pubsub",
+          "lineStart": 75,
+          "lineEnd": 95,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "queue-load",
+          "sourceId": "queue",
+          "lineStart": 48,
+          "lineEnd": 56,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-COMPENSATE",
+      "title": "Business-specific compensating transactions",
+      "kind": "pattern",
+      "family": "information-contracts",
+      "subjectId": "P2-COMPENSATE",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Business-specific compensating transactions: Record completed steps and their business-specific corrective actions, account for concurrent work, and keep compensation resumable with safe repeated steps.",
+      "conditions": [
+        "This treatment addresses work that cannot simply use one existing atomic transaction.",
+        "Undo behaviour must be meaningful under the domain rules.",
+        "Recovery must retain the information needed to resume failed compensation."
+      ],
+      "limitations": [
+        "Irreversible steps and legally/business-significant effects cannot be made reversible by labelling them compensation.",
+        "Compensation can itself fail, may not restore the exact original state, and may need human intervention; transient retry may be simpler for recoverable faults."
+      ],
+      "anchor": {
+        "passageId": "compensating-mechanism",
+        "sourceId": "compensation",
+        "lineStart": 27,
+        "lineEnd": 49,
+        "excerptSha256": "03a98dc2788495054e95f253e18b0db703bd130c42f74ad352b4bc5fd01711fe",
+        "candidatePassageSha256": "c789d1e1a3dddaf095c0766d67b5b0ef03d1d68a5145bb567bc81c8406689eb1",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-COMPENSATE",
+        "kind:pattern",
+        "family:information-contracts",
+        "basis:curator-interpretation",
+        "anchor:compensating-mechanism",
+        "cites:compensating-scope,compensating-mechanism,compensating-safety",
+        "licence:CC-BY-4.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "compensating-scope",
+          "sourceId": "compensation",
+          "lineStart": 81,
+          "lineEnd": 93,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "compensating-mechanism",
+          "sourceId": "compensation",
+          "lineStart": 27,
+          "lineEnd": 49,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "compensating-safety",
+          "sourceId": "compensation",
+          "lineStart": 49,
+          "lineEnd": 67,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-EVENT-REGISTRY",
+      "title": "Spring Modulith transactional publication registry",
+      "kind": "pattern",
+      "family": "implementation-boundaries",
+      "subjectId": "PAT-TRANSACTIONAL-OUTBOX",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Spring Modulith transactional publication registry: The captured Spring Modulith implementation records one log entry per transactional listener within the business transaction, marks successful completion, and retains incomplete work for explicit resubmission policies.",
+      "conditions": [
+        "The documented lifecycle is implementation-specific.",
+        "The registry hooks into the documented transactional-listener contract.",
+        "The publication log must participate in the original transaction."
+      ],
+      "limitations": [
+        "Do not assume automatic restart replay or stale-work monitoring is enabled; these depend on the captured configuration and version.",
+        "Publication records require retention/cleanup and safe repeat handling. Completed-record accumulation can increase storage and slow registry interactions."
+      ],
+      "anchor": {
+        "passageId": "event-registry",
+        "sourceId": "events",
+        "lineStart": 199,
+        "lineEnd": 211,
+        "excerptSha256": "892831ecde886e28c3a8183b433b6b5654bcea80bb9417d657c399a50e947f5a",
+        "candidatePassageSha256": "f74aaff7c587c52931a9332755bf9b8f4f0059d1fd60278466e9f4182321cf82",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-EVENT-REGISTRY",
+        "kind:pattern",
+        "family:implementation-boundaries",
+        "basis:curator-interpretation",
+        "anchor:event-registry",
+        "cites:event-registry,event-staleness,event-retention,timeout-ambiguity",
+        "licence:Apache-2.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "event-registry",
+          "sourceId": "events",
+          "lineStart": 199,
+          "lineEnd": 211,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "event-staleness",
+          "sourceId": "events",
+          "lineStart": 264,
+          "lineEnd": 282,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "event-retention",
+          "sourceId": "events",
+          "lineStart": 354,
+          "lineEnd": 358,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "timeout-ambiguity",
+          "sourceId": "retry",
+          "lineStart": 50,
+          "lineEnd": 52,
+          "role": "condition",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-EXTERNALIZATION",
+      "title": "Spring Modulith event externalisation and ordering",
+      "kind": "tactic",
+      "family": "implementation-boundaries",
+      "subjectId": "PAT-PUBLISH-SUBSCRIBE",
+      "predicate": "mitigates",
+      "claimType": "mitigation",
+      "polarity": "supports",
+      "statement": "Spring Modulith event externalisation and ordering: Select events, deliberately map external payloads and route them through the documented broker-specific publication integration. Review resubmission and externalisation serialisation where order matters.",
+      "conditions": [
+        "These details apply to the captured Spring Modulith event implementation.",
+        "Externalisation needs an actual external consumer or contract.",
+        "Internal event type names are not automatically suitable public contracts."
+      ],
+      "limitations": [
+        "Do not presume publication order survives asynchronous resubmission; serialization is a configurable implementation choice, not a global guarantee.",
+        "Serializing external publication can constrain concurrency, while parallel publication can reorder events. External payload and routing become separate versioned obligations."
+      ],
+      "anchor": {
+        "passageId": "event-externalization",
+        "sourceId": "events",
+        "lineStart": 455,
+        "lineEnd": 469,
+        "excerptSha256": "0a1975382f6b20649b657e1b0298401f4c7b198963b9a05b56cc1dd0fb6d03e5",
+        "candidatePassageSha256": "19b4526b601cc87f686514992a9eb8d4f2c6b38c92d0d33e20286516567e418c",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-EXTERNALIZATION",
+        "kind:tactic",
+        "family:implementation-boundaries",
+        "basis:curator-interpretation",
+        "anchor:event-externalization",
+        "cites:event-externalization,event-order",
+        "licence:Apache-2.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "event-externalization",
+          "sourceId": "events",
+          "lineStart": 455,
+          "lineEnd": 469,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "event-order",
+          "sourceId": "events",
+          "lineStart": 590,
+          "lineEnd": 598,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-MODULES",
+      "title": "Explicit module APIs and implementation boundaries",
+      "kind": "pattern",
+      "family": "implementation-boundaries",
+      "subjectId": "PAT-MODULAR-MONOLITH",
+      "predicate": "applies when",
+      "claimType": "applicability",
+      "polarity": "supports",
+      "statement": "Explicit module APIs and implementation boundaries: For the captured Spring Modulith packaging model, distinguish provided API, internal components and required APIs. Check module openness and named interfaces before treating an access as forbidden.",
+      "conditions": [
+        "The package/API mapping belongs to the captured framework model.",
+        "A boundary must identify actual packages and declared interfaces."
+      ],
+      "limitations": [
+        "An explicitly open module has different verification semantics and may be an intentional migration step, not an automatically prohibited design.",
+        "Encapsulation supports local change but demands deliberate API design and migration work for existing cross-module dependencies."
+      ],
+      "anchor": {
+        "passageId": "module-model",
+        "sourceId": "modules",
+        "lineStart": 14,
+        "lineEnd": 18,
+        "excerptSha256": "63b0cc25fe5cb0632693346a69be6f03120ab8f2bb730cf855b5ee17245a1d45",
+        "candidatePassageSha256": "8a10015d49e23a5d52f2ecd757ee70448013b1d222884b3ecf15b2d4e6187066",
+        "role": "mechanism"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-MODULES",
+        "kind:pattern",
+        "family:implementation-boundaries",
+        "basis:curator-interpretation",
+        "anchor:module-model",
+        "cites:module-model,module-encapsulation,module-open,module-verification",
+        "licence:Apache-2.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "module-model",
+          "sourceId": "modules",
+          "lineStart": 14,
+          "lineEnd": 18,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-encapsulation",
+          "sourceId": "modules",
+          "lineStart": 165,
+          "lineEnd": 170,
+          "role": "condition",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-open",
+          "sourceId": "modules",
+          "lineStart": 258,
+          "lineEnd": 264,
+          "role": "limitation",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-verification",
+          "sourceId": "verify",
+          "lineStart": 22,
+          "lineEnd": 30,
+          "role": "verification",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-MODULE-DAG",
+      "title": "Verify module dependency cycles and API access",
+      "kind": "verification-recipe",
+      "family": "implementation-boundaries",
+      "subjectId": "PAT-MODULAR-MONOLITH",
+      "predicate": "is verified by",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "statement": "Verify module dependency cycles and API access: The captured verifier checks the module dependency graph, API-only access with documented open-module exceptions, and optional allowed-dependency declarations.",
+      "conditions": [
+        "The recipe names the captured framework verifier, not all programming languages.",
+        "Verification needs the actual implementation graph, not a hand-drawn model."
+      ],
+      "limitations": [
+        "No executed result is supplied here; a verification recipe does not certify the users application, runtime behaviour or business correctness.",
+        "Policy configuration and migration exceptions affect which dependencies are admitted; ignored violations must not silently become a clean result."
+      ],
+      "anchor": {
+        "passageId": "module-verification",
+        "sourceId": "verify",
+        "lineStart": 22,
+        "lineEnd": 30,
+        "excerptSha256": "4a7c1315d53945f48054d36ca9a50e8e1339749bd27e34025beda14337773bff",
+        "candidatePassageSha256": "64b6d449d6dea6accab7d12e70c18a29dd1db7badde66b85d4f8fd680d7a4c52",
+        "role": "verification"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-MODULE-DAG",
+        "kind:verification-recipe",
+        "family:implementation-boundaries",
+        "basis:curator-interpretation",
+        "anchor:module-verification",
+        "cites:module-verification,module-violations,module-open",
+        "licence:Apache-2.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "module-verification",
+          "sourceId": "verify",
+          "lineStart": 22,
+          "lineEnd": 30,
+          "role": "verification",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-violations",
+          "sourceId": "verify",
+          "lineStart": 34,
+          "lineEnd": 44,
+          "role": "verification",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-open",
+          "sourceId": "modules",
+          "lineStart": 258,
+          "lineEnd": 264,
+          "role": "limitation",
+          "retrievable": true
+        }
+      ]
+    },
+    {
+      "assetId": "P2-MODULE-ALLOWLIST",
+      "title": "Opt-in module dependency allowlists",
+      "kind": "verification-recipe",
+      "family": "implementation-boundaries",
+      "subjectId": "PAT-MODULAR-MONOLITH",
+      "predicate": "is verified by",
+      "claimType": "obligation",
+      "polarity": "requires",
+      "statement": "Opt-in module dependency allowlists: Declare allowed dependencies explicitly in the captured module metadata, and verify the code against that policy; absence of the optional declaration must not be presented as an enforced allowlist.",
+      "conditions": [
+        "The annotation and validation contract are framework-specific.",
+        "The additional restriction needs an actual design requirement.",
+        "The source describes an opt-in rule; no declaration means no evidence of this enforcement."
+      ],
+      "limitations": [
+        "A general public API boundary does not prove this optional allowed-dependency policy has been configured.",
+        "A restrictive allowlist adds intentional change control; required integrations must be reviewed rather than silently bypassing the declaration."
+      ],
+      "anchor": {
+        "passageId": "module-verification",
+        "sourceId": "verify",
+        "lineStart": 22,
+        "lineEnd": 30,
+        "excerptSha256": "4a7c1315d53945f48054d36ca9a50e8e1339749bd27e34025beda14337773bff",
+        "candidatePassageSha256": "64b6d449d6dea6accab7d12e70c18a29dd1db7badde66b85d4f8fd680d7a4c52",
+        "role": "verification"
+      },
+      "tags": [
+        "candidate-set:BK-P2-20260911",
+        "asset:P2-MODULE-ALLOWLIST",
+        "kind:verification-recipe",
+        "family:implementation-boundaries",
+        "basis:curator-interpretation",
+        "anchor:module-verification",
+        "cites:module-verification,module-allowlist,module-model,module-violations",
+        "licence:Apache-2.0 detected, review pending"
+      ],
+      "citedPassages": [
+        {
+          "passageId": "module-verification",
+          "sourceId": "verify",
+          "lineStart": 22,
+          "lineEnd": 30,
+          "role": "verification",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-allowlist",
+          "sourceId": "modules",
+          "lineStart": 266,
+          "lineEnd": 281,
+          "role": "example",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-model",
+          "sourceId": "modules",
+          "lineStart": 14,
+          "lineEnd": 18,
+          "role": "mechanism",
+          "retrievable": true
+        },
+        {
+          "passageId": "module-violations",
+          "sourceId": "verify",
+          "lineStart": 34,
+          "lineEnd": 44,
+          "role": "verification",
+          "retrievable": true
+        }
+      ]
+    }
+  ],
+  "notImported": [
+    {
+      "assetId": "P2-IDEMPOTENT",
+      "title": "Camel idempotent consumer: identity and repository semantics",
+      "reason": "Its mechanism rests only on passages the knowledge repository cannot retrieve as project sources (idempotent-settings: not a documentation file in the knowledge repository)."
+    },
+    {
+      "assetId": "P2-CORRELATION",
+      "title": "Message correlation is not duplicate-effect control",
+      "reason": "Its mechanism rests only on passages the knowledge repository cannot retrieve as project sources (correlation-contract: too-large-for-project-source; idempotent-mechanism: not a documentation file in the knowledge repository)."
+    }
+  ]
+}

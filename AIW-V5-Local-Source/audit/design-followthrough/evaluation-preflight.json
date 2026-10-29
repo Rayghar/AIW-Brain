@@ -1,0 +1,277 @@
+{
+  "preflight": {
+    "valid": true,
+    "catalogue": {
+      "releaseId": "AKR-0.10.73.5",
+      "manifestSha256": "c30e78c5249e7620b980079c2bbab8693a0c357301e305d4cf81db9333a44839",
+      "sourceSha256": "bdfb8975f8e1fad42ef30133c56413dfe3c9b385b49e7101b82555927ea919d6",
+      "records": 328
+    },
+    "cases": [
+      {
+        "id": "PAY-01",
+        "domain": "bank-payment",
+        "valid": true,
+        "projectDigest": "96c77c2953df88230abc0c28b1769c9d223545b3ea5dad298312868fcc771c24",
+        "packetStamp": "03b3d565c3b52cf139dd81747aba949ee6971c24e23fca032b08d0743b973cd4",
+        "targets": [
+          "D:ADR-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "PAY-02",
+        "domain": "bank-payment",
+        "valid": true,
+        "projectDigest": "96c77c2953df88230abc0c28b1769c9d223545b3ea5dad298312868fcc771c24",
+        "packetStamp": "818d8243c1c101b353316d3e42fb8f6d53d9d724541f3946bce7bf5ee142f575",
+        "targets": [
+          "D:ADR-002"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "PAY-03",
+        "domain": "bank-payment",
+        "valid": true,
+        "projectDigest": "96c77c2953df88230abc0c28b1769c9d223545b3ea5dad298312868fcc771c24",
+        "packetStamp": "f4cc8b8b5a2ba62357317252cb00df236a26fea1fe33fc7decd7bb17c8ae793d",
+        "targets": [
+          "D:ADR-003"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "PAY-04",
+        "domain": "bank-payment",
+        "valid": true,
+        "projectDigest": "96c77c2953df88230abc0c28b1769c9d223545b3ea5dad298312868fcc771c24",
+        "packetStamp": "f35160370c86f298c737fc8a47ece209ab3af0037a2c9895ee245d9a451388e9",
+        "targets": [
+          "M:8:posting-api",
+          "M:8:network"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          },
+          {
+            "id": "playbook:PB-308",
+            "title": "Components GuideBook v2 · Components GuideBook v2!B43",
+            "reason": "source limit"
+          }
+        ]
+      },
+      {
+        "id": "PAY-05",
+        "domain": "bank-payment",
+        "valid": true,
+        "projectDigest": "96c77c2953df88230abc0c28b1769c9d223545b3ea5dad298312868fcc771c24",
+        "packetStamp": "8b74615282bb76b9809be69a6e7f34b4f72a4ecb51499fb84a94bf05959642e4",
+        "targets": [
+          "M:10:run-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          },
+          {
+            "id": "tradeoff:TO-012",
+            "title": "Trade-off · Latency against throughput",
+            "reason": "source limit"
+          }
+        ]
+      },
+      {
+        "id": "PAY-06",
+        "domain": "bank-payment",
+        "valid": true,
+        "projectDigest": "96c77c2953df88230abc0c28b1769c9d223545b3ea5dad298312868fcc771c24",
+        "packetStamp": "18669814b8870ff69920edf2431d33de44eb7245bd5800768b04bb4750fd1c1e",
+        "targets": [
+          "M:7:tr-003"
+        ],
+        "omissions": [
+          {
+            "id": "tactic:T-AV-SELFTEST",
+            "title": "Self-test · SA Playbook tactic",
+            "reason": "source limit"
+          },
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          },
+          {
+            "id": "playbook:PB-007",
+            "title": "Arch Style Suitability Ass · Arch Style Suitability Ass!B23",
+            "reason": "source limit"
+          },
+          {
+            "id": "playbook:PB-003",
+            "title": "Arch Style Suitability Ass · Arch Style Suitability Ass!B12",
+            "reason": "source limit"
+          }
+        ]
+      },
+      {
+        "id": "PAY-07",
+        "domain": "bank-payment",
+        "valid": true,
+        "projectDigest": "96c77c2953df88230abc0c28b1769c9d223545b3ea5dad298312868fcc771c24",
+        "packetStamp": "292f60dc8d89a3546371e15158bc0e08b38d6717eb994fa90fbc532f13515a04",
+        "targets": [
+          "M:2:QD-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "SVC-01",
+        "domain": "service-workflow",
+        "valid": true,
+        "projectDigest": "b5cf6e462a294bfb29932e6890a36fc0b3593003a290737597c3b5884e416953",
+        "packetStamp": "31b7ab80927487a8835e3141475e355bf950fc5e0a6869bdd28b614a6e112199",
+        "targets": [
+          "D:ADR-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "SVC-02",
+        "domain": "service-workflow",
+        "valid": true,
+        "projectDigest": "b5cf6e462a294bfb29932e6890a36fc0b3593003a290737597c3b5884e416953",
+        "packetStamp": "041e7c5946883ec5cc210c61fb9f18b690576db6673616c66537c70dd0438c4e",
+        "targets": [
+          "M:8:if-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "SVC-03",
+        "domain": "service-workflow",
+        "valid": true,
+        "projectDigest": "b5cf6e462a294bfb29932e6890a36fc0b3593003a290737597c3b5884e416953",
+        "packetStamp": "0d380d0d43f4aa30a8526cdc60ca1050eea9dd2044fc70b247c588f619cb7794",
+        "targets": [
+          "M:10:run-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "MIG-01",
+        "domain": "mysql-migration",
+        "valid": true,
+        "projectDigest": "834921ac411c18b4e365218929adb567aa1a91dac166395b28c95771691c796c",
+        "packetStamp": "d278f673866787b8981f36050479e81161cbca0dd2e5045a8f537761ffd3ec2a",
+        "targets": [
+          "M:7:tr-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      },
+      {
+        "id": "MIG-02",
+        "domain": "mysql-migration",
+        "valid": true,
+        "projectDigest": "834921ac411c18b4e365218929adb567aa1a91dac166395b28c95771691c796c",
+        "packetStamp": "85fdcf8aaab88a1764780d51d9375e5d388992599d100c2dcb310eed363b1dac",
+        "targets": [
+          "D:ADR-001",
+          "M:8:if-001"
+        ],
+        "omissions": [
+          {
+            "id": "architecture-intelligence-coverage",
+            "title": "Some contextual deductions were withheld",
+            "reason": "Complete source dependencies must fit the disclosure and request bounds."
+          }
+        ]
+      }
+    ]
+  },
+  "provider": {
+    "configured": false,
+    "remoteEligible": false,
+    "connected": false,
+    "missing": [
+      "ANTHROPIC_API_KEY"
+    ],
+    "routes": [
+      {
+        "mode": "reasoning",
+        "draft": {
+          "provider": "default",
+          "model": "claude-opus-5-5"
+        },
+        "check": {
+          "provider": "default",
+          "model": "claude-opus-5-5"
+        },
+        "fallback": []
+      }
+    ],
+    "providers": [
+      {
+        "name": "default",
+        "kind": "anthropic",
+        "host": "api.anthropic.com",
+        "configured": false,
+        "retention": "Sent to Anthropic over the server; kept under the account’s API data-retention terms (no retention only under a zero-data-retention arrangement)."
+      }
+    ],
+    "transport": "configured-remote-transport"
+  },
+  "providerCalls": 0
+}

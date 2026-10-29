@@ -1,0 +1,62 @@
+/* Modelling on the canvas (rc41, W3): the ghost element placed with "Add … here", the port handle, the ghost line of a
+   relationship, the status line and the kinds menu. Presentation only: none of it is a record, a pin or an export. Tokens
+   only (theme.css). */
+.cm.nt-placing .cm-stage, .cm.nt-placing .cm-svg, .cm.nt-placing .cm-svg .nt-node { cursor: crosshair; }
+/* The ghost element: the standard's box, drawn as the picture draws a real one (its fill, its kicker band, its own ink),
+   with a dashed gold outline and the italic "not saved yet"; it takes no pointer. (rc41 close: a half-transparent box
+   with the theme's ink failed contrast in the dark theme — light words on a light box over the dark stage — and the
+   business-dark ghost's words in the light theme; the picture's own pairs pass in both.) */
+.cm-svg .nt-draft-ghost { pointer-events: none; }
+.cm-svg .nt-draft-ghost rect.nt-box { stroke: var(--gold-9); stroke-width: 2; stroke-dasharray: 6 4; }
+.cm-svg .nt-draft-ghost .nt-draft-sub { font-style: italic; }
+/* The ghost line: dashed, gold while it looks for a target, green over an allowed one, red over a refused one. */
+.cm-svg .nt-draft-line { pointer-events: none; }
+.cm-svg .nt-draft-line path { fill: none; stroke: var(--gold-9); stroke-width: 2; stroke-dasharray: 6 4; }
+.cm-svg .nt-draft-line circle { fill: var(--gold-9); }
+.cm-svg .nt-draft-line.nt-draft-ok path { stroke: var(--green-9); }
+.cm-svg .nt-draft-line.nt-draft-ok circle { fill: var(--green-9); }
+.cm-svg .nt-draft-line.nt-draft-refused path { stroke: var(--red-9); }
+.cm-svg .nt-draft-line.nt-draft-refused circle { fill: var(--red-9); }
+.cm-svg .nt-node.nt-drop-target rect.nt-box { stroke: var(--green-9); stroke-width: 2.6; }
+.cm-svg .nt-node.nt-drop-refused rect.nt-box { stroke: var(--red-9); stroke-width: 2; stroke-dasharray: 3 3; }
+/* The port handle at an element's right edge, on hover and on the selected element. */
+.cm-svg .nt-port { cursor: crosshair; }
+.cm-svg .nt-port circle { fill: var(--sage-1); stroke: var(--green-9); stroke-width: 1.5; }
+.cm-svg .nt-port path { fill: none; stroke: var(--green-11); stroke-width: 1.6; stroke-linecap: round; }
+.cm-svg .nt-port:hover circle { fill: var(--green-3); }
+/* A legible handle at every zoom, as the marks' glyphs. */
+[data-cm-z] .cm-svg .nt-port .nt-port-s { transform-box: fill-box; transform-origin: center; transform: scale(max(1, calc(1 / var(--cm-z, 1)))); }
+/* The status line over the stage while a draft is in progress. */
+.cm-stage > .nt-draft-note { position: absolute; left: 12px; right: 12px; top: 10px; z-index: 10; width: fit-content; margin: 0 auto; display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 12px; border: 1px solid var(--gold-8); border-radius: 8px; background: color-mix(in srgb, var(--gold-2) 94%, transparent); color: var(--green-12); font: 12.5px var(--font-ui); box-shadow: var(--shadow); }
+.cm-stage > .nt-draft-note .cm-btn { padding: 2px 8px; font-size: 12px; }
+/* The kinds menu and the target list: a small menu at the drop point, one line per kind with the standard's type and the owning chapter. */
+.cm-stage > .nt-draft-menu { position: absolute; z-index: 11; min-width: 260px; max-width: 380px; max-height: calc(100% - 16px); overflow: auto; overscroll-behavior: contain; padding: 8px; border: 1px solid var(--green-6); border-radius: 10px; background: var(--sage-1); color: var(--green-12); font: 12.5px var(--font-ui); box-shadow: var(--shadow); }
+.cm-stage > .nt-draft-menu .nt-draft-menu-head { margin: 0 0 6px; padding: 2px 8px 6px; border-bottom: 1px solid var(--sage-5); }
+.cm-stage > .nt-draft-menu .nt-draft-menu-head b { font-weight: 600; }
+.cm-stage > .nt-draft-menu .nt-draft-menu-head small { display: block; color: var(--sage-11); font-size: 11.5px; }
+.cm-stage > .nt-draft-menu [role="menuitem"] { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; width: 100%; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+.cm-stage > .nt-draft-menu [role="menuitem"] b { font-weight: 600; }
+.cm-stage > .nt-draft-menu [role="menuitem"] small { color: var(--sage-11); font-size: 11.5px; }
+.cm-stage > .nt-draft-menu [role="menuitem"]:hover { background: var(--sage-3); }
+.cm-stage > .nt-draft-menu [role="menuitem"]:focus-visible, .cm-stage > .nt-draft-menu input:focus-visible, .cm-stage > .nt-draft-menu .cm-btn:focus-visible { outline: 2px solid var(--green-10); outline-offset: 1px; }
+.cm-stage > .nt-draft-menu .nt-draft-menu-cancel { margin-top: 4px; border-top: 1px solid var(--sage-5); border-radius: 0 0 6px 6px; color: var(--sage-11); }
+.cm-stage > .nt-draft-menu .nt-draft-reason { margin: 4px 8px 8px; color: var(--red-11); line-height: 1.4; }
+/* rc41 close (C13): the kinds a pair's readiness would report, named under the items as a quiet note, not a refusal. */
+.cm-stage > .nt-draft-menu .nt-draft-withheld { margin: 4px 8px 6px; color: var(--sage-11); font-size: 11.5px; line-height: 1.4; }
+.cm-stage > .nt-draft-menu .nt-find { display: flex; align-items: center; gap: 6px; margin: 0 8px 6px; }
+.cm-stage > .nt-draft-menu .nt-find input { flex: 1; min-width: 0; padding: 4px 6px; border: 1px solid var(--sage-6); border-radius: 6px; background: var(--sage-1); color: inherit; font: inherit; }
+.cm-stage > .nt-draft-menu .nt-draft-targets-list { max-height: 260px; overflow: auto; overscroll-behavior: contain; }
+/* How many targets the words leave (polite). */
+.cm-stage > .nt-draft-menu .nt-draft-count { margin: 0 8px 6px; color: var(--sage-11); font-size: 11.5px; }
+/* The refused pair's Close says its key. */
+.cm-stage > .nt-draft-menu.nt-draft-refused .cm-btn small { color: var(--sage-11); }
+/* The Add menu's "Add … here" entries stand with the chapter's own entries; the reason a chapter adds nothing is a note. */
+.cm-add .nt-add-here { display: contents; }
+.cm-add .nt-add-here-note, .nt-pop .nt-add-here-note { margin: 4px 8px; color: var(--sage-11); font-size: 12px; line-height: 1.4; }
+/* The one-element selection toolbar: the keyboard path to a relationship, with its key. */
+.cm-stage > .nt-seltools.nt-seltools-one button.nt-connect { display: inline-flex; width: auto; gap: 6px; padding: 0 8px; font-size: 12px; }
+.cm-stage > .nt-seltools.nt-seltools-one button.nt-connect kbd { padding: 0 4px; border: 1px solid var(--sage-6); border-radius: 4px; color: var(--sage-11); font: 11px var(--font-ui); }
+@media (max-width: 700px) {
+  .cm-stage > .nt-draft-menu { left: 8px !important; right: 8px; min-width: 0; max-width: none; }
+  .cm-stage > .nt-draft-note { left: 8px; right: 8px; top: 6px; font-size: 12px; }
+}

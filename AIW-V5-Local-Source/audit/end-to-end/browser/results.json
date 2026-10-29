@@ -1,0 +1,601 @@
+{
+  "checks": [
+    {
+      "name": "New blank project created through UI",
+      "project": "project-c55f1934-b55d-4765-9b94-0f79a08f68ad"
+    },
+    {
+      "name": "Blank-project model and empty state"
+    },
+    {
+      "name": "New illustrative project created through UI",
+      "project": "project-6e11eef6-670a-4bb8-8184-438213579084",
+      "authority": "Synthetic UI QA; unconfirmed reference content"
+    },
+    {
+      "name": "Chapter 1 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Start with the right questions.",
+        "The project brief",
+        "What needs to change?"
+      ]
+    },
+    {
+      "name": "Chapter 1 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Start with the right questions."
+      ]
+    },
+    {
+      "name": "Chapter 1 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Start with the right questions.",
+        "Requirements",
+        "Make the requirements defensible."
+      ]
+    },
+    {
+      "name": "Chapter 1 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Start with the right questions.",
+        "1 document this chapter can produce now",
+        "A brief you can build from."
+      ]
+    },
+    {
+      "name": "Chapter 2 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Make what drives the design explicit.",
+        "Start from the required behaviour.",
+        "01 · Requirements 1"
+      ]
+    },
+    {
+      "name": "Chapter 2 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Make what drives the design explicit."
+      ]
+    },
+    {
+      "name": "Chapter 2 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Make what drives the design explicit.",
+        "Architectural drivers",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 2 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Make what drives the design explicit.",
+        "2 documents this chapter can produce now",
+        "The prioritised architectural driver brief"
+      ]
+    },
+    {
+      "name": "Chapter 3 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Make the reasoning visible.",
+        "When should the customer receive a payment acknowledgement?",
+        "Keep the customer request synchronous"
+      ]
+    },
+    {
+      "name": "Chapter 3 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Make the reasoning visible."
+      ]
+    },
+    {
+      "name": "Chapter 3 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Make the reasoning visible.",
+        "Decisions",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 3 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Make the reasoning visible.",
+        "2 documents this chapter can produce now",
+        "Decision records (MADR)"
+      ]
+    },
+    {
+      "name": "Chapter 4 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Shape the logical application.",
+        "Shape the logical responsibilities.",
+        "Channel & customer"
+      ]
+    },
+    {
+      "name": "Chapter 4 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Shape the logical application."
+      ]
+    },
+    {
+      "name": "Chapter 4 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Shape the logical application.",
+        "Logical application",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 4 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Shape the logical application.",
+        "1 document this chapter can produce now",
+        "Carry the responsibility and its rationale."
+      ]
+    },
+    {
+      "name": "Chapter 5 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Bring the model to life.",
+        "Give every component a clear job.",
+        "Progress to Chapter 6"
+      ]
+    },
+    {
+      "name": "Chapter 5 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Bring the model to life."
+      ]
+    },
+    {
+      "name": "Chapter 5 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Bring the model to life.",
+        "Application realization",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 5 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Bring the model to life.",
+        "2 documents this chapter can produce now",
+        "Carry a design you can explain."
+      ]
+    },
+    {
+      "name": "Chapter 6 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Define the technology foundations.",
+        "Give the application its foundations.",
+        "Initiate payment"
+      ]
+    },
+    {
+      "name": "Chapter 6 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Define the technology foundations."
+      ]
+    },
+    {
+      "name": "Chapter 6 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Define the technology foundations.",
+        "Logical technology",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 6 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Define the technology foundations.",
+        "1 document this chapter can produce now",
+        "Carry capabilities into technology choices."
+      ]
+    },
+    {
+      "name": "Chapter 7 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Realize the technology choices.",
+        "Choose the technology. Keep the reasoning.",
+        "Application execution realization"
+      ]
+    },
+    {
+      "name": "Chapter 7 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Realize the technology choices."
+      ]
+    },
+    {
+      "name": "Chapter 7 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Realize the technology choices.",
+        "Technology realization",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 7 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Realize the technology choices.",
+        "1 document this chapter can produce now",
+        "Carry technology choices into contracts."
+      ]
+    },
+    {
+      "name": "Chapter 8 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Define the promises between systems.",
+        "Make every exchange explicit.",
+        "Payment initiation"
+      ]
+    },
+    {
+      "name": "Chapter 8 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Define the promises between systems."
+      ]
+    },
+    {
+      "name": "Chapter 8 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Define the promises between systems.",
+        "Interfaces & data",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 8 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Define the promises between systems.",
+        "2 documents this chapter can produce now",
+        "Contracts and data the next chapter can use."
+      ]
+    },
+    {
+      "name": "Chapter 9 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Design protection you can explain.",
+        "Make protection deliberate.",
+        "Payment without valid authority"
+      ]
+    },
+    {
+      "name": "Chapter 9 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Design protection you can explain."
+      ]
+    },
+    {
+      "name": "Chapter 9 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Design protection you can explain.",
+        "Security",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 9 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Design protection you can explain.",
+        "1 document this chapter can produce now",
+        "Carry protection into operation."
+      ]
+    },
+    {
+      "name": "Chapter 10 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Design how the architecture will run.",
+        "Give the architecture an operating home.",
+        "Application zone"
+      ]
+    },
+    {
+      "name": "Chapter 10 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Design how the architecture will run."
+      ]
+    },
+    {
+      "name": "Chapter 10 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Design how the architecture will run.",
+        "Deployment / runtime",
+        "Findings by cause"
+      ]
+    },
+    {
+      "name": "Chapter 10 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Design how the architecture will run.",
+        "1 document this chapter can produce now",
+        "An operating design the review can trace."
+      ]
+    },
+    {
+      "name": "Chapter 11 work",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Review the design. Realize its intent.",
+        "Bring the design to a reviewable conclusion.",
+        "Requirements"
+      ]
+    },
+    {
+      "name": "Chapter 11 model",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Model layers",
+        "Review the design. Realize its intent."
+      ]
+    },
+    {
+      "name": "Chapter 11 validate",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Review the design. Realize its intent.",
+        "Review & realize",
+        "Challenge the design. Keep the evidence."
+      ]
+    },
+    {
+      "name": "Chapter 11 output",
+      "widths": {
+        "body": 1440,
+        "viewport": 1440
+      },
+      "heading": [
+        "Design resources",
+        "Review the design. Realize its intent.",
+        "A design the delivery team can trace.",
+        "Each chapter, as the SDD will read it"
+      ]
+    },
+    {
+      "name": "Design Resources three entry points and hosted/local connection labels"
+    },
+    {
+      "name": "Mind Factory opened within chapter context"
+    },
+    {
+      "name": "Sol bounded source packet preview; local provider unavailable honestly disclosed"
+    },
+    {
+      "name": "Actual working SDD/project JSON export downloaded",
+      "filename": "AIW_Synthetic_release_QA_eleven_chapters_Working_SDD.json"
+    },
+    {
+      "name": "Phone width Chapters 4, 7, 8, 10, 11"
+    },
+    {
+      "name": "Keyboard tab focus and explicit activation"
+    },
+    {
+      "name": "No browser page errors"
+    }
+  ],
+  "errors": [],
+  "serverErrors": []
+}

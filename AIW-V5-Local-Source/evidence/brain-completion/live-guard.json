@@ -1,0 +1,55 @@
+{
+  "at": "2026-09-20T21:27:56.588Z",
+  "authority": "Two deliberately false synthetic candidates checked by the connected provider; not a general guarantee of factual accuracy",
+  "results": [
+    {
+      "topic": "distribution",
+      "rejected": true,
+      "reviewModel": "gpt-4.1-mini-2025-04-14",
+      "issues": [
+        "The candidate claims that a single endpoint preserves in-memory sessions even when the server crashes, which contradicts the source statement that local memory can be lost after failure in both a single endpoint and a replica pool.",
+        "The candidate claims that session affinity restores lost memory on any replica, but the source explicitly states that session affinity alone cannot recover unmanaged local session state after a replica instance fails.",
+        "Therefore, the candidate's assertions about session preservation and recovery with a single endpoint and session affinity are false according to the provided source materials."
+      ],
+      "result": {
+        "title": "Structured guidance · Maintain the declared service contract",
+        "summary": "The generated explanation did not pass the source consistency check. These comparison findings come directly from the reviewed Architecture Brain method.",
+        "passage": "Maintain the declared service contract Load-test safe capacity and reserve room for one instance loss. Service owner The business authority is the only writer of the operation register.\n\nsingle endpoint: The declared conditions are ready for architect model review; implementation remains unverified. Capacity: Useful capacity is limited by the endpoint and its shared downstream dependencies. Availability: An unavailable endpoint leaves no alternate service instance in this proposal. Operations: One routing destination reduces routing complexity but retains recovery ownership.  (S3)\n\nbalanced pool: BLOCKED: Unmanaged local session state makes routing to another replica unsafe. Session affinity alone cannot recover that state after its instance fails. Capacity: Useful capacity is bounded by the bottleneck, spare margin and distribution efficiency. Availability: Replicas share router, state and infrastructure dependencies. Consistency: Routing does not confer ordering or safe concurrent effects.  (S3)",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ],
+        "assumptions": [
+          "Conditions are declared project inputs, not proof of implementation. Quantitative outputs, when present, are calculations rather than achieved targets."
+        ],
+        "questions": [],
+        "options": []
+      }
+    },
+    {
+      "topic": "delivery",
+      "rejected": true,
+      "reviewModel": "gpt-4.1-mini-2025-04-14",
+      "issues": [
+        "The candidate claims that duplicate protection can be removed because lost notifications are acceptable, but the source explicitly requires duplicate protection for reliable delivery in the face of repeated attempts (S1, S3).",
+        "The candidate claims an outbox guarantees exactly-once and globally ordered business effects without consumer controls, but sources state local atomicity does not extend to multiple services, duplicate handling is still necessary, and ordering is per key, not global (S1, S3).",
+        "The candidate's assertion that an outbox guarantees exactly-once delivery without consumer controls contradicts the source details that consumer duplicate protection is required and that ordering is limited to within business keys, not globally (S1, S3).",
+        "The candidate ignores the requirement to reconcile lost notifications and handle duplicate deliveries as part of the failure and recovery agreement (S1, S3), thus making its claims unsupported."
+      ],
+      "result": {
+        "title": "Structured guidance · Maintain the declared service contract",
+        "summary": "The generated explanation did not pass the source consistency check. These comparison findings come directly from the reviewed Architecture Brain method.",
+        "passage": "Maintain the declared service contract Notification loss is acceptable Atomic duplicate check with the effect Order within a business key\n\nbest effort publish: The declared conditions are ready for architect model review; implementation remains unverified. Integrity: Business state can commit without a notification. This option does not preserve publication intent atomically. Completion: Successful publication may complete downstream later; a lost notification may never complete. Operations: Avoids a dedicated outbox relay, while retaining channel, duplicate-handling and reconciliation ownership. Best-effort publication does not confer ordering or exactly-once effects.  (S3)\n\ntransactional outbox: The declared conditions are ready for architect model review; implementation remains unverified. Integrity: One local commit can preserve publication intent; downstream business effects still require their own protection. Completion: Publication and downstream completion occur later; measure oldest pending age and outcome correlation. Operations: Delivery ownership, retained intent and replay need an operating plan.  (S3)",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ],
+        "assumptions": [
+          "Conditions are declared project inputs, not proof of implementation. Quantitative outputs, when present, are calculations rather than achieved targets."
+        ],
+        "questions": [],
+        "options": []
+      }
+    }
+  ]
+}

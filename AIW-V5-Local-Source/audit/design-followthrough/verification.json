@@ -1,0 +1,240 @@
+{
+  "schema": "aiw.design-followthrough-verification.v1",
+  "release": "AIW v0.10.0-rc.10.73.32+followthrough.20261020",
+  "recordedAt": "2026-10-20T14:17:12.761792+00:00",
+  "sourceParent": "629c33c7deb4623722eb1bb0b1c968cc7345793f",
+  "sourceIdentityNote": "The publication receipt and Git source archive identify the final commit. SOURCE-MANIFEST.json checks each delivered source file; its commit field is the checkout parent at generation.",
+  "scope": "Focused deterministic domain, in-process private Worker, Happy DOM, provider contract and production-build checks. No claim that the entire historical test corpus was rerun.",
+  "checks": [
+    {
+      "command": "node architecture-operation-continuation-validate.mjs",
+      "result": "passed",
+      "covers": "Seven native proposal types; exact run/option/operation identity, private owner/project and CAS boundaries, save/reopen, accept/reverse, stale references and confirmation semantics."
+    },
+    {
+      "command": "node architecture-operation-continuation-ui-validate.mjs",
+      "result": "passed",
+      "covers": "Seven native forms; full saved-response continuation, explicit target, dirty close/Keep/Discard and native edit/review/accept."
+    },
+    {
+      "command": "node architecture-obligation-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 9,
+      "covers": "Exact obligation identity, scoped basis and evidence currentness, released source withdrawal, immutable acceptance, and private Worker storage round trip."
+    },
+    {
+      "command": "node architecture-obligation-ui-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 4,
+      "covers": "Native action create/link/cancel/save/resume, explicit evidence review, stale form/project switch and Work/Validate/Output status."
+    },
+    {
+      "command": "node execution-composition-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 8,
+      "covers": "Native outbox prepare/accept, explicit contract/path refinement, unknowns/contradictions, scoped primary-source interpretation and product-family counterfactuals."
+    },
+    {
+      "command": "node execution-navigation-ui-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 3,
+      "covers": "Exact native field/panel/focus, stale guidance rejection, cross-project/selection guards and dirty draft preservation."
+    },
+    {
+      "command": "node native-editor-loading-ui-validate.mjs",
+      "result": "passed",
+      "covers": "Deferred first action and retry; no save fall-through; project, revision, selection, editor/input/step/disposal guards."
+    },
+    {
+      "command": "node exchange-task-ui-validate.mjs",
+      "result": "passed",
+      "covers": "Actual reference exchange native flow, saved resume, preview, Edit and explicit acceptance."
+    },
+    {
+      "command": "AIW_BLANK=1 node exchange-task-ui-validate.mjs",
+      "result": "passed",
+      "covers": "Actual blank exchange/new-payload flow through deferred native editor."
+    },
+    {
+      "command": "node model-alternatives-ui-validate.mjs",
+      "result": "passed",
+      "covers": "Four actual model editors, saved/resumed alternative, rebase, review, acceptance, discard and interface acceptance."
+    },
+    {
+      "command": "node sol-evaluation-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 17,
+      "covers": "Twelve current protocol groups and five retained scorer/adoption groups, including structured keep/recheck with no new provider call."
+    },
+    {
+      "command": "AIW_LLM_PROVIDER=anthropic node sol-current-evaluation-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 11,
+      "covers": "Synthetic alternate-wire checkpoint before the later provider-neutral structured report retention test was added."
+    },
+    {
+      "command": "node providers-validate.mjs",
+      "result": "passed",
+      "covers": "Draft/check routing, actual fallback receipts, safe diagnostics and transport boundaries, all with test transports."
+    },
+    {
+      "command": "node embedded-intelligence-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 5,
+      "covers": "Complete exact-source bundles in the native shared reading, field drafting, chapter review, disclosure and currentness under unchanged published character limits."
+    },
+    {
+      "command": "node architecture-intelligence-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 7,
+      "covers": "Shared contextual architecture reading and source closure at the core integration checkpoint."
+    },
+    {
+      "command": "node driver-applicability-validate.mjs",
+      "result": "passed",
+      "groupsOrItems": 7,
+      "covers": "Original conditional fit families, scope and three-valued interpretation at the core integration checkpoint."
+    },
+    {
+      "command": "node interfaces-validate.mjs",
+      "result": "passed",
+      "covers": "Native contract lifecycle and structured execution declarations."
+    },
+    {
+      "command": "node interface-impact-validate.mjs",
+      "result": "passed",
+      "covers": "Native impact review and execution change handling."
+    },
+    {
+      "command": "node architecture-evaluation-validate.mjs",
+      "result": "passed",
+      "covers": "Existing architectural alternatives and evaluation contracts."
+    },
+    {
+      "command": "node composition-validate.mjs",
+      "result": "passed",
+      "covers": "Thirteen native alternatives and seventeen counterexamples; largest adopted packet 19,914 characters."
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "result": "passed",
+      "covers": "Accepted solution specifications and downstream selection integration."
+    },
+    {
+      "command": "node intelligence-continuity-validate.mjs",
+      "result": "passed",
+      "covers": "Saved intelligence identity and continuation across context changes."
+    },
+    {
+      "command": "node model-reversal-validate.mjs",
+      "result": "passed",
+      "covers": "Reversal, provenance and atomic command failure preservation."
+    },
+    {
+      "command": "node design-task-validate.mjs",
+      "result": "passed",
+      "covers": "Existing guided native task lifecycle."
+    },
+    {
+      "command": "node review-validate.mjs",
+      "result": "passed",
+      "covers": "Private review/SDD export and immutable baseline persistence; outdated Output label/order assertions updated to the existing shared Output surface."
+    },
+    {
+      "command": "node check-syntax.mjs",
+      "result": "passed",
+      "groupsOrItems": 812,
+      "covers": "Application/service/script/verification module syntax, executed with permitted subprocess support."
+    },
+    {
+      "command": "node /root/.codex/plugins/cache/openai-curated-remote/sites/1.0.1/scripts/build-site.mjs",
+      "result": "passed",
+      "covers": "Production Worker/client build, packaged imports and asset serving; unchanged original bundle gates."
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed",
+      "covers": "No whitespace errors."
+    }
+  ],
+  "syntheticCoverage": {
+    "assessments": 18,
+    "contextualResponses": 14,
+    "chapters": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "modes": [
+      "design",
+      "mind",
+      "author",
+      "challenge"
+    ],
+    "failed": 0,
+    "rendering": "HTML strings only",
+    "liveProvider": false
+  },
+  "currentEvaluation": {
+    "dataset": "evaluation/sol-current-v1.json",
+    "cases": 12,
+    "assessments": 14,
+    "preflight": "passed; zero provider calls",
+    "authority": "Implementation-authored regression cases, not an independent architecture-quality benchmark."
+  },
+  "productionBuild": {
+    "serverModules": 233,
+    "vendoredSDK": "@anthropic-ai/sdk 0.131.0",
+    "embeddedAssetsMB": 8.91,
+    "compressedAssetModuleMB": 3.6,
+    "clientGateViolations": [],
+    "clientSizeReport": "client-size-report.json",
+    "budgetsChanged": false
+  },
+  "lint": {
+    "comparison": "Exact rc31 source snapshot versus current source using the same ESLint config. No baseline rules were raised.",
+    "baselineDiagnostics": 245,
+    "currentDiagnostics": 243,
+    "introducedDiagnostics": 0,
+    "fullRepositoryLintClean": false,
+    "details": "lint-delta.json"
+  },
+  "limits": [
+    "No rendered browser, mobile viewport, screenshot or accessibility-in-browser verification. Supported control-browser capability was unavailable; no alternative browser execution was attempted.",
+    "No live provider response or live architecture-quality comparison was completed. Hosted provider configuration exists; an authenticated customer execution path was unavailable here. Local readiness is not a diagnosis of hosted connectivity.",
+    "Synthetic provider responses establish protocol and guard behavior only; numerical quality scores from them are not model performance evidence.",
+    "Current verification recorded means a current human-reviewed record and its captured basis. AIW did not independently execute or certify external tests.",
+    "One explicit native target per proposed operation; additional proposed objects stay visible as remaining design scope.",
+    "The six-family coverage and inspected product-version interpretations are bounded; complete provider/version and cross-pattern coverage remains explicit in ARCHITECTURE-EXECUTION-COVERAGE.md."
+  ],
+  "artifacts": [
+    {
+      "path": "client-size-report.json",
+      "bytes": 3624,
+      "sha256": "25d439f989fe1469ad3a4d51ade278129a12fa34c02a7d5f83ce1c1b82d1b672"
+    },
+    {
+      "path": "evaluation-preflight.json",
+      "bytes": 9457,
+      "sha256": "faf484717b48d5505ae787ef2caddedee052b1a562a775755141eb8b9ab818b6"
+    },
+    {
+      "path": "lint-delta.json",
+      "bytes": 716,
+      "sha256": "eee154c4cf5675cf4857173bd8f75bec8988ecbad14b1a44e45be31eccfe0176"
+    },
+    {
+      "path": "sol-coverage-synthetic.json",
+      "bytes": 1460982,
+      "sha256": "e45fcae241bb92b72d542c9a352874877c84fd2eee452608ada2508c175de0b4"
+    }
+  ]
+}

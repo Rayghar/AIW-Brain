@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Neighbourhood bike share · ArchiMate 3 Model Exchange File fixture (AIW authored teaching example). One element of every type the reader maps, and one relationship of every kind. -->
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" identifier="id-bike-share">
+  <name xml:lang="en">Neighbourhood bike share</name>
+  <documentation xml:lang="en">Members unlock bikes at docks, ride, return and pay. Illustrative; no real organisation.</documentation>
+  <elements>
+    <element identifier="id-resident" xsi:type="BusinessActor"><name xml:lang="en">Resident</name><documentation xml:lang="en">Signs up, unlocks a bike, rides and pays the fee.</documentation></element>
+    <element identifier="id-member-role" xsi:type="BusinessRole"><name xml:lang="en">Member</name></element>
+    <element identifier="id-unlock-process" xsi:type="BusinessProcess"><name xml:lang="en">Unlock a bike</name><documentation xml:lang="en">A member presents the app or a card at the dock and the lock is released.</documentation></element>
+    <element identifier="id-return-process" xsi:type="BusinessProcess"><name xml:lang="en">Return the bike</name></element>
+    <element identifier="id-ride-service" xsi:type="BusinessService"><name xml:lang="en">Bike hire</name></element>
+    <element identifier="id-trip-service" xsi:type="ApplicationComponent"><name xml:lang="en">Trip service</name><documentation xml:lang="en">Records each trip exactly once, from unlock to return.</documentation></element>
+    <element identifier="id-pricing" xsi:type="ApplicationComponent"><name xml:lang="en">Pricing and payment service</name><documentation xml:lang="en">Calculates the fee and charges the saved payment method.</documentation></element>
+    <element identifier="id-trip-recording" xsi:type="ApplicationService"><name xml:lang="en">Trip recording</name></element>
+    <element identifier="id-dock-api" xsi:type="ApplicationInterface"><name xml:lang="en">Dock API</name><documentation xml:lang="en">The interface the dock gateway calls to report unlock and return events.</documentation></element>
+    <element identifier="id-trip-record" xsi:type="DataObject"><name xml:lang="en">Trip record</name><documentation xml:lang="en">One trip: member, bike, start, end and fee.</documentation></element>
+    <element identifier="id-cluster" xsi:type="Node"><name xml:lang="en">Application cluster</name></element>
+    <element identifier="id-dock" xsi:type="Device"><name xml:lang="en">Dock</name><documentation xml:lang="en">The chosen dock hardware; speaks a vendor protocol over mobile data.</documentation></element>
+    <element identifier="id-database" xsi:type="SystemSoftware"><name xml:lang="en">Relational database</name></element>
+    <element identifier="id-hosting" xsi:type="TechnologyService"><name xml:lang="en">Container hosting</name></element>
+    <element identifier="id-trip-artifact" xsi:type="Artifact"><name xml:lang="en">Trip table</name></element>
+    <element identifier="id-transport-team" xsi:type="Stakeholder"><name xml:lang="en">Transport team</name></element>
+    <element identifier="id-fast-unlock" xsi:type="Driver"><name xml:lang="en">Fast unlock at the dock</name><documentation xml:lang="en">A member should not wait at the dock; the lock must release within three seconds.</documentation></element>
+    <element identifier="id-goal" xsi:type="Goal"><name xml:lang="en">Fewer car journeys in the neighbourhood</name></element>
+    <element identifier="id-outcome" xsi:type="Outcome"><name xml:lang="en">Two thousand trips a day in the first year</name></element>
+    <element identifier="id-principle" xsi:type="Principle"><name xml:lang="en">Record once, charge once</name></element>
+    <element identifier="id-requirement" xsi:type="Requirement"><name xml:lang="en">Unlock a bike within three seconds</name><documentation xml:lang="en">The service must unlock a bike within three seconds of a valid request at the dock.</documentation></element>
+    <element identifier="id-constraint" xsi:type="Constraint"><name xml:lang="en">Trip locations kept no longer than ninety days</name></element>
+    <element identifier="id-capability" xsi:type="Capability"><name xml:lang="en">Fleet rebalancing</name></element>
+    <element identifier="id-resource" xsi:type="Resource"><name xml:lang="en">Bike fleet</name></element>
+    <element identifier="id-work" xsi:type="WorkPackage"><name xml:lang="en">First neighbourhood go-live</name></element>
+    <element identifier="id-plateau" xsi:type="Plateau"><name xml:lang="en">Summer launch</name></element>
+    <element identifier="id-gap" xsi:type="Gap"><name xml:lang="en">No rebalancing list yet</name></element>
+    <element identifier="id-group" xsi:type="Grouping"><name xml:lang="en">Bike share platform</name></element>
+  </elements>
+  <relationships>
+    <relationship identifier="id-r1" xsi:type="Assignment" source="id-resident" target="id-member-role"/>
+    <relationship identifier="id-r2" xsi:type="Triggering" source="id-unlock-process" target="id-return-process"><name xml:lang="en">then</name></relationship>
+    <relationship identifier="id-r3" xsi:type="Realization" source="id-unlock-process" target="id-ride-service"/>
+    <relationship identifier="id-r4" xsi:type="Serving" source="id-trip-recording" target="id-unlock-process"/>
+    <relationship identifier="id-r5" xsi:type="Realization" source="id-trip-service" target="id-trip-recording"/>
+    <relationship identifier="id-r6" xsi:type="Composition" source="id-trip-service" target="id-dock-api"/>
+    <relationship identifier="id-r7" xsi:type="Access" source="id-trip-service" target="id-trip-record" accessType="Write"/>
+    <relationship identifier="id-r8" xsi:type="Flow" source="id-trip-service" target="id-pricing"><name xml:lang="en">Trip completed</name></relationship>
+    <relationship identifier="id-r9" xsi:type="Serving" source="id-dock-api" target="id-dock"/>
+    <relationship identifier="id-r10" xsi:type="Realization" source="id-cluster" target="id-trip-service"/>
+    <relationship identifier="id-r11" xsi:type="Assignment" source="id-cluster" target="id-database"/>
+    <relationship identifier="id-r12" xsi:type="Realization" source="id-trip-artifact" target="id-trip-record"/>
+    <relationship identifier="id-r13" xsi:type="Influence" source="id-fast-unlock" target="id-requirement"><name xml:lang="en">+</name></relationship>
+    <relationship identifier="id-r14" xsi:type="Association" source="id-transport-team" target="id-fast-unlock"/>
+    <relationship identifier="id-r15" xsi:type="Realization" source="id-outcome" target="id-goal"/>
+    <relationship identifier="id-r16" xsi:type="Aggregation" source="id-group" target="id-trip-service"/>
+    <relationship identifier="id-r17" xsi:type="Aggregation" source="id-group" target="id-pricing"/>
+    <relationship identifier="id-r18" xsi:type="Specialization" source="id-member-role" target="id-resident"/>
+    <relationship identifier="id-r19" xsi:type="Serving" source="id-hosting" target="id-cluster"/>
+    <relationship identifier="id-r20" xsi:type="Realization" source="id-work" target="id-plateau"/>
+  </relationships>
+  <propertyDefinitions>
+    <propertyDefinition identifier="aiw-kind" type="string"><name>aiw-kind</name></propertyDefinition>
+  </propertyDefinitions>
+  <views>
+    <diagrams>
+      <view identifier="id-view-application" xsi:type="Diagram">
+        <name xml:lang="en">Application view</name>
+        <node identifier="id-n1" elementRef="id-trip-service" xsi:type="Element" x="10" y="10" w="120" h="55">
+          <node identifier="id-n2" elementRef="id-dock-api" xsi:type="Element" x="20" y="40" w="60" h="20"/>
+        </node>
+        <node identifier="id-n3" elementRef="id-pricing" xsi:type="Element" x="200" y="10" w="120" h="55"/>
+        <node identifier="id-n4" elementRef="id-trip-record" xsi:type="Element" x="10" y="120" w="120" h="55"/>
+        <connection identifier="id-c1" relationshipRef="id-r8" xsi:type="Relationship" source="id-n1" target="id-n3"/>
+        <connection identifier="id-c2" relationshipRef="id-r7" xsi:type="Relationship" source="id-n1" target="id-n4"/>
+      </view>
+    </diagrams>
+  </views>
+</model>

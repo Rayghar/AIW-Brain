@@ -1,0 +1,36 @@
+{
+  "schema": "aiw.layers-corridors-comparison.v1",
+  "release": "AIW v0.10.0-rc.10.73.16",
+  "productionAccepted": false,
+  "method": "Same current source, documents, scenes, and metrics; only Layers corridor planning switches on or off.",
+  "pictures": 355,
+  "layersViews": 64,
+  "crossings": {
+    "off": 18783,
+    "on": 14711,
+    "reductionPercent": 21.7
+  },
+  "foreignShared": {
+    "off": 1019,
+    "on": 611
+  },
+  "touches": {
+    "off": 2421,
+    "on": 1551
+  },
+  "ink": {
+    "off": 2149450,
+    "on": 1999701
+  },
+  "fallbacks": {
+    "off": 6,
+    "on": 6
+  },
+  "corridors": {
+    "planned": 697,
+    "demand": 4418,
+    "slotted": 1799,
+    "followed": 140
+  },
+  "historical": "audit/round10/evidence/notation-lines.json and audit/round11/evidence/layers-corridors.json remain frozen; their sources/scenes are different and are not the quantitative control for this release."
+}

@@ -1,0 +1,149 @@
+# The AIW knowledge repository
+
+**Status:** v20 · 26 September 2026 · controlling baseline AIW v0.10.0-rc.10.73.6. This describes what is implemented and tested. It also marks what only people can decide.
+
+The knowledge repository is the acquired architecture corpus, made usable by the Brain. It runs on the laptop that holds the corpus, as a separate service beside the workbench. It holds the 47 pinned GitHub snapshots from the governed acquisition: 186,219 file entries, of which 18,961 are documentation files. The architect searches it in Mind Factory, reads verified passages, and retrieves an exact original into the project. From there the ordinary governed path applies: interpretation, review, release, signed receipt, activation and a link to the record. Only then does Sol read it.
+
+Nothing in the repository is evidence until that path is complete. A passage is unreviewed repository text. A licence is detected, not cleared. A concept cue says that a name occurs, not that a pattern applies.
+
+## What it holds
+
+### Video-derived design resources (separate restricted candidate index)
+
+The video analysis engineering pack from the earlier AIW discussion can now be imported into the laptop repository as a **tenant-scoped candidate index**. Its exact six metadata files are stored with SHA-256 receipts; the importer cross-checks four named videos, 72 timecoded scene intervals, 63,184 frame-to-scene rows, 100 graph nodes and 119 candidate relationships. See [repository-service/README.md](repository-service/README.md#import-the-video-analysis-on-the-repository-laptop) for the Windows ZIP import and tenant allow-list. The four recordings themselves and their content hashes are absent from that pack, so the scene index cannot provide video playback or source proof. Every entry remains restricted and unreleased. It does not alter the GitHub corpus counts below or make video claims available to Sol.
+
+The product-facing view is **Design Resources → Knowledge Repository → Source media**. It requests the active project's tenant-scoped index from the repository service. A Site without a connected and permitted repository shows an empty or unavailable state; it does not ship this private catalogue in its public JavaScript. **Candidate** is a review state on an individual record, not the name of the media capability. A timecoded interpretation is a review lead, and cannot become a design decision or Sol authority merely by opening it.
+
+| | Count |
+|---|---|
+| Repositories (connectors) | 47: 30 approved, 9 candidate, 8 discovery-only |
+| File entries in the pinned snapshots | 186,219 |
+| Documentation files (Markdown, AsciiDoc, reStructuredText, text), every byte verified | 18,961 |
+| Files whose text is indexed | 8,432 |
+| Passages | 45,517 |
+| Files that can become project sources | 7,753 |
+| Catalogue concepts cued in passages | 191 |
+
+The other documentation files are not text-indexed for a stated reason:
+- Their licence dossier permits metadata only (10 repositories, among them developer-roadmap with 10,192 files).
+- Or they are too large for a project source (over 60,000 bytes).
+- Or their path is not one the project source contract accepts.
+
+Candidate and discovery-only repositories can be searched but not retrieved until they are approved and registered.
+
+## Move selected originals to a hosted project
+
+The repository service listens on the laptop's loopback address. A hosted Worker cannot use that address to search the laptop. For a small, chosen set of source files, Mind Factory → Sources → **Transfer selected originals from the repository laptop** shows the current project's tenant and project scope and accepts an explicitly exported bundle. This is a manual source handoff, not a hosted corpus deployment.
+
+On the repository laptop, search for and inspect the relevant revision IDs first. Check that moving each original into the private project is permitted for the intended use. From the AIW source directory, run:
+
+```sh
+node repository-service/cli.mjs transfer --tenant <scope-tenant> --project <scope-project> --revision <revision-id> --use-purpose "Specific architecture review in this private project" --acknowledge-rights --output private-transfer.json
+```
+
+You may repeat `--revision` for up to five distinct current, retrievable originals. The command verifies the exact original against the corpus store and writes a private JSON file containing those source texts. It refuses metadata-only, unavailable, oversized, or unregistered sources. Move the file only through an approved private channel, upload it in the named project's Sources view, inspect the listed file paths and purpose, and confirm the transfer. Delete temporary copies according to your organisation's policy.
+
+The file is bound to the exact authenticated tenant and project, signed with the repository's notice key, and valid for 24 hours. The server requires the authenticated importer to separately acknowledge the signed purpose and every selected source revision in the upload request; it records that person's identity, purpose and time in the project's source and history. Direct API requests without this acknowledgement are refused. The server also checks the signature, current trusted public key, source identity and SHA-256 before it saves the originals. A second upload is idempotent. A changed revision must identify the exact earlier revision; this makes old claims ineligible. The uploaded source is marked **unreviewed**. The notice key cannot sign a claim release: interpretation, independent source and rights review, a frozen release, a separate trusted release signature, activation, and links to design objects remain necessary. Signed repository invalidation notices still need to reach the hosted project through the existing signed-update route if the laptop service is not continuously reachable.
+
+## How the parts fit
+
+| Part | Where | What it does |
+|---|---|---|
+| Corpus reader | `repository-service/manifest-stream.js`, `corpus.js` | Streams the acquisition manifests (up to 409 MB each) and resolves the pinned snapshot per connector. Reads accepted bytes from the content-addressed store and checks each against the manifest hash on every read. Never opens quarantined, rejected, excluded or opaque files. |
+| Store | `repository-service/store.js`, `build.js` | Holds revision and passage identities (contract v1), line ranges and hashes. Search uses a contentless FTS5 index, so there is no second copy of third-party text. The store identity is created once. Every build re-verifies all current revisions. After the baseline, changes become notices. |
+| Passages | `repository-service/passages.js` | Deterministic segmentation by headings and paragraphs, at most 60 lines. An excerpt is the exact lines joined with LF, with CR and BOM kept, as the Site slices a stored source. |
+| Search and reading | `repository-service/reader.js` | Ranked search, two passages per file at most. Also passage and revision detail, exact originals and concept listings. Every excerpt shown is read from the verified original at request time. |
+| Service | `repository-service/server.js` | HTTP on loopback only, with a bearer token and a Host check. Requests from a browser Origin are refused; only the AIW server calls it. |
+| Signed notices | `repository-service/sync.js` | Revision and invalidation notices, signed with the laptop's notice key (Ed25519). A notice key can never sign a release. |
+| Live refresh | `repository-service/acquire.js`, `refresh.ps1` | Fetches newer documentation from approved repositories at an immutable commit. Downloads are checked against the git tree, credential-shaped files are quarantined, and the original acquisition root is never written. A rebuild then turns the change into notices. |
+| Workbench | `knowledge-repository.js`, `knowledge-service.js`, `public/repository-corpus-ui.js` | Discovery routes, exact-original retrieval through `knowledge.fetch`, and automatic application of signed notices. Also the Knowledge repository surface in Mind Factory → Sources and repository leads beside what Sol will read. |
+
+## Authority, and what stays with people
+
+- **One path into the project.** A retrieved original has the same origin (`repository-fetch`) and the same identity (repository, commit, path, SHA-256) as a live GitHub read. The workbench re-derives the revision identity and re-hashes the text itself; it does not trust the service's word. Every existing rule applies unchanged: interpretation, independent review, a release, a current signed receipt, activation.
+- **Leads are not evidence.** Sol is shown what it will read before anything is sent. Beside that, the workbench lists repository passages that mention what the decisions touch. Sol does not receive them and cannot cite them.
+- **Purpose-bound keys.** `AIW_REPOSITORY_NOTICE_KEYS` holds keys that may sign notices only. `AIW_REPOSITORY_SYNC_KEYS` holds keys trusted for release receipts. The service's automated key belongs in the first. Keep the release signing key separate and offline.
+- **Licences.** The repository records what the GitHub API detected and what the acquisition dossier says. Neither is clearance: a reviewer checks permitted use in the claim review.
+- **Independent review (four eyes).**
+  - Every claim needs a reviewer who is a different authenticated person from its author. This is checked when the claim is reviewed and again on every read.
+  - A claim its author verified is not used until another person reviews it.
+  - Repository claims also need a current signed release receipt.
+  - On the laptop, local accounts let a second person sign in ([LOCAL-RUN.md](LOCAL-RUN.md)). Without them the local server has one identity, and no claim can complete its review there.
+
+## Run it on the laptop
+
+From `AIW-V5-Local-Source`:
+
+```sh
+npm run repository:init    # once: service token and notice key under %LOCALAPPDATA%\AIW\repository-service
+npm run repository:build   # index or re-verify the corpus (about a minute)
+npm run repository:serve   # the service on http://127.0.0.1:4180; keep it running
+```
+
+`init` prints the settings for the workbench. Put them in the workbench's `.env`, never in Git:
+
+```sh
+AIW_KNOWLEDGE_REPOSITORY_URL=http://127.0.0.1:4180
+AIW_KNOWLEDGE_REPOSITORY_TOKEN_FILE=C:\Users\<you>\AppData\Local\AIW\repository-service\service-token
+AIW_REPOSITORY_NOTICE_KEYS={"repo-…":"<public key>"}
+```
+
+Then start the workbench with `node --env-file=.env server.js`. Mind Factory → Sources shows the Knowledge repository. A project with repository originals applies signed notices when it is opened, and on demand from Sources.
+
+### Refresh
+
+- `npm run repository:build` re-verifies every current revision against its manifest.
+- `node repository-service/cli.mjs acquire --dry-run` shows what a live refresh would fetch from GitHub.
+- `node repository-service/cli.mjs acquire` fetches it. This contacts api.github.com and raw.githubusercontent.com. Set `AIW_GITHUB_TOKEN` in the environment for a higher API rate limit.
+- A build after an acquisition turns the changes into notices.
+- `refresh.ps1 [-Acquire]` wraps both with a lock and logs to `knowledge-repository/store/logs`.
+- `register-refresh-task.ps1` registers a daily Windows task. Nothing registers it automatically.
+
+A repository whose tree GitHub truncates fails closed, and so does a refresh with more changed files than the connector's limit (`--max` raises it deliberately). Such a repository needs the governed acquisition process.
+
+### Candidate sets
+
+`candidate-sets/bk-p2-20260911.json` holds 16 candidate claims from the earlier AIW backend's curated corpus BK-P2-20260911. They cover retry, time-outs, circuit breakers, bulkheads, queues, events and modules.
+- Each claim is anchored on an exact passage of a file in this corpus, checked against its verified original when the set was built.
+- Two of the 18 curated assets are not included: their evidence is a JSON model file and a specification too large for a project source.
+- The set carries the curator's interpretations, the locators and the licences. It carries no third-party text.
+
+With the service and the workbench running:
+
+```sh
+npm run candidates:import -- --dry-run      # shows what would be retrieved and created
+npm run candidates:import                   # into the default project; add --project <id> for another
+```
+
+- With local accounts, add `--account <id> --secret-env <VAR>` and put that account's secret in the named environment variable.
+- The import retrieves each exact original and creates each claim as a candidate authored by the importing account. It reviews, releases and activates nothing. A different signed-in person verifies each claim in Mind Factory before it can be released and read by Sol.
+- `npm run candidates:build -- <corpus.json>` rebuilds a set from such a corpus.
+
+### Other commands
+
+| Command | Use |
+|---|---|
+| `node repository-service/cli.mjs status` | Store identity, notice cursor, counts, connectors with lifecycle, use policy and detected licence. |
+| `node repository-service/cli.mjs search "circuit breaker"` | Search from the terminal. |
+| `node repository-service/cli.mjs withdraw <revisionId> --reason "…"` | Operator withdrawal, for example after a licence decision. It becomes a signed invalidation for every project that holds the file. |
+| `node repository-service/cli.mjs packet --tenant … --project … --revision … --output packet.json` | A metadata-only candidate packet for the hosted workbench's packet preview. |
+| `node scripts/sign-repository-sync.mjs …` | The operator's signing of an independently reviewed release (unchanged). Use the store identity from `status`. |
+
+## Verified, and not yet verified
+
+- **Verified:**
+  - `npm run test:repository-service`: 12 checks on a synthetic corpus of original text. They cover identity parity with the workbench, the streaming reader at hostile chunk boundaries, segmentation, and policy gating (quarantined and metadata-only text never searchable). They also cover search injection safety, exact originals with BOM and CRLF, resumable builds, and store identity. Finally: the HTTP boundary, retrieval, the workbench's own packet validator, refresh notices, and signed notices that a notice key cannot use for a release.
+  - `npm run test:knowledge-repository`: 4 checks through the real Worker, SQLite and commands. They cover discovery routes, retrieval and interpretation on the same line range, automatic revocation on project read, the explicit sync route, and the Sources rendering.
+  - `npm run test:repository-acquire`: 5 checks against a loopback fake of GitHub. They cover planning, reuse by git blob hash, blob-verified downloads, credential quarantine, fail-closed truncation, redirects and tampering, notices after the refresh, and an untouched original root.
+  - `npm run test:knowledge-repository-browser`: rendered checks in Chromium. They cover search, read, retrieve, interpret; the desk switch point opened in Mind Factory; leads beside Sol; phone width.
+  - `npm run test:brain-chain`: 4 checks of the whole chain, on the local server with two synthetic accounts, the synthetic corpus and the provider test double.
+    - A candidate set is built against the corpus and imported.
+    - The author is refused and a second person verifies.
+    - The claim is released, its signed receipt applied, activated and linked to IF-001.
+    - Sol's packet for IF-001 carries the claim, and the request to the provider sends it. A claim still a candidate reaches neither.
+  - `npm run test:local-accounts`: sign-in, refusal of tampered and forged sessions, and four eyes through the server.
+  - The real corpus was built, re-verified and searched on this laptop: 18,961 documentation revisions with zero unavailable, build receipts in `knowledge-repository/store/build-receipts`.
+- **Not yet verified:**
+  - No live GitHub acquisition was run for this delivery; the adapter is verified against the loopback fake.
+  - No project claim from the corpus has been independently reviewed, released under a real signing key or activated.
+  - The hosted workbench cannot reach the laptop. It keeps the packet preview and signed-update upload, and retrieves live from GitHub.

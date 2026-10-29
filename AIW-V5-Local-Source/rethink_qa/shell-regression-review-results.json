@@ -1,0 +1,202 @@
+{
+  "selection": {
+    "first": {
+      "id": "REQ-001",
+      "panel": "open",
+      "expanded": "true"
+    },
+    "closed": "collapsed",
+    "sameDetailsClick": {
+      "panel": "open",
+      "selected": "REQ-001",
+      "inspectorHidden": "false"
+    },
+    "otherDetailsClick": {
+      "id": "REQ-002",
+      "panel": "open"
+    },
+    "closeInsideInspector": true
+  },
+  "sol": [
+    {
+      "chapter": 1,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Review the brief",
+        "Add an artefact",
+        "Explore the model",
+        "Preview an editable draft suggestion",
+        "Draft from a source"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 2,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Add a linked driver",
+        "Explore QD-001"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 3,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Edit decision context",
+        "Compare alternatives",
+        "Edit comparison evidence",
+        "Open decision record",
+        "Draft from a source"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 4,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Create a responsibility",
+        "Organise groups"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 5,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Create a component",
+        "Review inherited model"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 6,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Create a supporting capability",
+        "Create a capability"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 7,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Edit implementation plan",
+        "Compare alternatives",
+        "Review the selection"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 8,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Edit this definition",
+        "Try a sample payload",
+        "Record its design review"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 9,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Assess this object",
+        "Review residual risk"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 10,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Edit this operating plan",
+        "Place this component",
+        "Record a design review"
+      ],
+      "error": ""
+    },
+    {
+      "chapter": 11,
+      "open": true,
+      "native": true,
+      "context": "Sol",
+      "actions": [
+        "Frame the SDD",
+        "Define a delivery action"
+      ],
+      "error": ""
+    }
+  ],
+  "errors": [],
+  "nativeReplacement": [
+    {
+      "chapter": 2,
+      "selector": "[data-q-context]",
+      "available": true,
+      "closeInsideInspector": true,
+      "panel": "open",
+      "dismissed": true,
+      "focusReturned": true,
+      "reopened": true
+    },
+    {
+      "chapter": 3,
+      "selector": "[data-d-node]",
+      "available": false
+    },
+    {
+      "chapter": 6,
+      "selector": "[data-t-action=\"lens\"]",
+      "available": false
+    },
+    {
+      "chapter": 7,
+      "selector": "[data-tr-action=\"lens\"]",
+      "available": false
+    },
+    {
+      "chapter": 8,
+      "selector": "[data-i-action=\"lens\"]",
+      "available": false
+    },
+    {
+      "chapter": 9,
+      "selector": "[data-sec-action=\"lens\"]",
+      "available": false
+    },
+    {
+      "chapter": 10,
+      "selector": "[data-rt-action=\"lens\"]",
+      "available": false
+    },
+    {
+      "chapter": 11,
+      "selector": "[data-rv-action=\"lens\"]",
+      "available": false
+    }
+  ],
+  "projectUnchanged": true,
+  "writesAfterInitialization": 0
+}

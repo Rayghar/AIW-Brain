@@ -1,0 +1,211 @@
+{
+  "renderer": "@resvg/resvg-js",
+  "version": "2.6.2",
+  "renderedAt": "2026-10-21T02:33:37.556Z",
+  "background": "#fdfdf9",
+  "fontFiles": [
+    "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-mono-latin-400-normal.ttf",
+    "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-mono-latin-500-normal.ttf",
+    "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-sans-latin-400-normal.ttf",
+    "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-sans-latin-500-normal.ttf",
+    "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-sans-latin-600-normal.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf",
+    "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"
+  ],
+  "convertedFonts": [
+    {
+      "source": "/workspace/scratch/3880d2ad414a/aiw-studio/public/fonts/ibm-plex-mono-latin-400-normal.woff2",
+      "ttf": "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-mono-latin-400-normal.ttf",
+      "family": "IBM Plex Mono",
+      "weight": 400
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/aiw-studio/public/fonts/ibm-plex-mono-latin-500-normal.woff2",
+      "ttf": "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-mono-latin-500-normal.ttf",
+      "family": "IBM Plex Mono Medium",
+      "weight": 500
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/aiw-studio/public/fonts/ibm-plex-sans-latin-400-normal.woff2",
+      "ttf": "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-sans-latin-400-normal.ttf",
+      "family": "IBM Plex Sans",
+      "weight": 400
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/aiw-studio/public/fonts/ibm-plex-sans-latin-500-normal.woff2",
+      "ttf": "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-sans-latin-500-normal.ttf",
+      "family": "IBM Plex Sans Medium",
+      "weight": 500
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/aiw-studio/public/fonts/ibm-plex-sans-latin-600-normal.woff2",
+      "ttf": "/tmp/aiw-svg-rasterizer/fonts/ibm-plex-sans-latin-600-normal.ttf",
+      "family": "IBM Plex Sans SemiBold",
+      "weight": 600
+    }
+  ],
+  "sourcePolicy": "Original SVG files are unchanged. Diagnostic input expands CSS font shorthand to equivalent longhands because resvg does not support the shorthand. No text, labels, shapes, coordinates, paths, routing or element counts are modified. Raster background supplied as a renderer option; original SVG dimensions.",
+  "limitations": [
+    "Pure SVG rasterization, not a browser screenshot. Surrounding HTML, actual browser viewport/camera scaling, toolbar layout, interactions and responsive CSS are not exercised.",
+    "The real self-hosted IBM Plex Sans 400/500/600 and Mono 400/500 assets are losslessly decompressed from WOFF2 to TTF for this renderer. Declared source families remain unchanged. IBM Plex Sans is the sans fallback, while any source Georgia uses locally installed DejaVu Serif because Georgia is absent.",
+    "SVG/CSS behavior follows resvg. It warns that :nth-of-type, :focus-visible, :is, :not, forced-colors @media and auto-start-reverse marker orientation are unsupported. This default overview capture does not validate forced colors, focus/hover styles, All/None/Selected modes or arrowhead direction.",
+    "Screen SVG fixtures include their internal SVG styles and resolved visible-connection CSS; outside ancestor selectors, viewport-dependent typography and full native application styles are not captured. PNGs provide static geometry/content diagnostics, not browser pixel acceptance."
+  ],
+  "images": [
+    {
+      "source": "/workspace/scratch/3880d2ad414a/rc37-visual/diagram-application-screen.svg",
+      "sourceSha256": "74953f9ee81c78b6ad36044030c4cdc6a20b007842c5c0cfdb34b9d52fcb8de4",
+      "normalizedSha256": "723c984a18159314c605a1d344dfcbfd92c21336862453d1208e0da1410c63ba",
+      "target": "/workspace/scratch/3880d2ad414a/rc37-visual/resvg-fonts/diagram-application-screen.png",
+      "pngSha256": "c85dbd2a33b5e65f54f2b15bc9f3bbcb3162fd3229e40291503df235c9291c6c",
+      "width": 1566,
+      "height": 320,
+      "nonOpaquePixels": 0,
+      "cornerRGBA": [
+        253,
+        253,
+        249,
+        255
+      ],
+      "bytes": 59275,
+      "fontShorthandExpansionCount": 30,
+      "declaredFontFamilies": [
+        "Georgia,serif",
+        "\"IBM Plex Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ]
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/rc37-visual/diagram-solution-screen.svg",
+      "sourceSha256": "87cd558e5c4021925c869864ce6fbeee1f5cb579adc3c1fe3ca5e971a3f46d3c",
+      "normalizedSha256": "19e32a02bf62402ba217067d37538a51062c67c7cf16aa3141f887c33682a009",
+      "target": "/workspace/scratch/3880d2ad414a/rc37-visual/resvg-fonts/diagram-solution-screen.png",
+      "pngSha256": "e695c69215a2309bbcb5f60feba1f847ab1d227d1e037096d962d809cbf9249e",
+      "width": 1149,
+      "height": 426,
+      "nonOpaquePixels": 0,
+      "cornerRGBA": [
+        253,
+        253,
+        249,
+        255
+      ],
+      "bytes": 51362,
+      "fontShorthandExpansionCount": 30,
+      "declaredFontFamilies": [
+        "Georgia,serif",
+        "\"IBM Plex Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ]
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/rc37-visual/diagram-stack-screen.svg",
+      "sourceSha256": "9699ef29768758666a10e4ac2d76fb841aff7ef4a1e56838c81c1217c1defe0e",
+      "normalizedSha256": "d73a777b2e3c1dcd2b3851b49e2740d829a8c07961c4856394383e2313f862f8",
+      "target": "/workspace/scratch/3880d2ad414a/rc37-visual/resvg-fonts/diagram-stack-screen.png",
+      "pngSha256": "057a147ae6f950e8b0deacba4971a331c53a2535dbdef9c8e72f0e1a837c57df",
+      "width": 1149,
+      "height": 592,
+      "nonOpaquePixels": 0,
+      "cornerRGBA": [
+        253,
+        253,
+        249,
+        255
+      ],
+      "bytes": 70787,
+      "fontShorthandExpansionCount": 30,
+      "declaredFontFamilies": [
+        "Georgia,serif",
+        "\"IBM Plex Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ]
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/rc37-visual/layers-ch1-detail-screen.svg",
+      "sourceSha256": "42f4047d06f7c05648b95803358b1f3da50cb536b9766b533238e576663b6c64",
+      "normalizedSha256": "0e49e0d3570fa3fa143529062987be51088ddd7ef52fc66379ae548258f24131",
+      "target": "/workspace/scratch/3880d2ad414a/rc37-visual/resvg-fonts/layers-ch1-detail-screen.png",
+      "pngSha256": "a9352f0c3f208b3e7b237201e752f4650c6a2a932c636522e9f81b960eca3260",
+      "width": 1434,
+      "height": 734,
+      "nonOpaquePixels": 0,
+      "cornerRGBA": [
+        253,
+        253,
+        249,
+        255
+      ],
+      "bytes": 108314,
+      "fontShorthandExpansionCount": 30,
+      "declaredFontFamilies": [
+        "Georgia,serif",
+        "\"IBM Plex Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ]
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/rc37-visual/layers-ch1-screen.svg",
+      "sourceSha256": "9601cfd2ed243178a2b3129ec8a8e928104793759f61f5462ad27bf1157e7b28",
+      "normalizedSha256": "3e0161d897dd1a521c727321b008351aafd07c2f84634e720b947fc8e3dd770f",
+      "target": "/workspace/scratch/3880d2ad414a/rc37-visual/resvg-fonts/layers-ch1-screen.png",
+      "pngSha256": "17528ff99ec3698e420358df1f0531d2a2d1fef7fe65893591ae01655c768fa0",
+      "width": 1260,
+      "height": 394,
+      "nonOpaquePixels": 0,
+      "cornerRGBA": [
+        253,
+        253,
+        249,
+        255
+      ],
+      "bytes": 43067,
+      "fontShorthandExpansionCount": 30,
+      "declaredFontFamilies": [
+        "Georgia,serif",
+        "\"IBM Plex Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ]
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/rc37-visual/layers-ch5-screen.svg",
+      "sourceSha256": "a8917ea931aa26f16102faa986aeccd1c19a6ae2bc0fefd41d5684572d60842a",
+      "normalizedSha256": "cbf3ee30109a343f3a2b6b2b32f822032a58e6a87e59c5ed7b23306223ed7224",
+      "target": "/workspace/scratch/3880d2ad414a/rc37-visual/resvg-fonts/layers-ch5-screen.png",
+      "pngSha256": "e43907ecf0bea3bb66cd015608e1d09ffd66da34b7cc09dbc5c68505b5f4be49",
+      "width": 1260,
+      "height": 1184,
+      "nonOpaquePixels": 0,
+      "cornerRGBA": [
+        253,
+        253,
+        249,
+        255
+      ],
+      "bytes": 114720,
+      "fontShorthandExpansionCount": 30,
+      "declaredFontFamilies": [
+        "Georgia,serif",
+        "\"IBM Plex Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ]
+    },
+    {
+      "source": "/workspace/scratch/3880d2ad414a/rc37-visual/layers-ch7-screen.svg",
+      "sourceSha256": "113c5a4a521d93602bc347c14f254a91a1cc38887eace298a20a713de6683461",
+      "normalizedSha256": "54b2bb5a5102bdfb81e8d889f19baaf3351d35fa4a6c9ea498729216527fc3df",
+      "target": "/workspace/scratch/3880d2ad414a/rc37-visual/resvg-fonts/layers-ch7-screen.png",
+      "pngSha256": "8ee9fa7283aef81e2ec7d45b410d1617dfb5610e439649192567324a0c3ab153",
+      "width": 1260,
+      "height": 394,
+      "nonOpaquePixels": 0,
+      "cornerRGBA": [
+        253,
+        253,
+        249,
+        255
+      ],
+      "bytes": 36868,
+      "fontShorthandExpansionCount": 30,
+      "declaredFontFamilies": [
+        "Georgia,serif",
+        "\"IBM Plex Sans\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", sans-serif"
+      ]
+    }
+  ]
+}

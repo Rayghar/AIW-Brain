@@ -1,0 +1,41 @@
+{
+  "schema": "aiw-sol-heldout-v1",
+  "title": "Held-out decisions for evaluating Sol's advice",
+  "authority": "Implementation-authored expectations. They were written from the designs' own readings before Sol was run on these cases, and none of these cases was used to write Sol's instructions, the guards or the provider test double. They are not independent expert review: an architect should review and amend them before any result is relied on.",
+  "defaults": {
+    "forbid": ["\\bguarantee", "\\bproven\\b", "will never fail", "100 ?% (?:available|uptime|availability)", "zero (?:data )?loss", "certif"]
+  },
+  "domains": {
+    "bank-payment": {"template": "bank-payment", "description": "The bank payment reference design: fourteen running parts, three product switch points and three recorded decisions."},
+    "service-permits": {"template": "service-permits", "description": "Citizen service requests: a case-management teaching example with one running part and an illustrative workload of 10 applications a second."},
+    "warehouse-fulfilment": {"template": "warehouse-fulfilment", "description": "Warehouse fulfilment: an operations teaching example with asynchronous fulfilment and an illustrative workload of 20 requests a second."}
+  },
+  "cases": [
+    {"id": "BP-01", "domain": "bank-payment", "ids": ["F:capacity:run-001"], "expect": {"verdicts": ["apply", "refine"], "cite": ["instrument-reading"], "numbers": {"maxReplicas": [20, 60]}, "mention": "load test|assum|measur|per.replica"}, "why": "The desk's arithmetic for the recorded objective calls for 24 replicas. Sound advice takes it or adjusts it modestly, and says the per-replica rate is a planning assumption for a load test to replace."},
+    {"id": "BP-02", "domain": "bank-payment", "ids": ["F:integrity:if-004+rest"], "expect": {"verdicts": ["apply", "refine"], "cite": ["instrument-reading"], "mention": "idempot|duplicate|repeat|retr"}, "why": "Payment requests without an idempotency key or duplicate policy can repeat a financial effect; making them safe to repeat is sound."},
+    {"id": "BP-03", "domain": "bank-payment", "ids": ["F:observability:run-001"], "expect": {"verdicts": ["apply", "refine"], "cite": ["instrument-reading"], "mention": "monitor|alert|signal|detect|observ"}, "why": "A part carrying a critical driver with no recorded monitoring should gain it."},
+    {"id": "BP-04", "domain": "bank-payment", "ids": ["J:security:run-002"], "expect": {"verdicts": ["judge"], "proposals": {"min": 1}}, "why": "No threat is recorded for the risk engine; the desk cannot draft one, so Sol should put the judgement to the architect and propose threats on the listed targets."},
+    {"id": "BP-05", "domain": "bank-payment", "ids": ["D:ADR-001"], "expect": {"verdicts": ["judge"], "preferredIn": ["ALT-001", "ALT-002"]}, "why": "A recorded decision is the architect's to take; Sol may lean with reasons but must leave the choice."},
+    {"id": "BP-06", "domain": "bank-payment", "ids": ["D:ADR-002"], "expect": {"verdicts": ["judge"], "preferredIn": ["ALT-003", "ALT-004"]}, "why": "As BP-05."},
+    {"id": "BP-07", "domain": "bank-payment", "ids": ["F:switch:tr-003"], "expect": {"verdicts": ["apply", "refine"], "cite": ["product-mechanism"], "mention": "kafka|rabbitmq|replay|partition|queue"}, "why": "The drivers lean away from the product in the design; framing the choice as a decision is sound, resting on the products' documented mechanisms."},
+    {"id": "BP-08", "domain": "bank-payment", "ids": ["F:switch:tr-002"], "expect": {"verdicts": ["apply", "refine"], "cite": ["product-mechanism"], "mention": "primary|write|postgres|mongo|partition"}, "why": "The objective passes the single-primary ceiling; the choice deserves to be framed, citing the documented mechanism."},
+    {"id": "BP-09", "domain": "bank-payment", "ids": ["M:2:QD-003"], "expect": {"verdicts": ["apply", "refine", "judge"]}, "why": "A recorded quality scenario; advice may sharpen it but the target stays the business's."},
+    {"id": "BP-10", "domain": "bank-payment", "ids": ["M:7:tr-003"], "expect": {"verdicts": ["judge", "apply", "refine"], "preferredIn": ["TO-005", "TO-006"]}, "why": "A realisation with two options; Sol may lean, the choice stays in Chapter 7."},
+    {"id": "BP-11", "domain": "bank-payment", "ids": ["M:10:run-001"], "expect": {"verdicts": ["refine", "reconsider"], "numbers": {"maxReplicas": [2, 60]}, "mention": "replica|recover|capacity|load"}, "why": "The runtime plan records one replica for a load the desk computes at 3,125 requests a second, and no recovery time; it should not be taken as recorded."},
+    {"id": "BP-12", "domain": "bank-payment", "ids": ["M:8:if-004"], "expect": {"verdicts": ["refine", "reconsider"], "mention": "timeout|idempot|duplicate|retr"}, "why": "The contract records no timeout or duplicate handling on the payment path."},
+    {"id": "BP-13", "domain": "bank-payment", "ids": ["M:9:thr-001"], "expect": {"verdicts": ["apply", "refine", "judge"]}, "why": "A recorded threat; advice may sharpen its wording."},
+    {"id": "BP-14", "domain": "bank-payment", "ids": ["F:capacity:run-002", "F:recovery:run-003", "F:latency:QD-003"], "expect": {"verdicts": ["apply", "refine"], "cite": ["instrument-reading"]}, "why": "A round of three drafted fixes from the desk's own arithmetic; each should be taken or refined, not rejected."},
+    {"id": "SP-01", "domain": "service-permits", "ids": ["F:capacity:run-001"], "expect": {"verdicts": ["reconsider", "insufficient"], "mention": "example|illustrative|not (?:the|this) project|recorded workload|10 (?:applications|requests)|objective|confirm"}, "why": "The 23 replicas rest on the SA Playbook's example target of 100,000 concurrent users, not this project's recorded workload of 10 applications a second, and the project records no scalability driver. Taking the draft as it stands would be unsound."},
+    {"id": "SP-02", "domain": "service-permits", "ids": ["D:ADR-001"], "expect": {"verdicts": ["judge"], "preferredIn": ["ALT-001", "ALT-002"]}, "why": "The architect's decision."},
+    {"id": "SP-03", "domain": "service-permits", "ids": ["M:2:QD-001"], "expect": {"verdicts": ["apply", "refine", "judge"]}, "why": "A recorded quality scenario."},
+    {"id": "SP-04", "domain": "service-permits", "ids": ["M:8:if-001"], "expect": {"verdicts": ["refine", "reconsider"], "mention": "timeout|idempot|duplicate|retr"}, "why": "Submissions arrive with duplicates by the domain's own account; the contract should say how a repeat is handled and how long a caller waits."},
+    {"id": "SP-05", "domain": "service-permits", "ids": ["M:9:thr-001"], "expect": {"verdicts": ["apply", "refine"], "mention": "idempot|replay|duplicate|once"}, "why": "A replay threat; advice should connect it to duplicate handling."},
+    {"id": "SP-06", "domain": "service-permits", "ids": ["M:10:run-001"], "expect": {"verdicts": ["apply", "refine", "reconsider"]}, "why": "A runtime plan with two replicas and no recovery time recorded."},
+    {"id": "WF-01", "domain": "warehouse-fulfilment", "ids": ["F:capacity:run-001"], "expect": {"verdicts": ["reconsider", "insufficient"], "mention": "example|illustrative|not (?:the|this) project|recorded workload|20 requests|objective|confirm"}, "why": "As SP-01: the draft rests on the Playbook's example target, not the project's illustrative 20 requests a second."},
+    {"id": "WF-02", "domain": "warehouse-fulfilment", "ids": ["D:ADR-001"], "expect": {"verdicts": ["judge"]}, "why": "The architect's decision."},
+    {"id": "WF-03", "domain": "warehouse-fulfilment", "ids": ["M:2:QD-001"], "expect": {"verdicts": ["apply", "refine", "judge"]}, "why": "A recorded quality scenario."},
+    {"id": "WF-04", "domain": "warehouse-fulfilment", "ids": ["M:8:if-001"], "expect": {"verdicts": ["refine", "reconsider"], "mention": "timeout|idempot|duplicate|retr"}, "why": "Duplicate submissions and an unavailable adapter are in the domain's own account; the contract should handle both."},
+    {"id": "WF-05", "domain": "warehouse-fulfilment", "ids": ["M:9:thr-001"], "expect": {"verdicts": ["apply", "refine"]}, "why": "A recorded threat."},
+    {"id": "WF-06", "domain": "warehouse-fulfilment", "ids": ["M:10:run-001"], "expect": {"verdicts": ["apply", "refine", "reconsider"]}, "why": "A runtime plan to read against its drivers."}
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "authority": "Automated application acceptance, not rendered-browser verification",
+  "results": [
+    {
+      "test": "architecture-design-validate.mjs",
+      "passed": true,
+      "seconds": 0.98,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nProject storage error Synthetic storage failure\n"
+    },
+    {
+      "test": "read-design-validate.mjs",
+      "passed": false,
+      "seconds": 0.83,
+      "output": "file:///workspace/scratch/240cd2bc9d5a/aiw-explorer/public/architecture-knowledge.js:140\n  if(excerpt.length>20000)throw Error('The architecture source packet exceeds its review limit. Narrow the saved comparison before asking Sol.');\n                                ^\n\nError: The architecture source packet exceeds its review limit. Narrow the saved comparison before asking Sol.\n    at architectureGrounding (file:///workspace/scratch/240cd2bc9d5a/aiw-explorer/public/architecture-knowledge.js:140:33)\n    at intelligencePacket (file:///workspace/scratch/240cd2bc9d5a/aiw-explorer/public/intelligence-context.js:31:21)\n    at file:///workspace/scratch/240cd2bc9d5a/aiw-explorer/read-design-validate.mjs:51:177\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n"
+    },
+    {
+      "test": "persistence-validate.mjs",
+      "passed": true,
+      "seconds": 1.69,
+      "output": "PASS persistence boundaries, recovery gates, source hashes, authority/copy invariants, reuse, stale review, SDD and bounded LLM grounding.\nPASS persistence Worker commands, revision conflict, owner isolation and retained model after reopen.\n"
+    },
+    {
+      "test": "model-alternatives-validate.mjs",
+      "passed": true,
+      "seconds": 9.98,
+      "output": "PASS Model alternatives: durable drafts without model mutation; comparison; coordinated application; unrelated-edit preservation; overlap disclosure; already-applied detection; explicit review; private blob persistence; CAS; storage failure atomicity; retained history and frozen SDD.\nProject storage error Synthetic alternative storage failure\n"
+    },
+    {
+      "test": "model-reversal-validate.mjs",
+      "passed": true,
+      "seconds": 1.12,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nPASS composition reversal: exact previous model restored, counters preserved, current checks invalidated, original reasoning retained, later model edits and references block destructive reversal.\nProject storage error Synthetic storage failure\n"
+    },
+    {
+      "test": "review-validate.mjs",
+      "passed": true,
+      "seconds": 17.89,
+      "output": "PASS Review & Realize: explicit findings and owned actions; five-stage traceability; separate architect/governance/implementation evidence; immutable working and reviewed baselines; source and outcome invalidation; attainable conditional handoff; escaped SDD exports; private R2 snapshots, bounded D1 rows, owner isolation, CAS, failure preservation, and durable reopening.\nProject storage error Synthetic object storage outage\n"
+    },
+    {
+      "test": "knowledge-design-validate.mjs",
+      "passed": true,
+      "seconds": 1.09,
+      "output": "PASS architecture reasoning, source gates, topology composition, reuse, decision and SDD traceability.\nPASS architecture API ownership, saved alternatives, atomic failure recovery and accepted graph persistence.\nPASS governed composition: active claim \u2192 model comparison \u2192 immutable acceptance receipt \u2192 SDD \u2192 withdrawal blocks pending adoption and marks accepted design stale; reviewed link retirement and source refresh recover the task. Withdrawn methods never enter LLM context.\nProject storage error Synthetic storage failure\n"
+    },
+    {
+      "test": "brain-integration-validate.mjs",
+      "passed": true,
+      "seconds": 0.41,
+      "output": "PASS Brain integration: exact source identity, untrusted catalogue, conditional claim review, contradictions, immutable releases, explicit pins, source withdrawal, model/SDD impact, saved-response rejection, repository boundaries, real embedding protocol validation, semantic cache isolation, truthful fallback and owner/revision guards. Provider transport is synthetic.\nProject storage error The knowledge does not match its exact saved reference.\nProject storage error Synthetic knowledge storage failure\n"
+    },
+    {
+      "test": "composition-validate.mjs",
+      "passed": true,
+      "seconds": 2.94,
+      "output": "PASS 8 composition alternatives, 9 architectural counterexamples, reasoning/LLM/SDD/reversal, 6 numerical methods and source-bound measurement calibration.\n"
+    },
+    {
+      "test": "intelligence-validate.mjs",
+      "passed": true,
+      "seconds": 0.43,
+      "output": "PASS LLM: reviewed context, bounded retrieval, server-only credentials, output/source validation, no automatic changes, durable runs, duplicate protection, owner isolation, draft/accepted provenance, stale sources, refusal, timeout, request budget and storage failure. Mock provider; no live LLM call.\n"
+    }
+  ],
+  "passed": false
+}

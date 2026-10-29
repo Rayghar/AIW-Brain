@@ -1,0 +1,37 @@
+{
+  "release": "AIW v0.10.0-rc.10.73.14 (candidate)",
+  "commit": "a9701d9+round-9 working tree",
+  "steps": {
+    "light": 49,
+    "dark": 49,
+    "paired": 49,
+    "onlyLight": [],
+    "onlyDark": []
+  },
+  "errors": {
+    "light": 0,
+    "dark": 0
+  },
+  "failedApi": {
+    "light": 0,
+    "dark": 0
+  },
+  "recordsSame": true,
+  "counts": {
+    "1": 45,
+    "2": 9,
+    "3": 5,
+    "4": 9,
+    "5": 9,
+    "6": 9,
+    "7": 9,
+    "8": "8+8",
+    "9": "12+12",
+    "10": "9+9",
+    "11": "Neighbourhood bike share — Solution Design"
+  },
+  "sddBytes": {
+    "light": 1053651,
+    "dark": 1053651
+  }
+}

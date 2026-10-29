@@ -1,0 +1,166 @@
+/* The journey draft review (round 4, Contract 3): one chapter's proposed records in the shell's stage, their sources in
+   the companion. Each value carries its basis in words (stated, inferred, from upstream, Sol, open question, edited by
+   you), never colour alone. Text is 12 px or larger and wraps; nothing is cut short. */
+.stage.jd-on>:not(.jd){display:none}
+.studio>.stage.jd-on{align-self:stretch;width:100%;min-width:0}
+.jd{container-type:inline-size;width:100%;min-width:0;box-sizing:border-box;align-self:stretch;grid-column:1/-1;display:flex;flex-direction:column;gap:12px;color:var(--green-12)}
+.jd-head{padding:14px 16px;border:1px solid var(--green-5);border-radius:12px;background:var(--sage-1)}
+.jd-kicker{display:block;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--sage-10);font-weight:600}
+.jd-head h2{margin:2px 0 6px;font-family:var(--font-ui);font-weight:600;font-size:21px;line-height:1.25}
+.jd-head h2:focus-visible{outline:2px solid var(--gold-8);outline-offset:3px;border-radius:3px}
+.jd-head>p{margin:6px 0 0;font-size:13px;line-height:1.45;color:var(--sage-11)}
+.jd-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+.jd-actions .btn{min-height:36px}
+.jd-sol{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:10px 0 0;padding:8px 10px;border:1px solid var(--prov-sol-line);border-radius:9px;background:var(--prov-sol-wash);font-size:13px}
+.jd-sol span{flex:1 1 240px;color:var(--sage-11)}
+.jd-sol.accepted{border-color:var(--state-pass-line);background:var(--sage-2)}
+.jd-sol.withheld{border-color:var(--state-draft-line);background:var(--state-draft-wash)}
+.jd-source-note{padding:6px 10px;border-left:3px solid var(--gold-7);background:var(--sage-1)}
+.jd-progress:empty,.jd-message:empty{display:none}
+.jd-progress{font-weight:600}
+.jd-error{color:var(--red-11);font-weight:600}
+.jd-records{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.jd-card{padding:12px 14px;border:1px solid var(--green-4);border-left:4px solid var(--sage-8);border-radius:10px;background:var(--sage-1)}
+.jd-card.saved{border-left-color:var(--green-9);background:var(--sage-1)}
+.jd-card.skipped{opacity:.7;border-left-color:var(--sage-7)}
+.jd-card.blocked{border-left-color:var(--gold-7)}
+.jd-card>header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:start}
+.jd-card>header small{grid-column:1;font-size:12px;color:var(--sage-10)}
+.jd-card>header h3{grid-column:1;margin:0;font-size:15px;line-height:1.35;overflow-wrap:anywhere}
+.jd-card>header .jd-skip{grid-column:2;grid-row:1/span 2;min-height:32px;font-size:13px}
+.jd-saved,.jd-skipped,.jd-blocked{margin:6px 0 0;font-size:13px}
+.jd-blocked{color:var(--gold-11)}
+.jd-fields{display:grid;grid-template-columns:minmax(120px,30%) minmax(0,1fr);gap:6px 12px;margin:10px 0 0}
+.jd-field{display:contents}
+.jd-field dt{font-size:12px;font-weight:600;color:var(--sage-11);line-height:1.4;padding-top:2px}
+.jd-field dd{margin:0;display:flex;flex-direction:column;gap:3px;min-width:0}
+.jd-value{font-size:13px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.jd-field.gap .jd-value{color:var(--prov-open)}
+.jd-field textarea,.jd-field select{width:100%;font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--sage-7);border-radius:7px;background:var(--sage-1)}
+.jd-field textarea:focus-visible,.jd-field select:focus-visible{outline:2px solid var(--gold-8);outline-offset:1px}
+.jd-q{font-size:12px;color:var(--gold-11)}
+.jd-meta{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}
+.jd-tag{display:inline-block;font-size:12px;line-height:1.4;padding:1px 8px;border-radius:999px;border:1px solid var(--green-4);background:var(--sage-2);color:var(--green-11)}
+.jd-tag a{color:inherit}
+.jd-tag.stated{background:var(--sage-2);border-color:var(--prov-stated-line)}.jd-tag.stated::before{content:"“ ";font-weight:700}
+.jd-tag.inferred{background:var(--sage-2);border-color:var(--prov-inferred-line)}.jd-tag.inferred::before{content:"≈ "}
+.jd-tag.upstream{background:var(--sage-2);border-color:var(--sage-7)}.jd-tag.upstream::before{content:"↑ "}
+.jd-tag.gap{background:var(--gold-2);border-color:var(--prov-open-line);color:var(--prov-open)}.jd-tag.gap::before{content:"? "}
+.jd-tag.sol{background:var(--prov-sol-wash);border-color:var(--prov-sol-line)}.jd-tag.sol::before{content:"✦ "}
+.jd-tag.edited{background:var(--sage-1);border-style:dashed}
+.jd-link{border:0;background:none;padding:0;font:inherit;font-size:12px;color:var(--green-11);text-decoration:underline;cursor:pointer}
+.jd-link:focus-visible{outline:2px solid var(--gold-8);outline-offset:2px}
+.jd-extra{margin:8px 0 0;font-size:13px;line-height:1.45}
+.jd-extra code{font-size:12px}
+.jd-gaps{padding:12px 14px;border:1px solid var(--gold-5);border-radius:10px;background:var(--sage-1);font-size:13px}
+.jd-gaps h3{margin:0 0 6px;font-size:14px}
+.jd-gaps ul{margin:0;padding-left:18px}
+#inspector.jd-side{overflow:auto}
+.jd-companion-body{padding:10px 14px;font-size:13px;line-height:1.45;color:var(--green-12)}
+.jd-companion-body h3{margin:12px 0 6px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--sage-10)}
+.jd-passages{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.jd-passages li{padding:6px 8px;border-left:3px solid var(--green-6);background:var(--sage-1);overflow-wrap:anywhere}
+.jd-passages li:target{background:var(--gold-2);border-left-color:var(--gold-7)}
+.jd-passages b{display:block;font-size:12px;color:var(--green-11)}
+.jd-cites{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.jd-cites li{display:flex;flex-direction:column;gap:2px;padding:6px 8px;border:1px solid var(--green-4);border-radius:8px}
+.jd-cites small{font-size:12px;color:var(--sage-10)}
+.jd-note{margin:12px 0 0;font-size:12px;color:var(--sage-10)}
+@container (max-width:560px){.jd-fields{grid-template-columns:1fr}.jd-field dt{padding-top:6px}}
+@media (prefers-reduced-motion:reduce){.jd *{transition:none!important}}
+/* Round 5: while Sol drafts the chapter, the run's step and the seconds it has taken. */
+.jd-sol-progress span{font-weight:600}.jd-sol-progress small{margin-left:4px;color:var(--sage-10)}
+/* Round 6: a draft from the model. The switch between the brief and the model, and the model's lines quoted beside the
+   brief's passages (each list numbers its own P-nnn; a record's tag says which it cites). Wraps at 390 px. */
+.jd-switch{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:10px 0 0;padding:8px 10px;border:1px solid var(--green-4);border-radius:9px;background:var(--sage-2);font-size:13px;line-height:1.45}
+.jd-switch span{flex:1 1 240px;color:var(--sage-11);overflow-wrap:anywhere}
+.jd-switch .jd-mode{min-height:32px;font-size:13px}
+.jd-model-lines li{border-left-color:var(--blue-7);background:var(--sage-2)}
+.jd-model-lines code{font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+/* Round 12: the architecture draft of a grouped project: its job's progress and receipt, then the preview (the
+   proposals per chapter with a sample, every cap with its headroom) and the one reviewed step that applies it. */
+.jd-job,.jd-preview{padding:16px 18px;border:1px solid var(--green-4);border-radius:10px;background:var(--sage-1);font-size:14px;line-height:1.55}
+.jd-preview h3{margin:0 0 8px;font-size:18px;line-height:1.35}
+.jd-chapters{margin:6px 0 0;padding-left:20px}
+.jd-receipt{margin:6px 0 0;font-size:12px;color:var(--sage-10);overflow-wrap:anywhere}
+.jd-table{width:100%;border-collapse:collapse;margin:14px 0 0;font-size:14px;line-height:1.45}
+.jd-table caption{text-align:left;font-weight:600;padding:0 0 4px}
+.jd-table th,.jd-table td{text-align:left;vertical-align:top;padding:9px 8px;border-top:1px solid var(--green-4);overflow-wrap:anywhere}
+.jd-table thead th{font-size:12px;color:var(--sage-11);border-top:0}
+.jd-table tr.over td{color:var(--red-11);font-weight:600}
+.jd-asks{margin:10px 0 0;padding-left:18px}
+.jd-review{display:flex;gap:8px;align-items:center;margin:12px 0 0;font-weight:600}
+.jd-review-progress{margin:18px 0;padding:13px 15px;border:1px solid var(--green-5);border-left:4px solid var(--green-9);border-radius:8px;background:var(--sage-2);line-height:1.5}
+.jd-review-progress b{font-size:1.1em;color:var(--green-11)}
+.jd-page-review{align-items:center;margin:14px 0 8px}
+.jd-page-review small{color:var(--sage-11);line-height:1.4}
+.jd-message{margin:8px 0 0}
+.jd-record-detail{margin:20px 0;padding:18px;border:1px solid var(--green-5);border-radius:10px;background:var(--sage-2)}
+.jd-record-detail>header h3{margin:0;font-size:19px;line-height:1.35}
+.jd-record-detail>header p{margin:4px 0 12px;color:var(--sage-11)}
+.jd-review-card{padding:16px;margin:12px 0;border:1px solid var(--green-4);border-radius:9px;background:var(--sage-1)}
+.jd-review-card h4{font-size:17px;line-height:1.35;margin:4px 0 0;overflow-wrap:anywhere}
+.jd-review-card header small{color:var(--sage-10);font-weight:600}
+.jd-review-card>p{margin:8px 0 0}
+.jd-reasoning{margin:14px 0;padding:12px 14px;border-left:3px solid var(--gold-7);background:var(--sage-2)}
+.jd-reasoning p{margin:3px 0;line-height:1.5;overflow-wrap:anywhere}
+.jd-reasoning b{display:block;font-size:12px;color:var(--sage-10)}
+.jd-theme-review{margin:12px 0;padding:9px 12px;border:1px solid var(--green-4);border-radius:8px}
+.jd-theme-review summary{cursor:pointer;font-weight:600}
+.jd-theme-review ul{margin:9px 0 0;padding-left:20px;max-height:320px;overflow:auto}
+.jd-theme-review li{margin:5px 0}
+.jd-theme-review small{display:block;color:var(--sage-11);overflow-wrap:anywhere}
+.jd-review-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px 16px;margin:14px 0 0}
+.jd-review-field{min-width:0;padding:10px 12px;border-radius:7px;background:var(--sage-2)}
+.jd-review-field dt{font-size:12.5px;font-weight:600;color:var(--sage-11);text-transform:capitalize}
+.jd-review-field dd{margin:4px 0 0;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.jd-review-sources{margin:12px 0;padding:9px 12px;border:1px solid var(--green-4);border-radius:8px;background:var(--sage-2)}
+.jd-review-sources summary{cursor:pointer;font-weight:600}
+.jd-review-sources ul{margin:8px 0;padding-left:20px;max-height:280px;overflow:auto}
+.jd-review-sources li{padding:5px 0;line-height:1.45;overflow-wrap:anywhere}
+.jd-review-sources li p{margin:3px 0;color:var(--sage-11)}
+.jd-review-sources a{color:var(--green-11);text-underline-offset:2px}
+.jd-review-sources small{color:var(--sage-10)}
+.jd-apply-review,.jd-replace{margin:18px 0 0;padding:16px;border:1px solid var(--green-5);border-radius:10px;background:var(--sage-2)}
+.jd-apply-review h3,.jd-replace h3{margin:0 0 5px;font-size:18px}
+.jd-apply-review>p,.jd-replace>p{margin:4px 0 0;line-height:1.5}
+.jd-apply-review:focus,.jd-replace h3:focus{outline:2px solid var(--gold-8);outline-offset:3px}
+.jd-replace{border-left:4px solid var(--gold-8)}
+@media(max-width:600px){
+  .jd-job,.jd-preview{padding:14px 12px}
+  .jd-record-detail{padding:12px 10px;margin:18px 0}
+  .jd-review-card{padding:14px 12px}
+  .jd-review-sources,.jd-apply-review,.jd-replace{padding:12px}
+  .jd-review-progress{padding:12px}
+  .jd-page-review{display:grid;grid-template-columns:1fr;gap:8px}
+  .jd-page-review .btn{width:100%;min-height:44px;justify-content:center}
+  .jd-record-detail>nav .btn{flex:1 1 130px;min-height:44px;white-space:normal;justify-content:center;text-align:center}
+  .jd-table[data-jd-counts]{table-layout:fixed}
+  .jd-table[data-jd-counts] th:first-child{width:42%}
+  .jd-table[data-jd-counts] th:nth-child(2){width:17%}
+  .jd-table[data-jd-counts] th:last-child{width:41%}
+  .jd-table[data-jd-counts] .btn{min-height:44px;padding:6px;white-space:normal;line-height:1.3;overflow-wrap:anywhere;text-align:left}
+  .jd-table[data-jd-caps]{table-layout:fixed;font-size:12px}
+  .jd-table[data-jd-caps] th,.jd-table[data-jd-caps] td{padding:8px 3px;overflow-wrap:anywhere}
+  .jd-table[data-jd-caps] th:first-child{width:42%}
+  .jd-table[data-jd-caps] th:not(:first-child){width:14.5%}
+  .jd-table[data-jd-caps] thead th{font-size:11.5px;line-height:1.3}
+}
+@media(max-width:360px){
+  .jd-job,.jd-preview{padding:12px 9px}
+  .jd-record-detail{padding:10px 8px}
+  .jd-review-card{padding:12px 10px}
+  .jd-table[data-jd-counts] th,.jd-table[data-jd-counts] td{padding:8px 4px}
+  .jd-table[data-jd-caps]{display:block;font-size:13px}
+  .jd-table[data-jd-caps] caption{display:block;padding-bottom:8px}
+  .jd-table[data-jd-caps] thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .jd-table[data-jd-caps] tbody{display:grid;gap:8px}
+  .jd-table[data-jd-caps] tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;padding:12px;border:1px solid var(--green-4);border-radius:8px}
+  .jd-table[data-jd-caps] th,.jd-table[data-jd-caps] td{display:block;width:auto!important;padding:0;border:0;overflow-wrap:normal}
+  .jd-table[data-jd-caps] th[scope=row]{grid-column:1/-1;font-size:14px;line-height:1.4}
+  .jd-table[data-jd-caps] td::before{display:block;color:var(--sage-11);font-size:11.5px;font-weight:600;line-height:1.3}
+  .jd-table[data-jd-caps] td:nth-of-type(1)::before{content:'Held'}
+  .jd-table[data-jd-caps] td:nth-of-type(2)::before{content:'Drafted'}
+  .jd-table[data-jd-caps] td:nth-of-type(3)::before{content:'Bound'}
+  .jd-table[data-jd-caps] td:nth-of-type(4)::before{content:'Headroom'}
+}

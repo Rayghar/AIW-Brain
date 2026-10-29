@@ -1,0 +1,274 @@
+{
+  "schema": "aiw.focused-validation.v1",
+  "release": "AIW v0.10.0-rc.10.73.35+studio.20261020",
+  "status": "passed",
+  "namedValidationSuites": 28,
+  "uniqueRecordedCommands": 33,
+  "checks": [
+    {
+      "command": "node driver-led-journey-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-grounding-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json",
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node read-design-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json",
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node persistence-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-case-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node payment-case-journey-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node --input-type=module (inline before/after ordering parity check)",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node anatomy-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node exchange-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-driver-journey-results.json"
+      ]
+    },
+    {
+      "command": "node model-dossier-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node canvas-controls-dom-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node model-journey-continuity-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-arrangement-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node view-experience-dom-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node notation-export-context-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node notation-code-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node --input-type=module",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-model-refinement-results.json"
+      ]
+    },
+    {
+      "command": "node interfaces-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node outcome-design-journey-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-operation-continuation-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node read-outcome-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-operation-group-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-operation-group-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-native-integration-results.json"
+      ]
+    },
+    {
+      "command": "node read-outcome-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node composition-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node execution-composition-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node outcome-contract-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node outcome-context-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node architecture-intelligence-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "evidence": [
+        "rc35-read-outcome-results.json"
+      ]
+    },
+    {
+      "command": "node check-syntax.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "modules": 836
+    },
+    {
+      "command": "node build.mjs",
+      "via": "Sites build-site.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "serverModules": 237,
+      "note": "Packaged imports, vendored provider loading, gzip/plain assets and ETag revalidation verified."
+    }
+  ],
+  "note": "Results combine observed targeted commands and independent parity checks. Repeated impacted checks are deduplicated; the entire historical corpus was not rerun."
+}

@@ -1,0 +1,68 @@
+// Synthetic fixtures only. These assertions never record a human approval.
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {richProject,blankProject} from './sdd-fixtures.mjs';
+import {httpOperation,exportSpecification} from './public/standards-domain.js';
+import {outputStage,documentListHTML} from './public/output-documents.js';
+import {implementationHandoffNeeds,applyFinalReviewCommand} from './public/review-domain.js';
+import {sddDocument,architectureFigureSet,frozenFigureSet} from './public/sdd-document.js';
+import {exportInterfacesMarkdown} from './public/interfaces-domain.js';
+import {sha256} from './public/brain-integrity.js';
+const {document:p}=await richProject(),blank=blankProject(),before=JSON.stringify(p),checks=[];
+assert.deepEqual(httpOperation('POST /payments · illustrative'),{method:'post',path:'/payments',qualifier:'illustrative'});
+assert.equal(httpOperation('POST /payments extra words'),null);
+const q=structuredClone(p),c=q.interfaces.contracts.find(c=>c.kind==='request');
+c.operation='POST /bounded-pilot · illustrative';c.authorization='';c.retryPolicy='';
+q.interfaces.contracts.push({...c,id:'duplicate-fixture'});
+q.interfaces.contracts.push({...c,id:'unparsed-fixture',operation:'human description only'});
+const api=exportSpecification(q,'openapi');
+assert.equal(api.paths['/bounded-pilot'].post['x-aiw-contract'].qualifier,'illustrative');
+assert.equal(api.paths['/bounded-pilot'].post['x-aiw-contract'].authorization,'Not recorded');
+assert.ok(api['x-aiw-export-gaps'].some(g=>g.id==='duplicate-fixture'));
+assert.ok(api['x-aiw-export-gaps'].some(g=>g.id==='unparsed-fixture'));
+assert.ok(outputStage(q,8).now.find(d=>d.id==='contracts').formats.includes('openapi'));
+checks.push('HTTP suffixes retain their illustrative receipt; unparseable and duplicate endpoints produce explicit gaps, with no invented authorization');
+const dataOnly=structuredClone(blank);dataOnly.interfaces.data.push(structuredClone(p.interfaces.data[0]));
+delete dataOnly.interfaces.data[0].schema;
+dataOnly.interfaces.data[0].fields.push({id:'field-money-fixture',name:'unmappedMoney',type:'money',description:'Synthetic amount without wire schema',currency:'USD',enumeration:'',required:false});
+const schemas=exportSpecification(dataOnly,'schemas');
+assert.ok(schemas.$defs[dataOnly.interfaces.data[0].id]);assert.ok(!schemas.paths&&!schemas.channels&&!schemas.openapi);
+assert.equal(schemas.$defs[dataOnly.interfaces.data[0].id].properties.unmappedMoney.type,undefined,'a logical money type is not an invalid JSON Schema type or an invented representation');
+assert.ok(schemas['x-aiw-export-gaps'].some(g=>g.field==='unmappedMoney'));
+assert.ok(outputStage(dataOnly,8).now.some(d=>d.id==='schemas'));
+assert.ok(outputStage(dataOnly,11).now.some(d=>d.id==='sdd'));
+assert.throws(()=>exportSpecification(p,'original-spec','missing'),/retained imported specification/);
+const event=structuredClone(p.interfaces.contracts.find(c=>c.kind==='event'));event.operation='';dataOnly.interfaces.contracts.push(event);
+const asyncapi=exportSpecification(dataOnly,'asyncapi');assert.equal(asyncapi.channels[event.id].address,null);assert.ok(asyncapi['x-aiw-export-gaps'].some(g=>g.id===event.id));
+checks.push('Data-only design has a named schemas export and working SDD; missing event addresses and absent original imports remain explicit');
+const md=exportInterfacesMarkdown(q);assert.match(md,/Authority and access: Not recorded/);assert.match(md,/Retry: Not recorded/);
+assert.match(sddDocument(blank,{figures:false}).status.status,/Empty template/);
+assert.ok(!documentListHTML(blank,1).includes('data-out-download="Requirements register'));
+assert.ok(implementationHandoffNeeds(blank,null).length>=2);
+assert.throws(()=>applyFinalReviewCommand(blank,{type:'review.handoff',payload:{acknowledge:true}}),/architect-reviewed baseline/);
+for(const f of ['requirements','quality','decisions','logical-ui','realisation-ui','technology-ui','technology-realisation-ui','interfaces-ui','security-ui','runtime-ui']){
+ const line=readFileSync('public/'+f+'.js','utf8').split('\n').find(l=>l.includes('function handoff()'));assert.match(line,/disabled title="Resolve the prerequisite above first"/);assert.match(line,/Acknowledging records the handoff/);
+}
+checks.push('Empty templates and prerequisite failures cannot masquerade as design readiness; server handoff guard remains enforced');
+const set=architectureFigureSet(p),wanted=['drivers','decisions','logical','solution','stack','sequence','security','rationale'];
+for(const id of wanted)assert.ok(set.figures.some(f=>f.key==='chapter:'+id),'saved chapter model '+id);
+assert.equal(new Set(set.figures.map(f=>f.n)).size,set.figures.length);
+for(const f of set.figures)assert.equal(sha256(f.svg),f.sha256);
+const old=frozenFigureSet(p,{id:'BL-synthetic',markdown:'<!-- aiw:cover -->'});assert.ok(old.figures.every(f=>!f.key.startsWith('chapter:')));
+const current=frozenFigureSet(p,{id:'BL-synthetic',markdown:'<!-- aiw:cover -->\n<!-- aiw:chapter-models -->'});assert.ok(current.figures.some(f=>f.key==='chapter:security'));
+const executive=sddDocument(p,{edition:'executive'});assert.ok(executive.figures.figures.some(f=>f.key==='context'));assert.match(executive.markdown,/System context/);
+assert.equal(sddDocument(p,{edition:'executive',figures:false}).figures,null);
+assert.equal(architectureFigureSet(blank).figures.length,0);
+checks.push('Canonical chapter models and executive context carry verified hashes, old baselines keep their earlier figure identity, empty chapters invent no picture, figure-free executive remains available');
+assert.equal(JSON.stringify(p),before);
+const [{default:worker},{localDatabase}]=await Promise.all([import('./worker.js'),import('./local-db.js')]);
+const env={DB:localDatabase(':memory:'),ASSETS:{fetch:()=>new Response('asset')}};
+const get=path=>worker.fetch(new Request('https://aiw.test'+path,{headers:{'oai-authenticated-user-id':'synthetic-output-test'}}),env);
+const saved=await(await get('/api/project')).json(),files=[];
+for(const [format,field]of [['openapi','paths'],['asyncapi','channels'],['schemas','$defs']]){
+ const response=await get('/api/export?chapter=8&format='+format);assert.equal(response.status,200);const result=await response.json();assert.ok(result[field]);assert.match(result['x-aiw-posture'],/No live conformance claimed/);files.push(response.headers.get('Content-Disposition'));
+}
+assert.equal(new Set(files).size,3,'different files cannot overwrite each other');
+assert.equal((await(await get('/api/project')).json()).revision,saved.revision,'exports are read-only');
+checks.push('Authenticated Worker routes return each named specification format with unique filenames and preserve the saved project revision');
+console.log(JSON.stringify({passed:checks.length,checks},null,2));

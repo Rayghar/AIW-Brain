@@ -1,0 +1,10 @@
+// Existing architecture context projection, shared without importing the
+// comparison orchestrator. Callers supply their canonical normalized answers.
+import {COMPOSITION_SLOTS} from './composition-manifest.js';
+import {copy} from './util.js';
+export function architectureTaskContext(p,a,contexts={}) {
+  const ids=[...COMPOSITION_SLOTS.map(k=>a[k+'Id']),...Object.keys(a).filter(k=>k.startsWith('support_')&&k.endsWith('Id')).map(k=>a[k]),a.callerId,a.processorId,a.queueId,a.capabilityId,a.boundaryId,a.cacheId,a.storeId,a.recoveryId,a.backupCapabilityId,a.recoveryCapabilityId].filter(Boolean);
+  const records=[...p.realisation.components,...p.technology.capabilities,...p.technology.boundaries,...((Object.hasOwn(a,'freshness')||Object.hasOwn(a,'transactionScope'))?[...p.interfaces.parties,...p.technologyRealisation.records]:[])];
+  const needs=p.technology.needs.filter(n=>ids.includes(n.applicationId));
+  return {...(a.compositionTopic?{compositionDependencies:p.technology.dependencies.filter(d=>ids.includes(d.from)||ids.includes(d.to)).map(copy),compositionContracts:p.interfaces.contracts.filter(c=>ids.includes(c.from)||ids.includes(c.to)).map(copy),compositionImplementations:p.technologyRealisation.records.filter(r=>p.technologyRealisation.mappings.some(m=>m.realizationId===r.id&&ids.includes(m.capabilityId))).map(copy)}:{}),...(a.compositionTopic&&a.dataId?{compositionData:copy(p.interfaces.data.find(d=>d.id===a.dataId)||{id:a.dataId,removed:true})}:{}),...contexts,records:ids.map(id=>copy(records.find(r=>r.id===id)||{id,removed:true})),allocations:p.logical.mappings.filter(m=>ids.includes(m.physicalId)).map(copy),interactions:p.realisation.connections.filter(e=>ids.includes(e.from)||ids.includes(e.to)).map(copy),needs:needs.map(copy),applicationBoundaries:Object.fromEntries(ids.filter(id=>p.realisation.components.some(c=>c.id===id)).map(id=>[id,p.technology.applicationBoundaries[id]||null])),support:p.technology.mappings.filter(m=>ids.includes(m.capabilityId)||needs.some(n=>n.id===m.needId)).map(copy)};
+}

@@ -1,0 +1,787 @@
+{
+  "projectId": "project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+  "fixture": "UI-authored synthetic clinic project, created blank and carried through Chapters 1\u201311. No real stakeholder approval, provider generation or production execution.",
+  "preservedRevision": 82,
+  "finalProductionBuild": {
+    "entry": "app-EGGGDY6S.js",
+    "css": "app-bb38cdfb641c.css",
+    "entrySHA256": "2e9a1fd6d8a3918a0a81a2ed9e9dbfdeef78877f662cd8037e8a597ca3ab67c3"
+  },
+  "buildSequence": [
+    {
+      "build": "app-JEYY45XJ.js",
+      "scope": "44 chapter/tab surfaces with full native/shared Model and UI action walkthrough"
+    },
+    {
+      "build": "app-N3STZ3PP.js",
+      "scope": "Corrected all4 C10 contexts and skipped Work/Validate/Output actions; C5 dynamic-menu remainder; Working-draft baseline capture and frozen exports"
+    },
+    {
+      "build": "app-ZIBBVAWD.js",
+      "scope": "Truthful governance wording browser regression with unchanged project"
+    },
+    {
+      "build": "app-EGGGDY6S.js",
+      "scope": "C8 Data flow native proposal review/editor/cancel/dismiss; unchanged saved project and no browser errors"
+    },
+    {
+      "build": "app-EGGGDY6S.js + app-bb38cdfb641c.css",
+      "scope": "C10 Not placed tray actual expand/collapse after Fit; pointer interception fixed; unchanged document"
+    }
+  ],
+  "chapterTabSurfaces": 44,
+  "uniqueModelViewPairs": 78,
+  "modelViews": [
+    {
+      "chapter": 1,
+      "view": "boundary"
+    },
+    {
+      "chapter": 1,
+      "view": "cross"
+    },
+    {
+      "chapter": 1,
+      "view": "diagram"
+    },
+    {
+      "chapter": 1,
+      "view": "layers"
+    },
+    {
+      "chapter": 1,
+      "view": "map"
+    },
+    {
+      "chapter": 1,
+      "view": "table"
+    },
+    {
+      "chapter": 1,
+      "view": "whole"
+    },
+    {
+      "chapter": 2,
+      "view": "cross"
+    },
+    {
+      "chapter": 2,
+      "view": "diagram"
+    },
+    {
+      "chapter": 2,
+      "view": "layers"
+    },
+    {
+      "chapter": 2,
+      "view": "table"
+    },
+    {
+      "chapter": 2,
+      "view": "tree"
+    },
+    {
+      "chapter": 2,
+      "view": "tune"
+    },
+    {
+      "chapter": 2,
+      "view": "whole"
+    },
+    {
+      "chapter": 3,
+      "view": "cross"
+    },
+    {
+      "chapter": 3,
+      "view": "diagram"
+    },
+    {
+      "chapter": 3,
+      "view": "layers"
+    },
+    {
+      "chapter": 3,
+      "view": "map"
+    },
+    {
+      "chapter": 3,
+      "view": "matrix"
+    },
+    {
+      "chapter": 3,
+      "view": "table"
+    },
+    {
+      "chapter": 3,
+      "view": "whole"
+    },
+    {
+      "chapter": 4,
+      "view": "coverage"
+    },
+    {
+      "chapter": 4,
+      "view": "cross"
+    },
+    {
+      "chapter": 4,
+      "view": "diagram"
+    },
+    {
+      "chapter": 4,
+      "view": "layers"
+    },
+    {
+      "chapter": 4,
+      "view": "map"
+    },
+    {
+      "chapter": 4,
+      "view": "table"
+    },
+    {
+      "chapter": 4,
+      "view": "whole"
+    },
+    {
+      "chapter": 5,
+      "view": "components"
+    },
+    {
+      "chapter": 5,
+      "view": "cross"
+    },
+    {
+      "chapter": 5,
+      "view": "diagram"
+    },
+    {
+      "chapter": 5,
+      "view": "layers"
+    },
+    {
+      "chapter": 5,
+      "view": "specification"
+    },
+    {
+      "chapter": 5,
+      "view": "table"
+    },
+    {
+      "chapter": 5,
+      "view": "whole"
+    },
+    {
+      "chapter": 6,
+      "view": "cross"
+    },
+    {
+      "chapter": 6,
+      "view": "diagram"
+    },
+    {
+      "chapter": 6,
+      "view": "failure"
+    },
+    {
+      "chapter": 6,
+      "view": "layers"
+    },
+    {
+      "chapter": 6,
+      "view": "platform"
+    },
+    {
+      "chapter": 6,
+      "view": "table"
+    },
+    {
+      "chapter": 6,
+      "view": "whole"
+    },
+    {
+      "chapter": 7,
+      "view": "cross"
+    },
+    {
+      "chapter": 7,
+      "view": "diagram"
+    },
+    {
+      "chapter": 7,
+      "view": "layers"
+    },
+    {
+      "chapter": 7,
+      "view": "options"
+    },
+    {
+      "chapter": 7,
+      "view": "stack"
+    },
+    {
+      "chapter": 7,
+      "view": "table"
+    },
+    {
+      "chapter": 7,
+      "view": "whole"
+    },
+    {
+      "chapter": 8,
+      "view": "cross"
+    },
+    {
+      "chapter": 8,
+      "view": "data"
+    },
+    {
+      "chapter": 8,
+      "view": "diagram"
+    },
+    {
+      "chapter": 8,
+      "view": "layers"
+    },
+    {
+      "chapter": 8,
+      "view": "table"
+    },
+    {
+      "chapter": 8,
+      "view": "whole"
+    },
+    {
+      "chapter": 9,
+      "view": "coverage"
+    },
+    {
+      "chapter": 9,
+      "view": "cross"
+    },
+    {
+      "chapter": 9,
+      "view": "diagram"
+    },
+    {
+      "chapter": 9,
+      "view": "layers"
+    },
+    {
+      "chapter": 9,
+      "view": "model"
+    },
+    {
+      "chapter": 9,
+      "view": "table"
+    },
+    {
+      "chapter": 9,
+      "view": "whole"
+    },
+    {
+      "chapter": 10,
+      "view": "cross"
+    },
+    {
+      "chapter": 10,
+      "view": "deploy"
+    },
+    {
+      "chapter": 10,
+      "view": "diagram"
+    },
+    {
+      "chapter": 10,
+      "view": "failure"
+    },
+    {
+      "chapter": 10,
+      "view": "layers"
+    },
+    {
+      "chapter": 10,
+      "view": "table"
+    },
+    {
+      "chapter": 10,
+      "view": "whole"
+    },
+    {
+      "chapter": 11,
+      "view": "board"
+    },
+    {
+      "chapter": 11,
+      "view": "cross"
+    },
+    {
+      "chapter": 11,
+      "view": "diagram"
+    },
+    {
+      "chapter": 11,
+      "view": "layers"
+    },
+    {
+      "chapter": 11,
+      "view": "load"
+    },
+    {
+      "chapter": 11,
+      "view": "table"
+    },
+    {
+      "chapter": 11,
+      "view": "trace"
+    },
+    {
+      "chapter": 11,
+      "view": "vitals"
+    },
+    {
+      "chapter": 11,
+      "view": "whole"
+    }
+  ],
+  "deepRun": {
+    "surfaces": 44,
+    "expectedSurfaces": 44,
+    "modelViews": 75,
+    "clickEvents": 2745,
+    "uniqueObservedButtons": 3251,
+    "clickedObservedButtons": 1021,
+    "disabledObservedButtons": 216,
+    "remainingEnabledButtons": 2014,
+    "claim": "Observed button coverage only. This is not exhaustive proof of every conditional button or every business outcome."
+  },
+  "followup": {
+    "surfaces": 6,
+    "expectedSurfaces": null,
+    "modelViews": 4,
+    "clickEvents": 245,
+    "uniqueObservedButtons": 387,
+    "clickedObservedButtons": 96,
+    "disabledObservedButtons": 31,
+    "remainingEnabledButtons": 260,
+    "claim": "Observed button coverage only. This is not exhaustive proof of every conditional button or every business outcome."
+  },
+  "recordedClickEventsInListedMainRuns": 4642,
+  "recordedInteractionEventsIncludingSupplements": 5808,
+  "modelGapActualClicks": 117,
+  "modelRemainingActualClicks": 45,
+  "shellGroupedChecks": 15,
+  "shellSupplementActualClicks": 23,
+  "outputForwardChecks": {
+    "actualClicks": 14,
+    "routes": [
+      {
+        "chapter": 4,
+        "selector": "[data-l-action=\"chapter5\"]",
+        "label": "Open Chapter 5 Work",
+        "disclosureExpanded": true,
+        "destination": 5,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 5,
+        "selector": "[data-a-action=\"technology-intake\"]",
+        "label": "Open Chapter 6 Work",
+        "disclosureExpanded": true,
+        "destination": 6,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 6,
+        "selector": "[data-t-action=\"chapter7\"]",
+        "label": "Open Chapter 7 Work",
+        "disclosureExpanded": true,
+        "destination": 7,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 7,
+        "selector": "[data-tr-action=\"chapter8\"]",
+        "label": "Open Interfaces & data",
+        "disclosureExpanded": true,
+        "destination": 8,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 8,
+        "selector": "[data-i-action=\"chapter9\"]",
+        "label": "Open Security",
+        "disclosureExpanded": true,
+        "destination": 9,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 9,
+        "selector": "[data-sec-action=\"chapter10\"]",
+        "label": "Open Deployment / runtime",
+        "disclosureExpanded": true,
+        "destination": 10,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      },
+      {
+        "chapter": 10,
+        "selector": "[data-rt-action=\"chapter11\"]",
+        "label": "Open Review & realize",
+        "disclosureExpanded": true,
+        "destination": 11,
+        "tab": "work",
+        "beforeRevision": 82,
+        "afterRevision": 82,
+        "unchanged": true
+      }
+    ],
+    "errors": [],
+    "status": "passed"
+  },
+  "conditionalMeaningfulSave": {
+    "title": "Synthetic QA conditional editor save",
+    "purpose": "Isolated test group created by the final button-family check; no production architecture or approval claim.",
+    "savedRecord": {
+      "id": "GRP-001",
+      "title": "Synthetic QA conditional editor save",
+      "purpose": "Isolated test group created by the final button-family check; no production architecture or approval claim.",
+      "provenance": {
+        "author": {
+          "kind": "person",
+          "by": "local-architect",
+          "at": "2026-10-18T10:39:45.737Z"
+        }
+      }
+    },
+    "saved": true
+  },
+  "conditionalVisibleChecks": {
+    "actualClickEvents": 50,
+    "coveredFamilies": [
+      "data-r-action=mind",
+      "data-brain-launch=mind",
+      "data-q-action=mind",
+      "data-d-action=mind",
+      "data-l-action=mind",
+      "data-a-action=mind",
+      "data-t-action=mind",
+      "data-tr-action=mind",
+      "data-i-action=mind",
+      "data-sec-action=mind",
+      "data-rt-action=mind",
+      "data-rv-action=mind",
+      "data-object-page=[record]",
+      "data-object-history=",
+      "data-rt-action=dismiss-seed",
+      "data-rt-action=keep-seed",
+      "data-rt-action=inspect"
+    ],
+    "applicationExceptions": [],
+    "previewOnlyOutcome": {
+      "before": "Own the decision to allocate an available appointment and return its stable booking outcome.",
+      "after": "Own the decision to allocate an available appointment and return its stable booking outcome.",
+      "saved": false,
+      "interpretation": "Existing responsibility used Preview impact, so its stored purpose correctly remained unchanged; this was not a Save submission. Separate synthetic group Save persisted."
+    }
+  },
+  "conditionalGapChecks": {
+    "actualClickEvents": 707,
+    "distinctPreviouslyUnclickedFamilies": 107,
+    "applicationExceptions": [],
+    "remainingBranches": [
+      {
+        "family": "label=Record treatment",
+        "reason": "Finding-treatment submission was not reached; native remedy navigation and editor validation were exercised, without recording an unsupported review disposition."
+      },
+      {
+        "family": "data-close-review=",
+        "reason": "Requires a valid changed editor submission to open the shared review-change confirmation; this pass exercised native editor open, steps, validation and cancel paths."
+      },
+      {
+        "family": "label=Confirm selected after review",
+        "reason": "Requires the shared review-change confirmation after a valid changed submission; no confirmation was asserted merely to increase coverage."
+      },
+      {
+        "family": "data-a-action=technology-intake",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-i-action=chapter9",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-i-action=select-contract",
+        "reason": "Requires the selected external party\u2019s related-contract list; that conditional party branch was not reached in this bounded pass."
+      },
+      {
+        "family": "data-l-action=chapter5",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rv-action=content-report",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rv-action=delivery-stage",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-sec-action=chapter10",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-t-action=chapter7",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-tr-action=chapter8",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-tr-action=compare",
+        "reason": "The current-plan Review comparison shortcut was not exposed on the visited plan/compare paths; the comparison section, assessment and preference controls were clicked."
+      },
+      {
+        "family": "data-rt-action=chapter11",
+        "reason": "Unvisited closed-disclosure branch: this native control is composed inside .output-handoff-panel. Prior visible-only checks did not open its summary; they do not establish missing DOM or a retired alias."
+      },
+      {
+        "family": "data-rt-action=inspect",
+        "reason": "Requires an environment/zone inspector or affected operating-plan list; this pass selected the operating record rather than that conditional inspector branch."
+      },
+      {
+        "family": "label=Undo last saved input review",
+        "reason": "Requires the transient undo notice immediately after a new Chapter 3 input-review save; that save was not executed during this pass."
+      }
+    ]
+  },
+  "nativeGapSummaries": {
+    "actualClicksIncludingRetries": 199,
+    "disclosureOpens": 28,
+    "pageErrors": 0,
+    "requestFailures": 0,
+    "allProjectHashesUnchanged": true
+  },
+  "nativeGapGuardedOrUnavailable": [
+    {
+      "chapter": 4,
+      "action": "l.preview review",
+      "reason": "This proposal is already saved in the shared project. Existing saved responsibility remains; no proposal fabricated."
+    },
+    {
+      "chapter": 10,
+      "action": "rt.ghost isolate",
+      "reason": "No proposal created in this fixture; independent standby prerequisite not fulfilled. Controlled-restoration (recover) proposal succeeds."
+    },
+    {
+      "chapter": 4,
+      "action": "spark.fill",
+      "reason": "No eligible local field values offered in the empty responsibility editor; no field fill executed."
+    },
+    {
+      "chapter": 8,
+      "action": "i.field",
+      "reason": "Not exposed in sampled record disclosure context; not claimed clicked."
+    },
+    {
+      "chapter": 10,
+      "action": "rt.assumptions",
+      "reason": "Not clicked: script looked after final walkthrough stage, while this action belongs to quality/controls stage. Remains uncovered by this pass."
+    },
+    {
+      "chapter": 9,
+      "action": "sec.simulate",
+      "reason": "Not exercised by this bounded pass."
+    }
+  ],
+  "remainingProductFindings": [],
+  "supplementalFindingResolution": {
+    "earlierFindings": [
+      {
+        "chapter": 8,
+        "action": "i.ghost reference creates an active proposal, but native review/edit/dismiss unavailable in data-flow companion even with Details open.",
+        "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-c8-proposal-2026-10-18T10-30-28-638Z/results.json",
+        "status": "Reported to parent and model owner; production unchanged by this pass.",
+        "resolution": {
+          "status": "Fixed and independently verified",
+          "build": "app-EGGGDY6S.js",
+          "evidence": "/workspace/scratch/8e11d52a9a55/rethink_qa/native-c8-fixed-2026-10-18T10-37-39-975Z/results.json",
+          "outcome": "Native review/edit visible in Model Data flow; editor Cancel retains preview; explicit Dismiss clears preview; saved project unchanged; zero errors."
+        }
+      }
+    ],
+    "c8": {
+      "build": "app-EGGGDY6S.js",
+      "outcomes": [
+        {
+          "family": "C8 native proposal in Data flow: review, cancel and dismiss",
+          "status": "passed",
+          "preview": {
+            "url": "http://127.0.0.1:41427/?chapter=8&tab=model&object=if-001&model=data&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c",
+            "hasProposal": true
+          },
+          "dataView": true,
+          "panelBefore": "open",
+          "nativeReviewVisible": true,
+          "editorOpened": true,
+          "cancelRetainsProposal": true,
+          "dismissed": true,
+          "projectUnchanged": true,
+          "finalURL": "http://127.0.0.1:41427/?chapter=8&tab=model&object=if-001&model=data&project=project-8fe1bbc3-e38a-4b29-963e-6299dd50d79c"
+        }
+      ],
+      "errors": [],
+      "requestFailures": []
+    }
+  },
+  "resolvedFindings": [
+    {
+      "finding": "C5 menu inventory became stale after state changes",
+      "classification": "harness",
+      "resolution": "Options tested before state changes; unavailable dynamic menus rechecked; four shared views passed."
+    },
+    {
+      "finding": "C10 Co-design referenced undefined selectedPlan in Work/Validate/Output",
+      "classification": "application",
+      "resolution": "Canonical currentPlan context used; four tabs plus missed editor/validation/output paths passed on N3STZ3PP."
+    },
+    {
+      "finding": "Working-draft governance dialog described capture author as architect reviewer",
+      "classification": "application wording",
+      "resolution": "Unreviewed baseline and capture author distinguished; actual browser open passed with no writes on ZIBBVAWD."
+    }
+  ],
+  "focusedRetestFailures": [],
+  "focusedRetestPageErrors": [],
+  "mainRunErrorsRetained": [
+    "selectedPlan is not defined",
+    "selectedPlan is not defined",
+    "selectedPlan is not defined"
+  ],
+  "mainRunFailedAttemptsRetained": [
+    {
+      "label": "Final chapter 5 model",
+      "message": "locator.click: Timeout 6000ms exceeded."
+    },
+    {
+      "label": "Final chapter 10 work",
+      "message": "locator.click: Timeout 6000ms exceeded."
+    },
+    {
+      "label": "Final chapter 10 validate",
+      "message": "locator.click: Timeout 6000ms exceeded."
+    },
+    {
+      "label": "Final chapter 10 output",
+      "message": "locator.click: Timeout 6000ms exceeded."
+    }
+  ],
+  "networkNotes": "Cancelled ERR_ABORTED requests during deliberate rapid navigation/download changes are retained in raw logs. Early staging-index rebuild 404, old network-idle waits and interrupted fixture runs are excluded from the final release-path status.",
+  "downloads": {
+    "uniqueFiles": 41,
+    "formats": [
+      ".docx",
+      ".html",
+      ".json",
+      ".md",
+      ".ndjson",
+      ".pdf",
+      ".zip"
+    ]
+  },
+  "commandCoverage": {
+    "evidenceRuns": [
+      "authored-2026-10-18T09-48-56-409Z",
+      "repair-2026-10-18T09-58-04-399Z",
+      "finish-author-2026-10-18T10-01-39-970Z",
+      "verify-2026-10-18T10-02-54-920Z",
+      "exports-2026-10-18T10-05-51-977Z",
+      "exports-2026-10-18T10-12-31-387Z",
+      "final-followup-2026-10-18T10-21-07-463Z",
+      "gap-model/model-command-evidence.json",
+      "native-families-2026-10-18T10-24-28-850Z/results.json",
+      "rethink_qa/native-gap-closure-evidence.json",
+      "rethink_qa/conditional-family-clicks-compact.json",
+      "rethink_qa/native-c8-fixed-2026-10-18T10-37-39-975Z/results.json",
+      "rethink_qa/gap-shell/targeted-shell-merged.json",
+      "rethink_qa/conditional-visible-closure.json",
+      "rethink_qa/remaining-model/remaining-model-evidence.json",
+      "rethink_qa/conditional-save-outcome.json",
+      "rethink_qa/output-forward-2026-10-18T10-44-36-543Z/results.json",
+      "gap-shell/shell-coverage.json"
+    ],
+    "raw44EnabledSelectorGaps": 2014,
+    "raw44GapCommandFamilies": 324,
+    "raw44GapsInFamiliesClickedElsewhere": 1744,
+    "raw44GapsInUnexercisedFamilies": 270,
+    "observedCommandFamilies": 666,
+    "clickedCommandFamilies": 570,
+    "unexercisedEnabledCommandFamilies": 73,
+    "disabledCommandFamilies": 23,
+    "definition": "A family shares a primary action attribute/value across chapter, tab, record and repeated observations. One tested family is not proof of all instances or parameter choices. Enabled status means enabled in at least one recorded observation; conditional or hidden final-UI aliases remain described separately.",
+    "remainingByCategory": {
+      "provider preparation; sending requires connected provider": 5,
+      "local conditional action/editor": 47,
+      "local design proposal or simulation": 12,
+      "local Model control or analysis": 3,
+      "requires genuine review or delivery evidence": 1,
+      "local source/import fixture needed": 2,
+      "collaboration or publication branch": 1,
+      "local shell/resource controls": 2
+    }
+  },
+  "coverageLimit": "This is observed control coverage, not every button or every conditional business outcome. The CSV explicitly retains unexercised enabled families. A family tested on one record does not prove every record or parameter instance.",
+  "deferred": [
+    "Live provider generation and connection verification: no provider credentials configured. Context packets were inspected without sending.",
+    "External governance/sign-off and implementation handoff: no genuine independent approval was fabricated; native prerequisites remain enforced.",
+    "Delivery verification and measured runtime/security evidence: local simulations are not implementation proof.",
+    "Remaining enabled local actions, record-specific alternatives, source/import paths and lifecycle mutations are enumerated in browser-command-families.csv."
+  ],
+  "evidenceRuns": [
+    "authored-2026-10-18T09-48-56-409Z",
+    "repair-2026-10-18T09-58-04-399Z",
+    "finish-author-2026-10-18T10-01-39-970Z",
+    "verify-2026-10-18T10-02-54-920Z",
+    "exports-2026-10-18T10-05-51-977Z",
+    "exports-2026-10-18T10-12-31-387Z",
+    "final-followup-2026-10-18T10-21-07-463Z",
+    "governance-wording-2026-10-18T10-25-50-962Z"
+  ],
+  "supplementalEvidence": {
+    "model": [
+      "gap-model/model-command-evidence.json",
+      "remaining-model/remaining-model-evidence.json"
+    ],
+    "shell": [
+      "gap-shell/shell-coverage.json",
+      "gap-shell/targeted-shell-merged.json"
+    ],
+    "native": "native-gap-closure-evidence.json",
+    "conditional": [
+      "conditional-family-clicks-compact.json",
+      "conditional-visible-closure.json",
+      "conditional-save-outcome.json"
+    ],
+    "c8": "native-c8-fixed-2026-10-18T10-37-39-975Z/results.json",
+    "outputForward": "output-forward-2026-10-18T10-44-36-543Z/results.json"
+  }
+}

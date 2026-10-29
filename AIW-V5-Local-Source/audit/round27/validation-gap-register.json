@@ -1,0 +1,247 @@
+{
+  "schema": 1,
+  "workstream": "W3 Validate and D04 reversible actions",
+  "base": {
+    "siteVersion": 88,
+    "commitPrefix": "430b046"
+  },
+  "status": "implementation tested locally; final combined build, full regression and deployment owned by root",
+  "generatedAt": "2026-10-16T22:20:27.544Z",
+  "rows": [
+    {
+      "ids": [
+        "R26-V-01",
+        "R26-V-07"
+      ],
+      "status": "done",
+      "change": "Shared native filter/run contract across all eleven chapters; first populated category, named filter tiles, one Run-checks hook/toast.",
+      "files": [
+        "public/validate-view.js",
+        "public/requirements-scale.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-02",
+        "R26-V-14"
+      ],
+      "status": "done",
+      "change": "Next-three guidance, cause disclosures, dense groups collapsed at seven records, SDD disclosure, record chips and compact Validate cards.",
+      "files": [
+        "public/validate-view.js",
+        "public/validate.css"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-03",
+        "R26-V-13",
+        "R26-V-17"
+      ],
+      "status": "done",
+      "change": "Full cause/kind names; technology needs group by TN identity with parent application; missing brief records have meaningful group names.",
+      "files": [
+        "public/readiness-model.js",
+        "public/validate-view.js",
+        "public/technology-ui.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-05"
+      ],
+      "status": "done",
+      "change": "Focused case reading offered only when a case exists; otherwise explicit Chapter11 create link; invalid case route falls back to readiness.",
+      "files": [
+        "public/validate-view.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-06"
+      ],
+      "status": "done_with_correction",
+      "change": "Treat terminology and structured fixChapter destinations; inherited subset is labelled but retained in canonical header/SDD totals. Never parse English instructions to infer a fix route.",
+      "files": [
+        "public/validate-view.js",
+        "public/logical-domain.js",
+        "public/review-ui.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-08"
+      ],
+      "status": "done_with_scope",
+      "change": "Explicit reviewed selection confirms supported native record definitions only, with reviewer, basis, current-project guard and authenticated journal actor. Chapters3/7/9/11 retain their specialized individual acceptance/evidence/approval workflows.",
+      "files": [
+        "public/validation-confirmation-domain.js",
+        "public/validation-confirmation.js",
+        "worker.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-09",
+        "R26-V-10"
+      ],
+      "status": "done",
+      "change": "Eight initial model prompts plus Show all; Chapter11 trace/anti-pattern prompts; cause rule explanation and record links. No verdict from an assumed capacity example.",
+      "files": [
+        "public/validation-models.js",
+        "public/readiness-model.js",
+        "public/validate-view.js",
+        "public/review-ui.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-11",
+        "R26-V-15"
+      ],
+      "status": "done",
+      "change": "Not run yet and current/stale wording distinguishes live counts from a saved check stamp.",
+      "files": [
+        "public/validate-view.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-V-16",
+        "R26-V-18"
+      ],
+      "status": "done",
+      "change": "Empty Chapter11 source/action passages require confirmation, never pass vacuously; own checks separated visibly from inherited findings and counting scales; review/baseline preconditions; draft destination caption.",
+      "files": [
+        "public/readiness-model.js",
+        "public/review-ui.js",
+        "public/validate-view.js"
+      ]
+    },
+    {
+      "ids": [
+        "R26-W-25"
+      ],
+      "status": "done",
+      "change": "Data owner matching a component/responsibility/contract/party raises a warning to name accountable person/team; it neither verifies identity nor rewrites owner.",
+      "files": [
+        "public/interfaces-domain.js"
+      ]
+    },
+    {
+      "ids": [
+        "D04"
+      ],
+      "status": "done",
+      "change": "Server-issued latest-action receipts and revision/actor/guard checks; native inverse commands; walkthrough withdrawal preserves observation and history; previous acceptance/governance never restored.",
+      "files": [
+        "public/action-undo-domain.js",
+        "public/project-store.js",
+        "worker.js",
+        "public/decisions-domain.js",
+        "public/technology-realisation-domain.js",
+        "public/technology-domain.js",
+        "public/runtime-domain.js"
+      ]
+    },
+    {
+      "ids": [
+        "C6-proposal-authority"
+      ],
+      "status": "done",
+      "change": "Keeping a proposed need records keptAt but leaves confirmed=false; source snapshot is retained without claiming review; the legacy template-wording inference recognizes the kept draft.",
+      "files": [
+        "public/technology-domain.js"
+      ]
+    }
+  ],
+  "verification": [
+    {
+      "test": "readiness-validate.mjs",
+      "status": "passed",
+      "groups": 9
+    },
+    {
+      "test": "validation-confirmation-validate.mjs",
+      "status": "passed",
+      "groups": 9,
+      "note": "Includes synthetic authenticated review and kept-as-draft regression; latest small full-label assertions awaiting rerun."
+    },
+    {
+      "test": "action-undo-validate.mjs",
+      "status": "passed",
+      "groups": 7
+    },
+    {
+      "test": "action-undo-api-validate.mjs",
+      "status": "passed",
+      "groups": 5,
+      "note": "Real worker Request/Response handler, SQLite, private file adapter, createProjectStore and section deltas. This is an in-process HTTP integration, not hosted browser execution."
+    },
+    {
+      "test": "quality-validate.mjs",
+      "status": "passed",
+      "note": "Native domain/API and DOM studio tests; explicit selection, choose/save and review/handoff retained."
+    },
+    {
+      "test": "decisions-validate.mjs",
+      "status": "passed",
+      "note": "Native domain/API and DOM studio tests; explicit Compare stage before choose, comparison evidence and recording preconditions retained."
+    },
+    {
+      "test": "round27-validate-browser.mjs",
+      "status": "passed",
+      "checks": 17,
+      "evidence": "evidence/round27/validate-1792188699120/results.json",
+      "providerCalls": 0,
+      "note": "Actual Playwright Chromium, all11 frame contracts; native check save; C1 cause action; TN own-ID/parent; C8 dense fold under900words; C11 empty obligation/divider;390px keyboard/nooverflow. Last wording-only kind-name/arrow change not rerun in Chromium."
+    }
+  ],
+  "failuresPreserved": [
+    {
+      "evidence": "evidence/round27/validate-1792187233157/results.json",
+      "reason": "Chapter11 inherited cause title still elided; fixed."
+    },
+    {
+      "evidence": "evidence/round27/validate-1792187560891/results.json",
+      "reason": "Same exact title expression not replaced by first attempt; fixed the actual expression."
+    },
+    {
+      "evidence": "evidence/round27/validate-1792187858919/results.json",
+      "reason": "Navigation timeout after12 passing checks during host memory pressure. No page/API error. Later bounded run passed17."
+    }
+  ],
+  "unverified": [
+    {
+      "impact": "medium",
+      "item": "Actual Chromium submission of the multi-record confirmation dialog; domain and request/store path are verified."
+    },
+    {
+      "impact": "medium",
+      "item": "Hosted latest-action Undo and authentication in the deployed private service; local HTTP/store path verified."
+    },
+    {
+      "impact": "release",
+      "item": "Combined source build, full existing regression suites, deployment/archive identity and hosted smoke checks pending root final evidence."
+    }
+  ],
+  "scopeDecisions": [
+    {
+      "id": "R26-V-06",
+      "reason": "Canonical chapterChecks/SDD totals continue including inherited findings; removing them would conceal unresolved obligations. The subset is labelled separately."
+    },
+    {
+      "id": "R26-V-08",
+      "reason": "No batch decision acceptance, measured evidence, governance approval or SDD sign-off. Definition confirmation remains a real explicit user action; tests use named synthetic fixtures."
+    },
+    {
+      "id": "R26-V-04/R26-V-12",
+      "reason": "Root owns inspector arrival/editor focus; relevant C2/C3 suites updated and passed here."
+    }
+  ],
+  "noClaims": [
+    "No real architect approval was authored by this implementation work.",
+    "No OpenAI request or real payment measurement was performed in this workstream.",
+    "No deployment is claimed from these local tests."
+  ]
+}

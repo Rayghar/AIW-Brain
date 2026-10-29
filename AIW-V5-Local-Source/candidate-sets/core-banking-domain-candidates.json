@@ -1,0 +1,1994 @@
+{
+  "schemaVersion": "aiw-domain-candidates-v1",
+  "packId": "CB-DOMAIN-CANDIDATES-1",
+  "version": 1,
+  "revision": "CB-DOMAIN-CANDIDATES-1 v1 2026-10-08",
+  "title": "Core-banking domain knowledge prepared as candidates: decision topics, compliance tactics and regulation records, core platform product categories, recovery and availability passages and the posting method",
+  "domain": "core-banking",
+  "lens": {
+    "id": "core-banking",
+    "version": 1
+  },
+  "status": "candidate",
+  "approval": {
+    "status": "pending",
+    "fourEyes": false,
+    "approvedBy": null,
+    "approvedAt": null,
+    "releaseId": null,
+    "decision": null
+  },
+  "productionAccepted": false,
+  "influence": {
+    "scoring": false,
+    "constraints": false,
+    "conformance": false,
+    "drafter": false,
+    "brain": false,
+    "lens": false
+  },
+  "preparedBy": "Sol, AIW round 12 workstream K (drafted, not reviewed by a person)",
+  "preparedOn": "2026-10-08",
+  "reviewPack": "audit/round12/DOMAIN-KNOWLEDGE-REVIEW-PACK.md",
+  "authority": "Candidate only. Nothing in this file is approved, released or active, and no runtime module reads it. A record becomes knowledge only when the four-eyes knowledge approver attaches its exact passage as a source (knowledge.source), writes its claim on that passage (knowledge.claim), a second person verifies the claim (knowledge.review), and the claim is released and pinned (knowledge.release, knowledge.activate), in a project or once for an organisation. Released, it is offered to the chapters by its shape (public/domain-knowledge.js); before, it informs no score, hard constraint, conformance result, draft, retrieval or lens reading.",
+  "sourcePolicy": "A passage is held only where its exact text is in this repository: AIW's own method text (origin aiw-authored) or the SA Playbook text the structured pack holds (origin sa-playbook). No third-party passage is held, retrieved or hashed, and no rights were checked. Every regulation record and every product fact needs its passage from a real source (sourcesNeeded); a record with no held passage cannot become a claim until the approver attaches one. \"located\" says how a title and section were found: here, always from the drafter's reading, not confirmed, or not located.",
+  "shapes": {
+    "topic": {
+      "subject": "decision-topic:",
+      "predicate": "offers a decision topic",
+      "tags": [
+        "title",
+        "question",
+        "concern"
+      ]
+    },
+    "tactic": {
+      "subject": "tactic:",
+      "predicate": "offers a tactic for",
+      "tags": [
+        "quality",
+        "name",
+        "concern"
+      ]
+    },
+    "product": {
+      "subject": "product:",
+      "predicate": "states a product fact",
+      "tags": [
+        "technology",
+        "version"
+      ]
+    },
+    "regulation": {
+      "subject": "regulation:",
+      "predicate": "records a regulation",
+      "tags": [
+        "regulator",
+        "instrument",
+        "section",
+        "effective",
+        "jurisdiction"
+      ]
+    },
+    "method": {
+      "subject": "method:",
+      "predicate": "describes a method",
+      "tags": [
+        "title",
+        "concern"
+      ]
+    }
+  },
+  "counts": {
+    "records": 39,
+    "decisionTopics": 7,
+    "tactics": 5,
+    "regulations": 12,
+    "productCategories": 6,
+    "playbookPassages": 7,
+    "methods": 2,
+    "heldPassages": 21,
+    "sourceNeeded": 18
+  },
+  "records": [
+    {
+      "id": "CBK-TOPIC-POSTING-INTEGRITY",
+      "kind": "decision-topic",
+      "gap": "GR-DOM-03",
+      "status": "candidate",
+      "concernIds": [
+        "posting"
+      ],
+      "title": "Posting integrity",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TOPIC-POSTING-INTEGRITY",
+        "text": "Where is a balanced posting enforced, and how is a repeated instruction recognised?\nDecide which component keeps the general ledger and checks that each posting's debits equal its credits in each currency before it is committed; how each posting carries a reference unique to its originator, so that a repeated instruction posts once; and how a posted entry is corrected only by a reversing entry. Compare one posting service that every product calls with posting inside each product module, against the integrity, availability and performance drivers.",
+        "lines": 2,
+        "sha256": "43f5cc9e0a48960a47c2f489b440b350a69bc408ab8307959519b621c4bc37ca",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "decision-topic:posting-integrity",
+        "predicate": "offers a decision topic",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "statement": "Decide which component keeps the general ledger and checks that each posting's debits equal its credits in each currency before it is committed; how each posting carries a reference unique to its originator, so that a repeated instruction posts once; and how a posted entry is corrected only by a reversing entry. Compare one posting service that every product calls with posting inside each product module, against the integrity, availability and performance drivers.",
+        "conditions": [
+          "A core-banking design that has to decide posting integrity."
+        ],
+        "limitations": [
+          "It frames the decision and what to compare; it chooses nothing and states no value."
+        ],
+        "tags": [
+          "title:Posting integrity",
+          "question:Where is a balanced posting enforced, and how is a repeated instruction recognised?",
+          "concern:posting",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TOPIC-END-OF-DAY",
+      "kind": "decision-topic",
+      "gap": "GR-DOM-03",
+      "status": "candidate",
+      "concernIds": [
+        "eod",
+        "value-dating"
+      ],
+      "title": "End of day",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TOPIC-END-OF-DAY",
+        "text": "What runs at end of day, in what order and window, and what stays online?\nDecide the end-of-day window, the posting cut-off and how the business date rolls; the order of the steps and which step waits for which; how a failed step restarts without posting twice; and which services stay online during the run and which date their postings take. Compare a run that stops posting with an online end of day in which postings after the cut-off take the next business date, against the availability and operability drivers.",
+        "lines": 2,
+        "sha256": "dfd4590c8985a029a77d4c3a472916b0d4ce5ad10fc1578598805aa23635da2f",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "decision-topic:end-of-day",
+        "predicate": "offers a decision topic",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "statement": "Decide the end-of-day window, the posting cut-off and how the business date rolls; the order of the steps and which step waits for which; how a failed step restarts without posting twice; and which services stay online during the run and which date their postings take. Compare a run that stops posting with an online end of day in which postings after the cut-off take the next business date, against the availability and operability drivers.",
+        "conditions": [
+          "A core-banking design that has to decide end of day."
+        ],
+        "limitations": [
+          "It frames the decision and what to compare; it chooses nothing and states no value."
+        ],
+        "tags": [
+          "title:End of day",
+          "question:What runs at end of day, in what order and window, and what stays online?",
+          "concern:eod",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TOPIC-APPROVAL-WORKFLOW",
+      "kind": "decision-topic",
+      "gap": "GR-DOM-03",
+      "status": "candidate",
+      "concernIds": [
+        "maker-checker"
+      ],
+      "title": "Approval workflow",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TOPIC-APPROVAL-WORKFLOW",
+        "text": "Which actions need a second person, and where is that enforced?\nDecide which transactions and which changes to parameters, users and limits need a checker; where the rule is enforced: one approval service, or each module; how approval limits route an item and where it escalates; and how one person is kept from both entering and approving the same item. Compare a central workflow with approvals built into each module, against the security, traceability and operability drivers.",
+        "lines": 2,
+        "sha256": "d8b1227405327ac10375f50026bf09b3fc9a7b230e0c256b10c446cb98b71951",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "decision-topic:approval-workflow",
+        "predicate": "offers a decision topic",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "statement": "Decide which transactions and which changes to parameters, users and limits need a checker; where the rule is enforced: one approval service, or each module; how approval limits route an item and where it escalates; and how one person is kept from both entering and approving the same item. Compare a central workflow with approvals built into each module, against the security, traceability and operability drivers.",
+        "conditions": [
+          "A core-banking design that has to decide approval workflow."
+        ],
+        "limitations": [
+          "It frames the decision and what to compare; it chooses nothing and states no value."
+        ],
+        "tags": [
+          "title:Approval workflow",
+          "question:Which actions need a second person, and where is that enforced?",
+          "concern:maker-checker",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TOPIC-PRODUCT-PARAMETERS",
+      "kind": "decision-topic",
+      "gap": "GR-DOM-03",
+      "status": "candidate",
+      "concernIds": [
+        "product-config",
+        "interest"
+      ],
+      "title": "Product parameters",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TOPIC-PRODUCT-PARAMETERS",
+        "text": "How are products and their parameters defined, dated and changed?\nDecide where products and their parameters (rates, tariffs, limits, fees) are defined; how a change is dated so that past transactions keep the values that applied to them; who approves a change before it takes effect; and whether a new product needs a software release. Compare a product factory that every module reads with parameters held in each module, against the maintainability and integrity drivers.",
+        "lines": 2,
+        "sha256": "abe33f19e9a0599a17bacc58ee6f66ed8f8d39b8feefba74a1241f95ee3a6812",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "decision-topic:product-parameters",
+        "predicate": "offers a decision topic",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "statement": "Decide where products and their parameters (rates, tariffs, limits, fees) are defined; how a change is dated so that past transactions keep the values that applied to them; who approves a change before it takes effect; and whether a new product needs a software release. Compare a product factory that every module reads with parameters held in each module, against the maintainability and integrity drivers.",
+        "conditions": [
+          "A core-banking design that has to decide product parameters."
+        ],
+        "limitations": [
+          "It frames the decision and what to compare; it chooses nothing and states no value."
+        ],
+        "tags": [
+          "title:Product parameters",
+          "question:How are products and their parameters defined, dated and changed?",
+          "concern:product-config",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TOPIC-CURRENCIES",
+      "kind": "decision-topic",
+      "gap": "GR-DOM-03",
+      "status": "candidate",
+      "concernIds": [
+        "fx"
+      ],
+      "title": "Currencies",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TOPIC-CURRENCIES",
+        "text": "How are amounts held in several currencies, valued and revalued?\nDecide how every amount carries its currency; where exchange rates come from and which rate applies to a transaction; how a cross-currency posting balances in each currency; and when foreign balances are revalued and where the gains and losses are posted. Compare one ledger with currency position accounts with a ledger per currency, against the integrity and reporting drivers.",
+        "lines": 2,
+        "sha256": "a2e70a687e716905f1606a42133cae56e4e1efcfae91441998bc93fbadf90257",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "decision-topic:currencies",
+        "predicate": "offers a decision topic",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "statement": "Decide how every amount carries its currency; where exchange rates come from and which rate applies to a transaction; how a cross-currency posting balances in each currency; and when foreign balances are revalued and where the gains and losses are posted. Compare one ledger with currency position accounts with a ledger per currency, against the integrity and reporting drivers.",
+        "conditions": [
+          "A core-banking design that has to decide currencies."
+        ],
+        "limitations": [
+          "It frames the decision and what to compare; it chooses nothing and states no value."
+        ],
+        "tags": [
+          "title:Currencies",
+          "question:How are amounts held in several currencies, valued and revalued?",
+          "concern:fx",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TOPIC-REGULATORY-REPORTING",
+      "kind": "decision-topic",
+      "gap": "GR-DOM-03",
+      "status": "candidate",
+      "concernIds": [
+        "reporting"
+      ],
+      "title": "Regulatory reporting",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TOPIC-REGULATORY-REPORTING",
+        "text": "How is each regulatory return produced from the ledger and reconciled to it?\nDecide which returns are due, to which authority and by when; from which records each return is built and how its totals reconcile to the ledger; which returns are produced automatically and which by hand; and who checks a return before it is submitted. Compare returns built from a reporting store refreshed from the ledger with returns built from extracts, against the compliance and traceability drivers.",
+        "lines": 2,
+        "sha256": "e57baa754c8b66c6b0ed17b299d12ebd60dfa3bc0e250a64fbeb32ae85464a86",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "decision-topic:regulatory-reporting",
+        "predicate": "offers a decision topic",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "statement": "Decide which returns are due, to which authority and by when; from which records each return is built and how its totals reconcile to the ledger; which returns are produced automatically and which by hand; and who checks a return before it is submitted. Compare returns built from a reporting store refreshed from the ledger with returns built from extracts, against the compliance and traceability drivers.",
+        "conditions": [
+          "A core-banking design that has to decide regulatory reporting."
+        ],
+        "limitations": [
+          "It frames the decision and what to compare; it chooses nothing and states no value."
+        ],
+        "tags": [
+          "title:Regulatory reporting",
+          "question:How is each regulatory return produced from the ledger and reconciled to it?",
+          "concern:reporting",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TOPIC-DATA-RESIDENCY",
+      "kind": "decision-topic",
+      "gap": "GR-DOM-03",
+      "status": "candidate",
+      "concernIds": [
+        "privacy"
+      ],
+      "title": "Data residency",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TOPIC-DATA-RESIDENCY",
+        "text": "Where may customer data live, and how is it kept there?\nDecide in which country or region customer data must stay; which zones, providers and backups may hold it; how personal data is protected in transit, at rest and outside production; and what a provider outside the boundary may receive. Compare holding the data in the country with a provider's region, against the residency constraint and the availability and cost drivers.",
+        "lines": 2,
+        "sha256": "b7e5c1b9afc46675c6ef3ccdff013db4b743d8d103dcdd41ea2a40e74058cbe5",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "decision-topic:data-residency",
+        "predicate": "offers a decision topic",
+        "claimType": "definition",
+        "polarity": "neutral",
+        "statement": "Decide in which country or region customer data must stay; which zones, providers and backups may hold it; how personal data is protected in transit, at rest and outside production; and what a provider outside the boundary may receive. Compare holding the data in the country with a provider's region, against the residency constraint and the availability and cost drivers.",
+        "conditions": [
+          "A core-banking design that has to decide data residency."
+        ],
+        "limitations": [
+          "It frames the decision and what to compare; it chooses nothing and states no value."
+        ],
+        "tags": [
+          "title:Data residency",
+          "question:Where may customer data live, and how is it kept there?",
+          "concern:privacy",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TAC-OBLIGATIONS-REGISTER",
+      "kind": "quality-tactic",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "reporting",
+        "audit"
+      ],
+      "title": "Obligations register",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TAC-OBLIGATIONS-REGISTER",
+        "text": "Keep a register of the obligations that apply to the platform, each naming its regulator, instrument and section.\nMap each obligation to the design records that meet it and to the tests or reports that show it is met.\nWhen an obligation changes, open the records it maps to for review.",
+        "lines": 3,
+        "sha256": "57e6d829b9878450e0deba2c5b7626c4e0812d1ebe6ae1c5b8b017e30c718b1f",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "tactic:obligations-register",
+        "predicate": "offers a tactic for",
+        "claimType": "mitigation",
+        "polarity": "supports",
+        "statement": "Keep a register of the obligations that apply to the platform, each naming its regulator, instrument and section. Map each obligation to the design records that meet it and to the tests or reports that show it is met. When an obligation changes, open the records it maps to for review.",
+        "conditions": [
+          "The platform is subject to named regulation or contractual obligations."
+        ],
+        "limitations": [
+          "The register shows where an obligation is met; it does not interpret the law, and a person who can name the jurisdiction keeps it current."
+        ],
+        "tags": [
+          "quality:compliance",
+          "name:Obligations register",
+          "concern:reporting",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 3
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TAC-DATED-REGULATORY-PARAMETERS",
+      "kind": "quality-tactic",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "product-config",
+        "maker-checker"
+      ],
+      "title": "Regulatory parameters as dated configuration",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TAC-DATED-REGULATORY-PARAMETERS",
+        "text": "Hold regulatory parameters (limits, thresholds, customer tiers, retention periods, reporting dates) as configuration with an effective date.\nChange them under maker-checker, never in code, so that a past transaction keeps the values that applied to it.",
+        "lines": 2,
+        "sha256": "79547db2d066a7e5ec5b4bbe416d9d5ef74e841a4f10a330221549b251dda951",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "tactic:dated-regulatory-parameters",
+        "predicate": "offers a tactic for",
+        "claimType": "mitigation",
+        "polarity": "supports",
+        "statement": "Hold regulatory parameters (limits, thresholds, customer tiers, retention periods, reporting dates) as configuration with an effective date. Change them under maker-checker, never in code, so that a past transaction keeps the values that applied to it.",
+        "conditions": [
+          "Regulation sets values the platform must apply, and they change over time."
+        ],
+        "limitations": [
+          "It says where the values live and how they change, not what they are: each value comes from the instrument that sets it."
+        ],
+        "tags": [
+          "quality:compliance",
+          "name:Regulatory parameters as dated configuration",
+          "concern:product-config",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TAC-EVIDENCE-FROM-RECORDS",
+      "kind": "quality-tactic",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "audit"
+      ],
+      "title": "Evidence from the platform's own records",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TAC-EVIDENCE-FROM-RECORDS",
+        "text": "Produce the evidence that an obligation is met from records the platform already keeps: the audit history, the reconciled ledger, the approval records.\nProduce it on request and for a period, rather than assembling it by hand.",
+        "lines": 2,
+        "sha256": "c38d48d416954d23166451239b4c368a8541044f7e29fa9547d53811bd1d2456",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "tactic:evidence-from-records",
+        "predicate": "offers a tactic for",
+        "claimType": "mitigation",
+        "polarity": "supports",
+        "statement": "Produce the evidence that an obligation is met from records the platform already keeps: the audit history, the reconciled ledger, the approval records. Produce it on request and for a period, rather than assembling it by hand.",
+        "conditions": [
+          "An auditor, a regulator or a customer may ask for evidence that an obligation is met."
+        ],
+        "limitations": [
+          "The evidence is only as good as the records: an audit history that can be changed proves nothing."
+        ],
+        "tags": [
+          "quality:compliance",
+          "name:Evidence from the platform's own records",
+          "concern:audit",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TAC-RETURNS-RECONCILED",
+      "kind": "quality-tactic",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "reporting"
+      ],
+      "title": "Returns reconciled to the ledger before submission",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TAC-RETURNS-RECONCILED",
+        "text": "Build each regulatory return from the ledger, or from a reporting store refreshed from it.\nReconcile the return's totals to the ledger before it is submitted, and keep the reconciliation with the return.",
+        "lines": 2,
+        "sha256": "2e2937891f2d2adb8a4f5b5613dc096436b9f7ca88e53268f6248452c4deb26e",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "tactic:returns-reconciled",
+        "predicate": "offers a tactic for",
+        "claimType": "mitigation",
+        "polarity": "supports",
+        "statement": "Build each regulatory return from the ledger, or from a reporting store refreshed from it. Reconcile the return's totals to the ledger before it is submitted, and keep the reconciliation with the return.",
+        "conditions": [
+          "The platform submits regulatory returns built from its records."
+        ],
+        "limitations": [
+          "Which returns are due, and their format, come from the regulator's own rules."
+        ],
+        "tags": [
+          "quality:compliance",
+          "name:Returns reconciled to the ledger before submission",
+          "concern:reporting",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [
+        {
+          "title": "BCBS 239, Principles for effective risk data aggregation and risk reporting",
+          "edition": "January 2013",
+          "section": "Principles 3 and 7",
+          "supports": "That risk data and reports are accurate and reconcilable with the bank's sources; AIW's tactic follows it, and the approver checks that it does.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-TAC-RETENTION-BY-RULE",
+      "kind": "quality-tactic",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "audit",
+        "privacy"
+      ],
+      "title": "Retention by rule",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-TAC-RETENTION-BY-RULE",
+        "text": "Keep each record for the period its obligation sets.\nWhen the period ends, remove or anonymise the record by rule and record the removal; a legal hold stops the rule for the records it names.",
+        "lines": 2,
+        "sha256": "e2b1507a1a72dd180bc5f902739e3d46b84d4f6ec1081f7a58a82e94337230a7",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "tactic:retention-by-rule",
+        "predicate": "offers a tactic for",
+        "claimType": "mitigation",
+        "polarity": "supports",
+        "statement": "Keep each record for the period its obligation sets. When the period ends, remove or anonymise the record by rule and record the removal; a legal hold stops the rule for the records it names.",
+        "conditions": [
+          "Obligations set how long records are kept, and data protection law how long personal data may be."
+        ],
+        "limitations": [
+          "The periods come from the instruments that set them; this tactic states none."
+        ],
+        "tags": [
+          "quality:compliance",
+          "name:Retention by rule",
+          "concern:audit",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 2
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-REG-FATF-R10",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "kyc"
+      ],
+      "title": "The FATF Recommendations: International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation · Recommendation 10, Customer due diligence",
+      "regulator": "Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+      "instrument": "The FATF Recommendations: International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation",
+      "section": "Recommendation 10, Customer due diligence",
+      "effective": "Adopted February 2012, as updated; pin the version in force",
+      "jurisdiction": "Every FATF member jurisdiction, through its own law",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:fatf-r10",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: Every FATF member jurisdiction, through its own law."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+          "instrument:The FATF Recommendations: International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation",
+          "section:Recommendation 10, Customer due diligence",
+          "effective:Adopted February 2012, as updated; pin the version in force",
+          "jurisdiction:Every FATF member jurisdiction, through its own law"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-PAT-RISK-BASED-CDD"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "The FATF Recommendations: International Standards on Combating Money Laundering and the Financing of Terrorism and Proliferation",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Recommendation 10, Customer due diligence",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-FATF-R11",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "kyc",
+        "audit"
+      ],
+      "title": "The FATF Recommendations · Recommendation 11, Record-keeping",
+      "regulator": "Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+      "instrument": "The FATF Recommendations",
+      "section": "Recommendation 11, Record-keeping",
+      "effective": "Adopted February 2012, as updated; pin the version in force",
+      "jurisdiction": "Every FATF member jurisdiction, through its own law",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:fatf-r11",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: Every FATF member jurisdiction, through its own law."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+          "instrument:The FATF Recommendations",
+          "section:Recommendation 11, Record-keeping",
+          "effective:Adopted February 2012, as updated; pin the version in force",
+          "jurisdiction:Every FATF member jurisdiction, through its own law"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-TAC-KYC-RECORD-KEEPING"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "The FATF Recommendations",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Recommendation 11, Record-keeping",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-FATF-R16",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "aml",
+        "payments"
+      ],
+      "title": "The FATF Recommendations · Recommendation 16, Wire transfers",
+      "regulator": "Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+      "instrument": "The FATF Recommendations",
+      "section": "Recommendation 16, Wire transfers",
+      "effective": "Adopted February 2012, as updated; pin the version in force, as this recommendation has been revised",
+      "jurisdiction": "Every FATF member jurisdiction, through its own law",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:fatf-r16",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: Every FATF member jurisdiction, through its own law."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+          "instrument:The FATF Recommendations",
+          "section:Recommendation 16, Wire transfers",
+          "effective:Adopted February 2012, as updated; pin the version in force, as this recommendation has been revised",
+          "jurisdiction:Every FATF member jurisdiction, through its own law"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-TAC-WIRE-TRANSFER-DATA"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "The FATF Recommendations",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Recommendation 16, Wire transfers",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-FATF-R20",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "aml"
+      ],
+      "title": "The FATF Recommendations · Recommendation 20, Reporting of suspicious transactions",
+      "regulator": "Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+      "instrument": "The FATF Recommendations",
+      "section": "Recommendation 20, Reporting of suspicious transactions",
+      "effective": "Adopted February 2012, as updated; pin the version in force",
+      "jurisdiction": "Every FATF member jurisdiction, through its own law",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:fatf-r20",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: Every FATF member jurisdiction, through its own law."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:Financial Action Task Force (an intergovernmental standard setter, not a regulator)",
+          "instrument:The FATF Recommendations",
+          "section:Recommendation 20, Reporting of suspicious transactions",
+          "effective:Adopted February 2012, as updated; pin the version in force",
+          "jurisdiction:Every FATF member jurisdiction, through its own law"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-TAC-TRANSACTION-MONITORING"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "The FATF Recommendations",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Recommendation 20, Reporting of suspicious transactions",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-BCBS239-P3",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "reporting"
+      ],
+      "title": "BCBS 239 · Principle 3, Accuracy and integrity",
+      "regulator": "Basel Committee on Banking Supervision (a standard setter; national supervisors apply it)",
+      "instrument": "BCBS 239, Principles for effective risk data aggregation and risk reporting (January 2013)",
+      "section": "Principle 3, Accuracy and integrity",
+      "effective": "January 2016 for global systemically important banks; a national supervisor sets it for others",
+      "jurisdiction": "Where the national supervisor applies it",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:bcbs239-p3",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: Where the national supervisor applies it."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:Basel Committee on Banking Supervision (a standard setter; national supervisors apply it)",
+          "instrument:BCBS 239, Principles for effective risk data aggregation and risk reporting (January 2013)",
+          "section:Principle 3, Accuracy and integrity",
+          "effective:January 2016 for global systemically important banks; a national supervisor sets it for others",
+          "jurisdiction:Where the national supervisor applies it"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-PAT-RETURNS-FROM-LEDGER"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "BCBS 239, Principles for effective risk data aggregation and risk reporting (January 2013)",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Principle 3, Accuracy and integrity",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-BCBS239-P7",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "reporting"
+      ],
+      "title": "BCBS 239 · Principle 7, Accuracy",
+      "regulator": "Basel Committee on Banking Supervision (a standard setter; national supervisors apply it)",
+      "instrument": "BCBS 239, Principles for effective risk data aggregation and risk reporting (January 2013)",
+      "section": "Principle 7, Accuracy",
+      "effective": "January 2016 for global systemically important banks; a national supervisor sets it for others",
+      "jurisdiction": "Where the national supervisor applies it",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:bcbs239-p7",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: Where the national supervisor applies it."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:Basel Committee on Banking Supervision (a standard setter; national supervisors apply it)",
+          "instrument:BCBS 239, Principles for effective risk data aggregation and risk reporting (January 2013)",
+          "section:Principle 7, Accuracy",
+          "effective:January 2016 for global systemically important banks; a national supervisor sets it for others",
+          "jurisdiction:Where the national supervisor applies it"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-PAT-RETURNS-FROM-LEDGER"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "BCBS 239, Principles for effective risk data aggregation and risk reporting (January 2013)",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Principle 7, Accuracy",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-EU-GDPR-ART5",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "privacy"
+      ],
+      "title": "Regulation (EU) 2016/679 · Article 5, Principles relating to processing of personal data",
+      "regulator": "European Union (supervised by each member state's data protection authority)",
+      "instrument": "Regulation (EU) 2016/679, the General Data Protection Regulation",
+      "section": "Article 5, Principles relating to processing of personal data",
+      "effective": "Applies from 25 May 2018",
+      "jurisdiction": "The European Union and the European Economic Area only",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:eu-gdpr-art5",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: The European Union and the European Economic Area only."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:European Union (supervised by each member state's data protection authority)",
+          "instrument:Regulation (EU) 2016/679, the General Data Protection Regulation",
+          "section:Article 5, Principles relating to processing of personal data",
+          "effective:Applies from 25 May 2018",
+          "jurisdiction:The European Union and the European Economic Area only"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-PAT-PERSONAL-DATA-PLACED"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "Regulation (EU) 2016/679, the General Data Protection Regulation",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Article 5, Principles relating to processing of personal data",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-EU-GDPR-ART32",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "privacy"
+      ],
+      "title": "Regulation (EU) 2016/679 · Article 32, Security of processing",
+      "regulator": "European Union (supervised by each member state's data protection authority)",
+      "instrument": "Regulation (EU) 2016/679, the General Data Protection Regulation",
+      "section": "Article 32, Security of processing",
+      "effective": "Applies from 25 May 2018",
+      "jurisdiction": "The European Union and the European Economic Area only",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:eu-gdpr-art32",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: The European Union and the European Economic Area only."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:European Union (supervised by each member state's data protection authority)",
+          "instrument:Regulation (EU) 2016/679, the General Data Protection Regulation",
+          "section:Article 32, Security of processing",
+          "effective:Applies from 25 May 2018",
+          "jurisdiction:The European Union and the European Economic Area only"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-TAC-ENCRYPT-AND-MASK"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "Regulation (EU) 2016/679, the General Data Protection Regulation",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Article 32, Security of processing",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-EU-GDPR-ART44",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "privacy"
+      ],
+      "title": "Regulation (EU) 2016/679 · Article 44, General principle for transfers",
+      "regulator": "European Union (supervised by each member state's data protection authority)",
+      "instrument": "Regulation (EU) 2016/679, the General Data Protection Regulation",
+      "section": "Article 44, General principle for transfers",
+      "effective": "Applies from 25 May 2018",
+      "jurisdiction": "The European Union and the European Economic Area only",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:eu-gdpr-art44",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: The European Union and the European Economic Area only."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:European Union (supervised by each member state's data protection authority)",
+          "instrument:Regulation (EU) 2016/679, the General Data Protection Regulation",
+          "section:Article 44, General principle for transfers",
+          "effective:Applies from 25 May 2018",
+          "jurisdiction:The European Union and the European Economic Area only"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-PAT-PERSONAL-DATA-PLACED"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "Regulation (EU) 2016/679, the General Data Protection Regulation",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Article 44, General principle for transfers",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-EU-RTS-2018-389",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "channels"
+      ],
+      "title": "Commission Delegated Regulation (EU) 2018/389 · Articles 4 and 5, Authentication code and Dynamic linking",
+      "regulator": "European Union (supervised by national competent authorities)",
+      "instrument": "Commission Delegated Regulation (EU) 2018/389, the regulatory technical standards for strong customer authentication and common and secure open standards of communication",
+      "section": "Articles 4 and 5, Authentication code and Dynamic linking",
+      "effective": "Applies from 14 September 2019",
+      "jurisdiction": "The European Union and the European Economic Area only",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:eu-rts-2018-389",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: The European Union and the European Economic Area only."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:European Union (supervised by national competent authorities)",
+          "instrument:Commission Delegated Regulation (EU) 2018/389, the regulatory technical standards for strong customer authentication and common and secure open standards of communication",
+          "section:Articles 4 and 5, Authentication code and Dynamic linking",
+          "effective:Applies from 14 September 2019",
+          "jurisdiction:The European Union and the European Economic Area only"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-TAC-CHANNEL-AUTHENTICATION"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "Commission Delegated Regulation (EU) 2018/389, the regulatory technical standards for strong customer authentication and common and secure open standards of communication",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Articles 4 and 5, Authentication code and Dynamic linking",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-EU-DORA-ART11-12",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "availability"
+      ],
+      "title": "Regulation (EU) 2022/2554 · Article 11, Response and recovery, and Article 12, Backup policies and procedures, restoration and recovery procedures and methods",
+      "regulator": "European Union (supervised by the financial supervisors of each member state)",
+      "instrument": "Regulation (EU) 2022/2554, the Digital Operational Resilience Act",
+      "section": "Article 11, Response and recovery, and Article 12, Backup policies and procedures, restoration and recovery procedures and methods",
+      "effective": "Applies from 17 January 2025",
+      "jurisdiction": "The European Union only",
+      "located": "from the drafter's reading, not confirmed",
+      "passage": null,
+      "claim": {
+        "subjectId": "regulation:eu-dora-art11-12",
+        "predicate": "records a regulation",
+        "claimType": "obligation",
+        "polarity": "requires",
+        "statement": null,
+        "statementFrom": "The approver writes the obligation from the attached passage; this pack states none.",
+        "conditions": [
+          "Where it applies: The European Union only."
+        ],
+        "limitations": [
+          "A record of where the obligation is written, not an interpretation of the law."
+        ],
+        "tags": [
+          "regulator:European Union (supervised by the financial supervisors of each member state)",
+          "instrument:Regulation (EU) 2022/2554, the Digital Operational Resilience Act",
+          "section:Article 11, Response and recovery, and Article 12, Backup policies and procedures, restoration and recovery procedures and methods",
+          "effective:Applies from 17 January 2025",
+          "jurisdiction:The European Union only"
+        ]
+      },
+      "relatedCandidates": [
+        "CB-TAC-STANDBY-ELSEWHERE"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "Regulation (EU) 2022/2554, the Digital Operational Resilience Act",
+          "edition": "The version in force on the date the project relies on it",
+          "section": "Article 11, Response and recovery, and Article 12, Backup policies and procedures, restoration and recovery procedures and methods",
+          "supports": "The exact text of the obligation, its scope and the date it applies from, and who supervises it in the project's jurisdiction.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-REG-JURISDICTION",
+      "kind": "regulation",
+      "gap": "GR-DOM-05",
+      "status": "candidate",
+      "concernIds": [
+        "reporting",
+        "kyc",
+        "aml",
+        "privacy"
+      ],
+      "title": "The project's own jurisdiction: not stated",
+      "regulator": "not stated",
+      "instrument": "not stated",
+      "section": "not stated",
+      "effective": "not stated",
+      "jurisdiction": "not stated: a person who can name it must",
+      "located": "not located: no jurisdiction is named here",
+      "open": [
+        "In which country or region does the bank operate, and under which licence?",
+        "Which central bank or supervisor regulates it, and which of its rules apply: prudential returns, customer and account tiers, outsourcing and cloud, operational resilience?",
+        "Which data protection law applies, and does it require customer data to stay in the country?",
+        "Which anti-money-laundering law applies, and which financial intelligence unit receives suspicious transaction reports, and by when?"
+      ],
+      "passage": null,
+      "claim": null,
+      "relatedCandidates": [],
+      "sourcesNeeded": [
+        {
+          "title": "The regulator's and the legislature's own texts for the jurisdiction a person names",
+          "edition": "In force on the date the project relies on them",
+          "section": "Each rule the design must meet",
+          "supports": "Every jurisdiction-specific obligation; the European Union records here apply only in the European Union.",
+          "located": "not located",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-PRD-CORE-BANKING-PLATFORM",
+      "kind": "product-category",
+      "gap": "GR-DOM-04",
+      "status": "candidate",
+      "concernIds": [
+        "posting",
+        "eod",
+        "interest",
+        "fx",
+        "product-config",
+        "value-dating"
+      ],
+      "title": "Core banking platform",
+      "technologyCategory": "application-platform",
+      "holds": "A packaged platform that keeps customer accounts, deposits and loans, the general ledger, interest and charges, and end-of-day processing.",
+      "factsNeeded": [
+        "Which products and account types it holds (current and savings accounts, term deposits, loans).",
+        "Whether it keeps the general ledger itself or posts to an external one.",
+        "Which day-count bases and interest methods it supports, and how accruals are posted.",
+        "How it holds amounts in several currencies and revalues foreign balances.",
+        "Its end-of-day model: what stops, what stays online, and how the business date rolls.",
+        "How products and parameters are configured, and whether a new product needs a software release.",
+        "Its maker-checker controls and audit history.",
+        "The deployment and operating models offered (on premises, hosted by the provider, as a service), and the regions where data may be held.",
+        "The versions supported, the upgrade path and how often upgrades are required.",
+        "How it is licensed, and what leaving it would take (data export, contract terms)."
+      ],
+      "facts": [],
+      "passage": null,
+      "claim": {
+        "subjectId": "product:<product name>",
+        "predicate": "states a product fact",
+        "claimType": "component-attribute",
+        "polarity": "neutral",
+        "statement": null,
+        "statementFrom": "One claim per fact, written from the vendor's document for the version weighed.",
+        "conditions": [
+          "The version of the product named in the claim."
+        ],
+        "limitations": [
+          "A fact of one version: it is checked again when the version changes."
+        ],
+        "tags": [
+          "technology:application-platform",
+          "category:core-banking-platform",
+          "version:<version>"
+        ]
+      },
+      "sourcesNeeded": [
+        {
+          "title": "The vendor's product documentation for each product weighed",
+          "edition": "The version weighed",
+          "section": "The section that states each fact",
+          "supports": "Each fact in factsNeeded.",
+          "located": "not located: no product is named in this pack",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-PRD-PAYMENTS-HUB",
+      "kind": "product-category",
+      "gap": "GR-DOM-04",
+      "status": "candidate",
+      "concernIds": [
+        "payments"
+      ],
+      "title": "Payments hub",
+      "technologyCategory": "application-platform",
+      "holds": "A packaged platform that connects the bank to clearing and settlement networks, validates and routes payments, and keeps their status.",
+      "factsNeeded": [
+        "Which networks and message standards it supports, at which versions.",
+        "How it recognises a repeated payment instruction.",
+        "How it finds the outcome of a payment that did not answer in time.",
+        "How it reconciles settlement reports with the ledger.",
+        "The deployment and operating models offered (on premises, hosted by the provider, as a service), and the regions where data may be held.",
+        "The versions supported, the upgrade path and how often upgrades are required.",
+        "How it is licensed, and what leaving it would take (data export, contract terms)."
+      ],
+      "facts": [],
+      "passage": null,
+      "claim": {
+        "subjectId": "product:<product name>",
+        "predicate": "states a product fact",
+        "claimType": "component-attribute",
+        "polarity": "neutral",
+        "statement": null,
+        "statementFrom": "One claim per fact, written from the vendor's document for the version weighed.",
+        "conditions": [
+          "The version of the product named in the claim."
+        ],
+        "limitations": [
+          "A fact of one version: it is checked again when the version changes."
+        ],
+        "tags": [
+          "technology:application-platform",
+          "category:payments-hub",
+          "version:<version>"
+        ]
+      },
+      "sourcesNeeded": [
+        {
+          "title": "The vendor's product documentation for each product weighed",
+          "edition": "The version weighed",
+          "section": "The section that states each fact",
+          "supports": "Each fact in factsNeeded.",
+          "located": "not located: no product is named in this pack",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-PRD-FINANCIAL-CRIME-PLATFORM",
+      "kind": "product-category",
+      "gap": "GR-DOM-04",
+      "status": "candidate",
+      "concernIds": [
+        "kyc",
+        "aml"
+      ],
+      "title": "Financial crime platform",
+      "technologyCategory": "application-platform",
+      "holds": "A packaged platform that screens customers and payments against sanctions and watch lists, monitors transactions and manages the cases they raise.",
+      "factsNeeded": [
+        "Which lists it screens against, and how often they are refreshed.",
+        "Whether screening is repeated when a list changes.",
+        "How monitoring rules are written and changed.",
+        "How a suspicious transaction report is produced and filed.",
+        "The deployment and operating models offered (on premises, hosted by the provider, as a service), and the regions where data may be held.",
+        "The versions supported, the upgrade path and how often upgrades are required.",
+        "How it is licensed, and what leaving it would take (data export, contract terms)."
+      ],
+      "facts": [],
+      "passage": null,
+      "claim": {
+        "subjectId": "product:<product name>",
+        "predicate": "states a product fact",
+        "claimType": "component-attribute",
+        "polarity": "neutral",
+        "statement": null,
+        "statementFrom": "One claim per fact, written from the vendor's document for the version weighed.",
+        "conditions": [
+          "The version of the product named in the claim."
+        ],
+        "limitations": [
+          "A fact of one version: it is checked again when the version changes."
+        ],
+        "tags": [
+          "technology:application-platform",
+          "category:financial-crime-platform",
+          "version:<version>"
+        ]
+      },
+      "sourcesNeeded": [
+        {
+          "title": "The vendor's product documentation for each product weighed",
+          "edition": "The version weighed",
+          "section": "The section that states each fact",
+          "supports": "Each fact in factsNeeded.",
+          "located": "not located: no product is named in this pack",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-PRD-DIGITAL-BANKING-PLATFORM",
+      "kind": "product-category",
+      "gap": "GR-DOM-04",
+      "status": "candidate",
+      "concernIds": [
+        "channels"
+      ],
+      "title": "Digital banking platform",
+      "technologyCategory": "application-platform",
+      "holds": "A packaged platform for mobile and internet banking that calls the bank's services and authenticates its users.",
+      "factsNeeded": [
+        "Which channels it serves.",
+        "How users are authenticated and how a payment is confirmed.",
+        "Which services of the core it calls, and through which interfaces.",
+        "Which limits it enforces per channel.",
+        "The deployment and operating models offered (on premises, hosted by the provider, as a service), and the regions where data may be held.",
+        "The versions supported, the upgrade path and how often upgrades are required.",
+        "How it is licensed, and what leaving it would take (data export, contract terms)."
+      ],
+      "facts": [],
+      "passage": null,
+      "claim": {
+        "subjectId": "product:<product name>",
+        "predicate": "states a product fact",
+        "claimType": "component-attribute",
+        "polarity": "neutral",
+        "statement": null,
+        "statementFrom": "One claim per fact, written from the vendor's document for the version weighed.",
+        "conditions": [
+          "The version of the product named in the claim."
+        ],
+        "limitations": [
+          "A fact of one version: it is checked again when the version changes."
+        ],
+        "tags": [
+          "technology:application-platform",
+          "category:digital-banking-platform",
+          "version:<version>"
+        ]
+      },
+      "sourcesNeeded": [
+        {
+          "title": "The vendor's product documentation for each product weighed",
+          "edition": "The version weighed",
+          "section": "The section that states each fact",
+          "supports": "Each fact in factsNeeded.",
+          "located": "not located: no product is named in this pack",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-PRD-REGULATORY-REPORTING-PLATFORM",
+      "kind": "product-category",
+      "gap": "GR-DOM-04",
+      "status": "candidate",
+      "concernIds": [
+        "reporting"
+      ],
+      "title": "Regulatory reporting platform",
+      "technologyCategory": "application-platform",
+      "holds": "A packaged platform that builds regulatory returns from the bank's data and submits them.",
+      "factsNeeded": [
+        "Which returns and formats it produces for the project's jurisdiction.",
+        "From which data it builds them, and how they reconcile to the ledger.",
+        "How a change in a return's rules reaches it.",
+        "The deployment and operating models offered (on premises, hosted by the provider, as a service), and the regions where data may be held.",
+        "The versions supported, the upgrade path and how often upgrades are required.",
+        "How it is licensed, and what leaving it would take (data export, contract terms)."
+      ],
+      "facts": [],
+      "passage": null,
+      "claim": {
+        "subjectId": "product:<product name>",
+        "predicate": "states a product fact",
+        "claimType": "component-attribute",
+        "polarity": "neutral",
+        "statement": null,
+        "statementFrom": "One claim per fact, written from the vendor's document for the version weighed.",
+        "conditions": [
+          "The version of the product named in the claim."
+        ],
+        "limitations": [
+          "A fact of one version: it is checked again when the version changes."
+        ],
+        "tags": [
+          "technology:application-platform",
+          "category:regulatory-reporting-platform",
+          "version:<version>"
+        ]
+      },
+      "sourcesNeeded": [
+        {
+          "title": "The vendor's product documentation for each product weighed",
+          "edition": "The version weighed",
+          "section": "The section that states each fact",
+          "supports": "Each fact in factsNeeded.",
+          "located": "not located: no product is named in this pack",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-PRD-GENERAL-LEDGER-PLATFORM",
+      "kind": "product-category",
+      "gap": "GR-DOM-04",
+      "status": "candidate",
+      "concernIds": [
+        "posting",
+        "reporting"
+      ],
+      "title": "General ledger and finance platform",
+      "technologyCategory": "application-platform",
+      "holds": "A packaged finance platform that keeps the general ledger and the chart of accounts and closes the books.",
+      "factsNeeded": [
+        "Whether it receives postings in detail or in summary, and how often.",
+        "How it keeps balances per currency.",
+        "How its period close relates to the core's end of day.",
+        "The deployment and operating models offered (on premises, hosted by the provider, as a service), and the regions where data may be held.",
+        "The versions supported, the upgrade path and how often upgrades are required.",
+        "How it is licensed, and what leaving it would take (data export, contract terms)."
+      ],
+      "facts": [],
+      "passage": null,
+      "claim": {
+        "subjectId": "product:<product name>",
+        "predicate": "states a product fact",
+        "claimType": "component-attribute",
+        "polarity": "neutral",
+        "statement": null,
+        "statementFrom": "One claim per fact, written from the vendor's document for the version weighed.",
+        "conditions": [
+          "The version of the product named in the claim."
+        ],
+        "limitations": [
+          "A fact of one version: it is checked again when the version changes."
+        ],
+        "tags": [
+          "technology:application-platform",
+          "category:general-ledger-platform",
+          "version:<version>"
+        ]
+      },
+      "sourcesNeeded": [
+        {
+          "title": "The vendor's product documentation for each product weighed",
+          "edition": "The version weighed",
+          "section": "The section that states each fact",
+          "supports": "Each fact in factsNeeded.",
+          "located": "not located: no product is named in this pack",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": true
+    },
+    {
+      "id": "CBK-PB-AVAILABILITY-DEFINITION",
+      "kind": "playbook-passage",
+      "gap": "GR-DOM-07",
+      "status": "candidate",
+      "concernIds": [
+        "availability"
+      ],
+      "title": "Availability: what it means",
+      "passage": {
+        "held": true,
+        "origin": "sa-playbook",
+        "locator": "SA Playbook_v2.xlsx · QR-Guidebook!C7",
+        "pack": "AIW-PLAYBOOK-3",
+        "text": "The degree to which a system is operational and accessible to users when they need it. A measure of uptime, continuous service, and resilience to failures.",
+        "lines": 1,
+        "sha256": "bc7d0d278370208c2e07d9e14c0675a9b7f46c0a6676cda8711fe53134e58247",
+        "licence": "The owner's SA Playbook workbook (SA Playbook_v2.xlsx, SHA-256 d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6); its reuse is the owner's to permit.",
+        "note": "The cell's text as the structured pack holds it."
+      },
+      "claim": {
+        "subjectId": "method:sa-playbook-availability-definition",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "neutral",
+        "statement": "The SA Playbook defines availability as the degree to which a system is operational and accessible when needed: uptime, continuous service and resilience to failures.",
+        "conditions": [
+          "A design that states availability or recovery targets, or plans how it recovers."
+        ],
+        "limitations": [
+          "Method guidance from the owner's playbook; it states no target for this design, and a draft must never take a value from it."
+        ],
+        "tags": [
+          "title:Availability: what it means",
+          "concern:availability",
+          "availability",
+          "recovery",
+          "sa-playbook"
+        ],
+        "lineStart": 1,
+        "lineEnd": 1
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-PB-AVAILABILITY-IMPORTANCE",
+      "kind": "playbook-passage",
+      "gap": "GR-DOM-07",
+      "status": "candidate",
+      "concernIds": [
+        "availability"
+      ],
+      "title": "Availability: why it matters",
+      "passage": {
+        "held": true,
+        "origin": "sa-playbook",
+        "locator": "SA Playbook_v2.xlsx · QR-Guidebook!D7",
+        "pack": "AIW-PLAYBOOK-3",
+        "text": "Fundamental for user trust, business continuity, and maintaining a positive reputation. Critical for many applications where downtime can have significant financial, safety, or legal implications.",
+        "lines": 1,
+        "sha256": "3aa1d45355ea26dff4f47a5f8d8863091a6abc14f12232aeaf2b276029ffc2cb",
+        "licence": "The owner's SA Playbook workbook (SA Playbook_v2.xlsx, SHA-256 d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6); its reuse is the owner's to permit.",
+        "note": "The cell's text as the structured pack holds it."
+      },
+      "claim": {
+        "subjectId": "method:sa-playbook-availability-importance",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "neutral",
+        "statement": "The SA Playbook holds availability fundamental to user trust and business continuity, and critical where downtime has financial, safety or legal consequences.",
+        "conditions": [
+          "A design that states availability or recovery targets, or plans how it recovers."
+        ],
+        "limitations": [
+          "Method guidance from the owner's playbook; it states no target for this design, and a draft must never take a value from it."
+        ],
+        "tags": [
+          "title:Availability: why it matters",
+          "concern:availability",
+          "availability",
+          "recovery",
+          "sa-playbook"
+        ],
+        "lineStart": 1,
+        "lineEnd": 1
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-PB-AVAILABILITY-METRICS",
+      "kind": "playbook-passage",
+      "gap": "GR-DOM-07",
+      "status": "candidate",
+      "concernIds": [
+        "availability"
+      ],
+      "title": "Availability and recovery: what is measured",
+      "passage": {
+        "held": true,
+        "origin": "sa-playbook",
+        "locator": "SA Playbook_v2.xlsx · QR-Guidebook!E7",
+        "pack": "AIW-PLAYBOOK-3",
+        "text": "Uptime (%)\nDowntime (minutes, hours, days per year)\nMTBF (hours, days)\nMTTR (minutes, hours)\nRTO (minutes, hours)\nRPO (minutes, hours)\nService Level Agreements (SLAs)",
+        "lines": 7,
+        "sha256": "cc45a9cad9ffe3e650688e4b5ab54f389ca6080d1d50ea5ae6f5a4b893892759",
+        "licence": "The owner's SA Playbook workbook (SA Playbook_v2.xlsx, SHA-256 d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6); its reuse is the owner's to permit.",
+        "note": "The bullet texts of the cell, one per line, as the structured pack holds them; the bullet marks and line-break tags are not held."
+      },
+      "claim": {
+        "subjectId": "method:sa-playbook-availability-metrics",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "neutral",
+        "statement": "The SA Playbook measures availability and recovery by uptime, downtime, mean time between failures, mean time to recover, the recovery time objective, the recovery point objective and service level agreements; a design says which it targets.",
+        "conditions": [
+          "A design that states availability or recovery targets, or plans how it recovers."
+        ],
+        "limitations": [
+          "Method guidance from the owner's playbook; it states no target for this design, and a draft must never take a value from it."
+        ],
+        "tags": [
+          "title:Availability and recovery: what is measured",
+          "concern:availability",
+          "availability",
+          "recovery",
+          "sa-playbook"
+        ],
+        "lineStart": 1,
+        "lineEnd": 7
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-PB-AVAILABILITY-DECISIONS",
+      "kind": "playbook-passage",
+      "gap": "GR-DOM-07",
+      "status": "candidate",
+      "concernIds": [
+        "availability"
+      ],
+      "title": "Availability: the design decisions",
+      "passage": {
+        "held": true,
+        "origin": "sa-playbook",
+        "locator": "SA Playbook_v2.xlsx · QR-Guidebook!G7",
+        "pack": "AIW-PLAYBOOK-3",
+        "text": "Redundancy: Deploy redundant components (servers, databases, network links, power supplies).\nFailover Mechanisms: Implement automatic failover to backup components.\nDisaster Recovery Planning: Develop a comprehensive disaster recovery plan.\nLoad Balancing: Distribute traffic across multiple servers.\nMonitoring and Alerting: Implement comprehensive monitoring and alerting.\nRegular Backups: Perform regular data backups to a secure and separate location.\nFault Tolerance: Design systems to tolerate failures.\nGeographic Distribution: Deploy across multiple regions for resilience.\nData Replication: Replicate data across multiple databases or data centers.\nStateless Design: Design components to be stateless.\nBlue-Green Deployments: Minimize downtime during updates.\nCanary Releases: Gradually roll out new versions.\nCapacity Planning: Estimate future demand and plan for sufficient capacity.",
+        "lines": 13,
+        "sha256": "b16313ceddfcdab7f2f1f23c618fbca8b3b08bf713452a7ab49dca1b84932248",
+        "licence": "The owner's SA Playbook workbook (SA Playbook_v2.xlsx, SHA-256 d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6); its reuse is the owner's to permit.",
+        "note": "The bullet texts of the cell, one per line, as the structured pack holds them; the bullet marks and line-break tags are not held."
+      },
+      "claim": {
+        "subjectId": "method:sa-playbook-availability-decisions",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "neutral",
+        "statement": "The SA Playbook lists the design decisions that serve availability and recovery: redundancy, failover, disaster recovery planning, load balancing, monitoring and alerting, regular backups to a separate location, fault tolerance, geographic distribution, data replication and the others it names.",
+        "conditions": [
+          "A design that states availability or recovery targets, or plans how it recovers."
+        ],
+        "limitations": [
+          "Method guidance from the owner's playbook; it states no target for this design, and a draft must never take a value from it."
+        ],
+        "tags": [
+          "title:Availability: the design decisions",
+          "concern:availability",
+          "availability",
+          "recovery",
+          "sa-playbook"
+        ],
+        "lineStart": 1,
+        "lineEnd": 13
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-PB-AVAILABILITY-TESTING",
+      "kind": "playbook-passage",
+      "gap": "GR-DOM-07",
+      "status": "candidate",
+      "concernIds": [
+        "availability",
+        "operations"
+      ],
+      "title": "Availability and recovery: how they are tested",
+      "passage": {
+        "held": true,
+        "origin": "sa-playbook",
+        "locator": "SA Playbook_v2.xlsx · QR-Guidebook!I7",
+        "pack": "AIW-PLAYBOOK-3",
+        "text": "Availability Testing: Conduct failover testing, disaster recovery drills, and load testing to simulate failures and measure recovery times.\nMonitoring: Implement continuous monitoring and alerting to detect and respond to potential issues.\nChaos Engineering: Introduce controlled disruptions to test system resilience.",
+        "lines": 3,
+        "sha256": "5805563fa35b4784f0f23da48f70e7607052667174ffd931fdc0c602331be04f",
+        "licence": "The owner's SA Playbook workbook (SA Playbook_v2.xlsx, SHA-256 d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6); its reuse is the owner's to permit.",
+        "note": "The bullet texts of the cell, one per line, as the structured pack holds them; the bullet marks and line-break tags are not held."
+      },
+      "claim": {
+        "subjectId": "method:sa-playbook-availability-testing",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "neutral",
+        "statement": "The SA Playbook tests availability and recovery with failover tests, disaster recovery drills and load tests that measure recovery times, continuous monitoring, and controlled disruptions.",
+        "conditions": [
+          "A design that states availability or recovery targets, or plans how it recovers."
+        ],
+        "limitations": [
+          "Method guidance from the owner's playbook; it states no target for this design, and a draft must never take a value from it."
+        ],
+        "tags": [
+          "title:Availability and recovery: how they are tested",
+          "concern:availability",
+          "availability",
+          "recovery",
+          "sa-playbook"
+        ],
+        "lineStart": 1,
+        "lineEnd": 3
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-PB-AVAILABILITY-RISKS",
+      "kind": "playbook-passage",
+      "gap": "GR-DOM-07",
+      "status": "candidate",
+      "concernIds": [
+        "availability"
+      ],
+      "title": "Availability: risks and how they are mitigated",
+      "passage": {
+        "held": true,
+        "origin": "sa-playbook",
+        "locator": "SA Playbook_v2.xlsx · QR-Guidebook!J7",
+        "pack": "AIW-PLAYBOOK-3",
+        "text": "Risk of single points of failure, unexpected failures, human error, and challenges in maintaining availability during updates.\nEliminating single points of failure through redundancy.\nDesigning for fault tolerance.\nThoroughly testing disaster recovery plans.\nImplementing robust monitoring and alerting.\nAutomating deployments and failover processes.\nMinimizing human intervention.\nUsing blue-green deployments or canary releases for updates.\nConducting regular security audits and vulnerability assessments.",
+        "lines": 9,
+        "sha256": "95ea7a6b642149a55b3b67a79b0a94f267287c06b94748d4b4103a978752f4a6",
+        "licence": "The owner's SA Playbook workbook (SA Playbook_v2.xlsx, SHA-256 d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6); its reuse is the owner's to permit.",
+        "note": "The bullet texts of the cell, one per line, as the structured pack holds them; the bullet marks and line-break tags are not held."
+      },
+      "claim": {
+        "subjectId": "method:sa-playbook-availability-risks",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "neutral",
+        "statement": "The SA Playbook names single points of failure, unexpected failures, human error and updates as risks to availability, mitigated by redundancy, fault tolerance, tested disaster recovery plans, monitoring and automated failover.",
+        "conditions": [
+          "A design that states availability or recovery targets, or plans how it recovers."
+        ],
+        "limitations": [
+          "Method guidance from the owner's playbook; it states no target for this design, and a draft must never take a value from it."
+        ],
+        "tags": [
+          "title:Availability: risks and how they are mitigated",
+          "concern:availability",
+          "availability",
+          "recovery",
+          "sa-playbook"
+        ],
+        "lineStart": 1,
+        "lineEnd": 9
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-PB-AVAILABILITY-TRADEOFFS",
+      "kind": "playbook-passage",
+      "gap": "GR-DOM-07",
+      "status": "candidate",
+      "concernIds": [
+        "availability"
+      ],
+      "title": "Availability: what it is traded against",
+      "passage": {
+        "held": true,
+        "origin": "sa-playbook",
+        "locator": "SA Playbook_v2.xlsx · Quality Requirements!B13",
+        "pack": "AIW-PLAYBOOK-3",
+        "text": "Cost: High availability solutions often require more expensive infrastructure, software licenses, and operational overhead.\nComplexity: Highly available systems can be more complex to design, develop, and manage.\nPerformance: Some availability techniques (e.g., data replication, failover) can introduce performance overhead.\nSecurity: Balancing high availability with strong security can be challenging, as some security measures may impact performance or availability.",
+        "lines": 4,
+        "sha256": "bc75643cfcb5a19db3434989b5af43b7689996937512ef6da607f7808630684b",
+        "licence": "The owner's SA Playbook workbook (SA Playbook_v2.xlsx, SHA-256 d3ee19a22e664b365a0e3d618bf60ebb195788b5578a425d25c8672e7c53e4a6); its reuse is the owner's to permit.",
+        "note": "Each line is the trade-off's name as the structured pack holds it, a colon, then its text."
+      },
+      "claim": {
+        "subjectId": "method:sa-playbook-availability-tradeoffs",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "neutral",
+        "statement": "The SA Playbook weighs availability against cost, complexity, performance and security: more redundancy and failover cost more, are harder to run, can slow the work and can pull against security measures.",
+        "conditions": [
+          "A design that states availability or recovery targets, or plans how it recovers."
+        ],
+        "limitations": [
+          "Method guidance from the owner's playbook; it states no target for this design, and a draft must never take a value from it."
+        ],
+        "tags": [
+          "title:Availability: what it is traded against",
+          "concern:availability",
+          "availability",
+          "recovery",
+          "sa-playbook"
+        ],
+        "lineStart": 1,
+        "lineEnd": 4
+      },
+      "sourcesNeeded": [],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-MTH-IDEMPOTENT-POSTING-BOUNDARY",
+      "kind": "method",
+      "gap": "GR-DOM-08",
+      "status": "candidate",
+      "concernIds": [
+        "posting",
+        "payments"
+      ],
+      "title": "Idempotent posting boundary",
+      "coreModel": "internal",
+      "lineage": "Generalised from the Bank Payment reference's decision ADR-002, Where should one financial effect be enforced? (public/decisions-domain.js), where the core ledger stands behind an external party; here the ledger is the system's own.",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-MTH-IDEMPOTENT-POSTING-BOUNDARY",
+        "text": "The core ledger is part of the system under design, and its posting operation is the boundary where one financial effect is enforced.\nEvery instruction carries a reference that its originator keeps for every retry.\nThe ledger records that reference with the posting in the same transaction, so a repeated instruction finds the recorded posting and returns its result instead of posting again.\nA check made outside that transaction, such as a cache of recent references, only saves work; it is never the guarantee.",
+        "lines": 4,
+        "sha256": "a2364399a86259f30b23b018616f4f722951695927958ee899feb484770b45a5",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "method:idempotent-posting-boundary",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "supports",
+        "statement": "The core ledger is part of the system under design, and its posting operation is the boundary where one financial effect is enforced. Every instruction carries a reference that its originator keeps for every retry. The ledger records that reference with the posting in the same transaction, so a repeated instruction finds the recorded posting and returns its result instead of posting again. A check made outside that transaction, such as a cache of recent references, only saves work; it is never the guarantee.",
+        "conditions": [
+          "A posting may be requested more than once: by a retry, after a timeout, or as a repeated message."
+        ],
+        "limitations": [
+          "The reference must be unique to its originator and kept for as long as a retry can arrive.",
+          "It does not say what to do when an outcome is unknown: enquire before retry does."
+        ],
+        "tags": [
+          "title:Idempotent posting boundary",
+          "concern:posting",
+          "posting",
+          "ledger",
+          "reference",
+          "retry",
+          "idempotent",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 4
+      },
+      "relatedCandidates": [
+        "CB-PAT-IDEMPOTENT-PAYMENT",
+        "CB-PAT-POSTING-BALANCED"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "Enterprise Integration Patterns",
+          "edition": "First edition, 2003 (Hohpe and Woolf)",
+          "section": "Chapter 10, Idempotent Receiver",
+          "supports": "A receiver that can safely receive the same message more than once; the approver checks that the method follows it.",
+          "located": "from the drafter's reading, not confirmed",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": false
+    },
+    {
+      "id": "CBK-MTH-ENQUIRE-BEFORE-RETRY",
+      "kind": "method",
+      "gap": "GR-DOM-08",
+      "status": "candidate",
+      "concernIds": [
+        "payments",
+        "posting"
+      ],
+      "title": "Enquire before retry",
+      "coreModel": "internal",
+      "lineage": "Generalised from the Bank Payment reference's decision ADR-003, What should happen after an uncertain settlement response? (public/decisions-domain.js), where the core ledger stands behind an external party; here the ledger is the system's own.",
+      "passage": {
+        "held": true,
+        "origin": "aiw-authored",
+        "locator": "candidate-sets/core-banking-domain-candidates.json · CBK-MTH-ENQUIRE-BEFORE-RETRY",
+        "text": "When a call that may have changed a balance does not answer in time, its outcome is unknown, not failed.\nKeep the instruction pending with its original reference.\nAsk the side that may have applied it for the outcome, by a status enquiry or at the next reconciliation, and replay only when it is shown not to have been applied, with the same reference.\nUntil then, report the instruction as pending.",
+        "lines": 4,
+        "sha256": "14555dfbd0fbd5a1a3ab0b26314acf1ec9814ecabf0378c814f14d12cf32c1a9",
+        "licence": "AIW-authored method text written for this pack; it copies no third-party text."
+      },
+      "claim": {
+        "subjectId": "method:enquire-before-retry",
+        "predicate": "describes a method",
+        "claimType": "applicability",
+        "polarity": "supports",
+        "statement": "When a call that may have changed a balance does not answer in time, its outcome is unknown, not failed. Keep the instruction pending with its original reference. Ask the side that may have applied it for the outcome, by a status enquiry or at the next reconciliation, and replay only when it is shown not to have been applied, with the same reference. Until then, report the instruction as pending.",
+        "conditions": [
+          "A call that may change a balance can end without an answer."
+        ],
+        "limitations": [
+          "It needs the other side to answer an enquiry or to report what it applied; without either, the outcome stays unknown until a person investigates.",
+          "The time an instruction may stay pending is the project's to state."
+        ],
+        "tags": [
+          "title:Enquire before retry",
+          "concern:payments",
+          "posting",
+          "ledger",
+          "reference",
+          "retry",
+          "idempotent",
+          "lens:core-banking"
+        ],
+        "lineStart": 1,
+        "lineEnd": 4
+      },
+      "relatedCandidates": [
+        "CB-TAC-ENQUIRE-BEFORE-RETRY",
+        "CB-ANTI-RETRY-ON-TIMEOUT"
+      ],
+      "sourcesNeeded": [
+        {
+          "title": "A published source for the enquiry-before-retry practice",
+          "edition": "not located",
+          "section": "not located",
+          "supports": "The pack C entry CB-TAC-ENQUIRE-BEFORE-RETRY has no source either; the approver finds one or keeps the method as AIW's own.",
+          "located": "not located",
+          "rights": "not checked"
+        }
+      ],
+      "sourceNeeded": false
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "schema": "aiw.payment-architecture-knowledge-pilot.v1",
+  "authority": "Architect review queue and implementation fixture. These are proposed interpretations, not verified claims, signed releases, approved technology selections, deployed configuration, or measured outcomes.",
+  "case": {
+    "template": "bank-payment",
+    "title": "Payment handoff and uncertain outcome",
+    "requirements": ["REQ-001", "REQ-003", "REQ-004"],
+    "drivers": ["QD-001", "QD-003", "QD-004"],
+    "capability": {"id": "queue", "ref": "TC-003", "title": "Durable work handoff"},
+    "realization": "tr-003",
+    "options": [
+      {"id": "TO-005", "product": "RabbitMQ", "templateVersion": "4.0"},
+      {"id": "TO-006", "product": "Apache Kafka", "templateVersion": "3.9"}
+    ],
+    "contextQuestions": [
+      "Is the transfer event committed with the payment state, and who owns the outbox relay?",
+      "Must consumers replay a retained event history, or only retry unprocessed work?",
+      "What peak load, backlog, retention window, failure domains, version and operating ownership are actually approved?",
+      "Which party owns duplicate suppression, uncertain outcome enquiry and reconciliation?"
+    ]
+  },
+  "sourcesToAcquire": [
+    {
+      "id": "AWS-OUTBOX",
+      "title": "Transactional outbox pattern",
+      "publisher": "AWS Prescriptive Guidance",
+      "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html",
+      "locator": "Intent; Applicability; Issues and considerations",
+      "status": "locator-only",
+      "next": "Retrieve and hash the permitted exact original; review whether the method applies to the project's transaction boundary and whether storage, quotation, and redistribution are permitted."
+    },
+    {
+      "id": "KAFKA-39-DESIGN",
+      "title": "Kafka 3.9 Design",
+      "publisher": "Apache Kafka",
+      "url": "https://kafka.apache.org/39/design/design/",
+      "locator": "Consumer Position; Message Delivery Semantics; Replication",
+      "status": "locator-only",
+      "next": "Retrieve and hash the exact versioned original; check the actual client/broker versions, retained history, offset handling, replication, and permissions before a product claim."
+    },
+    {
+      "id": "RABBIT-QUORUM",
+      "title": "Quorum Queues and Consumer Acknowledgements",
+      "publisher": "RabbitMQ",
+      "url": "https://www.rabbitmq.com/docs/quorum-queues",
+      "relatedUrl": "https://www.rabbitmq.com/docs/confirms",
+      "locator": "Use Cases; Data Safety; Dead Lettering; Publisher Confirms",
+      "status": "locator-only",
+      "next": "The current page describes a later RabbitMQ release than the template's 4.0 option. Retrieve applicable 4.0 originals and verify configuration, availability, rights, and version scope before asserting 4.0 behaviour."
+    },
+    {
+      "id": "POSTGRES-17-CONSTRAINTS",
+      "title": "PostgreSQL 17 constraints",
+      "publisher": "PostgreSQL Global Development Group",
+      "url": "https://www.postgresql.org/docs/17/ddl-constraints.html",
+      "locator": "Unique Constraints",
+      "status": "locator-only",
+      "next": "Retrieve the exact original and review transaction and reference-key design. A unique key does not by itself prove an end-to-end payment has one financial effect."
+    },
+    {
+      "id": "PRIVATE-PAYMENT-ORIGINALS",
+      "title": "Confirmed payment requirements and solution records",
+      "publisher": "Project owner",
+      "locator": "11 Requirement Detail rows FRD-011, UATC-0197, UATC-0945; controlling PayHub source pages and test evidence as inventoried by scripts/pilot-payment-case.mjs",
+      "status": "owner-review-required",
+      "next": "Confirm scope and interpretation with the architect, check rights and exact revisions, and link to the corresponding project objects. Workbook UAT counters are assertions until underlying execution evidence is inspected."
+    }
+  ],
+  "candidateClaims": [
+    {
+      "id": "PILOT-OUTBOX-1",
+      "sourceId": "AWS-OUTBOX",
+      "subjectId": "PAT-TRANSACTIONAL-OUTBOX",
+      "claimType": "applicability",
+      "predicate": "coordinates payment state and handoff",
+      "polarity": "supports",
+      "statement": "A committed payment state change and an event awaiting publication can be recorded in one database transaction, then relayed to the broker.",
+      "conditions": ["The local payment state and outbox entry share a transactional store.", "An asynchronous handoff is justified by the payment workflow."],
+      "limitations": ["Duplicate publication or delivery can still occur; consumers need idempotency.", "This does not atomically commit a remote settlement or replace reconciliation."],
+      "architectureUnit": {
+        "kind": "pattern",
+        "mechanism": "Commit a state change and an outbox record together, then publish committed records with a monitored relay.",
+        "scope": {"capability": "Durable work handoff"},
+        "effects": [
+          {"quality": "reliability", "direction": "supports", "rationale": "Avoids an untracked gap between committing state and requesting publication, if the transaction and relay behave as assumed."},
+          {"quality": "operability", "direction": "tradeoff", "rationale": "A relay, backlog, retry, and duplicate policy require ownership and monitoring."}
+        ],
+        "obligations": [
+          {"action": "Test failure immediately before and after commit and relay publication", "evidence": "Source-row audit, broker publication log, duplicate-processing result, and reconciliation record for the same payment reference"}
+        ],
+        "exclusions": ["No shared local transaction for the state and outbox record"]
+      }
+    },
+    {
+      "id": "PILOT-KAFKA-1",
+      "sourceId": "KAFKA-39-DESIGN",
+      "subjectId": "PROD-KAFKA-39",
+      "claimType": "tradeoff",
+      "predicate": "may support retained event replay",
+      "polarity": "supports",
+      "statement": "Kafka can support independent consumers revisiting retained event records using their positions, subject to the configured retention and consumer design.",
+      "conditions": ["Replay is a stated requirement for the payment investigation or reconstruction use case.", "The topic retains the required history and an approved consumer can reset or seek safely."],
+      "limitations": ["Retention and partitioning must be configured and evidenced.", "Broker semantics do not alone make writes to an external ledger exactly once."],
+      "architectureUnit": {
+        "kind": "product-mechanism",
+        "mechanism": "Partitioned retained log with consumer-managed positions.",
+        "scope": {"capability": "Durable work handoff", "product": "Apache Kafka", "version": "3.9"},
+        "effects": [
+          {"quality": "recoverability", "direction": "supports", "rationale": "Retained records can be revisited when an authorised consumer and an adequate retention window are available."},
+          {"quality": "operability", "direction": "tradeoff", "rationale": "Partitions, offset handling, storage, backlog and access to replay require operational controls."}
+        ],
+        "obligations": [
+          {"action": "Exercise consumer crash and controlled replay without an additional debit", "evidence": "Retained offset range, consumer configuration, payment reference, ledger reconciliation and observed test run"}
+        ],
+        "exclusions": ["Required replay history exceeds verified retention", "Consumer cannot legally or safely replay a payment effect"]
+      }
+    },
+    {
+      "id": "PILOT-RABBIT-1",
+      "sourceId": "RABBIT-QUORUM",
+      "subjectId": "PROD-RABBITMQ-QUORUM",
+      "claimType": "tradeoff",
+      "predicate": "may support durable work handoff",
+      "polarity": "supports",
+      "statement": "A RabbitMQ quorum queue may carry unprocessed payment work with publisher confirms and manual consumer acknowledgements under an approved multi-node topology.",
+      "conditions": ["The requirement is reliable delivery of unprocessed work rather than reconstruction from retained consumed history.", "The quorum topology and producer/consumer acknowledgement policy are configured and exercised."],
+      "limitations": ["A confirmed publication does not prove downstream processing or ledger correctness.", "Behaviour for the project's exact RabbitMQ 4.0 version must be verified from version-appropriate originals."],
+      "architectureUnit": {
+        "kind": "product-mechanism",
+        "mechanism": "Replicated quorum queue with publisher confirms and manual consumer acknowledgements.",
+        "scope": {"capability": "Durable work handoff", "product": "RabbitMQ", "version": "4.0", "topology": "quorum queue"},
+        "effects": [
+          {"quality": "reliability", "direction": "supports", "rationale": "Publication and processing can be acknowledged at their distinct boundaries when configured as assumed."},
+          {"quality": "recoverability", "direction": "unknown", "rationale": "Retained replay of consumed history requires a separate design or verified stream option."}
+        ],
+        "obligations": [
+          {"action": "Test leader loss, redelivery, dead-letter handling and consumer crash", "evidence": "Topology and policy settings, publication confirms, consumer processing records, and reconciliation for one payment reference"}
+        ],
+        "exclusions": ["No quorum of available members", "Historical replay of already consumed work is mandatory and no separate history exists"]
+      }
+    }
+  ],
+  "decisionRubric": {
+    "authority": "Evaluation expectations authored for the pilot, not independent expert judgements or production thresholds.",
+    "checks": [
+      "Unreviewed candidates never become Sol or model authority and carry no selection score.",
+      "A choice with unknown product version or topology must surface missing context; a version mismatch must not inherit version-specific guidance.",
+      "If replay of consumed payment events becomes mandatory, reopen the RabbitMQ work-queue rationale and compare a retained-log or separate history design.",
+      "If the end-to-end duplicate-debit target changes, reopen consumer deduplication, transactional boundary and reconciliation tests regardless of broker choice.",
+      "No wording implies that a numeric availability, latency, recovery or duplicate-debit target has been achieved without a current relevant observation.",
+      "An independent architect decides whether the reviewed case is supported; whole-project SDD approval remains separate."
+    ]
+  }
+}

@@ -1,0 +1,1333 @@
+{
+  "at": "2026-10-23T02:27:58.348Z",
+  "authority": "AIW authored illustrations: each reference project is drafted by the deterministic journey rules (journey-rules-1 from the brief) from an AIW authored teaching brief. Not a customer project, not a measured system, not an architecture review, and not a confirmation, verification, governance approval or production acceptance of any record; productionAccepted stays false.",
+  "rules": {
+    "brief": "brief-rules-1",
+    "drafted": "journey-rules-1 from the brief",
+    "referenceAuthority": "AIW authored illustration"
+  },
+  "method": "Each project created through POST /api/projects with its template id, read back through GET /api/project and exported through GET /api/export?chapter=11 as md, json (embed=project) and html, with its review registers annex (annex=registers, md), on the local Worker with an in-memory database. Readiness from readiness-model.js sddBoard (chapterChecks per chapter); findings from each chapter's own checks.",
+  "productionAccepted": false,
+  "results": [
+    {
+      "id": "service-permits",
+      "title": "Citizen service requests",
+      "name": "Citizen service requests",
+      "briefSha256": "fa3672cd71b7511b2e675a08ff5b2abce2e12043de6d1c9772833a6d8e985ce0",
+      "brief": {
+        "firstLine": "Citizen service requests: a brief for one case-management service (an AIW authored teaching example).",
+        "words": 682,
+        "characters": 4023,
+        "sha256": "fa3672cd71b7511b2e675a08ff5b2abce2e12043de6d1c9772833a6d8e985ce0",
+        "passages": 53,
+        "questions": 6,
+        "sourceId": "SRC-001"
+      },
+      "interpreted": {
+        "rules": "brief-rules-1",
+        "sourceId": "SRC-001",
+        "passages": 53,
+        "outcomes": 2,
+        "stakeholders": 2,
+        "actors": 3,
+        "scope": 2,
+        "journeys": 6,
+        "constraints": 3,
+        "assumptions": 1,
+        "requirements": 5,
+        "questions": 6,
+        "inferred": 0
+      },
+      "chapters": {
+        "1": {
+          "records": 24,
+          "detail": {
+            "actor": 3,
+            "assumption": 1,
+            "constraint": 3,
+            "journey": 6,
+            "outcome": 2,
+            "requirement": 5,
+            "scope": 2,
+            "stakeholder": 2
+          },
+          "withJourney": 24,
+          "openAnswers": 5
+        },
+        "2": {
+          "records": 5,
+          "withJourney": 5,
+          "openAnswers": 28
+        },
+        "3": {
+          "records": 3,
+          "detail": {
+            "decisions": 3,
+            "alternatives": 6
+          },
+          "withJourney": 3,
+          "openAnswers": 3
+        },
+        "4": {
+          "records": 5,
+          "withJourney": 5,
+          "openAnswers": 5
+        },
+        "5": {
+          "records": 5,
+          "withJourney": 5,
+          "openAnswers": 10
+        },
+        "6": {
+          "records": 10,
+          "detail": {
+            "capabilities": 5,
+            "trustBoundaries": 5,
+            "technologyNeeds": 5
+          },
+          "withJourney": 10,
+          "openAnswers": 30
+        },
+        "7": {
+          "records": 5,
+          "withJourney": 5,
+          "openAnswers": 15
+        },
+        "8": {
+          "records": 11,
+          "detail": {
+            "contracts": 5,
+            "data": 5,
+            "dataFields": 10,
+            "parties": 1
+          },
+          "withJourney": 11,
+          "openAnswers": 21
+        },
+        "9": {
+          "records": 14,
+          "detail": {
+            "threats": 7,
+            "controls": 7
+          },
+          "withJourney": 14,
+          "openAnswers": 26
+        },
+        "10": {
+          "records": 15,
+          "detail": {
+            "environments": 5,
+            "zones": 5,
+            "plans": 5,
+            "placements": 5
+          },
+          "withJourney": 15,
+          "openAnswers": 25
+        },
+        "11": {
+          "records": 1,
+          "withJourney": 1,
+          "openAnswers": 1
+        }
+      },
+      "parts": {
+        "alternatives": 6,
+        "technologyNeeds": 5,
+        "placements": 5
+      },
+      "provenance": {
+        "records": 98,
+        "withJourney": 98,
+        "passagesCited": 37,
+        "passagesNotInBrief": 0
+      },
+      "gaps": {
+        "openAnswers": 169,
+        "briefQuestions": 6
+      },
+      "readiness": {
+        "passing": 4,
+        "total": 193,
+        "toFix": 247,
+        "toConfirm": 375,
+        "treated": 0,
+        "chapters": [
+          {
+            "chapter": 1,
+            "passing": 1,
+            "total": 26,
+            "toFix": 5,
+            "toConfirm": 54
+          },
+          {
+            "chapter": 2,
+            "passing": 0,
+            "total": 6,
+            "toFix": 10,
+            "toConfirm": 31
+          },
+          {
+            "chapter": 3,
+            "passing": 0,
+            "total": 4,
+            "toFix": 12,
+            "toConfirm": 13
+          },
+          {
+            "chapter": 4,
+            "passing": 0,
+            "total": 72,
+            "toFix": 71,
+            "toConfirm": 31
+          },
+          {
+            "chapter": 5,
+            "passing": 0,
+            "total": 6,
+            "toFix": 10,
+            "toConfirm": 39
+          },
+          {
+            "chapter": 6,
+            "passing": 0,
+            "total": 11,
+            "toFix": 5,
+            "toConfirm": 23
+          },
+          {
+            "chapter": 7,
+            "passing": 0,
+            "total": 6,
+            "toFix": 30,
+            "toConfirm": 28
+          },
+          {
+            "chapter": 8,
+            "passing": 0,
+            "total": 11,
+            "toFix": 35,
+            "toConfirm": 35
+          },
+          {
+            "chapter": 9,
+            "passing": 0,
+            "total": 19,
+            "toFix": 21,
+            "toConfirm": 63
+          },
+          {
+            "chapter": 10,
+            "passing": 0,
+            "total": 21,
+            "toFix": 46,
+            "toConfirm": 50
+          },
+          {
+            "chapter": 11,
+            "passing": 3,
+            "total": 11,
+            "toFix": 2,
+            "toConfirm": 8
+          }
+        ]
+      },
+      "findings": {
+        "errors": 245,
+        "warnings": 281,
+        "sourceChange": 0,
+        "key": 0
+      },
+      "scale": {
+        "inputs": 0,
+        "derived": 0,
+        "findings": {
+          "SCALE-NO-TARGET": 1
+        }
+      },
+      "resilience": {
+        "externalContracts": 1,
+        "disruptionThreats": 1,
+        "drafts": 5,
+        "missing": 0
+      },
+      "confirmed": 0,
+      "recorded": {
+        "chapterReviews": 0,
+        "chapterHandoffs": 0,
+        "reviews": 0,
+        "baselines": 0,
+        "governance": 0,
+        "handoff": 0
+      },
+      "reference": {
+        "id": "service-permits",
+        "authority": "AIW authored illustration",
+        "drafted": "journey-rules-1 from the brief",
+        "verified": false
+      },
+      "narrativeTitle": "Citizen service requests — Solution Design",
+      "sdd": {
+        "markdownBytes": 292010,
+        "jsonBytes": 731798,
+        "htmlBytes": 320849,
+        "registersBytes": 293471
+      }
+    },
+    {
+      "id": "warehouse-fulfilment",
+      "title": "Warehouse fulfilment",
+      "name": "Warehouse fulfilment",
+      "briefSha256": "4e405ac9babce967afa34c98caed0029ab8dc891349ff464c4926d01c1c59f15",
+      "brief": {
+        "firstLine": "Warehouse fulfilment: a brief for reserving stock and tracing every order to its delivery (an AIW authored teaching example).",
+        "words": 724,
+        "characters": 4344,
+        "sha256": "4e405ac9babce967afa34c98caed0029ab8dc891349ff464c4926d01c1c59f15",
+        "passages": 53,
+        "questions": 7,
+        "sourceId": "SRC-001"
+      },
+      "interpreted": {
+        "rules": "brief-rules-1",
+        "sourceId": "SRC-001",
+        "passages": 53,
+        "outcomes": 2,
+        "stakeholders": 2,
+        "actors": 3,
+        "scope": 2,
+        "journeys": 4,
+        "constraints": 3,
+        "assumptions": 1,
+        "requirements": 7,
+        "questions": 7,
+        "inferred": 0
+      },
+      "chapters": {
+        "1": {
+          "records": 24,
+          "detail": {
+            "actor": 3,
+            "assumption": 1,
+            "constraint": 3,
+            "journey": 4,
+            "outcome": 2,
+            "requirement": 7,
+            "scope": 2,
+            "stakeholder": 2
+          },
+          "withJourney": 24,
+          "openAnswers": 7
+        },
+        "2": {
+          "records": 7,
+          "withJourney": 7,
+          "openAnswers": 40
+        },
+        "3": {
+          "records": 4,
+          "detail": {
+            "decisions": 4,
+            "alternatives": 8
+          },
+          "withJourney": 4,
+          "openAnswers": 4
+        },
+        "4": {
+          "records": 7,
+          "withJourney": 7,
+          "openAnswers": 7
+        },
+        "5": {
+          "records": 7,
+          "withJourney": 7,
+          "openAnswers": 14
+        },
+        "6": {
+          "records": 14,
+          "detail": {
+            "capabilities": 7,
+            "trustBoundaries": 7,
+            "technologyNeeds": 7
+          },
+          "withJourney": 14,
+          "openAnswers": 35
+        },
+        "7": {
+          "records": 7,
+          "withJourney": 7,
+          "openAnswers": 21
+        },
+        "8": {
+          "records": 15,
+          "detail": {
+            "contracts": 7,
+            "data": 7,
+            "dataFields": 14,
+            "parties": 1
+          },
+          "withJourney": 15,
+          "openAnswers": 29
+        },
+        "9": {
+          "records": 18,
+          "detail": {
+            "threats": 9,
+            "controls": 9
+          },
+          "withJourney": 18,
+          "openAnswers": 34
+        },
+        "10": {
+          "records": 21,
+          "detail": {
+            "environments": 7,
+            "zones": 7,
+            "plans": 7,
+            "placements": 7
+          },
+          "withJourney": 21,
+          "openAnswers": 35
+        },
+        "11": {
+          "records": 1,
+          "withJourney": 1,
+          "openAnswers": 1
+        }
+      },
+      "parts": {
+        "alternatives": 8,
+        "technologyNeeds": 7,
+        "placements": 7
+      },
+      "provenance": {
+        "records": 125,
+        "withJourney": 125,
+        "passagesCited": 35,
+        "passagesNotInBrief": 0
+      },
+      "gaps": {
+        "openAnswers": 227,
+        "briefQuestions": 7
+      },
+      "readiness": {
+        "passing": 4,
+        "total": 244,
+        "toFix": 335,
+        "toConfirm": 489,
+        "treated": 0,
+        "chapters": [
+          {
+            "chapter": 1,
+            "passing": 1,
+            "total": 26,
+            "toFix": 7,
+            "toConfirm": 56
+          },
+          {
+            "chapter": 2,
+            "passing": 0,
+            "total": 8,
+            "toFix": 14,
+            "toConfirm": 43
+          },
+          {
+            "chapter": 3,
+            "passing": 0,
+            "total": 5,
+            "toFix": 16,
+            "toConfirm": 17
+          },
+          {
+            "chapter": 4,
+            "passing": 0,
+            "total": 94,
+            "toFix": 93,
+            "toConfirm": 43
+          },
+          {
+            "chapter": 5,
+            "passing": 0,
+            "total": 8,
+            "toFix": 14,
+            "toConfirm": 55
+          },
+          {
+            "chapter": 6,
+            "passing": 0,
+            "total": 15,
+            "toFix": 7,
+            "toConfirm": 31
+          },
+          {
+            "chapter": 7,
+            "passing": 0,
+            "total": 8,
+            "toFix": 42,
+            "toConfirm": 38
+          },
+          {
+            "chapter": 8,
+            "passing": 0,
+            "total": 15,
+            "toFix": 49,
+            "toConfirm": 47
+          },
+          {
+            "chapter": 9,
+            "passing": 0,
+            "total": 25,
+            "toFix": 27,
+            "toConfirm": 81
+          },
+          {
+            "chapter": 10,
+            "passing": 0,
+            "total": 29,
+            "toFix": 64,
+            "toConfirm": 68
+          },
+          {
+            "chapter": 11,
+            "passing": 3,
+            "total": 11,
+            "toFix": 2,
+            "toConfirm": 10
+          }
+        ]
+      },
+      "findings": {
+        "errors": 333,
+        "warnings": 370,
+        "sourceChange": 0,
+        "key": 0
+      },
+      "scale": {
+        "inputs": 1,
+        "derived": 0,
+        "findings": {
+          "SCALE-NO-TARGET": 1
+        }
+      },
+      "resilience": {
+        "externalContracts": 1,
+        "disruptionThreats": 1,
+        "drafts": 7,
+        "missing": 0
+      },
+      "confirmed": 0,
+      "recorded": {
+        "chapterReviews": 0,
+        "chapterHandoffs": 0,
+        "reviews": 0,
+        "baselines": 0,
+        "governance": 0,
+        "handoff": 0
+      },
+      "reference": {
+        "id": "warehouse-fulfilment",
+        "authority": "AIW authored illustration",
+        "drafted": "journey-rules-1 from the brief",
+        "verified": false
+      },
+      "narrativeTitle": "Warehouse fulfilment — Solution Design",
+      "sdd": {
+        "markdownBytes": 314109,
+        "jsonBytes": 869314,
+        "htmlBytes": 343558,
+        "registersBytes": 386278
+      }
+    },
+    {
+      "id": "clinic-appointments",
+      "title": "Clinic appointments",
+      "name": "Clinic appointments",
+      "briefSha256": "b61a0c611eb4870dddcbf94e7e870c07fa8c9fb6e91b2625a80f0a797656342b",
+      "brief": {
+        "firstLine": "Clinic appointments: a brief for booking, reminders, rescheduling and no-show handling (an AIW authored teaching example).",
+        "words": 643,
+        "characters": 3890,
+        "sha256": "b61a0c611eb4870dddcbf94e7e870c07fa8c9fb6e91b2625a80f0a797656342b",
+        "passages": 51,
+        "questions": 7,
+        "sourceId": "SRC-001"
+      },
+      "interpreted": {
+        "rules": "brief-rules-1",
+        "sourceId": "SRC-001",
+        "passages": 51,
+        "outcomes": 2,
+        "stakeholders": 2,
+        "actors": 3,
+        "scope": 2,
+        "journeys": 5,
+        "constraints": 3,
+        "assumptions": 1,
+        "requirements": 6,
+        "questions": 7,
+        "inferred": 0
+      },
+      "chapters": {
+        "1": {
+          "records": 24,
+          "detail": {
+            "actor": 3,
+            "assumption": 1,
+            "constraint": 3,
+            "journey": 5,
+            "outcome": 2,
+            "requirement": 6,
+            "scope": 2,
+            "stakeholder": 2
+          },
+          "withJourney": 24,
+          "openAnswers": 6
+        },
+        "2": {
+          "records": 6,
+          "withJourney": 6,
+          "openAnswers": 34
+        },
+        "3": {
+          "records": 4,
+          "detail": {
+            "decisions": 4,
+            "alternatives": 8
+          },
+          "withJourney": 4,
+          "openAnswers": 4
+        },
+        "4": {
+          "records": 6,
+          "withJourney": 6,
+          "openAnswers": 6
+        },
+        "5": {
+          "records": 6,
+          "withJourney": 6,
+          "openAnswers": 12
+        },
+        "6": {
+          "records": 12,
+          "detail": {
+            "capabilities": 6,
+            "trustBoundaries": 6,
+            "technologyNeeds": 6
+          },
+          "withJourney": 12,
+          "openAnswers": 36
+        },
+        "7": {
+          "records": 6,
+          "withJourney": 6,
+          "openAnswers": 18
+        },
+        "8": {
+          "records": 13,
+          "detail": {
+            "contracts": 6,
+            "data": 6,
+            "dataFields": 12,
+            "parties": 1
+          },
+          "withJourney": 13,
+          "openAnswers": 25
+        },
+        "9": {
+          "records": 16,
+          "detail": {
+            "threats": 8,
+            "controls": 8
+          },
+          "withJourney": 16,
+          "openAnswers": 30
+        },
+        "10": {
+          "records": 18,
+          "detail": {
+            "environments": 6,
+            "zones": 6,
+            "plans": 6,
+            "placements": 6
+          },
+          "withJourney": 18,
+          "openAnswers": 30
+        },
+        "11": {
+          "records": 1,
+          "withJourney": 1,
+          "openAnswers": 1
+        }
+      },
+      "parts": {
+        "alternatives": 8,
+        "technologyNeeds": 6,
+        "placements": 6
+      },
+      "provenance": {
+        "records": 112,
+        "withJourney": 112,
+        "passagesCited": 44,
+        "passagesNotInBrief": 0
+      },
+      "gaps": {
+        "openAnswers": 202,
+        "briefQuestions": 7
+      },
+      "readiness": {
+        "passing": 4,
+        "total": 219,
+        "toFix": 293,
+        "toConfirm": 431,
+        "treated": 0,
+        "chapters": [
+          {
+            "chapter": 1,
+            "passing": 1,
+            "total": 26,
+            "toFix": 6,
+            "toConfirm": 55
+          },
+          {
+            "chapter": 2,
+            "passing": 0,
+            "total": 7,
+            "toFix": 12,
+            "toConfirm": 37
+          },
+          {
+            "chapter": 3,
+            "passing": 0,
+            "total": 5,
+            "toFix": 16,
+            "toConfirm": 17
+          },
+          {
+            "chapter": 4,
+            "passing": 0,
+            "total": 83,
+            "toFix": 82,
+            "toConfirm": 37
+          },
+          {
+            "chapter": 5,
+            "passing": 0,
+            "total": 7,
+            "toFix": 12,
+            "toConfirm": 44
+          },
+          {
+            "chapter": 6,
+            "passing": 0,
+            "total": 13,
+            "toFix": 6,
+            "toConfirm": 27
+          },
+          {
+            "chapter": 7,
+            "passing": 0,
+            "total": 7,
+            "toFix": 36,
+            "toConfirm": 33
+          },
+          {
+            "chapter": 8,
+            "passing": 0,
+            "total": 13,
+            "toFix": 42,
+            "toConfirm": 41
+          },
+          {
+            "chapter": 9,
+            "passing": 0,
+            "total": 22,
+            "toFix": 24,
+            "toConfirm": 72
+          },
+          {
+            "chapter": 10,
+            "passing": 0,
+            "total": 25,
+            "toFix": 55,
+            "toConfirm": 59
+          },
+          {
+            "chapter": 11,
+            "passing": 3,
+            "total": 11,
+            "toFix": 2,
+            "toConfirm": 9
+          }
+        ]
+      },
+      "findings": {
+        "errors": 291,
+        "warnings": 324,
+        "sourceChange": 0,
+        "key": 0
+      },
+      "scale": {
+        "inputs": 1,
+        "derived": 0,
+        "findings": {
+          "SCALE-NO-TARGET": 1
+        }
+      },
+      "resilience": {
+        "externalContracts": 1,
+        "disruptionThreats": 1,
+        "drafts": 6,
+        "missing": 0
+      },
+      "confirmed": 0,
+      "recorded": {
+        "chapterReviews": 0,
+        "chapterHandoffs": 0,
+        "reviews": 0,
+        "baselines": 0,
+        "governance": 0,
+        "handoff": 0
+      },
+      "reference": {
+        "id": "clinic-appointments",
+        "authority": "AIW authored illustration",
+        "drafted": "journey-rules-1 from the brief",
+        "verified": false
+      },
+      "narrativeTitle": "Clinic appointments — Solution Design",
+      "sdd": {
+        "markdownBytes": 300885,
+        "jsonBytes": 792452,
+        "htmlBytes": 330051,
+        "registersBytes": 336287
+      }
+    },
+    {
+      "id": "parcel-lockers",
+      "title": "Municipal parcel lockers",
+      "name": "Municipal parcel lockers",
+      "briefSha256": "d3132931ec851db143ba39e058bfc19153dfab13cba4638bc1e0a97ef07ee5df",
+      "brief": {
+        "firstLine": "Municipal parcel lockers: a brief for a city's parcel-locker network, from courier deposit to resident collection (an AIW authored teaching example).",
+        "words": 747,
+        "characters": 4292,
+        "sha256": "d3132931ec851db143ba39e058bfc19153dfab13cba4638bc1e0a97ef07ee5df",
+        "passages": 53,
+        "questions": 6,
+        "sourceId": "SRC-001"
+      },
+      "interpreted": {
+        "rules": "brief-rules-1",
+        "sourceId": "SRC-001",
+        "passages": 53,
+        "outcomes": 3,
+        "stakeholders": 4,
+        "actors": 4,
+        "scope": 7,
+        "journeys": 6,
+        "constraints": 3,
+        "assumptions": 1,
+        "requirements": 9,
+        "questions": 6,
+        "inferred": 1
+      },
+      "chapters": {
+        "1": {
+          "records": 37,
+          "detail": {
+            "actor": 4,
+            "assumption": 1,
+            "constraint": 3,
+            "journey": 6,
+            "outcome": 3,
+            "requirement": 9,
+            "scope": 7,
+            "stakeholder": 4
+          },
+          "withJourney": 37,
+          "openAnswers": 9
+        },
+        "2": {
+          "records": 9,
+          "withJourney": 9,
+          "openAnswers": 46
+        },
+        "3": {
+          "records": 5,
+          "detail": {
+            "decisions": 5,
+            "alternatives": 10
+          },
+          "withJourney": 5,
+          "openAnswers": 5
+        },
+        "4": {
+          "records": 9,
+          "withJourney": 9,
+          "openAnswers": 9
+        },
+        "5": {
+          "records": 9,
+          "withJourney": 9,
+          "openAnswers": 18
+        },
+        "6": {
+          "records": 18,
+          "detail": {
+            "capabilities": 9,
+            "trustBoundaries": 9,
+            "technologyNeeds": 9
+          },
+          "withJourney": 18,
+          "openAnswers": 54
+        },
+        "7": {
+          "records": 9,
+          "withJourney": 9,
+          "openAnswers": 27
+        },
+        "8": {
+          "records": 25,
+          "detail": {
+            "contracts": 11,
+            "data": 11,
+            "dataFields": 22,
+            "parties": 3
+          },
+          "withJourney": 25,
+          "openAnswers": 47
+        },
+        "9": {
+          "records": 34,
+          "detail": {
+            "threats": 17,
+            "controls": 17
+          },
+          "withJourney": 34,
+          "openAnswers": 62
+        },
+        "10": {
+          "records": 27,
+          "detail": {
+            "environments": 9,
+            "zones": 9,
+            "plans": 9,
+            "placements": 9
+          },
+          "withJourney": 27,
+          "openAnswers": 45
+        },
+        "11": {
+          "records": 1,
+          "withJourney": 1,
+          "openAnswers": 1
+        }
+      },
+      "parts": {
+        "alternatives": 10,
+        "technologyNeeds": 9,
+        "placements": 9
+      },
+      "provenance": {
+        "records": 183,
+        "withJourney": 183,
+        "passagesCited": 46,
+        "passagesNotInBrief": 0
+      },
+      "gaps": {
+        "openAnswers": 323,
+        "briefQuestions": 6
+      },
+      "readiness": {
+        "passing": 5,
+        "total": 346,
+        "toFix": 483,
+        "toConfirm": 690,
+        "treated": 0,
+        "chapters": [
+          {
+            "chapter": 1,
+            "passing": 1,
+            "total": 39,
+            "toFix": 9,
+            "toConfirm": 84
+          },
+          {
+            "chapter": 2,
+            "passing": 0,
+            "total": 10,
+            "toFix": 18,
+            "toConfirm": 55
+          },
+          {
+            "chapter": 3,
+            "passing": 0,
+            "total": 6,
+            "toFix": 20,
+            "toConfirm": 21
+          },
+          {
+            "chapter": 4,
+            "passing": 0,
+            "total": 138,
+            "toFix": 137,
+            "toConfirm": 55
+          },
+          {
+            "chapter": 5,
+            "passing": 0,
+            "total": 10,
+            "toFix": 18,
+            "toConfirm": 70
+          },
+          {
+            "chapter": 6,
+            "passing": 0,
+            "total": 19,
+            "toFix": 9,
+            "toConfirm": 39
+          },
+          {
+            "chapter": 7,
+            "passing": 0,
+            "total": 10,
+            "toFix": 54,
+            "toConfirm": 48
+          },
+          {
+            "chapter": 8,
+            "passing": 0,
+            "total": 23,
+            "toFix": 77,
+            "toConfirm": 73
+          },
+          {
+            "chapter": 9,
+            "passing": 0,
+            "total": 43,
+            "toFix": 51,
+            "toConfirm": 147
+          },
+          {
+            "chapter": 10,
+            "passing": 0,
+            "total": 37,
+            "toFix": 88,
+            "toConfirm": 86
+          },
+          {
+            "chapter": 11,
+            "passing": 4,
+            "total": 11,
+            "toFix": 2,
+            "toConfirm": 12
+          }
+        ]
+      },
+      "findings": {
+        "errors": 481,
+        "warnings": 517,
+        "sourceChange": 0,
+        "key": 0
+      },
+      "scale": {
+        "inputs": 2,
+        "derived": 9,
+        "findings": {
+          "SCALE-UNCONFIRMED": 1
+        }
+      },
+      "resilience": {
+        "externalContracts": 3,
+        "disruptionThreats": 3,
+        "drafts": 9,
+        "missing": 0
+      },
+      "confirmed": 0,
+      "recorded": {
+        "chapterReviews": 0,
+        "chapterHandoffs": 0,
+        "reviews": 0,
+        "baselines": 0,
+        "governance": 0,
+        "handoff": 0
+      },
+      "reference": {
+        "id": "parcel-lockers",
+        "authority": "AIW authored illustration",
+        "drafted": "journey-rules-1 from the brief",
+        "verified": false
+      },
+      "narrativeTitle": "Municipal parcel lockers — Solution Design",
+      "sdd": {
+        "markdownBytes": 326695,
+        "jsonBytes": 1047199,
+        "htmlBytes": 357373,
+        "registersBytes": 518431
+      }
+    },
+    {
+      "id": "library-reservations",
+      "title": "Library reservations",
+      "name": "Library reservations",
+      "briefSha256": "7cd23dea400df1ba51bf5e0c884b26598840cd6a8bd93b96fd4c5d4f83536ff7",
+      "brief": {
+        "firstLine": "Library reservations: a brief for holds and reservations across a public library's branches, its app and its catalogue (an AIW authored teaching example).",
+        "words": 749,
+        "characters": 4267,
+        "sha256": "7cd23dea400df1ba51bf5e0c884b26598840cd6a8bd93b96fd4c5d4f83536ff7",
+        "passages": 52,
+        "questions": 7,
+        "sourceId": "SRC-001"
+      },
+      "interpreted": {
+        "rules": "brief-rules-1",
+        "sourceId": "SRC-001",
+        "passages": 52,
+        "outcomes": 2,
+        "stakeholders": 3,
+        "actors": 4,
+        "scope": 6,
+        "journeys": 5,
+        "constraints": 3,
+        "assumptions": 1,
+        "requirements": 8,
+        "questions": 7,
+        "inferred": 2
+      },
+      "chapters": {
+        "1": {
+          "records": 32,
+          "detail": {
+            "actor": 4,
+            "assumption": 1,
+            "constraint": 3,
+            "journey": 5,
+            "outcome": 2,
+            "requirement": 8,
+            "scope": 6,
+            "stakeholder": 3
+          },
+          "withJourney": 32,
+          "openAnswers": 8
+        },
+        "2": {
+          "records": 8,
+          "withJourney": 8,
+          "openAnswers": 40
+        },
+        "3": {
+          "records": 5,
+          "detail": {
+            "decisions": 5,
+            "alternatives": 10
+          },
+          "withJourney": 5,
+          "openAnswers": 5
+        },
+        "4": {
+          "records": 8,
+          "withJourney": 8,
+          "openAnswers": 8
+        },
+        "5": {
+          "records": 8,
+          "withJourney": 8,
+          "openAnswers": 16
+        },
+        "6": {
+          "records": 16,
+          "detail": {
+            "capabilities": 8,
+            "trustBoundaries": 8,
+            "technologyNeeds": 8
+          },
+          "withJourney": 16,
+          "openAnswers": 48
+        },
+        "7": {
+          "records": 8,
+          "withJourney": 8,
+          "openAnswers": 24
+        },
+        "8": {
+          "records": 20,
+          "detail": {
+            "contracts": 9,
+            "data": 9,
+            "dataFields": 18,
+            "parties": 2
+          },
+          "withJourney": 20,
+          "openAnswers": 38
+        },
+        "9": {
+          "records": 26,
+          "detail": {
+            "threats": 13,
+            "controls": 13
+          },
+          "withJourney": 26,
+          "openAnswers": 48
+        },
+        "10": {
+          "records": 24,
+          "detail": {
+            "environments": 8,
+            "zones": 8,
+            "plans": 8,
+            "placements": 8
+          },
+          "withJourney": 24,
+          "openAnswers": 40
+        },
+        "11": {
+          "records": 1,
+          "withJourney": 1,
+          "openAnswers": 1
+        }
+      },
+      "parts": {
+        "alternatives": 10,
+        "technologyNeeds": 8,
+        "placements": 8
+      },
+      "provenance": {
+        "records": 156,
+        "withJourney": 156,
+        "passagesCited": 35,
+        "passagesNotInBrief": 0
+      },
+      "gaps": {
+        "openAnswers": 276,
+        "briefQuestions": 7
+      },
+      "readiness": {
+        "passing": 4,
+        "total": 297,
+        "toFix": 412,
+        "toConfirm": 595,
+        "treated": 0,
+        "chapters": [
+          {
+            "chapter": 1,
+            "passing": 1,
+            "total": 34,
+            "toFix": 9,
+            "toConfirm": 73
+          },
+          {
+            "chapter": 2,
+            "passing": 0,
+            "total": 9,
+            "toFix": 16,
+            "toConfirm": 49
+          },
+          {
+            "chapter": 3,
+            "passing": 0,
+            "total": 6,
+            "toFix": 20,
+            "toConfirm": 21
+          },
+          {
+            "chapter": 4,
+            "passing": 0,
+            "total": 116,
+            "toFix": 115,
+            "toConfirm": 50
+          },
+          {
+            "chapter": 5,
+            "passing": 0,
+            "total": 9,
+            "toFix": 16,
+            "toConfirm": 62
+          },
+          {
+            "chapter": 6,
+            "passing": 0,
+            "total": 17,
+            "toFix": 8,
+            "toConfirm": 35
+          },
+          {
+            "chapter": 7,
+            "passing": 0,
+            "total": 9,
+            "toFix": 48,
+            "toConfirm": 43
+          },
+          {
+            "chapter": 8,
+            "passing": 0,
+            "total": 19,
+            "toFix": 63,
+            "toConfirm": 60
+          },
+          {
+            "chapter": 9,
+            "passing": 0,
+            "total": 34,
+            "toFix": 39,
+            "toConfirm": 114
+          },
+          {
+            "chapter": 10,
+            "passing": 0,
+            "total": 33,
+            "toFix": 76,
+            "toConfirm": 77
+          },
+          {
+            "chapter": 11,
+            "passing": 3,
+            "total": 11,
+            "toFix": 2,
+            "toConfirm": 11
+          }
+        ]
+      },
+      "findings": {
+        "errors": 410,
+        "warnings": 447,
+        "sourceChange": 0,
+        "key": 0
+      },
+      "scale": {
+        "inputs": 2,
+        "derived": 8,
+        "findings": {
+          "SCALE-UNCONFIRMED": 1
+        }
+      },
+      "resilience": {
+        "externalContracts": 2,
+        "disruptionThreats": 2,
+        "drafts": 8,
+        "missing": 0
+      },
+      "confirmed": 0,
+      "recorded": {
+        "chapterReviews": 0,
+        "chapterHandoffs": 0,
+        "reviews": 0,
+        "baselines": 0,
+        "governance": 0,
+        "handoff": 0
+      },
+      "reference": {
+        "id": "library-reservations",
+        "authority": "AIW authored illustration",
+        "drafted": "journey-rules-1 from the brief",
+        "verified": false
+      },
+      "narrativeTitle": "Library reservations — Solution Design",
+      "sdd": {
+        "markdownBytes": 325919,
+        "jsonBytes": 966351,
+        "htmlBytes": 356213,
+        "registersBytes": 449245
+      }
+    }
+  ]
+}

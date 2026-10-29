@@ -1,0 +1,1451 @@
+{
+  "schema": "aiw-sol-evaluation-v1",
+  "at": "2026-09-25T23:40:10.590Z",
+  "dataset": {
+    "title": "Held-out decisions for evaluating Sol's advice",
+    "digest": "eefa96c59a04b91632e1b7aca53e10e986f7748905a893def19544160e3b6347",
+    "cases": 26,
+    "authority": "Implementation-authored expectations. They were written from the designs' own readings before Sol was run on these cases, and none of these cases was used to write Sol's instructions, the guards or the provider test double. They are not independent expert review: an architect should review and amend them before any result is relied on."
+  },
+  "provider": "OpenAI",
+  "model": "mock-sol",
+  "summary": {
+    "cases": 26,
+    "requestFailures": 0,
+    "assessments": 28,
+    "withheld": {
+      "rate": 0,
+      "of": 28,
+      "reasons": {}
+    },
+    "verdictAgreement": {
+      "rate": 0.929,
+      "of": 28
+    },
+    "ownReadingCited": {
+      "rate": 1,
+      "of": 28
+    },
+    "expectedSupportCited": {
+      "rate": 0.75,
+      "of": 8
+    },
+    "addressesTheIssue": {
+      "rate": 0.167,
+      "of": 12
+    },
+    "numbersWithinBand": {
+      "rate": 1,
+      "of": 2
+    },
+    "proposalsValid": {
+      "rate": 1,
+      "of": 1
+    },
+    "preferenceWithinOptions": {
+      "rate": 1,
+      "of": 4
+    },
+    "falseSupport": {
+      "rate": 0,
+      "of": 28
+    },
+    "tokens": 83200,
+    "latencyMs": {
+      "p50": 63,
+      "p95": 398
+    },
+    "byDomain": {
+      "bank-payment": {
+        "verdictAgreement": {
+          "rate": 1,
+          "of": 16
+        },
+        "addressesTheIssue": {
+          "rate": 0.286,
+          "of": 7
+        }
+      },
+      "service-permits": {
+        "verdictAgreement": {
+          "rate": 0.833,
+          "of": 6
+        },
+        "addressesTheIssue": {
+          "rate": 0,
+          "of": 3
+        }
+      },
+      "warehouse-fulfilment": {
+        "verdictAgreement": {
+          "rate": 0.833,
+          "of": 6
+        },
+        "addressesTheIssue": {
+          "rate": 0,
+          "of": 2
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "BP-01",
+      "domain": "bank-payment",
+      "ms": 398,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "bea64b24f78ad60242eeeab498b5d0942c8e3ef228b8f0ccbad9343c752a4d59",
+        "sources": 14,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14462
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-001",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": true,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "product-mechanism",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-02",
+      "domain": "bank-payment",
+      "ms": 173,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "d2a0ce063c5e65baaa57ef46eade6dd8d5df14840f3427a12955b13a813b2b36",
+        "sources": 11,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14346
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:integrity:if-004+rest",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": [
+            "rest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-03",
+      "domain": "bank-payment",
+      "ms": 95,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "c74bee1220ebf4af7241c6d8962a52c40b1fdf994767382a2f5cd4c73ba1d983",
+        "sources": 14,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14985
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:observability:run-001",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": [
+            "monitoring"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-04",
+      "domain": "bank-payment",
+      "ms": 60,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "03cdef21122eec97a2b734c8a8225b0b578aaddb5b7ed61420c6f028c268bfdf",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 13889
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "J:security:run-002",
+          "kind": "judgement",
+          "verdict": "judge",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": true,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-05",
+      "domain": "bank-payment",
+      "ms": 119,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "c8ef44ee054901a60fdf26b5b1a02eb200f09b97cd1a1c639c58f0610debf774",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 13451
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-001",
+          "kind": "decision",
+          "verdict": "judge",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": true,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-06",
+      "domain": "bank-payment",
+      "ms": 63,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "12532673d07b2bc4055078b122530dfa8fa45e2ec378e74d5e309e586cb4d248",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 13287
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-002",
+          "kind": "decision",
+          "verdict": "judge",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": true,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-07",
+      "domain": "bank-payment",
+      "ms": 162,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "d0a2a008676489bdce20f7b4dd0f22498984caf3f38737b569a8679b4ae978a5",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14967
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:switch:tr-003",
+          "kind": "switch",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": false,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-08",
+      "domain": "bank-payment",
+      "ms": 155,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "cfa0b978efe45ac56479ae34f8896e6016e935af7ee14f34d055f37dd6701963",
+        "sources": 12,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "brain-method"
+        ],
+        "chars": 14967
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:switch:tr-002",
+          "kind": "switch",
+          "verdict": "apply",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": false,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "BP-09",
+      "domain": "bank-payment",
+      "ms": 199,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "3f16dd5e4de310fff806fdbd6fb7d1a82408a10b4f01ea8edd59af8b97227237",
+        "sources": 11,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 16553
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:2:QD-003",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "stimulus"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-10",
+      "domain": "bank-payment",
+      "ms": 544,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "3a35f0a42443b22f25e4bb5e65a7b04fdefb541ccc7555f45a4173b744a9bb08",
+        "sources": 17,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 18239
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:7:tr-003",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": true,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "operationsPlan"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-11",
+      "domain": "bank-payment",
+      "ms": 235,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "5b9dd9acfd956f933ff44fd8dbcc506f10f40d1c3198664054a83349a73c2086",
+        "sources": 18,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 18786
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:10:run-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": true,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": true,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading",
+            "product-mechanism",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-12",
+      "domain": "bank-payment",
+      "ms": 213,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "acadc9af66dbbf5ebc68be040b61dfee8c3b9cbc1871eb7fa3445792a30213f4",
+        "sources": 11,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 16632
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:8:if-004",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "timeoutMs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-13",
+      "domain": "bank-payment",
+      "ms": 163,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "889e80b74ab9c59222a42e2a809ffb546e90870ff81db4274bae6b75cec233d0",
+        "sources": 11,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14509
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:9:thr-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "actor"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "BP-14",
+      "domain": "bank-payment",
+      "ms": 201,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "fd8d420c4861c223ddb2bd32f16716d01c2c8e4a4d1fd95199bd944fb9e7a4d9",
+        "sources": 16,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "product-mechanism",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 18218
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-002",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "product-mechanism",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas"
+          ]
+        },
+        {
+          "id": "F:recovery:run-003",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": [
+            "recoveryPlan"
+          ]
+        },
+        {
+          "id": "F:latency:QD-003",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": true,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "product-mechanism",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "rest"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-01",
+      "domain": "service-permits",
+      "ms": 36,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "23b9654f9531db8a31b041e631f802da47a7e0f3349e16f0ec2e725d2a557d75",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 12372
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-001",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": false,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-02",
+      "domain": "service-permits",
+      "ms": 30,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "aee5f07e9e5a75e5663548311787e4a9936e4ed357545bbb6cd9068f5e924d3a",
+        "sources": 6,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 11799
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-001",
+          "kind": "decision",
+          "verdict": "judge",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": true,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "SP-03",
+      "domain": "service-permits",
+      "ms": 30,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "6364db3e4a39b6d7623528ff0c5341091ceda506e986bf6e3cc3c7e6189cf8d2",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14510
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:2:QD-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "stimulus"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-04",
+      "domain": "service-permits",
+      "ms": 30,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "405d3b2d273dadd7eb5318fe536adac5c574ea007305635b52cd8a3640546979",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 12381
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:8:if-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "timeoutMs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-05",
+      "domain": "service-permits",
+      "ms": 33,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "e5e65ab3f7ad64d5beeb0e35f46c64805187536a56cf5c7e9299f9c91bb35228",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 11314
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:9:thr-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "actor"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SP-06",
+      "domain": "service-permits",
+      "ms": 39,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "6d327273e459039a1320a25275cc61bf75b8639df4d94a6e1f2c68cdc3ba3768",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "catalogue-description",
+          "brain-method"
+        ],
+        "chars": 15644
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:10:run-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-01",
+      "domain": "warehouse-fulfilment",
+      "ms": 27,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "2f36d7f66e7d38f2d462cd43abdc69b69c9cda0471292afd1441e88087832a79",
+        "sources": 8,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 12197
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "F:capacity:run-001",
+          "kind": "fix",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": false,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-02",
+      "domain": "warehouse-fulfilment",
+      "ms": 33,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "5a2e1d8df00dc3e4f9393d04ac9ee16ab11f63ac247cb79006324d5e1b6e69e3",
+        "sources": 6,
+        "kinds": [
+          "instrument-reading",
+          "planning-assumptions",
+          "model",
+          "brain-method"
+        ],
+        "chars": 11609
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "D:ADR-001",
+          "kind": "decision",
+          "verdict": "judge",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "instrument-reading"
+          ],
+          "refinements": []
+        }
+      ]
+    },
+    {
+      "id": "WF-03",
+      "domain": "warehouse-fulfilment",
+      "ms": 27,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "4a3064757262c7023ebdb34916b3887688893d297e67120123f6d20c81051fdb",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "model",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14303
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:2:QD-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "stimulus"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-04",
+      "domain": "warehouse-fulfilment",
+      "ms": 28,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "2040a8e49640efa288a5677bd7be65bd3a9e6e97ca6211cd454bcf2682f97a20",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 12187
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:8:if-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": false,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "timeoutMs"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-05",
+      "domain": "warehouse-fulfilment",
+      "ms": 29,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "06824e138f0c087c88deee995b7937c75037e8f1dafe243789abf74ccfc6d7b0",
+        "sources": 4,
+        "kinds": [
+          "chapter-reading",
+          "brain-method"
+        ],
+        "chars": 11150
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:9:thr-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading"
+          ],
+          "refinements": [
+            "actor"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "WF-06",
+      "domain": "warehouse-fulfilment",
+      "ms": 37,
+      "provider": "OpenAI",
+      "model": "mock-sol",
+      "usage": {
+        "inputTokens": 2400,
+        "outputTokens": 800
+      },
+      "packet": {
+        "stamp": "b043e0254775900fcd6d1a1d51e287533e17cc93a863898b6f8cfd03b8783c7c",
+        "sources": 8,
+        "kinds": [
+          "chapter-reading",
+          "planning-assumptions",
+          "playbook-entry",
+          "brain-method"
+        ],
+        "chars": 14678
+      },
+      "review": {
+        "accepted": true,
+        "withheld": []
+      },
+      "assessments": [
+        {
+          "id": "M:10:run-001",
+          "kind": "record",
+          "verdict": "refine",
+          "withheld": false,
+          "verdictAgrees": true,
+          "citesOwnReading": true,
+          "citesExpectedKinds": null,
+          "numbersInBand": null,
+          "proposalsOk": null,
+          "preferredOk": null,
+          "addresses": null,
+          "forbidden": [],
+          "unsupportedNumbers": [],
+          "falseSupport": false,
+          "citedKinds": [
+            "chapter-reading",
+            "playbook-entry"
+          ],
+          "refinements": [
+            "maxReplicas"
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Test double: the answers are canned. This run verifies the path, the guards and the metrics, not the quality of advice.",
+    "Expectations are implementation-authored and need independent architect review.",
+    "Metrics are automated proxies: they detect grounding and structural failures and disagreement with the expected class of advice, not the quality of architectural judgement.",
+    "The designs are reference and teaching examples, not a production system."
+  ],
+  "mode": "test-double"
+}

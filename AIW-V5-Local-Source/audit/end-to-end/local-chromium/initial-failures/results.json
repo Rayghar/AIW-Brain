@@ -1,0 +1,61 @@
+{
+  "at": "2026-10-12T06:45:13.964Z",
+  "sourceCommit": "f13d0ef05ec0c44df067c11f8724b6415c210bd9",
+  "runtime": "v24.18.0",
+  "browser": "Playwright Chromium; actual local server and isolated SQLite databases",
+  "realOpenAIExecution": false,
+  "providerLimit": "No local OpenAI credential. The test double is explicitly separate from real provider acceptance.",
+  "checks": [
+    {
+      "name": "eleven-chapter-walkthrough",
+      "code": 0,
+      "passed": true,
+      "durationMs": 87477,
+      "log": "eleven-chapter-walkthrough.log"
+    },
+    {
+      "name": "payment-evidence-journey",
+      "code": 1,
+      "passed": false,
+      "durationMs": 16495,
+      "log": "payment-evidence-journey.log"
+    },
+    {
+      "name": "focused-case-review",
+      "code": 1,
+      "passed": false,
+      "durationMs": 42302,
+      "log": "focused-case-review.log"
+    },
+    {
+      "name": "quality-target-change",
+      "code": 0,
+      "passed": true,
+      "durationMs": 13401,
+      "log": "quality-target-change.log"
+    },
+    {
+      "name": "technology-choice",
+      "code": 0,
+      "passed": true,
+      "durationMs": 22879,
+      "log": "technology-choice.log"
+    },
+    {
+      "name": "sol-browser",
+      "code": 1,
+      "passed": false,
+      "durationMs": 12521,
+      "log": "sol-browser.log"
+    },
+    {
+      "name": "sol-all-chapters-test-double",
+      "code": 0,
+      "passed": true,
+      "durationMs": 11158,
+      "log": "sol-all-chapters-test-double.log"
+    }
+  ],
+  "passed": false,
+  "finishedAt": "2026-10-12T06:48:40.241Z"
+}

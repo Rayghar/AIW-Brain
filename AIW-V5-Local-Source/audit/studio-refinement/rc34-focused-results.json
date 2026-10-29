@@ -1,0 +1,110 @@
+{
+  "schema": "aiw.focused-validation.v1",
+  "authority": "Authored native/DOM/domain checks; no rendered browser or live-provider execution.",
+  "checks": [
+    {
+      "command": "npm run test:outcome-contracts",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 21.77,
+      "passLines": 14,
+      "log": "\n> aiw-v5-live-model-explorer@1.0.0 test:outcome-contracts\n> node outcome-contract-validate.mjs && node outcome-context-validate.mjs && node outcome-contract-ui-validate.mjs && node outcome-design-journey-validate.mjs\n\nPASS native status and event contracts in payment and fulfilment retain explicit meaning, correlation, placement, export and pending verification\nPASS missing, proposed, dangling and wrong-environment context stays unknown; legacy same-provider completion remains unchanged\nPASS acceptance-only results, wrong direction/kind/authority, unrelated identity, schema conflict and unsupported further links produce scoped native targets\nPASS canonical saves reject dangling, self and circular links; exact field names and existing lifecycle reference guards remain authoritative\nPASS linked contract/payload/path changes reopen native review, source withdrawal preserves declarations, and impact guards concurrent execution edits\nPASS linked contracts, dictionaries, authority, paths and their scoped drivers/requirements/constraints form a currentness-sensitive source closure in either selection\nPASS all checks, verification responsibilities and exact supporting records fit the provider bounds; excluded or undersized support withholds the whole deduction without altering saved facts\nPASS current guidance and Validate remedies open the exact linked contract or data authority field; stale guidance and read-only navigation cannot write\nPASS exact result choices and authored field text survive changing suggestions, dirty navigation, preview/edit and explicit native acceptance\nPASS payment request: saved synthetic option \u2192 explicit related drafts \u2192 combined preview \u2192 atomic native acceptance \u2192 linked model, validation and SDD \u2192 source-change invalidation with history \u2192 complete reversal.\nPASS fulfilment event: saved synthetic option \u2192 explicit related drafts \u2192 combined preview \u2192 atomic native acceptance \u2192 linked model, validation and SDD \u2192 source-change invalidation with history \u2192 complete reversal.\nPASS new sibling result creation resolves exact native ID, retains missing-path uncertainty, and reverses dependent link and record atomically.\nPASS typed outcome references retain self/wrong-kind/missing/cycle/member/currentness guards; old draft schemas preserve execution facts and payloads.\nPASS native DOM saved-response journey: exact option, progressive payload/outcome controls, typed sibling link, dirty guard, save/resume, exact-member refinement, combined preview, explicit acceptance and immutable navigable history.\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\nThis guidance changed with the design or its sources. Review the current question before continuing. \nThis guidance changed with the design or its sources. Review the current question before continuing. \n"
+    },
+    {
+      "command": "npm run test:model-journey-continuity",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 6.151,
+      "passLines": 0,
+      "log": "\n> aiw-v5-live-model-explorer@1.0.0 test:model-journey-continuity\n> node model-journey-continuity-ui-validate.mjs && node canvas-controls-dom-validate.mjs && node view-experience-dom-validate.mjs\n\nModel journey continuity: Diagram/Layers/Table/Matrix subject, per-sheet zoom/scroll, Whole design camera, project isolation, hidden-layer recovery, scoped Escape, logical-to-physical handoff and outside-concern reading passed.\nCanvas controls: true all-bounds Fit, selection Fit, fixed zoom, scoped keyboard, menu lifecycle, project cameras, multi-selection, guarded movement, sizing, undo, pointer cancellation and project isolation passed.\nModel Questions DOM: exact native instrument targets, current question, deliberate navigation, keyboard focus and no duplicate toolbar controls passed.\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+    },
+    {
+      "command": "npm run test:coordinated-options",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 50.763,
+      "passLines": 5,
+      "log": "\n> aiw-v5-live-model-explorer@1.0.0 test:coordinated-options\n> node architecture-operation-group-validate.mjs && node architecture-operation-group-ui-validate.mjs\n\nPASS coordinated native option: exact group identity, idempotent resume, six editable operations, typed dependency resolution, joined preview, atomic acceptance, immutable original operations and whole-group reversal.\nPASS coordinated guards: missing or wrong-kind draft output, self/cyclic dependencies, partial option, changed draft, changed driver basis, explicit acceptance and sibling proposal invalidation.\nPASS private Worker group lifecycle: owner isolation, saved run/option identity, idempotent resume, CAS, all native edits, joined acceptance, persisted receipts and complete reversal.\nPASS native grouped drafting: exact guarded option, explicit targets, typed future references, safe member navigation, chapter context, prerequisite progress, saved values and idempotent group resume.\nPASS joined impact review: all exact native targets, selected-change edit, sibling invalidation and re-preview, explicit atomic acceptance, immutable operations and navigable accepted history without provider calls.\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+    },
+    {
+      "command": "npm run test:caller-resilience",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 6.765,
+      "passLines": 7,
+      "log": "\n> aiw-v5-live-model-explorer@1.0.0 test:caller-resilience\n> node caller-resilience-validate.mjs && node caller-resilience-ui-validate.mjs\n\nPASS exact-boundary declared attempt envelope, separate caller/effect placement and pending verification\nPASS deadline overrun, permanent errors, nested retries, open circuit, unsafe repeat and wrong interaction style are explained conflicts\nPASS missing facts stay unknown; explicit zero, no-breaker/no-retry choices, numeric validity and persisted/exported values remain exact\nPASS source-backed native guidance, exact model/source currentness and complete bounded provider context\nPASS native preview keeps saved facts unchanged and requires review of concurrent changes to the execution agreement\nPASS native caller fields accept typed numeric input and retain explicit zero through impact preview and edit\nPASS explicit native impact review saves exact numbers, recomputes the bounded composition and keeps verification pending\nnpm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm.\n"
+    },
+    {
+      "command": "node execution-composition-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 1.667,
+      "passLines": 8,
+      "log": "PASS one saved contract/path/environment composes retained intent, repeat ownership and authoritative outcome without claiming runtime proof\nPASS counterfactual loss window, broker-only protection, changed identity/intent, wrong owner, uncertain response and acceptance-only workflow\nPASS exact environment/path scope, proposed or absent route stays unknown and unrelated environments cannot borrow the declared composition\nPASS native schema validation, partial patch/clear/no-op, JSON round trip, visible impact and overlapping-edit protection\nPASS bounded native provider packet retains complete declared composition/source bundle; exact dependencies, currentness and withdrawals fail closed\nPASS native outbox comparison\u2192reviewed business contract\u2192explicit unanswered facts\u2192contract/path refinement with immutable original acceptance\nPASS traced constraints remain mandatory dependencies without importing a separately scoped requirement\u2019s constraint\nPASS explicit documentation-family gates accept patch versions, retain unknowns and withhold uninspected version claims without inventing product unsuitability\n"
+    },
+    {
+      "command": "node architecture-intelligence-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 4.447,
+      "passLines": 7,
+      "log": "PASS exact requirement/responsibility intent, shared implementation constraints, live groups, all-kind source semantics and native driver editing\nPASS repository-driven discovery beyond old examples, all eleven selected chapters, stable cross-tab basis and native final-review targets\nPASS reviewed typed applicability, false and zero, per-option unknowns, canonical product identity, version mismatch and interpretation currentness\nPASS exact editorial relation evidence, omitted-source closure, released comparison native routing and non-circular draft currentness\nPASS native reviewed proposal \u2192 concrete obligations \u2192 component specifications, changed driver basis, interpretation revision and publisher withdrawal with immutable acceptance history\nPASS nested-option disclosure blocks the broader required reasoning request before derived labels or rationale can be transmitted\nPASS native instrument basis and a complete contextual deduction/source bundle coexist within the unchanged reasoning bounds\n"
+    },
+    {
+      "command": "node driver-solution-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 0.663,
+      "passLines": 1,
+      "log": "PASS driver solution journey: all-kind driver scope, concrete caller policy placement, full alternative trace, exact changed edges, reviewed adoption, specification and product obligations, SDD, changed-target reassessment and no invented measurement.\n"
+    },
+    {
+      "command": "node contextual-intelligence-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 6.445,
+      "passLines": 6,
+      "log": "PASS: Work, Model, Co-design and all four tab headers share the question, native action and exact source meaning\nPASS: Validate and Output retain the same source reading; derived refresh preserves native input, caret, disclosure and preview\nPASS: native source actions resolve exact receipts; forged, stale, off-context and detached actions cannot navigate\nPASS: catalogue navigation uses the native comparison return; unsaved input survives and deferred actions recheck their saved basis\nPASS: all 14 exact archived source leads stay discovery-only; lookup preparation leaves immutable ref and passage hash unresolved\nPASS: the native read/inspect/guard journeys perform zero saved-project commands or provider generation requests\nThis guidance changed with the design or its sources. Review the current question before continuing. \nThis guidance changed with the design or its sources. Review the current question before continuing. \nThis guidance changed with the design or its sources. Review the current question before continuing. \nThis guidance changed while another edit was open. Review its current basis before continuing. \n"
+    },
+    {
+      "command": "node standards-preview-loading-ui-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 1.618,
+      "passLines": 0,
+      "log": "Standards preview loading: zero eager load, deduplicated arrival, native schema validation and import dialogs, exact context guards, newer-input retention, failed-load retry, stale-failure suppression and synchronous operation parser passed.\n"
+    },
+    {
+      "command": "node enhancements-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 1.23,
+      "passLines": 0,
+      "log": "{\"at\":\"2026-10-20T20:28:05.780Z\",\"event\":\"project-access\",\"by\":\"owner\",\"owner\":\"owner\",\"project\":\"project-e0022683-e92a-4ef7-a368-f4397cf8c313\",\"member\":\"reviewer\",\"role\":\"reviewer\"}\n{\"at\":\"2026-10-20T20:28:05.782Z\",\"event\":\"project-access\",\"by\":\"owner\",\"owner\":\"owner\",\"project\":\"project-e0022683-e92a-4ef7-a368-f4397cf8c313\",\"member\":\"editor\",\"role\":\"editor\"}\n{\"at\":\"2026-10-20T20:28:05.784Z\",\"event\":\"project-access\",\"by\":\"owner\",\"owner\":\"owner\",\"project\":\"project-e0022683-e92a-4ef7-a368-f4397cf8c313\",\"member\":\"viewer\",\"role\":\"viewer\"}\n{\n  \"at\": \"2026-10-20T20:28:06.021Z\",\n  \"status\": \"passed\",\n  \"checks\": [\n    \"Changes preview exact object fields and linked downstream work\",\n    \"Saved alternatives rebase unrelated fields and require conflict choices\",\n    \"All eleven chapters expose a next step; brief answers require review and register a source\",\n    \"Analysis formulas, cycles and failure sensitivity retain explicit assumptions\",\n    \"Library approval needs evidence and becomes stale when its source changes\",\n    \"Nested schema validation rejects bad types, required fields, arrays and unhandled assertions\",\n    \"OpenAPI and AsyncAPI import original definitions into real model contracts\",\n    \"Assurance and delivery exchange preserve observation type, identities and source freshness\",\n    \"Missing evidence clears for a reviewed linked test result; capability groups are requirement groups now\",\n    \"Template instances reset authority and preserve separate project identity\",\n    \"Authenticated project roles enforce isolated read, edit and membership permissions\",\n    \"Assigned review outcomes bind the authenticated reviewer and retain a discussion history\",\n    \"Original evidence bytes, SHA-256 and source revision persist together; other accounts cannot download them\",\n    \"Project archive, restore and reusable templates round trip through the real database\",\n    \"Concurrent edits preserve one project revision and reject the stale writer\"\n  ]\n}\n"
+    },
+    {
+      "command": "node output-stage-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 2.386,
+      "passLines": 0,
+      "log": "{\n  \"passed\": 8,\n  \"checks\": [\n    \"one declarative list names every document with its chapter, the chapters it reads, its formats, what it needs and what later chapters add; every chapter offers at least one; a register comes as Markdown, JSON only where a document has its own data, preview where the route serves it, the MADR zip as a pack\",\n    \"on the reference every chapter can produce its own documents now, each format linked to the export route; the component specification and the SDD are named at Chapter 2 as later documents that read it; the SDD says the framing would make it fuller\",\n    \"on a blank project the stage lists nothing to produce and says in one line what each document needs; with one driver the requirements specification can be produced and says which later chapters make it fuller\",\n    \"the Output tab draws the list: Preview and a link per format for each document, each file once, the project data once, what would make each fuller, what needs later chapters; a blank chapter lists its documents disabled with the reason, once each, and no live export\",\n    \"a chapter registers its browser-only appendix as data; a chapter without one, or a failing one, appends nothing\",\n    \"reading the stage changes nothing in the project\",\n    \"every register page lists the chapter's own records, one read-only row each with Inspect and a separate \\\"Open in Work\\\" link; Chapter 5's rows carry the specification's Preview and three downloads; Chapter 4 adds its links as a second section; a blank chapter offers the way to Work; 50 rows a page, the next page without overlap; a filter narrows the page and says so\",\n    \"the export route serves the ten registers as HTML views (inline, framed by the workbench, with the chapter's picture) and downloads, each with the project revision and the date as the first line after the title, as the ARS and the specifications are; the whole project is the JSON without a chapter\"\n  ]\n}\nThe chapter's export appendix could not be read. broken\n"
+    },
+    {
+      "command": "node knowledge-structure-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 0.511,
+      "passLines": 1,
+      "log": "PASS supplied catalogue structure, immutable source identities, qualitative non-scoring effects, exact one-hop relationships and field locators, shared source serialization, native independent review/release/withdrawal, typed applicability and retained history.\n"
+    },
+    {
+      "command": "node model-dossier-validate.mjs",
+      "result": "passed",
+      "exitCode": 0,
+      "durationSeconds": 0.561,
+      "passLines": 0,
+      "log": "Model dossier and question chooser: source, choice, navigation, readiness, observed evidence, escaping and read-only checks passed.\n"
+    }
+  ]
+}

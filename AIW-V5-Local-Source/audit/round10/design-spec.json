@@ -1,0 +1,947 @@
+{
+ "final": {
+  "title": "AIW round 10: declared line bundles in the one notation engine and wires drawn once in the chapter views. Fewer lines and marks; every relationship stays its own record, hit, Tab stop and reading (target AIW v0.10.0-rc.10.73.15, candidate)",
+  "rationale": "The spine is the engine proposal. It was the only one prototyped in production shape: scratch exp/public/notation-layout.js, notation-svg.js and notation-metrics.mjs, which passed every notation unit suite and 8 browser suites. It is also the only proposal all three lenses scored 8.\n\nIt fixes noise at its two measured roots in the shared engine, so the Diagram, the Layers view, the SVG/PNG export, the SDD figures, the record picture, the Running board and the perspectives improve together:\n- The snap defect leaves jogs on 72% of edges.\n- The one-port-per-end rule turns same-style fans into ribbons with stacked heads. Fans hold 52.8% of bank-payment's Diagram edges.\n\nMeasured on the 88 routed reference Diagram defaults: heads 1,245\u21921,056, distinct visual crossing points 768\u2192590, ink \u22126.2%, bends \u221244%, short jog segments \u221287%, foreign shared runs 19\u21925, 0 fallbacks. On bank Ch6 Solution: heads 32\u219214 and crossing points 114\u219268.\n\nGrafts from the other proposals, each kept because a judge listed it as a must-keep:\n- From reader:\n  - the UML 2.5.1 shared-target T-join with no dot for composition and aggregation, extended to the kinds that already use a dot end marker (protects, evidences, hosts, standsOn);\n  - a screen-only lift layer that draws selected, lit and traced routes whole and on top;\n  - a companion hover reading for relationships and lines;\n  - the camera following keyboard focus (WCAG 2.4.11);\n  - CSS-only line, join and hit widths that follow zoom;\n  - forced-colours rules;\n  - the Key wording 'each branch is one recorded relationship'.\n- From semantic:\n  - exactness checked as a property, which becomes the bundleIntegrity suite;\n  - a drawing note in every member's aria-label and title;\n  - Key marks shown only when their form is drawn;\n  - a visual-only 'Also recorded as' for duplicate records.\n- From views:\n  - the whole chapter-view lane: a pure wire-merge module that shares ink only among identically styled links, a crossing-aware track assigner, Ch9 entry trunks drawn once, Ch2 and Ch3 combs, the Ch3 track order and port rule, Ch1 fan-out trees, Ch10 'needs' rails, Whole design spines, token-filled heads and relative chapter evidence;\n  - continuous stroke-dashoffset from the bundle root, which makes the engine's 'dashes in phase' claim true across joins.\n\nJudge corrections built in:\n- bundleIntegrity gains two checks the engine missed: a foreign line within 3 px of a join, and a foreign corner lying on a trunk. I re-ran the judge script and confirmed 7 and 6 such cases in the prototype's Layers pictures.\n- Bundles that use the T-join must split only as a T, never as a 4-way node.\n- Tuning becomes frozen constants. The prototype read process.env.R10_*.\n- Layers relayout gets an early bail-out and a budget, because the fallback path was 2.4\u00d7 slower.\n- Duplicate merging is excluded from BPMN lanes and process pictures.\n- The sharedRuns exemption applies only to bundles that pass integrity.\n- Dark-theme state tokens are ones that pass 3:1: gold-11, violet-11, green-11, gold-9 and sage-9. The reader and semantic proposals' token sets fail for 4 of 5 states.\n- Culling is re-checked.\n- The test re-specifications (notation-browser-validate:67, story-browser-validate:144) become stronger, never looser.\n- Before and after screenshots must be inspected and logged. Two prototype shots this round were defective: the Ch10 rails left dots floating, and the Ch1 'exact' bus implied ACT-003\u2192JRN-003.\n\nDropped with reason:\n- Semantic's model-level fact merge: it changes D counts and drops records from the Layers code exports.\n- Junction items inside the arrangements: unprototyped production form, +34% page width.\n- Dashed same-relationship frames: they read as ArchiMate Grouping.\n- Nesting by default.\n- pointer-events:none on member hits.\n- Reader's roving tabindex and branch-only hits: they change the keyboard contract.\n- Counted pills: they hide lines at rest in the SDD.\n- Receding headless lines and heavier trunks.\n- Views' 'most established member' style rule and biclique buses.\n- Frozen golden ceilings.\n- Engine's exposed 'Join lines' toggle: an export would depend on a per-reader preference. consolidate stays one internal notationLayout option, used for the control and the fallback.\n\nHow the judges were weighed:\n- Judge 1 (truth) acts as a veto on anything that implies or hides a relationship.\n- Judge 2 (engineering) acts as a veto on the D/L/DOM/export contracts, determinism and budgets.\n- Judge 3 (standards and accessibility) governs glyphs, exclusions, tokens and keyboard access.\n- Where they differed, the stricter rule wins. Examples: trunk state is derived per run, so selection lights exactly the selected route; the lift is screen-only; buses are deferred.\n\nHonest scope: this round cleans the routed pictures. The straight-mode giants keep their 1:1 lines and are reported unchanged. These are by-layer pictures above 160 edges or 120 nodes, and any picture above 400 edges; 77.5% of all crossings sit in the noisiest 10% of pictures, and scale Ch3 Rationale alone has 99,977. Summarising them changes the picture contract, so it is an owner decision for a later round.",
+  "principles": [
+   "A picture is a reading, never a fact. Consolidation merges ink, never records. One D.edge stays one L.edge (full pts, in D order), one g.nt-edge[data-nt-edge], one full-route .nt-hit with its own Tab stop and aria-label, one companion reading and one connection in every code export. No bundle id ever reaches draw.io, the ArchiMate exchange, BPMN DI, Structurizr, PlantUML or Mermaid.",
+   "Ink is shared only along a declared tree from one shared element and one side of it. The relationships on it must be drawn identically: kind (therefore ArchiMate type), word, ends, weak, reply, diff change, and the qualifier where it sits at the shared end. No link belongs to two structures. Relationships that do not share an endpoint never share ink, so the D2-12 bus cannot return.",
+   "Every bundle is validated. A bundle that rides a foreign line along its trunk, passes a foreign line through or near a join, has a foreign corner on its trunk, rejoins itself, crosses an element, or (for T-join kinds) splits four ways is repaired locally or drawn apart as snapped separate lines. It is never drawn as a bus, and every fallback is recorded.",
+   "No implied semantics. No joins on ArchiMate Flow or Triggering relationships (flow, transforms, message, path, sequence, transition, plus selects by family), in BPMN lanes or process pictures, in sequence pictures, or on numbered, cardinality or crossing-marked edges. Composition and aggregation split as a plain T under one diamond. The Key makes no ArchiMate junction conformance claim until an independent reviewer has checked the 3.2 \u00a75.5 text.",
+   "One engine, one renderer, one entry point. The changes live in public/notation-layout.js and public/notation-svg.js, so every consumer improves at once. consolidate is a single option on notationLayout, used for the in-run control and the fallback, not a parallel path. The chapter views share one pure wires module instead of five copies of interval colouring and four copies of roundPath.",
+   "Deterministic geometry. Layout depends on no zoom, viewport, selection, lens or environment variable. Exports are byte-identical at any window width and in light and dark. SDD figures equal fresh renders. Only CSS weight and visibility follow zoom.",
+   "Disclosure without moving anything. Hover, focus, selection, trace and the lift layer reveal a relationship's full route, trunk included. Trunk state is derived per run (sel or lit when any member travelling the run is, dim only when every member is), so a selection lights exactly its own route and never a co-member's branch.",
+   "State stays visible in every theme. The round-9 dark regression is fixed with token rules that meet 3:1 on the night canvas. Trunks, joins and the lift recolour with the lines, and non-colour cues are kept: width, end rings, dashes, separate weak and plain bundles.",
+   "Evidence over claims. Gains are measured on real pictures against a consolidate:false control computed in the same run, using stated metric definitions: heads drawn, line ends, ink, distinct visual crossing points, bends, foreign-on-trunk, foreign-at-join, T-contacts, fallbacks and ms. Fallbacks are named, screenshots are inspected and logged, and tests only get stronger.",
+   "Honest scope and governance. Straight-mode giants are explicitly unchanged this round. Owner acceptances are recorded as pending until given. No external authority (ArchiMate reviewer, production acceptance) is impersonated, and productionAccepted stays false."
+  ],
+  "workstreams": [
+   {
+    "id": "W0",
+    "name": "Release discipline, recorded plan and frozen baseline",
+    "scope": "The AGENTS.md steps before implementation: inspect the branch and working tree; create the round-10 branch from claude/dazzling-cerf-a3qshh at 4d94292 (release field rc.10.73.14); make a baseline checkpoint commit; record this plan and every owner decision with its default; freeze the before numbers.",
+    "files": [
+     "audit/round10/DESIGN.md (new)",
+     "audit/round10/evidence/baseline-measure.json (new; copy of scratchpad r10/measure/out/baseline.json, 472 rows)",
+     "audit/round10/evidence/baseline-prototype.json (new; copy of r10/exp-src/base.json with its SHA-256)"
+    ],
+    "mechanism": "1. git status must be clean.\n2. Create branch round10/line-consolidation, or the session's designated branch.\n3. Checkpoint commit.\n4. DESIGN.md records: the workstreams below, the metric definitions, the owner decisions with the defaults this plan proceeds on (each marked 'owner acceptance pending'), the target release AIW v0.10.0-rc.10.73.15 (candidate), the controlling baseline (still rc.10.73.6), and productionAccepted=false.\n5. Freeze the scratch harness baseline and record its SHA-256, so the round's delta isolates the drawing code (the documents in measure/data are reused).",
+    "reader_effect": "None. It makes the round reversible and auditable.",
+    "acceptance": [
+     "The branch exists and the baseline checkpoint commit is on it; git status is clean.",
+     "DESIGN.md lists all 14 owner decisions with recommendation, default and status 'pending'.",
+     "The frozen baseline files are committed with SHA-256 recorded in DESIGN.md.",
+     "notation-layout-validate, notation-validate, notation-code-validate and theme-browser-validate are recorded green on the baseline, and the known dark state-colour defect is logged as an open finding."
+    ],
+    "tests": "Run the current notation and theme suites to record the green baseline. No test changes.",
+    "depends_on": [],
+    "can_run_in_parallel_with": [],
+    "effort": "S"
+   },
+   {
+    "id": "N1",
+    "name": "Drawn metrics, bundle integrity and the notation evidence generator (dormant)",
+    "scope": "Add the measures and the integrity checker before any geometry changes, so each later step is proven against an in-run control. Port the scratch harness into the repo as the release evidence generator.",
+    "files": [
+     "notation-metrics.mjs",
+     "notation-metrics-validate.mjs (new unit suite on hand-built L fixtures)",
+     "scripts/notation-lines-evidence.mjs (new; port of r10/exp-src/drawn.mjs + r10/measure/noise-metrics.mjs + the judges' lens/foreign.mjs and lens/joins.mjs checks)",
+     "scripts/notation-lines-fixtures.mjs (new; documents as r10/measure/fetch-projects.mjs builds them: server on a free port with AIW_LOCAL_DB under .aiw-local, bank-payment plus the 5 reference journeys, scale-300 via scripts/build-scale-fixture.mjs, stress-44 via notation-fixtures.mjs)"
+    ],
+    "mechanism": "drawnMetrics(L) defines, in the module header:\n- markers drawn (member far-end marks plus one per root or far run);\n- lineEnds (distinct port points at elements);\n- ink (union length of drawn segments, each run once);\n- visualCrossings (distinct proper intersection points between different drawn groups, a trunk counted once, pairs sharing an end element excluded as today);\n- touches (T-contacts between groups);\n- words, joins, bends, and shortSegs (interior segments under 8 px);\n- foreignShared (sharedRuns over pairs not in one valid bundle);\n- foreignOnTrunk (a non-member segment collinear with a run of 2 or more members for more than 6 px);\n- foreignAtJoin (a non-member segment within 3 px of a join);\n- tContacts (a non-member vertex within 0.5 px of a run of 2 or more members);\n- tabStops (= L.edges.length);\n- fallback and dissolved.\n\nbundleIntegrity(L) returns a list of violations:\n- members disagree on kind, label, ends, weak, reply, change, or the qualifier rule;\n- members do not share the named node and face;\n- runs do not form a tree rooted at the port with nested member sets;\n- a split has no join, or a join is not at a split;\n- a member's pts differ from its runs plus its branch;\n- a member passes through an element;\n- the root is shorter than 10 px (except for 'both');\n- branches rejoin after parting;\n- any foreignOnTrunk, foreignAtJoin or tContacts;\n- a 4-way split in an undotted bundle;\n- an excluded kind, arrangement or scene appears.\n\ndiagramMetrics.sharedRuns exempts a pair only when a.e.bundle===b.e.bundle and that bundle has no integrity violation. The comment cites audit/round2/03_DIAGRAMS.md:59 and :88 and the owner decision.\n\nWith no L.bundles every output equals today's. The generator writes audit/round10/evidence/notation-lines.json and .csv: per picture, control (consolidate:false) against after, bundles, joins, duplicates, dissolved, fallback and why, with group totals as in r10/exp-src/analyze.py (A reference defaults, B bank defaults, C reference Layers, D Grouped alternatives, E stress+scale routed, F straight). Timings go to a separate timing file, so the hashed body is deterministic.",
+    "reader_effect": "None directly. The gains become evidence rather than claims, and the D2-12 guard becomes precise.",
+    "acceptance": [
+     "On today's source the generator reproduces the prototype base totals: 88 routed reference defaults have markers 1,245, lineEnds 2,584, ink 569,778 (\u00b11%), visual crossing points 768, bends 5,367 and shortSegs 1,338. The 18 bank routed defaults have markers 285, lineEnds 580, ink 131,854 and crossing points 428.",
+     "diagramMetrics output is byte-equal to today's for every reference, stress and synthetic picture (no bundles yet), including sharedRuns.",
+     "notation-metrics-validate passes: a valid fan-in tree gives integrity []; each violation class (foreign collinear on a trunk, foreign line through a join, foreign corner on a trunk, rejoin, branch mismatch, 4-way undotted split, excluded kind) is detected; same-bundle sharedRuns are exempt only when the bundle is valid.",
+     "Two generator runs give byte-identical notation-lines.json; a full run takes under 3 minutes."
+    ],
+    "tests": "Add notation-metrics-validate.mjs to the regression runner. notation-layout-validate.mjs is not touched in N1. The measure harness's --compare against the frozen baseline must show a 0% delta on today's source.",
+    "depends_on": [
+     "W0"
+    ],
+    "can_run_in_parallel_with": [
+     "T1",
+     "V1",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "N2",
+    "name": "Whole-run port snap (the jog fix)",
+    "scope": "Every routed picture: tree, orthogonal, layered, grouped, lanes, by-layer up to 160 edges, and radial edges that fall back to A*. Not sequence, and not straight lines.",
+    "files": [
+     "public/notation-layout.js (routeAll :688-696; comment at :547-551)",
+     "notation-layout-validate.mjs (new short-segment assertion)"
+    ],
+    "mechanism": "Replace the two-point snap at :689-692.\n1. With vA (and vB) meaning the port face is top or bottom, walk ia forward while mid[ia+1] shares mid[0]'s column (or row), and walk ib backward from the end the same way.\n2. Snap mid[0..ia] to pa's coordinate and mid[ib..] to pb's.\n3. When the whole route is one straight run between offset ports (ia>=ib, same orientation), put one jog at h=floor((ia+ib)/2).\n4. simplify(), keep fix(), then re-check every moved run against foreign boxes with crossesBox(...,1). On any hit, revert that edge only to today's snap and record its id in L.snapReverted.\nThe prototype is in scratch nl-snap.js and exp/public/notation-layout.js.",
+    "reader_effect": "A straight drop is one straight line instead of a 5-segment stair. Every corner is a real turn, and the 1-4 px wobble that read as near-parallel lines disappears. Nothing changes topology.",
+    "acceptance": [
+     "88 routed reference defaults: bends \u22643,100 (baseline 5,367; prototype 3,023) and interior segments under 8 px \u2264200 (1,338; 167).",
+     "18 bank routed defaults: bends \u2264730 (1,257) and short segments \u226425 (292).",
+     "64 routed reference Layers: bends \u226413,500 (19,570) and short segments \u2264120 (3,295). stress-44 plus scale-300 routed: bends \u22649,000 (14,143).",
+     "No interior segment under 4 px in any reference default picture except edges listed in L.snapReverted.",
+     "Layout through 0 and metric through 0; labelOnLabel 0; sharedRuns \u22643 on every default picture with no exemption yet.",
+     "Crossings plus touches are not higher: Ch6 Solution 128\u2192\u2264124, Ch7 Stack 187\u2192\u2264175, Motivation 27\u2192\u226421. Segment-pair crossings may rise (a counting artefact, scratch exp-src/xcheck.mjs) and are reported beside touches.",
+     "Same layout twice and at viewW 640; routed-default median layout \u22644 ms; stress under 3 s."
+    ],
+    "tests": "notation-layout-validate.mjs:33-41 and :48-51 hold unchanged. Add the short-segment assertion. notation-code-validate.mjs:112-128 holds because SDD figures are compared with fresh renders; inspect the regenerated SDD figures. notation-validate and process-semantics-validate hold. The evidence generator records bends and shortSegs before and after.",
+    "depends_on": [
+     "W0",
+     "N1"
+    ],
+    "can_run_in_parallel_with": [
+     "T1",
+     "V1",
+     "V2",
+     "V3",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "S"
+   },
+   {
+    "id": "N3",
+    "name": "Declared bundles in the layout: exact duplicates, same-style fans, validation, local repair and recorded fallback",
+    "scope": "Every routed picture, through the one notationLayout entry point. Excluded:\n- the sequence and lanes arrangements and scene 'process' (BPMN), for both fans and duplicates;\n- straight, large and direct pictures, including radial straight lines;\n- step, cardinality and crossing-marked edges, and self edges;\n- fans of ArchiMate Flow or Triggering kinds, or families flow, sequence, message and path;\n- fan-outs whose representative carries a qualifier.\nThe Running board is covered automatically: its 28 serves bundle at the component end.",
+    "files": [
+     "public/notation-layout.js (portsOf :619-637, makeGrid :553-567, astar :590-618, routeAll :646-704, new formBundles/consolidate/routeConsolidated, notationLayout :841-885)",
+     "notation-layout-validate.mjs (new integrity, exclusion, control-relative, Layers budget, duplicate and cross-process determinism sections)"
+    ],
+    "mechanism": "notation-layout.js imports styleOf from the import-free notation-palette.js.\n\nUnits:\n- Exact duplicates are keyed by from|to|kind|label|ends|weak|reply|change|qualifier, members sorted by id, representative = smallest id. They are eligible in every family outside the excluded arrangements and scenes, because no fork is implied.\n- Fan keys: fan-in 'i|to|face|lineStyle'; fan-out 'o|from|face|lineStyle', only without a qualifier. lineStyle = kind, label, ends, weak, reply and change.\n\nGreedy assignment is deterministic: score = size \u00d7 (2 if a marker sits at that end), ties to the smaller key so fan-in comes first, minimum 2, one bundle per unit. Each bundle is therefore a tree from one shared end, never confluent.\n\nPorts: the slot list collapses by merge key at the shared end, sorted by mean far-end centre then id, so a picture without bundles keeps today's order.\n\nGrid and search:\n- The grid replaces the used bits with Uint16 counts uh/uv plus bh/bv.\n- Along-cost is AVOID=300 when the router is a member or the cell carries a bundle, else 40.\n- A member subtracts its own bundle's earlier counts and prefers those cells during its search.\n- A 2-cell stem at the shared end.\n\nconsolidate() runs after the per-edge loop:\n- Member paths are oriented from the shared end. Pairwise LCP gives runs keyed by (member set, start) and joins at splits.\n- Validation is bundleIntegrity from N1, including foreign-at-join, T-contact and, for undotted bundles, no 4-way split.\n- Repair order: re-route the offender once with along-cost 4000 on bundle cells; else drop the failing members; else ban the key.\n- At most 3 incremental passes, keeping every unchanged route.\n- Early bail-out: if pass 1 fails on more than 25% of bundles, go to a duplicates-only pass, then a pass with no bundles. The fallback is recorded.\n- dotted = not (Composition or Aggregation, or a 'dot' head or tail).\n\nTuning is a frozen BUNDLE object {MIN:2, ROOT:10, PASSES:3, AVOID:300, STEM:2, BAIL:0.25, RUN:6, JOIN_CLEAR:3}, with no process.env or globalThis reads.\n\nOutput contract (beside, never instead of, today's L):\n- each member gains bundle, bundleEnd ('to'|'from'|'both') and branch;\n- L.bundles=[{id 'B:'+key, end, node, face, kind, family, label, dotted, members (D order), runs:[{members, pts, root, far, offset}], joins, root}];\n- L.consolidation={bundles, members, duplicates, joins, passes, dissolved, fallback: false|'duplicates'|'none', why (bounded)}.\n\nnotationLayout({consolidate=true}); consolidate:false is today's behaviour plus the snap (the control). The comments at :547-551 and :619-620 are rewritten: connectors never share a start or end, except inside a declared, validated bundle.\n\nLayers tuning attempt (judge 1): for bank Ch5 and Ch6, try formation order, per-face exclusivity and AVOID. Keep only changes that hold every gate, and record the outcome.",
+    "reader_effect": "A component served by five capabilities receives one arrowhead on one line that splits at dots. A capability serving five components leaves by one line. Composition fans become one diamond at the whole with plain T splits. A fact recorded twice is drawn once. Different styles stay apart: a weak and a plain serves to the same component are two lines with two heads.",
+    "acceptance": [
+     "Every scene \u00d7 arrangement (reference, stress, synthetic-200): bundleIntegrity empty, through 0, foreignOnTrunk 0, foreignAtJoin 0 and tContacts 0 (the prototype had 7 foreign-at-join and 6 T-contacts in Layers; now 0).",
+     "88 routed reference defaults: markers \u22641,080 (1,245), lineEnds \u22642,360 (2,584), ink \u2264540,000 (569,778), visual crossing points \u2264610 (768), foreign shared runs \u22646 in total and \u22641 per picture (19), 0 fallbacks, \u226412 dissolved.",
+     "18 bank routed defaults: markers \u2264200 (285), crossing points \u2264325 (428), ink \u2264122,000 (131,854).",
+     "Bank named pictures:\n- Ch6 Solution: markers \u226416 (32), crossing points \u226475 (114), ink \u226413,500 (15,506).\n- Ch7 Stack: markers \u226424 (41), crossing points \u2264135 (161).\n- Ch3 Rationale: markers \u226410 (22).\n- Motivation: markers \u226411 (23), crossing points \u22649 (15).\n- Drivers: markers \u226411 (22), crossing points \u226410 (17).\n- Application: markers \u226423 (26), the composes fan drawn as one diamond T-tree with no join dots.",
+     "In-run relative checks: on every default picture, markers, lineEnds and ink are \u2264 the consolidate:false control. Total drawn crossing points over the defaults are \u226515% below control. Ch6, Ch7, Motivation, Rationale and Drivers markers are \u226540% below control.",
+     "Running board: heads \u226418 (38); drawn crossing points \u226525% below control; per-kind relationship counts unchanged (realizes 5, serves 28, fulfils 5).",
+     "64 routed reference Layers: markers \u22642,950 (3,116) and crossing points \u226418,700 (21,074). Bank Ch4 Layers: exactly 12 duplicate pairs (fulfils 5, flow 4, owns 3) share pts in 'both' bundles, and crossing points \u2264400 (629). At most 3 fallbacks, each named with its reason in L.consolidation and the evidence. Bank Ch5 and Ch6 get a documented tuning attempt and are reported as measured, with no improvement claimed where they fall back.",
+     "stress-44 plus scale-300 routed: markers \u22642,000 (2,464). stress-44 Ch4 Logical (flows, excluded by design) is unchanged and reported as such.",
+     "The 48 straight pictures: L deep-equal to the control, zero bundles, every large-picture edge has 2 pts.",
+     "No bundle in sequence, lanes or process pictures, or carrying a Flow or Triggering kind, a step, a cardinality or a crossing mark (an explicit test per exclusion).",
+     "Budgets: routed defaults median \u22644 ms and max \u226460 ms; stress under 3 s; synthetic-200 under 8 s; 305-responsibility by-layer under 1.5 s; scale-500 Ch4 and Ch5 under 1.5 s and straight; every reference Layers picture under 900 ms in node and \u22643\u00d7 its own control.",
+     "Determinism: layout JSON identical twice, at viewW 640, and in a second Node process. public/notation-layout.js contains no 'process.env' and no globalThis tuning."
+    ],
+    "tests": "Changed on purpose, with rationale: notation-layout-validate.mjs \u00a72 (:48-51) keeps sharedRuns \u22643 on every default picture, now computed with the integrity-gated exemption, and adds foreignOnTrunk, foreignAtJoin and tContacts equal to 0 on every routed picture. New sections:\n- integrity empty for every scene \u00d7 arrangement;\n- exclusions;\n- relative reductions against the consolidate:false control;\n- Layers budget and fallback recording;\n- connected Ch4 duplicates;\n- cross-process determinism and no env reads.\n\nKept and must pass:\n- notation-layout-validate.mjs:33-41, :87-90, :107-111, :133-134 and :212 (L.edges equals D.edges);\n- process-semantics-validate.mjs:247 and :353-355;\n- notation-validate.mjs:62-84 and :237-246 (D untouched);\n- desk-validate.mjs:184 and :189;\n- scale-validate.mjs:245-252;\n- notation-code-validate.mjs:103 and :112-128;\n- model-interpreter-validate.mjs:355-360 (draw.io round trip with coincident waypoints);\n- diagram-arrangement-validate.\n\nThe evidence generator records every group total.",
+    "depends_on": [
+     "N1",
+     "N2"
+    ],
+    "can_run_in_parallel_with": [
+     "T1",
+     "V1",
+     "V2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "L"
+   },
+   {
+    "id": "N4",
+    "name": "Bundle-aware words",
+    "scope": "Word, qualifier and crossing-mark placement for bundled relationships, in the same placer.",
+    "files": [
+     "public/notation-layout.js (placeLabels :741-795)",
+     "notation-layout-validate.mjs (word assertions)"
+    ],
+    "mechanism": "placeLabels receives L.bundles.\n- A bundle's word is placed once, by its first member in D order (label is part of the key). The candidate segments are the root run first (for fan-in, the segment entering the target), then the other runs longest first, then the representative's branch.\n- The other members get labelHidden with lx and ly copied.\n- The existing source-side fold at :760-763 applies only to unbundled edges.\n- crosses() ignores runs of the same bundle.\n- Fan-in members keep their qualifiers at their own source, on their own branch. Duplicate partners hide theirs.\n- Crossing marks never occur in bundles (excluded).\n- desk-layout.js quiet() still runs after layout.",
+    "reader_effect": "One 'serves' per arriving line instead of one per relationship. Repeated fan-in words such as 'delivers' \u00d73 at OUT-001 fold to one.",
+    "acceptance": [
+     "Words drawn on the 88 routed defaults \u22641,050 (1,127). Bank \u2264190 (213). Motivation \u226410 (17), Rationale \u22649 (14), Ch6 Solution \u226414 (16).",
+     "labelOnLabel 0 in every picture. labelOnNode 0 on default pictures. At most 2 words touching an element (5 in stress).",
+     "Every serves edge on the Running board is labelHidden; every chapter still shows at least one word; lifecycle IF-00x words are unchanged."
+    ],
+    "tests": "notation-layout-validate.mjs:35-36 and :50 hold. desk-validate.mjs:189 holds. notation-browser-validate.mjs:52-55 and :360-362 hold. Add an assertion that every bundle with a label shows exactly one visible word, and that it lies on one of the bundle's runs or the representative's branch.",
+    "depends_on": [
+     "N3"
+    ],
+    "can_run_in_parallel_with": [
+     "N5",
+     "T1",
+     "V2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "S"
+   },
+   {
+    "id": "N5",
+    "name": "Renderer, Key and reading packet: trunks drawn once, branches per relationship, per-member hits kept",
+    "scope": "svgParts, notationSVG, keySVG, legendData, explainDiagram and liftSVG. This reaches the on-screen Diagram and Layers views, exports and PNGs, SDD figures (sdd-figures.js:32-38), the record picture (notation-view.js:877), the Running board, perspectives and the archimate-views geometry.",
+    "files": [
+     "public/notation-svg.js (:18-46 legendData, :72-99 explainDiagram, :106-130 SVG_STYLE, :140-212 svgParts, :263-303 keySVG, :308-325 notationSVG)",
+     "notation-code-validate.mjs (no bundle ids; no pts in explainDiagram)",
+     "notation-validate.mjs (Key marks if and only if drawn)",
+     "notation-browser-validate.mjs (:67 re-specified, stronger)"
+    ],
+    "mechanism": "Trunk groups are emitted inline in the edges part, so every composer gets them without code changes. Per bundle:\n- one top-level <g class='nt-bundle' data-nt-bundle=ID>, which bounds the growth in cull units to one per bundle;\n- inside it, one <g class='nt-trunk nt-e-KIND nt-f-FAMILY [weak][reply][sel|lit|dim][change][nt-mk-lit|nt-mk-dim]' data-nt-members='ids'> per run, holding path.nt-line with the palette stroke attribute and dash.\n\nRun details:\n- Each run is drawn oriented away from the shared end, with stroke-dashoffset equal to its arc-length distance from the root, so dashes are continuous across joins. Markers use orient=auto-start-reverse (notation-palette.js:179).\n- The shared-end marker sits only on the root run; for 'both', both markers sit on the single far run.\n- Dotted bundles get circle.nt-join r 2.4 in the line colour, inside the run with the largest member set. Undotted bundles get no circle.\n- Run state is derived: sel if any member travelling it is selected; lit if any is lit; dim only if all are dim; nt-mk-lit if any; nt-mk-dim only if all. Change and weak are uniform by key.\n\nEach member keeps:\n- its <g class='nt-edge ...' data-nt-edge=ID data-nt-bundle=ID> with path.nt-line drawing its branch, or d='' when empty;\n- only its far-end marker, its word, qualifier, cardinality and cross;\n- its .nt-hit with the full-route d, role=button and tabindex=0. Its aria-label and title are describeEdge plus a drawing note: 'Drawn on one line with N other <kind> relationships to/from <node>.' For a duplicate: 'Recorded more than once; this record: <record>.'\n\nAfter all member hits, each fan bundle gets one path.nt-bhit (all runs, pointer-only, aria-hidden, no tabindex, data-nt-select=shared node) with a <title> listing its members. 'both' bundles get none.\n\nOther renderer changes:\n- In export mode the root run carries a <title> listing members.\n- SVG_STYLE rules are generalised to :is(.nt-edge,.nt-trunk). New rules: .nt-trunk:is(.lit,.sel) .nt-join{fill:#b18d42}; .nt-bhit{fill:none;stroke:transparent;stroke-width:12px;cursor:pointer}; .nt-bhit:hover{stroke:#b18d4233}; and an nt-end ring (stroke #b18d42, width 2) on the two ends of a selected relationship.\n- liftSVG(D, L, ids, opts) is exported and returned as an interactive-only 'lift' part: <g class='nt-lift' aria-hidden='true'> holding the full pts of sel, lit and nt-mk-lit relationships in state colour, pointer-events none. It is never in an export.\n\nKey and packet:\n- legendData(D, L=null) adds marks only when drawn. 'bundle': 'One line for relationships of one kind to or from one element; a dot marks where each leaves it, and each branch is one recorded relationship. A drawing join: AIW does not claim it as an ArchiMate junction.' 'tree': 'Composition, aggregation, assignment, protects and evidences fans share one end mark and split as a plain T.' 'duplicate': 'One line for a relationship recorded more than once; the reading lists each record.'\n- keySVG draws a T-join with a dot, a plain T, and a '\u00d72' line.\n- notationSVG passes L.\n- explainDiagram edges gain bundle {id, end, with}, and measures gain consolidation {bundles, joins, duplicates, fallback}; never pts.\n- diagramText is unchanged, so every relationship stays in the alt text.",
+    "reader_effect": "Each trunk is drawn once: dashes in phase, no overdraw, no darkening from stacked opacities. One head or diamond sits at the shared end, with a dot where each relationship leaves, or a clean T for structural fans. Hovering or focusing a member shows its whole route. The printed SDD carries exactly the picture at rest, and the Key explains the new marks in one sentence each.",
+    "acceptance": [
+     "The exported SVG is byte-identical at 1000 and 1440 px. Light and dark exports are byte-identical with no var(--. SDD figures equal fresh notationSVG renders and are inspected by eye after regeneration.",
+     "In every picture the count of g.nt-edge[data-nt-edge] and of .nt-hit both equal D.edges.length. Each .nt-hit d equals pathD of its L.edge pts. No .nt-trunk or .nt-bundle carries the nt-edge class or data-nt-edge. The first .nt-hit in DOM order is a relationship.",
+     "Markers drawn in the DOM equal N3's drawnMetrics markers (for example Ch6 Solution 14).",
+     "Zero 'B:' substrings in draw.io, ArchiMate exchange (views and relationships), BPMN DI, Structurizr, PlantUML and Mermaid outputs. explainDiagram has one entry per D.edge and no positions.",
+     "Key: 'bundle' appears if and only if a dotted fan bundle is drawn, 'tree' if and only if an undotted one is, 'duplicate' if and only if a 'both' bundle is. The texts contain 'each branch is one recorded relationship' and 'does not claim it as an ArchiMate junction'.",
+     "Desk .nt-edge counts per kind stay exactly {realizes 5, serves 28, fulfils 5} with status '38 relationships'. The export carries no nt-mk classes on trunks."
+    ],
+    "tests": "Re-specified to be stronger: notation-browser-validate.mjs:67. Every Ch6 .nt-edge must have a path.nt-line whose dasharray equals its family's dash, and its family's marker must be on its own path or on the root .nt-trunk run of its data-nt-bundle; at least 2 distinct combinations.\n\nExtended:\n- notation-code-validate.mjs:51 (no 'B:' ids in any format) and :135-139 (no pts);\n- notation-validate.mjs:92-95 plus the Key-mark if-and-only-if checks.\n\nMust hold:\n- notation-browser-validate.mjs:52-55, :62, :137-142, :205-211, :228-229, :240-255;\n- notation-code-validate.mjs:103 and :112-128;\n- desk-browser-validate.mjs:167-168 and :200-205;\n- exchange-browser-validate.mjs:162-166;\n- model-views-browser-validate.mjs:187;\n- notation-build-browser-validate.mjs:108-109;\n- review-validate.mjs:222-247;\n- sdd-documents-browser-validate;\n- theme-browser-validate.mjs:188-190;\n- process-semantics-validate.mjs:347.",
+    "depends_on": [
+     "N3"
+    ],
+    "can_run_in_parallel_with": [
+     "N4",
+     "T1",
+     "V2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "N6",
+    "name": "Screen interaction, state, culling and accessibility for bundled pictures",
+    "scope": "The notation view across the 11 chapters (through NT.handle), the desk Running board, the perspectives and the record picture: selection, trunk clicks, the companion, marks, the lift, hover readings, keyboard focus and camera, zoom weight, culling.",
+    "files": [
+     "public/notation-view.js (handle :633-635, keydown :705-707, paintMarks :331-353, compose :523, legendHTML :580-592, readingHTML :598-605, hover :796-801)",
+     "public/perspective-view.js (:411 pointer handler; lift compose)",
+     "public/desk-view.js (:1221 board pointer handler; lift compose)",
+     "public/model-stage.js (focusin :157-162)",
+     "public/notation.css (:22, :45, :244; zoom-following widths; Key samples :79-85)",
+     "public/process-editing.js (comment only: process pictures form no bundles)",
+     "notation-browser-validate.mjs, desk-browser-validate.mjs, model-views-browser-validate.mjs, scale-browser-validate.mjs (new checks)"
+    ],
+    "mechanism": "Pointer on a trunk: in notation-view handle(), before the .nt-hit branch, a click on .nt-bhit clears selEdge and calls onSelect(bh.dataset.ntSelect). It reuses element selection (the threat-view entry-marker precedent), adds no new state, and its keyboard equivalent is the element's own Tab stop. The same applies at perspective-view.js:411 and desk-view.js:1221.\n\nCompanion:\n- A selected member adds 'Drawn on one line with N other <kind> relationships to/from <node>', with each fellow member as a button (data-nt='edge-pick' data-id) that sets selEdge.\n- A duplicate adds 'Also recorded as <record>' with a button.\n- An element's reading lists its lines ('Lines drawn together') with member buttons.\n\nMarks and lift:\n- paintMarks builds a Map of D.edges by id (removing the O(E\u00b2) find), repaints each .nt-trunk from data-nt-members with the derived rule, and rebuilds .nt-lift through liftSVG.\n- The lift is composed after the edges and before the nodes in all three views.\n\nHover and focus:\n- Hovering .nt-hit or .nt-bhit writes 'Under the pointer \u00b7 Relationship' (describeEdge plus the drawing note) or 'Under the pointer \u00b7 One line, N relationships' (each member) into the companion hover reading. The full-route hover band already comes from the member hit.\n- model-stage focusin also reveals a focused SVG .nt-hit or .nt-node when it is :focus-visible (getBBox, then api.reveal). Pointer focus never moves the camera.\n- Keyboard is unchanged: one Tab stop per relationship in L.edges order, and bhits are not focusable. refocus is unchanged because only .nt-hit paths carry data-nt-edge.\n\nCSS:\n- notation.css:45 and :244 become :is(.nt-edge,.nt-trunk), plus .cm-svg .nt-bhit{pointer-events:stroke}.\n- Zoom-following, screen-only widths keep plain < lit < sel < traced at every zoom: line max(1.3px, 1px/z), lit max(2.2px, 1.7px/z), sel max(2.4px, 1.85px/z), traced as today max(2.6px, 2px/z), join r max(2.4px, 1.5px/z), hits max(12px, 10px/z). desk.css:457 already reaches trunks.\n- legendHTML calls legendData(D, L) with .nt-k.nt-m-bundle, -tree and -duplicate samples.\n\nCulling: the bundle groups are cull units and g.nt-hits stays one never-culled child. Verify the pictures whose top-level child count crosses CULL_FROM=150 because of the added bundle groups.",
+    "reader_effect": "Selecting a relationship lights its branch and exactly the trunk runs it travels, drawn on top, with both ends ringed. Clicking a trunk selects the element it belongs to and lists its lines and relationships. Hovering a line says what it carries. Tabbing to a relationship keeps it on screen. At the first fit, lines, dots and hit bands keep a visible weight. Nothing becomes keyboard-unreachable.",
+    "acceptance": [
+     "Tab stops equal relationships and keep L.edges order (Ch6 Solution 32), with 0 focusable bhits.",
+     "A click on Ch6's .nt-bhit selects data-nt-select into the companion (describeNode plus 'Lines drawn together'). An edge-pick button selects that relationship (.nt-edge.sel with that id). With a member selected, every .nt-trunk it travels has sel, and every run not on its route has dim.",
+     "Trace: when a traced relationship travels a run, that .nt-trunk carries nt-mk-lit; .nt-edge.nt-mk-lit count \u2265 traced\u22121 (model-views:440). Diff colours show on trunks per bundle.",
+     "The lift path d for the selected relationship equals its full route. The lift is absent from every export.",
+     "Hovering a relationship hit shows 'Under the pointer \u00b7 Relationship' in the companion; hovering a bhit lists every member.",
+     "Tabbing to an off-stage relationship moves the camera so its hit's box is inside the stage; pointer focus does not move the camera.",
+     "At z=0.5: plain line computed stroke \u22651 screen px, join radius \u22651.5 screen px, hit band \u226510 screen px. Export bytes unchanged.",
+     "Culling: in every picture at or above CULL_FROM, every relationship hit stays focusable and refocus after redraw finds the same hit. paintMarks contains no D.edges.find."
+    ],
+    "tests": "New checks:\n- notation-browser-validate: bhit selection, edge-pick, the sel and dim split on trunks, Tab order equals the L.edges order, focus reveal, hover reading;\n- model-views-browser-validate: a traced trunk carries nt-mk-lit (closing the gap at :440, which only counts .nt-edge);\n- desk-browser-validate: clicking a serves trunk selects the shared component, Escape clears;\n- scale-browser-validate: culling evidence with bundles.\n\nKept: notation-browser-validate.mjs:205-211, desk-browser-validate.mjs:200-205, ux-shell-browser-validate.mjs:354 (process pictures are unbundled; pe-on unchanged), perspective-view-validate, scale-browser-validate.mjs:93-117.",
+    "depends_on": [
+     "N5",
+     "T1"
+    ],
+    "can_run_in_parallel_with": [
+     "N4",
+     "T2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "T1",
+    "name": "Dark theme: fix the round-9 state-colour regression (independent, first)",
+    "scope": "Dark and system-dark themes on every notation screen picture: selected, lit, traced and diff edges, which today all draw sage-10. Light theme and exports are untouched.",
+    "files": [
+     "public/theme-ui.css (after :52 in the dark block; after :82 in the system block)",
+     "theme-browser-validate.mjs (new dark state assertions)"
+    ],
+    "mechanism": "Add token-only state rules at specificity (0,6,2). They beat the (0,5,1) attribute rules at :44-52 and :74-82, which today beat SVG_STYLE's (0,3,1) state rules. Each is written with :is(.nt-edge,.nt-trunk), which is harmless before trunks exist, in the light order:\n- :root[data-theme='dark'] .cm svg :is(.nt-edge,.nt-trunk):is(.sel,.lit) path.nt-line{stroke:var(--gold-11)};\n- .added \u2192 var(--green-11);\n- .removed \u2192 var(--sage-9), keeping its dash;\n- .changed \u2192 var(--gold-9);\n- .nt-mk-lit (last) \u2192 var(--violet-11);\n- .nt-lift path.sel and .nt-lift path.lit \u2192 var(--gold-11); .nt-lift path.nt-mk-lit \u2192 var(--violet-11).\nMirror everything inside @media (prefers-color-scheme:dark) for [data-theme='system']. Literals stay only inside [stroke] and [fill] attribute selectors.",
+    "reader_effect": "In the night theme a selected or lit relationship is gold again, a traced one violet, and Compare's added, removed and changed lines keep their colours. Today only their width changes.",
+    "acceptance": [
+     "In dark and in system-dark (emulated prefers-color-scheme), computed strokes are: .nt-edge.sel and .lit #f0c674, nt-mk-lit #d6b4ef, added #7fd3a5, changed #996c00, removed #667970 dashed. A plain edge stays #82948b.",
+     "WCAG 1.4.11 contrast on the canvas #172024 is \u22653:1 for all five states (gold-11 10.3, violet-11 9.2, green-11 9.3, gold-9 3.55, sage-9 3.57).",
+     "Light-theme computed values are unchanged. Light and dark exports stay byte-identical with no var(--. style-tokens-validate passes."
+    ],
+    "tests": "Add the dark and system-dark state-colour assertions to theme-browser-validate.mjs, replacing scratch dark-sel-check.mjs and exp-src/dark-probe.mjs. Keep theme-browser-validate.mjs:188-190 and style-tokens-validate.mjs:34-51.",
+    "depends_on": [
+     "W0"
+    ],
+    "can_run_in_parallel_with": [
+     "N1",
+     "N2",
+     "N3",
+     "N4",
+     "N5",
+     "V1",
+     "V2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "S"
+   },
+   {
+    "id": "T2",
+    "name": "Dark theme for trunks, joins and the lift, plus forced colours",
+    "scope": "Night recolouring of the new marks, and a forced-colors fallback. Lands after the renderer.",
+    "files": [
+     "public/theme-ui.css (:44-52 and :74-82 rewritten; forced-colors block)",
+     "theme-browser-validate.mjs (trunk and join assertions)"
+    ],
+    "mechanism": "Rewrite every '.cm svg .nt-edge [stroke=\"#hex\"]' as '.cm svg :is(.nt-edge,.nt-trunk) [stroke=\"#hex\"]'. Add '.cm svg .nt-trunk .nt-join[fill=\"#hex\"]' for each palette stroke: #3c4a44 and #778478 to sage-10; #2f6b4f and #587448 to green-11; #6f5a93, #805d83 and #8a7f90 to violet-11; #b0493a to red-11. Add .nt-trunk:is(.sel,.lit) .nt-join{fill:var(--gold-11)}, in both the dark and the system blocks.\n\n@media (forced-colors:active): selected and lit lines and the lift use Highlight, and joins use CanvasText. If style-tokens-validate rejects system colour keywords there, place this block in theme.css.",
+    "reader_effect": "In the night theme trunks, dots and lifted routes take the same night colours as lines, and a selected trunk run is gold. High-contrast mode keeps selection and joins visible.",
+    "acceptance": [
+     "In dark, a plain trunk path computes to #82948b and its join dot follows. A selected trunk run and its join compute to #f0c674. Light values are unchanged.",
+     "Light and dark exports stay byte-identical; style-tokens-validate passes.",
+     "Under emulated forced-colors, a selected line and a join stay distinguishable from the canvas."
+    ],
+    "tests": "Extend theme-browser-validate with the trunk, join and lift checks on Ch6 Solution, plus a forced-colors emulation check. Keep :188-190.",
+    "depends_on": [
+     "T1",
+     "N5"
+    ],
+    "can_run_in_parallel_with": [
+     "N6",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "S"
+   },
+   {
+    "id": "V1",
+    "name": "Pure wires module for the chapter views, and helper consolidation",
+    "scope": "A DOM-free module that the chapter layouts and views share: wires drawn once, a crossing-aware track assigner, token-filled heads and the single roundPath. Also a behaviour-neutral retirement of the duplicated roundPath copies.",
+    "files": [
+     "public/wire-merge.js (new)",
+     "wire-merge-validate.mjs (new)",
+     "public/model-stage.js (re-export roundPath; headPath helper next to arrowMarker :436-457)",
+     "public/anatomy-view.js:313, public/tradeoff-view.js:215, public/utility-view.js:227 (local roundPath copies deleted; explicit r kept: 6, 7, 8)"
+    ],
+    "mechanism": "mergeWires(routes) takes routes of the form {id, pts, share, end, style}:\n- Ink is shared only within one share and only among identical style keys: the classes for kind, proposed, hole, sensitive, buffered, party and lens state. A share whose members differ in style is split into identical-style sub-shares. The 'most established member' rule is not used.\n- Coordinates are rounded to 0.5 px and segments split at group vertices. Pieces are keyed canonically. A chain stops where the degree is not 2 or the member set changes.\n- Chains are walked outward from the shared end, each with offset (arc length from the root) used as stroke-dashoffset, and with sorted member ids.\n- Joins are drawn only at degree 3 or more; a plain crossing never gets a dot. There is one head per distinct end.\n- Output: {chains, joins, heads, ink}, deterministic.\n\nassignTracks(items, {slack}) solves a linear ordering with pairwise crossing costs: exact subset DP per overlap component up to 12 tracks; above that, greedy insertion plus adjacent transpositions; ties by key. It keeps the fewest modelled crossings within the budget 'colouring levels + max(slack, ceil(0.15 \u00d7 colouring))', then prefers fewer levels.\n\nheadPath(x, y, dir, size) draws a polygon with a CSS class, so chapter heads take token fills; today, for example, threat-view.js:207 uses '#4d6a5c' at 2.78:1 in dark. exactBicliques is not shipped (buses are deferred).",
+    "reader_effect": "None alone. It is the shared machinery for V2-V7 and retires duplicated code (F2-09).",
+    "acceptance": [
+     "wire-merge-validate passes on 1,000 random orthogonal route sets and on every reference chapter layout:\n- membership preserved (the union of chain members covering each route's pieces is exactly that route);\n- chains orthogonal;\n- no chain mixes shares or style keys;\n- joins only at degree 3 or more;\n- exactly one head per distinct end;\n- offsets continuous from root to leaf;\n- JSON equal twice.",
+     "assignTracks never exceeds its budget and never yields more modelled crossings than interval colouring on any reference layout; its modelled count equals the drawn count on the checked cases.",
+     "The roundPath retirement commit is behaviour-neutral: rendered markup of Ch2 Utility tree, Ch3 Decision map and Whole design is byte-equal before and after."
+    ],
+    "tests": "Add wire-merge-validate.mjs to the regression runner. Keep utility-, tradeoff- and anatomy-browser-validate unchanged in the retirement commit.",
+    "depends_on": [
+     "W0"
+    ],
+    "can_run_in_parallel_with": [
+     "N1",
+     "N2",
+     "N3",
+     "N4",
+     "N5",
+     "T1",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "V2",
+    "name": "Crossing-aware tracks in the lane engine and platform brackets",
+    "scope": "Lane-engine gutters (Ch1 Context, Ch4, Ch5, Ch9) and the Ch6 platform brackets. The lane engine also returns wires beside its routes.",
+    "files": [
+     "public/lane-layout.js (:94-103 tracks; :186 return gains wires)",
+     "public/platform-layout.js (:18-23, slack 0)",
+     "threat-validate.mjs, realise-validate.mjs, responsibility-validate.mjs, story-validate.mjs, platform-validate.mjs (assertions only if needed; invariants must hold)"
+    ],
+    "mechanism": "Replace the interval colouring at lane-layout.js:95-103 with assignTracks. The cost counts the farther trunk's card-side horizontals inside the nearer trunk's span, plus the nearer trunk's far-side horizontals inside the farther trunk's span. Platform brackets use slack 0. The lane engine returns wires: mergeWires over its routes, with share = entry id for Ch9's existing bundles and end 'to'. Route data ({id, link, pts, ya, yb, xa, xt, xb, dir, entry}) and joins are kept unchanged beside it.",
+    "reader_effect": "The same lines and cards, with tracks ordered so horizontal runs stop cutting other flows' verticals.",
+    "acceptance": [
+     "Visual crossings with track order alone:\n- Ch1 Context: bank 12\u2192\u22644, library 73\u2192\u226444, parcel-lockers 134\u2192\u226478, clinic 36\u2192\u226417, service-permits 61\u2192\u226427, warehouse 5\u2192\u22643.\n- Ch9: bank 29\u2192\u226424.\n- Ch5: parcel-lockers 6\u2192\u22644, library \u22645, bank 0.\n- Ch6: unchanged, 3 levels and 14 plates.",
+     "Lane invariants hold on every reference layout: orthogonal, no route through a card, tracks overlap only within one entry; Ch9 keeps 7 markers and 7 labels; JSON identical twice.",
+     "Gutter growth in Ch1 is \u226442 px before V5. No level count exceeds the budget."
+    ],
+    "tests": "threat-validate.mjs:56-57, :87-108, :115-116; realise-validate.mjs:84-100; responsibility-validate.mjs:97-119; story-validate.mjs:98-115; platform-validate.mjs:84-85 and :96 must hold. Add to wire-merge-validate: lane assigner crossings \u2264 colouring crossings on the reference projects.",
+    "depends_on": [
+     "V1"
+    ],
+    "can_run_in_parallel_with": [
+     "N2",
+     "N3",
+     "N4",
+     "N5",
+     "T1",
+     "V3",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "V3",
+    "name": "Ch3 Decision map: crossing-aware driver tracks, port rule, option combs",
+    "scope": "Ch3 'weighs' routes and decision-to-alternative trunks. Drivers keep their priority order down the page; only the invisible track order changes. Each driver keeps its own track.",
+    "files": [
+     "public/tradeoff-layout.js (:41 tx by rank; :42 port rule; :47-51 combs[] beside routes)",
+     "public/tradeoff-view.js (:212-230 wires, combs, token heads)",
+     "tradeoff-validate.mjs (crossing assertion)"
+    ],
+    "mechanism": "Track rank comes from the assignTracks pairwise cost: exact enumeration up to 8 drivers, DP up to 13, greedy beyond; ties by priority index.\n\nPort rule: on each decision, routes arriving from above take the top ports, ordered from the track nearest the decisions; routes from below take the bottom ports in mirror order.\n\nA driver's stub and track run through mergeWires (share 'drv:'+id, end 'from'), drawn once with a dot where the track divides. Option trunks become one comb per decision. edges[] and routes[] are kept. Lit routes draw individually on top as today.",
+    "reader_effect": "Weighs lines stop crossing each other in the gutter, and each decision's alternatives hang from one clean comb.",
+    "acceptance": [
+     "Visual crossings: bank 21\u2192\u226414, library 7\u2192\u22642, parcel-lockers 10\u2192\u22644, clinic 6\u2192\u22641, warehouse 5\u2192\u22642, service-permits \u22641.",
+     "Weighs ink on bank \u22644,100 (4,656); options ink \u2264760 (816). Gutter width unchanged.",
+     "Every reference project's crossings are \u2264 those of the priority order computed in the same run."
+    ],
+    "tests": "tradeoff-validate.mjs:84-98 (routes from different drivers never share a segment; orthogonal; alternatives right of their decision; deterministic) must hold. Add the in-run crossing assertion. tradeoff-browser-validate must hold.",
+    "depends_on": [
+     "V1"
+    ],
+    "can_run_in_parallel_with": [
+     "N2",
+     "N3",
+     "N4",
+     "N5",
+     "N6",
+     "T1",
+     "T2",
+     "V2",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "S"
+   },
+   {
+    "id": "V4",
+    "name": "Ch9 entry trunks drawn once, and Ch2 utility combs (render-only)",
+    "scope": "Ch9 Threat model rendering of its existing entries, and the Ch2 Utility tree comb per parent. Entry semantics and layouts are unchanged.",
+    "files": [
+     "public/threat-view.js (:206-221)",
+     "public/threat.css (:13-24)",
+     "public/utility-layout.js (:53-56 combs[] beside edges)",
+     "public/utility-view.js (:224-247)",
+     "utility-validate.mjs (comb assertions)"
+    ],
+    "mechanism": "Ch9 base chains come from L.wires (V2). Each carries class tm-route {kind} {cross+state | inside}, plus sensitive only when every member is (otherwise the sub-share is split, per V1's identical-style rule), and a stroke-dashoffset from the entry so the '3 3' dash is continuous. tm-join dots come from the wires: lit if any member is lit, dim only when all are dim. There is one token-filled head per entry. Lit, proposed and sensitive-lens routes keep their per-link overlay on top with today's classes. Entry markers, labels and buttons are unchanged.\n\nCh2: each parent gets one comb (stub, spine rounded only at its two ends, one stub per child) through mergeWires (share parent, end 'from'). A recorded child's spine stretch stays solid; a hole or proposed child's own stub keeps its dash. Lit edges draw per edge on top.",
+    "reader_effect": "Ch9: each entry is one dashed trunk with dots, one arrowhead and one marker, instead of 3-5 stacked heads and out-of-phase dashes. Ch2: no more blobs of stacked rounded corners at each junction.",
+    "acceptance": [
+     "Ch9 bank at depth parts: ink \u22644,250 (5,171); heads = entries + contracts = 11 (22); collinear overlaps 0 (31); markers 7 and labels 7; crossings as V2.",
+     "Ch2 ink: bank \u22643,000 (3,906), library \u22643,800 (4,636), parcel-lockers \u22643,850 (4,683), clinic \u22643,150 (3,921), warehouse \u22643,350 (4,224), service-permits \u22642,950 (4,253); crossings stay 0.",
+     "Chapter heads are token-filled: in dark, a Ch9 head computes to a token colour, not #4d6a5c."
+    ],
+    "tests": "threat-validate.mjs:56-57 and :87-116; threat-browser-validate.mjs:41-42, :63, :111, :113 (.tm-x, .tm-label, .tm-route.lit and .proposed through the overlay); utility-validate.mjs:117-121 must hold. Add: one comb per parent with children; comb children equal the parent's edges; the comb spine x equals the edges' trunk x.",
+    "depends_on": [
+     "V1",
+     "V2"
+    ],
+    "can_run_in_parallel_with": [
+     "N3",
+     "N4",
+     "N5",
+     "N6",
+     "T1",
+     "T2",
+     "V3",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "S"
+   },
+   {
+    "id": "V5",
+    "name": "Ch1 Context fan-out trees (no buses)",
+    "scope": "The lane engine's source-side sharing for Ch1 participates (person to step) and owns (stakeholder to outcome). 'delivers' (labelled) is never shared. Exact-biclique buses are not built this round.",
+    "files": [
+     "public/lane-layout.js (fromKey option; one-structure-per-link rule; ports :56-85; trunks :87-93)",
+     "public/story-layout.js (:42 / :79 configuration)",
+     "public/story-view.js (:309-318 wires, joins, heads, overlay; legend :401)",
+     "story-validate.mjs (new assertions)",
+     "story-browser-validate.mjs (:144 adapted, stronger)"
+    ],
+    "mechanism": "fromKey(l) = kind+':'+from+target lane+side, with at least 2 links. Each link joins at most one structure: a target fan-in bundle (bundleKey, as Ch9) or a source fan-out tree. Sharing at both ends is never allowed (the s1\u2013t1\u2013s2\u2013t2 confluence argument).\n\nPorts are one per source item and one per target item. Each link keeps its own 4-point route through its own ports, so it stays valid for the overlay, and gains share and shareEnd. The view draws base wires with data-links, sm-join dots, token heads, and the lit overlay as today. The legend adds: 'a line divides at a dot, one branch per step'.",
+    "reader_effect": "Each person leaves through one port on one line that divides at dots, one per step, instead of a tangle of separate lines. Every relationship is still its own branch, lights on selection and is stated by the card chips.",
+    "acceptance": [
+     "Visual crossings with fan-out plus track order: bank \u22644 (12), library \u226419 (73), parcel-lockers \u226433 (134), clinic \u22648 (36), service-permits \u226413 (61), warehouse \u22642 (5).",
+     "Parcel-lockers picture width \u2264 today's 1,238 px. At most 3 ports on one card side (6 today). Ink drawn \u2264 today's on every journey.",
+     "Story invariants hold (orthogonal, no route through a card, 5 labels on bank). Routes share a track only within one share. JSON identical twice."
+    ],
+    "tests": "story-validate.mjs:98-115 must hold. Add: no link in two structures, no both-ends sharing, ports on cards. story-browser-validate.mjs:144 consciously adapted from '.sm-route >= 11' to 'the union of data-links over .sm-route equals every link (11 on bank)', which proves every relationship is drawn. :150 (.sm-route.lit) holds through the overlay.",
+    "depends_on": [
+     "V2"
+    ],
+    "can_run_in_parallel_with": [
+     "N3",
+     "N4",
+     "N5",
+     "N6",
+     "T1",
+     "T2",
+     "V3",
+     "V4",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "V6",
+    "name": "Ch10 Deployment: 'needs' rails instead of trunks drawn once per link (owner decision; default adopt)",
+    "scope": "Ch10 dependency gutter at every depth, including the 'What fails together' lens, which shares the geometry.",
+    "files": [
+     "public/deploy-layout.js (:25-45)",
+     "public/deploy-view.js (:214-233; legend :344; tip for data-arc)",
+     "public/deploy.css (:10-21)",
+     "deploy-validate.mjs (new assertions)",
+     "deploy-browser-validate.mjs"
+    ],
+    "mechanism": "One rail per needed part: {id 'to:'+t, to, x, y1, y2, level, stubY: cy(t)+6, dots: [{link, from, y: cy(from)\u22126}]}. Levels come from assignTracks; x = xb \u2212 ARC_PAD \u2212 level\u00b7ARC_STEP.\n\nGeometry rules:\n- The rail spans from the topmost to the bottommost of all its dots and its stub. This fixes the prototype shot (chv/shots/deploy-rails.png), where rails with dependents below the target were not drawn and dots floated.\n- 'Needs' sits 6 px above a row's centre and 'needed by' arrives 6 px below, so no dot lies on another row's stub.\n- arcs[] stay one per link (overlay route M xb y1 H x V y2 H xb), and trunks[] stay as an alias of the rails, so deploy-validate.mjs:58-60 reads the same fields.\n\nView:\n- one path and one token-filled head per rail;\n- one mark per link: required = filled dot; buffered = filled dot plus an 8 px dashed tick toward the row (dash is today's buffered cue); party = filled diamond in gold (shape plus colour); never a hollow circle (the ArchiMate Or-junction look-alike);\n- then lit and failure-carrying links as full paths with today's dp-arc lit and dp-arc carries classes;\n- rails at opacity .7 (the .22 fade only hid overdraw).\nThe legend teaches the rail grammar.",
+    "reader_effect": "Instead of ten overlapping trunks at 22% opacity building into bars, the gutter shows one thin line per needed part, ending in one arrow into it, with a mark at the row of each part that needs it. 'What fails if postgres fails' is literally the marks on postgres's rail. Selection and failure still draw each relationship as a full arc on top.",
+    "acceptance": [
+     "Bank at depth all: heads \u226415 (37); visual crossings \u226412 (42); ink \u22648,600 (16,824); exactly 37 marks (one per relationship) and 15 stubs (one per rail). Depth modules: 6 rails, 0 crossings.",
+     "Every link has exactly one mark on its target's rail; every rail spans all its marks and its stub; no mark lies within 3 px of any stub; levels are within budget.",
+     "Text fit at a 1,100 px viewport: no zone column narrower than DEP.MIN_Z, and no part label more truncated than in today's layout computed in the same run.",
+     "Synthetic 160-part system: levels \u2264 today's (\u22646 at modules, \u226423 at all) and layout under 1,500 ms.",
+     "Before and after screenshots, light and dark, inspected and logged: no floating mark, no hollow circle."
+    ],
+    "tests": "deploy-validate.mjs:58-60 and :112 must hold. Add the one-mark-per-link, one-stub-per-rail, rail-spans-marks, mark-off-stub and level-budget checks. deploy-browser-validate.mjs:71 (.dp-arc.lit > 2) holds through the overlay; add a check that a selected row lights its full arcs.",
+    "depends_on": [
+     "V1"
+    ],
+    "can_run_in_parallel_with": [
+     "N2",
+     "N3",
+     "N4",
+     "N5",
+     "N6",
+     "T1",
+     "T2",
+     "V2",
+     "V3",
+     "V4",
+     "V5",
+     "V7",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "V7",
+    "name": "Whole design: one spine per component (implement threads stay drawn)",
+    "scope": "The anatomy pillars from Chapter 6 on. Implement threads stay drawn at rest by default (owner decision pending).",
+    "files": [
+     "public/anatomy-layout.js (:494-523 realizationThreads)",
+     "public/anatomy-view.js (:325-338)",
+     "public/anatomy.css (:155-160)",
+     "anatomy-validate.mjs (new assertions)"
+    ],
+    "mechanism": "Each component that needs anything gets one spine {kind 'spine', from, needs, points, feet: [{to, x, y: lane.y}]}, with x = column.x + column.w\u00b7(k+1)/(n+1). A component with another card below it in the same column first steps into the column's left gutter at x = col.x \u2212 7 \u2212 4k and comes back in below that card, so no spine passes behind a lower component.\n\nFeet (r 2.6) are drawn in an-over on each needed lane's top edge. The per-need pillar threads are kept as a list for the lit overlay (an-th pillar on, as today). Operate threads stay lens-only as today.",
+    "reader_effect": "28 pale pillars that showed only as dashes in 4 px gaps become five clear spines, each with a foot on every capability its component needs. A spine passing a lane without a foot means that lane is not needed. Selecting a component or lane draws the exact pillars, lit.",
+    "acceptance": [
+     "Bank Ch6: lines at rest \u226417 (40); pillar ink \u22642,000 (7,362); passes behind other cards \u226410 (111).",
+     "Bank Ch8, Ch10 and Ch11 default lens: lines at rest \u226426 (49) with implement threads kept (\u226417 only if the owner approves on-demand implement threads).",
+     "At most one spine per component; its feet are exactly M.needs; no spine segment passes behind a component card; spines are identical with memoisation on and off."
+    ],
+    "tests": "anatomy-validate.mjs:123-135 and anatomy-browser-validate.mjs:61 must hold. Add the spine assertions, and the memo on/off comparison in scale-validate.",
+    "depends_on": [
+     "V1"
+    ],
+    "can_run_in_parallel_with": [
+     "N2",
+     "N3",
+     "N4",
+     "N5",
+     "N6",
+     "T1",
+     "T2",
+     "V2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V8"
+    ],
+    "effort": "M"
+   },
+   {
+    "id": "V8",
+    "name": "Chapter-lines evidence harness with assertions relative to in-run baselines",
+    "scope": "Machine-readable evidence and a regression gate for every chapter view above, on bank-payment and the five reference journeys.",
+    "files": [
+     "chapter-lines-validate.mjs (new)",
+     "scripts/chapter-lines-evidence.mjs (new; promotes r10/lines.mjs and r10/chv/exp-*.mjs metrics)"
+    ],
+    "mechanism": "Per view, compute visual crossings (distinct H\u00d7V points between different shares), ink drawn and unique, heads, join dots, the most ports on one card side, passes behind cards, gutter widths and level counts. Write audit/round10/evidence/chapter-lines.json.\n\nAssertions are relative to baselines computed in the same run (priority order for Ch3; interval colouring for lanes, deploy and platform; per-link drawing for overdraw). The only absolute checks are structural identities: Ch10 heads equal distinct targets with one mark per link; Ch9 heads equal entries plus contracts; Ch2 one comb per parent. Each assertion is switched on as its V workstream lands.",
+    "reader_effect": "None directly. It is the positive proof that the chapter pictures got cleaner, beside the proof that nothing was lost.",
+    "acceptance": [
+     "The harness reproduces today's measured numbers on unchanged source (Ch10 heads 37, crossings 42, ink 16,824; Ch9 heads 22, crossings 29; Ch3 crossings 21; Ch1 parcel-lockers 134).",
+     "After V2-V7 land, every relative assertion holds and the evidence JSON is byte-identical across two runs."
+    ],
+    "tests": "New suite in the regression runner. Existing suites are not changed by V8.",
+    "depends_on": [
+     "W0"
+    ],
+    "can_run_in_parallel_with": [
+     "N1",
+     "N2",
+     "N3",
+     "N4",
+     "N5",
+     "N6",
+     "T1",
+     "T2",
+     "V1",
+     "V2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7"
+    ],
+    "effort": "S"
+   },
+   {
+    "id": "R1",
+    "name": "Verification, evidence inspection, report and package",
+    "scope": "The AGENTS.md steps before completion, on the merged round.",
+    "files": [
+     "audit/round10/REPORT.md (new)",
+     "audit/round10/evidence/notation-lines.json, chapter-lines.json, screenshots-inspection.json, regression.json (new)",
+     "package.json (release field AIW v0.10.0-rc.10.73.15)",
+     "release manifest with SHA-256"
+    ],
+    "mechanism": "1. Clean installs and backend and frontend builds.\n2. Focused suites per workstream, then the full regression runner.\n3. All Playwright browser suites in light and dark.\n4. Security and integrity gates: release-checks, security-validate, xss-browser-validate, style-tokens-validate, evidence-validate.\n5. Regenerate the notation and chapter evidence, run the measure harness against out/baseline.json, and inspect the JSON.\n6. Before and after screenshots, light and dark: Ch6 Solution, Ch7 Stack, Motivation, Rationale, Drivers, Application, Layers Ch4, Layers Ch5 (shown honestly if it falls back), Running board, Ch1 parcel-lockers, Ch3, Ch9, Ch10 and Whole design Ch6. Each is inspected and logged for: floating dots, foreign line along a trunk or through a join, join versus crossing legibility, state colours, Key text.\n7. Regenerate the SDD documents.\n8. Package with SHA-256, and review the final diff.\n9. REPORT.md states the measured per-picture gains, names every fallback, declares the straight-mode giants unchanged, and lists each owner decision with its status (pending) and every external dependency.",
+    "reader_effect": "The owner receives evidenced, inspectable pictures and an honest account of what is and is not solved.",
+    "acceptance": [
+     "Every suite green with no weakened assertion; the diff review confirms only the planned test re-specifications (notation-browser-validate:67, story-browser-validate:144, notation-layout-validate \u00a72).",
+     "The evidence JSON shows every N3/N4/V acceptance number met, with fallbacks listed by name.",
+     "The screenshot inspection log covers every listed picture in both themes, with no unresolved defect.",
+     "Package SHA-256 recorded. Release field AIW v0.10.0-rc.10.73.15 (candidate); controlling baseline still rc.10.73.6; productionAccepted false.",
+     "REPORT.md records as open: owner acceptance of the redefined D2-12 gate, the join glyph and the rails grammar; the independent ArchiMate 3.2 \u00a75.5 review (not done, so no conformance claimed); the deferred items."
+    ],
+    "tests": "Full regression plus all browser suites; measure harness --compare; evidence-validate.",
+    "depends_on": [
+     "N4",
+     "N6",
+     "T2",
+     "V3",
+     "V4",
+     "V5",
+     "V6",
+     "V7",
+     "V8"
+    ],
+    "can_run_in_parallel_with": [],
+    "effort": "M"
+   }
+  ],
+  "deferred": [
+   {
+    "item": "Summarised relationships for straight-mode giants: counted fold pills with every member listed under the figure and lifted on demand, or power-graph frames. Applies to by-layer pictures above 160 edges or 120 nodes and to anything above 400 edges: scale-300 Ch3 Rationale (922 edges, 99,977 crossings), Decisions, the scale and stress Layers views, bank Layers Ch11.",
+    "why": "It changes the 1:1 picture contract: lines are hidden at rest in the SDD, and folded members lose their own pointer hits. All three judges require an owner decision. The 48 straight pictures are unchanged this round, and the report must say so with their numbers."
+   },
+   {
+    "item": "Exact-biclique buses and ArchiMate And-junctions: Ch1 Context bus, Running board 4\u00d74 concentrator, Ch9 entry-merging bus, junction items in notation pictures.",
+    "why": "The views prototype's 'exact' 4\u00d75 bus visually implied ACT-003\u2192JRN-003, which is not recorded. The semantic junction items widened pages by 34% and raised foreign shared runs. A conformance claim needs the unread ArchiMate 3.2 text. Revisit only in a compact point-junction form, validated by an exactness kernel, with owner approval."
+   },
+   {
+    "item": "Nesting instead of composition lines: the Application scene's system boundary, and Layers Ch8 aggregation fields.",
+    "why": "This is a scene and model decision that hides composition lines at rest. The acceptance rule would keep bank's 5 composes lines anyway, and L.nests beside L.groups would be a parallel container concept. The composes fan already becomes one diamond T-tree (Application heads 26\u219222)."
+   },
+   {
+    "item": "Independent review of the ArchiMate 3.2 \u00a75.5 junction rules (external authority).",
+    "why": "No qualified reviewer has checked the text, and the 3.2 page was not reachable from this environment. The Key therefore states that the dot is a drawing join, not claimed as an ArchiMate junction. The review pack goes into the report; nobody impersonates the reviewer."
+   },
+   {
+    "item": "Corridors for the by-layer arrangement (dummy or gap routing for long cross-lane edges), the structural root of Layers noise (7.1 crossings per edge).",
+    "why": "It is an arrangement change with its own regression surface and budget risk. Raising the straight threshold was measured at 1,516 ms with a full fallback on bank Ch11. It should follow once bundles have settled."
+   },
+   {
+    "item": "Module-pair flow consolidation in grouped pictures (stress-44 Ch4 Logical: 77 of 81 flows in 6 module pairs, 1,154 crossings).",
+    "why": "Flows are dynamic, so a join would read as a fork, and module-pair trunks share ink between relationships that do not share an endpoint (D2-12). Only a summarised 'N flows' edge could help, which changes the 1:1 contract."
+   },
+   {
+    "item": "Security pictures: ordering controls and threats on opposite sides of their targets.",
+    "why": "The noise there is protects \u00d7 threatens crossings, not fans (measure observation 13), so it needs a different ordering technique. It is out of scope for line consolidation."
+   },
+   {
+    "item": "Reader setting 'Join lines' (one line per relationship) in the UI.",
+    "why": "An export would then depend on a persisted per-reader preference, it adds a state to three views, and the lift, hover and companion lists give the same disclosure. consolidate stays an internal option."
+   },
+   {
+    "item": "One Tab stop per line with arrow keys through its members (roving tabindex), and switching the interactive svg from role=img to role=group.",
+    "why": "It changes the keyboard and assistive-technology contract and needs real screen-reader testing, which this round cannot honestly evidence. One Tab stop per relationship stays the baseline."
+   },
+   {
+    "item": "Relationship and line readings in the chapter cursor tips (exchange, threat, utility, story, responsibility and realise views).",
+    "why": "The companion hover reading, the native titles on hits and the member list on trunk titles already give every relationship a hover reading. Adopting it in six chapter tip call sites would collide with V4 and V5 edits, so it is scheduled after this round."
+   },
+   {
+    "item": "Hiding or fading lines that card chips restate (Ch3 weighs, Ch1 participates), and showing Whole design implement threads only on demand.",
+    "why": "Each removes default-visible relationships, a product decision. Faded headless lines would fail non-text contrast. All of them stay drawn."
+   },
+   {
+    "item": "Edge concentration in the layered ordering, and qualifier stagger beyond three positions (noise source 9).",
+    "why": "Small measured gains (9 edges on Solution and Stack). Revisit after bundles land."
+   },
+   {
+    "item": "Folding Ch8 synchronous returns into the call row.",
+    "why": "Rejected rather than deferred. UML reply semantics, the response-data chips, the lost answer and the activation bars all depend on the return line, and the picture has no line noise (0 crossings, overdraw 1.0)."
+   }
+  ],
+  "owner_decisions": [
+   {
+    "decision": "Redefining the round-2 D2-12 guard (notation-layout-validate.mjs:50). A declared bundle that passes bundleIntegrity is exempt from sharedRuns. A declared bundle means: one shared element and side; one kind, word, ends, weak and diff state; a tree; drawn once; a join at every split; one word.",
+    "recommendation": "Accept. Foreign shared runs stay \u22643 on every default picture (measured max 1), and foreign-on-trunk, foreign-at-join and T-contacts must be 0 in every routed picture, Layers included. This is stricter than the original gate wherever it matters. Default: implemented this way, recorded as 'owner acceptance pending' with a reference to audit/round2/03_DIAGRAMS.md:59 and :88."
+   },
+   {
+    "decision": "The join glyph and its Key wording.",
+    "recommendation": "Filled dot, r 2.4, in the line colour, for kinds without a dot end marker. Plain T-join with no dot for composition and aggregation (UML 2.5.1 \u00a711.5.4 shared-target) and for protects, evidences, hosts and standsOn, whose ends already use a dot. Undotted bundles may split only as a T. Key text: 'each branch is one recorded relationship \u2026 a drawing join; AIW does not claim it as an ArchiMate junction' until an independent reviewer has checked ArchiMate 3.2 \u00a75.5. Default: this."
+   },
+   {
+    "decision": "Composition and aggregation fans: one diamond with a T-tree, exclude them from bundling, or nest the parts.",
+    "recommendation": "One diamond at the whole with a plain T-tree (Application heads 26\u219222; 113 such members across the reference set). Nesting is deferred because it is a scene decision that hides lines. Default: the T-tree."
+   },
+   {
+    "decision": "Fan bundles in the Layers view (connected model by layer), or only exact duplicates and the snap there.",
+    "recommendation": "Keep fan bundles under the same integrity rules, with the early bail-out, a Layers budget (under 900 ms in node and \u22643\u00d7 control per picture), and every fallback named in the evidence. Measured: heads \u22127%, crossing points \u221213%, foreign shared runs \u221218% on the 64 routed reference Layers; at most 3 fall back. Default: keep."
+   },
+   {
+    "decision": "Duplicate facts in the connected model (61 pairs in bank-payment): merge visually or deduplicate in the model.",
+    "recommendation": "Visual-only merge in the layout. Both records keep their D.edge, hit, Tab stop and record-specific aria-label, and the companion says 'Also recorded as'. A model-level merge would change D counts and drop records from the Layers code exports. Default: visual-only."
+   },
+   {
+    "decision": "What a click on a shared trunk does.",
+    "recommendation": "Select the shared element: it reuses existing selection (the threat-view entry-marker precedent), adds no new state, and has a keyboard equivalent in the element's Tab stop. The companion lists that element's lines with a button per member, and hovering the trunk lists exactly its members. A dedicated bundle selection state is the alternative if the owner finds element selection too broad. Default: select the shared element."
+   },
+   {
+    "decision": "Expose a reader setting 'Join lines' (one line per relationship).",
+    "recommendation": "Not this round. consolidate stays an internal notationLayout option, used for the in-run control and the fallback, so exports never depend on a reader preference. Default: not exposed."
+   },
+   {
+    "decision": "Summarising the straight-mode giants (counted pills with a printed member list, or frames).",
+    "recommendation": "Defer to a later round as an explicit change to the 1:1 picture contract. This round reports those 48 pictures as unchanged. Default: unchanged."
+   },
+   {
+    "decision": "Ch10 'needs' rails as the new dependency grammar. One rail per needed part. A mark per dependent: filled dot = required, dot plus dashed tick = buffered, gold diamond = party, never a hollow circle. 'Needs' 6 px above a row's centre and 'needed by' 6 px below. The gutter widens from about 94 to 129 px on bank.",
+    "recommendation": "Adopt. It is the only measured option that is both clean and unambiguous (heads 37\u219215, crossings 42\u2192\u226412, ink about \u221250%). Drawing today's trunks once keeps confluent row stubs that imply false paths. Conditions: rails span every mark, text-fit checks at 1,100 px, and inspected light and dark shots. Default: adopt."
+   },
+   {
+    "decision": "Exact-biclique buses and ArchiMate And-junctions (Ch1, Running board, notation pictures).",
+    "recommendation": "Not in round 10. The prototype's 'exact' bus implied a relationship that is not recorded. Revisit as a compact point junction validated by an exactness kernel, after the ArchiMate review. Default: none built."
+   },
+   {
+    "decision": "Level budget for the crossing-aware track assigner.",
+    "recommendation": "Interval-colouring levels + max(2, ceil(15%)) in lane gutters and Ch10. Slack 0 for Ch6 platform brackets, whose 3 levels are pinned by tests. Use slack 0 everywhere if no gutter may widen. Default: the recommended budget."
+   },
+   {
+    "decision": "Whole design implement threads only on selection, and fading lines that card chips restate (Ch3 weighs, Ch1 participates).",
+    "recommendation": "Keep them all drawn at rest this round, because each removes a default-visible relationship. Ship only the component spines. Default: drawn."
+   },
+   {
+    "decision": "The interactive picture's svg role (role=img wrapping focusable buttons).",
+    "recommendation": "Change to role=group with an aria-roledescription only in a later accessibility pass with real screen-reader testing; notation-browser-validate.mjs:62 would change then. Default: unchanged."
+   },
+   {
+    "decision": "Ch8 sequence return messages.",
+    "recommendation": "Keep them drawn (UML reply semantics, response data, the lost answer, activation bars). Default: unchanged."
+   }
+  ],
+  "success_metrics": [
+   "Heads and diamonds drawn on the 88 routed reference Diagram defaults fall from 1,245 to \u22641,080, and on bank-payment's 18 routed defaults from 285 to \u2264200. Ch6 Solution \u226416 (32), Ch7 Stack \u226424 (41), Motivation \u226411 (23), Rationale \u226410 (22), Drivers \u226411 (22).",
+   "Distinct visual crossing points fall from 768 to \u2264610 on the reference defaults, from 428 to \u2264325 on bank, and from 114 to \u226475 on Ch6 Solution. Drawn crossings over the defaults are \u226515% below the in-run consolidate:false control.",
+   "Ink falls by at least 5% on the reference defaults and 7% on bank. On every default picture, markers, line ends and ink never exceed the control.",
+   "The snap fix cuts bends by 40% or more and interior segments under 8 px by 85% or more (1,338\u2192\u2264200 on the reference defaults; 3,295\u2192\u2264120 on the reference Layers).",
+   "Foreign-on-trunk = 0, foreign-at-join = 0 and T-contacts = 0 in every routed picture. Foreign shared runs \u22643 on every default picture (\u22641 expected). Through-passes 0 and words on words 0 everywhere.",
+   "Nothing lost: in every picture, the counts of g.nt-edge, full-route .nt-hit and Tab stops each equal D.edges.length. Status line, svg aria-label and Key counts are unchanged. Code exports carry the same relationship sets with zero bundle ids. explainDiagram has one entry per relationship and no positions.",
+   "Determinism: exports byte-identical at 1000 and 1440 px and in light and dark; SDD figures equal fresh renders; layout JSON identical across runs and processes.",
+   "Budgets held: stress under 3 s, synthetic-200 under 8 s, the 305-responsibility by-layer picture under 1.5 s, scale-500 Ch4 and Ch5 under 1.5 s, every reference Layers picture under 900 ms and \u22643\u00d7 its control. Layers fallbacks \u22643, each named.",
+   "Dark theme: selected, lit, traced, added, changed and removed lines and trunks compute to their state tokens, each at least 3:1 on the night canvas (today all draw sage-10).",
+   "Chapter views:\n- Ch10 heads 37\u2192\u226415, crossings 42\u2192\u226412, ink about \u221250%.\n- Ch9 heads 22\u219211, overlaps 31\u21920.\n- Ch3 crossings 21\u2192\u226414 on bank and at or below priority order everywhere.\n- Ch1 parcel-lockers crossings 134\u2192\u226433 without buses.\n- Ch2 ink about \u221225%.\n- Whole design Ch6 lines 40\u2192\u226417 and passes behind cards 111\u2192\u226410.",
+   "Honesty: the evidence JSON and REPORT.md list per-picture before and after values, every fallback by name, the unchanged straight-mode giants, every pending owner acceptance and the outstanding external ArchiMate review; productionAccepted stays false."
+  ]
+ },
+ "proposals": [
+  {
+   "id": "engine",
+   "title": "Round 10, engine first: declared line bundles in the shared notation router (whole-run port snap, exact-duplicate merge, same-style fan trunks drawn once with join dots, one shared head and one word), so every Diagram, export, SDD figure and record picture gets cleaner at once with nothing lost"
+  },
+  {
+   "id": "semantic",
+   "title": "Round 10, semantic consolidation: draw fewer lines by using the notation's own exact forms (one line per fact, junctions, same-relationship frames, nesting)"
+  },
+  {
+   "id": "reader",
+   "title": "Consolidated at rest, disclosed on demand: a reader-first line design for the AIW notation renderer (round 10)"
+  },
+  {
+   "id": "views",
+   "title": "Round 10, the chapter views: wires drawn once, exact sharing only, crossing-aware tracks"
+  }
+ ],
+ "judgements": [
+  {
+   "lens": "ARCHITECT'S CLARITY AND TRUTH. Does the consolidated picture read faster and mor",
+   "scores": [
+    {
+     "proposal": "engine",
+     "score": 8
+    },
+    {
+     "proposal": "semantic",
+     "score": 5
+    },
+    {
+     "proposal": "reader",
+     "score": 6
+    },
+    {
+     "proposal": "views",
+     "score": 6.5
+    }
+   ],
+   "must_haves": [
+    "One relationship stays one D.edge and one L.edge with its full pts, in D order. Consolidation merges ink, never records. Code exports stay one relationship and one connection per relationship, with no bundle or junction ids.",
+    "A shared stroke carries only relationships that share one end element and one side of it, and that are drawn identically: kind, label, ends, weak, reply, diff change, ArchiMate type, and the qualifier where it sits at the shared end.",
+    "Every bundle is a tree from its shared end. No link belongs to two structures, and sharing at both ends is forbidden unless an exact-biclique form is explicitly approved by the owner.",
+    "Per-bundle validation dissolves the bundle locally when an unrelated relationship runs collinear with any trunk run (more than 6 px; target 0 foreign-on-trunk in every picture, Layers included), when branches rejoin, or when anything passes through an element. A failed bundle is drawn apart, never as a bus.",
+    "Join glyphs appear at every split and nowhere else. No foreign line passes within about 3 px of a join, and no foreign corner lies on a trunk run (T-contact). Add both to bundleIntegrity: the engine prototype has 7 and 6 such cases.",
+    "The join glyph cannot be confused with an end marker (the protects and evidences dot head, the hosts and standsOn dot tail). Composition and aggregation get a T-join with no ArchiMate junction dot, or nesting if the owner approves.",
+    "Excluded: Flow and Triggering kinds (flow, transforms, sequence, transition, message), numbered paths, sequence pictures and BPMN lanes, so that no fork or AND-join is implied. Exact duplicates may merge in every family, with no junction.",
+    "Every relationship stays individually discoverable: its own full-route hit and title, keyboard reachable (one Tab stop each unless the owner changes it), a companion reading that names its co-members, and 'Also recorded as' for merged duplicates. A trunk click never silently picks one member.",
+    "Selection, trace and diff show exactly the selected relationship's full route, trunk included, and never light a co-member's branch. State stays visible in the dark theme (fix the theme-ui.css:44-82 specificity defect).",
+    "Fan-in bundles draw one head at the shared end and one word. Qualifier-bearing fan-outs are not bundled. Words stay readable (labelOnLabel 0).",
+    "The Key, in export, SDD figure and companion, explains every new mark in one plain sentence ('each branch is one recorded relationship'). It shows only when the mark is drawn and makes no ArchiMate conformance claim until a qualified reviewer has checked the 3.2 text.",
+    "Geometry is deterministic and independent of zoom, viewport and selection. Screen, export and SDD figure are one picture, byte-identical at any window width.",
+    "Evidence is measured on the real pictures with stated metric definitions: distinct visual crossing points, heads drawn, ink, foreign-on-trunk, foreign-at-join, bends and fallbacks, per picture against a consolidate:false control. Before and after screenshots, light and dark, must be inspected; two prototype shots in this round were defective.",
+    "The Layers views and the giants are explicitly addressed or explicitly declared out of scope: that is where 77.5% of crossings live. Dense Layers pictures must not silently fall back to nothing while the report claims improvement."
+   ],
+   "red_lines": [
+    "Any ink shared between relationships that do not share an end element, or an unrelated line riding along a trunk (the D2-12 bus). The reader prototype does this 37 times on bank Layers Ch5.",
+    "Near-biclique buses, lane-pair or group-pair count bands, or any form that states pairs exist without showing which. The same applies to an 'exact' bus drawn so that it visually passes rows it does not serve (the views prototype implies ACT-003\u2192JRN-003).",
+    "Joins or junctions on flow, triggering, sequence, message, transition or BPMN flows: they imply forks or synchronisation that the model does not record.",
+    "An ArchiMate And-junction glyph or claim on composition or aggregation, or a Key that claims ArchiMate conformance before the standard text has been checked.",
+    "Merging different kinds, words, weak or strong lines, diff states, or proposed and recorded states onto one stroke, or hiding a member's distinct state on a shared portion.",
+    "Deleting or merging relationships in D to make a picture cleaner without owner approval, or a model-level merge that drops a differing qualifier.",
+    "A frame or container glyph that reads as an ArchiMate Grouping or the app's own groups, and so implies containment that is not recorded.",
+    "Relationships hidden at rest in routed pictures that print in the SDD (faded headless lines, lines shown only on hover). Straight-mode summaries are allowed only with every member listed in print and owner approval.",
+    "Geometry that depends on zoom, selection or window width; a screen-only consolidation that the SDD does not carry.",
+    "A trunk hit that silently selects one member, or the loss of per-relationship hits, Tab reachability or companion readings.",
+    "Reporting gains from prototypes that do not implement the stated exclusions or validation, or citing screenshots that were not inspected."
+   ]
+  },
+  {
+   "lens": "Engineering risk and contracts. The lens covers determinism (layout JSON identic",
+   "scores": [
+    {
+     "proposal": "engine",
+     "score": 8
+    },
+    {
+     "proposal": "semantic",
+     "score": 3.5
+    },
+    {
+     "proposal": "reader",
+     "score": 5
+    },
+    {
+     "proposal": "views",
+     "score": 6.5
+    }
+   ],
+   "must_haves": [
+    "Keep the D contract. D.edges is not merged, dropped or re-keyed by consolidation. Duplicate facts are merged only in L geometry and in the render, so relationship counts, status lines, describeEdge, explainDiagram and the codeFile(D, L) exports stay one per recorded relationship.",
+    "Keep the L contract. Exactly one L.edge per D.edge, in D order, each with its full axis-aligned pts from its own element to its own element (radial excepted). Bundle data goes beside it (L.bundles, L.consolidation, e.bundle, e.branch) and never replaces it. notation-layout-validate:212 and process-semantics-validate:247 must hold.",
+    "Code exports keep one relationship and one connection per relationship. No bundle, junction or 'B:' id may appear in draw.io, ArchiMate views or BPMN DI. Extend notation-code-validate:51 to assert this. Coincident bendpoints are the only carry-over.",
+    "Determinism. Every bundle key is a sorted string with stable tie-breaks. No randomness, no viewport, zoom, selection, lens or env input (remove process.env.R10_* and globalThis.__RF from shipped code). Layout JSON is identical twice and across processes. The export is byte-identical at 1000 and 1440 px. SDD figures equal a fresh notationSVG.",
+    "Budgets. Consolidation is off in straight mode (radial, by-layer above 160 edges or 120 nodes, anything above 400 edges) and for sequence, lanes and BPMN. Stress stays under 3 s, synthetic-200 under 8 s, the 305-responsibility by-layer picture under 1.5 s, and scale-500 Ch4 and Ch5 under 1.5 s and still straight. Add an explicit Layers consolidation budget assertion and an early bail-out to duplicates-only.",
+    "The D2-12 guard is redefined, not weakened. The sharedRuns exemption applies only to pairs inside a bundle that passes bundleIntegrity, and bundleIntegrity is asserted empty for every scene \u00d7 arrangement (same kind and style, shared node, the runs form a tree, a join at every split, member pts = runs + branch, no foreign segment along a trunk, root \u2265 10 px). Foreign sharedRuns stay \u2264 3 on every default picture, and the owner's acceptance is recorded with a reference to audit/round2/03_DIAGRAMS.md:59.",
+    "Per-relationship DOM. One g.nt-edge[data-nt-edge] per relationship with its own path.nt-line. One .nt-hit per relationship with its full-route d, role=button, tabindex=0 and aria-label=describeEdge, in the single never-culled g.nt-hits, in L.edges order after the nodes. Shared-ink elements never carry .nt-edge or data-nt-edge. Any bundle hit is pointer-only, aria-hidden and placed after the member hits.",
+    "State on shared ink is derived: sel or lit if any member is, dim or nt-mk-dim only if every member is. paintMarks repaints trunks through a Map. Add a browser test that a trace lights the trunk; existing tests count only .nt-edge and would miss it.",
+    "Dark theme. Fix the round-9 state-colour regression (state rules at specificity 0,6,2 with tokens only), recolour trunks and join dots through [stroke] and [fill] attribute selectors, and mirror everything in the system-dark block. style-tokens-validate passes, and the light and dark exports stay byte-identical.",
+    "Land in coherent, separately verifiable commits, each green on its focused suites. Order: metrics (dormant), snap alone, duplicates, fan bundles with integrity and fallback, words, renderer and Key, dark theme, interaction. SDD figure bytes are regenerated and inspected at the step that changes geometry.",
+    "Tests change only to become stronger. notation-browser-validate:67 re-specified to read the root-run marker; story-browser-validate:144 changed to the union of data-links. Nothing is deleted or loosened, and the per-kind .nt-edge counts (desk 5/28/5, lifecycle 4, messages) stay exact.",
+    "Evidence is relative and machine-readable. Compare drawn metrics against a consolidate:false control in the same run, reporting both segment-pair and drawn crossings, plus bundles, joins, dissolved, fallback and ms per picture. Record it in release evidence that keeps the AIW v0.10.0-rc.10.73.x notation.",
+    "The fallback is always a valid, unambiguous picture: separate snapped lines. It is deterministic and recorded in L.consolidation; it never leaves a partial bus.",
+    "The Key and the readings make no conformance claim to a standard that nobody has checked. Use 'a drawing join, not an ArchiMate junction' until a qualified reviewer has checked the ArchiMate 3.2 text, and record that dependency honestly.",
+    "Check culling after the change. Added trunk groups may push pictures over CULL_FROM=150; check that culled trunks and the never-culled hits container keep keyboard reachability (scale-browser-validate, model-stage refocus)."
+   ],
+   "red_lines": [
+    "Merging, deleting or re-keying D.edges to consolidate lines (for example semantic C2). It changes counts and drops records from the Layers code exports.",
+    "Emitting ArchiMate Junction elements, merged connections or any synthetic bundle or junction id in any code export.",
+    "Geometry or bundling that depends on zoom, hover, selection, lens, window width or environment variables.",
+    "Sharing ink between relationships that do not share an endpoint (confluent or lane-pair buses), except exact bicliques after explicit owner approval and an exactness gate.",
+    "Hiding relationships at rest in exports or SDD figures (counted pills or folds, display:none members, nesting that draws composition only on selection) without an owner decision. This changes the 1:1 picture contract.",
+    "Removing direct pointer or keyboard selection of an individual relationship. That includes pointer-events:none on member hits, a member hit reduced to its branch, and a roving tabindex that replaces per-relationship Tab stops without an approved a11y change.",
+    "Exempting bundles from sharedRuns without a bundleIntegrity gate asserted on every scene \u00d7 arrangement, or loosening any existing count or gate to make consolidation pass.",
+    "Changing the straight-mode threshold semantics (for example counting drawn lines) without scale budget proof.",
+    "Introducing a parallel container or line concept to sidestep an existing assertion (L.nests beside L.groups), or keeping old and new routing paths side by side instead of one consolidate option on notationLayout.",
+    "Global re-route passes with a whole-picture fallback that cascades (measured at 361-736 dissolutions).",
+    "Shipping prototype tuning knobs (process.env.R10_*, globalThis.__RF) or unbounded search in public/ code.",
+    "Claiming ArchiMate or UML conformance for the join glyph, or claiming productionAccepted, without the external review and the evidence that would support it."
+   ]
+  },
+  {
+   "lens": "NOTATION STANDARDS AND ACCESSIBILITY. I checked against the source and understan",
+   "scores": [
+    {
+     "proposal": "engine",
+     "score": 8
+    },
+    {
+     "proposal": "semantic",
+     "score": 5.5
+    },
+    {
+     "proposal": "reader",
+     "score": 6.5
+    },
+    {
+     "proposal": "views",
+     "score": 6
+    }
+   ],
+   "must_haves": [
+    "Every relationship keeps its own D.edge, L.edge (full pts), g.nt-edge and focusable .nt-hit. Its aria-label and title are describeEdge, extended with any drawing note ('drawn on one line with N others', or 'recorded twice; this record: X' for duplicates). Enter and Space select it into the companion, and the first .nt-hit in DOM order is a relationship. One Tab stop per relationship stays the baseline; a roving composite is allowed only with a proper ARIA role, screen-reader testing and owner sign-off.",
+    "Keyboard focus and pointer hover on a relationship show its complete route, shared trunk included, and a selected or lit relationship is visible end to end. Trunk state is sel or lit if any member is, and dimmed only when every member is.",
+    "A click on a shared trunk or junction never silently picks one member; its action (for example selecting the shared element) has a keyboard equivalent, and the companion lists every member as a button.",
+    "Ink is shared only by relationships with an identical full style: kind (therefore ArchiMate type), word, dash, head, tail, ends, weak, reply, diff change, validity, and proposed versus recorded state. Fans share exactly one end and form a tree. Sharing at both ends is allowed only for exact bicliques under an explicit owner decision.",
+    "Exclusions: any kind whose ArchiMate type is Flow or Triggering (flow, transforms, message, path, sequence, transition, and selects by family), BPMN lanes and process pictures (duplicate merge included), sequence pictures (UML replies and message order kept), and edges carrying a step, cardinality or crossing mark. Straight-mode pictures stay 1:1.",
+    "Join glyph: the Key and readings call it a drawing join and make no ArchiMate And-junction conformance claim until an independent reviewer has checked the ArchiMate 3.2 \u00a75.5 text (record that status honestly). Composition and aggregation trees get no filled dot (UML shared-target T-join). The glyph must be distinguishable from a crossing (a mark at every split, or no 4-way split) and from the existing 'dot' end marker (assignment tail; protects and evidences heads). It must stay visible at the first-fit zoom through screen-only CSS.",
+    "Dark-theme parity in both the dark and the system-dark blocks: trunks, join dots and shared markers recolour, and the state colours sel, lit, nt-mk-lit, added, removed and changed are restored with tokens that meet 3:1 on the dark canvas (#172024): gold-11, violet-11, green-11, gold-9 and sage-9. Light theme and exports stay byte-identical, with literals only inside [stroke]/[fill] attribute selectors. Chapter-view arrowheads move to token fills.",
+    "Non-colour cues survive: selection by width (plus end rings), removed by dash, weak and plain bundles kept apart with separate heads, and no stacked markers.",
+    "On screen, the camera reveals keyboard-focused SVG elements and relationships (:focus-visible), so focus is never off stage (WCAG 2.4.11); line and hit widths follow zoom in CSS only.",
+    "Governance: bundles and junctions live only in L and the DOM. No model elements, no ArchiMate Junction elements, no 'B:'/'b:'/'j:' ids in any code export. Code exports stay one relationship per relationship. explainDiagram carries no positions, nothing is written to the document, and the Key, status line and aria-label count relationships, not lines.",
+    "Determinism: geometry never depends on zoom, selection, lens or window width. The export is byte-identical at 1000 and 1440 px, and SDD figures equal fresh renders.",
+    "Evidence: browser assertions for dark state colours (contrast), Tab order unchanged, aria-labels per member, trunk-click behaviour and focus reveal. The redefined D2-12 gate (foreign shared runs \u2264 3) is explicitly accepted by the owner."
+   ],
+   "red_lines": [
+    "Shared ink between relationships that do not share an endpoint, unless they form an exact biclique (the D2-12 bus); near-complete bipartite buses or lane-pair count bands.",
+    "A filled dot or any junction-like glyph on a split of ArchiMate Flow or Triggering relationships, or on BPMN sequence or message flows: it asserts a gateway the model does not hold.",
+    "Calling the join an ArchiMate And-junction in the Key, readings or SDD before an independent reviewer confirms it, or impersonating that reviewer.",
+    "A relationship that is reachable only by pointer, or that loses its own aria-label, selection or companion reading; a trunk hit that silently selects whichever member is last in DOM order.",
+    "One stroke showing one style for members whose styles differ (proposed or hole drawn as recorded, weak as plain, different kinds or words, different diff states).",
+    "Folding UML sequence replies, merging numbered messages, or bundling inside the sequence or BPMN lanes arrangements.",
+    "Emitting ArchiMate Junction elements, merged connections or bundle ids in draw.io, ArchiMate exchange, BPMN DI, Structurizr or Mermaid; adding model elements or writing anything to the document.",
+    "Geometry or consolidation that varies with zoom, selection, lens or viewport, which breaks byte-identical exports.",
+    "Dark-theme state colours that fail 3:1 against the canvas, or states that only change width.",
+    "A dashed tabbed frame (ArchiMate Grouping, C4 boundary or AIW external-container look-alike), or nesting that implies a composition or aggregation the model does not record.",
+    "Hiding relationship lines by default in standard pictures or SDD figures (pills, receding lines) without an explicit owner decision."
+   ]
+  }
+ ]
+}

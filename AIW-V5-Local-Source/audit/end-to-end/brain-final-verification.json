@@ -1,0 +1,374 @@
+{
+  "schema": "aiw.brain-final-verification.v1",
+  "at": "2026-10-12T13:23:50.594529+00:00",
+  "testedParentCommit": "9efe4fb9ccb72f279f7de2f15b8f3be6ed6e50e0",
+  "sourceIdentity": "SOURCE-MANIFEST.json binds these files; the external publication receipt and full git archive identify the final commit.",
+  "evidence": [
+    {
+      "path": "brain-repair-evidence/final-required-checks.json",
+      "sha256": "2756084d62c72da7ce9bc4f276f1b3d6a846437d51192e5ad18025fb529f9de3",
+      "at": "2026-10-12T12:17:01.478Z",
+      "finishedAt": "2026-10-12T12:20:25.115Z",
+      "passed": true,
+      "checks": [
+        {
+          "file": "payment-knowledge-pilot-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 3667
+        },
+        {
+          "file": "architecture-knowledge-unit-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 763
+        },
+        {
+          "file": "brain-governance-ui-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 4885
+        },
+        {
+          "file": "brain-integration-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 2387
+        },
+        {
+          "file": "knowledge-retrieval-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 6078
+        },
+        {
+          "file": "technology-catalogue-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 853
+        },
+        {
+          "file": "brain-synthesis-retrieval-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 4546
+        },
+        {
+          "file": "brain-reasoning-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 3289
+        },
+        {
+          "file": "brain-alternative-review-ui-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 1754
+        },
+        {
+          "file": "brain-unknown-facts-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 1027
+        },
+        {
+          "file": "candidate-import-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 794
+        },
+        {
+          "file": "build.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 7008
+        },
+        {
+          "file": "check-syntax.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 166542
+        }
+      ],
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "brain-repair-evidence/consistency-repair-checks.json",
+      "sha256": "237b4c8af33fc16f7d87702435e9de1736fb765e8bca999a366c06ccddbc3f8e",
+      "at": "2026-10-12T12:46:03.454Z",
+      "finishedAt": "2026-10-12T12:46:21.046Z",
+      "passed": true,
+      "checks": [
+        {
+          "file": "brain-reasoning-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 2067
+        },
+        {
+          "file": "brain-alternative-review-ui-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 2005
+        },
+        {
+          "file": "brain-unknown-facts-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 899
+        },
+        {
+          "file": "brain-synthesis-retrieval-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 4078
+        },
+        {
+          "file": "build.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 8515
+        }
+      ],
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "brain-repair-evidence/final-ui-checks.json",
+      "sha256": "a4ff10d3680e48cb4fddccd59af61b417ce73bd57a406b10531e2357c820f7c1",
+      "at": "2026-10-12T13:10:53.806Z",
+      "finishedAt": "2026-10-12T13:11:41.661Z",
+      "passed": false,
+      "checks": [
+        {
+          "file": "sol-companion-navigation-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 1384
+        },
+        {
+          "file": "sol-panel-disclosure-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 1418
+        },
+        {
+          "file": "causal-reasoning-rubric-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 181
+        },
+        {
+          "file": "brain-reasoning-consistency-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 624
+        },
+        {
+          "file": "brain-generated-outcome-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 920
+        },
+        {
+          "file": "brain-reasoning-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 3362
+        },
+        {
+          "file": "intelligence-validate.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 37515
+        },
+        {
+          "file": "build.mjs",
+          "code": 1,
+          "passed": false,
+          "durationMs": 2411
+        }
+      ],
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "brain-repair-evidence/final-build-checks.json",
+      "sha256": "db7ad131ea01c023e81651d769454da0d947a4a321da6245d739e46dc1de0962",
+      "at": "2026-10-12T13:13:16.329Z",
+      "finishedAt": "2026-10-12T13:16:12.578Z",
+      "passed": true,
+      "checks": [
+        {
+          "file": "build.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 10015
+        },
+        {
+          "file": "check-syntax.mjs",
+          "code": 0,
+          "passed": true,
+          "durationMs": 166220
+        }
+      ],
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "local-chromium-evidence/results.json",
+      "sha256": "d0a1f72120151049706d7f1349aa7255667e79bd2dd0943ab49b0b0a2b27bc0d",
+      "at": "2026-10-12T13:15:48.749Z",
+      "finishedAt": "2026-10-12T13:17:12.060Z",
+      "passed": true,
+      "checks": null,
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "local-chromium-evidence/brain-semantic-openai/results.json",
+      "sha256": "83b800a8b0c0ea042d06f50c2903d5fc885e38abfad4cd28e77c7a2726c0435f",
+      "at": "2026-10-12T13:17:20.103Z",
+      "finishedAt": "2026-10-12T13:18:03.014Z",
+      "passed": true,
+      "checks": null,
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "local-chromium-evidence/mind-factory-openai/results.json",
+      "sha256": "f913ad57c87dea44ba6994e9fc4d4a6a25c249f20ad4491e49c2822beb5b748e",
+      "at": "2026-10-12T13:15:30.263Z",
+      "finishedAt": "2026-10-12T13:16:04.456Z",
+      "passed": true,
+      "checks": null,
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "local-chromium-evidence/causal-openai/results.json",
+      "sha256": "09cfd0617d189038cf48a2432240751e6b3abf8b91d8a3c0f802cffaa7d4ec02",
+      "at": "2026-10-12T13:11:45.725Z",
+      "finishedAt": null,
+      "passed": true,
+      "checks": null,
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "evidence/brain-completion/live-reasoning.json",
+      "sha256": "2d8daf5ccec2beff007b790a54352c0cbcdcfbf178e5ce1e426309c32bd5e931",
+      "at": "2026-10-12T11:35:31.497Z",
+      "finishedAt": null,
+      "passed": true,
+      "checks": null,
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    },
+    {
+      "path": "architecture-provider-semantic-review.json",
+      "sha256": "9e537e73c746984cac6408838dbbccad644fb28f192dc130b9af1a83e4403115",
+      "at": null,
+      "finishedAt": null,
+      "passed": null,
+      "checks": null,
+      "authority": "Implementation verification; actual provider execution only where explicitly recorded. No human approval."
+    }
+  ],
+  "realCausalCases": [
+    {
+      "id": "payment-approval-race",
+      "passedNecessaryConditionRubric": true,
+      "model": "gpt-4.1-mini-2025-04-14",
+      "prompt": {
+        "promptVersion": "sol-reasoning-3",
+        "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+      },
+      "withheld": [],
+      "reviewedClaims": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "unknown-outcome-retry",
+      "passedNecessaryConditionRubric": true,
+      "model": "gpt-4.1-mini-2025-04-14",
+      "prompt": {
+        "promptVersion": "sol-reasoning-3",
+        "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+      },
+      "withheld": [],
+      "reviewedClaims": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "global-order-workers",
+      "passedNecessaryConditionRubric": true,
+      "model": "gpt-4.1-mini-2025-04-14",
+      "prompt": {
+        "promptVersion": "sol-reasoning-3",
+        "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+      },
+      "withheld": [],
+      "reviewedClaims": [
+        0,
+        0
+      ]
+    },
+    {
+      "id": "per-key-order-workers",
+      "passedNecessaryConditionRubric": true,
+      "model": "gpt-4.1-mini-2025-04-14",
+      "prompt": {
+        "promptVersion": "sol-reasoning-3",
+        "sha256": "a2b34197d45848a019b0d9732ed494794d642b9cc115c2d998cb395b43a13d9d"
+      },
+      "withheld": [],
+      "reviewedClaims": [
+        0,
+        0
+      ]
+    }
+  ],
+  "limits": [
+    "Real-provider rubric checks and automated source reviews do not certify architectural accuracy. Earlier actual runs contain documented false positives; the verification archive retains them.",
+    "The real-provider packets exercise bounded project facts, shipped editorial guidance and methods. They do not establish synthesis over independently reviewed and released laptop corpus originals.",
+    "Visitor-authenticated hosted provider execution, saved state and export remain unverified: the available browser-control environment fails Windows CreateProcessWithLogonW 1385; Sites service access supplies no visitor identity.",
+    "No scheduled continuation is configured on the existing Site. No schedule was invented.",
+    "The confirmed UATC-0197 functional policy has no agreed workload/latency target or actual payment measurement. Human source review, release activation, architectural selection and independent case finding remain open."
+  ],
+  "publication": "Prepared for supported private publication; the external deployment receipt records the actual outcome.",
+  "semanticBrowser": {
+    "functionalChecksPassed": true,
+    "retrieval": {
+      "mode": "graph + lexical + semantic",
+      "model": "text-embedding-3-small",
+      "dimensions": 256,
+      "indexScope": "9af576f66386f8e5bf3265494fef82c5e37ecb587783de546e4c18bc2f4a6ec8",
+      "eligibleRecords": 659,
+      "scopeExcluded": 0,
+      "tokensUsed": 64560,
+      "minimumCosine": 0.25,
+      "thresholdStatus": "Uncalibrated retrieval heuristic; not an architectural quality or suitability score",
+      "ranking": "reciprocal rank fusion with minimum similarity; relevance only, not architectural suitability",
+      "sourceIds": [
+        "catalogue:PAT-EVENT-CARRIED-STATE-TRANSFER",
+        "catalogue:ARCH-RELATIONAL-DATA-CAPABILITY",
+        "catalogue:ARCH-CACHE-CAPABILITY",
+        "catalogue:PAT-POLICY-ENFORCEMENT-POINT",
+        "catalogue:PAT-BOUNDED-CONTEXT",
+        "catalogue:PAT-CLAIM-CHECK"
+      ],
+      "editorialGuidance": 6,
+      "retainedSourceIds": [
+        "catalogue:PAT-EVENT-CARRIED-STATE-TRANSFER",
+        "catalogue:ARCH-RELATIONAL-DATA-CAPABILITY",
+        "catalogue:ARCH-CACHE-CAPABILITY",
+        "catalogue:PAT-POLICY-ENFORCEMENT-POINT",
+        "catalogue:PAT-BOUNDED-CONTEXT",
+        "catalogue:PAT-CLAIM-CHECK"
+      ]
+    },
+    "groundingAccepted": false,
+    "assessmentWithheld": [
+      "M:1:REQ-001"
+    ],
+    "interpretation": "Actual embeddings, provider transport, UI, storage, restart and export were exercised. The single assessment was withheld; functional completion is not a useful-answer pass."
+  },
+  "supersededBuildFailure": "The final-ui-checks build exceeded the old chapter route cap by 141 bytes. The final-build-checks report verifies the measured next-whole-KB cap and the final source syntax; no other cap changed."
+}

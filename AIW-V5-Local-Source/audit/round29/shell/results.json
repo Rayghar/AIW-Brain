@@ -1,0 +1,20 @@
+{
+  "startedAt": "2026-10-18T13:40:07.083Z",
+  "finishedAt": "2026-10-18T13:40:15.927Z",
+  "client": "/workspace/scratch/8e11d52a9a55/rethink_qa/client-restoration-round29",
+  "executable": "/workspace/scratch/8e11d52a9a55/browser_runtime/bin/chromium-aiw",
+  "status": "passed",
+  "checks": [
+    "Native Next task opens the Chapter 4 input-review workflow.",
+    "Model footer Next task invokes the same native Chapter 4 workflow.",
+    "Legacy collapsed preference migrated.",
+    "Explicit inspection opens without erasing the saved closed preference; both manual states survive reload.",
+    "validate: canonical foreign record inspected without changing chapter/tab/scope/scroll or output selection.",
+    "output: canonical foreign record inspected without changing chapter/tab/scope/scroll or output selection.",
+    "1024px: bounded drawer, visible close and location, Escape dismissal, no horizontal overflow.",
+    "390px: bounded drawer, visible close and location, Escape dismissal, no horizontal overflow."
+  ],
+  "errors": [],
+  "failure": null,
+  "authority": "Synthetic local browser test on a temporary database; no provider calls, approvals or publication."
+}

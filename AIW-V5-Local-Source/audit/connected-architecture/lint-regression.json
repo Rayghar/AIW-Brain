@@ -1,0 +1,27 @@
+{
+  "schema": "aiw.lint-regression.v1",
+  "baselineCommit": "fdca377e5f4e0125f2ae2da24494fc8e495e4f8c",
+  "method": "The pinned ESLint and unchanged eslint.config.js ran directly over both the exact frozen git source and the current tree. The three final edited files were rechecked and replace their earlier rows. No baseline allowance was changed.",
+  "baselineFiles": 842,
+  "currentFiles": 867,
+  "baselineProblems": 243,
+  "currentProblems": 242,
+  "growth": [],
+  "introducedProblemsStatus": "passed",
+  "fullTreeRatchetStatus": "failed on inherited violations",
+  "wrapperLimitation": "scripts/lint.mjs spawned Node was rejected with EPERM and returned no report; equivalent direct ESLint invocations produced complete JSON.",
+  "existingImportCycles": [
+    {
+      "file": "public/design-reasoning.js",
+      "count": 1
+    },
+    {
+      "file": "public/driver-links.js",
+      "count": 1
+    },
+    {
+      "file": "public/technology-realisation-domain.js",
+      "count": 1
+    }
+  ]
+}
