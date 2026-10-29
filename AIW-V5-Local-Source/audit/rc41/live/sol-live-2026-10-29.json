@@ -1,0 +1,788 @@
+{
+  "schema": "aiw.sol-live-check/3",
+  "at": "2026-10-29T19:30:23.439Z",
+  "live": true,
+  "provider": "openai",
+  "model": "gpt-4.1-mini",
+  "modelDefaulted": true,
+  "effort": null,
+  "callTimeoutMs": 120000,
+  "connectionVerified": {
+    "at": "2026-10-29T19:27:22.362Z",
+    "ok": true,
+    "model": "gpt-4.1-mini"
+  },
+  "pins": [],
+  "chapters": [
+    {
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "status": "failed",
+      "packetCharacters": 4287,
+      "sources": 10,
+      "neighbours": 5,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "status": "failed",
+      "packetCharacters": 10449,
+      "sources": 7,
+      "neighbours": 0,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "status": "failed",
+      "packetCharacters": 9278,
+      "sources": 7,
+      "neighbours": 3,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "record": "LR-001 Appointment scheduling",
+      "status": "failed",
+      "packetCharacters": 11962,
+      "sources": 9,
+      "neighbours": 1,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "record": "APP-001 Appointment scheduling service",
+      "status": "failed",
+      "packetCharacters": 9455,
+      "sources": 6,
+      "neighbours": 1,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "status": "failed",
+      "packetCharacters": 11805,
+      "sources": 10,
+      "neighbours": 1,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "status": "failed",
+      "packetCharacters": 11972,
+      "sources": 4,
+      "neighbours": 0,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "record": "IF-001 Hand over appointment",
+      "status": "failed",
+      "packetCharacters": 11878,
+      "sources": 9,
+      "neighbours": 2,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "record": "SEC-001 Limit access to Appointment",
+      "status": "failed",
+      "packetCharacters": 11819,
+      "sources": 10,
+      "neighbours": 1,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "record": "RUN-001 Appointment scheduling service",
+      "status": "failed",
+      "packetCharacters": 9271,
+      "sources": 7,
+      "neighbours": 2,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "status": "failed",
+      "packetCharacters": 10966,
+      "sources": 7,
+      "neighbours": 2,
+      "groundingAccepted": null,
+      "withheld": null,
+      "draft": null,
+      "error": "429: The provider request limit was reached."
+    }
+  ],
+  "runs": [
+    {
+      "mode": "field",
+      "id": "7e526ef9-0c4c-458d-b5af-92e5bc4c00be",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "description",
+        "hasDraft": false,
+        "sourcesInPacket": 10
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "recordId": "OUT-001",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "packet": {
+        "characters": 4287,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 5,
+          "requirement": 3
+        },
+        "neighbours": [
+          "REQ-001 Book an appointment at any time through the online service",
+          "REQ-002 Register a phone booking and move or cancel it for a patient who calls",
+          "REQ-003 Send a reminder by text message or email two days before each appointment",
+          "REQ-004 Answer each reminder to confirm, move or cancel the appointment",
+          "REQ-006 Record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets"
+        ],
+        "omissions": [
+          "REQ-004 Answer each reminder to confirm, move or cancel the appointment",
+          "QD-001 Quality: Book an appointment at any time through the online service",
+          "QD-002 Quality: Register a phone booking and move or cancel it for a patient who calls",
+          "QD-003 Quality: Send a reminder by text message or email two days before each appointment",
+          "QD-004 Quality: Answer each reminder to confirm, move or cancel the appointment"
+        ],
+        "help": "What this record says: a journey step as the user experiences it, a requirement as a behaviour, a constraint as a limit, an outcome as a change."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "b992fcbf-e324-46ff-b9d7-e2c5912c1c76",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "response",
+        "hasDraft": false,
+        "sourcesInPacket": 7
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "recordId": "QD-001",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "packet": {
+        "characters": 10449,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "quality-driver": 1,
+          "model": 2,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [],
+        "omissions": [
+          "3 contextual insights omitted",
+          "Event-Driven Service",
+          "Chatty Services",
+          "God Service",
+          "Chapter 2’s reading of QD-001 Quality: Book an appointment at any time through the online service"
+        ],
+        "help": "What the system must do when the stimulus arrives."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "06c014a1-246a-49b5-a4ce-b828bbc7ee52",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "rationale",
+        "hasDraft": false,
+        "sourcesInPacket": 7
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "recordId": "ADR-001",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "packet": {
+        "characters": 9278,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 3,
+          "quality-driver": 1,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "ALT-001 Keep it within one owned boundary",
+          "ALT-002 Separate it into an independent boundary",
+          "CON-001 Patient personal data must be handled in line with the health data regulation that applies where the clinic operates"
+        ],
+        "omissions": [
+          "4 contextual insights omitted",
+          "Single Point of Failure",
+          "Chatty Services",
+          "God Service"
+        ],
+        "help": "Why the chosen alternative answers the question, against the drivers compared."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "49a1c467-1972-407a-91eb-c485f76a14f3",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "purpose",
+        "hasDraft": false,
+        "sourcesInPacket": 9
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "recordId": "lr-001",
+      "record": "LR-001 Appointment scheduling",
+      "packet": {
+        "characters": 11962,
+        "maxCharacters": 12000,
+        "sources": 9,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "quality-driver": 1,
+          "model": 3,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "APP-001 Appointment scheduling service"
+        ],
+        "omissions": [
+          "3 contextual insights omitted",
+          "Single Point of Failure",
+          "Chatty Services",
+          "God Service",
+          "Chapter 4’s reading of LR-001 Appointment scheduling"
+        ],
+        "help": "The behaviour this responsibility owns for the requirements it serves."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "92eccc5a-54e6-4175-897a-37cbd31335b3",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "boundary",
+        "hasDraft": false,
+        "sourcesInPacket": 6
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "recordId": "obj-001",
+      "record": "APP-001 Appointment scheduling service",
+      "packet": {
+        "characters": 9455,
+        "maxCharacters": 12000,
+        "sources": 6,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "requirement": 1,
+          "quality-driver": 1,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "TN-001 compute need"
+        ],
+        "omissions": [
+          "4 contextual insights omitted",
+          "Transactional Outbox",
+          "Idempotent Consumer",
+          "Dead Letter Channel",
+          "Missing Idempotency",
+          "Zero-Trust Service Boundary",
+          "Event-Driven Architecture",
+          "Change Data Capture",
+          "Chapter 5’s reading of APP-001 Appointment scheduling service"
+        ],
+        "help": "What this component owns, and what it leaves to other components."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "6629fd97-6e5c-49a7-a3b3-2617b05858e7",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "purpose",
+        "hasDraft": false,
+        "sourcesInPacket": 10
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "recordId": "tc-001",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "packet": {
+        "characters": 11805,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "model": 5,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "TR-001 Compute for Appointment scheduling service implementation"
+        ],
+        "omissions": [
+          "3 contextual insights omitted",
+          "Event-Driven Service",
+          "Single Point of Failure",
+          "Chatty Services",
+          "Chapter 6’s reading of TC-001 Compute for Appointment scheduling service"
+        ],
+        "help": "The support obligation this capability satisfies for the components that need it."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "cef9b4ac-d7d0-437a-9e0d-87ac44e63561",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "operationsPlan",
+        "hasDraft": false,
+        "sourcesInPacket": 4
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "recordId": "tr-001",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "packet": {
+        "characters": 11972,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "catalogue-description": 2
+        },
+        "neighbours": [],
+        "omissions": [
+          "4 contextual insights omitted",
+          "Database per Service",
+          "Transactional Outbox",
+          "Circuit Breaker",
+          "Premature Microservices",
+          "Distributed Monolith",
+          "Modular Monolith",
+          "Layered",
+          "Open Host Service",
+          "Chatty Services",
+          "God Service",
+          "Chapter 7’s reading of TR-001 Compute for Appointment scheduling service implementation"
+        ],
+        "help": "Who operates this, how it is monitored and how incidents are handled."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "c2c94a88-f063-42c9-a09c-2d9bec0c918d",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "failurePolicy",
+        "hasDraft": false,
+        "sourcesInPacket": 9
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "recordId": "if-001",
+      "record": "IF-001 Hand over appointment",
+      "packet": {
+        "characters": 11878,
+        "maxCharacters": 12000,
+        "sources": 9,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 2,
+          "quality-driver": 2,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "APP-002 Phone booking intake service",
+          "DAT-001 Appointment"
+        ],
+        "omissions": [
+          "4 contextual insights omitted",
+          "Single Point of Failure",
+          "Chatty Services",
+          "God Service",
+          "Chapter 8’s reading of IF-001 Hand over appointment"
+        ],
+        "help": "What the caller does when the provider fails or does not answer."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "c25ef05f-dc81-4637-b188-36a3d329b091",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "mechanism",
+        "hasDraft": false,
+        "sourcesInPacket": 10
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "recordId": "sec-001",
+      "record": "SEC-001 Limit access to Appointment",
+      "packet": {
+        "characters": 11819,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "model": 5,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "THR-001 Disclosure of Appointment"
+        ],
+        "omissions": [
+          "3 contextual insights omitted",
+          "Event-Driven Service",
+          "Chatty Services",
+          "God Service",
+          "Chapter 9’s reading of SEC-001 Limit access to Appointment"
+        ],
+        "help": "How the control works."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "55eb1b83-1998-4eb6-8e85-2501a1961a8a",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "readiness",
+        "hasDraft": false,
+        "sourcesInPacket": 7
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "recordId": "run-001",
+      "record": "RUN-001 Appointment scheduling service",
+      "packet": {
+        "characters": 9271,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 1,
+          "quality-driver": 1,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "TC-001 Compute for Appointment scheduling service",
+          "ENV-001 Appointment scheduling service production design"
+        ],
+        "omissions": [
+          "4 contextual insights omitted",
+          "Single Point of Failure",
+          "Chatty Services",
+          "God Service",
+          "Chapter 10’s reading of RUN-001 Appointment scheduling service"
+        ],
+        "help": "What proves an instance is ready to serve."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "field",
+      "id": "9dc93c70-918f-4341-89ed-6a09afc440b7",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "field": "summary",
+        "hasDraft": false,
+        "sourcesInPacket": 7
+      },
+      "error": "429: The provider request limit was reached.",
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "recordId": "SDD",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "packet": {
+        "characters": 10966,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "neighbour": 2,
+          "model": 2,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+          "OUT-002 Every freed slot is offered to the waiting list before the day of the appointment"
+        ],
+        "omissions": [
+          "1 contextual insights omitted",
+          "Event Sourcing",
+          "Transactional Outbox",
+          "Materialized View",
+          "Layered",
+          "Saga Boundary",
+          "Idempotent Consumer",
+          "Dead Letter Channel",
+          "Missing Idempotency",
+          "Chapter 11’s reading of SDD Sol live check · reference — Solution Design"
+        ],
+        "help": "The design in a few sentences a reviewer reads first."
+      },
+      "grounding": null,
+      "draft": null
+    },
+    {
+      "mode": "journey",
+      "id": "6e08dec1-02c5-4a0f-b224-6ddd20f6e2bb",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "chapter": 1,
+        "recordsInDraft": 24,
+        "fieldsInPacket": 53,
+        "answers": null,
+        "fallback": null
+      },
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "mode": "review",
+      "id": "f0ff51a1-3039-4b98-8dab-6125729a3026",
+      "status": "failed",
+      "model": "gpt-4.1-mini",
+      "usage": null,
+      "prompt": null,
+      "calls": [],
+      "groundingAccepted": null,
+      "withheld": 0,
+      "checks": {
+        "chapter": 4,
+        "elementsInPacket": 38,
+        "sourcesInPacket": 29,
+        "findings": null
+      },
+      "error": "429: The provider request limit was reached."
+    },
+    {
+      "mode": "architecture",
+      "id": null,
+      "status": "failed",
+      "theme": {
+        "key": "REQ:REQ-001",
+        "title": "Appointment"
+      },
+      "checks": {
+        "packetStamp": "7365262671c2210e92151debf8e0d8826d500d1f69bb69f46fd7fa0d21fa71b8"
+      },
+      "error": "The provider request limit was reached. Your request is retained."
+    }
+  ],
+  "passed": false,
+  "notes": [
+    "Receipts, field drafts and one synthetic architecture theme: packet counts, grounding result, accepted proposal titles and withheld reasons are recorded without prompt content or keys.",
+    "The architecture theme uses the model request path directly to bound this probe; it is not a persisted project job, applied decision, provider quality acceptance or evidence of scheduled continuation.",
+    "Advice only: nothing Sol returned was applied; the runs were read and discarded with the scratch database."
+  ],
+  "authority": "Acceptance evidence for the Sol connection on one day. It does not approve the design, calibrate Sol or accept the release for production.",
+  "serverLog": [
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_77dd98bb60d14bd499f18d94ff11dc47\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_21f0790ea6354105baf3d01511acb39e\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_32fb990d522947ddb17703b4fea0589c\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_f32cd1a2611c41fcaacbbc995579e0a9\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_fb095fca58e04713887317b7c440d34d\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_802f3156ae5a4e6bb95f434b5254696e\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_cafd3e9806da4379b3db52f88ea7bb44\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_217df717f07941bbbbd9440e55a1615d\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_fdbd3a9fc7b240f49596de161c9abf3a\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_883189aa90f14b8397917860f9537eb2\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_2694b632088b41b6a34871320519ee03\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_de886fc5641444a385fd578f3eeb9220\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}",
+    "{\"event\":\"openai-provider-failure\",\"upstreamStatus\":429,\"upstreamRequestId\":\"req_3683ff3231ba45d1bc7e01c382c0cc0d\",\"upstreamType\":\"insufficient_quota\",\"upstreamCode\":\"project_spend_limit_exceeded\"}"
+  ]
+}
