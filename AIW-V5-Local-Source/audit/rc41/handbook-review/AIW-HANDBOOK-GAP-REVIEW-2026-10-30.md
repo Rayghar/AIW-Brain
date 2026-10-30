@@ -1,7 +1,7 @@
 # AIW design process measured against the 27 reviewed handbooks
 
 **Date:** 2026-10-30
-**Release line:** AIW v0.10.0-rc.10.73 series. The controlling baseline is AIW v0.10.0-rc.10.73.6.
+**Release line:** the source reviewed is AIW v0.10.0-rc.10.73.41. AGENTS.md names AIW v0.10.0-rc.10.73.6 as the controlling baseline.
 **Source reviewed:** branch `claude/dazzling-cerf-a3qshh` at `2b5afaa`.
 **Status:** a review by AI agents only. No AIW code was changed. Every recommendation is a proposal for the owner to decide on.
 productionAccepted stays false.
@@ -525,8 +525,8 @@ Each feature comes from what the handbooks prescribe. Each lists the agent-verif
 
 Release numbers are proposals; the owner confirms them.
 
-0. **Before any library import: licence and source confirmation.** The owner or their counsel records the licence or permitted use and the SHA-256 of each handbook file. **Status today:** not confirmed. A review pack for counsel is still to be prepared.
-1. **AIW v0.10.0-rc.10.73.7 (proposed): integrity.** D1–D20. Several are migrations, not patches, for example D9 and D7.
+0. **Before any library import: licence and source confirmation.** The owner or their counsel records the licence or permitted use and the SHA-256 of each handbook file. **Status (2026-10-30):** the owner confirmed permitted use, and the hashes are recorded in `audit/rc42/`. Licence counsel has not reviewed it.
+1. **AIW v0.10.0-rc.10.73.42: integrity.** D1–D20. Decided by the owner on 2026-10-30. This corrects an earlier "rc.10.73.7", which overlooked that the source is already at rc.10.73.41. Several are migrations, not patches, for example D9 and D7.
 2. **Foundations other features depend on:**
    - F15's decision rights and standards register;
    - F7's business-service record and workload model;

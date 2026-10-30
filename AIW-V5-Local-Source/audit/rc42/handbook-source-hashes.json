@@ -1,0 +1,142 @@
+{
+ "schema": "aiw.handbook-source-hashes/1",
+ "recorded": "2026-10-30",
+ "note": "SHA-256 of the 27 reviewed handbook files (docx) as supplied by the owner in 01_Reviewed_Handbooks.zip. The files themselves are not in this repository.",
+ "files": [
+  {
+   "file": "Application_Architecture_Handbook.docx",
+   "bytes": 3913609,
+   "sha256": "3d91a03fddc14eb924742cdd3432da576b62a47f07ab3e3cd46c0fc234a39805"
+  },
+  {
+   "file": "Application_Architecture_Master.docx",
+   "bytes": 701930,
+   "sha256": "64c3e5aa5bfd9cc66db328a7b676fea0affb6f5c9fe3af483b1810640f185d8c"
+  },
+  {
+   "file": "Application_Engineering_Practicum.docx",
+   "bytes": 775119,
+   "sha256": "d57b970fbd35791ac617e791b9bb23f89961b2cea1cac7ff240be0c5ed43086d"
+  },
+  {
+   "file": "Applied_Solution_Architecture_Volume_10_Handbook.docx",
+   "bytes": 1653195,
+   "sha256": "216074a60eea36e74ee1ade7cd8a88406b4ac81b49fa8dea58d425c4b87070f7"
+  },
+  {
+   "file": "Architecture_Assurance_Production_Readiness_and_Evolution.docx",
+   "bytes": 727427,
+   "sha256": "1085d6c04ee36702ba956bc2a3c72fbc6e2e43c48a4abc9135d5791a97c13e62"
+  },
+  {
+   "file": "Banking_Architecture_Challenge_Solutions.docx",
+   "bytes": 609293,
+   "sha256": "5c130b5ef06fef23e1d8c739cf0295335b1f9d903439cc656a6251e78cd4a6a5"
+  },
+  {
+   "file": "Banking_Production_Environment_Handbook.docx",
+   "bytes": 157431,
+   "sha256": "7abd0eae1d8306be3a2d75216970d03196f0df25007d0ef24f6f2701377412a0"
+  },
+  {
+   "file": "Business_Architecture_Handbook.docx",
+   "bytes": 1060973,
+   "sha256": "27e290c0ece170915db9978964516a0de8d8ce10ebc1cf62a70625e20c089ecf"
+  },
+  {
+   "file": "Cloud_Architecture_Handbook.docx",
+   "bytes": 174767,
+   "sha256": "631a1c7c1e0f250217a1fb0114a7b8537956fa36549a963a3da465b7ca8cc52b"
+  },
+  {
+   "file": "Cloud_Infrastructure_Master.docx",
+   "bytes": 701836,
+   "sha256": "a727234cb5bf12ffbdca5f5869eece28e4e58ac3b7afd06fc62a8662012b3fca"
+  },
+  {
+   "file": "Data_Architecture_Handbook.docx",
+   "bytes": 2148285,
+   "sha256": "4cf2ea148e154651e13e84b40ea9a8da61e5288fd47943dd36c55a5dafc5025e"
+  },
+  {
+   "file": "DevOps_Implementation_Handbook.docx",
+   "bytes": 177357,
+   "sha256": "48f5ee0b90e3193fa7e41614b06e7bcb038785d18c65566999f0dfa6df2f1fc4"
+  },
+  {
+   "file": "DevOps_Master.docx",
+   "bytes": 674201,
+   "sha256": "8bb16489a5a775b7efef251d20df38025c0ae41a2ea086d792739a788a3771a8"
+  },
+  {
+   "file": "Development_Environment_Handbook.docx",
+   "bytes": 177431,
+   "sha256": "4762d66e2d25655fc39629f7df632c7f2b6a91278672104cf38db4e979ce0326"
+  },
+  {
+   "file": "Enterprise_Architecture_Handbook.docx",
+   "bytes": 1169625,
+   "sha256": "9e52e3d0d7d324bb942e501582e4834ead101c12f2a3901b87671cf282911129"
+  },
+  {
+   "file": "Enterprise_Component_Library_Part_1_Application_and_Resilience.docx",
+   "bytes": 932659,
+   "sha256": "5a9798bd1f2e6818f30c12b3392e80272c6c1274be6eebc35407adba9867572e"
+  },
+  {
+   "file": "Enterprise_Component_Library_Part_2_Data_Intelligence_and_Security.docx",
+   "bytes": 515341,
+   "sha256": "4b72b9c3ed783634266e53f5011fb82963927f1ebc4f874d4d4b78fdc0e4e453"
+  },
+  {
+   "file": "Enterprise_Component_Library_Part_3_Platform_Deployment_and_Operations.docx",
+   "bytes": 513468,
+   "sha256": "b11c60225f99991d26ac6c02e30c08db3bfa17b72429e2abd211b99d43306cee"
+  },
+  {
+   "file": "Evolution_Architecture_Volume_8_Handbook.docx",
+   "bytes": 1662068,
+   "sha256": "4b1f1676868460ea461ab2aa00fe739e52c974dfcee2c03f8686b4c0e9771f62"
+  },
+  {
+   "file": "Integration_Architecture_Volume_7_Handbook.docx",
+   "bytes": 1231592,
+   "sha256": "25e3f1505c01974c62b7908962b9e0173c57b67dc3ae46bf3d2554559f387fd4"
+  },
+  {
+   "file": "QA_Environment_Handbook.docx",
+   "bytes": 156768,
+   "sha256": "5f8429c8eb3060e265c0d321a2740ea449d31f9fb064fea57489aa978e9194b2"
+  },
+  {
+   "file": "Quality_Architecture_Volume_9_Handbook.docx",
+   "bytes": 1410646,
+   "sha256": "b4a55d304a2de39edba270d02fee7bf70476f840164e501d0ae9016bd61d7794"
+  },
+  {
+   "file": "Software_Application_Design_Handbook.docx",
+   "bytes": 599170,
+   "sha256": "d61e2de4b5a1be79c8856b0a87190e4b842901fb798d6e209157a93b9dc08c3b"
+  },
+  {
+   "file": "Software_Design_Component_Dictionary_Master.docx",
+   "bytes": 694436,
+   "sha256": "53347e6909c6115a0c75be0c27dda65a56c42633acd1559e6d588533cf177eec"
+  },
+  {
+   "file": "Target_Platform_Qualification_and_Operational_Acceptance_Handbook.docx",
+   "bytes": 581001,
+   "sha256": "9a7645340ce0aae6b8988931bbbf168c7a4f7e1f29dfbe1bb3c5c62868cb6f00"
+  },
+  {
+   "file": "Technology_Architecture_Handbook.docx",
+   "bytes": 2288671,
+   "sha256": "f0ec0720b9f0d553992bbec52a785bd36ab3f2eeccc24a4f29fcd1dfd10dce95"
+  },
+  {
+   "file": "Virtual_Private_Cloud_Handbook.docx",
+   "bytes": 175864,
+   "sha256": "033a8175c91757039bf9c5102799e0dd8d18b1ffdb77ca7cff12c0e7c6a7b6b3"
+  }
+ ]
+}
