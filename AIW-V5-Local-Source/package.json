@@ -183,6 +183,7 @@
     "test:exchange-task-ui": "node exchange-task-ui-validate.mjs",
     "test:intelligence-ui": "node intelligence-ui-validate.mjs",
     "test:providers": "node providers-validate.mjs",
+    "test:provider-quota": "node provider-quota-validate.mjs",
     "test:architecture-job": "node architecture-job-validate.mjs",
     "test:sol-architecture": "node sol-architecture-validate.mjs",
     "test:sol-sdd": "node sol-sdd-validate.mjs",

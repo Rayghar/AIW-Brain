@@ -18,7 +18,9 @@ async function providers(ops){
  let status=await read();
  const d=modal('Model providers','<div class="ops-providers" data-providers></div>'),slot=d.querySelector('[data-providers]');
  const pick=x=>x?esc(x.provider)+' · '+esc(x.model||'its default model'):'—';
- const checked=v=>!v?'Not checked yet':v.ok?'Answered '+timeHTML(v.at):'Did not answer ('+esc(v.code||'error')+') '+timeHTML(v.at);
+ // Round 41: a passing check reaches the key and the model; it cannot see a spend limit or an exhausted credit, which
+ // show on the first request the provider refuses. A refusal the check itself met is said in words.
+ const checked=v=>!v?'Not checked yet':v.ok?'Answered '+timeHTML(v.at)+(v.limitsChecked===false?'<br><small>A spend limit or exhausted credit is not visible to this check; it shows when a request is refused.</small>':''):v.code==='provider_quota'?'Refused: the account’s spend limit or credit is exhausted '+timeHTML(v.at):'Did not answer ('+esc(v.code||'error')+') '+timeHTML(v.at);
  const models=p=>esc((p.models?.length?p.models:[p.defaultModel||'not set']).join(', '));
  const price=p=>p.pricing?.configured?esc(p.pricing.currency||'')+' '+esc(p.pricing.input)+' in · '+esc(p.pricing.output)+' out per million tokens':'Not configured: cost is not computed';
  const render=()=>{

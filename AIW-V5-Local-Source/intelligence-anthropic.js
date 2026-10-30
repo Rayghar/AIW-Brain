@@ -13,7 +13,7 @@
 // carrying its receipt, which each mode records as a withheld draft with the reason. Nothing here validates or applies
 // an answer: the modes do.
 import Anthropic from '@anthropic-ai/sdk';
-import {providerFetch,withCost,ANTHROPIC_DEFAULT_MODEL,STREAMED_MODES,safeProviderIdentifier} from './intelligence-provider.js';
+import {providerFetch,withCost,ANTHROPIC_DEFAULT_MODEL,STREAMED_MODES,safeProviderIdentifier,STATUS_MESSAGES,retryAfterOf} from './intelligence-provider.js';
 
 const FALLBACK_BETA='server-side-fallback-2026-07-01';
 // Output ceilings: thinking counts toward max_tokens, so a streamed mode (the larger answers) has room for both.
@@ -71,7 +71,7 @@ export function anthropicRequest(target,{instructions,input,schema,name,mode}){
 // redirects refused and the response cut off past its ceiling.
 function seamFetch(fetcher,call,limit,attempts=2){
  return async(url,init)=>{
-  const response=await providerFetch(fetcher,typeof url==='string'?url:String(url),init,call,{attempts});
+  const response=await providerFetch(fetcher,typeof url==='string'?url:String(url),init,call,{attempts,quota:f=>f.upstreamType==='billing_error'});
   if(!response?.body||[101,204,205,304].includes(response.status))return response;
   let size=0;
   const counted=response.body.pipeThrough(new TransformStream({transform(chunk,c){size+=chunk.byteLength;if(size>limit){call.oversize=true;c.error(Object.assign(Error('The provider response exceeded its limit.'),{code:'invalid_output'}));return;}c.enqueue(chunk);}}));
@@ -84,9 +84,18 @@ function client(target,call,fetcher,limit,attempts){
 }
 
 // The SDK's typed errors, answered in the seam's own codes (and so the service's 429 and 502 answers). The SDK has no
-// APIStatusError: every status error is an APIError with its status.
-const answer={authentication:'The provider could not authorise this connection. Check the server-side key and model access.',provider_limit:'The provider request limit was reached. Your request is retained.',provider_unavailable:'The provider could not complete this request. Your request is retained.'};
-const coded=code=>Object.assign(Error(answer[code]),{code});
+// APIStatusError: every status error is an APIError with its status. The words are the seam's, the same on every wire.
+const coded=code=>Object.assign(Error(STATUS_MESSAGES[code]),{code});
+// The quota signal of this wire (round 41, FIX NOW 7): Anthropic does not answer an exhausted credit or a reached spend
+// limit as a 429 (that is its rate limit, rate_limit_error) but as its billing error (402 billing_error), or as a 400
+// invalid_request_error that says the credit balance is too low or the usage limit is reached. The message is tested
+// against those two phrases here and never kept, logged or returned.
+const CREDIT=/credit balance is too low|reached your specified API usage limits/i;
+export function anthropicQuota(e){
+ if(!(e instanceof Anthropic.APIError))return false;
+ const error=e.error?.error;
+ return e.status===402||error?.type==='billing_error'||(e.status===400&&error?.type==='invalid_request_error'&&CREDIT.test(String(error?.message||'')));
+}
 // Round 25 (D-25-12): a failure with a status is logged as the OpenAI wire logs one (anthropic-provider-failure), and
 // travels with the error as its providerFailure, so a refusal such as an account gate can be read without sending the
 // call again: the status, the error's type and the request id, each only when it is a plain identifier. Never the key,
@@ -100,7 +109,8 @@ export function anthropicError(e,call,noun='assessment'){
  if(call.aborted)return e;
  const failure=e instanceof Anthropic.APIError&&Number.isInteger(e.status)?anthropicFailure(e):null,known=x=>(failure?Object.assign(x,{providerFailure:failure}):x);
  if(failure)console.error(JSON.stringify({event:'anthropic-provider-failure',...failure}));
- if(e instanceof Anthropic.RateLimitError)return known(coded('provider_limit'));
+ if(anthropicQuota(e))return known(Object.assign(coded('provider_quota'),{status:e.status}));
+ if(e instanceof Anthropic.RateLimitError){const retryAfter=retryAfterOf(e.headers?.get?.('retry-after')??e.headers?.['retry-after']);return known(Object.assign(coded('provider_limit'),{status:e.status,...(retryAfter?{retryAfter}:{})}));}
  if(e instanceof Anthropic.AuthenticationError||e instanceof Anthropic.PermissionDeniedError)return known(coded('authentication'));
  if(e instanceof Anthropic.APIConnectionTimeoutError)return Object.assign(Error('The provider took too long. Your request is saved.'),{code:'timeout'});
  // The status travels with the code (never the upstream text): the seam falls back to another route on a 5xx only.
@@ -155,7 +165,7 @@ export async function anthropicCall(env,target,request,call,fetcher,{noun='asses
 // The connection probe: GET /v1/models/{model}, one attempt, no project data.
 export async function anthropicProbe(env,target,call,fetcher){
  try{await client(target,call,fetcher,BYTES.whole,1).models.retrieve(target.model,{signal:call.signal});return {ok:true};}
- catch(e){const x=anthropicError(e,call,'probe');if(call.aborted)throw e;return {ok:false,code:x.code==='authentication'?'authentication':'provider_unavailable',...(x.providerFailure||{})};}
+ catch(e){const x=anthropicError(e,call,'probe');if(call.aborted)throw e;return {ok:false,code:['authentication','provider_quota'].includes(x.code)?x.code:'provider_unavailable',...(x.providerFailure||{})};}
 }
 // The models the provider lists (GET /v1/models, the first page of up to 100), for the organisation's view.
 export async function anthropicModels(env,target,call,fetcher){

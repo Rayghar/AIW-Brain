@@ -14,18 +14,14 @@
 // shares), and its check assesses the merges as well as the proposals (ARCHITECTURE_CROSS_REVIEW_SCHEMA): a merge the
 // check does not support is not applied.
 //
-// The provider seam's timer and refusal readers are not exported by intelligence-provider.js (workstream M is inside
-// it); the two small shims below (timed, declinable) do what its own do: a per-call timeout with the seam's error codes,
-// and a refusal read as a declined call rather than a failure.
-import {intelligenceStatus, modelCall, callTimeout, providerReceipt, sumUsage} from './intelligence-provider.js';
+// Round 41 (FIX NOW 6): the seam's own timer, parser and refusal reader (intelligence-provider.js timed, parsed,
+// declinable) replace the shims this file kept. The shim's timer could not re-arm, so after a timeout a fallback route
+// was sent with a signal already aborted, and after a 5xx it had only the primary's leftover time; the seam's timer gives
+// each route a time of its own. The calls go through runCalls, so a failed request carries what its calls were billed.
+import {intelligenceStatus, modelCall, callTimeout, providerReceipt, sumUsage, timed, parsed, declinable, runCalls} from './intelligence-provider.js';
 import {ARCHITECTURE_INSTRUCTIONS, ARCHITECTURE_CROSS_INSTRUCTIONS, ARCHITECTURE_REVIEW_INSTRUCTIONS, ARCHITECTURE_REVIEW_SCHEMA, ARCHITECTURE_CROSS_REVIEW_SCHEMA, architectureInstructionsPin, architectureDraftSchema, crossDraftSchema, validateArchitectureDraft, guardArchitectureDraft, settleArchitectureReview, reviewShapeOf, reviewCandidate} from './public/architecture-contract.js';
 
 const AUTHORITY = 'Automated checks against the packet, not independent verification. A withheld proposal offers nothing and the rules’ skeleton stands for it; an accepted one is a proposal a person previews, applies and then keeps, completes or retires.';
-function startCall(timeoutMs) { const abort = new AbortController(), timer = setTimeout(() => abort.abort(), timeoutMs); return {signal: abort.signal, get aborted() { return abort.signal.aborted; }, clear() { clearTimeout(timer); }, attempts: 0}; }
-const callError = (e, call) => (call.aborted ? Object.assign(Error('The provider took too long. Your request is saved; no proposal was applied.'), {code: 'timeout'}) : e?.code ? e : Object.assign(Error('The provider connection was interrupted. Your request is saved.'), {code: 'provider_unavailable'}));
-async function timed(timeoutMs, fn) { const call = startCall(timeoutMs); try { return await fn(call); } catch (e) { throw callError(e, call); } finally { call.clear(); } }
-const parsed = r => { if (r.parseError) throw Object.assign(Error('The model response was incomplete.'), {code: 'invalid_output', usage: r.usage}); return r; };
-async function declinable(pending) { try { return await pending; } catch (e) { if (e?.code === 'refusal' && e.refusal) return {declined: e.refusal.reason, category: e.refusal.category, model: e.model, usage: e.usage, attempts: e.attempts, providerResponseId: e.providerResponseId, stopReason: 'refusal', ...(e.fallback ? {fallback: e.fallback} : {})}; throw e; } }
 const EMPTY = {proposals: [], withheld: [], keep: [], merges: [], notes: []}, list = v => (Array.isArray(v) ? v : []);
 
 export async function requestArchitectureDraft(env, packet, {fetcher = fetch, timeoutMs = 120000, retry = true} = {}) {
@@ -33,17 +29,17 @@ export async function requestArchitectureDraft(env, packet, {fetcher = fetch, ti
   if (!status.configured) throw Object.assign(Error('LLM connection is not configured. The rules’ draft of the architecture remains available.'), {code: 'not_configured'});
   const cross = packet.task === 'architecture-cross', perCall = callTimeout(env, timeoutMs), pin = architectureInstructionsPin(), schema = cross ? crossDraftSchema(packet) : architectureDraftSchema(packet);
   const instructions = cross ? ARCHITECTURE_CROSS_INSTRUCTIONS : ARCHITECTURE_INSTRUCTIONS, reviewSchema = cross ? ARCHITECTURE_CROSS_REVIEW_SCHEMA : ARCHITECTURE_REVIEW_SCHEMA;
-  const calls = [], attempts = [];
+  const calls = [], attempts = [], run = runCalls(env);
   // One attempt: the draft call, the structure and the guard, then the check call; what it leaves accepted and withheld.
   const attempt = async n => {
-    const draft = await declinable(timed(perCall, call => modelCall(env, status, {instructions, input: packet, schema, name: 'aiw_architecture_draft', mode: 'architecture'}, call, fetcher).then(parsed)));
+    const draft = await run.call(declinable(timed(perCall, call => modelCall(env, status, {instructions, input: packet, schema, name: 'aiw_architecture_draft', mode: 'architecture'}, call, fetcher).then(parsed), 'proposal')));
     calls.push(['draft', draft]);
     if (draft.declined) return {n, result: {...EMPTY, issues: [draft.declined]}, draft, review: null, accepted: 0, withheld: 0, issues: [draft.declined]};
     let checked;
     try { checked = guardArchitectureDraft(packet, validateArchitectureDraft(draft.raw, packet)); } catch (e) { return {n, result: {...EMPTY, issues: [e.message]}, draft, review: null, accepted: 0, withheld: 0, issues: [e.message]}; }
     if (!checked.proposals.length && !checked.merges.length) return {n, result: {...checked, notes: list(checked.notes)}, draft, review: null, accepted: 0, withheld: checked.withheld.length, guarded: checked.withheld.map(w => w.id), issues: checked.withheld.flatMap(w => w.issues)};
     const candidate = reviewCandidate(checked);
-    const review = await declinable(timed(perCall, call => modelCall(env, status, {instructions: ARCHITECTURE_REVIEW_INSTRUCTIONS, input: {packet, candidate}, schema: reviewSchema, name: 'aiw_architecture_draft_check', mode: 'architecture'}, call, fetcher).then(parsed)));
+    const review = await run.call(declinable(timed(perCall, call => modelCall(env, status, {instructions: ARCHITECTURE_REVIEW_INSTRUCTIONS, input: {packet, candidate}, schema: reviewSchema, name: 'aiw_architecture_draft_check', mode: 'architecture'}, call, fetcher).then(parsed), 'proposal')));
     calls.push(['check', review]);
     // A check the provider declined, or one that does not fit, withholds every proposal: unchecked advice is not shown.
     const read = review.declined ? {proposals: checked.proposals.map(x => ({id: x.id, supported: false, defects: [review.declined.replace('nothing was drafted', 'the proposals were not checked and are withheld')], notes: []}))} : reviewShapeOf(review.raw) ? review.raw : null;
@@ -64,10 +60,8 @@ export async function requestArchitectureDraft(env, packet, {fetcher = fetch, ti
     return {result, provider: status.provider, model: best.draft.model, instructions: pin, usage, attempts: calls.reduce((n, [, c]) => n + (c.attempts || 1), 0), providerResponseId: best.draft.providerResponseId, providerReceipt: providerReceipt(status, 'architecture', pin, calls),
       groundingReview: {kind: 'automated-source-consistency', accepted: best.accepted > 0, withheld: result.withheld.map(w => w.id), issues: result.withheld.flatMap(w => w.issues).slice(0, 40), notes: result.notes, draft: best.result.proposals.length ? {proposals: best.result.proposals.length, keep: result.keep.length} : null, draftModel: best.draft.model, reviewModel: best.review?.model || null, reviewResponseId: best.review?.providerResponseId || null, deterministic: {withheld: byGuard.map(w => w.id), issues: [...(best.draft.declined ? [] : list(best.result.issues)), ...byGuard.flatMap(w => w.issues)].slice(0, 40)}, check: best.review ? {withheld: byCheck.map(w => w.id), defects: byCheck.flatMap(w => w.issues).slice(0, 40), notes: result.notes} : null, packetStamp: packet.stamp, attempts: attempts.map(a => ({attempt: a.n, draftResponseId: a.draft.providerResponseId || null, reviewResponseId: a.review?.providerResponseId || null, accepted: a.accepted, withheld: a.withheld, declined: !!a.draft.declined})), retried: attempts.length > 1, lastAttempt: last.n, authority: AUTHORITY}};
   } catch (e) {
-    // A failed request still carries what its calls were billed (round 23): the completed calls and the failing one's.
-    const failure = e?.code ? e : Object.assign(Error('The provider connection was interrupted. Your request is saved.'), {code: 'provider_unavailable'});
-    const billed = sumUsage(env, ...calls.map(([, c]) => c.usage), e?.usage);
-    if ((billed.inputTokens || 0) + (billed.outputTokens || 0)) failure.usage = billed;
-    throw failure;
+    // A failed request still carries what its calls were billed (round 23): the completed calls and the failing one's,
+    // and whether that is the run's whole use (runCalls; the service settles the reservation from it).
+    throw run.failed(e);
   }
 }

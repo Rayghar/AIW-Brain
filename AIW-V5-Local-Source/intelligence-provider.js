@@ -141,7 +141,7 @@ function routesOf(env,reg){
 const pick=r=>r?{provider:r.provider,model:r.model,...(r.variable?{variable:r.variable}:{})}:null;
 // The last connection probe and models list per provider (verifyConnection, listModels), reported by the status.
 const VERIFICATIONS=new Map(),MODEL_LISTS=new Map();
-const verified=(p,model)=>{const v=p&&VERIFICATIONS.get(p.name);return v&&v.provider===p.kind&&(model===undefined||v.model===model)?{at:v.at,ok:v.ok,model:v.model,...(v.code?{code:v.code}:{}),...(v.upstreamStatus?{upstreamStatus:v.upstreamStatus}:{}),...(v.upstreamRequestId?{upstreamRequestId:v.upstreamRequestId}:{}),...(v.transportFailure?{transportFailure:v.transportFailure}:{}),...(v.unauthenticatedStatus?{unauthenticatedStatus:v.unauthenticatedStatus}:{}),...(v.unauthenticatedTransportFailure?{unauthenticatedTransportFailure:v.unauthenticatedTransportFailure}:{}),...(v.modelListed!==undefined?{modelListed:v.modelListed}:{})}:null;};
+const verified=(p,model)=>{const v=p&&VERIFICATIONS.get(p.name);return v&&v.provider===p.kind&&(model===undefined||v.model===model)?{at:v.at,ok:v.ok,model:v.model,...(v.code?{code:v.code}:{}),...(v.upstreamStatus?{upstreamStatus:v.upstreamStatus}:{}),...(v.upstreamRequestId?{upstreamRequestId:v.upstreamRequestId}:{}),...(v.transportFailure?{transportFailure:v.transportFailure}:{}),...(v.unauthenticatedStatus?{unauthenticatedStatus:v.unauthenticatedStatus}:{}),...(v.unauthenticatedTransportFailure?{unauthenticatedTransportFailure:v.unauthenticatedTransportFailure}:{}),...(v.modelListed!==undefined?{modelListed:v.modelListed}:{}),...(v.limitsChecked===false?{limitsChecked:false}:{})}:null;};
 // A provider as the browser may see it: its settings, never its key; the probe and the models list when they were taken.
 export function publicProvider(e,routing){
  const usedBy=[];if(routing){for(const [mode,r] of Object.entries(routing.modes()))for(const pass of PASSES)if(r[pass].provider===e.name)usedBy.push({mode,pass,model:r[pass].model});if(routing.fallback.some(f=>f.provider===e.name))usedBy.push({mode:'fallback',pass:null,model:routing.fallback.filter(f=>f.provider===e.name).map(f=>f.model).join(', ')});}
@@ -170,12 +170,15 @@ export function intelligenceStatus(env,mode){
 // included) or a connection that failed before any response arrived is retried once after a short jittered pause (a 429's Retry-After is honoured
 // up to five seconds) within that same time; nothing is retried once bytes of a response were read. A fallback route
 // (round 12) is a new call to another provider, so it re-arms the timer: it gets the same time of its own.
+// Round 41 (FIX NOW 7): a 429 that says the provider account's spend limit or credit is exhausted is not retried: the
+// wire's quota predicate reads the error's type and code (a bounded copy of the body, kept for the wire's own receipt),
+// and waiting does not clear it, so a second send only spends the call's time.
 const RETRY_STATUSES=new Set([408,425,429,500,502,503,504,529]);
 const FETCH_FAILURES=new WeakSet();
 export const callTimeout=(env,fallback)=>{const n=Number(env?.AIW_LLM_TIMEOUT_MS);return Number.isFinite(n)&&n>=1000?n:fallback;};
 function startCall(timeoutMs){let abort=new AbortController(),timer=setTimeout(()=>abort.abort(),timeoutMs);return {get signal(){return abort.signal;},get aborted(){return abort.signal.aborted;},clear(){clearTimeout(timer);},rearm(){clearTimeout(timer);abort=new AbortController();timer=setTimeout(()=>abort.abort(),timeoutMs);},attempts:0,timeoutMs};}
 const pause=(ms,signal)=>new Promise((resolve,reject)=>{const t=setTimeout(resolve,ms);signal.addEventListener('abort',()=>{clearTimeout(t);reject(Object.assign(Error('aborted'),{name:'AbortError'}));},{once:true});});
-export async function providerFetch(fetcher,url,init,call,{attempts=2}={}){
+export async function providerFetch(fetcher,url,init,call,{attempts=2,quota=null}={}){
  let response=null;
  for(let attempt=1;attempt<=attempts;attempt++){
   call.attempts=attempt;
@@ -183,6 +186,7 @@ export async function providerFetch(fetcher,url,init,call,{attempts=2}={}){
   try{response=await fetcher(url,{...init,signal:call.signal,...(call.pass?{aiwPass:call.pass}:{})});}
   catch(e){if(e&&typeof e==='object')FETCH_FAILURES.add(e);if(call.aborted||attempt===attempts)throw e;response=null;}
   if(response&&(!RETRY_STATUSES.has(response.status)||attempt===attempts))return response;
+  if(response?.status===429&&quota){const bytes=await errorBytes(response);response=new Response(bytes,{status:response.status,statusText:response.statusText,headers:response.headers});if(quota(errorFields(bytes)))return response;}
   const retryAfter=response?Number(response.headers?.get?.('retry-after')):NaN;try{await response?.body?.cancel();}catch{/* the body was already closed */}
   await pause(Math.min(5000,Number.isFinite(retryAfter)&&retryAfter>0?retryAfter*1000:600*attempt+Math.floor(Math.random()*500)),call.signal);
  }
@@ -192,7 +196,7 @@ export async function providerFetch(fetcher,url,init,call,{attempts=2}={}){
 // are diagnostic; never retain its message, stack, URL, request body, or arbitrary cause fields.
 const TRANSPORT_NAMES=new Set(['TypeError','RangeError','AbortError','Error','NetworkError','TimeoutError','AggregateError','DOMException']);
 const TRANSPORT_CODES=new Set(['EAI_AGAIN','ENOTFOUND','ECONNREFUSED','ECONNRESET','ETIMEDOUT','ENETUNREACH','EHOSTUNREACH','EPIPE','ERR_NETWORK','ERR_TLS_CERT_ALTNAME_INVALID','ERR_TLS_CERT_SIGNATURE_ALGORITHM_UNSUPPORTED','CERT_HAS_EXPIRED','UNABLE_TO_VERIFY_LEAF_SIGNATURE']);
-const PROVIDER_ERROR_CODES=new Set(['authentication','provider_limit','provider_unavailable','invalid_output','incomplete','refusal','not_configured','timeout']);
+const PROVIDER_ERROR_CODES=new Set(['authentication','provider_limit','provider_quota','provider_unavailable','invalid_output','incomplete','refusal','not_configured','timeout']);
 const transportDiagnostic=e=>{
  const name=TRANSPORT_NAMES.has(e?.name)?e.name:'OtherError',raw=e?.cause?.code??e?.code;
  return {phase:e&&typeof e==='object'&&FETCH_FAILURES.has(e)?'fetch':'processing',name,...(typeof raw==='string'&&TRANSPORT_CODES.has(raw)?{causeCode:raw}:{})};
@@ -204,7 +208,8 @@ const callError=(e,call,what='proposal')=>{
  console.error(JSON.stringify({event:'provider-transport-failure',code:failure.code,transportFailure}));
  return failure;
 };
-async function timed(timeoutMs,fn,what){const call=startCall(timeoutMs);try{return await fn(call);}catch(e){throw callError(e,call,what);}finally{call.clear();}}
+// The call's own timer (exported for architecture-request.js, round 41: one timer for every mode, re-armed for a fallback).
+export async function timed(timeoutMs,fn,what){const call=startCall(timeoutMs);try{return await fn(call);}catch(e){throw callError(e,call,what);}finally{call.clear();}}
 // A response body read up to its ceiling and parsed as JSON; past the ceiling or unreadable it is invalid_output.
 async function readJSON(response,limit,noun){
  const reader=response.body?.getReader();if(!reader)throw Object.assign(Error('The provider returned no response body.'),{code:'invalid_output'});
@@ -234,7 +239,10 @@ export function sumUsage(env,...usages){
 // A probe of a provider's connection, at most once a minute per provider, so status can say "reachable" rather than
 // only "configured". It sends no project data: GET models/{model} (OpenAI), GET /v1/models/{model} (Anthropic), the
 // models list or, where there is none, a one-token completion (OpenAI-compatible). Without a provider named, the
-// default route's.
+// default route's. Round 41 (FIX NOW 7): what it can tell of a spend limit it says, and no more. A probe the provider
+// refuses with its quota signal (the wire's predicate) is provider_quota. A probe that answers cannot see a spend limit
+// or an exhausted credit: those GET requests are free, and the live run of 2026-10-29 had them pass while every billed
+// call was refused. So an answered probe carries limitsChecked:false, and a spend limit shows on the first billed call.
 export async function verifyConnection(env,{fetcher=fetch,timeoutMs=10000,force=false,provider,model}={}){
  const reg=providers(env),routing=routesOf(env,reg),dflt=routing.defaultRoute().draft,name=provider||dflt.provider,p=reg.byName.get(name)||null;
  const target=model||(name===dflt.provider?dflt.model:p?.defaultModel)||null,now=()=>new Date().toISOString();
@@ -246,11 +254,13 @@ export async function verifyConnection(env,{fetcher=fetch,timeoutMs=10000,force=
   if(p.kind==='anthropic'){const {anthropicProbe}=await import('./intelligence-anthropic.js');result=await timed(timeoutMs,call=>anthropicProbe(env,{provider:p,model:target},call,fetcher),'probe');}
   else if(p.kind==='openai-compatible')result=await timed(timeoutMs,call=>compatibleProbe(p,target,call,fetcher),'probe');
   else{
-   const response=await timed(timeoutMs,call=>providerFetch(fetcher,p.baseURL+'/models/'+encodeURIComponent(target),{method:'GET',redirect:'error',headers:{Authorization:'Bearer '+p.key}},call,{attempts:1}),'probe');
+   // A refusal's body is read within the probe's own time, for its quota signal (never its text).
+   const {response,failure}=await timed(timeoutMs,async call=>{const r=await providerFetch(fetcher,p.baseURL+'/models/'+encodeURIComponent(target),{method:'GET',redirect:'error',headers:{Authorization:'Bearer '+p.key}},call,{attempts:1});return {response:r,failure:r.ok?null:await openAIErrorReceipt(r)};},'probe');
    const requestId=safeProviderIdentifier(response.headers?.get?.('x-request-id'),128);
    try{await response.body?.cancel();}catch{/* the body was already closed */}
-   result={ok:response.ok,...(response.ok?{}:{code:response.status===401||response.status===403?'authentication':'provider_unavailable',upstreamStatus:response.status,...(requestId?{upstreamRequestId:requestId}:{})})};
+   result={ok:response.ok,...(response.ok?{}:{code:probeCode(response,failure).code,upstreamStatus:response.status,...(requestId?{upstreamRequestId:requestId}:{})})};
   }
+  if(result.ok&&result.limitsChecked===undefined)result.limitsChecked=false;
  }
  catch(e){
   result={ok:false,code:e.code||'provider_unavailable',...(e.transportFailure?{transportFailure:e.transportFailure}:{})};
@@ -268,15 +278,17 @@ export async function verifyConnection(env,{fetcher=fetch,timeoutMs=10000,force=
  const v={at:now(),model:target,provider:p.kind,providerName:name,...result};VERIFICATIONS.set(name,v);return v;
 }
 const bearer=p=>p.key?{Authorization:'Bearer '+p.key}:{};
-const probeCode=r=>r.ok?{}:{code:r.status===401||r.status===403?'authentication':'provider_unavailable'};
+// A probe's failure in the seam's codes; failure is the OpenAI-shaped error receipt, read for the quota signal.
+const probeCode=(r,failure)=>r.ok?{}:{code:r.status===401||r.status===403?'authentication':openAIQuota(failure)?'provider_quota':'provider_unavailable'};
 async function compatibleProbe(p,model,call,fetcher){
  const listed=await providerFetch(fetcher,p.baseURL+'/models',{method:'GET',redirect:'error',headers:bearer(p)},call,{attempts:1});
  if(listed.ok){let ids=null;try{const data=await readJSON(listed,2000000,'probe');ids=Array.isArray(data?.data)?data.data.map(x=>String(x?.id||'')).filter(Boolean):null;}catch{/* a list that is not readable is still a reachable endpoint */}if(ids)MODEL_LISTS.set(p.name,{at:new Date().toISOString(),provider:p.kind,models:ids.slice(0,500)});return {ok:true,...(ids?{modelListed:ids.includes(model)}:{})};}
- try{await listed.body?.cancel();}catch{/* the body was already closed */}
- if(![404,405,501].includes(listed.status))return {ok:false,...probeCode(listed)};
+ const unlisted=await openAIErrorReceipt(listed);
+ if(![404,405,501].includes(listed.status))return {ok:false,...probeCode(listed,unlisted)};
  const r=await providerFetch(fetcher,p.baseURL+'/chat/completions',{method:'POST',redirect:'error',headers:{...bearer(p),'Content-Type':'application/json'},body:JSON.stringify({model,messages:[{role:'user',content:'ok'}],max_tokens:1,stream:false})},call,{attempts:1});
+ const failure=r.ok?null:await openAIErrorReceipt(r);
  try{await r.body?.cancel();}catch{/* the body was already closed */}
- return {ok:r.ok,...probeCode(r)};
+ return {ok:r.ok,...probeCode(r,failure)};
 }
 // The models a configured provider lists (GET /models on the OpenAI wires, the Messages API's models list), kept ten
 // minutes per provider for the organisation's view. It sends no project data and nothing when the provider is not configured.
@@ -336,7 +348,7 @@ function groundedFallback(packet,declined=false){
 }
 export async function requestIntelligence(env,packet,{fetcher=fetch,timeoutMs=45000}={}){
  const status=intelligenceStatus(env,'generate');if(!status.configured)throw Object.assign(Error('LLM connection is not configured. Project guidance and saved drafts remain available.'),{code:'not_configured'});
- const perCall=callTimeout(env,timeoutMs);
+ const perCall=callTimeout(env,timeoutMs),run=runCalls(env);
  // The base schema reuses its string-array definition. Replace the entire
  // citation property so its enum cannot leak into assumptions or questions.
  const schema=intelligenceSchema(packet),citationSchema={type:'array',items:{type:'string',enum:packet.sources.map(s=>s.ref)}};
@@ -355,12 +367,12 @@ export async function requestIntelligence(env,packet,{fetcher=fetch,timeoutMs=45
  // does not fit is still refused.
  const produce=(prompt,input,review=false)=>timed(perCall,async call=>{
   const r=await modelCall(env,status,{instructions:prompt,input,schema:review?REVIEW_SCHEMA:schema,name:review?'aiw_source_check':'aiw_grounded_proposal',mode:'generate'},call,fetcher);
-  let result,invalid=null;try{if(r.parseError)throw Error(r.parseError);if(review){if(!reviewShape(r.raw,['supported','defects','notes']))throw Error('The source check returned an unsupported assessment.');result=r.raw;}else result=validateIntelligenceOutput(r.raw,packet);}catch(e){if(review)throw Object.assign(Error(e.message),{code:'invalid_output'});invalid=e.message;}
+  let result,invalid=null;try{if(r.parseError)throw Error(r.parseError);if(review){if(!reviewShape(r.raw,['supported','defects','notes']))throw Error('The source check returned an unsupported assessment.');result=r.raw;}else result=validateIntelligenceOutput(r.raw,packet);}catch(e){if(review)throw Object.assign(Error(e.message),{code:'invalid_output',usage:r.usage,...(r.routeFallback?{routeFallback:r.routeFallback}:{})});invalid=e.message;}
   return {result,invalid,...by(status,r),model:r.model,usage:r.usage,attempts:r.attempts,providerResponseId:r.providerResponseId,call:r};
  });
  const withheldReview=(issues,draft,extra={})=>({kind:'automated-source-consistency',accepted:false,issues,notes:[],deterministic:{accepted:false,issues},packetStamp:packet.stamp,draft:null,draftModel:draft.model,draftResponseId:draft.providerResponseId,reviewModel:null,reviewResponseId:null,...extra,authority:'Automated assessment against the reviewed sources, not independent verification. A response that does not fit is replaced by structured method findings, never an unreviewed model change.'});
  try{
-  const draft=await declinable(produce(instructions,packet));
+  const draft=await run.call(declinable(produce(instructions,packet)));
   if(draft.declined)return {result:groundedFallback(packet,true),...by(status,draft),model:draft.model,usage:draft.usage,attempts:draft.attempts||1,providerResponseId:draft.providerResponseId,instructions:pin,providerReceipt:providerReceipt(status,'generate',pin,[['draft',draft]]),groundingReview:withheldReview([draft.declined],draft,{declined:true,deterministic:{accepted:false,issues:[]}})};
   if(draft.invalid){const {invalid,call,...d}=draft;return {...d,instructions:pin,providerReceipt:providerReceipt(status,'generate',pin,[['draft',call]]),result:groundedFallback(packet),groundingReview:withheldReview([`Sol’s response did not fit the contract: ${invalid}`],draft,{deterministic:{accepted:false,issues:[invalid]}})};}
   const deterministic=enforceReasoningContract(packet,draft.result);
@@ -372,13 +384,13 @@ export async function requestIntelligence(env,packet,{fetcher=fetch,timeoutMs=45
    if(prose.some(text=>overclaim(text))||values.some(text=>overclaim(text,{drafted:true})))deterministic.issues.push('A generated mechanism or proposal asserts guaranteed correctness, atomicity or another unverified outcome.');
    deterministic.issues=[...new Set(deterministic.issues)];deterministic.accepted=deterministic.issues.length===0;
   }
-  const reviewed=await declinable(produce(reviewPrompt,{packet,candidate:draft.result},true));
+  const reviewed=await run.call(declinable(produce(reviewPrompt,{packet,candidate:draft.result},true)));
   // The check's concrete defects decide; where it contradicts itself its flag is recorded, not relied on. A check the
   // provider declined to make is a defect: an unchecked draft is not shown.
   const found=reviewed.declined?{defects:[reviewed.declined.replace('nothing was drafted','the draft was not checked and is withheld')],notes:[],contradiction:null}:reviewFinding(reviewed.result),accepted=found.defects.length===0&&deterministic.accepted;
   const {call,...d}=draft;
   return {...d,instructions:pin,providerReceipt:providerReceipt(status,'generate',pin,[['draft',call],['check',reviewed.call||reviewed]]),result:accepted?draft.result:groundedFallback(packet),usage:sumUsage(env,draft.usage,reviewed.usage),attempts:(draft.attempts||1)+(reviewed.attempts||1),groundingReview:{kind:'automated-source-consistency',accepted,issues:[...deterministic.issues,...found.defects],notes:found.notes,...(found.contradiction?{contradiction:found.contradiction}:{}),deterministic,packetStamp:packet.stamp,draft:draft.result,draftModel:draft.model,draftResponseId:draft.providerResponseId,reviewModel:reviewed.model,reviewResponseId:reviewed.providerResponseId,authority:'Automated assessment against the reviewed sources, not independent verification. A rejected explanation is replaced by structured method findings, never an unreviewed model change.'}};
- }catch(e){if(e.code)throw e;throw Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable'});}
+ }catch(e){throw run.failed(e);}
 }
 
 // ---------------------------------------------------------------- the seam (round 5, Contract P; round 12, M)
@@ -431,12 +443,38 @@ export async function modelCall(env,status,{instructions,input,schema,name,mode,
   }
  }
 }
-// The answer as JSON, or the seam's invalid_output when the model's text did not parse.
-function parsed(r){if(r.parseError)throw Object.assign(Error('The model response was incomplete.'),{code:'invalid_output'});return r;}
+// The answer as JSON, or the seam's invalid_output when the model's text did not parse; the call was billed, so its
+// usage travels with the error (round 41), and so does the route fallback that answered it (runCalls).
+export function parsed(r){if(r.parseError)throw Object.assign(Error('The model response was incomplete.'),{code:'invalid_output',usage:r.usage,...(r.routeFallback?{routeFallback:r.routeFallback}:{})});return r;}
+// The calls of one request (round 41, FIX NOW 6). Each call goes through call(): an answered call is kept as it returns,
+// and an error it throws is marked as the call's own. failed(e) gives the error the request throws: what the run was
+// billed (the answered calls' usage with the failing call's own) and whether that is the run's whole use (settled).
+// It is when every answered call reported its usage and the failure adds no use it cannot count: the error came after
+// the calls rather than from one (a draft that did not fit), the failing call reported its own usage, or it was refused
+// before it answered (a status error, or a connection that failed before any response). It is not for a timeout or an
+// answer that could not be read, after an answered draft too: the provider may have billed that call. Nor for a call
+// another route answered or failed on (routeFallback, on the call or on the generate pass's call): the first route's
+// attempt (a timeout, a lost connection, a refusal) is not counted. The failing call's own usage is read before the
+// answered calls' is attached to the error. The service settles the run's reservation from it (settleFailedRun).
+const REFUSED_CODES=new Set(['provider_quota','provider_limit','authentication','not_configured']);
+const refusedBeforeAnswer=e=>!e?.routeFallback&&(REFUSED_CODES.has(e?.code)||(e?.code==='provider_unavailable'&&(Number.isInteger(e.status)||e.transportFailure?.phase==='fetch')));
+const usageKnown=c=>!!c?.usage&&!(c.routeFallback||c.call?.routeFallback);
+export function runCalls(env){
+ const answered=[];let inCall=false;
+ return {
+  call:pending=>pending.then(r=>{answered.push(r);return r;},e=>{inCall=true;throw e;}),
+  failed:e=>{
+   const failure=e?.code?e:Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable'}),own=usageKnown(e);
+   const billed=sumUsage(env,...answered.map(c=>c?.usage),e?.usage);
+   if((billed.inputTokens||0)+(billed.outputTokens||0))failure.usage=billed;
+   failure.settled=answered.every(usageKnown)&&(!inCall||own||refusedBeforeAnswer(e));
+   return failure;
+  }};
+}
 // A refusal the provider's own fallback could not rescue (Anthropic) is an answer, not a failure: the call is receipted
 // and the mode withholds its draft with the reason. Every other error is thrown as before; an OpenAI refusal, as
 // before, fails the request.
-async function declinable(pending){try{return await pending;}catch(e){if(e?.code==='refusal'&&e.refusal)return {declined:e.refusal.reason,category:e.refusal.category,model:e.model,usage:e.usage,attempts:e.attempts,providerResponseId:e.providerResponseId,stopReason:'refusal',...(e.fallback?{fallback:e.fallback}:{}),...(e.provider?{provider:e.provider}:{}),...(e.pass?{pass:e.pass}:{}),...(e.routeFallback?{routeFallback:e.routeFallback}:{})};throw e;}}
+export async function declinable(pending){try{return await pending;}catch(e){if(e?.code==='refusal'&&e.refusal)return {declined:e.refusal.reason,category:e.refusal.category,model:e.model,usage:e.usage,attempts:e.attempts,providerResponseId:e.providerResponseId,stopReason:'refusal',...(e.fallback?{fallback:e.fallback}:{}),...(e.provider?{provider:e.provider}:{}),...(e.pass?{pass:e.pass}:{}),...(e.routeFallback?{routeFallback:e.routeFallback}:{})};throw e;}}
 // The provider and its name as a run records them: the one that answered the draft, else the route's.
 const by=(status,c)=>({provider:c?.provider?.label||status.provider,providerName:c?.provider?.name||status.providerName});
 // What reached the provider and what came back, per call: the wire, the prompt pin it carried (the instructions are the
@@ -453,20 +491,37 @@ export function providerReceipt(status,mode,pin,calls){
 // Upstream error text can echo a request or credential. Retain only bounded identifiers and the HTTP status;
 // never log, save, or return the upstream message or response body. The provider receipt is diagnostic, not advice.
 export const safeProviderIdentifier=(value,max=64)=>typeof value==='string'&&value.length<=max&&/^[A-Za-z0-9_.-]+$/.test(value)?value:null;
+// An error body, up to 8 KB (past it, none), and its type and code as plain identifiers: never its message.
+async function errorBytes(response){
+ const reader=response.body?.getReader();if(!reader)return null;
+ const chunks=[];let size=0;
+ try{while(true){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>8192)return null;chunks.push(value);}}
+ catch{/* An unreadable error body leaves the status alone. */return null;}
+ finally{try{await reader.cancel();}catch{/* The body was already closed. */}}
+ const bytes=new Uint8Array(size);let at=0;for(const c of chunks){bytes.set(c,at);at+=c.byteLength;}return bytes;
+}
+function errorFields(bytes){
+ const out={};if(!bytes)return out;
+ try{const error=JSON.parse(new TextDecoder().decode(bytes))?.error;for(const [field,key] of [['type','upstreamType'],['code','upstreamCode']]){const safe=safeProviderIdentifier(error?.[field]);if(safe)out[key]=safe;}}
+ catch{/* An unreadable error body still leaves the safe status and request ID. */}
+ return out;
+}
 async function openAIErrorReceipt(response){
  const receipt={upstreamStatus:response.status},requestId=safeProviderIdentifier(response.headers?.get?.('x-request-id'),128);
  if(requestId)receipt.upstreamRequestId=requestId;
- const reader=response.body?.getReader();if(!reader)return receipt;
- let bytes=0,body='';const decoder=new TextDecoder();
- try{
-  while(true){const {done,value}=await reader.read();if(done)break;bytes+=value.byteLength;if(bytes>8192)return receipt;body+=decoder.decode(value,{stream:true});}
-  const error=JSON.parse(body+decoder.decode())?.error;
-  for(const [field,key] of [['type','upstreamType'],['code','upstreamCode']]){const safe=safeProviderIdentifier(error?.[field]);if(safe)receipt[key]=safe;}
- }catch{/* An unreadable error body still leaves the safe status and request ID. */}
- finally{try{await reader.cancel();}catch{/* The body was already closed. */}}
- return receipt;
+ return {...receipt,...errorFields(await errorBytes(response))};
 }
-const statusError=(status,providerFailure)=>{const code=status===401||status===403?'authentication':status===429?'provider_limit':'provider_unavailable';return Object.assign(Error(code==='authentication'?'The provider could not authorise this connection. Check the server-side key and model access.':code==='provider_limit'?'The provider request limit was reached. Your request is retained.':'The provider could not complete this request. Your request is retained.'),{code,status,...(providerFailure?{providerFailure}:{})});};
+// The quota signal of the OpenAI wires (round 41, FIX NOW 7): the account's credit or the project's spend limit is
+// exhausted. OpenAI answers it as a 429 of type insufficient_quota, its code naming which limit (the live run of
+// 2026-10-29: project_spend_limit_exceeded); an OpenAI-compatible endpoint that passes OpenAI's errors through says it the
+// same way. Anthropic says it its own way (intelligence-anthropic.js anthropicQuota).
+const OPENAI_QUOTA=new Set(['insufficient_quota','project_spend_limit_exceeded','billing_hard_limit_reached','billing_not_active']);
+export const openAIQuota=failure=>OPENAI_QUOTA.has(failure?.upstreamType)||OPENAI_QUOTA.has(failure?.upstreamCode);
+// What a person reads for each of the wires' status failures, the same on every wire. A spend limit asks its owner to
+// act; a rate limit clears with time, and the provider's Retry-After (in seconds) travels with it as retryAfter.
+export const STATUS_MESSAGES={authentication:'The provider could not authorise this connection. Check the server-side key and model access.',provider_quota:'The provider account’s spend limit or credit is exhausted, so the provider refused this request. Waiting will not clear it: the account’s owner raises the limit or adds credit, or the administrator configures another key. Your request is retained.',provider_limit:'The provider request limit was reached; it clears with time. Your request is retained.',provider_unavailable:'The provider could not complete this request. Your request is retained.'};
+export const retryAfterOf=value=>{const n=Number(value);return Number.isInteger(n)&&n>0&&n<=86400?n:null;};
+const statusError=(status,providerFailure,{quota=false,retryAfter=null}={})=>{const code=status===401||status===403?'authentication':quota?'provider_quota':status===429?'provider_limit':'provider_unavailable';return Object.assign(Error(STATUS_MESSAGES[code]),{code,status,...(providerFailure?{providerFailure}:{}),...(code==='provider_limit'&&retryAfter?{retryAfter}:{})});};
 const unparsed=e=>e.message==='Unexpected end of JSON input'?'The model response was incomplete.':e.message;
 
 // The OpenAI Responses API, unchanged in behaviour: store:false, a strict json_schema format named for the contract,
@@ -477,8 +532,8 @@ const unparsed=e=>e.message==='Unexpected end of JSON input'?'The model response
 // not a charge: the provider bills the tokens it actually writes.
 const OUTPUT_CEILINGS={architecture:32000},outputCeiling=mode=>OUTPUT_CEILINGS[mode]||6000;
 async function responsesCall(env,{provider:p,model},{instructions,input,schema,name,mode},call,fetcher,{noun='assessment',limit=200000,declined=''}={}){
- const response=await providerFetch(fetcher,p.baseURL+'/responses',{method:'POST',redirect:'error',headers:{Authorization:'Bearer '+p.key,'Content-Type':'application/json'},body:JSON.stringify({model,store:false,max_output_tokens:outputCeiling(mode),instructions,input:[{role:'user',content:JSON.stringify(input)}],text:{format:{type:'json_schema',name,strict:true,schema}}})},call);
- if(!response.ok){const diagnostic=await openAIErrorReceipt(response);console.error(JSON.stringify({event:'openai-provider-failure',...diagnostic}));throw statusError(response.status,diagnostic);}
+ const response=await providerFetch(fetcher,p.baseURL+'/responses',{method:'POST',redirect:'error',headers:{Authorization:'Bearer '+p.key,'Content-Type':'application/json'},body:JSON.stringify({model,store:false,max_output_tokens:outputCeiling(mode),instructions,input:[{role:'user',content:JSON.stringify(input)}],text:{format:{type:'json_schema',name,strict:true,schema}}})},call,{quota:openAIQuota});
+ if(!response.ok){const diagnostic=await openAIErrorReceipt(response);console.error(JSON.stringify({event:'openai-provider-failure',...diagnostic}));throw statusError(response.status,diagnostic,{quota:openAIQuota(diagnostic),retryAfter:retryAfterOf(response.headers?.get?.('retry-after'))});}
  const data=await readJSON(response,limit,noun);
  // What the provider billed travels with a refusal or an incomplete answer too (round 23), as on the Anthropic wire, so
  // a failed run records the tokens it used rather than none.
@@ -493,8 +548,8 @@ async function responsesCall(env,{provider:p,model},{instructions,input,schema,n
 // instructions as the system message, the packet as the user message, the contract as a strict json_schema response
 // format; a refusal or a content filter is a refusal, a stop for length is incomplete, and a fenced answer is unfenced.
 async function chatCall(env,{provider:p,model},{instructions,input,schema,name,mode},call,fetcher,{noun='assessment',limit=200000,declined=''}={}){
- const response=await providerFetch(fetcher,p.baseURL+'/chat/completions',{method:'POST',redirect:'error',headers:{...bearer(p),'Content-Type':'application/json'},body:JSON.stringify({model,messages:[{role:'system',content:instructions},{role:'user',content:JSON.stringify(input)}],response_format:{type:'json_schema',json_schema:{name,strict:true,schema}},max_tokens:outputCeiling(mode),stream:false})},call);
- if(!response.ok)throw statusError(response.status);
+ const response=await providerFetch(fetcher,p.baseURL+'/chat/completions',{method:'POST',redirect:'error',headers:{...bearer(p),'Content-Type':'application/json'},body:JSON.stringify({model,messages:[{role:'system',content:instructions},{role:'user',content:JSON.stringify(input)}],response_format:{type:'json_schema',json_schema:{name,strict:true,schema}},max_tokens:outputCeiling(mode),stream:false})},call,{quota:openAIQuota});
+ if(!response.ok){const diagnostic=await openAIErrorReceipt(response);throw statusError(response.status,diagnostic,{quota:openAIQuota(diagnostic),retryAfter:retryAfterOf(response.headers?.get?.('retry-after'))});}
  const data=await readJSON(response,limit,noun),choice=(data.choices||[])[0],message=choice?.message||{};
  const cached=Number(data.usage?.prompt_tokens_details?.cached_tokens)||0;
  const billed={model:data.model||model,usage:withCost(env,{inputTokens:Number(data.usage?.prompt_tokens)||0,outputTokens:Number(data.usage?.completion_tokens)||0,...(cached?{cacheReadTokens:cached}:{})},p.pricing),attempts:call.attempts,providerResponseId:typeof data.id==='string'?data.id.slice(0,180):null};
@@ -510,9 +565,9 @@ async function chatCall(env,{provider:p,model},{instructions,input,schema,name,m
 // stands. Nothing here changes the design.
 export async function requestReasoning(env,packet,{fetcher=fetch,timeoutMs=60000,check=null}={}){
  const status=intelligenceStatus(env,'reasoning');if(!status.configured)throw Object.assign(Error('LLM connection is not configured. The desk’s readings and drafts remain available.'),{code:'not_configured'});
- const perCall=callTimeout(env,timeoutMs),pin=packet.brainReceipt?.instructions||instructionsPin();
+ const perCall=callTimeout(env,timeoutMs),run=runCalls(env),pin=packet.brainReceipt?.instructions||instructionsPin();
  try{
-  const draft=await declinable(timed(perCall,call=>modelCall(env,status,{instructions:REASONING_INSTRUCTIONS,input:packet,schema:reasoningSchema(packet),name:'aiw_desk_assessment',mode:'reason'},call,fetcher).then(parsed),'assessment'));
+  const draft=await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:REASONING_INSTRUCTIONS,input:packet,schema:reasoningSchema(packet),name:'aiw_desk_assessment',mode:'reason'},call,fetcher).then(parsed),'assessment')));
   // A declined draft withholds every assessment with the reason; the desk's readings stand.
   if(draft.declined){const settled={summary:'',sourceRefs:[],assessments:packet.items.map(it=>withheldAssessment(packet,it.id,[draft.declined]))};
    return {result:settled,...by(status,draft),model:draft.model,usage:draft.usage,attempts:draft.attempts||1,providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'reason',pin,[['draft',draft]]),
@@ -521,7 +576,7 @@ export async function requestReasoning(env,packet,{fetcher=fetch,timeoutMs=60000
   // The second pass checks the advice as it will be shown, on its own: what was set aside is not advice, and the
   // deterministic checks' findings are not sent, so the second pass neither echoes them nor leans on them.
   const candidate={...result,setAside:undefined,trimmed:undefined,assessments:result.assessments.map(({setAside,trimmed,problems,...a})=>a)};
-  const review=await declinable(timed(perCall,call=>modelCall(env,status,{instructions:REVIEW_INSTRUCTIONS,input:{packet,candidate},schema:DECISION_REVIEW_SCHEMA,name:'aiw_desk_assessment_check',mode:'reason'},call,fetcher).then(parsed),'assessment'));
+  const review=await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:REVIEW_INSTRUCTIONS,input:{packet,candidate},schema:DECISION_REVIEW_SCHEMA,name:'aiw_desk_assessment_check',mode:'reason'},call,fetcher).then(parsed),'assessment')));
   // A check the provider declined to make withholds every assessment: unchecked advice is not shown.
   const r=review.declined?{assessments:result.assessments.map(a=>({id:a.id,supported:false,defects:[review.declined.replace('nothing was drafted','the advice was not checked and is withheld')],notes:[]}))}:review.raw;
   if(!r||!Array.isArray(r.assessments)||r.assessments.some(x=>!reviewShape(x,['id','supported','defects','notes','alternativeFindings','requestFulfillment'])||typeof x.id!=='string'))throw Object.assign(Error('The source check returned an unsupported assessment.'),{code:'invalid_output'});
@@ -529,7 +584,7 @@ export async function requestReasoning(env,packet,{fetcher=fetch,timeoutMs=60000
   const settled=check?check(settleReasoning(packet,result,r)):settleReasoning(packet,result,r);
   return {result:settled,...by(status,draft),model:draft.model,usage:sumUsage(env,draft.usage,review.usage),attempts:(draft.attempts||1)+(review.attempts||1),providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'reason',pin,[['draft',draft],['check',review]]),
    groundingReview:{kind:'automated-source-consistency',accepted:settled.assessments.every(a=>!a.withheld),withheld:settled.assessments.filter(a=>a.withheld).map(a=>a.id),contradictions:settled.checkContradictions||[],notes:settled.checkNotes||[],assessmentFindings:r.assessments,draft:result,draftModel:draft.model,reviewModel:review.model,reviewResponseId:review.providerResponseId,packetStamp:packet.stamp,authority:'Automated checks against the packet, not independent verification. A withheld assessment leaves the desk’s reading to stand; no model change follows from any assessment.'}};
- }catch(e){if(e.code)throw e;throw Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable'});}
+ }catch(e){throw run.failed(e);}
 }
 
 // The evaluation's control arm only (sol-evaluation.js): the same provider and model answer the same
@@ -601,20 +656,20 @@ export function guardFieldDraft(packet,result){
 }
 export async function requestFieldDraft(env,packet,{fetcher=fetch,timeoutMs=45000}={}){
  const status=intelligenceStatus(env,'field');if(!status.configured)throw Object.assign(Error('LLM connection is not configured. The rule-based suggestions remain available.'),{code:'not_configured'});
- const perCall=callTimeout(env,timeoutMs),pin=fieldInstructionsPin();
+ const perCall=callTimeout(env,timeoutMs),run=runCalls(env),pin=fieldInstructionsPin();
  const authority='Automated checks against the packet, not independent verification. A withheld draft offers nothing; an accepted one is a proposal the architect reviews in the form and saves through the chapter’s own command.';
  try{
-  const draft=await declinable(timed(perCall,call=>modelCall(env,status,{instructions:FIELD_INSTRUCTIONS,input:packet,schema:fieldDraftSchema(packet),name:'aiw_field_draft',mode:'field'},call,fetcher).then(parsed),'draft'));
+  const draft=await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:FIELD_INSTRUCTIONS,input:packet,schema:fieldDraftSchema(packet),name:'aiw_field_draft',mode:'field'},call,fetcher).then(parsed),'draft')));
   if(draft.declined)return {result:{field:packet.target.field,value:'',basis:'',sourceRefs:[],withheld:true,issues:[draft.declined]},...by(status,draft),model:draft.model,instructions:pin,usage:draft.usage,attempts:draft.attempts||1,providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'field',pin,[['draft',draft]]),
    groundingReview:{kind:'automated-source-consistency',accepted:false,issues:[draft.declined],notes:[],declined:true,deterministic:{accepted:false,issues:[]},check:null,draft:null,draftModel:draft.model,reviewModel:null,reviewResponseId:null,packetStamp:packet.stamp,authority}};
   let result;try{result=validateFieldDraft(draft.raw,packet);}catch(e){throw Object.assign(Error(e.message),{code:'invalid_output'});}
   const problems=guardFieldDraft(packet,result);
-  const review=await declinable(timed(perCall,call=>modelCall(env,status,{instructions:FIELD_REVIEW_INSTRUCTIONS,input:{packet,candidate:result},schema:REVIEW_SCHEMA,name:'aiw_field_draft_check',mode:'field'},call,fetcher).then(parsed),'draft'));
+  const review=await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:FIELD_REVIEW_INSTRUCTIONS,input:{packet,candidate:result},schema:REVIEW_SCHEMA,name:'aiw_field_draft_check',mode:'field'},call,fetcher).then(parsed),'draft')));
   if(!review.declined&&!reviewShape(review.raw,['supported','defects','notes']))throw Object.assign(Error('The source check returned an unsupported assessment.'),{code:'invalid_output'});
   const found=review.declined?{defects:[review.declined.replace('nothing was drafted','the draft was not checked and is withheld')],notes:[],contradiction:null}:reviewFinding(review.raw),issues=[...problems,...found.defects],accepted=!issues.length;
   return {result:accepted?result:{field:result.field,value:'',basis:'',sourceRefs:[],withheld:true,issues},...by(status,draft),model:draft.model,instructions:pin,usage:sumUsage(env,draft.usage,review.usage),attempts:(draft.attempts||1)+(review.attempts||1),providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'field',pin,[['draft',draft],['check',review]]),
    groundingReview:{kind:'automated-source-consistency',accepted,issues,notes:found.notes,...(found.contradiction?{contradiction:found.contradiction}:{}),deterministic:{accepted:!problems.length,issues:problems},check:{defects:found.defects,notes:found.notes,contradiction:found.contradiction||null},draft:result,draftModel:draft.model,reviewModel:review.model,reviewResponseId:review.providerResponseId,packetStamp:packet.stamp,authority}};
- }catch(e){if(e.code)throw e;throw Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable'});}
+ }catch(e){throw run.failed(e);}
 }
 
 // Sol drafts one chapter of the journey (round 4; mode 'journey', intelligence-service.js): answers for the fields of
@@ -680,20 +735,20 @@ export function guardJourneyDraft(packet,result){
 }
 export async function requestJourneyDraft(env,packet,{fetcher=fetch,timeoutMs=60000}={}){
  const status=intelligenceStatus(env,'journey');if(!status.configured)throw Object.assign(Error('LLM connection is not configured. The deterministic journey draft remains available.'),{code:'not_configured'});
- const perCall=callTimeout(env,timeoutMs),pin=journeyInstructionsPin();
+ const perCall=callTimeout(env,timeoutMs),run=runCalls(env),pin=journeyInstructionsPin();
  const withheld=(issues,draft=null)=>({answers:[],withheld:true,issues,reason:'Sol’s draft did not pass the checks; the deterministic draft stands for this chapter.',...(draft?{draft}:{})});
  const unfit=(issues,draft,authority,layer)=>({result:withheld(issues),...by(status,draft),model:draft.model,instructions:pin,usage:draft.usage,attempts:draft.attempts||1,providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'journey',pin,[['draft',draft]]),groundingReview:{kind:'automated-source-consistency',accepted:false,issues,notes:[],...layer,check:null,draft:null,draftModel:draft.model,reviewModel:null,reviewResponseId:null,packetStamp:packet.stamp,authority}});
  try{
-  const draft=await declinable(timed(perCall,call=>modelCall(env,status,{instructions:JOURNEY_INSTRUCTIONS,input:packet,schema:journeyDraftSchema(packet),name:'aiw_journey_draft',mode:'journey'},call,fetcher).then(parsed),'draft'));
+  const draft=await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:JOURNEY_INSTRUCTIONS,input:packet,schema:journeyDraftSchema(packet),name:'aiw_journey_draft',mode:'journey'},call,fetcher).then(parsed),'draft')));
   if(draft.declined)return unfit([draft.declined],draft,'Automated checks against the packet, not independent verification. A declined draft offers nothing; the deterministic draft stands.',{declined:true,deterministic:{accepted:false,issues:[]}});
   let result;try{result=validateJourneyDraft(draft.raw,packet);}catch(e){return unfit([e.message],draft,'Automated checks against the packet, not independent verification. A draft that does not fit the contract offers nothing; the deterministic draft stands.',{deterministic:{accepted:false,issues:[e.message]}});}
   const problems=guardJourneyDraft(packet,result);
-  const review=await declinable(timed(perCall,call=>modelCall(env,status,{instructions:JOURNEY_REVIEW_INSTRUCTIONS,input:{packet,candidate:result},schema:REVIEW_SCHEMA,name:'aiw_journey_draft_check',mode:'journey'},call,fetcher).then(parsed),'draft'));
+  const review=await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:JOURNEY_REVIEW_INSTRUCTIONS,input:{packet,candidate:result},schema:REVIEW_SCHEMA,name:'aiw_journey_draft_check',mode:'journey'},call,fetcher).then(parsed),'draft')));
   if(!review.declined&&!reviewShape(review.raw,['supported','defects','notes']))throw Object.assign(Error('The source check returned an unsupported assessment.'),{code:'invalid_output'});
   const found=review.declined?{defects:[review.declined.replace('nothing was drafted','the draft was not checked and is withheld')],notes:[],contradiction:null}:reviewFinding(review.raw),issues=[...problems,...found.defects],accepted=!issues.length;
   return {result:accepted?result:withheld(issues),...by(status,draft),model:draft.model,instructions:pin,usage:sumUsage(env,draft.usage,review.usage),attempts:(draft.attempts||1)+(review.attempts||1),providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'journey',pin,[['draft',draft],['check',review]]),
    groundingReview:{kind:'automated-source-consistency',accepted,issues,notes:found.notes,...(found.contradiction?{contradiction:found.contradiction}:{}),deterministic:{accepted:!problems.length,issues:problems},check:{defects:found.defects,notes:found.notes,contradiction:found.contradiction||null},draft:result,draftModel:draft.model,reviewModel:review.model,reviewResponseId:review.providerResponseId,packetStamp:packet.stamp,authority:'Automated checks against the packet, not independent verification. A withheld draft offers nothing and the deterministic draft stands; an accepted one is a proposal the architect reviews and commits through the guide.'}};
- }catch(e){if(e.code)throw e;throw Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable'});}
+ }catch(e){throw run.failed(e);}
 }
 
 
@@ -755,16 +810,16 @@ export function guardReviewDraft(packet,result){
 }
 export async function requestModelReview(env,packet,{fetcher=fetch,timeoutMs=60000}={}){
  const status=intelligenceStatus(env,'review');if(!status.configured)throw Object.assign(Error('LLM connection is not configured. The chapter’s own checks remain available.'),{code:'not_configured'});
- const perCall=callTimeout(env,timeoutMs),pin=reviewInstructionsPin();
+ const perCall=callTimeout(env,timeoutMs),run=runCalls(env),pin=reviewInstructionsPin();
  const authority='Automated checks against the packet, not independent verification. A withheld finding is not offered; a finding is advice the architect weighs, never a check, and nothing changes unless the architect adopts one.';
  try{
-  const draft=await declinable(timed(perCall,call=>modelCall(env,status,{instructions:REVIEW_MODE_INSTRUCTIONS,input:packet,schema:reviewDraftSchema(packet),name:'aiw_model_review',mode:'review'},call,fetcher).then(parsed),'review'));
+  const draft=await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:REVIEW_MODE_INSTRUCTIONS,input:packet,schema:reviewDraftSchema(packet),name:'aiw_model_review',mode:'review'},call,fetcher).then(parsed),'review')));
   if(draft.declined)return {result:{findings:[],withheld:[],declined:draft.declined},...by(status,draft),model:draft.model,instructions:pin,usage:draft.usage,attempts:draft.attempts||1,providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'review',pin,[['draft',draft]]),
    groundingReview:{kind:'automated-source-consistency',accepted:false,issues:[draft.declined],withheld:[],notes:[],contradictions:[],declined:true,deterministic:{accepted:false,issues:[],withheld:[]},check:null,draft:null,draftModel:draft.model,reviewModel:null,reviewResponseId:null,packetStamp:packet.stamp,authority}};
   let result;try{result=validateReviewDraft(draft.raw,packet);}catch(e){throw Object.assign(Error(e.message),{code:'invalid_output'});}
   const problems=guardReviewDraft(packet,result);
   // Nothing found is nothing to check: the second call is made only when there is a finding to check.
-  const review=result.findings.length?await declinable(timed(perCall,call=>modelCall(env,status,{instructions:REVIEW_MODE_CHECK_INSTRUCTIONS,input:{packet,candidate:{findings:result.findings}},schema:reviewCheckSchema(result.findings.map(f=>f.id)),name:'aiw_model_review_check',mode:'review'},call,fetcher).then(parsed),'review')):null;
+  const review=result.findings.length?await run.call(declinable(timed(perCall,call=>modelCall(env,status,{instructions:REVIEW_MODE_CHECK_INSTRUCTIONS,input:{packet,candidate:{findings:result.findings}},schema:reviewCheckSchema(result.findings.map(f=>f.id)),name:'aiw_model_review_check',mode:'review'},call,fetcher).then(parsed),'review'))):null;
   const checks=review?.declined?null:review?.raw;
   if(review&&!review.declined&&(!checks||!Array.isArray(checks.findings)||checks.findings.some(x=>!reviewShape(x,['id','supported','defects','notes'])||typeof x.id!=='string')))throw Object.assign(Error('The source check returned an unsupported assessment.'),{code:'invalid_output'});
   const byId=new Map((checks?.findings||[]).map(x=>[x.id,x])),findings=[],withheld=[],notes=[],contradictions=[],guarded={issues:[],withheld:[]},checked={defects:[],withheld:[]};
@@ -778,5 +833,5 @@ export async function requestModelReview(env,packet,{fetcher=fetch,timeoutMs=600
   const settled={findings,withheld,...(result.setAside?{setAside:result.setAside}:{}),...(result.trimmed?{trimmed:result.trimmed}:{})};
   return {result:settled,...by(status,draft),model:draft.model,instructions:pin,usage:sumUsage(env,draft.usage,review?.usage),attempts:(draft.attempts||1)+(review?.attempts||0),providerResponseId:draft.providerResponseId,providerReceipt:providerReceipt(status,'review',pin,[['draft',draft],['check',review]]),
    groundingReview:{kind:'automated-source-consistency',accepted:!withheld.length&&!result.setAside,issues:withheld.flatMap(f=>f.issues.map(i=>f.id+': '+i)),withheld:withheld.map(f=>f.id),notes,contradictions,deterministic:{accepted:!guarded.withheld.length&&!result.setAside,...guarded,setAside:(result.setAside||[]).length},check:review?{...checked,notes,contradictions}:null,draft:result,draftModel:draft.model,reviewModel:review?.model||null,reviewResponseId:review?.providerResponseId||null,packetStamp:packet.stamp,authority}};
- }catch(e){if(e.code)throw e;throw Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable'});}
+ }catch(e){throw run.failed(e);}
 }

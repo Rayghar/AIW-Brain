@@ -31,13 +31,24 @@ import {architectureIntelligence} from './public/architecture-intelligence.js';
 const json=(v,status=200)=>new Response(JSON.stringify(v),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
 const prefix=(owner,projectId)=>'intelligence/'+encodeURIComponent(owner)+'/'+projectId+'/';
 const rowFor=(env,owner,projectId,id)=>env.DB.prepare("SELECT * FROM intelligence_runs WHERE owner_id=? AND project_id=? AND id=? AND mode<>'context-draft'").bind(owner,projectId,id).first();
-const genericError=code=>({timeout:'The provider took too long. Your request is retained.',interrupted:'The request was interrupted before the provider answered (the server stopped). Its reserved tokens were released; send it again.',refusal:'The provider declined the request. Reframe the design question.',authentication:'Check the server-side key and model access.',provider_limit:'The provider request limit was reached.',invalid_output:'The response did not pass source and structure checks.',incomplete:'The provider returned an incomplete response.',storage:'The response could not be saved. No proposal was applied.'}[code]||'The request could not be completed. Your saved model is unchanged.');
+const genericError=code=>({timeout:'The provider took too long. Your request is retained.',interrupted:'The request was interrupted before the provider answered (the server stopped). Its reserved tokens were released; send it again.',refusal:'The provider declined the request. Reframe the design question.',authentication:'Check the server-side key and model access.',provider_limit:'The provider request limit was reached; it clears with time, so send the request again shortly.',provider_quota:'The provider account’s spend limit or credit is exhausted, and waiting will not clear it. The account’s owner raises the limit or adds credit, or the administrator configures another key. Your request is retained.',invalid_output:'The response did not pass source and structure checks.',incomplete:'The provider returned an incomplete response.',storage:'The response could not be saved. No proposal was applied.'}[code]||'The request could not be completed. Your saved model is unchanged.');
 // Only the bounded status/type/code/request ID constructed by the provider adapter is attached to a failed run.
 // Provider response text and the request packet never enter this diagnostic field.
+// A rate limit's Retry-After (seconds, from the provider) travels with the failed run and its 429 answer (failedAnswer).
 const providerFailure=e=>({
  ...(e?.providerFailure?{providerFailure:e.providerFailure}:{}),
- ...(e?.transportFailure?{transportFailure:e.transportFailure}:{})
+ ...(e?.transportFailure?{transportFailure:e.transportFailure}:{}),
+ ...(e?.code==='provider_limit'&&Number.isInteger(e.retryAfter)?{retryAfterSeconds:e.retryAfter}:{})
 });
+// A failed run's answer (round 41, FIX NOW 7): 429 with the provider's Retry-After for a rate limit, which clears with
+// time; 502 for everything else, a spend limit included, which waiting does not clear.
+const failedAnswer=(failed,code)=>{const r=json({...failed,result:undefined},code==='provider_limit'?429:502);if(failed.retryAfterSeconds)r.headers.set('Retry-After',String(failed.retryAfterSeconds));return r;};
+// The tokens a failed run holds (round 41, FIX NOW 6), in every mode: what its calls were billed when that is the run's
+// whole use (intelligence-provider.js runCalls: the answered calls with the failing call's own usage, and none for a
+// call refused before it answered), so a spend-limit or rate-limit refusal with no answer holds nothing. Where the use
+// is not known (a timeout, an answer that could not be read, a storage fault, anything else) the reservation stands:
+// NULL, which the budgets count as reserved_tokens (COALESCE(used_tokens, reserved_tokens)) until it leaves the window.
+export const settleFailedRun=e=>e?.settled?(Number(e.usage?.inputTokens)||0)+(Number(e.usage?.outputTokens)||0):e?.code==='not_configured'?0:null;
 function metadata(row){return {id:row.id,objectId:row.object_id,mode:row.mode,status:row.status==='pending'&&Date.now()-Date.parse(row.created_at)>120000?'interrupted':row.status,provider:row.provider,model:row.model,createdAt:row.created_at,updatedAt:row.updated_at,...(row.error_code?{error:genericError(row.error_code)}:{})};}
 // The browser needs receipts to mark an old review as historical after a knowledge withdrawal.
 // Return only the saved basis needed for currency, not a second copy of every source excerpt.
@@ -97,6 +108,20 @@ function solBudgetBinds(owner,projectId,policy,reservedTokens,now=Date.now()){
  const hour=new Date(now-3600000).toISOString(),day=new Date(now-86400000).toISOString(),hourly=policy.hourlyRequests??DEFAULT_HOURLY_REQUESTS;
  return [owner,hour,Math.max(DEFAULT_HOURLY_REQUESTS,hourly),owner,projectId,hour,hourly,owner,projectId,day,owner,projectId,day,reservedTokens,policy.dailyTokens??1000000];
 }
+// Which limit refused a reservation (round 41, FIX NOW 6), read after SOL_BUDGET_SQL refused it and named for the person:
+// another request of this project still running, the owner's requests in the last hour across projects, this project's
+// requests in the last hour, or this project's tokens in the last 24 hours (used, or still reserved) with this request's
+// reservation. A refusal the counts no longer show (the window moved on) says so rather than guess.
+async function budgetRefusal(env,owner,projectId,policy,reservedTokens,now=Date.now()){
+ const hour=new Date(now-3600000).toISOString(),day=new Date(now-86400000).toISOString(),active=new Date(now-120000).toISOString(),hourly=policy.hourlyRequests??DEFAULT_HOURLY_REQUESTS,ownerHourly=Math.max(DEFAULT_HOURLY_REQUESTS,hourly),daily=policy.dailyTokens??1000000,n=v=>Number(v)||0,fmt=v=>n(v).toLocaleString('en-GB');
+ const count=(sql,...binds)=>env.DB.prepare(sql).bind(...binds).first().then(r=>n(r?.n));
+ if(await count("SELECT COUNT(*) AS n FROM intelligence_runs WHERE owner_id=? AND project_id=? AND status='pending' AND created_at>?",owner,projectId,active))return 'Sol is already working on another request of this project.';
+ if(await count("SELECT COUNT(*) AS n FROM intelligence_runs WHERE owner_id=? AND mode NOT IN ('context-draft','architecture') AND created_at>?",owner,hour)>=ownerHourly)return `Your hourly request budget across projects is used (${fmt(ownerHourly)} requests in the last hour).`;
+ if(await count("SELECT COUNT(*) AS n FROM intelligence_runs WHERE owner_id=? AND project_id=? AND mode NOT IN ('context-draft','architecture') AND created_at>?",owner,projectId,hour)>=hourly)return `The project’s hourly request budget is used (${fmt(hourly)} requests in the last hour, set by the project owner in Operations).`;
+ const held=await count("SELECT (SELECT COALESCE(SUM(COALESCE(used_tokens,reserved_tokens)),0) FROM intelligence_runs WHERE owner_id=? AND project_id=? AND mode NOT IN ('context-draft','architecture') AND created_at>?)+(SELECT COALESCE(SUM(COALESCE(used_tokens,reserved_tokens)),0) FROM brain_retrieval_runs WHERE owner_id=? AND project_id=? AND created_at>?) AS n",owner,projectId,day,owner,projectId,day);
+ if(held+reservedTokens>daily)return `The project’s daily token budget would be passed: ${fmt(held)} of its ${fmt(daily)} tokens are used or reserved in the last 24 hours, and this request reserves ${fmt(reservedTokens)}.`;
+ return 'Sol is already working, or a request budget of this project has just been reached.';
+}
 // One architecture theme is one bounded Sol request (the draft and its source check are the passes of that request),
 // on the same hourly/daily ledger as the other modes. A completed provider response is saved before the job's theme
 // checkpoint: if the worker stops in that gap, the next lease reuses the response without sending or charging again.
@@ -143,11 +168,10 @@ export async function budgetedArchitectureDraft(env,owner,projectId,p,packet,{ac
  }catch(e){
   // A saved completed response survives a later metadata or logging outage; never send the same packet again.
   try{const file=await env.FILES.get(key),held=file?JSON.parse(await file.text()):null;if(held?.status==='completed'&&held.response)return held.response;}catch{/* Preserve the original provider or storage error. */}
-  // The tokens a failed run used (round 23): what the provider reported billing; none when no answer came back; and
-  // where an answer came back with its use unknown, the reservation stands, as for the other modes.
-  const failedAt=new Date().toISOString(),billed=e?.usage?(Number(e.usage.inputTokens)||0)+(Number(e.usage.outputTokens)||0):null;
-  const used=billed!==null?billed:['incomplete','refusal','invalid_output'].includes(e?.code)?null:0;
-  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=? AND status='pending'").bind(e.code||'provider_unavailable',used,failedAt,owner,id).run();
+  // The tokens a failed run used (round 23; round 41 settleFailedRun, the same for every mode): what the provider billed
+  // when that is the run's whole use, none when no call got an answer, and otherwise the reservation stands.
+  const failedAt=new Date().toISOString();
+  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=? AND status='pending'").bind(e.code||'provider_unavailable',settleFailedRun(e),failedAt,owner,id).run();
   throw e;
  }
 }
@@ -241,7 +265,7 @@ export async function handleIntelligence(request,env,owner,projectId){
  // A run cut off mid-flight (round 2, B2-11) releases its reservation before this one is counted against the budget.
  await releaseInterruptedRuns(env,{owner,projectId});
  const inserted=await env.DB.prepare("INSERT OR IGNORE INTO intelligence_runs (owner_id,id,project_id,object_id,mode,input_stamp,status,provider,model,storage_key,created_at,updated_at,actor_id,reserved_tokens) SELECT ?,?,?,?,?,?,'pending',?,?,?,?,?,?,? WHERE "+SOL_BUDGET_SQL+" AND NOT EXISTS (SELECT 1 FROM intelligence_runs WHERE owner_id=? AND project_id=? AND status='pending' AND created_at>?)").bind(owner,raw.requestId,projectId,normal.objectId,normal.mode,inputStamp,status.provider,status.model,key,at,at,request.headers.get('oai-authenticated-user-id'),reservedTokens,...solBudgetBinds(owner,projectId,policy,reservedTokens),owner,projectId,active).run();
- if(!inserted.meta?.changes)return json({error:'A request is already running, or a project or hourly request budget has been reached. Reopen saved requests before trying again.'},429);
+ if(!inserted.meta?.changes)return json({error:(await budgetRefusal(env,owner,projectId,policy,reservedTokens))+' Reopen saved requests before trying again.'},429);
  let run={actor:request.headers.get('oai-authenticated-user-id'),id:raw.requestId,projectId,objectId:normal.objectId,mode:normal.mode,status:'pending',provider:status.provider,model:status.model,createdAt:at,updatedAt:at,packet};
  try{
   await env.FILES.put(key,JSON.stringify(run),{httpMetadata:{contentType:'application/json'}});
@@ -255,8 +279,8 @@ export async function handleIntelligence(request,env,owner,projectId){
   // If a completed response reached R2, retain it even if the metadata write failed.
   try{const saved=await env.FILES.get(key),value=saved?JSON.parse(await saved.text()):null;if(value?.status==='completed')return json({...value,current:generationCurrent(p,generationReceipt(value))});}catch{}
   try{await env.FILES.put(key,JSON.stringify({...failed,result:undefined}),{httpMetadata:{contentType:'application/json'}});}catch{}
-  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,failed.updatedAt,owner,run.id).run();
-  return json({...failed,result:undefined},code==='provider_limit'?429:502);
+  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,settleFailedRun(e),failed.updatedAt,owner,run.id).run();
+  return failedAnswer(failed,code);
  }
 }
 
@@ -283,7 +307,7 @@ async function handleReasoning(request,env,owner,projectId,action,url){
  const reservedTokens=3*new TextEncoder().encode(JSON.stringify(packet)).length+24000;
  await releaseInterruptedRuns(env,{owner,projectId});
  const inserted=await env.DB.prepare("INSERT OR IGNORE INTO intelligence_runs (owner_id,id,project_id,object_id,mode,input_stamp,status,provider,model,storage_key,created_at,updated_at,actor_id,reserved_tokens) SELECT ?,?,?,?,'reason',?,'pending',?,?,?,?,?,?,? WHERE "+SOL_BUDGET_SQL+" AND NOT EXISTS (SELECT 1 FROM intelligence_runs WHERE owner_id=? AND project_id=? AND status='pending' AND created_at>?)").bind(owner,raw.requestId,projectId,normal.scope.slice(0,100),inputStamp,status.provider,status.model,key,at,at,request.headers.get('oai-authenticated-user-id'),reservedTokens,...solBudgetBinds(owner,projectId,policy,reservedTokens),owner,projectId,active).run();
- if(!inserted.meta?.changes)return json({error:'Sol is already working, or the project’s hourly request budget has been reached. Its earlier assessments stay on the desk.'},429);
+ if(!inserted.meta?.changes)return json({error:(await budgetRefusal(env,owner,projectId,policy,reservedTokens))+' Its earlier assessments stay on the desk.'},429);
  let run={actor:request.headers.get('oai-authenticated-user-id'),id:raw.requestId,projectId,objectId:normal.scope,mode:'reason',status:'pending',provider:status.provider,model:status.model,createdAt:at,updatedAt:at,packet,instructions:packet.brainReceipt?.instructions||instructionsPin()};
  try{
   await env.FILES.put(key,JSON.stringify(run),{httpMetadata:{contentType:'application/json'}});
@@ -296,8 +320,8 @@ async function handleReasoning(request,env,owner,projectId,action,url){
   // A response that fails the structure checks says which check (the validator's own words, never model text).
   const code=e.code||'storage',failed={...run,status:'failed',updatedAt:new Date().toISOString(),error:genericError(code),...providerFailure(e),...(code==='invalid_output'&&e.message?{detail:String(e.message).slice(0,300)}:{})};
   try{await env.FILES.put(key,JSON.stringify({...failed,result:undefined}),{httpMetadata:{contentType:'application/json'}});}catch{}
-  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,failed.updatedAt,owner,run.id).run();
-  return json({...failed,result:undefined},code==='provider_limit'?429:502);
+  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,settleFailedRun(e),failed.updatedAt,owner,run.id).run();
+  return failedAnswer(failed,code);
  }
 }
 
@@ -426,7 +450,7 @@ async function handleFieldDraft(request,env,owner,projectId,action,url){
  const reservedTokens=3*new TextEncoder().encode(JSON.stringify(packet)).length+8000,objectId=(normal.recordId||packet.request.parentId||normal.command).slice(0,100);
  await releaseInterruptedRuns(env,{owner,projectId});
  const inserted=await env.DB.prepare("INSERT OR IGNORE INTO intelligence_runs (owner_id,id,project_id,object_id,mode,input_stamp,status,provider,model,storage_key,created_at,updated_at,actor_id,reserved_tokens) SELECT ?,?,?,?,'field',?,'pending',?,?,?,?,?,?,? WHERE "+SOL_BUDGET_SQL+" AND NOT EXISTS (SELECT 1 FROM intelligence_runs WHERE owner_id=? AND project_id=? AND status='pending' AND created_at>?)").bind(owner,raw.requestId,projectId,objectId,inputStamp,status.provider,status.model,key,at,at,request.headers.get('oai-authenticated-user-id'),reservedTokens,...solBudgetBinds(owner,projectId,policy,reservedTokens),owner,projectId,active).run();
- if(!inserted.meta?.changes)return json({error:'Sol is already working, or the project’s hourly request budget has been reached. The rule-based suggestions remain available.'},429);
+ if(!inserted.meta?.changes)return json({error:(await budgetRefusal(env,owner,projectId,policy,reservedTokens))+' The rule-based suggestions remain available.'},429);
  let run={actor:request.headers.get('oai-authenticated-user-id'),id:raw.requestId,projectId,objectId,mode:'field',status:'pending',provider:status.provider,model:status.model,createdAt:at,updatedAt:at,request:packet.request,packet,instructions:fieldInstructionsPin()};
  try{
   await env.FILES.put(key,JSON.stringify(run),{httpMetadata:{contentType:'application/json'}});
@@ -438,8 +462,8 @@ async function handleFieldDraft(request,env,owner,projectId,action,url){
  }catch(e){
   const code=e.code||'storage',failed={...run,status:'failed',updatedAt:new Date().toISOString(),error:genericError(code),...providerFailure(e),...(code==='invalid_output'&&e.message?{detail:String(e.message).slice(0,300)}:{})};
   try{await env.FILES.put(key,JSON.stringify({...failed,result:undefined}),{httpMetadata:{contentType:'application/json'}});}catch{/* the row below still records the failure */}
-  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,failed.updatedAt,owner,run.id).run();
-  return json({...failed,result:undefined},code==='provider_limit'?429:502);
+  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,settleFailedRun(e),failed.updatedAt,owner,run.id).run();
+  return failedAnswer(failed,code);
  }
 }
 
@@ -510,7 +534,7 @@ async function handleJourneyDraft(request,env,owner,projectId,action,url){
  const reservedTokens=3*new TextEncoder().encode(JSON.stringify(packet)).length+12000,objectId=('journey:'+normal.chapter).slice(0,100);
  await releaseInterruptedRuns(env,{owner,projectId});
  const inserted=await env.DB.prepare("INSERT OR IGNORE INTO intelligence_runs (owner_id,id,project_id,object_id,mode,input_stamp,status,provider,model,storage_key,created_at,updated_at,actor_id,reserved_tokens) SELECT ?,?,?,?,'journey',?,'pending',?,?,?,?,?,?,? WHERE "+SOL_BUDGET_SQL+" AND NOT EXISTS (SELECT 1 FROM intelligence_runs WHERE owner_id=? AND project_id=? AND status='pending' AND created_at>?)").bind(owner,raw.requestId,projectId,objectId,inputStamp,status.provider,status.model,key,at,at,request.headers.get('oai-authenticated-user-id'),reservedTokens,...solBudgetBinds(owner,projectId,policy,reservedTokens),owner,projectId,active).run();
- if(!inserted.meta?.changes)return json({error:'Sol is already working, or the project’s hourly request budget has been reached. The deterministic journey draft remains available.'},429);
+ if(!inserted.meta?.changes)return json({error:(await budgetRefusal(env,owner,projectId,policy,reservedTokens))+' The deterministic journey draft remains available.'},429);
  let run={actor:request.headers.get('oai-authenticated-user-id'),id:raw.requestId,projectId,objectId,mode:'journey',status:'pending',provider:status.provider,model:status.model,createdAt:at,updatedAt:at,request:normal,packet,instructions:journeyInstructionsPin()};
  try{
   await env.FILES.put(key,JSON.stringify(run),{httpMetadata:{contentType:'application/json'}});
@@ -522,8 +546,8 @@ async function handleJourneyDraft(request,env,owner,projectId,action,url){
  }catch(e){
   const code=e.code||'storage',failed={...run,status:'failed',updatedAt:new Date().toISOString(),error:genericError(code),...providerFailure(e),...(code==='invalid_output'&&e.message?{detail:String(e.message).slice(0,300)}:{})};
   try{await env.FILES.put(key,JSON.stringify({...failed,result:undefined}),{httpMetadata:{contentType:'application/json'}});}catch{/* the row below still records the failure */}
-  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,failed.updatedAt,owner,run.id).run();
-  return json({...failed,result:undefined},code==='provider_limit'?429:502);
+  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,settleFailedRun(e),failed.updatedAt,owner,run.id).run();
+  return failedAnswer(failed,code);
  }
 }
 
@@ -548,7 +572,7 @@ export async function draftGroupWording(env, owner, projectId, p, packets, {acto
   const reservedTokens = 3 * new TextEncoder().encode(JSON.stringify(packet)).length + 12000, objectId = ('draft-group:' + packet.request.chapter + ':' + groupId).slice(0, 100), inputStamp = changeFingerprint({request: packet.request, packetStamp: packet.stamp});
   await releaseInterruptedRuns(env, {owner, projectId});
   const inserted = await env.DB.prepare("INSERT OR IGNORE INTO intelligence_runs (owner_id,id,project_id,object_id,mode,input_stamp,status,provider,model,storage_key,created_at,updated_at,actor_id,reserved_tokens) SELECT ?,?,?,?,'journey',?,'pending',?,?,?,?,?,?,? WHERE " + SOL_BUDGET_SQL + " AND NOT EXISTS (SELECT 1 FROM intelligence_runs WHERE owner_id=? AND project_id=? AND status='pending' AND created_at>?)").bind(owner, id, projectId, objectId, inputStamp, status.provider, status.model, key, at, at, actor, reservedTokens, ...solBudgetBinds(owner, projectId, policy, reservedTokens), owner, projectId, active).run();
-  if (!inserted.meta?.changes) { results.push({groupId, runId: null, status: 'not-sent', answers: [], error: 'Sol is already working, or the project’s hourly request budget has been reached. The deterministic wording stands for this group and the ones after it.'}); await onGroup(results.at(-1)); break; }
+  if (!inserted.meta?.changes) { results.push({groupId, runId: null, status: 'not-sent', answers: [], error: (await budgetRefusal(env, owner, projectId, policy, reservedTokens)) + ' The deterministic wording stands for this group and the ones after it.'}); await onGroup(results.at(-1)); break; }
   let run = {actor, id, projectId, objectId, mode: 'journey', status: 'pending', provider: status.provider, model: status.model, createdAt: at, updatedAt: at, request: packet.request, packet, instructions: journeyInstructionsPin()};
   try {
    await env.FILES.put(key, JSON.stringify(run), {httpMetadata: {contentType: 'application/json'}});
@@ -562,7 +586,7 @@ export async function draftGroupWording(env, owner, projectId, p, packets, {acto
   } catch (e) {
    const code = e.code || 'storage', failedAt = new Date().toISOString();
    try { await env.FILES.put(key, JSON.stringify({...run, status: 'failed', updatedAt: failedAt, error: genericError(code)}), {httpMetadata: {contentType: 'application/json'}}); } catch { /* the row below still records the failure */ }
-   await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,updated_at=? WHERE owner_id=? AND id=?").bind(code, failedAt, owner, id).run();
+   await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=?").bind(code, settleFailedRun(e), failedAt, owner, id).run();
    results.push({groupId, runId: id, status: 'failed', answers: [], error: genericError(code)});
   }
   await onGroup(results.at(-1));
@@ -597,7 +621,7 @@ async function handleModelReview(request,env,owner,projectId,action,url){
  const reservedTokens=3*new TextEncoder().encode(JSON.stringify(packet)).length+32000,objectId='review:'+normal.chapter;
  await releaseInterruptedRuns(env,{owner,projectId});
  const inserted=await env.DB.prepare("INSERT OR IGNORE INTO intelligence_runs (owner_id,id,project_id,object_id,mode,input_stamp,status,provider,model,storage_key,created_at,updated_at,actor_id,reserved_tokens) SELECT ?,?,?,?,'review',?,'pending',?,?,?,?,?,?,? WHERE "+SOL_BUDGET_SQL+" AND NOT EXISTS (SELECT 1 FROM intelligence_runs WHERE owner_id=? AND project_id=? AND status='pending' AND created_at>?)").bind(owner,raw.requestId,projectId,objectId,inputStamp,status.provider,status.model,key,at,at,request.headers.get('oai-authenticated-user-id'),reservedTokens,...solBudgetBinds(owner,projectId,policy,reservedTokens),owner,projectId,active).run();
- if(!inserted.meta?.changes)return json({error:'Sol is already working, or the project’s hourly request budget has been reached. The chapter’s own checks remain available.'},429);
+ if(!inserted.meta?.changes)return json({error:(await budgetRefusal(env,owner,projectId,policy,reservedTokens))+' The chapter’s own checks remain available.'},429);
  let run={actor:request.headers.get('oai-authenticated-user-id'),id:raw.requestId,projectId,objectId,mode:'review',status:'pending',provider:status.provider,model:status.model,createdAt:at,updatedAt:at,request:normal,packet,instructions:reviewInstructionsPin()};
  try{
   await env.FILES.put(key,JSON.stringify(run),{httpMetadata:{contentType:'application/json'}});
@@ -609,7 +633,7 @@ async function handleModelReview(request,env,owner,projectId,action,url){
  }catch(e){
   const code=e.code||'storage',failed={...run,status:'failed',updatedAt:new Date().toISOString(),error:genericError(code),...providerFailure(e),...(code==='invalid_output'&&e.message?{detail:String(e.message).slice(0,300)}:{})};
   try{await env.FILES.put(key,JSON.stringify({...failed,result:undefined}),{httpMetadata:{contentType:'application/json'}});}catch{/* the row below still records the failure */}
-  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,failed.updatedAt,owner,run.id).run();
-  return json({...failed,result:undefined},code==='provider_limit'?429:502);
+  await env.DB.prepare("UPDATE intelligence_runs SET status='failed',error_code=?,used_tokens=?,updated_at=? WHERE owner_id=? AND id=?").bind(code,settleFailedRun(e),failed.updatedAt,owner,run.id).run();
+  return failedAnswer(failed,code);
  }
 }
