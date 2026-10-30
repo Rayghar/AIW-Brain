@@ -51,9 +51,9 @@ import {technologyCatalogue} from './technology-catalogue.js';
 import {TECHNOLOGY_CATEGORIES} from './technology-domain.js';
 import {lensReport} from './domain-lens.js';
 import {plateausOf, roadmapOf, PLATEAU_WORDS, plateauGroups, groupPlacements, migrationsOf, migrationNeeds, MIGRATION_FIELDS} from './roadmap-domain.js';
-import {mappingRole, LAYER_KINDS} from './logical-domain.js';
+import {mappingRole} from './logical-domain.js';
 import {retiredRecords, isProposed, solDraftOf} from './record-lifecycle.js';
-import {stepOfNode} from './model-scope.js';
+import {recordTrace} from './trace-kernel.js';
 import {acceptedNarratives} from './brain-authoring.js';
 import {noteCurrent} from './aiw-brain.js';
 // rc39 (PLAN §4.4): the design questions a component faces, from the one projection, for its passage.
@@ -1220,26 +1220,28 @@ function integrations(B, {subset = null, level = 3} = {}) {
 
 // ---------------------------------------------------------------- round 12, D4's and E's records (GR-SDD-26, GR-SDD-28)
 // The journeys the functionalities run in (Chapter 1's journey steps, by journey), each with its kind of process
-// (requirements-domain.js processKind) and the responsibilities that serve or realise its steps (Chapter 4 connections of
-// kind serves or realises, logical-domain.js LAYER_KINDS, read with the responsibility as the source whichever end the
-// connection is drawn from; a structural connection drawn from a step to a responsibility reads as serving it, as the
-// architecture model types it: architecture-model.js connectionType, Serving with the responsibility as the source).
+// (requirements-domain.js processKind) and the responsibilities that serve or realise its steps, read from each step's
+// trace (rc.10.73.42, D7: trace-kernel.js recordTrace, the chain the trail and the narrative read): those a Chapter 4
+// connection draws serving or realising the step (kind serves or realises, logical-domain.js LAYER_KINDS, whichever end
+// it is drawn from; a structural connection drawn from the step reads as serving it, as architecture-model.js
+// connectionType types it), and those the requirements the step asks for name, which serve it.
+const REALISING = new Set(['realises', 'realizedBy']);
 function journeys(B) {
   const {p} = B, steps = list(p.artefacts).filter(a => a.type === 'journey' && a.scopeMode !== 'out');
   if (!steps.length) return '';
   const byJourney = new Map();
   for (const s of steps) { const k = str(s.journeyId) || 'The journey'; if (!byJourney.has(k)) byJourney.set(k, []); byJourney.get(k).push(s); }
-  // A connection's step end, by id (GR-REQ-19): the step itself, or the process node that stands for it on the Bank
-  // Payment reference (model-scope.js stepOfNode); never by title, so a step keeps what serves it when either is renamed.
-  const resp = new Map(list(p.logical?.responsibilities).map(r => [r.id, r])), stepAt = new Map(steps.map(s => [s.id, s])), by = new Map();
-  const stepOf = id => stepAt.get(id) || stepAt.get(stepOfNode(p, id)) || null;
-  for (const e of list(p.logical?.connections)) {
-    const structural = !e.kind || e.kind === 'trace', kind = LAYER_KINDS.includes(e.kind) ? e.kind : structural && resp.has(e.to) && stepOf(e.from) ? 'serves' : null;
-    if (!kind) continue;
-    const [r, x] = resp.has(e.from) && stepOf(e.to) ? [e.from, e.to] : resp.has(e.to) && stepOf(e.from) ? [e.to, e.from] : [];
-    if (!r) continue;
-    const s = stepOf(x).id;
-    let m = by.get(s); if (!m) by.set(s, m = {serves: new Set(), realises: new Set()}); m[kind].add(r);
+  // A connection's step end is read by id (GR-REQ-19): the step itself, or the process node that stands for it on the
+  // Bank Payment reference (model-scope.js stepOfNode, which the kernel reads); never by title.
+  const resp = new Map(list(p.logical?.responsibilities).map(r => [r.id, r])), by = new Map();
+  for (const s of steps) {
+    const T = recordTrace(p, s.id); if (!T) continue;
+    const asked = new Set(T.layers.requirement), m = {serves: new Set(), realises: new Set()};
+    for (const r of T.layers.responsibility) for (const h of T.hops.get(r) || []) {
+      if (h.source === 'logical.connections' && h.from === s.id) m[REALISING.has(h.type) ? 'realises' : 'serves'].add(r);
+      else if (h.type === 'fulfils' && asked.has(h.from)) m.serves.add(r);
+    }
+    by.set(s.id, m);
   }
   const KIND = Object.fromEntries(PROCESS_KINDS.map(([k, label]) => [k, (/^[aeiou]/i.test(label) ? 'an ' : 'a ') + label.toLowerCase()]));
   const lines = [...byJourney].map(([name, xs]) => {

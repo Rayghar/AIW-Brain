@@ -10,6 +10,7 @@ import {isBlankProject,seedingOff} from './model-scope.js';
 // A contract's end by its display reference, never its internal id.
 const participantRef=(p,id)=>{const x=participant(p,id);return x?(x.ref||x.id)+' '+x.title:'an unresolved participant';};
 import {num,list} from './util.js';
+import {planInScope} from './trace-kernel.js';
 import {groupById,groupMembers} from './requirement-groups.js';
 import {NOT_STATED,SEEDED,PROPOSED,said,authoredOrigin,authored,fitText,patchFields,patchLinks,groundLinks,patchOpen,keepConfirmations,sameRecord,has,retiredOf,proposalNote,openNotes,technologySeeds,boundarySeeds} from './technology-domain.js';
 import {citedNotes,undeliveredNotes,deliveryOf,namedRequirementStamps,trailText} from './requirement-links.js';
@@ -35,7 +36,7 @@ const fromIndex=(m,key)=>(m.get(key)||[]).slice();
 export const runtimeInput=(p,id)=>findIn(p,'runtime:inputs',()=>runtimeInputs(p),id);
 export const environments=p=>p.runtime?.environments||[],environment=(p,id)=>findIn(p,'runtime:environments',()=>environments(p),id);
 export const zones=(p,envId)=>envId?filterIn(p,'runtime:zones-by-environment',()=>p.runtime.zones,z=>z.environmentId,envId):p.runtime.zones.slice(),zone=(p,id)=>findIn(p,'runtime:zones',()=>p.runtime.zones,id);
-const inScopePlan=(p,r)=>environment(p,r.environmentId)?.assetIds.includes(r.assetId)&&runtimeInput(p,r.assetId);
+const inScopePlan=(p,r)=>planInScope(environment(p,r.environmentId),r,runtimeInput(p,r.assetId));
 export const plans=(p,envId)=>{const m=ix(p,'plans-by-environment',()=>groupBy(p.runtime.plans.filter(r=>inScopePlan(p,r)),r=>r.environmentId));if(!m)return p.runtime.plans.filter(r=>(!envId||r.environmentId===envId)&&inScopePlan(p,r));if(envId)return fromIndex(m,envId);const all=ix(p,'plans',()=>p.runtime.plans.filter(r=>inScopePlan(p,r)));return all.slice();};
 export const plan=(p,id)=>findIn(p,'runtime:plan',()=>p.runtime.plans,id),planFor=(p,envId,assetId)=>plans(p,envId).find(r=>r.assetId===assetId);
 export const placements=(p,id)=>id?filterIn(p,'runtime:placements-by-plan',()=>p.runtime.placements,l=>l.planId,id):p.runtime.placements.slice(),runtimePath=(p,id)=>findIn(p,'runtime:path',()=>p.runtime.paths,id);

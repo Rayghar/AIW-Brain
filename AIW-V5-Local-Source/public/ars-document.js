@@ -18,6 +18,7 @@
 // in, with their windows and cut-offs; an invariant without its condition, check or owner and a batch contract that
 // does not say when it runs, its window or its cut-off are open items (GR-SDD-28).
 import {driverChain} from './design-reasoning.js';
+import {traceRecords} from './trace-kernel.js';
 import {reasoningFor} from './design-spec.js';
 import {attribute} from './playbook-knowledge.js';
 import {QUALITY_TYPES, targetIsMeasurable, statedText, targetText, orderedDrivers, conflictIsResolved, isQualityDriver, isPlaceholder, driverPriority, driverCodes, driversByKind, TARGET_FIELDS} from './quality-domain.js';
@@ -82,9 +83,9 @@ const NAMED_BY = 'is named by no runtime plan, capability or realisation (Chapte
 // One driver as one requirement, with its trace.
 function requirementOf(R, p, d, links = linksIndex(p)) {
   const chain = driverChain(R, d.id) || {requirements: [], responsibilities: [], components: [], decisions: [], plans: [], contracts: []};
-  const compIds = new Set(chain.components.map(c => c.id)), contractIds = new Set(chain.contracts.map(c => c.id));
-  const planControls = new Set(chain.plans.flatMap(f => list(f.plan.controlIds)));
-  const controls = R.controls.filter(k => planControls.has(k.id) || list(k.targetIds).some(t => compIds.has(t) || contractIds.has(t)));
+  // The controls the chain's walk reaches (trace-kernel.js, rc.10.73.42 D7): on its components, their contracts and data
+  // and what they stand on, and what its plans enforce — the controls the trail of each requirement it serves reads.
+  const controls = traceRecords(chain.trace, 'control');
   const fields = linksToDriver(p, d.id, links).map(x => ({chapter: x.chapter, kind: x.kind, field: x.field, id: x.record.id, ref: x.ref, title: x.title, recorded: x.link.recorded.text, target: x.link.target ? x.link.target.text : '', state: x.link.state, why: x.link.why}));
   const named = linksToDriver(p, d.id, links), carriers = [...new Map(named.map(x => [x.record.id, {chapter: x.chapter, id: x.record.id, ref: x.ref, title: x.title}])).values()];
   const reached = chain.plans.filter(f => !carriers.some(c => c.id === f.plan.id)).map(f => ({id: f.plan.id, ref: f.plan.ref || f.plan.id, title: str(f.plan.title)}));

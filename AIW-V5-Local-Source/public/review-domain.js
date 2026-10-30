@@ -3,7 +3,7 @@ import {workbenchMarkdown,guidanceFindings,guideMarkdown} from './guidance-recor
 import {CHAPTER_TITLES} from './chapter-names.js';
 // Round 6 (Contract T): a recorded relationship the standard forbids is a finding of the chapter that owns its source record.
 import {relationshipFindings} from './architecture-model.js';
-import {remember,isSettled,memoOff,memoPass,documentIndex} from './document-memo.js';
+import {remember,isSettled,memoOff,memoPass,findIn} from './document-memo.js';
 import {assuranceMarkdown,semanticFindings} from './assurance-domain.js';
 import {qualityMeasurementFindings} from './quality-analysis.js';
 import {knowledgeFindings,knowledgeMarkdown} from './knowledge-governance.js';
@@ -18,9 +18,11 @@ import {withChanges,changeSummary,changeCauses,fourEyesOn} from './changes-domai
 import {recordJudgement,reviewOf,eachRecord,provenanceBlocksMarkdown} from './provenance.js';
 // What a review of a record reads of it (round 12, GR-GOV-05): its own fingerprint, not the whole design's.
 import {recordStamp} from './source-fingerprint.js';
-import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,plans,placements,runtimeSources,exportRuntimeMarkdown} from './runtime-domain.js';
+import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,exportRuntimeMarkdown} from './runtime-domain.js';
 import {findings,milestones,exportMarkdown} from './requirements-domain.js';
-import {linksRequirement,linkedRequirementIds} from './requirement-links.js';
+import {linkedRequirementIds} from './requirement-links.js';
+// One trace kernel (rc.10.73.42, D7): the trail is its walk over the canonical design graph.
+import {requirementTrace,traceRecords} from './trace-kernel.js';
 import {requirementGroups,groupMembers} from './requirement-groups.js';
 import {qualityFindings,qualityMilestones,exportQualityMarkdown} from './quality-domain.js';
 import {decisionFindings,decisionMilestones,decisionCurrent,exportDecisionsMarkdown} from './decisions-domain.js';
@@ -28,8 +30,8 @@ import {logicalGraph,logicalFindings,logicalMilestones,exportLogicalMarkdown} fr
 import {realisationFindings,realisationMilestones,exportRealisationMarkdown} from './realisation-domain.js';
 import {technologyFindings,technologyMilestones,exportTechnologyMarkdown} from './technology-domain.js';
 import {technologyRealisationFindings,technologyRealisationMilestones,exportTechnologyRealisationMarkdown} from './technology-realisation-domain.js';
-import {interfaceFindings,interfaceMilestones,interfaceSources,exportInterfacesMarkdown} from './interfaces-domain.js';
-import {securityFindings,securityMilestones,securitySources,exportSecurityMarkdown} from './security-domain.js';
+import {interfaceFindings,interfaceMilestones,exportInterfacesMarkdown} from './interfaces-domain.js';
+import {securityFindings,securityMilestones,exportSecurityMarkdown} from './security-domain.js';
 import {reasoningSource} from './design-reasoning.js';
 import {detectAntiPatterns} from './design-spec.js';
 import {capacityObjective,capacityPlan,capacityMarkdown,ASSUMPTIONS as CAPACITY_ASSUMPTIONS} from './desk-capacity.js';
@@ -124,58 +126,19 @@ function performanceMarkdown(p){let C=null;try{C=reviewCapacity(p);}catch{C=null
 export function reviewObjects(p){if(objectCache.has(p))return objectCache.get(p);const g=logicalGraph(p),map=new Map();for(const a of p.artefacts)map.set(a.id,{id:a.id,ref:a.id,title:a.title,chapter:1,kind:a.type});for(const d of p.quality.drivers)map.set(d.id,{id:d.id,ref:d.id,title:d.title,chapter:2,kind:'quality driver'});for(const d of p.decisions.records)map.set(d.id,{id:d.id,ref:d.id,title:d.question,chapter:3,kind:'decision'});for(const n of g.nodes)map.set(n.id,{id:n.id,ref:n.ref||n.id,title:n.title,chapter:n.runtimeKind?10:n.layer==='security'?9:n.layer==='interface'||n.layer==='data'?8:n.layer==='technology'?(n.id.startsWith('tr-')?7:6):n.layer==='physical'?5:n.layer==='logical'?4:1,kind:n.runtimeKind||n.layer});const result=[...map.values()];objectCache.set(p,result);return result;}
 export function reviewSourceUrl(chapter,id,tab='model'){return '/?chapter='+chapter+'&tab='+tab+(id&&id!=='project'?'&'+(chapter===1?'artefact':chapter===2?'driver':chapter===3?'decision':'object')+'='+encodeURIComponent(id):'');}
 export const reviewRequirements=p=>p.artefacts.filter(a=>a.type==='requirement'&&a.scopeMode!=='out');
-// A requirement's trail (round 5, R5-G: the same trail, read through sets; the records that carry each requirement in
-// their sources are listed once per settled document or pass, rather than every record's sources once per requirement).
-const carriersOf=p=>documentIndex(p,'review:trace-carriers',()=>memoPass(p,()=>{const by=(list,sources)=>{const m=new Map();for(const r of list)for(const id of new Set(sources(r).requirements.map(a=>a.id))){let xs=m.get(id);if(!xs)m.set(id,xs=[]);xs.push(r);}return m;};return {contracts:by(p.interfaces.contracts,c=>interfaceSources(p,c)),controls:by(p.security.controls,c=>securitySources(p,c)),runtime:by(plans(p),r=>runtimeSources(p,r))};}));
-// A complete SDD asks for every requirement trail. Index each record's explicit and group-derived links once for a
-// settled document or read pass; retain the original scan on mutable documents and in unmemoised equivalence checks.
-// Each index list is populated in its chapter's record order, so a trail has exactly the same order and wording.
-const traceDirectOf=p=>documentIndex(p,'review:trace-direct',()=>{
- const by=rows=>{const index=new Map();for(const row of rows)for(const id of linkedRequirementIds(p,row)){let list=index.get(id);if(!list)index.set(id,list=[]);list.push(row);}return index;};
- const byKey=(rows,key)=>{const index=new Map();for(const row of rows)for(const id of [].concat(key(row)??[])){let list=index.get(id);if(!list)index.set(id,list=[]);list.push(row);}return index;};
- const valuesBy=(rows,key,value)=>{const index=new Map();for(const row of rows){let list=index.get(key(row));if(!list)index.set(key(row),list=[]);list.push(value(row));}return index;};
- const lists={decisions:p.decisions.records,applications:p.realisation.components,needs:p.technology.needs,
-  capabilities:p.technology.capabilities,realizations:p.technologyRealisation.records,data:p.interfaces.data};
- const positions=Object.fromEntries(Object.entries(lists).map(([key,rows])=>[key,new Map(rows.map((row,i)=>[row,i]))]));
- const relationships=new Map();for(const link of p.relationships)for(const id of new Set([link.from,link.to])){let set=relationships.get(id);if(!set)relationships.set(id,set=new Set());set.add(link.from);set.add(link.to);}
- return {requirements:new Map(reviewRequirements(p).map(r=>[r.id,r])),relationships,positions,
-  decisionsByDriver:byKey(p.decisions.records,r=>r.driverIds),applicationIdsByLogical:valuesBy(p.logical.mappings,r=>r.logicalId,r=>r.physicalId),
-  applicationsById:byKey(p.realisation.components,r=>r.id),needsByApplication:byKey(p.technology.needs,r=>r.applicationId),
-  capabilityIdsByNeed:valuesBy(p.technology.mappings,r=>r.needId,r=>r.capabilityId),capabilitiesById:byKey(p.technology.capabilities,r=>r.id),
-  realizationIdsByCapability:valuesBy(p.technologyRealisation.mappings,r=>r.capabilityId,r=>r.realizationId),
-  realizationsById:byKey(p.technologyRealisation.records,r=>r.id),dataById:byKey(p.interfaces.data,r=>r.id),
-  drivers:by(p.quality.drivers),decisions:by(p.decisions.records),logical:by(p.logical.responsibilities),
-  applications:by(p.realisation.components),needs:by(p.technology.needs),capabilities:by(p.technology.capabilities),
-  realizations:by(p.technologyRealisation.records),contracts:by(p.interfaces.contracts),data:by(p.interfaces.data),
-  controls:by(p.security.controls),runtime:by(plans(p)),parties:by(p.interfaces.parties||[]),
-  threats:by(p.security.threats||[]),paths:by(p.runtime?.paths||[])};
-});
-export function reviewTrace(p,id){if(traceCache.get(p)?.has(id))return traceCache.get(p).get(id);const direct=traceDirectOf(p),requirement=direct?direct.requirements.get(id):reviewRequirements(p).find(r=>r.id===id);if(!requirement)return null;const linked=direct?(direct.relationships.get(id)||new Set()):new Set(p.relationships.filter(l=>l.from===id||l.to===id).flatMap(l=>[l.from,l.to]));
- // A record answers for the requirement by naming it or by linking a requirement group that holds it (round 12, D-03),
- // a component too, by the groups it links itself, and so does a record of Chapters 6 to 10 that names it or its group
- // beside the trail it inherits (DM-02, DM-03): a need, a capability, a realisation, a party, a contract, a data
- // definition, a threat, a control, a runtime plan or a path.
- const answers=r=>linksRequirement(p,r,id),from=(key,rows)=>direct?(direct[key].get(id)||[]):rows.filter(answers),also=(key,rows,base)=>{const seen=new Set(base);for(const r of from(key,rows))if(!seen.has(r)){seen.add(r);base.push(r);}return base;};
- const ordered=(key,items)=>[...new Set(items)].sort((a,b)=>direct.positions[key].get(a)-direct.positions[key].get(b));
- const joined=(key,rows,items,match)=>direct?ordered(key,[...from(key,rows),...items]):rows.filter(r=>answers(r)||match(r));
- const carriers=carriersOf(p),context=p.artefacts.filter(a=>linked.has(a.id)&&a.id!==id),drivers=from('drivers',p.quality.drivers),driverIds=new Set(drivers.map(d=>d.id));
- const decisions=joined('decisions',p.decisions.records,direct?[...driverIds].flatMap(did=>direct.decisionsByDriver.get(did)||[]):[],d=>d.driverIds.some(did=>driverIds.has(did)));
- const logical=from('logical',p.logical.responsibilities),logicalIds=new Set(logical.map(r=>r.id));
- const appIds=new Set(direct?[...logicalIds].flatMap(lid=>direct.applicationIdsByLogical.get(lid)||[]):p.logical.mappings.filter(m=>logicalIds.has(m.logicalId)).map(m=>m.physicalId));
- const applications=joined('applications',p.realisation.components,direct?[...appIds].flatMap(aid=>direct.applicationsById.get(aid)||[]):[],a=>appIds.has(a.id)),applicationIds=new Set(applications.map(a=>a.id));
- const needs=joined('needs',p.technology.needs,direct?[...applicationIds].flatMap(aid=>direct.needsByApplication.get(aid)||[]):[],n=>applicationIds.has(n.applicationId)),needIds=new Set(needs.map(n=>n.id));
- const capabilityIds=new Set(direct?[...needIds].flatMap(nid=>direct.capabilityIdsByNeed.get(nid)||[]):p.technology.mappings.filter(m=>needIds.has(m.needId)).map(m=>m.capabilityId));
- const capabilities=joined('capabilities',p.technology.capabilities,direct?[...capabilityIds].flatMap(cid=>direct.capabilitiesById.get(cid)||[]):[],c=>capabilityIds.has(c.id)),capabilityHeld=new Set(capabilities.map(c=>c.id));
- const realizationIds=new Set(direct?[...capabilityHeld].flatMap(cid=>direct.realizationIdsByCapability.get(cid)||[]):p.technologyRealisation.mappings.filter(m=>capabilityHeld.has(m.capabilityId)).map(m=>m.realizationId));
- const realizations=joined('realizations',p.technologyRealisation.records,direct?[...realizationIds].flatMap(rid=>direct.realizationsById.get(rid)||[]):[],r=>realizationIds.has(r.id));
- const contracts=also('contracts',p.interfaces.contracts,carriers?(carriers.contracts.get(id)||[]).slice():p.interfaces.contracts.filter(c=>interfaceSources(p,c).requirements.some(r=>r.id===id)));
- const dataIds=new Set(contracts.flatMap(c=>c.exchanges.map(e=>e.dataId)));
- const data=joined('data',p.interfaces.data,direct?[...dataIds].flatMap(did=>direct.dataById.get(did)||[]):[],d=>dataIds.has(d.id));
- const controls=also('controls',p.security.controls,carriers?(carriers.controls.get(id)||[]).slice():p.security.controls.filter(c=>securitySources(p,c).requirements.some(r=>r.id===id)));
- const runtime=also('runtime',plans(p),carriers?(carriers.runtime.get(id)||[]).slice():plans(p).filter(r=>runtimeSources(p,r).requirements.some(a=>a.id===id)));
- const parties=from('parties',p.interfaces.parties||[]),threats=from('threats',p.security.threats||[]),paths=from('paths',p.runtime?.paths||[]),runtimeIds=new Set(runtime.map(r=>r.id)),zoneIds=unique(placements(p).filter(l=>runtimeIds.has(l.planId)).map(l=>l.zoneId));
+// A requirement's trail (rc.10.73.42, D7): the trace kernel's walk from the requirement over the canonical design graph
+// (trace-kernel.js), read as the records of each layer in their chapter's order: its Chapter 1 context, the drivers and
+// decisions, the responsibilities and components, the capabilities and realisations, the contracts and data, the
+// controls, the operating plans in scope and the zones their placements stand in, the threats, parties and paths. The
+// trail walk, the review desk, the matrix annex, change impact and the architecture case read it; the narrative, the
+// Matrix, the component specification, the driver scope and the ARS read the same walk. A trail is read once per
+// document object.
+export function reviewTrace(p,id){if(traceCache.get(p)?.has(id))return traceCache.get(p).get(id);const requirement=findIn(p,'review:requirements',()=>reviewRequirements(p),id);if(!requirement)return null;
+ const T=memoPass(p,()=>requirementTrace(p,id)),of=layer=>traceRecords(T,layer);
+ const context=of('context'),drivers=of('driver'),decisions=of('decision'),logical=of('responsibility'),applications=of('component'),needs=of('need'),capabilities=of('capability'),realizations=of('realization'),contracts=of('contract'),data=of('data'),runtime=of('plan'),controls=of('control'),threats=of('threat'),parties=of('party'),paths=of('path');
+ const zoneIds=unique(of('placement').map(l=>l.zoneId).filter(z=>T.has(z)));
  const nodes=unique([...context.map(a=>a.modelRef).filter(Boolean),...logical,...applications,...capabilities,...realizations,...contracts,...data,...controls,...runtime].map(n=>typeof n==='string'?n:n.id).concat(zoneIds));
- const result={requirement,context,drivers,decisions,logical,applications,capabilities,realizations,contracts,data,controls,runtime,parties,threats,paths,zoneIds,nodeIds:nodes,steps:[{title:'The obligation',detail:requirement.acceptance||'Acceptance criteria need definition.',ids:context.map(a=>a.modelRef).filter(Boolean)},{title:'Quality and decisions',detail:drivers.length+' linked quality drivers; '+decisions.filter(d=>decisionCurrent(p,d)).length+' currently accepted decisions of '+decisions.length+' linked decisions. Drafts remain visible.',ids:logical.map(r=>r.id)},{title:'Application responsibilities',detail:logical.length+' logical responsibilities are mapped into '+applications.length+' application components. A mapping records design intent, not implementation evidence.',ids:[...logical,...applications].map(r=>r.id)},{title:'Supporting architecture',detail:capabilities.length+' capabilities, '+realizations.length+' realizations, and '+contracts.length+' contracts supply the supporting design.',ids:[...capabilities,...realizations,...contracts,...data].map(r=>r.id)},{title:'Protection and runtime',detail:controls.length+' intended controls and '+runtime.length+' operating plans carry the obligation into operation. Evidence and open findings remain separate.',ids:[...controls,...runtime].map(r=>r.id).concat(zoneIds)}]};if(!traceCache.has(p))traceCache.set(p,new Map());traceCache.get(p).set(id,result);return result;
+ const result={requirement,context,drivers,decisions,logical,applications,needs,capabilities,realizations,contracts,data,controls,runtime,parties,threats,paths,zoneIds,nodeIds:nodes,steps:[{title:'The obligation',detail:requirement.acceptance||'Acceptance criteria need definition.',ids:context.map(a=>a.modelRef).filter(Boolean)},{title:'Quality and decisions',detail:drivers.length+' linked quality drivers; '+decisions.filter(d=>decisionCurrent(p,d)).length+' currently accepted decisions of '+decisions.length+' linked decisions. Drafts remain visible.',ids:logical.map(r=>r.id)},{title:'Application responsibilities',detail:logical.length+' logical responsibilities are mapped into '+applications.length+' application components. A mapping records design intent, not implementation evidence.',ids:[...logical,...applications].map(r=>r.id)},{title:'Supporting architecture',detail:capabilities.length+' capabilities, '+realizations.length+' realizations, and '+contracts.length+' contracts supply the supporting design.',ids:[...capabilities,...realizations,...contracts,...data].map(r=>r.id)},{title:'Protection and runtime',detail:controls.length+' intended controls and '+runtime.length+' operating plans carry the obligation into operation. Evidence and open findings remain separate.',ids:[...controls,...runtime].map(r=>r.id).concat(zoneIds)}]};if(!traceCache.has(p))traceCache.set(p,new Map());traceCache.get(p).set(id,result);return result;
 }
 // An action's plateau (round 6) is part of its definition only when it names one, so the verification stamps of earlier
 // actions, which name none, are what they were.

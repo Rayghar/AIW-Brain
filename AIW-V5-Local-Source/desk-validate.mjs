@@ -136,9 +136,14 @@ assert.equal(M.trace.length, 5);
 assert.ok(M.trace.every(t => !t.firstBreak), 'every requirement reaches where it runs');
 assert.match(describeTrace(M.trace[0]), /^REQ-001 Accept a traceable payment instruction: reaches 9 of 9 recorded places; recorded links reach its running part\. Design links do not verify implementation\.$/);
 assert.deepEqual(M.trace[0].cells.platform.map(x => x.label).slice(0, 2), ['Kubernetes 1.31', 'PostgreSQL 17'], 'the platform reads as its products');
+// rc.10.73.42 (D7): the thread is the trace kernel's trail, so with api's own mapping gone REQ-001 still reaches the
+// components its drivers' responsibilities and their decisions are realised by, never api-pod; with no responsibility
+// realised by any component it reaches none, and the thread breaks at components.
 const broken = clone(project); broken.logical.mappings = broken.logical.mappings.filter(m => m.logicalId !== 'api');
-const Mb = deskModel(broken);
-assert.equal(Mb.trace.find(t => t.id === 'REQ-001').firstBreak.id, 'applications', 'with no component, the thread breaks at components');
+const Mb = deskModel(broken), Tb = Mb.trace.find(t => t.id === 'REQ-001');
+assert.deepEqual(Tb.cells.applications.map(x => x.id), ['risk-engine', 'core-adapter', 'worker', 'notify-worker'], 'without api\'s mapping REQ-001 reaches the components of the responsibilities its drivers and decisions name, not api-pod');
+const unmapped = clone(project); unmapped.logical.mappings = [];
+assert.equal(deskModel(unmapped).trace.find(t => t.id === 'REQ-001').firstBreak.id, 'applications', 'with no component, the thread breaks at components');
 assert.deepEqual(TRACE_COLS.map(c => c.ch), [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
 pass('the thread: each requirement followed through drivers, decisions, responsibilities, components, products, interfaces, controls and runtime to its vitals; a missing link is a break where it happens');
 
@@ -267,7 +272,11 @@ for (const r of M.rows) {
 }
 assert.ok(!/blocking/i.test(JSON.stringify(RD)), 'never "blocking"');
 const kinds = {}; for (const e of RD.edges) kinds[e.kind] = (kinds[e.kind] || 0) + 1;
-assert.deepEqual(kinds, {realizes: 5, fulfils: 5, serves: 28}, 'part → component → requirement');
+// rc.10.73.42 (D7): a component fulfils each requirement whose trail (the trace kernel's) holds it; the seed's drivers and
+// decisions name most responsibilities, so 21 component → requirement lines, one per component on each thread.
+assert.deepEqual(kinds, {realizes: 5, fulfils: 21, serves: 28}, 'part → component → requirement');
+assert.equal(kinds.fulfils, M.trace.reduce((n, t) => n + t.cells.applications.length, 0));
+assert.ok(RD.edges.filter(e => e.kind === 'fulfils').every(e => M.trace.find(t => t.id === e.to)?.cells.applications.some(c => c.id === e.from)), 'a component fulfils only a requirement whose thread holds it');
 assert.ok(RD.edges.every(e => RD.nodes.some(n => n.id === e.from) && RD.nodes.some(n => n.id === e.to)));
 assert.ok(RD.edges.filter(e => e.kind === 'realizes').every(e => M.rows.find(r => r.id === e.from)?.assetId === e.to), 'a part realizes its own component');
 for (let i = 0; i < RL.nodes.length; i++) for (let j = i + 1; j < RL.nodes.length; j++) assert.ok(!overlap(RL.nodes[i], RL.nodes[j]), RL.nodes[i].id + ' / ' + RL.nodes[j].id);

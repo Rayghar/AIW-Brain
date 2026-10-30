@@ -110,7 +110,9 @@ pass('every journey step of the bank, permits, warehouse and clinic references y
   const R = traceNarrative(p, traceFrom(p, 'REQ-001'));
   assert.equal(R.paragraphs.length, TRACE_ORDER.length - 1); assert.equal(R.paragraphs[0].step, 'quality driver'); assert.match(R.title, /^What the design records for REQ-001 /);
   const G = traceNarrative(p, traceFrom(p, 'risk'));
-  assert.match(G.paragraphs[0].text, /^It traces to the requirement REQ-002 /); assert.ok(G.gaps.includes('no control') && G.paragraphs.some(x => x.gap && x.text === 'No control is recorded for this step yet.'));
+  // rc.10.73.42 (D7): the trace is the kernel's, back to every requirement whose trail holds the responsibility: REQ-002
+  // names risk, and QD-003 and QD-005, which serve REQ-001, name it too.
+  assert.match(G.paragraphs[0].text, /^It traces to the requirements REQ-001 [^.]+ and REQ-002 /); assert.ok(G.gaps.includes('no control') && G.paragraphs.some(x => x.gap && x.text === 'No control is recorded for this step yet.'));
   assert.equal(traceNarrative(p, null), null); assert.equal(traceNarrative(p, traceFrom(p, 'nothing-here')), null); assert.equal(traceStoryHTML(p, null), '');
   pass('a requirement or a responsibility is told the same way, through its requirement first, with its gaps named; nothing to trace is nothing to tell');
 }
@@ -151,8 +153,13 @@ pass('every journey step of the bank, permits, warehouse and clinic references y
   for (const x of N.paragraphs) for (const id of x.ids) assert.ok(html.includes(`data-cm-open="${id}"`), id + ' is a data-cm-open link');
   assert.ok(html.includes('data-cm-open="JRN-001" data-cm-chapter="1"') && html.includes('data-cm-open="rest" data-cm-chapter="8"') && html.includes('data-cm-open="oauth" data-cm-chapter="9"'), 'each link carries the record’s chapter');
   assert.equal((html.match(/<li class="tn-step/g) || []).length, N.paragraphs.length); assert.ok(html.startsWith('<section class="tn-story" data-tn-from="JRN-001"') && html.includes('<h4 aria-level="3">What happens when: &lt;img'));
+  // rc.10.73.42 (D7): the story is the trace kernel's, so clinic JRN-001 reads its requirements' trails whole (TR-001,
+  // SEC-001, PL-001 …) with no false gap; with no realisation mapping, control or placement recorded, those three steps are gaps.
   const C = projects.find(([id]) => id === 'clinic-appointments')[1], H = traceStoryHTML(C, traceFrom(C, 'JRN-001'));
-  assert.equal((H.match(/<li class="tn-step gap"/g) || []).length, 3); assert.equal((H.match(new RegExp('<li><i aria-hidden="true">○</i>' + CHECK_WORDS.confirm + ' · No ', 'g')) || []).length, 3, 'the gaps in the checks’ words');
+  assert.equal((H.match(/<li class="tn-step gap"/g) || []).length, 0, 'every step of clinic JRN-001 holds a record on its trail');
+  const Cg = structuredClone(C); Cg.technologyRealisation.mappings = []; Cg.security.controls = []; Cg.runtime.placements = [];
+  const Hg = traceStoryHTML(Cg, traceFrom(Cg, 'JRN-001'));
+  assert.equal((Hg.match(/<li class="tn-step gap"/g) || []).length, 3); assert.equal((Hg.match(new RegExp('<li><i aria-hidden="true">○</i>' + CHECK_WORDS.confirm + ' · No ', 'g')) || []).length, 3, 'the gaps in the checks’ words');
   assert.ok(H.includes('href="/?chapter=8&amp;tab=model&amp;object=dat-001"') && traceStoryHTML(C, traceFrom(C, 'JRN-001'), {href: (id, ch) => '/x/' + ch + '/' + id}).includes('href="/x/8/dat-001"'), 'the link target is the companion’s to choose');
   pass('the HTML reading escapes hostile titles, links every cited record with data-cm-open and its chapter to an in-app path the caller may replace, and names the gaps in the checks’ words');
 }

@@ -17,6 +17,7 @@ import {dataAuthorities} from './interfaces-domain.js';
 import {optionSpecification} from './technology-realisation-domain.js';
 import {linkedRequirementIds} from './requirement-links.js';
 import {driverScope} from './driver-scope.js';
+import {forwardTrace, traceRecords} from './trace-kernel.js';
 import {architectureSolutionsFor, architectureObligationsFor} from './architecture-obligations.js';
 import {list,str,num,uniq,joinAnd,plural} from './util.js';
 
@@ -125,13 +126,11 @@ function specIndex(R) {
   const p = R.p, by = () => new Map(), add = (m, key, x) => { let xs = m.get(key); if (!xs) m.set(key, xs = []); if (xs.at(-1) !== x) xs.push(x); };
   // Data by id: Chapter 8's definitions, and the data records Chapter 8 seeds them from while it is not opened yet.
   const data = new Map([...list(p?.logical?.assets).filter(n => n.layer === 'data').map(n => [n.id, {id: n.id, ref: n.ref || n.id, title: n.title, purpose: n.description}]), ...list(p?.interfaces?.data).map(d => [d.id, d])]);
-  const contractsByEnd = by(), ownedBy = by(), authored = new Set(), threatsBy = by(), controlsBy = by(), connectionsBy = by();
+  const contractsByEnd = by(), ownedBy = by(), authored = new Set(), connectionsBy = by();
   for (const k of R.contracts) { add(contractsByEnd, k.from, k); add(contractsByEnd, k.to, k); }
   for (const d of list(p?.interfaces?.data)) { const as = dataAuthorities(p, d); if (as.length) authored.add(d.id); for (const a of as) add(ownedBy, a.id, d); }
-  for (const t of list(p?.security?.threats)) for (const x of list(t.targetIds)) add(threatsBy, x, t);
-  for (const k of R.controls) for (const x of list(k.targetIds)) add(controlsBy, x, k);
   for (const k of R.connections) { add(connectionsBy, k.from, k); add(connectionsBy, k.to, k); }
-  X = {data, parties: new Map(list(p?.interfaces?.parties).map(x => [x.id, x])), contracts: new Map(R.contracts.map(k => [k.id, k])), contractsByEnd, ownedBy, authored, threatsBy, controlsBy, connectionsBy};
+  X = {data, parties: new Map(list(p?.interfaces?.parties).map(x => [x.id, x])), contracts: new Map(R.contracts.map(k => [k.id, k])), contractsByEnd, ownedBy, authored, connectionsBy};
   specIndexes.set(R, X); return X;
 }
 export function componentSpec(R, id) {
@@ -162,7 +161,9 @@ export function componentSpec(R, id) {
     if (k.to === id) flows[x.role === 'response' ? 'produced' : 'consumed'].push(x.dataId);
   }
   const consumed = dataOf([...flows.consumed, ...list(c.consumesDataIds)]), produced = dataOf([...flows.produced, ...list(c.producesDataIds)]);
-  const threats = X.threatsBy.get(id) || [], controls = X.controlsBy.get(id) || [];
+  // Its protection is what its trail reads (rc.10.73.42, D7): the controls and threats the trace kernel reaches from it — on
+  // it, on the contracts it provides or uses, the data it owns or they carry and what it stands on, and what its plans enforce.
+  const reach = forwardTrace(p, id, {graph: R.graph?.()}), threats = traceRecords(reach, 'threat'), controls = traceRecords(reach, 'control');
   const needs = rowsWith(R, 'needsByApp', id).map(n => { const m = firstWith(R, 'techByNeed', n.id); return {need: n, capability: m ? R.caps.get(m.capabilityId) || null : null}; });
   const interactions = (X.connectionsBy.get(id) || []).map(k => ({interaction: k, other: endOf(k.from === id ? k.to : k.from), direction: k.from === id ? 'out' : 'in'}));
   const gaps = S.gaps.slice();
