@@ -62,6 +62,7 @@
     "test:contextual-intelligence": "node architecture-operations-validate.mjs && node intelligence-continuity-validate.mjs && node intelligence-draft-service-validate.mjs && node contextual-service-validate.mjs && node brain-proposed-verification-validate.mjs && node brain-panel-state-validate.mjs",
     "test:co-design": "node co-design-guide-validate.mjs && node co-design-question-validate.mjs && node reasoning-history-service-validate.mjs && node brain-structural-correctness-validate.mjs",
     "test:architecture": "node architecture-design-validate.mjs",
+    "test:rc42-g3b-trace-and-delivery": "node rc42-g3b-trace-and-delivery-validate.mjs",
     "test:reads": "node read-design-validate.mjs",
     "test:persistence": "node persistence-validate.mjs",
     "test:brain-integration": "node brain-integration-validate.mjs",

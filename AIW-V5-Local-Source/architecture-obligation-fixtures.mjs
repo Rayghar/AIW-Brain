@@ -4,7 +4,8 @@ import {applyTechnologyRealisationCommand} from './public/technology-realisation
 import {applyFinalReviewCommand} from './public/review-domain.js';
 import {architectureObligationAction,architectureActionStamp} from './public/architecture-obligations.js';
 export const obligationAt='2026-10-20T18:00:00.000Z';
-export const reviewCommand=(p,type,payload,actor='synthetic-reviewer')=>applyFinalReviewCommand(p,{type:'review.'+type,payload},obligationAt,actor).document;
+// A delivery action is verified by a second signed-in person, never its author or owner (rc42, D15).
+export const reviewCommand=(p,type,payload,actor=type==='delivery'?'synthetic-verifier':'synthetic-reviewer')=>applyFinalReviewCommand(p,{type:'review.'+type,payload},obligationAt,actor).document;
 export function acceptedObligationFixture(){
  const prepared=arc(readyComposition('resilience'),'architecture.prepare',{optionId:'protected-call'}),alternative=prepared.document.modelAlternatives.records.find(a=>a.id===prepared.selected),preview=previewAlternative(prepared.document,alternative);
  let p=applyAlternativeCommand(prepared.document,{type:'alternative.apply',payload:{id:alternative.id,alternativeRevision:alternative.revision,previewStamp:preview.stamp,reviewed:true,reviewer:'Synthetic architect',reason:'Exercise an accepted caller policy and exact verification duties.'}},obligationAt).document;

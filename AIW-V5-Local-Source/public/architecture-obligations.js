@@ -25,6 +25,16 @@ export function architectureEvidenceSources(p,receipts=[]){
  }
  return out;
 }
+// Who marks a delivery action Verified (rc42, D15): a signed-in person, not an agent or Sol, who wrote no revision of the
+// action and does not own it, whatever the project's four-eyes setting. A typed reviewer name describes the review; it
+// never establishes it. An action names who wrote each revision (actor); one saved before it did names no author, and
+// nobody can show they are independent of it until it is saved again. A Verified mark recorded without such a person
+// stays as it was and never makes its obligation current-verified.
+const sameName=(a,b)=>{const n=v=>String(v??'').trim().toLowerCase();return !!n(a)&&n(a)===n(b);};
+export const deliveryActionAuthors=a=>unique([a?.actor,...list(a?.history).filter(h=>h?.revision!=null).map(h=>h.actor)]);
+export const SECOND_VERIFIER='A second signed-in person, who did not write or own the action, verifies it.';
+export function verifierRefusal(a,actor,account=null){const id=a?.id;return !actor?'Sign in to verify '+id+'.':account==='agent'?'An agent or Sol does not verify '+id+'.':!a.actor?id+' names no author: save it again first.':deliveryActionAuthors(a).includes(actor)?SECOND_VERIFIER+' '+actor+' wrote '+id+'.':sameName(actor,a.owner)?SECOND_VERIFIER+' '+actor+' owns '+id+'.':null;}
+export const independentVerification=a=>!!a?.verification&&a.verification.account!=='agent'&&!verifierRefusal(a,a.verification.actor);
 export function architectureObligationActionState(p,a){
  const ref=a?.architectureObligation,basis=architectureObligationBasis(p,ref),reasons=[...basis.reasons],v=a?.verification,comparison=verificationForAction(p,a);
  const current=basis.ready&&ref?.basisStamp===basis.stamp;
@@ -38,7 +48,9 @@ export function architectureObligationActionState(p,a){
  }else if(a?.status==='Verified')evidenceCurrent=false;
  if(!evidenceCurrent)reasons.push('The captured verification no longer identifies this current obligation, action and evidence.');
  const targetIds=accepted(p,ref)?.obligation.targetIds||[],defined=['title','owner','due','acceptance'].every(key=>typeof a?.[key]==='string'&&a[key].trim())&&targetIds.length>0&&targetIds.every(id=>list(a?.objectIds).includes(id));
- const verified=current&&defined&&evidenceCurrent&&a?.status==='Verified'&&v?.reviewed===true&&!!v?.reviewer&&!!v?.reference&&!!v?.architectureObligation;
+ const independent=a?.status!=='Verified'||independentVerification(a);
+ if(!independent)reasons.push(SECOND_VERIFIER);
+ const verified=current&&defined&&evidenceCurrent&&independent&&a?.status==='Verified'&&v?.reviewed===true&&!!v?.reviewer&&!!v?.reference&&!!v?.architectureObligation;
  if(a?.status==='Verified'&&!defined){evidenceCurrent=false;reasons.push('The verification action no longer defines every required target, owner, date and acceptance criterion.');}
  if(comparison&&comparison.state!=='pass')reasons.push(comparison.label+': '+comparison.reasons.join(' '));
  return {id:a?.id,state:!current||!evidenceCurrent?'review-required':verified?'current-verified':'evidence-awaiting',current,verified,reasons,verification:v||null,history:list(a?.history),basis,...(comparison?{comparison}:{})};
