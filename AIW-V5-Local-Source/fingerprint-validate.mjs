@@ -100,7 +100,8 @@ for (const state of fixture.states.filter(s => s.document)) {
   assert.ok(needsReadingsUpgrade(doc), state.name + ': the fixture keeps copies');
   const t = performance.now(), up = review.withFinalReview(structuredClone(doc)), ms = Math.round(performance.now() - t);
   assert.ok(!needsReadingsUpgrade(up) && allFingerprints(up), state.name + ': every reading is a fingerprint after the upgrade');
-  const said = withReadingsDefinition(1, () => readingJudgements(M, doc));
+  // Read as rc.10.73.16 wrote it: readings of whole records, and design fingerprint 1 (rc42, D14: evidence inside it).
+  const said = withReadingsDefinition(1, () => review.withDesignFingerprint(1, () => readingJudgements(M, doc)));
   assert.deepEqual(historicalReading(said), historicalReading(state.expected), state.name + ': old source-change and change-journal judgments hold');
   assert.deepEqual(readingJudgements(M, up), said, state.name + ': all current judgments are identical before and after upgrading readings');
   assert.equal(sig(review.withFinalReview(structuredClone(doc))), sig(up), state.name + ': the upgrade is deterministic');
@@ -120,7 +121,7 @@ try {
   // States A and B are one project at two moments: each is stored for an owner of its own.
   for (const [n, state] of fixture.states.filter(s => s.document).entries()) {
     const doc = structuredClone(state.document), id = doc.id, owner = ACTOR + '-' + n;
-    const before = withReadingsDefinition(1, () => readingJudgements(M, doc));
+    const before = withReadingsDefinition(1, () => review.withDesignFingerprint(1, () => readingJudgements(M, doc)));
     await env.DB.prepare('INSERT INTO projects(owner_id,id,document,revision,updated_at) VALUES(?,?,?,1,?)').bind(owner, id, JSON.stringify(createProject({name: doc.name, template: 'blank'}, id, at)), at).run();
     await saveStoredProject(env, owner, id, doc, 1, at, new Map());
     const stored = await row(id, owner);
