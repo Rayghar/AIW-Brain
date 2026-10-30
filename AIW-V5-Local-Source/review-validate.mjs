@@ -32,7 +32,7 @@ assert.equal(rv.reviewTrace(base,'REQ-missing'),null);
 
 const narrative={title:'Synthetic SDD fixture',owner:'Fixture architect',audience:'Prototype validation',summary:'Synthetic review, not a bank approval.',scope:'Reference project only.',approach:'Preserve findings and separate design from implementation.',confirmed:true};
 const action={title:'Synthetic delivery evidence',owner:'Fixture owner',due:'2026-10-01',acceptance:'Record the observed result and review its limits.',objectIds:['api'],findingId:sourceErrors[0].id};
-const treatment=(p,f,extra={})=>({findingId:f.id,stamp:rv.inheritedFindings(p).find(x=>x.id===f.id).stamp,treatment:'Accepted design limitation',reviewer:'Synthetic reviewer',reference:'Test fixture only',rationale:'Synthetic explicit limitation used to exercise review state transitions.',reviewed:true,...extra});
+const treatment=(p,f,extra={})=>({findingId:f.id,stamp:rv.inheritedFindings(p).find(x=>x.id===f.id).stamp,treatment:'Accepted design limitation',reviewer:'Synthetic reviewer',reference:'Test fixture only',rationale:'Synthetic explicit limitation used to exercise review state transitions.',reviewBy:'2099-12-31',reviewed:true,...extra});
 const record=(p,outcome='Revision required')=>({stamp:rv.reviewDesignStamp(p),outcome,reviewer:'Synthetic reviewer',reference:'Fixture outcome, no real approval',rationale:'Source gaps remain explicit.',reviewed:true});
 const capture=p=>({stamp:rv.reviewDesignStamp(p),title:'Synthetic frozen review',reviewed:true});
 let p=cmd(base,'intake');p=cmd(p,'narrative',narrative);
@@ -128,7 +128,7 @@ assert.equal(JSON.stringify(base),original);assert.deepEqual(rv.reviewSource(p),
  assert(rv.traceReviewFor(u,'REQ-001')&&!rv.traceReviewFor(u,'REQ-003'),'a change on one trail reopens that trail alone');
  // One treatment for a whole cause, with an exception; each finding keeps its own stamp.
  const cause='3|choice|error',members=rv.causeFindings(q,cause);assert.equal(members.length,3);
- const treat={scope:'cause',cause,treatment:'Accepted design limitation',rationale:'The choices are made in a later workshop.',reviewer:'Synthetic reviewer',reference:'Workshop plan, fixture',reviewed:true};
+ const treat={scope:'cause',cause,treatment:'Accepted design limitation',rationale:'The choices are made in a later workshop.',reviewer:'Synthetic reviewer',reference:'Workshop plan, fixture',reviewBy:'2099-12-31',reviewed:true};
  assert.throws(()=>cmd(q,'disposition',{...treat,stamp:'old'}),/changed/);
  assert.throws(()=>cmd(q,'disposition',{...treat,stamp:rv.causeFindingStamp(q,members),treatment:'Carry as action'}),/own action/);
  q=cmd(q,'disposition',{...treat,stamp:rv.causeFindingStamp(q,members),exceptions:[{findingId:'C3:choice:ADR-003',reason:'Its alternatives are not drafted yet.'}]},'reviewer-b');

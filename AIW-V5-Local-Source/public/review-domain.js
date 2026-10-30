@@ -70,6 +70,25 @@ export const CHAPTERS=[
 // the source's owner: treated, with who raised it, when and with whom, and listed as raised, not as unfinished work.
 export const SOURCE_SILENT='Source silent · raised with the owner';
 export const DISPOSITIONS=['Fix before review','Carry as action','Accepted design limitation','Not applicable',SOURCE_SILENT];
+// rc.10.73.42 (D13, gap C11-01): findings no treatment waives. A hard constraint broken by the Chapter 3 working choice or
+// the Chapter 7 preferred option (a Chapter 1 Must constraint, or one whose priority nobody stated, read through its
+// Chapter 2 constraint driver: decision-reading.js constraintForce), and the invariants the chapters check: integrity
+// (Chapter 8: a posting contract with no invariant or idempotency key; an invariant bound to records that are gone),
+// authorisation (Chapter 9: dual control and segregation of duties) and recovery (Chapter 10: a stateful plan's
+// recoverable copy and write fencing, its backup zone, an independent standby). Such an error is not accepted as a
+// limitation, marked not applicable or raised as source silent: the design changes (fixed before review, or carried as
+// an owned action), or, for a hard constraint, its Chapter 1 constraint and Chapter 2 driver change through a reviewed
+// change. A waiver recorded before is kept in the record and read as no treatment.
+const frozen=o=>Object.freeze(Object.fromEntries(Object.entries(o).map(([k,v])=>[k,Object.freeze(v)])));
+export const NON_WAIVABLE=Object.freeze({'hard-constraint':frozen({3:['breaks'],7:['hard-constraint']}),invariant:frozen({8:['posting-guard','invariant-link'],9:['dual-control-same','dual-control-uncovered','dual-control-roles'],10:['state-protection','standby','backup-zone']})});
+export const WAIVERS=Object.freeze(['Accepted design limitation','Not applicable',SOURCE_SILENT]);
+export function nonWaivable(f){if(f?.level!=='error')return null;const chapter=String(f.id||'').match(/^C(\d+):/)?.[1];if(!chapter)return null;for(const [kind,codes] of Object.entries(NON_WAIVABLE))if(codes[chapter]?.includes(f.code))return kind;return null;}
+function refuseWaiver(f,treatment){const kind=nonWaivable(f),hard=kind==='hard-constraint';if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” breaks '+(hard?'a hard constraint':'an integrity, authorisation or recovery invariant')+': it cannot be accepted as a limitation, marked not applicable or raised as source silent. Change the design so '+(hard?'it is met, or change its Chapter 1 constraint and Chapter 2 driver through a reviewed change':'the invariant holds')+'; until then, fix it before review or carry it as an action.');}
+// An accepted limitation is reviewed by a date (rc.10.73.42, D13): it is recorded with a review-by date after the day it
+// is recorded, and once that date has passed, or for a limitation recorded before with none, its finding is open again.
+function reviewByDate(raw,at){const d=text(raw.reviewBy,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!Number.isFinite(Date.parse(d))||new Date(d).toISOString().slice(0,10)!==d||d<=String(at).slice(0,10))throw Error('Give the accepted limitation a review-by date after today: it reopens once that date has passed.');return d;}
+export const limitationLapsed=d=>d?.treatment==='Accepted design limitation'&&!(typeof d.reviewBy==='string'&&d.reviewBy>=new Date().toISOString().slice(0,10));
+const treatmentVoid=(f,d)=>WAIVERS.includes(d.treatment)&&!!nonWaivable(f)||limitationLapsed(d);
 export const REVIEW_OUTCOMES=['Revision required','Ready with actions / limitations','Ready for governance'];
 export const GOVERNANCE_OUTCOMES=['Approved','Approved with conditions','Rejected','Withdrawn'];
 export const DELIVERY_STATES=['Planned','In progress','Blocked','Verified'];
@@ -203,7 +222,9 @@ export const dispositionCurrent=(p,d,f)=>!!f&&(d.basis==='finding'?d.stamp===f.s
 // rewritten: an index of the list as it stands, kept while its length is unchanged).
 const dispositionIndexes=new WeakMap();
 function dispositionIndex(p){const list=p.finalReview?.dispositions||[],kept=dispositionIndexes.get(list);if(kept&&kept.n===list.length)return kept.m;const m=new Map(),add=(id,e)=>{let xs=m.get(id);if(!xs)m.set(id,xs=[]);xs.push(e);};list.forEach(d=>{if(d?.scope==='cause')for(const x of d.findings||[])add(x[0],{d,stamp:x[1]});else if(d?.findingId)add(d.findingId,{d,stamp:null});});for(const xs of m.values())xs.reverse();dispositionIndexes.set(list,{n:list.length,m});return m;}
-export function latestDisposition(p,f){for(const e of dispositionIndex(p).get(f.id)||[])if(localReview(p,e.d)&&(e.d.scope==='cause'?e.stamp===f.stamp:dispositionCurrent(p,e.d,f)))return e.d;return undefined;}
+// The newest current treatment, unless it no longer holds (a waiver of a non-waivable finding, a limitation past its
+// review-by date): then the finding is open again.
+export function latestDisposition(p,f){for(const e of dispositionIndex(p).get(f.id)||[])if(localReview(p,e.d)&&(e.d.scope==='cause'?e.stamp===f.stamp:dispositionCurrent(p,e.d,f)))return treatmentVoid(f,e.d)?undefined:e.d;return undefined;}
 const treatmentFor=(p,d)=>{if(!d)return 'Needs assessment';if(d.treatment==='Carry as action'){const a=p.finalReview.actions.find(a=>a.id===d.actionId);return a&&actionReady(a)&&actionCurrent(p,a)?'Carry as action':'Action needs review';}return d.treatment;};
 export function findingTreatment(p,f){return treatmentFor(p,latestDisposition(p,f));}
 // Anti-pattern findings are review warnings, never content errors. When the readiness board only needs blockers,
@@ -352,14 +373,16 @@ function treatCause(p,raw,at,actor){
  if(!all.length)throw Error('Nothing of this cause is waiting for a treatment.');
  if(raw.stamp!==causeFindingStamp(p,all))throw Error('A finding of this cause changed, or was treated, since you opened it. Reload and review the current findings.');
  if(!CAUSE_TREATMENTS.includes(raw.treatment))throw Error('Choose one treatment for the cause: fix before review, an accepted limitation, not applicable, or raised with the owner of a silent source. Carry each finding as its own action.');
+ for(const f of all)refuseWaiver(f,raw.treatment);
  if(raw.reviewed!==true||!text(raw.rationale)||!text(raw.reviewer))throw Error('Record a treatment, rationale, reviewer, and explicit confirmation.');
  if(['Accepted design limitation','Not applicable',SOURCE_SILENT].includes(raw.treatment)&&!text(raw.reference))throw Error(raw.treatment===SOURCE_SILENT?'Say with whom the question was raised, and where (the owner of the source and the reference of the request).':'Provide the evidence or decision reference for this judgement.');
+ const reviewBy=raw.treatment==='Accepted design limitation'?reviewByDate(raw,at):null;
  const out=new Map((Array.isArray(raw.exceptions)?raw.exceptions:[]).map(x=>[String(x?.findingId??x?.id??x),text(x?.reason,600)]));
  for(const [id,why] of out){if(!all.some(f=>f.id===id))throw Error('An exception names a finding outside this cause: '+id.slice(0,80)+'.');if(!why)throw Error('Give each exception its reason: it stays open.');}
  const members=all.filter(f=>!out.has(f.id));if(!members.length)throw Error('Every finding of the cause is an exception: nothing would be treated.');
  for(const f of members)fourEyesFinding(p,f,actor);
  const c=findingCause(members[0]),id='RF-'+pad(++m.counters.disposition);
- m.dispositions.push({id,at,actor,scope:'cause',cause:{key:c.key,chapter:c.chapter,kind:c.kind,level:c.level,title:c.title,count:all.length},findings:members.map(f=>[f.id,f.stamp]),exceptions:[...out].map(([findingId,reason])=>[findingId,reason]),basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),actionId:null});
+ m.dispositions.push({id,at,actor,scope:'cause',cause:{key:c.key,chapter:c.chapter,kind:c.kind,level:c.level,title:c.title,count:all.length},findings:members.map(f=>[f.id,f.stamp]),exceptions:[...out].map(([findingId,reason])=>[findingId,reason]),basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),...(reviewBy?{reviewBy}:{}),actionId:null});
  return id;
 }
 // One trace review for every trail of a group, a responsibility or named requirements (GR-GOV-05): each trail kept with
@@ -412,7 +435,7 @@ export function applyFinalReviewCommand(input,command,at=new Date().toISOString(
  }
  // A treatment is stamped with its finding's own inputs (round 12, GR-GOV-05: basis 'finding'); one treatment may cover a
  // whole cause (scope 'cause', GR-GOV-13); a finding the source cannot answer may be raised with its owner (GR-SRC-07).
- case 'review.disposition':{if(raw.scope==='cause'){selected=treatCause(p,raw,at,actor);break;}const f=inheritedFindings(p).find(f=>f.id===raw.findingId);if(!f||raw.stamp!==f.stamp)throw Error('The source finding changed. Review its current definition.');if(!DISPOSITIONS.includes(raw.treatment)||!text(raw.rationale)||!text(raw.reviewer)||raw.reviewed!==true)throw Error('Record a treatment, rationale, reviewer, and explicit confirmation.');if(raw.treatment==='Carry as action'){const a=m.actions.find(a=>a.id===raw.actionId);if(!a||!actionReady(a)||!actionCurrent(p,a)||a.findingId!==f.id)throw Error('Link a current, fully defined action for this specific finding.');}if(['Accepted design limitation','Not applicable'].includes(raw.treatment)&&!text(raw.reference))throw Error('Provide the evidence or decision reference for this judgement.');if(raw.treatment===SOURCE_SILENT&&!text(raw.reference))throw Error('Say with whom the question was raised, and where (the owner of the source and the reference of the request).');fourEyesFinding(p,f,actor);m.dispositions.push({id:'RF-'+pad(++m.counters.disposition),at,actor,findingId:f.id,stamp:f.stamp,basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),actionId:raw.treatment==='Carry as action'?raw.actionId:null});break;}
+ case 'review.disposition':{if(raw.scope==='cause'){selected=treatCause(p,raw,at,actor);break;}const f=inheritedFindings(p).find(f=>f.id===raw.findingId);if(!f||raw.stamp!==f.stamp)throw Error('The source finding changed. Review its current definition.');if(!DISPOSITIONS.includes(raw.treatment)||!text(raw.rationale)||!text(raw.reviewer)||raw.reviewed!==true)throw Error('Record a treatment, rationale, reviewer, and explicit confirmation.');refuseWaiver(f,raw.treatment);if(raw.treatment==='Carry as action'){const a=m.actions.find(a=>a.id===raw.actionId);if(!a||!actionReady(a)||!actionCurrent(p,a)||a.findingId!==f.id)throw Error('Link a current, fully defined action for this specific finding.');}if(['Accepted design limitation','Not applicable'].includes(raw.treatment)&&!text(raw.reference))throw Error('Provide the evidence or decision reference for this judgement.');if(raw.treatment===SOURCE_SILENT&&!text(raw.reference))throw Error('Say with whom the question was raised, and where (the owner of the source and the reference of the request).');const reviewBy=raw.treatment==='Accepted design limitation'?reviewByDate(raw,at):null;fourEyesFinding(p,f,actor);m.dispositions.push({id:'RF-'+pad(++m.counters.disposition),at,actor,findingId:f.id,stamp:f.stamp,basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),...(reviewBy?{reviewBy}:{}),actionId:raw.treatment==='Carry as action'?raw.actionId:null});break;}
  // A trace review keeps the stamp of the trail it covers (round 12, GR-GOV-05); a stamp of the whole design as it is now
  // covers the trail too. One review may cover every requirement of a group or a responsibility (scope).
  case 'review.trace':{if(raw.scope&&typeof raw.scope==='object'){selected=traceGroup(p,raw,at,actor);break;}if(!reviewTrace(p,raw.requirementId)||raw.stamp!==traceStamp(p,raw.requirementId)&&raw.stamp!==reviewSourceStamp(p))throw Error('The requirement trail changed. Reopen the current trail.');if(!Array.isArray(raw.visited)||![0,1,2,3,4].every(i=>raw.visited.includes(i))||raw.reviewed!==true||!text(raw.reviewer)||!text(raw.notes))throw Error('Explore all five stages and record the reviewer and observations.');fourEyesTrail(p,[raw.requirementId],actor);m.traces.push({id:'TRV-'+pad(++m.counters.trace),at,actor,requirementId:raw.requirementId,stamp:traceStamp(p,raw.requirementId),basis:'trail',reviewer:text(raw.reviewer,180),notes:text(raw.notes)});break;}

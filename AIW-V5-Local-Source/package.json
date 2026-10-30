@@ -23,6 +23,7 @@
     "test:module-scope-browser": "node module-scope-browser-validate.mjs",
     "test:requirements-browser": "node requirements-browser-validate.mjs",
     "test:quality": "node quality-validate.mjs",
+    "test:rc42-g3a-risk-and-limits": "node rc42-g3a-risk-and-limits-validate.mjs",
     "test:decision-reading": "node decision-reading-validate.mjs",
     "test:decisions": "node decisions-validate.mjs",
     "test:logical": "node logical-validate.mjs",

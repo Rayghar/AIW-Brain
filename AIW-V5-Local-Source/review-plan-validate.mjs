@@ -111,7 +111,7 @@ const findingSteps = plan.steps.filter(x => x.kind === 'findings');
 const biggest = findingSteps.sort((a, b) => b.count - a.count)[0];
 assert.ok(biggest.count >= 100, 'a systemic cause: ' + biggest.title + ' · ' + biggest.count);
 const treat = planCommand(p, biggest);
-p = timed('one treatment of the largest cause', () => applyFinalReviewCommand(p, {type: treat.type, payload: {...treat.payload, treatment: 'Accepted design limitation', rationale: 'The source does not state it for any record; carried as a limitation.', reviewer: 'Architecture lead', reference: 'Review plan, cause ' + biggest.target.cause, reviewed: true}}, AT, 'architect-a').document);
+p = timed('one treatment of the largest cause', () => applyFinalReviewCommand(p, {type: treat.type, payload: {...treat.payload, treatment: 'Accepted design limitation', rationale: 'The source does not state it for any record; carried as a limitation.', reviewer: 'Architecture lead', reference: 'Review plan, cause ' + biggest.target.cause, reviewBy: '2099-12-31', reviewed: true}}, AT, 'architect-a').document);
 const d = p.finalReview.dispositions.at(-1);
 assert.deepEqual([d.scope, d.actor, d.findings.length], ['cause', 'architect-a', biggest.count]);
 assert.equal(causeFindings(p, biggest.target.cause).length, 0, 'every finding of the cause is treated');
