@@ -1,0 +1,1654 @@
+[
+  {
+    "name": "test",
+    "status": "passed",
+    "ms": 361
+  },
+  {
+    "name": "test:action-undo",
+    "status": "passed",
+    "ms": 2242
+  },
+  {
+    "name": "test:action-undo-api",
+    "status": "passed",
+    "ms": 1414
+  },
+  {
+    "name": "test:action-undo-ui",
+    "status": "passed",
+    "ms": 722
+  },
+  {
+    "name": "test:anatomy",
+    "status": "passed",
+    "ms": 6714
+  },
+  {
+    "name": "test:anatomy-browser",
+    "status": "failed",
+    "ms": 10511,
+    "error": "Command failed: anatomy-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: stage height at chapter 3: 262.609375\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/anatomy-browser-validate.mjs:40:12 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:architecture",
+    "status": "passed",
+    "ms": 2951
+  },
+  {
+    "name": "test:architecture-arrangement",
+    "status": "passed",
+    "ms": 17069
+  },
+  {
+    "name": "test:architecture-case",
+    "status": "passed",
+    "ms": 3594
+  },
+  {
+    "name": "test:architecture-case-browser",
+    "status": "passed",
+    "ms": 10875
+  },
+  {
+    "name": "test:architecture-case-scope",
+    "status": "passed",
+    "ms": 1327
+  },
+  {
+    "name": "test:architecture-drafting",
+    "status": "passed",
+    "ms": 4599
+  },
+  {
+    "name": "test:architecture-evaluation",
+    "status": "passed",
+    "ms": 2408
+  },
+  {
+    "name": "test:architecture-grounding",
+    "status": "passed",
+    "ms": 1580
+  },
+  {
+    "name": "test:architecture-intelligence",
+    "status": "passed",
+    "ms": 7688
+  },
+  {
+    "name": "test:architecture-job",
+    "status": "passed",
+    "ms": 854
+  },
+  {
+    "name": "test:architecture-model-browser",
+    "status": "passed",
+    "ms": 17982
+  },
+  {
+    "name": "test:architecture-modules",
+    "status": "passed",
+    "ms": 62422
+  },
+  {
+    "name": "test:architecture-obligations",
+    "status": "passed",
+    "ms": 11928
+  },
+  {
+    "name": "test:architecture-operation-continuation",
+    "status": "passed",
+    "ms": 100202
+  },
+  {
+    "name": "test:architecture-scenarios",
+    "status": "passed",
+    "ms": 2106
+  },
+  {
+    "name": "test:architecture-scenarios-ui",
+    "status": "passed",
+    "ms": 2686
+  },
+  {
+    "name": "test:architecture-service",
+    "status": "passed",
+    "ms": 3502
+  },
+  {
+    "name": "test:architecture-ui",
+    "status": "failed",
+    "ms": 2541,
+    "error": "Command failed: architecture-ui-validate.mjs\n(node:26571) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Architecture choices are inside Proposals\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/architecture-ui-validate.mjs:36:37 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: null,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:architecture-verification",
+    "status": "passed",
+    "ms": 3542
+  },
+  {
+    "name": "test:architecture-verification-ui",
+    "status": "passed",
+    "ms": 5193
+  },
+  {
+    "name": "test:architecture-whatif",
+    "status": "passed",
+    "ms": 552
+  },
+  {
+    "name": "test:architecture-whatif-browser",
+    "status": "passed",
+    "ms": 12001
+  },
+  {
+    "name": "test:ars",
+    "status": "passed",
+    "ms": 2150
+  },
+  {
+    "name": "test:baseline-size",
+    "status": "passed",
+    "ms": 103661
+  },
+  {
+    "name": "test:brain",
+    "status": "passed",
+    "ms": 3580
+  },
+  {
+    "name": "test:brain-ahead",
+    "status": "failed",
+    "ms": 783,
+    "error": "Command failed: brain-ahead-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The input did not match the regular expression /\\| Capacity \\| Critical \\|/. Input:\n\n'## Architecture reasoning record\\n' +\n  '\\n' +\n  'What the review desk read, where the product choices stand, what Sol advised and what the architect did with it, and what the project learned. The desk’s readings are design arithmetic, not measurement; Sol’s advice is advice, checked against the sources it was given; every decision and its reason is the architect’s.\\n' +\n  '\\n' +\n  '### Vitals at review\\n' +\n  '\\n' +\n  '14 running parts read against the drivers they carry; no load is stated, so the desk computes no capacity reading.\\n' +\n  '\\n' +\n  '| Vital | State | Reading | Parts |\\n' +\n  '|---|---|---|---|\\n' +\n  '| Availability | No signal | 99.9 % · 43.2 min / 30 d | 11 no signal |\\n' +\n  '| Recovery | No signal | within 15 min | 11 no signal |\\n' +\n  '| Data loss | Not carried | no recovery point | not carried |\\n' +\n  '| Latency | No signal | ≤ 2 seconds · 3 sync calls | 4 no signal |\\n' +\n  '| Capacity | No signal | no load stated | no capacity reading until a load is stated |\\n' +\n  '| Integrity | Critical | 6 requests unguarded | 3 critical |\\n' +\n  '| Protection | Critical | 1 of 4 threats covered | 3 critical · 7 no signal |\\n' +\n  '| Observability | Critical | 0 of 14 monitored | 13 critical |\\n' +\n  '\\n' +\n  'Parts that read critical or without signal:\\n' +\n  '\\n' +\n  '- RUN-001 Payment service (on Kubernetes 1.31): integrity critical — IF-001, IF-004 record no idempotency key or duplicate policy: a repeated request could repeat its effect; protection critical — THR-001 Payment without valid authority; THR-003 Sensitive data escapes its intended audience: no control covers them here; observability critical — It carries a Critical driver, and nothing records how its failure would be seen; availability no signal; latency no signal.\\n' +\n  '- RUN-002 Risk engine (on Kubernetes 1.31): observability critical — It carries a Critical driver, and nothing records how its failure would be seen; latency no signal; protection no signal.\\n' +\n  '- RUN-003 Core connector (on Kubernetes 1.31): integrity critical — IF-002, IF-005, IF-006 record no idempotency key or duplicate policy: a repeated request could repeat its effect; protection critical — THR-002 Repeated instruction changes the financial effect: no control covers it here; observability critical — It carries a Critical driver, and nothing records how its failure would "
+  },
+  {
+    "name": "test:brain-chain",
+    "status": "passed",
+    "ms": 4529
+  },
+  {
+    "name": "test:brain-companion",
+    "status": "failed",
+    "ms": 4323,
+    "error": "Command failed: brain-ui-validate.mjs --companion --chapter=4\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Only the three established companions in the bar\n\n2 !== 3\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/brain-ui-validate.mjs:53:10 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 2,\n  expected: 3,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:brain-governance-ui",
+    "status": "passed",
+    "ms": 9082
+  },
+  {
+    "name": "test:brain-integration",
+    "status": "passed",
+    "ms": 3668
+  },
+  {
+    "name": "test:brain-reasoning",
+    "status": "failed",
+    "ms": 4050,
+    "error": "Command failed: brain-reasoning-validate.mjs\nfile:///home/user/AIW-Brain/AIW-V5-Local-Source/public/brain-reasoning.js:264\n    if (sources.length >= MAX_SOURCES || chars + s.excerpt.length > MAX_CHARS) { if (must) throw Error('These decisions do not fit in one request. Ask Sol about fewer at a time.'); omissions.push({id: s.id, title: s.title, reason: sources.length >= MAX_SOURCES ? 'source limit' : 'character budget'}); return null; }\n                                                                                                 ^\n\nError: These decisions do not fit in one request. Ask Sol about fewer at a time.\n    at add (file:///home/user/AIW-Brain/AIW-V5-Local-Source/public/brain-reasoning.js:264:98)\n    at reasoningPacket (file:///home/user/AIW-Brain/AIW-V5-Local-Source/public/brain-reasoning.js:305:10)\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/brain-reasoning-validate.mjs:27:16\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:brain-reasoning-browser",
+    "status": "failed",
+    "ms": 11749,
+    "error": "Command failed: brain-reasoning-browser-validate.mjs\nNote: provider default (OpenAI) sends its key (OPENAI_API_KEY) and Sol's requests to 127.0.0.1. Use only a gateway you trust.\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Sol reads the desk reading, the objective and assumptions and the product mechanisms: and 21 sources: 1 desk reading, 12 project records, 1 objective & assumptions, 2 catalogue entries, 1 architecture-intelligence, 3 SA Playbook tactics, 1 SA Playbook method. 5 more did not fit and are left out.\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/brain-reasoning-browser-validate.mjs:62:10 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 'ASK SOL\\n' +\n    '1 decision\\n' +\n    '\\n' +\n    'Let RUN-001 grow to 24 replicas\\n' +\n    '\\n' +\n    'Sol will read your question, 1 selected decision, their recorded values and options, the objective and policy context, and 21 sources: 1 desk reading, 12 project records, 1 objective & assumptions, 2 catalogue entries, 1 architecture-intelligence, 3 SA Playbook tactics, 1 SA Playbook method. 5 more did not fit and are left out.\\n' +\n    '\\n' +\n    'Read sources and receipts · 21\\n' +\n    'Inspect the complete context packet sent to the provider\\n' +\n    'Search knowledge by meaningThis explicitly sends the redacted question, selected readings, eligible released claims and shipped editorial Pattern DNA to OpenAI embeddings. Excluded objects and incompatible claims are withheld. Changing this setting prepares a new source preview before Sol answers; it does not activate repository material.\\n' +\n    'Your question for Sol (optional)\\n' +\n    '\\n' +\n    'Question saved privately for this object, tab and assessment scope.\\n' +\n    '\\n' +\n    'If you edit the question, the first click prepares the updated packet for review; the next sends it.\\n' +\n    '\\n' +\n    'Send to Sol\\n' +\n    'Cancel\\n' +\n    '\\n' +\n    'OpenAI · mock-sol. Sent to OpenAI over the server with store:false; the provider does not keep the response for later retrieval. Two passes: Sol assesses, then a second pass checks every assessment against these sources. Instructions pinned: prompt sol-reasoning-4 · b655aeadf63b.',\n  expected: /Let RUN-001 grow to 24 replicas[\\s\\S]*Sol will read your question, 1 selected decision, their recorded values and options, the objective and policy context, and \\d+ sources: (?=[^\\n]*\\b1 desk reading\\b)(?=[^\\n]*\\b1 objective & assumptions\\b)(?=[^\\n]*\\bproduct mechanisms?\\b)/i,\n  operator: 'match',\n  diff: 'simple'\n}\n\nNode.js v22.22"
+  },
+  {
+    "name": "test:brain-subject-browser",
+    "status": "passed",
+    "ms": 167903
+  },
+  {
+    "name": "test:brain-tradeoffs",
+    "status": "passed",
+    "ms": 1800
+  },
+  {
+    "name": "test:brain-ui",
+    "status": "passed",
+    "ms": 18508
+  },
+  {
+    "name": "test:brief-interpreter",
+    "status": "passed",
+    "ms": 815
+  },
+  {
+    "name": "test:browser",
+    "status": "failed",
+    "ms": 5035,
+    "error": "Command failed: browser-validate.mjs\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    graph: false,\n+   inspector: true,\n-   inspector: false,\n    nextStrip: false,\n    ribbon: false\n  }\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/browser-validate.mjs:40:10\n"
+  },
+  {
+    "name": "test:bundle-browser",
+    "status": "failed",
+    "ms": 51187,
+    "error": "Command failed: bundle-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: /?chapter=1&project=bank-payment&tab=work opens without the pattern catalogue\n+ actual - expected\n\n+ [\n+   'http://127.0.0.1:35695/assets/chunks/brain-catalogue-K3IVH353.js'\n+ ]\n- []\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/bundle-browser-validate.mjs:58:198 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [\n    'http://127.0.0.1:35695/assets/chunks/brain-catalogue-K3IVH353.js'\n  ],\n  expected: [],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:caller-resilience",
+    "status": "passed",
+    "ms": 8220
+  },
+  {
+    "name": "test:canvas-draft-browser",
+    "status": "passed",
+    "ms": 211887
+  },
+  {
+    "name": "test:changes",
+    "status": "passed",
+    "ms": 4416
+  },
+  {
+    "name": "test:chapter-header",
+    "status": "passed",
+    "ms": 4577
+  },
+  {
+    "name": "test:chapter-lines",
+    "status": "passed",
+    "ms": 23140
+  },
+  {
+    "name": "test:chapter-reasoning",
+    "status": "failed",
+    "ms": 6455,
+    "error": "Command failed: chapter-reasoning-validate.mjs\nfile:///home/user/AIW-Brain/AIW-V5-Local-Source/public/brain-reasoning.js:264\n    if (sources.length >= MAX_SOURCES || chars + s.excerpt.length > MAX_CHARS) { if (must) throw Error('These decisions do not fit in one request. Ask Sol about fewer at a time.'); omissions.push({id: s.id, title: s.title, reason: sources.length >= MAX_SOURCES ? 'source limit' : 'character budget'}); return null; }\n                                                                                                 ^\n\nError: These decisions do not fit in one request. Ask Sol about fewer at a time.\n    at add (file:///home/user/AIW-Brain/AIW-V5-Local-Source/public/brain-reasoning.js:264:98)\n    at reasoningPacket (file:///home/user/AIW-Brain/AIW-V5-Local-Source/public/brain-reasoning.js:305:10)\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/chapter-reasoning-validate.mjs:168:12\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:chapter-records",
+    "status": "passed",
+    "ms": 883
+  },
+  {
+    "name": "test:chapter-sol-browser",
+    "status": "failed",
+    "ms": 10287,
+    "error": "Command failed: chapter-sol-browser-validate.mjs\nNote: provider default (OpenAI) sends its key (OPENAI_API_KEY) and Sol's requests to 127.0.0.1. Use only a gateway you trust.\nfile:///home/user/AIW-Brain/AIW-V5-Local-Source/chapter-sol-browser-validate.mjs:46\n  const ask = async (sel = '#inspector .cm-companion [data-dk=\"sol-ask\"]') => { await page.waitForSelector(sel + ':not([disabled])', {timeout: 10000}); await act(sel); await page.waitForSelector('#inspector .cm-companion .dk-solpend [data-dk=\"sol-send\"]:not([disabled]), #inspector .cm-companion .dk-verdict.bad[role=\"alert\"]', {timeout: 8000}); const alert = await page.$('#inspector .cm-companion .dk-verdict.bad[role=\"alert\"]'); if (alert && !await page.$('#inspector .cm-companion .dk-solpend')) throw Error('Sol could not prepare ' + sel + ': ' + await alert.innerText()); };\n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ^\n\nError: Sol could not prepare #inspector .cm-companion .cs-round [data-dk=\"sol-ask\"]: These decisions do not fit in one request. Ask Sol about fewer at a time.\n    at ask (file:///home/user/AIW-Brain/AIW-V5-Local-Source/chapter-sol-browser-validate.mjs:46:507)\n    at async file:///home/user/AIW-Brain/AIW-V5-Local-Source/chapter-sol-browser-validate.mjs:54:3\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:co-design",
+    "status": "passed",
+    "ms": 3357
+  },
+  {
+    "name": "test:coauthor",
+    "status": "passed",
+    "ms": 4123
+  },
+  {
+    "name": "test:command-equivalence",
+    "status": "failed",
+    "ms": 2103,
+    "error": "Command failed: command-equivalence-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: a working choice made: the saved document is the one the route saved before round 12 · $.workbench.history[1]: {\"at\":\"2026-10-30T06:32:45.716Z\",\"actor\":\"command-equivalence\",\"commands\":[],\"changed\":[\"ADR-002\"],\"affected\":[],\"reason\":\"Undo receipt for decision.choose\",\"undo\":{\"id\":\"UNDO-410bd78d-80cb-41ab-a3c5-81460306eb31\",\"type\":\"decision.choose\",\"previous\":{\"id\":\"ADR-002\",\"alternativeId\":null},\"revision\":9 ≠ undefined\n    at same (file:///home/user/AIW-Brain/AIW-V5-Local-Source/command-equivalence-validate.mjs:60:81)\n    at step (file:///home/user/AIW-Brain/AIW-V5-Local-Source/command-equivalence-validate.mjs:136:5)\n    at async file:///home/user/AIW-Brain/AIW-V5-Local-Source/command-equivalence-validate.mjs:161:3 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:component-library",
+    "status": "passed",
+    "ms": 2548
+  },
+  {
+    "name": "test:component-needs",
+    "status": "passed",
+    "ms": 1549
+  },
+  {
+    "name": "test:composition",
+    "status": "passed",
+    "ms": 12794
+  },
+  {
+    "name": "test:composition-ui",
+    "status": "failed",
+    "ms": 2225,
+    "error": "Command failed: composition-ui-validate.mjs\n(node:26620) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Architecture choices are inside Proposals\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/composition-ui-validate.mjs:37:37 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: null,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:connected-architecture",
+    "status": "passed",
+    "ms": 155432
+  },
+  {
+    "name": "test:connected-architecture-ui",
+    "status": "passed",
+    "ms": 3001
+  },
+  {
+    "name": "test:connected-design-projections",
+    "status": "passed",
+    "ms": 12704
+  },
+  {
+    "name": "test:connected-model",
+    "status": "passed",
+    "ms": 7937
+  },
+  {
+    "name": "test:contextual-intelligence",
+    "status": "passed",
+    "ms": 9497
+  },
+  {
+    "name": "test:contextual-intelligence-ui",
+    "status": "failed",
+    "ms": 7733,
+    "error": "Command failed: contextual-intelligence-ui-validate.mjs\nThis guidance changed with the design or its sources. Review the current question before continuing. \nThis guidance changed with the design or its sources. Review the current question before continuing. \nThis guidance changed with the design or its sources. Review the current question before continuing. \nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Existing saved architecture comparison is active\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/contextual-intelligence-ui-validate.mjs:116:51 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: null,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:coordinated-options",
+    "status": "passed",
+    "ms": 98556
+  },
+  {
+    "name": "test:decision-prerequisite",
+    "status": "passed",
+    "ms": 1184
+  },
+  {
+    "name": "test:decision-reading",
+    "status": "passed",
+    "ms": 13667
+  },
+  {
+    "name": "test:decisions",
+    "status": "passed",
+    "ms": 9298
+  },
+  {
+    "name": "test:deferred-case",
+    "status": "passed",
+    "ms": 1434
+  },
+  {
+    "name": "test:deferred-intake",
+    "status": "passed",
+    "ms": 1221
+  },
+  {
+    "name": "test:deploy",
+    "status": "passed",
+    "ms": 1207
+  },
+  {
+    "name": "test:deploy-browser",
+    "status": "failed",
+    "ms": 5987,
+    "error": "Command failed: deploy-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: unplaced parts wait in Not placed\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/deploy-browser-validate.mjs:48:10 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:design-concern",
+    "status": "failed",
+    "ms": 1497,
+    "error": "Command failed: design-concern-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  {\n    'QD-001': 'Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules. Operations: Facilities runs the rebuild.',\n+   'QD-002': '',\n    'QD-003': 'Operations: Facilities runs the rebuild. Released consequence: One team runs the nightly rebuild.',\n    'QD-004': 'Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules.'\n  }\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/design-concern-validate.mjs:119:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: {\n    'QD-001': 'Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules. Operations: Facilities runs the rebuild.',\n    'QD-004': 'Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules.',\n    'QD-003': 'Operations: Facilities runs the rebuild. Released consequence: One team runs the nightly rebuild.',\n    'QD-002': ''\n  },\n  expected: {\n    'QD-001': 'Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules. Operations: Facilities runs the rebuild.',\n    'QD-004': 'Recovery: Restore one process and reconcile reservations. Released consequence: One restore point covers both modules.',\n    'QD-003': 'Operations: Facilities runs the rebuild. Released consequence: One team runs the nightly rebuild.'\n  },\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:design-links",
+    "status": "passed",
+    "ms": 886
+  },
+  {
+    "name": "test:design-questions",
+    "status": "passed",
+    "ms": 768
+  },
+  {
+    "name": "test:design-records",
+    "status": "passed",
+    "ms": 1702
+  },
+  {
+    "name": "test:design-resources-browser",
+    "status": "passed",
+    "ms": 57224
+  },
+  {
+    "name": "test:design-spec",
+    "status": "passed",
+    "ms": 2645
+  },
+  {
+    "name": "test:design-task-ui",
+    "status": "passed",
+    "ms": 12165
+  },
+  {
+    "name": "test:design-tasks",
+    "status": "passed",
+    "ms": 2070
+  },
+  {
+    "name": "test:desk",
+    "status": "passed",
+    "ms": 3658
+  },
+  {
+    "name": "test:desk-browser",
+    "status": "failed",
+    "ms": 13845,
+    "error": "Command failed: desk-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: the objective first\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/desk-browser-validate.mjs:105:10\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:453:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 'The objective what every part below is read against\\n' +\n    'Objective\\t100,000 concurrent users\\n' +\n    'saved for this review\\n' +\n    '\\n' +\n    'Arrival rate\\t3,125 req/s\\n' +\n    '100,000 users ÷ (30 s between requests + 2 s response (QD-003)) = 3,125 req/s\\n' +\n    '\\n' +\n    'Running it takes\\t164 pods · 82 vCPU · 82 GiB · 16 nodes\\n' +\n    '8 vCPU and 32 GiB a node\\n' +\n    '\\n' +\n    'Short or to check\\t9 short · 0 to check · 7 with nothing recorded to compare\\n' +\n    'Product choices\\t5 to revisit\\n' +\n    'of 9 with alternatives\\n' +\n    '\\n' +\n    'Planning assumptions\\t\\n' +\n    \"Time between one user's requests 30 s\\n\" +\n    'Utilisation to plan for at peak 70 %\\n' +\n    'Keep serving after losing one replica\\n' +\n    'Requests one service replica handles 200 req/s\\n' +\n    'Messages one worker replica handles 100 msg/s\\n' +\n    'Requests one gateway or identity replica handles 1,000 req/s\\n' +\n    'CPU per replica 0.50 vCPU\\n' +\n    'Memory per replica 0.50 GiB\\n' +\n    'Database connections each replica holds 10\\n' +\n    'Database operations per request 2\\n' +\n    'Share of operations that are reads 50 %\\n' +\n    'Reads the cache answers 80 %\\n' +\n    'Size of a written record 2 KB\\n' +\n    'Size of a message 2 KB\\n' +\n    'Telemetry per request, per part 1 KB\\n' +\n    \"Messages one queue's leader handles 10,000 msg/s\\n\" +\n    'Writes one database primary sustains 10,000 writes/s\\n' +\n    'vCPU per cluster node 8 vCPU\\n' +\n    'Memory per cluster node 32 GiB\\n' +\n    'Numbers the design does not record: change them in the companion.\\n' +\n    '\\n' +\n    'Edge where every request enters · 2 parts\\n' +\n    'TR-005 Service connectivity realization\\n' +\n    'Gateway · Kong Gateway 3.9\\n' +\n    '✕\\n' +\n    'Short\\t\\n' +\n    '\\n' +\n    'DEMAND 3,125 req/s\\n' +\n    '\\n' +\n    'Replicas\\n' +\n    '6\\n' +\n    '5 for the load + 1 (survive one replica: one spare)\\n' +\n    'Each replica\\n' +\n    '1,000 req/s\\n' +\n    'planning assumption\\n' +\n    'Chapter 10 records\\n' +\n    'RUN-010 · 1 to 1 replicas · not placed\\n' +\n    '\\n' +\n    'Kong Gateway ·"
+  },
+  {
+    "name": "test:desk-fixes",
+    "status": "passed",
+    "ms": 2308
+  },
+  {
+    "name": "test:details-toggle",
+    "status": "passed",
+    "ms": 995
+  },
+  {
+    "name": "test:development",
+    "status": "passed",
+    "ms": 13063
+  },
+  {
+    "name": "test:diagram-arrangement",
+    "status": "passed",
+    "ms": 853
+  },
+  {
+    "name": "test:diagram-export-context",
+    "status": "passed",
+    "ms": 6471
+  },
+  {
+    "name": "test:diagram-readability",
+    "status": "passed",
+    "ms": 172438
+  },
+  {
+    "name": "test:dialog",
+    "status": "passed",
+    "ms": 1428
+  },
+  {
+    "name": "test:domain-lens",
+    "status": "passed",
+    "ms": 12751
+  },
+  {
+    "name": "test:drafter-groups",
+    "status": "passed",
+    "ms": 239344
+  },
+  {
+    "name": "test:driver-applicability",
+    "status": "passed",
+    "ms": 895
+  },
+  {
+    "name": "test:driver-design-ui",
+    "status": "passed",
+    "ms": 1819
+  },
+  {
+    "name": "test:driver-kinds",
+    "status": "passed",
+    "ms": 451
+  },
+  {
+    "name": "test:driver-knowledge-ui",
+    "status": "passed",
+    "ms": 697
+  },
+  {
+    "name": "test:driver-led-journey",
+    "status": "passed",
+    "ms": 32929
+  },
+  {
+    "name": "test:driver-product-ui",
+    "status": "passed",
+    "ms": 1730
+  },
+  {
+    "name": "test:driver-solution",
+    "status": "passed",
+    "ms": 1071
+  },
+  {
+    "name": "test:driver-spec-view",
+    "status": "passed",
+    "ms": 699
+  },
+  {
+    "name": "test:durability",
+    "status": "passed",
+    "ms": 1284
+  },
+  {
+    "name": "test:embedded-intelligence",
+    "status": "passed",
+    "ms": 12938
+  },
+  {
+    "name": "test:enhancements",
+    "status": "passed",
+    "ms": 1928
+  },
+  {
+    "name": "test:enterprise-references",
+    "status": "passed",
+    "ms": 1659
+  },
+  {
+    "name": "test:evidence",
+    "status": "passed",
+    "ms": 4237
+  },
+  {
+    "name": "test:exchange",
+    "status": "passed",
+    "ms": 791
+  },
+  {
+    "name": "test:exchange-browser",
+    "status": "failed",
+    "ms": 5855,
+    "error": "Command failed: exchange-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: which draws the chapter’s contracts as messages on their lifelines\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/exchange-browser-validate.mjs:44:10\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:453:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:exchange-design",
+    "status": "passed",
+    "ms": 3083
+  },
+  {
+    "name": "test:exchange-task-ui",
+    "status": "passed",
+    "ms": 8334
+  },
+  {
+    "name": "test:execution-composition",
+    "status": "passed",
+    "ms": 6336
+  },
+  {
+    "name": "test:execution-journey",
+    "status": "passed",
+    "ms": 6030
+  },
+  {
+    "name": "test:execution-journey-ui",
+    "status": "passed",
+    "ms": 6261
+  },
+  {
+    "name": "test:export-build",
+    "status": "passed",
+    "ms": 15794
+  },
+  {
+    "name": "test:field-kit-browser",
+    "status": "passed",
+    "ms": 49648
+  },
+  {
+    "name": "test:field-spark",
+    "status": "passed",
+    "ms": 13484
+  },
+  {
+    "name": "test:field-spark-browser",
+    "status": "passed",
+    "ms": 28736
+  },
+  {
+    "name": "test:field-spark-pages",
+    "status": "passed",
+    "ms": 39282
+  },
+  {
+    "name": "test:figures-at-size",
+    "status": "passed",
+    "ms": 123772
+  },
+  {
+    "name": "test:figures-at-size-browser",
+    "status": "passed",
+    "ms": 105440
+  },
+  {
+    "name": "test:figures-integrity",
+    "status": "passed",
+    "ms": 243480
+  },
+  {
+    "name": "test:fingerprint",
+    "status": "passed",
+    "ms": 6009
+  },
+  {
+    "name": "test:focused-case-browser",
+    "status": "passed",
+    "ms": 20909
+  },
+  {
+    "name": "test:focused-case-validate",
+    "status": "passed",
+    "ms": 1517
+  },
+  {
+    "name": "test:governance-review-wording",
+    "status": "passed",
+    "ms": 1091
+  },
+  {
+    "name": "test:ground-reference-browser",
+    "status": "passed",
+    "ms": 20707
+  },
+  {
+    "name": "test:grounding-review",
+    "status": "passed",
+    "ms": 979
+  },
+  {
+    "name": "test:hosted-knowledge",
+    "status": "passed",
+    "ms": 927
+  },
+  {
+    "name": "test:inspector-toggle-browser",
+    "status": "passed",
+    "ms": 21522
+  },
+  {
+    "name": "test:intake",
+    "status": "passed",
+    "ms": 58724
+  },
+  {
+    "name": "test:intelligence",
+    "status": "failed",
+    "ms": 14607,
+    "error": "Command failed: intelligence-validate.mjs\n(node:18183) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n{\"event\":\"provider-transport-failure\",\"code\":\"timeout\",\"transportFailure\":{\"phase\":\"fetch\",\"name\":\"Error\"}}\n{\"event\":\"openai-provider-failure\",\"upstreamStatus\":401}\n{\"event\":\"provider-transport-failure\",\"code\":\"timeout\",\"transportFailure\":{\"phase\":\"processing\",\"name\":\"Error\"}}\n{\"event\":\"anthropic-provider-failure\",\"upstreamStatus\":401,\"upstreamType\":\"authentication_error\"}\n{\"event\":\"anthropic-provider-failure\",\"upstreamStatus\":429,\"upstreamType\":\"rate_limit_error\"}\n{\"event\":\"anthropic-provider-failure\",\"upstreamStatus\":401,\"upstreamType\":\"x\"}\n{\"event\":\"anthropic-provider-failure\",\"upstreamStatus\":400,\"upstreamType\":\"x\"}\n{\"event\":\"anthropic-provider-failure\",\"upstreamStatus\":401}\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(model.elements.length>records.length&&model.relationships.length>0)\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/intelligence-validate.mjs:242:56 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:intelligence-ui",
+    "status": "failed",
+    "ms": 10407,
+    "error": "Command failed: intelligence-ui-validate.mjs\n(node:26660) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The input did not match the regular expression /Unselected proposals/. Input:\n\n'Architecture proposalsDevelop an option as related native drafts, or continue one operation. Review the model changes before acceptance.Cohesive outcome ownershipresponsibility · ProposedDevelop authoritative outcome ownershipExplore ownership for the recorded requirement without selecting a design.Mechanism: A proposed boundary owner would couple its request identity, outcome record and effect within an explicit storage transaction; that contract still needs verification.Requirements · 1REQ-001Proposed object names · 1BoundaryOutcomeOwnerExisting objects affected · 1apiConditions · 1The authoritative owner and storage guarantees remain to be established.Trade-offs · 1Additional state and recovery obligations need review.Implementation obligations · 1Define duplicate identity and unknown-outcome handling before implementation.Proposed verification steps · 1Interrupt after commit but before the response, then query the same request identity.Proposed pass criteria · 1The authoritative outcome remains tied to one request identity; this is a proposed test.Open assumptions · 1No runtime observation establishes the proposed outcome.Reconsider when · 1A requirement or storage guarantee changes.Source references: S1, S2Continue this operationSeparate recovery ownershiprecovery · ProposedDevelop an explicit recovery protocolExplore ownership for the recorded requirement without selecting a design.Mechanism: A proposed recovery coordinator would query authoritative request state and retain uncertainty until the owner establishes the outcome.Requirements · 1REQ-001Proposed object names · 1RecoveryCoordinatorExisting objects affected · 1apiConditions · 1The authoritative owner and storage guarantees remain to be established.Trade-offs · 1Additional state and recovery obligations need review.Implementation obligations · 1Define duplicate identity and unknown-outcome handling before implementation.Proposed verification steps · 1Interrupt after commit but before the response, then query the same request identity.Proposed pass criteria · 1The authoritative outcome remains tied to one request identity; this is a proposed test.Open assumptions · 1No runtime observation establishes "
+  },
+  {
+    "name": "test:interface-impact",
+    "status": "passed",
+    "ms": 3434
+  },
+  {
+    "name": "test:interfaces",
+    "status": "passed",
+    "ms": 1927
+  },
+  {
+    "name": "test:investigation",
+    "status": "passed",
+    "ms": 1212
+  },
+  {
+    "name": "test:journal-archive",
+    "status": "passed",
+    "ms": 15777
+  },
+  {
+    "name": "test:journey",
+    "status": "passed",
+    "ms": 2836
+  },
+  {
+    "name": "test:journey-audit",
+    "status": "failed",
+    "ms": 376,
+    "error": "Command failed: journey-audit-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: \"Review & edit brief\" is not a second primary while the chapter waits for its draft\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/journey-audit-validate.mjs:55:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: \"import {hoverTipHTML} from './cursor-tip.js';\\n\" +\n    \"// rc41 W3: the canvas's drafts open this chapter's own editors prefilled (canvas-draft.js); the record is saved here as any other.\\n\" +\n    'let draftRelease=null;\\n' +\n    \"import {outputWorkspaceHTML} from './output-workspace.js';\\n\" +\n    \"import {validationSurfaceHTML} from './validation-workspace.js';\\n\" +\n    \"import {renderStudioRecordCard} from './record-card.js';\\n\" +\n    \"import {workFrameHTML,workTraceHTML,sectionFromAddress,validWorkSection} from './work-frame.js';\\n\" +\n    '// Chapter 1, Requirements: the brief, the project context, the journey and the requirements, as a studio of the one\\n' +\n    '// workspace shell (round 3, A). The shell (app.js) draws the frame — navigation, heading and readiness, tabs, the\\n' +\n    '// details column and the footer — and calls this studio for its surfaces: work(), validation(), output(),\\n' +\n    '// inspector(node), assistance(), milestones(), graph(), next() and assistant(kind). bind(bridge) registers every\\n' +\n    '// document and window listener on one AbortController, which dispose() aborts. Selection and the working tab are the\\n' +\n    \"// shell's (bridge.state); the record and its links are saved only through the project store's commands. The Model tab\\n\" +\n    \"// is the chapter's own models (story-view.js, through workspace-ux.js); they edit through window.aiwRequirementsPage.\\n\" +\n    \"import {reportLoadFailure} from './load-failures.js';\\n\" +\n    '// One origin vocabulary and label for every chapter (round 12, GR-GOV-06): who wrote a record and whether a person reviewed it.\\n' +\n    \"import {recordProvenance} from './provenance.js';\\n\" +\n    \"import {sourceAssurance} from './assurance-domain.js';\\n\" +\n    \"import {presentAssistant} from './assistant-surface.js';\\n\" +\n    \"import {evidenceContextHTML,evidenceCursorText,evidenceAssistantLink,refineAssistantDialog} from './evidence-ui.js';\\n\" +\n    \"import {projectURL,activePro"
+  },
+  {
+    "name": "test:journey-draft-browser",
+    "status": "passed",
+    "ms": 371202
+  },
+  {
+    "name": "test:journey-drafter",
+    "status": "passed",
+    "ms": 37658
+  },
+  {
+    "name": "test:knowledge",
+    "status": "failed",
+    "ms": 984,
+    "error": "Command failed: knowledge-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The upstream inventory dependency can time out.\n+ actual - expected\n\n+ []\n- [\n-   'PAT-CIRCUIT-BREAKER'\n- ]\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/knowledge-validate.mjs:24:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [],\n  expected: [ 'PAT-CIRCUIT-BREAKER' ],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:knowledge-coverage",
+    "status": "passed",
+    "ms": 1629
+  },
+  {
+    "name": "test:knowledge-design",
+    "status": "passed",
+    "ms": 3599
+  },
+  {
+    "name": "test:knowledge-ingestion",
+    "status": "passed",
+    "ms": 777
+  },
+  {
+    "name": "test:knowledge-repository",
+    "status": "passed",
+    "ms": 1903
+  },
+  {
+    "name": "test:knowledge-repository-browser",
+    "status": "passed",
+    "ms": 41161
+  },
+  {
+    "name": "test:knowledge-retrieval",
+    "status": "passed",
+    "ms": 13034
+  },
+  {
+    "name": "test:knowledge-second-brain",
+    "status": "passed",
+    "ms": 949
+  },
+  {
+    "name": "test:knowledge-structure",
+    "status": "passed",
+    "ms": 967
+  },
+  {
+    "name": "test:layers-corridors",
+    "status": "passed",
+    "ms": 1589
+  },
+  {
+    "name": "test:layers-overview",
+    "status": "passed",
+    "ms": 1267
+  },
+  {
+    "name": "test:lifecycle-browser",
+    "status": "passed",
+    "ms": 51488
+  },
+  {
+    "name": "test:link-pickers",
+    "status": "passed",
+    "ms": 1140
+  },
+  {
+    "name": "test:local-accounts",
+    "status": "passed",
+    "ms": 2599
+  },
+  {
+    "name": "test:logical",
+    "status": "passed",
+    "ms": 1496
+  },
+  {
+    "name": "test:madr",
+    "status": "passed",
+    "ms": 751
+  },
+  {
+    "name": "test:model-alternatives",
+    "status": "passed",
+    "ms": 6661
+  },
+  {
+    "name": "test:model-alternatives-ui",
+    "status": "passed",
+    "ms": 42542
+  },
+  {
+    "name": "test:model-canvas-refinement-browser",
+    "status": "failed",
+    "ms": 35114,
+    "error": "Command failed: model-canvas-refinement-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Tab moves to the next connection level\n\n'none' !== 'adjacent'\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/model-canvas-refinement-browser-validate.mjs:97:10 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 'none',\n  expected: 'adjacent',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:model-chrome",
+    "status": "passed",
+    "ms": 1050
+  },
+  {
+    "name": "test:model-conformance",
+    "status": "passed",
+    "ms": 663
+  },
+  {
+    "name": "test:model-dossier",
+    "status": "passed",
+    "ms": 1277
+  },
+  {
+    "name": "test:model-dossier-browser",
+    "status": "passed",
+    "ms": 13649
+  },
+  {
+    "name": "test:model-history-work-route-browser",
+    "status": "passed",
+    "ms": 9652
+  },
+  {
+    "name": "test:model-impact",
+    "status": "passed",
+    "ms": 4057
+  },
+  {
+    "name": "test:model-import-browser",
+    "status": "passed",
+    "ms": 108443
+  },
+  {
+    "name": "test:model-interpreter",
+    "status": "passed",
+    "ms": 8894
+  },
+  {
+    "name": "test:model-journey-continuity",
+    "status": "passed",
+    "ms": 19511
+  },
+  {
+    "name": "test:model-lifecycle",
+    "status": "passed",
+    "ms": 833
+  },
+  {
+    "name": "test:model-reconciliation",
+    "status": "passed",
+    "ms": 1210
+  },
+  {
+    "name": "test:model-tab-refinement",
+    "status": "passed",
+    "ms": 2549
+  },
+  {
+    "name": "test:model-tab-refinement-browser",
+    "status": "failed",
+    "ms": 89554,
+    "error": "Command failed: model-tab-refinement-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'125%' !== '115%'\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/model-tab-refinement-browser-validate.mjs:48:83 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: '125%',\n  expected: '115%',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:model-views",
+    "status": "passed",
+    "ms": 1214
+  },
+  {
+    "name": "test:model-views-browser",
+    "status": "passed",
+    "ms": 284841
+  },
+  {
+    "name": "test:model-work-routes-browser",
+    "status": "passed",
+    "ms": 18230
+  },
+  {
+    "name": "test:module-model",
+    "status": "passed",
+    "ms": 62740
+  },
+  {
+    "name": "test:module-scope",
+    "status": "passed",
+    "ms": 8317
+  },
+  {
+    "name": "test:module-scope-browser",
+    "status": "passed",
+    "ms": 141060
+  },
+  {
+    "name": "test:native-connections",
+    "status": "passed",
+    "ms": 21588
+  },
+  {
+    "name": "test:native-editor-loading",
+    "status": "passed",
+    "ms": 1043
+  },
+  {
+    "name": "test:not-stated",
+    "status": "passed",
+    "ms": 841
+  },
+  {
+    "name": "test:notation",
+    "status": "passed",
+    "ms": 12330
+  },
+  {
+    "name": "test:notation-browser",
+    "status": "passed",
+    "ms": 297615
+  },
+  {
+    "name": "test:notation-build-browser",
+    "status": "passed",
+    "ms": 71340
+  },
+  {
+    "name": "test:notation-code",
+    "status": "passed",
+    "ms": 9280
+  },
+  {
+    "name": "test:notation-layout",
+    "status": "passed",
+    "ms": 41118
+  },
+  {
+    "name": "test:notation-metrics",
+    "status": "passed",
+    "ms": 17700
+  },
+  {
+    "name": "test:open-fields",
+    "status": "passed",
+    "ms": 336
+  },
+  {
+    "name": "test:operations",
+    "status": "passed",
+    "ms": 5092
+  },
+  {
+    "name": "test:order-independence",
+    "status": "passed",
+    "ms": 783
+  },
+  {
+    "name": "test:outcome-contracts",
+    "status": "passed",
+    "ms": 39538
+  },
+  {
+    "name": "test:output-stage",
+    "status": "passed",
+    "ms": 5724
+  },
+  {
+    "name": "test:pattern-dna",
+    "status": "passed",
+    "ms": 328
+  },
+  {
+    "name": "test:payment-case-journey",
+    "status": "passed",
+    "ms": 3081
+  },
+  {
+    "name": "test:payment-case-journey-browser",
+    "status": "passed",
+    "ms": 10850
+  },
+  {
+    "name": "test:payment-knowledge-pilot",
+    "status": "passed",
+    "ms": 12900
+  },
+  {
+    "name": "test:persistence",
+    "status": "passed",
+    "ms": 3351
+  },
+  {
+    "name": "test:platform",
+    "status": "passed",
+    "ms": 1165
+  },
+  {
+    "name": "test:platform-browser",
+    "status": "failed",
+    "ms": 20432,
+    "error": "Command failed: platform-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The input did not match the regular expression /Whole platform › Application execution and what it depends on/. Input:\n\n'Whole platform'\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/platform-browser-validate.mjs:113:10 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'Whole platform',\n  expected: /Whole platform › Application execution and what it depends on/,\n  operator: 'match',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:process-semantics",
+    "status": "passed",
+    "ms": 12664
+  },
+  {
+    "name": "test:product-choice",
+    "status": "passed",
+    "ms": 2218
+  },
+  {
+    "name": "test:projects",
+    "status": "passed",
+    "ms": 17846
+  },
+  {
+    "name": "test:provenance",
+    "status": "passed",
+    "ms": 3073
+  },
+  {
+    "name": "test:provider-quota",
+    "status": "passed",
+    "ms": 16685
+  },
+  {
+    "name": "test:providers",
+    "status": "passed",
+    "ms": 2322
+  },
+  {
+    "name": "test:quality",
+    "status": "passed",
+    "ms": 9085
+  },
+  {
+    "name": "test:read-outcomes",
+    "status": "passed",
+    "ms": 20870
+  },
+  {
+    "name": "test:readiness",
+    "status": "passed",
+    "ms": 1623
+  },
+  {
+    "name": "test:reads",
+    "status": "passed",
+    "ms": 2803
+  },
+  {
+    "name": "test:realisation",
+    "status": "passed",
+    "ms": 2731
+  },
+  {
+    "name": "test:realise",
+    "status": "passed",
+    "ms": 1189
+  },
+  {
+    "name": "test:realise-browser",
+    "status": "passed",
+    "ms": 64274
+  },
+  {
+    "name": "test:reconciliation",
+    "status": "passed",
+    "ms": 2530
+  },
+  {
+    "name": "test:recovery-authority",
+    "status": "passed",
+    "ms": 26293
+  },
+  {
+    "name": "test:recovery-size",
+    "status": "passed",
+    "ms": 99748
+  },
+  {
+    "name": "test:reference-projects",
+    "status": "passed",
+    "ms": 51410
+  },
+  {
+    "name": "test:reference-resolution",
+    "status": "passed",
+    "ms": 12526
+  },
+  {
+    "name": "test:reference-route-browser",
+    "status": "passed",
+    "ms": 17995
+  },
+  {
+    "name": "test:refinement-walkthrough",
+    "status": "passed",
+    "ms": 1242134
+  },
+  {
+    "name": "test:repository-acquire",
+    "status": "passed",
+    "ms": 705
+  },
+  {
+    "name": "test:repository-service",
+    "status": "passed",
+    "ms": 2017
+  },
+  {
+    "name": "test:repository-sync",
+    "status": "passed",
+    "ms": 1046
+  },
+  {
+    "name": "test:repository-transfer",
+    "status": "passed",
+    "ms": 1244
+  },
+  {
+    "name": "test:repository-transfer-browser",
+    "status": "passed",
+    "ms": 10309
+  },
+  {
+    "name": "test:repository-video",
+    "status": "passed",
+    "ms": 1667
+  },
+  {
+    "name": "test:requirement-storage",
+    "status": "passed",
+    "ms": 318
+  },
+  {
+    "name": "test:requirements",
+    "status": "failed",
+    "ms": 4014,
+    "error": "Command failed: requirements-validate.mjs\n(node:16270) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nfile:///home/user/AIW-Brain/AIW-V5-Local-Source/public/requirements.js:239\nfunction showTip(el,event){if(!ui.cursor||window.innerWidth<700||event?.pointerType==='touch'||ui.modal)return;const a=get(el.dataset.rInsight);if(!a)return;clearTimeout(tipTimer);tipTimer=setTimeout(()=>{const g=guidance(project,a,ui.tab,ui.section),tip=$('#cursor-tip');if(!tip)return;tip.className='r-cursor-tip';tip.innerHTML=`<small>CHAPTER 01 / ${esc(ui.tab.toUpperCase())} · ${esc(a.id)}</small><h3>${esc(a.title)}</h3><p>${esc(g.explanation)}</p><p><b>${esc(a.owner||'Owner missing')}</b> · ${related(project,a.id).length} relationships · ${status(a)}</p><p class=\"r-tip-attention\">${esc(g.attention)}</p><small>${esc(g.next)} Select to pin details and explore an editable draft suggestion.</small>`;tip.innerHTML+=`<small>${esc(evidenceCursorText(project,a.id))}</small>`;tip.hidden=false;Promise.resolve().then(()=>{const extra=hoverTipHTML(project,a.id,1);if(extra&&!tip.hidden&&!tip.querySelector('.tip-brain'))tip.insertAdjacentHTML('beforeend',extra)}).catch(e=>console.warn('Sol’s reading for this tip could not load.',e?.message));const box=el.getBoundingClientRect(),x=event?.clientX??box.x+box.width/2,y=event?.clientY??box.y+box.height/2;tip.style.left=Math.max(8,Math.min(innerWidth-328,x+14))+'px';tip.style.top=Math.max(8,Math.min(innerHeight-tip.offsetHeight-8,y+14))+'px'},250)}\n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   "
+  },
+  {
+    "name": "test:requirements-browser",
+    "status": "passed",
+    "ms": 89148
+  },
+  {
+    "name": "test:resilience",
+    "status": "passed",
+    "ms": 15221
+  },
+  {
+    "name": "test:responsibility",
+    "status": "passed",
+    "ms": 653
+  },
+  {
+    "name": "test:responsibility-browser",
+    "status": "failed",
+    "ms": 25484,
+    "error": "Command failed: responsibility-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The input did not match the regular expression /Whole journey › Control & accounting › Core ledger/. Input:\n\n'Whole journey'\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/responsibility-browser-validate.mjs:116:10 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'Whole journey',\n  expected: /Whole journey › Control & accounting › Core ledger/,\n  operator: 'match',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:retention",
+    "status": "failed",
+    "ms": 865,
+    "error": "Command failed: retention-validate.mjs\n(node:30328) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: the never-applied uploads were already removed by the sweep above\n\n1 !== 0\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/retention-validate.mjs:127:10 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 1,\n  expected: 0,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:reversal",
+    "status": "passed",
+    "ms": 3210
+  },
+  {
+    "name": "test:review",
+    "status": "passed",
+    "ms": 22949
+  },
+  {
+    "name": "test:review-plan",
+    "status": "passed",
+    "ms": 60453
+  },
+  {
+    "name": "test:roadmap",
+    "status": "passed",
+    "ms": 1989
+  },
+  {
+    "name": "test:roadmap-browser",
+    "status": "passed",
+    "ms": 17701
+  },
+  {
+    "name": "test:round27-model",
+    "status": "failed",
+    "ms": 3976,
+    "error": "Command failed: round27-model-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /data-cm-question|<button/. Input:\n\n'<details class=\"cm-qpick\"><summary class=\"cm-qsum\" aria-label=\"Questions: choose what the model explains\">Questions <span aria-hidden=\"true\">▾</span></summary><div class=\"cm-qlist\" role=\"group\" aria-label=\"Choose a model question\"><p class=\"cm-qintro\">Choose a question to open its view.</p><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"diagram\"><b>How is this chapter represented in the model?</b><span>Diagram · overview</span><small>The journey as a process diagram in the standard notation</small></button><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"map\"><b>What happens in the journey?</b><span>Journey map · overview</span><small>What must happen, for whom, and how important it is.</small></button><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"boundary\"><b>Who participates, and where is the boundary?</b><span>Boundary · isolation</span><small>The system’s edge: who takes part, the outcomes and their owners, and the limits on the design.</small></button><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"layers\"><b>Which architecture layers carry this design?</b><span>Layers · cross-section</span><small>The chapter’s connected model, one lane per model layer.</small></button><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"table\"><b>What has been recorded here?</b><span>Table · listing</span><small>The chapter’s records as a sortable, filterable table.</small></button><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"cross\"><b>Where are the links and gaps between record sets?</b><span>Matrix · cross-section</span><small>Two record sets against each other: what relates, and the gaps.</small></button><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"whole\"><b>How does this fit into the whole design?</b><span>Whole design · overview</span><small>The design anatomy: the whole design as one body.</small></button><button type=\"button\" class=\"cm-qentry\" data-cm-question=\"modules\" disabled><b>Which modules organise the requirements, and how far is each?</b><span>Module map · overview</span><small>Create requirement modules in Chapter 1 to use this view.</small></button></div></details>'\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/round27-model-validate.mjs:57:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImpor"
+  },
+  {
+    "name": "test:round27-validate-browser",
+    "status": "passed",
+    "ms": 56819
+  },
+  {
+    "name": "test:round27-work-browser",
+    "status": "failed",
+    "ms": 10443,
+    "error": "Command failed: round27-work-browser.mjs\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'Work sections'\n- 'Sections'\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/round27-work-browser.mjs:37:66\n"
+  },
+  {
+    "name": "test:runtime",
+    "status": "passed",
+    "ms": 2342
+  },
+  {
+    "name": "test:runtime-assistance",
+    "status": "passed",
+    "ms": 4197
+  },
+  {
+    "name": "test:runtime-form-validation-browser",
+    "status": "passed",
+    "ms": 7083
+  },
+  {
+    "name": "test:scale",
+    "status": "failed",
+    "ms": 1500290,
+    "error": "Timed out after 1500000 ms: --expose-gc scale-validate.mjs\n(node:29221) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  {
+    "name": "test:scale-browser",
+    "status": "passed",
+    "ms": 51012
+  },
+  {
+    "name": "test:scale-design",
+    "status": "passed",
+    "ms": 24174
+  },
+  {
+    "name": "test:scale-readings",
+    "status": "passed",
+    "ms": 3689
+  },
+  {
+    "name": "test:screens-at-size",
+    "status": "failed",
+    "ms": 233521,
+    "error": "Command failed: screens-at-size-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Chapter 11 model: a list draws 253 rows (at most 100; the rest page): TBODY. < TABLE.dk-table < DIV.dk-sheet\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/screens-at-size-browser-validate.mjs:241:16 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:screens-at-size-model",
+    "status": "passed",
+    "ms": 21459
+  },
+  {
+    "name": "test:sdd-architecture",
+    "status": "passed",
+    "ms": 16801
+  },
+  {
+    "name": "test:sdd-authoring-browser",
+    "status": "passed",
+    "ms": 11887
+  },
+  {
+    "name": "test:sdd-content",
+    "status": "passed",
+    "ms": 29421
+  },
+  {
+    "name": "test:sdd-documents-browser",
+    "status": "passed",
+    "ms": 13658
+  },
+  {
+    "name": "test:sdd-formats",
+    "status": "passed",
+    "ms": 12717
+  },
+  {
+    "name": "test:sdd-layout-cache",
+    "status": "passed",
+    "ms": 2384
+  },
+  {
+    "name": "test:sdd-mermaid",
+    "status": "passed",
+    "ms": 5162
+  },
+  {
+    "name": "test:sdd-modules",
+    "status": "passed",
+    "ms": 47747
+  },
+  {
+    "name": "test:sdd-size",
+    "status": "failed",
+    "ms": 56040,
+    "error": "Command failed: sdd-size-validate.mjs\n(node:31056) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: the executive edition, built cold, in 2083 ms, under 2 s\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/sdd-size-validate.mjs:172:12 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:security",
+    "status": "passed",
+    "ms": 1746
+  },
+  {
+    "name": "test:security-design",
+    "status": "passed",
+    "ms": 3034
+  },
+  {
+    "name": "test:security-task-ui",
+    "status": "failed",
+    "ms": 8872,
+    "error": "Command failed: security-task-ui-validate.mjs\n(node:27466) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(q('.dc-dialog'))\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/security-task-ui-validate.mjs:52:19 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: null,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:seeded-proposals",
+    "status": "passed",
+    "ms": 1903
+  },
+  {
+    "name": "test:selection-consistency",
+    "status": "passed",
+    "ms": 2004
+  },
+  {
+    "name": "test:server-hardening",
+    "status": "passed",
+    "ms": 21012
+  },
+  {
+    "name": "test:service-routes",
+    "status": "passed",
+    "ms": 3729
+  },
+  {
+    "name": "test:shell-notices",
+    "status": "passed",
+    "ms": 708
+  },
+  {
+    "name": "test:size-speed",
+    "status": "passed",
+    "ms": 53287
+  },
+  {
+    "name": "test:sol-architecture",
+    "status": "passed",
+    "ms": 15346
+  },
+  {
+    "name": "test:sol-checks",
+    "status": "failed",
+    "ms": 3909,
+    "error": "Command failed: sol-checks-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/sol-checks-validate.mjs:161:9\n    at check (file:///home/user/AIW-Brain/AIW-V5-Local-Source/sol-checks-validate.mjs:29:37)\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/sol-checks-validate.mjs:158:7 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:sol-coverage",
+    "status": "passed",
+    "ms": 241608
+  },
+  {
+    "name": "test:sol-coverage-browser",
+    "status": "passed",
+    "ms": 264311
+  },
+  {
+    "name": "test:sol-current-evaluation",
+    "status": "passed",
+    "ms": 38356
+  },
+  {
+    "name": "test:sol-disclosure",
+    "status": "failed",
+    "ms": 16334,
+    "error": "Command failed: sol-disclosure-validate.mjs\n(node:26521) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n{\"event\":\"openai-provider-failure\",\"upstreamStatus\":500}\n{\"event\":\"anthropic-provider-failure\",\"upstreamStatus\":500}\n{\"event\":\"openai-provider-failure\",\"upstreamStatus\":500}\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: {\"error\":\"The desk no longer holds F:capacity:run-001, F:capacity:run-008. Read the desk again before asking Sol.\"}\n\n400 !== 200\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/sol-disclosure-validate.mjs:205:8 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 400,\n  expected: 200,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:sol-evaluation",
+    "status": "passed",
+    "ms": 41064
+  },
+  {
+    "name": "test:sol-live-check",
+    "status": "passed",
+    "ms": 29227
+  },
+  {
+    "name": "test:sol-open-fields",
+    "status": "passed",
+    "ms": 6713
+  },
+  {
+    "name": "test:sol-sdd",
+    "status": "passed",
+    "ms": 1547
+  },
+  {
+    "name": "test:specification-reading",
+    "status": "passed",
+    "ms": 7441
+  },
+  {
+    "name": "test:specification-reasoning",
+    "status": "passed",
+    "ms": 2589
+  },
+  {
+    "name": "test:stack",
+    "status": "passed",
+    "ms": 1775
+  },
+  {
+    "name": "test:stack-browser",
+    "status": "failed",
+    "ms": 20942,
+    "error": "Command failed: stack-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(await page.$('.cm-view[data-id=\"options\"][aria-pressed=\"true\"]'))\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/stack-browser-validate.mjs:87:10 {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: null,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:stewardship",
+    "status": "failed",
+    "ms": 5008,
+    "error": "Command failed: stewardship-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: F:latency:QD-003: knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/stewardship-validate.mjs:92:80\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:stewardship-browser",
+    "status": "passed",
+    "ms": 49760
+  },
+  {
+    "name": "test:story",
+    "status": "passed",
+    "ms": 1528
+  },
+  {
+    "name": "test:story-browser",
+    "status": "passed",
+    "ms": 53212
+  },
+  {
+    "name": "test:studio-dialog-browser",
+    "status": "passed",
+    "ms": 63093
+  },
+  {
+    "name": "test:studio-model",
+    "status": "passed",
+    "ms": 48919
+  },
+  {
+    "name": "test:studio-validation-output",
+    "status": "passed",
+    "ms": 41052
+  },
+  {
+    "name": "test:studio-work",
+    "status": "passed",
+    "ms": 23776
+  },
+  {
+    "name": "test:style-tokens",
+    "status": "failed",
+    "ms": 233,
+    "error": "Command failed: style-tokens-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: no colour literal in a declaration outside theme.css\n+ actual - expected\n\n+ [\n+   'model-round27.css: .cm-export>div,.cm .cm-qlist,.cm :is(.cm-connection,.cm-fit- { box-shadow: 0 10px 30px #0002 }',\n+   'model-round27.css: .wb-review-step>.brain-actions { background: var(--paper,#fff) }',\n+   'notation.css: .cm-svg .nt-node.nt-dr-open :is(.nt-box,.nt-ev,.nt-gw) { fill: var(--red-3,#fbe3e3)!important }',\n+   'notation.css: .cm-svg .nt-node.nt-dr-open :is(.nt-box,.nt-ev,.nt-gw) { stroke: var(--red-9,#c0392b) }',\n+   'notation.css: .cm-legend .nt-k.nt-dr-k.open { background: var(--red-3,#fbe3e3) }',\n+   'notation.css: .cm-legend .nt-k.nt-dr-k.open { border-color: var(--red-9,#c0392b) }',\n+   'notation.css: .nt-basis-q.nt-dr-open { border-left-color: var(--red-9,#c0392b) }',\n+   'validate.css: dialog.out-dialog .out-preview { background: #eff0e6 }'\n+ ]\n- []\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/style-tokens-validate.mjs:48:10\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: [\n    'model-round27.css: .cm-export>div,.cm .cm-qlist,.cm :is(.cm-connection,.cm-fit- { box-shadow: 0 10px 30px #0002 }',\n    'model-round27.css: .wb-review-step>.brain-actions { background: var(--paper,#fff) }',\n    'notation.css: .cm-svg .nt-node.nt-dr-open :is(.nt-box,.nt-ev,.nt-gw) { fill: var(--red-3,#fbe3e3)!important }',\n    'notation.css: .cm-svg .nt-node.nt-dr-open :is(.nt-box,.nt-ev,.nt-gw) { stroke: var(--red-9,#c0392b) }',\n    'notation.css: .cm-legend .nt-k.nt-dr-k.open { background: var(--red-3,#fbe3e3) }',\n    'notation.css: .cm-legend .nt-k.nt-dr-k.open { border-color: var(--red-9,#c0392b) }',\n    'notation.css: .nt-basis-q.nt-dr-open { border-left-color: var(--red-9,#c0392b) }',\n    'validate.css: dialog.out-dialog .out-preview { background: #eff0e6 }'\n  ],\n  expected: [],\n  operator: 'deepStrictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:technology",
+    "status": "passed",
+    "ms": 2838
+  },
+  {
+    "name": "test:technology-capability-handoff-browser",
+    "status": "passed",
+    "ms": 17133
+  },
+  {
+    "name": "test:technology-catalogue",
+    "status": "passed",
+    "ms": 1212
+  },
+  {
+    "name": "test:technology-choice-browser",
+    "status": "passed",
+    "ms": 24292
+  },
+  {
+    "name": "test:technology-icons",
+    "status": "passed",
+    "ms": 9096
+  },
+  {
+    "name": "test:technology-realisation",
+    "status": "passed",
+    "ms": 5326
+  },
+  {
+    "name": "test:technology-selection-ux-browser",
+    "status": "passed",
+    "ms": 52858
+  },
+  {
+    "name": "test:theme",
+    "status": "failed",
+    "ms": 33892,
+    "error": "Command failed: theme-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: a notation fill keeps its own light colour in the light theme (undefined)\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/theme-browser-validate.mjs:173:16 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:threat",
+    "status": "passed",
+    "ms": 1441
+  },
+  {
+    "name": "test:threat-browser",
+    "status": "passed",
+    "ms": 46962
+  },
+  {
+    "name": "test:trace-narrative",
+    "status": "passed",
+    "ms": 175858
+  },
+  {
+    "name": "test:tradeoff",
+    "status": "passed",
+    "ms": 6329
+  },
+  {
+    "name": "test:tradeoff-browser",
+    "status": "failed",
+    "ms": 25845,
+    "error": "Command failed: tradeoff-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: The input did not match the regular expression /All decisions › QD-004/. Input:\n\n'All decisions'\n\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/tradeoff-browser-validate.mjs:151:10\n    at runNextTicks (node:internal/process/task_queues:65:5)\n    at process.processImmediate (node:internal/timers:453:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'All decisions',\n  expected: /All decisions › QD-004/,\n  operator: 'match',\n  diff: 'simple'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:tray",
+    "status": "passed",
+    "ms": 8187
+  },
+  {
+    "name": "test:ui-modules",
+    "status": "passed",
+    "ms": 2609
+  },
+  {
+    "name": "test:ui-proportion",
+    "status": "passed",
+    "ms": 232015
+  },
+  {
+    "name": "test:ui-variants",
+    "status": "failed",
+    "ms": 32076,
+    "error": "Command failed: ui-variants-validate.mjs\nFAIL security-task-ui-validate.mjs AIW_BLANK=1\nAssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n    at file:///home/user/AIW-Brain/AIW-V5-Local-Source/security-task-ui-validate.mjs:52:19\n"
+  },
+  {
+    "name": "test:utility",
+    "status": "passed",
+    "ms": 971
+  },
+  {
+    "name": "test:utility-browser",
+    "status": "passed",
+    "ms": 48456
+  },
+  {
+    "name": "test:ux-shell",
+    "status": "failed",
+    "ms": 194512,
+    "error": "Command failed: ux-shell-browser-validate.mjs\nnode:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\npage.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('dialog[open]') to be visible\u001b[22m\n\n    at /home/user/AIW-Brain/AIW-V5-Local-Source/ux-shell-browser-validate.mjs:538:38 {\n  log: [ \"  - waiting for locator('dialog[open]') to be visible\" ],\n  name: 'TimeoutError'\n}\n\nNode.js v22.22.0\n"
+  },
+  {
+    "name": "test:validate-browser",
+    "status": "passed",
+    "ms": 75486
+  },
+  {
+    "name": "test:validate-output-refinement",
+    "status": "passed",
+    "ms": 2260
+  },
+  {
+    "name": "test:validate-output-refinement-browser",
+    "status": "passed",
+    "ms": 52829
+  },
+  {
+    "name": "test:validation-capabilities",
+    "status": "passed",
+    "ms": 18680
+  },
+  {
+    "name": "test:validation-confirmation",
+    "status": "passed",
+    "ms": 1214
+  },
+  {
+    "name": "test:view-experience-dom",
+    "status": "passed",
+    "ms": 1165
+  },
+  {
+    "name": "test:wire-merge",
+    "status": "passed",
+    "ms": 23365
+  },
+  {
+    "name": "test:work-glance",
+    "status": "passed",
+    "ms": 1610
+  },
+  {
+    "name": "test:work-review-readability",
+    "status": "passed",
+    "ms": 1571
+  },
+  {
+    "name": "test:work-sections",
+    "status": "passed",
+    "ms": 39670
+  },
+  {
+    "name": "test:workbench-ui",
+    "status": "passed",
+    "ms": 8790
+  },
+  {
+    "name": "test:workspace",
+    "status": "passed",
+    "ms": 2611
+  },
+  {
+    "name": "test:xss-browser",
+    "status": "passed",
+    "ms": 97732
+  }
+]

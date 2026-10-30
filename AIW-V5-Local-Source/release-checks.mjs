@@ -15,7 +15,8 @@ const active=new Set();
 // other workers finish what they run and wait while it runs, so a browser suite's load never counts against a budget.
 // test:notation-layout times each chapter's Layers layout against its control and a 900 ms bound (rc41 close: it failed by 3 ms
 // beside two browser suites and passes alone).
-const EXCLUSIVE=new Set(['test:scale','test:size-speed','test:baseline-size','test:recovery-size','test:notation-layout']);
+// test:sdd-size builds the SDD editions cold against a 2 s bound (2026-10-30: 2,083 ms beside two browser suites; passes alone).
+const EXCLUSIVE=new Set(['test:scale','test:size-speed','test:baseline-size','test:recovery-size','test:notation-layout','test:sdd-size']);
 let running=0,wanted=0,exclusive=false;const waiters=[];
 const claim=ex=>new Promise(res=>{if(ex)wanted++;const tryClaim=()=>{if(ex?running===0:(!wanted&&!exclusive)){running++;if(ex){wanted--;exclusive=true;}res();return true;}return false;};if(!tryClaim())waiters.push(tryClaim);});
 const release=ex=>{running--;if(ex)exclusive=false;for(const w of waiters.splice(0))if(!w())waiters.push(w);};
