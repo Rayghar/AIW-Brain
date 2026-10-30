@@ -76,7 +76,7 @@ function kernelOf(p, upto = null) {
       let ys = stepped.get(b); if (!ys) stepped.set(b, ys = []); ys.push({e, other: s});
     }
     const inScope = id => { const plan = G.objects.get(id)?.record, asset = G.objects.get(plan?.assetId); return planInScope(G.objects.get(plan?.environmentId)?.record, plan, asset && ['component', 'technology'].includes(asset.type) ? asset : null); };
-    return {G, layer, order, steps, stepped, inScope};
+    return {G, layer, order, steps, stepped, inScope, upto};
   });
 }
 const keep = (K, hop, e) => (!hop.types || hop.types.includes(e.type)) && (!hop.only || hop.only(e)) && e.source !== hop.skip;
@@ -130,8 +130,10 @@ function traceOf(K, start, at, hops) {
   const layers = Object.fromEntries(TRACE_LAYERS.map(l => [l, []]));
   for (const [id, l] of at) layers[l].push(id);
   for (const l of TRACE_LAYERS) if (layers[l].length > 1) layers[l].sort((a, b) => K.order.get(a) - K.order.get(b));
-  let ids = null;
-  return {start, layers, hops, get ids() { return ids ??= new Set(at.keys()); }, layerOf: id => at.get(id) || null, has: id => at.has(id), record: id => K.G.objects.get(id) || null};
+  let ids = null, next = null;
+  // `next`: for each record, the hops that run from it (tracePath reads them, once per trace).
+  const onward = () => { const m = new Map(); for (const [to, hs] of hops) for (const h of hs) { let xs = m.get(h.from); if (!xs) m.set(h.from, xs = []); xs.push({to, h}); } return m; };
+  return {start, layers, hops, get ids() { return ids ??= new Set(at.keys()); }, get next() { return next ??= onward(); }, layerOf: id => at.get(id) || null, has: id => at.has(id), record: id => K.G.objects.get(id) || null};
 }
 const joinHops = (into, from) => { for (const [k, hs] of from) { const xs = into.get(k) || []; for (const h of hs) if (!xs.some(x => x.relation === h.relation && x.from === h.from)) xs.push(h); into.set(k, xs); } };
 
@@ -149,7 +151,7 @@ export const traceGraph = (p, upto = null) => kernelOf(p, upto);
 export function forwardTrace(p, id, {graph = null} = {}) {
   const K = graph || kernelOf(p);
   if (!K.layer.has(id)) return null;
-  return remember(p, 'trace-kernel:forward', id, () => { const w = walk(K, [id]); return traceOf(K, id, w.at, w.hops); });
+  return remember(p, 'trace-kernel:forward', K.upto ? id + '\u0000' + K.upto : id, () => { const w = walk(K, [id]); return traceOf(K, id, w.at, w.hops); });
 }
 // The walk from several records at once (a driver's scope: the driver and what the requirements it serves name).
 export function seededTrace(p, ids, {until = null, graph = null} = {}) {
@@ -199,9 +201,7 @@ export const hopsFrom = (T, id, test = () => true) => (T?.hops.get(id) || []).fi
 // what reaches the start).
 export function tracePath(T, id) {
   if (!T || !T.has(id) || id === T.start) return [];
-  const next = new Map();
-  for (const [to, hs] of T.hops) for (const h of hs) { let xs = next.get(h.from); if (!xs) next.set(h.from, xs = []); xs.push({to, h}); }
-  const prev = new Map([[T.start, null]]), queue = [T.start];
+  const next = T.next, prev = new Map([[T.start, null]]), queue = [T.start];
   while (queue.length && !prev.has(id)) {
     const x = queue.shift();
     for (const {to, h} of next.get(x) || []) if (!prev.has(to)) { prev.set(to, {at: x, step: {from: x, to, type: h.type, relation: h.relation, source: h.source}}); queue.push(to); }
