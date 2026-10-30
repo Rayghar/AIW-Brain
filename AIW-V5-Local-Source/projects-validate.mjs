@@ -158,7 +158,7 @@ try{
  const src=m.coauthoring.sources.find(s=>s.kind==='model');
  assert.deepEqual([m.coauthoring.sources.length,src.id,src.kind,src.name,src.format,src.hash,src.text===DSL,src.addedAt],[1,'SRC-001','model','bike-share.dsl','structurizr',sha(DSL),true,m.workspace.createdAt],'the whole model text, hashed on the server, its format detected');
  assert.equal(src.versions[0].status,'Unconfirmed');assert.equal(src.versions[0].title,'Model · bike-share.dsl');assert.equal(src.versions[0].location,'Model file bike-share.dsl read in the browser · structurizr · text SHA-256 '+sha(DSL));assert(DSL.startsWith(src.versions[0].excerpt.slice(0,200)));
- assert.deepEqual(m.model.interpreted,{rules:'model-rules-1',at:m.workspace.createdAt,sourceId:'SRC-001',textHash:sha(DSL),...modelCounts(interpretModel(DSL,{name:'bike-share.dsl',format:'dsl'}))},'model.interpreted keeps the counts of the reading');
+ assert.deepEqual(m.model.interpreted,{rules:'model-rules-2',at:m.workspace.createdAt,sourceId:'SRC-001',textHash:sha(DSL),...modelCounts(interpretModel(DSL,{name:'bike-share.dsl',format:'dsl'}))},'model.interpreted keeps the counts of the reading');
  assert.deepEqual([m.model.interpreted.elements,m.model.interpreted.relationships,m.model.interpreted.kinds.container],[26,13,7]);assert(!JSON.stringify(m.model.interpreted).includes('"Trip service"'),'counts only, never the elements');
  assert.equal(m.artefacts.length,0,'interpreting is not drafting: no record is created');assert.equal(m.brief.problem,'');assert.equal(m.brief.interpreted,undefined);
  const both=(await (await api('/api/projects','POST',{name:'Bikes from both',template:'blank',brief:BRIEF,model:{text:DSL,name:'bike-share.dsl',kind:'dsl',format:'structurizr'}})).json()).document;

@@ -19,11 +19,16 @@ export function enterpriseReferences(p){const targets=new Map(enterpriseTargets(
  if(asset?.lifecycle==='Retired')reasons.push('The pinned service contract is retired.');
  return {id:u.id,identity:ref.identity||enterpriseIdentity(org.id,org.entryId),title:u.entry?.title||org.entryId,organizationId:org.id,entryId:org.entryId,organizationTitle:org.title||'',targetId:u.targetId,targetTitle:target?.title||u.targetId,environmentId:ref.environmentId||'',releaseId:ref.releaseId,expectedVersion:ref.expectedVersion||'',critical:ref.critical===true,scope:ref.scope||'',contract:ref.contract||'',asset,definitionHash:ref.definitionHash,current:reasons.length===0&&!!a?.latestDefinitionHash,state:reasons.length?'Review required':a?.latestDefinitionHash?'Current declaration':'Source currentness unknown',reasons,at:u.at,actor:u.actor,source:'workbench.guidanceUses',authority:'Declared enterprise dependency; no live connection, capacity reservation or service health is inferred.'};
  });}
+// Why an adopted entry cannot be named as a shared dependency now, or '' (the preview below and the journey drafter's
+// import report, rc.10.73.42 D12, read this one rule).
+export function enterpriseAdoptionIssue(entry){const org=entry?.organization;
+ if(!entry?.asset||!org||!org.assurance?.eligible||entry.status!=='approved')return 'Adopt a verified signed release of this shared service first.';
+ if(entry.asset.lifecycle==='Retired')return 'This shared service is retired. Review or retire its existing consumers.';
+ if(org.assurance.latestDefinitionHash!==enterpriseDefinition(entry)||org.assurance.latestStatus==='withdrawn')return 'The shared service contract changed or its current source is unavailable. Adopt the current reviewed release before linking a consumer.';
+ return '';}
 export function enterpriseReferencePreview(p,{entryId,targetId,environmentId='',expectedVersion='',scope='',contract='',critical=false,usageId=''}={}){
- const entry=p.workbench?.catalogue?.find(e=>e.id===entryId),org=entry?.organization,target=enterpriseTargets(p).find(t=>t.id===targetId),old=usageId?p.workbench?.guidanceUses?.find(u=>u.id===usageId&&u.kind==='shared-dependency'&&!u.retired):null;
- if(!entry?.asset||!org||!org.assurance?.eligible||entry.status!=='approved')throw Error('Adopt a verified signed release of this shared service first.');
- if(entry.asset.lifecycle==='Retired')throw Error('This shared service is retired. Review or retire its existing consumers.');
- if(org.assurance.latestDefinitionHash!==enterpriseDefinition(entry)||org.assurance.latestStatus==='withdrawn')throw Error('The shared service contract changed or its current source is unavailable. Adopt the current reviewed release before linking a consumer.');
+ const entry=p.workbench?.catalogue?.find(e=>e.id===entryId),org=entry?.organization,target=enterpriseTargets(p).find(t=>t.id===targetId),old=usageId?p.workbench?.guidanceUses?.find(u=>u.id===usageId&&u.kind==='shared-dependency'&&!u.retired):null,issue=enterpriseAdoptionIssue(entry);
+ if(issue)throw Error(issue);
  if(!target)throw Error('Choose an authored consuming object in this project.');
  if(environmentId&&!p.runtime?.environments?.some(e=>e.id===environmentId))throw Error('Choose an existing environment or leave the dependency at design scope.');
  if(!String(scope).trim()||!String(contract).trim())throw Error('State the dependency scope and the service contract this consumer relies on.');

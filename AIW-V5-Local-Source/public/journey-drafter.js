@@ -44,6 +44,7 @@ import {withJourneyProvenance} from './chapter-guide.js';
 import {resilienceDrafts} from './security-domain.js';
 import {draftsByGroup, groupedDraftReason} from './readiness-model.js';
 import {nounPhrase} from './architecture-drafter.js';
+import {enterpriseAdoptionIssue, enterpriseIdentity} from './enterprise-references.js';
 // Round 12 (G, GR-UX-16): the chapters named from the one chapter-name table.
 import {CHAPTER_TITLES} from './chapter-names.js';
 
@@ -508,6 +509,8 @@ function threat(p, target, category, title, scenario, consequence, priority, pri
 // external system, and interfaces → Chapter 8 contract (event when the words say so), with the data they touch;
 // environment, node and instance → Chapter 10. An element the project already holds (same kind of record, same title
 // words) is not drafted again. A value is stated when the model's line holds its words, else inferred from that line.
+// rc.10.73.42 (D12): a business capability and a gap, and every element of the implementation-and-migration layer, are
+// drafted by no chapter: each is listed, with its note and its lines, in the import report (notMapped below).
 const elText = e => [e.name, e.description, e.technology, ...e.tags].join(' ');
 const APP_KINDS = new Set(['system', 'container', 'component']);
 const hasParts = (M, e) => list(M.children.get(e.id)).some(c => c.kind === 'container' || c.kind === 'component');
@@ -551,22 +554,28 @@ function processOrder(M) {
 // sequence and message flows as process.transition between the steps the chapter made and those elements. An element
 // made in this batch is named by a reference the applier resolves ("@ref:model:E-007"); a flow whose end is neither a
 // step nor such an element (a pool, a data object) is not drafted.
+// rc.10.73.42 (D16, C1-M1): a flow out of an exclusive or inclusive gateway keeps the condition the model states; with
+// none it is adopted with an open condition (empty, an open question, open-fields.js) that PROC-GATEWAY raises until a
+// person states it, and the gateway's default flow is adopted as the default path (process.transition `default`).
+// "Follows when … completes." is only for a flow that leaves no gateway. An element of the implementation-and-migration
+// layer (an ArchiMate implementation event) is no process element, as a work package is no journey step.
 const REF = '@ref:model:';
 const EVENT_TYPES = new Set(['none', 'message', 'timer', 'error', 'signal']), GATEWAY_TYPES = new Set(['exclusive', 'parallel', 'inclusive', 'event']);
+const flowElement = e => (e.kind === 'event' || e.kind === 'gateway') && e.attrs.layer !== 'implementation';
 function processExtras(doc, M) {
   const steps = artefacts(doc, 'journey'), stepOf = el => named(steps, el.name), out = [], seen = new Set();
   const laneOf = el => { let e = M.els.get(el.parent); while (e && e.kind !== 'lane' && e.kind !== 'pool') e = M.els.get(e.parent); return e?.name || ''; };
-  const idOf = el => !el ? null : el.kind === 'task' || el.kind === 'process' ? stepOf(el)?.id || null : el.kind === 'event' || el.kind === 'gateway' ? REF + el.id : null;
+  const idOf = el => !el ? null : el.kind === 'task' || el.kind === 'process' ? stepOf(el)?.id || null : flowElement(el) ? REF + el.id : null;
   const source = x => `${M.name}${x.passages.length ? ' · ' + x.passages.join(', ') : ''}`;
   // A BPMN sub-process that became a journey step also stands in the process model as a sub-process element, so the
   // events and gateways inside it can name it (Contract T: parentId names a sub-process element).
   const subs = new Map();
-  for (const el of M.elements.filter(e => e.kind === 'event' || e.kind === 'gateway')) {
+  for (const el of M.elements.filter(flowElement)) {
     const parentEl = M.els.get(el.parent); if (!parentEl || !(parentEl.kind === 'task' || parentEl.kind === 'process') || !stepOf(parentEl) || subs.has(parentEl.id)) continue;
     const ref = REF + parentEl.id + ':sub'; subs.set(parentEl.id, ref);
     out.push({type: 'process.element', ref, payload: {kind: 'subprocess', title: clip(parentEl.name, 160), purpose: clip(parentEl.description, 1000), lane: clip(laneOf(parentEl), 100) || 'Unassigned', owner: '', source: clip(source(parentEl), 600), sourceLocator: clip(parentEl.passages.join(', '), 240), requirementIds: [], eventType: '', position: '', attachedTo: '', gatewayType: '', parentId: '', partyId: '', dataId: ''}});
   }
-  for (const el of M.elements.filter(e => e.kind === 'event' || e.kind === 'gateway')) {
+  for (const el of M.elements.filter(flowElement)) {
     const a = el.attrs, parentEl = M.els.get(el.parent);
     out.push({type: 'process.element', ref: REF + el.id, payload: {kind: el.kind, title: clip(el.name, 160), purpose: clip(el.description, 1000), lane: clip(laneOf(el), 100) || 'Unassigned', owner: '', source: clip(source(el), 600), sourceLocator: clip(el.passages.join(', '), 240), requirementIds: [], eventType: el.kind === 'event' ? (EVENT_TYPES.has(a.eventType) ? a.eventType : 'none') : '', position: el.kind === 'event' ? (['start', 'intermediate', 'end', 'boundary'].includes(a.position) ? a.position : 'intermediate') : '', attachedTo: a.attachedTo ? idOf(M.els.get(a.attachedTo)) || '' : '', gatewayType: el.kind === 'gateway' ? (GATEWAY_TYPES.has(a.gatewayType) ? a.gatewayType : 'exclusive') : '', parentId: (parentEl && subs.get(parentEl.id)) || '', partyId: '', dataId: ''}});
   }
@@ -574,8 +583,8 @@ function processExtras(doc, M) {
     const a = M.els.get(r.from), b = M.els.get(r.to), from = idOf(a), to = idOf(b);
     if (!from || !to || from === to || seen.has(from + '>' + to)) continue;
     seen.add(from + '>' + to);
-    const fromGateway = a.kind === 'gateway';
-    out.push({type: 'process.transition', payload: {from, to, label: clip(r.label || `${a.name} → ${b.name}`, 100), condition: clip(r.attrs.condition || (fromGateway ? `No condition stated in the model for ${r.label || 'this path'}.` : `Follows when ${a.name} completes.`), 600), kind: r.kind, contractId: '', owner: '', source: clip(source(r), 600), sourceLocator: clip(r.passages.join(', '), 240)}});
+    const fromGateway = a.kind === 'gateway', chooses = fromGateway && ['exclusive', 'inclusive'].includes(GATEWAY_TYPES.has(a.attrs.gatewayType) ? a.attrs.gatewayType : 'exclusive'), condition = str(r.attrs.condition), byDefault = chooses && r.attrs.isDefault === true;
+    out.push({type: 'process.transition', payload: {from, to, label: clip(r.label || `${a.name} → ${b.name}`, 100), condition: clip(condition || (fromGateway ? '' : `Follows when ${a.name} completes.`), 600), ...(byDefault ? {default: true} : {}), ...(chooses && !condition && !byDefault ? {open: {condition: {state: 'open-question', question: clip(`What must be true for ${r.label || 'the path to ' + b.name} to be taken?`, 600), source: clip(source(r), 600)}}} : {}), kind: r.kind, contractId: '', owner: '', source: clip(source(r), 600), sourceLocator: clip(r.passages.join(', '), 240)}});
   }
   return out;
 }
@@ -587,6 +596,37 @@ export function resolveRefs(value, refs) {
   return value;
 }
 export const isRef = value => typeof value === 'string' && value.startsWith(REF);
+// The import report (rc.10.73.42, D12): what the model holds and no chapter drafts, each with the lines it came from and
+// a note for the person. A business capability (an ArchiMate Capability or BusinessFunction) is never a Chapter 6
+// technology capability: it is named against the governed identity of an Enterprise capability the project has adopted
+// under the same name, one a person could link now (enterprise-references.js), else it is an import note. A gap is a
+// transition note for Chapter 11, never a requirement. A plateau, a work package and the rest of the
+// implementation-and-migration layer are Chapter 11 work a person records. Names are compared, never guessed at: a match
+// is a suggestion, and the link is a person's reviewed shared dependency.
+const isPlateau = x => /^plateau$/i.test(str(x?.attrs.xsiType || x?.attrs.archimateType));
+const NOT_MAPPED_WORDS = {'business-capability': 'business capability', gap: 'gap'};
+function notMapped(p, M) {
+  const adopted = list(p?.workbench?.catalogue).filter(e => e?.asset?.type === 'Enterprise capability' && !enterpriseAdoptionIssue(e));
+  return M.elements.filter(e => e.kind === 'business-capability' || e.kind === 'gap' || e.attrs.layer === 'implementation').map(e => {
+    const type = str(e.attrs.xsiType || e.attrs.archimateType) || e.kind, row = {element: e.id, kind: e.kind, xsiType: type, name: e.name, passages: e.passages};
+    if (e.kind === 'business-capability') {
+      const c = adopted.find(x => titleKey(x.title) === titleKey(e.name)), identity = c ? enterpriseIdentity(c.organization.id, c.organization.entryId) : '';
+      return c ? {...row, mapping: 'enterprise-capability', identity, entryId: c.id, note: `${e.name} (${type}) is a business capability, not a Chapter 6 technology capability. It carries the name of the adopted Enterprise capability ${c.title} (${identity}): link the records that realise it to that identity as a reviewed shared dependency.`}
+        : {...row, mapping: 'import-note', note: `${e.name} (${type}) is a business capability, not a Chapter 6 technology capability, and no adopted Enterprise capability carries its name. Record it as an Enterprise capability in the organisation library for review and release, or keep this note.`};
+    }
+    if (e.kind === 'gap') {
+      const ends = uniq([...list(M.out.get(e.id)).map(r => M.els.get(r.to)), ...list(M.into.get(e.id)).map(r => M.els.get(r.from))].filter(isPlateau).map(x => x.name));
+      return {...row, mapping: 'transition-note', note: `${e.name} (${type}) is a step between plateaus${ends.length ? ' (' + ends.join(' and ') + ')' : ''}, not a requirement, and is not drafted as one. Chapter 11 records the plateaus, and the SDD's Transition section reads each gap from what a plateau introduces and retires: state it as the purpose of the plateau it leads to.`};
+    }
+    return {...row, mapping: 'import-note', note: `${e.name} (${type}) is ${isPlateau(e) ? 'a Chapter 11 plateau, recorded by a person in the Plateaus stage' : e.kind === 'task' ? 'delivery work (a Chapter 11 delivery action), not a journey step' : 'Chapter 11 work of the implementation-and-migration layer'}; it is not drafted from the model.`};
+  });
+}
+const notMappedNote = (rows, ch) => {
+  if (ch === 1 && rows.length) return `${rows.length} element${rows.length === 1 ? ' of the model is' : 's of the model are'} not drafted into a chapter: ${rows.map(x => `${x.name} (${NOT_MAPPED_WORDS[x.kind] || x.xsiType})`).join('; ')}. Each is in the import report with its note and its lines.`;
+  const caps = rows.filter(x => x.kind === 'business-capability');
+  if (ch === 6 && caps.length) return `${caps.map(x => x.name).join(', ')} ${caps.length === 1 ? 'is a business capability' : 'are business capabilities'}, not a Chapter 6 technology capability: ${caps.map(x => x.identity ? `${x.name} carries the name of the adopted Enterprise capability ${x.identity}` : `${x.name} matches no adopted Enterprise capability`).join('; ')}.`;
+  return '';
+};
 
 const MODEL_RULES = {
   // Chapter 1: the model's people, stakeholders, outcomes, steps (in flow order), constraints and requirements; the
@@ -606,7 +646,7 @@ const MODEL_RULES = {
     const linkTo = (type, el, onlyOne) => doc => { const items = artefacts(doc, type), top = best(items, elText(el)) || (onlyOne && items.length === 1 ? items[0] : null); return top ? inferred(top.id, {upstream: [top.id], note: overlap(textOf(top), elText(el)) ? `Shares the most words with ${top.id} ${top.title}.` : `The only ${type} the project holds.`}) : gap('', `No ${type} shares words with it.`); };
     for (const el of take('requirement', M.elements.filter(e => e.kind === 'requirement'))) push('requirement', el, {acceptance: gap(openText('What observable result would demonstrate this behaviour')), owner: gap(OWNER_GAP, 'The model names no owner for this requirement.'), journeyId: linkTo('journey', el, true), outcomeId: linkTo('outcome', el, true), constraintId: linkTo('constraint', el, false), assumptionId: linkTo('assumption', el, false)});
     const last = specs.filter(s => s.type === 'journey').at(-1);
-    if (last && M.elements.some(e => e.kind === 'event' || e.kind === 'gateway')) last.extras = doc => processExtras(doc, M);
+    if (last && M.elements.some(flowElement)) last.extras = doc => processExtras(doc, M);
     return specs;
   },
   // Chapter 2: a quality scenario per driver the model names.
@@ -883,7 +923,9 @@ function draftWith(input, ch, {brief = null, model = null, mode = 'deterministic
     records.push(record);
   }
   const gaps = [...records.flatMap(r => r.gaps.map(g => ({record: r.key, ...g}))), ...list(ctx.questions).map(q => ({record: null, key: q.key, question: q.question, forType: q.forType}))];
-  const draft = {chapter: ch, title: CHAPTER_TITLES[ch], mode: M && !M.empty ? 'model' : mode, basis: {stamp: guideBasis(p, ch, null), engine: BRAIN_ENGINE, policy: BRAIN_POLICY, procedure: brain.procedure ? {id: brain.procedure.id, title: brain.procedure.title, questions: brain.procedure.questions} : null}, records, gaps, citations: brain.citations, ...(ctx.note ? {note: ctx.note} : {}), ...(M && !M.empty ? {model: {sourceId: M.sourceId, name: M.name, format: M.format, elements: M.elements.length, drafted: records.filter(r => r.provenance.mode === 'model').length}} : {}), ...(!records.length ? {empty: ch === 1 ? (M && !M.empty ? 'The model and the brief yield no new Chapter 1 record.' : 'The brief yields no new Chapter 1 record.') : `Chapter ${ch} has nothing to draft from: its upstream records are drafted already or missing.`} : {})};
+  const unmapped = M && !M.empty ? notMapped(p, M) : null, said = unmapped ? notMappedNote(unmapped, ch) : '';
+  if (said) ctx.note = [ctx.note, said].filter(Boolean).join(' ');
+  const draft = {chapter: ch, title: CHAPTER_TITLES[ch], mode: M && !M.empty ? 'model' : mode, basis: {stamp: guideBasis(p, ch, null), engine: BRAIN_ENGINE, policy: BRAIN_POLICY, procedure: brain.procedure ? {id: brain.procedure.id, title: brain.procedure.title, questions: brain.procedure.questions} : null}, records, gaps, citations: brain.citations, ...(ctx.note ? {note: ctx.note} : {}), ...(M && !M.empty ? {model: {sourceId: M.sourceId, name: M.name, format: M.format, elements: M.elements.length, drafted: records.filter(r => r.provenance.mode === 'model').length, notMapped: unmapped}} : {}), ...(!records.length ? {empty: ch === 1 ? (M && !M.empty ? 'The model and the brief yield no new Chapter 1 record.' : 'The brief yields no new Chapter 1 record.') : `Chapter ${ch} has nothing to draft from: its upstream records are drafted already or missing.`} : {})};
   return {draft, document: doc};
 }
 // One chapter of proposed records for the project as it stands. Pure: the project is read, never written.
