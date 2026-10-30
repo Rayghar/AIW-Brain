@@ -1,9 +1,9 @@
 # AIW design process measured against the 27 reviewed handbooks
 
 **Date:** 2026-10-30
-**Release line:** AIW v0.10.0-rc.10.73.x. The controlling baseline is rc.10.73.6.
+**Release line:** AIW v0.10.0-rc.10.73 series. The controlling baseline is AIW v0.10.0-rc.10.73.6.
 **Source reviewed:** branch `claude/dazzling-cerf-a3qshh` at `2b5afaa`.
-**Status:** a review only. No AIW code was changed. Every recommendation is a proposal for the owner to decide on.
+**Status:** a review by AI agents only. No AIW code was changed. Every recommendation is a proposal for the owner to decide on.
 productionAccepted stays false.
 
 This file is the summary. The detail is in two companion files:
@@ -24,7 +24,9 @@ This file is the summary. The detail is in two companion files:
 **Limits.**
 - The readers judged AIW support from a digest, so their "absent" marks are hypotheses. Only gaps that survived source verification and the skeptic appear here.
 - Sol (the LLM layer) was not exercised in the hands-on runs, because no provider was configured for them.
-- Severities are the reviewers' judgement, not the owner's.
+- All readers, analysts and skeptics were AI agents. "Verified" means checked against the source by one agent and challenged by another.
+- No independent architecture reviewer, four-eyes knowledge approver or licence counsel has reviewed these findings or severities. Status: not started.
+- Severities are the AI reviewers' judgement, not the owner's or an independent reviewer's.
 - The handbooks are kept outside the repository and are not committed. This report cites them as "Handbook › heading" only.
 
 ---
@@ -118,17 +120,17 @@ Deep-dive: deployment-architecture; C10-01 to C10-19.
 ## 3. Fix first: defects that break AIW's own rules
 
 How each was verified:
-- **On a running AIW, using scratch databases:** D1–D3, D5–D7, D9, D10 and D12.
+- **On a running AIW or a scratch copy of a reference project:** D1–D3, D5–D7, D9, D10 and D12.
 - **By running AIW's domain code in memory:** D4 and D11. D11's template text was also seen in an SDD exported from a running app.
-- **In the source:** D8, D13 and D14 (C10-21, C11-01, C11-02, C11-04).
+- **In the source only:** D8, D13, D14, D15 and D16.
 
-A skeptic re-checked each one. They break AIW's own rules:
-- a person decides, and someone else approves;
-- no evidence is invented;
-- one canonical graph gives one answer (D7, D9, D12, D14);
-- drafting does not build errors in (D10).
+A second agent re-checked each one. What each breaks:
+- **A person decides and someone else approves:** D1, D2, D4, D5, D6, D13 and D15.
+- **Unrecorded or template content shown as decided or entry-specific:** D3, D8, D11 and D16.
+- **One canonical Design Graph:** D9.
+- **Consistency of the model:** D7, D10, D12 and D14.
 
-They should be fixed before any feature work.
+They should be fixed before any feature work. Several are migrations, not patches. D9, for example, retires Chapter 5 dataIds as an ownership record.
 
 | # | Defect | Where |
 |---|---|---|
@@ -138,286 +140,399 @@ They should be fixed before any feature work.
 | D4 | A withdrawn archetype still saves as a Chapter 5 candidate. The organisation library offers draft entries that were never released. One person can author and approve a project-library entry. | library-coverage, component-selection; K-05 |
 | D5 | The architect who accepts a residual security risk can also record its approval. | deep-dive security-architecture |
 | D6 | A trace review can be recorded on a broken trail, and doing so clears the trace warning. | deep-dive traceability |
-| D7 | At least six separate trace traversals give different answers for the same requirement: the trail and desk, the Matrix chain behind the narrative, the design index behind SDD §4, driver scope, the ARS driver chain and the SDD journey line. So the Model views, ARS and SDD disagree. | deep-dive traceability (critical) |
-| D8 | The review-desk availability verdict counts zone records, not independent failure domains. It can read "holds" while Chapter 10 itself warns that everything sits in a single domain. | C10-21 |
-| D9 | Chapter 5 and the Chapter 8 authority can name different owners for the same data. This leaves two conflicting "owns" edges in the canonical graph, with no finding. It arises mainly in the reference project and in data created by design tasks; the SDD already follows Chapter 8. | deep-dive data-and-integration |
+| D7 | Several separate trace traversals give different answers for the same requirement: the trail and desk, the Matrix chain behind the narrative, the design index behind SDD §4, driver scope, the ARS driver chain and the SDD journey line. So the Model views, ARS and SDD disagree. | deep-dive traceability (critical) |
+| D8 | The review-desk availability verdict and its survive-one-zone sizing count zone records, not independent failure domains. The desk can read "holds" while Chapter 10 itself warns that everything sits in a single domain. | C10-21 |
+| D9 | Chapter 5 and the Chapter 8 authority can name different owners for the same data. This leaves two conflicting "owns" edges in the canonical graph, with no finding. It arises mainly in the reference project and in data created by design tasks; the SDD already follows Chapter 8. Fix: make the Chapter 8 authority the only ownership edge. | deep-dive data-and-integration |
 | D10 | The journey drafter creates one production environment per component, which raises Chapter 10 errors by construction. RTO and RPO marked open on a capability are silently dropped. | deployment-architecture, worked-example |
 | D11 | Archetype proposals carry template text, and sometimes the wrong kit (a relational store proposes identity-token contracts), into the component and on into the SDD. | library-coverage, component-selection; K-06 |
 | D12 | ArchiMate import turns a Gap into a Chapter 1 requirement, and misfiles a business Capability as a Chapter 6 technology capability. | evolution-and-transition, enterprise-alignment |
-| D13 | One reviewer can treat a hard-constraint breach away as an "accepted limitation", and the limitation never expires. | C11-01, C11-02 |
+| D13 | One reviewer can treat a hard-constraint or invariant breach away as an "accepted limitation", and the limitation never expires. | C11-01 (the waiver register that replaces it is F13) |
 | D14 | Recording assurance or Chapter 9/10 evidence changes the design fingerprint, so the approved baseline goes stale. | C11-04 |
+| D15 | The author of a Chapter 11 delivery action can mark it Verified on a typed reviewer name, which makes its obligation "current-verified". The delivery review has no actor or four-eyes check. | C11-14 |
+| D16 | Imported BPMN branches with no condition get placeholder text. The text satisfies the gateway check, and the BPMN default flow is dropped. | C1-M1 |
 
 ---
 
 ## 4. Features to add to AIW
 
-Each feature is drawn from what the handbooks prescribe. Together the features cover every high and medium verified gap. The 18 low-severity refinements not mapped here are listed in the chapter files. Each lists the verified gaps it closes; the gap ids are detailed in `CHAPTER-GAPS.md`, and "DD" names a deep-dive. Throughout, the doctrine holds:
-- Sol and the rules only propose; a person selects and accepts.
-- Candidate knowledge never scores.
-- Governed knowledge needs a second person.
+Each feature comes from what the handbooks prescribe. Each lists the agent-verified gaps it closes.
+- Together, D1–D16 and F1–F18 give every one of the 353 gaps exactly one owner. That includes the low-severity refinements.
+- Gap ids are detailed in `CHAPTER-GAPS.md`. "DD" names a deep-dive, counting only the gaps its skeptic upheld.
+
+**Doctrine.** Each feature is meant to keep to the doctrine below. That is the reviewers' proposal, for the owner to confirm.
+- **Sol** may interpret, propose, compare, critique and explain.
+  - It never approves, decides, waives policy, overrides a hard constraint, promotes knowledge or invents evidence.
+  - It changes the canonical graph only through proposals that a person accepts one by one.
+- **Deterministic rules gate.** A hard-constraint or invariant finding blocks, and no person can wave it through. Below the gates, readings are leans; a person selects and accepts.
+- **Candidate and discovery knowledge never affects scoring, hard constraints or conformance.** This includes the 14-product discovery catalogue. Library content enters no score, hard constraint or conformance reading unless a person separately adopts it as policy.
+- **A second person.** Releasing knowledge, approvals, waivers and acceptance each need a signed-in person other than the author.
+- **One authority path.** Each feature extends the existing record and command and retires what it replaces, through a reversible migration. One canonical Design Graph, one Brain entry point, and tenant and project boundaries are kept.
+- **productionAccepted stays false.**
 
 ### Tier 1: Selecting what realises the architecture
 
 **F1. Governed architecture library: the handbook catalogues as selectable knowledge.**
-- **Record kinds.** Component profile, style, pattern, tactic, technique, anti-pattern, composition recipe, and reference architecture or deployment blueprint.
+- **Record kinds.** Extend AIW's existing structured-claim kinds and organisation-library entries rather than adding new ones. The kinds: component profile, style, pattern, tactic, technique, anti-pattern, composition recipe, and reference architecture or deployment blueprint.
 - **Entry template, from the handbooks:**
   - problem and forces; use when / avoid when; prerequisites;
   - quality effects (causal mechanism, observable measure, cost to other qualities);
   - guarantee boundary (claims, depends on, does not cover);
   - design parameters (unit, scope, basis, failure if wrong);
-  - failure modes and repair; obligations and required companions; conformance and validation tests;
-  - physical options; evidence level (illustrative, proposed, executed locally, production);
+  - failure modes and repair; obligations and required companions; conformance and validation tests; physical options;
   - typed relations: requires, conflicts, alternative, realised-by, easily confused with.
-- **Intake.** Handbook passage → candidate (never offered, never scored) → second-person review → release → project pin.
-- **Upkeep.** An updated profile raises a reviewable migration proposal in each project that uses it. Released claims carry checked dates and review-by dates.
-- **Closes:** K-01–K-04, K-06–K-09, K-11, K-12, K-19, K-22; DD library-coverage (all), component-selection (critical).
+- **Evidence level as stated by the source:** illustrative, proposed, or reported-executed-by-source.
+  - AIW's own project evidence is kept apart from it: executed-in-project, observed-in-production, failed, stale, inconclusive.
+  - A result the handbook reports enters only as reported-executed-by-source, until AIW reruns it and keeps the report as a hashed evidence source.
+  - The handbooks' worked numbers import as labelled examples, never as project values. Missing evidence reads UNKNOWN, never PASS.
+- **Intake.**
+  1. The owner records the licence or permitted use and the SHA-256 of each handbook file.
+  2. Handbook passage, through the existing source and claim path.
+  3. Candidate: never offered, never scored.
+  4. Second-person review.
+  5. Release.
+  6. Project pin.
+
+  The project library is never an import target. The importer and its size limits need extending for a handbook-scale import.
+- **One identity per mechanism.** Resolve the Playbook and catalogue ids through a reviewed crosswalk, and retire the duplicate identity.
+- **Upkeep.** When a project's pinned entry is superseded or withdrawn, that project raises a finding against its own pin and offers a reviewed migration.
+  - Nothing is written into a project from outside it.
+  - The pin moves only when a person in that project accepts.
+  - Released claims carry checked dates and review-by dates.
+- **Closes:** K-03, K-04, K-06–K-08, K-11, K-12, K-15, K-19, K-22, K-25 (2 high, 7 medium, 2 low); DD library-coverage. Note the library-coverage skeptic: a governed organisation-library component entry already exists, so this extends it.
 
 **F2. Component selection from responsibilities and drivers (Chapter 4 → 5).**
-- Start from a responsibility, its drivers and its invariants, and shortlist released library components.
-- Run the hard gates first: constraints, applicability, avoid-when.
-- Show per-driver fit, consequences, obligations, alternatives and evidence level.
-- The person chooses. AIW records a component-selection decision with the eligible and rejected candidates and the reasons.
-- The component keeps its adopted profile and version.
-- Obligations flow on as Chapter 8–11 verification actions.
-- SDD section 4 prints the selection basis, the origin and the rejected options.
-- **Also:** an application-deployable record, with an evidenced reason for each split.
+- Start from a responsibility and its drivers. Its invariants come in once C4-03 binds them, in F8.
+- **Eligibility first.** A deterministic check against the project's hard-constraint drivers and adopted policy gives pass, fail or unknown. Unknown is never treated as neutral.
+- **Applicability as a reading.** Each released profile's use-when and avoid-when is shown as context-match, needs-context or excluded. It raises a finding until a person records a reasoned override.
+- **Then descriptive content:** consequences, obligations, alternatives, quality effects labelled uncalibrated, and evidence level. Do not rank or score.
+- **Sol** may suggest candidates with receipts, as proposals only.
+- **The decision.** The person's choice is recorded as a Chapter 3 decision with the eligible and rejected candidates and the reasons. Accepting it instantiates only the chosen profile, through the existing reviewed candidate path, with the profile's version pinned.
+- **Afterwards.** Obligations become proposed Chapter 8–11 actions. SDD section 4 prints the selection basis, the origin and the rejected options.
 - **Also:**
+  - an application-deployable record, with an evidenced reason for each split;
   - typed component ports;
   - a logical-to-physical responsibility map (authority, placement, runtime identity, owner);
   - authored component scenarios and failure walkthroughs;
   - design questions that close only on a record that fits;
+  - build, buy or reuse sourcing;
   - an AI/ML and agentic component category with its obligations.
-- **Closes:** C5-01, C5-03, C5-05, C5-09, C5-14, C5-16–C5-18, C5-20–C5-22, C4-02, X-22; DD component-selection (all).
+- **Closes:** C5-03, C5-09, C5-14, C5-16–C5-18, C5-20–C5-23, X-22, C11-43 (1 high, 9 medium, 2 low); DD component-selection.
 
-**F3. Applying patterns and styles as governed bundles.**
-- Lift the 19-entry limit. Any released pattern or style can be attached in Chapters 3, 5, 6, 8, 9 and 10.
-- A style can be set per subsystem, as an explicit hybrid with crossing contracts.
-- An adopted pattern expands into roles, components and interactions, with a check that its required roles are realised.
-- It records its parameters, guarantee boundary and obligations.
-- A composition check confirms that required companions are present and that combined mechanisms agree on their assumptions and parameters.
-- Generalise today's eight code-authored design tasks into governed, releasable decision models and recipes.
-- **Closes:** C5-04, C5-06, C5-07, C5-08, C5-13, C5-15, C6-07, C6-06, K-10, K-13, K-15–K-17, X-04, X-11, X-12, X-14; C3-01.
+**F3. Adopting patterns and styles as governed bundles.**
+- **Where.** Any released pattern, style or tactic can be adopted in Chapters 3, 5, 6, 8, 9 and 10 through one adoption record. This lifts the Playbook-only limit once F1's crosswalk exists.
+- **Fit reading.** Adoption runs one fit reading against the entry's conditions.
+- **Proposals.** Adoption deterministically proposes, without applying them, the entry's roles, components, interactions, parameters, guarantee boundary and obligations.
+  - Each role binds to an existing record or stays an open question.
+  - A person accepts each proposal one by one, through the audited Brain command path.
+  - Sol may propose role bindings only as drafts.
+- **Composition check.** Required companions must be present, conflicts are flagged, and combined mechanisms must agree on their assumptions and parameters.
+- **Styles.** A style can be set per subsystem, with an explicit hybrid and crossing contracts. Each added tier must name the pressure that justifies it.
+- **Decision models.** Migrate today's eight code-authored design tasks onto one generic, governed decision-model interpreter. Run both only behind a parity test, then retire the code path. Released catalogue variants become governed alternatives.
+- **Closes:** K-01, K-02, K-09, K-10, K-13, K-16, K-17, C5-01, C5-04–C5-08, C5-13, C5-15, C6-06, C6-07, X-04, X-11, X-12, X-14, C3-01, C3-13–C3-15, C3-17, C3-19 (11 high, 15 medium, 1 low). X-12 finishes after F8 and F13, which it depends on.
 
 **F4. Technology and product selection with qualification (Chapter 6 → 7).**
-- Derive the required behavioural capabilities into a capability matrix before products, and feed Chapter 8 contract semantics back into it.
-- Apply eligibility gates before preference.
-- Compare complete alternatives on whole-life cost per accepted outcome:
-  - sourcing options: build, reuse, buy, managed or SaaS;
-  - the current design and the simplest viable option are always in the set.
-- Record each option's facts:
-  - licence, end-of-support, support contract, vendor risk and exit feasibility;
+- **Capabilities before products.** Derive the required behavioural capabilities into a capability matrix, and feed Chapter 8 contract guarantees back into it as fit criteria.
+- **Eligibility before preference.**
+  - The check uses released, four-eyes technology-standard and approved-product records only.
+  - The discovery catalogue and candidate entries never feed eligibility gates, the lean or a conformance reading.
+  - The standards register comes from F15, so that part follows F15.
+- **Whole-life comparison.**
+  - Complete alternatives (build, reuse, buy, managed or SaaS) are compared on whole-life cost per accepted outcome, with sensitivity.
+  - The current design and the simplest viable option are always in the set.
+- **Option facts:**
+  - licence model and terms, with a licence-review state that reads "pending licence counsel". It is never set by AIW or Sol and never shown as licence approval;
+  - end-of-support, support contract, vendor risk and exit feasibility;
   - provider quotas and regional availability.
-- Track qualification state at the exact version, configuration and region: declared, then selected, then demonstrated, then observed.
-- Record the operating-model responsibility split, and make a selection conditional on the organisation's operating capability.
-- Check each choice against enterprise standards and the approved-product list.
-- Put a technology decision record, with rejected options and reasons, in the SDD.
-- **Also:** the option's acknowledgement and replication mode checked against recovery-point objectives. Patterns and quality mechanisms adopted in Chapters 3 and 5 become Chapter 7 qualification criteria.
-- **Closes:** C7-01–C7-15, ch07-M1, ch07-M2, K-20; DD technology-selection (all).
+- **Qualification.** Extend the existing obligation verification checks to track it.
+  - A state advances only on a recorded observation, with receipt, of matching scope. Unknown is the default.
+  - "Observed" is never production acceptance.
+- **Local and target.** Environment-scoped local and target realisations can coexist.
+- **Operating model.** The operating-model responsibility split, and the organisation's operating capability as a condition.
+- **SDD.** A technology decision record, with rejected options and reasons.
+- **Closes:** C7-01–C7-15, ch07-M1, ch07-M2, K-20, C8-19 (3 high, 16 medium); DD technology-selection beyond D1–D3; worked-example (local and target realisations).
 
 **F5. Deployment architecture design and selection (Chapter 10, with 6 and 7).**
-- Declare the failure set and the minimum service that must survive it, with degraded modes, first.
-- Make location a gated decision (residency, required services, quotas, keys), and give every data copy (backups, logs, traces, keys) an approved location.
-- Choose from released reference deployment blueprints (for example landing zone, single-region multi-AZ, regional active with qualified standby, cells, hub-and-spoke) as a reviewed proposal with a tailoring record.
-- Model the topology:
+- **What must survive.** Declare the failure set and the minimum service that must survive it, first. Its degraded modes are owned by the business-service record from F7.
+- **Location as a gated decision.** Gates for residency, required services, quotas and keys. Every data copy (backups, logs, traces, keys) gets an approved location. The key gate completes with F9's key register.
+- **Blueprints.** Choose a released reference deployment blueprint through the existing saved design alternatives, with an adoption record of fit, deviations and tailoring. Examples: landing zone, single-region multi-AZ, regional active with qualified standby, cells, hub-and-spoke.
+- **Topology model:**
   - accounts or landing zone, regions and AZs;
   - VPCs, subnets and the address plan;
   - clusters and edge.
-- Keep a flow matrix that includes denied, infrastructure and lifecycle flows.
-- Define an environment chain with a claim-based parity matrix; non-production holds no production authority.
-- Record a common-cause inventory, and compute survivor capacity from the actual placements.
-- **Also:**
-  - provider and consumer contracts for shared platform capabilities;
-  - external parties and enterprise services inside the dependency model;
-  - typed capability parameters;
-  - an egress inventory;
-  - Chapter 6 design questions that a reference capability cannot silence.
-- **Closes:** C10-01–C10-06, C6-01, C6-02, C6-05, C6-08–C6-10, C6-12–C6-14, C6-M2, K-18; DD deployment-architecture (topology, environment chain, platform library, network zones).
+- **Flows and environments.**
+  - A flow matrix that includes denied, infrastructure and lifecycle flows.
+  - An environment chain with promotion order, an environment contract and parity. Non-production holds no production authority.
+- **Dependencies.**
+  - A common-cause inventory.
+  - Provider and consumer contracts for shared platform capabilities.
+  - External parties, with a supplier assessment, inside the dependency model.
+  - Typed capability parameters and an egress inventory.
+- **Closes:** C10-01–C10-05, C10-20, C10-22, C10-41–C10-43, C6-01, C6-09, C6-10, C6-12–C6-14, C6-M2, C8-34, C8-35, K-18 (6 high, 11 medium, 3 low); DD deployment-architecture (topology, environment chain, platform library, network zones).
 
 ### Tier 2: Method depth the handbooks require
 
 **F6. Decision records to the handbooks' template.**
-- Diagnose before choosing.
-- State options conditionally: select when, disqualifier, evidence needed.
-- Treat feasibility as a non-compensable gate.
-- Allow outcomes other than one chosen option: infeasible, deferred, bounded pilot, composed, transferred.
-- Include whole-life cost, break-even and sensitivity.
-- Record reversibility and points of no return.
-- Add a refutable validation plan linked to a Chapter 11 check.
-- Add observable review triggers and a switching condition for the credible alternative.
-- **Closes:** C3-01–C3-07 and the rest of Chapter 3, X-07, X-24; DD worked-example (hard quality requirements, review triggers).
+- **Before choosing.** Diagnose first.
+- **Options.**
+  - State options conditionally: select when, disqualifier, evidence needed.
+  - Mandatory conditions are scoped to the decision and act as non-compensable gates.
+  - Allow outcomes other than one chosen option: infeasible, deferred, bounded pilot, composed, transferred.
+- **Analysis.**
+  - An owned preference model.
+  - Whole-life cost with ranges, break-even and sensitivity.
+  - Reversibility and points of no return.
+  - An unresolved-obligation list.
+- **Afterwards.**
+  - A refutable validation plan linked to a Chapter 11 check.
+  - Observable review triggers, and a switching condition for the credible alternative.
+  - A post-implementation review.
+- **Method.** An attribute-driven design iteration record.
+- **Closes:** C3-02–C3-12, C3-16, C3-18, C3-20, C3-M1, C3-M2, C3-M3, C3-M4, C11-30, X-24 (5 high, 12 medium, 3 low); DD worked-example (review triggers).
 
-**F7. Quality scenarios and measurement contracts.**
-- **Scenarios.** Six-part quality scenarios with source and artefact. A set of normal, peak, failure, recovery and change scenarios per driver.
-- **Measurement contracts.** Population, numerator and denominator, window, clock anchors, how unknowns count, guardrails and a versioned definition.
-- **Objectives.** SLO records with error budgets and burn-rate owners. Hard requirements kept separate from objectives, so a hard quality requirement rules an option out instead of being weighed.
-- **Workload.** A recorded workload model. Journey-level composition into child budgets.
-- **Closes:** C2-01–C2-12, C2-M1, C2-M2, X-15, X-16, X-17; DD quality-method (all), operability-and-delivery (SLI and error budget).
+**F7. Quality scenarios, measurement contracts and the business service.**
+- **Built early, ahead of F5.**
+  - A business-service record holding criticality, time-dependent harm, degraded modes and continuity targets. It is the one owner of degraded-mode records.
+  - A recorded workload model.
+  F5 and F10 build on both rather than adding their own.
+- **Scenarios.** Six-part quality scenarios, with a set of normal, peak, failure, recovery and change scenarios.
+- **Measurement contracts:** population, numerator and denominator, window, clock anchors, how unknowns count, guardrails, and a versioned definition.
+- **Objectives.**
+  - SLO records with error budgets and burn-rate owners.
+  - Hard requirements kept separate from objectives, so a hard quality requirement rules an option out instead of being weighed.
+- **Composition.** Journey-level composition into child budgets, including availability composed along critical chains.
+- **Closes:** C2-01–C2-16, C2-M1, C2-M2, C6-08, X-15–X-17 (1 high, 16 medium, 5 low); DD quality-method; operability-and-delivery (SLI and error budget).
 
 **F8. Authority, data and contract register (Chapter 8).**
 - **Authority and data.**
   - Designate each data definition as authoritative, derived or externally observed. Derived copies get a source, a freshness bound, permitted uses, and inherited classification, residency and retention.
   - An effective-writer inventory with scoped write authority and fenced transfers.
-  - Invariants with enforcement point, mechanism, writers and verification, held in the canonical graph.
+  - Invariants with enforcement point, mechanism, writers and verification, in the canonical graph and bound to responsibilities and components.
   - Lifecycle guards, owners and deadlines.
-  - A semantic contract beside the schema.
+  - A semantic contract beside the schema, and a typed identity model.
 - **Outcomes and partners.**
   - A reconciliation design behind "manual reconciliation".
   - Qualification of the external-party guarantees the design relies on.
+- **Effects.** An effect classification (reversible, compensable, irreversible) with a compensating contract and owner, checked against rollback.
 - **Horizons and budgets.**
   - Recognition, replay and retention horizons that must cover each other.
   - A version-coexistence matrix.
-  - Fleet-wide dependency budgets.
-  - The execution agreement made mandatory for posting and effect contracts.
-- **Data and integration.**
-  - Data movement mechanisms: CDC, ETL and streaming.
-  - Orchestration versus choreography, and sagas.
-- **Closes:** C8-01–C8-12 and the rest of Chapter 8; C5-02, C5-11, C5-12, C4-03, X-05; DD data-and-integration (all that hold).
+  - Fleet-wide dependency and admission budgets.
+- **Execution agreements.** Made mandatory for posting and effect contracts.
+- **Data and integration.** Data movement (CDC, ETL, streaming); orchestration versus choreography and sagas; outcome and error catalogues; publication and subscription registers.
+- **Closes:** C8-01–C8-18, C8-20–C8-22, C8-24–C8-33, C8-36–C8-44, C5-02, C5-11, C5-12, C4-03, X-05, X-07 (16 high, 22 medium, 8 low); DD data-and-integration.
 
 **F9. Identity, access and protection coverage (Chapter 9).**
 - **Coverage.** Judge coverage per access route, not per object: inventory every route to a protected effect or to sensitive data, including bypass paths.
+- **Threat elicitation.** Per element and per crossing, over spoofing, tampering, disclosure, denial of service and misuse of privilege. Each threat has a precondition and an abuse-case test link.
+  - This is the handbooks' own method. They do not name STRIDE or ask for likelihood × impact scoring, but they do ask for a per-element pass over these STRIDE-like classes.
 - **Identity.**
   - The authorisation decision chain over time: issuer, decision point, enforcement point, re-check moment, revocation window.
   - Identity classes and a least-privilege matrix per component.
 - **Secrets.** A lifecycle register for secrets, keys and certificates.
-- **Isolation.** The tenancy and isolation model.
+- **Isolation.** The tenancy and isolation model, including tenant scope on data and cells.
 - **Controls.** A control picker from released security tactics and patterns, giving each control its role (prevent, detect, respond, recover).
 - **Obligations.** An obligation applicability register mapped to controls and evidence.
-- The yardstick is the handbooks' six-step threat method. The handbooks do not ask for STRIDE or likelihood × impact scoring.
-- **Also:** message-origin authenticity, freshness and replay horizons at integration boundaries; a safe-change design for security and network policy (dry-run, staged rollout, independent recovery channel).
-- **Closes:** C9-01–C9-14, C9-M1, C9-M2; DD security-architecture (all).
+- **Boundaries and change.** Message-origin authenticity and replay horizons at integration boundaries. Safe change for security and network policy.
+- **Closes:** C9-01–C9-14, C9-M1, C9-M2, C8-23, C10-24 (3 high, 14 medium, 1 low); DD security-architecture.
 
-**F10. Capacity and recovery engineering (Chapter 10).**
-- A workload model and a limiting-resource analysis.
-- Shared-resource envelopes across all deployables, including surge, draining, jobs and rollout overlap.
-- Burst and outage backlog, drain time and retention against quotas.
-- Recovery objectives per failure scope, as a timed stage graph ending at a business endpoint.
-- Exercise evidence of matching scope.
-- Data-loss claims tied to a replication or acknowledgement mechanism.
-- Write authority and fencing.
-- A recovery-set manifest.
-- Gated reopening after recovery.
-- **Also:**
-  - a failure-mode register per component, contract, mechanism and plan, covering slow, stale, duplicated and partial modes as well as outage;
-  - degraded behaviour declared per business operation;
-  - surviving and maintenance-plus-failure capacity;
-  - continuity claims reconciled with the Chapter 7 option and the Chapter 10 placements.
-- **Closes:** C10-06–C10-16 and the rest of Chapter 10, X-13, C5-10, C6-03, C6-04, C6-M1, C6-M3.
+**F10. Capacity, failure and recovery engineering (Chapter 10, with 6).**
+- **Capacity, using F7's workload model.**
+  - A limiting-resource analysis.
+  - Shared-resource envelopes across all deployables, including surge, draining, jobs and rollout overlap.
+  - Survivor capacity computed from the recorded placements.
+  - Burst and outage backlog, drain time and retention against quotas.
+- **Failure.**
+  - A failure-mode register per component, contract, mechanism and plan, covering slow, stale, duplicated and partial modes as well as outage.
+  - Serving, control and recovery planes, with a static-stability check.
+  - Qualified fallback paths.
+- **Recovery.**
+  - Objectives per failure scope, as a timed stage graph ending at a business endpoint.
+  - Exercise evidence of matching scope, which completes with F13's evidence records.
+  - Data-loss claims tied to a replication or acknowledgement mechanism.
+  - Write authority and fencing.
+  - A recovery-set manifest.
+  - Gated reopening after recovery.
+  - An exercise programme.
+- **Closes:** C10-06–C10-16, C10-23, C10-25–C10-30, C10-32, C10-34, C10-39, C10-40, C10-44, C10-46, X-13, C5-10, C5-28, C6-02–C6-05, C6-15, C6-M1, C6-M3 (13 high, 17 medium, 4 low).
+
+### Tier 3: Delivery, assurance and evolution
+
+**F11. Release and operations design.**
+- **Release.**
+  - A release manifest: artifact digest, configuration, policy, schema.
+  - Typed release-strategy selection.
+  - Progressive exposure with predeclared promote, hold and stop rules on business outcomes.
+  - Rollback eligibility, with a point of no return and mixed-version coexistence.
+- **Runtime behaviour.**
+  - Readiness, liveness and drain as separate records.
+  - A runtime configuration register.
+- **Operations.**
+  - Observability design: signals anchored to business outcomes, metric contracts for operating measures, correlation identifiers, an audit path, telemetry sinks, alerts with owners.
+  - A failure-to-runbook register.
+  - CI/CD and infrastructure as code as design records.
+- **Closes:** C10-17–C10-19, C10-31, C10-33, C10-35–C10-38, C10-45 (3 high, 6 medium, 1 low); DD operability-and-delivery; deployment-architecture (CI/CD, IaC).
+
+**F12. Operational acceptance and handover.**
+- **The register.**
+  - An operational acceptance register, as a preparation pack only.
+  - Its rows come from Chapter 9 controls, Chapter 10 plans and Chapter 11 actions, each with an evidence reference and a validity interval.
+  - Its disposition reads HOLD while any mandatory row is missing, stale or unknown.
+- **Staged readings.**
+  - Staged readiness readings: implement, deploy, production.
+  - Exchange readiness per owner dimension.
+  - Readiness of people and process.
+- **The decision.**
+  - Scoped to a service, environment and configuration.
+  - Recorded only by the named acceptance authority, through a person-only command: a signed-in person other than the preparer and the design author.
+  - Sol and agent accounts are refused.
+  - AIW never acts as the acceptance authority, and productionAccepted stays false unless every mandatory row genuinely passes.
+- **Conditions and handover.**
+  - Approval conditions tracked as records.
+  - A review panel per concern, with dissent recorded.
+  - A residual-obligation ledger that the receiving owner accepts.
+- **Closes:** C11-03, C11-11, C11-16, C11-24, C11-37, C11-39, X-20 (2 high, 5 medium); DD deliverables-and-views and operability-and-delivery (acceptance pack, go-live decision).
+
+**F13. Evidence, verification, conformance and waivers.**
+- **Evidence.**
+  - A claim register and an evidence ladder (model, local, integration, exercise, production).
+  - A statement of what each level can and cannot establish.
+  - Falsifiable verification cases with oracles and negative controls.
+  - A test strategy and verification portfolio.
+  - Evidence expiry and re-run triggers.
+  - Epistemic status on design statements.
+- **Checks and findings.**
+  - Failing checks block what they should.
+  - Reviewer-raised findings.
+  - PASS / FAIL / UNKNOWN conformance over a declared population.
+  - Design-to-runtime drift.
+  - Anti-pattern and misuse detection driven by released records.
+- **Waivers (exception grants).** These extend D13.
+  - Each records the waived rule and its version, the exact scope, compensating controls and what they leave uncovered, the approving authority and its mandate, a start and an expiry.
+  - **Non-waivable findings** refuse any waiver: Chapter 3 "breaks", the Chapter 7 hard-constraint error, Chapter 1 Must-constraint violations, and integrity, authorisation and recovery invariants. A hard constraint changes only through a reviewed change to its Chapter 1 constraint and Chapter 2 driver.
+  - **The approver** is a signed-in person other than the design author, whatever the four-eyes setting. Agent accounts are refused.
+  - **Sol** may draft text, but never grants or renews a waiver.
+  - **Expiry** reopens the finding and refuses handoff.
+- **Closes:** C11-02, C11-05–C11-07, C11-12, C11-13, C11-15, C11-17–C11-20, C11-28, C11-29, C11-38, C11-40–C11-42, K-14, K-24, X-01–X-03, X-06, X-08, X-10, X-19, X-23, X-25, X-29, X-31–X-33 (9 high, 15 medium, 8 low); DD enterprise-alignment (waiver, conformance), quality-method (fitness functions), evolution-and-transition (fitness and drift), operability-and-delivery (test strategy).
+
+**F14. Transition and migration architecture.**
+- **Starting point.** Current-state capture.
+- **Plateaus.** Entry and exit gates, invariants and authority.
+- **Migration mechanics.**
+  - Migration units and cohorts.
+  - An authority-handover protocol.
+  - A staged compatibility plan for contracts and schemas.
+  - Reversal plans.
+  - Data-migration reconciliation.
+  - A parallel-run comparison contract.
+  - Rehearsal records.
+- **Plan and retirement.**
+  - A sequenced, feasible delivery plan.
+  - Retirement plans and decommissioning readiness.
+  - A technical-debt register, and temporary components with an expiry.
+  - An editor for migration records.
+- **Closes:** C11-08–C11-10, C11-25, C11-32–C11-36, C11-45, X-28 (3 high, 6 medium, 2 low); DD evolution-and-transition.
+
+**F15. Enterprise alignment.**
+- **Capabilities.** A business capability map, extending the governed "Enterprise capability" identity. It builds on D12's import fix.
+- **People and rights.** Organisation units, decision rights and typed operating roles. These are consumed by F17 and F18, so they come first.
+- **Principles.** Principle records (statement, implementation rule, observable evidence).
+  - Adopted from released four-eyes organisation entries, or authored by a person in the project.
+  - Built on the existing constraint → driver → conformance path.
+  - Sol may propose mappings only as drafts.
+- **Standards.** Adopted enterprise standards and reference architectures, applied with conformance and tailoring readings. The approved-product register is consumed by F4.
+- **Closes:** K-23, X-18, X-21 (2 medium, 1 low); DD enterprise-alignment.
+
+**F16. The full deliverable set and the traceability chain.**
+- **SDD body sections:** security (threat model, treatments), data, operations, and transition.
+- **Registers:** a RAID register, a glossary, and a stakeholder concern-to-view mapping.
+- **Traceability.** One typed trace model, so every view agrees. It builds on D7. The requirement → driver → decision → component → product → contract → control → placement → evidence chain is printed in the SDD.
+- **Views.** Failure-story walkthroughs and cross-view consistency checks.
+- **Handoff.**
+  - An implementation specification index that shares the architecture's identifiers.
+  - Implementation status per element, with an as-built overlay.
+- **Closes:** C6-11, K-21, X-09, X-26, X-27, X-30, X-34, C11-21–C11-23, C11-26, C11-27, C11-44 (9 medium, 4 low); DD deliverables-and-views, traceability.
 
 **F17. Requirements as service promises, journeys and exception paths (Chapter 1).**
-- **Before mechanisms are chosen.** Record a customer operation contract (the service promise).
+- **Before mechanisms are chosen.** A customer operation contract (the service promise).
 - **Journeys as records.**
   - A promised outcome, a terminal-state set and a closure predicate.
   - An explicit unknown outcome.
-  - Step contracts: entry condition, permitted actions, durable effect, recovery path.
-- **Exception and recovery paths.** Designed explicitly, with exception classes.
+  - Step contracts.
+- **Exceptions.** Designed exception and recovery paths.
 - **Requirement records carry:**
   - the consequence if violated, and the protected invariant and its authority;
   - rationale, status and a revisit trigger.
-- **Constraints.** A register with predicate, scope, change authority and harm prevented.
-- **Business rules.** Versioned, as decision tables with hit policy and unknown-input handling.
+- **Constraints and rules.**
+  - A constraint register with predicate, scope, change authority and harm prevented.
+  - Versioned business rules as decision tables.
 - **Context and stakeholders.**
-  - A stakeholder map of accountability: decides, approves, supplies evidence.
+  - An accountability-based stakeholder map, using F15's decision rights.
   - A record of what the team controls, influences or only observes.
   - A context-scoped vocabulary.
-- **Brownfield.** A behaviour baseline and a dependency register.
-- **Closes:** C1-01–C1-19, C1-M1; DD quality-method (functional requirements drafted as quality scenarios), enterprise-alignment (decision rights).
+  - A benefit register.
+- **Brownfield.** A behaviour baseline.
+- **Closes:** C1-01–C1-19, C11-31 (3 high, 15 medium, 2 low); DD quality-method (functional requirements drafted as quality scenarios).
 
 **F18. Logical decomposition and boundary design (Chapter 4).**
 - **Domain records.**
-  - Bounded contexts and a context map: relationship patterns, translation ownership, per-context term meaning.
-  - Subdomain classification (core, supporting, generic) to set modelling depth and sourcing.
+  - Bounded contexts and a context map.
+  - Subdomain classification.
 - **Choosing boundaries.**
   - Derive boundaries from shared rules, invariants, change reasons and authority.
-  - Compare candidate partitions, and validate the chosen one with change, partial-failure and ownership-transfer scenarios.
+  - Compare candidate partitions, recorded as a Chapter 3 decomposition decision.
+  - Validate the chosen one with change, partial-failure and ownership-transfer scenarios.
   - Bring trust and privilege boundaries into the decomposition.
 - **Rules and coupling.**
   - Allowed and forbidden dependency rules, with architecture-test obligations.
   - Coupling evidence.
 - **Ownership and coordination.**
-  - Owners with team and decision rights.
+  - Owners, using F15's decision rights.
   - Human tasks as architecture.
   - A coordination decision per journey.
 - **Knowledge and output.**
-  - Governed domain-design patterns and reference decompositions.
+  - Governed domain-design patterns.
   - The logical decomposition documented in the SDD.
-- **Closes:** C4-01, C4-04–C4-15, ch04-M1, ch04-M2, C5-19.
-
-### Tier 3: Delivery, assurance and evolution
-
-**F11. Release and operations design.**
-- A release manifest: artifact digest, configuration, policy, schema.
-- Typed release-strategy selection.
-- Progressive exposure with predeclared promote, hold and stop rules on business outcomes.
-- Rollback eligibility with a point of no return and mixed-version coexistence.
-- CI/CD and infrastructure as code as design records.
-- Observability design: signals, correlation identifiers, alerts with owners.
-- Structured runbooks.
-- **Closes:** C10-17–C10-19; DD operability-and-delivery, deployment-architecture (CI/CD, IaC).
-
-**F12. Operational acceptance and handover.**
-- An acceptance decision kept separate from technical readiness, with a HOLD disposition.
-- An operational acceptance and handover pack.
-- A residual-obligation ledger that the receiving owner accepts.
-- Target-platform qualification.
-- Acceptance is always recorded by a person.
-- **Closes:** C11-03, C11-11; DD deliverables-and-views, operability-and-delivery.
-
-**F13. Evidence, conformance and fitness functions.**
-- An evidence ladder on every claim: model, local, integration, exercise, production.
-- Falsifiable experiments with negative controls.
-- Evidence expiry and re-run triggers.
-- PASS / FAIL / UNKNOWN conformance rules per selected building block.
-- Design-to-runtime drift checks.
-- Anti-pattern detection driven by released anti-pattern records, with diagnosis and repair route.
-- Waivers carrying authority, scope, compensating controls and expiry.
-- **Closes:** C11-01, C11-02, C11-05–C11-07, C11-12, K-14, K-24, X-01–X-03, X-06, X-08, X-10, X-19, X-20, X-23, X-25; DD enterprise-alignment (waiver, conformance), quality-method (fitness functions), evolution-and-transition (fitness and drift).
-
-**F14. Transition and migration architecture.**
-- Current-state capture with a register of recovered claims.
-- Plateaus with entry and exit gates, invariants and authority.
-- Cross-plateau dependency checks.
-- Migration patterns: strangler with an authority ledger and cohort fencing; parallel run with a comparison contract.
-- A cutover critical path with the last reversible point.
-- Decommissioning readiness.
-- A technical-debt register, and temporary components with an expiry.
-- An editor for migration records.
-- **Closes:** C11-08–C11-10 and the transition gaps in Chapter 11; DD evolution-and-transition (all).
-
-**F15. Enterprise alignment.**
-- A business capability map, and the misfiling on import fixed.
-- Organisation units and decision rights.
-- Principles turned into rules and observable evidence.
-- Adopted enterprise standards and reference architectures applied with conformance and tailoring readings.
-- **Closes:** K-23, X-18, X-21; DD enterprise-alignment.
-
-**F16. The full deliverable set and the traceability chain.**
-- **SDD body sections:** security (threat model, treatments), data, operations, and transition.
-- **Registers:** a RAID register, a glossary, and a stakeholder concern-to-view mapping.
-- **Traceability.** One typed trace algorithm, so every view agrees. The requirement → driver → decision → component → product → contract → control → placement → evidence chain printed in the SDD.
-- **Handoff.** An implementation specification index for engineering.
-- **Closes:** C6-11, C7-10, K-21, X-09, X-26, X-27, X-30, X-34; DD deliverables-and-views, traceability.
+- **Closes:** C4-01, C4-02, C4-04–C4-16, ch04-M1, ch04-M2, C5-19, C5-24–C5-27 (2 high, 15 medium, 5 low).
 
 ---
 
 ## 5. Suggested order
 
-1. **rc.10.73.x+1: integrity.** D1–D14. Mostly S/M effort and touches existing paths only.
-2. **Library foundation.** The F1 record kinds and intake. Import a first slice: Application Architecture Master (styles, patterns, tactics, anti-patterns, components) and Enterprise Component Library Part 1. Every entry stays a candidate until a second person releases it.
-3. **Selection paths.** F2 (Ch5 component selection), then F3 (patterns as bundles), then F4 (Ch7 qualification). These reuse the eight design tasks' existing machinery: applicability predicates, Ch3 alternatives, obligations into Ch11.
-4. **Deployment.** F5 topology and blueprints, then F10 capacity and recovery.
-5. **Method depth.** F6–F10, F17 and F18, in parallel tracks per chapter.
-6. **Delivery and assurance.** F11–F16.
+Release numbers are proposals; the owner confirms them.
 
-What this order depends on from outside:
-- **Licence and use of the handbook content.** Whether the content may be imported is for the owner, or their counsel, to confirm.
-- **Releasing library entries.** This needs a second authorised person. AIW, Sol and this review cannot release them.
-- **Production acceptance.** Nothing here establishes it.
+0. **Before any library import: licence and source confirmation.** The owner or their counsel records the licence or permitted use and the SHA-256 of each handbook file. **Status today:** not confirmed. A review pack for counsel is still to be prepared.
+1. **AIW v0.10.0-rc.10.73.7 (proposed): integrity.** D1–D16. Several are migrations, not patches, for example D9 and D7.
+2. **Foundations other features depend on:**
+   - F15's decision rights and standards register;
+   - F7's business-service record and workload model;
+   - F13's evidence ladder and claim register;
+   - F1's record kinds, crosswalk and intake, once step 0 is done.
+3. **Library slices**, each a candidate set until a second authorised person releases it:
+   - Application Architecture Master and Enterprise Component Library Part 1, for components and patterns;
+   - Cloud Infrastructure Master and Enterprise Component Library Part 3, for deployment blueprints and platform components;
+   - security tactics and patterns;
+   - product and technology entries.
+4. **Selection paths:**
+   1. F2, Chapter 5 component selection. Its invariant input waits for C4-03 in F8.
+   2. F3, patterns as bundles. X-12 waits for F8 and F13.
+   3. F4, Chapter 7 qualification, using F15's standards register.
+5. **Deployment and runtime:**
+   1. F5, topology and blueprints. The location gate completes with F9's key register.
+   2. F10, capacity, failure and recovery. Its exercise evidence uses F13.
+6. **Method depth**, in parallel tracks per chapter: F6, the rest of F7, F8, F9, F17 and F18.
+7. **Delivery and assurance:** F11, F12, the rest of F13, F14 and F16.
+
+**External authorities and their true status:**
+- **Licence counsel:** not engaged.
+- **Four-eyes knowledge approver** for library releases: not assigned. AIW, Sol and this review cannot release entries.
+- **Independent architecture reviewer** for these findings: not started.
+- **Production acceptance authority:** nothing here establishes production acceptance.
 
 ---
 
 ## 6. Chapter by chapter (summary)
 
-Across the 13 units: **353 verified gaps** (85 high, 216 medium, 52 low), plus the deep-dive gaps in CAPABILITY-DEEP-DIVES.md.
+Across the 13 units: **353 agent-verified gaps** (85 high, 216 medium, 52 low), plus the deep-dive gaps in CAPABILITY-DEEP-DIVES.md.
 
 ### Chapter 1 · Requirements
 
