@@ -41,7 +41,7 @@ export async function requestArchitectureDraft(env, packet, {fetcher = fetch, ti
     if (draft.declined) return {n, result: {...EMPTY, issues: [draft.declined]}, draft, review: null, accepted: 0, withheld: 0, issues: [draft.declined]};
     let checked;
     try { checked = guardArchitectureDraft(packet, validateArchitectureDraft(draft.raw, packet)); } catch (e) { return {n, result: {...EMPTY, issues: [e.message]}, draft, review: null, accepted: 0, withheld: 0, issues: [e.message]}; }
-    if (!checked.proposals.length && !checked.merges.length) return {n, result: {...checked, notes: list(checked.notes)}, draft, review: null, accepted: 0, withheld: checked.withheld.length, issues: checked.withheld.flatMap(w => w.issues)};
+    if (!checked.proposals.length && !checked.merges.length) return {n, result: {...checked, notes: list(checked.notes)}, draft, review: null, accepted: 0, withheld: checked.withheld.length, guarded: checked.withheld.map(w => w.id), issues: checked.withheld.flatMap(w => w.issues)};
     const candidate = reviewCandidate(checked);
     const review = await declinable(timed(perCall, call => modelCall(env, status, {instructions: ARCHITECTURE_REVIEW_INSTRUCTIONS, input: {packet, candidate}, schema: reviewSchema, name: 'aiw_architecture_draft_check', mode: 'architecture'}, call, fetcher).then(parsed)));
     calls.push(['check', review]);
@@ -50,7 +50,7 @@ export async function requestArchitectureDraft(env, packet, {fetcher = fetch, ti
     if (!read) throw Object.assign(Error('The source check returned an unsupported assessment.'), {code: 'invalid_output'});
     const settled = settleArchitectureReview(checked, read);
     // What stands is what the check supports: the proposals, and for the cross-cutting pass its merges.
-    return {n, result: settled, draft, review, accepted: settled.proposals.length + settled.merges.length, withheld: settled.withheld.length, issues: settled.withheld.flatMap(w => w.issues)};
+    return {n, result: settled, draft, review, accepted: settled.proposals.length + settled.merges.length, withheld: settled.withheld.length, guarded: checked.withheld.map(w => w.id), issues: settled.withheld.flatMap(w => w.issues)};
   };
   try {
     let best = await attempt(1);
@@ -58,9 +58,11 @@ export async function requestArchitectureDraft(env, packet, {fetcher = fetch, ti
     // Every proposal withheld by the check (not by the structure or the guard alone): one more draft, then it stands.
     if (retry && !best.accepted && best.review && best.result.proposals.length === 0 && !best.draft.declined) { const again = await attempt(2); attempts.push(again); if (again.accepted || !best.withheld) best = again; }
     const usage = sumUsage(env, ...calls.map(([, c]) => c.usage)), last = attempts.at(-1);
+    // Which layer withheld each proposal (the probe's evidence): the structure and the guard, else the check.
+    const guarded = new Set(list(best.guarded)), byGuard = best.result.withheld.filter(w => guarded.has(w.id)), byCheck = best.result.withheld.filter(w => !guarded.has(w.id));
     const result = {proposals: best.result.proposals, withheld: best.result.withheld, keep: best.result.keep || [], merges: best.result.merges || [], notes: best.result.notes || [], issues: best.result.issues || [], attempts: attempts.length, withheldAll: !best.accepted};
     return {result, provider: status.provider, model: best.draft.model, instructions: pin, usage, attempts: calls.reduce((n, [, c]) => n + (c.attempts || 1), 0), providerResponseId: best.draft.providerResponseId, providerReceipt: providerReceipt(status, 'architecture', pin, calls),
-      groundingReview: {kind: 'automated-source-consistency', accepted: best.accepted > 0, withheld: result.withheld.map(w => w.id), issues: result.withheld.flatMap(w => w.issues).slice(0, 40), notes: result.notes, draft: best.result.proposals.length ? {proposals: best.result.proposals.length, keep: result.keep.length} : null, draftModel: best.draft.model, reviewModel: best.review?.model || null, reviewResponseId: best.review?.providerResponseId || null, packetStamp: packet.stamp, attempts: attempts.map(a => ({attempt: a.n, draftResponseId: a.draft.providerResponseId || null, reviewResponseId: a.review?.providerResponseId || null, accepted: a.accepted, withheld: a.withheld, declined: !!a.draft.declined})), retried: attempts.length > 1, lastAttempt: last.n, authority: AUTHORITY}};
+      groundingReview: {kind: 'automated-source-consistency', accepted: best.accepted > 0, withheld: result.withheld.map(w => w.id), issues: result.withheld.flatMap(w => w.issues).slice(0, 40), notes: result.notes, draft: best.result.proposals.length ? {proposals: best.result.proposals.length, keep: result.keep.length} : null, draftModel: best.draft.model, reviewModel: best.review?.model || null, reviewResponseId: best.review?.providerResponseId || null, deterministic: {withheld: byGuard.map(w => w.id), issues: [...(best.draft.declined ? [] : list(best.result.issues)), ...byGuard.flatMap(w => w.issues)].slice(0, 40)}, check: best.review ? {withheld: byCheck.map(w => w.id), defects: byCheck.flatMap(w => w.issues).slice(0, 40), notes: result.notes} : null, packetStamp: packet.stamp, attempts: attempts.map(a => ({attempt: a.n, draftResponseId: a.draft.providerResponseId || null, reviewResponseId: a.review?.providerResponseId || null, accepted: a.accepted, withheld: a.withheld, declined: !!a.draft.declined})), retried: attempts.length > 1, lastAttempt: last.n, authority: AUTHORITY}};
   } catch (e) {
     // A failed request still carries what its calls were billed (round 23): the completed calls and the failing one's.
     const failure = e?.code ? e : Object.assign(Error('The provider connection was interrupted. Your request is saved.'), {code: 'provider_unavailable'});

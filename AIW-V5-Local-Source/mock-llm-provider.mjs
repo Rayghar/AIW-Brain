@@ -81,32 +81,51 @@ export function mockProposal(packet) {
 }
 
 // Sol's model review (round 5, Contract R): a finding on each of the first two records, each citing that record, and
-// the check that supports every finding it is shown.
-export function mockModelReview(packet) {
-  const records = packet.sources.filter(s => s.kind === 'record').slice(0, 2);
+// the check that supports every finding it is shown. With the probe's faults (PROBE_FAULTS.review, by the id the
+// finding will get: F1, F2, …) a third record is reviewed too, so a clean finding stands beside the faulted ones.
+export function mockModelReview(packet, faults = {}) {
+  const records = packet.sources.filter(s => s.kind === 'record').slice(0, Object.keys(faults).length ? 3 : 2);
   return {findings: records.map((s, i) => ({elementId: s.objectId, severity: i ? 'note' : 'confirm', title: `Confirm what ${s.title.slice(0, 80)} records`,
-    reason: `The record in ${s.ref} is still to confirm in the chapter's checks; confirm its fields against what it connects to before relying on it.`, sourceRefs: [s.ref]}))};
+    reason: `The record in ${s.ref} is still to confirm in the chapter's checks; confirm its fields against what it connects to before relying on it.${faultText(faults['F' + (i + 1)])}`, sourceRefs: [s.ref]}))};
 }
-export const mockModelReviewCheck = input => ({findings: input.candidate.findings.map(f => ({id: f.id, supported: true, defects: [], notes: ['The finding follows from the cited record.']}))});
+export const mockModelReviewCheck = (input, faults = {}) => ({findings: input.candidate.findings.map(f => ({id: f.id, ...mockDraftCheck(faults[f.id], 'The finding follows from the cited record.')}))});
+
+// Deliberate faults for the live probe (scripts/sol-live-check.mjs --mock-faults), so its evidence can be seen to name the
+// layer that withheld each draft: invented-number and guarantee are the deterministic guard's to catch; gap-statement
+// answers an open field with its own gap ("Open question: … unassigned …"), which only a guard that reads the target's
+// open state can withhold; check-reject has the check name a concrete defect; check-contradict has it answer unsupported
+// with only a defect that reads as support, so its flag is recorded and not relied on. By mode: field faults by the
+// record's command, review faults by finding id, journey and architecture faults for the whole draft.
+export const PROBE_FAULTS = Object.freeze({field: {artefact: ['invented-number'], 'decision.save': ['guarantee'], 'logical.responsibility': ['invented-number', 'check-reject'], 'techrealisation.plan': ['gap-statement'], 'interfaces.contract': ['check-contradict'], 'runtime.plan': ['check-reject']},
+  journey: ['guarantee'], review: {F1: ['invented-number'], F2: ['check-reject']}, architecture: ['guarantee']});
+export const GAP_STATEMENT = 'Open question: operational ownership is unassigned and must be clarified before release.';
+const FAULT_TEXT = {'invented-number': ' It handles 987654 bookings a day.', guarantee: ' This guarantees a verified outcome at full capacity.'};
+const faultText = (faults = []) => faults.map(f => FAULT_TEXT[f] || '').join('');
+// A field, journey or finding check: supported, or the fault's defect.
+export const mockDraftCheck = (faults = [], note = 'The draft repeats the packet.') => faults.includes('check-reject') ? {supported: false, defects: ['It invents a measurement that no source in the packet contains.'], notes: []}
+  : faults.includes('check-contradict') ? {supported: false, defects: ['The value is supported by the cited record.'], notes: []} : {supported: true, defects: [], notes: [note]};
 
 // The field and journey contracts (round 6): a field draft that repeats the packet's own words and cites its first
 // source; a journey draft that repeats the deterministic draft's current values. Both pass the guards, so
-// the double can stand in for every mode the live probe exercises.
-export const mockFieldDraft = input => {
+// the double can stand in for every mode the live probe exercises (unless a probe fault is asked for).
+export const mockFieldDraft = (input, faults = []) => {
   const first = (input.sources || [])[0], words = String(first?.excerpt || input.target?.current || input.target?.record || 'Drafted from the packet').split(/[.!?]/)[0].trim();
-  return {field: input.target.field, value: words.slice(0, Math.min(200, input.target.maxLength || 200)), basis: 'From the packet’s first source.', sourceRefs: first ? [first.ref] : []};
+  const max = Math.min(200, input.target.maxLength || 200), tail = faultText(faults);
+  if (faults.includes('gap-statement')) return {field: input.target.field, value: GAP_STATEMENT.slice(0, max), basis: 'The record leaves this open.', sourceRefs: first ? [first.ref] : []};
+  return {field: input.target.field, value: (words.slice(0, Math.max(0, max - tail.length)) + tail).trim(), basis: 'From the packet’s first source.', sourceRefs: first ? [first.ref] : []};
 };
-export const mockJourneyDraft = input => { const cite = (input.passages || [])[0]?.id; return {answers: cite ? (input.records || []).flatMap(r => (r.fields || []).filter(f => !f.options && !f.numeric && typeof f.current === 'string' && f.current.trim()).map(f => ({record: r.key, field: f.key, value: f.current.trim().slice(0, 2000), passages: [cite], sourceRefs: []}))).slice(0, 400) : []}; };
+export const mockJourneyDraft = (input, faults = []) => { const cite = (input.passages || [])[0]?.id, tail = faultText(faults); return {answers: cite ? (input.records || []).flatMap(r => (r.fields || []).filter(f => !f.options && !f.numeric && typeof f.current === 'string' && f.current.trim()).map(f => ({record: r.key, field: f.key, value: f.current.trim().slice(0, 2000), passages: [cite], sourceRefs: []}))).slice(0, 400).map((a, i) => i || !tail ? a : {...a, value: a.value.slice(0, 2000 - tail.length) + tail}) : []}; };
 
 // One grounded architecture theme for the synthetic live-check reference. The test double proposes a responsibility;
 // it neither selects a decision nor supplies evidence that a running system meets the requirement. The cross-cutting
 // pass (round 24: its own task) proposes and merges nothing.
-export const mockArchitectureDraft = packet => {
+// A probe fault adds a second responsibility whose statement carries the fault, for the guard to withhold beside the first.
+export const mockArchitectureDraft = (packet, faults = []) => {
   if (packet.task === 'architecture-cross') return {proposals: [], merges: [], keep: []};
   const requirement = packet.requirements?.[0];
   if (!requirement) return {proposals: [], keep: []};
-  const title = String(packet.theme?.title || 'Appointment').replace(/[.!?]+$/, '').slice(0, 100) + ' handling';
-  return {proposals: [{kind: 'responsibility', title, statement: 'Sol proposes a responsibility for ' + title.toLowerCase() + '.', requirementRefs: [requirement.ref], passages: [], basis: requirement.statement, interpretation: 'Sol proposes a boundary for the recorded requirement.'}], keep: []};
+  const theme = String(packet.theme?.title || 'Appointment').replace(/[.!?]+$/, '').slice(0, 100), proposal = (name, tail = '') => ({kind: 'responsibility', title: name, statement: 'Sol proposes a responsibility for ' + name.toLowerCase() + '.' + tail, requirementRefs: [requirement.ref], passages: [], basis: requirement.statement, interpretation: 'Sol proposes a boundary for the recorded requirement.'});
+  return {proposals: [proposal(theme + ' handling'), ...(faults.length ? [proposal(theme + ' register', faultText(faults))] : [])], keep: []};
 };
 // The check supports every proposal it is shown, and every merge of a cross-cutting pass's candidate.
 export const mockArchitectureCheck = input => ({proposals: (input.candidate?.proposals || []).map(p => ({id: p.id, supported: true, defects: [], notes: ['The cited requirement supports this proposal as a proposal.']})), ...(Array.isArray(input.candidate?.merges) ? {merges: input.candidate.merges.map(m => ({id: m.id, supported: true, defects: [], notes: ['The merged proposals are one concern.']}))} : {})});
@@ -116,18 +135,19 @@ export const envelope = (answer, model = 'mock-sol') => ({id: 'mock-' + Math.ran
 
 // Answer a request body the way the provider would.
 export function answer(body, opts = {}) {
-  const name = body?.text?.format?.name, input = JSON.parse(body.input[0].content);
+  const name = body?.text?.format?.name, input = JSON.parse(body.input[0].content), probe = opts.probeFaults || {};
   if (name === 'aiw_desk_assessment') return envelope(mockAssessment(input, opts));
   if (name === 'aiw_desk_assessment_check') return envelope(mockReview(input, opts));
   if (name === 'aiw_direct_assessment') return envelope(mockDirect(input));
   if (name === 'aiw_source_check') return envelope({supported: true, defects: [], notes: []});
   if (name === 'aiw_grounded_proposal') return envelope(mockProposal(input));
-  if (name === 'aiw_model_review') return envelope(mockModelReview(input));
-  if (name === 'aiw_model_review_check') return envelope(mockModelReviewCheck(input));
-  if (name === 'aiw_field_draft') return envelope(mockFieldDraft(input));
-  if (name === 'aiw_field_draft_check' || name === 'aiw_journey_draft_check') return envelope({supported: true, defects: [], notes: ['The draft repeats the packet.']});
-  if (name === 'aiw_journey_draft') return envelope(mockJourneyDraft(input));
-  if (name === 'aiw_architecture_draft') return envelope(mockArchitectureDraft(input));
+  if (name === 'aiw_model_review') return envelope(mockModelReview(input, probe.review));
+  if (name === 'aiw_model_review_check') return envelope(mockModelReviewCheck(input, probe.review));
+  if (name === 'aiw_field_draft') return envelope(mockFieldDraft(input, probe.field?.[input.target?.command]));
+  if (name === 'aiw_field_draft_check') return envelope(mockDraftCheck(probe.field?.[input.packet?.target?.command]));
+  if (name === 'aiw_journey_draft_check') return envelope(mockDraftCheck(probe.journey));
+  if (name === 'aiw_journey_draft') return envelope(mockJourneyDraft(input, probe.journey));
+  if (name === 'aiw_architecture_draft') return envelope(mockArchitectureDraft(input, probe.architecture));
   if (name === 'aiw_architecture_draft_check') return envelope(mockArchitectureCheck(input));
   return {id: 'mock', model: 'mock-sol', status: 'incomplete', output: []};
 }
