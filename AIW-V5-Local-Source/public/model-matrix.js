@@ -16,7 +16,7 @@ import {perDocument, memoPass} from './document-memo.js';
 import {esc} from './html-escape.js';
 import {requirementSearchIndex} from './requirement-groups.js';
 import {chapterRecordSet} from './chapter-records.js';
-import {recordTrace, tracePath} from './trace-kernel.js';
+import {recordTrace, tracePath, layerOf} from './trace-kernel.js';
 
 // The words for the sets the chapters' defaults name; any other record type reads its own label, in the plural.
 export const SET_LABELS = {journey: 'Journey steps', requirement: 'Requirements', quality: 'Quality drivers', decision: 'Decisions', responsibility: 'Responsibilities', component: 'Components', capability: 'Capabilities', technology: 'Products', contract: 'Contracts', data: 'Data definitions', threat: 'Threats', control: 'Controls', instance: 'Placements', runtime: 'Running parts'};
@@ -78,8 +78,9 @@ function buildMatrix(p, {rows, cols} = {}) {
   // row's trace (trace-kernel.js recordTrace: a requirement's trail; any other record's chain back to the requirements
   // it serves and on to what it reaches), each hop a typed relation (rc.10.73.42, D7: the trail, the trace path and
   // the narrative read the same chain).
-  for (const r of R) {
-    const T = rows !== cols ? recordTrace(p, r.id) : null; if (!T) continue;
+  const traced = rows !== cols && C.some(layerOf) && R.some(layerOf);
+  if (traced) for (const r of R) {
+    const T = recordTrace(p, r.id); if (!T) continue;
     for (const c of C) {
       if (c.id === r.id || !T.has(c.id) || cells.has(r.id + '|' + c.id)) continue;
       const path = tracePath(T, c.id); if (!path.length) continue;

@@ -6,7 +6,7 @@
 // This is a projection, not a store.
 import {linkedRequirementIds} from './requirement-links.js';
 import {remember, memoPass} from './document-memo.js';
-import {seededTrace, namedBy, namingRequirements, hopsFrom, linkedVia, relationOrder} from './trace-kernel.js';
+import {seededTrace, namedBy, namingRequirements, hopsFrom, linkedVia, relationOrder, traceGraph} from './trace-kernel.js';
 
 const list = x => Array.isArray(x) ? x : [];
 const unique = xs => [...new Set(xs)];
@@ -30,16 +30,19 @@ function build(p) {
   const drivers = list(p?.quality?.drivers), responsibilities = list(p?.logical?.responsibilities), components = list(p?.realisation?.components);
   const rr = index(responsibilities), cc = index(components);
   const requirements = index(list(p?.artefacts).filter(a => a.type === 'requirement'));
+  // The graph up to the component layer (record-graph.js upto), read once for every driver.
+  const G = traceGraph(p, 'component');
   // A record's requirements: those that name it, and for a component those that name a responsibility it realises.
-  const realisedBy = id => linkedVia(p, id, 'realizedBy', 'in', 'logical.mappings');
-  const recordRequirements = id => unique([...namingRequirements(p, id), ...(cc.has(id) ? realisedBy(id).flatMap(r => namingRequirements(p, r)) : [])]);
-  const scopes = new Map(), order = relationOrder(p);
+  const realisedBy = id => linkedVia(p, id, 'realizedBy', 'in', 'logical.mappings', G);
+  const naming = new Map(), namers = id => { let xs = naming.get(id); if (!xs) naming.set(id, xs = namingRequirements(p, id, G)); return xs; };
+  const recordRequirements = id => unique([...namers(id), ...(cc.has(id) ? realisedBy(id).flatMap(namers) : [])]);
+  const scopes = new Map(), order = relationOrder(p, G);
   for (const d of drivers) {
     const reqs = linkedRequirementIds(p, d), missing = [];
     for (const id of reqs) if (!requirements.has(id)) missing.push({kind: 'requirement', id});
     for (const id of list(d.responsibilityIds)) if (!rr.has(id)) missing.push({kind: 'responsibility', id});
     for (const id of unique(list(d.componentIds))) if (!cc.has(id)) missing.push({kind: 'component', id});
-    const T = seededTrace(p, driverTraceSeeds(p, d), {until: 'component'}), served = new Set(reqs);
+    const T = seededTrace(p, driverTraceSeeds(p, d, G), {until: 'component', graph: G}), served = new Set(reqs);
     const responsibilityIds = T.layers.responsibility.filter(id => rr.has(id)), componentIds = T.layers.component.filter(id => cc.has(id));
     const direct = id => hopsFrom(T, id, h => h.from === d.id && h.type === 'constrains').length > 0;
     const scope = {driverId: d.id, requirementIds: reqs, contextRequirementIds: [], responsibilityIds, componentIds,
@@ -50,7 +53,7 @@ function build(p) {
     for (const id of [...scope.directComponentIds].sort((a, b) => order.get(byRelation(a, h => h.from === d.id && h.type === 'constrains')[0].relation) - order.get(byRelation(b, h => h.from === d.id && h.type === 'constrains')[0].relation))) scope.paths.push({kind: 'direct-component', from: d.id, to: id});
     for (const id of responsibilityIds) {
       if (direct(id)) scope.paths.push({kind: 'direct-responsibility', from: d.id, to: id});
-      for (const req of namingRequirements(p, id)) if (served.has(req)) scope.paths.push({kind: 'shared-requirement', from: d.id, to: id, via: req});
+      for (const req of namers(id)) if (served.has(req)) scope.paths.push({kind: 'shared-requirement', from: d.id, to: id, via: req});
       for (const h of byRelation(id, h => h.type === 'justifies')) scope.paths.push({kind: 'decision', from: d.id, to: id, via: h.from});
     }
     const inherited = new Set();

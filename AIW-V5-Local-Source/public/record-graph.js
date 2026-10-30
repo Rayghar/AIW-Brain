@@ -107,7 +107,7 @@ export const CONTEXT_LAYER_TYPE={process:'journey',logical:'responsibility',phys
 // the model below and by the record graph the trace kernel walks (recordGraph; trace-kernel.js, rc.10.73.42 D7), so both
 // hold the same relations in the same order. `add` registers a nested part, `rel` takes a relation, `objects` is what
 // is registered so far and `root` is the system's object.
-export function recordRelations(p,{add,rel,objects,root,issues=[]}){
+export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  // A record that links requirement groups fulfils their members as it fulfils the requirements it names (round 12, DM-02).
  const linkRefs=(r,source)=>{
   for(const [field,type,inverse] of [['requirementIds','fulfils',true],['driverIds','constrains',true],['decisionIds','justifies',true],['sourceIds','supports',true]]){const named=list(r[field]);for(const id of field==='requirementIds'?linkedRequirementIds(p,r):named)rel(type,inverse?id:r.id,inverse?r.id:id,{source:source+'.'+(field==='requirementIds'&&!named.includes(id)?'requirementGroupIds':field)});}
@@ -138,6 +138,8 @@ export function recordRelations(p,{add,rel,objects,root,issues=[]}){
  for(const r of list(p.logical?.mappings))rel('realizedBy',r.logicalId,r.physicalId,{id:r.id,label:'realized by',attributes:r,source:'logical.mappings'});
  for(const source of ['logical.connections','realisation.connections','technology.dependencies','technologyRealisation.connections'])for(const r of RECORDED[source].rows(p))rel(RECORDED[source].type(r,p),r.from,r.to,{id:r.id,label:RECORDED[source].label(r),attributes:r,source});
  for(const c of list(p.realisation?.components)){linkRefs(c,'realisation.components');for(const id of list(c.dataIds))rel('owns',c.id,id,{source:'realisation.components.dataIds'});}
+ // A walk up to the components reads nothing stated after them (recordGraph upto).
+ if(upto==='component')return;
  for(const n of list(p.technology?.needs)){
   const obj=objects.get(n.id);if(obj){obj.title=n.description||n.category+' need';obj.owner=objects.get(n.applicationId)?.owner||'';}
   rel('hasNeed',n.applicationId,n.id,{source:'technology.needs'});
@@ -199,23 +201,28 @@ export function recordRelations(p,{add,rel,objects,root,issues=[]}){
 // them (with the declared context objects and the reference graph's base nodes, as recordTypes reads them), the relations
 // of the one emitter (recordRelations), resolved by the model's rule (both ends registered), each end's relations listed;
 // no drawn graph, typing or digest. What the trace kernel (trace-kernel.js) walks. Once per settled document or pass.
-export const recordGraph=perDocument(p=>{
- const objects=new Map(),relationships=new Map(),root='system:'+p.id;
+// `upto` 'component' keeps only what a walk up to the component layer reads — the records of the collections up to the
+// components, the reference graph's base nodes, and the relations between them a requirement, a driver, a decision, a
+// mapping, a Chapter 1 relationship or a Chapter 4 connection states: the driver scope's (driver-scope.js), which every
+// chapter check reads, so it does not pay for the whole graph.
+const UPTO_COMPONENT=new Set(['fulfils','constrains','justifies','realizedBy']),COMPONENTS=RECORD_COLLECTIONS.findIndex(([,,path])=>path==='realisation.components');
+export const recordGraph=perDocument((p,upto)=>{
+ const objects=new Map(),relationships=new Map(),root='system:'+p.id,part=upto==='component';
  const add=(r,type,source,id=r.id)=>{if(!id)return null;const prior=objects.get(id);if(prior&&prior.source!==source)return prior;const obj={id,type,title:label(r)||id,ref:r.ref||r.id||id,owner:r.owner||'',source,attributes:{},record:r};objects.set(id,obj);return obj;};
  const rel=(type,from,to,{id,label:meaning,attributes={},source='projection',derived=false,via=[]}={})=>{
-  if(!from||!to)return;
+  if(!from||!to||part&&(!UPTO_COMPONENT.has(type)&&source!=='relationships'&&source!=='logical.connections'||!objects.has(from)||!objects.has(to)))return;
   id=id||'rel:'+key(source,type,from,to);
   if(relationships.has(id)){const old=relationships.get(id);if(old.type===type&&old.from===from&&old.to===to)return;id=key(source,id,type,from,to);}
   relationships.set(id,{id,type,from,to,label:meaning||type,attributes,source,derived,via});
  };
  add({id:root,title:p.name},'system','project');
- for(const [rows,type,path] of RECORD_COLLECTIONS)list(rows(p)).forEach((r,i)=>add(r,typeof type==='function'?type(r):type,path+'['+i+']'));
+ for(const [rows,type,path] of part?RECORD_COLLECTIONS.slice(0,COMPONENTS+1):RECORD_COLLECTIONS)list(rows(p)).forEach((r,i)=>add(r,typeof type==='function'?type(r):type,path+'['+i+']'));
  for(const o of list(p.modelContext?.objects))if(!objects.has(o.id))add({...o.attributes,id:o.id,title:o.title},o.type,'model.context.'+o.id);
  for(const n of projectNodes(p))if(!objects.has(n.id))add({...n},CONTEXT_LAYER_TYPE[n.layer]||'context','model.context.'+n.id);
- for(const s of list(p.coauthoring?.sources)){const v=s.versions?.at(-1)||{};add({...v,id:s.id,title:v.title||s.id},'evidence','coauthoring.sources.'+s.id);}
- recordRelations(p,{add,rel,objects,root});
+ if(!part)for(const s of list(p.coauthoring?.sources)){const v=s.versions?.at(-1)||{};add({...v,id:s.id,title:v.title||s.id},'evidence','coauthoring.sources.'+s.id);}
+ recordRelations(p,{add,rel,objects,root,upto});
  const resolved=[...relationships.values()].filter(e=>objects.has(e.from)&&objects.has(e.to)),outgoing=new Map(),incoming=new Map();
  for(const id of objects.keys()){outgoing.set(id,[]);incoming.set(id,[]);}
  for(const e of resolved){outgoing.get(e.from).push(e);incoming.get(e.to).push(e);}
  return {projectId:p.id,root,objects,relationships:resolved,outgoing,incoming};
-});
+},upto=>upto||'');
