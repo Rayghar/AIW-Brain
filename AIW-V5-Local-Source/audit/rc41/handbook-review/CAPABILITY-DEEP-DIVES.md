@@ -2,6 +2,8 @@
 
 Companion to AIW-HANDBOOK-GAP-REVIEW-2026-10-30.md. Hands-on runs used scratch databases outside the repository; the AIW repository was not changed. "Skeptic: DOES NOT HOLD" marks a claim corrected or withdrawn.
 
+**Editor's note (final check).** This file keeps the analysts' and skeptics' words as recorded. One known inconsistency remains: the operability skeptic says there is no error-budget arithmetic, while the deployment skeptic and the code show a time-based availability budget (public/design-reasoning.js:267-270). The summary uses the corrected reading: a time-based budget exists, but no SLI, denominator or burn-rate policy.
+
 ## technology-selection
 
 **Question.** Does AIW let the architect select the technology (products, platforms, managed services) that realises each Chapter 6 technology capability? Where do the options come from, how are they assessed and approved, do they conform to standards or a target platform, and what reaches the SDD, compared with the Technology Architecture, Enterprise Component Library Part 3, Target Platform Qualification, Cloud Architecture and Cloud Infrastructure handbooks?

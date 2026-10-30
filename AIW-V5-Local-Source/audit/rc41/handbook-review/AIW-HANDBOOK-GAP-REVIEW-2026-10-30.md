@@ -16,10 +16,10 @@ This file is the summary. The detail is in two companion files:
 
 | Step | Scale | How it was checked |
 |---|---|---|
-| Read the handbooks | 27 handbooks, 3.18 M words, split into 65 sections | Each section was read in full, start to end, by its own reader. The readers covered 1,819 headings and recorded **2,769 items**: what the handbook prescribes and whether AIW appears to support it. |
+| Read the handbooks | 27 handbooks, 3.18 M words, split into 65 sections | Each section was read in full, start to end, by its own reader. The readers listed 1,819 sections and section groups as read, and recorded **2,769 items**: what the handbook prescribes and whether AIW appears to support it. |
 | Map AIW's design process | 11 chapters plus Validate, Model, Output (SDD), Sol, knowledge, intake and projects | Built from the source, with path:line evidence. |
-| Capability deep-dives | 13: component selection, technology selection, deployment architecture, library coverage, traceability, deliverables and views, a handbook worked example carried through AIW, quality method, data and integration, security, evolution and transition, enterprise alignment, operability and delivery | Many were run hands-on against AIW on scratch databases outside the repo (APIs, SDD exports, reference projects). A skeptic re-checked every gap; 16 of 195 did not hold as stated and are corrected or withdrawn. |
-| Per-chapter verification | 13 units, large chapters split by handbook family | Every reader claim that AIW lacks something was searched for in the source. Each resulting gap then went to a second agent told to refute it. No gap was refuted outright, about a quarter were corrected as overstated, and skeptics added gaps the synthesis had missed. Shards were then merged. |
+| Capability deep-dives | 13: component selection, technology selection, deployment architecture, library coverage, traceability, deliverables and views, a handbook worked example carried through AIW, quality method, data and integration, security, evolution and transition, enterprise alignment, operability and delivery | Many were run hands-on against AIW on scratch databases outside the repo (APIs, SDD exports, reference projects). A skeptic re-checked all 195 gaps. 15 did not hold as stated and were relabelled or corrected. Many of the 180 that held also carry corrections, and this summary applies them. |
+| Per-chapter verification | 13 units, large chapters split by handbook family | Every reader claim that AIW lacks something was searched for in the source. Each resulting gap then went to a second agent told to refute it. No gap was refuted outright. About a third (114 of 353) were corrected as overstated, and skeptics added 50 gaps the synthesis had missed. Shards were then merged. |
 
 **Limits.**
 - The readers judged AIW support from a digest, so their "absent" marks are hypotheses. Only gaps that survived source verification and the skeptic appear here.
@@ -37,12 +37,16 @@ This file is the summary. The detail is in two companion files:
   - Chapter 4 maps each responsibility to a component. Chapter 5 records the allocation with a role and a scope.
   - Chapter 5 has a "From the library" picker. It offers 20 catalogue archetypes and components saved from projects.
   - A pick becomes a candidate that a person must review, and its origin (release id and record hash) is kept.
-  - Real compare-and-choose, with every option kept as a Chapter 3 alternative, exists only inside eight hard-coded design tasks: interaction, reads, persistence, delivery, resilience, distribution, partitioning and structure.
+  - Real compare-and-choose, with every option kept as a Chapter 3 alternative, exists in two places:
+    - the eight code-authored design tasks (interaction, reads, persistence, delivery, resilience, distribution, partitioning, structure);
+    - comparisons built from a released, four-eyes-reviewed design concern.
+  - Model Alternatives and a guided boundary task also compare options and set them aside.
+  - None of these starts from a library component.
 - **What is missing.**
   - The picker does not start from the responsibility and its drivers. It is a text search.
   - Cards show no fit to quality drivers, no hard-constraint check, no consequences, alternatives or evidence.
   - No component-selection decision with eligible and rejected candidates is recorded.
-  - Adopting a pattern or library entry creates no fit record, obligations, parameters, guarantee boundary or tests (C5-01, C5-04 to C5-08, K-01 to K-03).
+  - Outside those design tasks, adopting a pattern or library entry creates no fit record, parameters, guarantee boundary or tests. Its obligations stay display-only proposals that never reach Chapter 11 (C5-01, C5-04 to C5-08, K-01 to K-03).
   - The SDD body does not print the selection basis.
 
   Deep-dive: component-selection.
@@ -55,7 +59,8 @@ This file is the summary. The detail is in two companion files:
   - Application Architecture Master: 20;
   - Cloud Infrastructure Master: 36;
   - DevOps Master: 32.
-- They also define about 38 styles, 92 patterns, 60 tactics, 60 anti-patterns, 20 composition recipes and 12 blueprints. Most entries carry:
+- The Application Architecture, Cloud Infrastructure and DevOps Masters also define 38 styles, 92 patterns, 60 tactics and 60 anti-patterns. The Enterprise Component Library adds 20 neighbouring-role compositions and 12 blueprints.
+- The volume handbooks add their own catalogues: for example the Application Architecture Handbook's 182 entries (including 15 styles and 22 anti-patterns), and about 73 composition recipes across seven handbooks. Most entries carry:
   - forces and when to use / when not to;
   - boundary and owned state, and ports;
   - physical options and typed configuration attributes;
@@ -64,9 +69,9 @@ This file is the summary. The detail is in two companion files:
 - AIW's catalogue (AKR-0.10.73.5) has 328 records:
   - 318 of them hold generator template text;
   - its 20 archetypes are platform capabilities with templated, sometimes wrong, kits;
-  - Chapter 5 can attach only the 19 SA Playbook styles and patterns;
-  - Chapters 9 and 10 have no picker at all.
-- AIW does have a sound governed path that an import could use: source, then candidate, then four-eyes review, then released, then a project pin. Its organisation library can already hold a reduced component profile.
+  - Chapter 5 can attach only SA Playbook ids: its picker offers the 19 styles and patterns, the record also accepts the 56 tactics, and no catalogue or handbook id is accepted;
+  - Chapters 8, 9 and 10 have no pattern, tactic or topology picker. Chapters 9 and 10 can take approved control or runbook guidance only as text.
+- AIW has a governed path an import could build on: source, then candidate, then four-eyes review, then release, then a project pin. Its organisation library can already hold a reduced component profile. But its importer reads only signed repository sources, and its size limits block a handbook-scale import, so both need changes first.
 
 Deep-dive: library-coverage; K-04, K-06, K-08.
 
@@ -77,10 +82,13 @@ Deep-dive: library-coverage; K-04, K-06, K-08.
   - Recording a selection is person-only.
 - **What is missing.**
   - A governed product catalogue: the 14 products are a discovery list with no approval.
-  - Licence, end-of-support, support-contract and exit data.
-  - A check against enterprise standards.
+  - Typed licence, end-of-support, support-contract and exit fields. Today only prose criteria ask for them.
+  - A product-level check against enterprise standards. Only shared-service dependencies get a lifecycle and version reading.
   - A binding to a target platform.
-  - A qualification state.
+  - A qualification state on the selection. Obligation checks give pass, fail or unknown per environment and release, but nothing ties them to the product's required behaviours.
+  - A capability matrix derived from Chapter 8 contracts (C7-02).
+  - The organisation's operating capability as a criterion and condition (C7-04).
+  - An option-level cost model per accepted outcome (C7-05).
 - **What is broken.** The approval is self-attested (section 3).
 
 Deep-dive: technology-selection; C7-02, C7-04, C7-05.
@@ -89,14 +97,14 @@ Deep-dive: technology-selection; C7-02, C7-04, C7-05.
 **Only partly.**
 - **What exists.**
   - Chapter 10 describes one deployment: environments, zones, one runtime plan per environment and part, placements and runtime paths.
-  - About 30 deterministic checks run over it.
+  - About 45 deterministic checks run over it.
   - It simulates a zone or failure-domain loss, sizes survivor capacity at the review desk and derives availability budgets.
   - Saved design alternatives can hold Chapter 10 changes, and a person records which one is accepted.
 - **What is missing.**
   - A reference-blueprint library. The Cloud Infrastructure Master alone has 12 deployment styles.
   - Gates before preferences.
   - Physical topology: account or landing zone, region, AZ, VPC, subnet, cluster, edge.
-  - An environment chain with parity and promotion.
+  - An environment chain: promotion order, an environment contract and stage-aware checks. Only a pairwise environment comparison exists today.
   - CI/CD and infrastructure as code.
   - A declared failure set with degraded modes.
   - Recovery designed as a timed procedure.
@@ -109,7 +117,18 @@ Deep-dive: deployment-architecture; C10-01 to C10-19.
 
 ## 3. Fix first: defects that break AIW's own rules
 
-These were reproduced on a running AIW, and the skeptic re-checked each one. They breach the doctrine that a person decides, someone else approves, and no evidence is invented. They should be fixed before any feature work.
+How each was verified:
+- **On a running AIW, using scratch databases:** D1–D3, D5–D7, D9, D10 and D12.
+- **By running AIW's domain code in memory:** D4 and D11. D11's template text was also seen in an SDD exported from a running app.
+- **In the source:** D8, D13 and D14 (C10-21, C11-01, C11-02, C11-04).
+
+A skeptic re-checked each one. They break AIW's own rules:
+- a person decides, and someone else approves;
+- no evidence is invented;
+- one canonical graph gives one answer (D7, D9, D12, D14);
+- drafting does not build errors in (D10).
+
+They should be fixed before any feature work.
 
 | # | Defect | Where |
 |---|---|---|
@@ -119,9 +138,9 @@ These were reproduced on a running AIW, and the skeptic re-checked each one. The
 | D4 | A withdrawn archetype still saves as a Chapter 5 candidate. The organisation library offers draft entries that were never released. One person can author and approve a project-library entry. | library-coverage, component-selection; K-05 |
 | D5 | The architect who accepts a residual security risk can also record its approval. | deep-dive security-architecture |
 | D6 | A trace review can be recorded on a broken trail, and doing so clears the trace warning. | deep-dive traceability |
-| D7 | Five trace algorithms give different answers for the same requirement, so the Model views, ARS and SDD disagree. | deep-dive traceability (critical) |
+| D7 | At least six separate trace traversals give different answers for the same requirement: the trail and desk, the Matrix chain behind the narrative, the design index behind SDD §4, driver scope, the ARS driver chain and the SDD journey line. So the Model views, ARS and SDD disagree. | deep-dive traceability (critical) |
 | D8 | The review-desk availability verdict counts zone records, not independent failure domains. It can read "holds" while Chapter 10 itself warns that everything sits in a single domain. | C10-21 |
-| D9 | Chapter 5 and Chapter 8 can name different owners for the same data, with no finding. | deep-dive data-and-integration |
+| D9 | Chapter 5 and the Chapter 8 authority can name different owners for the same data. This leaves two conflicting "owns" edges in the canonical graph, with no finding. It arises mainly in the reference project and in data created by design tasks; the SDD already follows Chapter 8. | deep-dive data-and-integration |
 | D10 | The journey drafter creates one production environment per component, which raises Chapter 10 errors by construction. RTO and RPO marked open on a capability are silently dropped. | deployment-architecture, worked-example |
 | D11 | Archetype proposals carry template text, and sometimes the wrong kit (a relational store proposes identity-token contracts), into the component and on into the SDD. | library-coverage, component-selection; K-06 |
 | D12 | ArchiMate import turns a Gap into a Chapter 1 requirement, and misfiles a business Capability as a Chapter 6 technology capability. | evolution-and-transition, enterprise-alignment |
@@ -603,14 +622,29 @@ Most consequential:
 
 ---
 
-## 7. What the handbooks do not ask for
+## 7. What the handbooks do not ask for, and what AIW already does
 
-Some earlier assumptions did not survive checking against the text:
-- **STRIDE, PCI DSS and likelihood × impact scoring.** None of these appears in any of the 27 handbooks. The QA Environment Handbook uses consequence and likelihood only to allocate test effort.
-- **Threat elicitation.** AIW already flags every trust-boundary crossing that has no threat, and drafts threats by rule.
-- **Survivor capacity.** AIW already computes survivor capacity after a zone loss.
-- **Error budgets.** AIW already derives availability error budgets from Chapter 2 objectives.
-- **Backward trace.** AIW already has a layered backward trace from any record.
-- **Comparing deployment alternatives.** AIW already compares saved deployment alternatives on capacity and cost.
+### Not asked for
+- **STRIDE, PCI DSS and likelihood × impact scoring.** None of these appears in any of the 27 handbooks.
+  - The QA Environment Handbook uses consequence and likelihood only to allocate test effort.
+  - The Application Architecture Handbook goes further. Its Failure Mode Analysis section advises bounded experiments "rather than filling a spreadsheet with unsupported likelihood scores", and warns against "a single numerical risk score".
+  - The yardstick for security is the handbooks' own method, which works through each element using spoofing, tampering, disclosure, denial of service and misuse of privilege.
 
-Each of these is listed under "already supported" in the detail files, with evidence, so it is not re-proposed as new work.
+### Already partly supported
+The remaining work sits in the features named. The supported part is evidenced in the detail files and is not re-proposed; only the residue named in each feature is new work.
+
+- **Threat elicitation.**
+  - **Today:** the Model asks "what could go wrong here?" once for each unexamined contract crossing and each entry into a platform service or store. This is advice only and blocks nothing. The journey drafter drafts threats by four rules.
+  - **Still a verified gap (F9):** a per-element checklist over the handbooks' categories, and a precondition field.
+- **Survivor capacity.**
+  - **Today:** the review desk sizes replicas and nodes so that Z−1 zones carry the full load. A capacity tool computes min((replicas − failed) × per-replica rate, downstream rate).
+  - **Not yet:** survivors computed from recorded placements or qualified per-plan capacity (C10-06; F5, F10). The zone count it uses is defective (D8).
+- **Error budgets.**
+  - **Today:** AIW computes a time-based availability budget from Chapter 2 targets and checks each part against it.
+  - **Still a gap (F7):** SLI definitions, denominators and a burn-rate policy.
+- **Backward trace.**
+  - **Today:** a layered backward trace from any record exists.
+  - **Missing:** it rests on untyped Matrix chains and disagrees with other traversals (D7; F16).
+- **Comparing deployment alternatives.**
+  - **Today:** saved alternatives that hold Chapter 10 changes are compared on capacity and cost, and a person records the choice.
+  - **Missing (F5):** governed blueprints, hard gates and an approach record.
