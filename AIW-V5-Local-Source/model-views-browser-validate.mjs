@@ -583,7 +583,26 @@ try {
       const lit = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-lit')].map(e => e.dataset.ntEdge)), dim = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-dim')].map(e => e.dataset.ntEdge));
       return {runs: [...document.querySelectorAll('.cm-svg .nt-trunk')].map(t => { const m = JSON.parse(t.dataset.ntMembers); return {lit: t.classList.contains('nt-mk-lit'), dim: t.classList.contains('nt-mk-dim'), anyLit: m.some(id => lit.has(id)), allDim: m.every(id => dim.has(id))}; }), lifted: [...document.querySelectorAll('.cm-svg .nt-lift path.nt-mk-lit')].map(p => p.dataset.ntLift).sort(), litEdges: [...lit].sort()};
     });
-    assert.ok(runs.runs.length > 0 && runs.runs.some(x => x.lit), 'the trace travels lines drawn together in the Layers view: ' + runs.runs.filter(x => x.lit).length + ' of ' + runs.runs.length + ' runs');
+    // rc.10.73.42 (D9): the one run REQ-001's chain travelled was the instruction's second ownership edge (its Chapter 5 list,
+    // realisation.components.dataIds, drawn over the Chapter 8 authority). With one owner that line is gone, so the runs are
+    // read on REQ-001's chain, which draws no second owner, and on a chain that travels one: REQ-005, fulfilled twice by LR-005.
+    assert.ok(runs.runs.length > 0, 'the Layers view draws lines together: ' + runs.runs.length + ' runs');
+    assert.ok(!(await rp.$$eval('.cm-svg [data-nt-edge]', es => es.map(e => e.dataset.ntEdge))).some(id => id.includes('realisation.components.dataIds:owns')), 'no Chapter 5 data list is drawn as a second owner');
+    {
+      const rc5 = await browser.newContext({viewport: {width: 1440, height: 900}}), rp5 = await rc5.newPage();
+      rp5.on('pageerror', e => errors.push(e.message));
+      await rp5.goto(base + '/?chapter=4&tab=model&model=layers', {waitUntil: 'networkidle'}); await rp5.waitForSelector('.cm .cm-svg .nt-node', {timeout: 15000}); await rp5.waitForTimeout(400);
+      await rp5.click('[data-nt="menu"][data-id="trace"]'); await rp5.waitForTimeout(250);
+      await rp5.selectOption('.nt-pop [data-nt-field="trace"]', 'REQ-005'); await rp5.waitForTimeout(600);
+      const r5 = await rp5.evaluate(() => {
+        const lit = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-lit')].map(e => e.dataset.ntEdge)), dim = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-dim')].map(e => e.dataset.ntEdge));
+        return {runs: [...document.querySelectorAll('.cm-svg .nt-trunk')].map(t => { const m = JSON.parse(t.dataset.ntMembers); return {lit: t.classList.contains('nt-mk-lit'), dim: t.classList.contains('nt-mk-dim'), anyLit: m.some(id => lit.has(id)), allDim: m.every(id => dim.has(id))}; }), lifted: [...document.querySelectorAll('.cm-svg .nt-lift path.nt-mk-lit')].map(p => p.dataset.ntLift).sort(), litEdges: [...lit].sort()};
+      });
+      assert.ok(r5.runs.length > 0 && r5.runs.some(x => x.lit), 'the trace travels lines drawn together in the Layers view: ' + r5.runs.filter(x => x.lit).length + ' of ' + r5.runs.length + ' runs on the trace from REQ-005');
+      assert.ok(r5.runs.every(x => x.lit === x.anyLit && x.dim === (!x.anyLit && x.allDim)), 'on it too, a run is traced when a relationship on it is, dimmed only when every one is');
+      assert.deepEqual(r5.lifted, r5.litEdges, 'and the lift draws every traced relationship whole, and only those');
+      await rc5.close();
+    }
     assert.ok(runs.runs.every(x => x.lit === x.anyLit && x.dim === (!x.anyLit && x.allDim)), 'a run is traced when a relationship on it is, dimmed only when every one is');
     assert.deepEqual(runs.lifted, runs.litEdges, 'the lift draws every traced relationship whole, and only those');
     assert.match(t.reading, /Trace · from REQ-001/i, 'the companion names the trace');
