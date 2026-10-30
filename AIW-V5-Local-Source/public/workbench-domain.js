@@ -138,7 +138,7 @@ function applySeeding(p,raw,at,actor){if(!['off','on'].includes(raw.state))throw
 // change is applied by a person who reviewed its changes (reviewed:true); a governed batch drafted by Sol (author kind
 // sol-draft, D-06) is applied as what it is, unreviewed (reviewed:false), and never has to claim a review nobody made.
 // Its history entry keeps who sent it, of what kind, whether a person reviewed it, and why.
-export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,baselineSource=null,author=null}={}){
+export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,baselineSource=null,author=null,release=null}={}){
  if(command.type==='workspace.diagram-arrangement')return applyDiagramArrangement(structuredClone(input),command.payload||{},at,actor,diagramNodes);
  if(command.type==='workspace.seeding')return applySeeding(documentCopy(input),command.payload||{},at,actor);
  const raw=command.payload||{};let p=documentCopy(input);p.workbench??={version:1,alternatives:[],analyses:[],catalogue:[],views:[],assignments:[]};const m=p.workbench;let selected,selectedIds;
@@ -184,7 +184,13 @@ export function applyWorkbenchCommand(input,command,at,actor,{diagramNodes=null,
   // Round 11: a component entry holds a component specification snapshot (component-library.js): checked, bounded and
   // redacted before it is kept, whole or not at all.
   let content=text(raw.content,30000);if(raw.kind===COMPONENT_LIBRARY_KIND){content=snapshotText(readComponentSnapshot(raw.content));if(content.length>SNAPSHOT_LIMIT)throw Error('This component snapshot is too long for the library. Shorten its texts first.');}
-  const entry={id:old?.id||'LIB-'+crypto.randomUUID(),revision:(old?.revision||0)+1,kind:raw.kind,title:text(raw.title,180),content,owner:text(raw.owner,180),status:['draft','approved','deprecated'].includes(raw.status)?raw.status:'draft',sourceId:text(raw.sourceId,100),sourceHash:source?digest(source):null,reviewNote:text(raw.reviewNote),reviewAfter:text(raw.reviewAfter,30),scope:'Project library',at,actor,history:old?[...(old.history||[]),(({history,...v})=>v)(old)]:[]};if(old)m.catalogue[m.catalogue.indexOf(old)]=entry;else m.catalogue.push(entry);
+  // rc42 (D4, K-05): its writer is who wrote its title and content (an entry saved before rc42: its last saver). Another
+  // signed-in person approves it, as the organisation library asks, and approving changes neither. An agent account or a
+  // draft by Sol never approves (authorship.js refuses them too). An entry installed from a signed organisation release
+  // (organization-service.js install, `release`) carries that release's independent review instead.
+  const title=text(raw.title,180),writer=old&&old.content===content&&old.title===title?old.author||old.actor:actor;
+  if(raw.status==='approved'&&!release&&(!actor||author?.account==='agent'||author?.kind==='sol-draft'||writer===actor))throw Error('A second signed-in person approves a library entry, as it stands: not its writer, an agent account or a draft by Sol.');
+  const entry={id:old?.id||'LIB-'+crypto.randomUUID(),revision:(old?.revision||0)+1,kind:raw.kind,title,content,owner:text(raw.owner,180),status:['draft','approved','deprecated'].includes(raw.status)?raw.status:'draft',sourceId:text(raw.sourceId,100),sourceHash:source?digest(source):null,reviewNote:text(raw.reviewNote),reviewAfter:text(raw.reviewAfter,30),scope:'Project library',at,actor,author:writer,history:old?[...(old.history||[]),(({history,...v})=>v)(old)]:[]};if(old)m.catalogue[m.catalogue.indexOf(old)]=entry;else m.catalogue.push(entry);
  }else if(command.type==='workspace.template'){
   const q=previewGuidanceTemplate(p,raw.entryId,at);if(raw.reviewed!==true||raw.stamp!==q.stamp)throw Error('Review the current template draft and its source.');const entry=m.catalogue.find(e=>e.id===raw.entryId);if(q.command){const r=applyCanonical(p,q.command,at,actor);p=r.document;selected=r.selected;}else p=q.document;
   p.workbench.guidanceUses??=[];if(p.workbench.guidanceUses.length>=400)throw Error('Export earlier adaptations before recording more than 400.');p.workbench.guidanceUses.push({id:'USE-'+crypto.randomUUID(),entry:structuredClone(entry),targetId:selected||'project',createdId:selected,reason:'Drafted from reviewed chapter template',at,actor});

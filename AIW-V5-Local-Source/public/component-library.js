@@ -11,6 +11,7 @@
 // knowledge: it enters no score, no hard constraint and no conformance reading. Pure.
 import {redactSecretsDeep} from './secret-redaction.js';
 import {CATALOGUE} from './catalogue-index.js';
+import {withdrawn} from './knowledge-governance.js';
 import {list, str, num, uniq} from './util.js';
 
 export const COMPONENT_LIBRARY_KIND = 'component';
@@ -49,6 +50,25 @@ export const snapshotText = snapshot => JSON.stringify(snapshot);
 // and a reference can be checked against without loading the catalogue.
 export const COMPONENT_ARCHETYPES = Object.freeze(CATALOGUE.records.filter(r => r.type === 'component-archetype').map(r => Object.freeze({id: r.id, name: r.name})));
 export const isArchetypeId = id => COMPONENT_ARCHETYPES.some(a => a.id === id);
+
+// rc42 (D4, K-05): what a proposal may come from, one rule for the chooser and Sol's catalogue reading
+// (component-library-ui.js) and for realisation.candidate. A catalogue archetype the project withdrew, or whose catalogue
+// release it withdrew, is not offered. An organisation entry reaches a project only through a signed release installed
+// there (organization-service.js install), while it is still eligible (refreshOrganizationAssurance keeps that reading
+// current on every load) and only with the content that was reviewed. A project entry is one of the project's own, not
+// deprecated; an installed organisation entry is never taken as one.
+export const archetypeWithdrawn = (p, id) => withdrawn(p, [id, CATALOGUE.releaseId]).length > 0;
+const componentEntries = p => list(p?.workbench?.catalogue).filter(e => e.kind === COMPONENT_LIBRARY_KIND);
+export const releasedEntries = p => componentEntries(p).filter(e => e.organization && e.status === 'approved' && e.organization.assurance?.eligible === true);
+export const projectEntries = p => componentEntries(p).filter(e => !e.organization && e.status !== 'deprecated');
+export function proposalSource(p, ref) {
+  if (ref.scope === 'catalogue') { if (archetypeWithdrawn(p, ref.archetypeId)) throw Error('This archetype was withdrawn from this project.'); return null; }
+  if (ref.scope === 'organisation') { const e = releasedEntries(p).find(e => e.organization.id === ref.organizationId && e.organization.entryId === ref.entryId); if (!e || e.organization.contentHash !== ref.contentHash) throw Error('An organisation entry reaches this project only through a signed release installed here.'); return e; }
+  const e = componentEntries(p).find(e => e.id === ref.entryId && !e.organization);
+  if (!e) throw Error('Choose a component entry of this project’s library.');
+  if (e.status === 'deprecated') throw Error('This library entry is deprecated. Choose a current one.');
+  return e;
+}
 
 // What travels with a proposal besides the component: bounded, text only. Stored on the candidate record as `proposed`.
 export function cleanProposed(raw) {
