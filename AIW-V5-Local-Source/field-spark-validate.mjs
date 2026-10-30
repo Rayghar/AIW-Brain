@@ -225,7 +225,7 @@ const req = id => p.artefacts.find(a => a.id === id);
 
 // ---------------------------------------------------------------- 3. the routes: provenance stored, Sol's field mode
 // A loopback double of the provider for the two field calls (the desk's own calls go to mock-llm-provider.mjs).
-let draftMode = 'good';
+let draftMode = 'good', askCheck = 'good';
 const calls = [];
 const llm = http.createServer((q, s) => { let d = ''; q.on('data', c => { d += c; }); q.on('end', () => {
   const body = JSON.parse(d || '{}'), name = body.text?.format?.name, input = JSON.parse(body.input?.[0]?.content || '{}');
@@ -235,6 +235,7 @@ const llm = http.createServer((q, s) => { let d = ''; q.on('data', c => { d += c
     const refs = input.sources.map(x => x.ref);
     out = envelope({field: input.target.field, value: draftMode === 'number' ? 'Retry 987654 times before giving up.' : draftMode === 'empty' ? '' : `Keep the outcome pending and answer status enquiries from the recorded result for ${input.target.record}.`, basis: `It follows from the record (S1) and the requirement it serves (${refs.at(-1)}).`, sourceRefs: draftMode === 'empty' ? [] : [...new Set(['S1', refs.at(-1)])]});
   } else if (name === 'aiw_field_draft_check') out = envelope(draftMode === 'defect' ? {supported: false, defects: ['The value names a mechanism the packet does not record.'], notes: []} : {supported: true, defects: [], notes: ['Checked against S1.']});
+  else if (name === 'aiw_source_check' && askCheck === 'defect') out = envelope({supported: false, defects: ['The passage names a boundary no source records.'], notes: []});
   else out = mockAnswer(body);
   s.writeHead(200, {'Content-Type': 'application/json'}); s.end(JSON.stringify(out));
 }); });
@@ -661,6 +662,33 @@ let run;
   }
   assert.deepEqual(JSON.stringify(R.dispositionsOf(await doc()).at(-1)?.outcome), '"dismissed"', 'the audit trail keeps what was recorded');
   pass('one provenance vocabulary (stated · inferred · Sol draft · edited): the old words map onto it, the bands and the journey draft show it, the recorded keys are unchanged');
+}
+{
+  // rc41 (FIX NOW 3): an Ask Sol answer fills a field only when its source checks accepted it. A withheld answer shows
+  // AIW's own fallback text (intelligence-provider.js groundedFallback), not Sol's, so the server refuses to keep it as
+  // a Sol draft; an accepted answer about the same record is still kept, as drafted.
+  const ask = async () => { const raw = {objectId: 'api', chapter: 4, mode: 'author', prompt: 'Explain where this responsibility stops.'}, k = await api('/api/intelligence/context', raw); assert.equal(k.status, 200, k.data.error); const g = await api('/api/intelligence/generate', {...raw, packetStamp: k.data.packet.stamp, requestId: uuid()}); assert.equal(g.status, 200, g.data.error); assert.equal(g.data.status, 'completed'); return g.data; };
+  askCheck = 'defect';
+  const withheld = await ask();
+  askCheck = 'good';
+  assert.equal(withheld.groundingReview.accepted, false, 'the source check withheld the answer');
+  assert.match(withheld.result.summary, /^The generated explanation (?:was withheld|did not pass)/, 'what the run shows is AIW’s fallback, not Sol’s answer');
+  const lr = (await doc()).logical.responsibilities.find(x => x.id === 'api'), revision = state.revision;
+  let r = await send({type: 'logical.responsibility', payload: {...lr, boundary: withheld.result.passage, solSuggestions: [{field: 'boundary', source: 'sol', runId: withheld.id}]}});
+  assert.equal(r.status, 400); assert.equal(r.data.code, 'invalid_suggestions');
+  assert.match(r.data.error, /^That Sol answer was withheld by its source checks\. The text it shows is AIW’s own fallback, not a Sol draft, so it cannot be saved as one\.$/);
+  assert.equal(state.revision, revision, 'nothing was saved'); assert.equal((await doc()).logical.responsibilities.find(x => x.id === 'api').boundary, lr.boundary);
+  const accepted = await ask(), kept = () => doc().then(d => d.logical.responsibilities.find(x => x.id === 'api').provenance.suggestions.filter(s => s.field === 'boundary').map(s => [s.source, s.runId, s.edited, !!s.superseded]));
+  assert.equal(accepted.groundingReview.accepted, true, JSON.stringify(accepted.groundingReview.issues));
+  // Its first sentence alone (what Proposals puts in a field too short for the whole answer) is kept as edited, as the
+  // editor's note says (coauthor-ui.js).
+  const first = accepted.result.passage.slice(0, accepted.result.passage.indexOf('. ') + 1);
+  assert.ok(first && first.length < accepted.result.passage.length);
+  r = await send({type: 'logical.responsibility', payload: {...lr, boundary: first, solSuggestions: [{field: 'boundary', source: 'sol', runId: accepted.id}]}});
+  assert.equal(r.status, 200, r.data.error); assert.deepEqual(await kept(), [['sol', accepted.id, true, false]], 'a shortened answer is kept as edited');
+  r = await send({type: 'logical.responsibility', payload: {...(await doc()).logical.responsibilities.find(x => x.id === 'api'), boundary: accepted.result.passage, solSuggestions: [{field: 'boundary', source: 'sol', runId: accepted.id}]}});
+  assert.equal(r.status, 200, r.data.error); assert.deepEqual(await kept(), [['sol', accepted.id, true, true], ['sol', accepted.id, false, false]], 'the whole answer is kept as drafted, the shortened one superseded');
+  pass('an Ask Sol answer its source checks withheld is refused as a Sol draft with a clear reason (its text is AIW’s own fallback) and nothing is saved; an accepted answer about the same record is kept, as edited when shortened');
 }
 llm.close();
 console.log(`\n${checks.length} checks passed.`);

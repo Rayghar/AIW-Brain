@@ -33,6 +33,15 @@ const requests = [];
 let solConfigured = false;
 const json = (body, status = 200) => new w.Response(JSON.stringify(body), {status, headers: {'Content-Type': 'application/json'}});
 const RUN = '0f2a6c1e-5b7d-4c3e-9a1b-2d3e4f5a6b7c', ASK = '1a2b3c4d-5e6f-4a1b-8c2d-3e4f5a6b7c8d', REVIEW_RUN = '9e8d7c6b-5a4f-4e3d-8c2b-1a0f9e8d7c6b';
+// Ask Sol's saved answers (rc41): about SEC-001, the accepted one and, newer, one its source checks withheld, whose text
+// is AIW's own fallback (intelligence-provider.js groundedFallback); about SEC-002, two longer than its title allows.
+const WITHHELD = '2b3c4d5e-6f7a-4b2c-9d3e-4f5a6b7c8d9e', LONG = '3c4d5e6f-7a8b-4c3d-8e4f-5a6b7c8d9e0f', TOO_LONG = '4d5e6f7a-8b9c-4d4e-9f5a-6b7c8d9e0f1a';
+const ANSWERS = {
+  [WITHHELD]: {objectId: 'oauth', mode: 'author', status: 'completed', createdAt: '2026-10-01T09:30:00Z', result: {summary: 'The generated explanation was withheld because its claims did not pass the source checks.', passage: 'The saved object “Identity & consent” remains the working context (S1). No original evidence excerpt was supplied for this context.'}, groundingReview: {accepted: false, issues: ['The passage names a mechanism no source records.']}},
+  [ASK]: {objectId: 'oauth', mode: 'design', status: 'completed', createdAt: '2026-10-01T09:00:00Z', result: {summary: 'Check identity and mandate at the payment entry.', passage: 'Check the caller’s identity and the payer’s mandate at the payment entry, before the instruction is accepted (S1).'}, packet: {brainReceipt: {instructions: {promptVersion: 'sol-generate-1', sha256: 'fedcba9876543210'}}}, groundingReview: {accepted: true}},
+  [LONG]: {objectId: 'audit', mode: 'design', status: 'completed', createdAt: '2026-10-01T08:00:00Z', result: {summary: 'Write every change to a payment instruction to an append-only trail, with who made it and when (S1). Keep each entry with the instruction’s end-to-end reference, so one payment can be followed from receipt to settlement (S1).', passage: ''}, groundingReview: {accepted: true}},
+  [TOO_LONG]: {objectId: 'audit', mode: 'design', status: 'completed', createdAt: '2026-10-01T07:00:00Z', result: {summary: 'Write every change to a payment instruction, every refusal of one and every change to a payer’s mandate to an append-only trail that names who made the change, when it was made and from which channel (S1).', passage: ''}, groundingReview: {accepted: true}}
+};
 globalThis.fetch = async (url, init = {}) => {
   const path = new URL(String(url), 'https://aiw.test').pathname, body = init.body ? JSON.parse(init.body) : null;
   requests.push({path, method: init.method || 'GET', body});
@@ -42,8 +51,9 @@ globalThis.fetch = async (url, init = {}) => {
   if (path === '/api/intelligence/field') return json({id: RUN, status: 'completed', mode: 'field', request: {command: body.command, field: body.field, recordId: body.recordId}, result: {field: body.field, value: 'Verify the bearer token and the payer’s mandate before accepting the instruction.', basis: 'It follows from S1 and QD-005 (S2).', sourceRefs: ['S1', 'S2']}, instructions: {promptVersion: 'sol-field-1', sha256: 'abcdef0123456789'}, groundingReview: {accepted: true, packetStamp: 'a1b2c3d4e5f6a7b8c9d0'}});
   if (path === '/api/intelligence/review-runs') return json({runs: new URL(String(url), 'https://aiw.test').searchParams.get('chapter') === '4' ? [{id: REVIEW_RUN, createdAt: '2026-10-02T08:00:00Z', model: 'mock-sol', request: {chapter: 4}, result: {findings: [{id: 'F1', elementId: 'api', severity: 'fix', title: 'Name the owner of LR-001', reason: 'The record names no owner (S2).', sourceRefs: ['S2']}]}, instructions: {promptVersion: 'sol-review-1', sha256: 'abcdef0123456789'}, packetStamp: 'p1', accepted: true}] : []});
   if (path === '/api/intelligence/field-runs') return json({runs: [{id: RUN, createdAt: '2026-10-01T10:00:00Z', request: {command: 'security.control', field: 'telemetry', recordId: 'oauth'}, result: {field: 'telemetry', value: 'Count refused instructions per caller and alert on a rise.', basis: 'From S1 and S2.', sourceRefs: ['S1', 'S2']}, instructions: {promptVersion: 'sol-field-1', sha256: 'abcdef0123456789'}, packetStamp: 'a1b2c3d4e5f6', accepted: true}]});
-  if (path === '/api/intelligence/runs' && new URL(String(url), 'https://aiw.test').searchParams.get('object')) return json({runs: [{id: ASK, mode: 'design', status: 'completed'}]});
-  if (path === '/api/intelligence/runs') return json({id: ASK, mode: 'design', status: 'completed', createdAt: '2026-10-01T09:00:00Z', result: {summary: 'Check identity and mandate at the payment entry.', passage: 'Check the caller’s identity and the payer’s mandate at the payment entry, before the instruction is accepted (S1).'}, packet: {brainReceipt: {instructions: {promptVersion: 'sol-generate-1', sha256: 'fedcba9876543210'}}}});
+  const object = new URL(String(url), 'https://aiw.test').searchParams.get('object'), id = new URL(String(url), 'https://aiw.test').searchParams.get('id');
+  if (path === '/api/intelligence/runs' && object) return json({runs: Object.entries(ANSWERS).filter(([, a]) => a.objectId === object).map(([id, a]) => ({id, objectId: a.objectId, mode: a.mode, status: a.status}))});
+  if (path === '/api/intelligence/runs' && ANSWERS[id]) return json({id, ...ANSWERS[id]});
   return json({error: 'Not stubbed: ' + path}, 404);
 };
 
@@ -274,6 +284,8 @@ await solLoad('bank-payment');
   const slot = panel.querySelector('[data-proposals]');
   assert.equal(slot.__view.scope, 'selected', 'selected-object proposals are the initial scope');
   assert.equal(slot.querySelectorAll('[data-proposal]').length, 4, 'chapter-wide rows do not displace selected-object work');
+  assert.equal(slot.querySelector(`[data-proposal="answer-${WITHHELD}"]`), null, 'an answer its source checks withheld is not offered for a field (rc41)');
+  assert.doesNotMatch(slot.textContent, /generated explanation was withheld/, 'AIW’s own fallback text is never offered as a Sol draft');
   assert.ok([...slot.querySelectorAll('[data-proposal]')].every(x => x.dataset.proposalScope === 'selected'));
   assert.equal(slot.querySelector('.pp-advanced').open, false, 'advanced filters initially leave room for suggestions');
   assert.equal(slot.querySelector('.pp-review-tools').open, false, 'whole-chapter review starts below selected work');
@@ -364,6 +376,30 @@ await solLoad('bank-payment');
   assert.ok(long.querySelector('[data-proposal-act="more"]'), 'a large list is never expanded to 1000 rows at once');
   longPanel.remove();
   pass('Proposals progressively reveals bounded pages rather than expanding a large chapter list at once');
+}
+// 7b. rc41: an Ask Sol answer longer than the field is cut after its last whole sentence that fits, never mid-sentence,
+// and the editor says it was shortened; one whose first sentence alone is too long is not put in the field at all.
+{
+  const panel = document.createElement('aside'), sent = commands.length; document.body.append(panel);
+  panel.innerHTML = proposalsSlot({chapter: 9, selected: {id: 'audit', ref: 'SEC-002'}}); await mountProposals(panel); await tick(5);
+  const slot = panel.querySelector('[data-proposals]'), row = id => slot.querySelector(`[data-proposal="answer-${id}"]`), label = fieldsFor('security.control').find(d => d.name === 'title').label;
+  const into = (id, field) => { const select = row(id).querySelector('[data-proposal-field]'); select.value = field; select.dispatchEvent(new Event('change', {bubbles: true})); click(row(id).querySelector('[data-proposal-act="put"]')); };
+  const long = ANSWERS[LONG].result.summary, first = long.slice(0, long.indexOf('(S1).') + 5);
+  assert.ok(long.length > 160 && first.length <= 160, 'the answer: two sentences, longer together than the title allows (160)');
+  into(LONG, 'title'); await tick(5);
+  const form = dialogOpen().querySelector('#sec-control-form');
+  assert.equal(form.querySelector('[name="title"]').value, first, 'cut after the last whole sentence that fits, never mid-sentence');
+  assert.equal(form.querySelector('[data-spark-prefill]').textContent, `A proposal is in “${label}” (Sol draft · run ${LONG.slice(0, 8)}). Shortened from ${long.length} to ${first.length} characters, after the last whole sentence that fits the field; saved, it is recorded as edited, since it is not the whole answer. Review it; nothing is saved until you save this record.`);
+  assert.equal(form.querySelector('[data-spark-mark="title"]').textContent, `Sol draft · not saved · run ${LONG.slice(0, 8)} · shortened`);
+  assert.deepEqual(pendingSuggestions(form).map(e => Object.keys(e).sort().join()), ['acceptedAt,acceptedBy,edited,field,runId,source,suggestionId'], 'the shortening is said, not carried: the server reads the saved text against the run');
+  closeAll();
+  const whole = ANSWERS[TOO_LONG].result.summary;
+  into(TOO_LONG, 'title'); await tick(5);
+  assert.equal(q('dialog[open]'), null, 'no editor opens');
+  assert.equal(row(TOO_LONG).querySelector('.pp-note').textContent, `Sol’s answer is ${whole.length} characters and its first sentence alone is longer than “${label}” allows (160), so nothing was put in the field. Choose a longer field, or write it yourself.`);
+  assert.equal(commands.length, sent, 'nothing is recorded');
+  panel.remove();
+  pass('an Ask Sol answer longer than the field is cut after its last whole sentence that fits and the editor says “shortened from N to M characters”; one whose first sentence alone does not fit is not put in the field, and the row says why');
 }
 // 9. Sol's review (round 5): one state per chapter, read once each; a change redraws the review's own section in place
 // and never asks a chapter model to redraw (no aiw:sol-changed), so two chapters drawn side by side cannot feed each other.

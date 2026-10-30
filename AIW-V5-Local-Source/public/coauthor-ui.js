@@ -77,8 +77,10 @@ function loadAnswers(objectId) {
   if (answers.has(key)) return answers.get(key);
   const p = get('runs?object=' + encodeURIComponent(objectId)).then(async d => {
     const done = (d.runs || []).filter(r => r.status === 'completed' && ASK_MODES.has(r.mode)).slice(0, 3);
-    // An answer whose sources have changed since (current: false) is kept for reference, not offered for a field.
-    return (await Promise.all(done.map(r => get('runs?id=' + encodeURIComponent(r.id)).catch(e => { answerErrors.set(key, 'Some saved answers could not be read.'); reportFailure('One of Sol’s saved answers could not be read.', e, {quiet: true}); return null; })))).filter(r => r?.result && (r.result.summary || r.result.passage) && r.current !== false);
+    // An answer whose sources have changed since (current: false) is kept for reference, not offered for a field. One its
+    // source checks withheld shows AIW's own fallback text, not Sol's, and is never offered as a Sol draft (rc41; the
+    // server refuses it too, worker.js checkSuggestions).
+    return (await Promise.all(done.map(r => get('runs?id=' + encodeURIComponent(r.id)).catch(e => { answerErrors.set(key, 'Some saved answers could not be read.'); reportFailure('One of Sol’s saved answers could not be read.', e, {quiet: true}); return null; })))).filter(r => r?.result && (r.result.summary || r.result.passage) && r.current !== false && r.groundingReview?.accepted === true);
   }).catch(e => { answerErrors.set(key, 'Saved Sol answers for this record could not be read.'); reportFailure('Sol’s saved answers for this record could not be read.', e, {quiet: true}); return []; });
   answers.set(key, p);
   return p;
@@ -302,10 +304,21 @@ async function act(e, slot, s, by) {
   if (action === 'put' && r?.run && s.sel && R) {
     const run = r.run, field = b.closest('.pp-row')?.querySelector('[data-proposal-field]')?.value, sel = s.sel;
     if (!field) return;
-    const d = fieldOf(sel.command, field), text = d?.kind === 'text' ? run.result.summary || run.result.passage : run.result.passage || run.result.summary;
-    const opened = await spark().openRecordEditor(sel.command, sel.record.id, {field, value: String(text || '').slice(0, R.maxLengthOf(sel.command, field)), focus: true, suggestion: {source: 'sol', runId: run.id, suggestionId: 'sol-' + run.id}});
+    const d = fieldOf(sel.command, field), text = String((d?.kind === 'text' ? run.result.summary || run.result.passage : run.result.passage || run.result.summary) || '').trim(), max = R.maxLengthOf(sel.command, field), value = sentencesWithin(text, max);
+    if (!value) return note(b, `Sol’s answer is ${text.length} characters and its first sentence alone is longer than “${d?.label || field}” allows (${max}), so nothing was put in the field. Choose a longer field, or write it yourself.`);
+    const opened = await spark().openRecordEditor(sel.command, sel.record.id, {field, value, focus: true, suggestion: {source: 'sol', runId: run.id, suggestionId: 'sol-' + run.id}, shortened: value.length < text.length ? `Shortened from ${text.length} to ${value.length} characters, after the last whole sentence that fits the field; saved, it is recorded as edited, since it is not the whole answer.` : ''});
     if (!opened) note(b, spark().canEdit(sel.command) ? 'Close the open dialog first, then try again.' : `Open Chapter ${s.chapter} to edit ${sel.record.ref || sel.record.id}.`);
   }
+}
+// An answer longer than the field is cut after its last whole sentence that fits, never mid-sentence (rc41); '' when not
+// even its first sentence fits. A sentence ends at . ! or ? (and any closing quote or bracket) at the end of the text,
+// or before a space and then a capital, a digit or an opening quote or bracket, so "e.g. the" does not end one.
+export function sentencesWithin(text, max) {
+  const t = String(text || '').trim();
+  if (t.length <= max) return t;
+  let end = 0;
+  for (const m of t.matchAll(/[.!?][”’"')\]]*(?=\s+[A-Z0-9“‘"'(]|$)/g)) { const at = m.index + m[0].length; if (at > max) break; end = at; }
+  return t.slice(0, end).trim();
 }
 function note(near, text) {
   let n = near.parentElement.querySelector(':scope > .pp-note');

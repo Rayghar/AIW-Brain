@@ -248,7 +248,7 @@ function sync(st) {
     if (!entry) { mark?.remove(); continue; }
     label.querySelector(':scope > [data-spark-provenance]')?.remove();
     if (!mark && label) { mark = document.createElement('small'); mark.className = 'spark-mark'; mark.dataset.sparkMark = entry.field; control.before(mark); }
-    if (mark) mark.textContent = `${entry.source === 'sol' ? 'Sol draft · not saved · run ' + String(entry.runId).slice(0, 8) : provenanceText(entry)}${entry.edited ? ' · edited' : ''}`;
+    if (mark) mark.textContent = `${entry.source === 'sol' ? 'Sol draft · not saved · run ' + String(entry.runId).slice(0, 8) : provenanceText(entry)}${entry.shortened ? ' · shortened' : ''}${entry.edited ? ' · edited' : ''}`;
   }
   let line = form.querySelector('[data-spark-pending]');
   if (!list.length) { line?.remove(); return; }
@@ -347,7 +347,11 @@ function renderPopover(st) {
     + bandHTML('sol', 'Sol draft', 'a model’s draft, recorded on the server · not saved until you save the record', solBandHTML(st, R, field))
     + '<p class="spark-foot">Accepting fills this field in the form only. Nothing is saved until you save this record.</p>';
   // Focus stays in the popover across redraws: on the same control, else on the Sol band's first control, else on close.
-  const target = pop.querySelector('[data-spark-dismiss] [data-spark-reason]') || (focusKey && pop.querySelector(`[data-spark-act="${focusKey}"]`)) || (had || pop.dataset.keepFocus ? pop.querySelector('[data-spark-band="sol"] [data-spark-act]') || pop.querySelector('[data-spark-act="close"]') : null);
+  // A result Sol has just returned takes focus on that first control (Accept, Ask again; close when there is nothing to
+  // draft), which the result describes (rc41: a screen reader hears the draft, or why it was withheld).
+  const solFirst = () => pop.querySelector('[data-spark-band="sol"] [data-spark-act]') || pop.querySelector('[data-spark-act="close"]');
+  if (pop.querySelector(`#${pop.id}-se`)) pop.querySelector('[data-spark-act="close"]').setAttribute('aria-describedby', `${pop.id}-se ${pop.id}-sr`);
+  const target = pop.querySelector('[data-spark-dismiss] [data-spark-reason]') || (pop.dataset.keepFocus === 'result' ? solFirst() : null) || (focusKey && pop.querySelector(`[data-spark-act="${focusKey}"]`)) || (had || pop.dataset.keepFocus ? solFirst() : null);
   delete pop.dataset.keepFocus;
   target?.focus({preventScroll: true});
 }
@@ -370,12 +374,15 @@ function solBandHTML(st, R, field) {
     return `<div class="spark-packet" data-spark-packet><p>Sol will read ${plural(k.sources.length, 'source')} for this field, and nothing else:</p><ol class="spark-sources">${k.sources.map(src => `<li><b>${esc(src.ref)}</b> ${esc(src.title)} <small>${esc(src.kind)}</small></li>`).join('')}</ol>${k.omissions?.length ? `<p class="spark-note">Left out: ${esc(k.omissions.map(o => `${o.title} (${o.reason})`).join('; '))}.</p>` : ''}<p class="spark-note">Packet ${esc(String(k.stamp).slice(0, 12))} · ${esc(pinText(k.brainReceipt?.instructions))}. Secrets are redacted before sending.</p></div>${button('send', 'Send to Sol', 'primary')}${button('not-now', 'Not now')}`;
   }
   if (x.phase === 'result') {
-    const run = x.run, r = run.result || {}, receipt = `<p class="spark-receipt" data-spark-receipt>Run ${esc(run.id)} · packet ${esc(String(run.groundingReview?.packetStamp || run.packet?.stamp || '').slice(0, 12))} · ${esc(pinText(run.instructions))} · ${run.groundingReview?.accepted ? 'source-checked' : 'source check raised issues'} · draft, not saved</p>`;
-    if (r.withheld) return `<p class="spark-error">Sol’s draft was withheld: ${esc((r.issues || []).join(' '))} Nothing to accept.</p>${receipt}${button('prepare', 'Ask again')}`;
-    if (!r.value) return `<p class="spark-empty">Sol found nothing it could responsibly draft here: ${esc(r.basis || 'the packet does not support a value.')}</p>${receipt}`;
+    // The result's blocks carry ids (the popover's, then -s and v the value, b its basis, r the receipt, w why it was
+    // withheld, e why there is nothing to draft): the control that takes focus is described by them (renderPopover), and
+    // the last two are also said as a status (rc41).
+    const run = x.run, r = run.result || {}, id = st.popover.id + '-s', receipt = `<p class="spark-receipt" id="${id}r" data-spark-receipt>Run ${esc(run.id)} · packet ${esc(String(run.groundingReview?.packetStamp || run.packet?.stamp || '').slice(0, 12))} · ${esc(pinText(run.instructions))} · ${run.groundingReview?.accepted ? 'source-checked' : 'source check raised issues'} · draft, not saved</p>`;
+    if (r.withheld) return `<p class="spark-error" id="${id}w" role="status">Sol’s draft was withheld: ${esc((r.issues || []).join(' '))} Nothing to accept.</p>${receipt}${button('prepare', 'Ask again', '', `aria-describedby="${id}w ${id}r"`)}`;
+    if (!r.value) return `<p class="spark-empty" id="${id}e" role="status">Sol found nothing it could responsibly draft here: ${esc(r.basis || 'the packet does not support a value.')}</p>${receipt}`;
     if (dismissed(st, 'sol-' + run.id)) return `<p class="spark-empty">You dismissed Sol’s draft (${esc(run.id.slice(0, 8))}).</p>${button('prepare', 'Draft again')}`;
-    const actions = st.dismissing === 'sol-' + run.id ? dismissHTML('sol-' + run.id) : `<div class="spark-actions">${button('accept', 'Accept', 'primary', `data-offer="sol-${esc(run.id)}"`)}${button('edit', 'Edit', '', `data-offer="sol-${esc(run.id)}"`)}${button('dismiss', 'Dismiss', '', `data-offer="sol-${esc(run.id)}"`)}</div>`;
-    return `<ul class="spark-offers"><li class="spark-offer spark-sol" data-spark-offer="sol-${esc(run.id)}"><p class="spark-value">${esc(r.value)}</p><p class="spark-why">${esc(r.basis)} <small>Cites ${esc((r.sourceRefs || []).join(', '))}.</small></p>${receipt}${actions}</li></ul>`;
+    const actions = st.dismissing === 'sol-' + run.id ? dismissHTML('sol-' + run.id) : `<div class="spark-actions">${button('accept', 'Accept', 'primary', `data-offer="sol-${esc(run.id)}" aria-describedby="${id}v ${id}b ${id}r"`)}${button('edit', 'Edit', '', `data-offer="sol-${esc(run.id)}"`)}${button('dismiss', 'Dismiss', '', `data-offer="sol-${esc(run.id)}"`)}</div>`;
+    return `<ul class="spark-offers"><li class="spark-offer spark-sol" data-spark-offer="sol-${esc(run.id)}"><p class="spark-value" id="${id}v">${esc(r.value)}</p><p class="spark-why" id="${id}b">${esc(r.basis)} <small>Cites ${esc((r.sourceRefs || []).join(', '))}.</small></p>${receipt}${actions}</li></ul>`;
   }
   return `${button('prepare', 'Draft with Sol')}<p class="spark-note">Sol shows what it will read first; nothing is sent until you send it.</p>`;
 }
@@ -422,7 +429,7 @@ async function perform(st, el) {
     try { run = await request('field', {...x.request, requestId, packetStamp: x.packet.stamp}); } finally { stop(); }
     if (run.status !== 'completed') throw Error(run.error || 'Sol’s draft was not completed. Nothing was changed.');
     st.sol[field] = {phase: 'result', run};
-    if (st.popover) st.popover.dataset.keepFocus = '1';
+    if (st.popover) st.popover.dataset.keepFocus = st.popover.dataset.sparkPop === field ? 'result' : '1';
     return renderPopover(st);
   }
 }
@@ -509,8 +516,9 @@ export const canEdit = command => editors.has(command);
 // Opens the record's editor through its studio and puts `value` in `field`, with the suggestion pending as if the
 // person had accepted it in the spark (source 'project', 'confirm' or 'sol'): how Proposals and the journey draft accept
 // a field offer. Nothing is saved: the person saves the record in the editor. Resolves to true when the editor opened
-// with the field filled.
-export async function openRecordEditor(command, recordId, {field, value, suggestion = {}, focus = false} = {}) {
+// with the field filled. `shortened`, a sentence, says the value is the start of a longer answer cut to fit the field
+// (coauthor-ui.js sentencesWithin): the note says it and the field's mark reads "shortened" (rc41).
+export async function openRecordEditor(command, recordId, {field, value, suggestion = {}, focus = false, shortened = ''} = {}) {
   const entry = editors.get(command);
   if (!entry || typeof document === 'undefined' || document.querySelector('dialog[open]') || readOnly(entry.studio)) return false;
   entry.open(recordId);
@@ -520,12 +528,12 @@ export async function openRecordEditor(command, recordId, {field, value, suggest
   const form = dialog.querySelector('#' + FORM_IDS[command]), st = form && states.get(form);
   if (!st) return false;
   st.recordId ||= recordId;
-  const control = put(st, field, value, suggestion);
+  const control = put(st, field, value, {...suggestion, shortened});
   if (!control) return false;
   reveal(control);
   const note = document.createElement('p');
   note.className = 'spark-prefill'; note.dataset.sparkPrefill = field; note.setAttribute('role', 'status');
-  note.textContent = `A proposal is in “${fieldOf(command, field)?.label || field}” (${provenanceText(suggestion)}). Review it; nothing is saved until you save this record.`;
+  note.textContent = `A proposal is in “${fieldOf(command, field)?.label || field}” (${provenanceText(suggestion)}).${shortened && ' ' + shortened} Review it; nothing is saved until you save this record.`;
   form.prepend(note);
   if (focus) control.focus({preventScroll: false});
   return true;

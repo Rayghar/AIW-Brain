@@ -160,7 +160,8 @@ export function suggestionEntries(raw,types){
   });
 }
 // Against the project and its saved runs: a cited record must exist; a Sol draft must be a completed run of this owner
-// and project for that field (or an Ask Sol answer about this record). Each Sol entry learns the run's text.
+// and project, accepted by its source checks, for that field (or an Ask Sol answer about this record). Each Sol entry
+// learns the run's text.
 export async function checkSuggestions(env,owner,projectId,doc,carriers){
   for(const c of carriers)for(const e of c.entries){
     if(e.source!=='sol'){if(!refExists(doc,e.ref))throw Error(`The suggestion for “${e.field}” cites ${String(e.ref).slice(0,60)}, which this project does not hold.`);continue;}
@@ -169,10 +170,12 @@ export async function checkSuggestions(env,owner,projectId,doc,carriers){
     if(run.mode==='field'){
       if(run.request?.field!==e.field||!c.types.includes(run.request?.command))throw Error(`The Sol draft named for “${e.field}” was drafted for another field.`);
       if(c.recordId&&run.request.recordId&&run.request.recordId!==c.recordId)throw Error(`The Sol draft named for “${e.field}” was drafted for another record.`);
-      if(run.result?.withheld||!run.result?.value)throw Error('That Sol draft was withheld by its checks; it cannot be accepted.');
+      if(run.result?.withheld||!run.result?.value||run.groundingReview?.accepted!==true)throw Error('That Sol draft was withheld by its checks; it cannot be accepted.');
       e.drafts=[run.result.value];
     }else if(['design','author','mind','challenge'].includes(run.mode)){
       if(!c.recordId||run.objectId!==c.recordId)throw Error('A Sol answer fills a field only of the record it was about.');
+      // rc41: a withheld answer's text is AIW's own fallback (intelligence-provider.js groundedFallback), not Sol's.
+      if(run.groundingReview?.accepted!==true)throw Error('That Sol answer was withheld by its source checks. The text it shows is AIW’s own fallback, not a Sol draft, so it cannot be saved as one.');
       e.drafts=[run.result?.summary,run.result?.passage].filter(v=>typeof v==='string'&&v.trim());
     }else throw Error('This kind of Sol run does not fill a field.');
   }

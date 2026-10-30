@@ -18,10 +18,14 @@ import {answer, envelope} from './mock-llm-provider.mjs';
 const require = createRequire(import.meta.url);
 const {chromium} = require(process.env.AIW_PLAYWRIGHT_MODULE || 'playwright');
 // The provider double: Sol's field draft and its source check; anything else as mock-llm-provider.mjs answers it.
+// fieldMode (rc41, the screen-reader check at the end): 'withheld', the check names a defect; 'empty', nothing to draft.
 const calls = [];
+let fieldMode = 'good';
 const llm = http.createServer((q, s) => { let d = ''; q.on('data', c => { d += c; }); q.on('end', () => {
   const body = JSON.parse(d || '{}'), name = body.text?.format?.name, input = JSON.parse(body.input?.[0]?.content || '{}');
   calls.push(name);
+  const odd = fieldMode === 'empty' && name === 'aiw_field_draft' ? envelope({field: input.target.field, value: '', basis: 'The packet records nothing this field could say.', sourceRefs: []}) : fieldMode === 'withheld' && name === 'aiw_field_draft_check' ? envelope({supported: false, defects: ['The value names a mechanism the packet does not record.'], notes: []}) : null;
+  if (odd) { s.writeHead(200, {'Content-Type': 'application/json'}); s.end(JSON.stringify(odd)); return; }
   const out = name === 'aiw_field_draft' ? envelope({field: input.target.field, value: 'Uncertain settlement outcomes are kept pending here; posting and notification stay with their own responsibilities.', basis: `It follows from the record (S1) and the requirement it serves (${input.sources.at(-1).ref}).`, sourceRefs: [...new Set(['S1', input.sources.at(-1).ref])]})
     : name === 'aiw_field_draft_check' ? envelope({supported: true, defects: [], notes: ['Checked against S1 and S2.']}) : answer(body);
   s.writeHead(200, {'Content-Type': 'application/json'}); s.end(JSON.stringify(out));
@@ -201,6 +205,39 @@ try {
   assert.equal(after.workspace.coauthor.dispositions.length, 2, 'the spark’s dismissal and this one');
   assert.equal(after.security.controls.find(c => c.id === 'oauth').verificationPlan, '', 'a dismissal changes no record');
   pass('Chapter 9: declining a field offer in Co-design’s suggestions is refused without a one-line reason, then kept under the workspace with it; the record is unchanged and the suggestion leaves the list');
+
+  // 3. rc41: a screen reader hears what Sol returned. Focus moves to the result's first control (Accept, Ask again; Close
+  // when there is nothing to draft), whose accessible description is the draft with its basis and receipt, or why it
+  // was withheld, or why there is nothing to draft; the last two are also said as a status.
+  await open('chapter=4&tab=work');
+  await page.click('.l-work [data-l-action="new"], [data-l-action="new"]');
+  await page.waitForSelector(`${dialog} #l-responsibility-form [data-spark]`);
+  const pop = page.locator(`${dialog} .spark-pop`), focused = loc => loc.evaluate(el => el === document.activeElement);
+  const receiptRe = checked => `Run [a-f0-9-]{36} · packet [a-f0-9]{12} · prompt sol-field-\\d+ · [a-f0-9]{12} · ${checked} · draft, not saved$`;
+  const ask = async mode => { await page.waitForSelector(`${dialog} .spark-pop [data-spark-packet]`); fieldMode = mode; await page.click(`${dialog} .spark-pop [data-spark-act="send"]`); await page.waitForSelector(`${dialog} .spark-pop [data-spark-receipt]`); fieldMode = 'good'; };
+  await page.click(`${dialog} [data-spark-for="boundary"]`);
+  await ask('withheld');
+  const again = pop.getByRole('button', {name: 'Ask again', exact: true, description: new RegExp('^Sol’s draft was withheld: The value names a mechanism the packet does not record\\. Nothing to accept\\. ' + receiptRe('source check raised issues'))});
+  assert.equal(await again.count(), 1, 'Ask again is described by why the draft was withheld and by its receipt');
+  assert.equal(await focused(again), true, 'and takes focus when the result arrives');
+  assert.equal(await pop.getByRole('status').filter({hasText: 'Sol’s draft was withheld'}).count(), 1, 'the reason is also said as a status');
+  await again.click();
+  await ask('empty');
+  const close = pop.getByRole('button', {name: 'Close suggestions', exact: true, description: new RegExp('^Sol found nothing it could responsibly draft here: The packet records nothing this field could say\\. ' + receiptRe('source-checked'))});
+  assert.equal(await close.count(), 1, 'with nothing to draft, Close is described by why');
+  assert.equal(await focused(close), true, 'and takes focus');
+  assert.equal(await pop.getByRole('status').filter({hasText: 'Sol found nothing it could responsibly draft here'}).count(), 1, 'the reason is also said as a status');
+  await page.keyboard.press('Escape');
+  await page.click(`${dialog} [data-spark-for="purpose"]`);
+  await ask('good');
+  const accept = pop.locator('[data-spark-band="sol"]').getByRole('button', {name: 'Accept', exact: true, description: new RegExp('^Uncertain settlement outcomes are kept pending here; posting and notification stay with their own responsibilities\\. It follows from the record \\(S1\\) and the requirement it serves \\(S\\d+\\)\\. Cites S1(?:, S\\d+)?\\. ' + receiptRe('source-checked'))});
+  assert.equal(await accept.count(), 1, 'Accept is described by the draft, its basis and its receipt');
+  assert.equal(await focused(accept), true, 'and takes focus when the draft arrives');
+  await page.keyboard.press('Escape');
+  await page.click(`${dialog} [data-l-action="close"]`);
+  if (await page.isVisible(`${dialog} [data-l-action="discard"]`)) await page.click(`${dialog} [data-l-action="discard"]`);
+  await page.waitForSelector(dialog, {state: 'detached'});
+  pass('a screen reader hears what Sol returned: focus moves to Accept, Ask again or Close, described by the draft with its basis and receipt, by why it was withheld, or by why there is nothing to draft; the last two are also said as a status');
   assert.deepEqual(errors, [], 'no page errors');
 } finally {
   await browser.close();
