@@ -123,6 +123,22 @@ await check('the journey guard withholds a gap restated as an open journey field
   assert.deepEqual(said([['readiness', 'Ready when the compute answers; the alert route is unspecified.']]), [], 'a stated field is not an open one');
 });
 
+await check('through requestJourneyDraft (a fetcher stub, no provider): an answer that restates its open question is left out and the field stays open; the chapter\'s sound answers are still offered; a draft of nothing but restated gaps offers nothing', async () => {
+  const packet = {stamp: 'journey-open-test', passages: [{id: 'P1', text: 'Patients book an appointment at any time through the online service.'}], upstream: [], sources: [], records: [{key: 'r1', title: 'Book an appointment online at any time', fields: [
+    {key: 'owner', label: 'Owner', current: 'Unassigned', basis: 'gap'}, {key: 'acceptance', label: 'Acceptance criteria', current: '', basis: 'gap'}]}]};
+  const answer = (field, value) => ({record: 'r1', field, value, passages: ['P1'], sourceRefs: []});
+  const sound = 'Given the online service is available, when a patient books at any time, then the booking is recorded.';
+  const mixed = await P.requestJourneyDraft(ENV, packet, {fetcher: stub([{answers: [answer('owner', 'Unassigned'), answer('acceptance', sound)]}, {supported: true, defects: [], notes: []}])});
+  assert.equal(mixed.groundingReview.accepted, true, 'the restated gap no longer withholds the chapter: ' + JSON.stringify(mixed.groundingReview.issues));
+  assert.deepEqual(mixed.result.answers.map(a => [a.field, a.value]), [['acceptance', sound]], 'only the sound answer is offered');
+  assert.deepEqual(mixed.groundingReview.deterministic.leftOpen, [{record: 'r1', field: 'owner'}], 'the field left open is recorded');
+  const only = await P.requestJourneyDraft(ENV, packet, {fetcher: stub([{answers: [answer('owner', 'Unassigned')]}])});
+  assert.equal(only.groundingReview.accepted, false); assert.equal(only.result.withheld, true); assert.deepEqual(only.result.answers, []);
+  assert.match(only.groundingReview.issues.join(' '), /Every answer restated an open question; the fields stay open\./);
+  const invented = await P.requestJourneyDraft(ENV, packet, {fetcher: stub([{answers: [answer('owner', 'Unassigned'), answer('acceptance', sound + ' It guarantees zero failed bookings.')]}, {supported: true, defects: [], notes: []}])});
+  assert.equal(invented.groundingReview.accepted, false, 'any other issue still withholds the whole chapter'); assert.equal(invented.result.withheld, true);
+});
+
 // ---------------------------------------------------------------- 4. the prompts
 await check('the field prompt keeps "improve" for a stated value, answers an open field from the sources or leaves it empty with its question in basis, and its check names the gap restated', () => {
   assert.doesNotMatch(P.FIELD_INSTRUCTIONS, /where the field already holds text \(target\.current\), improve it/, 'the old wording, which made Sol rewrite the gap, is gone');
