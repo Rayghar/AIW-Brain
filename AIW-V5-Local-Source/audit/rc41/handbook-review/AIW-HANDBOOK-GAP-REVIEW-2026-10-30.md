@@ -120,15 +120,15 @@ Deep-dive: deployment-architecture; C10-01 to C10-19.
 ## 3. Fix first: defects that break AIW's own rules
 
 How each was verified:
-- **On a running AIW or a scratch copy of a reference project:** D1–D3, D5–D7, D9, D10 and D12.
-- **By running AIW's domain code in memory:** D4 and D11. D11's template text was also seen in an SDD exported from a running app.
+- **On a running AIW or a scratch copy of a reference project:** D1–D3, D5–D7, D9, D10, D12, D18, D19 and D20.
+- **By running AIW's domain code in memory:** D4, D11 and D17. D11's template text was also seen in an SDD exported from a running app.
 - **In the source only:** D8, D13, D14, D15 and D16.
 
 A second agent re-checked each one. What each breaks:
 - **A person decides and someone else approves:** D1, D2, D4, D5, D6, D13 and D15.
-- **Unrecorded or template content shown as decided or entry-specific:** D3, D8, D11 and D16.
+- **Unrecorded, placeholder or template content shown as decided or entry-specific:** D3, D8, D11, D16, D17 and D18.
 - **One canonical Design Graph:** D9.
-- **Consistency of the model:** D7, D10, D12 and D14.
+- **Consistency of the model:** D7, D10, D12, D14, D19 and D20.
 
 They should be fixed before any feature work. Several are migrations, not patches. D9, for example, retires Chapter 5 dataIds as an ownership record.
 
@@ -144,19 +144,24 @@ They should be fixed before any feature work. Several are migrations, not patche
 | D8 | The review-desk availability verdict and its survive-one-zone sizing count zone records, not independent failure domains. The desk can read "holds" while Chapter 10 itself warns that everything sits in a single domain. | C10-21 |
 | D9 | Chapter 5 and the Chapter 8 authority can name different owners for the same data. This leaves two conflicting "owns" edges in the canonical graph, with no finding. It arises mainly in the reference project and in data created by design tasks; the SDD already follows Chapter 8. Fix: make the Chapter 8 authority the only ownership edge. | deep-dive data-and-integration |
 | D10 | The journey drafter creates one production environment per component, which raises Chapter 10 errors by construction. RTO and RPO marked open on a capability are silently dropped. | deployment-architecture, worked-example |
-| D11 | Archetype proposals carry template text, and sometimes the wrong kit (a relational store proposes identity-token contracts), into the component and on into the SDD. | library-coverage, component-selection; K-06 |
+| D11 | Archetype proposals carry template text, and sometimes the wrong kit (a relational store proposes identity-token contracts), into the component and on into the SDD. | library-coverage, component-selection; K-06 (D11 fixes the defect; F1 completes the content) |
 | D12 | ArchiMate import turns a Gap into a Chapter 1 requirement, and misfiles a business Capability as a Chapter 6 technology capability. | evolution-and-transition, enterprise-alignment |
 | D13 | One reviewer can treat a hard-constraint or invariant breach away as an "accepted limitation", and the limitation never expires. | C11-01 (the waiver register that replaces it is F13) |
 | D14 | Recording assurance or Chapter 9/10 evidence changes the design fingerprint, so the approved baseline goes stale. | C11-04 |
 | D15 | The author of a Chapter 11 delivery action can mark it Verified on a typed reviewer name, which makes its obligation "current-verified". The delivery review has no actor or four-eyes check. | C11-14 |
 | D16 | Imported BPMN branches with no condition get placeholder text. The text satisfies the gateway check, and the BPMN default flow is dropped. | C1-M1 |
+| D17 | Drafted placeholder text in Chapter 10, such as "Runbook for X still to be written." or an open-question rollback, satisfies the operations check. So the "operate" milestone can complete on placeholders. Fix: store drafted text as open fields. | deep-dive operability-and-delivery |
+| D18 | Chapter 10 recover and operate proposals, and a work-card placeholder, write payment wording into any project, for example "reconcile pending payments" on a clinic project. Fix: derive the wording from the project's own contracts, or gate it on the domain lens. | deep-dive deployment-architecture, operability-and-delivery |
+| D19 | In a blank project, the "recovery" co-design proposal always takes the first component as its source, and the person cannot change it. Its seeded Chapter 8 contract survives removal of that interaction. | deep-dive worked-example |
+| D20 | Read-only contracts raise the "duplicate" error unless a key is declared. The only way out records an open key, which misstates the contract. Fix: a reviewed "read-only, safe to repeat" declaration. | deep-dive worked-example |
 
 ---
 
 ## 4. Features to add to AIW
 
 Each feature comes from what the handbooks prescribe. Each lists the agent-verified gaps it closes.
-- Together, D1–D16 and F1–F18 give every one of the 353 gaps exactly one owner. That includes the low-severity refinements.
+- Together, D1–D20 and F1–F18 give every one of the 353 chapter gaps exactly one owner, including the low-severity refinements. The one exception is K-06: D11 fixes the defect and F1 completes the content.
+- Deep-dive gaps are owned through the DD tags in each feature. Where a feature carries a capability that no chapter gap covers, the capability is written into the feature's text.
 - Gap ids are detailed in `CHAPTER-GAPS.md`. "DD" names a deep-dive, counting only the gaps its skeptic upheld.
 
 **Doctrine.** Each feature is meant to keep to the doctrine below. That is the reviewers' proposal, for the owner to confirm.
@@ -319,7 +324,20 @@ Each feature comes from what the handbooks prescribe. Each lists the agent-verif
   - Fleet-wide dependency and admission budgets.
 - **Execution agreements.** Made mandatory for posting and effect contracts.
 - **Data and integration.** Data movement (CDC, ETL, streaming); orchestration versus choreography and sagas; outcome and error catalogues; publication and subscription registers.
-- **Closes:** C8-01–C8-18, C8-20–C8-22, C8-24–C8-33, C8-36–C8-44, C5-02, C5-11, C5-12, C4-03, X-05, X-07 (16 high, 22 medium, 8 low); DD data-and-integration.
+- **Data modelling and data quality.**
+  - A level (conceptual, logical, physical), grain and store mapping per data definition.
+  - A master, reference or transactional designation, with versioned reference sets.
+  - Typed quality rules (completeness, validity, control totals) with a discrepancy owner and a publication gate.
+  - Data service objectives (freshness, completeness).
+  - Analytical copies designated apart from operational authority.
+- **Privacy by design.**
+  - Per data definition: personal-data categories and permitted purposes of use (recipients, copies, retention per purpose), with linkage scope.
+  - Where consent is the basis: a choice state bound to subject, purpose and notice version, with a withdrawal-enforcement target.
+  - Lawful-basis status recorded as "awaiting counsel". It is never inferred by AIW or Sol, because it belongs to an external legal authority.
+  - Legal-hold state with a hold authority.
+  - Deletion propagated to every copy reached through lineage, including backups, and re-applied after a restore.
+  - A Chapter 9 disclosure threat per personal-data copy.
+- **Closes:** C8-01–C8-18, C8-20–C8-22, C8-24–C8-33, C8-36–C8-44, C5-02, C5-11, C5-12, C4-03, X-05, X-07 (16 high, 22 medium, 8 low); DD data-and-integration (including data movement, orchestration and sagas, operating terms, versioning, and purpose, residency and lawful basis).
 
 **F9. Identity, access and protection coverage (Chapter 9).**
 - **Coverage.** Judge coverage per access route, not per object: inventory every route to a protected effect or to sensitive data, including bypass paths.
@@ -333,7 +351,7 @@ Each feature comes from what the handbooks prescribe. Each lists the agent-verif
 - **Controls.** A control picker from released security tactics and patterns, giving each control its role (prevent, detect, respond, recover).
 - **Obligations.** An obligation applicability register mapped to controls and evidence.
 - **Boundaries and change.** Message-origin authenticity and replay horizons at integration boundaries. Safe change for security and network policy.
-- **Closes:** C9-01–C9-14, C9-M1, C9-M2, C8-23, C10-24 (3 high, 14 medium, 1 low); DD security-architecture.
+- **Closes:** C9-01–C9-14, C9-M1, C9-M2, C8-23, C10-24 (3 high, 14 medium, 1 low); DD security-architecture (including personal data and privacy design).
 
 **F10. Capacity, failure and recovery engineering (Chapter 10, with 6).**
 - **Capacity, using F7's workload model.**
@@ -369,8 +387,15 @@ Each feature comes from what the handbooks prescribe. Each lists the agent-verif
 - **Operations.**
   - Observability design: signals anchored to business outcomes, metric contracts for operating measures, correlation identifiers, an audit path, telemetry sinks, alerts with owners.
   - A failure-to-runbook register.
+- **Incident and support design.**
+  - Incident classes.
+  - A role model with an action-authority table (reduce admission, pause dispatch, correct state, reconcile, resume), each action with an owner and a safeguard. It reuses Chapter 9's separation of operational and destructive privilege, and the incident commander coordinates without gaining authority over corrections.
+  - A decision-log and situation-report template that keeps observation, hypothesis, action and outcome apart, and distinguishes accepted, pending, unknown and final outcomes.
+  - Handover as a recorded state.
+  - A support contract: responders, response targets, supported versions, escalation.
+  - All of it is authored by a person; Sol may only draft.
   - CI/CD and infrastructure as code as design records.
-- **Closes:** C10-17–C10-19, C10-31, C10-33, C10-35–C10-38, C10-45 (3 high, 6 medium, 1 low); DD operability-and-delivery; deployment-architecture (CI/CD, IaC).
+- **Closes:** C10-17–C10-19, C10-31, C10-33, C10-35–C10-38, C10-45 (3 high, 6 medium, 1 low); DD operability-and-delivery (including runbooks, incident response and the support model; observability; the delivery pipeline); deployment-architecture (CI/CD, IaC).
 
 **F12. Operational acceptance and handover.**
 - **The register.**
@@ -501,7 +526,7 @@ Each feature comes from what the handbooks prescribe. Each lists the agent-verif
 Release numbers are proposals; the owner confirms them.
 
 0. **Before any library import: licence and source confirmation.** The owner or their counsel records the licence or permitted use and the SHA-256 of each handbook file. **Status today:** not confirmed. A review pack for counsel is still to be prepared.
-1. **AIW v0.10.0-rc.10.73.7 (proposed): integrity.** D1–D16. Several are migrations, not patches, for example D9 and D7.
+1. **AIW v0.10.0-rc.10.73.7 (proposed): integrity.** D1–D20. Several are migrations, not patches, for example D9 and D7.
 2. **Foundations other features depend on:**
    - F15's decision rights and standards register;
    - F7's business-service record and workload model;
