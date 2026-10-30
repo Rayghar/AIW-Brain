@@ -5,7 +5,7 @@
 // application itself: the server reaches it only when a test sets AIW_LLM_BASE_URL (OpenAI) or
 // AIW_ANTHROPIC_BASE_URL (Anthropic) to its loopback address.
 import http from 'node:http';
-import {providerOf} from './intelligence-provider.js';
+import {providerOf, openJourneyField} from './intelligence-provider.js';
 
 export function mockAssessment(packet, {refineBy = 0.1, faults = {}} = {}) {
   const assessments = packet.items.map((it, i) => {
@@ -106,7 +106,8 @@ export const mockDraftCheck = (faults = [], note = 'The draft repeats the packet
   : faults.includes('check-contradict') ? {supported: false, defects: ['The value is supported by the cited record.'], notes: []} : {supported: true, defects: [], notes: [note]};
 
 // The field and journey contracts (round 6): a field draft that repeats the packet's own words and cites its first
-// source; a journey draft that repeats the deterministic draft's current values. Both pass the guards, so
+// source; a journey draft that repeats the deterministic draft's current values and leaves its open fields out (rc41:
+// an open field is answered or left out, never restated). Both pass the guards, so
 // the double can stand in for every mode the live probe exercises (unless a probe fault is asked for).
 export const mockFieldDraft = (input, faults = []) => {
   const first = (input.sources || [])[0], words = String(first?.excerpt || input.target?.current || input.target?.record || 'Drafted from the packet').split(/[.!?]/)[0].trim();
@@ -114,7 +115,7 @@ export const mockFieldDraft = (input, faults = []) => {
   if (faults.includes('gap-statement')) return {field: input.target.field, value: GAP_STATEMENT.slice(0, max), basis: 'The record leaves this open.', sourceRefs: first ? [first.ref] : []};
   return {field: input.target.field, value: (words.slice(0, Math.max(0, max - tail.length)) + tail).trim(), basis: 'From the packet’s first source.', sourceRefs: first ? [first.ref] : []};
 };
-export const mockJourneyDraft = (input, faults = []) => { const cite = (input.passages || [])[0]?.id, tail = faultText(faults); return {answers: cite ? (input.records || []).flatMap(r => (r.fields || []).filter(f => !f.options && !f.numeric && typeof f.current === 'string' && f.current.trim()).map(f => ({record: r.key, field: f.key, value: f.current.trim().slice(0, 2000), passages: [cite], sourceRefs: []}))).slice(0, 400).map((a, i) => i || !tail ? a : {...a, value: a.value.slice(0, 2000 - tail.length) + tail}) : []}; };
+export const mockJourneyDraft = (input, faults = []) => { const cite = (input.passages || [])[0]?.id, tail = faultText(faults); return {answers: cite ? (input.records || []).flatMap(r => (r.fields || []).filter(f => !f.options && !f.numeric && typeof f.current === 'string' && f.current.trim() && !openJourneyField(f)).map(f => ({record: r.key, field: f.key, value: f.current.trim().slice(0, 2000), passages: [cite], sourceRefs: []}))).slice(0, 400).map((a, i) => i || !tail ? a : {...a, value: a.value.slice(0, 2000 - tail.length) + tail}) : []}; };
 
 // One grounded architecture theme for the synthetic live-check reference. The test double proposes a responsibility;
 // it neither selects a decision nor supplies evidence that a running system meets the requirement. The cross-cutting

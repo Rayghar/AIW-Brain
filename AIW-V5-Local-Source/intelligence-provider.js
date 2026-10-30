@@ -720,7 +720,7 @@ export function validateJourneyDraft(raw,packet){
 }
 // Numbers must be in the packet (its passages, upstream records and current values); nothing guaranteed or verified; an
 // open field (basis gap, or a placeholder value) is not answered with its gap (restatesGap, as in field mode).
-const openJourneyField=f=>!!f&&!f.options&&!f.numeric&&(f.basis==='gap'||(!!String(f.current||'').trim()&&isOpenText(f.current)));
+export const openJourneyField=f=>!!f&&!f.options&&!f.numeric&&(f.basis==='gap'||(!!String(f.current||'').trim()&&isOpenText(f.current)));
 export function guardJourneyDraft(packet,result){
  const problems=[],known=new Set();
  const learn=t=>{for(const m of String(t).match(FIELD_NUMBER)||[])known.add(numberOf(m));};

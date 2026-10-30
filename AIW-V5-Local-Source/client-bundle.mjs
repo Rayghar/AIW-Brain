@@ -212,7 +212,12 @@ const KB = 1024;
 // the adapters' editor hooks (about 2.5 KB across eleven files), app.js +990 B (reference routes, project-scoped links,
 // focus on the case dossier), chapter-records.js +498 B and the knowledge scope gate (+621 B). The next whole-KiB cap;
 // every other budget unchanged.
-const CHAPTERS_ROUTE_BUDGET = 3157 * KB;
+// rc41 Sol fixes (2026-10-30, lead): 3,232,837 B, +713 B over the 3,232,124 B above, from the six fix-now packages' client
+// code on the route: a withheld answer kept out of Proposals and the spark's announced result (coauthor-ui.js,
+// field-spark.js), a turned check defect kept a defect and negation scoped to its claim (brain-reasoning.js), the
+// journey packet's record order and omissions (intelligence-context.js), the drafted-wording constants
+// (shared/reasoning-instructions.js) and the quota sentence (brain-reasoning-ui.js, operations-ui.js). The next whole KiB.
+const CHAPTERS_ROUTE_BUDGET = 3158 * KB;
 export const BUDGET = {
   entry: 8 * KB,
   // Round 12 (D4, 2026-10-08): the shared domain chunk measured 377,002 B of hand-written code (353,094 B on the round
