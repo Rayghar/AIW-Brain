@@ -109,6 +109,17 @@ await check('through requestFieldDraft (a fetcher stub, no provider): the Chapte
   assert.deepEqual(offered.instructions, P.fieldInstructionsPin(), 'the run records the pinned field prompt');
 });
 
+await check('an answer whose own basis says the sources leave the question open is not drawn from them (the live Chapter 7 draft of 2026-10-30: an invented operations team); a sourced answer and an empty draft pass', async () => {
+  const k = packetOf('techrealisation.plan', 'operationsPlan', 'tr-001');
+  assert.ok(k.target.open, 'the Chapter 7 field is open');
+  const invented = {field: 'operationsPlan', value: 'The compute components for the Appointment scheduling service will be operated by the designated operations team responsible for the TC-001 Compute for Appointment scheduling service. Monitoring will leverage existing telemetry and automated observability tools to detect incidents promptly.', basis: 'This plan is drafted from the open questions and status of the parent compute record TC-001 which currently has unassigned ownership and open recovery plans (S2), and the open operations plan status in TR-001 (S1).', sourceRefs: ['S1', 'S2']};
+  assert.match(P.guardFieldDraft(k, invented).join(' '), /Its basis says the sources leave the question open, so the value is not drawn from them/);
+  assert.deepEqual(P.guardFieldDraft(k, {field: 'operationsPlan', value: REAL_ANSWER, basis: 'S1 names the clinic IT team as the operator.', sourceRefs: ['S1']}), [], 'a sourced answer passes');
+  assert.deepEqual(P.guardFieldDraft(k, {field: 'operationsPlan', value: '', basis: 'The record leaves it open: who will operate, monitor and support it? It is unassigned in S2.', sourceRefs: []}), [], 'an empty value with the question in basis passes');
+  assert.match(P.FIELD_INSTRUCTIONS, /Where the record or its parent says the matter is unassigned, open or undecided, the sources leave it open: return an empty value; never propose an owner, team, tool, procedure or arrangement no source states\./);
+  assert.match(P.FIELD_REVIEW_INSTRUCTIONS, /a value that answers the question with an owner, team, tool, procedure or arrangement no cited source states/);
+});
+
 // ---------------------------------------------------------------- 3. the journey guard
 await check('the journey guard withholds a gap restated as an open journey field’s value (basis gap or a placeholder), and spares a stated field and a real answer', () => {
   const open = 'Open question: what triggers rollback and how is it checked? Not stated in the brief or the upstream records.';
@@ -176,7 +187,7 @@ await check('the architecture prompt models its interpretation as "this would le
 
 // ---------------------------------------------------------------- 5. the pins
 await check('every changed prompt is pinned by version and digest (field, journey, review, architecture), and generate by version', () => {
-  assert.deepEqual(P.fieldInstructionsPin(), {promptVersion: 'sol-field-4', sha256: '7cef6c145670051f574a48af8791cb8fdd816292861aeaffe96a78557ea7fbe3'});
+  assert.deepEqual(P.fieldInstructionsPin(), {promptVersion: 'sol-field-5', sha256: '8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3'});
   assert.deepEqual(P.journeyInstructionsPin(), {promptVersion: 'sol-journey-3', sha256: 'bee89def7bb923c4fd1ad6c367dab8881bb25c9fa09d0236864f1df71baea2c9'});
   assert.deepEqual(P.reviewInstructionsPin(), {promptVersion: 'sol-review-3', sha256: 'e2b5d3ef79c706242b436bd063e8cb249c9ca2267b303b5e14aa3c127e7960b7'});
   assert.deepEqual(A.architectureInstructionsPin(), {promptVersion: 'sol-architecture-5', sha256: 'e85683bfef98635b9f11842df75c4153cb1243723f3a6997fb368649b1555d4f'});
