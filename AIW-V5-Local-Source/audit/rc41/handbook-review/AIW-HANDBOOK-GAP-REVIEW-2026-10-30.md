@@ -125,6 +125,8 @@ These were reproduced on a running AIW, and the skeptic re-checked each one. The
 | D10 | The journey drafter creates one production environment per component, which raises Chapter 10 errors by construction. RTO and RPO marked open on a capability are silently dropped. | deployment-architecture, worked-example |
 | D11 | Archetype proposals carry template text, and sometimes the wrong kit (a relational store proposes identity-token contracts), into the component and on into the SDD. | library-coverage, component-selection; K-06 |
 | D12 | ArchiMate import turns a Gap into a Chapter 1 requirement, and misfiles a business Capability as a Chapter 6 technology capability. | evolution-and-transition, enterprise-alignment |
+| D13 | One reviewer can treat a hard-constraint breach away as an "accepted limitation", and the limitation never expires. | C11-01, C11-02 |
+| D14 | Recording assurance or Chapter 9/10 evidence changes the design fingerprint, so the approved baseline goes stale. | C11-04 |
 
 ---
 
@@ -281,7 +283,7 @@ Each feature is drawn from what the handbooks prescribe. Each lists the verified
 - A residual-obligation ledger that the receiving owner accepts.
 - Target-platform qualification.
 - Acceptance is always recorded by a person.
-- **Closes:** DD deliverables-and-views, operability-and-delivery.
+- **Closes:** C11-03, C11-11; DD deliverables-and-views, operability-and-delivery.
 
 **F13. Evidence, conformance and fitness functions.**
 - An evidence ladder on every claim: model, local, integration, exercise, production.
@@ -291,7 +293,7 @@ Each feature is drawn from what the handbooks prescribe. Each lists the verified
 - Design-to-runtime drift checks.
 - Anti-pattern detection driven by released anti-pattern records, with diagnosis and repair route.
 - Waivers carrying authority, scope, compensating controls and expiry.
-- **Closes:** K-14, K-24; DD enterprise-alignment (waiver, conformance), quality-method (fitness functions), evolution-and-transition (fitness and drift).
+- **Closes:** C11-01, C11-02, C11-05–C11-07, C11-12, K-14, K-24; DD enterprise-alignment (waiver, conformance), quality-method (fitness functions), evolution-and-transition (fitness and drift).
 
 **F14. Transition and migration architecture.**
 - Current-state capture with a register of recovered claims.
@@ -302,7 +304,7 @@ Each feature is drawn from what the handbooks prescribe. Each lists the verified
 - Decommissioning readiness.
 - A technical-debt register, and temporary components with an expiry.
 - An editor for migration records.
-- **Closes:** DD evolution-and-transition (all).
+- **Closes:** C11-08–C11-10 and the transition gaps in Chapter 11; DD evolution-and-transition (all).
 
 **F15. Enterprise alignment.**
 - A business capability map, and the misfiling on import fixed.
@@ -322,7 +324,7 @@ Each feature is drawn from what the handbooks prescribe. Each lists the verified
 
 ## 5. Suggested order
 
-1. **rc.10.73.x+1: integrity.** D1–D12. Mostly S/M effort and touches existing paths only.
+1. **rc.10.73.x+1: integrity.** D1–D14. Mostly S/M effort and touches existing paths only.
 2. **Library foundation.** The F1 record kinds and intake. Import a first slice: Application Architecture Master (styles, patterns, tactics, anti-patterns, components) and Enterprise Component Library Part 1. Every entry stays a candidate until a second person releases it.
 3. **Selection paths.** F2 (Ch5 component selection), then F3 (patterns as bundles), then F4 (Ch7 qualification). These reuse the eight design tasks' existing machinery: applicability predicates, Ch3 alternatives, obligations into Ch11.
 4. **Deployment.** F5 topology and blueprints, then F10 capacity and recovery.
