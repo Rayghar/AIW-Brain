@@ -119,6 +119,13 @@ await check('runCalls: a call that timed out or could not be read after the draf
   const viaFallback = thrown(() => parsed({parseError: 'x', usage: usage(100, 20), routeFallback: fallback}));
   assert.deepEqual(viaFallback.routeFallback, fallback, 'an unparsable answer keeps the route that answered it');
   assert.deepEqual(await settle([], viaFallback), {settled: false, used: null});
+  // A fallback route refused at the connection, after the primary timed out: the timer rebuilds the error, and the rebuilt
+  // error keeps the route that was tried, so the run's use stays unknown (rc41 close: the rebuild had dropped it).
+  const {timed} = await import('./intelligence-provider.js');
+  const refused = await timed(5000, async () => { throw Object.assign(new TypeError('fetch failed'), {cause: {code: 'ECONNREFUSED'}, routeFallback: fallback}); }).then(() => null, e => e);
+  assert.deepEqual([refused?.code, refused?.routeFallback], ['provider_unavailable', fallback], 'the rebuilt connection error keeps its route fallback');
+  assert.deepEqual(await settle([], refused), {settled: false, used: null}, 'the draft: primary timed out, the fallback refused the connection');
+  assert.deepEqual(await settle([draft], refused), {settled: false, used: null}, 'the check: primary timed out after the draft answered, the fallback refused the connection');
 });
 
 // ---------------------------------------------------------------- the architecture request on the seam's own timer

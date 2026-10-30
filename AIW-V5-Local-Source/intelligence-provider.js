@@ -201,10 +201,11 @@ const transportDiagnostic=e=>{
  const name=TRANSPORT_NAMES.has(e?.name)?e.name:'OtherError',raw=e?.cause?.code??e?.code;
  return {phase:e&&typeof e==='object'&&FETCH_FAILURES.has(e)?'fetch':'processing',name,...(typeof raw==='string'&&TRANSPORT_CODES.has(raw)?{causeCode:raw}:{})};
 };
+// A failure rebuilt here keeps routeFallback: a run whose fallback route failed may have been billed on the primary (rc41).
 const callError=(e,call,what='proposal')=>{
  if(e?.code&&PROVIDER_ERROR_CODES.has(e.code)&&!call.aborted)return e;
  const transportFailure=transportDiagnostic(e);
- const failure=call.aborted?Object.assign(Error('The provider took too long. Your request is saved; no '+what+' was applied.'),{code:'timeout',transportFailure}):Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable',transportFailure});
+ const failure=call.aborted?Object.assign(Error('The provider took too long. Your request is saved; no '+what+' was applied.'),{code:'timeout',transportFailure,...(e?.routeFallback?{routeFallback:e.routeFallback}:{})}):Object.assign(Error('The provider connection was interrupted. Your request is saved.'),{code:'provider_unavailable',transportFailure,...(e?.routeFallback?{routeFallback:e.routeFallback}:{})});
  console.error(JSON.stringify({event:'provider-transport-failure',code:failure.code,transportFailure}));
  return failure;
 };
