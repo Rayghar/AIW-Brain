@@ -58,7 +58,7 @@ const where = (chapter, section, object = null) => ({chapter, section: WORK[chap
 // A linked value: the text, the record's chapter and id (a Chapter 5 component is held in place by the view).
 export const to = (chapter, record, text = named(record), extra = {}) => ({text, chapter, id: record?.id || '', path: record?.id ? modelPath(chapter, record.id) : '', ...extra});
 const end = e => e?.kind === 'unknown' || !e?.record ? {text: str(e?.record?.title || e?.record?.id || 'Endpoint not found'), chapter: 8, id: '', path: '', state: 'open'} : to(e.chapter, e.record);
-const EFFECT = {supports: 'Supports · assessment', tension: 'Creates tension · assessment', violates: 'Violates · assessment', neutral: 'Neutral · assessment', unknown: 'Effect not assessed'};
+const EFFECT = {supports: 'Supports · assessment', tension: 'Creates tension · assessment', violates: 'Violates · assessment', neutral: 'Neutral · assessment', 'not-applicable': 'Does not apply · a person\'s judgement', unknown: 'Effect not assessed'};
 const effectTone = effect => ['violates', 'tension'].includes(effect) ? 'attention' : 'quiet';
 const day = at => typeof at === 'string' && /^\d{4}-\d{2}-\d{2}/.test(at) ? at.slice(0, 10) : '';
 

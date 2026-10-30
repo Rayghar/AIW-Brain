@@ -9,7 +9,7 @@ import {fieldOf,recordField} from './public/record-fields.js';
 import worker from './worker.js';
 import {localDatabase} from './local-db.js';
 
-const cmd=(p,type,payload={})=>applyTechnologyRealisationCommand(p,{type:'techrealisation.'+type,payload}).document;
+const cmd=(p,type,payload={},actor=null)=>applyTechnologyRealisationCommand(p,{type:'techrealisation.'+type,payload},undefined,actor).document;
 const base=withTechnologyRealisation(seedProject()),original=JSON.stringify(base);
 assert.equal(realizations(base).length,9);
 assert.equal(base.technologyRealisation.mappings.length,9);
@@ -42,6 +42,9 @@ assert(!exportTechnologyRealisationMarkdown(base).includes('undefined'));
  assert.throws(()=>cmd(g,'record',{id:rid,reviewed:true}),/rationale/);
  g=cmd(g,'plan',{id:rid,rationale:'Selected for a test of an explicitly considered trade-off.'});
  assert.equal(selectionPreparation(realization(g,rid)),'ready');
+ // rc42 (D2): ready to record, but for the judgements: each inherited driver is judged, with a reason, first.
+ assert.throws(()=>cmd(g,'record',{id:rid,reviewed:true}),/Assess the preferred option against every driver it inherits/);
+ for(const c of realizationCriteria(g,rid).filter(c=>c.kind==='driver'))g=cmd(g,'assessment',{id:rid,optionId:realization(g,rid).options[0].id,criterionId:c.id,effect:'supports',reason:'Synthetic judgement for the selection gate.',evidence:'Synthetic fixture.'});
  g=cmd(g,'record',{id:rid,reviewed:true});
  assert(selectionCurrent(g,realization(g,rid)));
  console.log('PASS selection prerequisites: option, preference, purpose and owner, nonblank rationale, then current record');
@@ -82,9 +85,10 @@ assert.throws(()=>cmd(p,'approval',{id,confirmed:true}),/Record/);
 for(const c of realizationCriteria(p,id))p=cmd(p,'assessment',{id,optionId:option.id,criterionId:c.id,effect:c.id==='cost'?'tension':'supports',reason:'Explicit synthetic comparison rationale for '+c.title,evidence:'Synthetic verification reference '+c.id});
 assert(!technologyRealisationFindings(p).some(f=>f.objectId===id&&f.code==='criterion'));
 assert.throws(()=>cmd(p,'assessment',{id,optionId:option.id,criterionId:'invented',effect:'supports'}),/current/);
-p=cmd(p,'record',{id,reviewed:true});assert(selectionCurrent(p,realization(p,id)));assert(!approvalCurrent(p,realization(p,id)));
+p=cmd(p,'record',{id,reviewed:true},'test-architect');assert(selectionCurrent(p,realization(p,id)));assert(!approvalCurrent(p,realization(p,id)));
 assert.throws(()=>cmd(p,'approval',{id,reviewer:'Test reviewer',authority:'Test authority',evidence:'Synthetic fixture'}),/explicit/);
-p=cmd(p,'approval',{id,reviewer:'Test reviewer',authority:'Test authority',evidence:'Synthetic approval fixture only',confirmed:true});assert(approvalCurrent(p,realization(p,id)));
+// rc42 (D1): a second signed-in person attaches the approval evidence.
+p=cmd(p,'approval',{id,reviewer:'Test reviewer',authority:'Test authority',evidence:'Synthetic approval fixture only',confirmed:true},'test-reviewer');assert(approvalCurrent(p,realization(p,id)));
 const recorded=p;
 const changedConfig=cmd(recorded,'option',{id,option:{id:option.id,replicaCount:'3'}});
 assert(!selectionCurrent(changedConfig,realization(changedConfig,id))&&!approvalCurrent(changedConfig,realization(changedConfig,id)),'Changing an option assumption invalidates selection and approval.');

@@ -93,6 +93,14 @@ try{
  await seed('techrealisation.plan',{id,rationale:'The candidate offers a documented transaction boundary; verify resilience against the measured workload.'});
  await page.reload({waitUntil:'networkidle'});
  console.log('Rationale opened');
+ // rc42 (D2): the record waits for a judgement of the preferred option against every driver the realization inherits.
+ const judging=await page.evaluate(async id=>{const {realizationCriteria}=await import('/technology-realisation-domain.js'),doc=window.aiwProjectStore.value.document,r=doc.technologyRealisation.records.find(r=>r.id===id);return {optionId:r.selectedOptionId,drivers:realizationCriteria(doc,id).filter(c=>c.kind==='driver').map(c=>c.id)};},id);
+ assert.ok(judging.drivers.length>0,'the realization inherits drivers to judge');
+ assert.equal(await main.locator('.work-task-actions [data-tr-action="stage"][data-tr-stage="compare"]').innerText(),'Assess the inherited drivers');
+ assert.match(await main.innerText(),new RegExp('Judge the preferred option against '+judging.drivers[0]));
+ for(const criterionId of judging.drivers)await seed('techrealisation.assessment',{id,optionId:judging.optionId,criterionId,effect:'supports',reason:'Synthetic browser fixture judgement.',evidence:'Synthetic fixture; nothing measured.'});
+ await page.reload({waitUntil:'networkidle'});
+ console.log('Drivers judged');
  assert.equal(await main.locator('.work-task-actions [data-tr-action="record"]').innerText(),'Review & record selection');
  assert.ok(await main.locator('.work-support .l-model-actions [data-tr-action="approval"]').isDisabled());
  await main.locator('.work-task-actions [data-tr-action="record"]').click();
@@ -110,6 +118,7 @@ try{
  if(!await approvalFold.evaluate(s=>s.parentElement.open))await approvalFold.click();
  await main.locator('.work-support .l-model-actions [data-tr-action="approval"]').click();
  assert.ok(await page.locator('#tr-approval-form').isVisible());
+ assert.match(await page.locator('.tr-dialog').innerText(),/A second signed-in person attaches it: not local-architect, who recorded this selection/,'rc42 (D1): the dialog says a second person attaches approval evidence');
  await page.locator('.tr-dialog header [data-tr-action="close"]').click();
  const selectedOptionId=await page.evaluate(id=>window.aiwProjectStore.value.document.technologyRealisation.records.find(r=>r.id===id).selectedOptionId,id);
  await seed('techrealisation.option',{id,option:{id:selectedOptionId,drawbacks:'Retest after a topology change.'}});

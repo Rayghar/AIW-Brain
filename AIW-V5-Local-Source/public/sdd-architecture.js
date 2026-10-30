@@ -1014,7 +1014,10 @@ function componentDetail(B, S, {level = 3, shared = []} = {}) {
     const decided = DQ.questions.filter(q => q.state === 'decided'), open = DQ.questions.filter(q => q.state !== 'decided');
     const codes = text => String(text).replace(/\bQD-\d{3}\b/g, id => codeOf(p, id));
     if (decided.length) out += 'Design basis: ' + decided.map(q => md(codes(q.story))).join(' ') + '\n\n';
-    if (open.length) out += 'Open design questions: ' + named(open.map(q => md(q.title) + ' (' + q.because.map(id => codeOf(p, id)).join(', ') + (q.state === 'draft' ? '; a draft answer is recorded' : '') + ')')) + '.\n\n';
+    // rc42 (D3): a question decided through a Chapter 7 selection names only the drivers judged for it; its other drivers
+    // are printed here, as open items.
+    const pending = decided.filter(q => list(q.pending).length);
+    if (open.length || pending.length) out += 'Open design questions: ' + named([...open.map(q => md(q.title) + ' (' + q.because.map(id => codeOf(p, id)).join(', ') + (q.state === 'draft' ? '; a draft answer is recorded' : '') + ')'), ...pending.map(q => md(q.title) + ' (' + q.pending.map(id => codeOf(p, id)).join(', ') + '; the recorded selection still needs evidence against ' + (q.pending.length === 1 ? 'it' : 'them') + ')')]) + '.\n\n';
   }
   // Requirements (GR-SDD-13, GR-CMP-08): those of the responsibilities it realises, by group with their delivery status.
   const R = I.reqsOfComp.get(S.id) || {realises: [], supports: []};

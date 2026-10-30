@@ -83,6 +83,22 @@ function recordFacts(p, at) {
   return facts;
 }
 
+// rc42 (D3): the Chapter 7 reading of a realization's selection, registered by technology-realisation-domain.js (which
+// reads this projection for its findings, so it is not imported here): null unless the selection is recorded and current,
+// otherwise how the selected option was judged against each driver ({driverId: effect}). Unregistered, no realization
+// answer is decided.
+let selectionBasis = null;
+export function registerSelectionBasis(read) { selectionBasis = typeof read === 'function' ? read : null; }
+// A realization answers a question as decided only through its current recorded selection, and only by the drivers judged
+// for it: supported, a trade-off accepted, or (a person's reasoned judgement) not applying; the question's other drivers
+// stay open (pending). A draft preference, or a selection none of whose drivers was judged, is a draft answer.
+function realizationAnswer(p, tr, drivers) {
+  const judged = selectionBasis ? selectionBasis(p, tr) : null, by = effect => drivers.filter(d => judged?.[d.id] === effect).map(d => d.id);
+  const supportedBy = by('supports'), tradeOffs = by('tension'), notApplying = by('not-applicable'), judgedIds = new Set([...supportedBy, ...tradeOffs, ...notApplying]);
+  return supportedBy.length || tradeOffs.length ? {state: 'decided', supportedBy, tradeOffs, notApplying, pending: drivers.filter(d => !judgedIds.has(d.id)).map(d => d.id)} : {state: 'draft'};
+}
+const realizationStory = (a, at) => `${a.title} for ${at.ref}, ${[a.supportedBy.length ? 'supported by ' + a.supportedBy.join(', ') : '', a.tradeOffs.length ? 'a trade-off on ' + a.tradeOffs.join(', ') : '', a.notApplying.length ? a.notApplying.join(', ') + ' recorded as not applying' : ''].filter(Boolean).join('; ')} (${a.ref}).`;
+
 // What already answers a question for the record, read from the canonical records in order of authority.
 const taskTouches = (t, ids) => list(t.basis?.contextIds).some(id => ids.has(id)) || ['callerId', 'processorId', 'storeId', 'queueId', 'consumerId', 'routerId', 'secondaryId'].some(k => ids.has(t.answers?.[k]));
 function answersFor(p, q, at, drivers) {
@@ -103,7 +119,7 @@ function answersFor(p, q, at, drivers) {
     }
     if (what === 'realization') for (const n of needs.filter(n => n.category === arg)) {
       const m = mappings.find(m => m.needId === n.id); if (!m) continue;
-      for (const rm of trMaps.filter(x => x.capabilityId === m.capabilityId)) { const tr = trs.find(x => x.id === rm.realizationId); if (!tr) continue; const o = list(tr.options).find(x => x.id === tr.selectedOptionId); if (o) push('realization', tr.ref || tr.id, o.product || o.title, 'decided', 7, {product: o.product || ''}); else if (list(tr.options).length) push('realization', tr.ref || tr.id, tr.title, 'draft', 7); }
+      for (const rm of trMaps.filter(x => x.capabilityId === m.capabilityId)) { const tr = trs.find(x => x.id === rm.realizationId); if (!tr) continue; const o = list(tr.options).find(x => x.id === tr.selectedOptionId); if (o) { const {state, ...judged} = realizationAnswer(p, tr, drivers); push('realization', tr.ref || tr.id, o.product || o.title, state, 7, {product: o.product || '', ...judged}); } else if (list(tr.options).length) push('realization', tr.ref || tr.id, tr.title, 'draft', 7); }
     }
     if (what === 'contract') for (const k of list(p.interfaces?.contracts).filter(k => ids.has(k.to))) {
       if (arg === 'timeout' && stated(k.timeoutMs)) push('contract', k.ref || k.id, `${k.title}: ${k.timeoutMs} ms`, k.timeoutConfirmed ? 'decided' : 'draft', 8);
@@ -139,9 +155,9 @@ function questionsOf(p, id) {
     const because = drivers.filter(d => driverOpens(q, d)); if (!because.length) continue;
     const required = list(q.trigger.facts), unknown = required.filter(f => facts[f] == null), denied = required.filter(f => facts[f] === false);
     if (denied.length) continue;
-    const answers = answersFor(p, q, at, because), state = stateOf(answers), decided = answers.find(a => a.state === 'decided');
+    const answers = answersFor(p, q, at, because), state = stateOf(answers), decided = answers.find(a => a.state === 'decided'), pending = decided?.kind === 'realization' ? decided.pending : [];
     questions.push({id: q.id, title: q.title, question: q.question, chapter: q.chapter, state, toConfirm: unknown.map(f => RECORD_FACTS[f]), because: because.map(d => d.id), answers, decide: q.decide, products: q.products, caution: q.caution,
-      story: decided ? `${decided.title} for ${at.ref}, because ${names(because)}${decided.ref ? ` (${decided.ref})` : ''}.` : ''});
+      story: !decided ? '' : decided.kind === 'realization' ? realizationStory(decided, at) : `${decided.title} for ${at.ref}, because ${names(because)}${decided.ref ? ` (${decided.ref})` : ''}.`, ...(pending.length ? {pending} : {})});
   }
   const counts = {open: 0, draft: 0, decided: 0}; for (const q of questions) counts[q.state]++;
   return {id, ref: at.ref, title: at.title, kind: at.kind, chapter: CHAPTERS[at.kind], drivers, facts, questions, counts};

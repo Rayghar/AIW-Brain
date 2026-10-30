@@ -60,7 +60,7 @@ function clearResourceRoute(){
 }
 function appearance(entry){
  const uses=entry.uses||[];
- return uses.some(u=>u.approved)?['External approval evidence recorded','approved']:
+ return uses.some(u=>u.approved)?[uses.find(u=>u.approved).status,'approved']:
  uses.some(u=>u.needsReview)?['Selection needs review','working']:
  uses.some(u=>u.recorded)?['Current architect selection','approved']:
  uses.some(u=>u.selected)?['Draft preference','working']:
@@ -120,7 +120,7 @@ function technology(p){
  <div class="dr-tech-layout" data-mobile-view="${mobileView}"><div class="dr-picker"><label for="dr-search">Search products and reasons</label><input id="dr-search" type="search" data-dr-search value="${esc(query)}" placeholder="Kafka, PostgreSQL, reliability…" autocomplete="off" maxlength="120">
  <div class="dr-filters"><label>Capability<select data-dr-filter="capability"><option value="">All capabilities</option><optgroup label="Product categories">${categories.map(c=>`<option value="category:${esc(c)}" ${capability==='category:'+c?'selected':''}>${esc(c)}</option>`).join('')}</optgroup>${caps.length?`<optgroup label="In this design">${caps.map(c=>`<option value="${esc(c.id)}" ${capability===c.id?'selected':''}>${esc(c.title||c.id)}</option>`).join('')}</optgroup>`:''}</select></label>
  <label>Quality driver<select data-dr-filter="driver"><option value="">All drivers</option>${drivers.map(d=>`<option value="${esc(d.id)}" ${driver===d.id?'selected':''}>${esc(d.title||d.id)}</option>`).join('')}</select></label>
- <label>Decision state<select data-dr-filter="status"><option value="">All states</option>${[['in-design','Considered in project'],['recorded','Recorded selection'],['needs-review','Needs review'],['candidate','Candidate option'],['approved','External approval recorded'],['not-considered','Not considered']].map(([id,label])=>`<option value="${id}" ${status===id?'selected':''}>${label}</option>`).join('')}</select></label></div>
+ <label>Decision state<select data-dr-filter="status"><option value="">All states</option>${[['in-design','Considered in project'],['recorded','Recorded selection'],['needs-review','Needs review'],['candidate','Candidate option'],['approved','Approval evidence attested'],['not-considered','Not considered']].map(([id,label])=>`<option value="${id}" ${status===id?'selected':''}>${label}</option>`).join('')}</select></label></div>
  <p class="dr-list-count">${visible.length} of ${entries.length} products · ${entries.filter(x=>x.uses?.length).length} appear in project options</p><div class="dr-products" role="group" aria-label="Technology products">${entries.map(e=>{const [state]=appearance(e);return `<button type="button" data-dr-product="${esc(e.id)}" aria-pressed="${e.id===selected}" ${visible.includes(e)?'':'hidden'}><span><b>${esc(e.name)}</b><small>${esc(e.category||'Technology')} · ${esc(state)}</small></span><span aria-hidden="true">›</span></button>`}).join('')}</div><p class="dr-no-match" ${visible.length?'hidden':''}>No matching product. Change a filter or add a custom option in Chapter 7.</p></div><div class="dr-detail-slot">${visible.length?productDetail(product):'<div class="dr-empty"><h3>No matching product</h3><p>Change a filter or add a custom option in Chapter 7.</p></div>'}</div></div>`;
 }
 function components(p){
