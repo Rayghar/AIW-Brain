@@ -28,7 +28,8 @@ import {CHAPTERS} from './public/review-domain.js';
 import {journeyProvenance, applyGuideCommand} from './public/chapter-guide.js';
 import {guideBasis} from './public/guidance-record.js';
 import {sha256} from './public/brain-integrity.js';
-import {journeyRequest, journeyPacket} from './public/intelligence-context.js';
+import {journeyRequest, journeyPacket, JOURNEY_SOL_LIMITS} from './public/intelligence-context.js';
+import {referenceBrief} from './shared/reference-journeys.js';
 import {journeyDraftSchema, validateJourneyDraft, guardJourneyDraft, requestJourneyDraft, journeyInstructionsPin, JOURNEY_PROMPT_VERSION} from './intelligence-provider.js';
 import * as rv from './public/review-domain.js';
 import {applyCommand} from './public/requirements-domain.js';
@@ -295,6 +296,45 @@ try {
   assert.throws(() => journeyRequest({chapter: 12}), /chapter/);
   assert.throws(() => journeyPacket(journeys.returns.p, {chapter: 1}, {chapter: 2, records: []}, journeys.returns.brief), /chapter/);
   pass('Sol\'s journey contract: the chapter\'s own fields only, never the upstream choice, options by id, passages and refs inside the packet, at most 2,000 characters, no markup, no number the packet lacks, nothing guaranteed or verified; the prompt pin is recorded');
+
+  // rc41 live run (audit/rc41/live/IMPROVEMENTS-2026-10-29.md, Fix now 8): the live probe's brief project, a blank
+  // project keeping the clinic-appointments reference brief, drafts 24 Chapter 1 records, and the first twelve in draft
+  // order were its outcomes, steps, actors and stakeholders: none of its requirements, constraints or scope reached Sol.
+  // The bound stays twelve; the records that bind the design go first, and omissions names what was left out.
+  {
+    const tier = r => ({requirement: 0, constraint: 0, scope: 0, outcome: 1, journey: 1, assumption: 1, actor: 2, stakeholder: 2})[r.type] ?? 1;
+    const made = await worker.fetch(new Request('https://aiw.test/api/projects', {method: 'POST', headers: {'oai-authenticated-user-id': owner, Origin: 'https://aiw.test', 'Content-Type': 'application/json'}, body: JSON.stringify({name: 'Sol live check · brief', template: 'blank', brief: referenceBrief('clinic-appointments')})}), env);
+    const clinic = (await made.json()).document?.id, c = await api('/api/intelligence/journey-context', {chapter: 1}, {project: clinic});
+    assert.equal(c.status, 200, JSON.stringify(c.data));
+    const {draft: d, packet: k} = c.data, guided = d.records.filter(r => r.kind === 'guided'), sent = new Set(k.records.map(r => r.key)), binding = guided.filter(r => tier(r) === 0);
+    assert.ok(guided.length > JOURNEY_SOL_LIMITS.records && binding.length < JOURNEY_SOL_LIMITS.records && ['requirement', 'constraint', 'scope'].every(t => binding.some(r => r.type === t)), `the brief drafts more records than the bound, every kind that binds the design among them (${guided.length} records, ${binding.length} binding)`);
+    assert.equal(k.records.length, JOURNEY_SOL_LIMITS.records, 'the twelve-record bound is unchanged');
+    assert.deepEqual(binding.filter(r => !sent.has(r.key)).map(r => r.key), [], 'every requirement, constraint and scope boundary of Chapter 1 reaches Sol');
+    const expected = guided.map((r, i) => [r, i]).sort((a, b) => tier(a[0]) - tier(b[0]) || a[1] - b[1]).map(([r]) => r);
+    assert.deepEqual(k.records.map(r => r.key), expected.slice(0, JOURNEY_SOL_LIMITS.records).map(r => r.key), 'requirements, constraints and scope first, then outcomes, steps and assumptions, then actors and stakeholders, in draft order within each');
+    assert.deepEqual(k.omissions.records, expected.slice(JOURNEY_SOL_LIMITS.records).map(r => ({key: r.key, type: r.type})), 'omissions names exactly the records left out, each with its type, in the order they would have been sent');
+    const passages = interpretBrief(referenceBrief('clinic-appointments'), {name: 'Sol live check · brief'}).passages.map(x => x.id), cited = new Set(k.records.flatMap(r => guided.find(x => x.key === r.key).provenance.passages));
+    assert.ok([...cited].every(id => k.passages.some(x => x.id === id)), 'every passage a sent record cites is in the packet');
+    assert.deepEqual(k.omissions.passages, passages.filter(id => !k.passages.some(x => x.id === id)), 'omissions names exactly the brief passages left out');
+    assert.deepEqual([k.passages.length + k.omissions.passages.length, k.omissions.excluded, k.brainReceipt.reasoning], [passages.length, 0, 'aiw-journey-draft-3']);
+  }
+  // The passage bound admits the passages the sent records cite before the brief's others, and a record the disclosure
+  // policy withholds is counted, never named; its passages win no place.
+  {
+    const P = n => 'P-' + String(n).padStart(3, '0'), brief = {passages: Array.from({length: 70}, (_, i) => ({id: P(i + 1), text: `Passage ${i + 1} of the brief.`}))};
+    const rec = (key, type, cites, upstream = []) => ({key, kind: 'guided', type, title: `${type} ${key}`, fields: [{key: 'title', label: 'Title', value: `${type} ${key}`, basis: 'stated', passages: cites}], provenance: {mode: 'deterministic', passages: cites, upstream, claimIds: [], playbook: []}});
+    const actors = Array.from({length: 12}, (_, i) => rec('a' + (i + 1), 'actor', [P(i + 1)]));
+    const draft = {chapter: 1, title: 'Context', records: [...actors, rec('q1', 'requirement', [P(65), P(70)]), rec('private-constraint', 'constraint', [P(69)], ['PRIVATE-1'])], citations: []};
+    const k = journeyPacket({workspace: {aiPolicy: {excludedObjectIds: ['PRIVATE-1']}}}, {chapter: 1}, draft, brief), ids = k.passages.map(x => x.id);
+    assert.deepEqual(k.records.map(r => r.key), ['q1', ...actors.slice(0, 11).map(r => r.key)], 'the requirement is sent before the actors');
+    assert.deepEqual([k.omissions.records, k.omissions.excluded], [[{key: 'a12', type: 'actor'}], 1], 'the actor the bound leaves out is named; the withheld record is counted');
+    assert.ok(!JSON.stringify(k).includes('private-constraint'), 'the withheld record is never named');
+    assert.equal(ids.length, JOURNEY_SOL_LIMITS.passages);
+    assert.ok([P(65), P(70)].every(id => ids.includes(id)), 'the passages the sent requirement cites beyond the sixtieth are admitted');
+    assert.deepEqual(ids, brief.passages.map(x => x.id).filter(id => ids.includes(id)), 'the packet keeps the brief\'s order');
+    assert.deepEqual(k.omissions.passages, [59, 60, 61, 62, 63, 64, 66, 67, 68, 69].map(P), 'omissions names exactly the passages left out, the withheld record\'s among them');
+  }
+  pass('the journey packet keeps its twelve-record bound and sends Chapter 1\'s requirements, constraints and scope first, then outcomes, steps and assumptions, then actors and stakeholders (the live probe\'s clinic-appointments brief project: all of them reach Sol); the passages the sent records cite are admitted first; omissions names each record and passage the bounds leave out, and counts, never names, a record the disclosure policy withholds');
 
   // Draft, accept and edit over HTTP: a scenario committed through the guide keeps where it was drafted from when a
   // person saves it again through Chapter 2's own command, marked edited with the fields that changed; an unrelated

@@ -351,7 +351,14 @@ export function adoptIntelligence(p,raw,run,at=new Date().toISOString()){
 // deterministic value and how it is known. The fields that choose which upstream record a draft hangs from
 // (requirementId, logicalId, from, to, targetId, …) and a Chapter 1 record's type are never offered: they stay the rules'. Disclosure policy and
 // redaction as everywhere; the server adds the instructions' pin. Nothing here is sent or applied.
+// A chapter with more records than the bound sends the records that bind the design first (rc41 live run: the first
+// twelve in draft order were Chapter 1's outcomes, steps, actors and stakeholders, and none of its requirements,
+// constraints or scope), then what it serves, then who takes part, in draft order within a tier; a type not named here
+// sits in the middle tier, so Chapters 2-11 (no type) keep the draft's order. The passages the sent records cite are
+// admitted before the brief's others, in the brief's order. omissions names what the bounds left out (records by key
+// and type, passages by id) and counts the rest; a record the disclosure policy withholds is counted, never named.
 export const JOURNEY_SOL_LIMITS={passages:60,upstream:40,records:12,value:2000};
+const JOURNEY_RECORD_TIER={requirement:0,constraint:0,scope:0,outcome:1,journey:1,assumption:1,actor:2,stakeholder:2};
 export const JOURNEY_ANCHORS=new Set(['type','journeyId','outcomeId','constraintId','assumptionId','requirementId','driverId','decisionId','logicalId','applicationId','capabilityId','from','to','authorityId','targetId','assetId']);
 export function journeyRequest(raw){
  const chapter=Number(raw?.chapter);
@@ -367,10 +374,12 @@ export function journeyPacket(p,raw,draft,brief,{instructions=null}={}){
  const request=journeyRequest(raw);
  if(!draft||draft.chapter!==request.chapter)throw Error('Draft this chapter before asking Sol.');
  const policy=p.workspace?.aiPolicy||{},excluded=new Set(policy.excludedObjectIds||[]),redact=t=>redactSecrets(policy.redactContacts?maskContactText(t):String(t));
- const records=(draft.records||[]).filter(r=>r.kind==='guided'&&!r.provenance?.upstream?.some(id=>excluded.has(id))).slice(0,JOURNEY_SOL_LIMITS.records).map(r=>({key:r.key,title:redact(r.title).slice(0,200),fields:r.fields.filter(f=>!JOURNEY_ANCHORS.has(f.key)).map(f=>({key:f.key,label:f.label,current:redact(f.value).slice(0,1200),basis:f.basis,...(f.numeric?{numeric:true}:{}),...(f.optional?{optional:true}:{}),...(f.options||f.display!==undefined?{options:(f.options||[{id:f.value,title:f.display}]).slice(0,40)}:{})}))}));
+ const guided=(draft.records||[]).filter(r=>r.kind==='guided'),allowed=guided.filter(r=>!r.provenance?.upstream?.some(id=>excluded.has(id))),tier=r=>JOURNEY_RECORD_TIER[r.type]??1,ranked=[...allowed].sort((a,b)=>tier(a)-tier(b)),kept=ranked.slice(0,JOURNEY_SOL_LIMITS.records);
+ const records=kept.map(r=>({key:r.key,title:redact(r.title).slice(0,200),fields:r.fields.filter(f=>!JOURNEY_ANCHORS.has(f.key)).map(f=>({key:f.key,label:f.label,current:redact(f.value).slice(0,1200),basis:f.basis,...(f.numeric?{numeric:true}:{}),...(f.optional?{optional:true}:{}),...(f.options||f.display!==undefined?{options:(f.options||[{id:f.value,title:f.display}]).slice(0,40)}:{})}))}));
  const ids=[...new Set(records.flatMap(r=>(draft.records.find(x=>x.key===r.key)?.provenance?.upstream||[])))].filter(id=>!excluded.has(id)),upstream=[];let withheld=0;
  for(const id of ids){if(upstream.length>=JOURNEY_SOL_LIMITS.upstream)break;const rec=upstreamRecord(p,id);if(!rec){withheld++;continue;}upstream.push({ref:id,title:redact(rec.title||rec.question||id).slice(0,200),fields:Object.fromEntries(KEY_FIELDS.filter(k=>typeof rec[k]==='string'&&rec[k].trim()).map(k=>[k,redact(rec[k]).slice(0,300)]))});}
- const passages=(brief?.passages||[]).slice(0,JOURNEY_SOL_LIMITS.passages).map(x=>({id:x.id,text:redact(x.text).slice(0,600)}));
+ const all=brief?.passages||[],cited=new Set(kept.flatMap(r=>[...(r.provenance?.passages||[]),...(r.fields||[]).flatMap(f=>f.passages||[])])),uncited=i=>cited.has(all[i].id)?0:1,admit=new Set([...all.keys()].sort((i,j)=>uncited(i)-uncited(j)).slice(0,JOURNEY_SOL_LIMITS.passages));
+ const passages=all.filter((x,i)=>admit.has(i)).map(x=>({id:x.id,text:redact(x.text).slice(0,600)}));
  const sources=[];let knowledgeCharacters=0,knowledgeOmitted=0;
  for(const s of draft.citations||[]){
   // A summary of a claim is not enough: conditions, limitations and the exact
@@ -382,8 +391,8 @@ export function journeyPacket(p,raw,draft,brief,{instructions=null}={}){
   sources.push({id:s.id,ref:'K'+(sources.length+1),kind:s.kind,objectId:s.objectId,title:s.title,posture:s.posture,receipt:s.receipt,excerpt:s.reasoningExcerpt,truncated:!!s.truncated,applicableTo});knowledgeCharacters+=s.reasoningExcerpt.length;
  }
  const packet={version:2,task:'journey-draft',request,chapter:{id:request.chapter,title:draft.title},records,passages,upstream,sources,
-  omissions:{records:Math.max(0,(draft.records||[]).filter(r=>r.kind==='guided').length-records.length),passages:Math.max(0,(brief?.passages||[]).length-passages.length),upstream:Math.max(0,ids.length-upstream.length),withheld,knowledge:knowledgeOmitted},
-  brainReceipt:{engine:'architecture-brain-1',policy:'evidence-before-proposal-1',reasoning:'aiw-journey-draft-2',instructions,claimIds:sources.filter(c=>c.kind==='governed-claim').map(c=>c.objectId),sourceRefs:sources.map(s=>s.id),scoring:false},
+  omissions:{records:ranked.slice(kept.length).map(r=>({key:r.key,...(r.type?{type:r.type}:{})})),passages:all.filter((x,i)=>!admit.has(i)).map(x=>x.id),excluded:guided.length-allowed.length,upstream:Math.max(0,ids.length-upstream.length),withheld,knowledge:knowledgeOmitted},
+  brainReceipt:{engine:'architecture-brain-1',policy:'evidence-before-proposal-1',reasoning:'aiw-journey-draft-3',instructions,claimIds:sources.filter(c=>c.kind==='governed-claim').map(c=>c.objectId),sourceRefs:sources.map(s=>s.id),scoring:false},
   disclosure:{version:2,redactContacts:!!policy.redactContacts,redactSecrets:true,excludedObjectCount:excluded.size}};
  const safe=discloseIntelligenceValue(packet,policy,excluded);return {...safe,stamp:changeFingerprint(safe)};
 }
