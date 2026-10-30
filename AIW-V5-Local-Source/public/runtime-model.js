@@ -1,4 +1,10 @@
 import {documentIndex,passRemember,firstById,groupBy,tupleSet} from './document-memo.js';
+import {isOpenText} from './open-fields.js';
+// rc.10.73.42 (D8, C10-21): one failure-domain reading for Chapter 10 and the review desk. A zone's failure domain,
+// normalised; '' when it is not stated (empty, kept open, or placeholder words), so an unstated domain never reads as an
+// independent one. A zone people connect from (kind 'access') hosts no part, so it is no hosting failure domain.
+export const failureDomainKey=z=>z?.open?.failureDomain||isOpenText(z?.failureDomain)?'':String(z.failureDomain).trim().toLowerCase();
+export const hostingZone=z=>!!z&&z.kind!=='access';
 // Round 12 (DM-04): a plan's availability target, hours of service and batch windows, as the plan states them (a plan
 // written before round 12 states none of these: its driver slots name recovery and capacity only).
 const planAttrs=r=>{const a=(Array.isArray(r.targets)?r.targets:[]).find(t=>t?.kind==='availability'&&t.value!==''&&t.value!=null),s=r.schedule&&typeof r.schedule==='object'?r.schedule:{},b=Array.isArray(s.batchWindows)?s.batchWindows:[];

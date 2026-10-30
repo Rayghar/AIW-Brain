@@ -43,7 +43,7 @@ import {sha256} from './brain-integrity.js';
 import {withJourneyProvenance} from './chapter-guide.js';
 import {resilienceDrafts} from './security-domain.js';
 import {draftsByGroup, groupedDraftReason} from './readiness-model.js';
-import {nounPhrase} from './architecture-drafter.js';
+import {nounPhrase, DRAFT_STAGES} from './architecture-drafter.js';
 // Round 12 (G, GR-UX-16): the chapters named from the one chapter-name table.
 import {CHAPTER_TITLES} from './chapter-names.js';
 
@@ -430,21 +430,36 @@ const RULES = {
     if (!specs.length) { const c = list(p.interfaces?.contracts).find(x => !threatened.has(x.id)); if (c) specs.push(threat(p, c, 'Unauthorised action', `Unauthorised use of ${c.title}`, `A caller without the required permission invokes ${c.title}.`, `An action on ${c.title} is taken without the authority it needs.`, 'Moderate', `${refOf(c)} is the design's exchange with the least recorded protection.`, `Authorise callers of ${c.title}`, 'Identity & access', specs.length)); }
     return specs;
   },
-  // Chapter 10: an operating plan, zone and placement per application component without one.
+  // Chapter 10 (rc.10.73.42, D10): one environment of a stage holding every part, as the grouped architecture drafter
+  // drafts it (architecture-drafter.js DRAFT_STAGES, DRF-16), never one per component: the production stage, the
+  // environment designed first. The first part's record designs the environment and its zone; each later part joins it
+  // (environmentId), in the zone of its capability's stated failure domain or the stage's own zone (zoneId). Every
+  // runtime part is placed, the components and the technology realizations that support them, so no dependency is
+  // missing by construction. What no source states stays open: the failure domain, readiness without a capability, the
+  // rollback and the runbook (D17: kept as open fields when committed, never as words a check reads as stated).
   10: p => {
-    const placed = new Set(list(p.runtime?.plans).map(r => r.assetId));
-    return list(p.realisation?.components).filter(c => !placed.has(c.id)).map((c, i) => {
-      const need = list(p.technology?.needs).find(n => n.applicationId === c.id), cap = need && list(p.technology?.capabilities).find(x => list(p.technology?.mappings).some(m => m.capabilityId === x.id && m.needId === need.id));
-      const boundary = list(p.technology?.boundaries).find(b => b.id === cap?.boundaryId), up = uniq([c.id, cap?.id, boundary?.id]);
-      return {key: 'e' + (i + 1), kind: 'guided', title: `${c.title} production design`, upstream: up, values: {
-        assetId: fromUpstream(c.id, [c.id]), title: inferred(`${c.title} production design`, {upstream: [c.id]}), stage: inferred('Production design', {upstream: [c.id], note: 'The operating environment designed first; add others as needed.'}),
-        zone: boundary ? fromUpstream(`${boundary.title} zone`, [boundary.id]) : gap(openText('Name the placement zone')),
-        failureDomain: cap && !placeholder(cap.failureDomain) ? fromUpstream(cap.failureDomain, [cap.id]) : gap(openText('Which shared failure domain does this zone belong to')),
-        replicas: inferred('1', {upstream: [c.id], note: 'The smallest count the question accepts: one instance of an application that exists. An assumption until load and failure tests say otherwise.'}),
+    const [, stage, stageTitle] = DRAFT_STAGES[0], placed = new Set(list(p.runtime?.plans).map(r => r.assetId)), zoneTitle = `${stageTitle} zone`;
+    const capOfComp = c => { const need = list(p.technology?.needs).find(n => n.applicationId === c.id); return need ? list(p.technology?.capabilities).find(x => list(p.technology?.mappings).some(m => m.capabilityId === x.id && m.needId === need.id)) : null; };
+    const capOfReal = r => list(p.technology?.capabilities).find(x => list(p.technologyRealisation?.mappings).some(m => m.capabilityId === x.id && m.realizationId === r.id)) || null;
+    const parts = [...list(p.realisation?.components).map(c => ({c, cap: capOfComp(c), app: true})), ...list(p.technologyRealisation?.records).map(r => ({c: r, cap: capOfReal(r), app: false}))].filter(x => !placed.has(x.c.id));
+    // The environment of the stage, once a record (or the person) has designed it; and its zone for a failure domain.
+    const stageEnv = doc => list(doc.runtime?.environments).find(e => e.stage === stage) || null;
+    const domainOf = cap => cap && !placeholder(cap.failureDomain) ? str(cap.failureDomain) : '';
+    const zoneFor = (doc, e, domain) => list(doc.runtime?.zones).find(z => z.environmentId === e.id && (domain ? str(z.failureDomain).toLowerCase() === domain.toLowerCase() : z.title === zoneTitle)) || null;
+    return parts.map(({c, cap, app}, i) => {
+      const domain = domainOf(cap), up = uniq([c.id, cap?.id]);
+      return {key: 'e' + (i + 1), kind: 'guided', title: `${c.title} in ${stageTitle}`, upstream: up, values: {
+        assetId: fromUpstream(c.id, [c.id]),
+        environmentId: doc => { const e = stageEnv(doc); return e ? inferred(e.id, {upstream: [c.id], note: `Joins ${e.ref || e.id} ${e.title}: one environment of the stage holds every part.`}) : inferred('new-environment', {upstream: [c.id], note: 'No environment of the stage is designed yet; this record designs it, for every part.'}); },
+        zoneId: doc => { const e = stageEnv(doc), z = e && zoneFor(doc, e, domain); return z ? inferred(z.id, {upstream: domain ? [cap.id] : [c.id], note: domain ? `The zone of its failure domain, ${domain}.` : 'The stage\'s zone: no failure domain is stated for it.'}) : inferred('new-zone', {upstream: [c.id], note: 'A new zone in the environment for its failure domain.'}); },
+        title: inferred(stageTitle, {upstream: [c.id], note: 'One environment of the stage for every part.'}), stage: inferred(stage, {upstream: [c.id], note: 'The operating environment designed first; add others as needed.'}),
+        zone: domain ? fromUpstream(`${domain} zone`, [cap.id]) : inferred(zoneTitle, {upstream: [c.id], note: 'The stage\'s zone, until a failure domain is stated.'}),
+        failureDomain: domain ? fromUpstream(domain, [cap.id]) : gap(openText('Which shared failure domain does this zone belong to')),
+        replicas: inferred('1', {upstream: [c.id], note: `The smallest count the question accepts: one instance of ${app ? 'an application' : 'an implementation'} that exists. An assumption until load and failure tests say otherwise.`}),
         minReady: inferred('1', {upstream: [c.id], note: 'No more than the proposed replicas.'}),
-        readiness: cap ? fromUpstream(`${c.title} is ready when ${cap.title} answers for it.`, [cap.id]) : gap(openText('What demonstrates readiness to serve')),
+        readiness: app && cap ? fromUpstream(`${c.title} is ready when ${cap.title} answers for it.`, [cap.id]) : gap(openText('What demonstrates readiness to serve')),
         rollback: gap(openText('What triggers rollback and how is it checked')),
-        runbook: inferred(`Runbook for ${c.title} still to be written.`, {upstream: [c.id], note: 'The question asks for the procedure still to be written when there is none.'}),
+        runbook: gap(openText(`Which runbook operates ${c.title}`)),
         owner: ownerOf(c, c.id)}};
     });
   },
@@ -775,13 +790,13 @@ const MODEL_RULES = {
       const stage = env ? stageOfName(env.name) : stageOfName(nodes.map(n => n.name).join(' ')), passages = uniq([...(pl.passages || []), ...pl.el.passages, ...(env?.passages || []), ...(zone?.passages || [])]), up = [pl.comp.id];
       const replicas = pl.counted && Number(pl.counted.attrs.instances) >= 1 ? String(Number(pl.counted.attrs.instances)) : '';
       specs.push({key: 'me' + (specs.length + 1), kind: 'guided', title: `${pl.comp.title} ${env ? lower(env.name) : 'production'} design`, source: 'model', element: pl.el.id, passages, upstream: up, values: {
-        assetId: fromUpstream(pl.comp.id, up), title: inferred(`${pl.comp.title} ${env ? env.name : 'production'} design`, {upstream: up, passages}),
+        assetId: fromUpstream(pl.comp.id, up), environmentId: inferred('new-environment', {upstream: up, note: 'An environment of its own, as the model draws the placement.'}), title: inferred(`${pl.comp.title} ${env ? env.name : 'production'} design`, {upstream: up, passages}),
         stage: stage ? inferred(stage, {passages: env?.passages || passages, note: `From the name "${env?.name || zone?.name}" the model gives it.`}) : gap('Production design', 'The model names no environment stage; the first holds until you choose.'),
         zone: zone ? fromModel(M, zone.name, zone.passages) : gap(openText('Name the placement zone')),
         failureDomain: outer ? fromModel(M, outer.name, outer.passages, {note: 'The outermost node the model places it in.'}) : gap(openText('Which shared failure domain does this zone belong to')),
         replicas: replicas ? fromModel(M, replicas, uniq([...pl.counted.passages, ...pl.el.passages]), {note: `The instance count the model states on ${pl.counted.name}; an assumption until load and failure tests say otherwise.`}) : inferred('1', {passages: pl.el.passages, note: 'One instance, as the model draws it; an assumption until load and failure tests say otherwise.'}),
         minReady: inferred('1', {upstream: up, note: 'No more than the proposed replicas.'}), readiness: gap(openText('What demonstrates readiness to serve')), rollback: gap(openText('What triggers rollback and how is it checked')),
-        runbook: inferred(`Runbook for ${pl.comp.title} still to be written.`, {upstream: up, note: 'The question asks for the procedure still to be written when there is none.'}),
+        runbook: gap(openText(`Which runbook operates ${pl.comp.title}`)),
         owner: gap(OWNER_GAP, 'The model names no owner.')}});
     }
     return specs;

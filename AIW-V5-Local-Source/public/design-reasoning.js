@@ -19,6 +19,8 @@ import {linkedRequirementIds} from './requirement-links.js';
 import {readDecision} from './decision-reading.js';
 import {driverScope, driverScopeIndex} from './driver-scope.js';
 import {toMs, toMinutes} from './target-units.js';
+import {failureDomainKey, hostingZone} from './runtime-model.js';
+import {isOpenText} from './open-fields.js';
 
 const fmt = n => n == null ? '—' : Math.abs(n) >= 100 ? String(Math.round(n)) : String(Math.round(n * 10) / 10);
 
@@ -160,10 +162,16 @@ export function planFacts(R, plan) {
   const active = pl.filter(x => x.role === 'active'), standby = pl.filter(x => x.role === 'standby');
   const count = xs => xs.reduce((n, x) => n + (num(x.replicas) || 0), 0);
   const zonesActive = uniq(active.map(x => x.zoneId)), zonesAll = uniq(pl.map(x => x.zoneId));
+  // rc.10.73.42 (D8, C10-21): the active copies by hosting failure domain, read as Chapter 10 reads it (failureDomainKey):
+  // an access zone hosts nothing, and a zone that states no failure domain is a domain of its own, unknown (' ' + zone).
+  // spread: the stated domains, how many zones state none, and the copies left after losing the largest domain.
+  const dom = new Map();
+  for (const x of active) { const z = R.zones.get(x.zoneId); if (hostingZone(z)) { const k = failureDomainKey(z) || ' ' + z.id; dom.set(k, (dom.get(k) || 0) + (num(x.replicas) || 0)); } }
+  const keys = [...dom.keys()], copies = [...dom.values()], spread = {domains: keys.filter(k => k[0] !== ' '), unstated: keys.some(k => k[0] === ' '), left: copies.reduce((n, c) => n + c, 0) - Math.max(0, ...copies), writer: !plan.open?.fencing && !isOpenText(plan.fencing)};
   const asset = R.comps.get(plan.assetId) || R.reals.get(plan.assetId) || null;
   return {plan, asset, assetKind: R.comps.has(plan.assetId) ? 'component' : R.reals.has(plan.assetId) ? 'realisation' : 'other',
     product: R.reals.has(plan.assetId) ? productOf(R.reals.get(plan.assetId)) : null,
-    placements: pl, active: count(active), standby: count(standby), zonesActive, zonesAll,
+    placements: pl, active: count(active), standby: count(standby), zonesActive, zonesAll, spread,
     // Round 12 (DM-08): placements whose role or copy count is not stated; they count as nothing, never as one.
     open: pl.filter(x => !['active', 'standby'].includes(x.role) || num(x.replicas) == null).length,
     minReady: num(plan.minReady), maxReplicas: num(plan.maxReplicas), recoveryMinutes: num(plan.recoveryMinutes), lossMinutes: num(plan.lossMinutes),
@@ -282,9 +290,22 @@ function planLabel(f) { return f.plan.ref + ' ' + f.plan.title + (f.product?.pro
 export function availabilityCheck(f, budget) {
   const where = f.zonesActive.length > 1 ? ` across ${f.zonesActive.length} zones` : f.zonesActive.length === 1 ? ' in one zone' : '';
   if (!f.placements.length) return {state: 'unknown', why: 'Not placed in any zone, so what an outage costs cannot be read.'};
-  if (f.active >= 2 && f.zonesActive.length > 1) return {state: 'holds', why: `${f.active} active replicas${where}: losing one replica or one zone does not stop it.`};
+  // Copies a zone or failure-domain loss stops: their recorded recovery time against the budget.
+  const lost = s => ({state: f.recoveryMinutes == null ? 'unknown' : f.recoveryMinutes <= budget ? 'holds' : 'breaks', why: `${f.active} active replicas${where} ${s}${f.recoveryMinutes == null ? ' for an unrecorded time' : ` for ${fmt(f.recoveryMinutes)} min`}.`});
+  // rc.10.73.42 (D8, C10-21): copies spread over zones hold only over independent hosting failure domains: zones that share
+  // one, state none or are access zones are no independence; the copies left after losing the largest domain meet the
+  // minimum ready count (one when none is stated); and a stateful service's copies are not interchangeable, so with one
+  // writer the loss of its domain waits on a promotion under its stated write authority.
+  if (f.active >= 2 && f.zonesActive.length > 1) {
+    const {domains: d, unstated, left, writer} = f.spread, need = f.minReady ?? 1;
+    if (!d.length || unstated) return {state: 'unknown', why: `${f.active} active replicas${where}, not all in a hosting zone with a stated failure domain: what losing one costs cannot be read.`};
+    if (d.length < 2) return lost(`share one failure domain (${d[0]}): losing it stops them`);
+    if (left < need) return lost(`leave ${left} after losing the largest failure domain, below the ${need} it needs ready: that stops it`);
+    if (f.stateMode === 'Stateful service') return writer ? lost('of a stateful service with one writer: losing its domain waits on a promotion under its write authority,') : {state: 'unknown', why: `${f.active} active replicas${where} of a stateful service: no write authority is stated.`};
+    return {state: 'holds', why: `${f.active} active replicas${where} in ${d.length} failure domains: losing one leaves ${left}, at least the ${need} it needs ready.`};
+  }
   if (f.open) return {state: 'unknown', why: `${f.open === 1 ? 'A placement does' : f.open + ' placements do'} not state ${f.open === 1 ? 'its' : 'their'} role or copies, so what an outage costs cannot be read.`};
-  if (f.active >= 2) return {state: f.recoveryMinutes == null ? 'unknown' : f.recoveryMinutes <= budget ? 'holds' : 'breaks', why: `${f.active} active replicas${where} survive a replica failure, but a zone failure stops it${f.recoveryMinutes == null ? ' for an unrecorded time' : ` for ${fmt(f.recoveryMinutes)} min`}.`};
+  if (f.active >= 2) return lost('survive a replica failure, but a zone failure stops it');
   if (f.recoveryMinutes == null) return {state: 'unknown', why: `One active replica${where}${f.standby ? ' with a standby' : ''}: every restart or release is unavailability, and its recovery time is not recorded.`};
   const fits = Math.floor(budget / Math.max(f.recoveryMinutes, 0.0001));
   return f.recoveryMinutes > budget

@@ -17,6 +17,7 @@ import {productMechanisms} from './product-applicability.js';
 import {productsAvailable} from './model-knowledge.js';
 import {list, str, num, uniq} from './util.js';
 import {REFERENCE_PROJECTS} from './reference-projects.js';
+import {failureDomainKey, hostingZone} from './runtime-model.js';
 
 export function fmtN(n, digits = 0) {
   if (n == null || !Number.isFinite(n)) return '—';
@@ -138,7 +139,10 @@ export function capacityPlan(R, objective) {
   const F = flowOf(R);
   const env = R.selectedEnvironmentId || [...R.plans.values()][0]?.environmentId || null;
   const zones = [...R.zones.values()].filter(z => !env || z.environmentId === env);
-  const Z = Math.max(1, zones.length);
+  // rc.10.73.42 (D8, C10-21): what a zone loss must be survived over is the distinct hosting failure domains, not the zone
+  // records: an access zone hosts nothing, zones that share a failure domain fail together, and a zone that states no
+  // failure domain shows no independence (failureDomainKey, as Chapter 10 reads it).
+  const Z = Math.max(1, uniq(zones.filter(hostingZone).map(failureDomainKey).filter(Boolean)).length);
   // No load stated (GR-RUN-04): no arrival rate, no part's demand, no cluster; the synchronous hops stay, which the
   // latency reading counts whatever the load.
   if (O.value == null) {
@@ -171,8 +175,8 @@ export function capacityPlan(R, objective) {
 
   const spare = (load, ds) => {
     if (!needsSpare(ds)) return {n: Math.max(1, load), rule: 'no availability, recovery or Critical driver: load only'};
-    if (A.survive === 'zone' && Z >= 2) { const per = ceil(load / (Z - 1)); return {n: Math.max(2, per * Z), rule: `survive one of ${Z} zones: ${fmtN(per)} in each zone, so ${Z - 1} zone${Z - 1 === 1 ? '' : 's'} still carr${Z - 1 === 1 ? 'ies' : 'y'} the load`}; }
-    return {n: Math.max(2, load + 1), rule: A.survive === 'zone' ? 'only one zone is recorded, so one spare replica' : 'survive one replica: one spare'};
+    if (A.survive === 'zone' && Z >= 2) { const per = ceil(load / (Z - 1)); return {n: Math.max(2, per * Z), rule: `survive one of ${Z} failure domains: ${fmtN(per)} in each, so ${Z - 1} still carr${Z - 1 === 1 ? 'ies' : 'y'} the load`}; }
+    return {n: Math.max(2, load + 1), rule: A.survive === 'zone' ? 'only one failure domain is recorded, so one spare replica' : 'survive one replica: one spare'};
   };
   const verdictReplicas = (need, f, label = 'replicas') => {
     if (!f) return {state: 'none', why: 'No runtime plan records it.'};
@@ -328,7 +332,7 @@ export function capacityPlan(R, objective) {
   const nodes = pods ? (A.survive === 'zone' && Z >= 2 ? ceil(nodeLoad / (Z - 1)) * Z : nodeLoad + 1) : 0;
   for (const r of realsBy('compute')) {
     rows.push({id: r.id, band: 'platform', kind: 'cluster', ref: r.ref, title: r.title, product: plabel(r), demand: {value: pods, unit: 'pods', text: `${fmtN(pods)} pods`}, plan: planOf(R, r.id), drivers: carried(R, [r.id]).map(d => d.id), replicas: nodes,
-      spec: [{k: 'Pods', v: fmtN(pods), d: 'the services and workers above'}, {k: 'vCPU · memory', v: `${fmtN(vcpu, 1)} vCPU · ${fmtN(mem, 1)} GiB`, d: 'requested by those pods'}, {k: 'Nodes', v: fmtN(nodes), d: `${fmtN(nodeLoad)} of ${fmtN(num(A.nodeVcpu))} vCPU and ${fmtN(num(A.nodeMemGiB))} GiB at ${fmtN(u * 100)} %${nodes > nodeLoad ? A.survive === 'zone' && Z >= 2 ? `, spread so one of ${Z} zones can fail` : ' + one spare node' : ''}`}],
+      spec: [{k: 'Pods', v: fmtN(pods), d: 'the services and workers above'}, {k: 'vCPU · memory', v: `${fmtN(vcpu, 1)} vCPU · ${fmtN(mem, 1)} GiB`, d: 'requested by those pods'}, {k: 'Nodes', v: fmtN(nodes), d: `${fmtN(nodeLoad)} of ${fmtN(num(A.nodeVcpu))} vCPU and ${fmtN(num(A.nodeMemGiB))} GiB at ${fmtN(u * 100)} %${nodes > nodeLoad ? A.survive === 'zone' && Z >= 2 ? `, spread so one of ${Z} failure domains can fail` : ' + one spare node' : ''}`}],
       verdict: against(r, /node/i, nodes, (v, ok) => ok ? `room for the ${fmtN(nodes)} nodes the pods need` : `short of the ${fmtN(nodes)} nodes the pods need`) || {state: 'none', why: recordedCap(r) ? `Chapter 7 records ${recordedCap(r)}; compare it with ${fmtN(nodes)} nodes.` : 'No cluster size is recorded to compare with.'}, recorded: recordedCap(r), estimatesConfirmed: !!r.estimatesConfirmed, nodeLoad, facts: factsOf(prod(r)?.product),
       math: [`max(${fmtN(vcpu, 1)} ÷ (${fmtN(num(A.nodeVcpu))} × ${fmtN(u * 100)} %), ${fmtN(mem, 1)} ÷ (${fmtN(num(A.nodeMemGiB))} × ${fmtN(u * 100)} %)) → ${fmtN(nodeLoad)} nodes`], fix: {chapter: 7, id: r.id, label: `Record ${r.ref}'s cluster size in Chapter 7`}});
   }

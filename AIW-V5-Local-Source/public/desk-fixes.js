@@ -81,7 +81,7 @@ const DRAFTERS = {
     if (!zones.length) return judgement(row, 'availability', `No zone is recorded for ${row.ref}'s environment, so there is nowhere to place it. The desk does not invent sites.`, {chapter: 10, id: pl.id, label: 'Record a zone in Chapter 10'});
     if (v.state === 'warn') return judgement(row, 'availability', `${v.why} Only ${zones.length} zone${zones.length === 1 ? ' is' : 's are'} recorded; a third failure domain is a decision about sites, not a number the desk can draft.`, {chapter: 10, id: pl.id, label: 'Record a third zone in Chapter 10'});
     const knobs = how === 'spread' ? [{key: 'perZone', label: 'Active replicas in each zone', type: 'number', min: 1, max: 50, value: Math.max(1, ...placementsOf(p, pl.id).filter(l => l.role === 'active').map(l => num(l.replicas) || 1)), unit: 'replicas'}]
-      : how === 'quorum' ? [{key: 'nodes', label: 'Nodes', type: 'number', min: 3, max: 9, step: 2, value: (fact(row.product, 'clusterNodes') || fact(row.product, 'dcs'))?.value || 3, unit: 'nodes'}]
+      : how === 'quorum' ? [{key: 'nodes', label: 'Nodes', type: 'number', min: 3, max: 9, step: 2, value: (fact(row.product, 'clusterNodes') || fact(row.product, 'dcs'))?.value || 3, unit: 'nodes'}, ...(!str(pl.fencing) ? [words('fencing', 'Write authority', QUORUM)] : [])]
       : [{key: 'recoveryMinutes', label: how === 'pair' ? 'Failover within' : 'Restart within', type: 'number', min: 1, max: 1440, value: minutesFor(row), unit: 'min', hint: minutesWhy(row)}, ...(how === 'pair' && !str(pl.fencing) ? [words('fencing', 'Fencing', FENCING)] : [])];
     const title = how === 'pair' ? `Give ${row.ref} a standby in a second zone` : how === 'quorum' ? `Spread ${row.ref}'s nodes across the zones` : how === 'single' ? `Place ${row.ref} apart from what it protects` : `Run ${row.ref} in ${Math.min(zones.length, 3)} zone${zones.length === 1 ? '' : 's'}`;
     const why = how === 'pair' ? `${row.product || row.title} keeps one primary: a standby in another zone, promoted within the recovery time, keeps ${v.target.split(' · ')[0]} within its budget.`
@@ -100,6 +100,9 @@ const DRAFTERS = {
           const n = Math.max(3, Math.round(num(k.nodes) || 3)), use = zs.slice(0, Math.min(zs.length, n)), per = use.map((z, i) => Math.floor(n / use.length) + (i < n % use.length ? 1 : 0));
           use.forEach((z, i) => { const l = act(z.id); if (!l) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: per[i], basis: `${DRAFTED}: ${n} nodes across ${use.length} zone${use.length === 1 ? '' : 's'} (${per.join(' + ')}), so a majority of ${Math.floor(n / 2) + 1} agrees. ${use.length < 3 ? 'Losing the zone with the most nodes loses the majority: record a third failure domain.' : 'Losing one zone keeps the majority.'}`})); else if ((num(l.replicas) || 0) !== per[i]) out.push(placementCmd({...l, replicas: per[i]})); });
           const ch = {}; if ((num(pl.maxReplicas) || 0) < n) ch.maxReplicas = n; if (str(pl.stateMode) === 'Unspecified' || !pl.stateMode) ch.stateMode = 'Stateful service'; if (['Unspecified', ''].includes(str(pl.recoveryStrategy))) ch.recoveryStrategy = 'Failover';
+          // rc.10.73.42 (D8): a stateful service's copies hold only with a stated write authority and a leader-election time,
+          // drafted here for the person to review, as a pair's fencing and failover time are.
+          if (!str(pl.fencing)) ch.fencing = said(k, 'fencing', QUORUM); if (num(pl.recoveryMinutes) == null) { const m = minutesFor(row); Object.assign(ch, {recoveryMinutes: m, targetsBasis: `${DRAFTED}: a new leader within ${fmtN(m)} min. Prove it with a failover drill.`, targetsConfirmed: false}); }
           if (Object.keys(ch).length) out.push(planCmd(p, pl.id, ch));
         } else {
           const m = Math.max(1, Math.round(num(k.recoveryMinutes) || minutesFor(row)));
@@ -271,6 +274,7 @@ const DRAFTERS = {
 const steps = xs => list(xs).map(m => str(m).replace(/[.;]\s*$/, '')).filter(Boolean).join('; ');
 const fill = (t, vars) => str(t).replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? String(vars[k]) : m);
 const FENCING = 'One primary accepts writes. Fence the old primary before the standby is promoted, so two never act at once.';
+const QUORUM = 'A majority of the nodes elects the one leader that takes writes; a minority stops taking them.';
 const FAILOVER_WORDS = 'Promote the standby, fence the old primary, verify the state is consistent, then resume.';
 const RESTART_WORDS = row => `Restart the failed instance${on(row) ? ' (Kubernetes restarts it and readiness gates traffic)' : ''}; reconcile in-flight work by its reference before it resumes.`;
 const recoveryWords = (row, how) => how === 'pair' || how === 'quorum' ? FAILOVER_WORDS : RESTART_WORDS(row);
@@ -310,7 +314,7 @@ export function monitoringText(D, row) {
     if (d.category === 'performance') return `${d.id} when the 95th percentile passes ${d.targetValue} ${d.unit}`;
     if (d.category === 'recoverability') return `${d.id} when anything is still unresolved after ${d.targetValue} ${d.unit}`;
     if (d.category === 'integrity') return `${d.id} on any repeated effect reconciliation finds`;
-    if (d.category === 'security') return `${d.id} on refused access, without logging credentials or payment details`;
+    if (d.category === 'security') return `${d.id} on refused access, without logging credentials or other sensitive details`;
     if (d.category === 'traceability') return `${d.id} when a stage loses the reference`;
     return '';
   }).filter(Boolean);
