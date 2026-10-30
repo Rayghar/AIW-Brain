@@ -1,0 +1,3945 @@
+{
+  "schema": "aiw.sol-live-check/4",
+  "at": "2026-10-30T06:36:09.653Z",
+  "live": true,
+  "provider": "openai",
+  "model": "gpt-4.1-mini",
+  "modelDefaulted": true,
+  "effort": null,
+  "callTimeoutMs": 120000,
+  "connectionVerified": {
+    "at": "2026-10-30T06:34:25.844Z",
+    "ok": true,
+    "model": "gpt-4.1-mini",
+    "limitsChecked": false
+  },
+  "pins": [
+    "sol-field-5",
+    "sol-journey-3",
+    "sol-review-3",
+    "sol-architecture-5"
+  ],
+  "routes": {
+    "field": {
+      "draft": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      },
+      "check": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      }
+    },
+    "journey": {
+      "draft": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      },
+      "check": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      }
+    },
+    "reasoning": {
+      "draft": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      },
+      "check": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      }
+    },
+    "review": {
+      "draft": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      },
+      "check": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      }
+    },
+    "generate": {
+      "draft": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      },
+      "check": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      }
+    },
+    "architecture": {
+      "draft": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      },
+      "check": {
+        "provider": "default",
+        "model": "gpt-4.1-mini"
+      }
+    }
+  },
+  "fallbackRoutes": [],
+  "faults": null,
+  "chapters": [
+    {
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "status": "completed",
+      "packetCharacters": 4287,
+      "sources": 10,
+      "neighbours": 5,
+      "draftAccepted": false,
+      "withheld": true,
+      "withheldBy": "check",
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "",
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "value": "Patients can book, move, or cancel their appointments themselves at any time of day through the online service, as required by the linked booking requirement."
+      },
+      "error": null
+    },
+    {
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "status": "completed",
+      "packetCharacters": 10428,
+      "sources": 7,
+      "neighbours": 0,
+      "draftAccepted": true,
+      "withheld": false,
+      "withheldBy": null,
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "Patients must be able to book an appointment through the online service at any time, fulfilling the requirement to allow self-service booking, moving, or cancellation at any hour.",
+      "withheldDraft": null,
+      "error": null
+    },
+    {
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "status": "completed",
+      "packetCharacters": 9311,
+      "sources": 7,
+      "neighbours": 3,
+      "draftAccepted": true,
+      "withheld": false,
+      "withheldBy": null,
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "This design choice addresses CON-001 by aligning the handling of patient personal data with applicable health data regulations where the clinic operates, ensuring the core constraint is respected. The decision considers the context of REQ-001, which enables patients to book appointments online at any time, incorporating the relevant quality drivers and constraints. The alternatives ALT-001 and ALT-002 illustrate the options between a single owned boundary or a separate independent boundary to manage regulated data effectively. The rationale prioritizes a clear ownership and boundary for compliance with health data regulations, informed by the constraint CON-001 and quality concerns in QD-001, supported by the project context in REQ-001. Operational and governance consequences, as well as obligations introduced by these choices, are identified in relevant patterns but are not yet decided here, leaving room for further verification and ownership assignment.",
+      "withheldDraft": null,
+      "error": null
+    },
+    {
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "record": "LR-001 Appointment scheduling",
+      "status": "completed",
+      "packetCharacters": 11995,
+      "sources": 9,
+      "neighbours": 1,
+      "draftAccepted": true,
+      "withheld": false,
+      "withheldBy": null,
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "Enables patients to book appointments online at any time, fulfilling the requirement for round-the-clock appointment scheduling while excluding clinical records, prescriptions, and related booking or reminder functions handled elsewhere.",
+      "withheldDraft": null,
+      "error": null
+    },
+    {
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "record": "APP-001 Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 9461,
+      "sources": 6,
+      "neighbours": 1,
+      "draftAccepted": true,
+      "withheld": false,
+      "withheldBy": null,
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "Owns Appointment scheduling: Patients can book an appointment at any time through the online service, covering online bookings only. Outside scope are clinical records and prescriptions, plus phone bookings and their management (register/move/cancel) and sending or handling appointment reminders by text or email, which are handled by other components.",
+      "withheldDraft": null,
+      "error": null
+    },
+    {
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 11808,
+      "sources": 10,
+      "neighbours": 1,
+      "draftAccepted": true,
+      "withheld": false,
+      "withheldBy": null,
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "Provides compute resources to APP-001 Appointment scheduling service to support its own processing logic, enabling patients to book an appointment at any time through the online service.",
+      "withheldDraft": null,
+      "error": null
+    },
+    {
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "status": "completed",
+      "packetCharacters": 11951,
+      "sources": 4,
+      "neighbours": 0,
+      "draftAccepted": false,
+      "withheld": true,
+      "withheldBy": "deterministic",
+      "targetOpen": true,
+      "currentIsPlaceholder": false,
+      "draft": "",
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "value": "Operations, monitoring, and incident handling for this compute component remain unassigned and open. The design records do not specify which team or organization will assume these responsibilities, nor the monitoring tools or incident response procedures. These aspects need to be defined as part of the ongoing architectural decision and operations planning."
+      },
+      "error": null
+    },
+    {
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "record": "IF-001 Hand over appointment",
+      "status": "completed",
+      "packetCharacters": 11820,
+      "sources": 9,
+      "neighbours": 2,
+      "draftAccepted": false,
+      "withheld": true,
+      "withheldBy": "deterministic",
+      "targetOpen": true,
+      "currentIsPlaceholder": false,
+      "draft": "",
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "value": "When the provider fails or does not answer, the caller must handle the outcome as unavailable or uncertain. The specific behaviour upon such failure is currently open and requires decision based on usage context and operational conditions, consistent with the open question on failurePolicy in IF-001 and the lack of stated expectations in the upstream requirements and related components."
+      },
+      "error": null
+    },
+    {
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "record": "SEC-001 Limit access to Appointment",
+      "status": "completed",
+      "packetCharacters": 11798,
+      "sources": 10,
+      "neighbours": 1,
+      "draftAccepted": false,
+      "withheld": true,
+      "withheldBy": "deterministic",
+      "targetOpen": true,
+      "currentIsPlaceholder": false,
+      "draft": "",
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "value": "The control is a design proposal to limit access to the Appointment data, intended to prevent unauthorized disclosure of confidential journey information. However, where and how this control is enforced remains an open question, as it is not stated in the brief or upstream records. The design must eventually define enforcement location and method, ownership, monitoring, failure handling, and review criteria to meet security obligations and address the high-priority threat of unauthorized disclosure."
+      },
+      "error": null
+    },
+    {
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "record": "RUN-001 Appointment scheduling service",
+      "status": "completed",
+      "packetCharacters": 9277,
+      "sources": 7,
+      "neighbours": 2,
+      "draftAccepted": true,
+      "withheld": false,
+      "withheldBy": null,
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "The Appointment scheduling service is considered ready to serve when the Compute for Appointment scheduling service capability is available and responding, confirming the underlying infrastructure necessary for operation is functioning as expected.",
+      "withheldDraft": null,
+      "error": null
+    },
+    {
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "status": "completed",
+      "packetCharacters": 10999,
+      "sources": 7,
+      "neighbours": 2,
+      "draftAccepted": true,
+      "withheld": false,
+      "withheldBy": null,
+      "targetOpen": false,
+      "currentIsPlaceholder": false,
+      "draft": "Sol live check · reference enables patients to book, move, or cancel outpatient appointments themselves at any time of day. The design also ensures that every freed slot is offered to the waiting list before the day of the appointment, supporting outpatient appointment management from booking through follow-up. Key unresolved decisions address how personal health data and appointment reminders conform to applicable regulations and performance requirements, while online booking must be operational by year-end.",
+      "withheldDraft": null,
+      "error": null
+    }
+  ],
+  "totals": {
+    "field": {
+      "runs": 11,
+      "completed": 11,
+      "unit": "draft",
+      "offered": 7,
+      "empty": 0,
+      "withheld": 4,
+      "byLayer": {
+        "deterministic": 3,
+        "check": 1,
+        "both": 0,
+        "unrecorded": 0
+      },
+      "declined": 0,
+      "contradictions": 0
+    },
+    "journey": {
+      "runs": 1,
+      "completed": 1,
+      "unit": "draft",
+      "offered": 1,
+      "empty": 0,
+      "withheld": 0,
+      "byLayer": {
+        "deterministic": 0,
+        "check": 0,
+        "both": 0,
+        "unrecorded": 0
+      },
+      "declined": 0,
+      "contradictions": 0,
+      "answersOffered": 38,
+      "answersWithheld": 0
+    },
+    "review": {
+      "runs": 1,
+      "completed": 1,
+      "unit": "finding",
+      "offered": 20,
+      "empty": 0,
+      "withheld": 0,
+      "byLayer": {
+        "deterministic": 0,
+        "check": 0,
+        "both": 0,
+        "unrecorded": 0
+      },
+      "declined": 0,
+      "contradictions": 0
+    },
+    "architecture": {
+      "runs": 1,
+      "completed": 1,
+      "unit": "proposal",
+      "offered": 17,
+      "empty": 0,
+      "withheld": 2,
+      "byLayer": {
+        "deterministic": 2,
+        "check": 0,
+        "both": 0,
+        "unrecorded": 0
+      },
+      "declined": 0,
+      "contradictions": 0,
+      "withheldAll": 0
+    }
+  },
+  "runs": [
+    {
+      "mode": "field",
+      "id": "be3b94c8-18ec-4512-82c5-06b89fea2982",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 6672,
+        "outputTokens": 247
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_01ef1c0103756b5f016ae43a75336887d1bd2b644afe3e7b77",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 3566,
+            "outputTokens": 95
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_045164f942f7ed48016ae43a767b6887d1989b30b770faa37f",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 3106,
+            "outputTokens": 152
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "description",
+        "hasDraft": false,
+        "sourcesInPacket": 10
+      },
+      "error": null,
+      "chapter": 1,
+      "command": "artefact",
+      "field": "description",
+      "recordId": "OUT-001",
+      "record": "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+      "packetStamp": "8a88d622a5341cdf417f9306f03cb2055f35f31b46ff9e6ded7b3a0c1acf49dc",
+      "draftAccepted": false,
+      "outcome": {
+        "unit": "draft",
+        "offered": 0,
+        "empty": 0,
+        "withheld": 1,
+        "withheldBy": "check",
+        "byLayer": {
+          "deterministic": 0,
+          "check": 1,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 4287,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 5,
+          "requirement": 3
+        },
+        "neighbours": [
+          "REQ-001 Book an appointment at any time through the online service",
+          "REQ-002 Register a phone booking and move or cancel it for a patient who calls",
+          "REQ-003 Send a reminder by text message or email two days before each appointment",
+          "REQ-004 Answer each reminder to confirm, move or cancel the appointment",
+          "REQ-006 Record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets"
+        ],
+        "omissions": [
+          {
+            "title": "REQ-004 Answer each reminder to confirm, move or cancel the appointment",
+            "reason": "source limit"
+          },
+          {
+            "title": "QD-001 Quality: Book an appointment at any time through the online service",
+            "reason": "source limit"
+          },
+          {
+            "title": "QD-002 Quality: Register a phone booking and move or cancel it for a patient who calls",
+            "reason": "source limit"
+          },
+          {
+            "title": "QD-003 Quality: Send a reminder by text message or email two days before each appointment",
+            "reason": "source limit"
+          },
+          {
+            "title": "QD-004 Quality: Answer each reminder to confirm, move or cancel the appointment",
+            "reason": "source limit"
+          }
+        ],
+        "help": "What this record says: a journey step as the user experiences it, a requirement as a behaviour, a constraint as a limit, an outcome as a change."
+      },
+      "grounding": {
+        "accepted": false,
+        "issues": [
+          "the candidate value states 'move or cancel their appointments themselves at any time of day through the online service' but REQ-001 only requires booking at any time; moving or canceling at any time through the online service is not supported by the packet sources"
+        ],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [
+            "the candidate value states 'move or cancel their appointments themselves at any time of day through the online service' but REQ-001 only requires booking at any time; moving or canceling at any time through the online service is not supported by the packet sources"
+          ],
+          "notes": [
+            "The original record OUT-001 states patients can book, move or cancel at any time of day but does not specify 'through the online service'.",
+            "REQ-001 supports booking at any time through the online service, but does not specify moving or canceling at any time through the online service.",
+            "The candidate adds 'through the online service' to moving and canceling at any time, which is not supported by the cited sources."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The original record OUT-001 states patients can book, move or cancel at any time of day but does not specify 'through the online service'.",
+          "REQ-001 supports booking at any time through the online service, but does not specify moving or canceling at any time through the online service.",
+          "The candidate adds 'through the online service' to moving and canceling at any time, which is not supported by the cited sources."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": true,
+        "packetStamp": "8a88d622a5341cdf417f9306f03cb2055f35f31b46ff9e6ded7b3a0c1acf49dc",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "",
+        "basis": "",
+        "sourceRefs": []
+      },
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "reference": "clinic-appointments",
+        "value": "Patients can book, move, or cancel their appointments themselves at any time of day through the online service, as required by the linked booking requirement.",
+        "basis": "This description follows from the record's own text and the linked requirement REQ-001, which states patients must be able to book an appointment at any time through the online service, as supported by sources S1 and S3.",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "65331d78-fa1a-41ad-a433-adb80942a3df",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10678,
+        "outputTokens": 228
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0751cc5979f70d74016ae43a7878a487d1900e60cc3ef7e9a9",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5558,
+            "outputTokens": 108
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0d6812aa104a9c70016ae43a7a30e887d1b9e769ae9459433a",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5120,
+            "outputTokens": 120
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "response",
+        "hasDraft": true,
+        "sourcesInPacket": 7
+      },
+      "error": null,
+      "chapter": 2,
+      "command": "quality.driver",
+      "field": "response",
+      "recordId": "QD-001",
+      "record": "QD-001 Quality: Book an appointment at any time through the online service",
+      "packetStamp": "2a860818d1925de0159c53f805d2dab887522265c2df52e8b98bc5aac77de2dd",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 10428,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "quality-driver": 1,
+          "model": 2,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [],
+        "omissions": [
+          {
+            "title": "3 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Event-Driven Service",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chatty Services",
+            "reason": "character budget"
+          },
+          {
+            "title": "God Service",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chapter 2’s reading of QD-001 Quality: Book an appointment at any time through the online service",
+            "reason": "character budget"
+          }
+        ],
+        "help": "What the system must do when the stimulus arrives."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate value is a restatement and slight elaboration of the recorded response in QD-001 and the requirement REQ-001. It does not present measured, verified, or guaranteed performance, only an expected functional behavior.",
+            "All key numbers and terms ('at any time', 'book an appointment', 'online service', 'self-service booking, moving, or cancellation') are present in the packet sources referenced (S1, S2, S3).",
+            "No unsupported numbers, invented data, or unsupported claims are present."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate value is a restatement and slight elaboration of the recorded response in QD-001 and the requirement REQ-001. It does not present measured, verified, or guaranteed performance, only an expected functional behavior.",
+          "All key numbers and terms ('at any time', 'book an appointment', 'online service', 'self-service booking, moving, or cancellation') are present in the packet sources referenced (S1, S2, S3).",
+          "No unsupported numbers, invented data, or unsupported claims are present."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "2a860818d1925de0159c53f805d2dab887522265c2df52e8b98bc5aac77de2dd",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "Patients must be able to book an appointment through the online service at any time, fulfilling the requirement to allow self-service booking, moving, or cancellation at any hour.",
+        "basis": "This value reflects the stated requirement REQ-001 and the quality driver QD-001’s current recorded response, which obliges the system to allow patients to book appointments at any time, as supported by sources S1, S2, and S3.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ]
+      },
+      "withheldDraft": null
+    },
+    {
+      "mode": "field",
+      "id": "5393cf40-c484-4325-b835-29f49e51970a",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9575,
+        "outputTokens": 492
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0a6d053401fec533016ae43a7c356887d1aeb4ef6f11713a88",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 4918,
+            "outputTokens": 286
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0b5a23f0664f7597016ae43a7eb58087d18fe036d299d50ba7",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 4657,
+            "outputTokens": 206
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "rationale",
+        "hasDraft": true,
+        "sourcesInPacket": 7
+      },
+      "error": null,
+      "chapter": 3,
+      "command": "decision.save",
+      "field": "rationale",
+      "recordId": "ADR-001",
+      "record": "ADR-001 How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?",
+      "packetStamp": "79dd27ff839c8f855119f3dff6bb0ddf85644838b0af20594d5bfbcc16ed0c62",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 9311,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 3,
+          "quality-driver": 1,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "ALT-001 Keep it within one owned boundary",
+          "ALT-002 Separate it into an independent boundary",
+          "CON-001 Patient personal data must be handled in line with the health data regulation that applies where the clinic operates"
+        ],
+        "omissions": [
+          {
+            "title": "4 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Single Point of Failure",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chatty Services",
+            "reason": "character budget"
+          },
+          {
+            "title": "God Service",
+            "reason": "character budget"
+          }
+        ],
+        "help": "Why the chosen alternative answers the question, against the drivers compared."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The rationale coherently addresses how the design respects the constraint CON-001 regarding patient data regulation compliance in the clinic's jurisdiction, aligns with requirement REQ-001 for online appointment booking, and references architectural alternatives ALT-001 and ALT-002 for data boundary ownership as described in the packet. The rationale does not present any unsupported numbers or measurements, does not invent data, and does not contradict the packet excerpts.",
+            "The candidate appropriately references the constraint, requirement, alternatives, and quality driver from the packet sources S1, S2, S3, S4, S5, and S6. It does not state measured, verified, or guaranteed values and does not address unresolved open questions with invented answers.",
+            "Operational and governance consequences are noted as identified but undecided, which reflects the sources stating these aspects as open or to be decided later, thus no defect arises from this.",
+            "Overall, the candidate is a suitable, supported rationale consistent with the supplied packet contents."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The rationale coherently addresses how the design respects the constraint CON-001 regarding patient data regulation compliance in the clinic's jurisdiction, aligns with requirement REQ-001 for online appointment booking, and references architectural alternatives ALT-001 and ALT-002 for data boundary ownership as described in the packet. The rationale does not present any unsupported numbers or measurements, does not invent data, and does not contradict the packet excerpts.",
+          "The candidate appropriately references the constraint, requirement, alternatives, and quality driver from the packet sources S1, S2, S3, S4, S5, and S6. It does not state measured, verified, or guaranteed values and does not address unresolved open questions with invented answers.",
+          "Operational and governance consequences are noted as identified but undecided, which reflects the sources stating these aspects as open or to be decided later, thus no defect arises from this.",
+          "Overall, the candidate is a suitable, supported rationale consistent with the supplied packet contents."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "79dd27ff839c8f855119f3dff6bb0ddf85644838b0af20594d5bfbcc16ed0c62",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "This design choice addresses CON-001 by aligning the handling of patient personal data with applicable health data regulations where the clinic operates, ensuring the core constraint is respected. The decision considers the context of REQ-001, which enables patients to book appointments online at any time, incorporating the relevant quality drivers and constraints. The alternatives ALT-001 and ALT-002 illustrate the options between a single owned boundary or a separate independent boundary to manage regulated data effectively. The rationale prioritizes a clear ownership and boundary for compliance with health data regulations, informed by the constraint CON-001 and quality concerns in QD-001, supported by the project context in REQ-001. Operational and governance consequences, as well as obligations introduced by these choices, are identified in relevant patterns but are not yet decided here, leaving room for further verification and ownership assignment.",
+        "basis": "The rationale follows from the requirement to handle patient data in line with applicable health data regulations (CON-001) and the need to enable online appointment booking at any time (REQ-001), alongside consideration of alternative architectural boundaries (ALT-001, ALT-002) and quality drivers (QD-001) described in the packet (S1, S2, S3, S4, S5, S6).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S5",
+          "S6"
+        ]
+      },
+      "withheldDraft": null
+    },
+    {
+      "mode": "field",
+      "id": "7c93bc12-fcd9-44d9-979a-fede91b62e57",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 11873,
+        "outputTokens": 230
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_01dd301b9a55a4cb016ae43a80d5a087d1afa96e1135ce77b1",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 6154,
+            "outputTokens": 117
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0a5e13e4c5c2c366016ae43a824bd487d18e826dfecf50aa66",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5719,
+            "outputTokens": 113
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "purpose",
+        "hasDraft": true,
+        "sourcesInPacket": 9
+      },
+      "error": null,
+      "chapter": 4,
+      "command": "logical.responsibility",
+      "field": "purpose",
+      "recordId": "lr-001",
+      "record": "LR-001 Appointment scheduling",
+      "packetStamp": "fbbb89e17f6c518b9910ae3ebc089a4d32a30c71453f9752396b0f68b0e93330",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 11995,
+        "maxCharacters": 12000,
+        "sources": 9,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "quality-driver": 1,
+          "model": 3,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "APP-001 Appointment scheduling service"
+        ],
+        "omissions": [
+          {
+            "title": "3 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Single Point of Failure",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chatty Services",
+            "reason": "character budget"
+          },
+          {
+            "title": "God Service",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chapter 4’s reading of LR-001 Appointment scheduling",
+            "reason": "character budget"
+          }
+        ],
+        "help": "The behaviour this responsibility owns for the requirements it serves."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate value accurately restates the purpose from the saved LR-001 record and REQ-001 requirement, clarifies scope exclusions matching S1 and S3, and does not introduce unsupported measurements or claims.",
+            "The number 'any time' is preserved from sources and not converted from words to numbers.",
+            "The candidate correctly limits the scope as per the existing boundaries; it does not contradict any packet content.",
+            "The candidate purpose fits the field 'purpose' of record 'lr-001' as requested."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate value accurately restates the purpose from the saved LR-001 record and REQ-001 requirement, clarifies scope exclusions matching S1 and S3, and does not introduce unsupported measurements or claims.",
+          "The number 'any time' is preserved from sources and not converted from words to numbers.",
+          "The candidate correctly limits the scope as per the existing boundaries; it does not contradict any packet content.",
+          "The candidate purpose fits the field 'purpose' of record 'lr-001' as requested."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "fbbb89e17f6c518b9910ae3ebc089a4d32a30c71453f9752396b0f68b0e93330",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "Enables patients to book appointments online at any time, fulfilling the requirement for round-the-clock appointment scheduling while excluding clinical records, prescriptions, and related booking or reminder functions handled elsewhere.",
+        "basis": "This value restates the saved purpose from LR-001 and the linked requirement REQ-001, clarifying the functional boundary and scope as indicated in S1, S2, S3, and confirmed by the architecture intelligence in S5 and S9.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S5",
+          "S9"
+        ]
+      },
+      "withheldDraft": null
+    },
+    {
+      "mode": "field",
+      "id": "c3cfc03a-f36d-4013-89a0-528e310b557a",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9493,
+        "outputTokens": 281
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_00fe8b4c2ca765cf016ae43a84850887d18c48beee88b781df",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 4950,
+            "outputTokens": 136
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0e241e1fa6f20f09016ae43a862d7887d18a25320f2b741853",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 4543,
+            "outputTokens": 145
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "boundary",
+        "hasDraft": true,
+        "sourcesInPacket": 6
+      },
+      "error": null,
+      "chapter": 5,
+      "command": "realisation.component",
+      "field": "boundary",
+      "recordId": "obj-001",
+      "record": "APP-001 Appointment scheduling service",
+      "packetStamp": "9b6f2c17fd2226035eba3823fc43dc863e68e88585a1b6752c0fc35116c9f65c",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 9461,
+        "maxCharacters": 12000,
+        "sources": 6,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "requirement": 1,
+          "quality-driver": 1,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "TN-001 compute need"
+        ],
+        "omissions": [
+          {
+            "title": "4 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Transactional Outbox",
+            "reason": "character budget"
+          },
+          {
+            "title": "Idempotent Consumer",
+            "reason": "character budget"
+          },
+          {
+            "title": "Dead Letter Channel",
+            "reason": "character budget"
+          },
+          {
+            "title": "Missing Idempotency",
+            "reason": "character budget"
+          },
+          {
+            "title": "Zero-Trust Service Boundary",
+            "reason": "character budget"
+          },
+          {
+            "title": "Event-Driven Architecture",
+            "reason": "character budget"
+          },
+          {
+            "title": "Change Data Capture",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chapter 5’s reading of APP-001 Appointment scheduling service",
+            "reason": "character budget"
+          }
+        ],
+        "help": "What this component owns, and what it leaves to other components."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate's value restates and consolidates the owned boundary and exclusions from the supplied APP-001 and LR-001 records (refs S1 and S2) accurately, without adding unsupported facts or measurements. The numbers and requirements cited are present in the packet. The candidate correctly indicates scope (online bookings only) and exclusions (clinical records, prescriptions, phone bookings, reminders), consistent with the provided sources.",
+            "No conversions from words to numbers occur.",
+            "No invented or unsupported owners, identifiers, measurements, or claims are present.",
+            "The candidate answers the named 'boundary' field of the 'realisation.component' record ID 'obj-001' as required."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate's value restates and consolidates the owned boundary and exclusions from the supplied APP-001 and LR-001 records (refs S1 and S2) accurately, without adding unsupported facts or measurements. The numbers and requirements cited are present in the packet. The candidate correctly indicates scope (online bookings only) and exclusions (clinical records, prescriptions, phone bookings, reminders), consistent with the provided sources.",
+          "No conversions from words to numbers occur.",
+          "No invented or unsupported owners, identifiers, measurements, or claims are present.",
+          "The candidate answers the named 'boundary' field of the 'realisation.component' record ID 'obj-001' as required."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "9b6f2c17fd2226035eba3823fc43dc863e68e88585a1b6752c0fc35116c9f65c",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "Owns Appointment scheduling: Patients can book an appointment at any time through the online service, covering online bookings only. Outside scope are clinical records and prescriptions, plus phone bookings and their management (register/move/cancel) and sending or handling appointment reminders by text or email, which are handled by other components.",
+        "basis": "This boundary text follows from the appointment scheduling service ownership and exclusions stated in APP-001 and LR-001, reflecting that it owns online appointment booking per REQ-001 and excludes related processes such as phone bookings and reminders, as described in S1 and S2.",
+        "sourceRefs": [
+          "S1",
+          "S2"
+        ]
+      },
+      "withheldDraft": null
+    },
+    {
+      "mode": "field",
+      "id": "ae985075-1799-499e-aaa8-566622385641",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 12001,
+        "outputTokens": 191
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_08c173bc886ca21d016ae43a884e3887d1b08aa0035c3821f7",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 6222,
+            "outputTokens": 112
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0c04ef4492672ead016ae43a898b4487d1ac929a51b2672953",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5779,
+            "outputTokens": 79
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "purpose",
+        "hasDraft": true,
+        "sourcesInPacket": 10
+      },
+      "error": null,
+      "chapter": 6,
+      "command": "technology.capability",
+      "field": "purpose",
+      "recordId": "tc-001",
+      "record": "TC-001 Compute for Appointment scheduling service",
+      "packetStamp": "13a26887308749a3dc5da38eccbc8281d2156f9270bc6abb008e19e502d00cde",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 11808,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "model": 5,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "TR-001 Compute for Appointment scheduling service implementation"
+        ],
+        "omissions": [
+          {
+            "title": "3 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Event-Driven Service",
+            "reason": "source limit"
+          },
+          {
+            "title": "Single Point of Failure",
+            "reason": "source limit"
+          },
+          {
+            "title": "Chatty Services",
+            "reason": "source limit"
+          },
+          {
+            "title": "Chapter 6’s reading of TC-001 Compute for Appointment scheduling service",
+            "reason": "source limit"
+          }
+        ],
+        "help": "The support obligation this capability satisfies for the components that need it."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "Candidate restates the purpose field from TC-001 with elaboration but in consistent terms.",
+            "No unsupported numbers or invented data.",
+            "Purpose matches the capability TC-001 related to APP-001 as per the packet excerpts S1, S2, S4, S5.",
+            "No claims of measurement, verification or guarantee are made."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "Candidate restates the purpose field from TC-001 with elaboration but in consistent terms.",
+          "No unsupported numbers or invented data.",
+          "Purpose matches the capability TC-001 related to APP-001 as per the packet excerpts S1, S2, S4, S5.",
+          "No claims of measurement, verification or guarantee are made."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "13a26887308749a3dc5da38eccbc8281d2156f9270bc6abb008e19e502d00cde",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "Provides compute resources to APP-001 Appointment scheduling service to support its own processing logic, enabling patients to book an appointment at any time through the online service.",
+        "basis": "The purpose is stated as providing compute support to the appointment scheduling service for running its owned logic, specifically to enable continuous patient booking through the online service, as supported by S1, S2, S4 and aligned with the requirement REQ-001 (S5).",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S4",
+          "S5"
+        ]
+      },
+      "withheldDraft": null
+    },
+    {
+      "mode": "field",
+      "id": "5fcfa4da-e5f5-4ee0-94f5-b77f7cc220bb",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10755,
+        "outputTokens": 245
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_01e9ebe2a8c45bf6016ae43a8b9c5487d1939ceaa7aebff3c4",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5574,
+            "outputTokens": 145
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_066b7dc2138da2ad016ae43a8d4d6087d1a9462f13443c882f",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5181,
+            "outputTokens": 100
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "operationsPlan",
+        "hasDraft": false,
+        "sourcesInPacket": 4
+      },
+      "error": null,
+      "chapter": 7,
+      "command": "techrealisation.plan",
+      "field": "operationsPlan",
+      "recordId": "tr-001",
+      "record": "TR-001 Compute for Appointment scheduling service implementation",
+      "packetStamp": "501749b4230d8e70ab19ce43f385b6084443cf0d454ec9622fba1dd8bb84def0",
+      "draftAccepted": false,
+      "outcome": {
+        "unit": "draft",
+        "offered": 0,
+        "empty": 0,
+        "withheld": 1,
+        "withheldBy": "deterministic",
+        "byLayer": {
+          "deterministic": 1,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": {
+          "state": "open-question",
+          "question": "who will operate, monitor and support it?"
+        },
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 11951,
+        "maxCharacters": 12000,
+        "sources": 4,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "catalogue-description": 2
+        },
+        "neighbours": [],
+        "omissions": [
+          {
+            "title": "4 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Database per Service",
+            "reason": "character budget"
+          },
+          {
+            "title": "Transactional Outbox",
+            "reason": "character budget"
+          },
+          {
+            "title": "Circuit Breaker",
+            "reason": "character budget"
+          },
+          {
+            "title": "Premature Microservices",
+            "reason": "character budget"
+          },
+          {
+            "title": "Distributed Monolith",
+            "reason": "character budget"
+          },
+          {
+            "title": "Modular Monolith",
+            "reason": "character budget"
+          },
+          {
+            "title": "Layered",
+            "reason": "character budget"
+          },
+          {
+            "title": "Zero Trust",
+            "reason": "character budget"
+          },
+          {
+            "title": "Policy Enforcement Point",
+            "reason": "character budget"
+          },
+          {
+            "title": "Least Privilege",
+            "reason": "character budget"
+          },
+          {
+            "title": "Secrets Management",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chatty Services",
+            "reason": "character budget"
+          },
+          {
+            "title": "God Service",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chapter 7’s reading of TR-001 Compute for Appointment scheduling service implementation",
+            "reason": "character budget"
+          }
+        ],
+        "help": "Who operates this, how it is monitored and how incidents are handled."
+      },
+      "grounding": {
+        "accepted": false,
+        "issues": [
+          "It restates the open question as the value instead of answering it, so the field stays open."
+        ],
+        "deterministic": {
+          "accepted": false,
+          "issues": [
+            "It restates the open question as the value instead of answering it, so the field stays open."
+          ]
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate correctly states that operations ownership, monitoring, and incident handling are unassigned and open questions, consistent with the 'open-question' state in TR-001 (S1) and unassigned ownership in the parent TC-001 (S2).",
+            "No contradictory or missing data found in the provided packet for this field value.",
+            "The candidate does not present any measured, verified, or guaranteed values, nor invents unsupported attributes."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate correctly states that operations ownership, monitoring, and incident handling are unassigned and open questions, consistent with the 'open-question' state in TR-001 (S1) and unassigned ownership in the parent TC-001 (S2).",
+          "No contradictory or missing data found in the provided packet for this field value.",
+          "The candidate does not present any measured, verified, or guaranteed values, nor invents unsupported attributes."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": true,
+        "packetStamp": "501749b4230d8e70ab19ce43f385b6084443cf0d454ec9622fba1dd8bb84def0",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "",
+        "basis": "",
+        "sourceRefs": []
+      },
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "reference": "clinic-appointments",
+        "value": "Operations, monitoring, and incident handling for this compute component remain unassigned and open. The design records do not specify which team or organization will assume these responsibilities, nor the monitoring tools or incident response procedures. These aspects need to be defined as part of the ongoing architectural decision and operations planning.",
+        "basis": "This value reflects the records for TR-001 and its parent TC-001, which explicitly state that the owner and operational plans are unassigned and pose open questions without further detail, supported by S1 and S2. No supporting information about operational ownership or procedures is provided in the other sources (S3, S4).",
+        "sourceRefs": [
+          "S1",
+          "S2"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "f10dff45-0fa6-4818-be31-c835c392c1a0",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 11338,
+        "outputTokens": 291
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_05850d5672719ca6016ae43a8f4e8487d19bdf1b2bcb5aedc8",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5874,
+            "outputTokens": 143
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0d902e298ed9610b016ae43a91002887d1b97db142f29e78a0",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5464,
+            "outputTokens": 148
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "failurePolicy",
+        "hasDraft": false,
+        "sourcesInPacket": 9
+      },
+      "error": null,
+      "chapter": 8,
+      "command": "interfaces.contract",
+      "field": "failurePolicy",
+      "recordId": "if-001",
+      "record": "IF-001 Hand over appointment",
+      "packetStamp": "770433e2741f1280ef4c1ae72309ff4575f0c0cbefeeef94e016a27612fdb20d",
+      "draftAccepted": false,
+      "outcome": {
+        "unit": "draft",
+        "offered": 0,
+        "empty": 0,
+        "withheld": 1,
+        "withheldBy": "deterministic",
+        "byLayer": {
+          "deterministic": 1,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": {
+          "state": "open-question",
+          "question": "what should happen when the outcome is unavailable or uncertain?"
+        },
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 11820,
+        "maxCharacters": 12000,
+        "sources": 9,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 2,
+          "quality-driver": 2,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "APP-002 Phone booking intake service",
+          "DAT-001 Appointment"
+        ],
+        "omissions": [
+          {
+            "title": "4 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Retry with Backoff",
+            "reason": "character budget"
+          },
+          {
+            "title": "Circuit Breaker",
+            "reason": "character budget"
+          },
+          {
+            "title": "Bulkhead",
+            "reason": "character budget"
+          },
+          {
+            "title": "Retry Storm",
+            "reason": "character budget"
+          },
+          {
+            "title": "Dead Letter Channel",
+            "reason": "character budget"
+          },
+          {
+            "title": "Queue-Based Load Leveling",
+            "reason": "character budget"
+          },
+          {
+            "title": "Timeout",
+            "reason": "character budget"
+          },
+          {
+            "title": "Fallback",
+            "reason": "character budget"
+          },
+          {
+            "title": "Load Shedding",
+            "reason": "character budget"
+          },
+          {
+            "title": "Event-Driven Service",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chapter 8’s reading of IF-001 Hand over appointment",
+            "reason": "character budget"
+          }
+        ],
+        "help": "What the caller does when the provider fails or does not answer."
+      },
+      "grounding": {
+        "accepted": false,
+        "issues": [
+          "It restates the open question as the value instead of answering it, so the field stays open."
+        ],
+        "deterministic": {
+          "accepted": false,
+          "issues": [
+            "It restates the open question as the value instead of answering it, so the field stays open."
+          ]
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate correctly reflects the open state of the failurePolicy field as indicated in S1.",
+            "The candidate appropriately does not state any concrete failure handling policy, consistent with the open question in the sources.",
+            "The candidate's wording is careful not to claim measurement or confirmation, aligning with the posture of the sources.",
+            "All cited source references (S1, S2, S3) are present in the packet and support the claim of no defined failure policy.",
+            "No numbers, metrics, or numeric conversions are present in the candidate, so no defects on that basis.",
+            "The candidate does not invent any owner or other unreferenced data; it respects the open status shown in the sources."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate correctly reflects the open state of the failurePolicy field as indicated in S1.",
+          "The candidate appropriately does not state any concrete failure handling policy, consistent with the open question in the sources.",
+          "The candidate's wording is careful not to claim measurement or confirmation, aligning with the posture of the sources.",
+          "All cited source references (S1, S2, S3) are present in the packet and support the claim of no defined failure policy.",
+          "No numbers, metrics, or numeric conversions are present in the candidate, so no defects on that basis.",
+          "The candidate does not invent any owner or other unreferenced data; it respects the open status shown in the sources."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": true,
+        "packetStamp": "770433e2741f1280ef4c1ae72309ff4575f0c0cbefeeef94e016a27612fdb20d",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "",
+        "basis": "",
+        "sourceRefs": []
+      },
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "reference": "clinic-appointments",
+        "value": "When the provider fails or does not answer, the caller must handle the outcome as unavailable or uncertain. The specific behaviour upon such failure is currently open and requires decision based on usage context and operational conditions, consistent with the open question on failurePolicy in IF-001 and the lack of stated expectations in the upstream requirements and related components.",
+        "basis": "The failurePolicy is not yet defined in IF-001 and there is no stated policy in the parent service or related neighbours; this remains an open question as documented in S1 and supported by the context in S2 and S3 where failure handling is not specified.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "8e5219cb-1d25-4e06-a7e5-0e1ab5d5383a",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 11998,
+        "outputTokens": 327
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0fafe5f7076988bf016ae43a9336b487d186ae975fa77b4daa",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 6192,
+            "outputTokens": 170
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_070c8ad269f2f0e6016ae43a95d13c87d18e718f8d33080689",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5806,
+            "outputTokens": 157
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "mechanism",
+        "hasDraft": false,
+        "sourcesInPacket": 10
+      },
+      "error": null,
+      "chapter": 9,
+      "command": "security.control",
+      "field": "mechanism",
+      "recordId": "sec-001",
+      "record": "SEC-001 Limit access to Appointment",
+      "packetStamp": "eb62f0c258f5504cd12091d26e3036e9e42a0d8c610e273b21fa9ec80e2a556d",
+      "draftAccepted": false,
+      "outcome": {
+        "unit": "draft",
+        "offered": 0,
+        "empty": 0,
+        "withheld": 1,
+        "withheldBy": "deterministic",
+        "byLayer": {
+          "deterministic": 1,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": {
+          "state": "open-question",
+          "question": "where and how is the control enforced?"
+        },
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 11798,
+        "maxCharacters": 12000,
+        "sources": 10,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 1,
+          "model": 5,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "THR-001 Disclosure of Appointment"
+        ],
+        "omissions": [
+          {
+            "title": "3 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Event-Driven Service",
+            "reason": "source limit"
+          },
+          {
+            "title": "Chatty Services",
+            "reason": "source limit"
+          },
+          {
+            "title": "God Service",
+            "reason": "source limit"
+          },
+          {
+            "title": "Chapter 9’s reading of SEC-001 Limit access to Appointment",
+            "reason": "source limit"
+          }
+        ],
+        "help": "How the control works."
+      },
+      "grounding": {
+        "accepted": false,
+        "issues": [
+          "It restates the open question as the value instead of answering it, so the field stays open."
+        ],
+        "deterministic": {
+          "accepted": false,
+          "issues": [
+            "It restates the open question as the value instead of answering it, so the field stays open."
+          ]
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate text accurately reflects that the mechanism is a design proposal without specific enforcement details, consistent with open questions in the sources S1, S4 and reflected in architecture intelligence S10.",
+            "No numbers appear in the candidate, so no invented or unsupported numerical data issues arise.",
+            "The candidate does not present any enforcement details contrary to the sources, rather it states they are not yet defined.",
+            "The candidate correctly relates the mechanism to limiting unauthorized disclosure of Appointment data, matching threat THR-001 in S3 and the purpose in SEC-001 records.",
+            "No invented owners, identifiers, or test results appear in candidate.",
+            "The statement fits the 'mechanism' field for the security control record 'sec-001' as requested."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate text accurately reflects that the mechanism is a design proposal without specific enforcement details, consistent with open questions in the sources S1, S4 and reflected in architecture intelligence S10.",
+          "No numbers appear in the candidate, so no invented or unsupported numerical data issues arise.",
+          "The candidate does not present any enforcement details contrary to the sources, rather it states they are not yet defined.",
+          "The candidate correctly relates the mechanism to limiting unauthorized disclosure of Appointment data, matching threat THR-001 in S3 and the purpose in SEC-001 records.",
+          "No invented owners, identifiers, or test results appear in candidate.",
+          "The statement fits the 'mechanism' field for the security control record 'sec-001' as requested."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": true,
+        "packetStamp": "eb62f0c258f5504cd12091d26e3036e9e42a0d8c610e273b21fa9ec80e2a556d",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "",
+        "basis": "",
+        "sourceRefs": []
+      },
+      "withheldDraft": {
+        "offeredToArchitect": false,
+        "reference": "clinic-appointments",
+        "value": "The control is a design proposal to limit access to the Appointment data, intended to prevent unauthorized disclosure of confidential journey information. However, where and how this control is enforced remains an open question, as it is not stated in the brief or upstream records. The design must eventually define enforcement location and method, ownership, monitoring, failure handling, and review criteria to meet security obligations and address the high-priority threat of unauthorized disclosure.",
+        "basis": "The saved records consistently indicate that enforcement details are not yet specified and remain open questions; the control currently exists as a design proposal addressing the threat of disclosure of Appointment data, with obligations to define enforcement and operational aspects still pending (S1, S3, S4, S10).",
+        "sourceRefs": [
+          "S1",
+          "S3",
+          "S4",
+          "S10"
+        ]
+      }
+    },
+    {
+      "mode": "field",
+      "id": "6c68b242-10e8-4af4-8b1e-56dc9b984cc9",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 9149,
+        "outputTokens": 230
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_001bae3fc9e84e42016ae43a97f4a487d1901e0221b69e7883",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 4796,
+            "outputTokens": 104
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0f4984af34d0dedd016ae43a9946d087d1a5ff6c1c4d011fdc",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 4353,
+            "outputTokens": 126
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "readiness",
+        "hasDraft": true,
+        "sourcesInPacket": 7
+      },
+      "error": null,
+      "chapter": 10,
+      "command": "runtime.plan",
+      "field": "readiness",
+      "recordId": "run-001",
+      "record": "RUN-001 Appointment scheduling service",
+      "packetStamp": "44ce90edfb5a45773237125e4ae0957ed3c3968ce8c5a4914a18d19521e5b754",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 9277,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "parent": 1,
+          "neighbour": 2,
+          "requirement": 1,
+          "quality-driver": 1,
+          "catalogue-description": 1
+        },
+        "neighbours": [
+          "TC-001 Compute for Appointment scheduling service",
+          "ENV-001 Appointment scheduling service production design"
+        ],
+        "omissions": [
+          {
+            "title": "4 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Single Point of Failure",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chatty Services",
+            "reason": "character budget"
+          },
+          {
+            "title": "God Service",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chapter 10’s reading of RUN-001 Appointment scheduling service",
+            "reason": "character budget"
+          }
+        ],
+        "help": "What proves an instance is ready to serve."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate restates the readiness condition from RUN-001 (S1) about Compute for Appointment scheduling service answering, aligning exactly with the packet content.",
+            "The candidate appropriately references the neighbour relation (S3) explaining that Compute for Appointment scheduling service is the needed capability underlying the Appointment scheduling service, consistent with the packet data.",
+            "No invented data or unsupported claims are present; the candidate neither measures nor guarantees readiness, simply stating the readiness criteria as per the packet sources.",
+            "The value fits the named field 'readiness' for record 'RUN-001 Appointment scheduling service'."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate restates the readiness condition from RUN-001 (S1) about Compute for Appointment scheduling service answering, aligning exactly with the packet content.",
+          "The candidate appropriately references the neighbour relation (S3) explaining that Compute for Appointment scheduling service is the needed capability underlying the Appointment scheduling service, consistent with the packet data.",
+          "No invented data or unsupported claims are present; the candidate neither measures nor guarantees readiness, simply stating the readiness criteria as per the packet sources.",
+          "The value fits the named field 'readiness' for record 'RUN-001 Appointment scheduling service'."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "44ce90edfb5a45773237125e4ae0957ed3c3968ce8c5a4914a18d19521e5b754",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "The Appointment scheduling service is considered ready to serve when the Compute for Appointment scheduling service capability is available and responding, confirming the underlying infrastructure necessary for operation is functioning as expected.",
+        "basis": "This readiness statement follows from RUN-001 indicating readiness depends on Compute for Appointment scheduling service answering (S1) and the neighbour relation to TC-001 Compute for Appointment scheduling service as the necessary capability to run the application logic (S3).",
+        "sourceRefs": [
+          "S1",
+          "S3"
+        ]
+      },
+      "withheldDraft": null
+    },
+    {
+      "mode": "field",
+      "id": "7084c314-1403-45fb-b00e-c5f7aab1157a",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 10987,
+        "outputTokens": 290
+      },
+      "prompt": {
+        "promptVersion": "sol-field-5",
+        "sha256": "8247d92b8267d811409c22f582553df8a7e3814b21e285f1e30ee1fd219b14f3"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_03e7247a3666b75a016ae43a9bc23887d18aecdf52cd7a3148",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5682,
+            "outputTokens": 169
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0f0a64609973f51a016ae43a9dc4cc87d1a924c6edcf2af500",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5305,
+            "outputTokens": 121
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "field": "summary",
+        "hasDraft": true,
+        "sourcesInPacket": 7
+      },
+      "error": null,
+      "chapter": 11,
+      "command": "review.narrative",
+      "field": "summary",
+      "recordId": "SDD",
+      "record": "SDD Sol live check · reference — Solution Design",
+      "packetStamp": "f225916da1a1fd6aa0474ad0db9427bef3d4a15bea515b75973104a0a9277914",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "target": {
+        "open": null,
+        "currentIsPlaceholder": false
+      },
+      "packet": {
+        "characters": 10999,
+        "maxCharacters": 12000,
+        "sources": 7,
+        "kinds": {
+          "record": 1,
+          "neighbour": 2,
+          "model": 2,
+          "catalogue-description": 1,
+          "architecture-intelligence": 1
+        },
+        "neighbours": [
+          "OUT-001 Patients can book, move or cancel an appointment themselves at any time of day",
+          "OUT-002 Every freed slot is offered to the waiting list before the day of the appointment"
+        ],
+        "omissions": [
+          {
+            "title": "1 contextual insights omitted",
+            "reason": "Complete source basis did not fit the disclosed context"
+          },
+          {
+            "title": "Event Sourcing",
+            "reason": "character budget"
+          },
+          {
+            "title": "Transactional Outbox",
+            "reason": "character budget"
+          },
+          {
+            "title": "Materialized View",
+            "reason": "character budget"
+          },
+          {
+            "title": "Layered",
+            "reason": "character budget"
+          },
+          {
+            "title": "Saga Boundary",
+            "reason": "character budget"
+          },
+          {
+            "title": "Idempotent Consumer",
+            "reason": "character budget"
+          },
+          {
+            "title": "Dead Letter Channel",
+            "reason": "character budget"
+          },
+          {
+            "title": "Missing Idempotency",
+            "reason": "character budget"
+          },
+          {
+            "title": "Chapter 11’s reading of SDD Sol live check · reference — Solution Design",
+            "reason": "character budget"
+          }
+        ],
+        "help": "The design in a few sentences a reviewer reads first."
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": []
+        },
+        "check": {
+          "defects": [],
+          "notes": [
+            "The candidate text aligns closely with the authoritative summary in the SDD record and related source excerpts, accurately reflecting the patient self-service booking capabilities and the offering of freed slots to waiting lists.",
+            "The candidate correctly states the scope as outpatient appointments from booking through follow-up and notes open decision points on data handling and compliance, consistent with SDD and CON-003 sources.",
+            "No unsupported numbers, invented owner, or contradictions to the packet are present.",
+            "The elaboration does not claim verification or guarantees but restates the design status and unresolved decisions appropriately."
+          ],
+          "contradiction": null
+        },
+        "notes": [
+          "The candidate text aligns closely with the authoritative summary in the SDD record and related source excerpts, accurately reflecting the patient self-service booking capabilities and the offering of freed slots to waiting lists.",
+          "The candidate correctly states the scope as outpatient appointments from booking through follow-up and notes open decision points on data handling and compliance, consistent with SDD and CON-003 sources.",
+          "No unsupported numbers, invented owner, or contradictions to the packet are present.",
+          "The elaboration does not claim verification or guarantees but restates the design status and unresolved decisions appropriately."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "f225916da1a1fd6aa0474ad0db9427bef3d4a15bea515b75973104a0a9277914",
+        "packetStampMatches": true
+      },
+      "draft": {
+        "value": "Sol live check · reference enables patients to book, move, or cancel outpatient appointments themselves at any time of day. The design also ensures that every freed slot is offered to the waiting list before the day of the appointment, supporting outpatient appointment management from booking through follow-up. Key unresolved decisions address how personal health data and appointment reminders conform to applicable regulations and performance requirements, while online booking must be operational by year-end.",
+        "basis": "This summary restates and slightly elaborates the current summary in the SDD record, reflecting the design scope, outcomes served, and unresolved decisions noted in sources S1, S2, S3, S4, and S5, without adding unrecorded details or owner assignments.",
+        "sourceRefs": [
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S5"
+        ]
+      },
+      "withheldDraft": null
+    },
+    {
+      "mode": "journey",
+      "id": "7ce609b5-40b2-459c-aaad-e8aa740d6013",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13059,
+        "outputTokens": 2168
+      },
+      "prompt": {
+        "promptVersion": "sol-journey-3",
+        "sha256": "bee89def7bb923c4fd1ad6c367dab8881bb25c9fa09d0236864f1df71baea2c9"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0530da48176fbc12016ae43a9f77f887d188ed9e5710f36685",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 5928,
+            "outputTokens": 2155
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_01de27264c0a202f016ae43aad4ba487d1a5f8d0ed95707f87",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 7131,
+            "outputTokens": 13
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "chapter": 1,
+        "recordsInDraft": 24,
+        "fieldsInPacket": 56,
+        "answers": 38,
+        "fallback": null
+      },
+      "error": null,
+      "packetStamp": "b0e6843f:afda9813",
+      "draftAccepted": true,
+      "outcome": {
+        "unit": "draft",
+        "offered": 1,
+        "empty": 0,
+        "withheld": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0,
+        "answersOffered": 38,
+        "answersWithheld": 0
+      },
+      "packet": {
+        "records": 12,
+        "guidedRecordsInDraft": 24,
+        "passages": 51,
+        "upstream": 0,
+        "sources": 2,
+        "omissions": {
+          "records": [
+            {
+              "key": "c2",
+              "type": "outcome"
+            },
+            {
+              "key": "c3",
+              "type": "journey"
+            },
+            {
+              "key": "c4",
+              "type": "journey"
+            },
+            {
+              "key": "c5",
+              "type": "journey"
+            },
+            {
+              "key": "c6",
+              "type": "journey"
+            },
+            {
+              "key": "c7",
+              "type": "journey"
+            },
+            {
+              "key": "c18",
+              "type": "assumption"
+            },
+            {
+              "key": "c8",
+              "type": "actor"
+            },
+            {
+              "key": "c9",
+              "type": "actor"
+            },
+            {
+              "key": "c10",
+              "type": "actor"
+            },
+            {
+              "key": "c11",
+              "type": "stakeholder"
+            },
+            {
+              "key": "c12",
+              "type": "stakeholder"
+            }
+          ],
+          "passages": [],
+          "excluded": 0,
+          "upstream": 10,
+          "withheld": 10,
+          "knowledge": 0
+        },
+        "omittedRecords": [
+          {
+            "key": "c2",
+            "type": "outcome",
+            "title": "Every freed slot is offered to the waiting list before the day of the appointment"
+          },
+          {
+            "key": "c3",
+            "type": "journey",
+            "title": "A patient books an appointment online or by phone with a receptionist"
+          },
+          {
+            "key": "c4",
+            "type": "journey",
+            "title": "The appointment service confirms the booking and schedules a reminder"
+          },
+          {
+            "key": "c5",
+            "type": "journey",
+            "title": "The patient receives the reminder and confirms, moves or cancels the appointment"
+          },
+          {
+            "key": "c6",
+            "type": "journey",
+            "title": "A cancelled or moved appointment frees a slot that the service offers to the waiting list"
+          },
+          {
+            "key": "c7",
+            "type": "journey",
+            "title": "The clinician marks the appointment as attended or missed, and a missed appointment starts the follow-up"
+          },
+          {
+            "key": "c8",
+            "type": "actor",
+            "title": "Patients"
+          },
+          {
+            "key": "c9",
+            "type": "actor",
+            "title": "Receptionists"
+          },
+          {
+            "key": "c10",
+            "type": "actor",
+            "title": "Clinicians"
+          },
+          {
+            "key": "c11",
+            "type": "stakeholder",
+            "title": "Clinic"
+          },
+          {
+            "key": "c12",
+            "type": "stakeholder",
+            "title": "Clinical governance committee"
+          },
+          {
+            "key": "c18",
+            "type": "assumption",
+            "title": "Most patients have a mobile phone or an email address for reminders"
+          }
+        ],
+        "citedPassagesOmitted": []
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": [],
+          "leftOpen": [
+            {
+              "record": "r1",
+              "field": "owner"
+            },
+            {
+              "record": "r2",
+              "field": "owner"
+            },
+            {
+              "record": "r3",
+              "field": "owner"
+            },
+            {
+              "record": "r4",
+              "field": "owner"
+            },
+            {
+              "record": "r5",
+              "field": "owner"
+            },
+            {
+              "record": "r6",
+              "field": "owner"
+            }
+          ]
+        },
+        "check": {
+          "defects": [],
+          "notes": [],
+          "contradiction": null
+        },
+        "notes": [],
+        "contradiction": null,
+        "declined": false,
+        "withheld": false,
+        "packetStamp": "b0e6843f:afda9813",
+        "packetStampMatches": true
+      },
+      "answers": [
+        {
+          "record": "c13",
+          "field": "title",
+          "value": "Outpatient appointments from booking to follow-up",
+          "passages": [
+            "P-025",
+            "P-026"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c13",
+          "field": "description",
+          "value": "In scope: outpatient appointments from booking to follow-up.",
+          "passages": [
+            "P-025",
+            "P-026"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c13",
+          "field": "scopeMode",
+          "value": "in",
+          "passages": [
+            "P-025",
+            "P-026"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c13",
+          "field": "source",
+          "value": "Opening brief · P-025, P-026",
+          "passages": [
+            "P-025",
+            "P-026"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c14",
+          "field": "title",
+          "value": "Clinical records and prescriptions",
+          "passages": [
+            "P-027",
+            "P-014"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c14",
+          "field": "description",
+          "value": "Out of scope: clinical records and prescriptions.",
+          "passages": [
+            "P-027",
+            "P-014"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c14",
+          "field": "scopeMode",
+          "value": "out",
+          "passages": [
+            "P-027",
+            "P-014"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c14",
+          "field": "source",
+          "value": "Opening brief · P-027",
+          "passages": [
+            "P-027"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c15",
+          "field": "title",
+          "value": "Patient personal data must be handled in line with the health data regulation that applies where the clinic operates",
+          "passages": [
+            "P-041",
+            "P-042"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c15",
+          "field": "description",
+          "value": "Patient personal data must be handled in line with the health data regulation that applies where the clinic operates.",
+          "passages": [
+            "P-041",
+            "P-042"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c15",
+          "field": "source",
+          "value": "Opening brief · P-041, P-042",
+          "passages": [
+            "P-041",
+            "P-042"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c16",
+          "field": "title",
+          "value": "Reminders must not include the reason for the appointment or any clinical detail",
+          "passages": [
+            "P-041",
+            "P-043"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c16",
+          "field": "description",
+          "value": "Reminders must not include the reason for the appointment or any clinical detail.",
+          "passages": [
+            "P-041",
+            "P-043"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c16",
+          "field": "source",
+          "value": "Opening brief · P-041, P-043",
+          "passages": [
+            "P-041",
+            "P-043"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c17",
+          "field": "title",
+          "value": "Online booking must be live by the end of the year",
+          "passages": [
+            "P-041",
+            "P-044"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c17",
+          "field": "description",
+          "value": "Online booking must be live by the end of the year.",
+          "passages": [
+            "P-041",
+            "P-044"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c17",
+          "field": "source",
+          "value": "Opening brief · P-041, P-044",
+          "passages": [
+            "P-041",
+            "P-044"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r1",
+          "field": "title",
+          "value": "Book an appointment at any time through the online service",
+          "passages": [
+            "P-034",
+            "P-035"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r1",
+          "field": "description",
+          "value": "Patients must be able to book an appointment at any time through the online service.",
+          "passages": [
+            "P-034",
+            "P-035"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r1",
+          "field": "acceptance",
+          "value": "Given [the starting condition], when [the triggering event] occurs, then patients can book an appointment at any time through the online service and [the observable result] is verified.",
+          "passages": [
+            "P-034",
+            "P-035"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r2",
+          "field": "title",
+          "value": "Register a phone booking and move or cancel it for a patient who calls",
+          "passages": [
+            "P-034",
+            "P-036"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r2",
+          "field": "description",
+          "value": "Receptionists must be able to register a phone booking and move or cancel it for a patient who calls.",
+          "passages": [
+            "P-034",
+            "P-036"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r2",
+          "field": "acceptance",
+          "value": "Given [the starting condition], when [the triggering event] occurs, then receptionists can register a phone booking and move or cancel it for a patient who calls and [the observable result] is verified.",
+          "passages": [
+            "P-034",
+            "P-036"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r3",
+          "field": "title",
+          "value": "Send a reminder by text message or email two days before each appointment",
+          "passages": [
+            "P-034",
+            "P-037"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r3",
+          "field": "description",
+          "value": "The appointment service must send a reminder by text message or email two days before each appointment.",
+          "passages": [
+            "P-034",
+            "P-037"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r3",
+          "field": "acceptance",
+          "value": "Given [the starting condition], when [the triggering event] occurs, then the appointment service can send a reminder by text message or email two days before each appointment and [the observable result] is verified.",
+          "passages": [
+            "P-034",
+            "P-037"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r4",
+          "field": "title",
+          "value": "Answer each reminder to confirm, move or cancel the appointment",
+          "passages": [
+            "P-034",
+            "P-038"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r4",
+          "field": "description",
+          "value": "Patients must be able to answer each reminder to confirm, move or cancel the appointment.",
+          "passages": [
+            "P-034",
+            "P-038"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r4",
+          "field": "acceptance",
+          "value": "Given [the starting condition], when [the triggering event] occurs, then patients can answer each reminder to confirm, move or cancel the appointment and [the observable result] is verified.",
+          "passages": [
+            "P-034",
+            "P-038"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r5",
+          "field": "title",
+          "value": "Offer a freed slot to the waiting list within 15 minutes of a cancellation",
+          "passages": [
+            "P-034",
+            "P-039"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r5",
+          "field": "description",
+          "value": "The appointment service should offer a freed slot to the waiting list within 15 minutes of a cancellation.",
+          "passages": [
+            "P-034",
+            "P-039"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r5",
+          "field": "acceptance",
+          "value": "Given [the starting condition], when [the triggering event] occurs, then the appointment service can offer a freed slot to the waiting list within 15 minutes of a cancellation and [the observable result] is verified.",
+          "passages": [
+            "P-034",
+            "P-039"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r6",
+          "field": "title",
+          "value": "Record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets",
+          "passages": [
+            "P-034",
+            "P-040"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r6",
+          "field": "description",
+          "value": "Clinicians must be able to record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets.",
+          "passages": [
+            "P-034",
+            "P-040"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "r6",
+          "field": "acceptance",
+          "value": "Given [the starting condition], when [the triggering event] occurs, then clinicians can record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets and [the observable result] is verified.",
+          "passages": [
+            "P-034",
+            "P-040"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c1",
+          "field": "title",
+          "value": "Patients can book, move or cancel an appointment themselves at any time of day",
+          "passages": [
+            "P-015",
+            "P-016"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c1",
+          "field": "description",
+          "value": "Patients can book, move or cancel an appointment themselves at any time of day.",
+          "passages": [
+            "P-015",
+            "P-016"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        },
+        {
+          "record": "c1",
+          "field": "source",
+          "value": "Opening brief · P-015, P-016",
+          "passages": [
+            "P-015",
+            "P-016"
+          ],
+          "sourceRefs": [
+            "K1",
+            "K2"
+          ]
+        }
+      ],
+      "withheldDraft": null
+    },
+    {
+      "mode": "review",
+      "id": "8fee0425-5306-4ba7-b9ba-ec6f707c1280",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 35628,
+        "outputTokens": 2011
+      },
+      "prompt": {
+        "promptVersion": "sol-review-3",
+        "sha256": "e2b5d3ef79c706242b436bd063e8cb249c9ca2267b303b5e14aa3c127e7960b7"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_06ecfdb8f559aee7016ae43aaf61e887d18279a88f55508af0",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 17326,
+            "outputTokens": 1275
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_02d98bcd652c7cb1016ae43ab8133887d1bd6c26bb8c358932",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 18302,
+            "outputTokens": 736
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "chapter": 4,
+        "elementsInPacket": 38,
+        "sourcesInPacket": 29,
+        "findings": 20
+      },
+      "error": null,
+      "packetStamp": "43d69413:933fb5ed",
+      "allFindingsAccepted": true,
+      "outcome": {
+        "unit": "finding",
+        "offered": 20,
+        "empty": 0,
+        "withheld": 0,
+        "setAside": 0,
+        "withheldBy": null,
+        "byLayer": {
+          "deterministic": 0,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0
+      },
+      "packet": {
+        "elements": 38,
+        "sources": 29,
+        "omissions": {
+          "records": 62,
+          "withheld": 0,
+          "elements": 28,
+          "relationships": 94,
+          "knowledge": 15,
+          "knowledgeContexts": 18,
+          "unavailableKnowledgeContexts": 0
+        }
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [],
+        "deterministic": {
+          "accepted": true,
+          "issues": [],
+          "withheld": [],
+          "setAside": 0
+        },
+        "check": {
+          "defects": [],
+          "withheld": [],
+          "notes": [
+            {
+              "id": "F1",
+              "notes": [
+                "The fix severity is supported by source S2 as it explicitly states the responsibility has no connected path to the project journey and requires connection."
+              ]
+            },
+            {
+              "id": "F2",
+              "notes": [
+                "The fix severity and reasoning are supported by source S3, which states the Phone booking intake responsibility has no connected path to the project journey."
+              ]
+            },
+            {
+              "id": "F3",
+              "notes": [
+                "Source S4 supports the fix severity and explanation that Reminder notification responsibility lacks journey connection."
+              ]
+            },
+            {
+              "id": "F4",
+              "notes": [
+                "The reasoning for the Reminder handling responsibility lacking journey connection is supported by S5."
+              ]
+            },
+            {
+              "id": "F5",
+              "notes": [
+                "The freed slot handling responsibility connection gap and corresponding fix severity is confirmed by S6."
+              ]
+            },
+            {
+              "id": "F6",
+              "notes": [
+                "Source S7 confirms the missed appointment record keeping responsibility lacks journey connection and requires fix."
+              ]
+            },
+            {
+              "id": "F7",
+              "notes": [
+                "The journey step JRN-001 missing responsibility connection and fix severity is supported by S8."
+              ]
+            },
+            {
+              "id": "F8",
+              "notes": [
+                "Source S9 supports the finding that JRN-002 lacks connected responsibility and needs a fix."
+              ]
+            },
+            {
+              "id": "F9",
+              "notes": [
+                "The absence of responsibility connected to journey step JRN-003 is supported by S10."
+              ]
+            },
+            {
+              "id": "F10",
+              "notes": [
+                "Fix severity for JRN-004 lacking responsibility connection is supported by S11."
+              ]
+            },
+            {
+              "id": "F11",
+              "notes": [
+                "The journey step JRN-005 lacking a responsibility connection and fix severity is supported by S12."
+              ]
+            },
+            {
+              "id": "F12",
+              "notes": [
+                "Appointment scheduling service obj-001 lacks journey connection, supported by fix detail in S13."
+              ]
+            },
+            {
+              "id": "F13",
+              "notes": [
+                "Source S14 supports the Phone booking intake service obj-002 has no journey connection and needs fix."
+              ]
+            },
+            {
+              "id": "F14",
+              "notes": [
+                "The Reminder notification adapter obj-003 lacks journey connection as per S15, supporting fix severity."
+              ]
+            },
+            {
+              "id": "F15",
+              "notes": [
+                "S16 confirms the Reminder handling service obj-004 lacks connection to the journey and requires fix."
+              ]
+            },
+            {
+              "id": "F16",
+              "notes": [
+                "Freed slot handling service obj-005 is missing journey connection per S17, supporting fix."
+              ]
+            },
+            {
+              "id": "F17",
+              "notes": [
+                "Missed appointment record keeping service obj-006 has no connected path to the journey; fix supported by S18."
+              ]
+            },
+            {
+              "id": "F18",
+              "notes": [
+                "Compute for Appointment scheduling service tc-001 lacks journey connection, supported by S19."
+              ]
+            },
+            {
+              "id": "F19",
+              "notes": [
+                "Compute for Phone booking intake service tc-002 missing journey connection is confirmed by S20; fix severity supported."
+              ]
+            },
+            {
+              "id": "F20",
+              "notes": [
+                "Connectivity for Reminder notification adapter tc-003 lacks journey connection; fix indicated by S21."
+              ]
+            }
+          ],
+          "contradictions": []
+        },
+        "notes": [
+          {
+            "id": "F1",
+            "notes": [
+              "The fix severity is supported by source S2 as it explicitly states the responsibility has no connected path to the project journey and requires connection."
+            ]
+          },
+          {
+            "id": "F2",
+            "notes": [
+              "The fix severity and reasoning are supported by source S3, which states the Phone booking intake responsibility has no connected path to the project journey."
+            ]
+          },
+          {
+            "id": "F3",
+            "notes": [
+              "Source S4 supports the fix severity and explanation that Reminder notification responsibility lacks journey connection."
+            ]
+          },
+          {
+            "id": "F4",
+            "notes": [
+              "The reasoning for the Reminder handling responsibility lacking journey connection is supported by S5."
+            ]
+          },
+          {
+            "id": "F5",
+            "notes": [
+              "The freed slot handling responsibility connection gap and corresponding fix severity is confirmed by S6."
+            ]
+          },
+          {
+            "id": "F6",
+            "notes": [
+              "Source S7 confirms the missed appointment record keeping responsibility lacks journey connection and requires fix."
+            ]
+          },
+          {
+            "id": "F7",
+            "notes": [
+              "The journey step JRN-001 missing responsibility connection and fix severity is supported by S8."
+            ]
+          },
+          {
+            "id": "F8",
+            "notes": [
+              "Source S9 supports the finding that JRN-002 lacks connected responsibility and needs a fix."
+            ]
+          },
+          {
+            "id": "F9",
+            "notes": [
+              "The absence of responsibility connected to journey step JRN-003 is supported by S10."
+            ]
+          },
+          {
+            "id": "F10",
+            "notes": [
+              "Fix severity for JRN-004 lacking responsibility connection is supported by S11."
+            ]
+          },
+          {
+            "id": "F11",
+            "notes": [
+              "The journey step JRN-005 lacking a responsibility connection and fix severity is supported by S12."
+            ]
+          },
+          {
+            "id": "F12",
+            "notes": [
+              "Appointment scheduling service obj-001 lacks journey connection, supported by fix detail in S13."
+            ]
+          },
+          {
+            "id": "F13",
+            "notes": [
+              "Source S14 supports the Phone booking intake service obj-002 has no journey connection and needs fix."
+            ]
+          },
+          {
+            "id": "F14",
+            "notes": [
+              "The Reminder notification adapter obj-003 lacks journey connection as per S15, supporting fix severity."
+            ]
+          },
+          {
+            "id": "F15",
+            "notes": [
+              "S16 confirms the Reminder handling service obj-004 lacks connection to the journey and requires fix."
+            ]
+          },
+          {
+            "id": "F16",
+            "notes": [
+              "Freed slot handling service obj-005 is missing journey connection per S17, supporting fix."
+            ]
+          },
+          {
+            "id": "F17",
+            "notes": [
+              "Missed appointment record keeping service obj-006 has no connected path to the journey; fix supported by S18."
+            ]
+          },
+          {
+            "id": "F18",
+            "notes": [
+              "Compute for Appointment scheduling service tc-001 lacks journey connection, supported by S19."
+            ]
+          },
+          {
+            "id": "F19",
+            "notes": [
+              "Compute for Phone booking intake service tc-002 missing journey connection is confirmed by S20; fix severity supported."
+            ]
+          },
+          {
+            "id": "F20",
+            "notes": [
+              "Connectivity for Reminder notification adapter tc-003 lacks journey connection; fix indicated by S21."
+            ]
+          }
+        ],
+        "contradiction": null,
+        "declined": false,
+        "packetStamp": "43d69413:933fb5ed",
+        "packetStampMatches": true
+      },
+      "findings": [
+        {
+          "id": "F1",
+          "elementId": "lr-001",
+          "severity": "fix",
+          "title": "Appointment scheduling responsibility lacks journey connection",
+          "reason": "The Appointment scheduling responsibility (lr-001) is not connected to any project journey steps, missing connections for its inputs or outputs, which leaves its place in the overall process undefined. This disconnect undermines traceability from requirements through implementation.",
+          "sourceRefs": [
+            "S2"
+          ]
+        },
+        {
+          "id": "F2",
+          "elementId": "lr-002",
+          "severity": "fix",
+          "title": "Phone booking intake responsibility lacks journey connection",
+          "reason": "The Phone booking intake responsibility (lr-002) has no connected path to the project journey, missing linkage to process steps that would clarify input, output or process context.",
+          "sourceRefs": [
+            "S3"
+          ]
+        },
+        {
+          "id": "F3",
+          "elementId": "lr-003",
+          "severity": "fix",
+          "title": "Reminder notification responsibility lacks journey connection",
+          "reason": "The Reminder notification responsibility (lr-003) stands unconnected to the project journey with no input, output or process step linkage, impeding traceability of its role in service delivery.",
+          "sourceRefs": [
+            "S4"
+          ]
+        },
+        {
+          "id": "F4",
+          "elementId": "lr-004",
+          "severity": "fix",
+          "title": "Reminder handling responsibility lacks journey connection",
+          "reason": "The Reminder handling responsibility (lr-004) is disconnected from any journey steps, lacking clear linkage and context within the overall process model.",
+          "sourceRefs": [
+            "S5"
+          ]
+        },
+        {
+          "id": "F5",
+          "elementId": "lr-005",
+          "severity": "fix",
+          "title": "Freed slot handling responsibility lacks journey connection",
+          "reason": "Freed slot handling responsibility (lr-005) does not link to the project journey, so its responsibilities lack integration within the overall booking and cancellation process.",
+          "sourceRefs": [
+            "S6"
+          ]
+        },
+        {
+          "id": "F6",
+          "elementId": "lr-006",
+          "severity": "fix",
+          "title": "Missed appointment record keeping responsibility lacks journey connection",
+          "reason": "Missed appointment record keeping responsibility (lr-006) is not connected to any journey process steps, hindering understanding of its operational context and flow.",
+          "sourceRefs": [
+            "S7"
+          ]
+        },
+        {
+          "id": "F7",
+          "elementId": "JRN-001",
+          "severity": "fix",
+          "title": "Journey step has no connected responsibility",
+          "reason": "The journey step 'A patient books an appointment online or by phone with a receptionist' (JRN-001) does not have a logical responsibility connected, leaving no accountable element defined for this process function.",
+          "sourceRefs": [
+            "S8"
+          ]
+        },
+        {
+          "id": "F8",
+          "elementId": "JRN-002",
+          "severity": "fix",
+          "title": "Journey step has no connected responsibility",
+          "reason": "The journey step 'The appointment service confirms the booking and schedules a reminder' (JRN-002) lacks any connected logical responsibility, leaving its execution responsibility undefined.",
+          "sourceRefs": [
+            "S9"
+          ]
+        },
+        {
+          "id": "F9",
+          "elementId": "JRN-003",
+          "severity": "fix",
+          "title": "Journey step has no connected responsibility",
+          "reason": "The journey step 'The patient receives the reminder and confirms, moves or cancels the appointment' (JRN-003) is not connected to any responsibility, impairing clarity on ownership and implementation.",
+          "sourceRefs": [
+            "S10"
+          ]
+        },
+        {
+          "id": "F10",
+          "elementId": "JRN-004",
+          "severity": "fix",
+          "title": "Journey step has no connected responsibility",
+          "reason": "The journey step 'A cancelled or moved appointment frees a slot that the service offers to the waiting list' (JRN-004) lacks connection to a responsible element, impacting traceability and accountability.",
+          "sourceRefs": [
+            "S11"
+          ]
+        },
+        {
+          "id": "F11",
+          "elementId": "JRN-005",
+          "severity": "fix",
+          "title": "Journey step has no connected responsibility",
+          "reason": "The journey step 'The clinician marks the appointment as attended or missed, and a missed appointment starts the follow-up' (JRN-005) does not have a connected logical responsibility assigned, obscuring responsibility and control.",
+          "sourceRefs": [
+            "S12"
+          ]
+        },
+        {
+          "id": "F12",
+          "elementId": "obj-001",
+          "severity": "fix",
+          "title": "Appointment scheduling service lacks journey connection",
+          "reason": "The Appointment scheduling service (obj-001) has no connected path to the project journey, which breaks traceability from the business journey to the service components.",
+          "sourceRefs": [
+            "S13"
+          ]
+        },
+        {
+          "id": "F13",
+          "elementId": "obj-002",
+          "severity": "fix",
+          "title": "Phone booking intake service lacks journey connection",
+          "reason": "The Phone booking intake service (obj-002) is not connected to the project journey, creating a gap in understanding how this component participates in the overall process.",
+          "sourceRefs": [
+            "S14"
+          ]
+        },
+        {
+          "id": "F14",
+          "elementId": "obj-003",
+          "severity": "fix",
+          "title": "Reminder notification adapter lacks journey connection",
+          "reason": "Reminder notification adapter (obj-003) lacks connection to the project journey, which leaves unclear how this component fits into the appointment reminder workflow.",
+          "sourceRefs": [
+            "S15"
+          ]
+        },
+        {
+          "id": "F15",
+          "elementId": "obj-004",
+          "severity": "fix",
+          "title": "Reminder handling service lacks journey connection",
+          "reason": "The Reminder handling service (obj-004) is disconnected from the project journey, meaning its role in handling reminder responses is not linked in the model.",
+          "sourceRefs": [
+            "S16"
+          ]
+        },
+        {
+          "id": "F16",
+          "elementId": "obj-005",
+          "severity": "fix",
+          "title": "Freed slot handling service lacks journey connection",
+          "reason": "Freed slot handling service (obj-005) lacks connection to the project journey, obscuring its role in managing freed appointment slots after cancellations.",
+          "sourceRefs": [
+            "S17"
+          ]
+        },
+        {
+          "id": "F17",
+          "elementId": "obj-006",
+          "severity": "fix",
+          "title": "Missed appointment record keeping service lacks journey connection",
+          "reason": "Missed appointment record keeping service (obj-006) is not connected to any journey steps, reducing clarity on operational responsibility and integration.",
+          "sourceRefs": [
+            "S18"
+          ]
+        },
+        {
+          "id": "F18",
+          "elementId": "tc-001",
+          "severity": "fix",
+          "title": "Compute for Appointment scheduling service lacks journey connection",
+          "reason": "The compute capability for Appointment scheduling service (tc-001) has no connected path to the project journey, making its required operational context unclear.",
+          "sourceRefs": [
+            "S19"
+          ]
+        },
+        {
+          "id": "F19",
+          "elementId": "tc-002",
+          "severity": "fix",
+          "title": "Compute for Phone booking intake service lacks journey connection",
+          "reason": "The compute capability for Phone booking intake service (tc-002) is not connected to the project journey, obscuring its operational role and integration.",
+          "sourceRefs": [
+            "S20"
+          ]
+        },
+        {
+          "id": "F20",
+          "elementId": "tc-003",
+          "severity": "fix",
+          "title": "Connectivity for Reminder notification adapter lacks journey connection",
+          "reason": "Connectivity capability for Reminder notification adapter (tc-003) has no connected path to the project journey, leaving critical communication context undefined.",
+          "sourceRefs": [
+            "S21"
+          ]
+        }
+      ],
+      "withheldFindings": [],
+      "setAside": []
+    },
+    {
+      "mode": "architecture",
+      "id": "resp_04ccde10a6261a58016ae43abd753c87d19234d83ace68d947",
+      "status": "completed",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "usage": {
+        "inputTokens": 13781,
+        "outputTokens": 4554
+      },
+      "prompt": {
+        "promptVersion": "sol-architecture-5",
+        "sha256": "e85683bfef98635b9f11842df75c4153cb1243723f3a6997fb368649b1555d4f"
+      },
+      "calls": [
+        {
+          "role": "draft",
+          "pass": "draft",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_04ccde10a6261a58016ae43abd753c87d19234d83ace68d947",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 7643,
+            "outputTokens": 3772
+          },
+          "fallback": null,
+          "routeFallback": null
+        },
+        {
+          "role": "check",
+          "pass": "check",
+          "provider": "default",
+          "kind": "openai",
+          "model": "gpt-4.1-mini-2025-04-14",
+          "responseId": "resp_0620ac60864a611b016ae43ad4484c87d1a86d2e807f7cf499",
+          "stopReason": null,
+          "declined": false,
+          "usage": {
+            "inputTokens": 6138,
+            "outputTokens": 782
+          },
+          "fallback": null,
+          "routeFallback": null
+        }
+      ],
+      "checks": {
+        "theme": "REQ:REQ-001",
+        "requirements": 1,
+        "proposalCount": 17,
+        "withheldCount": 2,
+        "packetStamp": "5cda7dc27550482de4dd791b75d895f7379ab75e6827c9ee44eae2f51d0808ef"
+      },
+      "error": null,
+      "theme": {
+        "key": "REQ:REQ-001",
+        "title": "Appointment"
+      },
+      "packetStamp": "5cda7dc27550482de4dd791b75d895f7379ab75e6827c9ee44eae2f51d0808ef",
+      "someProposalAccepted": true,
+      "outcome": {
+        "unit": "proposal",
+        "offered": 17,
+        "empty": 0,
+        "withheld": 2,
+        "withheldBy": "deterministic",
+        "byLayer": {
+          "deterministic": 2,
+          "check": 0,
+          "both": 0,
+          "unrecorded": 0
+        },
+        "withheldAll": false,
+        "declined": false,
+        "fallback": null,
+        "contradictions": 0,
+        "attempts": 1
+      },
+      "grounding": {
+        "accepted": true,
+        "issues": [
+          "It presents a draft as guaranteeing an outcome.",
+          "It presents a draft as guaranteeing an outcome."
+        ],
+        "deterministic": {
+          "issues": [
+            "It presents a draft as guaranteeing an outcome.",
+            "It presents a draft as guaranteeing an outcome."
+          ],
+          "withheld": [
+            "A1",
+            "A19"
+          ]
+        },
+        "check": {
+          "defects": [],
+          "withheld": [],
+          "notes": [
+            "A2: Checked requirement REQ-001 and passage P-036: specify that receptionists must be able to register, move, or cancel phone bookings. Proposal correctly interprets this as a phone booking intake service.",
+            "A3: Requirement REQ-001 and passages P-037, P-043 support sending reminders two days before each appointment and excluding clinical details. Proposal aligns with these demands.",
+            "A4: Requirement REQ-001 and passage P-038 specify patients can respond to reminders to confirm, move or cancel appointments. Proposal correctly interprets patient interactions via reminder handling service.",
+            "A5: Requirement REQ-001 and passage P-039 specify offering freed slots within 15 minutes after a cancellation. Proposal consistent with these requirements.",
+            "A6: Requirement REQ-001 and passage P-040 require recording missed appointments and starting follow-up actions per clinical governance. Proposal aligns correctly.",
+            "A7: Passages P-029 to P-031 describe the appointment booking journey including online booking. Requirement REQ-001 requires booking appointments anytime online. Proposal responsibility aligns with this.",
+            "A8: Requirement REQ-001, passage P-036 and user passage P-023 support receptionist phone booking intake responsibility. Proposal is supported.",
+            "A9: Passages P-037 and P-043 specify reminders sent two days before appointments without clinical details. Proposal assigning responsibility for this fits.",
+            "A10: Passage P-038 states patients answer reminders to manage appointments. Proposal assigns handling responsibility accordingly.",
+            "A11: Passage P-039 contains 15-minute target for freed slot offers. Proposal responsibility consistent with this.",
+            "A12: Passages P-020 and P-040 specify governance and missed appointment following up requirements. Proposal responsibility matches these.",
+            "A13: Passages P-029 to P-031 and requirement REQ-001 support an appointment scheduling service managing bookings including online self-service. The proposed solution and concerns align.",
+            "A14: Existing state references a phone booking intake service APP-002. Proposal corresponds well with requirements and passages for receptionist phone booking intake.",
+            "A15: Passages P-037 and P-043 specify reminder message content and timing. Proposal of an integration adapter for notification matches.",
+            "A16: Requirement REQ-001 and passage P-038 require processing patient responses to reminders. Proposal matches this with a reminder handling service.",
+            "A17: Requirement and passage P-039 specifying 15-minute performance target for freed slot offerings are correctly addressed by this event-driven freed slot handling service proposal.",
+            "A18: Passages P-020 and P-040 and requirement REQ-001 require missed appointment recording and invoking follow-up actions. Proposal is consistent with this."
+          ]
+        },
+        "notes": [
+          "A2: Checked requirement REQ-001 and passage P-036: specify that receptionists must be able to register, move, or cancel phone bookings. Proposal correctly interprets this as a phone booking intake service.",
+          "A3: Requirement REQ-001 and passages P-037, P-043 support sending reminders two days before each appointment and excluding clinical details. Proposal aligns with these demands.",
+          "A4: Requirement REQ-001 and passage P-038 specify patients can respond to reminders to confirm, move or cancel appointments. Proposal correctly interprets patient interactions via reminder handling service.",
+          "A5: Requirement REQ-001 and passage P-039 specify offering freed slots within 15 minutes after a cancellation. Proposal consistent with these requirements.",
+          "A6: Requirement REQ-001 and passage P-040 require recording missed appointments and starting follow-up actions per clinical governance. Proposal aligns correctly.",
+          "A7: Passages P-029 to P-031 describe the appointment booking journey including online booking. Requirement REQ-001 requires booking appointments anytime online. Proposal responsibility aligns with this.",
+          "A8: Requirement REQ-001, passage P-036 and user passage P-023 support receptionist phone booking intake responsibility. Proposal is supported.",
+          "A9: Passages P-037 and P-043 specify reminders sent two days before appointments without clinical details. Proposal assigning responsibility for this fits.",
+          "A10: Passage P-038 states patients answer reminders to manage appointments. Proposal assigns handling responsibility accordingly.",
+          "A11: Passage P-039 contains 15-minute target for freed slot offers. Proposal responsibility consistent with this.",
+          "A12: Passages P-020 and P-040 specify governance and missed appointment following up requirements. Proposal responsibility matches these.",
+          "A13: Passages P-029 to P-031 and requirement REQ-001 support an appointment scheduling service managing bookings including online self-service. The proposed solution and concerns align.",
+          "A14: Existing state references a phone booking intake service APP-002. Proposal corresponds well with requirements and passages for receptionist phone booking intake.",
+          "A15: Passages P-037 and P-043 specify reminder message content and timing. Proposal of an integration adapter for notification matches.",
+          "A16: Requirement REQ-001 and passage P-038 require processing patient responses to reminders. Proposal matches this with a reminder handling service.",
+          "A17: Requirement and passage P-039 specifying 15-minute performance target for freed slot offerings are correctly addressed by this event-driven freed slot handling service proposal.",
+          "A18: Passages P-020 and P-040 and requirement REQ-001 require missed appointment recording and invoking follow-up actions. Proposal is consistent with this."
+        ],
+        "contradiction": null,
+        "declined": false,
+        "packetStamp": "5cda7dc27550482de4dd791b75d895f7379ab75e6827c9ee44eae2f51d0808ef",
+        "packetStampMatches": true
+      },
+      "proposalRefs": [
+        {
+          "kind": "driver",
+          "title": "Quality: Register a phone booking and move or cancel it for a patient who calls",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-036"
+          ]
+        },
+        {
+          "kind": "driver",
+          "title": "Quality: Send a reminder by text message or email two days before each appointment",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-037",
+            "P-043"
+          ]
+        },
+        {
+          "kind": "driver",
+          "title": "Quality: Answer each reminder to confirm, move or cancel the appointment",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-038"
+          ]
+        },
+        {
+          "kind": "driver",
+          "title": "Performance: Offer a freed slot to the waiting list within 15 minutes of a cancellation",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-039"
+          ]
+        },
+        {
+          "kind": "driver",
+          "title": "Quality: Record a missed appointment, and the appointment service must start the follow-up the clinical governance committee sets",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-040"
+          ]
+        },
+        {
+          "kind": "responsibility",
+          "title": "Appointment scheduling",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-029",
+            "P-030",
+            "P-031"
+          ]
+        },
+        {
+          "kind": "responsibility",
+          "title": "Phone booking intake",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-036",
+            "P-023"
+          ]
+        },
+        {
+          "kind": "responsibility",
+          "title": "Reminder notification",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-037",
+            "P-043"
+          ]
+        },
+        {
+          "kind": "responsibility",
+          "title": "Reminder handling",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-038"
+          ]
+        },
+        {
+          "kind": "responsibility",
+          "title": "Freed slot handling",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-039"
+          ]
+        },
+        {
+          "kind": "responsibility",
+          "title": "Missed appointment record keeping",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-040",
+            "P-020"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "Appointment scheduling service",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-029",
+            "P-030",
+            "P-031"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "Phone booking intake service",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-023",
+            "P-036"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "Reminder notification adapter",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-037",
+            "P-043"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "Reminder handling service",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-038"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "Freed slot handling service",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-039"
+          ]
+        },
+        {
+          "kind": "component",
+          "title": "Missed appointment record keeping service",
+          "requirements": [
+            "REQ-001"
+          ],
+          "passages": [
+            "P-020",
+            "P-040"
+          ]
+        }
+      ],
+      "withheldReasons": [
+        {
+          "id": "A1",
+          "kind": "driver",
+          "issues": [
+            "It presents a draft as guaranteeing an outcome."
+          ],
+          "withheldBy": "deterministic",
+          "offeredToArchitect": false,
+          "title": "Quality: Book an appointment at any time through the online service"
+        },
+        {
+          "id": "A19",
+          "kind": "decision",
+          "issues": [
+            "It presents a draft as guaranteeing an outcome."
+          ],
+          "withheldBy": "deterministic",
+          "offeredToArchitect": false,
+          "title": "How should the design respect CON-001: Patient personal data must be handled in line with the health data regulation that applies where the clinic operates?"
+        }
+      ],
+      "packet": {
+        "requirements": 1,
+        "passages": 52,
+        "claims": 0,
+        "omissions": {
+          "requirements": 0,
+          "passages": 0,
+          "claims": 0,
+          "state": 0,
+          "skeleton": 0,
+          "excluded": 0
+        }
+      }
+    }
+  ],
+  "completed": true,
+  "passed": true,
+  "deprecated": {
+    "passed": "Alias of completed, kept for readers of schema 3: every run completed. It is not acceptance; see totals and each run’s outcome.",
+    "groundingAccepted": "Replaced by draftAccepted (field, journey), allFindingsAccepted (review) and someProposalAccepted (architecture)."
+  },
+  "notes": [
+    "Receipts, field drafts and one synthetic architecture theme: packet counts, grounding result, accepted proposal titles and withheld reasons are recorded without prompt content or keys.",
+    "Withheld drafts, findings and proposals are recorded with offeredToArchitect: false, their text only because these are AIW’s illustrative reference projects. They were never offered to an architect.",
+    "The architecture theme uses the model request path directly to bound this probe; it is not a persisted project job, applied decision, provider quality acceptance or evidence of scheduled continuation.",
+    "Advice only: nothing Sol returned was applied; the runs were read and discarded with the scratch database."
+  ],
+  "authority": "Acceptance evidence for the Sol connection on one day. It does not approve the design, calibrate Sol or accept the release for production."
+}
