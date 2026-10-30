@@ -172,7 +172,9 @@ function buildArchitectureModel(p){
  }
  for(const r of list(p.logical?.mappings))rel('realizedBy',r.logicalId,r.physicalId,{id:r.id,label:'realized by',attributes:r,source:'logical.mappings'});
  for(const source of ['logical.connections','realisation.connections','technology.dependencies','technologyRealisation.connections'])for(const r of RECORDED[source].rows(p))rel(RECORDED[source].type(r,p),r.from,r.to,{id:r.id,label:RECORDED[source].label(r),attributes:r,source});
- for(const c of list(p.realisation?.components)){linkRefs(c,'realisation.components');for(const id of list(c.dataIds))rel('owns',c.id,id,{source:'realisation.components.dataIds'});}
+ // rc.10.73.42 (D9): a data definition has one owner, the authority Chapter 8 names (below); a component's own data list is
+ // data it uses, never a second ownership edge.
+ for(const c of list(p.realisation?.components)){linkRefs(c,'realisation.components');for(const id of list(c.dataIds))rel('uses',c.id,id,{source:'realisation.components.dataIds'});}
  for(const n of list(p.technology?.needs)){
   const obj=objects.get(n.id);if(obj){obj.title=n.description||n.category+' need';obj.owner=objects.get(n.applicationId)?.owner||'';}
   rel('hasNeed',n.applicationId,n.id,{source:'technology.needs'});
@@ -273,7 +275,7 @@ export function architectureScope(model,scopeId){
   ids.add(other);if(['component','responsibility','party'].includes(o.type)&&!core.has(other))external.add(other);
  }
  // Pull the control/threat and data/contract explanation for the scoped objects.
- for(const e of model.relationships)if((ids.has(e.to)&&['protects','threatens','mitigates','exchanges'].includes(e.type))||(ids.has(e.from)&&['exchanges','owns','withinBoundary','locatedIn','inEnvironment'].includes(e.type)))ids.add(ids.has(e.from)?e.to:e.from);
+ for(const e of model.relationships)if((ids.has(e.to)&&['protects','threatens','mitigates','exchanges'].includes(e.type))||(ids.has(e.from)&&(['exchanges','owns','withinBoundary','locatedIn','inEnvironment'].includes(e.type)||e.source==='realisation.components.dataIds')))ids.add(ids.has(e.from)?e.to:e.from);
  return {ids,core,external,title:subject.title};
 }
 
