@@ -1,6 +1,6 @@
 // The journey drafter (round 4, Contract 2; shared/journey-drafter.js), the governed commit of its records (Contract 3;
 // guide.commit-draft with provenance, public/chapter-guide.js) and Sol's journey mode (intelligence-service.js,
-// intelligence-provider.js; prompt pin sol-journey-2). Two briefs are interpreted (shared/brief-interpreter.js) and
+// intelligence-provider.js; prompt pin sol-journey-3). Two briefs are interpreted (shared/brief-interpreter.js) and
 // drafted through all
 // eleven chapters on an in-memory copy. The suite asserts: every chapter drafts at least one record; the answers are
 // shaped exactly for each chapter's creation questions; the compiled document raises no "source-change" or key
@@ -267,7 +267,7 @@ try {
   const sent = await call('/api/intelligence/journey', {chapter: 1, requestId: crypto.randomUUID(), packetStamp: packet.stamp});
   assert.equal(sent.status, 200, JSON.stringify(sent.data));
   assert.equal(sent.data.mode, 'journey'); assert.equal(sent.data.groundingReview.accepted, true); assert.equal(sent.data.result.answers.length, 1);
-  assert.equal(sent.data.instructions.promptVersion, 'sol-journey-2');
+  assert.equal(sent.data.instructions.promptVersion, 'sol-journey-3');
   const row = await env.DB.prepare("SELECT mode,status FROM intelligence_runs WHERE owner_id=? AND id=?").bind(owner, sent.data.id).first();
   assert.deepEqual({...row}, {mode: 'journey', status: 'completed'});
   // A second check that names a defect: the deterministic answers stand, with the reason.

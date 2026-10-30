@@ -170,7 +170,7 @@ try {
   pass('the units: every requirement in one unit, platform modules first (largest first), business modules by size, a large module in parts of whole sub-modules naming them, a sample for a platform module that only serves, no theme drafted');
 
   // 3 (contract) and 2 (packets), read from a run of the job through the double.
-  assert.equal(ARCHITECTURE_PROMPT_VERSION, 'sol-architecture-4');
+  assert.equal(ARCHITECTURE_PROMPT_VERSION, 'sol-architecture-5');
   assert.match(ARCHITECTURE_INSTRUCTIONS, /foundational is a choice that shapes the whole platform[^.]*\); it is kept for the cross-cutting pass/);
   assert.match(ARCHITECTURE_INSTRUCTIONS, /structural is how the unit's parts are divided/); assert.match(ARCHITECTURE_INSTRUCTIONS, /in serves, at most 5/); assert.match(ARCHITECTURE_INSTRUCTIONS, /in uses, by their titles in the catalogue/);
   assert.match(ARCHITECTURE_CROSS_INSTRUCTIONS, /merges: \[\{keep, into, reason\}\]/); assert.match(ARCHITECTURE_CROSS_INSTRUCTIONS, /Never fold a business module's component into a component of another business module/);

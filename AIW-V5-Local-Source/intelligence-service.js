@@ -19,6 +19,7 @@ import {requestArchitectureDraft} from './architecture-request.js';
 import {reasoningRequest,reasoningCurrency,adoptReasoning,checkRecordRefinements,instructionsPin} from './public/brain-reasoning.js';
 import {fieldsFor,fieldOf,fieldHelp} from './public/record-fields.js';
 import {sparkFields,draftable,supported,recordOf,chapterOf,parentOf,relatedOf,maxLengthOf,workingRecord,LINK_FIELDS,singletonId,recordNoun} from './public/field-suggestions.js';
+import {fieldOpen,isOpenText} from './public/open-fields.js';
 import {chapterReading,fitReading,RECORD_TYPES} from './public/chapter-reasoning.js';
 import {brainContext} from './public/aiw-brain.js';
 import {architectureBrain,brainSources,BRAIN_ENGINE,BRAIN_POLICY} from './public/architecture-brain.js';
@@ -344,11 +345,17 @@ export function fieldPacket(p,raw){
   if(sources.length>=FIELD_SOURCES||chars+s.excerpt.length>FIELD_CHARS){if(must)throw Error('This record does not fit in one request.');omissions.push({id:s.id,title:s.title,reason:sources.length>=FIELD_SOURCES?'source limit':'character budget'});return null;}
   const ref='S'+(sources.length+1);sources.push({...s,ref});chars+=s.excerpt.length;return ref;
  };
- const text=sparkFields(command).map(x=>x.name),recorded=Object.fromEntries(text.filter(k=>String(r[k]??'').trim()).map(k=>[k,String(r[k]).trim().slice(0,1200)]));
+ // A field that is open (open-fields.js: a placeholder such as "Open question: …" or "Unassigned", or a recorded open
+ // state with nothing typed) holds no value (rc41 IMPROVEMENTS-2026-10-29, item 1): S1 lists it under open with its
+ // question, never as recorded text; the target sends it as target.open with no current value; the retrieval query reads
+ // the field's meaning instead of the placeholder. An empty field with no recorded state stays notRecorded, and text the
+ // architect typed is a value whatever open state the saved record keeps.
+ const openOf=k=>{const v=String(r[k]??'').trim();if(v&&!isOpenText(v))return null;const o=fieldOpen(r,k);return o&&(v||!o.derived)?{state:o.state,question:String(o.question||'').slice(0,600)}:null;};
+ const text=sparkFields(command).map(x=>x.name),open=Object.fromEntries(text.map(k=>[k,openOf(k)]).filter(([,o])=>o)),recorded=Object.fromEntries(text.filter(k=>!open[k]&&String(r[k]??'').trim()).map(k=>[k,String(r[k]).trim().slice(0,1200)]));
  // A saved record by its reference and title (the brief and the narrative are singletons with no id; a decision is
  // titled by its question); a new one by what it is ("A new quality scenario").
  const label=saved?(command==='brief'?`Project brief ${saved.title||saved.name||''}`:`${saved.ref||saved.id||singletonId(command)||''} ${saved.title||saved.question||saved.name||''}`).trim():`A new ${recordNoun(command,r)}`;
- add({id:'record:'+(request.recordId||command),kind:'record',objectId:request.recordId||null,title:label,posture:'The record as the open form holds it: its free-text fields, saved or not yet saved. What the architect typed is not yet recorded fact.',excerpt:JSON.stringify({record:label,type:command,field:{name:field,label:d?.label||field},recorded,notRecorded:text.filter(k=>!recorded[k])}).slice(0,3000),truncated:false},true);
+ add({id:'record:'+(request.recordId||command),kind:'record',objectId:request.recordId||null,title:label,posture:'The record as the open form holds it: its free-text fields, saved or not yet saved. What the architect typed is not yet recorded fact.'+(Object.keys(open).length?' A field under open holds no value yet: it is not stated, or an open question no source has answered.':''),excerpt:JSON.stringify({record:label,type:command,field:{name:field,label:d?.label||field},recorded,...(Object.keys(open).length?{open}:{}),notRecorded:text.filter(k=>!recorded[k]&&!open[k])}).slice(0,3000),truncated:false},true);
  const type=Object.entries(RECORD_TYPES).find(([,T])=>T.command===command)?.[0];let chapterSource=null;
  if(saved&&type){try{const R=chapterReading(p,`M:${RECORD_TYPES[type].chapter}:${saved.id||'SDD'}`);if(R?.reading){const body=JSON.stringify(fitReading(R.reading,3000));chapterSource={id:'reading:'+(saved.id||'SDD'),kind:'chapter-reading',objectId:saved.id||null,title:`Chapter ${RECORD_TYPES[type].chapter}’s reading of ${label}`,posture:'The chapter’s reading of its own record: recorded facts, the journey’s checks and the desk’s vitals — design arithmetic, not measurement.',excerpt:body,truncated:JSON.stringify(R.reading).length>body.length};}}catch{/* a record without a reading is read from the form alone */}}
  if(parent&&parent.id!==request.recordId){const fields=Object.fromEntries(Object.entries(parent).filter(([k,v])=>typeof v==='string'&&v.trim()&&!['id','sourceSnapshot','origin','ref','type'].includes(k)).map(([k,v])=>[k,v.slice(0,600)]));add({id:'parent:'+parent.id,kind:'parent',objectId:parent.id,title:`${parent.ref||parent.id} ${parent.title||parent.question||parent.description||''}`.trim().slice(0,160),posture:'The record this one hangs from, as saved.',excerpt:JSON.stringify(fields).slice(0,1800),truncated:false});}
@@ -366,7 +373,7 @@ export function fieldPacket(p,raw){
   if(anchor){
    const selection={chapter:chapterOf(command),id:anchor},c=brainContext(p,selection);
    if(c.selected.id!=='project'){
-    const query=[d?.label,r.title,recorded[field]].filter(Boolean).join(' '),reading=architectureIntelligence(p,selection,{context:c,prompt:query,limit:4});
+    const query=[d?.label,r.title,open[field]?fieldHelp(command,field):recorded[field]].filter(Boolean).join(' '),reading=architectureIntelligence(p,selection,{context:c,prompt:query,limit:4});
     // A saved parent or driver already has a place in this packet. Expand that
     // same source to its complete canonical record instead of paying another
     // source slot for a duplicate. The unsaved form remains a distinct source.
@@ -389,7 +396,7 @@ export function fieldPacket(p,raw){
  const redact=t=>redactSecrets(policy.redactContacts?String(t).replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,'[email redacted]').replace(/(?<![\w.-])\+?\d[\d ()-]{8,}\d(?![\w.-])/g,'[phone-like value redacted]'):t);
  if(withheld)omissions.push({id:'disclosure-policy',title:`${withheld} source${withheld===1?'':'s'} excluded by the project disclosure policy`,reason:'disclosure policy'});
  const packet={version:1,task:'field-draft',request:{command,field,recordId:request.recordId,parentId:parent?.id||null},
-  target:{command,field,label:d?.label||field,kind:d?.kind||'textarea',help:fieldHelp(command,field),maxLength:maxLengthOf(command,field),current:redact(String(r[field]??'').trim().slice(0,2400)),record:label},
+  target:{command,field,label:d?.label||field,kind:d?.kind||'textarea',help:fieldHelp(command,field),maxLength:maxLengthOf(command,field),current:open[field]?'':redact(String(r[field]??'').trim().slice(0,2400)),...(open[field]?{open:{state:open[field].state,question:redact(open[field].question)}}:{}),record:label},
   sources:sources.map(s=>({...s,title:redact(s.title),excerpt:redact(s.excerpt)})),omissions,coverage:{characters:chars,maxCharacters:FIELD_CHARS,sourceCount:sources.length,maxSources:FIELD_SOURCES},
   brainReceipt:{engine:BRAIN_ENGINE,policy:BRAIN_POLICY,reasoning:'aiw-field-draft-1',instructions:fieldInstructionsPin(),claimIds,scoring:false},
   disclosure:{version:2,redactContacts:!!policy.redactContacts,redactSecrets:true,excludedObjectCount:excluded.size,withheldSources:withheld}};

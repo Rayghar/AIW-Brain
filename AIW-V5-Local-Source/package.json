@@ -275,6 +275,7 @@
     "test:trace-narrative": "node trace-narrative-validate.mjs",
     "test:process-semantics": "node process-semantics-validate.mjs",
     "test:open-fields": "node open-fields-validate.mjs",
+    "test:sol-open-fields": "node sol-open-fields-validate.mjs",
     "test:not-stated": "node not-stated-validate.mjs",
     "test:seeded-proposals": "node seeded-proposals-validate.mjs",
     "test:provenance": "node provenance-validate.mjs",

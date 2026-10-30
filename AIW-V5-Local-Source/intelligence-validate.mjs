@@ -78,7 +78,7 @@ async function suite(provider){
   assert.equal((await req('/api/intelligence/generate',generation,{bindings:{...env,[keyName]:undefined}})).status,503);assert.equal(calls,0);
   assert.equal((await req('/api/intelligence/generate',{...generation,packetStamp:'changed'})).status,409);assert.equal(calls,0);
   const generated=await req('/api/intelligence/generate',generation);assert.equal(generated.status,200,JSON.stringify(generated.data));assert.equal(generated.data.status,'completed');assert.equal(calls,2);
-  assert.equal(generated.data.provider,label);assert.equal(generated.data.providerReceipt.provider,provider);assert.equal(generated.data.providerReceipt.calls.length,2);assert.deepEqual(generated.data.providerReceipt.prompt,{promptVersion:'sol-generate-1',sha256:generated.data.instructions.sha256});
+  assert.equal(generated.data.provider,label);assert.equal(generated.data.providerReceipt.provider,provider);assert.equal(generated.data.providerReceipt.calls.length,2);assert.deepEqual(generated.data.providerReceipt.prompt,{promptVersion:'sol-generate-2',sha256:generated.data.instructions.sha256});
   if(anthropic){assert.equal(generated.data.providerReceipt.api,'messages');assert.equal(generated.data.providerReceipt.streamed,true);assert(generated.data.providerReceipt.calls.every(c=>/^msg_mock_/.test(c.responseId)&&c.stopReason==='end_turn'));assert(Number.isInteger(generated.data.usage.cacheWriteTokens)&&generated.data.usage.cacheWriteTokens>0,'the first sight of a cached prefix is a cache write');}
   else assert.deepEqual(Object.keys(generated.data.usage).sort(),['inputTokens','outputTokens'],'the OpenAI usage is as before');
   assert.equal((await req('/api/project')).data.revision,1,'Generation must not mutate the model');

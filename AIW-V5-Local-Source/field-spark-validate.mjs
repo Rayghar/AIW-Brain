@@ -588,7 +588,10 @@ let run;
     assert.ok(Array.isArray(R.relatedOf(now, command, sample).neighbours), command + ' reads its neighbours');
     for (const d of R.sparkFields(command)) assert.ok(fieldHelp(command, d.name).length > 12, `${command}.${d.name} has a meaning for the packet`);
   }
-  assert.equal(FIELD_PROMPT_VERSION, 'sol-field-3');
+  // The pin by version and digest (rc41 item 4): FIELD_INSTRUCTIONS embeds shared constants, so the version alone could
+  // stay while the words Sol is told change.
+  assert.equal(FIELD_PROMPT_VERSION, 'sol-field-4');
+  assert.deepEqual(fieldInstructionsPin(), {promptVersion: 'sol-field-4', sha256: '7cef6c145670051f574a48af8791cb8fdd816292861aeaffe96a78557ea7fbe3'}, 'the field prompt, with every shared constant it embeds, is the one pinned');
   assert.match(FIELD_INSTRUCTIONS, /target\.help says what this field means[\s\S]*sources of kind neighbour/, 'the instruction reads the help and the neighbours');
   pass('field context preserves the saved parent and neighbours, adds positively scoped drivers and bounded architecture knowledge, reports omitted critical context, and uses the pinned field instructions');
 }

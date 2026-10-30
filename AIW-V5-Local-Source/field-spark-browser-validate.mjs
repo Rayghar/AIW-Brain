@@ -95,13 +95,13 @@ try {
   await page.click(`${dialog} [data-spark-for="boundary"]`);
   await page.waitForSelector(`${dialog} .spark-pop [data-spark-packet]`);
   assert.equal(await page.$(`${dialog} .spark-pop [data-spark-act="prepare"]`), null, 'the packet is already prepared: the first click sends');
-  assert.match(await text(`${dialog} .spark-pop [data-spark-packet]`), /Sol will read (?:[2-9]|10) sources for this field, and nothing else:[\s\S]*S1[\s\S]*A new responsibility record[\s\S]*S2[\s\S]*REQ-004[\s\S]*prompt sol-field-3/);
+  assert.match(await text(`${dialog} .spark-pop [data-spark-packet]`), /Sol will read (?:[2-9]|10) sources for this field, and nothing else:[\s\S]*S1[\s\S]*A new responsibility record[\s\S]*S2[\s\S]*REQ-004[\s\S]*prompt sol-field-4/);
   assert.equal(calls.length, 0, 'preparing the packet sends nothing to the provider');
   await page.click(`${dialog} .spark-pop [data-spark-act="send"]`);
   await page.waitForSelector(`${dialog} .spark-pop [data-spark-receipt]`);
   assert.deepEqual(calls, ['aiw_field_draft', 'aiw_field_draft_check']);
   const receipt = await text(`${dialog} .spark-pop [data-spark-receipt]`);
-  assert.match(receipt, /^Run [a-f0-9-]{36} · packet [a-f0-9]{12} · prompt sol-field-3 · [a-f0-9]{12} · source-checked · draft, not saved$/);
+  assert.match(receipt, /^Run [a-f0-9-]{36} · packet [a-f0-9]{12} · prompt sol-field-4 · [a-f0-9]{12} · source-checked · draft, not saved$/);
   const runId = receipt.match(/^Run ([a-f0-9-]{36})/)[1];
   await page.click(`${dialog} .spark-pop [data-spark-band="sol"] [data-spark-act="accept"]`);
   assert.match(await page.inputValue(`${dialog} [name="boundary"]`), /^Uncertain settlement outcomes are kept pending here/);

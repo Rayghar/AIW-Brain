@@ -47,7 +47,7 @@ try {
   const fields = evidence.runs.filter(r => r.mode === 'field');
   assert.equal(fields.length, 11); assert.equal(evidence.runs.length, 14, 'eleven field drafts, the journey, the review and one architecture theme');
   assert.ok(fields.every(r => r.packet && Array.isArray(r.packet.neighbours) && typeof r.packet.help === 'string' && r.draft && r.grounding), 'each field run keeps its packet reading, grounding and draft');
-  assert.ok(evidence.pins.includes('sol-field-3'), 'the field prompt pin is recorded: ' + evidence.pins.join(', '));
+  assert.ok(evidence.pins.includes('sol-field-4'), 'the field prompt pin is recorded: ' + evidence.pins.join(', '));
   assert.ok(evidence.runs.some(r => r.mode === 'journey' && r.status === 'completed') && evidence.runs.some(r => r.mode === 'review' && r.status === 'completed'));
   const architecture = evidence.runs.find(r => r.mode === 'architecture');
   assert.equal(architecture.status, 'completed', architecture.error);
