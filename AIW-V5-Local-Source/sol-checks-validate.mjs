@@ -79,6 +79,12 @@ await check('2 · the guard reads a claim as a claim: a guarantee in any tense, 
  // an object that is not an outcome, missing evidence, and what a test should verify.
  for(const s of ['Ensure clear procedures for recovery and failover to maintain availability.','No tactics from the SA Playbook are yet named or realized, and the conditions include unavailable downstream services which add complexity to achieving the target.','Applying scaling horizontally (S3) and stateless principles (S4) is indicated to achieve needed capacity.','Lifecycle management ensures the messaging infrastructure aligns with capacity growth (S14) and orderly evolution to support long-term operation.','This ensures operational and cost efficiency and appropriate capacity planning aligned to real demand rather than example data.','Without measured evidence favoring latency or operational trade-off impacts, the choice depends on business priorities.','Lack of validated test results to confirm capacity sufficiency at proposed replica counts.','Refinements should increase maxReplicas, specify scalingPolicy and ensure minReady matches availability needs.','The standby is critical for detecting failure and ensuring timely recovery.','A load test should verify that the pool achieves the target before go-live.','To address missing management, monitoring, and recovery coverage ensuring observability and availability.','Kafka requires proactive operations to handle load and ensure availability.'])assert.equal(overclaim(s),null,s);
  for(const s of ['This ensures capacity matches demand under normal and failure conditions (S1, S2, S5).','Refinements increase maxReplicas to 23 and ensure availability.','To date, the ledger has guaranteed zero loss.'])assert.equal(overclaim(s),'guarantee',s);
+ // A negation reaches a claim only within the five words after it, across commas, never past a ';' (rc41 review,
+ // IMPROVEMENTS-2026-10-29.md item 9): a claim the sentence negates only afterwards still claims, in either reading; a
+ // negated claim with an aside claims nothing; a negated verification claims nothing.
+ for(const [s,claim] of [['The booking lock guarantees zero double bookings, not just fewer.','guarantee'],['Three replicas ensure availability during failover, so a manual standby is not needed.','guarantee'],['The latency was measured at 180 ms in production, not estimated.','verified']])for(const drafted of [false,true])assert.equal(overclaim(s,{drafted}),claim,s);
+ for(const s of ['The booking lock does not, as written, guarantee zero double bookings.','Three replicas do not, on their own, ensure availability during failover.','A single queue cannot, by itself, achieve exactly-once processing.'])for(const drafted of [false,true])assert.equal(overclaim(s,{drafted}),null,s);
+ assert.equal(overclaim('The design has not verified capacity in production.'),null);assert.equal(overclaim('The design has verified capacity in production.'),'verified');
  // A drafted value is written into the design: an outcome it says it ensures is set aside, a purpose included.
  const purpose='Horizontal Pod Autoscaler on CPU at 70 %, from 3 to 26 replicas, to ensure availability during the peak.';
  assert.equal(overclaim(purpose),null);assert.equal(overclaim(purpose,{drafted:true}),'guarantee');
@@ -107,6 +113,13 @@ await check('3 · a second pass that contradicts itself is recorded, not relied 
  assert.deepEqual(f.defects,[]);assert.equal(f.notes.length,4);assert.match(f.contradiction.note,/4 of the defects it named read as support/);
  // Real defects stay defects, however they are worded.
  for(const d of ['The 30-second timeout is not supported by the packet.','It states 48,000, which no reading in the packet contains.','The claim that the rate is supported by S3 is false.','It invents an operations team as the owner.'])assert.deepEqual(reviewFinding({supported:false,defects:[d],notes:[]}).defects,[d],d);
+ // A defect that affirms one part and then turns (but, however, although, though, except, yet, whereas), or that names
+ // what no source states, stays a defect (rc41 review, item 2); before, each of these read as support and became a note.
+ for(const d of ['The retry policy is supported by S1, but the 5-second window does not appear in any source.','The owner is supported by S2; however, the 99.9% availability figure is not stated in any reading.','Choosing a queue is appropriate, although the claim that it removes every duplicate goes beyond what S3 says.','The value is supported by the packet, except the named product, which S2 never mentions.','The structure is acceptable, yet the monthly retention period is unsubstantiated.',
+  'The candidate claims that duplicate protection can be removed because lost notifications are acceptable, but the source explicitly requires duplicate protection for reliable delivery in the face of repeated attempts (S1, S3).', // a live check's defect (evidence/brain-completion/live-guard.json)
+  'The retry count is supported by S2; the backoff ceiling exceeds what any reading states.','The idempotency key is acceptable; the 24-hour retention lacks support in the packet.','The owner is supported by S1; the product it names is absent from every reading.'])assert.deepEqual(reviewFinding({supported:false,defects:[d],notes:[]}).defects,[d],d);
+ // A negated "exceed" or "absent" still reads as support.
+ for(const d of ['The 30-second figure does not exceed what S2 states, so it is supported.','The owner is not absent from S1; it is supported.'])assert.deepEqual(reviewFinding({supported:false,defects:[d],notes:[]}).notes,[d],d);
  // Defects named while the flag says supported: the defects decide, and the disagreement is recorded.
  f=reviewFinding({supported:true,defects:['It invents Prometheus as the monitoring product.'],notes:[]});
  assert.equal(f.defects.length,1);assert.match(f.contradiction.note,/while marking it supported; the defects decide/);
@@ -136,6 +149,10 @@ await check('3 · a second pass that contradicts itself is recorded, not relied 
  let n=0;const r=await requestIntelligence(env,ip,{fetcher:async()=>Response.json(envelope(++n===1?draft:{supported:false,defects:[],notes:['Every assertion is attributed to the packet.']}))});
  assert.equal(r.groundingReview.accepted,r.groundingReview.deterministic.accepted,'the bare flag no longer decides');
  assert.match(r.groundingReview.contradiction.note,/named no defect/);assert.deepEqual(r.groundingReview.notes,['Every assertion is attributed to the packet.']);
+ // A contrast-worded defect withholds there too; before, it was taken as a note and the draft was offered.
+ n=0;const turn='The outbox passage is supported by S1, but the claim that the relay needs no monitoring does not appear in any source.';
+ const turned=await requestIntelligence(env,ip,{fetcher:async()=>Response.json(envelope(++n===1?draft:{supported:true,defects:[turn],notes:[]}))});
+ assert.equal(turned.groundingReview.deterministic.accepted,true,'only the check withholds it');assert.equal(turned.groundingReview.accepted,false);assert(turned.groundingReview.issues.includes(turn));assert.deepEqual(turned.groundingReview.notes,[]);
 });
 
 await check('4 · the Playbook example is named as the example; a design with its own workload is not sized for it',async()=>{

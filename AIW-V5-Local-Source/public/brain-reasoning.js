@@ -534,7 +534,9 @@ export const restated = (value, unit) => [norm(value), ...(RESTATED[unit] || [])
 // ("latency was measured at 180 ms in production"). Advice claims nothing: an instruction ("Ensure clear
 // recovery procedures"), a purpose or modal ("to ensure", "should ensure", "helps ensure"), a goal ("critical
 // for ensuring", "complexity to achieving the target"), missing evidence ("without measured evidence"), a
-// question, and a negated or hedged sentence ("does not guarantee", "until a load test replaces it").
+// question, a hedged sentence ("until a load test replaces it") and a negated claim ("does not guarantee",
+// "does not, as written, guarantee"). A negation reaches a claim at most five words after it, so "guarantees
+// zero double bookings, not just fewer" still claims; the structural shortcuts keep a sentence-wide negation.
 // A drafted value is read strictly, because it is written into the design: an outcome it says it ensures
 // is a claim even as a purpose ("…to ensure availability").
 const ENSURES = /\b(?:guarantee[sd]?|guaranteeing|ensure[sd]?|ensuring|achieve[sd]?|achieving|prove[sdn]?|proving)\b/gi;
@@ -578,20 +580,23 @@ function claims(sentence, m, drafted) {
   if (bare === 'be') return /\bwill\s+be$/i.test(words.slice(-2).join(' '));
   return !ADVISES.has(bare);
 }
+const NEGATES = /^(?:not|never|cannot|can't|doesn.t|isn.t)$/i;
+const negated = before => before.split(';').pop().trim().split(/\s+/).slice(-5).some(w => NEGATES.test(w.replace(/^\W+|\W+$/g, '')));
 export function overclaim(text, {drafted = false} = {}) {
   for (const sentence of String(text).split(/(?<=[.!?])\s+|\n+|;\s*|\s+(?:but|while|whereas|although|though|however)\s+/)) {
     if (/\?\s*$/.test(sentence)) continue;
-    if (/\b(?:not|never|cannot|can't|doesn.t|isn.t|no guarantee|unverified|not yet|until)\b/i.test(sentence)) continue;
-    if(structuralCorrectnessClaim(sentence))return 'guarantee';
-    if(TOPOLOGY_ATOMICITY.test(sentence)&&!DIRECTS.test(sentence)&&!/^\s*(?:if|when|provided|assuming)\b/i.test(sentence)&&!/\b(?:via|using|through|backed by)\b.{0,70}\b(?:database|datastore|storage|transaction)\b/i.test(sentence))return 'guarantee';
+    if (/\b(?:no guarantee|unverified|not yet|until)\b/i.test(sentence)) continue;
+    const denied = /\b(?:not|never|cannot|can't|doesn.t|isn.t)\b/i.test(sentence);
+    if(!denied&&structuralCorrectnessClaim(sentence))return 'guarantee';
+    if(!denied&&TOPOLOGY_ATOMICITY.test(sentence)&&!DIRECTS.test(sentence)&&!/^\s*(?:if|when|provided|assuming)\b/i.test(sentence)&&!/\b(?:via|using|through|backed by)\b.{0,70}\b(?:database|datastore|storage|transaction)\b/i.test(sentence))return 'guarantee';
     for (const m of sentence.matchAll(ENSURES)) {
-      if (!claims(sentence, m, drafted)) continue;
+      if (negated(sentence.slice(0, m.index)) || !claims(sentence, m, drafted)) continue;
       const after = sentence.slice(m.index + m[0].length).split(/[;:—–]|\s(?:but|while|whereas|although|though)\s/)[0].slice(0, 90).trimStart();
       if (HARD.test(after) || SOFT.test(after)) return 'guarantee';
     }
     for (const m of sentence.matchAll(VERIFIED)) {
       const clause = sentence.slice(0, m.index).split(/[;:—–(]/).pop(), after = sentence.slice(m.index + m[0].length);
-      if (UNPROVEN.test(clause)) continue; // "without measured evidence", "lack of validated results"
+      if (UNPROVEN.test(clause) || negated(sentence.slice(0, m.index))) continue; // "without measured evidence", "lack of validated results", "has not verified capacity"
       const asserted = /\b(?:is|are|was|were|been)\s+(?:\w+ly\s+)?$/i.test(clause) || /^\s+(?:capacity|latency|throughput|recovery|availability)\b/i.test(after);
       if (asserted && /^.{0,60}\b(?:capacity|latency|throughput|recovery|availability|in production)\b/i.test(after)) return 'verified';
     }
@@ -667,13 +672,17 @@ export function withheld(packet, id, issues) {
 }
 // What a second pass found. Its concrete defects decide; it is not trusted where it contradicts itself. A
 // defect that only affirms support ("…, so it is supported") is read as the note it is, and a flag that
-// disagrees with the defects it names ("unsupported", naming none) is recorded, never relied on.
+// disagrees with the defects it names ("unsupported", naming none) is recorded, never relied on. A defect that
+// turns after affirming ("supported by S1, but the 5-second window does not appear in any source"), or that names
+// what no source states, stays a defect.
 const AFFIRMS = /\b(?:is|are|remains?)\s+(?:\w+ly\s+)?(?:supported|acceptable|appropriate)\b|\b(?:so|thus|therefore|all)\s+(?:it is\s+)?(?:supported|acceptable)\b|\bnot (?:an issue|a defect)\b|^no (?:invented|fabricated|unsupported|issues?|defects?)\b|\bno (?:issue|defect)s?\b/i;
-const DENIES = /\bnot supported\b|\bunsupported\b|\bcontradict|\bdoes not follow\b|\bnot in the packet\b|\bno reading\b|(?<!\bno )\binvent|(?<!\bno )\bfabricat|\boverstat|\bfalse\b|\bincorrect\b|\bwrong\b|\bmisstat|\bnot (?:true|accurate)\b/i;
+const DENIES = /\bnot supported\b|\bunsupported\b|\bcontradict|\bdoes not follow\b|\bnot in the packet\b|\bno reading\b|(?<!\bno )\binvent|(?<!\bno )\bfabricat|\boverstat|\bfalse\b|\bincorrect\b|\bwrong\b|\bmisstat|\bnot (?:true|accurate)\b|\bnot (?:\w+ly )?(?:stated|mentioned|present|found)\b|\b(?:does|do)(?: not|n.t) appear\b|\bno source|\b(?:goes|went) beyond\b|\bunsubstantiated\b|\black(?:s|ing)? (?:\w+ )?support|(?<!\b(?:not|never|without) |n.t )\bexceed|(?<!\b(?:not|never) |n.t )\babsent\b/i;
+const TURNS = /\b(?:but|however|although|though|except|yet|whereas)\b/i;
+const affirms = d => { const m = AFFIRMS.exec(d); return !!m && !DENIES.test(d) && !TURNS.test(d.slice(m.index + m[0].length)); };
 export function reviewFinding(r) {
   if (!r) return {defects: [], notes: [], contradiction: null};
   const defects = [], notes = [...list(r.notes)];
-  for (const d of list(r.defects)) (AFFIRMS.test(d) && !DENIES.test(d) ? notes : defects).push(d);
+  for (const d of list(r.defects)) (affirms(d) ? notes : defects).push(d);
   const demoted = list(r.defects).length - defects.length, disagrees = r.supported !== !defects.length;
   const asNotes = demoted ? `${demoted} of the defects it named read as support and were taken as notes` : '';
   const note = disagrees && defects.length ? `The source check named ${defects.length} defect${defects.length === 1 ? '' : 's'} while marking it supported; the defects decide.`
