@@ -18,11 +18,17 @@ import {localFiles} from './local-files.js';
 import {readRecoveryPoint} from './storage-upgrade.js';
 import {seedProject, applyCommand} from './public/requirements-domain.js';
 import * as rv from './public/review-domain.js';
-import {applySecurityCommand, controlStamp, evidenceCurrent} from './public/security-domain.js';
-import {applyRuntimeCommand, runtimePlanStamp, runtimeEvidenceCurrent} from './public/runtime-domain.js';
+import {applySecurityCommand, controlStamp, evidenceCurrent, threatStamp, securityGovernanceStamp} from './public/security-domain.js';
+import {applyRuntimeCommand, runtimePlanStamp, runtimeEvidenceCurrent, runtimeEnvironmentStamp, runtimeHandoffCurrent} from './public/runtime-domain.js';
 import {applyAssuranceCommand, assuranceCurrent} from './public/assurance-domain.js';
 import {needsReadingsUpgrade, upgradeReadings} from './public/readings-upgrade.js';
 import {withReadingsDefinition} from './public/source-fingerprint.js';
+import {applyEvidenceCommand} from './public/evidence-domain.js';
+import {verificationContext, verificationResult} from './public/architecture-verification.js';
+import {changesSinceBaseline} from './public/sdd-document.js';
+import {memoPass} from './public/document-memo.js';
+import {digest} from './public/brain-integrity.js';
+import {verificationFixture, obligationAt} from './architecture-verification-fixtures.mjs';
 
 const at = '2026-10-30T09:00:00.000Z', ARCHITECT = 'architect-a', APPROVER = 'approver-b', checks = [];
 const pass = name => { checks.push(name); console.log('ok - ' + name); };
@@ -38,14 +44,14 @@ const assurance = (p, payload) => rv.withFinalReview(applyAssuranceCommand(p, {t
 // handed off, every Chapter 11 step recorded by the architect, approval evidence recorded by a second signed-in person.
 // Every source error is carried as its own owned delivery action (actions not bound to an obligation, so each is current
 // only against the design stamp). A synthetic fixture: no real review, approval or evidence is claimed.
-function approvedProject() {
-  let p = rv.withFinalReview(seedProject());
-  p = security(p, 'review'); p = security(p, 'handoff', {acknowledge: true});
-  p = runtime(p, 'intake'); p = runtime(p, 'review'); p = runtime(p, 'handoff', {acknowledge: true});
+// approve(p) takes any project through those Chapter 11 steps (rc42 r2: the reference journey and the typed-check fixture).
+const checkedChapters = p => { p = security(p, 'review'); p = security(p, 'handoff', {acknowledge: true}); p = runtime(p, 'intake'); p = runtime(p, 'review'); return runtime(p, 'handoff', {acknowledge: true}); };
+function approvedProject() { return approve(checkedChapters(rv.withFinalReview(seedProject()))); }
+function approve(p) {
   p = review(p, 'intake');
   p = review(p, 'narrative', {title: 'Synthetic SDD fixture', owner: 'Fixture architect', audience: 'Validation only', summary: 'Synthetic review, not an approval.', scope: 'Reference project only.', approach: 'Keep design and evidence apart.', confirmed: true});
   for (const f of rv.inheritedFindings(p).filter(x => x.level === 'error')) {
-    p = review(p, 'action', {title: 'Resolve ' + f.id.slice(0, 60), owner: 'Fixture owner', due: '2026-12-01', acceptance: 'Record the observed result and its limits.', objectIds: [rv.reviewObjects(p).some(o => o.id === f.objectId) ? f.objectId : 'api'], findingId: f.id});
+    p = review(p, 'action', {title: 'Resolve ' + f.id.slice(0, 60), owner: 'Fixture owner', due: '2026-12-01', acceptance: 'Record the observed result and its limits.', objectIds: [rv.reviewObjects(p).some(o => o.id === f.objectId) ? f.objectId : rv.reviewObjects(p).some(o => o.id === 'api') ? 'api' : rv.reviewObjects(p)[0].id], findingId: f.id});
     const actionId = p.finalReview.actions.at(-1).id, current = rv.inheritedFindings(p).find(x => x.id === f.id);
     p = review(p, 'disposition', {findingId: f.id, stamp: current.stamp, treatment: 'Carry as action', actionId, reviewer: 'Synthetic reviewer', reference: 'Fixture only', rationale: 'Carried as an owned delivery action.', reviewed: true});
   }
@@ -58,7 +64,7 @@ function approvedProject() {
   p = review(p, 'handoff', {baselineId: b.id, acknowledge: true});
   // One action verified, by a person other than its author: its verification reads the action's definition, which names
   // the design stamp it was defined against.
-  p = review(p, 'delivery', {id: p.finalReview.actions[0].id, status: 'Verified', progress: 'Synthetic observed check only', reviewer: 'Fixture verifier', reference: 'Fixture evidence, no real check', reviewed: true}, APPROVER);
+  p = review(p, 'delivery', {id: p.finalReview.actions.find(a => !a.architectureObligation).id, status: 'Verified', progress: 'Synthetic observed check only', reviewer: 'Fixture verifier', reference: 'Fixture evidence, no real check', reviewed: true}, APPROVER);
   return p;
 }
 // What approval reads: whether the latest review, the baseline, its approval and the handoff are current, each plain
@@ -238,6 +244,215 @@ const legacyApproved = asV1(approvedProject), fromLegacy = (...edits) => asV1(()
     assert.equal(rv.finalHandoffCurrent(changed), false);
   } finally { env.DB.close(); await rm(dir, {recursive: true, force: true}); }
   pass('an approved fingerprint-1 row read through /api/project is upgraded and stored once (a storage upgrade in the activity, the old row with its old stamps kept in a recovery point) with the same approval state; evidence recorded through /api/commands then leaves it current, and a design change makes it stale');
+}
+
+// ================================================================ rc42 r2 (the review of G3c)
+// The evidence a typed check or a reviewed observation needs, and a connector sync's, arrives with a project source of
+// its own (evidence.source): a source no design record cites is evidence too, and a source the design cites stays design.
+// The assurance records journey-context.js holds as design nodes, and the domains' own evidence flags, decide the rest.
+// Each section below reads only the fixture above and the helpers here.
+const r2Requirement = rv.reviewRequirements(approved)[0];
+const r2Report = {title: 'Synthetic payment test report', location: 'fixture://reports/payment-entry', version: 'fixture-1', date: '2026-10-29', excerpt: 'Synthetic report: payment entry observed in a fixture run. No real environment, release or result.', status: 'Unconfirmed'};
+const attach = (p, payload = r2Report) => rv.withFinalReview(applyEvidenceCommand(p, {type: 'evidence.source', payload}, at, ARCHITECT).document);
+const r2Observation = (p, sourceId) => ({kind: 'observation', title: 'Synthetic reviewed observation', statement: 'Observed in a synthetic run; no real environment.', requirementIds: [r2Requirement.id], release: 'R-fixture', environment: 'Synthetic test', observedAt: '2026-10-29', cycle: 'Fixture cycle 2', sourceId, reviewed: true, reviewer: 'Fixture reviewer', reviewNote: 'Read against the attached synthetic report; no real result.'});
+const r2RuntimeEvidence = p => ({id: p.runtime.plans[0].id, stamp: runtimePlanStamp(p, p.runtime.plans[0]), kind: 'exercise', result: 'partial', reviewed: true, reviewer: 'Fixture operator', reference: 'Synthetic exercise', observations: 'Synthetic partial exercise.'});
+const r2SecurityEvidence = p => ({id: p.security.controls[0].id, stamp: controlStamp(p, p.security.controls[0]), kind: 'verification', result: 'pass', reviewed: true, reviewer: 'Fixture tester', reference: 'Synthetic test run', observations: 'Synthetic pass; no real enforcement observed.'});
+// What stays current after approval when only evidence was recorded: the reading section 1 takes, against any fixture.
+// A baseline frozen under fingerprint 1 kept no evidence stamp: it names nothing for evidence (named = []).
+const stillApproved = (before, after, name, named = ['Evidence recorded since the baseline']) => {
+  assert.equal(rv.reviewDesignStamp(after), rv.reviewDesignStamp(before), name + ': the design fingerprint does not move');
+  assert.deepEqual(approval(after), approval(before), name + ': the review, the checks, the baseline, its approval, the handoff and every plain action stay current');
+  assert.deepEqual(rv.baselineChanges(after, before.finalReview.baselines.at(-1)), named, name + ': named as evidence, never as a design change');
+};
+const approvedReading = (p, name) => { const s = approval(p); assert(s.designReview && s.checks && s.baseline && s.current && s.handoff && s.actionSource === 0 && s.actions.split(' ').every(x => x.endsWith(':true')), name + ' reaches an approved, handed-off baseline with every plain action current: ' + sig(s)); };
+// A document as the release before this one wrote it (section 4's reading: fingerprint 1, no version or evidence stamp).
+const asV1r2 = build => underV1(() => { const p = build(); delete p.finalReview.designFingerprint; for (const x of p.finalReview.baselines) { delete x.designFingerprint; delete x.evidenceStamp; } return p; });
+
+// ---------------------------------------------------------------- 7. a reviewed observation with its original source
+{
+  let p = attach(approved);
+  const source = p.coauthoring.sources.at(-1);
+  assert.equal(source.versions.at(-1).status, 'Unconfirmed');
+  stillApproved(approved, p, 'an Unconfirmed test-report source attached after approval');
+  assert.throws(() => assurance(p, r2Observation(p, '')), /original source/, 'a reviewed observation is refused without its original source');
+  p = assurance(p, r2Observation(p, source.id));
+  const o = p.assurance.records.at(-1);
+  assert.equal(o.sourceEvidence?.id, source.id); assert.equal(o.reviewed, true);
+  stillApproved(approved, p, 'a reviewed observation citing that source');
+  assert(assuranceCurrent(p, o), 'the observation is current against the source and the requirement it read');
+  // Evidence currency is unchanged: a new revision of the source only the observation cites makes the observation stale
+  // and leaves the approved design as it was.
+  const revised = attach(p, {...r2Report, id: source.id, excerpt: r2Report.excerpt + ' Revised.'});
+  assert.equal(assuranceCurrent(revised, revised.assurance.records.at(-1)), false, 'a new revision of its source makes the observation stale');
+  stillApproved(approved, revised, 'a new revision of a source only evidence cites');
+  pass('r2: a source attached after approval and a reviewed observation citing it (evidence.source, then assurance.record with sourceId) leave the design fingerprint, the review, the checks, the baseline, its approval, the handoff and every plain action current; a new revision of that source makes the observation stale, not the design');
+}
+
+// ---------------------------------------------------------------- 8. a typed-check observation with its verification source
+{
+  const vApproved = approve(rv.withFinalReview(verificationFixture().p)), check = vApproved.finalReview.actions.find(a => a.verificationContract);
+  approvedReading(vApproved, 'the typed-check fixture');
+  assert(check?.architectureObligation && verificationContext(vApproved, check).ready, 'its typed check is ready after approval');
+  const typed = (p, source) => { const receipt = verificationContext(p, check).receipt, version = source?.versions.at(-1); return {kind: 'test-result', title: 'Synthetic caller exercise', statement: 'Recorded synthetic observation; no production result.', status: 'Source says passed', owner: 'Synthetic operator', release: receipt.release, environment: receipt.environmentName, cycle: 'Synthetic retained exercise', observedAt: obligationAt, requirementIds: receipt.requirementIds, objectIds: receipt.objectIds, sourceId: source?.id || '', verificationSource: source ? {id: source.id, revision: version.revision, hash: digest(version)} : null, verificationObservation: {...receipt, value: 200, unit: receipt.contract.unit}, verificationCurrent: true, reviewed: false, reviewer: '', reviewNote: ''}; };
+  let p = assurance(vApproved, typed(vApproved, null));
+  assert.equal(verificationResult(p, p.assurance.records.at(-1)).state, 'unknown', 'without its source the typed comparison stays incomplete');
+  stillApproved(vApproved, p, 'a typed-check observation without its source');
+  p = attach(p, {title: 'Synthetic timed exercise report', location: 'fixture://verification/deadline-2', excerpt: 'Synthetic observation of the caller deadline under the declared test load; no production result.', status: 'Unconfirmed'});
+  p = assurance(p, typed(p, p.coauthoring.sources.at(-1)));
+  assert.equal(verificationResult(p, p.assurance.records.at(-1)).state, 'pass', 'with its source attached the typed comparison completes');
+  stillApproved(vApproved, p, 'the source the typed check needs, and the observation compared against it');
+  pass('r2: on an approved project with a typed check, attaching the source the comparison needs and recording the observation with its verificationSource completes the comparison and leaves the review, the checks, the baseline, its approval, the handoff and every plain action current');
+}
+
+// ---------------------------------------------------------------- 9. a connector sync that imports observations
+{
+  const dir = await mkdtemp(tmpdir() + '/aiw-rc42-g3c-sync-'), env = {DB: localDatabase(dir + '/f.sqlite'), FILES: localFiles(dir + '/files'), ASSETS: {fetch: () => new Response('ok')}};
+  env.AIW_CONNECTIONS_JSON = JSON.stringify([{id: 'issues', title: 'Synthetic issue tracker', kind: 'github-issues', owners: [ARCHITECT], url: 'https://api.github.com/repos/example/fixture/issues'}]);
+  env.CONNECTION_FETCH = async (url, options) => { assert.equal(options.method, 'GET'); assert.equal(new URL(url).hostname, 'api.github.com'); return new Response(JSON.stringify([{number: 7, title: 'Synthetic payment defect', body: 'Synthetic defect reported by a fixture; no real system.', state: 'open', updated_at: '2026-10-29T10:00:00Z'}]), {headers: {ETag: '"fixture-1"'}}); };
+  const origin = 'https://aiw.test', api = async (route, body) => { const r = await worker.fetch(new Request(origin + route, {method: body ? 'POST' : 'GET', headers: {'oai-authenticated-user-id': ARCHITECT, Origin: origin, ...(body ? {'Content-Type': 'application/json'} : {})}, ...(body ? {body: JSON.stringify(body)} : {})}), env); return {status: r.status, data: JSON.parse(await r.text())}; };
+  try {
+    // The approved reference project, named as the reference so that storing it stamps nothing (GR-DOM-15).
+    const doc = approve(checkedChapters(rv.withFinalReview({...seedProject(), workspace: {template: 'bank-payment'}})));
+    await env.DB.prepare('INSERT INTO projects(owner_id,id,document,revision,updated_at) VALUES(?,?,?,1,?)').bind(ARCHITECT, doc.id, JSON.stringify(doc), at).run();
+    const read = await api('/api/project'); assert.equal(read.status, 200);
+    const stored = rv.withFinalReview(read.data.document);
+    approvedReading(stored, 'the stored project');
+    const connection = await api('/api/connections', {profileId: 'issues', title: 'Synthetic delivery issues', enabled: true}); assert.equal(connection.status, 200, sig(connection.data));
+    const requestId = crypto.randomUUID();
+    assert.equal((await api('/api/jobs?action=create', {kind: 'sync', connectionId: connection.data.id, requestId})).status, 201);
+    const ran = await api('/api/jobs?action=run', {id: requestId}); assert.equal(ran.data.job?.status, 'completed', sig(ran.data));
+    const selection = {id: requestId, selected: ['7'], mapping: {7: [r2Requirement.id]}}, preview = await api('/api/jobs?action=preview', selection);
+    assert.equal(preview.status, 200, sig(preview.data));
+    const applied = await api('/api/jobs?action=apply', {...selection, stamp: preview.data.stamp, revision: read.data.revision, reviewed: true});
+    assert.equal(applied.status, 200, sig(applied.data));
+    const synced = rv.withFinalReview((await api('/api/project')).data.document), source = synced.coauthoring.sources.at(-1), observed = synced.assurance.records.at(-1);
+    assert.equal(source.originalJob?.id, requestId, 'the sync keeps the source it retrieved'); assert.equal(observed.sourceEvidence?.id, source.id, 'and each observation it imported names it'); assert.equal(observed.externalId, '7'); assert.equal(observed.reviewed, false);
+    stillApproved(stored, synced, 'a connector sync that imports observations (evidence.source, then feedback.import with its sourceId)');
+  } finally { env.DB.close(); await rm(dir, {recursive: true, force: true}); }
+  pass('r2: a connector sync applied through /api/jobs (operation-service.js: its retrieved source, then feedback.import with that sourceId) leaves the stored approved project\'s review, checks, baseline, approval, handoff and every plain action current');
+}
+
+// ---------------------------------------------------------------- 10. a source the design cites stays design
+{
+  // An applied guided task (evidence-domain.js evidence.apply) cites its source: the requirement, the scenario and the
+  // decision were drafted from it.
+  let p = checkedChapters(rv.withFinalReview(seedProject()));
+  const rules = {title: 'Synthetic payment instruction rules', location: 'fixture://rules/instructions', excerpt: 'Synthetic rule: a repeated instruction must not repeat its business effect. Fixture text only.', status: 'Confirmed', confirmedBy: 'Fixture reviewer', reviewed: true};
+  p = attach(p, rules);
+  const cited = p.coauthoring.sources.at(-1).id, task = (q, type, payload) => rv.withFinalReview(applyEvidenceCommand(q, {type: 'evidence.' + type, payload}, at, ARCHITECT).document);
+  p = task(p, 'task', {sourceId: cited, intent: 'duplicate', title: 'Synthetic repeat protection'});
+  const id = p.coauthoring.tasks.at(-1).id;
+  p = task(p, 'answers', {id, title: 'Synthetic single effect per instruction', need: 'A repeated payment instruction produces one business effect.', acceptance: 'Two identical instructions leave one posting; the second is answered with the first outcome.', owner: 'Fixture owner'});
+  p = task(p, 'prepare', {id});
+  const proposal = p.coauthoring.tasks.at(-1).proposal;
+  p = task(p, 'proposal', {id, proposal: {...proposal, driver: {...proposal.driver, title: 'Synthetic integrity under repeated instructions'}, decision: {...proposal.decision, question: 'Synthetic: where is the single effect enforced?'}}});
+  p = task(p, 'apply', {id, reviewed: true, reviewer: 'Fixture reviewer', reason: 'Synthetic fixture: the drafts follow the cited rule.'});
+  assert.equal(p.coauthoring.tasks.at(-1).status, 'applied');
+  const cApproved = approve(p);
+  approvedReading(cApproved, 'a project with an applied guided task');
+  // Evidence beside it, with a source of its own, is evidence.
+  let e = attach(cApproved); e = assurance(e, r2Observation(e, e.coauthoring.sources.at(-1).id));
+  stillApproved(cApproved, e, 'a reviewed observation with a source of its own, beside a source the design cites');
+  // A new revision of the cited source is a design change.
+  const revised = attach(e, {...rules, id: cited, excerpt: 'Synthetic rule, revised: a repeated instruction within one day must not repeat its business effect.'});
+  assert.notEqual(rv.reviewDesignStamp(revised), rv.reviewDesignStamp(cApproved), 'a new revision of the source an applied task cites moves the design fingerprint');
+  const r = approval(revised);
+  assert.equal(r.designReview, null); assert.equal(r.checks, false); assert.equal(r.baseline, false); assert.equal(r.current, null); assert.equal(r.handoff, false);
+  assert(r.actions.split(' ').every(x => x.endsWith(':false')), 'every plain action needs review against the revised source');
+  const named = rv.baselineChanges(revised, cApproved.finalReview.baselines.at(-1));
+  assert(named.includes('Review narrative, traceability, findings, or delivery plan'), 'named as a design change: ' + named.join('; '));
+  pass('r2: a new revision of the source an applied guided task cites still moves the design fingerprint and makes the review, the checks, the baseline, its approval, the handoff and every plain action stale; evidence with a source of its own beside it does not');
+}
+
+// ---------------------------------------------------------------- 11. what the design graph holds, and the domains' own evidence flags
+{
+  // A capability (Chapter 4) or value-outcome (Chapter 1) record is a node of the design graph (journey-context.js).
+  for (const kind of ['capability', 'value-outcome']) {
+    const q = assurance(approved, {kind, title: 'Synthetic ' + kind, statement: 'Synthetic ' + kind + ' for the fixture.', requirementIds: [r2Requirement.id]});
+    assert.notEqual(rv.reviewDesignStamp(q), stamp, 'a ' + kind + ' record is a design change');
+    assert.equal(rv.baselineCurrent(q, b), false); assert.equal(rv.finalHandoffCurrent(q), false);
+    assert(!rv.baselineChanges(q, b).includes('Evidence recorded since the baseline'), 'a ' + kind + ' record is not reported as evidence');
+  }
+  // A repeat judgement (Chapter 1, requirement-commands.js) and a legacy capability group (Chapter 4) are design too.
+  for (const [name, part] of [['a repeat judgement', {repeats: [{id: 'repeat-fixture', ids: [r2Requirement.id], judgement: 'distinct scope', reason: 'Synthetic judgement for the fixture.'}]}], ['a legacy capability group', {groups: [{id: 'CG-fixture', title: 'Synthetic group', requirementIds: [r2Requirement.id]}]}]]) {
+    const q = structuredClone(approved); q.assurance = {version: 2, counter: 0, records: [], ...part};
+    assert.notEqual(rv.reviewDesignStamp(q), stamp, name + ' is a design change');
+    assert(!rv.baselineChanges(q, b).includes('Evidence recorded since the baseline'), name + ' is not reported as evidence');
+  }
+  // What Chapter 9 records as assurance (security-domain.js: residual-risk treatment, governance, walkthroughs) and
+  // Chapter 10 as evidence (runtime-domain.js: walkthroughs) is evidence here too.
+  const threat = approved.security.threats[0], fixture = {reviewed: true, reviewer: 'Synthetic reviewer', reference: 'Synthetic fixture, no real review', observations: 'Synthetic record only.'};
+  let p = security(approved, 'risk', {...fixture, id: threat.id, stamp: threatStamp(approved, threat), treatment: 'mitigate', owner: 'Fixture owner', residual: 'Synthetic residual risk.', nextReview: '2026-12-01'});
+  stillApproved(approved, p, 'a Chapter 9 residual-risk treatment');
+  p = security(p, 'governance', {...fixture, id: threat.id, stamp: securityGovernanceStamp(p, p.security.threats[0]), decision: 'deferred'});
+  stillApproved(approved, p, 'Chapter 9 governance evidence');
+  p = security(p, 'simulation', {id: threat.id, mode: 'planned', stamp: threatStamp(p, p.security.threats[0]), reviewed: true, observations: 'Synthetic walkthrough.', visited: [0, 1, 2, 3]});
+  stillApproved(approved, p, 'a Chapter 9 walkthrough');
+  const environment = p.runtime.environments[0], zone = p.runtime.zones.find(z => z.environmentId === environment.id);
+  p = runtime(p, 'simulation', {environmentId: environment.id, zoneId: zone.id, mode: 'zone', durationMinutes: 30, stamp: runtimeEnvironmentStamp(p, environment.id), reviewed: true, observations: 'Synthetic zone walkthrough.', visited: [0, 1, 2, 3]});
+  stillApproved(approved, p, 'a Chapter 10 walkthrough');
+  assert.equal(p.security.risks.length, 1); assert.equal(p.security.governance.length, 1); assert.equal(p.security.simulations.length, 1); assert.equal(p.runtime.simulations.length, 1);
+  pass('r2: capability and value-outcome records, repeat judgements and capability groups stay design (stale, never reported as evidence); Chapter 9 risk treatments, governance and walkthroughs and Chapter 10 walkthroughs, which their domains record as assurance or evidence, leave the approval current');
+}
+
+// ---------------------------------------------------------------- 12. Chapter 11 notices a Chapter 10 handoff that evidence cleared
+{
+  const handoffWarning = p => rv.finalFindings(p).filter(f => f.code === 'runtime-handoff');
+  assert.equal(approved.finalReview.intake.runtimeHandoffCurrent, true); assert.deepEqual(handoffWarning(approved), []);
+  const p = runtime(approved, 'evidence', r2RuntimeEvidence(approved));
+  assert.equal(runtimeHandoffCurrent(p), false, 'Chapter 10 evidence clears its handoff');
+  assert.equal(rv.reviewIntakeCurrent(p), true, 'the Chapter 11 intake stays current (the design did not change)');
+  assert.equal(handoffWarning(p).length, 1, 'Chapter 11 says that the Chapter 10 handoff it took in has changed');
+  assert.equal(handoffWarning(p)[0].level, 'warning');
+  let again = runtime(p, 'review'); again = runtime(again, 'handoff', {acknowledge: true});
+  assert.deepEqual(handoffWarning(again), [], 'handed off again, the warning goes');
+  pass('r2: Chapter 11 warns when the Chapter 10 handoff its intake took in is no longer current (evidence cleared it), and stops once Chapter 10 is handed off again');
+}
+
+// ---------------------------------------------------------------- 13. the SDD's changes since the last baseline
+{
+  const none = changesSinceBaseline(approved);
+  assert.deepEqual([none.chapters, none.edges, none.other], [[], 0, []], 'nothing changed since the baseline');
+  let p = assurance(approved, {kind: 'observation', title: 'Synthetic unreviewed observation', statement: 'Observed in a synthetic run; no real environment.', requirementIds: [r2Requirement.id], release: 'R-fixture', environment: 'Synthetic test', observedAt: '2026-10-29', cycle: 'Fixture cycle 3'});
+  p = security(p, 'evidence', r2SecurityEvidence(p)); p = runtime(p, 'evidence', r2RuntimeEvidence(p)); p = attach(p); p = assurance(p, r2Observation(p, p.coauthoring.sources.at(-1).id));
+  const c = changesSinceBaseline(p);
+  assert.deepEqual(c.chapters, [], 'evidence is not listed as a chapter change'); assert.equal(c.edges, 0, 'nor as a changed link');
+  assert.deepEqual(c.other, ['Evidence recorded since the baseline'], 'it is named on the evidence line');
+  const control = p.security.controls[0], edited = changesSinceBaseline(security(p, 'control', {...control, purpose: control.purpose + ' Revised design.'}));
+  assert.deepEqual(edited.chapters.map(x => x.chapter), [9], 'a design change is listed under its chapter'); assert(edited.chapters[0].changed.some(x => x.ref === control.ref));
+  pass('r2: the SDD\'s changes since the last baseline list a design change under its chapter and name evidence only on the evidence line (no assurance record or link listed as a design change)');
+}
+
+// ---------------------------------------------------------------- 14. one alias table, and the fingerprint-1 stamp taken once per pass
+{
+  const legacy = asV1r2(approvedProject), up = rv.withFinalReview(structuredClone(legacy)), lb = up.finalReview.baselines.at(-1), m = up.finalReview, now = rv.reviewSourceStamp(up), chapters = rv.computeChapterStamps(up);
+  assert.equal(m.readingsUpgrade?.design?.[now] + ':' + m.version, lb.stamp, 'the alias table a later readings upgrade chains through (readingsUpgrade) answers for the fingerprint-1 baseline under the current stamp');
+  for (const id of [9, 10]) assert.equal(m.readingsUpgrade.chapters[id]?.[chapters[id]], lb.chapterStamps[id], 'and for its Chapter ' + id + ' stamp');
+  const alone = structuredClone(up); delete alone.finalReview.designFingerprintUpgrade;
+  assert.equal(rv.baselineCurrent(alone, lb), true, 'the baseline is answered through that one table'); assert.deepEqual(rv.baselineChanges(alone, lb), []);
+  assert.equal(m.designFingerprintUpgrade?.from, 1, 'the fingerprint-1 stamps the upgrade read are kept for audit');
+  assert.equal(m.designFingerprintUpgrade.design[now] + ':' + m.version, lb.stamp);
+  const json = JSON.stringify; let taken = 0;
+  JSON.stringify = function (v, ...rest) { if (v && typeof v === 'object' && !Array.isArray(v) && 'artefacts' in v && 'security' in v && !('finalReview' in v)) taken++; return json.call(this, v, ...rest); };
+  try { rv.withDesignFingerprint(1, () => memoPass(legacy, () => { rv.reviewSourceStamp(legacy); rv.reviewSourceStamp(legacy); rv.reviewDesignStamp(legacy); })); } finally { JSON.stringify = json; }
+  assert.equal(taken, 1, 'within one pass the fingerprint-1 design source is serialised once');
+  pass('r2: the fingerprint upgrade keeps one alias table (readingsUpgrade, keyed by the current stamp, which a later readings upgrade chains through) and the fingerprint-1 stamps for audit; the fingerprint-1 design stamp is taken once per pass');
+}
+
+// ---------------------------------------------------------------- 15. fingerprint-1 documents with sources, under the same rule
+{
+  const legacy = asV1r2(() => { let p = attach(checkedChapters(rv.withFinalReview(seedProject()))); p = assurance(p, r2Observation(p, p.coauthoring.sources.at(-1).id)); return approve(p); });
+  const before = underV1(() => approval(legacy));
+  assert(before.baseline && before.handoff && before.designReview, 'under fingerprint 1 the project with a sourced observation is approved and handed off');
+  const up = rv.withFinalReview(structuredClone(legacy));
+  assert.deepEqual(approval(up), before, 'after the upgrade its approval state is the same');
+  let e = attach(up, {...r2Report, title: 'Synthetic second report'}); e = assurance(e, r2Observation(e, e.coauthoring.sources.at(-1).id));
+  stillApproved(up, e, 'after the upgrade, a new source and a reviewed observation citing it', []);
+  // One whose baseline a source attached after it had made stale under fingerprint 1 stays stale (no silent flip).
+  const late = asV1r2(() => attach(structuredClone(asV1r2(approvedProject)))), lateBefore = underV1(() => approval(late));
+  assert.equal(lateBefore.baseline, false, 'under fingerprint 1 a source attached after the baseline made it stale');
+  assert.deepEqual(approval(rv.withFinalReview(structuredClone(late))), lateBefore, 'after the upgrade it is still stale');
+  pass('r2: fingerprint-1 documents carry their approval state over under the source rule (current stays current, stale stays stale); afterwards a new source with a reviewed observation leaves the approval current');
 }
 
 console.log(`\n${checks.length} checks passed.`);

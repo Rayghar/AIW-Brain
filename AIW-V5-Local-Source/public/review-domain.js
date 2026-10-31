@@ -25,6 +25,7 @@ import {requirementGroups,groupMembers} from './requirement-groups.js';
 import {qualityFindings,qualityMilestones,exportQualityMarkdown} from './quality-domain.js';
 import {decisionFindings,decisionMilestones,decisionCurrent,exportDecisionsMarkdown} from './decisions-domain.js';
 import {logicalGraph,logicalFindings,logicalMilestones,exportLogicalMarkdown} from './logical-domain.js';
+import {assuranceChapter} from './journey-context.js';
 import {realisationFindings,realisationMilestones,exportRealisationMarkdown} from './realisation-domain.js';
 import {technologyFindings,technologyMilestones,exportTechnologyMarkdown} from './technology-domain.js';
 import {technologyRealisationFindings,technologyRealisationMilestones,exportTechnologyRealisationMarkdown} from './technology-realisation-domain.js';
@@ -45,27 +46,44 @@ const text=(v,max=4000)=>typeof v==='string'?v.trim().slice(0,max):'',unique=xs=
 // A compact change detector, not a security signature or a verification claim.
 export function reviewFingerprint(value){let a=2166136261,b=5381;const s=JSON.stringify(value);for(let i=0;i<s.length;i++){a=Math.imul(a^s.charCodeAt(i),16777619);b=Math.imul(b,33)^s.charCodeAt(i);}return (a>>>0).toString(16).padStart(8,'0')+(b>>>0).toString(16).padStart(8,'0');}
 export const reviewSource=p=>({...(acceptedNarratives(p).length?{coauthoredNarratives:acceptedNarratives(p)}:{}),...(designTasks(p).some(t=>t.status==='applied'||t.measurements?.length)?{guidedDesign:designTasks(p).filter(t=>t.status==='applied'||t.measurements?.length)} : {}),...((p.coauthoring?.sources?.length)?{evidence:evidenceDesignSource(p)}:{}),...Object.fromEntries(Object.entries(p).filter(([k])=>!['finalReview','workspace','changes','coauthoring','roadmap','readingsDefinition'].includes(k))),...(p.workspace?.template?{workspace:{template:p.workspace.template}}:{})});
-// The design fingerprint (rc42, D14) reads the design, not the evidence recorded about it: the assurance records
-// (p.assurance: test results, observations, defects, typed or imported), Chapter 9's and Chapter 10's evidence with the
-// counters and versions recording it moves, and the check markers of those two chapters that read it and that recording
-// it clears (Chapter 9's review and handoff, Chapter 10's intake, review and handoff). Recording evidence therefore leaves
-// the review, the baseline, its approval and the handoff current; evidence is still judged against the design it judged
-// (each record keeps its own stamp of it), so it goes stale when that design changes. A freeze keeps the whole source.
+// The design fingerprint (rc42, D14) reads the design, not the evidence overlay recorded about it (designOf below), as
+// the domains classify that overlay: the assurance records journey-context.js holds as Chapter 11 nodes (test results,
+// observations, defects, promises, change requests, assessments, typed or imported; a capability, a Chapter 4 node, and a
+// value outcome, a Chapter 1 node, are design, as are repeat judgements and capability groups) and Sol's source challenges,
+// with the version and counter recording them moves; what Chapter 9 records as assurance (evidence, residual-risk
+// treatments, governance, walkthroughs) and Chapter 10 as evidence (evidence, walkthroughs), with the versions and the
+// counters recording them moves (the design records themselves carry every design change a counter counts), and the check
+// markers of those chapters that recording them clears (Chapter 9's review and handoff, Chapter 10's intake, review and
+// handoff); and each project source no design record cites: one only evidence cites (a reviewed observation's, a typed
+// check's, a connector sync's) or one nothing cites yet. A source the design cites (named by an applied or withdrawn
+// guided task, by the brief or model interpreted from it, by any design record) stays design, so its new revision is a
+// design change. Recording evidence therefore leaves the review, the baseline, its approval and the handoff current;
+// evidence is still judged against the design it judged (each record keeps its own stamp of it), so it goes stale when
+// that design changes. A freeze keeps the whole source.
 // Fingerprint 1 read every key reviewSource keeps. A document whose stamps were taken under it is upgraded on read
 // (readings-upgrade.js), which alone reads a document under fingerprint 1 (withDesignFingerprint), to know which of its
 // stamps were current; a frozen baseline keeps the stamp it was frozen with (designStampIs below).
 export const DESIGN_FINGERPRINT=2;
 let fingerprintVersion=DESIGN_FINGERPRINT;
 export function withDesignFingerprint(version,fn){const was=fingerprintVersion;fingerprintVersion=version;try{return fn();}finally{fingerprintVersion=was;}}
-const EVIDENCE_OVERLAY={security:['evidence','assuranceVersion','review','handoff'],runtime:['evidence','evidenceVersion','intake','review','handoff']};
-const designPart=(key,v)=>{const drop=fingerprintVersion>1&&EVIDENCE_OVERLAY[key];if(!drop||!v)return v;const out={...v};for(const k of drop)delete out[k];if(v.counters)out.counters={...v.counters,evidence:undefined};return out;};
-export function designSource(p){const s=reviewSource(p);if(fingerprintVersion>1){delete s.assurance;for(const k in EVIDENCE_OVERLAY)if(s[k])s[k]=designPart(k,s[k]);}return s;}
+// Each chapter's overlay: its records | its markers.
+const OVERLAY={security:'evidence risks governance simulations|assuranceVersion review handoff counters',runtime:'evidence simulations|evidenceVersion intake review handoff counters'};
+// A design source (a project's reviewSource, or a frozen baseline's source) as [its design, the evidence overlay beside
+// it]. The overlay lists only what it holds, so a design record that creates its container never reads as evidence; a
+// source is cited when the design, its guided tasks with it, names its id.
+export function designOf(s){const d={...s},o=[],put=v=>v?.length&&o.push(v),a=d.assurance,e=d.evidence;
+ for(const k in OVERLAY)if(d[k]){const v=d[k]={...d[k]};for(const x of OVERLAY[k].split('|')[0].split(' '))put(v[x]);for(const x of OVERLAY[k].split(/\W/))delete v[x];}
+ if(a){const {version,counter,semanticFindings,records=[],...c}=a;c.records=records.filter(x=>assuranceChapter(x)<11);put(records.filter(x=>!c.records.includes(x)));put(semanticFindings);Object.values(c).some(v=>v?.length)?d.assurance=c:delete d.assurance;}
+ if(e){const json=JSON.stringify({...d,evidence:e.tasks}),sources=e.sources.filter(x=>json.includes('"'+x.id+'"'));put(e.sources.filter(x=>!sources.includes(x)));sources.length||e.tasks.length?d.evidence={sources,tasks:e.tasks}:delete d.evidence;}
+ return [d,o];}
+export function designSource(p){const s=reviewSource(p);return fingerprintVersion>1?designOf(s)[0]:s;}
 // The evidence a baseline is frozen beside, by its fingerprint: what baselineChanges names as evidence recorded since.
-export const evidenceStamp=p=>reviewFingerprint([p.assurance??null,p.security?.evidence??null,p.runtime?.evidence??null]);
+export const evidenceStamp=p=>reviewFingerprint(designOf(reviewSource(p))[1]);
 const sourceCache=new WeakMap(),findingCache=new WeakMap(),summaryCache=new WeakMap(),objectCache=new WeakMap(),traceCache=new WeakMap();
-// The design fingerprint taken afresh (the upgrade's reading of a document it is changing), and the one kept per document.
+// The design fingerprint taken afresh (the upgrade's reading of a document it is changing), and the one kept per document
+// (under an earlier fingerprint, once per pass: the upgrade and the legacy judgements read it for every finding).
 export const designFingerprint=p=>reviewFingerprint(designSource(p));
-export function reviewSourceStamp(p){if(fingerprintVersion!==DESIGN_FINGERPRINT)return designFingerprint(p);if(!sourceCache.has(p))sourceCache.set(p,designFingerprint(p));return sourceCache.get(p);}
+export function reviewSourceStamp(p){if(fingerprintVersion!==DESIGN_FINGERPRINT)return remember(p,'review:stamp',fingerprintVersion,()=>designFingerprint(p));if(!sourceCache.has(p))sourceCache.set(p,designFingerprint(p));return sourceCache.get(p);}
 export const reviewDesignStamp=p=>reviewSourceStamp(p)+':'+p.finalReview.version;
 const localReview=(p,r)=>!p.finalReview?.imported||!!(r?.actor&&!r?.importedActor&&r.at>p.finalReview.imported.at);
 export const narrativeCurrent=p=>p.finalReview.narrative.confirmed&&p.finalReview.narrative.sourceStamp===reviewSourceStamp(p)&&(!p.finalReview.imported||!!reviewOf(p,p.finalReview.narrative,11));
@@ -264,10 +282,10 @@ export function traceScope(p,scope){
 export const latestDesignReview=p=>[...p.finalReview.reviews].reverse().find(r=>localReview(p,r)&&r.stamp===reviewDesignStamp(p));
 export const baseline=(p,id)=>p.finalReview.baselines.find(b=>b.id===id);
 // A baseline frozen before the readings upgrade keeps the stamps of the design as it was then (readings-upgrade.js):
-// while the design is what the upgrade made it, those are its stamps too (finalReview.readingsUpgrade). So does one frozen
-// under fingerprint 1 (rc42, D14): while the design is what the fingerprint upgrade read, the fingerprint-1 stamp it kept
-// (finalReview.designFingerprintUpgrade) is its stamp too, and the readings upgrade's before it.
-const designStampIs=(p,stamp)=>{const m=p.finalReview,now=reviewSourceStamp(p),v1=m.designFingerprintUpgrade?.design?.[now];return stamp===now+':'+m.version||stamp!=null&&[v1,m.readingsUpgrade?.design?.[v1??now]].some(s=>s&&stamp===s+':'+m.version);};
+// while the design is what the upgrade made it, those are its stamps too (finalReview.readingsUpgrade). So are those of
+// one frozen under design fingerprint 1 (rc42, D14): the fingerprint upgrade keeps them in the same one table, keyed by the
+// current stamps, so that a later readings upgrade chains through them.
+const designStampIs=(p,stamp)=>{const m=p.finalReview,now=reviewSourceStamp(p),legacy=m.readingsUpgrade?.design?.[now];return stamp===now+':'+m.version||!!legacy&&stamp===legacy+':'+m.version;};
 export const baselineCurrent=(p,b)=>!!b&&designStampIs(p,b.stamp)&&b.reviewId===(latestDesignReview(p)?.id||null);
 export const latestGovernance=(p,id)=>[...p.finalReview.governance].reverse().find(g=>localReview(p,g)&&g.baselineId===id);
 export const currentBaseline=p=>[...p.finalReview.baselines].reverse().find(b=>baselineCurrent(p,b));
@@ -295,6 +313,9 @@ export const independentApproval=(b,g)=>!!(g?.actor&&reviewAuthor(b)&&g.actor!==
 export function finalFindings(p){return memoPass(p,()=>finalFindingsOf(p));}
 function finalFindingsOf(p){const fs=[],add=(code,title,detail,level='error',id='project')=>fs.push({id:code+':'+id,objectId:id,code,title,detail,level}),m=p.finalReview,n=m.narrative;
  if(!reviewIntakeCurrent(p))add('intake','Review the inherited project','Review Chapter 10 and the current cross-chapter findings.','warning');
+ // Chapter 10's handoff is outside the design fingerprint (rc42, D14): evidence or checks recorded there clear it and
+ // leave the intake current, so the intake's record of a current handoff is read again here.
+ else if(m.intake.runtimeHandoffCurrent&&!runtimeHandoffCurrent(p))add('runtime-handoff','Chapter 10 is no longer handed off','Its evidence or checks changed after the intake. Hand it off again.','warning');
  if(!n.title||!n.owner||!n.audience||!n.summary||!n.scope||!n.approach||!narrativeCurrent(p))add('narrative','Frame the solution design document','Name the document owner and audience, explain the scope and approach, and confirm the wording.');
  // Counted by cause (round 12, D-05): one change to a shared record is one review, with the records it reaches.
  const changed=changeSummary(p);if(changed.open){const causes=changeCauses(p).length;add('change-review','Review '+causes+' change'+(causes===1?'':'s')+' to '+changed.open+' affected record'+(changed.open===1?'':'s'),'Definition edits have unresolved linked reviews. Record the design assessment for each change, once for all the records it reaches, and any owned follow-up.','warning');}
@@ -349,11 +370,11 @@ function saveAction(p,raw,at){
 }
 export function reviewProposal(p,key,objectId){const o=reviewObjects(p).find(o=>o.id===objectId)||reviewObjects(p)[0];if(!o)return null;const ideas={assurance:['Verify the architecture claim','Record a repeatable check, expected result, observed evidence, limitations, and an accountable reviewer.'],cutover:['Prepare controlled implementation','Define prerequisites, owned stop/go criteria, reconciliation, rollback, and the evidence required before resumption.'],drift:['Check implementation against the baseline','Compare the delivered component, contracts, access, and runtime configuration with the reviewed design; record deviations and their disposition.']};const idea=ideas[key];if(!idea)return null;return {key,objectId:o.id,reason:'Turn the '+o.ref+' design claim into an owned, verifiable delivery obligation.',record:{title:idea[0]+' · '+o.title,owner:'',due:'',acceptance:idea[1],objectIds:[o.id],findingId:''}};}
 function chapterStamps(p){return remember(p,'review:chapter-stamps','',()=>computeChapterStamps(p));}
-// A chapter's stamp reads its design as the design fingerprint does: Chapters 9 and 10 without their evidence (rc42, D14).
-export function computeChapterStamps(p){return Object.fromEntries(CHAPTERS.map(c=>[c.id,reviewFingerprint(c.id===1?{brief:p.brief,artefacts:p.artefacts,relationships:p.relationships,review:p.review,handoff:p.handoff}:designPart(c.key,p[c.key]))]));}
+// A chapter's stamp reads its design as the design fingerprint does: Chapters 9 and 10 without their overlay (rc42, D14).
+export function computeChapterStamps(p){const s=designSource(p);return Object.fromEntries(CHAPTERS.map(c=>[c.id,reviewFingerprint(c.id===1?{brief:p.brief,artefacts:p.artefacts,relationships:p.relationships,review:p.review,handoff:p.handoff}:s[c.key])]));}
 // What changed since a baseline: each chapter whose design changed, a change outside the chapters, a new review outcome,
 // and evidence recorded since, named apart from design edits (rc42, D14: known for a baseline that kept its evidence stamp).
-export function baselineChanges(p,b){const now=chapterStamps(p),m=p.finalReview,v1=m?.designFingerprintUpgrade?.chapters||{},alias=m?.readingsUpgrade?.chapters||{},same=c=>{const s=b.chapterStamps[c.id],n=now[c.id],f=v1[c.id]?.[n];return s===n||(s!=null&&(s===f||s===alias[c.id]?.[f??n]));};return CHAPTERS.filter(c=>!same(c)).map(c=>c.title).concat(!designStampIs(p,b.stamp)&&CHAPTERS.every(same)?['Review narrative, traceability, findings, or delivery plan']:[]).concat(b.reviewId!==(latestDesignReview(p)?.id||null)?['Architect review outcome']:[]).concat(b.evidenceStamp!=null&&b.evidenceStamp!==evidenceStamp(p)?['Evidence recorded since the baseline']:[]);}
+export function baselineChanges(p,b){const now=chapterStamps(p),alias=p.finalReview?.readingsUpgrade?.chapters||{},same=c=>{const s=b.chapterStamps[c.id],n=now[c.id];return s===n||s!=null&&s===alias[c.id]?.[n];};return CHAPTERS.filter(c=>!same(c)).map(c=>c.title).concat(!designStampIs(p,b.stamp)&&CHAPTERS.every(same)?['Review narrative, traceability, findings, or delivery plan']:[]).concat(b.reviewId!==(latestDesignReview(p)?.id||null)?['Architect review outcome']:[]).concat(b.evidenceStamp!=null&&b.evidenceStamp!==evidenceStamp(p)?['Evidence recorded since the baseline']:[]);}
 // Four eyes (a project's setting, workspace.governance): a person does not treat a finding of a record they wrote, nor
 // review a trail of records they wrote.
 const personWriter=r=>r?.provenance?.author?.kind==='person'?r.provenance.author.by:null;
@@ -446,6 +467,8 @@ export function applyFinalReviewCommand(input,command,at=new Date().toISOString(
  // One reviewed judgement for a whole group of records (round 12, GR-GOV-04): the review plan's step, its scope stated,
  // each record kept with its fingerprint (provenance.js recordJudgement).
  case 'review.judgement':selected=recordJudgement(p,raw,at,actor,{fourEyes:fourEyesOn(p)});break;
+ // The counts are the record of the moment the checks ran (at): evidence recorded since leaves the checks current and
+ // can add findings, so what is shown (review-ui.js, the milestones, finalFindings) is counted afresh, never read here.
  case 'review.checks':changed=false;m.checks={at,actor,stamp:reviewDesignStamp(p),sourceFindings:inheritedFindings(p).length,blockers:reviewBlockers(p).length};m.handoff=null;break;
  case 'review.record':{changed=false;if(!finalChecksCurrent(p)||raw.stamp!==reviewDesignStamp(p))throw Error('Run current review checks before recording the outcome.');if(!REVIEW_OUTCOMES.includes(raw.outcome)||raw.reviewed!==true||!text(raw.reviewer)||!text(raw.reference)||!text(raw.rationale))throw Error('Record the reviewer, evidence reference, rationale, outcome, and explicit confirmation.');if(raw.outcome==='Ready for governance'&&changeSummary(p).open)throw Error('Resolve the open architecture-change reviews, or record Ready with actions / limitations.');if(raw.outcome!=='Revision required'){if(!finalMilestones(p).slice(0,4).every(m=>m.done))throw Error('Complete context, SDD framing, traceability, and finding treatment before a positive review.');const limitations=inheritedFindings(p).some(f=>f.level==='error'&&findingTreatment(p,f)!=='Not applicable');if(limitations&&raw.outcome==='Ready for governance')throw Error('Use Ready with actions / limitations while source errors remain.');}m.reviews.push({id:'FR-'+pad(++m.counters.review),at,stamp:reviewDesignStamp(p),outcome:raw.outcome,reviewer:text(raw.reviewer,180),actor,...account,reference:text(raw.reference),rationale:text(raw.rationale)});m.handoff=null;break;}
  case 'review.baseline':{changed=false;const steps=freezeSteps(p,raw,at,actor);let step=steps.next();while(!step.done)step=steps.next();selected=recordBaseline(p,step.value).id;break;}

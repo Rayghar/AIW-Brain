@@ -148,8 +148,11 @@ function toCurrentReadings(p){
 // version, and of each treated finding is taken under fingerprint 1 and under 2: a stored value equal to the first (it was
 // current) becomes the second, one that was not stays as it was, and stays not current, so no review, baseline or
 // approval turns current or stale by the upgrade. A frozen baseline is never changed (its stamps are covered by its
-// SHA-256): the fingerprint-1 stamps of the design and of the chapters the upgrade read are kept beside it
-// (finalReview.designFingerprintUpgrade), and answer for it while the design is unchanged; the old value stays on record.
+// SHA-256): it is answered, while the design is unchanged, through the one alias table (finalReview.readingsUpgrade,
+// review-domain.js designStampIs and baselineChanges), keyed by the current stamps and chained through the aliases an
+// earlier readings upgrade left, as toReadings chains them, so that a later readings upgrade chains through it too. The
+// fingerprint-1 stamps the upgrade read, and the alias table it replaced, stay on record for audit
+// (finalReview.designFingerprintUpgrade).
 function toDesignFingerprint(q){
  const m=q.finalReview;if(!m||typeof m!=='object')return q;
  const findingIds=treatedFindingIds(q),before=withDesignFingerprint(1,()=>designStamps(q,findingIds)),version=m.version,map=new Map();
@@ -164,8 +167,12 @@ function toDesignFingerprint(q){
  const verified=list(m.actions).map(a=>!!a.verification&&a.verification.stamp===reviewFingerprint(actionDefinition(a)));
  translate(q,m,map);
  list(m.actions).forEach((a,i)=>{if(verified[i])a.verification={...a.verification,stamp:reviewFingerprint(actionDefinition(a))};});
- const chapters={};for(const [id,b] of Object.entries(before.chapters))if(after.chapters[id]!==b)chapters[id]={[after.chapters[id]]:b};
- m.designFingerprintUpgrade={from:1,design:{[after.source]:before.source},chapters};
+ const old=m.readingsUpgrade,chapters={};for(const [id,b] of Object.entries(before.chapters))if(after.chapters[id]!==b)chapters[id]={[after.chapters[id]]:b};
+ m.designFingerprintUpgrade={from:1,design:{[after.source]:before.source},chapters,...(old?{readingsUpgrade:old}:{})};
+ if(list(m.baselines).length){
+  const aliases={};for(const [id,b] of Object.entries(before.chapters)){const legacy=old?.chapters?.[id]?.[b]??b,a=after.chapters[id];if(a!==legacy||old?.chapters?.[id])aliases[id]={[a]:legacy};}
+  m.readingsUpgrade={design:{[after.source]:old?.design?.[before.source]??before.source},chapters:aliases};
+ }
  m.designFingerprint=DESIGN_FINGERPRINT;
  return q;
 }
