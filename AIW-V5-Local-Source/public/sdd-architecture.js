@@ -41,7 +41,7 @@ import {partyIntegrations, PARTY_INTEGRATION, invariants as invariantRecords, ba
 import {assessContractExecution, contractExecutionContext, executionMethodSource, executionJourney} from './architecture-applicability.js';
 import {scenarioProjection} from './guidance-record.js';
 import {enterpriseReferences} from './enterprise-references.js';
-import {architectureObligationsFor, OBLIGATION_STATES} from './architecture-obligations.js';
+import {architectureObligationsFor, OBLIGATION_STATES, independentVerification} from './architecture-obligations.js';
 import {verificationContext,verificationForAction,VERIFICATION_OPERATORS} from './architecture-verification.js';
 import {designBasisCurrent} from './design-task-state.js';
 import {planOperation, seededRecords} from './runtime-domain.js';
@@ -1740,7 +1740,8 @@ function obligations(B) {
   B.totals = {...B.totals, 'delivery action': acts.length};
   for (const a of acts) {
     const owner = str(a.owner) && !fieldOpen(a, 'owner') ? md(a.owner) : '', acceptance = str(a.acceptance) ? md(a.acceptance) : '', plateau = a.plateauId ? ' Plateau: ' + a.plateauId + (plateausOf(p).find(x => x.id === a.plateauId) ? ' · ' + md(plateausOf(p).find(x => x.id === a.plateauId).title) : '') + '.' : '';
-    const status = str(a.status || 'Planned').toLowerCase() + (a.status === 'Verified' ? '' : '; verification remains separate'), objects = ' Objects: ' + refList(list(a.objectIds).map(id => recordRef(p, id))) + '.';
+    // A Verified mark on an obligation's action that no second signed-in person made does not count (rc42, D15): it says so.
+    const status = str(a.status || 'Planned').toLowerCase() + (a.status !== 'Verified' ? '; verification remains separate' : a.architectureObligation && !independentVerification(a) ? '; the mark does not count until a second signed-in person, who did not write or own the action, verifies it' : ''), objects = ' Objects: ' + refList(list(a.objectIds).map(id => recordRef(p, id))) + '.';
     if (F1) { out += '**' + a.id + ' · ' + md(a.title) + '**: owner ' + (owner || 'open: owner not stated') + ', ' + (a.due ? 'due ' + a.due : 'open: due date not stated') + ', ' + status + '.' + objects + ' Acceptance: ' + (acceptance || 'open: acceptance not stated') + plateau + '\n\n'; continue; }
     for (const [v, words] of [[owner, 'owner'], [a.due, 'due date'], [acceptance, 'acceptance']]) if (!v) O.ask(a.id, 'delivery action', words);
     out += '**' + a.id + ' · ' + md(a.title) + '**: ' + [owner ? 'owner ' + owner : '', a.due ? 'due ' + a.due : '', status].filter(Boolean).join(', ') + '.' + objects + (acceptance ? ' Acceptance: ' + acceptance : '') + plateau + '\n\n';

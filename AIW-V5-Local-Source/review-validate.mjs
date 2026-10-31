@@ -85,7 +85,8 @@ assert(rv.finalMilestones(p).every(m=>m.done),JSON.stringify(rv.finalMilestones(
 assert.equal(p.finalReview.handoff.openActionIds.length,2,'Review completion does not assert implementation completion');
 const frozenApproved=rv.exportSDD(p,approvedBaseline.id);
 assert.throws(()=>cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Test'}),/Verification/);
-p=cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Synthetic observed check only',reviewer:'Fixture verifier',reference:'Fixture evidence',reviewed:true});
+assert.throws(()=>cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Synthetic observed check only',reviewer:'Fixture verifier',reference:'Fixture evidence',reviewed:true}),/architect-a wrote RA-001/,'the action\'s author does not verify it (rc42, D15)');
+p=cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Synthetic observed check only',reviewer:'Fixture verifier',reference:'Fixture evidence',reviewed:true},'verifier-c');assert.equal(p.finalReview.actions[0].verification.actor,'verifier-c');
 assert(rv.actionComplete(p,p.finalReview.actions[0]));assert(rv.baselineCurrent(p,rv.baseline(p,approvedBaseline.id)));assert(rv.finalHandoffCurrent(p));
 assert.equal(rv.exportSDD(p,approvedBaseline.id),frozenApproved,'Delivery events leave the captured SDD unchanged');
 const revisedAction=cmd(p,'action',{...p.finalReview.actions[0],acceptance:'Revised fixture criterion'});

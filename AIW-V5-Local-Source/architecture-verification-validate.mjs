@@ -67,13 +67,15 @@ console.log('PASS portable expected-check/observation exchange, explicit intake,
 
 const {default:worker}=await import('./worker.js'),{localDatabase}=await import('./local-db.js'),{readStoredProject,saveStoredProject}=await import('./project-storage.js');
 const files=new Map(),env={DB:localDatabase(':memory:'),FILES:{async put(k,v){files.set(k,v);},async get(k){return files.has(k)?{text:async()=>files.get(k)}:null;},async delete(k){files.delete(k);}},ASSETS:{fetch:()=>new Response('asset')}};
-const owner='synthetic-check-owner',api=(path,method='GET',body,actor=owner)=>worker.fetch(new Request('https://aiw.test'+path,{method,headers:{'oai-authenticated-user-id':actor,Origin:'https://aiw.test',...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})}),env);
+// A delivery action is verified by a second signed-in person, a project editor who did not write it (rc42, D15).
+const owner='synthetic-check-owner',verifier='synthetic-check-verifier',api=(path,method='GET',body,actor=owner)=>worker.fetch(new Request('https://aiw.test'+path,{method,headers:{'oai-authenticated-user-id':actor,Origin:'https://aiw.test',...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})}),env);
 try{
  let response=await api('/api/projects','POST',{name:'Synthetic verification contract lifecycle',template:'blank'}),state=await response.json();assert.equal(response.status,201);
  const projectId=state.document.id,row=await env.DB.prepare('SELECT document,revision FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first(),loaded=await readStoredProject(env,owner,row.document),fixture=verificationFixture({action:false}).p;fixture.id=projectId;
  assert.equal((await saveStoredProject(env,owner,projectId,fixture,row.revision,obligationAt,loaded.keys)).meta.changes,1);
+ await env.DB.prepare('INSERT INTO project_access(owner_id,project_id,actor_id,role,created_at) VALUES(?,?,?,?,?)').bind(owner,projectId,verifier,'editor',obligationAt).run();
  const reload=async()=>{response=await api('/api/project?project='+projectId);assert.equal(response.status,200);state=await response.json();};await reload();
- const post=async(type,payload,status=200)=>{const r=await api('/api/commands?project='+projectId,'POST',{revision:state.revision,command:{type,payload}});assert.equal(r.status,status,await r.clone().text());if(r.ok)state=await r.json();return r;};
+ const post=async(type,payload,status=200)=>{const r=await api('/api/commands?project='+projectId,'POST',{revision:state.revision,command:{type,payload}},type==='review.delivery'?verifier:owner);assert.equal(r.status,status,await r.clone().text());if(r.ok)state=await r.json();return r;};
  await post('review.action',{...linkedAction(state.document,architectureObligationsFor(state.document)[0]),verificationContract:contract});await reload();assert(verificationContext(state.document,state.document.finalReview.actions[0]).ready);
  await post('assurance.record',observationPayload(state.document));await reload();assert.equal(result(state.document).state,'pass');assert(!actionComplete(state.document,state.document.finalReview.actions[0]));
  assert.equal((await api('/api/project?project='+projectId,'GET',undefined,'unrelated-owner')).status,404);
