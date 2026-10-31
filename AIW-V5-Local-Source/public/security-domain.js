@@ -4,6 +4,7 @@ import {components,component,componentSources} from './realisation-domain.js';
 import {realizations,realization,realizationSources} from './technology-realisation-domain.js';
 import {capabilities,capability,technologySources,NOT_STATED,said,authoredOrigin,authored,fitText,patchFields,patchLinks,groundLinks,patchOpen,sameRecord,has,openNotes} from './technology-domain.js';
 import {citedNotes,deliveryOf,undeliveredNotes,namedRequirementStamps,trailText} from './requirement-links.js';
+import {withServing} from './trace-kernel.js';
 import {FINGERPRINT,isFingerprint,valueFingerprint,contentStamp} from './source-fingerprint.js';
 import {PRIORITY_BASIS} from './priority-scale.js';
 import {memoPass,passRemember,findIn,carrying,latestIn,groupBy,remember,sharedList} from './document-memo.js';
@@ -40,7 +41,8 @@ export const securitySourceChanged=(p,r)=>isFingerprint(r.sourceSnapshot)?r.sour
 const keptBefore=kept=>typeof kept==='string'&&!kept.includes(FINGERPRINT);
 // A record's sources: once per record for the length of a pass (its readers there only read it).
 export function securitySources(p,r){return passRemember(p,'security:sources',r,()=>securitySourcesOf(p,r));}
-function securitySourcesOf(p,r){const records=(r.targetIds||[r.id]).map(id=>securityTarget(p,id)).filter(Boolean),ss=records.map(r=>r.targetKind==='Interface'||r.targetKind==='Data'?interfaceSources(p,r):r.targetKind==='Application'?componentSources(p,r.id):r.targetKind==='Realization'?realizationSources(p,r.id):r.targetKind==='Capability'?technologySources(p,r.id):{});return {targets:records,applications:byId(ss.flatMap(s=>s.applications||[])),requirements:byId(ss.flatMap(s=>s.requirements||[])),drivers:byId(ss.flatMap(s=>s.drivers||[])),decisions:byId(ss.flatMap(s=>s.decisions||[]))};}
+// Its requirements are those whose trail holds it (rc.10.73.42, D7: trace-kernel.js servingRequirements), as the trail reads them.
+function securitySourcesOf(p,r){const records=(r.targetIds||[r.id]).map(id=>securityTarget(p,id)).filter(Boolean),ss=records.map(r=>r.targetKind==='Interface'||r.targetKind==='Data'?interfaceSources(p,r):r.targetKind==='Application'?componentSources(p,r.id):r.targetKind==='Realization'?realizationSources(p,r.id):r.targetKind==='Capability'?technologySources(p,r.id):{});return withServing(p,r.id,{targets:records,applications:byId(ss.flatMap(s=>s.applications||[])),drivers:byId(ss.flatMap(s=>s.drivers||[])),decisions:byId(ss.flatMap(s=>s.decisions||[]))});}
 export function targetBoundaries(p,id){const c=contract(p,id),d=dataRecord(p,id);let ids=[];if(c)ids=[...targetBoundaries(p,c.from),...targetBoundaries(p,c.to)].map(b=>b.id);else if(d)ids=targetBoundaries(p,d.authorityId).map(b=>b.id);else if(component(p,id))ids=[p.technology.applicationBoundaries[id]];else if(realizations(p).some(r=>r.id===id))ids=p.technologyRealisation.mappings.filter(m=>m.realizationId===id).map(m=>capability(p,m.capabilityId)?.boundaryId);else ids=[capability(p,id)?.boundaryId,id];return p.technology.boundaries.filter(b=>ids.includes(b.id));}
 export const relatedControls=(p,id)=>carrying(p,'security:controls-by-threat',()=>controls(p),c=>c.threatIds,id);
 const controlStampOf=(p,c,input)=>JSON.stringify([c.revision,input,c.threatIds.map(id=>[id,threat(p,id)?.revision])]);

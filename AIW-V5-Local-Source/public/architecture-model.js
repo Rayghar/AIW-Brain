@@ -5,7 +5,7 @@ import {processSourceQuestions} from './process-model.js';
 import {TYPE_INK, archimateOf, archimateTypeOf} from './notation-palette.js';
 import {perDocument,firstById,memoOff} from './document-memo.js';
 import {list} from './util.js';
-import {OBJECT_TYPES,label,key,RECORD_COLLECTIONS,RECORDED,CONTEXT_LAYER_TYPE,RECORD_COLLECTION_PATHS,RECORDED_RELATIONSHIP_SOURCES,recordRelations} from './record-graph.js';
+import {OBJECT_TYPES,label,key,RECORD_COLLECTIONS,RECORDED,CONTEXT_LAYER_TYPE,RECORD_COLLECTION_PATHS,RECORDED_RELATIONSHIP_SOURCES,recordRelations,registerRecords} from './record-graph.js';
 // The object types, the record collections and the recorded relationships live with the record graph (record-graph.js).
 export {OBJECT_TYPES,RECORD_COLLECTION_PATHS,RECORDED_RELATIONSHIP_SOURCES};
 
@@ -49,12 +49,7 @@ function buildArchitectureModel(p){
   if(relationships.has(id)){const old=relationships.get(id);if(old.type===type&&old.from===from&&old.to===to)return;id=key(source,id,type,from,to);}
   relationships.set(id,{id,type,from,to,label:meaning||({realizedBy:'realized by',implementedBy:'implemented by',operatedAs:'operated as',placedAs:'placed as',locatedIn:'located in',memberOf:'belongs to',fulfils:'fulfilled by',exchanges:'exchanges',mitigates:'mitigates',protects:'protects',requires:'requires'}[type]||type),attributes:safe(attributes),source,derived,via});
  };
- add({id:root,title:p.name,purpose:p.brief?.goal||p.brief?.problem||'',origin:p.workspace?.template==='bank-payment'?'reference':'project'},'system','project');
- for(const [rows,type,path] of RECORD_COLLECTIONS)list(rows(p)).forEach((r,i)=>add(r,typeof type==='function'?type(r):type,path+'['+i+']'));
- for(const b of list(p.finalReview?.baselines))add({id:'baseline:'+b.id,ref:b.id,title:b.title,at:b.at,classification:b.classification,stamp:b.stamp,status:b.classification},'baseline','finalReview.baselines.'+b.id);
- for(const o of list(p.modelContext?.objects))if(!objects.has(o.id))add({...o.attributes,id:o.id,title:o.title},o.type,'model.context.'+o.id);
- for(const n of visual.nodes)if(!objects.has(n.id))add({...n,description:n.description,attributes:n.attrs,origin:'reference'},CONTEXT_LAYER_TYPE[n.layer]||'context','model.context.'+n.id);
- for(const s of list(p.coauthoring?.sources)){const v=s.versions?.at(-1)||{};add({...v,id:s.id,title:v.title||s.id},'evidence','coauthoring.sources.'+s.id);}
+ registerRecords(p,add,objects,{id:root,title:p.name,purpose:p.brief?.goal||p.brief?.problem||'',origin:p.workspace?.template==='bank-payment'?'reference':'project'},visual.nodes,n=>({...n,description:n.description,attributes:n.attrs,origin:'reference'}),{between:()=>{for(const b of list(p.finalReview?.baselines))add({id:'baseline:'+b.id,ref:b.id,title:b.title,at:b.at,classification:b.classification,stamp:b.stamp,status:b.classification},'baseline','finalReview.baselines.'+b.id);}});
  recordRelations(p,{add,rel,objects,root,issues});
  const pairs=new Set([...relationships.values()].map(e=>e.from+'\0'+e.to));
  for(const e of visual.edges)if(!pairs.has(e.from+'\0'+e.to)&&[e.from,e.to].some(id=>objects.get(id)?.source.startsWith('model.context.')))rel(e.kind==='flow'?'interaction':'related',e.from,e.to,{id:e.id||'context:'+key(e.from,e.to,e.label),label:e.label,attributes:e,source:'model.context',derived:true});

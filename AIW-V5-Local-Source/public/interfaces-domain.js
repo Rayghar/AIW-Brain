@@ -9,6 +9,7 @@ import {planSchedule} from './driver-links.js';
 import {seedingOff} from './model-scope.js';
 import {NOT_STATED,SEEDED,PROPOSED,said,authoredOrigin,authored,fitText,patchFields,patchLinks,groundLinks,groundIds,patchOpen,keepConfirmations,sameRecord,has,retiredOf,proposalNote,openNotes} from './technology-domain.js';
 import {citedNotes,namedRequirementStamps,trailText} from './requirement-links.js';
+import {withServing} from './trace-kernel.js';
 import {normaliseContractExecution,assessContractExecution,contractExecutionContext,executionMethodSource,executionJourney} from './architecture-applicability.js';
 import {EXECUTION_FIELDS} from './composition-manifest.js';
 export {EXECUTION_FIELDS};
@@ -84,7 +85,8 @@ const keptBefore=kept=>typeof kept==='string'&&!kept.includes(FINGERPRINT);
 export function interfaceSources(p,r){return passRemember(p,'interfaces:sources',r,()=>interfaceSourcesOf(p,r));}
 function interfaceSourcesOf(p,r){
  const endpoints=r.fields?[r.authorityId,...carrying(p,'interfaces:components-by-data',()=>components(p),a=>a.dataIds,r.id).map(a=>a.id),...carrying(p,'interfaces:contracts-by-data',()=>contracts(p),c=>c.exchanges.map(x=>x.dataId),r.id).flatMap(c=>[c.from,c.to])]:[r.from,r.to],wanted=new Set(endpoints),apps=endpoints.map(id=>component(p,id)).filter(Boolean),rs=realizations(p).filter(r=>wanted.has(r.id)),ss=[...apps.map(a=>componentSources(p,a.id)),...rs.map(r=>realizationSources(p,r.id))];
- return {applications:byId([...apps,...ss.flatMap(s=>s.applications||[])]),realizations:rs,requirements:byId(ss.flatMap(s=>s.requirements)),drivers:byId(ss.flatMap(s=>s.drivers)),decisions:byId(ss.flatMap(s=>s.decisions))};
+ // Its requirements are those whose trail holds it (rc.10.73.42, D7: trace-kernel.js servingRequirements).
+ return withServing(p,r.id,{applications:byId([...apps,...ss.flatMap(s=>s.applications||[])]),realizations:rs,drivers:byId(ss.flatMap(s=>s.drivers)),decisions:byId(ss.flatMap(s=>s.decisions))});
 }
 // A review or a check is current while the record, what it reads and the records of this chapter it carries are as they
 // were (round 12, GR-REQ-13); one taken before holds the versions of Chapters 1-7 in place of the reading.

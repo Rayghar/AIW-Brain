@@ -10,52 +10,52 @@ import {list} from './util.js';
 import {linkedRequirementIds} from './requirement-links.js';
 import {enterpriseReferences} from './enterprise-references.js';
 
-export const OBJECT_TYPES={
- system:{label:'System',chapter:1,level:'context',color:'#234e42'},
- module:{label:'Responsibility group',chapter:4,level:'logical',color:'#285e4b'},
- requirement:{label:'Requirement',chapter:1,level:'intent',color:'#587448'},
- outcome:{label:'Outcome',chapter:1,level:'intent',color:'#75618c'},
- actor:{label:'Actor',chapter:1,level:'context',color:'#687b66'},
- journey:{label:'Journey step',chapter:1,level:'intent',color:'#947334'},
- task:{label:'Process task',chapter:4,level:'logical',color:'#376857'},
- gateway:{label:'Decision gateway',chapter:4,level:'logical',color:'#9c7540'},
- event:{label:'Process event',chapter:4,level:'logical',color:'#688199'},
- subprocess:{label:'Sub-process',chapter:4,level:'logical',color:'#376857'},
- dataObject:{label:'Process data object',chapter:8,level:'data',color:'#80668d'},
- account:{label:'Process account',chapter:8,level:'data',color:'#80668d'},
- claim:{label:'Source claim',chapter:11,level:'intent',color:'#916e5c'},
- constraint:{label:'Constraint',chapter:1,level:'intent',color:'#976941'},
- assumption:{label:'Assumption',chapter:1,level:'intent',color:'#976941'},
- context:{label:'Context',chapter:1,level:'context',color:'#697d80'},
- quality:{label:'Quality scenario',chapter:2,level:'intent',color:'#987431'},
- decision:{label:'Decision',chapter:3,level:'intent',color:'#805d83'},
- alternative:{label:'Alternative',chapter:3,level:'intent',color:'#805d83'},
- responsibility:{label:'Responsibility',chapter:4,level:'logical',color:'#286954'},
- component:{label:'Application component',chapter:5,level:'application',color:'#35667b'},
- capability:{label:'Technology capability',chapter:6,level:'capability',color:'#69773a'},
- need:{label:'Technology need',chapter:6,level:'capability',color:'#69773a'},
- boundary:{label:'Trust boundary',chapter:6,level:'protection',color:'#936180'},
- technology:{label:'Technology realization',chapter:7,level:'technology',color:'#74653c'},
- sharedService:{label:'Shared enterprise service',chapter:7,level:'technology',color:'#74653c'},
- option:{label:'Technology option',chapter:7,level:'technology',color:'#74653c'},
- contract:{label:'Interface contract',chapter:8,level:'interaction',color:'#9b6643'},
- data:{label:'Data definition',chapter:8,level:'data',color:'#776097'},
- field:{label:'Data field',chapter:8,level:'data',color:'#776097'},
- exchange:{label:'Data exchange',chapter:8,level:'interaction',color:'#9b6643'},
- party:{label:'External participant',chapter:8,level:'context',color:'#687c82'},
- control:{label:'Security control',chapter:9,level:'protection',color:'#99677e'},
- threat:{label:'Threat',chapter:9,level:'protection',color:'#a06450'},
- risk:{label:'Risk',chapter:9,level:'protection',color:'#a06450'},
- environment:{label:'Environment',chapter:10,level:'deployment',color:'#637f9c'},
- zone:{label:'Deployment zone',chapter:10,level:'deployment',color:'#637f9c'},
- runtime:{label:'Operating plan',chapter:10,level:'deployment',color:'#47748a'},
- instance:{label:'Planned placement',chapter:10,level:'deployment',color:'#47748a'},
- path:{label:'Runtime path',chapter:10,level:'deployment',color:'#47748a'},
- evidence:{label:'Evidence',chapter:11,level:'intent',color:'#778478'},
- pattern:{label:'Applied design reasoning',chapter:3,level:'intent',color:'#805d83'},
- baseline:{label:'Frozen baseline',chapter:11,level:'context',color:'#697d80'},
- view:{label:'Saved view',chapter:11,level:'context',color:'#697d80'}
-};
+// The object types, one a line: type|label|chapter|level, and an ink only for a type the notation palette has none for
+// (each other type's ink is the palette's, notation-palette.js TYPE_INK, set by architecture-model.js, round-2 D2-20).
+export const OBJECT_TYPES=Object.fromEntries(`system|System|1|context
+module|Responsibility group|4|logical
+requirement|Requirement|1|intent
+outcome|Outcome|1|intent
+actor|Actor|1|context
+journey|Journey step|1|intent
+task|Process task|4|logical
+gateway|Decision gateway|4|logical
+event|Process event|4|logical
+subprocess|Sub-process|4|logical
+dataObject|Process data object|8|data
+account|Process account|8|data
+claim|Source claim|11|intent
+constraint|Constraint|1|intent
+assumption|Assumption|1|intent
+context|Context|1|context
+quality|Quality scenario|2|intent
+decision|Decision|3|intent
+alternative|Alternative|3|intent
+responsibility|Responsibility|4|logical
+component|Application component|5|application
+capability|Technology capability|6|capability
+need|Technology need|6|capability
+boundary|Trust boundary|6|protection
+technology|Technology realization|7|technology
+sharedService|Shared enterprise service|7|technology|#74653c
+option|Technology option|7|technology
+contract|Interface contract|8|interaction
+data|Data definition|8|data
+field|Data field|8|data
+exchange|Data exchange|8|interaction
+party|External participant|8|context
+control|Security control|9|protection
+threat|Threat|9|protection
+risk|Risk|9|protection
+environment|Environment|10|deployment
+zone|Deployment zone|10|deployment
+runtime|Operating plan|10|deployment
+instance|Planned placement|10|deployment
+path|Runtime path|10|deployment
+evidence|Evidence|11|intent
+pattern|Applied design reasoning|3|intent
+baseline|Frozen baseline|11|context
+view|Saved view|11|context`.split('\n').map(x=>{const [type,label,chapter,level,color]=x.split('|');return [type,{label,chapter:+chapter,level,...color&&{color}}];}));
 
 export const label=r=>r.title||r.question||r.name||r.description||r.id;
 // A part that encodeURIComponent leaves as it is (letters, digits and - _ . ! ~ * ' ( )) is kept without encoding it: the same key.
@@ -70,16 +70,12 @@ const relationKey=(source,type,from,to)=>'rel:'+keyPart(source)+':'+keyPart(type
 export const RECORD_COLLECTIONS=[
  [p=>p.artefacts,r=>OBJECT_TYPES[r.type]?r.type:'context','artefacts'],
  [p=>processElements(p),r=>r.kind==='data'?'dataObject':r.kind,'process.elements'],[p=>list(p.processModel?.claims).map(c=>({...c,title:c.topic,description:c.statement})),'claim','process.claims'],
- [p=>p.quality?.drivers,'quality','quality.drivers'],[p=>p.decisions?.records,'decision','decisions.records'],
- [p=>p.logical?.groups,'module','logical.groups'],[p=>p.logical?.responsibilities,'responsibility','logical.responsibilities'],
- [p=>p.realisation?.components,'component','realisation.components'],
- [p=>p.technology?.capabilities,'capability','technology.capabilities'],[p=>p.technology?.needs,'need','technology.needs'],[p=>p.technology?.boundaries,'boundary','technology.boundaries'],
- [p=>p.technologyRealisation?.records,'technology','technologyRealisation.records'],
- [p=>p.interfaces?.contracts,'contract','interfaces.contracts'],[p=>p.interfaces?.data,'data','interfaces.data'],[p=>p.interfaces?.parties,'party','interfaces.parties'],
- [p=>p.security?.controls,'control','security.controls'],[p=>p.security?.threats,'threat','security.threats'],[p=>p.security?.risks,'risk','security.risks'],
- [p=>p.runtime?.environments,'environment','runtime.environments'],[p=>p.runtime?.zones,'zone','runtime.zones'],[p=>p.runtime?.plans,'runtime','runtime.plans'],[p=>p.runtime?.placements,'instance','runtime.placements'],[p=>p.runtime?.paths,'path','runtime.paths'],
- [p=>p.security?.evidence,'evidence','security.evidence'],[p=>p.runtime?.evidence,'evidence','runtime.evidence'],
- [p=>p.workbench?.views,'view','workbench.views']
+ // The rest, each type:chapter.list, read as p.chapter?.list.
+ ...`quality:quality.drivers decision:decisions.records module:logical.groups responsibility:logical.responsibilities component:realisation.components
+ capability:technology.capabilities need:technology.needs boundary:technology.boundaries technology:technologyRealisation.records
+ contract:interfaces.contracts data:interfaces.data party:interfaces.parties control:security.controls threat:security.threats risk:security.risks
+ environment:runtime.environments zone:runtime.zones runtime:runtime.plans instance:runtime.placements path:runtime.paths
+ evidence:security.evidence evidence:runtime.evidence view:workbench.views`.split(/\s+/).map(x=>{const [type,path]=x.split(':'),[a,b]=path.split('.');return [p=>p[a]?.[b],type,path];})
 ];
 // The relationships a person records as relationships (round 6, Contract T): Chapter 1's links between artefacts, the
 // process flows, and the connections of Chapters 4 to 7 — each source with its rows, the relationship type its records
@@ -94,10 +90,8 @@ const connectionType=(r,p)=>r.kind==='flow'?'interaction':LAYERED[r.kind]?LAYERE
 export const RECORDED={
  relationships:{rows:p=>list(p.relationships),type:r=>r.kind||'related',label:()=>undefined,chapter:1},
  'process.transitions':{rows:p=>processTransitions(p),type:t=>t.kind==='message'?'message':'sequence',label:t=>t.label,chapter:1},
- 'logical.connections':{rows:p=>list(p.logical?.connections),type:connectionType,label:r=>r.label,chapter:4},
- 'realisation.connections':{rows:p=>list(p.realisation?.connections),type:connectionType,label:r=>r.label,chapter:5},
- 'technology.dependencies':{rows:p=>list(p.technology?.dependencies),type:connectionType,label:r=>r.label,chapter:6},
- 'technologyRealisation.connections':{rows:p=>list(p.technologyRealisation?.connections),type:connectionType,label:r=>r.label,chapter:7}
+ // The connections of Chapters 4 to 7, each chapter.list read as p.chapter?.list.
+ ...Object.fromEntries(['logical.connections','realisation.connections','technology.dependencies','technologyRealisation.connections'].map((source,i)=>{const [a,b]=source.split('.');return [source,{rows:p=>list(p[a]?.[b]),type:connectionType,label:r=>r.label,chapter:4+i}];}))
 };
 // The paths of the record collections, in registration order (round 26, D-26-09): chapter-records.js reads a chapter's
 // record set from the objects these collections register, never from projections, so every count agrees.
@@ -205,6 +199,18 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  for(const e of list(p.modelContext?.relationships))rel(e.type,e.from,e.to,e);
 }
 
+// The records in registration order, as the connected model (architecture-model.js) and the record graph register them
+// alike: the system (`root`, its record), the record collections (up to the components on the driver scope's graph,
+// `part`), what `between` adds, the declared context objects, the reference graph's nodes no record carries (`nodes`,
+// each read by `node`) and, on the whole graph, the co-authoring sources. The order is the model's signature order.
+export function registerRecords(p,add,objects,root,nodes,node,{part=false,between}={}){
+ add(root,'system','project');
+ for(const [rows,type,path] of part?RECORD_COLLECTIONS.slice(0,COMPONENTS+1):RECORD_COLLECTIONS)list(rows(p)).forEach((r,i)=>add(r,typeof type==='function'?type(r):type,path+'['+i+']'));
+ between?.();
+ for(const o of list(p.modelContext?.objects))if(!objects.has(o.id))add({...o.attributes,id:o.id,title:o.title},o.type,'model.context.'+o.id);
+ for(const n of nodes)if(!objects.has(n.id))add(node(n),CONTEXT_LAYER_TYPE[n.layer]||'context','model.context.'+n.id);
+ if(!part)for(const s of list(p.coauthoring?.sources)){const v=s.versions?.at(-1)||{};add({...v,id:s.id,title:v.title||s.id},'evidence','coauthoring.sources.'+s.id);}
+}
 // The model's records and relations without its picture (rc.10.73.42, D7): the records registered as the model registers
 // them (with the declared context objects and the reference graph's base nodes, as recordTypes reads them), the relations
 // of the one emitter (recordRelations), resolved by the model's rule (both ends registered), each end's relations listed;
@@ -226,11 +232,7 @@ export const recordGraph=perDocument((p,upto)=>{
   if(relationships.has(id)){const old=relationships.get(id);if(old.type===type&&old.from===from&&old.to===to)return;id=key(source,id,type,from,to);}
   relationships.set(id,{id,type,from,to,label:meaning||type,attributes,source,derived,via});
  };
- add({id:root,title:p.name},'system','project');
- for(const [rows,type,path] of part?RECORD_COLLECTIONS.slice(0,COMPONENTS+1):RECORD_COLLECTIONS)list(rows(p)).forEach((r,i)=>add(r,typeof type==='function'?type(r):type,path+'['+i+']'));
- for(const o of list(p.modelContext?.objects))if(!objects.has(o.id))add({...o.attributes,id:o.id,title:o.title},o.type,'model.context.'+o.id);
- for(const n of projectNodes(p))if(!objects.has(n.id))add({...n},CONTEXT_LAYER_TYPE[n.layer]||'context','model.context.'+n.id);
- if(!part)for(const s of list(p.coauthoring?.sources)){const v=s.versions?.at(-1)||{};add({...v,id:s.id,title:v.title||s.id},'evidence','coauthoring.sources.'+s.id);}
+ registerRecords(p,add,objects,{id:root,title:p.name},projectNodes(p),n=>({...n}),{part});
  recordRelations(p,{add,rel,objects,root,upto});
  const resolved=[...relationships.values()].filter(e=>objects.has(e.from)&&objects.has(e.to)),outgoing=new Map(),incoming=new Map();
  const push=(m,id,e)=>{const xs=m.get(id);if(xs)xs.push(e);else m.set(id,[e]);};

@@ -53,7 +53,7 @@ import {lensReport} from './domain-lens.js';
 import {plateausOf, roadmapOf, PLATEAU_WORDS, plateauGroups, groupPlacements, migrationsOf, migrationNeeds, MIGRATION_FIELDS} from './roadmap-domain.js';
 import {mappingRole} from './logical-domain.js';
 import {retiredRecords, isProposed, solDraftOf} from './record-lifecycle.js';
-import {recordTrace} from './trace-kernel.js';
+import {recordTrace} from './trace-record.js';
 import {acceptedNarratives} from './brain-authoring.js';
 import {noteCurrent} from './aiw-brain.js';
 // rc39 (PLAN §4.4): the design questions a component faces, from the one projection, for its passage.
@@ -1221,10 +1221,11 @@ function integrations(B, {subset = null, level = 3} = {}) {
 // ---------------------------------------------------------------- round 12, D4's and E's records (GR-SDD-26, GR-SDD-28)
 // The journeys the functionalities run in (Chapter 1's journey steps, by journey), each with its kind of process
 // (requirements-domain.js processKind) and the responsibilities that serve or realise its steps, read from each step's
-// trace (rc.10.73.42, D7: trace-kernel.js recordTrace, the chain the trail and the narrative read): those a Chapter 4
-// connection draws serving or realising the step (kind serves or realises, logical-domain.js LAYER_KINDS, whichever end
-// it is drawn from; a structural connection drawn from the step reads as serving it, as architecture-model.js
-// connectionType types it), and those the requirements the step asks for name, which serve it.
+// trace (rc.10.73.42, D7: trace-record.js recordTrace, the chain the trail and the narrative read): only those a Chapter 4
+// connection draws serving or realising the step (the kernel's step hops: kind serves or realises, logical-domain.js
+// LAYER_KINDS, whichever end it is drawn from; a structural connection drawn from the step reads as serving it, as
+// architecture-model.js connectionType types it), so the line agrees with Chapter 4's process gaps. The responsibilities
+// the requirements of its steps name are listed apart, as assigned to them, never as serving a step.
 const REALISING = new Set(['realises', 'realizedBy']);
 function journeys(B) {
   const {p} = B, steps = list(p.artefacts).filter(a => a.type === 'journey' && a.scopeMode !== 'out');
@@ -1236,10 +1237,10 @@ function journeys(B) {
   const resp = new Map(list(p.logical?.responsibilities).map(r => [r.id, r])), by = new Map();
   for (const s of steps) {
     const T = recordTrace(p, s.id); if (!T) continue;
-    const asked = new Set(T.layers.requirement), m = {serves: new Set(), realises: new Set()};
+    const asked = new Set(T.layers.requirement), m = {serves: new Set(), realises: new Set(), assigned: new Set()};
     for (const r of T.layers.responsibility) for (const h of T.hops.get(r) || []) {
       if (h.source === 'logical.connections' && h.from === s.id) m[REALISING.has(h.type) ? 'realises' : 'serves'].add(r);
-      else if (h.type === 'fulfils' && asked.has(h.from)) m.serves.add(r);
+      else if (h.type === 'fulfils' && asked.has(h.from)) m.assigned.add(r);
     }
     by.set(s.id, m);
   }
@@ -1247,10 +1248,11 @@ function journeys(B) {
   const lines = [...byJourney].map(([name, xs]) => {
     const kinds = new Map(); for (const s of xs) { const k = processKind(s); kinds.set(k, (kinds.get(k) || 0) + 1); }
     const kindText = kinds.size === 1 ? KIND[[...kinds.keys()][0]] : [...kinds].map(([k, n]) => plural(n, 'step') + ' of ' + KIND[k]).join(', ');
-    const serves = new Set(), realises = new Set();
-    for (const s of xs) { const m = by.get(s.id); if (m) { m.serves.forEach(x => serves.add(x)); m.realises.forEach(x => realises.add(x)); } }
+    const serves = new Set(), realises = new Set(), assigned = new Set();
+    for (const s of xs) { const m = by.get(s.id); if (m) { m.serves.forEach(x => serves.add(x)); m.realises.forEach(x => realises.add(x)); m.assigned.forEach(x => assigned.add(x)); } }
+    for (const x of [...serves, ...realises]) assigned.delete(x);
     const refs = ids => refList([...ids].map(id => refOf(resp.get(id))), 6);
-    return '**' + md(name) + '**: ' + plural(xs.length, 'step') + ' (' + refList(xs.map(s => s.id), 6) + '), ' + kindText + (realises.size ? '; realised by ' + refs(realises) : '') + (serves.size ? '; served by ' + refs(serves) : '') + (serves.size || realises.size ? '' : '; no responsibility serves or realises its steps yet');
+    return '**' + md(name) + '**: ' + plural(xs.length, 'step') + ' (' + refList(xs.map(s => s.id), 6) + '), ' + kindText + (realises.size ? '; realised by ' + refs(realises) : '') + (serves.size ? '; served by ' + refs(serves) : '') + (serves.size || realises.size ? '' : '; no responsibility serves or realises its steps yet') + (assigned.size ? '; its steps\' requirements are assigned to ' + refs(assigned) : '');
   });
   return 'The journeys they run in, each with its kind of process and the responsibilities that realise or serve its steps:\n\n' + bullets(lines, {rest: k => 'And ' + plural(k, 'more journey') + ' (Chapter 1 · Journey).'});
 }

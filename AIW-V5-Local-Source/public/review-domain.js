@@ -22,7 +22,7 @@ import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,expo
 import {findings,milestones,exportMarkdown} from './requirements-domain.js';
 import {linkedRequirementIds} from './requirement-links.js';
 // One trace kernel (rc.10.73.42, D7): the trail is its walk over the canonical design graph.
-import {requirementTrace,traceRecords} from './trace-kernel.js';
+import {requirementTrace,requirementSpine,traceRecords} from './trace-kernel.js';
 import {requirementGroups,groupMembers} from './requirement-groups.js';
 import {qualityFindings,qualityMilestones,exportQualityMarkdown} from './quality-domain.js';
 import {decisionFindings,decisionMilestones,decisionCurrent,exportDecisionsMarkdown} from './decisions-domain.js';
@@ -132,13 +132,15 @@ export const reviewRequirements=p=>p.artefacts.filter(a=>a.type==='requirement'&
 // controls, the operating plans in scope and the zones their placements stand in, the threats, parties and paths. The
 // trail walk, the review desk, the matrix annex, change impact and the architecture case read it; the narrative, the
 // Matrix, the component specification, the driver scope and the ARS read the same walk. A trail is read once per
-// document object.
+// document object. Its `spine` is the requirement's own chain by the same keys (trace-kernel.js requirementSpine: what it
+// names, and onwards by the design's own relations, without what its drivers constrain or its decisions justify), which
+// the checks of a continuous trail read (desk-model.js firstBreak, architecture-case.js), read when first asked for.
+const layered=T=>Object.fromEntries('context drivers:driver decisions:decision logical:responsibility applications:component needs:need capabilities:capability realizations:realization contracts:contract data controls:control runtime:plan parties:party threats:threat paths:path'.split(' ').map(x=>{const [k,l=k]=x.split(':');return [k,traceRecords(T,l)];}));
 export function reviewTrace(p,id){if(traceCache.get(p)?.has(id))return traceCache.get(p).get(id);const requirement=findIn(p,'review:requirements',()=>reviewRequirements(p),id);if(!requirement)return null;
- const T=memoPass(p,()=>requirementTrace(p,id)),of=layer=>traceRecords(T,layer);
- const context=of('context'),drivers=of('driver'),decisions=of('decision'),logical=of('responsibility'),applications=of('component'),needs=of('need'),capabilities=of('capability'),realizations=of('realization'),contracts=of('contract'),data=of('data'),runtime=of('plan'),controls=of('control'),threats=of('threat'),parties=of('party'),paths=of('path');
- const zoneIds=unique(of('placement').map(l=>l.zoneId).filter(z=>T.has(z)));
+ const T=memoPass(p,()=>requirementTrace(p,id)),L=layered(T),{context,drivers,decisions,logical,applications,capabilities,realizations,contracts,data,controls,runtime}=L;
+ const zoneIds=unique(traceRecords(T,'placement').map(l=>l.zoneId).filter(z=>T.has(z)));let spine;
  const nodes=unique([...context.map(a=>a.modelRef).filter(Boolean),...logical,...applications,...capabilities,...realizations,...contracts,...data,...controls,...runtime].map(n=>typeof n==='string'?n:n.id).concat(zoneIds));
- const result={requirement,context,drivers,decisions,logical,applications,needs,capabilities,realizations,contracts,data,controls,runtime,parties,threats,paths,zoneIds,nodeIds:nodes,steps:[{title:'The obligation',detail:requirement.acceptance||'Acceptance criteria need definition.',ids:context.map(a=>a.modelRef).filter(Boolean)},{title:'Quality and decisions',detail:drivers.length+' linked quality drivers; '+decisions.filter(d=>decisionCurrent(p,d)).length+' currently accepted decisions of '+decisions.length+' linked decisions. Drafts remain visible.',ids:logical.map(r=>r.id)},{title:'Application responsibilities',detail:logical.length+' logical responsibilities are mapped into '+applications.length+' application components. A mapping records design intent, not implementation evidence.',ids:[...logical,...applications].map(r=>r.id)},{title:'Supporting architecture',detail:capabilities.length+' capabilities, '+realizations.length+' realizations, and '+contracts.length+' contracts supply the supporting design.',ids:[...capabilities,...realizations,...contracts,...data].map(r=>r.id)},{title:'Protection and runtime',detail:controls.length+' intended controls and '+runtime.length+' operating plans carry the obligation into operation. Evidence and open findings remain separate.',ids:[...controls,...runtime].map(r=>r.id).concat(zoneIds)}]};if(!traceCache.has(p))traceCache.set(p,new Map());traceCache.get(p).set(id,result);return result;
+ const result={requirement,...L,zoneIds,nodeIds:nodes,get spine(){return spine??=layered(memoPass(p,()=>requirementSpine(p,id)));},steps:[{title:'The obligation',detail:requirement.acceptance||'Acceptance criteria need definition.',ids:context.map(a=>a.modelRef).filter(Boolean)},{title:'Quality and decisions',detail:drivers.length+' linked quality drivers; '+decisions.filter(d=>decisionCurrent(p,d)).length+' currently accepted decisions of '+decisions.length+' linked decisions. Drafts remain visible.',ids:logical.map(r=>r.id)},{title:'Application responsibilities',detail:logical.length+' logical responsibilities are mapped into '+applications.length+' application components. A mapping records design intent, not implementation evidence.',ids:[...logical,...applications].map(r=>r.id)},{title:'Supporting architecture',detail:capabilities.length+' capabilities, '+realizations.length+' realizations, and '+contracts.length+' contracts supply the supporting design.',ids:[...capabilities,...realizations,...contracts,...data].map(r=>r.id)},{title:'Protection and runtime',detail:controls.length+' intended controls and '+runtime.length+' operating plans carry the obligation into operation. Evidence and open findings remain separate.',ids:[...controls,...runtime].map(r=>r.id).concat(zoneIds)}]};if(!traceCache.has(p))traceCache.set(p,new Map());traceCache.get(p).set(id,result);return result;
 }
 // An action's plateau (round 6) is part of its definition only when it names one, so the verification stamps of earlier
 // actions, which name none, are what they were.
@@ -450,20 +452,15 @@ export const openCounts=p=>openCounter?openCounter(p):null;
 // Coverage from curated links (round 12, GR-SDD-16): a requirement is traced to a layer when a record of that layer names
 // it or its requirement group, or, for application components, when the component realises a responsibility that does
 // (its realising component). The trails derived from that component (the products of its needs, the plans that run it)
-// are counted apart as inherited, never as traced.
+// are counted apart as inherited, never as traced. Read from each requirement's spine (rc.10.73.42, D7: trace-kernel.js
+// requirementSpine), so coverage counts only what the trail holds: a record of the layer with a fulfils hop from the
+// requirement; a component on its own chain; a product (implementedBy) or plan (operatedAs) reached through them.
 export function traceCoverage(p){return remember(p,'review:coverage','',()=>memoPass(p,()=>{
- const reqs=reviewRequirements(p),ids=new Set(reqs.map(r=>r.id)),named=xs=>{const s=new Set();for(const r of xs||[])for(const id of linkedRequirementIds(p,r))if(ids.has(id))s.add(id);return s;};
- const byResp=new Map();for(const r of p.logical.responsibilities)for(const id of linkedRequirementIds(p,r))if(ids.has(id)){let xs=byResp.get(r.id);if(!xs)byResp.set(r.id,xs=[]);xs.push(id);}
- const compsOf=new Map(),add=(req,c)=>{let xs=compsOf.get(req);if(!xs)compsOf.set(req,xs=new Set());xs.add(c);};
- for(const m of p.logical.mappings)for(const id of byResp.get(m.logicalId)||[])add(id,m.physicalId);
- for(const c of p.realisation.components)for(const id of linkedRequirementIds(p,c))if(ids.has(id))add(id,c.id);
- const needs=new Map();for(const n of p.technology.needs){let xs=needs.get(n.applicationId);if(!xs)needs.set(n.applicationId,xs=[]);xs.push(n.id);}
- const capOf=new Map(p.technology.mappings.map(m=>[m.needId,m.capabilityId])),realsOf=new Map();for(const m of p.technologyRealisation.mappings){let xs=realsOf.get(m.capabilityId);if(!xs)realsOf.set(m.capabilityId,xs=[]);xs.push(m.realizationId);}
- const planned=new Set(p.runtime.plans.map(r=>r.assetId)),compReals=c=>(needs.get(c)||[]).flatMap(n=>realsOf.get(capOf.get(n))||[]);
- const direct={logical:named(p.logical.responsibilities),applications:new Set(compsOf.keys()),realizations:named([...p.technologyRealisation.records,...p.technology.capabilities]),runtime:named([...p.runtime.plans,...(p.runtime.paths||[])])};
- const inherited={logical:new Set(),applications:new Set(),realizations:new Set(),runtime:new Set()};
- for(const [req,cs] of compsOf)for(const c of cs){const rs=compReals(c);if(rs.length&&!direct.realizations.has(req))inherited.realizations.add(req);if((planned.has(c)||rs.some(r=>planned.has(r)))&&!direct.runtime.has(req))inherited.runtime.add(req);}
- return {requirements:reqs.length,layers:[['logical','responsibilities'],['applications','application components'],['realizations','technology realization'],['runtime','runtime placement']].map(([key,label])=>({key,label,direct:direct[key].size,inherited:inherited[key].size}))};
+ const reqs=reviewRequirements(p),keys=['logical','applications','realizations','runtime'],direct={},inherited={};for(const k of keys)direct[k]=inherited[k]=0;
+ for(const r of reqs){const S=requirementSpine(p,r.id),via=(test,...ls)=>ls.some(l=>S.layers[l].some(x=>S.hops.get(x).some(test))),named=(...ls)=>via(h=>h.type==='fulfils'&&h.from===r.id,...ls);
+  const d={logical:named('responsibility'),applications:S.layers.component.length>0,realizations:named('realization','capability'),runtime:named('plan','path')},i={realizations:via(h=>h.type==='implementedBy','realization'),runtime:via(h=>h.type==='operatedAs','plan')};
+  for(const k of keys)if(d[k])direct[k]++;else if(i[k])inherited[k]++;}
+ return {requirements:reqs.length,layers:[['logical','responsibilities'],['applications','application components'],['realizations','technology realization'],['runtime','runtime placement']].map(([key,label])=>({key,label,direct:direct[key],inherited:inherited[key]}))};
 }));}
 export function atGlanceMarkdown(p){
  const reqs=reviewRequirements(p),cover=traceCoverage(p),sums=chapterSummaries(p),done=sums.reduce((t,c)=>t+c.done,0),total=sums.reduce((t,c)=>t+c.total,0),C=openCounts(p),m=p.finalReview,n=m.narrative||{},gaps=findingGroups(p).filter(g=>g.level==='error'&&!g.disposition).sort((a,b)=>b.items.length-a.items.length).slice(0,5),warnings=C?C.toConfirm:0;

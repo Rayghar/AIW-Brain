@@ -3,8 +3,11 @@
 // the data, never a fixed list); each chapter opens on its default pair and remembers the pair chosen. A cell says how
 // the row relates to the column: the recorded relationship(s) where there is one; else the path through one
 // intermediate record (two hops), marked as such; and where a pair meets neither way, the trace kernel's chain from the
-// row to the column (trace-kernel.js: requirement → driver → decision → responsibility → … → running part). A click
-// selects the cell. A row or column with nothing recorded against the other axis is a gap and is marked as one.
+// row to the column (trace-kernel.js: requirement → driver → decision → responsibility → … → running part), for any
+// such pair on the row's trace, even where other pairs of the two sets meet directly (rc.10.73.42, D7). A click selects
+// the cell. A row or column with nothing recorded against the other axis is a gap and is marked as one: gaps are read on
+// the nearest kind the two sets share (the basis: recorded, else through one record, else through the design), so a
+// chain cell never closes a gap where the sets meet more directly.
 // Large sets are capped (the first 60 rows × 40 columns) with a note and a filter per axis. A reading of the saved
 // document: nothing here writes. An axis of requirements filters on the text every requirement search reads
 // (requirement-groups.js requirementSearchIndex), so a requirement is found by its workbook id, its domain or its group
@@ -16,7 +19,8 @@ import {perDocument, memoPass} from './document-memo.js';
 import {esc} from './html-escape.js';
 import {requirementSearchIndex} from './requirement-groups.js';
 import {chapterRecordSet} from './chapter-records.js';
-import {recordTrace, tracePath, layerOf} from './trace-kernel.js';
+import {layerOf} from './trace-kernel.js';
+import {recordTrace, tracePath} from './trace-record.js';
 
 // The words for the sets the chapters' defaults name; any other record type reads its own label, in the plural.
 export const SET_LABELS = {journey: 'Journey steps', requirement: 'Requirements', quality: 'Quality drivers', decision: 'Decisions', responsibility: 'Responsibilities', component: 'Components', capability: 'Capabilities', technology: 'Products', contract: 'Contracts', data: 'Data definitions', threat: 'Threats', control: 'Controls', instance: 'Placements', runtime: 'Running parts'};
@@ -75,7 +79,7 @@ function buildMatrix(p, {rows, cols} = {}) {
     }
   }
   // 3. Where a pair meets neither way: the trace kernel's chain from the row to the column, when the column is on the
-  // row's trace (trace-kernel.js recordTrace: a requirement's trail; any other record's chain back to the requirements
+  // row's trace (trace-record.js recordTrace: a requirement's trail; any other record's chain back to the requirements
   // it serves and on to what it reaches), each hop a typed relation (rc.10.73.42, D7: the trail, the trace path and
   // the narrative read the same chain).
   const traced = rows !== cols && C.some(layerOf) && R.some(layerOf);
@@ -152,12 +156,12 @@ export function matrixHTML(X, {sel = null, cell = null, layers = null, sets = []
     const label = x.kind === 'direct' ? `${r.ref} ${x.items.map(i => i.words + (i.type ? ' (' + i.type + ')' : '')).join('; ')} ${c.ref}` : x.kind === 'via' ? `${r.ref} and ${c.ref}: no recorded relationship; related via ${x.items.map(i => i.words.replace(/^via /, '')).join(', ')}` : `${r.ref} and ${c.ref}: related ${x.items[0].words}`;
     return `<td class="hit ${x.kind}${on ? ' on' : ''}"><button type="button" data-nt-cell="${esc(k)}" aria-pressed="${on}" aria-label="${esc(label)}" title="${esc(label)}"><i aria-hidden="true">${MARK[x.kind]}</i><span>${esc(x.items[0].words)}${x.items.length > 1 ? ` <small>+${x.items.length - 1}</small>` : ''}</span></button></td>`;
   }).join('')}</tr>`).join('');
-  return bar + capNote + `<div class="nt-tcard"><div class="nt-table-wrap nt-x-wrap" tabindex="0" role="region" aria-label="${esc(X.rowLabel)} against ${esc(X.colLabel)}, scrolls both ways"><table class="nt-table nt-x"><caption class="cm-sr">Chapter ${esc(chapter)}: ${esc(X.rowLabel)} against ${esc(X.colLabel)}. A filled mark is a recorded relationship, a hollow mark a path through one other record${X.counts.chain ? ', a dotted mark a longer chain through the design' : ''}; an empty row or column is a gap.</caption><thead>${head}</thead><tbody>${body}</tbody></table></div><p class="nt-scroll-hint" aria-hidden="true">Scroll sideways for more columns →</p></div><p class="nt-x-key"><span><i>●</i> recorded<span class="nt-long"> relationship</span></span><span><i>○</i> through one<span class="nt-long"> other</span> record</span>${X.counts.chain ? '<span><i>◌</i> through the design</span>' : ''}<span class="gap">gap<span class="nt-long">: nothing recorded against the other axis</span></span></p>`;
+  return bar + capNote + `<div class="nt-tcard"><div class="nt-table-wrap nt-x-wrap" tabindex="0" role="region" aria-label="${esc(X.rowLabel)} against ${esc(X.colLabel)}, scrolls both ways"><table class="nt-table nt-x"><caption class="cm-sr">Chapter ${esc(chapter)}: ${esc(X.rowLabel)} against ${esc(X.colLabel)}. A filled mark is a recorded relationship, a hollow mark a path through one other record${X.counts.chain ? ', a dotted mark a longer chain through the design' : ''}; an empty row or column is a gap${X.counts.chain && X.basis !== 'chain' ? ', and a dotted mark alone does not close one' : ''}.</caption><thead>${head}</thead><tbody>${body}</tbody></table></div><p class="nt-scroll-hint" aria-hidden="true">Scroll sideways for more columns →</p></div><p class="nt-x-key"><span><i>●</i> recorded<span class="nt-long"> relationship</span></span><span><i>○</i> through one<span class="nt-long"> other</span> record</span>${X.counts.chain ? '<span><i>◌</i> through the design</span>' : ''}<span class="gap">gap<span class="nt-long">: nothing recorded against the other axis</span></span></p>`;
 }
 // ---------------------------------------------------------------- the trace path (round 5; rc.10.73.42, D7)
 // The chain from one record through the design's layers: requirement → quality driver → decision → responsibility →
 // component → capability → realization → contract or data → control → placement → running part. Each step is read
-// from the trace kernel (trace-kernel.js recordTrace): a requirement's trail, or for any other record the records
+// from the trace kernel (trace-record.js recordTrace): a requirement's trail, or for any other record the records
 // whose typed hops reach it, back to the requirements it serves, and what it reaches in turn — the chain the trail, the
 // desk, the narrative and the Matrix read. The start holds its own step. A step with nothing is a gap, and is named.
 export const TRACE_ORDER = [['requirement'], ['quality'], ['decision'], ['responsibility'], ['component'], ['capability'], ['technology'], ['contract', 'data'], ['control'], ['instance'], ['runtime']];
