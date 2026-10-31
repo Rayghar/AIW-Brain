@@ -1,8 +1,9 @@
 // The trace kernel (rc.10.73.42, D7): the one reading of a requirement's chain through the design, and of any record's
-// chain back to the requirements it serves, over the canonical design graph's typed relations (architecture-model.js
-// recordGraph: the model's own records and relations, from its one emitter). A walk goes layer by layer — requirement,
-// its Chapter 1 context, driver, decision, responsibility, component, need, capability, realisation, contract, data,
-// operating plan, placement, zone, control, threat, party, path — and a record joins a layer only through a typed
+// chain back to the requirements it serves, over the canonical design graph's typed relations (record-graph.js
+// recordGraph: the model's own records and relations, from the one emitter the model draws). A walk goes layer by
+// layer — requirement, its Chapter 1 context, driver, decision, responsibility, component, need, capability,
+// realisation, contract, data, operating plan, placement, zone, control, threat, party, path — and a record joins a
+// layer only through a typed
 // relation from a record already on an earlier layer (TRACE_HOPS). Each record keeps the hops that linked it: the
 // relation's type, the record it came from, the relationship and the field that records it. What a record reaches
 // depends on that record alone, so a record on a requirement's trail reaches only records on that trail. The trail, the
@@ -57,6 +58,8 @@ export const TRACE_HOPS = [
 ];
 const RANK = new Map(TRACE_LAYERS.map((l, i) => [l, i]));
 const HOPS_INTO = new Map(TRACE_LAYERS.map(l => [l, TRACE_HOPS.filter(h => h.layer === l)]));
+// The hop by which a requirement names a record of each layer (fulfils), for namedBy and namingRequirements.
+const NAMING = new Map(TRACE_LAYERS.map(l => [l, HOPS_INTO.get(l).find(h => h.types?.includes('fulfils'))]).filter(([, h]) => h));
 
 // A plan is in scope while its environment lists its asset and the asset is a component or a realisation; a plan left
 // behind by a removed asset carries nothing (runtime-domain.js plans reads the same rule).
@@ -79,6 +82,7 @@ function kernelOf(p, upto = null) {
     return {G, layer, order, steps, stepped, inScope, upto};
   });
 }
+const NONE = [];
 const keep = (K, hop, e) => (!hop.types || hop.types.includes(e.type)) && (!hop.only || hop.only(e)) && e.source !== hop.skip;
 // The relations a hop reads from a record already on the walk, each with the record at the other end.
 function edgesFrom(K, id, hop) {
@@ -98,15 +102,23 @@ const admit = (K, layer, id) => fits(layer, K.G.objects.get(id)) && (layer !== '
 
 // The walk from seeds: every record reached, by layer, each with the hops that linked it.
 function walk(K, seeds, until = null) {
-  const at = new Map(), hops = new Map(), held = new Map(TRACE_LAYERS.map(l => [l, []]));
-  const put = (id, l) => { at.set(id, l); hops.set(id, []); held.get(l).push(id); };
-  for (const id of seeds) if (K.layer.has(id) && !at.has(id)) put(id, K.layer.get(id));
-  // A hop runs from an earlier layer, so the records it reads are all on the walk before it runs.
-  for (const layer of TRACE_LAYERS.slice(0, until ? RANK.get(until) + 1 : undefined)) for (const hop of HOPS_INTO.get(layer)) for (const l of hop.from) for (const id of held.get(l)) {
-    for (const {e, other} of edgesFrom(K, id, hop)) {
-      if (other === id || !admit(K, layer, other) || (at.has(other) && at.get(other) !== layer)) continue;
-      if (!at.has(other)) put(other, layer);
-      hops.get(other).push(hopOf(e, id));
+  const at = new Map(), hops = new Map(), held = {};
+  const put = (id, l) => { at.set(id, l); hops.set(id, []); (held[l] ||= []).push(id); };
+  for (const id of seeds) { const l = K.layer.get(id); if (l && !at.has(id)) put(id, l); }
+  const reach = (layer, e, other, id) => {
+    if (other === id || !admit(K, layer, other)) return;
+    const was = at.get(other);
+    if (was === undefined) put(other, layer); else if (was !== layer) return;
+    hops.get(other).push(hopOf(e, id));
+  };
+  // A hop runs from an earlier layer, so the records it reads are all on the walk before it runs (edgesFrom's reading,
+  // without its list: the driver scope walks once for every driver).
+  for (let r = 0, last = until ? RANK.get(until) : TRACE_LAYERS.length - 1; r <= last; r++) {
+    const layer = TRACE_LAYERS[r];
+    for (const hop of HOPS_INTO.get(layer)) for (const l of hop.from) for (const id of held[l] || NONE) {
+      if (hop.step) { for (const {e, other} of K.steps.get(id) || NONE) reach(layer, e, other, id); continue; }
+      if (hop.dir !== 'in') for (const e of K.G.outgoing.get(id) || NONE) if (keep(K, hop, e)) reach(layer, e, e.to, id);
+      if (hop.dir !== 'out') for (const e of K.G.incoming.get(id) || NONE) if (keep(K, hop, e)) reach(layer, e, e.from, id);
     }
   }
   return {at, hops};
@@ -144,7 +156,8 @@ export function requirementTrace(p, id) {
   return remember(p, 'trace-kernel:requirement', id, () => { const w = walk(K, [id]); return traceOf(K, id, w.at, w.hops); });
 }
 // The graph the walks read, for a reader that walks it many times over one document it does not change (the reasoning
-// source keeps it as it keeps its chains, design-reasoning.js): handed back as `graph` to the walks below.
+// source keeps it as it keeps its chains, design-reasoning.js): handed back as `graph` to the walks below. With `upto`
+// 'component', the driver scope's graph (record-graph.js), for walks from drivers, responsibilities and components only.
 export const traceGraph = (p, upto = null) => kernelOf(p, upto);
 // What one record reaches: the records of later layers its hops lead to (a component's needs, capabilities,
 // realisations, contracts, data, plans, placements, zones, controls and threats).
@@ -176,11 +189,11 @@ export function recordTrace(p, id) {
 }
 // The records a requirement names on one layer (fulfils, its groups included), and the requirements that name a record.
 export function namedBy(p, requirementId, layer, graph = null) {
-  const K = graph || kernelOf(p), hop = HOPS_INTO.get(layer)?.find(h => h.types?.includes('fulfils'));
+  const K = graph || kernelOf(p), hop = NAMING.get(layer);
   return hop ? edgesFrom(K, requirementId, hop).map(x => x.other).filter(x => admit(K, layer, x)) : [];
 }
 export function namingRequirements(p, id, graph = null) {
-  const K = graph || kernelOf(p), layer = K.layer.get(id), hop = HOPS_INTO.get(layer)?.find(h => h.types?.includes('fulfils'));
+  const K = graph || kernelOf(p), layer = K.layer.get(id), hop = NAMING.get(layer);
   return hop ? [...new Set(edgesTo(K, id, hop).map(x => x.other).filter(x => K.layer.get(x) === 'requirement'))] : [];
 }
 // The records at the other end of a record's relations of one type ('out': the relation runs from the record; 'in': to
@@ -190,7 +203,7 @@ export function linkedVia(p, id, type, dir = 'out', source = null, graph = null)
   return [...new Set(edgesFrom(K, id, {types: [type], dir, only: source ? e => e.source === source : null}).map(x => x.other))];
 }
 // Each relation's position in the graph (the order its records state it), to read hops in the order they are recorded.
-export const relationOrder = (p, graph = null) => new Map((graph || kernelOf(p)).G.relationships.map((e, i) => [e.id, i]));
+export const relationOrder = (p, graph = null) => { const K = graph || kernelOf(p); return K.relationIndex ??= new Map(K.G.relationships.map((e, i) => [e.id, i])); };
 // The records of a trace on some layers, as the model registers them (record, ref, title, type), in register order.
 export const traceObjects = (T, ...layers) => !T ? [] : layers.flatMap(l => T.layers[l] || []).map(id => T.record(id)).filter(Boolean);
 export const traceRecords = (T, ...layers) => traceObjects(T, ...layers).map(o => o.record);

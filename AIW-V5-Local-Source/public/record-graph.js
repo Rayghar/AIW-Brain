@@ -58,7 +58,11 @@ export const OBJECT_TYPES={
 };
 
 export const label=r=>r.title||r.question||r.name||r.description||r.id;
-export const key=(...parts)=>parts.map(x=>encodeURIComponent(String(x??''))).join(':');
+// A part that encodeURIComponent leaves as it is (letters, digits and - _ . ! ~ * ' ( )) is kept without encoding it: the same key.
+const PLAIN=/^[\w.!~*'()-]*$/,keyPart=x=>{const s=String(x??'');return PLAIN.test(s)?s:encodeURIComponent(s);};
+export const key=(...parts)=>parts.map(keyPart).join(':');
+// A stated relation's id: 'rel:' and the key of its source, type and ends.
+const relationKey=(source,type,from,to)=>'rel:'+keyPart(source)+':'+keyPart(type)+':'+keyPart(from)+':'+keyPart(to);
 
 // The record collections of the connected model, in registration order: where each lives in the document, the object
 // type of its records (a function where the record says) and the path the object's source names. The model registers
@@ -109,16 +113,20 @@ export const CONTEXT_LAYER_TYPE={process:'journey',logical:'responsibility',phys
 // is registered so far and `root` is the system's object.
 export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  // A record that links requirement groups fulfils their members as it fulfils the requirements it names (round 12, DM-02).
- const linkRefs=(r,source)=>{
-  for(const [field,type,inverse] of [['requirementIds','fulfils',true],['driverIds','constrains',true],['decisionIds','justifies',true],['sourceIds','supports',true]]){const named=list(r[field]);for(const id of field==='requirementIds'?linkedRequirementIds(p,r):named)rel(type,inverse?id:r.id,inverse?r.id:id,{source:source+'.'+(field==='requirementIds'&&!named.includes(id)?'requirementGroupIds':field)});}
+ // Up to the components (recordGraph upto 'component', the driver scope's graph), only what the driver scope's walks read
+ // is stated: the requirements that name responsibilities and components, what drivers and decisions bear on, and the
+ // mappings; the rest is not worked out.
+ const part=upto==='component';
+ const linkRefs=(r,source,requirements=true)=>{
+  for(const [field,type,inverse] of [['requirementIds','fulfils',true],['driverIds','constrains',true],['decisionIds','justifies',true],['sourceIds','supports',true]])if(requirements||field!=='requirementIds'){const named=list(r[field]);for(const id of field==='requirementIds'?linkedRequirementIds(p,r):named)rel(type,inverse?id:r.id,inverse?r.id:id,{source:source+'.'+(field==='requirementIds'&&!named.includes(id)?'requirementGroupIds':field)});}
  };
- for(const g of list(p.logical?.groups))rel('memberOf',g.id,root,{source:'logical.groups'});
- for(const r of list(p.logical?.responsibilities)){if(r.groupId)rel('memberOf',r.id,r.groupId,{source:'logical.responsibilities.groupId'});linkRefs(r,'logical.responsibilities');}
- for(const r of list(p.artefacts))if(r.modelRef)rel('fulfils',r.id,r.modelRef,{source:'artefacts.modelRef'});
+ if(!part)for(const g of list(p.logical?.groups))rel('memberOf',g.id,root,{source:'logical.groups'});
+ for(const r of list(p.logical?.responsibilities)){if(r.groupId&&!part)rel('memberOf',r.id,r.groupId,{source:'logical.responsibilities.groupId'});linkRefs(r,'logical.responsibilities');}
+ if(!part)for(const r of list(p.artefacts))if(r.modelRef)rel('fulfils',r.id,r.modelRef,{source:'artefacts.modelRef'});
  // The relationships a person records as relationships (RECORDED, shared with the chapter checks): Chapter 1's links, then
  // the process flows (a message flow crosses pools and carries a contract; a sequence flow stays inside one).
- for(const source of ['relationships','process.transitions'])for(const r of RECORDED[source].rows(p))rel(RECORDED[source].type(r,p),r.from,r.to,{id:r.id,label:RECORDED[source].label(r),attributes:r,source});
- for(const e of list(p.processModel?.elements)){
+ if(!part)for(const source of ['relationships','process.transitions'])for(const r of RECORDED[source].rows(p))rel(RECORDED[source].type(r,p),r.from,r.to,{id:r.id,label:RECORDED[source].label(r),attributes:r,source});
+ if(!part)for(const e of list(p.processModel?.elements)){
   for(const id of linkedRequirementIds(p,e))rel('motivatedBy',e.id,id,{source:'process.elements.requirementIds'});
   if(e.kind==='account'&&e.authorityId)rel('owns',e.authorityId,e.id,{source:'process.elements.authorityId'});
   // Round 6 (Contract T): a sub-process holds its elements, a boundary event hangs on its task, an external pool runs
@@ -128,18 +136,18 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
   if(e.partyId)rel('inPool',e.partyId,e.id,{source:'process.elements.partyId'});
   if(e.kind==='data'&&e.dataId)rel('describes',e.id,e.dataId,{source:'process.elements.dataId'});
  }
- for(const c of list(p.processModel?.claims)){const path=processTransitions(p).find(t=>t.id===c.subjectId);rel('asserts',c.id,path?path.from:c.subjectId,{source:'process.claims',via:path?[path.id]:[],attributes:{topic:c.topic,statement:c.statement,source:c.source,sourceLocator:c.sourceLocator,status:c.status,transitionId:path?.id}});}
- for(const group of processConflicts(p))for(let i=1;i<group.length;i++)rel('conflictsWith',group[0].id,group[i].id,{source:'process.claims',attributes:{topic:group[0].topic,status:'Unresolved'}});
- for(const j of list(p.artefacts).filter(a=>a.type==='journey'))for(const requirementId of list(p.relationships).filter(r=>r.from===j.id&&r.kind==='requires').map(r=>r.to)){const requirement=p.artefacts.find(a=>a.id===requirementId);if(requirement?.modelRef)rel('implementedBy',j.id,requirement.modelRef,{source:'process.requirement.modelRef',derived:true,via:[requirementId]});}
- for(const q of list(p.quality?.drivers)){linkRefs(q,'quality.drivers');for(const id of list(q.responsibilityIds))rel('constrains',q.id,id,{source:'quality.drivers.responsibilityIds'});for(const id of list(q.componentIds))rel('constrains',q.id,id,{source:'quality.drivers.componentIds'});}
+ if(!part)for(const c of list(p.processModel?.claims)){const path=processTransitions(p).find(t=>t.id===c.subjectId);rel('asserts',c.id,path?path.from:c.subjectId,{source:'process.claims',via:path?[path.id]:[],attributes:{topic:c.topic,statement:c.statement,source:c.source,sourceLocator:c.sourceLocator,status:c.status,transitionId:path?.id}});}
+ if(!part)for(const group of processConflicts(p))for(let i=1;i<group.length;i++)rel('conflictsWith',group[0].id,group[i].id,{source:'process.claims',attributes:{topic:group[0].topic,status:'Unresolved'}});
+ if(!part)for(const j of list(p.artefacts).filter(a=>a.type==='journey'))for(const requirementId of list(p.relationships).filter(r=>r.from===j.id&&r.kind==='requires').map(r=>r.to)){const requirement=p.artefacts.find(a=>a.id===requirementId);if(requirement?.modelRef)rel('implementedBy',j.id,requirement.modelRef,{source:'process.requirement.modelRef',derived:true,via:[requirementId]});}
+ for(const q of list(p.quality?.drivers)){linkRefs(q,'quality.drivers',!part);for(const id of list(q.responsibilityIds))rel('constrains',q.id,id,{source:'quality.drivers.responsibilityIds'});for(const id of list(q.componentIds))rel('constrains',q.id,id,{source:'quality.drivers.componentIds'});}
  for(const d of list(p.decisions?.records)){
-  linkRefs(d,'decisions.records');for(const a of list(d.alternatives)){const id=d.id+'/alternative/'+a.id;add({...a,title:a.title||a.name,id},'alternative','decisions.records.'+d.id+'.alternatives');rel('considers',d.id,id,{source:'decisions.alternatives',attributes:{selected:d.selectedAlternativeId===a.id||d.selected===a.id}});}
+  linkRefs(d,'decisions.records',!part);if(!part)for(const a of list(d.alternatives)){const id=d.id+'/alternative/'+a.id;add({...a,title:a.title||a.name,id},'alternative','decisions.records.'+d.id+'.alternatives');rel('considers',d.id,id,{source:'decisions.alternatives',attributes:{selected:d.selectedAlternativeId===a.id||d.selected===a.id}});}
  }
  for(const r of list(p.logical?.mappings))rel('realizedBy',r.logicalId,r.physicalId,{id:r.id,label:'realized by',attributes:r,source:'logical.mappings'});
- for(const source of ['logical.connections','realisation.connections','technology.dependencies','technologyRealisation.connections'])for(const r of RECORDED[source].rows(p))rel(RECORDED[source].type(r,p),r.from,r.to,{id:r.id,label:RECORDED[source].label(r),attributes:r,source});
- for(const c of list(p.realisation?.components)){linkRefs(c,'realisation.components');for(const id of list(c.dataIds))rel('owns',c.id,id,{source:'realisation.components.dataIds'});}
+ if(!part)for(const source of ['logical.connections','realisation.connections','technology.dependencies','technologyRealisation.connections'])for(const r of RECORDED[source].rows(p))rel(RECORDED[source].type(r,p),r.from,r.to,{id:r.id,label:RECORDED[source].label(r),attributes:r,source});
+ for(const c of list(p.realisation?.components)){linkRefs(c,'realisation.components');if(!part)for(const id of list(c.dataIds))rel('owns',c.id,id,{source:'realisation.components.dataIds'});}
  // A walk up to the components reads nothing stated after them (recordGraph upto).
- if(upto==='component')return;
+ if(part)return;
  for(const n of list(p.technology?.needs)){
   const obj=objects.get(n.id);if(obj){obj.title=n.description||n.category+' need';obj.owner=objects.get(n.applicationId)?.owner||'';}
   rel('hasNeed',n.applicationId,n.id,{source:'technology.needs'});
@@ -201,17 +209,20 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
 // them (with the declared context objects and the reference graph's base nodes, as recordTypes reads them), the relations
 // of the one emitter (recordRelations), resolved by the model's rule (both ends registered), each end's relations listed;
 // no drawn graph, typing or digest. What the trace kernel (trace-kernel.js) walks. Once per settled document or pass.
-// `upto` 'component' keeps only what a walk up to the component layer reads — the records of the collections up to the
-// components, the reference graph's base nodes, and the relations between them a requirement, a driver, a decision, a
-// mapping, a Chapter 1 relationship or a Chapter 4 connection states: the driver scope's (driver-scope.js), which every
-// chapter check reads, so it does not pay for the whole graph.
+// `upto` 'component' is the driver scope's graph (driver-scope.js, which every chapter check and many commands read, so
+// it does not pay for the whole graph): the records of the collections up to the components and the reference graph's
+// base nodes, and only what a walk from drivers, responsibilities and components up to the components reads — the
+// requirements that name responsibilities and components (fulfils), what drivers and decisions bear on (constrains,
+// justifies) and the mappings (realizedBy). A walk from a requirement or its context reads the whole graph.
 const UPTO_COMPONENT=new Set(['fulfils','constrains','justifies','realizedBy']),COMPONENTS=RECORD_COLLECTIONS.findIndex(([,,path])=>path==='realisation.components');
+// A relation stated without attributes or a path shares one frozen empty value: the walks only read them.
+const NO_ATTRIBUTES=Object.freeze({}),NO_VIA=Object.freeze([]),NO_OPTIONS=Object.freeze({});
 export const recordGraph=perDocument((p,upto)=>{
  const objects=new Map(),relationships=new Map(),root='system:'+p.id,part=upto==='component';
  const add=(r,type,source,id=r.id)=>{if(!id)return null;const prior=objects.get(id);if(prior&&prior.source!==source)return prior;const obj={id,type,title:label(r)||id,ref:r.ref||r.id||id,owner:r.owner||'',source,attributes:{},record:r};objects.set(id,obj);return obj;};
- const rel=(type,from,to,{id,label:meaning,attributes={},source='projection',derived=false,via=[]}={})=>{
-  if(!from||!to||part&&(!UPTO_COMPONENT.has(type)&&source!=='relationships'&&source!=='logical.connections'||!objects.has(from)||!objects.has(to)))return;
-  id=id||'rel:'+key(source,type,from,to);
+ const rel=(type,from,to,{id,label:meaning,attributes=NO_ATTRIBUTES,source='projection',derived=false,via=NO_VIA}=NO_OPTIONS)=>{
+  if(!from||!to||part&&(!UPTO_COMPONENT.has(type)||!objects.has(from)||!objects.has(to)))return;
+  id=id||relationKey(source,type,from,to);
   if(relationships.has(id)){const old=relationships.get(id);if(old.type===type&&old.from===from&&old.to===to)return;id=key(source,id,type,from,to);}
   relationships.set(id,{id,type,from,to,label:meaning||type,attributes,source,derived,via});
  };
@@ -222,7 +233,7 @@ export const recordGraph=perDocument((p,upto)=>{
  if(!part)for(const s of list(p.coauthoring?.sources)){const v=s.versions?.at(-1)||{};add({...v,id:s.id,title:v.title||s.id},'evidence','coauthoring.sources.'+s.id);}
  recordRelations(p,{add,rel,objects,root,upto});
  const resolved=[...relationships.values()].filter(e=>objects.has(e.from)&&objects.has(e.to)),outgoing=new Map(),incoming=new Map();
- for(const id of objects.keys()){outgoing.set(id,[]);incoming.set(id,[]);}
- for(const e of resolved){outgoing.get(e.from).push(e);incoming.get(e.to).push(e);}
+ const push=(m,id,e)=>{const xs=m.get(id);if(xs)xs.push(e);else m.set(id,[e]);};
+ for(const e of resolved){push(outgoing,e.from,e);push(incoming,e.to,e);}
  return {projectId:p.id,root,objects,relationships:resolved,outgoing,incoming};
 },upto=>upto||'');

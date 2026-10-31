@@ -21,61 +21,67 @@ export function driverScopeIndex(p) {
 // The records a driver's walk starts from: the driver, and the responsibilities and components named by the
 // requirements it serves (shared requirements, groups included). The driver chain (design-reasoning.js) walks from the
 // same seeds, so its products, plans and controls are those of this scope.
-export function driverTraceSeeds(p, d, graph = null) {
-  const served = linkedRequirementIds(p, d);
-  return [d.id, ...served.flatMap(r => [...namedBy(p, r, 'responsibility', graph), ...namedBy(p, r, 'component', graph)])];
-}
+export const driverTraceSeeds = (p, d, graph = null) => seedsOf(p, d, linkedRequirementIds(p, d), graph);
+const seedsOf = (p, d, served, graph) => [d.id, ...served.flatMap(r => [...namedBy(p, r, 'responsibility', graph), ...namedBy(p, r, 'component', graph)])];
 
 function build(p) {
   const drivers = list(p?.quality?.drivers), responsibilities = list(p?.logical?.responsibilities), components = list(p?.realisation?.components);
   const rr = index(responsibilities), cc = index(components);
   const requirements = index(list(p?.artefacts).filter(a => a.type === 'requirement'));
-  // The graph up to the component layer (record-graph.js upto), read once for every driver.
+  // The driver scope's graph (record-graph.js upto 'component': what its walks read, up to the components), read once
+  // for every driver.
   const G = traceGraph(p, 'component');
   // A record's requirements: those that name it, and for a component those that name a responsibility it realises.
   const realisedBy = id => linkedVia(p, id, 'realizedBy', 'in', 'logical.mappings', G);
   const naming = new Map(), namers = id => { let xs = naming.get(id); if (!xs) naming.set(id, xs = namingRequirements(p, id, G)); return xs; };
-  const recordRequirements = id => unique([...namers(id), ...(cc.has(id) ? realisedBy(id).flatMap(namers) : [])]);
-  const scopes = new Map(), order = relationOrder(p, G);
+  const carried = new Map(), recordRequirements = id => { let xs = carried.get(id); if (!xs) carried.set(id, xs = unique([...namers(id), ...(cc.has(id) ? realisedBy(id).flatMap(namers) : [])])); return xs; };
+  // The paths, one for each hop that brought a record onto the driver's scope: the components it names, then each
+  // responsibility's, then the mappings, then each component's, every list in the order its records state it; with the
+  // components it inherits and the requirements that are its context.
+  const detail = (d, reqs, T, responsibilityIds, componentIds, directComponentIds, direct) => {
+    const order = relationOrder(p, G), served = new Set(reqs), paths = [];
+    const byRelation = (id, test) => hopsFrom(T, id, test).sort((a, b) => order.get(a.relation) - order.get(b.relation));
+    for (const id of [...directComponentIds].sort((a, b) => order.get(byRelation(a, h => h.from === d.id && h.type === 'constrains')[0].relation) - order.get(byRelation(b, h => h.from === d.id && h.type === 'constrains')[0].relation))) paths.push({kind: 'direct-component', from: d.id, to: id});
+    for (const id of responsibilityIds) {
+      if (direct(id)) paths.push({kind: 'direct-responsibility', from: d.id, to: id});
+      for (const req of namers(id)) if (served.has(req)) paths.push({kind: 'shared-requirement', from: d.id, to: id, via: req});
+      for (const h of byRelation(id, h => h.type === 'justifies')) paths.push({kind: 'decision', from: d.id, to: id, via: h.from});
+    }
+    const inherited = new Set();
+    for (const [id, h] of componentIds.flatMap(id => hopsFrom(T, id, h => h.type === 'realizedBy').map(h => [id, h])).sort((a, b) => order.get(a[1].relation) - order.get(b[1].relation))) { inherited.add(id); paths.push({kind: 'responsibility-mapping', from: d.id, to: id, via: h.from}); }
+    for (const id of componentIds) {
+      for (const req of recordRequirements(id)) if (served.has(req)) { inherited.add(id); paths.push({kind: 'component-requirement', from: d.id, to: id, via: req}); }
+      for (const h of byRelation(id, h => h.type === 'justifies')) { inherited.add(id); paths.push({kind: 'component-decision', from: d.id, to: id, via: h.from}); }
+    }
+    // Context may walk back from an explicitly named component. It must not
+    // walk back through an inherited shared component into another requirement:
+    // that component carries both drivers, but neither requirement owns the
+    // other's intent merely because the implementation is shared.
+    return {paths, inheritedComponentIds: componentIds.filter(id => inherited.has(id)), contextRequirementIds: unique([...reqs, ...[...responsibilityIds, ...directComponentIds].flatMap(recordRequirements)])};
+  };
+  const scopes = new Map();
   for (const d of drivers) {
     const reqs = linkedRequirementIds(p, d), missing = [];
     for (const id of reqs) if (!requirements.has(id)) missing.push({kind: 'requirement', id});
     for (const id of list(d.responsibilityIds)) if (!rr.has(id)) missing.push({kind: 'responsibility', id});
     for (const id of unique(list(d.componentIds))) if (!cc.has(id)) missing.push({kind: 'component', id});
-    const T = seededTrace(p, driverTraceSeeds(p, d, G), {until: 'component', graph: G}), served = new Set(reqs);
+    const T = seededTrace(p, seedsOf(p, d, reqs, G), {until: 'component', graph: G});
     const responsibilityIds = T.layers.responsibility.filter(id => rr.has(id)), componentIds = T.layers.component.filter(id => cc.has(id));
-    const direct = id => hopsFrom(T, id, h => h.from === d.id && h.type === 'constrains').length > 0;
-    const scope = {driverId: d.id, requirementIds: reqs, contextRequirementIds: [], responsibilityIds, componentIds,
-      directComponentIds: componentIds.filter(direct), inheritedComponentIds: [], paths: [], missing};
-    // The paths, one for each hop that brought a record onto the driver's scope: the components it names, then each
-    // responsibility's, then the mappings, then each component's, every list in the order its records state it.
-    const byRelation = (id, test) => hopsFrom(T, id, test).sort((a, b) => order.get(a.relation) - order.get(b.relation));
-    for (const id of [...scope.directComponentIds].sort((a, b) => order.get(byRelation(a, h => h.from === d.id && h.type === 'constrains')[0].relation) - order.get(byRelation(b, h => h.from === d.id && h.type === 'constrains')[0].relation))) scope.paths.push({kind: 'direct-component', from: d.id, to: id});
-    for (const id of responsibilityIds) {
-      if (direct(id)) scope.paths.push({kind: 'direct-responsibility', from: d.id, to: id});
-      for (const req of namers(id)) if (served.has(req)) scope.paths.push({kind: 'shared-requirement', from: d.id, to: id, via: req});
-      for (const h of byRelation(id, h => h.type === 'justifies')) scope.paths.push({kind: 'decision', from: d.id, to: id, via: h.from});
-    }
-    const inherited = new Set();
-    for (const [id, h] of componentIds.flatMap(id => hopsFrom(T, id, h => h.type === 'realizedBy').map(h => [id, h])).sort((a, b) => order.get(a[1].relation) - order.get(b[1].relation))) { inherited.add(id); scope.paths.push({kind: 'responsibility-mapping', from: d.id, to: id, via: h.from}); }
-    for (const id of componentIds) {
-      for (const req of recordRequirements(id)) if (served.has(req)) { inherited.add(id); scope.paths.push({kind: 'component-requirement', from: d.id, to: id, via: req}); }
-      for (const h of byRelation(id, h => h.type === 'justifies')) { inherited.add(id); scope.paths.push({kind: 'component-decision', from: d.id, to: id, via: h.from}); }
-    }
-    scope.inheritedComponentIds = componentIds.filter(id => inherited.has(id));
-    // Context may walk back from an explicitly named component. It must not
-    // walk back through an inherited shared component into another requirement:
-    // that component carries both drivers, but neither requirement owns the
-    // other's intent merely because the implementation is shared.
-    scope.contextRequirementIds = unique([...reqs, ...[...responsibilityIds, ...scope.directComponentIds].flatMap(recordRequirements)]);
-    scopes.set(d.id, scope);
+    const direct = id => hopsFrom(T, id, h => h.from === d.id && h.type === 'constrains').length > 0, directComponentIds = componentIds.filter(direct);
+    // The paths, the inherited components and the context are worked out when first read, once: a command that asks
+    // which drivers bear on a component (realisation-domain.js componentSources) reads only the scopes' records.
+    let more = null;
+    const read = () => more ??= detail(d, reqs, T, responsibilityIds, componentIds, directComponentIds, direct);
+    scopes.set(d.id, {driverId: d.id, requirementIds: reqs, get contextRequirementIds() { return read().contextRequirementIds; }, responsibilityIds, componentIds,
+      directComponentIds, get inheritedComponentIds() { return read().inheritedComponentIds; }, get paths() { return read().paths; }, missing});
   }
-  const componentDrivers = new Map(), requirementDrivers = new Map();
-  for (const s of scopes.values()) {
-    for (const id of s.componentIds) add(componentDrivers, id, s.driverId);
-    for (const id of s.contextRequirementIds) add(requirementDrivers, id, s.driverId);
-  }
-  return {drivers, scopes, componentDrivers, requirementDrivers};
+  const componentDrivers = new Map();
+  for (const s of scopes.values()) for (const id of s.componentIds) add(componentDrivers, id, s.driverId);
+  let requirementDrivers = null;
+  return {drivers, scopes, componentDrivers, get requirementDrivers() {
+    if (!requirementDrivers) { requirementDrivers = new Map(); for (const s of scopes.values()) for (const id of s.contextRequirementIds) add(requirementDrivers, id, s.driverId); }
+    return requirementDrivers;
+  }};
 }
 
 export function driverScope(p, driverOrId, scopes = driverScopeIndex(p)) {
