@@ -36,7 +36,7 @@ async function api(path, {actor = 'architect', body, method, headers = {}} = {})
 const narrative = {title: 'Synthetic SDD fixture', owner: 'Fixture architect', audience: 'Prototype validation', summary: 'Synthetic review, not a bank approval.', scope: 'Reference project only.', approach: 'Preserve findings and separate design from implementation.', confirmed: true};
 // A finding's stamp identifies the finding, and recording review steps does not change it, so each disposition uses
 // the stamp read once at the start of the walk (reading the findings again for every step costs minutes).
-const treatment = (f) => ({findingId: f.id, stamp: f.stamp, treatment: 'Accepted design limitation', reviewer: 'Synthetic reviewer', reference: 'Test fixture only', rationale: 'Synthetic explicit limitation used to exercise review state transitions.', reviewed: true});
+const treatment = (f) => ({findingId: f.id, stamp: f.stamp, treatment: 'Accepted design limitation', reviewer: 'Synthetic reviewer', reference: 'Test fixture only', rationale: 'Synthetic explicit limitation used to exercise review state transitions.', reviewBy: '2099-12-31', reviewed: true});
 const record = (p, outcome) => ({stamp: rv.reviewDesignStamp(p), outcome, reviewer: 'Synthetic reviewer', reference: 'Fixture outcome, no real approval', rationale: 'Source gaps remain explicit.', reviewed: true});
 const capture = (p) => ({stamp: rv.reviewDesignStamp(p), title: 'Synthetic frozen review', reviewed: true});
 const trace = (p, id) => ({requirementId: id, stamp: rv.reviewSourceStamp(p), visited: [0, 1, 2, 3, 4], reviewer: 'Synthetic reviewer', notes: 'Fixture links and gaps reviewed; no runtime execution.', reviewed: true});

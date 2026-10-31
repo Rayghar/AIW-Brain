@@ -61,7 +61,7 @@ export async function previewRecovery(raw,unpacked=null){const encodedPack=typeo
 // never current. Group judgements, trace reviews and finding treatments also remain historical until a person
 // records the review on this workbench. Chapter content, stamps and typed reviewer names are untouched.
 export const IMPORTED_AUTHORITY='Imported historical assertion; not a signed-in identity on this workbench.';
-const importedAuthoritySummary=p=>{const m=p.finalReview||{};const actors=new Set();const note=r=>{if(r?.actor)actors.add(r.actor);};for(const r of m.reviews||[])note(r);for(const r of m.judgements||[])note(r);for(const b of m.baselines||[]){note(b);note(b.review?.outcome);}for(const g of m.governance||[])note(g);const verified=(p.knowledge?.claims||[]).filter(c=>c.review?.actor);for(const c of verified)note(c.review);return {reviews:(m.reviews||[]).length,judgements:(m.judgements||[]).length,baselines:(m.baselines||[]).length,governance:(m.governance||[]).length,handoff:!!m.handoff,verifiedClaims:verified.length,actors:[...actors].sort(),authority:IMPORTED_AUTHORITY};};
+const importedAuthoritySummary=p=>{const m=p.finalReview||{};const actors=new Set();const note=r=>{if(r?.actor)actors.add(r.actor);};for(const r of m.reviews||[])note(r);for(const r of m.judgements||[])note(r);for(const b of m.baselines||[]){note(b);note(b.review?.outcome);}for(const g of m.governance||[])note(g);for(const r of [...(p.security?.risks||[]),...(p.security?.governance||[])])note(r);const verified=(p.knowledge?.claims||[]).filter(c=>c.review?.actor);for(const c of verified)note(c.review);return {reviews:(m.reviews||[]).length,judgements:(m.judgements||[]).length,baselines:(m.baselines||[]).length,governance:(m.governance||[]).length,handoff:!!m.handoff,verifiedClaims:verified.length,actors:[...actors].sort(),authority:IMPORTED_AUTHORITY};};
 // rc42 (D4, K-05): a project library entry's approval needs a second signed-in person, and its author, last editor and
 // approver from elsewhere are historical assertions too. Every entry is restored as a draft (an approval kept as
 // importedApproval, its identities as importedActor, importedAuthor and importedLastEditor) and the restorer stands as its
@@ -69,8 +69,12 @@ const importedAuthoritySummary=p=>{const m=p.finalReview||{};const actors=new Se
 // uses it. An organisation entry is adopted again from its signed release (refreshOrganizationAssurance, install).
 export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??null){
  for(const e of Array.isArray(p.workbench?.catalogue)?p.workbench.catalogue:[]){if(!e||typeof e!=='object')continue;if(e.status==='approved')e.importedApproval={actor:e.actor??null,at:e.at??null,reviewNote:e.reviewNote??'',authority:IMPORTED_AUTHORITY};e.status='draft';for(const [k,to] of [['actor','importedActor'],['author','importedAuthor'],['lastEditor','importedLastEditor']])if(e[k]!=null)e[to]=e[k];e.actor=null;e.author=e.lastEditor=actor;if(e.organization)e.organization.assurance={eligible:false,status:'Restored history; review and adopt the signed release again.'};}
- const m=p.finalReview;if(!m||typeof m!=='object')return p;
  const strip=r=>{if(!r||typeof r!=='object')return;if(r.actor!=null)r.importedActor=r.actor;r.actor=null;};
+ // rc.10.73.42 (D5): who recorded a Chapter 9 risk treatment and who approved it are historical here too, so an imported
+ // approval of an accepted residual risk never counts as independent on this workbench.
+ for(const r of Array.isArray(p?.security?.risks)?p.security.risks:[])strip(r);
+ for(const g of Array.isArray(p?.security?.governance)?p.security.governance:[])strip(g);
+ const m=p.finalReview;if(!m||typeof m!=='object')return p;
  strip(m.intake);strip(m.checks);
  for(const r of m.reviews||[])strip(r);
  for(const r of m.judgements||[])strip(r);

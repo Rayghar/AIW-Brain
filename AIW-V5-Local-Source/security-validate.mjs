@@ -5,7 +5,8 @@ import {logicalGraph} from './public/logical-domain.js';
 import {withSecurity,controls,control,threats,threat,securityTargets,securitySources,targetBoundaries,relatedControls,securityIntakeCurrent,securityReviewCurrent,securityHandoffCurrent,securitySourceChanged,controlStamp,threatStamp,securityGovernanceStamp,evidenceCurrent,latestEvidence,assuranceLabel,riskCurrent,latestRisk,latestGovernance,governanceCurrent,securitySimulationCurrent,securityFindings,securityMilestones,securityProposal,simulateSecurity,applySecurityCommand,exportSecurityMarkdown,resilienceDrafts} from './public/security-domain.js';
 import worker from './worker.js';
 import {localDatabase} from './local-db.js';
-const cmd=(p,type,payload={})=>applySecurityCommand(p,{type:'security.'+type,payload}).document;
+// A signed-in person sends each command (rc.10.73.42, D5: a residual-risk approval is recorded by a second one).
+const cmd=(p,type,payload={},actor='architect-a')=>applySecurityCommand(p,{type:'security.'+type,payload},undefined,actor).document;
 const base=withSecurity(seedProject()),original=JSON.stringify(base),upstream=withInterfaces(seedProject());
 assert.equal(threats(base).length,4);assert.equal(controls(base).length,3);assert.equal(control(base,'oauth').ref,'SEC-001');assert.equal(control(base,'audit').ref,'SEC-002');assert.equal(control(base,'mtls').ref,'SEC-003');
 assert.deepEqual(withSecurity(base),base,'Reopening retains stable identities and records');
@@ -44,7 +45,7 @@ assert.throws(()=>cmd(p,'risk',{...risk(p,'thr-001'),stamp:'old'}),/changed/);
 assert.throws(()=>cmd(p,'risk',{...risk(p,'thr-001'),reviewed:false}),/explicit/);
 p=cmd(p,'risk',risk(p,'thr-001','accept'));const accepted=p.security.risks.at(-1);assert.equal(accepted.id,'RR-001');assert(riskCurrent(p,accepted));assert(securityFindings(p).some(f=>f.code==='risk-approval'&&f.objectId==='thr-001'));
 const governance=(project,id,decision='approved')=>({id,stamp:securityGovernanceStamp(project,threat(project,id)),decision,reviewer:'Independent governance fixture',reference:'Synthetic external approval record fixture.',observations:'Recorded approval scope for the synthetic test only.',reviewed:true});
-p=cmd(p,'governance',governance(p,'thr-001'));const approved=p.security.governance.at(-1);assert(governanceCurrent(p,approved));assert.equal(latestGovernance(p,'thr-001').decision,'approved');
+assert.throws(()=>cmd(p,'governance',governance(p,'thr-001')),/second signed-in person/);p=cmd(p,'governance',governance(p,'thr-001'),'approver-b');const approved=p.security.governance.at(-1);assert(governanceCurrent(p,approved));assert.equal(latestGovernance(p,'thr-001').decision,'approved');
 const beforeFailure=p;p=cmd(p,'evidence',evidence(p,'oauth','verification','fail'));const failed=p.security.evidence.at(-1);assert.equal(assuranceLabel(p,control(p,'oauth')),'Test failure recorded');assert(!riskCurrent(p,accepted));assert(!governanceCurrent(p,approved));assert(!latestRisk(p,'thr-001'));assert(securityFindings(p).some(f=>f.code==='evidence-result-verification'&&f.level==='error'));
 assert.throws(()=>cmd(p,'withdraw-evidence',{evidenceId:failed.id,reason:'',reviewed:true}),/Explain/);
 p=cmd(p,'withdraw-evidence',{evidenceId:failed.id,reason:'Fixture evidence superseded; retained in history.',reviewed:true});assert(p.security.evidence.at(-1).withdrawn);assert(!riskCurrent(p,accepted),'Withdrawing newer evidence must not resurrect an old risk acceptance');assert(!governanceCurrent(p,approved));

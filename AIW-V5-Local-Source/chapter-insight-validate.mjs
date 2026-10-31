@@ -70,7 +70,7 @@ pass('Round25 hard-constraint violations and dominated working choices use their
 
 const first=chapterInsight(p,6).lead;assert.equal(first.kind,'finding');
 const finding=inheritedFindings(p).find(f=>f.id===first.id);assert(finding);
-const treated=applyFinalReviewCommand(fixture,{type:'review.disposition',payload:{findingId:finding.id,stamp:finding.stamp,treatment:'Accepted design limitation',rationale:'Synthetic regression treatment only.',reviewer:'Synthetic fixture reviewer',reference:'FIXTURE-NOT-APPROVAL',reviewed:true}}).document;
+const treated=applyFinalReviewCommand(fixture,{type:'review.disposition',payload:{findingId:finding.id,stamp:finding.stamp,treatment:'Accepted design limitation',rationale:'Synthetic regression treatment only.',reviewer:'Synthetic fixture reviewer',reference:'FIXTURE-NOT-APPROVAL',reviewBy:'2099-12-31',reviewed:true}}).document;
 const after=chapterInsight(treated,6);assert.equal(after.progress.toFix,chapterInsight(p,6).progress.toFix-1);assert(!after.nextActions.some(a=>a.id===first.id));
 assert(after.progress.treated>0);
 pass('Chapter11-treated findings are not resurfaced as untreated header errors');
