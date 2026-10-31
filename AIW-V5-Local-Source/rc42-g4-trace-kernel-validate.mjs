@@ -68,13 +68,18 @@ for (const [name, p] of projects) {
   }
   pass(`${name}: the review desk's thread and the matrix annex report the trail's records per layer`);
 
-  // 2. Change impact routes a requirement's change to the records on its trail.
+  // 2. Change impact routes a requirement's change to the records on its own chain (the trail's spine: the kernel's walk
+  // without what its drivers constrain or its decisions justify), each with the records whose hops brought it.
   for (const r of reqs) {
     const after = structuredClone(p); after.artefacts.find(a => a.id === r.id).title += ' (revised)';
-    const I = requirementImpact(p, after, AT, r.id, [r.id]), t = trails.get(r.id), of = ch => ids(I.groups.find(g => g.chapter === ch)?.objects);
-    for (const [ch, keys] of [[2, ['drivers']], [3, ['decisions']], [4, ['logical']], [5, ['applications']], [6, ['capabilities']], [7, ['realizations']], [8, ['contracts', 'data']], [9, ['controls']], [10, ['runtime']]]) same(of(ch), keys.flatMap(k => ids(t[k])), `${name} ${r.id}: change impact opens Chapter ${ch} on the trail's records`);
+    const I = requirementImpact(p, after, AT, r.id, [r.id]), t = trails.get(r.id), S = t.spine, K = kernel.requirementSpine(p, r.id), of = ch => I.groups.find(g => g.chapter === ch)?.objects || [];
+    for (const [ch, keys] of [[2, ['drivers']], [3, ['decisions']], [4, ['logical']], [5, ['applications']], [6, ['capabilities']], [7, ['realizations']], [8, ['contracts', 'data']], [9, ['controls']], [10, ['runtime']]]) {
+      assert.deepEqual(ids(of(ch)), keys.flatMap(k => ids(S[k])), `${name} ${r.id}: change impact opens Chapter ${ch} on the spine's records, in order`);
+      within(ids(of(ch)), keys.flatMap(k => ids(t[k])), `${name} ${r.id}: Chapter ${ch}'s impact is on the trail`);
+      for (const o of of(ch)) for (const ref of o.via) assert.ok([...K.ids].some(id => (K.record(id)?.ref || id) === ref), `${name} ${r.id}: ${o.id} is reached via ${ref}, on the spine`);
+    }
   }
-  pass(`${name}: change impact names the trail's records, chapter by chapter`);
+  pass(`${name}: change impact names the records on the requirement's own chain, chapter by chapter`);
 
   // 3. The narrative and the Model trace (traceFrom) read the same chain, step for step; the Matrix shows every record
   // on it, and what protects and threatens a requirement in the Matrix is what its trail says.
