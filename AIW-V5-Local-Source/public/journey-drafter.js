@@ -554,9 +554,11 @@ function processOrder(M) {
 // sequence and message flows as process.transition between the steps the chapter made and those elements. An element
 // made in this batch is named by a reference the applier resolves ("@ref:model:E-007"); a flow whose end is neither a
 // step nor such an element (a pool, a data object) is not drafted.
-// rc.10.73.42 (D16, C1-M1): a flow out of an exclusive or inclusive gateway keeps the condition the model states; with
-// none it is adopted with an open condition (empty, an open question, open-fields.js) that PROC-GATEWAY raises until a
-// person states it, and the gateway's default flow is adopted as the default path (process.transition `default`).
+// rc.10.73.42 (D16, C1-M1): a branch (a flow out of an exclusive or inclusive gateway that splits: two or more outgoing
+// sequence flows in the model) keeps the condition the model states; with none it is adopted with an open condition
+// (empty, an open question, open-fields.js) that PROC-GATEWAY raises until a person states it, and the gateway's default
+// flow is adopted as the default path (process.transition `default`). The one flow out of a merge is no branch: no
+// condition, no question.
 // "Follows when … completes." is only for a flow that leaves no gateway. An element of the implementation-and-migration
 // layer (an ArchiMate implementation event) is no process element, as a work package is no journey step.
 const REF = '@ref:model:';
@@ -583,7 +585,7 @@ function processExtras(doc, M) {
     const a = M.els.get(r.from), b = M.els.get(r.to), from = idOf(a), to = idOf(b);
     if (!from || !to || from === to || seen.has(from + '>' + to)) continue;
     seen.add(from + '>' + to);
-    const fromGateway = a.kind === 'gateway', chooses = fromGateway && ['exclusive', 'inclusive'].includes(GATEWAY_TYPES.has(a.attrs.gatewayType) ? a.attrs.gatewayType : 'exclusive'), condition = str(r.attrs.condition), byDefault = chooses && r.attrs.isDefault === true;
+    const fromGateway = a.kind === 'gateway', chooses = fromGateway && M.relationships.filter(x => x.kind === 'sequence' && x.from === a.id).length > 1 && ['exclusive', 'inclusive'].includes(GATEWAY_TYPES.has(a.attrs.gatewayType) ? a.attrs.gatewayType : 'exclusive'), condition = str(r.attrs.condition), byDefault = chooses && r.attrs.isDefault === true;
     out.push({type: 'process.transition', payload: {from, to, label: clip(r.label || `${a.name} → ${b.name}`, 100), condition: clip(condition || (fromGateway ? '' : `Follows when ${a.name} completes.`), 600), ...(byDefault ? {default: true} : {}), ...(chooses && !condition && !byDefault ? {open: {condition: {state: 'open-question', question: clip(`What must be true for ${r.label || 'the path to ' + b.name} to be taken?`, 600), source: clip(source(r), 600)}}} : {}), kind: r.kind, contractId: '', owner: '', source: clip(source(r), 600), sourceLocator: clip(r.passages.join(', '), 240)}});
   }
   return out;

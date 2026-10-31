@@ -229,8 +229,9 @@ function bpmn(D, L, project) {
     const t = tag(n), ins = flows.filter(e => e.to === n.id).map(e => `<incoming>${id(e.id)}</incoming>`).join(''), outs = flows.filter(e => e.from === n.id).map(e => `<outgoing>${id(e.id)}</outgoing>`).join('');
     if (t === 'dataObjectReference') return `<dataObject id="${id('data:' + n.id)}" name="${xml(n.title)}"/><dataObjectReference id="${id(n.id)}" name="${xml(n.title)}" dataObjectRef="${id('data:' + n.id)}"/>`;
     const attach = t === 'boundaryEvent' && n.attachedTo && members.some(m => m.id === n.attachedTo) ? ` attachedToRef="${id(n.attachedTo)}" cancelActivity="true"` : '';
-    // The gateway's default path (rc.10.73.42, D16): the flow a person, or the imported model, marked default.
-    const byDefault = n.kind === 'gateway' ? flows.find(e => e.from === n.id && e.record?.default === true) : null;
+    // The gateway's default path (rc.10.73.42, D16): the flow a person, or the imported model, marked default. BPMN 2.0
+    // allows default= only on a gateway that chooses; a flag left on a parallel one is a PROC-GATEWAY finding, not exported.
+    const byDefault = /^(ex|in)clusiveG/.test(t) && flows.find(e => e.from === n.id && e.record?.default === true);
     const access = n.kind === 'task' ? D.edges.filter(e => e.kind === 'accesses' && e.from === n.id && members.some(m => m.id === e.to)).map(e => `<dataOutputAssociation id="${id(e.id)}"><targetRef>${id(e.to)}</targetRef></dataOutputAssociation>`).join('') : '';
     return `<${t} id="${id(n.id)}" name="${xml(n.title)}"${attach}${byDefault ? ` default="${id(byDefault.id)}"` : ''}>${ins}${outs}${definition(n)}${access}</${t}>`;
   };

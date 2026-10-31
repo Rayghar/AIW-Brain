@@ -18,8 +18,9 @@ const PLACEHOLDERS = [
   /^\s*not stated in (?:the )?(?:workbook|source|brief)\.?\s*$/i,
   /^\s*(?:unassigned|unknown|tbd|tbc|to be (?:confirmed|decided|defined)|n\/a)\.?\s*$/i,
   /^\s*confirm source\.?\s*$/i,
-  // The words the journey drafter wrote for a BPMN branch with no condition until rc.10.73.42 (D16, C1-M1).
-  /^no condition stated in the model\b/i,
+  // The words the journey drafter wrote for a BPMN branch with no condition until rc.10.73.42 (D16, C1-M1), also as the
+  // BPMN export clipped them into a conditionExpression ("No condition stated in …").
+  /^\s*no condition stated\b/i,
 ];
 
 const text = value => (typeof value === 'string' ? value : value == null ? '' : String(value));

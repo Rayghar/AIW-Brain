@@ -13,6 +13,12 @@
 //         flow is carried as process.transition `default`, exempt from the condition and shown as the default path (only
 //         out of an exclusive or inclusive gateway; a second one is a PROC-GATEWAY error); a document written with the
 //         retired words reads them as open; the BPMN export writes the gateway's default back.
+// Review round 2 (each reproduced on the first G6 commit 3549473 before its fix): only a gateway that splits (two or more
+// outgoing sequence flows) asks for a condition, so the one flow out of a merge gets no invented question; a default flag
+// left on a flow out of a gateway that no longer chooses (made parallel, or no gateway) is a PROC-GATEWAY finding and is
+// never exported as default=; an open or retired condition is printed as open in the SDD and never exported as a
+// conditionExpression (and the words a pre-rc42 export clipped read as open again); a reviewed identity link cannot
+// bring the D12 misfiling back (a business capability onto a Chapter 6 capability, a gap onto a requirement).
 // Plain node assertions, no server, no provider key. Run: node rc42-g6-import-validate.mjs
 import assert from 'node:assert/strict';
 import {interpretModel, ELEMENT_KINDS} from './shared/model-interpreter.js';
@@ -164,12 +170,17 @@ section('D12 reviewed identity links', () => {
   const q = modelRevisionPreview(p, {sourceId: src.id, incoming: {text: ARCHIMATE, name: 'core-r2.xml'}}), row = q.rows.find(r => r.objectId === req.id);
   assert.deepEqual([row.state, row.reason], ['type-changed', 'The external kind no longer matches the reviewed identity link. Keep the AIW record until an explicit unlink and reviewed relink.'], 'the link made under the old reading asks for review');
   assert.deepEqual(p.artefacts, p0.artefacts, 'and no record is changed by reading it');
-  // The person unlinks and, if the record still stands for the gap, relinks it under the new reading.
-  let next = p;
-  for (const remove of [true, false]) { const raw = {sourceId: src.id, key: 'element:a-gap', objectId: req.id, remove}, b = modelBindingPreview(next, raw); next = applyModelReconciliation(next, {type: 'evidence.model-bind', payload: {...raw, stamp: b.stamp, reviewed: true, reason: 'Reviewed the gap under the new reading.'}}, at, 'architect-a').document; }
-  assert.equal(next.coauthoring.sources.find(s => s.id === src.id).modelBindings[0].sourceKind, 'gap', 'relinked, the reviewed link names the new kind');
-  assert.equal(modelRevisionPreview(next, {sourceId: src.id, incoming: {text: ARCHIMATE, name: 'core-r2.xml'}}).rows.find(r => r.objectId === req.id).state, 'unchanged');
-  pass('D12 reviewed identity links: the reading rules are now model-rules-2; a link a person reviewed under model-rules-1 (a Gap linked as a requirement) is reported as a kind change for an explicit unlink and reviewed relink, nothing is rewritten, and the relinked identity names the new kind');
+  // The person unlinks it. A gap is no requirement, so the reviewed relink of the gap onto the requirement is refused
+  // (review round 2); the record can be relinked to an element that is a requirement, and that link names its kind.
+  const bind = (doc, raw) => applyModelReconciliation(doc, {type: 'evidence.model-bind', payload: {...raw, stamp: modelBindingPreview(doc, raw).stamp, reviewed: true, reason: 'Reviewed the gap under the new reading.'}}, at, 'architect-a').document;
+  const next = bind(p, {sourceId: src.id, key: 'element:a-gap', objectId: req.id, remove: true}), saved = doc => doc.coauthoring.sources.find(s => s.id === src.id);
+  assert.deepEqual([saved(next).modelBindings, saved(next).modelIdentityHistory.at(-1).event], [[], 'Unlinked'], 'the explicit unlink removes the link made under the old reading');
+  assert.throws(() => modelBindingPreview(next, {sourceId: src.id, key: 'element:a-gap', objectId: req.id}), /^Error: A gap is no requirement: it stays a transition note in the import report\.$/, 'the gap cannot be relinked onto the requirement');
+  assert.equal(modelRevisionPreview(next, {sourceId: src.id, incoming: {text: ARCHIMATE, name: 'core-r2.xml'}}).rows.find(r => r.objectId === req.id), undefined, 'no link is left to compare');
+  const relinked = bind(next, {sourceId: src.id, key: 'element:a-req', objectId: req.id});
+  assert.equal(saved(relinked).modelBindings[0].sourceKind, 'requirement', 'relinked to a requirement element, the reviewed link names its kind');
+  assert.equal(modelRevisionPreview(relinked, {sourceId: src.id, incoming: {text: ARCHIMATE, name: 'core-r2.xml'}}).rows.find(r => r.objectId === req.id).state, 'unchanged');
+  pass('D12 reviewed identity links: the reading rules are now model-rules-2; a link a person reviewed under model-rules-1 (a Gap linked as a requirement) is reported as a kind change for an explicit unlink, nothing is rewritten; the gap cannot be relinked onto the requirement, and a reviewed relink to a requirement element names its kind');
 });
 
 // ---------------------------------------------------------------- D16 · BPMN branches with no condition, and the default flow
@@ -271,6 +282,111 @@ section('D16 round trip', () => {
   assert.match(out.document, /<exclusiveGateway [^>]*default="/, 'the exported gateway names its default flow');
   assert.equal(back.relationships.filter(r => r.attrs.isDefault).map(r => r.label).join(), 'Not valid', 'read back, the default flow is the one the model declared');
   pass('D16 round trip: the BPMN export writes the gateway\'s default flow, and reading the export back finds the same default path');
+});
+
+// ---------------------------------------------------------------- review round 2
+const JOIN = `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="d-trip" targetNamespace="urn:test">
+  <process id="p-trip" name="End a trip">
+    <startEvent id="s1" name="Trip ending"/>
+    <task id="t0" name="Check the bike"/>
+    <exclusiveGateway id="g1" name="Docked?"/>
+    <task id="t1" name="Lock at the dock"/>
+    <task id="t2" name="Lock in the street"/>
+    <exclusiveGateway id="g2" name="Locked"/>
+    <task id="t3" name="Close the trip"/>
+    <inclusiveGateway id="g3" name="Notify"/>
+    <task id="t4" name="Email the receipt"/>
+    <task id="t5" name="Push the receipt"/>
+    <inclusiveGateway id="g4" name="Notified"/>
+    <endEvent id="e1" name="Trip closed"/>
+    <sequenceFlow id="f1" sourceRef="s1" targetRef="t0"/>
+    <sequenceFlow id="f2" sourceRef="t0" targetRef="g1"/>
+    <sequenceFlow id="f-dock" name="At a dock" sourceRef="g1" targetRef="t1"><conditionExpression xsi:type="tFormalExpression">bike.docked</conditionExpression></sequenceFlow>
+    <sequenceFlow id="f-street" name="In the street" sourceRef="g1" targetRef="t2"/>
+    <sequenceFlow id="f3" sourceRef="t1" targetRef="g2"/>
+    <sequenceFlow id="f4" sourceRef="t2" targetRef="g2"/>
+    <sequenceFlow id="f-close" name="Then close" sourceRef="g2" targetRef="t3"/>
+    <sequenceFlow id="f5" sourceRef="t3" targetRef="g3"/>
+    <sequenceFlow id="f-mail" name="By email" sourceRef="g3" targetRef="t4"><conditionExpression xsi:type="tFormalExpression">member.email</conditionExpression></sequenceFlow>
+    <sequenceFlow id="f-push" name="By push" sourceRef="g3" targetRef="t5"><conditionExpression xsi:type="tFormalExpression">member.app</conditionExpression></sequenceFlow>
+    <sequenceFlow id="f6" sourceRef="t4" targetRef="g4"/>
+    <sequenceFlow id="f7" sourceRef="t5" targetRef="g4"/>
+    <sequenceFlow id="f-end" name="All sent" sourceRef="g4" targetRef="e1"/>
+  </process>
+</definitions>`;
+section('D16 merge', () => {
+  // A merge (join) gateway has one way out: its flow is no branch, so it gets no condition and no open question; the
+  // split before it still asks for the condition of its unconditioned branch.
+  const p = project('Trip end', 'trip.bpmn', JOIN), model = modelOf(p, JOIN, 'trip.bpmn'), flows = draftChapter(p, 1, {model}).records.flatMap(r => r.extras || []).filter(c => c.type === 'process.transition');
+  const cmd = label => flows.find(c => c.payload.label === label)?.payload || assert.fail('no drafted flow ' + label);
+  for (const label of ['Then close', 'All sent']) assert.deepEqual([cmd(label).condition, cmd(label).open, cmd(label).default], ['', undefined, undefined], label + ': the one flow out of a merge gets no condition and no open question');
+  assert.deepEqual([cmd('In the street').condition, cmd('In the street').open?.condition?.state], ['', 'open-question'], 'the unconditioned branch of the split still has an open condition');
+  assert.deepEqual([cmd('At a dock').condition, cmd('By email').condition, cmd('By push').condition], ['bike.docked', 'member.email', 'member.app']);
+  const doc = draftJourney(p, {brief: null, model, upTo: 1, at}).document, md = processMarkdown(doc), gw = title => doc.processModel.elements.find(e => e.title === title).id;
+  for (const label of ['Then close', 'All sent']) { assert.equal(t16(doc, label).open, undefined, label + ': adopted with no open condition'); assert.match(md, new RegExp(label + '; condition: none recorded\\.'), label + ': the SDD records no condition'); assert.doesNotMatch(md, new RegExp(label + '[^\\n]*open:'), label + ': and asks no question'); }
+  assert.match(processDetailsHTML(doc, {edgeId: t16(doc, 'Then close').id}), /Then close/); assert.doesNotMatch(processDetailsHTML(doc, {edgeId: t16(doc, 'Then close').id}), /Condition: open/, 'the path details ask no question for the merge flow');
+  const gate = processFindings(doc).filter(f => f.code === 'PROC-GATEWAY');
+  assert.deepEqual(gate.map(f => [f.objectId, f.detail]), [[gw('Docked?'), '1 of its 2 outgoing flows has no condition: In the street. An exclusive gateway chooses by conditions.']], 'only the split is flagged, for its one unconditioned branch: ' + JSON.stringify(gate));
+  pass('D16 merge: the one flow out of an exclusive or inclusive merge is no branch, so it is adopted with no condition and no open question and the SDD and the path details ask none; the split before it still asks for its unconditioned branch');
+});
+section('D16 stale default', () => {
+  // A default flag left on a flow out of a gateway that no longer chooses is not rewritten silently: PROC-GATEWAY asks
+  // the person to clear it, and the BPMN export never writes default= on a gateway that has none (BPMN 2.0 allows it on
+  // exclusive, inclusive and complex gateways and on activities).
+  const doc = DOC16, gw = doc.processModel.elements.find(e => e.id === GW16.id), notValid = t16(doc, 'Not valid');
+  const exported = d => { const D = notationDiagram(d, 'process'); return diagramCode('bpmn', D, notationLayout(D, {arrangement: 'lanes'}), {project: d}).document; };
+  const stale = f => f.id === 'PROC-GATEWAY:' + gw.id + ':default' && f.level === 'error';
+  for (const [label, change] of [['parallel', {gatewayType: 'parallel'}], ['event', {gatewayType: 'event'}], ['task', {kind: 'task', gatewayType: ''}]]) {
+    const q = applyProcessCommand(doc, {type: 'process.element', payload: {...gw, ...change}}, at).document;
+    assert.equal(t16(q, 'Not valid').default, true, label + ': the stored flag is not rewritten');
+    const f = processFindings(q).filter(stale);
+    assert.equal(f.length, 1, label + ': PROC-GATEWAY asks to clear the default path: ' + JSON.stringify(processFindings(q).filter(x => x.code === 'PROC-GATEWAY')));
+    assert.deepEqual([f[0].code, f[0].objectId, f[0].title], ['PROC-GATEWAY', gw.id, 'Clear the default path out of Member valid?']);
+    assert.match(f[0].detail, /Not valid/); assert.match(f[0].detail, /only an exclusive or inclusive gateway has a default path/i);
+    const xml = exported(q);
+    assert.doesNotMatch(xml, / default="/, label + ': the export writes no default'); if (label !== 'task') assert.match(xml, new RegExp(`<${label === 'event' ? 'eventBased' : label}Gateway [^>]*name="Member valid\\?"`));
+    const cleared = applyProcessCommand(q, {type: 'process.transition', payload: {...t16(q, 'Not valid'), default: false}}, at).document;
+    assert.equal(processFindings(cleared).filter(stale).length, 0, label + ': cleared by the person, the finding goes');
+  }
+  assert.equal(processFindings(doc).filter(stale).length, 0, 'an exclusive gateway with one default path raises no such finding'); assert.equal(notValid.default, true);
+  pass('D16 stale default: a default flag left on a flow out of a gateway made parallel or event-based, or turned into a task, is kept as stored and raised as a PROC-GATEWAY error until the person clears it; the BPMN export writes default= only on an exclusive or inclusive gateway');
+});
+section('D16 open conditions in print and export', () => {
+  const doc = DOC16, md = processMarkdown(doc);
+  // The SDD prints an open condition as open (the question once, no doubled stop), and placeholder words never.
+  assert.match(md, /Card expired; condition: open: What must be true for Card expired to be taken\? Source:/, 'the open question is printed once, without a doubled stop');
+  assert.doesNotMatch(md, /; condition: [^\n]*[.?]\. Source:/, 'no condition line ends with a doubled stop');
+  assert.match(md, /; condition: Follows when Validate the member completes\. Source:/, 'a stated condition that ends with a stop keeps one');
+  const old = structuredClone(doc), legacy = old.processModel.transitions.find(x => x.label === 'Card expired');
+  legacy.condition = 'No condition stated in the model for Card expired.'; delete legacy.open;
+  const oldMd = processMarkdown(old);
+  assert.doesNotMatch(oldMd, /No condition stated/, 'the retired words are never printed as a condition');
+  assert.match(oldMd, /Card expired; condition: open: condition not stated\. Source:/, 'they print as an open condition');
+  const details = processDetailsHTML(old, {edgeId: legacy.id});
+  assert.match(details, /Condition: open: condition not stated/, 'and the path details show them as open'); assert.doesNotMatch(details, /No condition stated/);
+  // The notation never carries open or retired words as a qualifier, so the BPMN export writes no conditionExpression for them.
+  const D = notationDiagram(old, 'process'), xml = diagramCode('bpmn', D, notationLayout(D, {arrangement: 'lanes'}), {project: old}).document;
+  assert.equal(D.edges.find(e => e.id === legacy.id).qualifier, '', 'an open condition is no qualifier');
+  assert.equal(D.edges.find(e => e.id === t16(old, 'Valid').id).qualifier, 'member.valid == true', 'a stated one still is');
+  assert.doesNotMatch(xml, /No condition stated/, 'the export never writes the retired words');
+  assert.match(xml, /<conditionExpression xsi:type="tFormalExpression">member\.valid == true<\/conditionExpression>/);
+  // A BPMN file exported before rc.10.73.42 carries the clipped words as a conditionExpression; read again, they are open.
+  const clipped = BPMN.replace('<sequenceFlow id="f-exp" name="Card expired" sourceRef="g1" targetRef="t4"/>', '<sequenceFlow id="f-exp" name="Card expired" sourceRef="g1" targetRef="t4"><conditionExpression xsi:type="tFormalExpression">No condition stated in …</conditionExpression></sequenceFlow>');
+  assert.notEqual(clipped, BPMN);
+  const pc = project('Bike unlock again', 'again.bpmn', clipped), back = draftJourney(pc, {brief: null, model: modelOf(pc, clipped, 'again.bpmn'), upTo: 1, at}).document, gw = back.processModel.elements.find(e => e.title === 'Member valid?');
+  assert.match(processFindings(back).find(f => f.code === 'PROC-GATEWAY' && f.objectId === gw.id)?.detail || '', /1 of its 3 outgoing flows has no condition: Card expired\./, 'the clipped words never satisfy PROC-GATEWAY');
+  assert.doesNotMatch(processMarkdown(back), /No condition stated/);
+  pass('D16 open conditions in print and export: the SDD prints an open or retired condition as open (once, no doubled stop), the notation and the BPMN export never carry it as a condition, and the words a pre-rc42 export clipped read as open again');
+});
+section('D12 reviewed links refused', () => {
+  // A reviewed identity link cannot bring the misfiling back: a business capability is no Chapter 6 technology capability.
+  const src = P12.coauthoring.sources.find(s => s.kind === 'model'), p = structuredClone(P12);
+  p.technology = {...(p.technology || {}), capabilities: [...(p.technology?.capabilities || []), {id: 'TCAP-rc42', title: 'Payment posting', purpose: 'Drafted from the business capability before rc.10.73.42.'}]};
+  assert.throws(() => modelBindingPreview(p, {sourceId: src.id, key: 'element:a-cap', objectId: 'TCAP-rc42'}), /^Error: A business capability is no Chapter 6 technology capability: link its Enterprise capability, or keep it in the import report\.$/);
+  assert.throws(() => modelBindingPreview(p, {sourceId: src.id, key: 'element:a-func', objectId: 'TCAP-rc42'}), /business capability is no Chapter 6/);
+  assert.equal(modelBindingPreview(p, {sourceId: src.id, key: 'element:a-api', objectId: 'TCAP-rc42'}).binding.sourceKind, byName(M12, 'Posting API').kind, 'the application service can still be linked to the technology capability');
+  pass('D12 reviewed links refused: a reviewed identity link of a business Capability or BusinessFunction onto a Chapter 6 technology capability is refused (and of a gap onto a requirement, above); other elements still link');
 });
 
 if (failed.length) { console.error(`\nrc42 G6 intake and import: ${failed.length} failed (${failed.join('; ')}), ${checks.length} passed.`); process.exitCode = 1; }

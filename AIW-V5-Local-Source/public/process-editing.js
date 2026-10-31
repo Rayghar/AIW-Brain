@@ -12,6 +12,7 @@ import {modal, reviewChangeInDialog} from './workbench-ui.js';
 import {projectURL, onProjectSwitch} from './project-context.js';
 import {list} from './util.js';
 import {esc} from './html-escape.js';
+import {printable} from './open-fields.js';
 import {kitFor} from './record-fields.js';
 // The field kit, bound to this studio's record types (record-fields.js).
 const fElement=kitFor('process.element');const fTransition=kitFor('process.transition');const fClaim=kitFor('process.claim');const fRetire=kitFor('record.retire');
@@ -147,7 +148,7 @@ export function processDetailsHTML(p, {id = null, edgeId = null, frozen = false}
   if (edgeId) {
     const t = M.relationships.find(e => e.id === edgeId && (e.type === 'sequence' || e.type === 'message')); if (!t) return '';
     const mine = processRecord(p, edgeId)?.kind === 'transition', on = claims.filter(c => c.subjectId === edgeId), contract = t.attributes?.contractId ? M.objects.get(t.attributes.contractId) : null;
-    return `<section class="pe-details" aria-label="This path"><h4 aria-level="3">${t.type === 'message' ? 'Message flow' : 'Path'} · ${esc(t.label || 'condition')}</h4><p>${esc(M.objects.get(t.from)?.title || t.from)} → ${esc(M.objects.get(t.to)?.title || t.to)}${t.attributes?.default ? '<br><small>The default path out of its gateway</small>' : ''}${t.attributes?.condition ? `<br><small>Condition: ${esc(t.attributes.condition)}</small>` : t.attributes?.open?.condition ? `<br><small>Condition: open: ${esc(t.attributes.open.condition.question)}</small>` : ''}${contract ? `<br><small>Carries ${esc(contract.ref || contract.id)} · ${esc(contract.title)}</small>` : ''}</p>${mine ? '' : '<p class="cm-muted">An illustrative route: record a source claim for it, or add a reviewed path of your own.</p>'}
+    return `<section class="pe-details" aria-label="This path"><h4 aria-level="3">${t.type === 'message' ? 'Message flow' : 'Path'} · ${esc(t.label || 'condition')}</h4><p>${esc(M.objects.get(t.from)?.title || t.from)} → ${esc(M.objects.get(t.to)?.title || t.to)}${t.attributes?.default ? '<br><small>The default path out of its gateway</small>' : ''}${t.attributes?.condition || t.attributes?.open?.condition ? `<br><small>Condition: ${esc(printable(t.attributes, 'condition'))}</small>` : ''}${contract ? `<br><small>Carries ${esc(contract.ref || contract.id)} · ${esc(contract.title)}</small>` : ''}</p>${mine ? '' : '<p class="cm-muted">An illustrative route: record a source claim for it, or add a reviewed path of your own.</p>'}
      <h5 aria-level="4">Evidence for this condition · ${on.length}</h5>${on.map(c => claimHTML(c, frozen)).join('') || '<p class="cm-muted">No source claim is recorded for this path yet.</p>'}
      <p class="cm-acts">${B('claim', 'Record a source claim', `data-subject="${esc(edgeId)}"` + off)}${mine ? B('edit-path', 'Edit the condition', `data-id="${esc(edgeId)}"` + off) + B('remove', 'Remove the path', `data-id="${esc(edgeId)}"` + off) : ''}</p></section>`;
   }
