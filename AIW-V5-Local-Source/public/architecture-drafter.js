@@ -977,14 +977,17 @@ function chapterNine(R, H, C, out) {
   return recs;
 }
 
+// One set of environments (DRF-16), not one per component: production and pre-production, and a recovery environment
+// when the drivers ask for continuity; [id, stage, title]. The journey drafter's Chapter 10 rule designs the first of
+// them the same way (rc.10.73.42, D10: one environment of the stage holding every part, one zone for it).
+export const DRAFT_STAGES = Object.freeze([['production', 'Production design', 'Production'], ['preproduction', 'Pre-production design', 'Pre-production'], ['recovery', 'Recovery design', 'Recovery']]);
 function chapterTen(R, H, C, out) {
   const recs = [], at = (key, ...xs) => { if (!H.keys.has(key)) recs.push(rec(key, 10, ...xs)); };
   const named = C.all.filter(c => out.components.has(c.key) || H.ids.has(c.key));
   if (!named.length) return recs;
-  // One set of environments (DRF-16), not one per component: production and pre-production, and a recovery
-  // environment when the drivers ask for continuity. A plan per component is AIW's proposal (runtime-domain.js); each
-  // is placed in its environment's zone, its copies not stated.
-  const stages = [['production', 'Production design', 'Production'], ['preproduction', 'Pre-production design', 'Pre-production'], ...(out.concerns.has('business-continuity') || out.qualities.has('availability') || out.qualities.has('recoverability') ? [['recovery', 'Recovery design', 'Recovery']] : [])];
+  // A plan per component is AIW's proposal (runtime-domain.js); each is placed in its environment's zone, its copies
+  // not stated.
+  const stages = DRAFT_STAGES.filter(([id]) => id !== 'recovery' || out.concerns.has('business-continuity') || out.qualities.has('availability') || out.qualities.has('recoverability'));
   for (const [id, stage, title] of stages) {
     const env = 'c10.env.' + id, zone = 'c10.zone.' + id;
     if (H.environments.has(stage)) continue;

@@ -21,6 +21,7 @@ import {fmtN} from './desk-capacity.js';
 import {fact} from './product-facts.js';
 import {describeChoice} from './product-choice.js';
 import {list, str, num, uniq, jsonClone as json} from './util.js';
+import {failureDomainKey, hostingZone} from './runtime-model.js';
 // Round 12 (G, GR-UX-16): the chapters named from the one chapter-name table.
 import {CHAPTER_TITLES} from './chapter-names.js';
 
@@ -37,6 +38,9 @@ const controlRec = (p, id) => list(p?.security?.controls).find(x => x.id === id)
 const threatRec = (p, id) => list(p?.security?.threats).find(x => x.id === id) || null;
 const zonesOf = (p, envId) => list(p?.runtime?.zones).filter(z => z.environmentId === envId);
 const placementsOf = (p, planId) => list(p?.runtime?.placements).filter(l => l.planId === planId);
+// rc.10.73.42 (D8, C10-21): one hosting zone per distinct stated failure domain, those running it first: an access zone
+// hosts nothing, and zones that share a domain (or state none) fail together, so they add no independence.
+const domainZones = (zs, ls) => { const on = z => ls.some(l => l.zoneId === z.id && l.role === 'active'), seen = new Set(); return zs.filter(hostingZone).sort((a, b) => on(b) - on(a)).filter(z => { const k = failureDomainKey(z); return k && !seen.has(k) && seen.add(k); }); };
 // Each command carries the whole current record with the changed fields, as the chapter's editor sends it.
 const planCmd = (p, id, changes) => ({type: 'runtime.plan', payload: json({...planRec(p, id), ...changes})});
 const contractCmd = (p, id, changes) => { const c = contractRec(p, id); return {type: 'interfaces.contract', payload: json({...c, ...changes, exchanges: list(c.exchanges).map(x => ({dataId: x.dataId, role: x.role}))})}; };
@@ -70,6 +74,8 @@ const on = (row) => /kubernetes/i.test(row.product) ? 'Kubernetes' : '';
 // ---------------------------------------------------------------- the drafts, by vital
 
 function draft(x) { return {aims: [], rows: [], knobs: [], math: [], also: '', ...x}; }
+// A draft's identity: the vital it aims at on its row, and the record of the owning chapter it changes.
+const aimAt = (row, vital, chapter, rec, id = `${vital}:${row.id}`) => ({id, vital, chapter, target: {chapter, id: rec.id, ref: rec.ref}, rows: [row.id], aims: [`${row.id}:${vital}`]});
 // Wording the architect — or Sol, refining the draft — can rewrite; the numbers stay in their own knobs.
 const words = (key, label, value) => ({key, label, type: 'textarea', value, maxLength: 2400, wording: true});
 const said = (k, key, fallback) => str(k?.[key]) || fallback;
@@ -77,33 +83,40 @@ function judgement(row, vital, text, fix) { return {judgement: {id: `${vital}:${
 
 const DRAFTERS = {
   availability(D, row, v) {
-    const p = D.p, pl = row.plan, zones = zonesOf(p, pl.environmentId), how = survival(row);
+    const p = D.p, pl = row.plan, zones = zonesOf(p, pl.environmentId), how = survival(row), n = domainZones(zones, placementsOf(p, pl.id)).length, k = Math.min(n, 3);
     if (!zones.length) return judgement(row, 'availability', `No zone is recorded for ${row.ref}'s environment, so there is nowhere to place it. The desk does not invent sites.`, {chapter: 10, id: pl.id, label: 'Record a zone in Chapter 10'});
-    if (v.state === 'warn') return judgement(row, 'availability', `${v.why} Only ${zones.length} zone${zones.length === 1 ? ' is' : 's are'} recorded; a third failure domain is a decision about sites, not a number the desk can draft.`, {chapter: 10, id: pl.id, label: 'Record a third zone in Chapter 10'});
+    // rc.10.73.42 (D8, C10-21): copies spread over zones that fail together survive no loss of their domain, so with fewer
+    // than two hosting failure domains a spread is a decision about sites too.
+    const w = v.state === 'warn' ? 'a third' : n < 2 && how !== 'pair' && how !== 'single' && 'another';
+    if (w) return judgement(row, 'availability', `${v.why} ${n ? 'Only ' + n : 'No'} failure domain${n === 1 ? ' is' : 's are'} recorded; ${w} failure domain is a decision about sites, not a number the desk can draft.`, {chapter: 10, id: pl.id, label: `Record ${w} failure domain in Chapter 10`});
     const knobs = how === 'spread' ? [{key: 'perZone', label: 'Active replicas in each zone', type: 'number', min: 1, max: 50, value: Math.max(1, ...placementsOf(p, pl.id).filter(l => l.role === 'active').map(l => num(l.replicas) || 1)), unit: 'replicas'}]
-      : how === 'quorum' ? [{key: 'nodes', label: 'Nodes', type: 'number', min: 3, max: 9, step: 2, value: (fact(row.product, 'clusterNodes') || fact(row.product, 'dcs'))?.value || 3, unit: 'nodes'}]
+      : how === 'quorum' ? [{key: 'nodes', label: 'Nodes', type: 'number', min: 3, max: 9, step: 2, value: (fact(row.product, 'clusterNodes') || fact(row.product, 'dcs'))?.value || 3, unit: 'nodes'}, ...(!str(pl.fencing) ? [words('fencing', 'Write authority', QUORUM)] : [])]
       : [{key: 'recoveryMinutes', label: how === 'pair' ? 'Failover within' : 'Restart within', type: 'number', min: 1, max: 1440, value: minutesFor(row), unit: 'min', hint: minutesWhy(row)}, ...(how === 'pair' && !str(pl.fencing) ? [words('fencing', 'Fencing', FENCING)] : [])];
-    const title = how === 'pair' ? `Give ${row.ref} a standby in a second zone` : how === 'quorum' ? `Spread ${row.ref}'s nodes across the zones` : how === 'single' ? `Place ${row.ref} apart from what it protects` : `Run ${row.ref} in ${Math.min(zones.length, 3)} zone${zones.length === 1 ? '' : 's'}`;
+    const title = how === 'pair' ? `Give ${row.ref} a standby in a second zone` : how === 'quorum' ? `Spread ${row.ref}'s nodes across the failure domains` : how === 'single' ? `Place ${row.ref} apart from what it protects` : `Run ${row.ref} in ${k} zones`;
     const why = how === 'pair' ? `${row.product || row.title} keeps one primary: a standby in another zone, promoted within the recovery time, keeps ${v.target.split(' · ')[0]} within its budget.`
-      : how === 'quorum' ? `It works while a majority of its nodes agree, so its nodes are spread across the zones.${zones.length < 3 ? ` With ${zones.length} zone${zones.length === 1 ? '' : 's'} a majority does not survive losing the zone that holds most of them: the desk will read it as “to watch” until a third failure domain is recorded.` : ''}`
+      : how === 'quorum' ? `It works while a majority of its nodes agree, so its nodes are spread across the failure domains.${n < 3 ? ` With two, a majority does not survive losing the one that holds most of them: the desk will read it as “to watch” until a third is recorded.` : ''}`
       : how === 'single' ? `A copy kept in the same zone as what it protects is lost with it: it runs in the recovery zone, restarted within the recovery time.`
-      : `${v.why} With active replicas in ${zones.length > 1 ? 'every zone' : 'its zone'}, losing ${zones.length > 1 ? 'one zone' : 'one replica'} does not stop it.`;
-    return draft({id: `availability:${row.id}`, vital: 'availability', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:availability`], title, why, knobs,
+      : `${v.why} With active replicas in ${k} independent failure domains, losing one does not stop it.`;
+    return draft({...aimAt(row, 'availability', 10, pl), title, why, knobs,
       build(p, k) {
         const out = [], pl = planRec(p, row.id), zs = zonesOf(p, pl.environmentId), ls = placementsOf(p, pl.id);
         const act = zid => ls.find(l => l.zoneId === zid && l.role === 'active');
         if (how === 'spread') {
-          const n = Math.max(1, Math.round(num(k.perZone) || 1)), use = zs.slice(0, 3);
-          for (const z of use) { const l = act(z.id); if (!l) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: n, basis: `${DRAFTED}: ${n} active in each of ${use.length} zone${use.length === 1 ? '' : 's'}, so losing one zone leaves the others serving. Confirm the zones fail independently.`})); else if ((num(l.replicas) || 0) < n) out.push(placementCmd({...l, replicas: n, basis: `${DRAFTED}: ${n} active in each zone.`})); }
+          const n = Math.max(1, Math.round(num(k.perZone) || 1)), use = domainZones(zs, ls).slice(0, 3);
+          for (const z of use) { const l = act(z.id); if (!l) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: n, basis: `${DRAFTED}: ${n} active in each of ${use.length} failure domains, so losing one leaves the others serving. Confirm they fail independently.`})); else if ((num(l.replicas) || 0) < n) out.push(placementCmd({...l, replicas: n, basis: `${DRAFTED}: ${n} active in each zone.`})); }
           const total = n * use.length; if ((num(pl.maxReplicas) || 0) < total) out.push(planCmd(p, pl.id, {maxReplicas: total}));
         } else if (how === 'quorum') {
-          const n = Math.max(3, Math.round(num(k.nodes) || 3)), use = zs.slice(0, Math.min(zs.length, n)), per = use.map((z, i) => Math.floor(n / use.length) + (i < n % use.length ? 1 : 0));
-          use.forEach((z, i) => { const l = act(z.id); if (!l) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: per[i], basis: `${DRAFTED}: ${n} nodes across ${use.length} zone${use.length === 1 ? '' : 's'} (${per.join(' + ')}), so a majority of ${Math.floor(n / 2) + 1} agrees. ${use.length < 3 ? 'Losing the zone with the most nodes loses the majority: record a third failure domain.' : 'Losing one zone keeps the majority.'}`})); else if ((num(l.replicas) || 0) !== per[i]) out.push(placementCmd({...l, replicas: per[i]})); });
+          const n = Math.max(3, Math.round(num(k.nodes) || 3)), use = domainZones(zs, ls).slice(0, n), per = use.map((z, i) => Math.floor(n / use.length) + (i < n % use.length ? 1 : 0));
+          use.forEach((z, i) => { const l = act(z.id); if (!l) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: per[i], basis: `${DRAFTED}: ${n} nodes across ${use.length} failure domains (${per.join(' + ')}), so a majority of ${Math.floor(n / 2) + 1} agrees. ${use.length < 3 ? 'Losing the one with the most nodes loses the majority: record a third failure domain.' : 'Losing one keeps the majority.'}`})); else if ((num(l.replicas) || 0) !== per[i]) out.push(placementCmd({...l, replicas: per[i]})); });
           const ch = {}; if ((num(pl.maxReplicas) || 0) < n) ch.maxReplicas = n; if (str(pl.stateMode) === 'Unspecified' || !pl.stateMode) ch.stateMode = 'Stateful service'; if (['Unspecified', ''].includes(str(pl.recoveryStrategy))) ch.recoveryStrategy = 'Failover';
+          // rc.10.73.42 (D8): a stateful service's copies hold only with a stated write authority and a leader-election time,
+          // drafted here for the person to review, as a pair's fencing and failover time are.
+          if (!str(pl.fencing)) ch.fencing = said(k, 'fencing', QUORUM); if (num(pl.recoveryMinutes) == null) { const m = minutesFor(row); Object.assign(ch, {recoveryMinutes: m, targetsBasis: `${DRAFTED}: a new leader within ${fmtN(m)} min. Prove it with a failover drill.`, targetsConfirmed: false}); }
           if (Object.keys(ch).length) out.push(planCmd(p, pl.id, ch));
         } else {
           const m = Math.max(1, Math.round(num(k.recoveryMinutes) || minutesFor(row)));
-          const primary = ls.find(l => l.role === 'active')?.zoneId || zs[0].id, other = zs.find(z => z.id !== primary && z.failureDomain) || zs.find(z => z.id !== primary) || null;
+          // A standby, or a copy kept apart, goes to a hosting zone of another stated failure domain when there is one.
+          const hz = zs.filter(hostingZone), primary = ls.find(l => l.role === 'active')?.zoneId || (hz[0] || zs[0]).id, pk = failureDomainKey(zs.find(z => z.id === primary)), other = domainZones(zs, []).find(z => failureDomainKey(z) !== pk) || hz.find(z => z.id !== primary) || null;
           if (how === 'pair') {
             if (!ls.some(l => l.role === 'active')) out.push(placementCmd({planId: pl.id, zoneId: primary, role: 'active', replicas: 1, basis: `${DRAFTED}: one primary.`}));
             if (other && !ls.some(l => l.role === 'standby')) out.push(placementCmd({planId: pl.id, zoneId: other.id, role: 'standby', replicas: 1, basis: `${DRAFTED}: a standby in ${other.ref}, promoted when the primary fails. Confirm replication and promotion with a drill.`}));
@@ -111,7 +124,7 @@ const DRAFTERS = {
               fencing: str(pl.fencing) || said(k, 'fencing', FENCING),
               targetsBasis: `${DRAFTED}: failover within ${fmtN(m)} min (${minutesWhy(row)}). Prove it with a failover drill.`, targetsConfirmed: false}));
           } else {
-            const z = other || zs[0];
+            const z = other || hz[0] || zs[0];
             if (!ls.some(l => l.role === 'active')) out.push(placementCmd({planId: pl.id, zoneId: z.id, role: 'active', replicas: 1, basis: `${DRAFTED}: kept in ${z.ref}, apart from what it protects.`}));
             out.push(planCmd(p, pl.id, {recoveryStrategy: str(pl.recoveryStrategy) && pl.recoveryStrategy !== 'Unspecified' ? pl.recoveryStrategy : 'Restart', recoveryMinutes: m, targetsBasis: `${DRAFTED}: back within ${fmtN(m)} min (${minutesWhy(row)}). Prove it with a restore drill.`, targetsConfirmed: false}));
           }
@@ -124,7 +137,7 @@ const DRAFTERS = {
     const pl = row.plan;
     if (v.state === 'bad') return judgement(row, 'recovery', `${v.why} Recording a shorter time does not make it true: a faster recovery needs a standby or a quicker restart path, proven by a drill.`, v.fix);
     const how = survival(row), m0 = minutesFor(row);
-    return draft({id: `recovery:${row.id}`, vital: 'recovery', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:recovery`],
+    return draft({...aimAt(row, 'recovery', 10, pl),
       title: `Set ${row.ref}'s recovery objective to ${fmtN(m0)} min`, why: `${v.why} ${minutesWhy(row)[0].toUpperCase() + minutesWhy(row).slice(1)}; recorded as an objective to prove, not a measurement.`,
       knobs: [{key: 'recoveryMinutes', label: 'Recover within', type: 'number', min: 1, max: 1440, value: m0, unit: 'min', hint: minutesWhy(row)}, ...(!str(pl.recoveryPlan) ? [words('recoveryPlan', 'Recovery plan', recoveryWords(row, how))] : [])],
       build(p, k) {
@@ -143,7 +156,7 @@ const DRAFTERS = {
   loss(D, row, v) {
     const pl = row.plan, t = row.caps.filter(c => num(c.lossMinutes) != null).map(c => ({v: num(c.lossMinutes), by: c.ref})).sort((a, b) => a.v - b.v)[0];
     if (!t) return judgement(row, 'loss', `${v.why} How much data may be lost is a recovery-point objective only the business can set.`, v.fix);
-    return draft({id: `loss:${row.id}`, vital: 'loss', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:loss`], title: `Protect ${row.ref} to lose at most ${fmtN(t.v)} min`, why: `${t.by} allows ${fmtN(t.v)} min of loss: continuous log shipping or replication to the recovery zone meets it; a nightly copy does not.`,
+    return draft({...aimAt(row, 'loss', 10, pl), title: `Protect ${row.ref} to lose at most ${fmtN(t.v)} min`, why: `${t.by} allows ${fmtN(t.v)} min of loss: continuous log shipping or replication to the recovery zone meets it; a nightly copy does not.`,
       knobs: [{key: 'lossMinutes', label: 'Lose at most', type: 'number', min: 0, max: 1440, value: t.v, unit: 'min'}],
       build(p, k) { const m = Math.max(0, num(k.lossMinutes) ?? t.v), pl = planRec(p, row.id); return [planCmd(p, pl.id, {lossMinutes: m, backupPlan: str(pl.backupPlan) || `Ship the write-ahead log continuously to the recovery zone, so at most ${fmtN(m)} min is lost; test a restore.`, targetsBasis: `${DRAFTED}: loss within ${fmtN(m)} min (${t.by}). Prove it with a restore.`, targetsConfirmed: false})]; }});
   },
@@ -154,7 +167,7 @@ const DRAFTERS = {
     const d = x.driver, fault = new Set(x.faults.map(f => f.id));
     const todo = x.calls.filter(c => c.ms == null || fault.has(c.contract.id));
     if (!todo.length) return null;
-    return draft({id: `latency:${d.id}`, vital: 'latency', chapter: 8, target: {chapter: 8, id: todo[0].contract.id, ref: todo[0].contract.ref}, rows: [row.id], aims: [`${row.id}:latency`],
+    return draft({...aimAt(row, 'latency', 8, todo[0].contract, `latency:${d.id}`),
       title: `Time ${d.id}'s path: ${x.calls.map(c => `${c.contract.ref} ${fmtN(c.ms != null && !fault.has(c.contract.id) ? c.ms : c.budget)} ms`).join(' › ')}`,
       why: `${d.id} allows ${fmtN(x.target)} ms. The calls nest — each caller waits while its callee works — so each timeout leaves its caller about ${fmtN(x.target / x.levels)} ms for its own work: ${x.levels} level${x.levels === 1 ? '' : 's'}.`,
       math: x.calls.map(c => `${c.contract.ref} ${c.contract.title} · level ${c.depth}: ${fmtN(x.target)} × ${x.levels - c.depth} ÷ ${x.levels} → ${fmtN(c.budget)} ms`),
@@ -175,7 +188,7 @@ const DRAFTERS = {
     if (['service', 'worker', 'gateway', 'identity'].includes(c.kind) || (c.band === 'parts')) {
       if (c.verdict.state === 'ok' || c.replicas == null) return null;
       const need = c.replicas;
-      return draft({id: `capacity:${row.id}`, vital: 'capacity', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:capacity`],
+      return draft({...aimAt(row, 'capacity', 10, pl),
         title: `Let ${row.ref} grow to ${fmtN(need)} replicas${D.cap.workload ? " for the SA Playbook's example load" : ""}`, why: `${c.demand.text} for ${D.cap.objBasis}: ${c.spec[0].d}. ${pl.ref} can grow to ${fmtN(num(pl.maxReplicas) ?? 0)}.`, math: c.math,
         // Round 12 (GR-RUN-09): when the plan does not state how many copies must be ready, the fix asks for the count (an
         // empty knob) instead of proposing one; left empty, the count stays not stated.
@@ -192,7 +205,7 @@ const DRAFTERS = {
     if (c.kind === 'store') {
       const nodes = c.replicas || 1;
       if ((num(pl.maxReplicas) ?? 0) >= nodes) return note.length ? judgement(row, 'capacity', note.join(' '), c.ceiling?.passed ? {chapter: 3, id: '', label: 'Frame the choice in Chapter 3'} : v.fix) : null;
-      return draft({id: `capacity:${row.id}`, vital: 'capacity', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:capacity`], title: `Allow ${row.ref} ${fmtN(nodes)} nodes: a primary and a standby`, why: `${c.spec.find(s => s.k === 'Nodes')?.d || ''}.`, also: note.join(' '), math: c.math,
+      return draft({...aimAt(row, 'capacity', 10, pl), title: `Allow ${row.ref} ${fmtN(nodes)} nodes: a primary and a standby`, why: `${c.spec.find(s => s.k === 'Nodes')?.d || ''}.`, also: note.join(' '), math: c.math,
         knobs: [{key: 'nodes', label: 'Nodes', type: 'number', min: 1, max: 20, value: nodes, unit: 'nodes'}],
         build(p, k) { const pl = planRec(p, row.id), n = Math.max(1, Math.round(num(k.nodes) || nodes)); return (num(pl.maxReplicas) ?? 0) >= n ? [] : [planCmd(p, pl.id, {maxReplicas: n, capacityConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objBasis}: ${c.spec.map(s => `${s.k} ${s.v}`).join('; ')}.`})]; }});
     }
@@ -201,7 +214,7 @@ const DRAFTERS = {
       if (c.verdict.state === 'ok' || (c.verdict.state === 'warn' && c.recorded)) return c.ceiling?.passed ? judgement(row, 'capacity', note.join(' '), {chapter: 3, id: '', label: 'Frame the choice in Chapter 3'}) : null;
       const bound = roundUp(c.backlog), rabbit = /rabbitmq/i.test(c.product), kafka = /kafka/i.test(c.product);
       const full = rabbit ? 'the queue\'s overflow is set to reject-publish, so a publisher using confirms is told and keeps the instruction pending; nothing is dropped (https://www.rabbitmq.com/docs/maxlength)' : kafka ? 'the topic\'s retention is sized for it, and a producer whose buffer fills blocks and then fails, keeping the instruction pending (https://kafka.apache.org/documentation/#producerconfigs_max.block.ms)' : 'the sender is refused, keeps the instruction pending and says so; nothing is dropped';
-      return draft({id: `capacity:${row.id}`, vital: 'capacity', chapter: 7, target: {chapter: 7, id: row.assetId, ref: row.assetRef}, rows: [row.id], aims: [`${row.id}:capacity`], title: `Bound ${row.assetRef}'s queue at ${fmtN(bound)} messages`, why: `A consumer outage leaves ${fmtN(c.backlog)} messages waiting (${c.spec.find(s => s.k === 'Backlog to hold')?.d || ''}). The queue's bound must hold them — and say what the sender does when it is full.`, also: note.join(' '), math: c.math,
+      return draft({...aimAt(row, 'capacity', 7, {id: row.assetId, ref: row.assetRef}), title: `Bound ${row.assetRef}'s queue at ${fmtN(bound)} messages`, why: `A consumer outage leaves ${fmtN(c.backlog)} messages waiting (${c.spec.find(s => s.k === 'Backlog to hold')?.d || ''}). The queue's bound must hold them — and say what the sender does when it is full.`, also: note.join(' '), math: c.math,
         knobs: [{key: 'bound', label: 'Hold up to', type: 'number', min: 1, max: 1e12, step: 1000, value: bound, unit: 'messages', hint: `the backlog is ${fmtN(c.backlog)}`}, words('whenFull', 'When it is full', full)],
         build(p, k) { const n = Math.max(1, Math.round(num(k.bound) || bound)), r = realRec(p, row.assetId); if (num(r.capacityValue) === n && /messag/i.test(str(r.capacityUnit))) return [];
           return [realCmd(p, row.assetId, {capacityValue: n, capacityUnit: 'messages', estimatesConfirmed: false, capacityBasis: `${DRAFTED} for ${D.cap.objBasis}: ${steps(c.math)}. When it is full, ${said(k, 'whenFull', full).replace(/[.]\s*$/, '')}. Confirm with a load test.`})]; }});
@@ -210,7 +223,7 @@ const DRAFTERS = {
       if (c.verdict.state === 'ok') return null;
       const cluster = c.kind === 'cluster', value = cluster ? c.replicas : Math.ceil(c.demand.value / 100) * 100, unit = cluster ? 'nodes' : 'spans/s';
       if (!value) return null;
-      return draft({id: `capacity:${row.id}`, vital: 'capacity', chapter: 7, target: {chapter: 7, id: row.assetId, ref: row.assetRef}, rows: [row.id], aims: [`${row.id}:capacity`],
+      return draft({...aimAt(row, 'capacity', 7, {id: row.assetId, ref: row.assetRef}),
         title: cluster ? `Size ${row.assetRef}'s cluster at ${fmtN(value)} nodes` : `Size ${row.assetRef} for ${fmtN(value)} spans a second`,
         why: cluster ? `${c.spec.find(s => s.k === 'Pods')?.v} pods need ${c.spec.find(s => s.k === 'vCPU · memory')?.v}: ${c.spec.find(s => s.k === 'Nodes')?.d}.` : `${c.spec.map(s => `${s.k}: ${s.v}`).join('; ')}. Sampling and retention are then sized from it.`, math: c.math,
         knobs: [{key: 'value', label: cluster ? 'Nodes' : 'Ingest', type: 'number', min: 1, max: 1e9, value, unit}],
@@ -227,7 +240,7 @@ const DRAFTERS = {
     const p = D.p, reqs = D.R.contracts.filter(k => (k.kind === 'request' || !k.kind) && (k.from === row.assetId || k.to === row.assetId) && !str(k.idempotencyKey) && !str(k.duplicatePolicy));
     if (!reqs.length) return null;
     const keyOf = k => str(k.correlationKey) || list(k.exchanges).filter(x => x.role === 'request').map(x => list(p.interfaces?.data).find(d => d.id === x.dataId)).filter(Boolean).flatMap(d => list(d.fields).filter(f => f.key).map(f => f.name))[0] || camel(`${k.title} reference`);
-    return draft({id: `integrity:${reqs.map(k => k.id).sort().join('+')}`, vital: 'integrity', chapter: 8, target: {chapter: 8, id: reqs[0].id, ref: reqs[0].ref}, rows: [row.id], aims: [`${row.id}:integrity`],
+    return draft({...aimAt(row, 'integrity', 8, reqs[0], `integrity:${reqs.map(k => k.id).sort().join('+')}`),
       title: `Make ${reqs.map(k => k.ref).join(', ')} safe to repeat`, why: `${v.drivers.join(', ')} allows no repeated effect. Each request carries a reference the caller already sends; recorded as its idempotency key, a repeat returns the first outcome instead of acting twice.`,
       knobs: [...reqs.map(k => ({key: k.id, label: `${k.ref} ${k.title}`, type: 'text', value: keyOf(k), hint: str(k.correlationKey) ? 'its correlation key' : 'the key field of the data it carries'})), words('duplicatePolicy', 'Duplicate policy ({key} is each request\'s key)', DUPLICATE_WORDS)],
       build(p, kv) {
@@ -246,7 +259,7 @@ const DRAFTERS = {
       const existing = list(p.security?.controls).find(c => list(c.threatIds).includes(t.id));
       const key = PROPOSAL_FOR[t.category] || 'authority', proposal = existing ? null : securityProposal(p, key, t.id);
       if (!existing && !proposal) continue;
-      out.push(draft({id: `security:${t.id}`, vital: 'security', chapter: 9, target: {chapter: 9, id: t.id, ref: t.ref}, rows: [row.id], aims: [`${row.id}:security`], knobs: proposal ? [words('mechanism', 'Mechanism', proposal.record.mechanism), words('failureResponse', 'When it cannot decide', proposal.record.failureResponse)] : [],
+      out.push(draft({...aimAt(row, 'security', 9, t, `security:${t.id}`), knobs: proposal ? [words('mechanism', 'Mechanism', proposal.record.mechanism), words('failureResponse', 'When it cannot decide', proposal.record.failureResponse)] : [],
         title: existing ? `Extend ${existing.ref} ${existing.title} to ${open.map(id => refOf(p, id)).join(', ')}` : `Cover ${t.ref} with “${proposal.record.title}”`,
         why: `${t.ref} ${t.title} lands on ${list(t.targetIds).map(id => refOf(p, id)).join(' and ')}; ${open.map(id => refOf(p, id)).join(', ')} ${open.length === 1 ? 'has' : 'have'} no control. ${existing ? `${existing.ref} already answers ${t.ref}; the draft extends it to where the threat also lands.` : `The draft is Chapter 9's own ${proposal.record.category.toLowerCase()} proposal for ${t.category.toLowerCase()}, with its owner and enforcement point left for you.`}`,
         build(p, kw = {}) {
@@ -261,7 +274,7 @@ const DRAFTERS = {
 
   observability(D, row) {
     const pl = row.plan, text = monitoringText(D, row);
-    return draft({id: `observability:${row.id}`, vital: 'observability', chapter: 10, target: {chapter: 10, id: pl.id, ref: pl.ref}, rows: [row.id], aims: [`${row.id}:observability`],
+    return draft({...aimAt(row, 'observability', 10, pl),
       title: `Record how ${row.ref} would be seen failing`, why: `It carries ${row.drivers.map(d => d.id).join(', ') || 'no driver'}${row.drivers.some(d => d.priority === 'High') ? ', High priority among them' : ''}. The monitoring is drawn from what each driver measures.`,
       knobs: [{key: 'monitoring', label: 'Monitoring', type: 'textarea', value: text}],
       build(p, k) { const pl = planRec(p, row.id), t = str(k.monitoring) || text; return str(pl.monitoring) ? [] : [planCmd(p, pl.id, {monitoring: t.slice(0, 2400)})]; }});
@@ -271,6 +284,7 @@ const DRAFTERS = {
 const steps = xs => list(xs).map(m => str(m).replace(/[.;]\s*$/, '')).filter(Boolean).join('; ');
 const fill = (t, vars) => str(t).replace(/\{(\w+)\}/g, (m, k) => vars[k] != null ? String(vars[k]) : m);
 const FENCING = 'One primary accepts writes. Fence the old primary before the standby is promoted, so two never act at once.';
+const QUORUM = 'A majority of the nodes elects the one leader that takes writes; a minority stops taking them.';
 const FAILOVER_WORDS = 'Promote the standby, fence the old primary, verify the state is consistent, then resume.';
 const RESTART_WORDS = row => `Restart the failed instance${on(row) ? ' (Kubernetes restarts it and readiness gates traffic)' : ''}; reconcile in-flight work by its reference before it resumes.`;
 const recoveryWords = (row, how) => how === 'pair' || how === 'quorum' ? FAILOVER_WORDS : RESTART_WORDS(row);
@@ -310,7 +324,7 @@ export function monitoringText(D, row) {
     if (d.category === 'performance') return `${d.id} when the 95th percentile passes ${d.targetValue} ${d.unit}`;
     if (d.category === 'recoverability') return `${d.id} when anything is still unresolved after ${d.targetValue} ${d.unit}`;
     if (d.category === 'integrity') return `${d.id} on any repeated effect reconciliation finds`;
-    if (d.category === 'security') return `${d.id} on refused access, without logging credentials or payment details`;
+    if (d.category === 'security') return `${d.id} on refused access, without logging credentials or other sensitive details`;
     if (d.category === 'traceability') return `${d.id} when a stage loses the reference`;
     return '';
   }).filter(Boolean);
@@ -410,12 +424,9 @@ export function describeCommands(p, commands) {
   const out = [];
   for (const c of commands) {
     const x = c.payload || {}, show = (k, v) => Array.isArray(v) ? v.map(id => refOf(doc, id)).join(', ') : typeof v === 'boolean' ? (v ? 'yes' : 'no') : k.endsWith('ZoneId') || k === 'zoneId' ? zoneRef(doc, v) : NUMERIC.has(k) && num(v) != null ? fmtN(num(v)) : String(v ?? '');
-    let rec = null, head = '';
-    if (c.type === 'runtime.plan') { rec = planRec(doc, x.id); head = `${rec?.ref} ${rec?.title}`; }
-    else if (c.type === 'interfaces.contract') { rec = contractRec(doc, x.id); head = `${rec?.ref} ${rec?.title}`; }
-    else if (c.type === 'techrealisation.plan') { rec = realRec(doc, x.id); head = `${rec?.ref} ${rec?.title}`; }
-    else if (c.type === 'security.control' && x.id) { rec = controlRec(doc, x.id); head = `${rec?.ref} ${rec?.title}`; }
-    else if (c.type === 'runtime.placement' && x.id) { rec = list(doc.runtime?.placements).find(l => l.id === x.id); head = `${planRec(doc, x.planId)?.ref} in ${zoneRef(doc, x.zoneId)}`; }
+    const of = {'runtime.plan': planRec, 'interfaces.contract': contractRec, 'techrealisation.plan': realRec, 'security.control': x.id && controlRec}[c.type];
+    let rec = of ? of(doc, x.id) : null, head = `${rec?.ref} ${rec?.title}`;
+    if (c.type === 'runtime.placement' && x.id) { rec = list(doc.runtime?.placements).find(l => l.id === x.id); head = `${planRec(doc, x.planId)?.ref} in ${zoneRef(doc, x.zoneId)}`; }
     if (rec) out.push({chapter: chapterOf(c.type), head, created: false, fields: Object.keys(x).filter(k => !SKIP.has(k) && k in LABELS && !same(rec[k], x[k])).map(k => ({key: k, label: LABELS[k], before: show(k, rec[k]), after: show(k, x[k])}))});
     else if (c.type === 'runtime.placement') out.push({chapter: 10, head: `New placement · ${planRec(doc, x.planId)?.ref}`, created: true, fields: [{key: 'placement', label: 'Placed', before: '', after: `${x.replicas} ${x.role} in ${zoneRef(doc, x.zoneId)}`}]});
     else if (c.type === 'security.control') out.push({chapter: 9, head: `New control · ${x.title}`, created: true, fields: [{key: 'category', label: 'Category', before: '', after: x.category}, {key: 'targetIds', label: 'Protects', before: '', after: show('targetIds', x.targetIds)}, {key: 'threatIds', label: 'Answers', before: '', after: show('threatIds', x.threatIds)}]});

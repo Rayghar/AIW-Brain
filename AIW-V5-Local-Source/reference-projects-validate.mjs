@@ -33,7 +33,9 @@ const IDS = ['service-permits', 'warehouse-fulfilment', 'clinic-appointments', '
 // The three projects of round 4 draft exactly as before the two briefs of round 6 joined them: their record counts per
 // chapter, as kept before this round. Chapter 9 is read against the kept evidence instead, because the resilience drafts
 // (security-domain.js resilienceDrafts) change it when the lead wires them into the Chapter 9 journey rule.
-const EXISTING_COUNTS = {'service-permits': {1: 24, 2: 5, 3: 3, 4: 5, 5: 5, 6: 10, 7: 5, 8: 11, 10: 15, 11: 1}, 'warehouse-fulfilment': {1: 24, 2: 7, 3: 4, 4: 7, 5: 7, 6: 14, 7: 7, 8: 15, 10: 21, 11: 1}, 'clinic-appointments': {1: 24, 2: 6, 3: 4, 4: 6, 5: 6, 6: 12, 7: 6, 8: 13, 10: 18, 11: 1}};
+// rc.10.73.42 (D10): Chapter 10 holds one Production environment and its zone with a plan for every part (each component
+// and each technology realization), no longer an environment and a zone per component: 15 → 12, 21 → 16, 18 → 14.
+const EXISTING_COUNTS = {'service-permits': {1: 24, 2: 5, 3: 3, 4: 5, 5: 5, 6: 10, 7: 5, 8: 11, 10: 12, 11: 1}, 'warehouse-fulfilment': {1: 24, 2: 7, 3: 4, 4: 7, 5: 7, 6: 14, 7: 7, 8: 15, 10: 16, 11: 1}, 'clinic-appointments': {1: 24, 2: 6, 3: 4, 4: 6, 5: 6, 6: 12, 7: 6, 8: 13, 10: 14, 11: 1}};
 // The two briefs of round 6 are the shorter form: 600–750 words, like a brief an architect is handed in one sitting.
 const ROUND6 = {'parcel-lockers': {party: /Couriers|Residents|Locker stations/, rate: /20 deposits per second/}, 'library-reservations': {party: /Library members|Catalogue system/, rate: /1000 holds per hour/}};
 const CHAPTER_TITLES = Object.fromEntries(CHAPTERS.map(c => [c.id, c.title]));
@@ -139,6 +141,9 @@ for (const r of REFERENCE_PROJECTS) {
   assert.equal(JSON.stringify(createProject({name, template: r.id}, 'ref-' + r.id, at)), JSON.stringify(p), `${r.id}: the same brief drafts the same project, and a typed brief beside it changes nothing`);
   // The three projects of round 4 hold exactly the records they held before the two briefs of round 6 joined them.
   if (EXISTING_COUNTS[r.id]) for (const [ch, n] of Object.entries(EXISTING_COUNTS[r.id])) assert.equal(REGISTERS[ch](p).length, n, `${r.id}: Chapter ${ch} holds ${n} records, as before round 6`);
+  // rc.10.73.42 (D10): every reference journey's Chapter 10 is one Production environment holding every part, one zone,
+  // and one plan per part, all in that environment.
+  assert.deepEqual([p.runtime.environments.map(e => [e.stage, [...e.assetIds].sort()]), p.runtime.zones.length, p.runtime.plans.length, p.runtime.plans.every(x => x.environmentId === p.runtime.environments[0]?.id)], [[['Production design', [...p.realisation.components, ...p.technologyRealisation.records].map(x => x.id).sort()]], 1, p.realisation.components.length + p.technologyRealisation.records.length, true], `${r.id}: Chapter 10 is one stage environment holding every part`);
   // The two briefs of round 6 reach the parties outside the design and the numbers the scale readings read.
   if (ROUND6[r.id]) { assert.ok(p.interfaces.parties.length >= 2, `${r.id}: at least two parties outside the design`); assert.ok(p.quality.drivers.some(d => d.category === 'scalability' && Number(d.targetValue) > 0), `${r.id}: a scalability driver with a number`); }
 }

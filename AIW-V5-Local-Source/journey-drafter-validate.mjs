@@ -473,7 +473,13 @@ try {
   assert.ok(doc.interfaces.data.every(x => x.fields.some(f => f.key && f.required) && x.fields.some(f => f.name === 'status')), 'the data is keyed with a status field, as every drafted data is');
   // Chapter 9: the brief rules. Chapter 10: a plan per placed component: the zone its node, the failure domain the outermost node, the stage from "Live", the replicas the instance count the model states.
   assert.ok(c9.records.length >= 1 && c9.records.every(r => r.provenance.mode === 'deterministic'));
-  assert.equal(c10.records.length, 6); assert.ok(c10.records.every(r => r.provenance.mode === 'model'));
+  // rc.10.73.42 (D10): the six parts the model places, then the eight it does not (the mobile app and
+  // the seven technology realizations), all from the model's placements and in the one environment it draws, Live.
+  assert.equal(c10.records.length, 14); assert.ok(c10.records.every(r => r.provenance.mode === 'model'));
+  assert.deepEqual(c10.records.filter(r => / design$/.test(r.title)).map(r => r.title), ['Trip service live design', 'Pricing and payment service live design', 'Fleet console live design', 'Trip store live design', 'Trip events live design', 'Dock gateway live design'], 'the six parts the model places');
+  assert.ok(c10.records.slice(6).every(r => / in Live$/.test(r.title) && r.element), 'the eight others join Live, each naming the element it was read from');
+  assert.deepEqual([c10.records[0].answers.environmentId, c10.records[0].answers.title, ...new Set(c10.records.slice(1).map(r => r.answers.environmentId))], ['new-environment', 'Live', doc.runtime.environments[0].id], 'the first record designs the model\'s Live environment; every other record joins it');
+  assert.deepEqual(doc.runtime.environments.map(e => [e.title, e.assetIds.length]), [['Live', 14]], 'one environment holding every part');
   const plan = t => c10.records.find(r => r.title.startsWith(t + ' '));
   assert.deepEqual([plan('Trip service').answers.replicas, plan('Trip store').answers.replicas, plan('Dock gateway').answers.replicas, plan('Trip service').answers.stage, plan('Trip service').answers.zone, plan('Trip service').answers.failureDomain, plan('Dock gateway').answers.zone, field(plan('Dock gateway'), 'failureDomain').basis], ['2', '1', '40', 'Production design', 'Application cluster', 'Council cloud region', 'Dock sites', 'gap'], 'the dock sites sit under no outer node, so their failure domain is an open question');
   assert.deepEqual([field(plan('Trip service'), 'replicas').basis, field(plan('Trip service'), 'zone').basis, field(plan('Trip service'), 'stage').basis, field(plan('Trip service'), 'readiness').basis], ['stated', 'stated', 'inferred', 'gap']);
@@ -532,7 +538,11 @@ try {
   assert.ok(a6.records.every(r => r.provenance.mode === 'model' && field(r, 'title').basis === 'stated'));
   assert.deepEqual(a8.records.map(r => [r.title, r.answers.kind, field(r, 'kind').note]), [['Trip completed', 'event', 'The model draws it as a flow or a message: something passes without a reply.']]);
   assert.match(a8.note, /1 relationship into the design from outside, or from an element that is not yet a component, is not drafted: Dock → Trip service\./, 'the Dock API serves the Dock, a node: the caller is no component, so the person decides');
-  assert.deepEqual(a10.records.map(r => [r.title, r.answers.zone, r.answers.replicas, field(r, 'stage').basis]), [['Trip service production design', 'Application cluster', '1', 'gap']], 'a node that realises the component places it; no environment is named, so the stage is open');
+  assert.deepEqual(a10.records.filter(r => / design$/.test(r.title)).map(r => [r.title, r.answers.zone, r.answers.replicas, field(r, 'stage').basis]), [['Trip service production design', 'Application cluster', '1', 'gap']], 'a node that realises the component places it; no environment is named, so the stage is open');
+  // rc.10.73.42 (D10): the parts the model does not place join the environment of its stage: the other component in the
+  // environment's own zone, the realization beside the component it supports.
+  assert.deepEqual(a10.records.filter(r => !/ design$/.test(r.title)).map(r => [r.title, r.answers.environmentId, r.answers.zoneId === dA.runtime.zones.find(z => z.title === 'Application cluster')?.id]), [['Pricing and payment service in Production', dA.runtime.environments[0].id, false], ['Relational database implementation in Production', dA.runtime.environments[0].id, true]]);
+  assert.deepEqual(dA.runtime.environments.map(e => [e.title, e.assetIds.length]), [['Production', 3]], 'one environment holding every part');
   assert.ok(dA.quality.drivers.length === 1 && dA.quality.drivers[0].provenance.journey.mode === 'model' && dA.interfaces.contracts[0].kind === 'event');
   pass('a model in (ArchiMate): actors and roles, a stakeholder, goals and outcomes, processes as steps in triggering order, a principle and a constraint, requirements and gaps, a driver as a quality scenario, components, services and capabilities with their categories, a flow as an event contract, a realising node as a placement; what is not yet a component is left for the person and said so');
 

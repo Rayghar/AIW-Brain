@@ -15,6 +15,7 @@ import {capacityObjective, capacityPlan, fmtN, NO_LOAD, EXAMPLE_LABEL} from './d
 import {fact} from './product-facts.js';
 import {productsAvailable} from './model-knowledge.js';
 import {list, str, num, uniq} from './util.js';
+import {failureDomainKey, hostingZone} from './runtime-model.js';
 
 const OP = {'At least': '≥', 'At most': '≤', Exactly: '='};
 
@@ -86,17 +87,17 @@ const placedText = f => !f.placements.length ? 'not placed' : `${f.active} activ
 const fromCheck = c => ({holds: 'ok', breaks: 'bad', unknown: 'none', revisit: 'warn'})[c.state] || 'none';
 
 // A product that keeps working only while a majority of its nodes agree (quorum queues, a
-// configuration store): spread over zones, it must keep that majority when any one zone is lost.
+// configuration store): spread over zones, it must keep that majority when any one failure domain is lost.
+// rc.10.73.42 (D8, C10-21): its nodes grouped by hosting failure domain, as planFacts reads them (f.domains): zones that
+// share one fail together.
 function quorumLoss(R, row, f) {
   if (!productsAvailable(R.p)) return null;
   const qf = fact(row.product, 'clusterNodes') || fact(row.product, 'dcs');
   if (!qf || f.active < 2) return null;
-  const by = new Map();
-  for (const l of f.placements.filter(x => x.role === 'active')) by.set(l.zoneId, (by.get(l.zoneId) || 0) + (num(l.replicas) || 0));
-  const need = Math.floor(f.active / 2) + 1, [zid, n] = [...by].sort((a, b) => b[1] - a[1])[0] || [];
-  if (zid == null || f.active - n >= need) return null;
-  const ref = list(R.p?.runtime?.zones).find(z => z.id === zid)?.ref || zid;
-  return `It works while a majority of its nodes agree: ${f.active} nodes in ${by.size} zone${by.size === 1 ? '' : 's'}, and losing ${ref} (${n} of them) leaves ${f.active - n}, short of a majority of ${need}. A third failure domain keeps the majority.`;
+  const need = Math.floor(f.active / 2) + 1, [k, n] = Object.entries(f.domains).sort((a, b) => b[1] - a[1])[0] || [], zs = f.zonesActive.length;
+  if (k == null || f.active - n >= need) return null;
+  const refs = f.zonesActive.map(id => R.zones.get(id)).filter(z => hostingZone(z) && (failureDomainKey(z) || ' ' + z.id) === k).map(z => z.ref);
+  return `It works while a majority of its nodes agree: ${f.active} nodes in ${zs} zone${zs === 1 ? '' : 's'}, and losing ${refs.join(' and ')} (${refs.length > 1 ? 'one failure domain, ' : ''}${n} of them) leaves ${f.active - n}, short of a majority of ${need}. A third failure domain keeps the majority.`;
 }
 
 // The synchronous calls on a performance driver's path, nested by who calls whom: the entry the
@@ -186,7 +187,7 @@ export function partVitals(D, row) {
   const integ = ds.filter(d => d.category === 'integrity');
   const reqs = R.contracts.filter(k => (k.kind === 'request' || !k.kind) && (k.from === row.assetId || k.to === row.assetId));
   const open = reqs.filter(k => !str(k.idempotencyKey) && !str(k.duplicatePolicy));
-  if (!integ.length || !reqs.length) out.push(V('integrity', 'na', reqs.length ? `${reqs.length} request${reqs.length === 1 ? '' : 's'}` : 'no requests', integ.length ? 'one financial effect' : 'no integrity driver', integ.length ? 'It makes or takes no request.' : 'No integrity driver reaches this part.'));
+  if (!integ.length || !reqs.length) out.push(V('integrity', 'na', reqs.length ? `${reqs.length} request${reqs.length === 1 ? '' : 's'}` : 'no requests', integ.length ? 'one effect per request' : 'no integrity driver', integ.length ? 'It makes or takes no request.' : 'No integrity driver reaches this part.'));
   else out.push(V('integrity', open.length ? 'bad' : 'ok', open.length ? `${open.length} of ${reqs.length} unguarded` : `${reqs.length} guarded`, `${integ.map(d => d.id).join(', ')} · every request idempotent`, open.length ? `${open.map(k => k.ref).join(', ')} record no idempotency key or duplicate policy: a repeated request could repeat its effect.` : 'Every request it makes or takes records how a repeat is recognised.', {drivers: integ.map(d => d.id), fix: open[0] ? fix(8, `Record ${open[0].ref}'s idempotency key in Chapter 8`, open[0].id) : null}));
   // Protection: the chapter's coverage rule, on the part, its contracts and its data.
   const objs = uniq([row.assetId, ...reqs.map(k => k.id), ...R.contracts.filter(k => k.kind === 'event' && (k.from === row.assetId || k.to === row.assetId)).map(k => k.id), ...list(row.asset?.dataIds)]);
