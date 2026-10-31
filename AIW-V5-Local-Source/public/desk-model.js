@@ -37,7 +37,7 @@ export const ANTI_FIX = {
   'sync-chain': {chapter: 3, verb: 'Decide in Chapter 3 whether a call can hand off asynchronously'},
   idempotency: {chapter: 8, verb: 'Record an idempotency key or duplicate policy in Chapter 8'},
   retry: {chapter: 8, verb: 'Bound the retries in Chapter 8'},
-  'shared-data': {chapter: 5, verb: 'Give the data one owner in Chapter 5'},
+  'shared-data': {chapter: 5, verb: 'Let the others reach the data through its one owner'},
   god: {chapter: 4, verb: 'Split the responsibilities in Chapter 4'},
   queue: {chapter: 7, verb: 'Record the queue\'s bound in Chapter 7'},
   observability: {chapter: 10, verb: 'Record monitoring in Chapter 10'}

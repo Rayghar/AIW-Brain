@@ -36,7 +36,7 @@ assert.throws(()=>cmd(p,'component',{...payload,allocations:[] ,status:'reviewed
 p=cmd(p,'component',{...payload,id,title:'Revised pending-case coordinator',status:'reviewed'});c=component(p,id);assert.equal(c.ref,'APP-006');assert.equal(c.revision,2);assert.equal(c.history[0].title,payload.title);
 assert.equal(allocations(p,id)[0].id,'MAP-006');assert.equal(physicalObjects(p).find(n=>n.id===id).title,c.title);assert.equal(logicalGraph(p).nodes.find(n=>n.id===id).ref,'APP-006');
 const overlap=cmd(p,'component',{...payload,id,dataIds:['instruction'],allocations:[{logicalId:'hub',scope:allocations(p,'worker')[0].scope}]});
-assert(realisationFindings(overlap).some(f=>f.code.startsWith('data-owner')&&f.objectId===id));assert(realisationFindings(overlap).some(f=>f.code==='overlap'));
+assert(!realisationFindings(overlap).some(f=>f.code.startsWith('data-owner'))&&logicalGraph(overlap).edges.some(e=>e.from===id&&e.to==='instruction'&&e.label==='uses')&&!logicalGraph(overlap).edges.some(e=>e.from===id&&e.label==='owns'),'rc.10.73.42 D9: a second component using a record is no ownership conflict; its list is drawn as use, never as a second owner');assert(realisationFindings(overlap).some(f=>f.code==='overlap'));
 const original=JSON.stringify(p);for(const key of ['review','dedup','recovery'])assert(realisationProposal(p,key));assert.equal(JSON.stringify(p),original);
 assert.throws(()=>cmd(p,'candidate',{...realisationProposal(p,'dedup')}),/Review/);
 for(const key of ['review','dedup','recovery']){const q=realisationProposal(p,key);p=cmd(p,'candidate',{...q,reviewed:true});assert(realisationProposal(p,key).existingId);assert.throws(()=>cmd(p,'candidate',{...q,reviewed:true}),/already/);}

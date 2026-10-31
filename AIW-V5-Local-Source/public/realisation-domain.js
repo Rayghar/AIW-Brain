@@ -124,8 +124,12 @@ export function withRealisation(input){
  return p;
 }
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-// The one owner of a data record (rc.10.73.42, D9): the authority its Chapter 8 definition names, read as its ref and title.
-const chapterEightOwner=(p,id)=>{const o=(p.interfaces?.data||[]).find(x=>x.id===id)?.authorityId;return o&&([...components(p),...(p.technologyRealisation?.records||[]),...(p.interfaces?.parties||[])].map(x=>x.id===o&&x.ref+' '+x.title).find(Boolean)||o);};
+// rc.10.73.42 (D9, review round 2): an ownership claim the server's read upgrade kept from a document written before
+// (dataOwnership.toConfirm, read by interfaces-domain.js ownershipToConfirm) is settled for good once done(dataId, componentId)
+// says it is resolved: the component's list leaves the record or the component leaves the design (here and in its retirement
+// rule), Chapter 8 names it as owner or a person confirms Chapter 8's owner (interfaces-domain.js). A list written after is
+// data the component uses, never the claim again; a malformed entry is dropped with the settled ones.
+export function settleClaims(p,done){const xs=p.dataOwnership?.toConfirm;if(!Array.isArray(xs)||!xs.length)return;let changed=false;const kept=xs.flatMap(x=>{const ids=Array.isArray(x?.componentIds)?x.componentIds:[],left=ids.filter(id=>!done(x.dataId,id));if(left.length<ids.length||!left.length)changed=true;return left.length?[left.length<ids.length?{...x,componentIds:left}:x]:[];});if(changed)p.dataOwnership={...p.dataOwnership,toConfirm:kept};}
 export function realisationFindings(p){return memoPass(p,()=>sharedList(p,'realisation:findings',()=>realisationFindingsOf(p)));}
 function realisationFindingsOf(p){
  const out=[],add=(code,id,title,detail,level='error',extra={})=>out.push({id:code+':'+id,code,objectId:id,title,detail,level,...extra});
@@ -140,8 +144,7 @@ function realisationFindingsOf(p){
   const seen=new Map();for(const m of ms.filter(m=>!mappingRole(m))){const key=m.scope.trim().toLowerCase();if(key&&seen.has(key))add('overlap',m.physicalId,'Clarify shared ownership of '+r.ref,'Two components have the same allocation scope. Distinguish their responsibilities or explain the shared boundary.','warning',{otherId:seen.get(key)});else seen.set(key,m.physicalId);}
  }
  const reached=connectedTo(logicalRecords(p).map(r=>r.id),g.edges,g.nodes.length);
- const decisionIds=new Set(p.decisions.records.map(d=>d.id)),dataIds=new Set(g.nodes.filter(n=>n.layer==='data').map(n=>n.id)),nodeById=firstById(g.nodes),owners=new Map(),linked=new Set(p.realisation.connections.flatMap(e=>[e.from,e.to])),titled=groupBy(cs,x=>x.title.toLowerCase());
- for(const x of cs)for(const id of new Set(x.dataIds)){let xs=owners.get(id);if(!xs)owners.set(id,xs=[]);xs.push(x);}
+ const decisionIds=new Set(p.decisions.records.map(d=>d.id)),dataIds=new Set(g.nodes.filter(n=>n.layer==='data').map(n=>n.id)),linked=new Set(p.realisation.connections.flatMap(e=>[e.from,e.to])),titled=groupBy(cs,x=>x.title.toLowerCase());
  const proposals=proposalFinding(cs,5),stated=(r,k)=>!!String(r[k]??'').trim()||!!r.open?.[k];if(proposals)out.push({...proposals,objectId:'project'});
  for(const c of checked(cs)){
   if(!stated(c,'purpose')||!stated(c,'boundary')||!stated(c,'owner')||!stated(c,'inputs')||!stated(c,'outputs'))add('definition',c.id,'Define the boundary of '+c.title,'Complete purpose, owned boundary, owner, inputs, and outputs.');
@@ -155,10 +158,11 @@ function realisationFindingsOf(p){
   else if(sources.decisions.some(d=>!decisionCurrent(p,d)))add('draft-decision',c.id,'Decision rationale still needs review','One or more inherited choices remain draft or depend on changed inputs. Component review does not approve them.','warning');
   if(c.decisionIds.some(id=>!decisionIds.has(id)))add('broken-decision',c.id,'Repair '+c.ref+' decision links','A linked decision is missing.');
   if((c.serves||[]).some(s=>!p.quality.drivers.some(d=>d.id===s.driverId)))add('broken-driver',c.id,'Repair the drivers '+c.ref+' serves','A driver it names as served is missing.');
-  if(c.dataIds.some(id=>!dataIds.has(id)))add('broken-data',c.id,'Repair '+c.ref+' data ownership','A named data record is missing.');
+  if(c.dataIds.some(id=>!dataIds.has(id)))add('broken-data',c.id,'Repair the data '+c.ref+' uses','A named data record is missing.');
   if([...(c.consumesDataIds||[]),...(c.producesDataIds||[])].some(id=>!dataIds.has(id)&&!(p.interfaces?.data||[]).some(d=>d.id===id)))add('broken-data-flow',c.id,'Repair '+c.ref+' data links','A data definition it consumes or produces is missing.');
-  // rc.10.73.42 (D9): a component's list is data it uses; the one owner is the authority Chapter 8 names, which the finding reads.
-  for(const id of c.dataIds){const other=(owners.get(id)||[]).find(x=>x.id!==c.id);if(other)add('data-owner-'+id,c.id,'Resolve ownership of '+(nodeById.get(id)?.title||id),c.title+' and '+other.title+' both list it. Chapter 8 names '+(chapterEightOwner(p,id)?chapterEightOwner(p,id)+' as its owner':'no owner')+': confirm it there, or explain separate records.');}
+  // rc.10.73.42 (D9, review round 2): a component's list is data it uses, so two components listing one record is no
+  // conflict and Chapter 5 no longer compares the lists. The one owner is Chapter 8's authority: a definition without one is
+  // Chapter 8's 'data-owner' error, and a claim an earlier document made is the read upgrade's 'owner-confirm' there.
   if(!reached.has(c.id))add('disconnected',c.id,'Connect '+c.title,'This component is disconnected from the logical application.');
   if(!linked.has(c.id))add('isolated',c.id,'Define an interaction for '+c.ref,'An allocation shows why it exists. Add its input, output, or supporting dependency.','warning');
   if(!stated(c,'technologyNeeds'))add('technology',c.id,'Describe technology needs for '+c.ref,'State the capabilities Chapter 6 must provide, without assuming a product or deployment is approved.');
@@ -331,7 +335,7 @@ export function realisationProposal(p,key){
 export function applyRealisationCommand(input,command,at=new Date().toISOString()){
  const p=withRealisation(input),a=p.realisation,raw=command.payload||{};let selected=null,mutated=true;
  switch(command.type){
-  case 'realisation.component':{const before=raw.id&&component(p,raw.id),c=saveComponent(p,raw,at);selected=c.id;if(c===before)mutated=false;break;}
+  case 'realisation.component':{const before=raw.id&&component(p,raw.id),c=saveComponent(p,raw,at);selected=c.id;if(c===before)mutated=false;settleClaims(p,(d,id)=>id===c.id&&!c.dataIds.includes(d));break;}
   case 'realisation.interaction':selected=saveInteraction(p,raw).from;break;
   case 'realisation.remove-interaction':if(!a.connections.some(e=>e.id===raw.id))throw Error('This interaction no longer exists.');a.connections=a.connections.filter(e=>e.id!==raw.id);break;
   case 'realisation.candidate':{

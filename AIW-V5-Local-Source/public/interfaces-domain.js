@@ -1,7 +1,7 @@
 import {projectNodes,isBlankProject} from './model-scope.js';
 import {nodes as referenceNodes} from './model.js';
 import {withTechnologyRealisation,realizations,realization,realizationSources,realizationHandoffCurrent,selectionCurrent} from './technology-realisation-domain.js';
-import {components,component,componentSources} from './realisation-domain.js';
+import {components,component,componentSources,settleClaims} from './realisation-domain.js';
 import {memoPass,passValue,passRemember,remember,findIn,carrying,firstById,groupBy,sharedList} from './document-memo.js';
 import {FINGERPRINT,isFingerprint,valueFingerprint,contentStamp} from './source-fingerprint.js';
 import {list} from './util.js';
@@ -127,15 +127,16 @@ export function withInterfaces(input){
 // owner; the server's read upgrade (ownership-upgrade.js) keeps, once, the components its lists named where Chapter 8 names
 // another owner or none (dataOwnership.toConfirm, beside the design: review-domain.js reviewSource). Each stays a finding until
 // a person confirms Chapter 8's owner by recording the definition's review (interfaces.record-review), makes Chapter 8 name
-// it, or takes the record off its list.
+// it, takes the record off its list or retires the component; each settles the claim for good (realisation-domain.js
+// settleClaims), so a list written after it is data the component uses (review round 2).
 export const dataOwners=(p,d)=>unique([d?.authorityId,...dataAuthorities(p,d).filter(a=>a.role==='owns').map(a=>a.id)].filter(Boolean));
-export const ownershipToConfirm=(p,d)=>{const x=list(p.dataOwnership?.toConfirm).find(x=>x.dataId===d.id);if(!x)return [];const owners=dataOwners(p,d);return list(x.componentIds).filter(id=>!owners.includes(id)&&list(component(p,id)?.dataIds).includes(d.id));};
+export const ownershipToConfirm=(p,d)=>{const owners=dataOwners(p,d);return unique(list(p.dataOwnership?.toConfirm).filter(x=>x?.dataId===d.id).flatMap(x=>list(x.componentIds))).filter(id=>!owners.includes(id)&&list(component(p,id)?.dataIds).includes(d.id));};
 // rc.10.73.42 (D20): a request contract that changes nothing may be declared read-only, safe to repeat, by a person who reviewed
 // it (interfaces.read-only: reviewer, why, explicit confirmation; a draft by Sol and an agent account send none, authorship.js).
 // The declaration answers the duplicate check in place of a repeat key, which it does not record; the repeat handling is still
 // said. It holds while what the contract does (its style, participants, operation, protocol and payloads) is as declared and
 // it posts nothing; a contract save never carries one.
-const readOnlyStamp=c=>valueFingerprint({kind:c.kind,from:c.from,to:c.to,operation:c.operation,protocol:c.protocol,exchanges:c.exchanges.map(x=>[x.dataId,x.role])});
+const readOnlyStamp=c=>valueFingerprint([c.kind,c.from,c.to,c.operation,c.protocol,c.exchanges.map(x=>[x.dataId,x.role])]);
 export const readOnlyCurrent=(p,c)=>!!c?.readOnlyDeclaration&&c.kind==='request'&&!postingContract(p,c)&&c.readOnlyDeclaration.stamp===readOnlyStamp(c);
 // Every command runs this, so the seeded sources are read from one set, kept as contracts are seeded (round 5). A source
 // whose contract was dismissed or removed is not seeded again while that contract is retired (round 12, D-13, DM-17).
@@ -146,6 +147,8 @@ function seedInputs(p){let added=false;const seeded=new Set([...p.interfaces.con
  }
  return added;
 }
+// A definition carried from the model proposes, once, the first component that lists the record as its authority (rc.10.73.42,
+// D9: a proposal for the person to confirm in this chapter, data-review; it is not read from the list again).
 function addData(p,n){const m=p.interfaces,ref='DAT-'+pad(++m.counters.data),owned=components(p).filter(c=>c.dataIds.includes(n.id)),authorityId=n.id==='posting'?'ext-core':owned[0]?.id||'';const fields=[newField(m,n.attrs?.Key||'recordId','string','demo-'+ref,true)];
  if(!isBlankProject(p)&&!fields.some(f=>f.name==='paymentReference'))fields.push(newField(m,'paymentReference','string','demo-payment-001'));
  if(n.id==='instruction')fields.push(newField(m,'amount','number','1000'),newField(m,'currency','string','NGN',false,'NGN'),newField(m,'beneficiaryReference','string','demo-beneficiary'));
@@ -303,7 +306,7 @@ function interfaceFindingsOf(p){const m=p.interfaces,fs=[],add=(code,r,title,det
  if(seedingOff(p)){const answered=new Set([...m.contracts.map(c=>c.sourceId),...retiredOf(p,'interfaces.contracts').map(x=>x.record.sourceId)]),open=[...inputs.values()].filter(e=>!answered.has(e.id));if(open.length)add('uncontracted','interfaces','Define the contracts of '+open.length+' interaction'+(open.length>1?'s':''),'Seeding is off, so AIW proposes none: '+open.slice(0,8).map(e=>e.id+' '+e.title).join('; ')+(open.length>8?' and '+(open.length-8)+' more':'')+'. Define a contract for each, or say why none is needed.','warning',{ids:open.map(e=>e.id)});}
  for(const c of m.contracts){
   // rc.10.73.42 (D19): AIW's proposal whose source interaction is gone says so; a person retires or keeps it.
-  if(contractIsSeed(p,c)){if(c.sourceId&&!inputs.has(c.sourceId))add('source-missing',c,'Retire AIW\'s proposed '+c.ref,'Its source '+c.sourceId+' is gone.');continue;}
+  if(contractIsSeed(p,c)){if(c.sourceId&&!inputs.has(c.sourceId))add('source-missing',c,'Retire AIW\'s proposed '+c.ref,'AIW proposed it from '+c.sourceId+', which no longer calls for it.');continue;}
   if(!participant(p,c.from)||!participant(p,c.to)||c.from===c.to)add('endpoints',c,'Repair '+c.ref+' participants','Choose distinct caller/publisher and provider/consumer boundaries.');
   if([c.from,c.to].some(id=>p.interfaces.parties.some(r=>r.id===id&&!r.confirmed)))add('external-boundary',c,'Confirm '+c.ref+' external participants','The external participant boundary or accountable provider is still unconfirmed.','warning');
   if(!['purpose','owner','operation','protocol','contractVersion'].every(f=>has(c,f)))add('definition',c,'Define '+c.ref+' contract','Complete purpose, owner, operation, protocol, and contract version.');
@@ -342,7 +345,7 @@ function interfaceFindingsOf(p){const m=p.interfaces,fs=[],add=(code,r,title,det
  for(const id of batchChain(p).cycles)add('batch-cycle',contract(p,id),'Break the circular order of '+contract(p,id).ref,'Its predecessors lead back to it, so the chain has no first run.');
  for(const d of m.data){
   if(!has(d,'purpose')||!has(d,'owner')||!d.open?.authorityId&&!participant(p,d.authorityId)||list(d.authorities).some(a=>!participant(p,a.id)))add('data-owner',d,'Establish '+d.ref+' authority','State its purpose, accountable owner, and authoritative system.');
-  const claimed=ownershipToConfirm(p,d);if(claimed.length){const who=xs=>xs.map(id=>participant(p,id)).map((r,i)=>r?r.ref+' '+r.title:xs[i]).join(' and '),owners=dataOwners(p,d);add('owner-confirm',d,'Confirm the owner of '+d.ref,who(claimed)+' listed it as owned in Chapter 5; Chapter 8 names '+(owners.length?who(owners):'no owner')+', the one owner. Review '+d.ref+' to confirm it, or change it.','error',{ids:claimed});}
+  const claimed=ownershipToConfirm(p,d);if(claimed.length){const who=xs=>xs.map(id=>(r=>r?r.ref+' '+r.title:id)(participant(p,id))).join(' and '),owners=dataOwners(p,d);add('owner-confirm',d,'Confirm the owner of '+d.ref,who(claimed)+' listed it as owned in Chapter 5; Chapter 8 names '+(owners.length?who(owners):'no owner')+', the one owner. Review '+d.ref+' to confirm it, or change it.','error',{ids:claimed});}
   const ownerName=text(d.owner).toLocaleLowerCase(),namedObject=ownerName&&[...participants(p),...list(p.logical?.responsibilities),...list(m.contracts)].find(o=>[o.id,o.ref,o.title].some(v=>text(v).toLocaleLowerCase()===ownerName));
   if(namedObject)add('data-accountable-owner',d,'Clarify the accountable owner of '+d.ref,'The owner matches the architecture object '+(namedObject.ref||namedObject.id)+' ('+namedObject.title+'). Name the accountable person or team separately from the authoritative system, or clarify this matching name. A name match does not verify identity.','warning');
   if(d.classification==='Unclassified'||!has(d,'protection'))add('classification',d,'Protect '+d.ref+' data','Classify the data and explain access, masking, and storage obligations.');
@@ -396,14 +399,16 @@ export function evaluateContract(p,id,raw,role='request',scenario='normal'){
 // design when no threat, control, derivation, lifecycle, batch window or authored runtime path names it; the runtime
 // paths AIW proposed for it leave with it (DEPENDENTS). While it is retired its source is not proposed again (seedInputs);
 // a restore brings it back as it was. Keeping AIW's proposal is a revision of the contract with the earlier origin kept.
+// A component that leaves the design settles the ownership claims it made (rc.10.73.42, D9): restored, its list is data it uses.
 export const INTERFACES_LIFECYCLE=Object.freeze({
- 'interfaces.contracts':{seed:(p,c)=>contractIsSeed(p,c),keep:(p,c,at)=>revise(p,c,'Keep AIW\'s proposal',at,{origin:c.origin})}
+ 'interfaces.contracts':{seed:(p,c)=>contractIsSeed(p,c),keep:(p,c,at)=>revise(p,c,'Keep AIW\'s proposal',at,{origin:c.origin})},
+ 'realisation.components':{retired:(p,c)=>settleClaims(p,(x,id)=>id===c.id)}
 });
 export function applyInterfacesCommand(input,command,at=new Date().toISOString()){
  const p=withInterfaces(input),m=p.interfaces,raw=command.payload||{};let selected=raw.id||null,mutated=true;
  switch(command.type){
  case 'interfaces.contract':{const old=raw.id?contract(p,raw.id):null,rev=old?.revision,c=saveContract(p,raw,at);mutated=!old||c.revision!==rev;selected=c.id;break;}
- case 'interfaces.data':{const old=raw.id?dataRecord(p,raw.id):null,rev=old?.revision,d=saveData(p,raw,at);mutated=!old||d.revision!==rev;selected=d.id;break;}
+ case 'interfaces.data':{const old=raw.id?dataRecord(p,raw.id):null,rev=old?.revision,d=saveData(p,raw,at);mutated=!old||d.revision!==rev;selected=d.id;settleClaims(p,(x,id)=>x===d.id&&dataOwners(p,d).includes(id));break;}
  case 'interfaces.field':{const d=dataRecord(p,raw.id);if(!d)throw Error('Choose a data definition.');const f=raw.field||{},old=f.id?d.fields.find(x=>x.id===f.id):null;mutated=saveField(p,d,f,at)!==old;break;}
  case 'interfaces.remove-field':{const d=dataRecord(p,raw.id);if(!d?.fields.some(f=>f.id===raw.fieldId))throw Error('This field no longer exists.');d.fields=d.fields.filter(f=>f.id!==raw.fieldId);revise(p,d,'Remove field '+raw.fieldId,at);break;}
  case 'interfaces.party':{const old=raw.id?m.parties.find(r=>r.id===raw.id):null,r=saveParty(p,raw);mutated=r!==old;selected=r.id;break;}
@@ -412,10 +417,10 @@ export function applyInterfacesCommand(input,command,at=new Date().toISOString()
  case 'interfaces.remove-lineage':{const l=m.lineage.find(l=>l.id===raw.id);if(!l)throw Error('This lineage no longer exists.');m.lineage=m.lineage.filter(l=>l.id!==raw.id);for(const id of [l.from,l.to].filter(id=>dataRecord(p,id)))revise(p,dataRecord(p,id),'Remove derivation '+l.id,at);selected=l.from;break;}
  case 'interfaces.proposal':{if(raw.reviewed!==true)throw Error('Review the proposed changes before acceptance.');const q=interfaceProposal(p,raw.key,raw.objectId);if(!q)throw Error('This proposal is no longer applicable.');selected=(q.kind==='contract'?saveContract:saveData)(p,{...raw.record,id:q.record.id,origin:'suggestion'},at).id;break;}
  case 'interfaces.read-only':{const c=contract(p,raw.id);if(!c)throw Error('Choose an existing contract.');selected=c.id;if(raw.withdraw===true){if(c.readOnlyDeclaration){revise(p,c,'Withdraw read-only',at);delete c.readOnlyDeclaration;}else mutated=false;break;}
-  const reviewer=text(raw.reviewer,180),basis=text(raw.basis,2400);if(contractIsSeed(p,c)||c.kind!=='request')throw Error('Only a request contract a person kept can be read-only.');if(postingContract(p,c))throw Error(c.ref+' posts; name its repeat key.');if(raw.reviewed!==true||!reviewer||!basis)throw Error('Confirm the review, name the reviewer and say why a repeat is safe.');
+  const reviewer=text(raw.reviewer,180),basis=text(raw.basis,2400);if(contractIsSeed(p,c)||c.kind!=='request'||postingContract(p,c))throw Error('Only a request contract a person kept, which posts nothing, can be read-only.');if(raw.reviewed!==true||!reviewer||!basis)throw Error('Confirm the review, name the reviewer and say why a repeat is safe.');
   revise(p,c,'Declare read-only',at);c.readOnlyDeclaration={at,reviewer,basis,stamp:readOnlyStamp(c)};break;}
  case 'interfaces.intake':mutated=false;m.intake={at,stamp:inputStamp(p),technologyHandoffCurrent:realizationHandoffCurrent(p)};break;
- case 'interfaces.record-review':{mutated=false;const r=contract(p,raw.id)||dataRecord(p,raw.id);if(!r)throw Error('Choose a contract or data definition.');if(raw.reviewed!==true||!text(raw.reviewer)||!text(raw.evidence))throw Error('Provide a reviewer, evidence, and explicit review confirmation.');r.sourceSnapshot=interfaceReading(p,r);r.review={at,reviewer:text(raw.reviewer,180),evidence:text(raw.evidence),stamp:r.fields?dataStamp(p,r):contractStamp(p,r)};if(r.fields&&p.dataOwnership)p.dataOwnership={...p.dataOwnership,toConfirm:list(p.dataOwnership.toConfirm).filter(x=>x.dataId!==r.id)};m.review=null;m.handoff=null;break;}
+ case 'interfaces.record-review':{mutated=false;const r=contract(p,raw.id)||dataRecord(p,raw.id);if(!r)throw Error('Choose a contract or data definition.');if(raw.reviewed!==true||!text(raw.reviewer)||!text(raw.evidence))throw Error('Provide a reviewer, evidence, and explicit review confirmation.');r.sourceSnapshot=interfaceReading(p,r);r.review={at,reviewer:text(raw.reviewer,180),evidence:text(raw.evidence),stamp:r.fields?dataStamp(p,r):contractStamp(p,r)};if(r.fields)settleClaims(p,x=>x===r.id);m.review=null;m.handoff=null;break;}
  case 'interfaces.check':{mutated=false;const result=evaluateContract(p,raw.id,raw.payload,raw.role,raw.scenario);if(raw.stamp!==contractStamp(p,contract(p,raw.id)))throw Error('Definitions changed. Re-run the sample before recording the review.');if(raw.reviewed!==true||!text(raw.observations)||!Array.isArray(raw.visited)||![0,1,2,3].every(i=>raw.visited.includes(i)))throw Error('Explore all four stages and record your review observations.');const c=contract(p,raw.id);m.checks.push({id:'CT-'+pad(++m.counters.check),at,stamp:contractStamp(p,c),contractId:c.id,role:result.role,scenario:result.scenario,valid:result.valid,issues:result.issues,fieldCount:result.fieldCount,policyDefined:result.policyDefined,observations:text(raw.observations)});m.checks=m.checks.slice(-120);m.review=null;m.handoff=null;break;}
  case 'interfaces.review':mutated=false;m.review={at,stamp:stamp(p),findings:interfaceFindings(p).length};break;
  case 'interfaces.handoff':mutated=false;if(!interfaceReviewCurrent(p))throw Error('Run checks on the current interfaces and data first.');if(raw.acknowledge!==true)throw Error('Acknowledge the open findings and Security obligations.');m.handoff={at,stamp:stamp(p),contractRefs:m.contracts.map(c=>c.ref),dataRefs:m.data.map(d=>d.ref),fieldRefs:m.data.flatMap(d=>d.fields.map(f=>f.id)),lineageRefs:m.lineage.map(l=>l.id),findings:interfaceFindings(p)};break;

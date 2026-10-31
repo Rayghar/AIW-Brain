@@ -1,10 +1,14 @@
 // AIW v0.10.0-rc.10.73.42, group G7 (handbook gap review D9, D19, D20; audit/rc42/OWNER-DECISIONS-AND-PLAN-2026-10-30.md).
 // D9: Chapter 8's authority is the one owner of a data definition; a component's Chapter 5 data list is a 'uses' relation,
 //     a document written before keeps the earlier ownership claims that disagree for a person to confirm (a migration).
+//     Review round 2: Chapter 5's list-against-list ownership check is retired (two users of one record are no conflict);
+//     a claim once settled (off the list, the component removed, Chapter 8 names it, a person confirms) never returns,
+//     and a bulk confirmation leaves a definition with an open claim to its own review.
 // D19: the blank-project 'recovery' proposal takes the source the person chooses, or none; a seeded Chapter 8 contract
 //     whose interaction is removed is flagged.
 // D20: a reviewed 'read-only, safe to repeat' declaration satisfies the duplicate check without a key; only a person
-//     makes it (a draft by Sol and an agent account cannot).
+//     makes it (a draft by Sol and an agent account cannot), on this project: a project made from a template does not
+//     inherit it (review round 2).
 import assert from 'node:assert/strict';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
@@ -16,8 +20,16 @@ import {seedProject,applyCommand} from './public/requirements-domain.js';
 import {withFinalReview,reviewSource} from './public/review-domain.js';
 import {architectureModel} from './public/architecture-model.js';
 import {figureSourceOf} from './public/sdd-document.js';
-import {applyInterfacesCommand,interfaceFindings,interfaceMilestones,contract,dataRecord,contracts} from './public/interfaces-domain.js';
-import {applyRealisationCommand,realisationProposal,realisationFindings,components,component,exportRealisationMarkdown} from './public/realisation-domain.js';
+import {applyInterfacesCommand,interfaceFindings,interfaceMilestones,contract,dataRecord,contracts,exportInterfacesMarkdown} from './public/interfaces-domain.js';
+import {applyRealisationCommand,realisationProposal,realisationFindings,realisationMilestones,components,component,exportRealisationMarkdown} from './public/realisation-domain.js';
+import {applyRecordCommand} from './public/canonical-command.js';
+import {confirmationCandidates} from './public/validation-confirmation-domain.js';
+import {instantiateTemplate} from './project-lifecycle.js';
+import {list} from './public/util.js';
+import {reasoningSource} from './public/design-reasoning.js';
+import {componentSpec,detectAntiPatterns} from './public/design-spec.js';
+import {componentSheet} from './public/component-sheet.js';
+import {componentSpecMarkdown} from './public/component-spec-document.js';
 import {applyLogicalCommand,logicalGraph} from './public/logical-domain.js';
 import {archimateWanted} from './public/notation-palette.js';
 import {createProject} from './shared/projects-domain.js';
@@ -58,12 +70,46 @@ check('D9: the canonical graph keeps one owner per data definition, the Chapter 
   // The SDD's figure source, a copy of the design source, reads the same: no claim is invented in the copy.
   assert.equal(findings(figureSourceOf(reviewSource(q)),'owner-confirm').length,0);
 });
-check('D9: Chapter 5\'s shared-data check names the one owner Chapter 8 records',()=>{
-  const p=reference(),q=rc(p,'component',{title:'Pending-case coordinator',kind:'worker',purpose:'Coordinate pending-case enquiries',boundary:'Own case assignment',owner:'Payments operations',inputs:'Pending instruction',outputs:'Verified outcome',rationale:'Separate pending work.',source:'Fixture',status:'draft',dataIds:['instruction'],allocations:[]});
-  const id=components(q).at(-1).id,f=realisationFindings(withFinalReview(q)).find(f=>f.code==='data-owner-instruction'&&f.objectId===id);
-  assert.ok(f,'two components listing one record is still raised on each');assert.equal(f.level,'error');
-  assert.match(f.detail,/Chapter 8 names APP-001 Payment service as its owner/,'the finding names the Chapter 8 owner: '+f.detail);
-  assert.doesNotMatch(f.detail,/both claim ownership/);
+check('D9: two components using one record is not an ownership conflict; Chapter 5 raises nothing, Chapter 8 asks for a missing owner',()=>{
+  // The reviewer's probe: APP-002 also uses the instruction, which Chapter 8 gives to APP-001.
+  const p=reference(),errors=d=>realisationFindings(d).filter(f=>f.level==='error').map(f=>f.id);
+  assert.deepEqual(errors(p),[],'fixture: the reference realisation has no error');
+  const q=withFinalReview(rc(p,'component',{id:'risk-engine',dataIds:['risk-record','instruction']}));
+  assert.deepEqual(component(q,'risk-engine').dataIds,['risk-record','instruction']);
+  assert.ok(!realisationFindings(q).some(f=>f.code.startsWith('data-owner')),'no Chapter 5 ownership finding on either component');
+  assert.deepEqual(errors(q),[],'a second user of a record raises no Chapter 5 error');
+  assert.equal(findings(q,'data-owner','instruction').length,0,'Chapter 8 names the owner');
+  assert.deepEqual(owners(q,'instruction'),['api-pod via interfaces.data.authorityId'],'the one owner is unchanged');
+  const reviewed=withFinalReview(applyRealisationCommand(q,{type:'realisation.review',payload:{}},at).document);
+  assert.equal(realisationMilestones(reviewed).find(m=>m.id==='a-validate').done,true,'Validate the realisation stays reachable');
+  const confirmed=withFinalReview(ic(q,'record-review',{id:'instruction',reviewed:true,reviewer:'Payments data owner',evidence:'APP-001 owns it; APP-002 uses it.'}));
+  assert.ok(!realisationFindings(confirmed).some(f=>f.code.startsWith('data-owner')),'and nothing waits for a Chapter 8 review');
+  // A new component listing the record is a user too.
+  const n=rc(p,'component',{title:'Pending-case coordinator',kind:'worker',purpose:'Coordinate pending-case enquiries',boundary:'Own case assignment',owner:'Payments operations',inputs:'Pending instruction',outputs:'Verified outcome',rationale:'Separate pending work.',source:'Fixture',status:'draft',dataIds:['instruction'],allocations:[]});
+  assert.ok(!realisationFindings(withFinalReview(n)).some(f=>f.code.startsWith('data-owner')));
+  // A record no Chapter 8 definition gives an owner is Chapter 8's error, once, on the definition.
+  const none=withFinalReview(ic(q,'data',{id:'instruction',authorityId:''}));
+  assert.equal(dataRecord(none,'instruction').authorityId,'','fixture: Chapter 8 names no owner');
+  const f=findings(none,'data-owner','instruction');
+  assert.equal(f.length,1,'Chapter 8 asks for the owner');assert.equal(f[0].level,'error');
+  assert.ok(!realisationFindings(none).some(f=>f.code.startsWith('data-owner')),'Chapter 5 does not raise it again beside it');
+});
+check('D9: the component specification, its sheet and the SDD read ownership from Chapter 8 only, never from a Chapter 5 list',()=>{
+  // APP-002 also uses the instruction (APP-001 owns it); the settlement has no Chapter 8 owner and APP-004 lists it.
+  const p=withFinalReview(ic(rc(reference(),'component',{id:'risk-engine',dataIds:['risk-record','instruction']}),'data',{id:'settlement',authorityId:''}));
+  assert.deepEqual(component(p,'worker').dataIds.includes('settlement'),true,'fixture: APP-004 lists the settlement');
+  const R=reasoningSource(p),spec=id=>componentSpec(R,id).data.owned.map(d=>d.id).sort();
+  assert.deepEqual(spec('api-pod'),['instruction'],'APP-001 owns what Chapter 8 names it the authority of');
+  assert.ok(!spec('risk-engine').includes('instruction'),'APP-002 only uses the instruction');
+  assert.ok(!spec('worker').includes('settlement'),'a record Chapter 8 gives no owner is owned by no component, whatever lists name it');
+  const owns=componentSheet(p,'worker').fields.find(f=>f.id==='owns');
+  assert.ok(!JSON.stringify(owns).includes('settlement')&&!JSON.stringify(owns).includes('no authority recorded'),'the sheet infers no ownership from the list: '+JSON.stringify(owns.values));
+  const ownedLine=componentSpecMarkdown(componentSpec(R,'worker')).match(/Owned: ([^·\n]*)/)?.[1];
+  assert.ok(ownedLine!==undefined&&!/settlement/i.test(ownedLine),'and the SDD\'s component passage says it owns no settlement: '+ownedLine);
+  // The shared-data concern reads the lists as use, not as owners: it asks how the others reach Chapter 8's one owner.
+  const shared=detectAntiPatterns(R).find(a=>a.id==='shared-data');
+  assert.ok(shared&&/instruction is used directly by APP-001 Payment service and APP-002 Risk engine/.test(shared.text),'two components using one record directly is a coupling concern: '+shared?.text);
+  assert.ok(!/held by/.test(shared.text)&&/Chapter 8/.test(shared.ask),'which names no owner from the lists and asks after Chapter 8\'s: '+shared.ask);
 });
 // A document written before rc.10.73.42: its Chapter 5 lists were ownership records. Read, it is migrated once.
 const legacyOf=p=>{const doc=structuredClone(p);delete doc.dataOwnership;return doc;};
@@ -100,6 +146,48 @@ check('D9 migration: a document written before keeps the disagreeing claims for 
   // Making Chapter 8 name the claimant resolves the other one; so does removing the claim from the list.
   const named=ic(up,'data',{id:'settlement',authorityId:'worker'});assert.equal(findings(named,'owner-confirm','settlement').length,0);
   const dropped=rc(up,'component',{id:'worker',dataIds:[]});assert.equal(findings(withFinalReview(dropped),'owner-confirm','settlement').length,0);
+});
+check('D9 migration: a resolved claim stays resolved; a list written later is data the component uses',()=>{
+  // The reviewer's probe: Chapter 8 names APP-002 and APP-001 listed the instruction before the upgrade.
+  const legacy=legacyOf(ic(reference(),'data',{id:'instruction',authorityId:'risk-engine'}));legacy.interfaces.data.find(d=>d.id==='settlement').authorityId='';
+  const up=withFinalReview(structuredClone(legacy)),claims=d=>list(d.dataOwnership?.toConfirm).map(x=>[x.dataId,x.componentIds]);
+  assert.deepEqual(claims(up),[['instruction',['api-pod']],['settlement',['worker']]],'fixture: two claims wait');
+  // Taken off the list, then listed again: the claim was settled when it left the list.
+  const off=withFinalReview(rc(up,'component',{id:'api-pod',dataIds:[]}));
+  assert.equal(findings(off,'owner-confirm','instruction').length,0);
+  assert.deepEqual(claims(off),[['settlement',['worker']]],'the settled claim leaves the record of claims');
+  const again=withFinalReview(rc(off,'component',{id:'api-pod',dataIds:['instruction']}));
+  assert.deepEqual(component(again,'api-pod').dataIds,['instruction']);
+  assert.equal(findings(again,'owner-confirm','instruction').length,0,'listed again it is data APP-001 uses, not the old claim');
+  assert.deepEqual(claims(again),[['settlement',['worker']]]);
+  const settled=withFinalReview(ic(again,'record-review',{id:'settlement',reviewed:true,reviewer:'Payments data owner',evidence:'Chapter 8 names the owner.'}));
+  assert.deepEqual([claims(settled),findings(settled,'owner-confirm').length],[[],0],'no claim is left to hold the data milestone');
+  // Chapter 8 names the claimant, then another owner: the claim was settled when Chapter 8 named it.
+  const named=withFinalReview(ic(up,'data',{id:'settlement',authorityId:'worker'}));
+  assert.deepEqual(claims(named),[['instruction',['api-pod']]],'naming the claimant as owner settles its claim');
+  const moved=withFinalReview(ic(named,'data',{id:'settlement',authorityId:'api-pod'}));
+  assert.equal(findings(moved,'owner-confirm','settlement').length,0,'a later owner change does not bring the old claim back');
+  // A person's confirmation settles every claim on the definition.
+  assert.deepEqual(claims(ic(up,'record-review',{id:'instruction',reviewed:true,reviewer:'Payments data owner',evidence:'APP-002 owns it.'})),[['settlement',['worker']]]);
+  // A component that leaves the design settles its claim: restored, its list is data it uses.
+  const made=rc(reference(),'component',{title:'Pending-case coordinator',kind:'worker',purpose:'Coordinate pending-case enquiries',boundary:'Own case assignment',owner:'Payments operations',inputs:'Pending instruction',outputs:'Verified outcome',rationale:'Separate pending work.',source:'Fixture',status:'draft',dataIds:['instruction'],allocations:[]}),madeId=components(made).at(-1).id;
+  const upMade=withFinalReview(legacyOf(made));
+  assert.deepEqual(claims(upMade),[['instruction',[madeId]]],'fixture: the new component\'s list was read as a claim');
+  const retired=withFinalReview(applyRecordCommand(upMade,{type:'record.retire',payload:{ids:[madeId],chapter:5,reason:'Merged into APP-001.'}},at,'architect').document);
+  assert.deepEqual(claims(retired),[],'a removed component\'s claim is settled');
+  const restored=withFinalReview(applyRecordCommand(retired,{type:'record.restore',payload:{ids:[madeId],chapter:5}},at,'architect').document);
+  assert.deepEqual(component(restored,madeId)?.dataIds,['instruction'],'fixture: restored with its list');
+  assert.equal(findings(restored,'owner-confirm','instruction').length,0,'restored, its list is data it uses');
+  // A malformed record of claims is read defensively.
+  const broken=structuredClone(up);broken.dataOwnership.toConfirm.unshift(null,{dataId:'instruction'});
+  assert.doesNotThrow(()=>interfaceFindings(broken));assert.equal(interfaceFindings(broken).filter(f=>f.code==='owner-confirm').length,2);
+  assert.doesNotThrow(()=>rc(broken,'component',{id:'api-pod',dataIds:[]}));
+  assert.doesNotThrow(()=>ic(broken,'record-review',{id:'instruction',reviewed:true,reviewer:'R',evidence:'E'}));
+  // A bulk confirmation does not settle a claim it does not show: a definition with a claim waits for its own review.
+  const rows=confirmationCandidates(up,8).map(x=>x.id);
+  assert.ok(!rows.includes('instruction')&&!rows.includes('settlement'),'a definition with an open claim is left out of the bulk confirmation: '+rows.join(', '));
+  assert.ok(confirmationCandidates(ic(up,'record-review',{id:'risk-record',reviewed:true,reviewer:'R',evidence:'E'}),8).every(x=>x.id!=='risk-record'),'fixture: a reviewed definition is not offered');
+  assert.ok(confirmationCandidates(withFinalReview(rc(up,'component',{id:'api-pod',dataIds:[]})),8).some(x=>x.id==='instruction'),'once settled, the definition is offered again');
 });
 // The same through the server: a row stored before is upgraded by its first read, once, as a storage upgrade.
 {
@@ -155,7 +243,9 @@ check('D19: a seeded Chapter 8 contract whose interaction is removed is flagged'
   const gone=withFinalReview(rc(q,'remove-interaction',{id:e.id}));
   assert.ok(contract(gone,seed.id),'AIW\'s proposal stays until a person retires it');
   const f=findings(gone,'source-missing',seed.id)[0];
-  assert.ok(f,'and says its source is gone');assert.match(f.detail,new RegExp(e.id));assert.match(f.title,/Retire/);
+  assert.ok(f,'and says its source no longer calls for it');assert.match(f.detail,new RegExp(e.id));assert.match(f.title,/Retire/);
+  // The same words hold for a seed whose read input left because Chapter 8's authority changed: no claim that a source is gone.
+  assert.match(f.detail,/no longer calls for it/);assert.doesNotMatch(f.detail,/is gone/);
 });
 
 // ---------------------------------------------------------------- D20
@@ -192,6 +282,30 @@ check('D20: Sol cannot make the declaration',()=>{
   // A contract save, drafted or not, cannot carry a declaration in with it.
   const smuggled=ic(p,'contract',{id,readOnlyDeclaration:{at,reviewer:'Sol',basis:'Looks safe.',stamp:'x'}});
   assert.equal(contract(smuggled,id).readOnlyDeclaration,undefined);assert.equal(findings(smuggled,'duplicate',id).length,1);
+});
+check('D20: a project made from a template does not inherit the declaration; a person declares it there',()=>{
+  let p=ic(reference(),'contract',statusContract);const id=contracts(p).at(-1).id;
+  p=ic(p,'read-only',{id,reviewed:true,reviewer:'Integration lead',basis:'It reads the instruction and changes nothing.'});
+  p=ic(p,'record-review',{id,reviewed:true,reviewer:'Integration lead',evidence:'Reviewed in the source project.'});
+  assert.deepEqual([findings(p,'duplicate',id).length,!!contract(p,id).review],[0,true],'fixture: declared and reviewed in the source project');
+  // A second contract, declared and then retired in the source: its retired copy must not carry the declaration either.
+  let s=ic(p,'contract',{...statusContract,title:'Query settlement status',operation:'GET /settlements/{reference}'});const sid=contracts(s).at(-1).id;
+  s=ic(s,'read-only',{id:sid,reviewed:true,reviewer:'Integration lead',basis:'It reads and changes nothing.'});
+  s=applyRecordCommand(s,{type:'record.retire',payload:{ids:[sid],chapter:8,reason:'Not needed in the source.'}},at,'architect').document;
+  const t=instantiateTemplate(s,'g7-from-template','From template',at),c=contract(t,id);
+  assert.equal(c.review,null,'the instance resets the contract\'s review');
+  assert.ok(!c.readOnlyDeclaration,'and the person-only declaration with it');
+  assert.equal(findings(t,'duplicate',id).length,1,'the duplicate check asks again in the new project');
+  assert.equal(findings(t,'read-only-review',id).length,0,'nothing stale is left to review');
+  assert.ok(!exportInterfacesMarkdown(t).includes('Read-only, safe to repeat'),'the export does not state it');
+  const back=applyRecordCommand(t,{type:'record.restore',payload:{ids:[sid],chapter:8}},at,'architect').document;
+  assert.ok(contract(back,sid)&&!contract(back,sid).readOnlyDeclaration,'a retired copy restored in the instance carries none');
+  assert.equal(findings(back,'duplicate',sid).length,1);
+  const declared=ic(t,'read-only',{id,reviewed:true,reviewer:'Instance integration lead',basis:'Reviewed here: it reads and changes nothing.'});
+  assert.equal(findings(declared,'duplicate',id).length,0,'a person declares it in the new project');
+  assert.equal(contract(declared,id).readOnlyDeclaration.reviewer,'Instance integration lead');
+  // The source project keeps its own declaration.
+  assert.equal(contract(p,id).readOnlyDeclaration.reviewer,'Integration lead');
 });
 
 if(failed){console.log(failed+' check'+(failed>1?'s':'')+' failed');process.exit(1);}

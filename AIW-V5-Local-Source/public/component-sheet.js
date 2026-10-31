@@ -143,11 +143,11 @@ function buildSheet(p, id) {
   field('interfaces', 'interactions', 'Interactions without a contract', where(8, 'contracts', null), {counted: false, state: flows.length ? 'open' : 'recorded', rows: flows, empty: 'Every recorded interaction of this component has a contract.'});
   section('interfaces');
 
-  // 4 · Data: owns (the definitions naming it as authority; its own list without an authority is inferred), reads, writes.
+  // 4 · Data: owns (the definitions Chapter 8 names it the authority of; rc.10.73.42, D9: its own list is data it uses and
+  // infers no ownership), reads, writes.
   const classified = d => stated(d.classification);
   const dataValue = d => to(8, d, named(d), {note: str(d.classification) || 'not classified', state: classified(d) ? 'recorded' : 'open'});
-  const authored = C.data.owned.filter(d => d.authorityId === id), listed = C.data.owned.filter(d => d.authorityId !== id);
-  field('data', 'owns', 'Owns', where(8, 'data', C.data.owned[0]?.id || null), {state: authored.length ? 'recorded' : listed.length ? 'inferred' : 'open', values: [...authored.map(dataValue), ...listed.map(d => ({...dataValue(d), note: (str(d.classification) || 'not classified') + ' · listed by the component, no authority recorded', state: 'inferred'}))], empty: 'Name this component as the authority of the data it owns.'});
+  field('data', 'owns', 'Owns', where(8, 'data', C.data.owned[0]?.id || null), {state: C.data.owned.length ? 'recorded' : 'open', values: C.data.owned.map(dataValue), empty: 'Name this component as the authority of the data it owns.'});
   field('data', 'reads', 'Reads', where(8, 'contracts', null), {state: C.data.consumed.length ? 'recorded' : str(c.inputs) ? 'open' : 'inferred', values: C.data.consumed.map(dataValue), empty: str(c.inputs) ? 'Its inputs are prose; link the data definition a contract exchanges.' : 'No contract exchange names data this component reads.'});
   field('data', 'writes', 'Writes', where(8, 'contracts', null), {state: C.data.produced.length ? 'recorded' : str(c.outputs) ? 'open' : 'inferred', values: C.data.produced.map(dataValue), empty: str(c.outputs) ? 'Its outputs are prose; link the data definition a contract exchanges.' : 'No contract exchange names data this component writes.'});
   const unclassified = C.data.owned.filter(d => !classified(d));

@@ -125,13 +125,13 @@ function specIndex(R) {
   const p = R.p, by = () => new Map(), add = (m, key, x) => { let xs = m.get(key); if (!xs) m.set(key, xs = []); if (xs.at(-1) !== x) xs.push(x); };
   // Data by id: Chapter 8's definitions, and the data records Chapter 8 seeds them from while it is not opened yet.
   const data = new Map([...list(p?.logical?.assets).filter(n => n.layer === 'data').map(n => [n.id, {id: n.id, ref: n.ref || n.id, title: n.title, purpose: n.description}]), ...list(p?.interfaces?.data).map(d => [d.id, d])]);
-  const contractsByEnd = by(), ownedBy = by(), authored = new Set(), threatsBy = by(), controlsBy = by(), connectionsBy = by();
+  const contractsByEnd = by(), ownedBy = by(), threatsBy = by(), controlsBy = by(), connectionsBy = by();
   for (const k of R.contracts) { add(contractsByEnd, k.from, k); add(contractsByEnd, k.to, k); }
-  for (const d of list(p?.interfaces?.data)) { const as = dataAuthorities(p, d); if (as.length) authored.add(d.id); for (const a of as) add(ownedBy, a.id, d); }
+  for (const d of list(p?.interfaces?.data)) for (const a of dataAuthorities(p, d)) add(ownedBy, a.id, d);
   for (const t of list(p?.security?.threats)) for (const x of list(t.targetIds)) add(threatsBy, x, t);
   for (const k of R.controls) for (const x of list(k.targetIds)) add(controlsBy, x, k);
   for (const k of R.connections) { add(connectionsBy, k.from, k); add(connectionsBy, k.to, k); }
-  X = {data, parties: new Map(list(p?.interfaces?.parties).map(x => [x.id, x])), contracts: new Map(R.contracts.map(k => [k.id, k])), contractsByEnd, ownedBy, authored, threatsBy, controlsBy, connectionsBy};
+  X = {data, parties: new Map(list(p?.interfaces?.parties).map(x => [x.id, x])), contracts: new Map(R.contracts.map(k => [k.id, k])), contractsByEnd, ownedBy, threatsBy, controlsBy, connectionsBy};
   specIndexes.set(R, X); return X;
 }
 export function componentSpec(R, id) {
@@ -150,12 +150,12 @@ export function componentSpec(R, id) {
   const uses = mine.filter(k => (str(k.kind) === 'event' ? k.to === id : k.from === id)).map(face);
   const dataOf = ids => uniq(list(ids)).map(x => data.get(x) || null).filter(Boolean);
   // Round 12 (GR-CMP-07): a component owns the data definitions that name it as their authority (Chapter 8,
-  // interfaces-domain.js dataAuthorities), and the data its own list names only where no authority is recorded yet (a
-  // data record Chapter 8 has not opened). It consumes and produces what its contracts exchange: a caller produces a
-  // request and consumes the response, a provider the reverse; an event's publisher produces it and its receiver
-  // consumes it. The lists a component declares itself are read beside them.
-  const authorities = X.ownedBy.get(id) || [], authored = X.authored;
-  const owned = uniq([...authorities, ...dataOf(c.dataIds).filter(d => !authored.has(d.id))]);
+  // interfaces-domain.js dataAuthorities); rc.10.73.42 (D9): only those. Its own Chapter 5 list is data it uses and is
+  // never read as ownership, so a record Chapter 8 names no authority for is owned by no component (Chapter 8 asks for
+  // one). It consumes and produces what its contracts exchange: a caller produces a request and consumes the response,
+  // a provider the reverse; an event's publisher produces it and its receiver consumes it. The lists a component
+  // declares itself (consumes, produces) are read beside them.
+  const owned = uniq(X.ownedBy.get(id) || []);
   const flows = {consumed: [], produced: []};
   for (const k of mine) for (const x of list(k.exchanges)) {
     if (k.from === id) flows[x.role === 'response' ? 'consumed' : 'produced'].push(x.dataId);
@@ -264,11 +264,13 @@ export function detectAntiPatterns(R) {
   // Retry storm: a retry policy with no backoff or limit.
   const storm = R.contracts.filter(c => str(c.retryPolicy) && !/backoff|jitter|limit|max|at most|budget/i.test(c.retryPolicy));
   if (storm.length) found.push(AP('ANTI-RETRY-STORM', {id: 'retry', chapter: 8, severity: 'risk', objects: storm.map(c => ({id: c.id, ref: c.ref, title: c.title, chapter: 8})), text: `${plural(storm.length, 'retry policy names', 'retry policies name')} no backoff or limit: ${storm.map(c => c.ref).join(', ')}.`, ask: 'What bounds the retries when the callee is already struggling?'}));
-  // Shared data: one data record held by more than one component.
+  // Shared data: one data record more than one component works on directly. rc.10.73.42 (D9): a non-ownership reading: a
+  // Chapter 5 list is data a component uses, and the one owner is the authority Chapter 8 names; components that use one
+  // record directly are coupled through it whoever owns it, so the question is how the others reach the owner.
   const holders = new Map();
   for (const c of R.comps.values()) for (const d of list(c.dataIds)) { if (!holders.has(d)) holders.set(d, []); holders.get(d).push(c); }
   const shared = [...holders].filter(([, cs]) => cs.length > 1);
-  if (shared.length) found.push(AP('ANTI-SHARED-DATABASE-COUPLING', {id: 'shared-data', chapter: 5, severity: 'risk', objects: shared.flatMap(([, cs]) => cs.map(c => ({id: c.id, ref: c.ref, title: c.title, chapter: 5}))), text: shared.map(([d, cs]) => `${d} is held by ${joinAnd(cs.map(c => c.ref + ' ' + c.title))}`).join('; ') + '.', ask: 'Who is the single owner, and how do the others reach it?', playbook: {text: 'Tight coupling between services can make it difficult to modify or update individual services without affecting others.', src: 'anti patterns!B41'}}));
+  if (shared.length) found.push(AP('ANTI-SHARED-DATABASE-COUPLING', {id: 'shared-data', chapter: 5, severity: 'risk', objects: shared.flatMap(([, cs]) => cs.map(c => ({id: c.id, ref: c.ref, title: c.title, chapter: 5}))), text: shared.map(([d, cs]) => `${d} is used directly by ${joinAnd(cs.map(c => c.ref + ' ' + c.title))}`).join('; ') + '.', ask: 'Which one owns it in Chapter 8, and how do the others reach it?', playbook: {text: 'Tight coupling between services can make it difficult to modify or update individual services without affecting others.', src: 'anti patterns!B41'}}));
   // God service: one component realising most responsibilities.
   const n = R.resp.size;
   const gods = [...R.comps.values()].filter(c => { const k = responsibilitiesOfComponent(R, c.id).length; return n >= 4 && (k > 3 || k / n > 0.5); });
