@@ -6,6 +6,7 @@ import {renderArchitectureCases,renderArchitectureCaseDossier,renderFocusedCaseV
 import {recordStamp,driverStamp} from './public/source-fingerprint.js';
 import {inputSnapshot} from './public/technology-realisation-domain.js';
 import {runtimePlanStamp} from './public/runtime-domain.js';
+import {requirementTrace,hopsFrom} from './public/trace-kernel.js';
 
 const at='2026-10-11T09:00:00.000Z';
 const create=()=>createProject({name:'Synthetic payment trail',template:'bank-payment'},'journey-fixture',at);
@@ -83,11 +84,23 @@ test('one disconnected selected requirement cannot borrow another requirement’
 });
 
 test('chapter tags without implementation mappings are not an end-to-end trail',()=>{
- const p=recordedSyntheticTrail();p.logical.mappings=p.logical.mappings.filter(m=>m.logicalId!=='api');
+ // rc.10.73.42 (D7): the trail is the trace kernel's. With no responsibility mapped to an application component, REQ-001's
+ // trail reaches no mapped component, so the journey is not end to end.
+ const p=recordedSyntheticTrail();p.logical.mappings=[];
  const q=save(p,'end-to-end'),report=evaluateArchitectureCase(q,{caseId:'AC-001'});
  assert.equal(report.journey.checks.find(x=>x.key==='continuous-trail').done,false);
  assert.equal(report.journey.checks.find(x=>x.key==='product-selection').done,false);
  assert(report.blockers.some(x=>/Trace one requirement through design and runtime/.test(x)));
+ // With api's own mapping removed, the trail goes on only through responsibilities that REQ-001's drivers constrain or
+ // its decisions justify, each mapped to a component on the trail; the product is still not selected for it.
+ const a=recordedSyntheticTrail();a.logical.mappings=a.logical.mappings.filter(m=>m.logicalId!=='api');
+ const qa=save(a,'end-to-end'),ra=evaluateArchitectureCase(qa,{caseId:'AC-001'}),T=requirementTrace(qa,'REQ-001');
+ const mapped=qa.logical.mappings.filter(m=>T.has(m.logicalId)&&T.has(m.physicalId));
+ assert.deepEqual(mapped.map(m=>m.logicalId),['risk','ledger','hub','notify'],'REQ-001 reaches risk, ledger, hub and notify through its drivers and decisions');
+ assert(mapped.every(m=>hopsFrom(T,m.logicalId).length&&hopsFrom(T,m.logicalId).every(h=>['driver','decision'].includes(T.layerOf(h.from))&&['constrains','justifies'].includes(h.type))),'each by a driver it is constrained by or a decision that justifies it');
+ assert.equal(ra.journey.checks.find(x=>x.key==='continuous-trail').done,true);
+ assert.equal(ra.journey.checks.find(x=>x.key==='product-selection').done,false);
+ assert(!ra.blockers.some(x=>/Trace one requirement through design and runtime/.test(x)));
 });
 
 test('the dossier cites the applied source revision when a source gets a newer revision',()=>{
