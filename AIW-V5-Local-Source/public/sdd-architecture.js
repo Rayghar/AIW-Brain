@@ -1308,7 +1308,7 @@ function techLine(B, S, t) {
   const F1 = B.format < 2;
   // A product where one is named; format 1 says where none is, format 2 prints the capability alone (productOpen asks it
   // of the section once).
-  let s = refOf(cap) + ' ' + md(clip(cap.title, 50)) + (cat && !String(cap.title || '').toLowerCase().includes(cat.toLowerCase()) ? ' (' + cat.toLowerCase() + ')' : '') + (t.product ? ' → ' + md(t.product) + ' (' + (t.selected && t.realisation ? selectionLabel(p, t.realisation) : 'Candidate option') + ')' : productOpen(B, cap) + (F1 ? ' → no product named yet' : ''));
+  let s = refOf(cap) + ' ' + md(clip(cap.title, 50)) + (cat && !String(cap.title || '').toLowerCase().includes(cat.toLowerCase()) ? ' (' + cat.toLowerCase() + ')' : '') + (t.product ? ' → ' + md(t.product) + ' (' + (t.selected && t.realisation ? md(selectionLabel(p, t.realisation)) : 'Candidate option') + ')' : productOpen(B, cap) + (F1 ? ' → no product named yet' : ''));
   const facts = [], need = S.needs.find(n => n.capability?.id === cap.id)?.need;
   // Format 2 says the consequence when it is stated; the section's list names the needs that leave it open.
   if (need) { const x = O.field(need, 6, 'technology need', 'criticality', 'consequence if unavailable'); if (x.stated || F1) facts.push(x.stated ? 'if unavailable: ' + md(x.text) : x.text); }

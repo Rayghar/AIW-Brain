@@ -58,7 +58,7 @@ const where = (chapter, section, object = null) => ({chapter, section: WORK[chap
 // A linked value: the text, the record's chapter and id (a Chapter 5 component is held in place by the view).
 export const to = (chapter, record, text = named(record), extra = {}) => ({text, chapter, id: record?.id || '', path: record?.id ? modelPath(chapter, record.id) : '', ...extra});
 const end = e => e?.kind === 'unknown' || !e?.record ? {text: str(e?.record?.title || e?.record?.id || 'Endpoint not found'), chapter: 8, id: '', path: '', state: 'open'} : to(e.chapter, e.record);
-const EFFECT = {supports: 'Supports · assessment', tension: 'Creates tension · assessment', violates: 'Violates · assessment', neutral: 'Neutral · assessment', 'not-applicable': 'Does not apply · a person\'s judgement', unknown: 'Effect not assessed'};
+const EFFECT = {supports: 'Supports · assessment', tension: 'Creates tension · assessment', violates: 'Violates · assessment', neutral: 'Neutral · assessment', 'not-applicable': 'Does not apply · judgement', unknown: 'Effect not assessed'};
 const effectTone = effect => ['violates', 'tension'].includes(effect) ? 'attention' : 'quiet';
 const day = at => typeof at === 'string' && /^\d{4}-\d{2}-\d{2}/.test(at) ? at.slice(0, 10) : '';
 
@@ -113,7 +113,7 @@ function buildSheet(p, id) {
       decisions: item.decisions.map(x => ({link: to(3, x.record), selected: x.selected ? str(x.selected.title) : '', effect: x.selected ? EFFECT[x.selected.assessments?.[d.id]?.effect] || EFFECT.unknown : '', tone: x.selected ? effectTone(x.selected.assessments?.[d.id]?.effect) : 'quiet', sourceChanged: x.sourceChanged}))};
   });
   field('basis', 'drivers', 'Drivers reaching it', where(2, 'scenarios', null), {state: drivers.length ? 'recorded' : 'open', empty: 'Link a driver to a responsibility this component realises, or to the component itself.', rows: drivers});
-  const questions = list(dq?.questions).map(q => ({id: q.id, title: q.title, question: q.question, state: q.state, chapter: q.chapter, because: q.because.map(x => ({id: x, title: byDriver.get(x)?.title || x})), answers: q.answers.map(a => ({kind: a.kind, ref: a.ref, title: a.title, state: a.state, chapter: a.chapter})), story: q.story, caution: q.caution, toConfirm: q.toConfirm, decide: q.decide}));
+  const questions = list(dq?.questions).map(q => ({id: q.id, title: q.title, question: q.question, state: q.state, chapter: q.chapter, because: q.because.map(x => ({id: x, title: byDriver.get(x)?.title || x})), answers: q.answers.map(a => ({kind: a.kind, ref: a.ref, title: a.title, state: a.state, chapter: a.chapter})), story: q.story, pending: q.pending, caution: q.caution, toConfirm: q.toConfirm, decide: q.decide}));
   const counts = dq?.counts || {open: 0, draft: 0, decided: 0};
   field('basis', 'questions', 'Design questions', where(5, 'components', id), {state: !drivers.length ? 'open' : counts.open ? 'open' : 'recorded', rows: questions, counts,
     value: questions.length ? ['decided', 'draft', 'open'].filter(k => counts[k]).map(k => counts[k] + ' ' + k).join(' · ') : drivers.length ? 'No design question opens from its drivers.' : '',

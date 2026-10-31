@@ -43,7 +43,7 @@ assert(!exportTechnologyRealisationMarkdown(base).includes('undefined'));
  g=cmd(g,'plan',{id:rid,rationale:'Selected for a test of an explicitly considered trade-off.'});
  assert.equal(selectionPreparation(realization(g,rid)),'ready');
  // rc42 (D2): ready to record, but for the judgements: each inherited driver is judged, with a reason, first.
- assert.throws(()=>cmd(g,'record',{id:rid,reviewed:true}),/Assess the preferred option against every driver it inherits/);
+ assert.throws(()=>cmd(g,'record',{id:rid,reviewed:true}),/Judge every driver it inherits, with a reason: /);
  for(const c of realizationCriteria(g,rid).filter(c=>c.kind==='driver'))g=cmd(g,'assessment',{id:rid,optionId:realization(g,rid).options[0].id,criterionId:c.id,effect:'supports',reason:'Synthetic judgement for the selection gate.',evidence:'Synthetic fixture.'});
  g=cmd(g,'record',{id:rid,reviewed:true});
  assert(selectionCurrent(g,realization(g,rid)));
