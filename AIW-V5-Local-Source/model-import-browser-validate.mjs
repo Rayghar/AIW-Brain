@@ -130,7 +130,8 @@ try {
   }
   p = await project();
   const ofModel = xs => xs.length && xs.every(x => x.provenance?.journey?.mode === 'model' && x.provenance.journey.sourceId === 'SRC-002');
-  assert.deepEqual([p.logical.responsibilities.length, p.realisation.components.length, p.interfaces.contracts.length, p.interfaces.parties.length, p.runtime.plans.length, p.technologyRealisation.records.length], [7, 7, 10, 3, 6, 7]);
+  assert.deepEqual([p.logical.responsibilities.length, p.realisation.components.length, p.interfaces.contracts.length, p.interfaces.parties.length, p.runtime.plans.length, p.technologyRealisation.records.length], [7, 7, 10, 3, 14, 7]); // rc.10.73.42 (D10): 14 plans, every part placed in the one Live environment
+  assert.deepEqual(p.runtime.environments.map(e => [e.title, e.assetIds.length]), [['Live', 14]], 'one environment holding every part');
   assert.ok(ofModel(p.logical.responsibilities) && ofModel(p.realisation.components) && ofModel(p.interfaces.contracts) && ofModel(p.interfaces.parties) && ofModel(p.runtime.plans) && ofModel(p.technologyRealisation.records), 'Chapters 4, 5, 7, 8 and 10 carry provenance.journey mode model with the source');
   assert.ok(p.quality.drivers.every(x => x.provenance.journey.mode === 'deterministic') && p.decisions.records.every(x => x.provenance.journey.mode === 'deterministic') && p.security.threats.every(x => x.provenance.journey.mode === 'deterministic'), 'Chapters 2, 3 and 9 stay deterministic');
   assert.deepEqual(p.realisation.components.map(c => [c.title, c.kind]).filter(([t]) => ['Trip store', 'Trip events', 'Dock gateway'].includes(t)), [['Dock gateway', 'adapter'], ['Trip store', 'store'], ['Trip events', 'queue']]);

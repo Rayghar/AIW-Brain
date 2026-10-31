@@ -18,8 +18,9 @@ const PLACEHOLDERS = [
   /^\s*not stated in (?:the )?(?:workbook|source|brief)\.?\s*$/i,
   /^\s*(?:unassigned|unknown|tbd|tbc|to be (?:confirmed|decided|defined)|n\/a)\.?\s*$/i,
   /^\s*confirm source\.?\s*$/i,
-  // rc.10.73.42 (D17): a procedure the words say is still to be written ("Runbook for X still to be written.") is none.
-  /\bstill to be (?:written|defined|decided|confirmed|agreed)\.?\s*$/i,
+  // rc.10.73.42 (D17): the drafted runbook placeholder, whole ("Runbook for X still to be written."), is none; a sentence
+  // that only ends in such words states something and is kept.
+  /^\s*runbook for [^.;:!?]{1,200} still to be written\.?\s*$/i,
 ];
 
 const text = value => (typeof value === 'string' ? value : value == null ? '' : String(value));

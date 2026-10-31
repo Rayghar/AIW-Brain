@@ -3,7 +3,9 @@ import {isOpenText} from './open-fields.js';
 // rc.10.73.42 (D8, C10-21): one failure-domain reading for Chapter 10 and the review desk. A zone's failure domain,
 // normalised; '' when it is not stated (empty, kept open, or placeholder words), so an unstated domain never reads as an
 // independent one. A zone people connect from (kind 'access') hosts no part, so it is no hosting failure domain.
-export const failureDomainKey=z=>z?.open?.failureDomain||isOpenText(z?.failureDomain)?'':String(z.failureDomain).trim().toLowerCase();
+export const failureDomainKey=z=>statedField(z,'failureDomain')?String(z.failureDomain).trim().toLowerCase():'';
+// A field states something: no open state is kept for it, and its words are no placeholder (open-fields.js).
+export const statedField=(r,f)=>!r?.open?.[f]&&!isOpenText(r?.[f]);
 export const hostingZone=z=>!!z&&z.kind!=='access';
 // Round 12 (DM-04): a plan's availability target, hours of service and batch windows, as the plan states them (a plan
 // written before round 12 states none of these: its driver slots name recovery and capacity only).

@@ -10,7 +10,7 @@ import {ENVIRONMENT_STAGES,runtimeInputs} from './runtime-domain.js';
 import {digest} from './brain-integrity.js';
 import {TYPES} from './requirements-domain.js';
 import {driversForRequirement} from './driver-scope.js';
-import {isOpenText,questionOf} from './open-fields.js';
+import {fieldOpen} from './open-fields.js';
 const text=(key,label,extra={})=>({key,label,...extra}),choice=(key,label,options,extra={})=>text(key,label,{options:options.map(o=>typeof o==='string'?{id:o,title:o}:Array.isArray(o)?{id:o[0],title:o[1]}:{id:o.id,title:o.title||o.name||o.question||o.id}),...extra});
 const requirement=p=>p.artefacts.filter(a=>a.type==='requirement');
 // Chapter 1 creates every artefact type through the same chain (round 4): the first answer is the record type, a
@@ -33,10 +33,9 @@ function chapterOne(p,answers,owner,source){
 // rc.10.73.42 (D10): a part is placed in an environment already designed (one of its zones, or a new zone in it), so one
 // environment of a stage holds every part; the first option designs a new environment, as before. The questions asked
 // depend on the answers only, never on what the project holds.
-function chapterTenPlace(p,a,title){const join=a.environmentId&&a.environmentId!=='new-environment';return [choice('environmentId','Which environment does it run in?',[['new-environment','Design a new environment'],...(p.runtime?.environments||[])]),...(join?[choice('zoneId','Which of its zones does it run in?',[['new-zone','Name a new zone'],...(p.runtime?.zones||[]).filter(z=>z.environmentId===a.environmentId)])]:[title,choice('stage','Which operating environment are we designing?',ENVIRONMENT_STAGES)]),...(join&&a.zoneId!=='new-zone'?[]:[text('zone','Name the placement zone.'),text('failureDomain','Which shared failure domain does this zone belong to?')])];}
-// rc.10.73.42 (D17): a plan's answer that is a placeholder (an open question, "Not stated", words still to be written) is
-// kept as the field's open state (open-fields.js) with its value empty, never as words a check could read as stated.
-function openAnswers(a,fs){const o={},v={};for(const f of fs)if(a[f]&&isOpenText(a[f])){const q=questionOf(a[f]);v[f]='';o[f]=q?{state:'open-question',question:q}:{state:'not-stated'};}return {...v,open:o};}
+// An environment that already plans the part is not offered: its plan is edited there, never rewritten by a creation.
+const plannedIn=(p,e,id)=>(p.runtime?.plans||[]).some(r=>r.environmentId===e&&r.assetId===id);
+function chapterTenPlace(p,a,title){const join=a.environmentId&&a.environmentId!=='new-environment';return [choice('environmentId','Which environment does it run in?',[['new-environment','A new environment'],...(p.runtime?.environments||[]).filter(e=>!plannedIn(p,e.id,a.assetId))]),...(join?[choice('zoneId','In which of its zones?',[['new-zone','A new zone'],...(p.runtime?.zones||[]).filter(z=>z.environmentId===a.environmentId)])]:[title,choice('stage','Which operating environment are we designing?',ENVIRONMENT_STAGES)]),...(join&&a.zoneId!=='new-zone'?[]:[text('zone','Name the placement zone.'),text('failureDomain','Which shared failure domain does this zone belong to?')])];}
 export function creationFields(p,ch,answers={}){
  const reqs=requirement(p),owner=text('owner','Who is accountable? Use “Unassigned” if this still needs a decision.'),title=text('title','What should this design object be called?'),source=text('source','Which source or recorded requirement supports this definition?');
  const req=choice('requirementId','Which requirement are we developing?',reqs),drivers=answers.requirementId?driversForRequirement(p,answers.requirementId):p.quality.drivers;
@@ -63,7 +62,7 @@ export function creationDefaults(p,ch,objectId){const candidates={1:{type:'requi
 // ("booking reference" → bookingReference); the fallback when no letter starts it.
 function fieldName(value,fallback){const v=String(value||'').trim();if(/^[A-Za-z_][A-Za-z0-9_]{0,59}$/.test(v))return v;const w=v.match(/[A-Za-z0-9]+/g)||[],n=w.slice(0,6).map((x,i)=>i?x[0].toUpperCase()+x.slice(1).toLowerCase():x.toLowerCase()).join('').slice(0,60);return /^[A-Za-z_]/.test(n)?n:fallback;}
 export function compileCreation(input,ch,answers,at='2000-01-01T00:00:00Z'){
- const state=creationState(input,ch,{answers});if(!state.complete)throw Error('Complete the remaining questions before reviewing this draft.');for(const f of state.fields)validateCreationAnswer(input,ch,answers,f.key,answers[f.key]);
+ if(ch===10&&plannedIn(input,answers.environmentId,answers.assetId))throw Error('It has a plan there. Edit that plan.');const state=creationState(input,ch,{answers});if(!state.complete)throw Error('Complete the remaining questions before reviewing this draft.');for(const f of state.fields)validateCreationAnswer(input,ch,answers,f.key,answers[f.key]);
  let p=structuredClone(input);const commands=[],created=[];let selected=null;const a=answers,source='Guided design from '+[a.requirementId,a.logicalId,a.applicationId,a.capabilityId,a.targetId,a.assetId].filter(Boolean).join(', ');
  const add=(type,payload)=>{const command={type,payload};const result=type==='review.narrative'?applyFinalReviewCommand(p,command,at):applyCanonical(p,command,at);p=result.document;commands.push(command);if(result.selected){selected=result.selected;created.push(result.selected);}return result.selected;};
  if(ch===1){const type=CH1_TYPES.some(([id])=>id===a.type)?a.type:'requirement';add('artefact',{...a,type,confirmed:false,...(type==='journey'?{order:Number(a.order)||0}:{}),links:type==='requirement'?requirementLinks(a):[]});}
@@ -82,9 +81,11 @@ export function compileCreation(input,ch,answers,at='2000-01-01T00:00:00Z'){
  if(ch===9){const threatId=add('security.threat',{...a,targetIds:[a.targetId]});add('security.control',{title:a.controlTitle,purpose:a.consequence,category:a.controlCategory,owner:a.owner,mechanism:a.mechanism,enforcement:a.mechanism,verificationPlan:a.verificationPlan,targetIds:[a.targetId],threatIds:[threatId],failureMode:'Unspecified',assumptions:'Protection is a design proposal until evidence and review are supplied.'});}
  if(ch===10){if(Number(a.minReady)>Number(a.replicas))throw Error('Minimum ready instances cannot exceed the proposed replicas.');
   // rc.10.73.42 (D10): a chosen environment (and zone) was checked against the project's own with every answer above.
-  const joined=p.runtime.environments.find(e=>e.id===a.environmentId),po=openAnswers(a,['readiness','rollback','runbook']);
-  const environmentId=!joined?add('runtime.environment',{...a,assetIds:[a.assetId],purpose:'Operating design for '+a.assetId,basis:'Architect-declared draft; no environment is provisioned.',confirmed:false}):joined.assetIds.includes(a.assetId)?joined.id:add('runtime.environment',{id:joined.id,assetIds:{add:[a.assetId]}});
-  const zoneId=joined&&a.zoneId!=='new-zone'?a.zoneId:add('runtime.zone',{environmentId,title:a.zone,failureDomain:a.failureDomain,owner:a.owner});const plan=p.runtime.plans.find(r=>r.environmentId===environmentId&&r.assetId===a.assetId);if(!plan)throw Error('The selected asset did not create an operating plan.');add('runtime.plan',{...plan,...a,minReady:Number(a.minReady),maxReplicas:Number(a.replicas),id:plan.id,title:plan.title,controlIds:plan.controlIds,...po,open:{...plan.open,...po.open}});add('runtime.placement',{planId:plan.id,zoneId,role:'active',replicas:Number(a.replicas),basis:'Architect-declared replica assumption. Validate against workload, capacity and failure tests.',confirmed:false});selected=plan.id;}
+  // rc.10.73.42 (D17): a plan's answer that is wholly a placeholder (an open question, "Not stated", the drafted "Runbook for
+  // X still to be written.") is kept as the field's open state (open-fields.js) with its value empty, never as words.
+  const joined=p.runtime.environments.find(e=>e.id===a.environmentId),po={},open={};for(const f of ['readiness','rollback','runbook']){const o=fieldOpen(a,f);if(o){po[f]='';open[f]=o;}}
+  const environmentId=add('runtime.environment',joined?{id:joined.id,assetIds:{add:[a.assetId]}}:{...a,assetIds:[a.assetId],purpose:'Operating design for '+a.assetId,basis:'Architect-declared draft; no environment is provisioned.',confirmed:false});
+  const zoneId=joined&&a.zoneId!=='new-zone'?a.zoneId:add('runtime.zone',{environmentId,title:a.zone,failureDomain:a.failureDomain,owner:a.owner});const plan=p.runtime.plans.find(r=>r.environmentId===environmentId&&r.assetId===a.assetId);if(!plan)throw Error('The selected asset did not create an operating plan.');add('runtime.plan',{...plan,...a,minReady:Number(a.minReady),maxReplicas:Number(a.replicas),id:plan.id,title:plan.title,controlIds:plan.controlIds,...po,open:{...plan.open,...open}});add('runtime.placement',{planId:plan.id,zoneId,role:'active',replicas:Number(a.replicas),basis:'Architect-declared replica assumption. Validate against workload, capacity and failure tests.',confirmed:false});selected=plan.id;}
  if(ch===11)add('review.narrative',{...p.finalReview.narrative,...a,confirmed:false});
  return {document:p,commands,created:[...new Set(created)],selected,stamp:digest({ch,answers,commands})};
 }

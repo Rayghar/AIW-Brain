@@ -1,5 +1,4 @@
-import {runtimeDependencyProjection,failureDomainKey,hostingZone} from './runtime-model.js';
-import {isOpenText} from './open-fields.js';
+import {runtimeDependencyProjection,failureDomainKey,hostingZone,statedField} from './runtime-model.js';
 import {withSecurity,controls,control,securityInputStamp,securityHandoffCurrent,latestEvidence,assuranceLabel} from './security-domain.js';
 import {components,component,componentSources} from './realisation-domain.js';
 import {realizations,realization,realizationSources} from './technology-realisation-domain.js';
@@ -241,13 +240,14 @@ function runtimeFindingsOf(p){const m=p.runtime,fs=[],add=(code,r,title,detail,l
   if(!has(r,'capacityBasis')||!r.capacityConfirmed)add('capacity',r,'Confirm '+r.ref+' capacity assumptions','Replica counts are not proof of throughput or failover capacity.','warning');
   // rc.10.73.42 (D17): a plan is operable on what it states: an open field, or placeholder words ("still to be written",
   // "Open question: …"), is listed as open and never satisfies the operations check, so 'operate' never completes on it.
-  if(!['monitoring','runbook','rollout','rollback'].every(f=>typeof r[f]==='string'&&r[f].trim()&&!r.open?.[f]&&!isOpenText(r[f])))add('operations',r,'Make '+r.ref+' operable','Define alerts and ownership, an operating runbook, rollout checks, and rollback/reconciliation criteria.');
+  if(!['monitoring','runbook','rollout','rollback'].every(f=>statedField(r,f)))add('operations',r,'Make '+r.ref+' operable','Define alerts and ownership, an operating runbook, rollout checks, and rollback/reconciliation criteria.');
   if(r.recoveryStrategy==='Unspecified'&&!r.open?.recoveryStrategy||!has(r,'recoveryPlan'))add('recovery',r,'Define '+r.ref+' recovery','Choose a strategy and explain recovery order, prerequisites, and resumption authority.');
   if(r.stateMode==='Stateful service'&&(!has(r,'fencing')||!has(r,'backupPlan')||!zone(p,r.backupZoneId)))add('state-protection',r,'Protect '+r.ref+' state','Define a recoverable copy, its location, and the authority/fencing rule for writes.');
   if(r.backupZoneId&&zone(p,r.backupZoneId)?.environmentId!==r.environmentId)add('backup-zone',r,'Repair '+r.ref+' backup location','The protected copy must refer to a zone in this environment.');
   // A placement whose role is not stated says nothing about where active copies run: no failure-domain reading (DM-08).
-  // rc.10.73.42 (D8): the failure domain as the review desk reads it (failureDomainKey): placeholder words state none.
-  const domainOf=id=>failureDomainKey(zone(p,id)),domains=unique(ls.filter(l=>l.role==='active').map(l=>domainOf(l.zoneId)));if(domains.length===1&&ls.every(roleStated))add('single-domain',r,'Review '+r.ref+' shared failure domain','All active placements share one failure domain. Check independent standby or recovery capacity.','warning');
+  // rc.10.73.42 (D8): the hosting failure domain as the review desk reads it (failureDomainKey over hostingZone): placeholder
+  // words state none, and an access zone hosts nothing.
+  const domainOf=id=>{const z=zone(p,id);return hostingZone(z)?failureDomainKey(z):null},domains=unique(ls.filter(l=>l.role==='active').map(l=>domainOf(l.zoneId)).filter(k=>k!=null));if(domains.length===1&&ls.every(roleStated))add('single-domain',r,'Review '+r.ref+' shared failure domain','All active placements share one failure domain. Check independent standby or recovery capacity.','warning');
   if(r.recoveryStrategy==='Failover'&&!ls.some(l=>l.role==='standby'&&domainOf(l.zoneId)&&!domains.includes(domainOf(l.zoneId))))add('standby',r,'Provide independent standby for '+r.ref,'A second zone name alone does not establish an independent failure domain.');
   if(r.backupZoneId&&domains.includes(domainOf(r.backupZoneId)))add('backup-domain',r,'Review '+r.ref+' backup isolation','Its protected copy shares an active failure domain.','warning');
   if((r.recoveryMinutes!==''||r.lossMinutes!=='')&&(!has(r,'targetsBasis')||!r.targetsConfirmed))add('recovery-targets',r,'Confirm '+r.ref+' recovery assumptions','Time and data-loss values require a basis and explicit confirmation.','warning');
