@@ -1014,7 +1014,10 @@ function componentDetail(B, S, {level = 3, shared = []} = {}) {
     const decided = DQ.questions.filter(q => q.state === 'decided'), open = DQ.questions.filter(q => q.state !== 'decided');
     const codes = text => String(text).replace(/\bQD-\d{3}\b/g, id => codeOf(p, id));
     if (decided.length) out += 'Design basis: ' + decided.map(q => md(codes(q.story))).join(' ') + '\n\n';
-    if (open.length) out += 'Open design questions: ' + named(open.map(q => md(q.title) + ' (' + q.because.map(id => codeOf(p, id)).join(', ') + (q.state === 'draft' ? '; a draft answer is recorded' : '') + ')')) + '.\n\n';
+    // rc42 (D3): a question decided through a Chapter 7 selection names only the drivers judged for it; its other drivers
+    // are printed here, as open items.
+    const pending = decided.filter(q => list(q.pending).length);
+    if (open.length || pending.length) out += 'Open design questions: ' + named([...open.map(q => md(q.title) + ' (' + q.because.map(id => codeOf(p, id)).join(', ') + (q.state === 'draft' ? '; a draft answer is recorded' : '') + ')'), ...pending.map(q => md(q.title) + ' (' + q.pending.map(id => codeOf(p, id)).join(', ') + '; the recorded selection still needs evidence against ' + (q.pending.length === 1 ? 'it' : 'them') + ')')]) + '.\n\n';
   }
   // Requirements (GR-SDD-13, GR-CMP-08): those of the responsibilities it realises, by group with their delivery status.
   const R = I.reqsOfComp.get(S.id) || {realises: [], supports: []};
@@ -1305,7 +1308,7 @@ function techLine(B, S, t) {
   const F1 = B.format < 2;
   // A product where one is named; format 1 says where none is, format 2 prints the capability alone (productOpen asks it
   // of the section once).
-  let s = refOf(cap) + ' ' + md(clip(cap.title, 50)) + (cat && !String(cap.title || '').toLowerCase().includes(cat.toLowerCase()) ? ' (' + cat.toLowerCase() + ')' : '') + (t.product ? ' → ' + md(t.product) + ' (' + (t.selected && t.realisation ? selectionLabel(p, t.realisation) : 'Candidate option') + ')' : productOpen(B, cap) + (F1 ? ' → no product named yet' : ''));
+  let s = refOf(cap) + ' ' + md(clip(cap.title, 50)) + (cat && !String(cap.title || '').toLowerCase().includes(cat.toLowerCase()) ? ' (' + cat.toLowerCase() + ')' : '') + (t.product ? ' → ' + md(t.product) + ' (' + (t.selected && t.realisation ? md(selectionLabel(p, t.realisation)) : 'Candidate option') + ')' : productOpen(B, cap) + (F1 ? ' → no product named yet' : ''));
   const facts = [], need = S.needs.find(n => n.capability?.id === cap.id)?.need;
   // Format 2 says the consequence when it is stated; the section's list names the needs that leave it open.
   if (need) { const x = O.field(need, 6, 'technology need', 'criticality', 'consequence if unavailable'); if (x.stated || F1) facts.push(x.stated ? 'if unavailable: ' + md(x.text) : x.text); }

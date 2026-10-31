@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {seedProject} from './public/requirements-domain.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
-import {applyTechnologyRealisationCommand} from './public/technology-realisation-domain.js';
+import {applyTechnologyRealisationCommand,realizationCriteria} from './public/technology-realisation-domain.js';
 import {technologyCatalogue,findTechnologyProduct,technologyProductUsage} from './public/technology-catalogue.js';
 
 const original=withFinalReview(seedProject()),before=JSON.stringify(original);
@@ -36,7 +36,7 @@ const withdrawn=structuredClone(original);withdrawn.knowledge??={};withdrawn.kno
 assert.equal(findTechnologyProduct(withdrawn,'Apache Kafka').provenance.status,'Source pack withdrawn');
 assert.equal(findTechnologyProduct(withdrawn,'Apache Kafka').mechanisms.length,0,'a withdrawn mechanism pack cannot suggest in discovery');
 
-const command=(p,type,payload)=>applyTechnologyRealisationCommand(p,{type:'techrealisation.'+type,payload},'2026-10-11T12:00:00Z').document;
+const command=(p,type,payload,actor=null)=>applyTechnologyRealisationCommand(p,{type:'techrealisation.'+type,payload},'2026-10-11T12:00:00Z',actor).document;
 let p=structuredClone(original),r=p.technologyRealisation.records.find(x=>x.id==='tr-002');
 p=command(p,'option',{id:r.id,option:{title:'MySQL design candidate',product:'MySQL',version:'',vendor:'',operatingModel:'',sourceUrl:'https://dev.mysql.com/doc/refman/8.4/en/',evidence:'Compare the applicable documented mechanisms and project obligations.'}});
 const mysql=findTechnologyProduct(p,'MySQL');
@@ -50,12 +50,15 @@ const pg=r.options.find(o=>o.product==='PostgreSQL');
 p=command(p,'plan',{id:r.id,rationale:'The architect prefers PostgreSQL subject to a measured restore and capacity assessment.'});
 p=command(p,'preference',{id:r.id,optionId:pg.id});
 assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].status,'Draft preference');
-p=command(p,'record',{id:r.id,reviewed:true});
+// rc42 (D2, D1): judged against every inherited driver before a person records it; a second signed-in person attaches approval.
+for(const c of realizationCriteria(p,r.id).filter(c=>c.kind==='driver'))p=command(p,'assessment',{id:r.id,optionId:pg.id,criterionId:c.id,effect:'supports',reason:'Synthetic fixture judgement.',evidence:'Synthetic fixture.'});
+p=command(p,'record',{id:r.id,reviewed:true},'fixture-architect');
 assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].status,'Current architect selection');
 assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].rationale,p.technologyRealisation.records.find(x=>x.id===r.id).rationale);
 assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].approved,false,'recorded selection does not imply external approval');
-p=command(p,'approval',{id:r.id,reviewer:'Fixture reviewer',authority:'Fixture change board',evidence:'Synthetic approval fixture only',confirmed:true});
-assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].status,'External approval evidence recorded');
+p=command(p,'approval',{id:r.id,reviewer:'Fixture reviewer',authority:'Fixture change board',evidence:'Synthetic approval fixture only',confirmed:true},'fixture-approver');
+assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].status,'Approval evidence attested by fixture-approver','rc42 (D1): the status names who attested the approval evidence');
+assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].approved,true);
 p=command(p,'option',{id:r.id,option:{id:pg.id,serviceTier:'Unconfirmed project tier'}});
 assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].status,'Selection needs review','a changed option invalidates recorded selection and approval without erasing its history');
 assert.equal(findTechnologyProduct(p,'PostgreSQL').uses[0].needsReview,true);

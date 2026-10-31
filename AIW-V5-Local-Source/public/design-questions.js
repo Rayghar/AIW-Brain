@@ -83,6 +83,16 @@ function recordFacts(p, at) {
   return facts;
 }
 
+// rc42 (D3): the Chapter 7 reading of a realization's selection, registered by technology-realisation-domain.js (which
+// reads this projection for its findings, so it is not imported here): null unless the selection is recorded and current,
+// otherwise how the selected option was judged against each driver ({driverId: effect}). Unregistered, no realization
+// answer is decided (rc42-g1-tech-approval-validate.mjs holds that every entry point loads the module that registers it).
+// A realization answers a question as decided only through that selection, and only because of the drivers judged to be
+// supported for it (basis), naming the trade-offs accepted; the question's drivers still needing evidence stay open
+// (pending). A draft preference, or a selection judged to support none of them, is a draft answer.
+let selectionBasis = () => null;
+export const registerSelectionBasis = read => { selectionBasis = read; };
+
 // What already answers a question for the record, read from the canonical records in order of authority.
 const taskTouches = (t, ids) => list(t.basis?.contextIds).some(id => ids.has(id)) || ['callerId', 'processorId', 'storeId', 'queueId', 'consumerId', 'routerId', 'secondaryId'].some(k => ids.has(t.answers?.[k]));
 function answersFor(p, q, at, drivers) {
@@ -103,7 +113,7 @@ function answersFor(p, q, at, drivers) {
     }
     if (what === 'realization') for (const n of needs.filter(n => n.category === arg)) {
       const m = mappings.find(m => m.needId === n.id); if (!m) continue;
-      for (const rm of trMaps.filter(x => x.capabilityId === m.capabilityId)) { const tr = trs.find(x => x.id === rm.realizationId); if (!tr) continue; const o = list(tr.options).find(x => x.id === tr.selectedOptionId); if (o) push('realization', tr.ref || tr.id, o.product || o.title, 'decided', 7, {product: o.product || ''}); else if (list(tr.options).length) push('realization', tr.ref || tr.id, tr.title, 'draft', 7); }
+      for (const rm of trMaps.filter(x => x.capabilityId === m.capabilityId)) { const tr = trs.find(x => x.id === rm.realizationId); if (!tr) continue; const o = list(tr.options).find(x => x.id === tr.selectedOptionId); if (o) { const j = selectionBasis(p, tr) || {}, by = e => drivers.filter(d => j[d.id] === e).map(d => d.id), basis = by('supports'); push('realization', tr.ref || tr.id, o.product || o.title, basis.length ? 'decided' : 'draft', 7, {product: o.product || '', basis, tradeOffs: by('tension'), pending: drivers.filter(d => !['supports', 'tension', 'not-applicable'].includes(j[d.id])).map(d => d.id)}); } else if (list(tr.options).length) push('realization', tr.ref || tr.id, tr.title, 'draft', 7); }
     }
     if (what === 'contract') for (const k of list(p.interfaces?.contracts).filter(k => ids.has(k.to))) {
       if (arg === 'timeout' && stated(k.timeoutMs)) push('contract', k.ref || k.id, `${k.title}: ${k.timeoutMs} ms`, k.timeoutConfirmed ? 'decided' : 'draft', 8);
@@ -141,7 +151,7 @@ function questionsOf(p, id) {
     if (denied.length) continue;
     const answers = answersFor(p, q, at, because), state = stateOf(answers), decided = answers.find(a => a.state === 'decided');
     questions.push({id: q.id, title: q.title, question: q.question, chapter: q.chapter, state, toConfirm: unknown.map(f => RECORD_FACTS[f]), because: because.map(d => d.id), answers, decide: q.decide, products: q.products, caution: q.caution,
-      story: decided ? `${decided.title} for ${at.ref}, because ${names(because)}${decided.ref ? ` (${decided.ref})` : ''}.` : ''});
+      story: decided ? `${decided.title} for ${at.ref}, because ${decided.basis ? decided.basis.join(', ') + (decided.tradeOffs.length ? ', accepting a trade-off on ' + decided.tradeOffs.join(', ') : '') : names(because)}${decided.ref ? ` (${decided.ref})` : ''}.` : '', ...decided?.pending?.length && {pending: decided.pending}});
   }
   const counts = {open: 0, draft: 0, decided: 0}; for (const q of questions) counts[q.state]++;
   return {id, ref: at.ref, title: at.title, kind: at.kind, chapter: CHAPTERS[at.kind], drivers, facts, questions, counts};

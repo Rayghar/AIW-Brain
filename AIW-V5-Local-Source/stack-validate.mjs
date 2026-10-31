@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import {seedProject} from './public/requirements-domain.js';
 import {withFinalReview} from './public/review-domain.js';
-import {technologyRealisationProposal, applyTechnologyRealisationCommand} from './public/technology-realisation-domain.js';
+import {technologyRealisationProposal, applyTechnologyRealisationCommand, realizationCriteria} from './public/technology-realisation-domain.js';
 import {anatomyModel} from './public/anatomy-model.js';
 import {exchangeModel} from './public/exchange-model.js';
 import {platformModel} from './public/platform-model.js';
@@ -45,6 +45,8 @@ const run = (type, payload) => { q = applyTechnologyRealisationCommand(q, {type,
 run('techrealisation.preference', {id: 'tr-001', optionId: rec('tr-001').options[0].id});
 run('techrealisation.preference', {id: 'tr-002', optionId: rec('tr-002').options[0].id});
 q.technologyRealisation.records.find(r => r.id === 'tr-002').rationale = 'PostgreSQL gives the atomic unique-reference guarantee the ledger path needs.';
+// rc42 (D2): the preferred option is judged against each inherited driver before the selection is recorded.
+for (const c of realizationCriteria(q, 'tr-002').filter(c => c.kind === 'driver')) run('techrealisation.assessment', {id: 'tr-002', optionId: rec('tr-002').options[0].id, criterionId: c.id, effect: 'supports', reason: 'Synthetic fixture judgement.', evidence: 'Synthetic fixture.'});
 run('techrealisation.record', {id: 'tr-002', reviewed: true});
 Object.assign(q.technologyRealisation.records.find(r => r.id === 'tr-003'), {resiliencePlan: 'Mirror queues across two nodes; replay only after reconciliation.', operationsPlan: 'Integration team runs it.'});
 const Q = stackSource(q);
@@ -53,7 +55,7 @@ assert.equal(Q.R.get('tr-003').planned, 2);
 const qi = stackInsights(Q).map(i => i.text).join('\n');
 assert.match(qi, /7 of 9 realisations have no choice yet\. Decide Identity and access decisions; Service connectivity first/);
 assert.match(qi, /1 choice is a draft preference, not yet recorded with its rationale: TR-001/);
-assert.match(qi, /TR-001 \(10 of 10 criteria\), TR-002 \(10 of 10 criteria\): the preferred option is not yet assessed/);
+assert.match(qi, /TR-001 \(10 of 10 criteria\), TR-002 \(4 of 10 criteria\): the preferred option is not yet assessed/, 'rc42 (D2): the recorded TR-002 is judged against its 6 drivers; its 4 general criteria remain');
 assert.match(qi, /Selection progress: 2 preferred, 1 recorded, 0 approved, of 9/);
 const si = stackInsights(S).map(i => i.text).join('\n');
 assert.match(si, /9 of 9 realisations have no choice yet\. Decide Application execution; Identity and access decisions; Service connectivity first: if any of them fails, all 5 components stop/);

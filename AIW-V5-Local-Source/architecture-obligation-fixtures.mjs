@@ -1,6 +1,6 @@
 import {readyComposition,arc} from './composition-fixtures.mjs';
 import {previewAlternative,applyAlternativeCommand} from './public/model-alternatives.js';
-import {applyTechnologyRealisationCommand} from './public/technology-realisation-domain.js';
+import {applyTechnologyRealisationCommand,realizationCriteria} from './public/technology-realisation-domain.js';
 import {applyFinalReviewCommand} from './public/review-domain.js';
 import {architectureObligationAction,architectureActionStamp} from './public/architecture-obligations.js';
 export const obligationAt='2026-10-20T18:00:00.000Z';
@@ -11,7 +11,10 @@ export function acceptedObligationFixture(){
  const id=p.technologyRealisation.records[0].id,tech=(type,payload)=>{p=applyTechnologyRealisationCommand(p,{type:'techrealisation.'+type,payload:{id,...payload}},obligationAt).document;};
  for(const label of ['A','B'])tech('option',{option:{title:'Synthetic implementation '+label,product:'Synthetic fixture '+label,version:'1',operatingModel:'Self managed',replicaCount:'2',configurationFacts:{'fixture.protected':true}}});
  tech('plan',{owner:'Synthetic service owner',purpose:'Provide the protected caller policy.',rationale:'Synthetic currentness test only; no claim of product suitability.'});
- tech('preference',{optionId:p.technologyRealisation.records[0].options[0].id});tech('record',{reviewed:true});
+ tech('preference',{optionId:p.technologyRealisation.records[0].options[0].id});
+ // rc42 (D2): a selection is recorded only once the preferred option is judged against every driver it inherits.
+ for(const c of realizationCriteria(p,id).filter(c=>c.kind==='driver'))tech('assessment',{optionId:p.technologyRealisation.records[0].options[0].id,criterionId:c.id,effect:'supports',reason:'Synthetic currentness judgement only; no claim of product suitability.',evidence:'Synthetic fixture.'});
+ tech('record',{reviewed:true});
  return p;
 }
 export function linkedAction(p,obligation){return {...architectureObligationAction(p,obligation.reference),owner:'Synthetic delivery owner',due:'2026-11-01'};}

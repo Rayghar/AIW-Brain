@@ -121,7 +121,7 @@ export function designBasisSource(p,selected){
   return {id:'design-questions:'+id,kind:'design-questions',objectId:id,title:'What '+d.id+' asks of the design',posture:DESIGN_BASIS_POSTURE,excerpt:excerpt.slice(0,6000),truncated:excerpt.length>6000};
  }
  const r=designQuestions(p,id);if(!r)return null;
- const excerpt=JSON.stringify({ref:r.ref,kind:r.kind,chapter:r.chapter,drivers:r.drivers.map(d=>({id:d.id,title:d.title,kind:d.kind,target:d.target,priority:d.priority,confirmed:d.confirmed,attribute:d.attribute?{name:d.attribute.name,family:d.attribute.family?.name||null}:null})),questions:r.questions.map(q=>({id:q.id,title:q.title,state:q.state,chapter:q.chapter,because:q.because,toConfirm:q.toConfirm,answers:q.answers.map(a=>({kind:a.kind,ref:a.ref,title:a.title,state:a.state,chapter:a.chapter})),story:q.story,caution:q.caution})),counts:r.counts});
+ const excerpt=JSON.stringify({ref:r.ref,kind:r.kind,chapter:r.chapter,drivers:r.drivers.map(d=>({id:d.id,title:d.title,kind:d.kind,target:d.target,priority:d.priority,confirmed:d.confirmed,attribute:d.attribute?{name:d.attribute.name,family:d.attribute.family?.name||null}:null})),questions:r.questions.map(q=>({id:q.id,title:q.title,state:q.state,chapter:q.chapter,because:q.because,toConfirm:q.toConfirm,answers:q.answers.map(a=>({kind:a.kind,ref:a.ref,title:a.title,state:a.state,chapter:a.chapter})),story:q.story,pending:q.pending,caution:q.caution})),counts:r.counts});
  return {id:'design-questions:'+id,kind:'design-questions',objectId:id,title:'Design basis · '+r.ref,posture:DESIGN_BASIS_POSTURE,excerpt:excerpt.slice(0,6000),truncated:excerpt.length>6000};
 }
 // Two starters for a record on Chapters 5–7 (rc39): each drafts the question with the record's design basis in it, so Sol
@@ -130,7 +130,7 @@ export function designStarters(p,chapter,objectId){
  if(![5,6,7].includes(Number(chapter))||!objectId)return [];
  const r=designQuestions(p,objectId);if(!r||!r.drivers.length)return [];
  const d=r.drivers[0],open=r.questions.filter(q=>q.state!=='decided'),decided=r.questions.filter(q=>q.state==='decided');
- const basis='Its design basis: '+r.drivers.map(x=>x.id+' ('+x.title+(x.target?', '+x.target:'')+')').join('; ')+'. Open questions: '+(open.map(q=>q.title+' ('+q.because.join(', ')+(q.state==='draft'?', a draft answer recorded':'')+')').join('; ')||'none')+'. Decided: '+(decided.map(q=>q.story).join(' ')||'nothing yet')+'.';
+ const basis='Its design basis: '+r.drivers.map(x=>x.id+' ('+x.title+(x.target?', '+x.target:'')+')').join('; ')+'. Open questions: '+(open.map(q=>q.title+' ('+q.because.join(', ')+(q.state==='draft'?', a draft answer recorded':'')+')').join('; ')||'none')+'. Decided: '+(decided.map(q=>q.story+(q.pending?' Still needs evidence: '+q.pending.join(', ')+'.':'')).join(' ')||'nothing yet')+'.';
  return [
   ['design-why','Why this kind of component here?','Why is '+r.ref+' the kind of component it is, and what does its selection rest on? '+basis+' Explain from the recorded drivers and answers only; say which questions are still open; propose nothing as decided.','Explain the selection from its drivers'],
   ['design-tighten','What would change if '+d.id+' tightened?','If '+d.id+' ('+d.title+(d.target?', now '+d.target:'')+') tightened, which of '+r.ref+'’s design questions would need a different answer, and what would have to be re-examined? '+basis+' Trace it through the recorded basis; ask me for the new target rather than inventing one.','Follow a tighter target through the basis']
