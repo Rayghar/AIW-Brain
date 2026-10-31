@@ -66,6 +66,43 @@ export function archetypeKind(id) {
   if (/GATEWAY|MESH/.test(s)) return 'adapter';
   return 'service';
 }
+// rc42 (D11): the kind of capability an archetype is, read from its name as archetypeKind reads its component kind. The
+// archive files its twenty archetypes under five categories in turn, each with that category's kit, so Relational Data
+// carries the security kit (identity assertion, policy decision); a kit part of another category than this one is never
+// proposed (archetypeProposal). AIW's reading, not reviewed by a person; it only ever leaves content out.
+export function archetypeCategory(id) {
+  const s = String(id || '');
+  if (/MODEL/.test(s)) return 'ai';
+  if (/CI-CD/.test(s)) return 'deployment';
+  if (/IDENTITY|SECRETS|POLICY/.test(s)) return 'security';
+  if (/OBSERVABILITY/.test(s)) return 'observability';
+  if (/DATA|STORAGE|CACHE|VECTOR|FEATURE-STORE|SCHEMA-REGISTRY/.test(s)) return 'data';
+  if (/GATEWAY|BROKER|EVENT-ROUTER|WORKFLOW/.test(s)) return 'integration';
+  return 'platform';
+}
+
+// rc42 (D11, K-06): the catalogue generator's template, read per field. At AKR-0.10.73.5, 318 of the 328 records hold the
+// archive generator's sentences with only their name, record type or category put in, and every component and interface
+// kit is a category's generic kit named after the record (catalogue-curation.js says so of the records it marks).
+// templateFields names the fields of a record that hold nothing else: what they say is not specific to the record, so no
+// proposal carries them into a design as if it were. The catalogue stays unedited and hash-checkable; this is a reading
+// in AIW's words, not reviewed by a person, and it informs no score, check or conformance result.
+export const TEMPLATE_LABEL = 'Generic catalogue template';
+const generated = r => new Set([`${r.name} normalized as an AIW ${r.recordType} record with explicit applicability, trade-offs, obligations, evidence and conformance guidance.`, `Address architecture forces for ${r.name} without hiding its operational and governance consequences.`, `Use when ${r.name} is relevant to the selected ${r.category} scope.`, 'Evaluate against project constraints, quality scenarios, team capability and existing architecture decisions.', `Named owner and measurable quality scenario for ${r.name}.`, `The selected scope must contain a ${r.category}-relevant responsibility or capability.`, `Do not adopt ${r.name} only because a technology or repository is popular.`, `${r.name} operating obligation`, `Define ownership, monitoring, failure handling and review criteria introduced by ${r.name}.`]);
+// templateItem(r) tests one value or list item of a field; a list is template as a whole only when every item is, and
+// ownItems keeps a list's other items, so a list mixing authored and template items proposes only the authored ones. An
+// obligation whose title or description is the template's is template.
+const templateItem = r => {
+  const g = generated(r), key = str(r.id).toLowerCase() + '-', has = x => g.has(x);
+  return {summary: has, problem: has, context: has, prerequisites: has, applicabilityRules: has, exclusions: has, obligations: o => has(o?.title) || has(o?.description),
+    componentKit: k => str(k?.key).startsWith(key) && k.name === `${r.name} ${k.archetype}`, interfaceKit: k => str(k?.key).startsWith(key) && str(k.name).startsWith(r.name + ' ')};
+};
+export function templateFields(r) {
+  if (!r) return [];
+  const t = templateItem(r);
+  return Object.keys(t).filter(f => (Array.isArray(r[f]) ? r[f].length > 0 && r[f].every(t[f]) : t[f](r[f])));
+}
+export function ownItems(r, f) { const t = templateItem(r)[f]; return list(r[f]).filter(x => !t(x)); }
 
 // ---------------------------------------------------------------- proposals
 
@@ -77,7 +114,7 @@ const base = () => ({status: 'candidate', owner: '', dataIds: [], consumesDataId
 export function libraryProposal(entry, library = {scope: 'project'}) {
   if (!entry || entry.kind !== COMPONENT_LIBRARY_KIND) throw Error('Choose a component entry of the library.');
   const s = readComponentSnapshot(entry.content), id = s.identity;
-  const ref = cleanLibraryRef({...library, entryId: entry.id, revision: entry.revision, title: entry.title, contentHash: library.contentHash || entry.organization?.contentHash || ''});
+  const ref = cleanLibraryRef({...library, entryId: library.entryId || entry.id, revision: entry.revision, title: entry.title, contentHash: library.contentHash || entry.organization?.contentHash || ''});
   const where = ref.scope === 'organisation' ? `the ${ref.organizationTitle || 'organisation'} library` : 'this project’s library';
   const contracts = [...s.interfaces.provides.map(f => ({...f, role: 'provides', other: f.consumer})), ...s.interfaces.requires.map(f => ({...f, role: 'requires', other: f.provider}))].map(f => ({title: f.title, kind: f.kind, role: f.role, other: f.other, promises: promisesText(f.promises), exchanges: f.exchanges.map(x => `${x.role}: ${x.data}`).join('; ')}));
   const needs = s.technology.needs.map(n => ({category: n.category, description: n.description, criticality: n.criticality}));
@@ -95,27 +132,35 @@ export function libraryProposal(entry, library = {scope: 'project'}) {
 }
 // A Chapter 5 proposal from a catalogue archetype (the loaded record, with its component kit, interface kit and
 // obligations). The archetype's knowledge authority travels as a reading: descriptive, never a score.
+// rc42 (D11): a template-marked field or list item (templateFields, ownItems) is not proposed, nor a kit part of another
+// category than the archetype's own (archetypeCategory), nor an interface kit unless its whole kit is the archetype's
+// own. The fields they would have filled are left empty, as open questions for the person, so no template or wrong-kit
+// text reaches the component, its checks or the SDD as if it were the archetype's own.
+const OPEN_QUESTIONS = {purpose: 'What does it do in this project?', boundary: 'What does it own, and where does its boundary lie?', inputs: 'What does it receive, and from whom?', outputs: 'What does it send or produce, and to whom?', technologyNeeds: 'Which technology capabilities does it need?', assumptions: 'What must hold for it to fit this project?'};
 export function archetypeProposal(record, {releaseId = ''} = {}) {
   if (!record || record.recordType !== 'component-archetype') throw Error('Choose one of the catalogue’s component archetypes.');
   const ref = cleanLibraryRef({scope: 'catalogue', archetypeId: record.id, title: record.name, releaseId: releaseId || CATALOGUE.releaseId, recordSha256: record.recordSha256});
-  const kit = list(record.componentKit), required = kit.filter(k => k.required), own = new Set(kit.map(k => str(k.archetype).toLowerCase()));
+  const template = new Set(templateFields(record)), mine = f => ownItems(record, f), all = list(record.componentKit);
+  const kit = mine('componentKit').filter(k => str(k.properties?.category) === archetypeCategory(record.id)), whole = all.length > 0 && kit.length === all.length;
+  const required = kit.filter(k => k.required), own = new Set(kit.map(k => str(k.archetype).toLowerCase()));
   // The archetype provides a contract when one of its own parts is the provider; it requires one when a part is the consumer.
   const roleOf = k => (own.has(str(k.providerRole).toLowerCase()) ? 'provides' : own.has(str(k.consumerRole).toLowerCase()) ? 'requires' : 'provides');
-  const contracts = list(record.interfaceKit).map(k => ({title: str(k.name), kind: str(k.interaction) === 'event' ? 'event' : 'request', role: roleOf(k), other: roleOf(k) === 'provides' ? str(k.consumerRole) : str(k.providerRole), promises: [str(k.protocol) && 'protocol ' + str(k.protocol), str(k.contractType) && 'contract ' + str(k.contractType), str(k.interaction) && 'interaction ' + str(k.interaction)].filter(Boolean).join('; '), exchanges: k.required ? 'required by the archetype' : 'optional'}));
+  const contracts = (whole ? mine('interfaceKit') : []).map(k => ({title: str(k.name), kind: str(k.interaction) === 'event' ? 'event' : 'request', role: roleOf(k), other: roleOf(k) === 'provides' ? str(k.consumerRole) : str(k.providerRole), promises: [str(k.protocol) && 'protocol ' + str(k.protocol), str(k.contractType) && 'contract ' + str(k.contractType), str(k.interaction) && 'interaction ' + str(k.interaction)].filter(Boolean).join('; '), exchanges: k.required ? 'required by the archetype' : 'optional'}));
   const needs = kit.filter(k => k.canonicalKind === 'LogicalTechnologyCapability' || k.canonicalKind === 'Control').map(k => ({category: str(k.properties?.category) || 'platform', description: `${str(k.name)}: ${str(k.responsibility)}`, criticality: k.required ? 'essential' : 'degraded'}));
-  const obligations = list(record.obligations).map(o => ({kind: 'archetype', title: str(o.title) || str(o.id), detail: `${str(o.description)}${o.mandatory ? ' (mandatory)' : ''}${str(o.verificationHint) ? ' · verify: ' + str(o.verificationHint) : ''}`}));
-  const authority = record.knowledgeAuthority || {};
+  const obligations = mine('obligations').map(o => ({kind: 'archetype', title: str(o.title) || str(o.id), detail: `${str(o.description)}${o.mandatory ? ' (mandatory)' : ''}${str(o.verificationHint) ? ' · verify: ' + str(o.verificationHint) : ''}`}));
+  const problem = template.has('problem') ? '' : str(record.problem), authority = record.knowledgeAuthority || {};
+  const fields = {purpose: clip(template.has('summary') ? '' : str(record.summary), 2000), boundary: clip(required.map(k => `${str(k.name)}: ${str(k.responsibility)}`).join('\n') || problem, 2000),
+    inputs: clip(contracts.filter(k => k.role === 'provides').map(k => `Received through ${k.title} from ${k.other}`).join('; '), 2000), outputs: clip(contracts.filter(k => k.role === 'requires').map(k => `Sent through ${k.title} to ${k.other}`).join('; '), 2000),
+    technologyNeeds: clip(needs.map(n => `${n.category}: ${n.description}`).join('\n'), 4000), assumptions: clip(['prerequisites', 'applicabilityRules', 'exclusions'].flatMap(mine).map(str).filter(Boolean).join(' '), 4000)};
+  const left = Object.keys(fields).filter(k => !fields[k]);
+  const open = Object.fromEntries(left.map(k => [k, {state: 'open-question', question: OPEN_QUESTIONS[k], raisedBy: 'AIW', source: `Catalogue archetype ${record.id}: no text of its own for this, so none was proposed`}]));
   return {
     key: 'archetype', origin: 'archetype', library: ref, ...base(),
-    title: str(record.name), kind: archetypeKind(record.id),
-    purpose: clip(str(record.summary), 2000), boundary: clip(required.map(k => `${str(k.name)}: ${str(k.responsibility)}`).join('\n') || str(record.problem), 2000),
-    inputs: clip(contracts.filter(k => k.role === 'provides').map(k => `Received through ${k.title} from ${k.other}`).join('; '), 2000), outputs: clip(contracts.filter(k => k.role === 'requires').map(k => `Sent through ${k.title} to ${k.other}`).join('; '), 2000),
-    technologyNeeds: clip(needs.map(n => `${n.category}: ${n.description}`).join('\n'), 4000),
-    rationale: `Proposed from the catalogue archetype ${record.id} (${CATALOGUE.releaseId}). ${clip(str(record.problem), 600)}`,
+    title: str(record.name), kind: archetypeKind(record.id), ...fields, open,
+    rationale: `Proposed from the catalogue archetype ${record.id} (${CATALOGUE.releaseId}).${problem ? ' ' + clip(problem, 600) : ''}`,
     source: `Catalogue archetype ${record.id} · ${ref.releaseId}${ref.recordSha256 ? ' · record ' + ref.recordSha256.slice(0, 12) : ''} · descriptive knowledge, not a score`,
-    assumptions: clip([...list(record.prerequisites), ...list(record.applicabilityRules), ...list(record.exclusions)].map(str).filter(Boolean).join(' '), 4000),
     proposed: cleanProposed({contracts, needs, obligations}),
     authority: {descriptive: authority.descriptive !== false, scoringCalibrated: authority.scoringCalibrated === true, candidateKnowledgeInfluence: str(authority.candidateKnowledgeInfluence) || 'blocked', conformanceReady: authority.conformanceReady === true},
-    effect: `Adds one candidate component shaped by the archetype ${record.name}. Its ${contracts.length} interface contracts and ${needs.length} technology needs stay proposals for Chapter 8 and Chapter 6. The archetype is descriptive knowledge: nothing is scored, constrained or approved by proposing it.`,
+    effect: `Adds one candidate component named after the archetype ${record.name}.${left.length ? ` The catalogue holds only generic template text, or a kit of another kind, for its ${left.map(k => k.replace(/([A-Z])/g, ' $1').toLowerCase()).join(', ')}: they are left as open questions for you, and none of that text is proposed.` : ''} Its ${contracts.length} interface contracts and ${needs.length} technology needs stay proposals for Chapter 8 and Chapter 6. The archetype is descriptive knowledge: nothing is scored, constrained or approved by proposing it.`,
   };
 }

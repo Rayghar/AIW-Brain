@@ -14,6 +14,10 @@
 //     every relation resolves (catalogueRelation) and none is invented.
 // Nothing here is knowledge: it informs no score, hard constraint, conformance result or drafted value, and no person
 // has reviewed it (audit/round12/DOMAIN-KNOWLEDGE-REVIEW-PACK.md lists it for review).
+// rc42 (D11, K-06): beyond the marked records, 318 of the 328 hold nothing but the generator's template. That reading,
+// field by field for any record, is component-snapshot.js templateFields (with archetypeCategory, the kind each
+// archetype's own name states): it keeps template text and kits of another kind out of the proposals it builds, and it
+// lives beside them, off the chapter route, so this module stays as small as the route needs it.
 import {catalogue} from './catalogue-store.js';
 
 export const CATALOGUE_CURATION = Object.freeze({id: 'AIW-CATALOGUE-CURATION-1', catalogueRelease: 'AKR-0.10.73.5', authority: 'AIW curation beside the descriptive catalogue: marks and stubs in AIW\'s own words, not reviewed by a person, never a source of grounding.'});

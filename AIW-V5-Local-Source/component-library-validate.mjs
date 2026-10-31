@@ -16,7 +16,7 @@ import {catalogue} from './public/catalogue-store.js';
 import {applyWorkbenchCommand, previewGuidanceTemplate, previewGuidanceUse} from './public/workbench-domain.js';
 import {applyRealisationCommand, components, component, realisationFindings, COMPONENT_KINDS} from './public/realisation-domain.js';
 import {readComponentSnapshot, snapshotText, cleanProposed, cleanLibraryRef, COMPONENT_ARCHETYPES, COMPONENT_LIBRARY_KIND, SNAPSHOT_SCHEMA, LIBRARY_KEYS} from './public/component-library.js';
-import {componentSnapshot, snapshotSummary, libraryProposal, archetypeProposal, archetypeRecord, archetypeKind} from './public/component-snapshot.js';
+import {componentSnapshot, snapshotSummary, libraryProposal, archetypeProposal, archetypeRecord, archetypeKind, templateFields} from './public/component-snapshot.js';
 import worker from './worker.js';
 import {localDatabase} from './local-db.js';
 import {localFiles} from './local-files.js';
@@ -91,20 +91,25 @@ q = applyRealisationCommand(q, {type: 'realisation.component', payload: {...made
 const edited = component(q, made.id); assert.equal(edited.revision, 2); assert.equal(edited.origin, 'library'); assert.deepEqual(edited.library, made.library); assert.deepEqual(edited.proposed, made.proposed);
 pass('propose from the library yields a proposal, not a record; the reviewed path saves a candidate with origin library and its entry; its contracts and needs stay proposals (no Chapter 8 or 6 record, no interaction); a later edit keeps the origin; a wrong reference or an unreviewed proposal is refused');
 
-// 4. The twenty archetypes: each a proposal with contracts and needs; the reviewed path makes a candidate with origin
+// 4. The twenty archetypes: each a proposal named after it, with its kind; the reviewed path makes a candidate with origin
 //    archetype; the archetype's knowledge authority travels as a reading, never a score; an unknown id is refused.
+//    rc42 (D11): every archetype's catalogue text and kit are the generator's template, so none of it is proposed: the
+//    fields it would fill are left as open questions and no contract, need or obligation travels with the proposal
+//    (rc42-g2-library-validate.mjs has the rest).
 assert.equal(COMPONENT_ARCHETYPES.length, 20); assert.ok(COMPONENT_ARCHETYPES.every(a => /^ARCH-/.test(a.id) && a.name));
 const C = catalogue(); assert.ok(C.loaded !== false && C.records.length, 'the catalogue is installed under node');
 for (const a of COMPONENT_ARCHETYPES) {
   const record = archetypeRecord(C, a.id); assert.ok(record, a.id + ' is in the catalogue');
   const ap = archetypeProposal(record);
   assert.deepEqual([ap.key, ap.origin, ap.status, ap.title, ap.kind], ['archetype', 'archetype', 'candidate', record.name, archetypeKind(a.id)]);
-  assert.ok(COMPONENT_KINDS.includes(ap.kind)); assert.ok(ap.purpose && ap.boundary && ap.technologyNeeds && ap.rationale && ap.source && ap.assumptions);
+  assert.ok(COMPONENT_KINDS.includes(ap.kind)); assert.ok(ap.rationale && ap.source);
+  for (const f of ['summary', 'problem', 'prerequisites', 'applicabilityRules', 'exclusions', 'obligations', 'componentKit', 'interfaceKit']) assert.ok(templateFields(record).includes(f), a.id + ' ' + f + ' is the generator template');
+  for (const f of ['purpose', 'boundary', 'inputs', 'outputs', 'technologyNeeds', 'assumptions']) { assert.equal(ap[f], '', a.id + ' ' + f + ' carries no template text'); assert.equal(ap.open[f].state, 'open-question'); assert.ok(ap.open[f].question, a.id + ' ' + f + ' is asked'); }
   assert.deepEqual(ap.library, {scope: 'catalogue', title: record.name, archetypeId: a.id, releaseId: C.releaseId, recordSha256: record.recordSha256});
-  assert.equal(ap.proposed.contracts.length, record.interfaceKit.length); assert.ok(ap.proposed.needs.length >= 1); assert.equal(ap.proposed.obligations.length, record.obligations.length);
+  assert.deepEqual(ap.proposed, {contracts: [], needs: [], obligations: []}, a.id + ' proposes no template contract, need or obligation');
   assert.deepEqual(ap.authority, {descriptive: true, scoringCalibrated: false, candidateKnowledgeInfluence: 'blocked', conformanceReady: false}, 'the archetype says it is descriptive');
   const z = applyRealisationCommand(p, {type: 'realisation.candidate', payload: {...ap, reviewed: true}}, at).document, c = components(z).at(-1);
-  assert.deepEqual([c.origin, c.status, c.library.archetypeId, c.proposed.contracts.length], ['archetype', 'candidate', a.id, record.interfaceKit.length]);
+  assert.deepEqual([c.origin, c.status, c.library.archetypeId, c.proposed.contracts.length, c.purpose, c.open.purpose.state], ['archetype', 'candidate', a.id, 0, '', 'open-question']);
   assert.equal(c.authority, undefined, 'no authority or score is stored on the record'); assert.equal(c.score, undefined);
   assert.equal(z.interfaces.contracts.length, contractsBefore); assert.equal(z.technology.needs.length, needsBefore);
 }
@@ -113,7 +118,7 @@ assert.throws(() => cleanLibraryRef({scope: 'catalogue', archetypeId: 'ARCH-NOT-
 assert.throws(() => applyRealisationCommand(p, {type: 'realisation.candidate', payload: {...archetypeProposal(archetypeRecord(C, 'ARCH-CACHE-CAPABILITY')), reviewed: true, library: {scope: 'catalogue', archetypeId: 'ARCH-NOT-THERE'}}}, at), /component archetypes/);
 assert.deepEqual(cleanProposed({contracts: [{title: 'T', kind: 'odd', role: 'x', other: 1, promises: {a: 1}}], needs: [{description: ''}], obligations: [{title: 'O'}]}), {contracts: [{title: 'T', kind: 'request', role: 'provides', other: '1', promises: '[object Object]', exchanges: ''}], needs: [], obligations: [{kind: 'obligation', title: 'O', detail: ''}]}, 'what travels with a proposal is bounded text');
 assert.deepEqual(LIBRARY_KEYS, ['library', 'archetype']);
-pass('each of the twenty catalogue archetypes proposes a component with its interface contracts, technology needs and obligations; accepting through the reviewed path saves a candidate with origin archetype and the archetype id; the knowledge authority is a reading (descriptive, not calibrated, candidate influence blocked) and no score is stored; an unknown archetype is refused');
+pass('each of the twenty catalogue archetypes proposes a component named after it with its kind, leaving its generator-template fields as open questions and proposing none of its template contracts, needs or obligations (rc42, D11); accepting through the reviewed path saves a candidate with origin archetype and the archetype id; the knowledge authority is a reading (descriptive, not calibrated, candidate influence blocked) and no score is stored; an unknown archetype is refused');
 
 // 5. Knowledge never weighs: a candidate from the library reads exactly as the same component authored by hand. Every
 //    finding, gap, anti-pattern and readiness check is the same with origin library as with origin user.

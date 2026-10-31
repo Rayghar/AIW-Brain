@@ -10,7 +10,7 @@ import {checked,isProposed,proposalFinding,openFindings,fieldWords} from './reco
 import {memoPass,passValue,findIn,filterIn,withIds,firstById,groupBy,remember,sharedList} from './document-memo.js';
 import {componentReading,valueFingerprint,recordStamp,driverStamp} from './source-fingerprint.js';
 import {decisionCurrent,governanceLabel} from './decisions-domain.js';
-import {LIBRARY_KEYS,cleanLibraryRef,cleanProposed,COMPONENT_LIBRARY_KIND} from './component-library.js';
+import {LIBRARY_KEYS,cleanLibraryRef,cleanProposed,proposalSource} from './component-library.js';
 import {driversForComponent} from './driver-scope.js';
 // rc39 (PLAN §4.3.3): the design questions a component faces, from the one projection, for the chapter's checks.
 import {designQuestions,designQuestionFindings} from './design-questions.js';
@@ -334,10 +334,12 @@ export function applyRealisationCommand(input,command,at=new Date().toISOString(
    // Round 11: a proposal from the library or a catalogue archetype (component-library.js). The same reviewed path saves
    // the component as a candidate with its origin and where it came from; the contracts and needs proposed with it stay
    // proposals on the record, for Chapter 8 and Chapter 6. No interaction, no data record and nothing else is written.
+   // rc42 (D4): what it comes from must be proposable (component-library.js proposalSource): no withdrawn archetype, no
+   // organisation entry outside a signed release installed here. An open question the person answered is not kept.
    if(LIBRARY_KEYS.includes(raw.key)){
     const ref=cleanLibraryRef(raw.library);if((raw.key==='archetype')!==(ref.scope==='catalogue'))throw Error('A library proposal names a library entry; an archetype proposal names a catalogue archetype.');
-    if(ref.scope==='project'){const entry=(p.workbench?.catalogue||[]).find(e=>e.id===ref.entryId);if(!entry||entry.kind!==COMPONENT_LIBRARY_KIND)throw Error('Choose a component entry of this project’s library.');if(entry.status==='deprecated')throw Error('This library entry is deprecated. Choose a current one.');ref.title=entry.title;ref.revision=entry.revision;}
-    const c=saveComponent(p,{...raw,id:undefined,patternKey:null,status:'candidate'},at);selected=c.id;c.origin=raw.key;c.library=ref;c.proposed=cleanProposed(raw.proposed);
+    const entry=proposalSource(p,ref);if(entry){ref.title=entry.title;if(entry.organization)ref.releaseId=entry.organization.releaseId;else ref.revision=entry.revision;}
+    const c=saveComponent(p,{...raw,id:undefined,patternKey:null,status:'candidate',open:Object.fromEntries(Object.entries(raw.open||{}).filter(([k])=>!clean(raw[k])))},at);selected=c.id;c.origin=raw.key;c.library=ref;c.proposed=cleanProposed(raw.proposed);
     const asset=p.logical.assets.find(n=>n.id===c.id);if(asset)asset.origin='suggestion';
     break;
    }
