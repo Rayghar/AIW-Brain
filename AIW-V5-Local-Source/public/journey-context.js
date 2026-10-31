@@ -6,6 +6,9 @@ import {CHAPTER_TITLES} from './chapter-names.js';
 
 export const journeyChapters=['',...Array.from({length:11},(_,i)=>CHAPTER_TITLES[i+1])];
 const list=value=>Array.isArray(value)?value:[];
+// The chapter an assurance record is a node of: a capability Chapter 4's and a value outcome Chapter 1's, both design;
+// every other kind is Chapter 11 evidence, which the design fingerprint leaves out (review-domain.js designOf, rc42 D14).
+export const assuranceChapter=r=>r?.kind==='capability'?4:r?.kind==='value-outcome'?1:11;
 
 // A read-only index of the saved project. No proposed alternative becomes a saved link.
 export function journeyIndex(p){
@@ -37,7 +40,7 @@ export function journeyIndex(p){
   for(const id of list(c.driverIds))add(id,c.id,'quality constraint');
   for(const id of list(c.decisionIds))add(id,c.id,'design rationale');
  }
- for(const r of p.assurance?.records||[]){nodes.set(r.id,{id:r.id,ref:r.id,title:r.title,chapter:r.kind==='capability'?4:r.kind==='value-outcome'?1:11,record:r});for(const id of [...r.requirementIds,...(r.objectIds||[])])add(id,r.id,r.kind);}
+ for(const r of p.assurance?.records||[]){nodes.set(r.id,{id:r.id,ref:r.id,title:r.title,chapter:assuranceChapter(r),record:r});for(const id of [...r.requirementIds,...(r.objectIds||[])])add(id,r.id,r.kind);}
  for(const g of p.assurance?.groups||[]){nodes.set(g.id,{id:g.id,ref:g.id,title:g.title,chapter:4,record:g});for(const id of g.requirementIds)add(id,g.id,'capability group');}
  return {nodes,edges};
 }
