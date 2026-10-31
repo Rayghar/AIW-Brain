@@ -72,7 +72,9 @@ export function neutraliseImportedAuthority(p,at){
  for(const g of m.governance||[]){strip(g);if(g.reviewAuthor!=null){g.importedReviewAuthor=g.reviewAuthor;g.reviewAuthor=null;}}
  for(const d of m.dispositions||[])strip(d);
  for(const t of m.traces||[])strip(t);
- for(const a of m.actions||[])strip(a.verification);
+ // A delivery action's author and the writers of its revisions are imported too (rc42, D15): it names no author here, so it
+ // is saved again on this workbench before anyone verifies it.
+ for(const a of m.actions||[]){strip(a);for(const h of a.history||[])if(h?.actor!=null)strip(h);strip(a.verification);}
  if(m.capacity)strip(m.capacity);
  if(m.handoff){m.importedHandoff={...m.handoff,authority:IMPORTED_AUTHORITY};m.handoff=null;}
  m.imported={at,authority:IMPORTED_AUTHORITY,reviews:(m.reviews||[]).length,judgements:(m.judgements||[]).length,baselines:(m.baselines||[]).length,governance:(m.governance||[]).length};

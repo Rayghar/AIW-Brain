@@ -229,7 +229,8 @@ export const groupTraceStamp=(p,ids)=>reviewFingerprint(ids.map(id=>[id,traceSta
 // A hop is missing when no record on the trail answers for it, and broken when its records name the requirement but the
 // hop before does not reach them (a component no responsibility on the trail is allocated to, a capability no component on
 // it needs, a realisation of no capability on it, a runtime plan that runs none of it). A trace review records the hops it
-// read, is refused while any is missing or broken, and stops counting once the trail breaks.
+// read, is refused while any is missing or broken, and stops counting once the trail breaks. A hop is reached when any one
+// of its records is: a further record of the hop that names the requirement but is not reached is not reported (a limit).
 export const TRACE_HOPS=[['logical',4,'responsibility'],['applications',5,'application component'],['capabilities',6,'technology capability'],['realizations',7,'technology realisation'],['runtime',10,'runtime plan']];
 export const traceHops=(p,id)=>{const t=reviewTrace(p,id);return t?Object.fromEntries(TRACE_HOPS.map(([hop])=>[hop,t[hop].length])):null;};
 export function traceBreaks(p,id){return remember(p,'review:trace-breaks',id,()=>{const t=reviewTrace(p,id);if(!t)return [];
@@ -334,7 +335,10 @@ function saveAction(p,raw,at,actor=null){
   if(!text(raw.acceptance))throw Error('Define the evidence and acceptance criteria for this obligation.');
   obligation={...basis.reference,basisStamp:basis.stamp};
  }
- const a={id:old?.id||'RA-'+pad(++m.counters.action),revision:(old?.revision||0)+1,title:text(raw.title,180),owner:text(raw.owner,180),due:raw.due?date(raw.due):'',acceptance:text(raw.acceptance),objectIds:unique(raw.objectIds),findingId:raw.findingId||'',plateauId:raw.plateauId===undefined?(old?.plateauId||''):actionPlateau(p,raw.plateauId),sourceStamp:obligation?basis.stamp:reviewSourceStamp(p),...(obligation?{architectureObligation:obligation}:{}),status:old?.status==='Verified'?'Planned':old?.status||'Planned',progress:old?.progress||'',verification:null,...(actor?{actor}:{}),history:[...(old?.history||[]),...(old?[{at,revision:old.revision,...(old.actor?{actor:old.actor}:{}),status:old.status,verification:old.verification,title:old.title,acceptance:old.acceptance,objectIds:old.objectIds,...(old.architectureObligation?{architectureObligation:old.architectureObligation}:{})}]:[])]};
+ // Who wrote the revision being replaced: its actor, or for one saved before actors were recorded (actor undefined), its
+ // last person writer as the Worker stamped it (provenance.author). An imported action's actor is null: no writer here.
+ const was=old?.actor===undefined?personWriter(old):old.actor;
+ const a={id:old?.id||'RA-'+pad(++m.counters.action),revision:(old?.revision||0)+1,title:text(raw.title,180),owner:text(raw.owner,180),due:raw.due?date(raw.due):'',acceptance:text(raw.acceptance),objectIds:unique(raw.objectIds),findingId:raw.findingId||'',plateauId:raw.plateauId===undefined?(old?.plateauId||''):actionPlateau(p,raw.plateauId),sourceStamp:obligation?basis.stamp:reviewSourceStamp(p),...(obligation?{architectureObligation:obligation}:{}),status:old?.status==='Verified'?'Planned':old?.status||'Planned',progress:old?.progress||'',verification:null,...(actor?{actor}:{}),history:[...(old?.history||[]),...(old?[{at,revision:old.revision,...(was?{actor:was}:{}),...(old.importedActor?{importedActor:old.importedActor}:{}),status:old.status,verification:old.verification,title:old.title,acceptance:old.acceptance,objectIds:old.objectIds,...(old.architectureObligation?{architectureObligation:old.architectureObligation}:{})}]:[])]};
  const contract=normaliseVerificationContract(p,a,raw.verificationContract===undefined?old?.verificationContract:raw.verificationContract);if(contract)a.verificationContract=contract;
  if(old?.verificationContract)a.history.at(-1).verificationContract=structuredClone(old.verificationContract);
  if(old)m.actions[m.actions.indexOf(old)]=a;else m.actions.push(a);return a;
@@ -384,7 +388,7 @@ function traceGroup(p,raw,at,actor){
  for(const [id,why] of out){if(!ids.includes(id))throw Error('An exception names a requirement outside this scope: '+id.slice(0,80)+'.');if(!why)throw Error('Give each exception its reason: it stays open.');}
  const members=ids.filter(id=>!out.has(id));if(!members.length)throw Error('Every requirement of the scope is an exception: nothing would be reviewed.');
  const broken=members.map(id=>[id,traceBreaks(p,id)]).filter(([,b])=>b.length);
- if(broken.length)throw Error('Trails in this scope have broken or missing hops: '+broken.slice(0,10).map(([id,b])=>id+': '+traceBreakWords(b)).join(' · ')+'. Repair them, or name each as an exception with its reason.');
+ if(broken.length)throw Error('Trails in this scope have broken or missing hops: '+broken.slice(0,10).map(([id,b])=>id+': '+traceBreakWords(b)).join(' · ')+(broken.length>10?' and '+(broken.length-10)+' more':'')+'. Repair them, or name each as an exception with its reason.');
  fourEyesTrail(p,members,actor);
  const id='TRV-'+pad(++m.counters.trace);
  m.traces.push({id,at,actor,scope:{kind:raw.scope.kind,id:raw.scope.kind==='requirements'?null:String(raw.scope.id),title},requirementIds:members,trails:Object.fromEntries(members.map(r=>[r,traceStamp(p,r)])),hops:Object.fromEntries(members.map(r=>[r,traceHops(p,r)])),basis:'trail',reviewer:text(raw.reviewer,180),notes:text(raw.notes),...(out.size?{exceptions:[...out].map(([requirementId,reason])=>[requirementId,reason])}:{})});

@@ -303,9 +303,9 @@ export function validateIntelligenceOutput(raw,packet){
  return result;
 }
 export function generationReceipt(run){return {groundingReview:copy(run.groundingReview),brainReceipt:copy(run.packet.brainReceipt),retrieval:copy(run.packet.retrieval),runId:run.id,provider:run.provider,model:run.model,at:run.updatedAt,request:copy(run.packet.request),context:copy(run.packet.context),basisStamp:run.packet.basisStamp,packetStamp:run.packet.stamp,sources:copy(run.packet.sources),sourceRefs:copy(run.result.sourceRefs),assumptions:copy(run.result.assumptions),questions:copy(run.result.questions),...(run.instructions?{instructions:copy(run.instructions)}:{})};}
-export function adoptIntelligence(p,raw,run,at=new Date().toISOString()){
+export function adoptIntelligence(p,raw,run,at=new Date().toISOString(),actor=null){
  if(run.status!=='completed')throw Error('Only a completed, saved response can enter review.');
- if(raw.kind==='review-finding')return adoptReviewFinding(p,raw,run,at);
+ if(raw.kind==='review-finding')return adoptReviewFinding(p,raw,run,at,actor);
  const generation=generationReceipt(run),current=generationCurrent(p,generation),requireCurrent=()=>{if(!current)throw Error('The source context changed. Generate again from the current sources before using this response.');};
  if(raw.kind==='architecture-operation'||raw.kind==='architecture-option'){
   if(!run.groundingReview?.accepted||!run.packet.architectureOperations?.canPropose)throw Error('Choose a source-checked architecture proposal from this saved response.');
@@ -494,7 +494,8 @@ export function reviewFindingBasis(p,run){
  try{receiptsCurrent=(run?.packet?.sources||[]).every(s=>s.kind==='knowledge'?receiptCurrent(s.receipt):s.kind==='architecture-intelligence'?architectureIntelligenceCurrent(p,s):['governed-claim','brain-method','catalogue-description'].includes(s.kind)?brainSourceCurrent(p,s):true);}catch{/* An unreadable receipt cannot be treated as current. */}
  return {savedStamp,currentStamp,current:!!savedStamp&&savedStamp===currentStamp&&receiptsCurrent,receiptsCurrent};
 }
-export function adoptReviewFinding(p,raw,run,at=new Date().toISOString()){
+// actor: the signed-in person who adopts the finding, recorded as the action's author (rc42, D15), as review.proposal does.
+export function adoptReviewFinding(p,raw,run,at=new Date().toISOString(),actor=null){
  if(run.mode!=='review'||run.status!=='completed')throw Error('Choose a completed review of Sol’s.');
  if(raw.reviewed!==true)throw Error('Confirm that you reviewed the finding before recording it as an action.');
  const f=(run.result?.findings||[]).find(x=>x&&x.id===raw.findingId);
@@ -504,7 +505,7 @@ export function adoptReviewFinding(p,raw,run,at=new Date().toISOString()){
  const basis=reviewFindingBasis(p,run),historicalReason=text(raw.historicalReason,2000);
  if(!basis.current&&(raw.historicalAcknowledged!==true||historicalReason.length<20))throw Error('The chapter review or its source receipts changed. Review the current chapter, or acknowledge why this historical finding still warrants an action (at least 20 characters).');
  const acceptance=`From Sol’s ${basis.current?'current':'historical'} review of Chapter ${run.request?.chapter??''} (${SEVERITY_WORDS[f.severity]||f.severity}): ${f.reason} Sol’s review run ${run.id}, finding ${f.id}; adopted as advice to act on, not as verified.${basis.current?'':' Historical basis acknowledged: '+historicalReason}`.slice(0,4000);
- const result=applyFinalReviewCommand(p,{type:'review.action',payload:{id:null,title:f.title,owner:'',due:'',acceptance,objectIds:[f.elementId],findingId:''}},at);
+ const result=applyFinalReviewCommand(p,{type:'review.action',payload:{id:null,title:f.title,owner:'',due:'',acceptance,objectIds:[f.elementId],findingId:''}},at,actor);
  const action=result.document.finalReview.actions.find(a=>a.id===result.selected);
  if(action)action.provenance={...(action.provenance||{}),solReview:{runId:run.id,findingId:f.id,elementId:f.elementId,severity:f.severity,title:f.title,reason:f.reason,promptVersion:run.instructions?.promptVersion||null,adoptedAt:at,basis:{savedStamp:basis.savedStamp,currentStamp:basis.currentStamp,receiptsCurrent:basis.receiptsCurrent,currentAtAdoption:basis.current,...(!basis.current?{historicalReason}: {})},authority:'Architect acknowledged advisory finding; no independent review or verification recorded.'}};
  return result;

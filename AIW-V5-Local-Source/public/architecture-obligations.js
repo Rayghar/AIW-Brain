@@ -30,7 +30,9 @@ export function architectureEvidenceSources(p,receipts=[]){
 // never establishes it. An action names who wrote each revision (actor); one saved before it did names no author, and
 // nobody can show they are independent of it until it is saved again. A Verified mark recorded without such a person
 // stays as it was and never makes its obligation current-verified.
-const sameName=(a,b)=>{const n=v=>String(v??'').trim().toLowerCase();return !!n(a)&&n(a)===n(b);};
+// The owner is free text and the actor an account id: they are compared with case, spaces and punctuation set aside, which
+// catches only a name written as the account id is (a weak check: the Worker holds no display name to compare).
+const sameName=(a,b)=>{const n=v=>String(v??'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');return !!n(a)&&n(a)===n(b);};
 export const deliveryActionAuthors=a=>unique([a?.actor,...list(a?.history).filter(h=>h?.revision!=null).map(h=>h.actor)]);
 export const SECOND_VERIFIER='A second signed-in person, who did not write or own the action, verifies it.';
 export function verifierRefusal(a,actor,account=null){const id=a?.id;return !actor?'Sign in to verify '+id+'.':account==='agent'?'An agent or Sol does not verify '+id+'.':!a.actor?id+' names no author: save it again first.':deliveryActionAuthors(a).includes(actor)?SECOND_VERIFIER+' '+actor+' wrote '+id+'.':sameName(actor,a.owner)?SECOND_VERIFIER+' '+actor+' owns '+id+'.':null;}
