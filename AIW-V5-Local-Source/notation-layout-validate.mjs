@@ -667,11 +667,15 @@ const synth = (() => {
 {
   const {D, L} = boardLayout(runningBoard(deskModel(project))), Lc = notationLayout(D, {arrangement: 'grouped', consolidate: false});
   const {m, mc} = assertBundles(D, L, Lc, 'running board', {quiet: 'serves'}), kinds = {}; for (const e of L.edges) kinds[e.kind] = (kinds[e.kind] || 0) + 1;
-  assert.deepEqual(kinds, {realizes: 5, fulfils: 5, serves: 28}, 'every relationship drawn');
-  assert.ok(m.markers <= 18 && mc.markers === 38, 'heads ' + m.markers + ' (control ' + mc.markers + ')');
+  // rc.10.73.42 (D7): a component fulfils each requirement whose trail (the trace kernel's) holds it, so the board draws
+  // 21 fulfilling lines (5 + 5 + 4 + 3 + 4 components on the five threads), not one a requirement; the control still draws
+  // one head a relationship (54), and the bundled board still at most 18.
+  assert.deepEqual(kinds, {realizes: 5, fulfils: 21, serves: 28}, 'every relationship drawn');
+  assert.equal(kinds.fulfils, deskModel(project).trace.reduce((n, t) => n + t.cells.applications.length, 0), 'one fulfilling line for each component on each requirement\'s thread');
+  assert.ok(m.markers <= 18 && mc.markers === L.edges.length && mc.markers === 54, 'heads ' + m.markers + ' (control ' + mc.markers + ')');
   assert.ok(m.visualCrossings <= 0.75 * mc.visualCrossings, 'crossing points ' + m.visualCrossings + ' (control ' + mc.visualCrossings + ')');
   metrics.runningBoard = {markers: [mc.markers, m.markers], visualCrossings: [mc.visualCrossings, m.visualCrossings], bundles: L.bundles.length};
-  pass(`the Running board: ${m.markers} heads for ${mc.markers}, ${m.visualCrossings} crossing points for ${mc.visualCrossings}, realizes 5, serves 28, fulfils 5`);
+  pass(`the Running board: ${m.markers} heads for ${mc.markers}, ${m.visualCrossings} crossing points for ${mc.visualCrossings}, realizes ${kinds.realizes}, serves ${kinds.serves}, fulfils ${kinds.fulfils}`);
 }
 
 // Round 10 · the Layers view (N3): every chapter's connected model by layer, bundled under the same checks within the
