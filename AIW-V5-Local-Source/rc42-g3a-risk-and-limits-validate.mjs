@@ -7,6 +7,9 @@
 //   D13 one reviewer could treat a hard-constraint or invariant breach away in Chapter 11 as an accepted limitation that
 //       never expired (gap C11-01). Those findings are not waivable now; any other accepted limitation carries a review-by
 //       date, and an overdue one reopens its finding.
+//   r2  (review) an accepted Chapter 9 risk no longer clears the non-waivable C9 dual-control-uncovered error; the Chapter 9
+//       screens say when an approval is not independent; the Chapter 11 review-by date starts tomorrow. The in-place
+//       treatment dialog runs in a browser in rc42-g3a-risk-and-limits-browser-validate.mjs.
 // Run: npm run test:rc42-g3a-risk-and-limits
 import assert from 'node:assert/strict';
 import {seedProject} from './public/requirements-domain.js';
@@ -129,13 +132,13 @@ const breaks = findingOf(d, 'C3:breaks:ADR-001'), dual = rv.inheritedFindings(d)
 assert.ok(breaks && breaks.level === 'error' && dual && dual.level === 'error', 'the fixture holds a hard-constraint break and a segregation-of-duties breach');
 await part('D13 non-waivable findings', () => {
   // The defect, reproduced: one reviewer accepts the hard-constraint break as a limitation (with a review-by date, too).
-  assert.throws(() => rcmd(d, 'disposition', treat(breaks, {reviewBy: '2099-12-31'})), /breaks a hard constraint: it cannot be accepted as a limitation, marked not applicable or raised as source silent\. Change the design so it is met, or change its Chapter 1 constraint and Chapter 2 driver through a reviewed change; until then, fix it before review or carry it as an action/);
+  assert.throws(() => rcmd(d, 'disposition', treat(breaks, {reviewBy: '2099-12-31'})), /^Error: “[^”]+” breaks a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change\. It cannot be waived; until then, fix it before review or carry it as an action\.$/);
   for (const treatment of ['Not applicable', rv.SOURCE_SILENT]) assert.throws(() => rcmd(d, 'disposition', treat(breaks, {treatment})), /breaks a hard constraint/, treatment + ' is refused');
-  assert.throws(() => rcmd(d, 'disposition', treat(dual, {reviewBy: '2099-12-31'})), /breaks an integrity, authorisation or recovery invariant: it cannot be accepted as a limitation, marked not applicable or raised as source silent\. Change the design so the invariant holds; until then, fix it before review or carry it as an action/);
+  assert.throws(() => rcmd(d, 'disposition', treat(dual, {reviewBy: '2099-12-31'})), /^Error: “[^”]+” breaks an invariant: change the design\. It cannot be waived; until then, fix it before review or carry it as an action\.$/);
   assert.throws(() => rcmd(d, 'disposition', treat(dual, {treatment: 'Not applicable'})), /invariant/);
   for (const f of [breaks, dual]) {
     const key = rv.findingCause(f).key, all = rv.causeFindings(d, key);
-    for (const treatment of ['Accepted design limitation', 'Not applicable', rv.SOURCE_SILENT]) assert.throws(() => rcmd(d, 'disposition', {scope: 'cause', cause: key, stamp: rv.causeFindingStamp(d, all), treatment, rationale: 'One treatment for the cause.', reviewer: 'Synthetic reviewer', reference: 'Fixture only', reviewBy: '2099-12-31', reviewed: true}), /cannot be accepted as a limitation/, f.id + ': a cause treatment cannot waive it either (' + treatment + ')');
+    for (const treatment of ['Accepted design limitation', 'Not applicable', rv.SOURCE_SILENT]) assert.throws(() => rcmd(d, 'disposition', {scope: 'cause', cause: key, stamp: rv.causeFindingStamp(d, all), treatment, rationale: 'One treatment for the cause.', reviewer: 'Synthetic reviewer', reference: 'Fixture only', reviewBy: '2099-12-31', reviewed: true}), /It cannot be waived; until then, fix it before review or carry it as an action\./, f.id + ': a cause treatment cannot waive it either (' + treatment + ')');
   }
   assert.ok(blocks(d, breaks.id) && blocks(d, dual.id));
   pass('D13 reproduced and refused: a hard-constraint break (C3 breaks) and a segregation-of-duties breach (C9 dual-control-same) cannot be accepted as a limitation, marked not applicable or raised as source silent, one finding or a whole cause at a time, and the message names the way out');
@@ -149,7 +152,7 @@ await part('D13 non-waivable findings', () => {
   assert.ok(!findingOf(changed, breaks.id), 'changing the design resolves it');
   pass('a non-waivable finding can be fixed before review (still a blocker) or carried as an owned action, and changing the design resolves it');
 
-  assert.deepEqual(JSON.parse(JSON.stringify(rv.NON_WAIVABLE)), {'hard-constraint': {3: ['breaks'], 7: ['hard-constraint']}, invariant: {8: ['posting-guard', 'invariant-link'], 9: ['dual-control-same', 'dual-control-uncovered', 'dual-control-roles'], 10: ['state-protection', 'standby', 'backup-zone']}});
+  assert.deepEqual(rv.NON_WAIVABLE, {'hard-constraint': 'C3:breaks C7:hard-constraint', invariant: 'C8:posting-guard C8:invariant-link C9:dual-control-same C9:dual-control-uncovered C9:dual-control-roles C10:state-protection C10:standby C10:backup-zone'});
   assert.ok(Object.isFrozen(rv.NON_WAIVABLE) && Object.values(rv.NON_WAIVABLE).every(x => Object.isFrozen(x) && Object.values(x).every(Object.isFrozen)), 'the class is fixed in code');
   const at = (chapter, code, level = 'error') => rv.nonWaivable({id: 'C' + chapter + ':' + code + ':X-001', chapter, code, level});
   assert.deepEqual([at(3, 'breaks'), at(7, 'hard-constraint'), at(8, 'posting-guard'), at(8, 'invariant-link'), at(9, 'dual-control-same'), at(9, 'dual-control-uncovered'), at(9, 'dual-control-roles'), at(10, 'state-protection'), at(10, 'standby'), at(10, 'backup-zone')], ['hard-constraint', 'hard-constraint', 'invariant', 'invariant', 'invariant', 'invariant', 'invariant', 'invariant', 'invariant', 'invariant']);
@@ -204,6 +207,93 @@ await part('D13 limitation review-by date', () => {
   const field = fieldOf('review.disposition', 'reviewBy');
   assert.ok(field && field.kind === 'date', 'the treatment form asks for the review-by date');
   pass('the Chapter 11 treatment form has a review-by date field');
+});
+
+// ---------------------------------------------------------------- review r2: no way round through Chapter 9
+// C9 'dual-control-uncovered' is a non-waivable authorisation invariant (NON_WAIVABLE above), so Chapter 11 refuses to
+// accept it as a limitation. Before r2 the same architect cleared it in Chapter 9 by recording an 'accept' risk treatment,
+// approved by no one. An accepted risk is a waiver: only a linked dual control, or avoiding the activity, clears it.
+await part('r2 Chapter 9 accept does not waive dual control', () => {
+  const made = sec.applySecurityCommand(sec.withSecurity(seedProject()), {type: 'security.threat', payload: {title: 'One officer enters and releases a payment', category: sec.DUAL_CONTROL, actor: 'An officer acting alone', scenario: 'The officer who enters a payment also releases it.', consequence: 'A fraudulent payment leaves the bank.', owner: 'Operations risk', priority: 'High', priorityBasis: 'Fraud loss.', targetIds: ['rest']}}, AT, 'architect-a');
+  const p = made.document, thr = made.selected, mine = f => f.code === 'dual-control-uncovered' && f.objectId === thr;
+  const open = q => rv.inheritedFindings(rv.withFinalReview(q)).find(mine), blocking = q => rv.reviewBlockers(rv.withFinalReview(q)).some(mine);
+  const f = open(p);
+  assert.ok(f && f.level === 'error' && rv.nonWaivable(f) === 'invariant' && blocking(p), 'a dual control threat with no dual control is a non-waivable error that blocks the review');
+  assert.throws(() => rcmd(rv.withFinalReview(p), 'disposition', treat(f, {reviewBy: '2099-12-31'})), /invariant/, 'Chapter 11 refuses to waive it');
+  // The route round the refusal, reproduced: the same architect accepts the residual risk in Chapter 9.
+  const accepted = scmd(p, 'risk', risk(p, thr));
+  assert.equal(sec.latestRisk(accepted, thr).actor, 'architect-a');
+  assert.ok(open(accepted), 'one architect\'s accepted risk leaves the invariant breach open');
+  assert.ok(blocking(accepted), 'and C9:dual-control-uncovered stays in reviewBlockers');
+  assert.match(open(accepted).detail, /or avoid the activity; an accepted risk does not clear it/, 'the finding says what clears it');
+  const approved = scmd(accepted, 'governance', governance(accepted, thr), 'approver-b');
+  assert.ok(sec.independentRiskApproval(sec.latestRisk(approved, thr), sec.latestGovernance(approved, thr)), 'a second signed-in person approved the acceptance');
+  assert.ok(blocking(approved), 'an independently approved acceptance waives the invariant no more than a limitation does');
+  assert.ok(!open(scmd(p, 'risk', risk(p, thr, 'avoid'))), 'avoiding the activity clears it');
+  const controlled = scmd(p, 'control', {title: 'Maker-checker on payment release', category: sec.DUAL_CONTROL, purpose: 'No payment leaves on one person\'s word.', owner: 'Payments operations', enforcement: 'The release step', mechanism: 'A second officer approves each release.', targetIds: ['rest'], threatIds: [thr]});
+  assert.ok(!open(controlled), 'a linked dual control clears it');
+  pass('r2: an accepted Chapter 9 risk, by one architect or approved by a second person, no longer clears the non-waivable C9 dual-control-uncovered error, which stays in reviewBlockers; a linked dual control or avoiding the activity clears it');
+});
+
+// ---------------------------------------------------------------- review r2: the screens read what the domain reads
+// The Chapter 9 risk panel, the threat's assurance strip and the Output register line say when an approval was not
+// recorded by a second signed-in person, as the finding and the Markdown export do; the Chapter 11 treatment dialog
+// offers no waiver for a non-waivable finding and asks for a review-by date from tomorrow, the server's rule.
+await part('r2 screens', async () => {
+  const {Window} = await import('happy-dom');
+  const w = new Window({url: 'https://aiw.test/?chapter=9&tab=work', settings: {disableIframePageLoading: true, disableCSSFileLoading: true}});
+  const kept = {};
+  for (const k of ['window', 'document', 'history', 'location', 'localStorage', 'CustomEvent', 'Event', 'FormData', 'Node', 'Element', 'HTMLElement', 'MutationObserver', 'navigator', 'CSS']) { kept[k] = Object.getOwnPropertyDescriptor(globalThis, k); Object.defineProperty(globalThis, k, {value: k === 'window' ? w : w[k], configurable: true, writable: true}); }
+  for (const k of ['matchMedia', 'getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) { kept[k] = Object.getOwnPropertyDescriptor(globalThis, k); globalThis[k] = w[k].bind(w); }
+  const bridge = state => ({state, getNode: () => null, render() {}, persist() {}, toast() {}, setTab() {}, setChapter() {}, selectNode() {}, hideTip() {}, refreshSimulation() {}});
+  try {
+    const {createSecurityStudio} = await import('./public/security-ui.js'), {recordRowsHTML} = await import('./public/output-documents.js');
+    let p = sec.withSecurity(seedProject());
+    p = scmd(p, 'risk', risk(p, 'thr-001'));
+    const legacy = clone(p);
+    legacy.security.governance.push({id: 'SG-001', threatId: 'thr-001', stamp: sec.securityGovernanceStamp(legacy, sec.threat(legacy, 'thr-001')), at: AT, decision: 'approved', reviewer: 'Earlier reviewer', reference: 'Earlier record', observations: 'Recorded before rc.10.73.42.'});
+    const independent = scmd(p, 'governance', governance(p, 'thr-001'), 'approver-b');
+    const screens = doc => {
+      const studio = createSecurityStudio({value: {document: doc, revision: 1}}), state = {chapter: 9, tab: 'work', selected: 'thr-001', visible: ['security'], cursor: true};
+      window.aiwProjectStore = {value: {document: doc, revision: 1}};
+      studio.bind(bridge(state));
+      const strip = /Governance evidence<\/small><b>([^<]*)/.exec(studio.work())?.[1];
+      studio.openSection('assurance');
+      const badge = /Governance evidence: ([^<]*)/.exec(studio.work())?.[1];
+      const line = /Governance: ([^<]*)/.exec(recordRowsHTML(doc, 9))?.[1];
+      return [strip, badge, line].map(s => String(s).replace(/&#39;|&amp;/g, ''));
+    };
+    for (const s of screens(sec.withSecurity(legacy))) assert.match(s, /^approved · not recorded by a second signed-in person/, 'an approval with no independent actor reads as not independent on every Chapter 9 surface: ' + s);
+    for (const s of screens(independent)) assert.equal(s.trim(), 'approved', 'an independent approval reads as approved');
+    pass('r2: the Chapter 9 threat strip, the risk panel badge and the Output register line read a legacy approval as not recorded by a second signed-in person, as the finding and the export do; an independent approval reads as approved');
+
+    const {createReviewStudio} = await import('./public/review-ui.js');
+    const store = {value: {document: d, revision: 1}, command: async () => { throw Error('not sent in this check'); }};
+    window.aiwProjectStore = store;
+    const review = createReviewStudio(store);
+    review.bind(bridge({chapter: 11, tab: 'validate', selected: null, visible: [], focus: false, zoom: 1, pan: {x: 0, y: 0}}));
+    const tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+    const dialogFor = f => {
+      for (const e of document.querySelectorAll('dialog')) e.remove();
+      document.body.innerHTML = '<button type="button" data-rv-action="disposition" data-rv-id="' + f.id + '">Treat</button>';
+      document.querySelector('[data-rv-action]').click();
+      const form = document.querySelector('#rv-disposition-form');
+      assert.ok(form, 'the treatment dialog opens for ' + f.id);
+      return {options: [...form.elements.treatment.options].map(o => o.value), reviewBy: form.elements.reviewBy};
+    };
+    const hard = dialogFor(findingOf(d, breaks.id)), inv = dialogFor(findingOf(d, dual.id));
+    assert.deepEqual(hard.options, ['Fix before review', 'Carry as action'], 'no waiver is offered for a hard-constraint break');
+    assert.deepEqual(inv.options, ['Fix before review', 'Carry as action'], 'nor for an invariant breach');
+    const soft = dialogFor(rv.inheritedFindings(d).find(f => f.id.startsWith('C8:protection:')));
+    assert.deepEqual(soft.options, rv.DISPOSITIONS, 'every treatment is offered for a waivable finding');
+    assert.equal(soft.reviewBy?.type, 'date', 'the dialog asks for a review-by date');
+    assert.equal(soft.reviewBy.min, tomorrow, 'from tomorrow, the server\'s rule');
+    assert.equal(rv.reviewByMin(), tomorrow, 'one rule for both treatment dialogs (review-ui.js and app.js)');
+    pass('r2: the Chapter 11 treatment dialog offers no waiver for a hard-constraint or invariant finding, every treatment for another, and a review-by date input whose earliest day is tomorrow');
+  } finally {
+    await w.happyDOM.close();
+    for (const [k, v] of Object.entries(kept)) { if (v) Object.defineProperty(globalThis, k, v); else delete globalThis[k]; }
+  }
 });
 
 assert.deepEqual(failures, [], failures.length + ' part(s) failed: ' + failures.join('; '));
