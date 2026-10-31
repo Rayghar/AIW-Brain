@@ -4,11 +4,16 @@
 //       chooser and Sol's catalogue reading nor saved by realisation.candidate.
 //   D4b An organisation entry reaches a project only through a signed release installed there and still eligible: drafts,
 //       approved but unreleased entries and entries withdrawn since are neither offered nor saved.
-//   D4c A project library entry is approved by a signed-in person other than the one who wrote it; an agent account or
-//       a draft by Sol never approves, and an approval does not change what was reviewed.
+//   D4c A project library entry is approved by a signed-in person other than its author (who created it, kept ever after)
+//       and its last editor (who last changed its title, content or source), as the organisation library asks; an entry
+//       saved before rc42 reads both from its history. An agent account or a draft by Sol never approves, and an approval
+//       does not change what was reviewed. A package restored here brings no approval: its library entries are drafts,
+//       the restorer stands as their author and last editor, and a second signed-in person here approves them before
+//       workspace.guidance or workspace.template use them. An installed organisation entry names the organisation's author.
 //   D11 The catalogue generator's template text and a kit of another kind never enter a design as if they were the
-//       archetype's own: template-marked fields are left as open questions, no wrong-kit part is proposed, and nothing of
-//       either reaches the component, its checks or the SDD.
+//       archetype's own: template-marked fields are left as open questions, no wrong-kit part is proposed, a list mixing
+//       authored and template items proposes only the authored ones, and nothing of either reaches the component, its
+//       checks or the SDD.
 // Library content is knowledge: it scores nothing and approves nothing. Run: npm run test:rc42-g2-library
 import assert from 'node:assert/strict';
 import {mkdtemp, rm} from 'node:fs/promises';
@@ -18,7 +23,7 @@ import {seedProject} from './public/requirements-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {applyEvidenceCommand} from './public/evidence-domain.js';
 import {applyKnowledgeCommand, knowledgeImpactStamp} from './public/knowledge-governance.js';
-import {applyWorkbenchCommand} from './public/workbench-domain.js';
+import {applyWorkbenchCommand, previewGuidanceUse, previewGuidanceTemplate} from './public/workbench-domain.js';
 import {applyRealisationCommand, components, realisationFindings} from './public/realisation-domain.js';
 import {architectureMarkdown} from './public/sdd-architecture.js';
 import {catalogue} from './public/catalogue-store.js';
@@ -26,6 +31,8 @@ import {CATALOGUE} from './public/catalogue-index.js';
 import * as CL from './public/component-library.js';
 import * as CS from './public/component-snapshot.js';
 import worker from './worker.js';
+import {buildRecovery, neutraliseImportedAuthority, IMPORTED_AUTHORITY} from './recovery-service.js';
+import {saveStoredProject} from './project-storage.js';
 import {localDatabase} from './local-db.js';
 import {localFiles} from './local-files.js';
 
@@ -77,8 +84,79 @@ await check('D4c: a project library entry is approved only by a signed-in person
   const q = ws(p, {...payload, id, status: 'approved'}, 'reviewer-b'), e = q.workbench.catalogue.at(-1);
   assert.deepEqual([e.status, e.author, e.actor, e.revision], ['approved', 'architect-a', 'reviewer-b', 2], 'the second person approves; writer and approver are both kept');
   assert.throws(() => ws(q, {...payload, id, status: 'approved', reviewNote: 'Re-approved by its writer'}, 'architect-a'), /second signed-in person|another signed-in person/i, 'the writer cannot re-approve it later');
-  const legacy = {...e, author: undefined, actor: 'architect-a', status: 'approved'}; delete legacy.author;
-  assert.throws(() => ws({...q, workbench: {...q.workbench, catalogue: [legacy]}}, {...payload, id, status: 'approved'}, 'architect-a'), /second signed-in person|another signed-in person/i, 'an entry saved before rc42 reads its last saver as its writer');
+  const legacy = {...e, author: undefined, actor: 'architect-a', status: 'approved'}; delete legacy.author; delete legacy.lastEditor; legacy.history = legacy.history.map(({author, lastEditor, ...v}) => v);
+  assert.throws(() => ws({...q, workbench: {...q.workbench, catalogue: [legacy]}}, {...payload, id, status: 'approved'}, 'architect-a'), /second signed-in person|another signed-in person/i, 'an entry saved before rc42 reads its author from its history');
+});
+
+// D4c, review 2: one author and one last editor, as the organisation library keeps them (organization-service.js review).
+const SECOND = /second signed-in person|another signed-in person/i;
+const libraryProject = () => { let p = applyEvidenceCommand(base, {type: 'evidence.source', payload: {title: 'Reusable intake', excerpt: 'A reviewed intake service.', location: 'Library note 1', status: 'Unconfirmed'}}, at).document; p = applyEvidenceCommand(p, {type: 'evidence.source', payload: {title: 'Other evidence', excerpt: 'An unrelated note.', location: 'Library note 2', status: 'Unconfirmed'}}, at).document; return p; };
+const ws = (q, raw, actor, options) => applyWorkbenchCommand(q, {type: 'workspace.catalogue', payload: raw}, at, actor, options).document;
+const entryOf = (q, id) => q.workbench.catalogue.find(x => x.id === id);
+await check('D4c review 2: the author stays its creator after anyone else\'s edit, the last editor is who last changed its title, content or source, and neither approves; a third person does', () => {
+  let p = libraryProject(); const [s1, s2] = p.coauthoring.sources.slice(-2).map(s => s.id);
+  const payload = {kind: 'control', title: 'Audit preservation', content: 'Preserve the original audit event', owner: 'Architecture', sourceId: s1, reviewed: true, reviewNote: 'Checked for this project'};
+  p = ws(p, {...payload, status: 'draft'}, 'creator-a'); const id = p.workbench.catalogue.at(-1).id;
+  const typo = {...payload, id, content: payload.content + '.'}, t = ws(p, {...typo, status: 'draft'}, 'editor-b');
+  assert.throws(() => ws(t, {...typo, status: 'approved'}, 'creator-a'), SECOND, 'the creator cannot approve once another person has corrected a typo');
+  assert.throws(() => ws(t, {...typo, status: 'approved'}, 'editor-b'), SECOND, 'the last editor cannot approve');
+  assert.deepEqual([entryOf(p, id).author, entryOf(p, id).lastEditor], ['creator-a', 'creator-a'], 'the creator is author and last editor');
+  assert.deepEqual([entryOf(t, id).author, entryOf(t, id).lastEditor, entryOf(t, id).actor], ['creator-a', 'editor-b', 'editor-b'], 'another person\'s edit keeps the creator as author and makes them the last editor');
+  const ok = entryOf(ws(t, {...typo, status: 'approved'}, 'reviewer-c'), id);
+  assert.deepEqual([ok.status, ok.author, ok.lastEditor, ok.actor, ok.revision], ['approved', 'creator-a', 'editor-b', 'reviewer-c', 3], 'a third person approves; author, last editor and approver are all kept');
+  const retitled = {...payload, id, title: 'Audit event preservation'}, r = ws(p, {...retitled, status: 'draft'}, 'editor-b');
+  assert.throws(() => ws(r, {...retitled, status: 'approved'}, 'creator-a'), SECOND, 'the creator cannot approve after a title edit by another person');
+  assert.throws(() => ws(r, {...retitled, status: 'approved'}, 'editor-b'), SECOND, 'the person who changed the title cannot approve');
+  const owned = {...payload, id, owner: 'Platform'}, o = ws(p, {...owned, status: 'draft'}, 'editor-b');
+  assert.deepEqual([entryOf(o, id).author, entryOf(o, id).lastEditor], ['creator-a', 'creator-a'], 'changing only the owner edits neither title, content nor source');
+  assert.throws(() => ws(o, {...owned, status: 'approved'}, 'creator-a'), SECOND, 'the creator cannot approve after another person re-saved it');
+  assert.throws(() => ws(p, {...payload, id, sourceId: s2, status: 'approved'}, 'editor-b'), SECOND, 'an approval does not swap the evidence it approves');
+  const swapped = ws(p, {...payload, id, sourceId: s2, status: 'draft'}, 'editor-b');
+  assert.equal(entryOf(swapped, id).lastEditor, 'editor-b', 'changing the source makes its editor the last editor');
+  assert.throws(() => ws(swapped, {...payload, id, sourceId: s2, status: 'approved'}, 'editor-b'), SECOND);
+  assert.equal(entryOf(ws(swapped, {...payload, id, sourceId: s2, status: 'approved'}, 'reviewer-c'), id).status, 'approved');
+  assert.throws(() => ws(ws(t, {...typo, status: 'approved'}, 'reviewer-c'), {...typo, status: 'approved', reviewNote: 'Re-approved by its creator'}, 'creator-a'), SECOND, 'the creator cannot re-approve it later');
+});
+await check('D4c review 2: an entry saved before rc42 reads its author (its first saver) and last editor (who saved its current title, content and source) from its history', () => {
+  let p = libraryProject(); const sourceId = p.coauthoring.sources.at(-2).id;
+  const payload = {kind: 'control', title: 'Audit preservation', content: 'Preserve the original audit event', owner: 'Architecture', sourceId, reviewed: true, reviewNote: 'Checked for this project'};
+  const legacy = q => ({...q, workbench: {...q.workbench, catalogue: q.workbench.catalogue.map(({author, lastEditor, ...e}) => ({...e, history: (e.history || []).map(({author, lastEditor, ...v}) => v)}))}});
+  p = legacy(ws(p, {...payload, status: 'draft'}, 'creator-a')); const id = p.workbench.catalogue.at(-1).id;
+  const owned = legacy(ws(p, {...payload, id, owner: 'Platform', status: 'draft'}, 'saver-b'));
+  assert.equal(entryOf(owned, id).author, undefined, 'the fixture is in the shape saved before rc42');
+  assert.throws(() => ws(owned, {...payload, id, owner: 'Platform', status: 'approved'}, 'creator-a'), SECOND, 'its creator cannot approve after another person re-saved only the owner');
+  const byB = entryOf(ws(owned, {...payload, id, owner: 'Platform', status: 'approved'}, 'saver-b'), id);
+  assert.deepEqual([byB.status, byB.author, byB.lastEditor], ['approved', 'creator-a', 'creator-a'], 'a re-save that changed no text does not make its saver the last editor');
+  const edited = legacy(ws(p, {...payload, id, content: payload.content + '.', status: 'draft'}, 'saver-b'));
+  assert.throws(() => ws(edited, {...payload, id, content: payload.content + '.', status: 'approved'}, 'creator-a'), SECOND, 'its creator cannot approve');
+  assert.throws(() => ws(edited, {...payload, id, content: payload.content + '.', status: 'approved'}, 'saver-b'), SECOND, 'who last changed its content cannot approve');
+  const c = entryOf(ws(edited, {...payload, id, content: payload.content + '.', status: 'approved'}, 'reviewer-c'), id);
+  assert.deepEqual([c.status, c.author, c.lastEditor, c.actor], ['approved', 'creator-a', 'saver-b', 'reviewer-c']);
+});
+await check('D4c review 2: a project library approval restored from a package is history: the entry is a draft that neither guidance nor a template uses until a second signed-in person here approves it', () => {
+  let p = libraryProject(); const sourceId = p.coauthoring.sources.at(-2).id, plan = p.runtime.plans[0];
+  const runbook = {kind: 'runbook', title: 'Restore method', content: 'Validate the retained backup hash before restoring service.', owner: 'Operations', sourceId, reviewed: true, reviewNote: 'Checked for this project', reviewAfter: '2030-01-01'};
+  const narrative = {kind: 'document-template', title: 'Design review narrative', content: JSON.stringify({summary: 'A source-backed draft narrative', scope: 'Explicit scope for this review'}), owner: 'Architecture', sourceId, reviewed: true, reviewNote: 'Checked chapter fields'};
+  p = ws(p, {...runbook, status: 'draft'}, 'mallory'); const rid = p.workbench.catalogue.at(-1).id; p = ws(p, {...runbook, id: rid, status: 'approved'}, 'mallory-alt');
+  p = ws(p, {...narrative, status: 'draft'}, 'mallory'); const tid = p.workbench.catalogue.at(-1).id; p = ws(p, {...narrative, id: tid, status: 'approved'}, 'mallory-alt');
+  const raw = {entryId: rid, targetId: plan.id, adaptation: 'Inspect the signed backup manifest; restore in an isolated test zone.', owner: 'Recovery lead', reason: 'This stateful service uses retained snapshots.'};
+  const use = (q, actor) => applyWorkbenchCommand(q, {type: 'workspace.guidance', payload: {...raw, stamp: previewGuidanceUse(q, raw).stamp, reviewed: true}}, at, actor).document;
+  assert.equal(use(p, 'mallory').runtime.plans.find(x => x.id === plan.id).runbook, raw.adaptation, 'the fixture is usable on the workbench it came from');
+  previewGuidanceTemplate(p, tid);
+  const restored = neutraliseImportedAuthority(structuredClone(p), at, 'mallory'), e = entryOf(restored, rid);
+  assert.throws(() => previewGuidanceUse(restored, raw), /reviewed guidance/, 'restored guidance is not used before a review here');
+  assert.throws(() => use(restored, 'mallory'), /reviewed guidance/, 'workspace.guidance refuses a restored approval');
+  assert.throws(() => previewGuidanceTemplate(restored, tid), /Review current source-backed guidance/, 'workspace.template refuses a restored approval');
+  assert.deepEqual([e.status, e.actor, e.importedActor, e.importedAuthor, e.importedLastEditor, e.author, e.lastEditor, e.reviewNote], ['draft', null, 'mallory-alt', 'mallory', 'mallory', 'mallory', 'mallory', runbook.reviewNote], 'the imported approver and authors are kept as history; the restorer stands as author and last editor; the review note is kept');
+  assert.deepEqual([e.importedApproval?.actor, e.importedApproval?.reviewNote, e.importedApproval?.authority], ['mallory-alt', runbook.reviewNote, IMPORTED_AUTHORITY], 'the imported approval is recorded as history');
+  assert.equal(entryOf(restored, tid).status, 'draft');
+  assert.throws(() => ws(restored, {...runbook, id: rid, status: 'approved'}, 'mallory'), SECOND, 'the restorer cannot approve it alone');
+  const approved = ws(ws(restored, {...runbook, id: rid, status: 'approved'}, 'carol'), {...narrative, id: tid, status: 'approved'}, 'carol');
+  assert.equal(use(approved, 'mallory').runtime.plans.find(x => x.id === plan.id).runbook, raw.adaptation, 'a second signed-in person here approves it, and it is used');
+  previewGuidanceTemplate(approved, tid);
+  assert.equal(entryOf(neutraliseImportedAuthority({...structuredClone(p), workspace: {...p.workspace, restoredBy: 'mallory'}}, at), rid).author, 'mallory', 'the restore\'s own restorer is used when none is passed');
+  const bare = neutraliseImportedAuthority({workbench: structuredClone(p.workbench)}, at, 'mallory');
+  assert.ok(bare.workbench.catalogue.every(x => x.status === 'draft' && x.author === 'mallory'), 'a package without a final review brings no library approval either');
 });
 
 // ------------------------------------------------------------------------------------------------ D11 template text and the wrong kit
@@ -117,6 +195,19 @@ await check('D11: a kit part whose category is not the archetype\'s own kind is 
   const right = {...authored(record(REL)), componentKit: kit('data', ['Ledger tables', 'Relational engine']), interfaceKit: [{consumerRole: 'caller', providerRole: 'ledger tables', contractType: 'SQL', interaction: 'request-response', key: 'synthetic-ledger', name: 'Ledger write', protocol: 'SQL', required: true}]};
   const g = CS.archetypeProposal(right);
   assert.ok(g.boundary.includes('Ledger tables') && g.proposed.contracts.some(k => k.title === 'Ledger write') && g.proposed.needs.some(n => n.description.startsWith('Relational engine')), 'a kit of the archetype\'s own kind is proposed');
+});
+await check('D11 review 2: a list mixing authored and template items proposes only the authored ones (prerequisites, obligations, kit parts)', () => {
+  const r = record(REL), key = REL.toLowerCase() + '-';
+  const own = {archetype: 'Ledger tables', canonicalKind: 'LogicalService', key: 'synthetic-ledger', name: 'Ledger tables', properties: {category: 'data'}, required: true, responsibility: 'Hold the payment ledger'};
+  const generic = {archetype: 'Store', canonicalKind: 'LogicalService', key: key + 'store', name: r.name + ' Store', properties: {category: 'data'}, required: true, responsibility: 'Generic store responsibility'};
+  const mixed = {...structuredClone(r), prerequisites: ['A schema owner is named.', ...r.prerequisites], obligations: [{id: 'OBL-REL-1', title: 'Back up the ledger tables', description: 'Daily backups with a tested restore.', mandatory: true}, ...r.obligations], componentKit: [own, generic, ...r.componentKit]};
+  const g = CS.archetypeProposal(mixed), text = JSON.stringify(g);
+  for (const s of [...GENERATED(r), generic.name, generic.responsibility]) assert.ok(!text.includes(s), 'a template item of a mixed list is proposed: ' + s);
+  assert.ok(g.assumptions.includes('A schema owner is named.'), 'the authored prerequisite is proposed');
+  assert.deepEqual(g.proposed.obligations.map(o => o.title), ['Back up the ledger tables'], 'only the authored obligation is proposed');
+  assert.ok(g.boundary.includes('Ledger tables: Hold the payment ledger'), 'the authored kit part is proposed');
+  assert.deepEqual(g.proposed.contracts, [], 'no interface kit comes with a kit that is not wholly the archetype\'s own');
+  assert.deepEqual(CS.templateFields(mixed).filter(f => ['prerequisites', 'obligations', 'componentKit'].includes(f)), [], 'a mixed list is not marked template as a whole');
 });
 await check('D11: a candidate saved from an archetype carries no template text into its record, its checks or the SDD; its open questions are kept', () => {
   const q = candidate(base, CS.archetypeProposal(record(REL)), {allocations: [{logicalId: 'api', scope: 'Intake'}]}), c = components(q).at(-1), r = record(REL);
@@ -158,6 +249,47 @@ await check('D4b/D4c through the service: a draft or unreleased organisation ent
     let r = await command('workspace.catalogue', {...payload, status: 'approved'}); assert.equal(r.status, 400, 'one person cannot write and approve in one request'); assert.match(r.data.error, /second signed-in person|another signed-in person/i);
     r = await command('workspace.catalogue', {...payload, status: 'draft'}); assert.equal(r.status, 200); const libId = r.data.document.workbench.catalogue.at(-1).id;
     r = await command('workspace.catalogue', {...payload, id: libId, status: 'approved'}); assert.equal(r.status, 400, 'the writer cannot approve it'); assert.match(r.data.error, /second signed-in person|another signed-in person/i);
+  } finally { env.DB.close(); await rm(dir, {recursive: true, force: true}); }
+});
+
+await check('D4c review 2 through the service: a package restored by one person brings no approved library entry and the restorer cannot approve one alone; an installed organisation entry names the organisation\'s author', async () => {
+  const dir = await mkdtemp(tmpdir() + '/aiw-rc42-g2r2-'), env = {DB: localDatabase(dir + '/test.sqlite'), FILES: localFiles(dir + '/files'), ASSETS: {fetch: () => new Response('ok')}};
+  const api = async (path, raw, actor) => { const response = await worker.fetch(new Request('https://aiw.test' + path, {headers: {'oai-authenticated-user-id': actor, Origin: 'https://aiw.test', ...(raw ? {'Content-Type': 'application/json'} : {})}, ...(raw ? {method: 'POST', body: JSON.stringify(raw)} : {})}), env); let data = null; try { data = await response.json(); } catch { data = null; } return {status: response.status, data}; };
+  try {
+    // On another workbench: 'mallory' files a runbook and 'mallory-alt' approves it; 'ghost' files a draft control.
+    let p = libraryProject(); const sourceId = p.coauthoring.sources.at(-2).id, plan = p.runtime.plans[0];
+    const runbook = {kind: 'runbook', title: 'Restore method', content: 'Validate the retained backup hash before restoring service.', owner: 'Operations', sourceId, reviewed: true, reviewNote: 'Checked for this project', reviewAfter: '2030-01-01'};
+    const control = {kind: 'control', title: 'Audit preservation', content: 'Preserve the original audit event', owner: 'Architecture', sourceId, reviewed: true, reviewNote: 'Checked'};
+    p = ws(p, {...runbook, status: 'draft'}, 'mallory'); const rid = p.workbench.catalogue.at(-1).id; p = ws(p, {...runbook, id: rid, status: 'approved'}, 'mallory-alt');
+    p = ws(p, {...control, status: 'draft'}, 'ghost'); const cid = p.workbench.catalogue.at(-1).id;
+    const originId = 'origin-rc42-library', origin = 'origin-owner';
+    await env.DB.prepare('INSERT INTO projects(owner_id,id,document,revision,updated_at) VALUES(?,?,?,1,?)').bind(origin, originId, JSON.stringify({...p, id: originId}), at).run();
+    assert.ok((await saveStoredProject(env, origin, originId, {...p, id: originId}, 1, at, new Map())).meta.changes);
+    const pack = await buildRecovery(env, {owner: origin, actor: origin, role: 'owner'}, originId);
+    const previewed = await api('/api/recovery?action=preview', {package: pack}, 'mallory'); assert.equal(previewed.status, 200, JSON.stringify(previewed.data));
+    const restored = await api('/api/recovery?action=restore', {package: pack, hash: previewed.data.hash, name: 'Restored library', reviewed: true}, 'mallory'); assert.equal(restored.status, 201, JSON.stringify(restored.data));
+    const pid = restored.data.id, state = async () => (await api('/api/project?project=' + pid, null, 'mallory')).data;
+    const command = async (type, payload) => api('/api/commands?project=' + pid, {revision: (await state()).revision, command: {type, payload}}, 'mallory');
+    const raw = {entryId: rid, targetId: plan.id, adaptation: 'Inspect the signed backup manifest; restore in an isolated test zone.', owner: 'Recovery lead', reason: 'This stateful service uses retained snapshots.'};
+    let res = await command('workspace.guidance', {...raw, stamp: 'any', reviewed: true}); assert.equal(res.status, 400, 'restored guidance is not applied: ' + JSON.stringify(res.data)); assert.match(res.data.error, /reviewed guidance/);
+    res = await command('workspace.catalogue', {...control, id: cid, status: 'approved'}); assert.equal(res.status, 400, 'the restorer cannot approve an entry another identity is said to have written: ' + JSON.stringify(res.data)); assert.match(res.data.error, SECOND);
+    res = await command('workspace.catalogue', {...runbook, id: rid, status: 'approved'}); assert.equal(res.status, 400, 'the restorer cannot re-approve the restored approval alone'); assert.match(res.data.error, SECOND);
+    let s = await state(); const r = entryOf(s.document, rid), c = entryOf(s.document, cid);
+    assert.ok(s.document.workbench.catalogue.every(e => e.status === 'draft'), 'nothing restored is approved');
+    assert.deepEqual([r.status, r.actor, r.author, r.lastEditor, r.importedAuthor, r.importedApproval?.actor], ['draft', null, 'mallory', 'mallory', 'mallory', 'mallory-alt'], 'the restored approval is history and the restorer stands as author and last editor');
+    assert.deepEqual([c.status, c.author, c.lastEditor, c.importedAuthor], ['draft', 'mallory', 'mallory', 'ghost'], 'an imported author is history too');
+    assert.equal(entryOf(ws(s.document, {...runbook, id: rid, status: 'approved'}, 'carol'), rid).status, 'approved', 'a second signed-in person approves it');
+
+    // An organisation entry filed by 'editor-c', reviewed by 'reviewer-b' and installed by 'editor-a' names its author.
+    const org = await api('/api/organizations?action=create', {title: 'Payments guild', purpose: 'Shared guidance'}, 'editor-a'); assert.equal(org.status, 201); const lib = '/api/organizations?organization=' + org.data.id + '&action=';
+    for (const [actorId, role] of [['editor-c', 'editor'], ['reviewer-b', 'reviewer']]) assert.equal((await api(lib + 'members', {actorId, role}, 'editor-a')).status, 200);
+    const filed = await api(lib + 'library', {kind: 'control', title: 'Audit preservation', content: 'Preserve the original audit event', conditions: 'Where audit events are kept.', limitations: 'A synthetic entry.', source: {location: 'Synthetic note 1', passage: 'Preserve the original audit event.', revision: 'r1'}}, 'editor-c'); assert.equal(filed.status, 200, JSON.stringify(filed.data));
+    const entry = (await api(lib + 'library', null, 'editor-a')).data.entries.find(x => x.id === filed.data.id);
+    assert.equal((await api(lib + 'review', {id: entry.id, revision: entry.revision, outcome: 'approved', reviewed: true, rationale: 'Checked', evidence: 'Compared with the source'}, 'reviewer-b')).status, 200);
+    const release = (await api(lib + 'releases', {title: 'Controls 1', entryIds: [entry.id], reviewed: true}, 'editor-a')).data.release;
+    const mine = (await api('/api/project', null, 'editor-a')).data; const installed = await api(lib + 'install', {revision: mine.revision, releaseId: release.id, reviewed: true}, 'editor-a'); assert.equal(installed.status, 200, JSON.stringify(installed.data));
+    const pinned = (await api('/api/project', null, 'editor-a')).data.document.workbench.catalogue.find(e => e.organization?.entryId === entry.id);
+    assert.deepEqual([pinned.status, pinned.author, pinned.lastEditor, pinned.actor], ['approved', 'editor-c', 'editor-c', 'editor-a'], 'the organisation\'s author and last editor are named, not the installer');
   } finally { env.DB.close(); await rm(dir, {recursive: true, force: true}); }
 });
 

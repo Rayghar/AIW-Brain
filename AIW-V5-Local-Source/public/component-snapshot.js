@@ -89,13 +89,20 @@ export function archetypeCategory(id) {
 // in AIW's words, not reviewed by a person, and it informs no score, check or conformance result.
 export const TEMPLATE_LABEL = 'Generic catalogue template';
 const generated = r => new Set([`${r.name} normalized as an AIW ${r.recordType} record with explicit applicability, trade-offs, obligations, evidence and conformance guidance.`, `Address architecture forces for ${r.name} without hiding its operational and governance consequences.`, `Use when ${r.name} is relevant to the selected ${r.category} scope.`, 'Evaluate against project constraints, quality scenarios, team capability and existing architecture decisions.', `Named owner and measurable quality scenario for ${r.name}.`, `The selected scope must contain a ${r.category}-relevant responsibility or capability.`, `Do not adopt ${r.name} only because a technology or repository is popular.`, `${r.name} operating obligation`, `Define ownership, monitoring, failure handling and review criteria introduced by ${r.name}.`]);
+// templateItem(r) tests one value or list item of a field; a list is template as a whole only when every item is, and
+// ownItems keeps a list's other items, so a list mixing authored and template items proposes only the authored ones. An
+// obligation whose title or description is the template's is template.
+const templateItem = r => {
+  const g = generated(r), key = str(r.id).toLowerCase() + '-', has = x => g.has(x);
+  return {summary: has, problem: has, context: has, prerequisites: has, applicabilityRules: has, exclusions: has, obligations: o => has(o?.title) || has(o?.description),
+    componentKit: k => str(k?.key).startsWith(key) && k.name === `${r.name} ${k.archetype}`, interfaceKit: k => str(k?.key).startsWith(key) && str(k.name).startsWith(r.name + ' ')};
+};
 export function templateFields(r) {
   if (!r) return [];
-  const g = generated(r), key = str(r.id).toLowerCase() + '-', has = x => g.has(x), every = (xs, f) => list(xs).length > 0 && list(xs).every(f);
-  const fields = {summary: has(r.summary), problem: has(r.problem), context: every(r.context, has), prerequisites: every(r.prerequisites, has), applicabilityRules: every(r.applicabilityRules, has), exclusions: every(r.exclusions, has), obligations: every(r.obligations, o => has(o.title) && has(o.description)),
-    componentKit: every(r.componentKit, k => str(k.key).startsWith(key) && k.name === `${r.name} ${k.archetype}`), interfaceKit: every(r.interfaceKit, k => str(k.key).startsWith(key) && str(k.name).startsWith(r.name + ' '))};
-  return Object.keys(fields).filter(k => fields[k]);
+  const t = templateItem(r);
+  return Object.keys(t).filter(f => (Array.isArray(r[f]) ? r[f].length > 0 && r[f].every(t[f]) : t[f](r[f])));
 }
+export function ownItems(r, f) { const t = templateItem(r)[f]; return list(r[f]).filter(x => !t(x)); }
 
 // ---------------------------------------------------------------- proposals
 
@@ -125,15 +132,15 @@ export function libraryProposal(entry, library = {scope: 'project'}) {
 }
 // A Chapter 5 proposal from a catalogue archetype (the loaded record, with its component kit, interface kit and
 // obligations). The archetype's knowledge authority travels as a reading: descriptive, never a score.
-// rc42 (D11): a template-marked field (templateFields) is not proposed, nor a kit part of another category than the
-// archetype's own (archetypeCategory), nor an interface kit that comes with such a kit. The fields they would have filled
-// are left empty, as open questions for the person, so no template or wrong-kit text reaches the component, its checks
-// or the SDD as if it were the archetype's own.
+// rc42 (D11): a template-marked field or list item (templateFields, ownItems) is not proposed, nor a kit part of another
+// category than the archetype's own (archetypeCategory), nor an interface kit unless its whole kit is the archetype's
+// own. The fields they would have filled are left empty, as open questions for the person, so no template or wrong-kit
+// text reaches the component, its checks or the SDD as if it were the archetype's own.
 const OPEN_QUESTIONS = {purpose: 'What does it do in this project?', boundary: 'What does it own, and where does its boundary lie?', inputs: 'What does it receive, and from whom?', outputs: 'What does it send or produce, and to whom?', technologyNeeds: 'Which technology capabilities does it need?', assumptions: 'What must hold for it to fit this project?'};
 export function archetypeProposal(record, {releaseId = ''} = {}) {
   if (!record || record.recordType !== 'component-archetype') throw Error('Choose one of the catalogue’s component archetypes.');
   const ref = cleanLibraryRef({scope: 'catalogue', archetypeId: record.id, title: record.name, releaseId: releaseId || CATALOGUE.releaseId, recordSha256: record.recordSha256});
-  const template = new Set(templateFields(record)), mine = f => (template.has(f) ? [] : list(record[f])), all = list(record.componentKit);
+  const template = new Set(templateFields(record)), mine = f => ownItems(record, f), all = list(record.componentKit);
   const kit = mine('componentKit').filter(k => str(k.properties?.category) === archetypeCategory(record.id)), whole = all.length > 0 && kit.length === all.length;
   const required = kit.filter(k => k.required), own = new Set(kit.map(k => str(k.archetype).toLowerCase()));
   // The archetype provides a contract when one of its own parts is the provider; it requires one when a part is the consumer.
