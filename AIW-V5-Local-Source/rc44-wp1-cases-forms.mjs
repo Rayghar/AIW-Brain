@@ -125,6 +125,11 @@ add('S1.2: each of the nine shapes round-trips; an unknown field, an over-limit 
   refused('applicability', f => { f.useWhen[0].weight = 3; }, /applicability\.useWhen\[0\] has an unsupported field: weight/);
   refused('definition', f => { f.distinctions = Array.from({length: 9}, () => clone(f.distinctions[0])); }, /definition\.distinctions holds 9 items; at most 8/);
   refused('exercise', f => { f.items = Array.from({length: 10}, () => clone(f.items[0])); }, /exercise\.items holds 10 items; at most 9/);
+  // A field named as something every object inherits is an unknown field like any other.
+  refused('applicability', f => { f.useWhen[0].constructor = 'hidden'; }, /applicability\.useWhen\[0\] has an unsupported field: constructor/);
+  refused('definition', f => { f.toString = 'hidden'; }, /definition has an unsupported field: toString/);
+  refused('applicability', f => { f.useWhen[0] = JSON.parse(JSON.stringify(f.useWhen[0]).replace('{', '{"__proto__":{"reviewed":true},')); }, /applicability\.useWhen\[0\] has an unsupported field: __proto__/);
+  for (const type of ['constructor', '__proto__', 'toString', 7, null]) assert.match(CF.conceptFormIssues({type, v: 1}, ctx(all.definition)).join(' '), /Choose a supported form type/);
   refused('mechanism', f => { f.steps[0].at = [9, 9]; }, /mechanism\.steps\[0\] cites lines 9.9, outside the passage \(lines 10.13\)/);
   refused('mechanism', f => { f.steps[0].at = [12, 14]; }, /mechanism\.steps\[0\] cites lines 12.14, outside the passage/);
   refused('mechanism', f => { f.steps[0].at = [12, 11]; }, /mechanism\.steps\[0\] names no lines/);
@@ -144,6 +149,9 @@ add('S1.2: each of the nine shapes round-trips; an unknown field, an over-limit 
   refused('calculation', f => { f.bounds += ' At most 15 minutes.'; }, /calculation\.bounds states the number 15, which no quote of the form contains/);
   refused('composition', f => { f.parameters[0].selectionBasis = 'Use 50 rows.'; }, /composition\.parameters\[0\]\.selectionBasis states the number 50/);
   { const f = all.calculation, form = clone(f.content); form.workedValues[0].name = 'outage of 120 seconds'; assert.deepEqual(CF.conceptFormIssues(form, ctx(f)), [], 'a number its quote holds is allowed'); }
+  refused('selection', f => { f.variants[0].name = 'Polling every 30 seconds'; }, /selection\.variants\[0\]\.name states the number 30/);
+  refused('calculation', f => { f.modelKind = 'queue-model-2'; }, /calculation\.modelKind states the number 2/);
+  { const f = all.verification, form = clone(f.content); form.scenarios[0].id = 'SYN-P001-T2'; assert.deepEqual(CF.conceptFormIssues(form, ctx(f)), [], 'an identifier is not a stated number'); }
   refused('calculation', f => { f.workedValues[0].evidenceLevel = 'proposed'; }, /calculation\.workedValues\[0\]: a worked value is illustrative/);
   refused('composition', f => { delete f.parameters[0].example.evidenceLevel; }, /composition\.parameters\[0\]\.example: a worked value is illustrative/);
   // Evidence levels are what the source says of itself; a result is never claimed here.
@@ -288,6 +296,14 @@ add('S1.5: a concept is verified by a second signed-in person: its author, an ed
   { const unverified = await library({forms: ['definition', 'mechanism']}); assert.throws(() => review('reviewer', F.person('reviewer'), unverified.document), /KC-\d+ \(definition\): The claim has not passed an explicit source and interpretation review/); }
   { const own = clone(L.document), c = own.knowledge.claims.find(x => x.id === L.claimIds.mechanism); c.review.actor = c.actor; assert.throws(() => review('reviewer', F.person('reviewer'), own), /\(mechanism\): Its author verified it/); }
   { const none = await library({forms: []}); assert.throws(() => review('reviewer', F.person('reviewer'), none.document), /SYN-P001 needs its definition/); }
+  // Nor by someone who wrote one of its forms: here `architect` wrote the example.
+  { const mixed = await library({forms: ['definition', 'mechanism']}), example = mixed.k('claim', F.formClaim(mixed.sourceId, 'SYN-P001', F.p001Forms().example), 'architect');
+    mixed.k('concept', {...CONCEPT, id: mixed.conceptRecordId, forms: [...mixed.document.knowledge.concepts[0].forms, {type: 'example', claimId: example}]});
+    for (const id of [...Object.values(mixed.claimIds), example]) mixed.k('review', {...F.REVIEW, formChecked: true, id}, 'reviewer');
+    assert.throws(() => review('architect', F.person('architect'), mixed.document), /A second signed-in person.*architect wrote KN-/, 'the author of one of its forms');
+    const ok = review('reviewer', F.person('reviewer'), mixed.document).document; assert.equal(KC.conceptRecords(ok)[0].state, 'reviewed');
+    const forged = clone(ok); forged.knowledge.concepts[0].review.actor = 'architect'; assert.equal(KC.conceptRecords(forged)[0].state, 'draft', 'and a review recorded for such a person does not stand on any read');
+    const self = clone(ok); self.knowledge.concepts[0].review.actor = 'importer'; assert.equal(KC.conceptRecords(self)[0].state, 'draft'); }
   // A form is verified through the register only: with every item checked, by a person, never by its author or as an import.
   const formReview = (id, actor, opts = F.person(actor), change = {}, p = (L.document)) => CC.applyConceptCommand(p, {type: 'knowledge.review', payload: {...F.REVIEW, formChecked: true, id, ...change}}, AT, actor, opts);
   const fresh = await library({forms: ['definition', 'applicability']}), fid = fresh.claimIds.applicability;
@@ -472,6 +488,11 @@ add('S1.9: a released form is checked again on every read: one tampered in the d
     const pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: L.releaseId, status: 'active'}];
     assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001').map(x => x.type), ['selection', 'composition', 'calculation', 'verification'], what + ': the tampered form is not handed to a design record');
   }
+  // The definition is the anchor: with it unusable, a design record is handed nothing of the concept.
+  { const q = careful(f => { f.quotes = ['an outbox guarantees exactly-once delivery']; }, 'definition'), pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: L.releaseId, status: 'active'}];
+    assert.equal(status(q, 'definition').status, 'released-ineligible'); assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001'), []); assert.equal(status(q, 'applicability').status, 'released'); }
+  // What an active release holds is offered as entries, never as the raw claim.
+  assert(KC.releasedConcepts(p)[0].forms.every(f => !('claim' in f) && !('form' in f)));
   { const q = careful(f => { f.steps[0].quote = 'the relay publishes before the commit'; }, 'mechanism'); assert.equal(status(q, 'mechanism').status, 'released-ineligible'); assert.equal(status(q, 'mechanism').content, null, 'a teaching form too'); assert(!KC.conceptTeachingForms(q, 'SYN-P001').some(f => f.type === 'mechanism')); }
   // A withdrawn source makes every form of the release ineligible through the existing gate.
   const withdrawn = L.k('withdraw', {...F.REVIEW, id: L.sourceId, stamp: K.knowledgeImpactStamp(p, L.sourceId)}, 'releaser') && L.document;

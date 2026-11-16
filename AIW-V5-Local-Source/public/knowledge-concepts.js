@@ -27,11 +27,13 @@ export function conceptHash(concept,claims){
 // This project's concept register, each concept with its hash and derived state. A review stands while its hash is the
 // concept's, its reviewer wrote no revision of the concept (verifierRefusal, the one second-person check) and every form
 // claim is eligible for release: verified by someone other than its author, on its exact passage, not withdrawn.
+// Who wrote a concept, for that check: its author, every editor, and the author of each claim that is one of its forms.
+export const conceptAuthors=(c,claims)=>({id:c.id,actor:c.actor,owner:'',history:[...list(c.history),...list(c.forms).map(f=>({revision:0,actor:list(claims).find(x=>x.id===f.claimId)?.actor})).filter(h=>h.actor)]});
 export function conceptRecords(p){
  const s=knowledgeState(p);
  return list(s.concepts).map(c=>{
   const hash=conceptHash(c,s.claims),r=c.review,forms=list(c.forms);
-  const stands=r?.decision==='verified'&&!!r.actor&&r.conceptHash===hash&&!verifierRefusal({id:c.id,actor:c.actor,history:c.history,owner:''},r.actor)&&forms.length>0&&forms.every(f=>{const claim=s.claims.find(x=>x.id===f.claimId);return !!claim?.form&&knowledgeEligibility(p,claim).eligible&&!formIssues(claim).length;});
+  const stands=r?.decision==='verified'&&!!r.actor&&r.conceptHash===hash&&!verifierRefusal(conceptAuthors(c,s.claims),r.actor)&&forms.length>0&&forms.every(f=>{const claim=s.claims.find(x=>x.id===f.claimId);return !!claim?.form&&knowledgeEligibility(p,claim).eligible&&!formIssues(claim).length;});
   return {...c,hash,state:c.retired?'retired':stands?'reviewed':'draft'};
  });
 }
@@ -63,7 +65,7 @@ export function releasedConcepts(p){
  for(const h of releasedClaims(p)){
   if(!h.claim?.form||!FORM_TYPES.includes(h.claim.form.type))continue;
   const key=h.release.id+'\n'+h.claim.subjectId;if(!groups.has(key))groups.set(key,{conceptId:h.claim.subjectId,release:h.release,forms:[]});
-  groups.get(key).forms.push({...formEntry(p,h.claim,h.release),claim:h.claim});
+  groups.get(key).forms.push(formEntry(p,h.claim,h.release));
  }
  return [...groups.values()].map(g=>({conceptId:g.conceptId,release:g.release,concept:g.release.organizationId?null:list(s.concepts).find(c=>c.conceptId===g.conceptId)||null,eligible:g.forms.every(f=>f.status==='released')&&g.forms.filter(f=>f.type==='definition').length===1,forms:g.forms.sort(byForm)}));
 }
@@ -76,7 +78,7 @@ export function conceptReading(p,conceptId){
   const hit=hits.find(h=>!h.release.organizationId&&h.claim.id===f.claimId&&h.claim.form),claim=hit?.claim||s.claims.find(c=>c.id===f.claimId);
   if(claim?.form)forms.push(formEntry(p,claim,hit?.release||null));
  }
- for(const c of released)for(const f of c.forms)if(!forms.some(x=>x.claimId===f.claimId&&x.releaseId===f.releaseId)){const {claim:_claim,...entry}=f;forms.push(entry);}
+ for(const c of released)for(const f of c.forms)if(!forms.some(x=>x.claimId===f.claimId&&x.releaseId===f.releaseId))forms.push(f);
  const head=concept||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
  return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm)};
 }
@@ -90,5 +92,7 @@ export function conceptTeachingForms(p,conceptId){
 export function conceptDecisionForms(p,pinId){
  const pin=list(knowledgeState(p).conceptPins).find(x=>x?.id===pinId&&x.status==='active');if(!pin)return [];
  const held=releasedConcepts(p).find(c=>c.conceptId===pin.conceptId&&c.release.id===pin.releaseId);
- return list(held?.forms).filter(f=>f.tier==='decision'&&f.status==='released').map(f=>({type:f.type,content:f.content,architectureUnit:f.architectureUnit,receipt:f.receipt}));
+ // The definition is the concept's anchor: without it released there, nothing of the concept is relied on.
+ if(!held?.forms.some(f=>f.type==='definition'&&f.status==='released'))return [];
+ return list(held.forms).filter(f=>f.tier==='decision'&&f.status==='released').map(f=>({type:f.type,content:f.content,architectureUnit:f.architectureUnit,receipt:f.receipt}));
 }

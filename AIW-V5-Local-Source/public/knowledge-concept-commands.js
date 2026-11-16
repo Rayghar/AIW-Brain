@@ -18,7 +18,7 @@ import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility} from './knowl
 import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,conceptFormIssues,conceptFormRecord} from './concept-form.js';
-import {conceptRecords,conceptHash} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors} from './knowledge-concepts.js';
 import {list} from './util.js';
 
 // A project's bounds, and a knowledge library's (one tranche of a handbook: about sixty concepts and their forms). The
@@ -36,7 +36,7 @@ const subset=(v,allowed,max)=>Array.isArray(v)&&v.length<=max&&v.every(x=>allowe
 function assertReview(raw){if(raw.reviewed!==true||!text(raw.reason)||!text(raw.reviewer,180))throw Error('Review the exact change and record the reviewer and rationale.');}
 // A review, a release of forms, a library mark, a retirement: a signed-in person's own request.
 const kindRefusal=author=>!author?'A review is a signed-in person\'s own request; this one states no author.':author.account==='agent'?'An agent or Sol reviews nothing: a person signs in to do that.':author.kind==='sol-draft'?'A draft by Sol reviews nothing: a person signs in to do that.':author.kind!=='person'?'An import records what a file says and reviews nothing: a person signs in to do that.':null;
-const secondPerson=(record,actor,author)=>verifierRefusal({id:record.id,actor:record.actor,history:record.history,owner:''},actor,author?.account)||kindRefusal(author);
+const secondPerson=(record,actor,author)=>verifierRefusal({owner:'',...record},actor,author?.account)||kindRefusal(author);
 function personOnly(author,actor){const refusal=!actor?'Sign in to record this.':kindRefusal(author);if(refusal)throw Error(refusal);}
 
 function conceptInput(s,r,existing){
@@ -116,7 +116,8 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
   Object.assign(existing,c,{revision:existing.revision+1,lastEditor:actor});existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});return existing.id;
  }
  case 'knowledge.concept-review':{
-  assertReview(r);const c=concept(),refusal=secondPerson(c,actor,author);if(refusal)throw Error(refusal);
+  // Verified by someone who wrote neither the concept (its author, any editor) nor any of its forms.
+  assertReview(r);const c=concept(),refusal=secondPerson(conceptAuthors(c,s.claims),actor,author);if(refusal)throw Error(refusal);
   if(!['verified','rejected','disputed'].includes(r.decision))throw Error('Record a review outcome.');
   if(c.retired)throw Error(c.conceptId+' is retired: restore it before reviewing.');
   if(r.decision==='verified'){

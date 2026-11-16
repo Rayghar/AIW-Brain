@@ -29,17 +29,19 @@ const INVARIANT_KINDS=['identity','authority','time','ordering','publication','l
 const RECORD_KINDS=['responsibility','component','contract','data','capability','realization','plan','control','party'];
 const STAGES=['problem','consequence','inspect','decide','run','evidence','revise','assess'];
 const RESERVED=['reviewed','confirmed','targetConfirmed','assumptionsResolved','acknowledge','sourceChecked','rightsChecked','conditionsChecked','status','decision'];
-// Field kinds: T a text a number rule reads, N a name or label, E one of a closed list, S a short list of texts.
-const T=(max,opt=false)=>({k:'text',max,opt}),N=(max,opt=false)=>({k:'text',max,opt,label:true}),E=(values,opt=false)=>({k:'enum',values,opt}),S=(n,max)=>({k:'strings',n,max,opt:true});
+// Field kinds: T a text the form states (it rests on a quote), N a name or label, ID an identifier or a reference to one
+// (the only text the number rule does not read), E one of a closed list, S a short list of texts.
+const own=(o,k)=>Object.hasOwn(o,k);
+const T=(max,opt=false)=>({k:'text',max,opt}),N=(max,opt=false)=>({k:'text',max,opt,label:true}),ID=(max,opt=false)=>({k:'text',max,opt,label:true,id:true}),E=(values,opt=false)=>({k:'enum',values,opt}),S=(n,max)=>({k:'strings',n,max,opt:true});
 const INT={k:'int'},BOOL={k:'bool'},TARGET={k:'target'},LEVEL={k:'level',opt:true},ILLUSTRATIVE={k:'illustrative'},VALUE={k:'value'},WORKED={k:'worked',opt:true};
 const SHAPES={
  definition:{scalars:{short:T(400),explanation:T(4000,true)},lists:{distinctions:[8,{from:N(240),difference:T(800)}],vocabulary:[12,{term:N(120),meaning:T(800)}]}},
  mechanism:{scalars:{narrative:T(4000,true)},lists:{steps:[16,{n:INT,text:T(800)}],effects:[12,{quality:N(120),direction:E(['supports','tradeoff','unknown']),mechanism:T(1200),observableMeasure:T(400,true),potentialCost:T(400,true)}]},objects:{diagram:{notation:N(60),source:T(4000),origin:E(['source-figure'])}},verbatim:{diagram:'source'}},
  applicability:{lists:{useWhen:[12,{text:T(800)}],avoidWhen:[12,{text:T(800)}],prerequisites:[12,{text:T(800)}]},objects:{guaranteeBoundary:{boundedClaim:T(800),dependsOn:S(8,400),doesNotEstablish:S(8,400)}}},
  selection:{lists:{alternatives:[12,{target:TARGET,chooseWhen:T(800),cost:T(800)}],rules:[12,{condition:T(800),candidate:T(400),contraindication:T(800),evidenceNeeded:T(800)}],variants:[12,{name:N(160),chooseWhen:T(800),tradeoff:T(800)}]}},
- composition:{lists:{roles:[16,{id:N(60),name:N(160),responsibility:T(800),recordKind:E(RECORD_KINDS),required:BOOL,sameAs:N(120,true)}],relations:[24,{verb:E(RELATION_VERBS),target:TARGET,when:T(400,true),reason:T(800)}],invariants:[12,{kind:E(INVARIANT_KINDS),statement:T(800)}],parameters:[24,{name:N(120),type:N(40),unit:N(40,true),meaning:T(800),selectionBasis:T(800),wrongChoice:T(800,true),required:BOOL,example:WORKED}],ports:[16,{name:N(160),direction:N(40),contract:T(800)}],sequence:[24,{step:INT,ownerRole:N(120),text:T(800),exitEvidence:T(400,true),onFailure:T(400,true)}]}},
+ composition:{lists:{roles:[16,{id:ID(60),name:N(160),responsibility:T(800),recordKind:E(RECORD_KINDS),required:BOOL,sameAs:ID(120,true)}],relations:[24,{verb:E(RELATION_VERBS),target:TARGET,when:T(400,true),reason:T(800)}],invariants:[12,{kind:E(INVARIANT_KINDS),statement:T(800)}],parameters:[24,{name:N(120),type:N(40),unit:N(40,true),meaning:T(800),selectionBasis:T(800),wrongChoice:T(800,true),required:BOOL,example:WORKED}],ports:[16,{name:N(160),direction:N(40),contract:T(800)}],sequence:[24,{step:INT,ownerRole:ID(120),text:T(800),exitEvidence:T(400,true),onFailure:T(400,true)}]}},
  calculation:{scalars:{modelKind:N(60),purpose:T(800),relation:T(1200),bounds:T(800,true)},lists:{inputs:[16,{name:N(120),unit:N(40),meaning:T(800)}],outputs:[8,{text:T(400)}],notConsidered:[12,{text:T(400)}],workedValues:[16,{name:N(120),value:VALUE,unit:N(40),evidenceLevel:ILLUSTRATIVE}]}},
- verification:{lists:{scenarios:[16,{id:N(80),given:T(800),when:T(800),then:T(800),evidenceRequired:T(800),evidenceLevel:LEVEL}],failureModes:[16,{failure:T(800),behaviour:T(800,true),signal:T(400,true),response:T(800),evidence:T(800,true)}],signals:[12,{name:N(120),unit:N(40),interpretation:T(800)}]},objects:{metric:{name:N(120),unit:N(40),boundary:T(400,true),population:T(400,true),aggregation:T(400,true),window:T(400,true),thresholdBasis:T(400,true),coverage:T(400,true),missingData:T(400,true),ownerAction:T(400,true)},technique:{purpose:T(800),inputs:S(12,400),steps:S(16,800),outputs:S(12,400),evidenceProduced:T(800)}}},
+ verification:{lists:{scenarios:[16,{id:ID(80),given:T(800),when:T(800),then:T(800),evidenceRequired:T(800),evidenceLevel:LEVEL}],failureModes:[16,{failure:T(800),behaviour:T(800,true),signal:T(400,true),response:T(800),evidence:T(800,true)}],signals:[12,{name:N(120),unit:N(40),interpretation:T(800)}]},objects:{metric:{name:N(120),unit:N(40),boundary:T(400,true),population:T(400,true),aggregation:T(400,true),window:T(400,true),thresholdBasis:T(400,true),coverage:T(400,true),missingData:T(400,true),ownerAction:T(400,true)},technique:{purpose:T(800),inputs:S(12,400),steps:S(16,800),outputs:S(12,400),evidenceProduced:T(800)}}},
  example:{scalars:{title:N(160),scenario:T(1200,true),expectedOutcome:T(600),evidenceLevel:LEVEL,numbersAre:E(['teaching-assumptions'])},lists:{steps:[16,{text:T(800)}]}},
  exercise:{lists:{items:[9,{level:E(['beginner','intermediate','advanced']),prompt:T(1200),stage:E(STAGES,true)}]}}
 };
@@ -58,7 +60,7 @@ function field(path,key,spec,v,basis,basisWords,out){
  if(spec.k==='text'){
   if(typeof v!=='string'||!v.trim()){out.push(at+(typeof v==='string'?' is required.':' is a text.'));return;}
   if(v.trim().length>spec.max)out.push(at+' holds '+v.trim().length+' characters; at most '+spec.max+'.');
-  if(basis&&!spec.label)for(const n of numbers(v))if(!basis.has(n)){out.push(at+' states the number '+n+', which '+basisWords+'.');break;}
+  if(basis&&!spec.id)for(const n of numbers(v))if(!basis.has(n)){out.push(at+' states the number '+n+', which '+basisWords+'.');break;}
  }else if(spec.k==='enum'){if(!spec.values.includes(v))out.push(at+': choose one of '+spec.values.join(', ')+'.');}
  else if(spec.k==='int'){if(!Number.isInteger(v)||v<1||v>999)out.push(at+' is a whole number (1 or more).');}
  else if(spec.k==='bool'){if(typeof v!=='boolean')out.push(at+' is true or false.');}
@@ -89,7 +91,7 @@ function reserved(v,path,out){
 // An item of a list, or an object the form holds: its fields, its lines inside the passage and its verbatim quote.
 function item(path,fields,v,{excerpt,lineStart,lines,decision,verbatim=null},out){
  if(!object(v)){out.push(path+' is an object.');return;}
- for(const k of Object.keys(v))if(!fields[k]&&k!=='at'&&k!=='quote'&&!RESERVED.includes(k))out.push(path+' has an unsupported field: '+k+'.');
+ for(const k of Object.keys(v))if(!own(fields,k)&&k!=='at'&&k!=='quote'&&!RESERVED.includes(k))out.push(path+' has an unsupported field: '+k+'.');
  if(verbatim&&v.quote!==undefined)out.push(path+' has an unsupported field: quote.');
  const at=v.at,range=Array.isArray(at)&&at.length===2&&at.every(Number.isInteger)&&at[0]>=1&&at[1]>=at[0],quote=verbatim?v[verbatim]:v.quote;
  let grounded=false;
@@ -104,12 +106,12 @@ function item(path,fields,v,{excerpt,lineStart,lines,decision,verbatim=null},out
 // Every issue of a form read against its passage: {excerpt (the claim's lines of the source), lineStart (its first line)}.
 export function conceptFormIssues(form,{excerpt,lineStart}={}){
  if(!object(form))return ['A form is an object.'];
- const type=form.type,shape=SHAPES[type];if(!shape)return ['Choose a supported form type ('+FORM_TYPES.join(', ')+').'];
+ const type=form.type,shape=typeof type==='string'&&own(SHAPES,type)?SHAPES[type]:null;if(!shape)return ['Choose a supported form type ('+FORM_TYPES.join(', ')+').'];
  if(typeof excerpt!=='string'||!excerpt.trim()||!Number.isInteger(lineStart)||lineStart<1)return ['A form is read against its passage: the lines of the source its claim cites.'];
  const out=[],scalars=shape.scalars||{},lists=shape.lists||{},objects=shape.objects||{},decision=FORM_TIER[type]==='decision',ctx={excerpt,lineStart,lines:excerpt.split('\n').length,decision};
  reserved(form,type,out);
  if(form.v!==1)out.push(type+': version 1 is the only form version (v: 1).');
- for(const k of Object.keys(form))if(!['type','v','quotes'].includes(k)&&!scalars[k]&&!lists[k]&&!objects[k]&&!RESERVED.includes(k))out.push(type+' has an unsupported field: '+k+'.');
+ for(const k of Object.keys(form))if(!['type','v','quotes'].includes(k)&&!own(scalars,k)&&!own(lists,k)&&!own(objects,k)&&!RESERVED.includes(k))out.push(type+' has an unsupported field: '+k+'.');
  // The texts the form states of itself rest on quotes of the passage: one for each.
  const stated=Object.keys(scalars).filter(k=>scalars[k].k==='text'&&!scalars[k].label&&form[k]!==undefined),quotes=form.quotes;
  let basis=null;
