@@ -149,7 +149,7 @@ try {
   st = await storyIn();
   // rc.10.73.42 (D7): the story reads the trace kernel's chain, REQ-004's trail, whose controls are SEC-002 and SEC-003
   // (they protect the posting and network contracts its components use), so no step is a gap any more; the gap in the
-  // checks' words is shown where a step holds nothing (trace-narrative-validate.mjs, the HTML reading).
+  // checks' words is shown where a step holds nothing (the last block of this suite, in the page, and trace-narrative-validate.mjs).
   assert.equal(st.title, 'What happens when: Settle the payment'); assert.ok(st.steps === 11 && st.gaps === 0 && /\bSEC-002\b[\s\S]*\bSEC-003\b/.test(st.text) && !/No control is recorded for this step yet\./.test(st.text), 'every step holds a record on the trail, its controls named: ' + st.text);
   assert.ok(await page.$('#inspector .cm-companion .cm-spec + .tn-story, #inspector .cm-companion .cm-spec ~ .tn-story'), 'told beneath the specimen');
   const href = await page.$eval('#inspector .cm-companion .tn-story .cm-link[data-cm-chapter="8"]', a => a.getAttribute('href'));
@@ -160,7 +160,7 @@ try {
   await page.focus('.cm.sm .cm-stage'); await page.keyboard.press('Escape'); await page.waitForTimeout(250);
   assert.equal(await count('.tn-story'), 0, 'Escape closes the story first'); assert.match(await spec(), /Journey step · 04/i, 'and keeps the selection');
   await page.keyboard.press('Escape'); await page.waitForTimeout(250);
-  pass('Read as a story tells a selected step from the records on its trace beneath its specimen — each reference a link, a Chapter 1 record selecting in place and another chapter’s opening its model, a gap in the checks’ words — and Escape closes it before the selection');
+  pass('Read as a story tells a selected step from the records on its trace beneath its specimen — each reference a link, a Chapter 1 record selecting in place and another chapter’s opening its model, every step of the reference holding a record with its controls named — and Escape closes it before the selection');
 
   // 7. Boundary (round 11: renamed from Context, which the Diagram's C4 picture keeps): the system's boundary, the people
   //    around it, the outcomes and their owners. The old id still lands on it.
@@ -242,6 +242,22 @@ try {
   assert.ok(m2.story && m2.links > 5 && !m2.over && m2.edge, 'phone story ' + JSON.stringify(m2));
   await phone.close();
   pass('on a 390 px phone the journey map has a usable canvas and no horizontal page scroll, and a step’s story opens within the screen’s width');
+
+  // Last, because it adds a record (the rc42 test audit): a step with nothing on its trail is told with its gaps, in the
+  // checks' words, in the page. Until rc.10.73.42 the Settle step showed one such gap; the trace kernel (D7) gives every
+  // journey of the reference a whole trail, so a new step no requirement answers yet is added through the command path.
+  {
+    await open();
+    const added = await page.evaluate(async () => (await window.aiwProjectStore.command({type: 'artefact', payload: {type: 'journey', title: 'Close the day', description: 'A step no requirement answers yet.', status: 'Draft', owner: 'Operations', source: 'Synthetic test step', assumptions: 'Not confirmed.'}})).selected);
+    assert.match(String(added), /^JRN-\d{3}$/, 'the step is saved through the command path: ' + added);
+    await open(); await click(`.sm-sh[data-lane="${added}"] b`);
+    await click('#inspector .cm-companion [data-sm="story"]');
+    const gs = await storyIn();
+    assert.equal(gs.title, 'What happens when: Close the day');
+    assert.ok(gs.gaps >= 1 && gs.gaps <= gs.steps && /to confirm · No requirement is recorded for this step yet\./.test(gs.text) && /to confirm · No control is recorded for this step yet\./.test(gs.text), 'the gaps are named in the checks’ words: ' + gs.text);
+    assert.equal(await count('#inspector .cm-companion .tn-story .tn-step.gap'), gs.gaps, 'each gap is a step marked as one');
+    pass('a step with nothing on its trail is told with its gaps in the checks’ words (' + gs.gaps + ' of ' + gs.steps + ' steps), in the page');
+  }
 
   assert.deepEqual(errors, [], 'no page errors');
   pass('no page errors');

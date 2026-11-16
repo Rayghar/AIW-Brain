@@ -221,7 +221,7 @@ try {
     const held = L.map(l => l.layer);
     assert.ok(held.length >= 3 && held.every(l => bands.includes(l)) && held.join() === bands.filter(b => held.includes(b)).join(), 'one lane per concern band the chapter holds, in the bands’ order: ' + L.map(l => l.text).join(' | '));
     assert.ok(L.every(l => /^[A-Z][A-Za-z &]+ · \d+$/.test(l.text) && !l.collapsed && !l.none), 'every lane names its band and its count, and no empty strip is drawn');
-    assert.match(await page.$eval('.nt-fold-note', e => e.textContent), /Architecture concerns.*42 records.*108 relationships/, 'the grouped overview names the source model instead of treating its records as hidden');
+    assert.match(await page.$eval('.nt-fold-note', e => e.textContent), /Architecture concerns.*42 records.*105 relationships/, 'the grouped overview names the source model instead of treating its records as hidden'); // 108 until rc.10.73.42: the three ownerships recorded by Chapter 5 and Chapter 8 alike are one line each now (D9)
     const drawn = await page.evaluate(() => ({groups: document.querySelectorAll('.cm-svg .nt-node[data-nt-node^="fold:"] .nt-li').length, boxes: document.querySelectorAll('.cm-svg .nt-node[data-nt-node^="fold:"]').length, lines: document.querySelectorAll('.cm-svg .nt-edge[data-nt-edge^="fold:"]').length, counted: [...document.querySelectorAll('.cm-svg .nt-hit[data-nt-edge^="fold:"]')].filter(h => /×\d+|\d+ relationships/.test(h.getAttribute('aria-label'))).length, index: document.querySelectorAll('#inspector [data-nt="pair"]').length, cards: document.querySelectorAll('.cm-svg .nt-rel-row, .cm-svg .nt-lane-card').length}));
     assert.ok(drawn.boxes >= 4 && drawn.groups >= drawn.boxes && drawn.lines >= 1 && drawn.counted >= 1 && drawn.index >= 1 && drawn.cards === 0, 'type groups are list boxes with their members, the relationships between them counted lines, the band-to-band index in the companion, and no index card or row is drawn: ' + JSON.stringify(drawn));
     await click('#inspector [data-nt="pair"]');
@@ -583,10 +583,10 @@ try {
       const lit = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-lit')].map(e => e.dataset.ntEdge)), dim = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-dim')].map(e => e.dataset.ntEdge));
       return {runs: [...document.querySelectorAll('.cm-svg .nt-trunk')].map(t => { const m = JSON.parse(t.dataset.ntMembers); return {lit: t.classList.contains('nt-mk-lit'), dim: t.classList.contains('nt-mk-dim'), anyLit: m.some(id => lit.has(id)), allDim: m.every(id => dim.has(id))}; }), lifted: [...document.querySelectorAll('.cm-svg .nt-lift path.nt-mk-lit')].map(p => p.dataset.ntLift).sort(), litEdges: [...lit].sort()};
     });
-    // rc.10.73.42 (D9): the one run REQ-001's chain travelled was the instruction's second ownership edge (its Chapter 5 list,
-    // realisation.components.dataIds, drawn over the Chapter 8 authority). With one owner that line is gone, so the runs are
-    // read on REQ-001's chain, which draws no second owner, and on a chain that travels one: REQ-005, fulfilled twice by LR-005.
-    assert.ok(runs.runs.length > 0, 'the Layers view draws lines together: ' + runs.runs.length + ' runs');
+    // rc.10.73.42 (D9): no Chapter 5 data list is drawn as a second owner (a component and data it owns share one line).
+    // REQ-001's chain still travels lines drawn together, as before; a second chain, REQ-005's (fulfilled twice by LR-005),
+    // is read as well.
+    assert.ok(runs.runs.length > 0 && runs.runs.some(x => x.lit), 'the trace travels lines drawn together in the Layers view: ' + runs.runs.filter(x => x.lit).length + ' of ' + runs.runs.length + ' runs');
     assert.ok(!(await rp.$$eval('.cm-svg [data-nt-edge]', es => es.map(e => e.dataset.ntEdge))).some(id => id.includes('realisation.components.dataIds:owns')), 'no Chapter 5 data list is drawn as a second owner');
     {
       const rc5 = await browser.newContext({viewport: {width: 1440, height: 900}}), rp5 = await rc5.newPage();
