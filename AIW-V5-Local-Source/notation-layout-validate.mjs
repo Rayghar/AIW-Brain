@@ -721,7 +721,7 @@ const synth = (() => {
   }
   const both = L.bundles.filter(b => b.end === 'both').length;
   metrics.duplicatesChapter4 = {pairs: pairs.length, both, inFans: pairs.length - both};
-  pass(`one fact recorded twice: Chapter 4's 12 (fulfils 5, flow 4, owns 3) are each drawn once on one route in one bundle (${both} bundles of both ends, ${pairs.length - both} as two records riding one branch of a fan), every record keeping its own edge`);
+  pass(`one fact recorded twice: Chapter 4's ${pairs.length} (fulfils 5, flow 4) are each drawn once on one route in one bundle (${both} bundles of both ends, ${pairs.length - both} as two records riding one branch of a fan), every record keeping its own edge; its three ownerships are one line each, from the Chapter 8 authority, with no second line beside them`);
 }
 
 // Round 10 · determinism (N3): the bundled layouts are the same in a second Node process, and the engine reads no

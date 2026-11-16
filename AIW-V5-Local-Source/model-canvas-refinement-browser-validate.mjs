@@ -30,6 +30,19 @@ try {
   const lanesRead = () => page.evaluate(() => { const lanes = [...document.querySelectorAll('.cm-svg .nt-lane[data-nt-lane]')].map(g => ({id: g.dataset.ntLane, r: g.querySelector(':scope > rect').getBoundingClientRect()})); const laneOf = id => { const b = document.querySelector(`.cm-svg .nt-node[data-nt-node="${CSS.escape(id)}"]`)?.getBoundingClientRect(), x = b && b.x + b.width / 2, y = b && b.y + b.height / 2; return b ? lanes.filter(({r}) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom).map(l => l.id) : []; }; const btn = document.querySelector('.nt-connections [data-nt="connections-more"]'); return {paths: [...document.querySelectorAll('.cm-svg .nt-edge[data-nt-edge]')].map(e => ({id: e.dataset.ntEdge, ends: [laneOf(e.dataset.ntFrom), laneOf(e.dataset.ntTo)], shown: !e.classList.contains('nt-connection-hidden')})), reveal: btn ? {text: btn.textContent, title: btn.title} : null}; });
   for (let chapter = 4; chapter <= 10; chapter++) {
     await page.goto(`http://127.0.0.1:${port}/?chapter=${chapter}&tab=model&model=layers`, {waitUntil: 'networkidle'});
+    // rc.10.73.42 (D9): a component and data it owns share one line, so Chapter 9's picture holds 15 records and 24
+    // relationships, within the overview's budget (18 and 24): it opens with every element, not as an overview. What the
+    // overview's checks below end on is asserted for it directly: with All chosen, every exact link is drawn and reachable
+    // from the keyboard. Every other chapter (4 to 8, 10) still opens as an overview and is checked as before.
+    if (chapter === 9) {
+      await page.waitForSelector('.cm .nt-connections [data-nt="connections"][aria-pressed="true"]');
+      assert.deepEqual([await page.locator('.nt-layers-overview').count(), await page.locator('.nt-fold-note [data-nt="fold-all"]').count(), await page.locator('.cm-svg .nt-node[data-nt-node^="fold:"]').count()], [0, 0, 0], 'Chapter 9: within the overview budget, drawn whole: no overview, no groups to open');
+      assert.equal(await page.locator('.cm-svg .nt-node[data-nt-node]').count(), 15, 'Chapter 9: its fifteen records are drawn');
+      await level('all');
+      const x9 = await reading();
+      assert.ok(x9.edges === 24 && x9.hidden === 0 && x9.focus === x9.edges && /^(\d+) of \1 links shown$/.test(x9.caption), `Chapter 9: with All chosen, every exact link is drawn and reachable from the keyboard: ${JSON.stringify(x9)}`);
+      continue;
+    }
     await page.waitForSelector('.nt-layers-overview .nt-connections [data-nt="connections"][aria-pressed="true"]');
     // rc41 (W1's level budget, w1/NOTE.md §1; close "notation"): Layers opens at Adjacent with min(12, the level's own paths),
     // all of them its own; the caption then says "· N more at this level" while the level keeps paths back, and "· N beyond"

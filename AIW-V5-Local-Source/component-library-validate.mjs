@@ -112,6 +112,12 @@ for (const a of COMPONENT_ARCHETYPES) {
   assert.deepEqual([c.origin, c.status, c.library.archetypeId, c.proposed.contracts.length, c.purpose, c.open.purpose.state], ['archetype', 'candidate', a.id, 0, '', 'open-question']);
   assert.equal(c.authority, undefined, 'no authority or score is stored on the record'); assert.equal(c.score, undefined);
   assert.equal(z.interfaces.contracts.length, contractsBefore); assert.equal(z.technology.needs.length, needsBefore);
+  // An archetype candidate saved with proposals (a kit that is not template, or ones a person adds) keeps them on the record
+  // as proposals and still writes no Chapter 8 contract and no Chapter 6 need. Until rc42 the template kit made this check
+  // with each archetype's own contracts; D11 emptied the kit, so the check is kept with proposals that are not template.
+  const w = applyRealisationCommand(p, {type: 'realisation.candidate', payload: {...ap, reviewed: true, proposed: structuredClone(prop.proposed)}}, at).document, k = components(w).at(-1);
+  assert.deepEqual([k.origin, k.status, k.library.archetypeId, k.proposed.contracts.length, k.proposed.needs.length, k.proposed.obligations.length], ['archetype', 'candidate', a.id, prop.proposed.contracts.length, prop.proposed.needs.length, prop.proposed.obligations.length], a.id + ' keeps the proposals it is saved with');
+  assert.equal(w.interfaces.contracts.length, contractsBefore, a.id + ': a proposed contract is not a Chapter 8 record'); assert.equal(w.technology.needs.length, needsBefore, a.id + ': a proposed need is not a Chapter 6 record');
 }
 assert.throws(() => archetypeProposal(archetypeRecord(C, 'STYLE-LAYERED') || {recordType: 'style'}), /component archetypes/);
 assert.throws(() => cleanLibraryRef({scope: 'catalogue', archetypeId: 'ARCH-NOT-THERE'}), /component archetypes/);
@@ -174,6 +180,28 @@ try {
   assert.equal((await api('/api/project', null, 'outsider-d')).data.document.workbench?.catalogue?.length ?? 0, 0);
   pass('the organisation library files a component entry (its snapshot, its source), refuses prose, keeps it from members of other organisations and strangers, reviews it independently, releases it signed and pins it into a project: no component is created, proposed or approved by installing, reading changes nothing, and a proposal from the pinned entry saves a candidate with origin library and the organisation');
 } finally { env.DB.close(); await rm(dir, {recursive: true, force: true}); }
+
+// The review form and the saved record show what is proposed with a component (the rc42 test audit: the browser suite's
+// only positive check of this block went when D11 emptied the archetypes' template kit). The Chapter 5 studio itself,
+// on the from-library proposal of section 3: its two contracts and six needs.
+{
+  const {Window} = await import('happy-dom');
+  const win = new Window({url: 'http://fixture.local/?chapter=5&tab=model'});
+  Object.assign(globalThis, {window: win, document: win.document, location: win.location, history: win.history, FormData: win.FormData, Event: win.Event, CustomEvent: win.CustomEvent, HTMLElement: win.HTMLElement, requestAnimationFrame: win.requestAnimationFrame.bind(win)});
+  const {createRealisationStudio} = await import('./public/realisation-ui.js'), {logicalGraph} = await import('./public/logical-domain.js');
+  const store = {value: {document: p}}, studio = createRealisationStudio(store);
+  studio.bind({state: {chapter: 5, tab: 'model', selected: null, visible: ['physical', 'logical']}, getNode: key => logicalGraph(store.value.document).nodes.find(n => n.id === key), selectNode() {}, closeModal() {}, pauseFlow() {}, render() {}, toast() {}, setTab() {}});
+  assert.notEqual(studio.proposeFromLibrary(structuredClone(prop)), false, 'the studio takes the library proposal');
+  document.body.innerHTML = '<button type="button" data-a-action="edit-ghost">Review &amp; edit proposal</button>';
+  document.querySelector('[data-a-action="edit-ghost"]').click();
+  const form = document.querySelector('#a-component-form'); assert.ok(form, 'the review form opens on the proposal');
+  const shown = form.textContent.replace(/\s+/g, ' ');
+  assert.match(shown, /Proposed with the component ?2 interface contracts for Chapter 8 · 6 technology needs for Chapter 6/, 'the form shows what is proposed with the component: ' + shown.slice(0, 400));
+  for (const kc of prop.proposed.contracts) assert.ok(shown.includes(kc.title), 'each proposed contract is named: ' + kc.title);
+  assert.equal(form.querySelector('[name="reviewed"]').checked, false, 'nothing is ticked as reviewed for the person');
+  studio.dispose();
+  pass('the Chapter 5 review form shows the proposals block for a proposal that carries contracts and needs (2 and 6), names each contract, and ticks nothing as reviewed');
+}
 
 assert.equal(JSON.stringify(base), before, 'the seed project is unchanged throughout');
 console.log(JSON.stringify({suite: 'component library', passed: checks.length, checks}, null, 2));

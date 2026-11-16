@@ -326,7 +326,12 @@ if (captures) await writeFile(`${captures}/arrange-panel.html`, arrange.outerHTM
     const spz = id => { const at = () => Z.root.querySelector(`.nt-arrange-panel [data-nt="arrange-spacing"][data-id="${id}"]`); if (!at()) Z.root.querySelector('[data-nt="menu"][data-id="arrange"]').click(); return at(); };
     for (const every of ch === 11 ? [false] : [false, true]) {
       const name = `Chapter ${ch} Layers ${every ? 'every element' : 'overview'}`;
-      if (every) { const folds = Z.notation.diagram().nodes.filter(n => n.fold).length; Z.root.querySelector('[data-nt="fold-all"]').click(); assert.ok(folds > 0 && Z.notation.diagram().nodes.every(n => !n.fold), `${name}: the overview's ${folds} groups open into their elements`); }
+      // rc.10.73.42 (D9): a component and data it owns share one line, so Chapter 9's Layers picture holds 15 records and
+      // 24 relationships, within the overview's budget (18 and 24): it opens with every element and has no groups to open.
+      // Every other chapter still opens grouped, and its groups still open into their elements.
+      if (every) { const folds = Z.notation.diagram().nodes.filter(n => n.fold).length, all = Z.root.querySelector('[data-nt="fold-all"]');
+        if (ch === 9) { const D9 = Z.notation.diagram(); assert.ok(folds === 0 && !all && D9.nodes.length === 15 && D9.edges.length === 24 && D9.nodes.every(n => !n.fold), `${name}: within the overview budget, drawn whole with no group to open: ${D9.nodes.length} records, ${D9.edges.length} relationships, ${folds} groups`); }
+        else { all.click(); assert.ok(folds > 0 && Z.notation.diagram().nodes.every(n => !n.fold), `${name}: the overview's ${folds} groups open into their elements`); } }
       const opened = Z.notation.layout(), first = overHeads(opened);
       assert.ok(opened.edges.length > 0 && first.length === 0, `${name} at comfortable, as it opens: no line over a lane title or an aspect header: ` + JSON.stringify(first.slice(0, 6)));
       for (const id of ['compact', 'spacious', 'comfortable']) {
