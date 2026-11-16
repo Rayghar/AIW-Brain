@@ -22,7 +22,7 @@ import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,expo
 import {findings,milestones,exportMarkdown} from './requirements-domain.js';
 import {linkedRequirementIds} from './requirement-links.js';
 // One trace kernel (rc.10.73.42, D7): the trail is its walk over the canonical design graph.
-import {requirementTrace,requirementSpine,traceRecords} from './trace-kernel.js';
+import {requirementTrace,requirementSpine,traceRecords,hopsFrom} from './trace-kernel.js';
 import {requirementGroups,groupMembers} from './requirement-groups.js';
 import {qualityFindings,qualityMilestones,exportQualityMarkdown} from './quality-domain.js';
 import {decisionFindings,decisionMilestones,decisionCurrent,exportDecisionsMarkdown} from './decisions-domain.js';
@@ -255,17 +255,19 @@ export function reviewBlockerCount(p){
 export function traceStamp(p,id){return remember(p,'review:trace-stamp',id,()=>{const t=reviewTrace(p,id);if(!t)return null;const zones=new Map((p.runtime?.zones||[]).map(z=>[z.id,z]));return reviewFingerprint([t.requirement,...t.context,...t.drivers,...t.decisions,...t.logical,...t.applications,...t.capabilities,...t.realizations,...t.contracts,...t.data,...t.controls,...t.runtime,...t.parties,...t.threats,...t.paths,...t.zoneIds.map(z=>zones.get(z))].map(r=>r?[r.id,recordStamp(p,r)]:null));});}
 export const groupTraceStamp=(p,ids)=>reviewFingerprint(ids.map(id=>[id,traceStamp(p,id)]));
 // The hops of a requirement's trail (rc42, D6): the spine the review desk follows, each with the chapter that records it.
-// A hop is missing when no record on the trail answers for it, and broken when its records name the requirement but the
-// hop before does not reach them (a component no responsibility on the trail is allocated to, a capability no component on
-// it needs, a realisation of no capability on it, a runtime plan that runs none of it). A trace review records the hops it
-// read, is refused while any is missing or broken, and stops counting once the trail breaks. A hop is reached when any one
+// Read from the one trace kernel (rc.10.73.42, D7: trace-kernel.js requirementSpine, the requirement's own chain). A hop is
+// missing when the spine holds no record of it, as the desk reads a break (desk-model.js firstBreak), and broken when it
+// holds records the hop before does not reach: a component the requirement names that no responsibility on the spine is
+// allocated to, a capability no need of a component on it is met by, a realisation of no capability on it, a runtime plan
+// that runs none of it. The desk does not report a broken hop; the trace review does. A trace review records the hops it
+// read (the whole trail's counts, context included), is refused while any is missing or broken, and stops counting once the trail breaks. A hop is reached when any one
 // of its records is: a further record of the hop that names the requirement but is not reached is not reported (a limit).
 export const TRACE_HOPS=[['logical',4,'responsibility'],['applications',5,'application component'],['capabilities',6,'technology capability'],['realizations',7,'technology realisation'],['runtime',10,'runtime plan']];
 export const traceHops=(p,id)=>{const t=reviewTrace(p,id);return t?Object.fromEntries(TRACE_HOPS.map(([hop])=>[hop,t[hop].length])):null;};
 export function traceBreaks(p,id){return remember(p,'review:trace-breaks',id,()=>{const t=reviewTrace(p,id);if(!t)return [];
- const set=xs=>new Set(xs.map(r=>r.id)),L=set(t.logical),A=set(t.applications),C=set(t.capabilities),R=set(t.realizations),needs=new Set(p.technology.needs.filter(n=>A.has(n.applicationId)).map(n=>n.id)),carried=carriersOf(p);
- const reached={logical:true,applications:p.logical.mappings.some(m=>L.has(m.logicalId)&&A.has(m.physicalId)),capabilities:p.technology.mappings.some(m=>needs.has(m.needId)&&C.has(m.capabilityId)),realizations:p.technologyRealisation.mappings.some(m=>C.has(m.capabilityId)&&R.has(m.realizationId)),runtime:carried?!!carried.runtime.get(id)?.length:t.runtime.some(r=>runtimeSources(p,r).requirements.some(a=>a.id===id))};
- return TRACE_HOPS.filter(([hop])=>!t[hop].length||!reached[hop]).map(([hop,chapter,noun])=>({hop,chapter,state:t[hop].length?'broken':'missing',text:(t[hop].length?'broken: '+noun+'s not reached from the hop before':'no '+noun)+' (Chapter '+chapter+')'}));});}
+ const S=memoPass(p,()=>requirementSpine(p,id)),from=(layer,...ls)=>S.layers[layer].some(x=>hopsFrom(S,x,(h,l)=>ls.includes(l)&&(l!=='need'||hopsFrom(S,h.from,(g,m)=>m==='component').length)).length);
+ const reached={logical:true,applications:from('component','responsibility'),capabilities:from('capability','need'),realizations:from('realization','capability'),runtime:from('plan','component','realization')};
+ return TRACE_HOPS.filter(([hop])=>!t.spine[hop].length||!reached[hop]).map(([hop,chapter,noun])=>({hop,chapter,state:t.spine[hop].length?'broken':'missing',text:(t.spine[hop].length?'broken: '+noun+'s not reached from the hop before':'no '+noun)+' (Chapter '+chapter+')'}));});}
 export const traceBreakWords=breaks=>breaks.map(b=>b.text).join('; ');
 const requirementIdSet=p=>remember(p,'review:requirement-ids','',()=>new Set(reviewRequirements(p).map(r=>r.id)));
 export const traceReviewCurrent=(p,t,id=t.requirementId)=>{if(!id||!requirementIdSet(p).has(id)||!localReview(p,t))return false;if(t.basis==='trail')return (t.trails?t.trails[id]:t.stamp)===traceStamp(p,id)&&!traceBreaks(p,id).length;return t.stamp===reviewSourceStamp(p)&&!traceBreaks(p,id).length;};

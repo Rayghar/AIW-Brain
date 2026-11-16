@@ -56,7 +56,8 @@ await check('D6: a later break reopens a trace review, including one recorded ag
  let p=cmd(base,'trace',{...trace(base,'REQ-002'),stamp:rv.reviewSourceStamp(base)});assert(rv.traceReviewFor(p,'REQ-002'));
  // Its responsibility stops naming it: the trail breaks from Chapter 4 on, and the review no longer counts.
  const q=structuredClone(p);for(const r of q.logical.responsibilities)if(Array.isArray(r.requirementIds))r.requirementIds=r.requirementIds.filter(id=>id!=='REQ-002');const broken=rv.withFinalReview(q);
- assert.equal(rv.reviewTrace(broken,'REQ-002').logical.length,0);
+ // rc42 integration (with G4, D7): the kernel keeps on the trail what the requirement's drivers and decisions bear on; its own chain (spine) is what breaks.
+ assert.equal(rv.reviewTrace(broken,'REQ-002').spine.logical.length,0);
  assert.equal(rv.traceReviewFor(broken,'REQ-002'),null);assert(traceFinding(broken,'REQ-002'));assert(rv.traceBreaks(broken,'REQ-002').some(b=>b.hop==='logical'&&b.chapter===4&&b.state==='missing'));
 });
 await check('D6: a break that leaves the trail\'s stamp as it was still reopens the trace review (its component names the requirement, its allocation is removed)',()=>{

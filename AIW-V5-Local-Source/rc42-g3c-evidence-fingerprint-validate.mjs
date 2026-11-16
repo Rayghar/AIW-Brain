@@ -348,6 +348,12 @@ const asV1r2 = build => underV1(() => { const p = build(); delete p.finalReview.
   p = task(p, 'proposal', {id, proposal: {...proposal, driver: {...proposal.driver, title: 'Synthetic integrity under repeated instructions'}, decision: {...proposal.decision, question: 'Synthetic: where is the single effect enforced?'}}});
   p = task(p, 'apply', {id, reviewed: true, reviewer: 'Fixture reviewer', reason: 'Synthetic fixture: the drafts follow the cited rule.'});
   assert.equal(p.coauthoring.tasks.at(-1).status, 'applied');
+  // rc42 integration (with G3b, D6): a trace review is refused on a broken trail, so the fixture gives the requirement the
+  // task drafted the trail a team would give it: the responsibility that already serves REQ-001 names it too.
+  { const q = structuredClone(p), drafted = rv.reviewRequirements(q).map(r => r.id).filter(id => rv.traceBreaks(p, id).length);
+    assert.deepEqual(drafted, ['REQ-006'], 'only the requirement the task drafted has no trail yet');
+    q.logical.responsibilities.find(r => r.requirementIds?.includes('REQ-001')).requirementIds.push(...drafted); p = rv.withFinalReview(q);
+    assert.deepEqual(rv.traceBreaks(p, 'REQ-006'), [], 'its trail is whole before the fixture reviews it'); }
   const cApproved = approve(p);
   approvedReading(cApproved, 'a project with an applied guided task');
   // Evidence beside it, with a source of its own, is evidence.
