@@ -43,6 +43,7 @@ import {withRoadmap,applyRoadmapCommand,actionPlateau,roadmapFindings,transition
 import {architectureObligationsFor,architectureObligationBasis,architectureObligationAction,architectureObligationActionState,architectureActionStamp,architectureEvidenceSources,deliveryActionDefinition,independentVerification,verifierRefusal,SECOND_VERIFIER} from './architecture-obligations.js';
 import {normaliseVerificationContract,verificationForAction,verificationEvidence} from './architecture-verification.js';
 import {digest} from './brain-integrity.js';
+import {EXTENSIONS,extensionChecks} from './design-extensions.js';
 
 const text=(v,max=4000)=>typeof v==='string'?v.trim().slice(0,max):'',unique=xs=>[...new Set(xs)],pad=n=>String(n).padStart(3,'0');
 // A compact change detector, not a security signature or a verification claim.
@@ -76,6 +77,9 @@ const OVERLAY={security:'evidence risks governance simulations|assuranceVersion 
 export function designOf(s){const d={...s},o=[],put=v=>v?.length&&o.push(v),a=d.assurance,e=d.evidence;
  for(const k in OVERLAY)if(d[k]){const v=d[k]={...d[k]};for(const x of OVERLAY[k].split('|')[0].split(' '))put(v[x]);for(const x of OVERLAY[k].split(/\W/))delete v[x];}
  if(a){const {version,counter,semanticFindings,records=[],...c}=a;c.records=records.filter(x=>assuranceChapter(x)<11);put(records.filter(x=>!c.records.includes(x)));put(semanticFindings);Object.values(c).some(v=>v?.length)?d.assurance=c:delete d.assurance;}
+ // What a design package records as evidence (rc44, slice S0: its evidenceKeys, each a key of the document or 'chapter.key')
+ // leaves the design the same way; every other key a package writes is design, as any key is.
+ for(const x of EXTENSIONS)for(const k of x.evidenceKeys||[]){let [a,b]=k.split('.'),v=d;if(b){if(!d[a])continue;v=d[a]={...d[a]};a=b;}put(v[a]);delete v[a];}
  if(e){const json=JSON.stringify({...d,evidence:e.tasks}),sources=e.sources.filter(x=>json.includes('"'+x.id+'"'));put(e.sources.filter(x=>!sources.includes(x)));sources.length||e.tasks.length?d.evidence={sources,tasks:e.tasks}:delete d.evidence;}
  return [d,o];}
 export function designSource(p){const s=reviewSource(p);return fingerprintVersion>1?designOf(s)[0]:s;}
@@ -123,9 +127,10 @@ export const NON_WAIVABLE=Object.freeze({'hard-constraint':'C3:breaks C7:hard-co
 const LIMIT='Accepted design limitation';
 export const WAIVERS=Object.freeze([LIMIT,'Not applicable',SOURCE_SILENT]);
 export const nonWaivable=f=>f?.level==='error'&&Object.keys(NON_WAIVABLE).find(k=>NON_WAIVABLE[k].split(' ').includes(String(f.id).split(':')[0]+':'+f.code))||null;
-function refuseWaiver(f,treatment){const kind=nonWaivable(f);if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” breaks '+(kind==='invariant'?'an invariant: change the design':'a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change')+'. It cannot be waived; until then, fix it before review or carry it as an action.');}
+// A finding a design package marks hard (rc44, slice S0) takes no treatment at all: the design changes.
+function refuseWaiver(f,treatment){if(f.hard)throw Error('“'+f.title+'” takes no treatment: change the design.');const kind=nonWaivable(f);if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” breaks '+(kind==='invariant'?'an invariant: change the design':'a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change')+'. It cannot be waived; until then, fix it before review or carry it as an action.');}
 // The treatments a dialog offers for a finding (review-ui.js, app.js).
-export const treatmentsFor=f=>DISPOSITIONS.filter(d=>!(nonWaivable(f)&&WAIVERS.includes(d)));
+export const treatmentsFor=f=>f.hard?[]:DISPOSITIONS.filter(d=>!(nonWaivable(f)&&WAIVERS.includes(d)));
 // An accepted limitation is reviewed by a date (rc.10.73.42, D13): it is recorded with a review-by date after the day it
 // is recorded (a dialog's earliest day: reviewByMin), and once that date has passed, or for a limitation recorded before
 // with none or with no valid date, its finding is open again.
@@ -171,7 +176,7 @@ export function inheritedFindings(p){if(fingerprintVersion===DESIGN_FINGERPRINT&
 const chapterInherited=(p,c)=>remember(p,'review:inherited-chapter',c.id,()=>c.checks(p).map(f=>stamped(p,{...f,id:'C'+c.id+':'+f.id,sourceId:f.id,chapter:c.id,chapterTitle:c.title,objectId:f.objectId||f.artefactId||f.driverId||f.decisionId||'project'},()=>findingStamp(p,c.id,f))));
 // inheritedFindings(p).filter(f=>f.chapter===chapter&&f.id.startsWith('C'+chapter+':')), the same records in the same order.
 export function chapterInheritedFindings(p,chapter){const c=CHAPTERS.find(x=>x.id===Number(chapter));return c?memoPass(p,()=>chapterInherited(p,c)):[];}
-const inheritedSupplement=p=>remember(p,'review:inherited-supplement','',()=>[...semanticFindings(p).filter(f=>f.chapter!==1),...evidenceFindings(p),...designTaskFindings(p),...qualityMeasurementFindings(p),...knowledgeFindings(p),...guidanceFindings(p),...narrativeFindings(p)]);
+const inheritedSupplement=p=>remember(p,'review:inherited-supplement','',()=>[...semanticFindings(p).filter(f=>f.chapter!==1),...evidenceFindings(p),...designTaskFindings(p),...qualityMeasurementFindings(p),...knowledgeFindings(p),...guidanceFindings(p),...narrativeFindings(p),...extensionChecks(p,11)]);
 function inheritedBase(p){return remember(p,'review:inherited-base','',()=>{const result=CHAPTERS.flatMap(c=>chapterInherited(p,c));result.push(...inheritedSupplement(p).map(f=>stamped(p,{...f,id:'EVIDENCE:'+f.id,sourceId:f.id},()=>findingStamp(p,'evidence',f))));return result;});}
 function inheritedFindingsOf(p){const result=inheritedBase(p).slice();result.push(...antiPatternFindings(p).map(f=>stamped(p,{...f,id:'ANTI:'+f.sourceId},()=>findingStamp(p,'anti',f))));if(fingerprintVersion===DESIGN_FINGERPRINT)findingCache.set(p,result);return result;}
 // Anti-patterns found in the recorded design (design-spec.js) are review items like any other

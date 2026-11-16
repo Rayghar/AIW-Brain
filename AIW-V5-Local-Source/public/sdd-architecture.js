@@ -74,6 +74,7 @@ import {contentReading, skeletonBanner, SDD_FORMAT, formatMarker, openMarkerLine
 import {list, str, refList as sharedRefList} from './util.js';
 // Who wrote each record and whether a person confirmed it: workstream D3's provenance reader, the one every page reads.
 import {sddAuthor, confirmedByPerson, provenanceBlocksMarkdown} from './provenance.js';
+import {placeSections} from './design-extension-parts.js';
 
 // ---------------------------------------------------------------- Markdown text
 // No list prints more than LIST_MAX items inline (SDD-SPEC principle 4); the rest are counted with a pointer.
@@ -1807,7 +1808,9 @@ function editionMarkdown(p, {audience = 'all', meta = {}, figures = null, editio
   const body = ['introduction', 'drivers', 'decisions', 'summaries', 'components', 'models', 'obligations', 'refinements', 'assurance'].filter(k => parts.has(k)).map(k => built[k]);
   const appendix = ['A', 'B', 'C', 'D', 'E'].filter(x => parts.has(x));
   if (appendix.length) body.push('# 7. Appendix\n\n' + appendix.map(x => built[x]).join(''));
-  const text = body.join('');
+  // The sections the design packages state for this document stand at their anchors, in the parts this audience prints
+  // (rc44, slice S0: design-extension-parts.js), before the contents are read from the headings.
+  const text = placeSections('sdd', body.join(''), p);
   // The contents, from the headings (levels 1 and 2), with the anchors every format gives them.
   const slug = slugger(), heads = [];
   for (const line of (front + control + '## Contents\n\n' + text).split('\n')) { const m = /^(#{1,6}) (.+)$/.exec(line); if (m) heads.push({level: m[1].length, title: m[2], anchor: slug(m[2])}); }

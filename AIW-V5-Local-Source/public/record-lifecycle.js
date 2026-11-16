@@ -15,6 +15,7 @@
 // Pure: the command works on a copy and returns it.
 import {fieldOpen} from './open-fields.js';
 import {documentCopy} from './document-memo.js';
+import {extendTable,watchExtensions} from './design-extensions.js';
 export const RECORD_STATES = Object.freeze(['proposed', 'authored', 'retired']);
 export const recordState = r => (r?.state === 'proposed' || r?.state === 'retired' ? r.state : 'authored');
 export const isProposed = r => r?.state === 'proposed';
@@ -47,9 +48,14 @@ export function proposalFinding(list, chapter) {
 
 // Every chapter's collections of records, with the chapter that owns them. A component and the Chapter 4 object that
 // stands for it share an id; they are one record and retire together.
-export const COLLECTIONS = Object.freeze([['artefacts', 1], ['relationships', 1], ['requirementGroups.records', 1], ['quality.drivers', 2], ['quality.conflicts', 2], ['decisions.records', 3], ['decisions.conflicts', 3], ['logical.responsibilities', 4], ['logical.groups', 4], ['logical.connections', 4], ['logical.mappings', 4], ['logical.assets', 4], ['realisation.components', 5], ['realisation.connections', 5], ['technology.capabilities', 6], ['technology.needs', 6], ['technology.mappings', 6], ['technology.dependencies', 6], ['technology.boundaries', 6], ['technologyRealisation.records', 7], ['technologyRealisation.mappings', 7], ['technologyRealisation.connections', 7], ['interfaces.contracts', 8], ['interfaces.data', 8], ['interfaces.parties', 8], ['interfaces.lineage', 8], ['interfaces.invariants', 8], ['security.threats', 9], ['security.controls', 9], ['runtime.environments', 10], ['runtime.zones', 10], ['runtime.plans', 10], ['runtime.placements', 10], ['runtime.paths', 10],
+export const COLLECTIONS = [['artefacts', 1], ['relationships', 1], ['requirementGroups.records', 1], ['quality.drivers', 2], ['quality.conflicts', 2], ['decisions.records', 3], ['decisions.conflicts', 3], ['logical.responsibilities', 4], ['logical.groups', 4], ['logical.connections', 4], ['logical.mappings', 4], ['logical.assets', 4], ['realisation.components', 5], ['realisation.connections', 5], ['technology.capabilities', 6], ['technology.needs', 6], ['technology.mappings', 6], ['technology.dependencies', 6], ['technology.boundaries', 6], ['technologyRealisation.records', 7], ['technologyRealisation.mappings', 7], ['technologyRealisation.connections', 7], ['interfaces.contracts', 8], ['interfaces.data', 8], ['interfaces.parties', 8], ['interfaces.lineage', 8], ['interfaces.invariants', 8], ['security.threats', 9], ['security.controls', 9], ['runtime.environments', 10], ['runtime.zones', 10], ['runtime.plans', 10], ['runtime.placements', 10], ['runtime.paths', 10],
   // Round 12 (GR-GOV-24): the process perspective's elements, paths and claims are Chapter 1's records (its findings are).
-  ['processModel.elements', 1], ['processModel.transitions', 1], ['processModel.claims', 1]]);
+  ['processModel.elements', 1], ['processModel.transitions', 1], ['processModel.claims', 1]];
+// The collections the design packages state ({path: chapter}) follow these, in the packages' id order (rc44, slice S0:
+// design-extensions.js); a path listed here stays as it is. They retire, restore and keep through the same family.
+const PATH_CHAPTERS = Object.fromEntries(COLLECTIONS);
+extendTable(PATH_CHAPTERS, e => e.lifecycle);
+watchExtensions(() => { COLLECTIONS.splice(0, Infinity, ...Object.entries(PATH_CHAPTERS)); });
 // A first-class record leaves the design only through the one retire path (round 12, GR-GOV-24): the hard deletes that
 // stood beside it (deleteArtefact, quality.delete, process.remove of an element or a claim) are refused with these words.
 export const RETIRE_ONLY = 'A record leaves the design through Retire, with your reason: it is kept with who and when, and can be restored (record.retire).';

@@ -90,6 +90,11 @@ import {installCatalogue} from './public/catalogue-store.js';
 // Documents whose records keep copies of what they read are upgraded to fingerprints on read (round 12, D-04): the
 // upgrade registers itself with withFinalReview here, on the server only.
 import './public/readings-upgrade.js';
+// The design packages (rc44, slice S0): design-packages.js imports each package's module, which registers it with the
+// shared machinery (public/design-extensions.js); their commands reach their handlers through the boundary below, and a
+// package that does not conform to the registration contract stops the server here, when it starts.
+import './design-packages.js';
+import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,trackExtensions,placeSections} from './design-extension-boundary.js';
 installCatalogue(BRAIN_CATALOGUE);
 const log=(event,details)=>console.error(JSON.stringify({at:new Date().toISOString(),event,...details}));
 // Command types reach their domain module by prefix (round 2, B2-05): one registry instead of a ternary chain, and
@@ -104,13 +109,18 @@ const COMMAND_PREFIXES=new Set([...COMMAND_HANDLERS.map(([key])=>key.split('.')[
 // bounded by how many it links, refused past its domain's limit with the limit named (5,000 requirements), never by the
 // characters of the ids; the whole request stays within 500 KB.
 const LARGE_COMMAND_PREFIXES=['evidence.model-reconcile','alternative.','design.','exchange.','protection.','architecture.','knowledge.','standards.','workspace.','requirements.','quality.','decision.','logical.','realisation.'];
-export function commandHandler(type){for(const [key,handler] of COMMAND_HANDLERS)if(key.endsWith('.')?type.startsWith(key):type===key)return handler;return applyCommand;}
+function builtInHandler(type){for(const [key,handler] of COMMAND_HANDLERS)if(key.endsWith('.')?type.startsWith(key):type===key)return handler;return applyCommand;}
+// A type a design package states (rc44, slice S0) reaches the package's handler through its boundary, unless a built-in
+// handler takes the type: the built-in handlers are asked first, the ones this route calls itself among them.
+installBuiltInCommands(type=>type==='knowledge.fetch'||type==='workspace.view'||type.startsWith('intelligence.')?true:type.startsWith('knowledge.')?applyKnowledgeCommand:builtInHandler(type));
+assertExtensions();
+export function commandHandler(type){return extensionHandler(type)||builtInHandler(type);}
 export function commandShape(command){
   if(!command||typeof command!=='object'||typeof command.type!=='string'||!/^[A-Za-z][A-Za-z0-9-]{0,60}(?:\.[A-Za-z][A-Za-z0-9-]{0,60})?$/.test(command.type))return {error:'The project action is incomplete.',code:'invalid_command'};
   if(command.payload!==undefined&&(!command.payload||typeof command.payload!=='object'||Array.isArray(command.payload)))return {error:'The project action payload must be an object.',code:'invalid_payload'};
   // A prefixed type whose prefix no module owns is refused here; an unprefixed type is the requirements domain's to
   // accept or refuse, as before (its refusal is answered with the same code).
-  const dot=command.type.indexOf('.');if(dot>=0&&!COMMAND_PREFIXES.has(command.type.slice(0,dot)))return {error:'Unknown project action.',code:'unknown_command'};
+  const dot=command.type.indexOf('.');if(dot>=0&&!COMMAND_PREFIXES.has(command.type.slice(0,dot))&&!extensionCommand(command.type))return {error:'Unknown project action.',code:'unknown_command'};
   return null;
 }
 // ---------------------------------------------------------------- accepted field suggestions (round 2, I2-12)
@@ -268,6 +278,7 @@ export function trackCommandChanges(prior,next,command,at,{author=null}={}){
     trackInterfaceChange(prior,next,command,at);
     trackModelChange(prior,next,command,at);
     trackDecisionChange(prior,next,command,at);
+    trackExtensions(prior,next,command,at);
     if(command.type==='workspace.apply')for(const c of Array.isArray(command.payload?.commands)?command.payload.commands:[]){trackModelChange(prior,next,c,at);trackInterfaceChange(prior,next,c,at);}
     quietChanges(prior,(next.changes?.events||[]).slice(already),author);
     return impact;
@@ -382,7 +393,8 @@ async function sddExport(project,url,filename,{env=null,key=()=>null,open=null,w
       const body=format==='md'?A.markdown:format==='html'?kept(['annex','figures','html'],()=>sddHTML(A.markdown,null,{figures:A.figures})):kept(['annex','figures','pdf'],()=>makeReviewPDF(A.markdown,project.name+' Solution Design — figures annex'));
       return new Response(body,headers(SDD_TYPES[format],file,format==='html'&&view));
     }
-    const md=()=>annex==='requirements'?requirementRegisterMarkdown(project,{page}):annex==='specifications'?componentSpecsAnnex(project):exportSDD(project,null);
+    // The working registers carry the sections the design packages state for them, at their anchors (rc44, slice S0).
+    const md=()=>annex==='requirements'?requirementRegisterMarkdown(project,{page}):annex==='specifications'?componentSpecsAnnex(project):placeSections('registers',exportSDD(project,null),project);
     const body=format==='csv'?kept(['annex',annex,'csv'],()=>annex==='matrix'?traceabilityMatrixCSV(project):requirementRegisterCSV(project)):format==='json'?JSON.stringify(annex==='matrix'?{exportedAt:new Date().toISOString(),document:'traceability-matrix',project:{id:project.id,name:project.name},rows:traceabilityMatrix(project)}:{exportedAt:new Date().toISOString(),document:'requirement-register',...requirementRegisterPage(project,{page})},null,2):kept(['annex',annex,format,paged?page:null],()=>format==='html'?sddHTML(md(),null,{figures:{figures:[],manifest:[],omitted:[]}}):md());
     return new Response(body,headers(SDD_TYPES[format],filename+'_'+ANNEX_FILES[annex]+(paged?'_p'+page:'')+'.'+format,format==='html'&&view));
   }
@@ -538,7 +550,7 @@ async function route(request,env,ctx){
         const view=url.searchParams.get('view')==='1',format=url.searchParams.get('format')||(view?'html':'md');
         if(!['md','json','html'].includes(format))return json({error:'Choose Markdown, JSON, or HTML.'},400);
         let built=null;
-        if(named==='ars')built={markdown:()=>arsMarkdown(project),data:()=>arsJSON(project),file:'Architecture_Requirements_Specification'};
+        if(named==='ars')built={markdown:()=>placeSections('ars',arsMarkdown(project),project),data:()=>arsJSON(project),file:'Architecture_Requirements_Specification'};
         else if(named==='spec'){const doc=componentSpecDocument(project,url.searchParams.get('id')||'');if(!doc)return json({error:'Choose an existing application component (id=).'},404);built={markdown:()=>doc.markdown,data:()=>doc.json,file:'Component_Specification_'+doc.ref.replace(/[^A-Za-z0-9_-]+/g,'_')};}
         if(!built)return json({error:'Choose the requirements specification (document=ars) or a component specification (document=spec&id=).'},400);
         // Round 26 (D-26-13): the first line after the title carries the project revision and the date; the JSON names the revision.
@@ -597,7 +609,7 @@ async function route(request,env,ctx){
       if(body.length>500000&&type!=='evidence.model-reconcile')return json({error:'This change is too large. Shorten the fields and try again.',code:'too_large'},413);
       // A baseline is frozen as a job with a receipt and its progress (baseline-service.js), never on a save's request.
       if(type==='review.baseline')return json({error:'A baseline is frozen as a job that reports its progress: freeze it from the review desk.',code:'freeze_job',route:'/api/baselines?action=freeze'},400);
-      if(body.length>40000&&!LARGE_COMMAND_PREFIXES.some(prefix=>type.startsWith(prefix))&&type!=='feedback.import')return json({error:'This change is too large. Shorten the fields and try again.',code:'too_large'},413);
+      if(body.length>40000&&!LARGE_COMMAND_PREFIXES.some(prefix=>type.startsWith(prefix))&&type!=='feedback.import'&&!extensionLarge(type))return json({error:'This change is too large. Shorten the fields and try again.',code:'too_large'},413);
       // Who or what writes this commit (round 12, D-06): a person, an import or a draft by Sol, from the signed-in account
       // and what the request says of itself. A draft by Sol and an agent account review, confirm and approve nothing.
       let author;try{author=commitAuthor({actor,account:identity.account},input,input.command);refuseUnreviewable(input.command,author);}catch(e){return json({error:publicMessage(e),code:'authorship'},400);}
@@ -635,7 +647,7 @@ async function route(request,env,ctx){
       // read carries a baseline's metadata, not its parts: project-storage.js openBaseline).
       const frozenSources=new Map(),viewed=type==='workspace.view'?input.command.payload?.exploration?.baselineId:null,viewedEntry=typeof viewed==='string'?prior.finalReview?.baselines?.find(b=>b.id===viewed):null;
       if(viewedEntry?.frozen)frozenSources.set(viewed,(await openBaseline(env,owner,projectId,viewedEntry,['source'])).source);
-      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior);result=type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyKnowledgeCommand(own,input.command,at,actor):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+      try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyKnowledgeCommand(own,input.command,at,actor):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
         // The records the commit wrote are stamped as its, and a brief it changed is kept as a new version of its source.
         stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;

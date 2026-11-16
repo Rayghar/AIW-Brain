@@ -9,6 +9,7 @@ import {perDocument,findIn} from './document-memo.js';
 import {list} from './util.js';
 import {linkedRequirementIds} from './requirement-links.js';
 import {enterpriseReferences} from './enterprise-references.js';
+import {EXTENSIONS,extendTable} from './design-extensions.js';
 
 // The object types, one a line: type|label|chapter|level, and an ink only for a type the notation palette has none for
 // (each other type's ink is the palette's, notation-palette.js TYPE_INK, set by architecture-model.js, round-2 D2-20).
@@ -57,6 +58,8 @@ pattern|Applied design reasoning|3|intent
 baseline|Frozen baseline|11|context
 view|Saved view|11|context`.split('\n').map(x=>{const [type,label,chapter,level,color]=x.split('|');return [type,{label,chapter:+chapter,level,...color&&{color}}];}));
 
+// The record kinds the design packages state join the table (rc44, slice S0: design-extensions.js; a built-in type stays).
+extendTable(OBJECT_TYPES,e=>e.objectTypes);
 export const label=r=>r.title||r.question||r.name||r.description||r.id;
 // A part that encodeURIComponent leaves as it is (letters, digits and - _ . ! ~ * ' ( )) is kept without encoding it: the same key.
 const PLAIN=/^[\w.!~*'()-]*$/,keyPart=x=>{const s=String(x??'');return PLAIN.test(s)?s:encodeURIComponent(s);};
@@ -199,6 +202,9 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  }
  // Preserve declared context edges not represented by a richer domain record.
  for(const e of list(p.modelContext?.relationships))rel(e.type,e.from,e.to,e);
+ // The records and typed relations each design package states from the document, in the packages' id order (rc44, slice
+ // S0). `add` keeps the first record of an id and `rel` never replaces a relation, so a package only adds.
+ for(const e of EXTENSIONS)e.records?.(p,add,rel,objects);
 }
 
 // The records in registration order, as the connected model (architecture-model.js) and the record graph register them

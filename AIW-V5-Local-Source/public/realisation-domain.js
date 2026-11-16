@@ -130,7 +130,7 @@ export function withRealisation(input){
 // rule), Chapter 8 names it as owner or a person confirms Chapter 8's owner (interfaces-domain.js). A list written after is
 // data the component uses, never the claim again; a malformed entry is dropped with the settled ones.
 export function settleClaims(p,done){const xs=p.dataOwnership?.toConfirm;if(!Array.isArray(xs)||!xs.length)return;let changed=false;const kept=xs.flatMap(x=>{const ids=Array.isArray(x?.componentIds)?x.componentIds:[],left=ids.filter(id=>!done(x.dataId,id));if(left.length<ids.length||!left.length)changed=true;return left.length?[left.length<ids.length?{...x,componentIds:left}:x]:[];});if(changed)p.dataOwnership={...p.dataOwnership,toConfirm:kept};}
-export function realisationFindings(p){return memoPass(p,()=>sharedList(p,'realisation:findings',()=>realisationFindingsOf(p)));}
+export function realisationFindings(p){return memoPass(p,()=>sharedList(p,5,()=>realisationFindingsOf(p)));}
 function realisationFindingsOf(p){
  const out=[],add=(code,id,title,detail,level='error',extra={})=>out.push({id:code+':'+id,code,objectId:id,title,detail,level,...extra});
  const cs=components(p),g=logicalGraph(p),ids=new Set(g.nodes.map(n=>n.id));

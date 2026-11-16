@@ -145,7 +145,7 @@ export function potentialTradeoffs(p,driver){
   return result;
 }
 // The chapter's checks, worked out once per settled document or pass (each caller gets its own copies).
-export function qualityFindings(p){return memoPass(p,()=>sharedList(p,'quality:findings',()=>qualityFindingsOf(p)));}
+export function qualityFindings(p){return memoPass(p,()=>sharedList(p,2,()=>qualityFindingsOf(p)));}
 function qualityFindingsOf(p){
   const q=p.quality,result=[],add=(code,id,title,detail,level='error',extra={})=>result.push({id:code+':'+id,code,driverId:id,title,detail,level,...extra});
   if(!q.drivers.length)add('empty','project','Add a quality scenario','Start with a requirement and define the response you need to measure.');

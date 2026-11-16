@@ -13,6 +13,7 @@ import {withFinalReview,applyFinalReviewCommand} from './review-domain.js';
 import {applyProcessCommand} from './process-model.js';
 import {documentCopy,handOver} from './document-memo.js';
 import {resolveGroupAliases} from './requirement-groups.js';
+import {EXTENSIONS} from './design-extensions.js';
 // The roadmap's commands (round 6, Contract S): review.plateau, review.plateau-remove and review.plateau-assign, with
 // review.action carrying plateauId. They are registered here with the rest and are not staged: each is applied through
 // review-domain.js's command path (applyFinalReviewCommand), where its checks live, under the worker's revision check,
@@ -55,7 +56,10 @@ export function migrateCommand(command){
 export function applyCanonical(input,raw,at=new Date().toISOString(),actor=''){
  // A group link sent by a legacy GRP id is stored as the RG id it reads as (round 12, GR-REQ-18).
  const command=resolveGroupAliases(input,migrateCommand(raw));
- if(!STAGED_COMMANDS.has(command?.type))throw Error('This action must use its chapter review workflow.');
+ // A design package's command (rc44, slice S0: design-extensions.js) is staged when it says so and is neither a
+ // person-only nor a second-person step; a type staged here is never a package's.
+ const type=command?.type,own_=STAGED_COMMANDS.has(type),x=!own_&&EXTENSIONS.map(e=>e.commands?.[type]).find(Boolean);
+ if(!own_&&!(x?.staged&&!x.person&&!x.second))throw Error('This action must use its chapter review workflow.');
  const handlers={process:applyProcessCommand,quality:applyQualityCommand,decision:applyDecisionCommand,logical:applyLogicalCommand,realisation:applyRealisationCommand,technology:applyTechnologyCommand,techrealisation:applyTechnologyRealisationCommand,interfaces:applyInterfacesCommand,security:applySecurityCommand,runtime:applyRuntimeCommand,record:applyRecordCommand,review:applyFinalReviewCommand};
  // One copy per command (round 12): the handler changes it in place and the review sections are completed on it in place,
  // where the handler and withFinalReview each copied it again after a structured clone; the journal's recorded events are
@@ -64,7 +68,7 @@ export function applyCanonical(input,raw,at=new Date().toISOString(),actor=''){
  // copied at all. A handler that answers with another document (one that copies by other means) has it completed on a
  // copy, as before.
  const own=handOver(documentCopy(input));
- const result=(handlers[command.type.split('.')[0]]||applyCommand)(own,command,at,actor);
+ const result=(x?x.apply:handlers[type.split('.')[0]]||applyCommand)(own,command,at,actor);
  if(result.document===own)handOver(own);
  result.document=withFinalReview(result.document);return result;
 }

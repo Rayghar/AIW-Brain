@@ -13,6 +13,7 @@ import {compactJournal} from './journal-archive.js';
 import {activityStatement} from './object-service.js';
 import {templateEvidence} from './shared/projects-domain.js';
 import {needsOwnershipUpgrade} from './public/ownership-upgrade.js';
+import {extensionUpgradeNeeded} from './public/design-extension-parts.js';
 
 const pointPrefix=(owner,projectId)=>'upgrades/'+encodeURIComponent(owner)+'/'+encodeURIComponent(projectId)+'/';
 // Whether a row as read needs storing again: readings to upgrade or design stamps taken under fingerprint 1 (rc42, D14:
@@ -23,6 +24,8 @@ export function storageUpgradeNeeded(stored){
   // A document written before rc.10.73.42 (D9), whose Chapter 5 data lists were a second ownership record: kept again with the
   // claims Chapter 8 does not share, for a person to confirm (ownership-upgrade.js).
   if(needsOwnershipUpgrade(stored.document))return true;
+  // A document a design package's upgrade step changes (rc44, slice S0): kept again as the step leaves it.
+  if(extensionUpgradeNeeded(stored.document))return true;
   // A frozen baseline stored whole (round 12, GR-STO-02): kept as parts named by their SHA-256 (project-storage.js).
   if((stored.document.finalReview?.baselines||[]).some(b=>!b?.frozen))return true;
   // A document stored without a template (round 12, GR-DOM-15) whose own evidence is not the Bank Payment reference:
