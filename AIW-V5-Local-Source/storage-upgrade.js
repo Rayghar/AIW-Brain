@@ -12,6 +12,7 @@ import {needsReadingsUpgrade} from './public/readings-upgrade.js';
 import {compactJournal} from './journal-archive.js';
 import {activityStatement} from './object-service.js';
 import {templateEvidence} from './shared/projects-domain.js';
+import {needsOwnershipUpgrade} from './public/ownership-upgrade.js';
 
 const pointPrefix=(owner,projectId)=>'upgrades/'+encodeURIComponent(owner)+'/'+encodeURIComponent(projectId)+'/';
 // Whether a row as read needs storing again: readings to upgrade or design stamps taken under fingerprint 1 (rc42, D14:
@@ -19,6 +20,9 @@ const pointPrefix=(owner,projectId)=>'upgrades/'+encodeURIComponent(owner)+'/'+e
 // version saved says it is compact).
 export function storageUpgradeNeeded(stored){
   if(needsReadingsUpgrade(stored.document))return true;
+  // A document written before rc.10.73.42 (D9), whose Chapter 5 data lists were a second ownership record: kept again with the
+  // claims Chapter 8 does not share, for a person to confirm (ownership-upgrade.js).
+  if(needsOwnershipUpgrade(stored.document))return true;
   // A frozen baseline stored whole (round 12, GR-STO-02): kept as parts named by their SHA-256 (project-storage.js).
   if((stored.document.finalReview?.baselines||[]).some(b=>!b?.frozen))return true;
   // A document stored without a template (round 12, GR-DOM-15) whose own evidence is not the Bank Payment reference:
@@ -39,7 +43,7 @@ export async function storeStorageUpgrade(env,identity,projectId,row,stored,docu
   if(!document.workspace?.template)document.workspace={...(document.workspace||{}),template:templateEvidence(document)};
   const objects=[...priorKeys(stored.keys)].sort();
   await env.FILES.put(key,JSON.stringify({schema:'aiw.storage-recovery-point.v1',at,projectId,revision:row.revision,updatedAt:row.updated_at,document:row.document,objects}),{httpMetadata:{contentType:'application/json'}});
-  const event={at,kind:'storage',title:'Storage upgrade',summary:'The project was stored again as this version of AIW keeps it: its readings as fingerprints of what records say, its design fingerprint without the evidence recorded about the design (its review stamps carried over where they were current, its frozen baselines keeping the stamps they were frozen with), its change history compact with earlier changes in the archive, its frozen baselines as parts named by their SHA-256, its workbench and guided histories as logs, and its template recorded from its own records when it had none. No design content changed; the previous version is kept for recovery.',revision:row.revision+1,recoveryPoint:key,fromRevision:row.revision};
+  const event={at,kind:'storage',title:'Storage upgrade',summary:'The project was stored again as this version of AIW keeps it: its readings as fingerprints of what records say, its design fingerprint without the evidence recorded about the design (its review stamps carried over where they were current, its frozen baselines keeping the stamps they were frozen with), its change history compact with earlier changes in the archive, its frozen baselines as parts named by their SHA-256, its workbench and guided histories as logs, its template recorded from its own records when it had none, and the data owners its Chapter 5 lists named where Chapter 8 names another kept for a person to confirm. No design content changed; the previous version is kept for recovery.',revision:row.revision+1,recoveryPoint:key,fromRevision:row.revision};
   let change;
   try{change=await saveStoredProject(env,owner,projectId,document,row.revision,at,stored.keys,stamp=>[activityStatement(env,identity,projectId,event,stamp)],{keepPrior:true});}
   catch(e){await env.FILES.delete(key).catch(()=>{});throw e;}

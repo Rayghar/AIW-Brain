@@ -57,6 +57,7 @@ import {reversalBasis} from './model-reversal.js';
 import {architectureCases,caseReviewBasis} from './architecture-case.js';
 import {digest} from './brain-integrity.js';
 import {templateEvidence} from '../shared/projects-domain.js';
+import {upgradeOwnership} from './ownership-upgrade.js';
 
 const list=v=>Array.isArray(v)?v:[],plain=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const READINGS=new Set(['sourceSnapshot','driverSnapshot']);
@@ -289,4 +290,5 @@ function toReadings(legacy,from){
  translate(q,m,map);
  return q;
 }
-registerReadingsUpgrade(upgradeReadings);
+// The read upgrade of rc.10.73.42 (D9) runs with it: the data owners Chapter 5 named that Chapter 8 does not (ownership-upgrade.js).
+registerReadingsUpgrade(p=>upgradeOwnership(upgradeReadings(p)));

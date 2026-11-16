@@ -466,6 +466,8 @@ export function scaleReadings(p, {envId = null} = {}) {
   // Storage: the data each component is authority for, from stated counts and sizes, read whether or not a rate is
   // recorded; a recorded data volume, or a record count on a driver at the desk's record size, is shared by the
   // components whose responsibilities the driver names, else by those that hold data, else by the entries.
+  // Storage sizing reads who keeps a copy: the Chapter 8 authority and the components that use the record (rc.10.73.42, D9:
+  // a sizing reading, not ownership; the one owner is the authority).
   const ownersOf = d => uniq([d.authorityId, ...[...R.comps.values()].filter(c => list(c.dataIds).includes(d.id)).map(c => c.id)].filter(id => R.comps.has(id)));
   const storage = new Map(), storageBasis = new Map(), note = (id, t) => storageBasis.set(id, [...(storageBasis.get(id) || []), t]);
   let sized = false;

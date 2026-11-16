@@ -299,7 +299,7 @@ const RELATION_ARCHIMATE = {
   operatedAs: [['Association'], false], justifies: [['Influence'], false], motivatedBy: [['Influence'], true], addresses: [['Influence'], false], assesses: [['Influence'], false], considers: [['Association'], false],
   protects: [['Influence'], false], mitigates: [['Influence'], false], threatens: [['Influence'], false], enforces: [['Influence'], false], evidences: [['Association'], false], asserts: [['Association'], false], conflictsWith: [['Association'], false]
 };
-const RELATION_BY_SOURCE = {'technology.mappings': {requires: [['Serving'], true]}, 'realisation.components.dataIds': {owns: [['Access'], false]}, 'interfaces.data.authorityId': {owns: [['Access'], false]}, 'process.elements.authorityId': {owns: [['Access'], false]}};
+const RELATION_BY_SOURCE = {'technology.mappings': {requires: [['Serving'], true]}, 'realisation.components.dataIds': {uses: [['Access'], false]}, 'interfaces.data.authorityId': {owns: [['Access'], false]}, 'process.elements.authorityId': {owns: [['Access'], false]}};
 export function archimateWanted(kind, source = '') {
   return RELATION_BY_SOURCE[source]?.[kind] || RELATION_ARCHIMATE[kind] || [['Association'], false];
 }

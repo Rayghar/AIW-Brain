@@ -1,4 +1,4 @@
-import {contractReviewCurrent,dataReviewCurrent} from './interfaces-domain.js';
+import {contractReviewCurrent,dataReviewCurrent,ownershipToConfirm} from './interfaces-domain.js';
 import {applyInterfacesCommand} from './interfaces-domain.js';
 import {applyRequirementsCommand} from './requirement-commands.js';
 import {applyCanonical} from './canonical-command.js';
@@ -10,7 +10,9 @@ export function confirmationCandidates(p, chapter, {ids=null}={}) {
   if(chapter===4)add(p.logical?.responsibilities,'logical.responsibility','Confirm the responsibility and its current inputs',r=>r.confirmed,()=>({confirmed:true}));
   if(chapter===5)add(p.realisation?.components,'realisation.component','Mark the component design reviewed; assumptions stay unchanged',r=>r.status==='reviewed',()=>({status:'reviewed'}));
   if(chapter===6)add(p.technology?.needs,'technology.needs','Confirm this application capability need',r=>r.confirmed,()=>({confirmed:true}));
-  if(chapter===8)add([...(p.interfaces?.contracts||[]),...(p.interfaces?.data||[])],'interfaces.record-review','Record definition review; no test or approval is implied',r=>r.fields?dataReviewCurrent(p,r):contractReviewCurrent(p,r),()=>({}));
+  // A definition with an ownership claim to confirm (rc.10.73.42, D9) is reviewed on its own, where the claim is shown: a
+  // bulk confirmation would settle a claim it never shows.
+  if(chapter===8)add([...(p.interfaces?.contracts||[]),...(p.interfaces?.data||[])],'interfaces.record-review','Record definition review; no test or approval is implied',r=>r.fields?dataReviewCurrent(p,r)||ownershipToConfirm(p,r).length>0:contractReviewCurrent(p,r),()=>({}));
   if(chapter===10)add(p.runtime?.environments,'runtime.environment','Confirm the recorded environment scope and basis',r=>r.confirmed,()=>({confirmed:true}));
   return rows;
 }
