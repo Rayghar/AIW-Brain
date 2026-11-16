@@ -21,6 +21,9 @@ const PLACEHOLDERS = [
   // rc.10.73.42 (D17): the drafted runbook placeholder, whole ("Runbook for X still to be written."), is none; a sentence
   // that only ends in such words states something and is kept.
   /^\s*runbook for [^.;:!?]{1,200} still to be written\.?\s*$/i,
+  // The words the journey drafter wrote for a BPMN branch with no condition until rc.10.73.42 (D16, C1-M1), also as the
+  // BPMN export clipped them into a conditionExpression ("No condition stated in …").
+  /^\s*no condition stated\b/i,
 ];
 
 const text = value => (typeof value === 'string' ? value : value == null ? '' : String(value));

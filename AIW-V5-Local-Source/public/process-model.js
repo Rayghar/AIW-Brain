@@ -8,6 +8,7 @@ import {list} from './util.js';
 import {patchIds,within,knownOnly} from './requirement-links.js';
 import {requirementGroups} from './requirement-groups.js';
 import {RETIRE_ONLY} from './record-lifecycle.js';
+import {fieldOpen,cleanOpen,printable} from './open-fields.js';
 // Round 12 (DM-02, DM-09, DM-10): a process element names as many requirements as the project holds, or the requirement
 // groups that hold them; an id the project does not hold is refused by name, and a save that leaves the links out keeps them.
 function elementLinks(p,raw,old){const r=patchIds(raw,'requirementIds',old),g=patchIds(raw,'requirementGroupIds',old);within(r.ids,5000,'requirements');within(g.ids,500,'requirement groups');knownOnly(r.sent,new Set(p.artefacts.filter(a=>a.type==='requirement').map(a=>a.id)),'requirements');knownOnly(g.sent,new Set(requirementGroups(p).map(x=>x.id)),'requirement groups');return {requirementIds:r.ids,...(g.ids.length||old?.requirementGroupIds?{requirementGroupIds:g.ids}:{})};}
@@ -104,8 +105,11 @@ export function describeWalkStep(p,ids,i){
 
 // ---------------------------------------------------------------- the checks
 // PROC-START no start event; PROC-END no end event reachable from a start; PROC-REACH an element no path reaches or that
-// reaches no end; PROC-GATEWAY an exclusive or inclusive gateway with two or more outgoing flows missing a condition, or a
-// parallel split without a join; PROC-DANGLING a flow whose end is gone (or a sub-process parent that is gone);
+// reaches no end; PROC-GATEWAY an exclusive or inclusive gateway with two or more outgoing flows missing a condition (an
+// open one: empty, an open question or placeholder words, open-fields.js; its default path is exempt, rc.10.73.42 D16) or
+// with more than one default path, a default path out of anything else (a gateway made parallel or event-based, or no
+// gateway: the flag is kept until the person clears it), or a parallel split without a join; PROC-DANGLING a flow whose
+// end is gone (or a sub-process parent that is gone);
 // PROC-BOUNDARY a boundary event attached to nothing; PROC-MESSAGE a message flow inside one pool or without a contract,
 // or a sequence flow across pools. They apply once the project models a process (an element or a flow beyond the journey
 // steps); a journey alone is a list of steps, not a process. External pools are participants: they are not asked for a
@@ -141,9 +145,11 @@ export function processFindings(p){
    else if(ends.length&&!back.has(n.id)&&!(n.kind==='event'&&n.position==='end'))add('PROC-REACH',n.id,'Lead '+n.title+' to an end event','From here no sequence flow reaches an end event.','warning');
   }
  }
- for(const n of ours.filter(n=>n.kind==='gateway')){
-  const outs=G.outgoing.get(n.id)||[];
-  if(['exclusive','inclusive'].includes(n.gatewayType)&&outs.length>=2){const open=outs.filter(t=>!clean(t.condition));if(open.length)add('PROC-GATEWAY',n.id,'State the condition of each path out of '+n.title,`${open.length} of its ${outs.length} outgoing flows ${open.length===1?'has':'have'} no condition: ${open.map(t=>t.label||t.id).join(', ')}. An ${n.gatewayType} gateway chooses by conditions.`);}
+ for(const n of ours){
+  const outs=G.outgoing.get(n.id)||[],defs=outs.filter(t=>t.default),named=defs.map(t=>t.label||t.id).join(', '),chooses=['exclusive','inclusive'].includes(n.gatewayType),one={id:'PROC-GATEWAY:'+n.id+':default'};
+  if(defs.length&&!chooses)add('PROC-GATEWAY',n.id,'Clear the default path out of '+n.title,named+': only an exclusive or inclusive gateway has a default path.','error',one);
+  if(n.kind!=='gateway')continue;
+  if(chooses&&outs.length>=2){const open=outs.filter(t=>!t.default&&fieldOpen(t,'condition'));if(open.length)add('PROC-GATEWAY',n.id,'State the condition of each path out of '+n.title,`${open.length} of its ${outs.length} outgoing flows ${open.length===1?'has':'have'} no condition: ${open.map(t=>t.label||t.id).join(', ')}. An ${n.gatewayType} gateway chooses by conditions.`);if(defs.length>1)add('PROC-GATEWAY',n.id,'Keep one default path out of '+n.title,`${defs.length} default paths: ${named}.`,'error',one);}
   if(n.gatewayType==='parallel'&&outs.length>=2){
    const seen=new Set(),q=outs.map(t=>t.to);let join=false;while(q.length&&!join){const id=q.shift();if(seen.has(id))continue;seen.add(id);const m=G.nodes.get(id);if(m?.kind==='gateway'&&m.gatewayType==='parallel'&&(G.incoming.get(id)||[]).length>=2){join=true;break;}for(const t of G.outgoing.get(id)||[])q.push(t.to);}
    if(!join)add('PROC-GATEWAY',n.id,'Join the parallel paths out of '+n.title,`A parallel gateway splits into ${outs.length} paths; no parallel gateway downstream joins them, so the process cannot know when all are done.`);
@@ -199,13 +205,18 @@ export function applyProcessCommand(input,command,at=new Date().toISOString()){
   const target=elements.find(e=>e.id===to);if(target?.kind==='event'&&(target.position==='boundary'||target.attachedTo))throw Error('A boundary event starts a path; a flow cannot lead into it.');
   const label=clean(raw.label,100),condition=clean(raw.condition,600);if(!label)throw Error('Name the transition.');
   if(processTransitions(p).some(t=>t.from===from&&t.to===to&&t.id!==id))throw Error('This process transition already exists.');
+  // rc.10.73.42 (D16): the default path of an exclusive or inclusive gateway (a save without the flag keeps it; a second
+  // one is a PROC-GATEWAY error), and an open condition kept as an open question until the condition is stated.
+  const def=(raw.default??old?.default)===true,gate=elements.find(e=>e.id===from);
+  if(def&&!['exclusive','inclusive'].includes(flowKind==='sequence'&&gate?.kind==='gateway'&&(gate.gatewayType||'exclusive')))throw Error('Only a path out of an exclusive or inclusive gateway can be its default.');
+  const open=condition?{}:cleanOpen(raw.open??old?.open,['condition']);
   const poolOf=x=>elements.find(e=>e.id===x)?.partyId||'';
   const contractId=clean(raw.contractId,100);
   if(contractId&&!contracts.some(c=>c.id===contractId))throw Error('Choose an interface contract from Chapter 8.');
   if(flowKind==='message'){if(!contractId)throw Error('A message flow names the contract it carries.');if(poolOf(from)===poolOf(to))throw Error('A message flow crosses pools: put one end in an external participant\'s pool.');}
   else if(poolOf(from)!==poolOf(to))throw Error('A sequence flow stays inside one pool; across pools use a message flow with its contract.');
-  record={...old,id:nextId,from,to,label,condition,kind:flowKind,contractId,owner:clean(raw.owner,180),source:clean(raw.source,600),sourceLocator:clean(raw.sourceLocator,240),origin:old?.origin||'architect',confirmed:false,revision:(old?.revision||0)+1,at};
-  if(!contractId)delete record.contractId;
+  record={...old,id:nextId,from,to,label,condition,default:def,open,kind:flowKind,contractId,owner:clean(raw.owner,180),source:clean(raw.source,600),sourceLocator:clean(raw.sourceLocator,240),origin:old?.origin||'architect',confirmed:false,revision:(old?.revision||0)+1,at};
+  if(!contractId)delete record.contractId;if(!def)delete record.default;if(!Object.keys(open).length)delete record.open;
  }else{
   const subjectId=clean(raw.subjectId,100),known=new Set([...p.artefacts.map(a=>a.id),...processElements(p).map(e=>e.id),...processTransitions(p).map(t=>t.id)]);
   if(!known.has(subjectId))throw Error('Link the claim to an existing process object or transition.');
@@ -236,9 +247,11 @@ function removeProcessRecord(p,m,id){
 }
 export function processMarkdown(p){const elements=list(p.processModel?.elements),transitions=list(p.processModel?.transitions),claims=list(p.processModel?.claims),conflicts=processConflicts(p);
  const where=e=>[e.kind==='event'?`${e.position||'intermediate'} event${e.eventType&&e.eventType!=='none'?' ('+e.eventType+')':''}`:e.kind==='gateway'?`${e.gatewayType||'exclusive'} gateway`:e.kind,e.partyId?'pool '+e.partyId:'',e.parentId?'inside '+e.parentId:'',e.attachedTo?'attached to '+e.attachedTo:'',e.dataId?'data '+e.dataId:''].filter(Boolean).join(', ');
+ // A condition prints as stated, or as open (an open question, or retired placeholder words; rc.10.73.42 D16), with one stop.
+ const cond=e=>(e.condition||e.open?.condition?printable(e,'condition'):'none recorded').replace(/[^.?]$/,'$&.'),cite=e=>` Source: ${e.source||'Not recorded'} ${e.sourceLocator||''}. Working / unconfirmed.`;
  return '## Process perspective and source questions\n\n'+(referenceProcess(p).elements.length?'The reference payment paths (confirmed, held, uncertain) are illustrative and require architect review. They reuse the Chapter 1 journey step identities.\n\n':'')+
- (elements.length?'### Architect process objects\n\n'+elements.map(e=>`- ${e.id} · ${where(e)}: ${e.title} (${e.lane}); ${e.purpose||'Purpose open'}. Source: ${e.source||'Not recorded'} ${e.sourceLocator||''}. Working / unconfirmed.`).join('\n')+'\n\n':'')+
- (transitions.length?'### Conditional transitions\n\n'+transitions.map(e=>`- ${e.from} → ${e.to}: ${e.label}${e.kind==='message'?' (message flow'+(e.contractId?', '+e.contractId:'')+')':''}; condition: ${e.condition||'none recorded'}. Source: ${e.source||'Not recorded'} ${e.sourceLocator||''}. Working / unconfirmed.`).join('\n')+'\n\n':'')+
+ (elements.length?'### Architect process objects\n\n'+elements.map(e=>`- ${e.id} · ${where(e)}: ${e.title} (${e.lane}); ${e.purpose||'Purpose open'}.${cite(e)}`).join('\n')+'\n\n':'')+
+ (transitions.length?'### Conditional transitions\n\n'+transitions.map(e=>`- ${e.from} → ${e.to}: ${e.label}${e.kind==='message'?' (message flow'+(e.contractId?', '+e.contractId:'')+')':''}${e.default?'; default path':''}; condition: ${cond(e)}${cite(e)}`).join('\n')+'\n\n':'')+
  (claims.length?'### Source claims for review\n\n'+claims.map(c=>`- ${c.id} · ${c.subjectId} · ${c.topic}: ${c.statement} (${c.source}, ${c.sourceLocator}; needs review).`).join('\n')+'\n\n':'No source claims have been reviewed for the process perspective.\n\n')+
  (conflicts.length?'Different source statements need reconciliation (they may describe different paths or abstraction levels): '+conflicts.map(g=>g.map(c=>c.id).join(' / ')).join('; ')+'.\n\n':'');
 }

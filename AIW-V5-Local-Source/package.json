@@ -45,6 +45,7 @@
     "test:design-questions": "node design-questions-validate.mjs",
     "test:shell-notices": "node shell-notices-validate.mjs",
     "test:projects": "node projects-validate.mjs",
+    "test:rc42-g6-import": "node rc42-g6-import-validate.mjs",
     "test:reference-projects": "node reference-projects-validate.mjs",
     "test:brief-interpreter": "node brief-interpreter-validate.mjs",
     "test:journey-drafter": "node journey-drafter-validate.mjs",

@@ -20,6 +20,7 @@ import {recordModules} from './module-scope.js';
 import {PARTY_KINDS} from './interfaces-domain.js';
 import {partyGroupTitle} from './figure-budget.js';
 import {plateausOf, migrationsOf, PLATEAU_WORDS} from './roadmap-domain.js';
+import {fieldOpen} from './open-fields.js';
 
 export {KINDS, GROUP_KINDS, STYLES, styleOf};
 const text = (v, n = 120) => String(v ?? '').replace(/\s+/g, ' ').trim().slice(0, n);
@@ -239,7 +240,9 @@ export function notationDiagram(p, sceneId, {environmentId = null, chapter = nul
       const from = surface(t.from), to = surface(t.to); if (from === to) continue;
       const typing = rels.find(e => e.id === t.id)?.archimate || null;
       if (t.kind === 'message') { const c = t.contractId ? O(t.contractId) : null; edge(from, to, c ? c.ref || c.title : t.label || 'message', {kind: 'message', id: t.id, qualifier: text(t.label && c ? t.label : c?.record?.protocol, 24), record: t, archimate: typing}); }
-      else edge(from, to, t.label || t.condition || '', {kind: 'sequence', id: t.id, qualifier: t.condition && t.condition !== t.label ? t.condition : '', record: t, archimate: typing});
+      // An open condition (empty, an open question, retired placeholder words; rc.10.73.42 D16) is no qualifier, so no
+      // export writes it as a condition.
+      else edge(from, to, t.label || t.condition || '', {kind: 'sequence', id: t.id, qualifier: t.condition !== t.label && !fieldOpen(t, 'condition') ? t.condition : '', record: t, archimate: typing});
     }
     // A recorded precedence already drawn as a transition is one flow, not two.
     for (const r of list(p.relationships).filter(r => r.kind === 'precedes')) if (!D.edges.some(e => e.from === r.from && e.to === r.to)) edge(r.from, r.to, '', {kind: 'sequence', id: r.id, archimate: rels.find(e => e.id === r.id)?.archimate || null});

@@ -22,9 +22,9 @@ import {interpretMADR} from './madr.js';
 
 export const MODEL_LIMIT = 2000000;
 export const MODEL_KIND_LIMIT = 500;
-export const MODEL_RULES = 'model-rules-1';
+export const MODEL_RULES = 'model-rules-2';
 export const MODEL_FORMATS = ['structurizr', 'archimate', 'bpmn', 'drawio', 'mermaid-c4', 'plantuml-c4', 'madr'];
-export const ELEMENT_KINDS = ['person', 'stakeholder', 'system', 'container', 'component', 'interface', 'service', 'capability', 'data', 'node', 'environment', 'zone', 'instance', 'process', 'task', 'event', 'gateway', 'lane', 'pool', 'requirement', 'outcome', 'constraint', 'driver', 'decision', 'alternative', 'boundary', 'technology'];
+export const ELEMENT_KINDS = ['person', 'stakeholder', 'system', 'container', 'component', 'interface', 'service', 'capability', 'data', 'node', 'environment', 'zone', 'instance', 'process', 'task', 'event', 'gateway', 'lane', 'pool', 'requirement', 'outcome', 'constraint', 'driver', 'decision', 'alternative', 'boundary', 'technology', 'business-capability', 'gap'];
 export const RELATIONSHIP_KINDS = ['uses', 'flow', 'message', 'sequence', 'realizes', 'serves', 'assigned', 'composes', 'accesses', 'triggers', 'association'];
 const XML_DEPTH = 100, XML_NODES = 400000, PASSAGE_LIMIT = 6000, OMITTED_LIMIT = 60, QUESTION_LIMIT = 20, NAME = 200, TEXT = 2000;
 const KIND = new Set(ELEMENT_KINDS), REL = new Set(RELATIONSHIP_KINDS);
@@ -431,16 +431,19 @@ function* walk(n) { for (const c of n.children) { yield c; yield* walk(c); } }
 const spanOf = (C, text, n) => C.span(n.start, n.end - n.start <= 1200 ? n.end : text.indexOf('>', n.start) + 1);
 
 // ------------------------------------------------------------------------------------------------ ArchiMate
-const ARCHIMATE_KIND = {BusinessActor: 'person', BusinessRole: 'person', BusinessCollaboration: 'person', BusinessInterface: 'interface', BusinessProcess: 'process', BusinessFunction: 'capability', BusinessInteraction: 'process', BusinessEvent: 'event', BusinessService: 'service', BusinessObject: 'data', Contract: 'data', Representation: 'data', Product: 'service',
+const ARCHIMATE_KIND = {BusinessActor: 'person', BusinessRole: 'person', BusinessCollaboration: 'person', BusinessInterface: 'interface', BusinessProcess: 'process', BusinessFunction: 'business-capability', BusinessInteraction: 'process', BusinessEvent: 'event', BusinessService: 'service', BusinessObject: 'data', Contract: 'data', Representation: 'data', Product: 'service',
   ApplicationComponent: 'container', ApplicationCollaboration: 'container', ApplicationInterface: 'interface', ApplicationFunction: 'component', ApplicationInteraction: 'process', ApplicationProcess: 'process', ApplicationEvent: 'event', ApplicationService: 'service', DataObject: 'data',
   Node: 'node', Device: 'node', SystemSoftware: 'technology', TechnologyCollaboration: 'node', TechnologyInterface: 'interface', Path: 'technology', CommunicationNetwork: 'technology', TechnologyFunction: 'capability', TechnologyProcess: 'process', TechnologyInteraction: 'process', TechnologyEvent: 'event', TechnologyService: 'service', Artifact: 'data', Equipment: 'node', Facility: 'zone', DistributionNetwork: 'technology', Material: 'data',
   Stakeholder: 'stakeholder', Driver: 'driver', Assessment: 'driver', Goal: 'outcome', Outcome: 'outcome', Principle: 'constraint', Requirement: 'requirement', Constraint: 'constraint', Meaning: 'outcome', Value: 'outcome',
-  Resource: 'capability', Capability: 'capability', ValueStream: 'process', CourseOfAction: 'decision',
-  WorkPackage: 'task', Deliverable: 'data', ImplementationEvent: 'event', Plateau: 'boundary', Gap: 'requirement',
+  Resource: 'capability', Capability: 'business-capability', ValueStream: 'process', CourseOfAction: 'decision',
+  WorkPackage: 'task', Deliverable: 'data', ImplementationEvent: 'event', Plateau: 'boundary', Gap: 'gap',
   Grouping: 'boundary', Location: 'zone', AndJunction: 'gateway', OrJunction: 'gateway', Junction: 'gateway'};
 const ARCHIMATE_REL = {Composition: 'composes', Aggregation: 'composes', Assignment: 'assigned', Realization: 'realizes', Serving: 'serves', Access: 'accesses', Influence: 'association', Triggering: 'triggers', Flow: 'flow', Specialization: 'association', Association: 'association'};
 // The implementation-and-migration layer: read with the nearest kind (a work package is a task), marked so that the
-// drafter never takes a work package for a journey step.
+// drafter never takes a work package for a journey step. rc.10.73.42 (D12): a Gap is a gap (a step between plateaus,
+// never a requirement), and a business Capability or BusinessFunction a business capability (never a Chapter 6
+// technology capability); the drafter drafts neither and lists both in its import report (journey-drafter.js notMapped).
+// Rules model-rules-2: model-rules-1 read them as requirement and capability.
 const ARCHIMATE_IMPLEMENTATION = new Set(['WorkPackage', 'Deliverable', 'ImplementationEvent', 'Plateau', 'Gap']);
 const xsiType = n => String(n.attrs['xsi:type'] || n.attrs.type || '').replace(/^archimate:/, '');
 function archimate(text, C) {
@@ -552,7 +555,7 @@ const aiwKind = kicker => { const k = plain(kicker); return Object.hasOwn(AIW_KI
 
 // ------------------------------------------------------------------------------------------------ draw.io
 const C4_KIND = {person: 'person', 'software system': 'system', container: 'container', component: 'component', systemscopeboundary: 'boundary', containerscopeboundary: 'boundary', 'system boundary': 'boundary', 'container boundary': 'boundary', 'enterprise boundary': 'boundary', boundary: 'boundary', 'deployment node': 'node', node: 'node'};
-const DRAWIO_ARCHIMATE = {comp: 'container', collab: 'container', interface: 'interface', func: 'capability', interaction: 'process', proc: 'process', event: 'event', serv: 'service', actor: 'person', role: 'person', node: 'node', device: 'node', sysSw: 'technology', path: 'technology', netw: 'technology', artifact: 'data', passive: 'data', location: 'zone', stakeholder: 'stakeholder', driver: 'driver', assess: 'driver', goal: 'outcome', outcome: 'outcome', principle: 'constraint', requirement: 'requirement', constraint: 'constraint', meaning: 'outcome', value: 'outcome', resource: 'capability', capability: 'capability', course: 'decision', workPackage: 'task', deliverable: 'data', plateau: 'boundary', gap: 'requirement', group: 'boundary', junction: 'gateway'};
+const DRAWIO_ARCHIMATE = {comp: 'container', collab: 'container', interface: 'interface', func: 'capability', interaction: 'process', proc: 'process', event: 'event', serv: 'service', actor: 'person', role: 'person', node: 'node', device: 'node', sysSw: 'technology', path: 'technology', netw: 'technology', artifact: 'data', passive: 'data', location: 'zone', stakeholder: 'stakeholder', driver: 'driver', assess: 'driver', goal: 'outcome', outcome: 'outcome', principle: 'constraint', requirement: 'requirement', constraint: 'constraint', meaning: 'outcome', value: 'outcome', resource: 'capability', capability: 'business-capability', course: 'decision', workPackage: 'task', deliverable: 'data', plateau: 'boundary', gap: 'gap', group: 'boundary', junction: 'gateway'};
 const styleOf = style => Object.fromEntries(String(style || '').split(';').filter(Boolean).map(s => { const i = s.indexOf('='); return i < 0 ? [s, true] : [s.slice(0, i), s.slice(i + 1)]; }));
 const plain_ = v => String(v || '').trim().toLowerCase();
 function drawio(text, C) {
@@ -585,7 +588,7 @@ function drawio(text, C) {
       const shape = /shape=mxgraph\.archimate3\.(\w+)/.exec(cell.attrs.style || '');
       if (shape) {
         const sub = shape[1] === 'application' ? st.appType : shape[1] === 'tech' ? st.techType : shape[1] === 'business' ? st.busType : shape[1];
-        const kind = DRAWIO_ARCHIMATE[sub] || DRAWIO_ARCHIMATE[shape[1]] || null;
+        const kind = shape[1] === 'business' && sub === 'func' ? 'business-capability' : DRAWIO_ARCHIMATE[sub] || DRAWIO_ARCHIMATE[shape[1]] || null;
         if (!kind) { C.omit({id, kind: shape[1], reason: `The ArchiMate shape "${cut(sub || shape[1], 40)}" is not read.`}); continue; }
         const el = C.element({kind, name: label || sub, parent: byRef.get(parent)?.id || null, passages: [key], attrs: {archimateShape: shape[1], ...(sub ? {archimateType: sub} : {}), ...(['workPackage', 'deliverable', 'plateau', 'gap'].includes(sub) || shape[1] === 'implementation' ? {layer: 'implementation'} : {}), ...(st.archiType ? {archiType: st.archiType} : {})}, ref: id});
         if (el) { byRef.set(id, el); ids.push(el.id); }
