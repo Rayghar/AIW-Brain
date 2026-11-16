@@ -74,7 +74,7 @@ const BASELINE = {bank: {findings: 'e188b2ccd284a1ab6d7be71b78f989075419b7dfcdcb
 function designReadings(p) {
   const requirement = p.artefacts.find(a => a.type === 'requirement').id, packet = intelligencePacket(p, {chapter: 1, objectId: requirement, mode: 'mind', prompt: 'Explain the transactional outbox and when a relay may repeat a notice.'});
   return {
-    findings: rv.inheritedFindings(p).map(({stamp: _stamp, ...f}) => f), summaries: rv.chapterSummaries(p), blockers: rv.reviewBlockerCount(p), readiness: sddReadiness(p),
+    findings: rv.inheritedFindings(p).map(({stamp: _stamp, ...f}) => f), summaries: rv.chapterSummaries(p), blockers: rv.reviewBlockerCount(p), readiness: sddReadiness(p), coverage: rv.traceCoverage(p), capacity: rv.reviewCapacity(p),
     released: K.releasedClaims(p), knowledgeFindings: K.knowledgeFindings(p), domain: domainKnowledge(p), structures: knowledgeStructures(p), snapshot: architectureKnowledgeSnapshot(p),
     sdd: architectureMarkdown(p).markdown, intelligence: architectureIntelligence(p, {id: requirement}), brain: brainContext(p, {id: requirement, chapter: 1}).knowledge,
     packetSources: packet.sources.map(s => [s.kind, s.objectId, s.ref, s.excerpt])
@@ -519,6 +519,12 @@ add('S1.10 (inert candidates): with the nine forms of a concept saved as candida
     assert(KC.conceptReading(p, 'SYN-P001').forms.filter(f => f.tier === 'decision').every(f => f.content === null && f.architectureUnit === null), stage + ': the concept reading holds no decision-bearing content');
     assert.equal(rv.designFingerprint(p) !== rv.designFingerprint(bank), true);
   }
+  // Released and active, a form is a released claim like any other (verified by a second person, released by a person):
+  // every reader still reads, no check or readiness reading moves, and a receipt carries no form and scores nothing.
+  { const L = await library({verify: true, review: true, release: true, activate: true, base: bank}), p = L.document, after = designReadings(p);
+    assert.equal(K.releasedClaims(p).filter(h => h.eligible && h.claim.form).length, 9);
+    for (const key of ['findings', 'summaries', 'blockers', 'readiness', 'coverage', 'capacity', 'knowledgeFindings']) assert.equal(JSON.stringify(after[key]), JSON.stringify(before[key]), 'released and active: ' + key + ' moved');
+    for (const h of K.releasedClaims(p)) { const receipt = K.claimReceipt(p, h.claim, h.release); assert(!('form' in receipt)); assert.equal(receipt.scoring, false); } }
   assert.equal(JSON.stringify(bank), frozen, 'the reference document itself was never changed');
 });
 
