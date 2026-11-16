@@ -32,6 +32,7 @@ import {componentSheet} from './public/component-sheet.js';
 import {componentSpecMarkdown} from './public/component-spec-document.js';
 import {applyLogicalCommand,logicalGraph} from './public/logical-domain.js';
 import {archimateWanted} from './public/notation-palette.js';
+import {notationDiagram} from './public/notation-model.js';
 import {createProject} from './shared/projects-domain.js';
 import {DRAFT_COMMANDS} from './public/architecture-drafter.js';
 import {storageUpgradeNeeded} from './storage-upgrade.js';
@@ -69,6 +70,21 @@ check('D9: the canonical graph keeps one owner per data definition, the Chapter 
   assert.equal(findings(q,'owner-confirm').length,0);
   // The SDD's figure source, a copy of the design source, reads the same: no claim is invented in the copy.
   assert.equal(findings(figureSourceOf(reviewSource(q)),'owner-confirm').length,0);
+});
+check('D9 (integration): the connected picture draws one line for a component and data it owns; a use of another owner\'s data keeps its line; the graph keeps both relations',()=>{
+  // Before D9 the two records of one ownership were drawn as one line. With the Chapter 5 list read as use, the pair held
+  // a use and an ownership, drawn as two parallel lines, and the Layers layout of the reference design gave up drawing
+  // lines together. The picture draws the ownership alone for such a pair; nothing leaves the graph.
+  const p=reference(),between=(D,a,b)=>D.edges.filter(e=>e.from===a&&e.to===b).map(e=>e.kind).sort();
+  const rels=(x,a,b)=>architectureModel(x).relationships.filter(e=>e.from===a&&e.to===b).map(e=>e.type+' via '+e.source).sort();
+  assert.deepEqual(rels(p,'api-pod','instruction'),['owns via interfaces.data.authorityId','uses via realisation.components.dataIds'],'the graph holds the use and the ownership');
+  for(const chapter of [4,5,8]){const D=notationDiagram(p,'connected',{chapter});
+    assert.deepEqual(between(D,'api-pod','instruction'),['owns'],'Chapter '+chapter+': one line, the ownership');
+    for(const e of D.edges.filter(e=>e.kind==='owns'))assert.deepEqual(between(D,e.from,e.to),['owns'],'Chapter '+chapter+': no line beside the ownership '+e.from+' > '+e.to);}
+  // Chapter 8 names another owner: the lister's use is its own fact and keeps its line; the new owner has the ownership.
+  const q=ic(p,'data',{id:'instruction',authorityId:'risk-engine'}),D=notationDiagram(q,'connected',{chapter:8});
+  assert.deepEqual(between(D,'api-pod','instruction'),['uses'],'a use of data another component owns is drawn');
+  assert.deepEqual(between(D,'risk-engine','instruction'),['owns'],'the owner\'s line is the ownership');
 });
 check('D9: two components using one record is not an ownership conflict; Chapter 5 raises nothing, Chapter 8 asks for a missing owner',()=>{
   // The reviewer's probe: APP-002 also uses the instruction, which Chapter 8 gives to APP-001.

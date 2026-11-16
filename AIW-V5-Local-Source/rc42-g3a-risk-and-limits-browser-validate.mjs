@@ -5,7 +5,7 @@
 // date field is shown only for a limitation. The Chapter 11 dialog (review-ui.js) is driven in
 // rc42-g3a-risk-and-limits-validate.mjs.
 // Needs Playwright and Chromium: AIW_PLAYWRIGHT_MODULE (defaults to 'playwright') and optionally AIW_BROWSER_EXECUTABLE.
-// Starts an isolated local server on a free port from 4100-4999 (AIW_TEST_PORT names one). Run: npm run test:rc42-g3a-risk-and-limits-browser
+// Starts an isolated local server on a free port from 4100-4999. Run: npm run test:rc42-g3a-risk-and-limits-browser
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {createRequire} from 'node:module';
@@ -15,7 +15,7 @@ import net from 'node:net';
 const require = createRequire(import.meta.url);
 const {chromium} = require(process.env.AIW_PLAYWRIGHT_MODULE || 'playwright');
 const free = p => new Promise(r => { const s = net.createServer().once('error', () => r(false)).listen(p, '127.0.0.1', () => s.close(() => r(true))); });
-let port = Number(process.env.AIW_TEST_PORT) || 0;
+let port = 0;
 for (let i = 0; !port && i < 50; i++) { const p = 4100 + Math.floor(Math.random() * 900); if (await free(p)) port = p; }
 assert.ok(port >= 4100 && port <= 4999, 'a free port in 4100-4999');
 const db = process.env.AIW_LOCAL_DB || '.aiw-local/rc42-g3a-' + port + '.sqlite';

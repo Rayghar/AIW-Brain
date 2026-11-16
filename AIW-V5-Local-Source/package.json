@@ -1,7 +1,7 @@
 {
   "name": "aiw-v5-live-model-explorer",
   "version": "1.0.0",
-  "release": "AIW v0.10.0-rc.10.73.41+studio.20261022",
+  "release": "AIW v0.10.0-rc.10.73.42+integrity.20261116",
   "private": true,
   "type": "module",
   "engines": {
