@@ -14,7 +14,6 @@ import {recordCardHTML} from './record-card.js';
 import {workGlanceHTML} from './work-glance.js';
 import {chapterHasRecords} from './work-frame.js';
 import {architectureModel} from './architecture-model.js';
-import {modelDossierHTML} from './model-dossier.js';
 import {savedRecordSubject} from './shell-record-subject.js';
 import {reportLoadFailure} from './load-failures.js';
 import {projectURL,projectPreferenceKey,activeProjectId,setShellScopeId} from './project-context.js';
@@ -440,6 +439,16 @@ function workspaceAssistance(){
 // (perspective-view.js) no longer rewrites the line (rc41, W2: a second line after the frame measured its height
 // overflowed the stage).
 
+// The dossier of a record another chapter owns (model-dossier.js) loads when such a record is first inspected, not to
+// open a chapter (rc42: the chapters route holds what every chapter needs to open). The inspector says the reading is
+// loading and repaints when it arrives, only while that line still stands (a person who has moved on to a record they
+// are editing keeps their place); a load that fails is reported like every other lazy part and may be asked again.
+let dossierModule=null,dossierAsked=false;
+function foreignDossierHTML(p,id,source){
+  if(dossierModule)return dossierModule.modelDossierHTML(p,id,{chapter:source,open:true});
+  if(!dossierAsked){dossierAsked=true;import('./model-dossier.js').then(m=>{dossierModule=m;if($('#inspector [data-dossier-loading]'))refreshInspector()}).catch(e=>{dossierAsked=false;reportLoadFailure('the record’s place in the model',e);const line=$('#inspector [data-dossier-loading]');if(line)line.textContent='This record’s place in the model did not load. Its definition is in its own chapter.'});}
+  return '<p class="muted" role="status" data-dossier-loading>Loading this record’s place in the model.</p>';
+}
 // Same-tab inspection reads the canonical record without borrowing another chapter's
 // stateful editor. Own-chapter controls remain native; foreign records use the shared
 // dossier and explicit links to their owning editor.
@@ -448,7 +457,7 @@ function workspaceInspectorHTML(){
   if(!source||source===s.chapter)return withGlance(studio.inspector(getNode(id)));
   const r=findRecord(p,source,id)?.record;if(!r)return withGlance(studio.inspector(getNode(id)));
   const graph=architectureModel(p),body='<p>'+esc(r.purpose||r.description||r.context||r.statement||'Purpose needs definition.')+'</p>'+
-    '<p><a class="btn" href="'+esc(projectURL('/?chapter='+source+'&tab=work&object='+encodeURIComponent(id)))+'">Open definition in Chapter '+source+' Work</a></p>'+modelDossierHTML(p,id,{chapter:source,open:true});
+    '<p><a class="btn" href="'+esc(projectURL('/?chapter='+source+'&tab=work&object='+encodeURIComponent(id)))+'">Open definition in Chapter '+source+' Work</a></p>'+foreignDossierHTML(p,id,source);
   return recordCardHTML(p,source,id,body,{nodes:[...graph.objects.values()],edges:graph.relationships});
 }
 // The design at a glance (rc40, PLAN §4.4.4; work-glance.js): on Work, Validate and Output (rc41, W2), while no record

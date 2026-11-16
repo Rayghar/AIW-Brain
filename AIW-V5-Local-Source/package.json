@@ -34,6 +34,7 @@
     "test:rc42-g1-tech-approval": "node rc42-g1-tech-approval-validate.mjs",
     "test:rc42-g2-library": "node rc42-g2-library-validate.mjs",
     "test:rc42-g7-data-contracts": "node rc42-g7-data-contracts-validate.mjs",
+    "test:rc42-lazy-dossier-browser": "node rc42-lazy-dossier-browser-validate.mjs",
     "test:rc42-g7-data-contracts-browser": "node rc42-g7-data-contracts-browser-validate.mjs",
     "test:realisation": "node realisation-validate.mjs",
     "test:technology": "node technology-validate.mjs",

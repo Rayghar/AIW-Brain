@@ -14,9 +14,7 @@ const GLANCE_BUDGET = 18;
 // chunks) loads on demand the first time a glance draws, as the Model views load it: the Work tab's route carries the
 // glance's words, not the engine (client-bundle.mjs, the chapters route budget).
 let engine = null;
-const loadEngine = () => engine || (engine = Promise.all([import('./notation-model.js'), import('./notation-layout.js'), import('./notation-svg.js'), import('./figure-budget.js')])
-  .then(([model, layout, svg, budget]) => ({notationDiagram: model.notationDiagram, notationScenes: model.notationScenes, notationLayout: layout.notationLayout, notationSVG: svg.notationSVG, foldDiagram: budget.foldDiagram}))
-  .catch(e => { engine = null; throw e; }));
+const loadEngine = () => engine || (engine = import('./glance-engine.js').catch(e => { engine = null; throw e; })); // one request for the four (glance-engine.js)
 // One miniature per document and chapter, kept while the document is the same (its id, content version and update time).
 const pictures = new Map();
 const pictureKey = (p, chapter) => [p.id, p.contentVersion, p.updatedAt, p.revision, chapter].join('|');

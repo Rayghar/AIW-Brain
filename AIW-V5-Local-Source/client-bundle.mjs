@@ -217,6 +217,16 @@ const KB = 1024;
 // field-spark.js), a turned check defect kept a defect and negation scoped to its claim (brain-reasoning.js), the
 // journey packet's record order and omissions (intelligence-context.js), the drafted-wording constants
 // (shared/reasoning-instructions.js) and the quota sentence (brain-reasoning-ui.js, operations-ui.js). The next whole KiB.
+// rc42 (2026-11-16, lead, the nine D1-D20 fix groups merged): the chapters route measured 3,249,158 B, +16,321 B over the
+// 3,232,837 B above and 15,366 B over the cap. The growth is the fixes' own rules on the route (bytesInOutput against the
+// base 25718b6): the one trace kernel and the record graph it walks (trace-kernel.js 6,443 B, record-graph.js 16,026 B
+// against architecture-model.js -16,747 B), the Chapter 8 authority rules (interfaces-domain.js +2,008 B), second-person
+// approval and judged selection in Chapter 7 (technology-realisation-domain.js +1,792 B), and under 1 KB each in the
+// library, guided creation, the process model, the security domain, design reasoning and the obligations. The cap is
+// NOT raised. The dossier of a record another chapter owns (model-dossier.js, 20 KB with what only it reads) was on the
+// route for one line of the inspector; it now loads when such a record is first inspected (app.js foreignDossierHTML),
+// as the Model views already load it. That added three script files, and the glance's four engine requests became one
+// (glance-engine.js), which removed five: the route measures 3,228,667 B and the client 148 scripts.
 const CHAPTERS_ROUTE_BUDGET = 3158 * KB;
 export const BUDGET = {
   entry: 8 * KB,
@@ -281,7 +291,7 @@ export const BUDGET = {
   // 1,170,523 B: 1144 KB. With K merged (the round branch at cdb9884: 1,174,973 B) it measures 1,189,201 B (+14,228 B,
   // F's share as above): 1162 KB, for the lead to settle.
   data: {'brain-catalogue': 1540 * KB, 'review-font': 1064 * KB, 'vendor-docx': 420 * KB, 'brain-playbook': 120 * KB, 'brain-tradeoffs': 43 * KB /* measured 41,373 B, round 6 */},
-  scripts: 150, // rc40 (lead): 150 measured — the round's own chunks (arrange-panel, component-sheet, component-spec-view, specification-reading, work-glance, work-records) less the retired spec-view; exact count gate, no spare allowance. (Combined tab refinement measured 146.)
+  scripts: 148, // rc42 (lead): 148 measured (see the chapters route above); was 150. // rc40 (lead): 150 measured — the round's own chunks (arrange-panel, component-sheet, component-spec-view, specification-reading, work-glance, work-records) less the retired spec-view; exact count gate, no spare allowance. (Combined tab refinement measured 146.)
   tiny: 61, // Round 29 adds the shared record-card facade (4,858 B) for canonical inspection; exact count gate.
 };
 // entry.js has two routes: the Projects page imports one page module; every chapter imports the store, the
