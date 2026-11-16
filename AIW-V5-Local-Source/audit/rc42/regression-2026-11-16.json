@@ -1,0 +1,2153 @@
+{
+ "schema": "aiw.release-regression.v1",
+ "release": "AIW v0.10.0-rc.10.73.42+integrity.20261116",
+ "run": 3,
+ "date": "2026-11-16",
+ "runner": "node release-checks.mjs (AIW_REGRESSION_CONCURRENCY=2, AIW_REGRESSION_TIMEOUT_MS=1800000)",
+ "runtime": {
+  "node": "v22.22.0",
+  "browser": "chromium headless shell build 1243 (Playwright expects 1228)",
+  "cpus": 4
+ },
+ "total": 334,
+ "passed": 297,
+ "red": 37,
+ "redThatWereGreenOnBaseline": [],
+ "baselineRedNowPassing": [
+  "test:model-canvas-refinement-browser",
+  "test:platform-browser",
+  "test:requirements",
+  "test:sdd-size",
+  "test:tradeoff-browser"
+ ],
+ "redFailingAsOnBaseline": 35,
+ "redFailingAtADifferentPoint": [
+  "test:scale",
+  "test:screens-at-size"
+ ],
+ "baseline": {
+  "file": "audit/rc41/live/regression-2026-10-30.json",
+  "total": 322,
+  "passed": 280
+ },
+ "productionAccepted": false,
+ "suites": [
+  {
+   "name": "test",
+   "status": "passed",
+   "ms": 263,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:action-undo",
+   "status": "passed",
+   "ms": 1933,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:action-undo-api",
+   "status": "passed",
+   "ms": 1006,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:action-undo-ui",
+   "status": "passed",
+   "ms": 388,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:anatomy",
+   "status": "passed",
+   "ms": 3739,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:anatomy-browser",
+   "status": "failed",
+   "ms": 7107,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: stage height at chapter 3: 262.609375",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: stage height at chapter 3: 262.609375",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:architecture",
+   "status": "passed",
+   "ms": 2517,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-arrangement",
+   "status": "passed",
+   "ms": 8967,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-case",
+   "status": "passed",
+   "ms": 2343,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-case-browser",
+   "status": "passed",
+   "ms": 6543,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-case-scope",
+   "status": "passed",
+   "ms": 1016,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-drafting",
+   "status": "passed",
+   "ms": 2314,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-evaluation",
+   "status": "passed",
+   "ms": 2360,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-grounding",
+   "status": "passed",
+   "ms": 1068,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-intelligence",
+   "status": "passed",
+   "ms": 4730,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-job",
+   "status": "passed",
+   "ms": 662,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-model-browser",
+   "status": "passed",
+   "ms": 13355,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-modules",
+   "status": "passed",
+   "ms": 40844,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-obligations",
+   "status": "passed",
+   "ms": 10197,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-operation-continuation",
+   "status": "passed",
+   "ms": 58573,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-scenarios",
+   "status": "passed",
+   "ms": 1714,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-scenarios-ui",
+   "status": "passed",
+   "ms": 2211,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-service",
+   "status": "passed",
+   "ms": 1960,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-ui",
+   "status": "failed",
+   "ms": 1495,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Architecture choices are inside Proposals",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Architecture choices are inside Proposals",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:architecture-verification",
+   "status": "passed",
+   "ms": 2751,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-verification-ui",
+   "status": "passed",
+   "ms": 4058,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-whatif",
+   "status": "passed",
+   "ms": 492,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:architecture-whatif-browser",
+   "status": "passed",
+   "ms": 6382,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:ars",
+   "status": "passed",
+   "ms": 1329,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:baseline-size",
+   "status": "passed",
+   "ms": 55865,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brain",
+   "status": "passed",
+   "ms": 2367,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brain-ahead",
+   "status": "failed",
+   "ms": 725,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\\| Capacity \\| Critical \\|/. Input:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\\| Capacity \\| Critical \\|/. Input:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:brain-chain",
+   "status": "passed",
+   "ms": 2760,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brain-companion",
+   "status": "failed",
+   "ms": 2992,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Only the three established companions in the bar",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Only the three established companions in the bar",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:brain-governance-ui",
+   "status": "passed",
+   "ms": 5284,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brain-integration",
+   "status": "passed",
+   "ms": 2384,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brain-reasoning",
+   "status": "failed",
+   "ms": 2339,
+   "baseline": "failed",
+   "failure": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+   "baselineFailure": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:brain-reasoning-browser",
+   "status": "failed",
+   "ms": 6933,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Sol reads the desk reading, the objective and assumptions and the product mechanisms: and 21 sources: 1 desk reading, 12 project records, 1 objective & assumptions, 2 catalogue entries, 1 architecture-intelligence, 3 SA Playbook",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Sol reads the desk reading, the objective and assumptions and the product mechanisms: and 21 sources: 1 desk reading, 12 project records, 1 objective & assumptions, 2 catalogue entries, 1 architecture-intelligence, 3 SA Playbook",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:brain-subject-browser",
+   "status": "passed",
+   "ms": 108706,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brain-tradeoffs",
+   "status": "passed",
+   "ms": 981,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brain-ui",
+   "status": "passed",
+   "ms": 11350,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:brief-interpreter",
+   "status": "passed",
+   "ms": 491,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:browser",
+   "status": "failed",
+   "ms": 2721,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:bundle-browser",
+   "status": "failed",
+   "ms": 38073,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: /?chapter=1&project=bank-payment&tab=work opens without the pattern catalogue",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: /?chapter=1&project=bank-payment&tab=work opens without the pattern catalogue",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:caller-resilience",
+   "status": "passed",
+   "ms": 7309,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:canvas-draft-browser",
+   "status": "passed",
+   "ms": 169046,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:changes",
+   "status": "passed",
+   "ms": 2437,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:chapter-header",
+   "status": "passed",
+   "ms": 3581,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:chapter-lines",
+   "status": "passed",
+   "ms": 14168,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:chapter-reasoning",
+   "status": "failed",
+   "ms": 3780,
+   "baseline": "failed",
+   "failure": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+   "baselineFailure": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:chapter-records",
+   "status": "passed",
+   "ms": 695,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:chapter-sol-browser",
+   "status": "failed",
+   "ms": 6168,
+   "baseline": "failed",
+   "failure": "Error: Sol could not prepare #inspector .cm-companion .cs-round [data-dk=\"sol-ask\"]: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+   "baselineFailure": "Error: Sol could not prepare #inspector .cm-companion .cs-round [data-dk=\"sol-ask\"]: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:co-design",
+   "status": "passed",
+   "ms": 2381,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:coauthor",
+   "status": "passed",
+   "ms": 2528,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:command-equivalence",
+   "status": "failed",
+   "ms": 1259,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: a working choice made: the saved document is the one the route saved before round 12 \u00b7 $.workbench.history[1]: {\"at\":\"2026-11-16T17:41:31.865Z\",\"actor\":\"command-equivalence\",\"commands\":[],\"changed\":[\"ADR-002\"],\"affected\":[],\"rea",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: a working choice made: the saved document is the one the route saved before round 12 \u00b7 $.workbench.history[1]: {\"at\":\"2026-10-30T06:32:45.716Z\",\"actor\":\"command-equivalence\",\"commands\":[],\"changed\":[\"ADR-002\"],\"affected\":[],\"rea",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:component-library",
+   "status": "passed",
+   "ms": 1840,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:component-needs",
+   "status": "passed",
+   "ms": 896,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:composition",
+   "status": "passed",
+   "ms": 11395,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:composition-ui",
+   "status": "failed",
+   "ms": 1760,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Architecture choices are inside Proposals",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Architecture choices are inside Proposals",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:connected-architecture",
+   "status": "passed",
+   "ms": 127843,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:connected-architecture-ui",
+   "status": "passed",
+   "ms": 2600,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:connected-design-projections",
+   "status": "passed",
+   "ms": 7673,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:connected-model",
+   "status": "passed",
+   "ms": 4667,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:contextual-intelligence",
+   "status": "passed",
+   "ms": 5884,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:contextual-intelligence-ui",
+   "status": "failed",
+   "ms": 4307,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Existing saved architecture comparison is active",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Existing saved architecture comparison is active",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:coordinated-options",
+   "status": "passed",
+   "ms": 57384,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:decision-prerequisite",
+   "status": "passed",
+   "ms": 777,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:decision-reading",
+   "status": "passed",
+   "ms": 9436,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:decisions",
+   "status": "passed",
+   "ms": 7763,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:deferred-case",
+   "status": "passed",
+   "ms": 1018,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:deferred-intake",
+   "status": "passed",
+   "ms": 843,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:deploy",
+   "status": "passed",
+   "ms": 1246,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:deploy-browser",
+   "status": "failed",
+   "ms": 3762,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: unplaced parts wait in Not placed",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: unplaced parts wait in Not placed",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:design-concern",
+   "status": "failed",
+   "ms": 1262,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:design-links",
+   "status": "passed",
+   "ms": 692,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:design-questions",
+   "status": "passed",
+   "ms": 666,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:design-records",
+   "status": "passed",
+   "ms": 1513,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:design-resources-browser",
+   "status": "passed",
+   "ms": 27641,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:design-spec",
+   "status": "passed",
+   "ms": 1548,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:design-task-ui",
+   "status": "passed",
+   "ms": 7733,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:design-tasks",
+   "status": "passed",
+   "ms": 1851,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:desk",
+   "status": "passed",
+   "ms": 2256,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:desk-browser",
+   "status": "failed",
+   "ms": 8950,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: the objective first",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: the objective first",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:desk-fixes",
+   "status": "passed",
+   "ms": 1267,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:details-toggle",
+   "status": "passed",
+   "ms": 533,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:development",
+   "status": "passed",
+   "ms": 9538,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:diagram-arrangement",
+   "status": "passed",
+   "ms": 649,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:diagram-export-context",
+   "status": "passed",
+   "ms": 4752,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:diagram-readability",
+   "status": "passed",
+   "ms": 106586,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:dialog",
+   "status": "passed",
+   "ms": 955,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:domain-lens",
+   "status": "passed",
+   "ms": 13449,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:drafter-groups",
+   "status": "passed",
+   "ms": 143785,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-applicability",
+   "status": "passed",
+   "ms": 985,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-design-ui",
+   "status": "passed",
+   "ms": 1162,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-kinds",
+   "status": "passed",
+   "ms": 292,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-knowledge-ui",
+   "status": "passed",
+   "ms": 465,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-led-journey",
+   "status": "passed",
+   "ms": 23845,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-product-ui",
+   "status": "passed",
+   "ms": 1187,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-solution",
+   "status": "passed",
+   "ms": 869,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:driver-spec-view",
+   "status": "passed",
+   "ms": 572,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:durability",
+   "status": "passed",
+   "ms": 1146,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:embedded-intelligence",
+   "status": "passed",
+   "ms": 7622,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:enhancements",
+   "status": "passed",
+   "ms": 1427,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:enterprise-references",
+   "status": "passed",
+   "ms": 1475,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:evidence",
+   "status": "passed",
+   "ms": 2276,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:exchange",
+   "status": "passed",
+   "ms": 627,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:exchange-browser",
+   "status": "failed",
+   "ms": 3416,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: which draws the chapter\u2019s contracts as messages on their lifelines",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: which draws the chapter\u2019s contracts as messages on their lifelines",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:exchange-design",
+   "status": "passed",
+   "ms": 2361,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:exchange-task-ui",
+   "status": "passed",
+   "ms": 5713,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:execution-composition",
+   "status": "passed",
+   "ms": 3977,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:execution-journey",
+   "status": "passed",
+   "ms": 3601,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:execution-journey-ui",
+   "status": "passed",
+   "ms": 5781,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:export-build",
+   "status": "passed",
+   "ms": 9372,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:field-kit-browser",
+   "status": "passed",
+   "ms": 30484,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:field-spark",
+   "status": "passed",
+   "ms": 7548,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:field-spark-browser",
+   "status": "passed",
+   "ms": 16683,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:field-spark-pages",
+   "status": "passed",
+   "ms": 24490,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:figures-at-size",
+   "status": "passed",
+   "ms": 105467,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:figures-at-size-browser",
+   "status": "passed",
+   "ms": 90244,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:figures-integrity",
+   "status": "passed",
+   "ms": 253849,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:fingerprint",
+   "status": "passed",
+   "ms": 4365,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:focused-case-browser",
+   "status": "passed",
+   "ms": 12727,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:focused-case-validate",
+   "status": "passed",
+   "ms": 1000,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:governance-review-wording",
+   "status": "passed",
+   "ms": 962,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:ground-reference-browser",
+   "status": "passed",
+   "ms": 12694,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:grounding-review",
+   "status": "passed",
+   "ms": 666,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:hosted-knowledge",
+   "status": "passed",
+   "ms": 785,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:inspector-toggle-browser",
+   "status": "passed",
+   "ms": 13388,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:intake",
+   "status": "passed",
+   "ms": 30966,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:intelligence",
+   "status": "failed",
+   "ms": 8999,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:intelligence-ui",
+   "status": "failed",
+   "ms": 5749,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Unselected proposals/. Input:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Unselected proposals/. Input:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:interface-impact",
+   "status": "passed",
+   "ms": 1692,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:interfaces",
+   "status": "passed",
+   "ms": 2000,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:investigation",
+   "status": "passed",
+   "ms": 999,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:journal-archive",
+   "status": "passed",
+   "ms": 7734,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:journey",
+   "status": "passed",
+   "ms": 1880,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:journey-audit",
+   "status": "failed",
+   "ms": 255,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: \"Review & edit brief\" is not a second primary while the chapter waits for its draft",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: \"Review & edit brief\" is not a second primary while the chapter waits for its draft",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:journey-draft-browser",
+   "status": "passed",
+   "ms": 310320,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:journey-drafter",
+   "status": "passed",
+   "ms": 25912,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge",
+   "status": "failed",
+   "ms": 828,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The upstream inventory dependency can time out.",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The upstream inventory dependency can time out.",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:knowledge-coverage",
+   "status": "passed",
+   "ms": 1214,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge-design",
+   "status": "passed",
+   "ms": 2791,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge-ingestion",
+   "status": "passed",
+   "ms": 617,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge-repository",
+   "status": "passed",
+   "ms": 1069,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge-repository-browser",
+   "status": "passed",
+   "ms": 28161,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge-retrieval",
+   "status": "passed",
+   "ms": 10476,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge-second-brain",
+   "status": "passed",
+   "ms": 650,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:knowledge-structure",
+   "status": "passed",
+   "ms": 606,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:layers-corridors",
+   "status": "passed",
+   "ms": 826,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:layers-overview",
+   "status": "passed",
+   "ms": 817,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:lifecycle-browser",
+   "status": "passed",
+   "ms": 34617,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:link-pickers",
+   "status": "passed",
+   "ms": 860,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:local-accounts",
+   "status": "passed",
+   "ms": 1813,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:logical",
+   "status": "passed",
+   "ms": 1226,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:madr",
+   "status": "passed",
+   "ms": 549,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-alternatives",
+   "status": "passed",
+   "ms": 4347,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-alternatives-ui",
+   "status": "passed",
+   "ms": 26824,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-canvas-refinement-browser",
+   "status": "passed",
+   "ms": 20721,
+   "baseline": "failed"
+  },
+  {
+   "name": "test:model-chrome",
+   "status": "passed",
+   "ms": 1039,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-conformance",
+   "status": "passed",
+   "ms": 478,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-dossier",
+   "status": "passed",
+   "ms": 1054,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-dossier-browser",
+   "status": "passed",
+   "ms": 8985,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-history-work-route-browser",
+   "status": "passed",
+   "ms": 5550,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-impact",
+   "status": "passed",
+   "ms": 2901,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-import-browser",
+   "status": "passed",
+   "ms": 73004,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-interpreter",
+   "status": "passed",
+   "ms": 5707,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-journey-continuity",
+   "status": "passed",
+   "ms": 10927,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-lifecycle",
+   "status": "passed",
+   "ms": 584,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-reconciliation",
+   "status": "passed",
+   "ms": 837,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-tab-refinement",
+   "status": "passed",
+   "ms": 1393,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-tab-refinement-browser",
+   "status": "failed",
+   "ms": 53502,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:model-views",
+   "status": "passed",
+   "ms": 754,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-views-browser",
+   "status": "passed",
+   "ms": 205128,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:model-work-routes-browser",
+   "status": "passed",
+   "ms": 10277,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:module-model",
+   "status": "passed",
+   "ms": 54796,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:module-scope",
+   "status": "passed",
+   "ms": 4357,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:module-scope-browser",
+   "status": "passed",
+   "ms": 107161,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:native-connections",
+   "status": "passed",
+   "ms": 15351,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:native-editor-loading",
+   "status": "passed",
+   "ms": 835,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:not-stated",
+   "status": "passed",
+   "ms": 900,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:notation",
+   "status": "passed",
+   "ms": 5007,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:notation-browser",
+   "status": "passed",
+   "ms": 219873,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:notation-build-browser",
+   "status": "passed",
+   "ms": 53922,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:notation-code",
+   "status": "passed",
+   "ms": 5190,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:notation-layout",
+   "status": "passed",
+   "ms": 24170,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:notation-metrics",
+   "status": "passed",
+   "ms": 11739,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:open-fields",
+   "status": "passed",
+   "ms": 272,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:operations",
+   "status": "passed",
+   "ms": 3056,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:order-independence",
+   "status": "passed",
+   "ms": 610,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:outcome-contracts",
+   "status": "passed",
+   "ms": 22457,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:output-stage",
+   "status": "passed",
+   "ms": 2977,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:pattern-dna",
+   "status": "passed",
+   "ms": 214,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:payment-case-journey",
+   "status": "passed",
+   "ms": 2231,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:payment-case-journey-browser",
+   "status": "passed",
+   "ms": 5953,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:payment-knowledge-pilot",
+   "status": "passed",
+   "ms": 7238,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:persistence",
+   "status": "passed",
+   "ms": 2183,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:platform",
+   "status": "passed",
+   "ms": 769,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:platform-browser",
+   "status": "passed",
+   "ms": 36563,
+   "baseline": "failed"
+  },
+  {
+   "name": "test:process-semantics",
+   "status": "passed",
+   "ms": 8334,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:product-choice",
+   "status": "passed",
+   "ms": 1734,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:projects",
+   "status": "passed",
+   "ms": 12717,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:provenance",
+   "status": "passed",
+   "ms": 2202,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:provider-quota",
+   "status": "passed",
+   "ms": 12155,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:providers",
+   "status": "passed",
+   "ms": 2041,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:quality",
+   "status": "passed",
+   "ms": 7850,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:rc42-g1-tech-approval",
+   "status": "passed",
+   "ms": 5019,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g2-library",
+   "status": "passed",
+   "ms": 2370,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g3a-risk-and-limits",
+   "status": "passed",
+   "ms": 2861,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g3a-risk-and-limits-browser",
+   "status": "passed",
+   "ms": 6155,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g3b-trace-and-delivery",
+   "status": "passed",
+   "ms": 4114,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g3c-evidence-fingerprint",
+   "status": "passed",
+   "ms": 67417,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g4-trace-kernel",
+   "status": "passed",
+   "ms": 7174,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g5-runtime",
+   "status": "passed",
+   "ms": 13171,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g6-import",
+   "status": "passed",
+   "ms": 1920,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g7-data-contracts",
+   "status": "passed",
+   "ms": 3190,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-g7-data-contracts-browser",
+   "status": "passed",
+   "ms": 7427,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:rc42-lazy-dossier-browser",
+   "status": "passed",
+   "ms": 6787,
+   "baseline": "new suite in this release"
+  },
+  {
+   "name": "test:read-outcomes",
+   "status": "passed",
+   "ms": 14135,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:readiness",
+   "status": "passed",
+   "ms": 1143,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:reads",
+   "status": "passed",
+   "ms": 1987,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:realisation",
+   "status": "passed",
+   "ms": 1856,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:realise",
+   "status": "passed",
+   "ms": 666,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:realise-browser",
+   "status": "passed",
+   "ms": 48822,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:reconciliation",
+   "status": "passed",
+   "ms": 1806,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:recovery-authority",
+   "status": "passed",
+   "ms": 17058,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:recovery-size",
+   "status": "passed",
+   "ms": 56647,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:reference-projects",
+   "status": "passed",
+   "ms": 35351,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:reference-resolution",
+   "status": "passed",
+   "ms": 6787,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:reference-route-browser",
+   "status": "passed",
+   "ms": 14614,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:refinement-walkthrough",
+   "status": "passed",
+   "ms": 956394,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:repository-acquire",
+   "status": "passed",
+   "ms": 414,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:repository-service",
+   "status": "passed",
+   "ms": 888,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:repository-sync",
+   "status": "passed",
+   "ms": 721,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:repository-transfer",
+   "status": "passed",
+   "ms": 964,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:repository-transfer-browser",
+   "status": "passed",
+   "ms": 6627,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:repository-video",
+   "status": "passed",
+   "ms": 1135,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:requirement-storage",
+   "status": "passed",
+   "ms": 186,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:requirements",
+   "status": "passed",
+   "ms": 8174,
+   "baseline": "failed"
+  },
+  {
+   "name": "test:requirements-browser",
+   "status": "passed",
+   "ms": 52696,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:resilience",
+   "status": "passed",
+   "ms": 10930,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:responsibility",
+   "status": "passed",
+   "ms": 629,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:responsibility-browser",
+   "status": "failed",
+   "ms": 20515,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Whole journey \u203a Control & accounting \u203a Core ledger/. Input:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Whole journey \u203a Control & accounting \u203a Core ledger/. Input:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:retention",
+   "status": "failed",
+   "ms": 678,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: the never-applied uploads were already removed by the sweep above",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: the never-applied uploads were already removed by the sweep above",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:reversal",
+   "status": "passed",
+   "ms": 2618,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:review",
+   "status": "passed",
+   "ms": 15174,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:review-plan",
+   "status": "passed",
+   "ms": 38761,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:roadmap",
+   "status": "passed",
+   "ms": 1548,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:roadmap-browser",
+   "status": "passed",
+   "ms": 12682,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:round27-model",
+   "status": "failed",
+   "ms": 1203,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /data-cm-question|<button/. Input:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The input was expected to not match the regular expression /data-cm-question|<button/. Input:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:round27-validate-browser",
+   "status": "passed",
+   "ms": 38176,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:round27-work-browser",
+   "status": "failed",
+   "ms": 6909,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:runtime",
+   "status": "passed",
+   "ms": 1688,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:runtime-assistance",
+   "status": "passed",
+   "ms": 2715,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:runtime-form-validation-browser",
+   "status": "passed",
+   "ms": 4156,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:scale",
+   "status": "failed",
+   "ms": 930789,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: readiness board (11 chapterChecks) took 710 ms (bound 500 ms)",
+   "baselineFailure": "Timed out after 1500000 ms: --expose-gc scale-validate.mjs",
+   "sameFailureAsBaseline": false,
+   "note": "Environment. The readiness-board bound of 500 ms is missed on this machine by the baseline (604 to 899 ms over three samples) and by this release (608 to 1019 ms). The baseline run timed out before reaching it."
+  },
+  {
+   "name": "test:scale-browser",
+   "status": "passed",
+   "ms": 25989,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:scale-design",
+   "status": "passed",
+   "ms": 13171,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:scale-readings",
+   "status": "passed",
+   "ms": 2405,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:screens-at-size",
+   "status": "failed",
+   "ms": 52657,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Chapter 10: focus moves to the list it opened",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Chapter 11 model: a list draws 253 rows (at most 100; the rest page): TBODY. < TABLE.dk-table < DIV.dk-sheet",
+   "sameFailureAsBaseline": false,
+   "note": "Intermittent on the baseline too: two of three baseline runs alone stop at the Chapter 10 focus check, the third at the Chapter 11 list check. This release shows the same two failures, and once a timing bound."
+  },
+  {
+   "name": "test:screens-at-size-model",
+   "status": "passed",
+   "ms": 27925,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-architecture",
+   "status": "passed",
+   "ms": 11949,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-authoring-browser",
+   "status": "passed",
+   "ms": 8306,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-content",
+   "status": "passed",
+   "ms": 30193,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-documents-browser",
+   "status": "passed",
+   "ms": 8243,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-formats",
+   "status": "passed",
+   "ms": 8373,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-layout-cache",
+   "status": "passed",
+   "ms": 1872,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-mermaid",
+   "status": "passed",
+   "ms": 3620,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-modules",
+   "status": "passed",
+   "ms": 53369,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sdd-size",
+   "status": "passed",
+   "ms": 114507,
+   "baseline": "failed"
+  },
+  {
+   "name": "test:security",
+   "status": "passed",
+   "ms": 1413,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:security-design",
+   "status": "passed",
+   "ms": 2690,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:security-task-ui",
+   "status": "failed",
+   "ms": 5214,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:seeded-proposals",
+   "status": "passed",
+   "ms": 1517,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:selection-consistency",
+   "status": "passed",
+   "ms": 2219,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:server-hardening",
+   "status": "passed",
+   "ms": 17028,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:service-routes",
+   "status": "passed",
+   "ms": 2414,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:shell-notices",
+   "status": "passed",
+   "ms": 456,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:size-speed",
+   "status": "passed",
+   "ms": 28735,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-architecture",
+   "status": "passed",
+   "ms": 8021,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-checks",
+   "status": "failed",
+   "ms": 2877,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:sol-coverage",
+   "status": "passed",
+   "ms": 135081,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-coverage-browser",
+   "status": "passed",
+   "ms": 193951,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-current-evaluation",
+   "status": "passed",
+   "ms": 25245,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-disclosure",
+   "status": "failed",
+   "ms": 12510,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: {\"error\":\"The desk no longer holds F:capacity:run-001, F:capacity:run-008. Read the desk again before asking Sol.\"}",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: {\"error\":\"The desk no longer holds F:capacity:run-001, F:capacity:run-008. Read the desk again before asking Sol.\"}",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:sol-evaluation",
+   "status": "passed",
+   "ms": 26335,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-live-check",
+   "status": "passed",
+   "ms": 17228,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-open-fields",
+   "status": "passed",
+   "ms": 4200,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:sol-sdd",
+   "status": "passed",
+   "ms": 1163,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:specification-reading",
+   "status": "passed",
+   "ms": 5826,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:specification-reasoning",
+   "status": "passed",
+   "ms": 2408,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:stack",
+   "status": "passed",
+   "ms": 1903,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:stack-browser",
+   "status": "failed",
+   "ms": 15833,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:stewardship",
+   "status": "failed",
+   "ms": 2791,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: F:latency:QD-003: knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: F:latency:QD-003: knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:stewardship-browser",
+   "status": "passed",
+   "ms": 28562,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:story",
+   "status": "passed",
+   "ms": 1025,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:story-browser",
+   "status": "passed",
+   "ms": 46236,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:studio-dialog-browser",
+   "status": "passed",
+   "ms": 40310,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:studio-model",
+   "status": "passed",
+   "ms": 29069,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:studio-validation-output",
+   "status": "passed",
+   "ms": 34644,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:studio-work",
+   "status": "passed",
+   "ms": 16034,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:style-tokens",
+   "status": "failed",
+   "ms": 182,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: no colour literal in a declaration outside theme.css",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: no colour literal in a declaration outside theme.css",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:technology",
+   "status": "passed",
+   "ms": 2556,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:technology-capability-handoff-browser",
+   "status": "passed",
+   "ms": 8723,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:technology-catalogue",
+   "status": "passed",
+   "ms": 1702,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:technology-choice-browser",
+   "status": "passed",
+   "ms": 13395,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:technology-icons",
+   "status": "passed",
+   "ms": 5973,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:technology-realisation",
+   "status": "passed",
+   "ms": 5894,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:technology-selection-ux-browser",
+   "status": "passed",
+   "ms": 28183,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:theme",
+   "status": "failed",
+   "ms": 26368,
+   "baseline": "failed",
+   "failure": "AssertionError [ERR_ASSERTION]: a notation fill keeps its own light colour in the light theme (undefined)",
+   "baselineFailure": "AssertionError [ERR_ASSERTION]: a notation fill keeps its own light colour in the light theme (undefined)",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:threat",
+   "status": "passed",
+   "ms": 1027,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:threat-browser",
+   "status": "passed",
+   "ms": 35157,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:trace-narrative",
+   "status": "passed",
+   "ms": 13876,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:tradeoff",
+   "status": "passed",
+   "ms": 3282,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:tradeoff-browser",
+   "status": "passed",
+   "ms": 67814,
+   "baseline": "failed"
+  },
+  {
+   "name": "test:tray",
+   "status": "passed",
+   "ms": 5165,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:ui-modules",
+   "status": "passed",
+   "ms": 1854,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:ui-proportion",
+   "status": "passed",
+   "ms": 217972,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:ui-variants",
+   "status": "failed",
+   "ms": 19999,
+   "baseline": "failed",
+   "failure": "FAIL security-task-ui-validate.mjs AIW_BLANK=1",
+   "baselineFailure": "FAIL security-task-ui-validate.mjs AIW_BLANK=1",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:utility",
+   "status": "passed",
+   "ms": 659,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:utility-browser",
+   "status": "passed",
+   "ms": 34866,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:ux-shell",
+   "status": "failed",
+   "ms": 164942,
+   "baseline": "failed",
+   "failure": "Timeout 30000ms exceeded.",
+   "baselineFailure": "Timeout 30000ms exceeded.",
+   "sameFailureAsBaseline": true
+  },
+  {
+   "name": "test:validate-browser",
+   "status": "passed",
+   "ms": 51907,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:validate-output-refinement",
+   "status": "passed",
+   "ms": 2481,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:validate-output-refinement-browser",
+   "status": "passed",
+   "ms": 36235,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:validation-capabilities",
+   "status": "passed",
+   "ms": 13038,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:validation-confirmation",
+   "status": "passed",
+   "ms": 781,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:view-experience-dom",
+   "status": "passed",
+   "ms": 832,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:wire-merge",
+   "status": "passed",
+   "ms": 14016,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:work-glance",
+   "status": "passed",
+   "ms": 1155,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:work-review-readability",
+   "status": "passed",
+   "ms": 806,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:work-sections",
+   "status": "passed",
+   "ms": 22979,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:workbench-ui",
+   "status": "passed",
+   "ms": 4735,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:workspace",
+   "status": "passed",
+   "ms": 1974,
+   "baseline": "passed"
+  },
+  {
+   "name": "test:xss-browser",
+   "status": "passed",
+   "ms": 68273,
+   "baseline": "passed"
+  }
+ ]
+}

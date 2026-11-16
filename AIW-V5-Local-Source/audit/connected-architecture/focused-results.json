@@ -1,8 +1,8 @@
 {
   "schema": "aiw.connected-architecture.verification.v1",
   "release": "AIW v0.10.0-rc.10.73.42+integrity.20261116",
-  "started": "2026-11-16T09:15:34.894Z",
-  "completed": "2026-11-16T09:18:04.884Z",
+  "started": "2026-11-16T18:46:05.148Z",
+  "completed": "2026-11-16T18:48:12.855Z",
   "status": "passed",
   "suites": [
     {
@@ -13,7 +13,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 4.468,
+      "seconds": 3.974,
       "log": "execution-journey-validate.log"
     },
     {
@@ -24,7 +24,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 6.216,
+      "seconds": 5.894,
       "log": "execution-journey-ui-validate.log"
     },
     {
@@ -35,7 +35,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 1.629,
+      "seconds": 1.613,
       "log": "architecture-scenarios-validate.log"
     },
     {
@@ -46,7 +46,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 2.42,
+      "seconds": 2.14,
       "log": "architecture-scenarios-ui-validate.log"
     },
     {
@@ -57,7 +57,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 3.259,
+      "seconds": 2.686,
       "log": "architecture-verification-validate.log"
     },
     {
@@ -68,7 +68,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 4.556,
+      "seconds": 3.7,
       "log": "architecture-verification-ui-validate.log"
     },
     {
@@ -79,7 +79,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 1.355,
+      "seconds": 0.931,
       "log": "knowledge-coverage-validate.log"
     },
     {
@@ -90,7 +90,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 0.971,
+      "seconds": 0.622,
       "log": "hosted-knowledge-validate.log"
     },
     {
@@ -101,7 +101,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 0.986,
+      "seconds": 0.747,
       "log": "model-reconciliation-validate.log"
     },
     {
@@ -112,7 +112,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 1.764,
+      "seconds": 1.446,
       "log": "enterprise-references-validate.log"
     },
     {
@@ -123,7 +123,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 2.403,
+      "seconds": 2.319,
       "log": "connected-architecture-ui-validate.log"
     },
     {
@@ -134,7 +134,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 8.054,
+      "seconds": 7.224,
       "log": "connected-design-projections-validate.log"
     },
     {
@@ -145,7 +145,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 1.138,
+      "seconds": 0.979,
       "log": "model-dossier-validate.log"
     },
     {
@@ -156,7 +156,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 0.453,
+      "seconds": 0.38,
       "log": "model-conformance-validate.log"
     },
     {
@@ -167,7 +167,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 12.762,
+      "seconds": 12.256,
       "log": "sdd-architecture-validate.log"
     },
     {
@@ -178,7 +178,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 32.213,
+      "seconds": 27.016,
       "log": "sdd-content-validate.log"
     },
     {
@@ -189,7 +189,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 55.064,
+      "seconds": 45.605,
       "log": "sdd-modules-validate.log"
     },
     {
@@ -200,7 +200,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 5.28,
+      "seconds": 4.065,
       "log": "workbench-ui-validate.log"
     },
     {
@@ -211,7 +211,7 @@
       "status": "passed",
       "exitCode": 0,
       "signal": null,
-      "seconds": 4.992,
+      "seconds": 4.106,
       "log": "brain-governance-ui-validate.log"
     }
   ],

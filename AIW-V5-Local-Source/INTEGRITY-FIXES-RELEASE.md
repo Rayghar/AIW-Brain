@@ -55,17 +55,22 @@ This release fixes the twenty defects the handbook gap review verified in rc.10.
 
 ## 5. Verification
 
-**Full regression (`release-checks.mjs`, 334 suites; the baseline had 322).** Status of this section: the third and final run is in progress as this draft is committed; its figures replace the ones below.
+**Full regression (`release-checks.mjs`, 334 suites; the baseline had 322).**
 
 | Run | Tree | Passed | Red | Red that were green on the baseline |
 |---|---|---|---|---|
 | Baseline, 2026-10-30 | rc.10.73.41 | 280 of 322 | 42 | n/a |
-| 1 | merged fixes | 292 of 334 | 42 | 5: four were consequences of the fixes (closed in `53a37d3`), one was this run's own 6-minute limit |
+| 1 | merged fixes | 292 of 334 | 42 | 5: four were consequences of the fixes (closed in `53a37d3`), one was that run's own 6-minute limit |
 | 2 | after `53a37d3` | 292 of 334 | 42 | 3: two expectations that follow the one ownership line (updated in `18eecde`), one passes when run alone |
-| 3 | after `18eecde` | in progress | | |
+| **3 (final)** | after `18eecde` | **297 of 334** | **37** | **none** |
 
-Of the 39 baseline-red suites that were red in run 2, 36 failed exactly as on the baseline. Three failed at a different point and were checked one by one: `scale` (the baseline misses the same 500 ms bound on this machine), `tradeoff-browser` (passes alone) and `model-canvas-refinement-browser` (stopped earlier because of the one ownership line; updated in `18eecde`, passes alone).
-
+In the final run:
+- No suite that was green on the baseline is red.
+- Five suites that were red on the baseline pass: `model-canvas-refinement-browser`, `platform-browser`, `requirements`, `sdd-size`, `tradeoff-browser`. Some of these are sensitive to load, so they may not pass on every run.
+- Of the 37 red suites, 35 fail exactly as they did on the baseline (this container's runtime and load; see `audit/rc41/live/REGRESSION-2026-10-30.md`).
+- Two fail at a different point and were checked:
+  - `scale` now reaches a 500 ms bound that the baseline also misses on this machine (the baseline run timed out before it).
+  - `screens-at-size` stops intermittently at a Chapter 10 focus check. The baseline does the same in two of three runs alone.
 
 - **New suites (12), all passing:** `rc42-g1-tech-approval`, `rc42-g2-library`, `rc42-g3a-risk-and-limits` (+ browser), `rc42-g3b-trace-and-delivery`, `rc42-g3c-evidence-fingerprint`, `rc42-g4-trace-kernel`, `rc42-g5-runtime`, `rc42-g6-import`, `rc42-g7-data-contracts` (+ browser), `rc42-lazy-dossier-browser`.
 - **Syntax:** 904 modules pass. **Lint:** no new problem; the baseline was lowered by one row.

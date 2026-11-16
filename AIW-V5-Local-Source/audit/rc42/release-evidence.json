@@ -1,0 +1,201 @@
+{
+ "schema": "aiw.release-evidence.v1",
+ "release": "AIW v0.10.0-rc.10.73.42+integrity.20261116",
+ "controllingBaseline": "AIW v0.10.0-rc.10.73.6",
+ "sourceBaseline": {
+  "release": "AIW v0.10.0-rc.10.73.41+studio.20261022",
+  "commit": "25718b6"
+ },
+ "date": "2026-11-16",
+ "productionAccepted": false,
+ "scope": "Integrity fixes D1-D20 from the handbook gap review. No feature added. No knowledge imported, released or promoted.",
+ "integrationCommitBeforeEvidence": "988703ce2578ae8dd33b19365cc08e25b35e32cc",
+ "fixGroups": [
+  {
+   "group": "G1",
+   "defects": [
+    "D1",
+    "D2",
+    "D3"
+   ],
+   "suite": "rc42-g1-tech-approval-validate.mjs"
+  },
+  {
+   "group": "G2",
+   "defects": [
+    "D4",
+    "D11"
+   ],
+   "suite": "rc42-g2-library-validate.mjs"
+  },
+  {
+   "group": "G3a",
+   "defects": [
+    "D5",
+    "D13"
+   ],
+   "suite": "rc42-g3a-risk-and-limits-validate.mjs, rc42-g3a-risk-and-limits-browser-validate.mjs"
+  },
+  {
+   "group": "G3b",
+   "defects": [
+    "D6",
+    "D15"
+   ],
+   "suite": "rc42-g3b-trace-and-delivery-validate.mjs"
+  },
+  {
+   "group": "G3c",
+   "defects": [
+    "D14"
+   ],
+   "suite": "rc42-g3c-evidence-fingerprint-validate.mjs"
+  },
+  {
+   "group": "G4",
+   "defects": [
+    "D7"
+   ],
+   "suite": "rc42-g4-trace-kernel-validate.mjs"
+  },
+  {
+   "group": "G5",
+   "defects": [
+    "D8",
+    "D10",
+    "D17",
+    "D18"
+   ],
+   "suite": "rc42-g5-runtime-validate.mjs"
+  },
+  {
+   "group": "G6",
+   "defects": [
+    "D12",
+    "D16"
+   ],
+   "suite": "rc42-g6-import-validate.mjs"
+  },
+  {
+   "group": "G7",
+   "defects": [
+    "D9",
+    "D19",
+    "D20"
+   ],
+   "suite": "rc42-g7-data-contracts-validate.mjs, rc42-g7-data-contracts-browser-validate.mjs"
+  },
+  {
+   "group": "integration",
+   "defects": [],
+   "suite": "rc42-lazy-dossier-browser-validate.mjs"
+  }
+ ],
+ "method": "Each group: a test that fails on the baseline, the fix, an adversarial review by a separate agent, one fix-up round. Merged and joined by the lead.",
+ "gates": {
+  "syntax": {
+   "result": "passed",
+   "modules": 904
+  },
+  "lint": {
+   "result": "passed",
+   "newProblems": 0,
+   "baseline": 162
+  },
+  "build": {
+   "result": "passed",
+   "violations": [],
+   "chaptersRouteBytes": 3228863,
+   "chaptersRouteCapBytes": 3233792,
+   "capRaised": false,
+   "scriptFiles": 148,
+   "scriptFileGate": 148,
+   "scriptFileGateBefore": 150,
+   "filesUnder10KB": 53
+  },
+  "rc42Suites": {
+   "count": 12,
+   "result": "all passed"
+  },
+  "regression": {
+   "run": 3,
+   "total": 334,
+   "passed": 297,
+   "red": 37,
+   "redThatWereGreenOnBaseline": [],
+   "baselineRedNowPassing": [
+    "test:model-canvas-refinement-browser",
+    "test:platform-browser",
+    "test:requirements",
+    "test:sdd-size",
+    "test:tradeoff-browser"
+   ],
+   "redFailingAsOnBaseline": 35,
+   "redFailingAtADifferentPoint": [
+    "test:scale",
+    "test:screens-at-size"
+   ],
+   "baseline": {
+    "file": "audit/rc41/live/regression-2026-10-30.json",
+    "total": 322,
+    "passed": 280
+   }
+  },
+  "regressionRuns": [
+   {
+    "run": 1,
+    "passed": 292,
+    "total": 334,
+    "redGreenOnBaseline": 5,
+    "closedBy": "53a37d3"
+   },
+   {
+    "run": 2,
+    "passed": 292,
+    "total": 334,
+    "redGreenOnBaseline": 3,
+    "closedBy": "18eecde (two expectations); one passes alone"
+   },
+   {
+    "run": 3,
+    "passed": 297,
+    "total": 334,
+    "redGreenOnBaseline": 0,
+    "file": "audit/rc42/regression-2026-11-16.json"
+   }
+  ]
+ },
+ "testIntegrity": {
+  "rule": "An existing assertion is replaced only by one at least as strict, and only where a fix changes the expected behaviour.",
+  "preExistingSuitesChanged": 39,
+  "changesAudited": 84,
+  "firstAuditor": {
+   "stricterOrEqual": 41,
+   "fixtureOnly": 37,
+   "loosened": 4,
+   "unclear": 2
+  },
+  "flaggedItemsClosed": 6,
+  "closedBy": "18eecde",
+  "secondAdversarialAgentPass": "not run (usage limit); the lead re-read the reasoning for the stricter-or-equal verdicts and skimmed the fixture-only ones",
+  "assertionsReplacedDuringIntegration": [
+   "67c6a06",
+   "53a37d3",
+   "18eecde"
+  ]
+ },
+ "openItems": 15,
+ "openItemsFile": "INTEGRITY-FIXES-RELEASE.md section 7",
+ "externalAuthorities": {
+  "licenceCounsel": "not engaged",
+  "fourEyesKnowledgeApprover": "not assigned",
+  "independentArchitectureReviewer": "not started",
+  "productionAcceptanceAuthority": "not established"
+ },
+ "runtime": {
+  "node": "v22.22.0",
+  "browser": "chromium headless shell build 1243 (Playwright expects 1228)",
+  "cpus": 4
+ },
+ "runtimeNote": "The owner's reference runtime is Node 24; this evidence was produced on Node 22.22.0 with a Chromium build Playwright does not expect. Suites red for that reason are in the regression file with their baseline status."
+}
