@@ -151,15 +151,18 @@ export function extensionIssues(e) {
   if (fn(e.needs) !== fn(e.load) || e.needs !== undefined && !fn(e.needs) || e.load !== undefined && !fn(e.load)) say('needs(p) and load() are stated together.');
   return out;
 }
-// What two registered packages both state, each as a sentence naming both: the one earlier by id keeps the row. Also a
-// hop of one package that comes from a layer the walk reads later (another package's, later by id).
+// What two registered packages both state, each as a sentence naming both: the one earlier by id keeps the row (a row
+// that is built in is neither's, and is named by extensionIssues). Also a hop of one package that comes from a layer the
+// walk reads later (another package's, later by id).
 export function extensionConflicts() {
   const out = [], seen = new Map();
+  // Built in: in the table, and not as any registered package states it.
+  const builtIn = (table, key, part) => key in table && !EXTENSIONS.some(e => plain(e[part]) && e[part][key] === table[key]);
   const claim = (kind, key, id) => { const k = kind + ' “' + key + '”', first = seen.get(k); if (first && first !== id) out.push(k + ' is stated by ' + first + ' and by ' + id + ': ' + first + ' keeps it.'); else seen.set(k, id); };
   for (const e of EXTENSIONS) {
-    for (const k of Object.keys(plain(e.objectTypes) ? e.objectTypes : {})) claim('object type', k, e.id);
-    for (const [k, t] of Object.entries(plain(e.layers) ? e.layers : {})) { claim('layer', k, e.id); claim('the layer of the type', t, e.id); }
-    for (const k of Object.keys(plain(e.lifecycle) ? e.lifecycle : {})) claim('collection', k, e.id);
+    for (const k of Object.keys(plain(e.objectTypes) ? e.objectTypes : {})) if (!builtIn(OBJECT_TYPES, k, 'objectTypes')) claim('object type', k, e.id);
+    for (const [k, t] of Object.entries(plain(e.layers) ? e.layers : {})) if (!BUILT_IN_LAYERS.includes(k)) { claim('layer', k, e.id); claim('the layer of the type', t, e.id); }
+    for (const k of Object.keys(plain(e.lifecycle) ? e.lifecycle : {})) if (!builtIn(Object.fromEntries(COLLECTIONS), k, 'lifecycle')) claim('collection', k, e.id);
     for (const k of Object.keys(plain(e.commands) ? e.commands : {})) claim('command', k, e.id);
     for (const k of Object.keys(plain(e.provenance?.nouns) ? e.provenance.nouns : {})) claim('the noun of', k, e.id);
     for (const h of list(e.hops)) for (const l of list(h?.from)) if (TRACE_LAYERS.includes(l) && TRACE_LAYERS.includes(h.layer) && TRACE_LAYERS.indexOf(l) >= TRACE_LAYERS.indexOf(h.layer)) out.push('a hop of ' + e.id + ' onto “' + h.layer + '” comes from “' + l + '”, which the walk reads later.');
