@@ -509,7 +509,7 @@ add('S1.11: a form is released with its concept: only when the concept is review
   assert.throws(() => release(verified, 'releaser', ids(verified)), /SYN-P001 is not reviewed/);
   const reviewed = await library({forms, verify: true, review: true});
   assert.throws(() => release(reviewed, 'releaser', ids(reviewed).slice(0, 2)), /SYN-P001 is released whole: add KC-\d+ \(applicability\)/);
-  assert.throws(() => release(reviewed, 'importer', ids(reviewed)), /importer wrote KC-\d+; a form is released by someone who did not write it/);
+  assert.throws(() => release(reviewed, 'importer', ids(reviewed)), /A second signed-in person.*importer wrote KC-\d+/);
   assert.throws(() => release(reviewed, 'releaser', ids(reviewed), F.importedBy('releaser')), /An import records what a file says and reviews nothing/);
   assert.throws(() => release(reviewed, 'releaser', ids(reviewed), F.solDraft('releaser')), /A draft by Sol reviews nothing/);
   assert.throws(() => K.applyKnowledgeCommand(reviewed.document, {type: 'knowledge.release', payload: {...F.REVIEW, title: 'Old entry', claimIds: ids(reviewed)}}, AT, 'releaser'), /form/i, 'the entry without the form capability releases no form');
@@ -567,7 +567,7 @@ add('S1.13: a source may carry when it was checked, when it is due, its version 
 
 // ------------------------------------------------------------------------------------------------ 14
 add('S1.14 (isolation): the route\'s knowledge module imports none of the new modules, no client module imports them, the command wrapper is reached by the server only, and the built client holds none of them', async () => {
-  const NEW = ['concept-form.js', 'knowledge-concepts.js', 'knowledge-concept-commands.js'], imports = file => [...readFileSync(file, 'utf8').matchAll(/(?:from\s*|import\s*\(\s*)['"]([^'"]+)['"]/g)].map(m => m[1].split('/').at(-1));
+  const NEW = ['concept-form.js', 'knowledge-concepts.js', 'knowledge-concept-commands.js'], IMPORTS = /(?:^|[\s;{}()])(?:import|export)\s*(?:[\w*${},\s]*?from\s*)?['"](\.{1,2}\/[^'"]+\.m?js)['"]|\bimport\(\s*['"](\.{1,2}\/[^'"]+\.m?js)['"]\s*\)/g, imports = file => [...readFileSync(file, 'utf8').matchAll(IMPORTS)].map(m => (m[1] || m[2]).split('/').at(-1));
   for (const name of NEW) assert(!imports('public/knowledge-governance.js').includes(name), 'knowledge-governance.js imports ' + name);
   const importers = Object.fromEntries(NEW.map(n => [n, []]));
   for (const file of readdirSync('public').filter(f => f.endsWith('.js'))) for (const name of imports('public/' + file)) if (importers[name] && !NEW.includes(file)) importers[name].push(file);

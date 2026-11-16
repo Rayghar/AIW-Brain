@@ -93,6 +93,8 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  // by a signed-in person before it is used: a released claim is immutable, so that means a successor release.
  const verifier=c=>{if(c?.review&&typeof c.review==='object'){if(c.review.actor!=null)c.review.importedActor=c.review.actor;c.review.actor=null;}};
  for(const c of p.knowledge?.claims||[])verifier(c);
+ // A concept's review (rc44, wp1) is the same assertion: it stands only when a second person here records it.
+ for(const c of Array.isArray(p.knowledge?.concepts)?p.knowledge.concepts:[])verifier(c);
  for(const r of p.knowledge?.releases||[])for(const c of r.claims||[])verifier(c);
  // Round 12 (GR-DOM-09): a pinned organisation knowledge release was verified on the workbench it came from; here its
  // claims stay ineligible until this workbench's organisation is found to sign exactly it (refreshOrganizationAssurance).
