@@ -236,7 +236,7 @@ const fs = inheritedFindings(project).filter(f => f.id.startsWith('ANTI:'));
 assert.deepEqual(fs.map(f => f.id), ['ANTI:spof', 'ANTI:sync-chain', 'ANTI:idempotency', 'ANTI:queue', 'ANTI:observability']);
 assert.ok(fs.every(f => f.level === 'warning' && f.chapter && f.detail.includes('Ask:')));
 assert.equal(reviewBlockers(project).length, 211, 'review items, not blockers');
-const treated = applyFinalReviewCommand(project, {type: 'review.disposition', payload: {findingId: 'ANTI:queue', stamp: fs[3].stamp, treatment: 'Accepted design limitation', rationale: 'Bounded by the core banking limit, recorded in Chapter 8.', reviewer: 'Neme', reference: 'CHG review', reviewed: true}}).document;
+const treated = applyFinalReviewCommand(project, {type: 'review.disposition', payload: {findingId: 'ANTI:queue', stamp: fs[3].stamp, treatment: 'Accepted design limitation', rationale: 'Bounded by the core banking limit, recorded in Chapter 8.', reviewer: 'Neme', reference: 'CHG review', reviewBy: '2099-12-31', reviewed: true}}).document;
 assert.equal(findingTreatment(treated, inheritedFindings(treated).find(f => f.id === 'ANTI:queue')), 'Accepted design limitation');
 assert.equal(deskModel(treated).findings.find(f => f.anti.id === 'queue').treatment, 'Accepted design limitation');
 assert.throws(() => applyFinalReviewCommand(project, {type: 'review.objective', payload: {kind: 'users', value: 0, reviewer: 'Neme', reviewed: true}}), /positive number/);

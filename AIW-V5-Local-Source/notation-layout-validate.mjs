@@ -699,7 +699,10 @@ const synth = (() => {
   pass(`the Layers view, chapters ${rows[0].ch}–${rows.at(-1).ch}: every bundle valid, each under 900 ms and within three times its control (slowest ${Math.max(...rows.map(r => r.ms))} ms), ${fallbacks.length} fall back and say why (${fallbacks.map(r => 'chapter ' + r.ch + ': ' + r.fallback).join('; ') || 'none'})`);
 }
 
-// Round 10 · one fact recorded twice (N3): Chapter 4's connected model records 12 facts twice (fulfils 5, flow 4, owns 3).
+// Round 10 · one fact recorded twice (N3): Chapter 4's connected model records 9 facts twice (fulfils 5, flow 4). Until
+// rc.10.73.42 it recorded 12: three ownerships were recorded twice, by Chapter 8's authority and by Chapter 5's data
+// list. D9 made Chapter 8's authority the one ownership and the Chapter 5 list a use, so no ownership is recorded twice;
+// a component's use of data it owns is drawn by its ownership line alone, and a use of another owner's data keeps its line.
 // Each is drawn once, both records on one route in one bundle, each record keeping its own edge; the flows, which never
 // fan, are bundles of both ends.
 {
@@ -707,7 +710,11 @@ const synth = (() => {
   const key = e => [e.from, e.to, e.kind, e.label || '', e.ends || '', e.weak ? 1 : 0, e.reply ? 1 : 0, e.change || '', e.qualifier || ''].join('|'), groups = new Map();
   for (const e of L.edges) { if (!groups.has(key(e))) groups.set(key(e), []); groups.get(key(e)).push(e); }
   const pairs = [...groups.values()].filter(g => g.length > 1), kinds = {}; for (const g of pairs) kinds[g[0].kind] = (kinds[g[0].kind] || 0) + 1;
-  assert.deepEqual(kinds, {fulfils: 5, flow: 4, owns: 3}, 'Chapter 4 records 12 facts twice');
+  assert.deepEqual(kinds, {fulfils: 5, flow: 4}, 'Chapter 4 records 9 facts twice');
+  const ends = e => e.from + '>' + e.to, owned = L.edges.filter(e => e.kind === 'owns').map(ends);
+  assert.deepEqual(owned.slice().sort(), ['api-pod>instruction', 'risk-engine>risk-record', 'worker>settlement'], 'each ownership is drawn once, from the Chapter 8 authority');
+  assert.deepEqual(L.edges.filter(e => e.kind !== 'owns' && owned.includes(ends(e))).map(e => e.kind + ' ' + ends(e)), [], 'no second line runs beside an ownership line');
+  assert.ok(L.edges.some(e => e.kind === 'uses' && ends(e) === 'worker>network'), 'a use that is not an ownership keeps its line');
   for (const g of pairs) {
     assert.ok(g.every(e => JSON.stringify(e.pts) === JSON.stringify(g[0].pts) && e.bundle && e.bundle === g[0].bundle) && new Set(g.map(e => e.id)).size === g.length, g[0].kind + ' ' + g[0].from + '→' + g[0].to + ': drawn once, in one bundle, each record its own edge');
     if (g[0].kind === 'flow') assert.equal(L.bundles.find(b => b.id === g[0].bundle).end, 'both', 'a flow recorded twice is a bundle of both ends');

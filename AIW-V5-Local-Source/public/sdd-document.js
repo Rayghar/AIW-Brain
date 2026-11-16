@@ -11,7 +11,7 @@
 // and the suites load it; the browser builds Word and PDF from the Markdown the server serves.
 // Round 6 (Contract F), kept: figures:'mermaid' writes each figure as a fenced Mermaid block that renders where Markdown is
 // rendered; the HTML, Word and PDF builders never take that variant.
-import {CHAPTERS, reviewRequirements, reviewTrace, reviewSource, baselineChanges, registerSDDBuilder, withFinalReview, openCounts, latestDesignReview} from './review-domain.js';
+import {CHAPTERS, reviewRequirements, reviewTrace, reviewSource, designSource, designOf, baselineChanges, registerSDDBuilder, withFinalReview, openCounts, latestDesignReview} from './review-domain.js';
 import {sddFigures, traceabilityFigure, figureSet, diagramFigures, moduleMapFigures, MAP_LINES, MATRIX_COLUMNS, FIGURE_BUDGET} from './sdd-figures.js';
 import {hasModules} from './module-model.js';
 import {SCENES, notationDiagram} from './notation-model.js';
@@ -65,7 +65,8 @@ function recordIndex(p) {
 const NOISE = new Set(['history', 'revision', 'sourceSnapshot', 'driverSnapshot', 'provenance', 'updatedAt', 'stamp', 'sourceStamp', 'review', 'reviews', 'at', 'solSuggestions']);
 export function changesSinceBaseline(p) {
   const b = p.finalReview?.baselines?.at(-1); if (!b?.source) return null;
-  let diff; try { diff = baselineDiff(b.source, reviewSource(p)); } catch { return null; }
+  // The design as frozen against the design now (rc42, D14): evidence recorded since is named on the evidence line only.
+  let diff; try { diff = baselineDiff(designOf(b.source)[0], designSource(p)); } catch { return null; }
   const now = recordIndex(p), then = recordIndex(b.source), rows = new Map();
   for (const r of diff.records) {
     const fields = r.kind === 'changed' ? r.fields.map(f => f.key).filter(k => !NOISE.has(k)) : []; if (r.kind === 'changed' && !fields.length) continue;

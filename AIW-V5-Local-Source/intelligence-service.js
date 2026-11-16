@@ -79,7 +79,8 @@ export async function prepareContextualPacket(env,owner,p,normal,{actorId,projec
  const packet=await prepareBrainPacket(env,owner,p,normal,{forGeneration,expectedStamp:prior?basePacketStamp:packetStamp});
  return prior?appendAdvisoryHistory(packet,prior,{projectId,actorId,request:normal,current,policy:aiPolicy(p)}):packet;
 }
-export async function adoptSavedIntelligence(env,owner,projectId,p,payload,at){
+// actor: the signed-in person adopting; an action made from a review finding names them as its author (rc42, D15).
+export async function adoptSavedIntelligence(env,owner,projectId,p,payload,at,actor=null){
  const row=await rowFor(env,owner,projectId,payload.runId);if(!row)throw Error('Choose a saved response in this project.');
  // A model review's findings are advice for the chapter's picture (round 5, Contract R); they are not a passage,
  // a design option or a desk assessment. The one adoption a review takes is kind review-finding: a person records one
@@ -87,7 +88,7 @@ export async function adoptSavedIntelligence(env,owner,projectId,p,payload,at){
  if(row.mode==='review'&&payload.kind!=='review-finding')throw Error('Sol’s review findings are advice on the model; adopt one finding as a Chapter 11 action, or record what you decide through the chapter itself.');
  if(payload.kind==='review-finding'&&row.mode!=='review')throw Error('Choose a saved review of Sol’s.');
  if(payload.kind==='assessment'){if(row.mode!=='reason')throw Error('Choose a saved assessment of Sol’s.');return adoptReasoning(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,p)),payload,await readRun(env,owner,projectId,row),at);}
- return adoptIntelligence(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,p)),payload,await readRun(env,owner,projectId,row),at);
+ return adoptIntelligence(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,p)),payload,await readRun(env,owner,projectId,row),at,actor);
 }
 // One budget for every one of Sol's modes (audit B-11): the owner's requests in the last hour across projects,
 // this project's requests in the last hour, and this project's tokens in the last day counted over both

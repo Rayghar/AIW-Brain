@@ -41,7 +41,7 @@ import {partyIntegrations, PARTY_INTEGRATION, invariants as invariantRecords, ba
 import {assessContractExecution, contractExecutionContext, executionMethodSource, executionJourney} from './architecture-applicability.js';
 import {scenarioProjection} from './guidance-record.js';
 import {enterpriseReferences} from './enterprise-references.js';
-import {architectureObligationsFor, OBLIGATION_STATES} from './architecture-obligations.js';
+import {architectureObligationsFor, OBLIGATION_STATES, independentVerification} from './architecture-obligations.js';
 import {verificationContext,verificationForAction,VERIFICATION_OPERATORS} from './architecture-verification.js';
 import {designBasisCurrent} from './design-task-state.js';
 import {planOperation, seededRecords} from './runtime-domain.js';
@@ -51,9 +51,9 @@ import {technologyCatalogue} from './technology-catalogue.js';
 import {TECHNOLOGY_CATEGORIES} from './technology-domain.js';
 import {lensReport} from './domain-lens.js';
 import {plateausOf, roadmapOf, PLATEAU_WORDS, plateauGroups, groupPlacements, migrationsOf, migrationNeeds, MIGRATION_FIELDS} from './roadmap-domain.js';
-import {mappingRole, LAYER_KINDS} from './logical-domain.js';
+import {mappingRole} from './logical-domain.js';
 import {retiredRecords, isProposed, solDraftOf} from './record-lifecycle.js';
-import {stepOfNode} from './model-scope.js';
+import {recordTrace} from './trace-record.js';
 import {acceptedNarratives} from './brain-authoring.js';
 import {noteCurrent} from './aiw-brain.js';
 // rc39 (PLAN §4.4): the design questions a component faces, from the one projection, for its passage.
@@ -1014,7 +1014,10 @@ function componentDetail(B, S, {level = 3, shared = []} = {}) {
     const decided = DQ.questions.filter(q => q.state === 'decided'), open = DQ.questions.filter(q => q.state !== 'decided');
     const codes = text => String(text).replace(/\bQD-\d{3}\b/g, id => codeOf(p, id));
     if (decided.length) out += 'Design basis: ' + decided.map(q => md(codes(q.story))).join(' ') + '\n\n';
-    if (open.length) out += 'Open design questions: ' + named(open.map(q => md(q.title) + ' (' + q.because.map(id => codeOf(p, id)).join(', ') + (q.state === 'draft' ? '; a draft answer is recorded' : '') + ')')) + '.\n\n';
+    // rc42 (D3): a question decided through a Chapter 7 selection names only the drivers judged for it; its other drivers
+    // are printed here, as open items.
+    const pending = decided.filter(q => list(q.pending).length);
+    if (open.length || pending.length) out += 'Open design questions: ' + named([...open.map(q => md(q.title) + ' (' + q.because.map(id => codeOf(p, id)).join(', ') + (q.state === 'draft' ? '; a draft answer is recorded' : '') + ')'), ...pending.map(q => md(q.title) + ' (' + q.pending.map(id => codeOf(p, id)).join(', ') + '; the recorded selection still needs evidence against ' + (q.pending.length === 1 ? 'it' : 'them') + ')')]) + '.\n\n';
   }
   // Requirements (GR-SDD-13, GR-CMP-08): those of the responsibilities it realises, by group with their delivery status.
   const R = I.reqsOfComp.get(S.id) || {realises: [], supports: []};
@@ -1220,35 +1223,39 @@ function integrations(B, {subset = null, level = 3} = {}) {
 
 // ---------------------------------------------------------------- round 12, D4's and E's records (GR-SDD-26, GR-SDD-28)
 // The journeys the functionalities run in (Chapter 1's journey steps, by journey), each with its kind of process
-// (requirements-domain.js processKind) and the responsibilities that serve or realise its steps (Chapter 4 connections of
-// kind serves or realises, logical-domain.js LAYER_KINDS, read with the responsibility as the source whichever end the
-// connection is drawn from; a structural connection drawn from a step to a responsibility reads as serving it, as the
-// architecture model types it: architecture-model.js connectionType, Serving with the responsibility as the source).
+// (requirements-domain.js processKind) and the responsibilities that serve or realise its steps, read from each step's
+// trace (rc.10.73.42, D7: trace-record.js recordTrace, the chain the trail and the narrative read): only those a Chapter 4
+// connection draws serving or realising the step (the kernel's step hops: kind serves or realises, logical-domain.js
+// LAYER_KINDS, whichever end it is drawn from; a structural connection drawn from the step reads as serving it, as
+// architecture-model.js connectionType types it), so the line agrees with Chapter 4's process gaps. The responsibilities
+// the requirements of its steps name are listed apart, as assigned to them, never as serving a step.
+const REALISING = new Set(['realises', 'realizedBy']);
 function journeys(B) {
   const {p} = B, steps = list(p.artefacts).filter(a => a.type === 'journey' && a.scopeMode !== 'out');
   if (!steps.length) return '';
   const byJourney = new Map();
   for (const s of steps) { const k = str(s.journeyId) || 'The journey'; if (!byJourney.has(k)) byJourney.set(k, []); byJourney.get(k).push(s); }
-  // A connection's step end, by id (GR-REQ-19): the step itself, or the process node that stands for it on the Bank
-  // Payment reference (model-scope.js stepOfNode); never by title, so a step keeps what serves it when either is renamed.
-  const resp = new Map(list(p.logical?.responsibilities).map(r => [r.id, r])), stepAt = new Map(steps.map(s => [s.id, s])), by = new Map();
-  const stepOf = id => stepAt.get(id) || stepAt.get(stepOfNode(p, id)) || null;
-  for (const e of list(p.logical?.connections)) {
-    const structural = !e.kind || e.kind === 'trace', kind = LAYER_KINDS.includes(e.kind) ? e.kind : structural && resp.has(e.to) && stepOf(e.from) ? 'serves' : null;
-    if (!kind) continue;
-    const [r, x] = resp.has(e.from) && stepOf(e.to) ? [e.from, e.to] : resp.has(e.to) && stepOf(e.from) ? [e.to, e.from] : [];
-    if (!r) continue;
-    const s = stepOf(x).id;
-    let m = by.get(s); if (!m) by.set(s, m = {serves: new Set(), realises: new Set()}); m[kind].add(r);
+  // A connection's step end is read by id (GR-REQ-19): the step itself, or the process node that stands for it on the
+  // Bank Payment reference (model-scope.js stepOfNode, which the kernel reads); never by title.
+  const resp = new Map(list(p.logical?.responsibilities).map(r => [r.id, r])), by = new Map();
+  for (const s of steps) {
+    const T = recordTrace(p, s.id); if (!T) continue;
+    const asked = new Set(T.layers.requirement), m = {serves: new Set(), realises: new Set(), assigned: new Set()};
+    for (const r of T.layers.responsibility) for (const h of T.hops.get(r) || []) {
+      if (h.source === 'logical.connections' && h.from === s.id) m[REALISING.has(h.type) ? 'realises' : 'serves'].add(r);
+      else if (h.type === 'fulfils' && asked.has(h.from)) m.assigned.add(r);
+    }
+    by.set(s.id, m);
   }
   const KIND = Object.fromEntries(PROCESS_KINDS.map(([k, label]) => [k, (/^[aeiou]/i.test(label) ? 'an ' : 'a ') + label.toLowerCase()]));
   const lines = [...byJourney].map(([name, xs]) => {
     const kinds = new Map(); for (const s of xs) { const k = processKind(s); kinds.set(k, (kinds.get(k) || 0) + 1); }
     const kindText = kinds.size === 1 ? KIND[[...kinds.keys()][0]] : [...kinds].map(([k, n]) => plural(n, 'step') + ' of ' + KIND[k]).join(', ');
-    const serves = new Set(), realises = new Set();
-    for (const s of xs) { const m = by.get(s.id); if (m) { m.serves.forEach(x => serves.add(x)); m.realises.forEach(x => realises.add(x)); } }
+    const serves = new Set(), realises = new Set(), assigned = new Set();
+    for (const s of xs) { const m = by.get(s.id); if (m) { m.serves.forEach(x => serves.add(x)); m.realises.forEach(x => realises.add(x)); m.assigned.forEach(x => assigned.add(x)); } }
+    for (const x of [...serves, ...realises]) assigned.delete(x);
     const refs = ids => refList([...ids].map(id => refOf(resp.get(id))), 6);
-    return '**' + md(name) + '**: ' + plural(xs.length, 'step') + ' (' + refList(xs.map(s => s.id), 6) + '), ' + kindText + (realises.size ? '; realised by ' + refs(realises) : '') + (serves.size ? '; served by ' + refs(serves) : '') + (serves.size || realises.size ? '' : '; no responsibility serves or realises its steps yet');
+    return '**' + md(name) + '**: ' + plural(xs.length, 'step') + ' (' + refList(xs.map(s => s.id), 6) + '), ' + kindText + (realises.size ? '; realised by ' + refs(realises) : '') + (serves.size ? '; served by ' + refs(serves) : '') + (serves.size || realises.size ? '' : '; no responsibility serves or realises its steps yet') + (assigned.size ? '; its steps\' requirements are assigned to ' + refs(assigned) : '');
   });
   return 'The journeys they run in, each with its kind of process and the responsibilities that realise or serve its steps:\n\n' + bullets(lines, {rest: k => 'And ' + plural(k, 'more journey') + ' (Chapter 1 · Journey).'});
 }
@@ -1305,7 +1312,7 @@ function techLine(B, S, t) {
   const F1 = B.format < 2;
   // A product where one is named; format 1 says where none is, format 2 prints the capability alone (productOpen asks it
   // of the section once).
-  let s = refOf(cap) + ' ' + md(clip(cap.title, 50)) + (cat && !String(cap.title || '').toLowerCase().includes(cat.toLowerCase()) ? ' (' + cat.toLowerCase() + ')' : '') + (t.product ? ' → ' + md(t.product) + ' (' + (t.selected && t.realisation ? selectionLabel(p, t.realisation) : 'Candidate option') + ')' : productOpen(B, cap) + (F1 ? ' → no product named yet' : ''));
+  let s = refOf(cap) + ' ' + md(clip(cap.title, 50)) + (cat && !String(cap.title || '').toLowerCase().includes(cat.toLowerCase()) ? ' (' + cat.toLowerCase() + ')' : '') + (t.product ? ' → ' + md(t.product) + ' (' + (t.selected && t.realisation ? md(selectionLabel(p, t.realisation)) : 'Candidate option') + ')' : productOpen(B, cap) + (F1 ? ' → no product named yet' : ''));
   const facts = [], need = S.needs.find(n => n.capability?.id === cap.id)?.need;
   // Format 2 says the consequence when it is stated; the section's list names the needs that leave it open.
   if (need) { const x = O.field(need, 6, 'technology need', 'criticality', 'consequence if unavailable'); if (x.stated || F1) facts.push(x.stated ? 'if unavailable: ' + md(x.text) : x.text); }
@@ -1737,7 +1744,8 @@ function obligations(B) {
   B.totals = {...B.totals, 'delivery action': acts.length};
   for (const a of acts) {
     const owner = str(a.owner) && !fieldOpen(a, 'owner') ? md(a.owner) : '', acceptance = str(a.acceptance) ? md(a.acceptance) : '', plateau = a.plateauId ? ' Plateau: ' + a.plateauId + (plateausOf(p).find(x => x.id === a.plateauId) ? ' · ' + md(plateausOf(p).find(x => x.id === a.plateauId).title) : '') + '.' : '';
-    const status = str(a.status || 'Planned').toLowerCase() + (a.status === 'Verified' ? '' : '; verification remains separate'), objects = ' Objects: ' + refList(list(a.objectIds).map(id => recordRef(p, id))) + '.';
+    // A Verified mark on an obligation's action that no second signed-in person made does not count (rc42, D15): it says so.
+    const status = str(a.status || 'Planned').toLowerCase() + (a.status !== 'Verified' ? '; verification remains separate' : a.architectureObligation && !independentVerification(a) ? '; the mark does not count until a second signed-in person, who did not write or own the action, verifies it' : ''), objects = ' Objects: ' + refList(list(a.objectIds).map(id => recordRef(p, id))) + '.';
     if (F1) { out += '**' + a.id + ' · ' + md(a.title) + '**: owner ' + (owner || 'open: owner not stated') + ', ' + (a.due ? 'due ' + a.due : 'open: due date not stated') + ', ' + status + '.' + objects + ' Acceptance: ' + (acceptance || 'open: acceptance not stated') + plateau + '\n\n'; continue; }
     for (const [v, words] of [[owner, 'owner'], [a.due, 'due date'], [acceptance, 'acceptance']]) if (!v) O.ask(a.id, 'delivery action', words);
     out += '**' + a.id + ' · ' + md(a.title) + '**: ' + [owner ? 'owner ' + owner : '', a.due ? 'due ' + a.due : '', status].filter(Boolean).join(', ') + '.' + objects + (acceptance ? ' Acceptance: ' + acceptance : '') + plateau + '\n\n';

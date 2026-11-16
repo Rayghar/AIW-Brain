@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import {seedProject} from './public/requirements-domain.js';
 import {withFinalReview} from './public/review-domain.js';
-import {applyTechnologyRealisationCommand,selectionState,selectionLabel,exportTechnologyRealisationMarkdown} from './public/technology-realisation-domain.js';
+import {applyTechnologyRealisationCommand,selectionState,selectionLabel,exportTechnologyRealisationMarkdown,realizationCriteria} from './public/technology-realisation-domain.js';
 import {modelDossierHTML} from './public/model-dossier.js';
 import {technologyProductUsage} from './public/technology-catalogue.js';
 import {stackSource,STATE_LABEL} from './public/stack-model.js';
@@ -13,14 +13,17 @@ import {sddDocument} from './public/sdd-document.js';
 let p=withFinalReview(seedProject());
 const id='tr-001',capId=p.technologyRealisation.mappings.find(m=>m.realizationId===id).capabilityId;
 const record=q=>q.technologyRealisation.records.find(r=>r.id===id);
-const run=(type,payload)=>{p=applyTechnologyRealisationCommand(p,{type:'techrealisation.'+type,payload},'2026-10-11T12:00:00Z').document;};
+const run=(type,payload,actor=null)=>{p=applyTechnologyRealisationCommand(p,{type:'techrealisation.'+type,payload},'2026-10-11T12:00:00Z',actor).document;};
 assert.equal(selectionState(p,record(p)),'none');
 run('plan',{id,rationale:'A synthetic design rationale for the application execution option.'});
 run('preference',{id,optionId:record(p).options[0].id});
 assert.equal(selectionState(p,record(p)),'preferred');
-run('record',{id,reviewed:true});
+// rc42 (D2, D1): the preferred option is judged against every inherited driver before a person records it, and a second
+// signed-in person attaches the approval evidence.
+for(const c of realizationCriteria(p,id).filter(c=>c.kind==='driver'))run('assessment',{id,optionId:record(p).options[0].id,criterionId:c.id,effect:'supports',reason:'Synthetic fixture judgement.',evidence:'Synthetic fixture.'});
+run('record',{id,reviewed:true},'fixture-architect');
 assert.equal(selectionState(p,record(p)),'recorded');
-run('approval',{id,reviewer:'Fixture reviewer',authority:'Fixture board',evidence:'Synthetic approval fixture',confirmed:true});
+run('approval',{id,reviewer:'Fixture reviewer',authority:'Fixture board',evidence:'Synthetic approval fixture',confirmed:true},'fixture-approver');
 assert.equal(selectionState(p,record(p)),'approved');
 const approved=structuredClone(p),approvedRecord=record(approved);
 const unrelated=structuredClone(approved);

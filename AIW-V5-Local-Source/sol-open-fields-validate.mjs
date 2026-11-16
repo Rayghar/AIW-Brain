@@ -48,7 +48,11 @@ for (const run of live) {
     assert.ok(/^Open question: /.test(saved) && isOpenText(saved), 'the record holds the journey drafter’s placeholder, as it did live: ' + saved);
     const k = packetOf(run.command, run.field, run.recordId);
     assert.equal(k.target.record, run.record, 'the live record'); assert.equal(k.target.help, run.packet.help, 'the live field meaning');
-    assert.deepEqual(kindsOf(k), run.packet.kinds, 'the same kinds of source as the live packet');
+    // rc.10.73.42 (D10): the journey now places every part, so a realization's own Chapter 10 plan joins its packet as a
+    // neighbour; every other source is of the same kinds, in the same numbers, as the live packet.
+    const placed = project.runtime.plans.filter(r => r.assetId === run.recordId).map(r => r.id), own = k.sources.filter(s => s.kind === 'neighbour' && placed.includes(s.objectId));
+    assert.deepEqual(own.map(s => s.objectId), placed, 'the part\'s own runtime plans, and only they, are the sources the live packet did not have');
+    assert.deepEqual(kindsOf({sources: k.sources.filter(s => !own.includes(s))}), run.packet.kinds, 'the same kinds of source as the live packet');
     assert.ok(k.coverage.characters <= 12000 && k.sources.length <= 10, 'within the budgets');
     assert.equal(k.target.current, '', 'an open field has no current value to improve');
     assert.deepEqual(k.target.open, {state: 'open-question', question: questionOf(saved)}, 'the open question rides on the target');

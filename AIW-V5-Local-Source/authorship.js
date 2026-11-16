@@ -36,11 +36,13 @@ export function commitAuthor({actor,account='person'},input={},command=null,{kin
 }
 // The commands that record a review, a confirmation, an acceptance or an approval: a draft by Sol and an agent account
 // send none of them. The chapter checks (*.review), handoffs and intake reviews are a person's steps too.
-const REVIEW_TYPES=new Set(['review','handoff','change.review','change.request','requirements.confirm','requirements.evidence','requirements.modules-accept','decision.record','decision.accept','decision.governance','decision.supersede','techrealisation.approval','techrealisation.record','knowledge.review','knowledge.release','knowledge.activate','knowledge.deactivate','knowledge.withdraw','knowledge.steward','brain.accept','guide.accept','assurance.semantic-review','review.intake','review.disposition','review.trace','review.record','review.baseline','review.governance','review.handoff','review.judgement','review.proposal','review.delivery','review.objective','review.objective-clear','workspace.merge','workspace.set-aside','workspace.governance']);
+const REVIEW_TYPES=new Set(['review','handoff','change.review','change.request','requirements.confirm','requirements.evidence','requirements.modules-accept','decision.record','decision.accept','decision.governance','decision.supersede','techrealisation.approval','techrealisation.record','knowledge.review','knowledge.release','knowledge.activate','knowledge.deactivate','knowledge.withdraw','knowledge.steward','brain.accept','guide.accept','assurance.semantic-review','interfaces.read-only','review.intake','review.disposition','review.trace','review.record','review.baseline','review.governance','review.handoff','review.judgement','review.proposal','review.delivery','review.objective','review.objective-clear','workspace.merge','workspace.set-aside','workspace.governance']);
 const REVIEW_SUFFIX=/\.(?:review|handoff|intake)$/;
 export const isReviewCommand=type=>REVIEW_TYPES.has(type)||REVIEW_SUFFIX.test(type);
-// A payload that claims a review: a confirmation, an acknowledgement, a resolved assumption, a checked source, or a
-// reviewed, accepted, approved, verified or confirmed state, at any depth (a reviewed change's inner commands too).
+// A payload that claims a review: a confirmation, an acknowledgement, a resolved assumption, a checked source, a
+// reviewed, accepted, approved, verified or confirmed state, or (rc42, D2) a judgement that a driver does not apply to a
+// Chapter 7 realization (effect not-applicable, which stands in for an assessment when a selection is recorded), at any
+// depth (a reviewed change's inner commands too).
 const CLAIMS=['reviewed','confirmed','targetConfirmed','assumptionsResolved','acknowledge','sourceChecked','rightsChecked','conditionsChecked'];
 const CLAIMED_STATE=/^(?:reviewed|accepted|approved|verified|confirmed)$/i;
 export function claimsReview(value,depth=0){
@@ -49,6 +51,7 @@ export function claimsReview(value,depth=0){
  for(const [k,v] of Object.entries(value)){
   if(CLAIMS.includes(k)&&v===true)return k;
   if((k==='status'||k==='decision')&&typeof v==='string'&&CLAIMED_STATE.test(v.trim()))return k+' '+v.trim().toLowerCase();
+  if(k==='effect'&&v==='not-applicable')return 'effect not-applicable';
   if(v&&typeof v==='object'){const c=claimsReview(v,depth+1);if(c)return c;}
  }
  return null;

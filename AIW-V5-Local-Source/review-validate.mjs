@@ -32,7 +32,7 @@ assert.equal(rv.reviewTrace(base,'REQ-missing'),null);
 
 const narrative={title:'Synthetic SDD fixture',owner:'Fixture architect',audience:'Prototype validation',summary:'Synthetic review, not a bank approval.',scope:'Reference project only.',approach:'Preserve findings and separate design from implementation.',confirmed:true};
 const action={title:'Synthetic delivery evidence',owner:'Fixture owner',due:'2026-10-01',acceptance:'Record the observed result and review its limits.',objectIds:['api'],findingId:sourceErrors[0].id};
-const treatment=(p,f,extra={})=>({findingId:f.id,stamp:rv.inheritedFindings(p).find(x=>x.id===f.id).stamp,treatment:'Accepted design limitation',reviewer:'Synthetic reviewer',reference:'Test fixture only',rationale:'Synthetic explicit limitation used to exercise review state transitions.',reviewed:true,...extra});
+const treatment=(p,f,extra={})=>({findingId:f.id,stamp:rv.inheritedFindings(p).find(x=>x.id===f.id).stamp,treatment:'Accepted design limitation',reviewer:'Synthetic reviewer',reference:'Test fixture only',rationale:'Synthetic explicit limitation used to exercise review state transitions.',reviewBy:'2099-12-31',reviewed:true,...extra});
 const record=(p,outcome='Revision required')=>({stamp:rv.reviewDesignStamp(p),outcome,reviewer:'Synthetic reviewer',reference:'Fixture outcome, no real approval',rationale:'Source gaps remain explicit.',reviewed:true});
 const capture=p=>({stamp:rv.reviewDesignStamp(p),title:'Synthetic frozen review',reviewed:true});
 let p=cmd(base,'intake');p=cmd(p,'narrative',narrative);
@@ -85,7 +85,8 @@ assert(rv.finalMilestones(p).every(m=>m.done),JSON.stringify(rv.finalMilestones(
 assert.equal(p.finalReview.handoff.openActionIds.length,2,'Review completion does not assert implementation completion');
 const frozenApproved=rv.exportSDD(p,approvedBaseline.id);
 assert.throws(()=>cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Test'}),/Verification/);
-p=cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Synthetic observed check only',reviewer:'Fixture verifier',reference:'Fixture evidence',reviewed:true});
+assert.throws(()=>cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Synthetic observed check only',reviewer:'Fixture verifier',reference:'Fixture evidence',reviewed:true}),/architect-a wrote RA-001/,'the action\'s author does not verify it (rc42, D15)');
+p=cmd(p,'delivery',{id:'RA-001',status:'Verified',progress:'Synthetic observed check only',reviewer:'Fixture verifier',reference:'Fixture evidence',reviewed:true},'verifier-c');assert.equal(p.finalReview.actions[0].verification.actor,'verifier-c');
 assert(rv.actionComplete(p,p.finalReview.actions[0]));assert(rv.baselineCurrent(p,rv.baseline(p,approvedBaseline.id)));assert(rv.finalHandoffCurrent(p));
 assert.equal(rv.exportSDD(p,approvedBaseline.id),frozenApproved,'Delivery events leave the captured SDD unchanged');
 const revisedAction=cmd(p,'action',{...p.finalReview.actions[0],acceptance:'Revised fixture criterion'});
@@ -124,11 +125,17 @@ assert.equal(JSON.stringify(base),original);assert.deepEqual(rv.reviewSource(p),
  // on REQ-003's): that trail alone is open again.
  const qd4=q.quality.drivers.find(d=>d.id==='QD-004');let u=rv.withFinalReview(applyQualityCommand(q,{type:'quality.driver',payload:{...qd4,title:qd4.title+' (restated)'}}).document);
  assert(rv.traceReviewFor(u,'REQ-001')&&rv.traceReviewFor(u,'REQ-003'),'an unrelated edit leaves the trace reviews current');
- const ledger=u.logical.responsibilities.find(r=>r.id==='ledger');u=rv.withFinalReview(applyLogicalCommand(u,{type:'logical.responsibility',payload:{...ledger,boundary:ledger.boundary+' It never posts twice.'}}).document);
+ // rc.10.73.42 (D7): the trails are the trace kernel's, on which QD-001's decisions bring ledger onto REQ-001's trail
+ // too, so a change to ledger reopens both; a record on REQ-003's trail alone (its journey step JRN-003) reopens it alone.
+ const ledger=u.logical.responsibilities.find(r=>r.id==='ledger'),both=rv.withFinalReview(applyLogicalCommand(u,{type:'logical.responsibility',payload:{...ledger,boundary:ledger.boundary+' It never posts twice.'}}).document);
+ assert(rv.reviewTrace(u,'REQ-001').logical.some(r=>r.id==='ledger')&&!rv.traceReviewFor(both,'REQ-001')&&!rv.traceReviewFor(both,'REQ-003'),'a change on two trails reopens both');
+ const step=u.artefacts.find(a=>a.id==='JRN-003');
+ assert(rv.reviewTrace(u,'REQ-003').context.some(a=>a.id==='JRN-003')&&!rv.reviewTrace(u,'REQ-001').context.some(a=>a.id==='JRN-003'),'JRN-003 is on REQ-003\'s trail alone');
+ u=rv.withFinalReview(applyCommand(u,{type:'artefact',payload:{...step,description:step.description+' It never posts twice.'}}).document);
  assert(rv.traceReviewFor(u,'REQ-001')&&!rv.traceReviewFor(u,'REQ-003'),'a change on one trail reopens that trail alone');
  // One treatment for a whole cause, with an exception; each finding keeps its own stamp.
  const cause='3|choice|error',members=rv.causeFindings(q,cause);assert.equal(members.length,3);
- const treat={scope:'cause',cause,treatment:'Accepted design limitation',rationale:'The choices are made in a later workshop.',reviewer:'Synthetic reviewer',reference:'Workshop plan, fixture',reviewed:true};
+ const treat={scope:'cause',cause,treatment:'Accepted design limitation',rationale:'The choices are made in a later workshop.',reviewer:'Synthetic reviewer',reference:'Workshop plan, fixture',reviewBy:'2099-12-31',reviewed:true};
  assert.throws(()=>cmd(q,'disposition',{...treat,stamp:'old'}),/changed/);
  assert.throws(()=>cmd(q,'disposition',{...treat,stamp:rv.causeFindingStamp(q,members),treatment:'Carry as action'}),/own action/);
  q=cmd(q,'disposition',{...treat,stamp:rv.causeFindingStamp(q,members),exceptions:[{findingId:'C3:choice:ADR-003',reason:'Its alternatives are not drafted yet.'}]},'reviewer-b');

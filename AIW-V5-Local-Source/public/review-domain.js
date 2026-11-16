@@ -3,7 +3,7 @@ import {workbenchMarkdown,guidanceFindings,guideMarkdown} from './guidance-recor
 import {CHAPTER_TITLES} from './chapter-names.js';
 // Round 6 (Contract T): a recorded relationship the standard forbids is a finding of the chapter that owns its source record.
 import {relationshipFindings} from './architecture-model.js';
-import {remember,isSettled,memoOff,memoPass,documentIndex} from './document-memo.js';
+import {remember,isSettled,memoOff,memoPass,findIn} from './document-memo.js';
 import {assuranceMarkdown,semanticFindings} from './assurance-domain.js';
 import {qualityMeasurementFindings} from './quality-analysis.js';
 import {knowledgeFindings,knowledgeMarkdown} from './knowledge-governance.js';
@@ -18,18 +18,21 @@ import {withChanges,changeSummary,changeCauses,fourEyesOn} from './changes-domai
 import {recordJudgement,reviewOf,eachRecord,provenanceBlocksMarkdown} from './provenance.js';
 // What a review of a record reads of it (round 12, GR-GOV-05): its own fingerprint, not the whole design's.
 import {recordStamp} from './source-fingerprint.js';
-import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,plans,placements,runtimeSources,exportRuntimeMarkdown} from './runtime-domain.js';
+import {withRuntime,runtimeFindings,runtimeMilestones,runtimeHandoffCurrent,exportRuntimeMarkdown} from './runtime-domain.js';
 import {findings,milestones,exportMarkdown} from './requirements-domain.js';
-import {linksRequirement,linkedRequirementIds} from './requirement-links.js';
+import {linkedRequirementIds} from './requirement-links.js';
+// One trace kernel (rc.10.73.42, D7): the trail is its walk over the canonical design graph.
+import {requirementTrace,requirementSpine,traceRecords,hopsFrom} from './trace-kernel.js';
 import {requirementGroups,groupMembers} from './requirement-groups.js';
 import {qualityFindings,qualityMilestones,exportQualityMarkdown} from './quality-domain.js';
 import {decisionFindings,decisionMilestones,decisionCurrent,exportDecisionsMarkdown} from './decisions-domain.js';
 import {logicalGraph,logicalFindings,logicalMilestones,exportLogicalMarkdown} from './logical-domain.js';
+import {assuranceChapter} from './journey-context.js';
 import {realisationFindings,realisationMilestones,exportRealisationMarkdown} from './realisation-domain.js';
 import {technologyFindings,technologyMilestones,exportTechnologyMarkdown} from './technology-domain.js';
 import {technologyRealisationFindings,technologyRealisationMilestones,exportTechnologyRealisationMarkdown} from './technology-realisation-domain.js';
-import {interfaceFindings,interfaceMilestones,interfaceSources,exportInterfacesMarkdown} from './interfaces-domain.js';
-import {securityFindings,securityMilestones,securitySources,exportSecurityMarkdown} from './security-domain.js';
+import {interfaceFindings,interfaceMilestones,exportInterfacesMarkdown} from './interfaces-domain.js';
+import {securityFindings,securityMilestones,exportSecurityMarkdown} from './security-domain.js';
 import {reasoningSource} from './design-reasoning.js';
 import {detectAntiPatterns} from './design-spec.js';
 import {capacityObjective,capacityPlan,capacityMarkdown,ASSUMPTIONS as CAPACITY_ASSUMPTIONS} from './desk-capacity.js';
@@ -37,16 +40,52 @@ import {arsSection} from './ars-document.js';
 import {componentSpecsSection} from './component-spec-document.js';
 import {reasoningRecordMarkdown} from './reasoning-record.js';
 import {withRoadmap,applyRoadmapCommand,actionPlateau,roadmapFindings,transitionSection} from './roadmap-domain.js';
-import {architectureObligationsFor,architectureObligationBasis,architectureObligationAction,architectureObligationActionState,architectureActionStamp,architectureEvidenceSources,deliveryActionDefinition} from './architecture-obligations.js';
+import {architectureObligationsFor,architectureObligationBasis,architectureObligationAction,architectureObligationActionState,architectureActionStamp,architectureEvidenceSources,deliveryActionDefinition,independentVerification,verifierRefusal,SECOND_VERIFIER} from './architecture-obligations.js';
 import {normaliseVerificationContract,verificationForAction,verificationEvidence} from './architecture-verification.js';
 import {digest} from './brain-integrity.js';
 
 const text=(v,max=4000)=>typeof v==='string'?v.trim().slice(0,max):'',unique=xs=>[...new Set(xs)],pad=n=>String(n).padStart(3,'0');
 // A compact change detector, not a security signature or a verification claim.
 export function reviewFingerprint(value){let a=2166136261,b=5381;const s=JSON.stringify(value);for(let i=0;i<s.length;i++){a=Math.imul(a^s.charCodeAt(i),16777619);b=Math.imul(b,33)^s.charCodeAt(i);}return (a>>>0).toString(16).padStart(8,'0')+(b>>>0).toString(16).padStart(8,'0');}
-export const reviewSource=p=>({...(acceptedNarratives(p).length?{coauthoredNarratives:acceptedNarratives(p)}:{}),...(designTasks(p).some(t=>t.status==='applied'||t.measurements?.length)?{guidedDesign:designTasks(p).filter(t=>t.status==='applied'||t.measurements?.length)} : {}),...((p.coauthoring?.sources?.length)?{evidence:evidenceDesignSource(p)}:{}),...Object.fromEntries(Object.entries(p).filter(([k])=>!['finalReview','workspace','changes','coauthoring','roadmap','readingsDefinition'].includes(k))),...(p.workspace?.template?{workspace:{template:p.workspace.template}}:{})});
+export const reviewSource=p=>({...(acceptedNarratives(p).length?{coauthoredNarratives:acceptedNarratives(p)}:{}),...(designTasks(p).some(t=>t.status==='applied'||t.measurements?.length)?{guidedDesign:designTasks(p).filter(t=>t.status==='applied'||t.measurements?.length)} : {}),...((p.coauthoring?.sources?.length)?{evidence:evidenceDesignSource(p)}:{}),...Object.fromEntries(Object.entries(p).filter(([k])=>!['finalReview','workspace','changes','coauthoring','roadmap','readingsDefinition','dataOwnership'].includes(k))),...(p.workspace?.template?{workspace:{template:p.workspace.template}}:{})});
+// The design fingerprint (rc42, D14) reads the design, not the evidence overlay recorded about it (designOf below), as
+// the domains classify that overlay: the assurance records journey-context.js holds as Chapter 11 nodes (test results,
+// observations, defects, promises, change requests, assessments, typed or imported; a capability, a Chapter 4 node, and a
+// value outcome, a Chapter 1 node, are design, as are repeat judgements and capability groups) and Sol's source challenges,
+// with the version and counter recording them moves; what Chapter 9 records as assurance (evidence, residual-risk
+// treatments, governance, walkthroughs) and Chapter 10 as evidence (evidence, walkthroughs), with the versions and the
+// counters recording them moves (the design records themselves carry every design change a counter counts), and the check
+// markers of those chapters that recording them clears (Chapter 9's review and handoff, Chapter 10's intake, review and
+// handoff); and each project source no design record cites: one only evidence cites (a reviewed observation's, a typed
+// check's, a connector sync's) or one nothing cites yet. A source the design cites (named by an applied or withdrawn
+// guided task, by the brief or model interpreted from it, by any design record) stays design, so its new revision is a
+// design change. Recording evidence therefore leaves the review, the baseline, its approval and the handoff current;
+// evidence is still judged against the design it judged (each record keeps its own stamp of it), so it goes stale when
+// that design changes. A freeze keeps the whole source.
+// Fingerprint 1 read every key reviewSource keeps. A document whose stamps were taken under it is upgraded on read
+// (readings-upgrade.js), which alone reads a document under fingerprint 1 (withDesignFingerprint), to know which of its
+// stamps were current; a frozen baseline keeps the stamp it was frozen with (designStampIs below).
+export const DESIGN_FINGERPRINT=2;
+let fingerprintVersion=DESIGN_FINGERPRINT;
+export function withDesignFingerprint(version,fn){const was=fingerprintVersion;fingerprintVersion=version;try{return fn();}finally{fingerprintVersion=was;}}
+// Each chapter's overlay: its records | its markers.
+const OVERLAY={security:'evidence risks governance simulations|assuranceVersion review handoff counters',runtime:'evidence simulations|evidenceVersion intake review handoff counters'};
+// A design source (a project's reviewSource, or a frozen baseline's source) as [its design, the evidence overlay beside
+// it]. The overlay lists only what it holds, so a design record that creates its container never reads as evidence; a
+// source is cited when the design, its guided tasks with it, names its id.
+export function designOf(s){const d={...s},o=[],put=v=>v?.length&&o.push(v),a=d.assurance,e=d.evidence;
+ for(const k in OVERLAY)if(d[k]){const v=d[k]={...d[k]};for(const x of OVERLAY[k].split('|')[0].split(' '))put(v[x]);for(const x of OVERLAY[k].split(/\W/))delete v[x];}
+ if(a){const {version,counter,semanticFindings,records=[],...c}=a;c.records=records.filter(x=>assuranceChapter(x)<11);put(records.filter(x=>!c.records.includes(x)));put(semanticFindings);Object.values(c).some(v=>v?.length)?d.assurance=c:delete d.assurance;}
+ if(e){const json=JSON.stringify({...d,evidence:e.tasks}),sources=e.sources.filter(x=>json.includes('"'+x.id+'"'));put(e.sources.filter(x=>!sources.includes(x)));sources.length||e.tasks.length?d.evidence={sources,tasks:e.tasks}:delete d.evidence;}
+ return [d,o];}
+export function designSource(p){const s=reviewSource(p);return fingerprintVersion>1?designOf(s)[0]:s;}
+// The evidence a baseline is frozen beside, by its fingerprint: what baselineChanges names as evidence recorded since.
+export const evidenceStamp=p=>reviewFingerprint(designOf(reviewSource(p))[1]);
 const sourceCache=new WeakMap(),findingCache=new WeakMap(),summaryCache=new WeakMap(),objectCache=new WeakMap(),traceCache=new WeakMap();
-export function reviewSourceStamp(p){if(!sourceCache.has(p))sourceCache.set(p,reviewFingerprint(reviewSource(p)));return sourceCache.get(p);}
+// The design fingerprint taken afresh (the upgrade's reading of a document it is changing), and the one kept per document
+// (under an earlier fingerprint, once per pass: the upgrade and the legacy judgements read it for every finding).
+export const designFingerprint=p=>reviewFingerprint(designSource(p));
+export function reviewSourceStamp(p){if(fingerprintVersion!==DESIGN_FINGERPRINT)return remember(p,'review:stamp',fingerprintVersion,()=>designFingerprint(p));if(!sourceCache.has(p))sourceCache.set(p,designFingerprint(p));return sourceCache.get(p);}
 export const reviewDesignStamp=p=>reviewSourceStamp(p)+':'+p.finalReview.version;
 const localReview=(p,r)=>!p.finalReview?.imported||!!(r?.actor&&!r?.importedActor&&r.at>p.finalReview.imported.at);
 export const narrativeCurrent=p=>p.finalReview.narrative.confirmed&&p.finalReview.narrative.sourceStamp===reviewSourceStamp(p)&&(!p.finalReview.imported||!!reviewOf(p,p.finalReview.narrative,11));
@@ -70,6 +109,31 @@ export const CHAPTERS=[
 // the source's owner: treated, with who raised it, when and with whom, and listed as raised, not as unfinished work.
 export const SOURCE_SILENT='Source silent · raised with the owner';
 export const DISPOSITIONS=['Fix before review','Carry as action','Accepted design limitation','Not applicable',SOURCE_SILENT];
+// rc.10.73.42 (D13, gap C11-01): findings no treatment waives. A hard constraint broken by the Chapter 3 working choice or
+// the Chapter 7 preferred option (a Chapter 1 Must constraint, or one whose priority nobody stated, read through its
+// Chapter 2 constraint driver: decision-reading.js constraintForce), and the invariants the chapters check: integrity
+// (Chapter 8: a posting contract with no invariant or idempotency key; an invariant bound to records that are gone),
+// authorisation (Chapter 9: dual control and segregation of duties) and recovery (Chapter 10: a stateful plan's
+// recoverable copy and write fencing, its backup zone, an independent standby). Such an error is not accepted as a
+// limitation, marked not applicable or raised as source silent: the design changes (fixed before review, or carried as
+// an owned action), or, for a hard constraint, its Chapter 1 constraint and Chapter 2 driver change through a reviewed
+// change. A waiver recorded before is kept in the record and read as no treatment.
+// NON_WAIVABLE names each kind's errors as 'C<chapter>:<code>', the chapter's own finding only (C3:breaks is not EVIDENCE:breaks).
+export const NON_WAIVABLE=Object.freeze({'hard-constraint':'C3:breaks C7:hard-constraint',invariant:'C8:posting-guard C8:invariant-link C9:dual-control-same C9:dual-control-uncovered C9:dual-control-roles C10:state-protection C10:standby C10:backup-zone'});
+const LIMIT='Accepted design limitation';
+export const WAIVERS=Object.freeze([LIMIT,'Not applicable',SOURCE_SILENT]);
+export const nonWaivable=f=>f?.level==='error'&&Object.keys(NON_WAIVABLE).find(k=>NON_WAIVABLE[k].split(' ').includes(String(f.id).split(':')[0]+':'+f.code))||null;
+function refuseWaiver(f,treatment){const kind=nonWaivable(f);if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” breaks '+(kind==='invariant'?'an invariant: change the design':'a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change')+'. It cannot be waived; until then, fix it before review or carry it as an action.');}
+// The treatments a dialog offers for a finding (review-ui.js, app.js).
+export const treatmentsFor=f=>DISPOSITIONS.filter(d=>!(nonWaivable(f)&&WAIVERS.includes(d)));
+// An accepted limitation is reviewed by a date (rc.10.73.42, D13): it is recorded with a review-by date after the day it
+// is recorded (a dialog's earliest day: reviewByMin), and once that date has passed, or for a limitation recorded before
+// with none or with no valid date, its finding is open again.
+const isoDay=d=>{try{return new Date(d).toISOString().slice(0,10)===d&&d;}catch{return '';}};
+export const reviewByMin=()=>new Date(Date.now()+864e5).toISOString().slice(0,10);
+function reviewBy(raw,at){if(raw.treatment!==LIMIT)return {};const d=isoDay(text(raw.reviewBy,10));if(!(d>String(at).slice(0,10)))throw Error('Give the accepted limitation a review-by date after today.');return {reviewBy:d};}
+export const limitationLapsed=d=>d?.treatment===LIMIT&&!(isoDay(d.reviewBy)>=new Date().toISOString().slice(0,10));
+const treatmentVoid=(f,d)=>WAIVERS.includes(d.treatment)&&nonWaivable(f)||limitationLapsed(d);
 export const REVIEW_OUTCOMES=['Revision required','Ready with actions / limitations','Ready for governance'];
 export const GOVERNANCE_OUTCOMES=['Approved','Approved with conditions','Rejected','Withdrawn'];
 export const DELIVERY_STATES=['Planned','In progress','Blocked','Verified'];
@@ -84,7 +148,7 @@ export function registerReadingsUpgrade(upgrade){readingsUpgrade=typeof upgrade=
 // title, and the project's name stands in.
 export const SAMPLE_SDD_TITLE='Bank Payment Journey — Solution Design';
 export const sddTitle=p=>{const t=text(p?.finalReview?.narrative?.title,180);return t&&!(t===SAMPLE_SDD_TITLE&&p.id&&p.id!=='bank-payment')?t:p?.name?text(p.name,100)+' — Solution Design':'Solution Design Document';};
-export function withFinalReview(input,{upgrade=true}={}){const p=withRoadmap(withProcessModel(withRuntime(input)));if(!p.finalReview)p.finalReview={schemaVersion:1,version:1,deliveryVersion:1,counters:{action:0,disposition:0,trace:0,review:0,baseline:0,governance:0},narrative:{title:(p.name?String(p.name)+' — ':'')+'Solution Design',owner:'',audience:'',summary:'',scope:'',approach:'',confirmed:false},intake:null,checks:null,dispositions:[],actions:[],traces:[],reviews:[],baselines:[],governance:[],handoff:null};const q=withEvidence(withChanges(p));return upgrade&&readingsUpgrade?readingsUpgrade(q):q;}
+export function withFinalReview(input,{upgrade=true}={}){const p=withRoadmap(withProcessModel(withRuntime(input)));if(!p.finalReview)p.finalReview={schemaVersion:1,version:1,deliveryVersion:1,designFingerprint:DESIGN_FINGERPRINT,counters:{action:0,disposition:0,trace:0,review:0,baseline:0,governance:0},narrative:{title:(p.name?String(p.name)+' — ':'')+'Solution Design',owner:'',audience:'',summary:'',scope:'',approach:'',confirmed:false},intake:null,checks:null,dispositions:[],actions:[],traces:[],reviews:[],baselines:[],governance:[],handoff:null};const q=withEvidence(withChanges(p));return upgrade&&readingsUpgrade?readingsUpgrade(q):q;}
 // The aggregations below read every chapter's checks; each runs as one pass over the document (document-memo.js,
 // round 5), so the chapters share their indexes and the connected graph instead of each building its own.
 export function chapterSummaries(p){if(summaryCache.has(p))return summaryCache.get(p);const result=memoPass(p,()=>CHAPTERS.map(c=>{const fs=c.checks(p),ms=c.milestones(p);return {id:c.id,title:c.title,errors:fs.filter(f=>f.level==='error').length,warnings:fs.filter(f=>f.level==='warning').length,done:ms.filter(m=>m.done).length,total:ms.length};}));summaryCache.set(p,result);return result;}
@@ -101,7 +165,7 @@ function stamped(p,f,compute){if(!isSettled(p)){f.stamp=compute();return f;}let 
 const recordIndex=p=>remember(p,'review:records-by-id','',()=>{const m=new Map();eachRecord(p,r=>{if(r.id!=null&&!m.has(r.id))m.set(r.id,r);});return m;});
 const findingInputs=(p,f)=>{const ids=[...new Set([f.objectId||f.artefactId||f.driverId||f.decisionId,...(Array.isArray(f.objectIds)?f.objectIds:[]),...(Array.isArray(f.ids)?f.ids:[])].filter(id=>typeof id==='string'&&id&&id!=='project'))];if(!ids.length)return null;const index=recordIndex(p),records=ids.map(id=>index.get(id));return records.every(Boolean)?records.map(r=>[r.id,recordStamp(p,r)]):null;};
 export const findingStamp=(p,scope,f)=>{const inputs=findingInputs(p,f);return reviewFingerprint(inputs?['finding',scope,f,inputs]:[reviewSourceStamp(p),scope,f]);};
-export function inheritedFindings(p){if(findingCache.has(p))return findingCache.get(p);return memoPass(p,()=>inheritedFindingsOf(p));}
+export function inheritedFindings(p){if(fingerprintVersion===DESIGN_FINGERPRINT&&findingCache.has(p))return findingCache.get(p);return memoPass(p,()=>inheritedFindingsOf(p));}
 // One chapter's own findings as the inherited list carries them, worked out once per settled document or pass and shared
 // with that list (round 5, R5-G): a chapter's passages need only its own, not every chapter's checks.
 const chapterInherited=(p,c)=>remember(p,'review:inherited-chapter',c.id,()=>c.checks(p).map(f=>stamped(p,{...f,id:'C'+c.id+':'+f.id,sourceId:f.id,chapter:c.id,chapterTitle:c.title,objectId:f.objectId||f.artefactId||f.driverId||f.decisionId||'project'},()=>findingStamp(p,c.id,f))));
@@ -109,7 +173,7 @@ const chapterInherited=(p,c)=>remember(p,'review:inherited-chapter',c.id,()=>c.c
 export function chapterInheritedFindings(p,chapter){const c=CHAPTERS.find(x=>x.id===Number(chapter));return c?memoPass(p,()=>chapterInherited(p,c)):[];}
 const inheritedSupplement=p=>remember(p,'review:inherited-supplement','',()=>[...semanticFindings(p).filter(f=>f.chapter!==1),...evidenceFindings(p),...designTaskFindings(p),...qualityMeasurementFindings(p),...knowledgeFindings(p),...guidanceFindings(p),...narrativeFindings(p)]);
 function inheritedBase(p){return remember(p,'review:inherited-base','',()=>{const result=CHAPTERS.flatMap(c=>chapterInherited(p,c));result.push(...inheritedSupplement(p).map(f=>stamped(p,{...f,id:'EVIDENCE:'+f.id,sourceId:f.id},()=>findingStamp(p,'evidence',f))));return result;});}
-function inheritedFindingsOf(p){const result=inheritedBase(p).slice();result.push(...antiPatternFindings(p).map(f=>stamped(p,{...f,id:'ANTI:'+f.sourceId},()=>findingStamp(p,'anti',f))));findingCache.set(p,result);return result;}
+function inheritedFindingsOf(p){const result=inheritedBase(p).slice();result.push(...antiPatternFindings(p).map(f=>stamped(p,{...f,id:'ANTI:'+f.sourceId},()=>findingStamp(p,'anti',f))));if(fingerprintVersion===DESIGN_FINGERPRINT)findingCache.set(p,result);return result;}
 // Anti-patterns found in the recorded design (design-spec.js) are review items like any other
 // finding: each can be treated here, fixed in the chapter that owns it, or accepted with reasons.
 function antiPatternFindings(p){let found=[];try{found=detectAntiPatterns(reasoningSource(p));}catch{return [];}return found.map(a=>({sourceId:a.id,code:a.catalogueId,chapter:a.chapter,chapterTitle:(CHAPTERS.find(c=>c.id===a.chapter)||{}).title||'',title:a.name,detail:a.text+(a.ask?' Ask: '+a.ask:''),level:'warning',objectId:a.objects[0]?.id||'project',objectIds:a.objects.map(o=>o.id)}));}
@@ -124,58 +188,21 @@ function performanceMarkdown(p){let C=null;try{C=reviewCapacity(p);}catch{C=null
 export function reviewObjects(p){if(objectCache.has(p))return objectCache.get(p);const g=logicalGraph(p),map=new Map();for(const a of p.artefacts)map.set(a.id,{id:a.id,ref:a.id,title:a.title,chapter:1,kind:a.type});for(const d of p.quality.drivers)map.set(d.id,{id:d.id,ref:d.id,title:d.title,chapter:2,kind:'quality driver'});for(const d of p.decisions.records)map.set(d.id,{id:d.id,ref:d.id,title:d.question,chapter:3,kind:'decision'});for(const n of g.nodes)map.set(n.id,{id:n.id,ref:n.ref||n.id,title:n.title,chapter:n.runtimeKind?10:n.layer==='security'?9:n.layer==='interface'||n.layer==='data'?8:n.layer==='technology'?(n.id.startsWith('tr-')?7:6):n.layer==='physical'?5:n.layer==='logical'?4:1,kind:n.runtimeKind||n.layer});const result=[...map.values()];objectCache.set(p,result);return result;}
 export function reviewSourceUrl(chapter,id,tab='model'){return '/?chapter='+chapter+'&tab='+tab+(id&&id!=='project'?'&'+(chapter===1?'artefact':chapter===2?'driver':chapter===3?'decision':'object')+'='+encodeURIComponent(id):'');}
 export const reviewRequirements=p=>p.artefacts.filter(a=>a.type==='requirement'&&a.scopeMode!=='out');
-// A requirement's trail (round 5, R5-G: the same trail, read through sets; the records that carry each requirement in
-// their sources are listed once per settled document or pass, rather than every record's sources once per requirement).
-const carriersOf=p=>documentIndex(p,'review:trace-carriers',()=>memoPass(p,()=>{const by=(list,sources)=>{const m=new Map();for(const r of list)for(const id of new Set(sources(r).requirements.map(a=>a.id))){let xs=m.get(id);if(!xs)m.set(id,xs=[]);xs.push(r);}return m;};return {contracts:by(p.interfaces.contracts,c=>interfaceSources(p,c)),controls:by(p.security.controls,c=>securitySources(p,c)),runtime:by(plans(p),r=>runtimeSources(p,r))};}));
-// A complete SDD asks for every requirement trail. Index each record's explicit and group-derived links once for a
-// settled document or read pass; retain the original scan on mutable documents and in unmemoised equivalence checks.
-// Each index list is populated in its chapter's record order, so a trail has exactly the same order and wording.
-const traceDirectOf=p=>documentIndex(p,'review:trace-direct',()=>{
- const by=rows=>{const index=new Map();for(const row of rows)for(const id of linkedRequirementIds(p,row)){let list=index.get(id);if(!list)index.set(id,list=[]);list.push(row);}return index;};
- const byKey=(rows,key)=>{const index=new Map();for(const row of rows)for(const id of [].concat(key(row)??[])){let list=index.get(id);if(!list)index.set(id,list=[]);list.push(row);}return index;};
- const valuesBy=(rows,key,value)=>{const index=new Map();for(const row of rows){let list=index.get(key(row));if(!list)index.set(key(row),list=[]);list.push(value(row));}return index;};
- const lists={decisions:p.decisions.records,applications:p.realisation.components,needs:p.technology.needs,
-  capabilities:p.technology.capabilities,realizations:p.technologyRealisation.records,data:p.interfaces.data};
- const positions=Object.fromEntries(Object.entries(lists).map(([key,rows])=>[key,new Map(rows.map((row,i)=>[row,i]))]));
- const relationships=new Map();for(const link of p.relationships)for(const id of new Set([link.from,link.to])){let set=relationships.get(id);if(!set)relationships.set(id,set=new Set());set.add(link.from);set.add(link.to);}
- return {requirements:new Map(reviewRequirements(p).map(r=>[r.id,r])),relationships,positions,
-  decisionsByDriver:byKey(p.decisions.records,r=>r.driverIds),applicationIdsByLogical:valuesBy(p.logical.mappings,r=>r.logicalId,r=>r.physicalId),
-  applicationsById:byKey(p.realisation.components,r=>r.id),needsByApplication:byKey(p.technology.needs,r=>r.applicationId),
-  capabilityIdsByNeed:valuesBy(p.technology.mappings,r=>r.needId,r=>r.capabilityId),capabilitiesById:byKey(p.technology.capabilities,r=>r.id),
-  realizationIdsByCapability:valuesBy(p.technologyRealisation.mappings,r=>r.capabilityId,r=>r.realizationId),
-  realizationsById:byKey(p.technologyRealisation.records,r=>r.id),dataById:byKey(p.interfaces.data,r=>r.id),
-  drivers:by(p.quality.drivers),decisions:by(p.decisions.records),logical:by(p.logical.responsibilities),
-  applications:by(p.realisation.components),needs:by(p.technology.needs),capabilities:by(p.technology.capabilities),
-  realizations:by(p.technologyRealisation.records),contracts:by(p.interfaces.contracts),data:by(p.interfaces.data),
-  controls:by(p.security.controls),runtime:by(plans(p)),parties:by(p.interfaces.parties||[]),
-  threats:by(p.security.threats||[]),paths:by(p.runtime?.paths||[])};
-});
-export function reviewTrace(p,id){if(traceCache.get(p)?.has(id))return traceCache.get(p).get(id);const direct=traceDirectOf(p),requirement=direct?direct.requirements.get(id):reviewRequirements(p).find(r=>r.id===id);if(!requirement)return null;const linked=direct?(direct.relationships.get(id)||new Set()):new Set(p.relationships.filter(l=>l.from===id||l.to===id).flatMap(l=>[l.from,l.to]));
- // A record answers for the requirement by naming it or by linking a requirement group that holds it (round 12, D-03),
- // a component too, by the groups it links itself, and so does a record of Chapters 6 to 10 that names it or its group
- // beside the trail it inherits (DM-02, DM-03): a need, a capability, a realisation, a party, a contract, a data
- // definition, a threat, a control, a runtime plan or a path.
- const answers=r=>linksRequirement(p,r,id),from=(key,rows)=>direct?(direct[key].get(id)||[]):rows.filter(answers),also=(key,rows,base)=>{const seen=new Set(base);for(const r of from(key,rows))if(!seen.has(r)){seen.add(r);base.push(r);}return base;};
- const ordered=(key,items)=>[...new Set(items)].sort((a,b)=>direct.positions[key].get(a)-direct.positions[key].get(b));
- const joined=(key,rows,items,match)=>direct?ordered(key,[...from(key,rows),...items]):rows.filter(r=>answers(r)||match(r));
- const carriers=carriersOf(p),context=p.artefacts.filter(a=>linked.has(a.id)&&a.id!==id),drivers=from('drivers',p.quality.drivers),driverIds=new Set(drivers.map(d=>d.id));
- const decisions=joined('decisions',p.decisions.records,direct?[...driverIds].flatMap(did=>direct.decisionsByDriver.get(did)||[]):[],d=>d.driverIds.some(did=>driverIds.has(did)));
- const logical=from('logical',p.logical.responsibilities),logicalIds=new Set(logical.map(r=>r.id));
- const appIds=new Set(direct?[...logicalIds].flatMap(lid=>direct.applicationIdsByLogical.get(lid)||[]):p.logical.mappings.filter(m=>logicalIds.has(m.logicalId)).map(m=>m.physicalId));
- const applications=joined('applications',p.realisation.components,direct?[...appIds].flatMap(aid=>direct.applicationsById.get(aid)||[]):[],a=>appIds.has(a.id)),applicationIds=new Set(applications.map(a=>a.id));
- const needs=joined('needs',p.technology.needs,direct?[...applicationIds].flatMap(aid=>direct.needsByApplication.get(aid)||[]):[],n=>applicationIds.has(n.applicationId)),needIds=new Set(needs.map(n=>n.id));
- const capabilityIds=new Set(direct?[...needIds].flatMap(nid=>direct.capabilityIdsByNeed.get(nid)||[]):p.technology.mappings.filter(m=>needIds.has(m.needId)).map(m=>m.capabilityId));
- const capabilities=joined('capabilities',p.technology.capabilities,direct?[...capabilityIds].flatMap(cid=>direct.capabilitiesById.get(cid)||[]):[],c=>capabilityIds.has(c.id)),capabilityHeld=new Set(capabilities.map(c=>c.id));
- const realizationIds=new Set(direct?[...capabilityHeld].flatMap(cid=>direct.realizationIdsByCapability.get(cid)||[]):p.technologyRealisation.mappings.filter(m=>capabilityHeld.has(m.capabilityId)).map(m=>m.realizationId));
- const realizations=joined('realizations',p.technologyRealisation.records,direct?[...realizationIds].flatMap(rid=>direct.realizationsById.get(rid)||[]):[],r=>realizationIds.has(r.id));
- const contracts=also('contracts',p.interfaces.contracts,carriers?(carriers.contracts.get(id)||[]).slice():p.interfaces.contracts.filter(c=>interfaceSources(p,c).requirements.some(r=>r.id===id)));
- const dataIds=new Set(contracts.flatMap(c=>c.exchanges.map(e=>e.dataId)));
- const data=joined('data',p.interfaces.data,direct?[...dataIds].flatMap(did=>direct.dataById.get(did)||[]):[],d=>dataIds.has(d.id));
- const controls=also('controls',p.security.controls,carriers?(carriers.controls.get(id)||[]).slice():p.security.controls.filter(c=>securitySources(p,c).requirements.some(r=>r.id===id)));
- const runtime=also('runtime',plans(p),carriers?(carriers.runtime.get(id)||[]).slice():plans(p).filter(r=>runtimeSources(p,r).requirements.some(a=>a.id===id)));
- const parties=from('parties',p.interfaces.parties||[]),threats=from('threats',p.security.threats||[]),paths=from('paths',p.runtime?.paths||[]),runtimeIds=new Set(runtime.map(r=>r.id)),zoneIds=unique(placements(p).filter(l=>runtimeIds.has(l.planId)).map(l=>l.zoneId));
+// A requirement's trail (rc.10.73.42, D7): the trace kernel's walk from the requirement over the canonical design graph
+// (trace-kernel.js), read as the records of each layer in their chapter's order: its Chapter 1 context, the drivers and
+// decisions, the responsibilities and components, the capabilities and realisations, the contracts and data, the
+// controls, the operating plans in scope and the zones their placements stand in, the threats, parties and paths. The
+// trail walk, the review desk, the matrix annex, change impact and the architecture case read it; the narrative, the
+// Matrix, the component specification, the driver scope and the ARS read the same walk. A trail is read once per
+// document object. Its `spine` is the requirement's own chain by the same keys (trace-kernel.js requirementSpine: what it
+// names, and onwards by the design's own relations, without what its drivers constrain or its decisions justify), which
+// the checks of a continuous trail read (desk-model.js firstBreak, architecture-case.js), read when first asked for.
+const layered=T=>Object.fromEntries('context drivers:driver decisions:decision logical:responsibility applications:component needs:need capabilities:capability realizations:realization contracts:contract data controls:control runtime:plan parties:party threats:threat paths:path'.split(' ').map(x=>{const [k,l=k]=x.split(':');return [k,traceRecords(T,l)];}));
+export function reviewTrace(p,id){if(traceCache.get(p)?.has(id))return traceCache.get(p).get(id);const requirement=findIn(p,'review:requirements',()=>reviewRequirements(p),id);if(!requirement)return null;
+ const T=memoPass(p,()=>requirementTrace(p,id)),L=layered(T),{context,drivers,decisions,logical,applications,capabilities,realizations,contracts,data,controls,runtime}=L;
+ const zoneIds=unique(traceRecords(T,'placement').map(l=>l.zoneId).filter(z=>T.has(z)));let spine;
  const nodes=unique([...context.map(a=>a.modelRef).filter(Boolean),...logical,...applications,...capabilities,...realizations,...contracts,...data,...controls,...runtime].map(n=>typeof n==='string'?n:n.id).concat(zoneIds));
- const result={requirement,context,drivers,decisions,logical,applications,capabilities,realizations,contracts,data,controls,runtime,parties,threats,paths,zoneIds,nodeIds:nodes,steps:[{title:'The obligation',detail:requirement.acceptance||'Acceptance criteria need definition.',ids:context.map(a=>a.modelRef).filter(Boolean)},{title:'Quality and decisions',detail:drivers.length+' linked quality drivers; '+decisions.filter(d=>decisionCurrent(p,d)).length+' currently accepted decisions of '+decisions.length+' linked decisions. Drafts remain visible.',ids:logical.map(r=>r.id)},{title:'Application responsibilities',detail:logical.length+' logical responsibilities are mapped into '+applications.length+' application components. A mapping records design intent, not implementation evidence.',ids:[...logical,...applications].map(r=>r.id)},{title:'Supporting architecture',detail:capabilities.length+' capabilities, '+realizations.length+' realizations, and '+contracts.length+' contracts supply the supporting design.',ids:[...capabilities,...realizations,...contracts,...data].map(r=>r.id)},{title:'Protection and runtime',detail:controls.length+' intended controls and '+runtime.length+' operating plans carry the obligation into operation. Evidence and open findings remain separate.',ids:[...controls,...runtime].map(r=>r.id).concat(zoneIds)}]};if(!traceCache.has(p))traceCache.set(p,new Map());traceCache.get(p).set(id,result);return result;
+ const result={requirement,...L,zoneIds,nodeIds:nodes,get spine(){return spine??=layered(memoPass(p,()=>requirementSpine(p,id)));},steps:[{title:'The obligation',detail:requirement.acceptance||'Acceptance criteria need definition.',ids:context.map(a=>a.modelRef).filter(Boolean)},{title:'Quality and decisions',detail:drivers.length+' linked quality drivers; '+decisions.filter(d=>decisionCurrent(p,d)).length+' currently accepted decisions of '+decisions.length+' linked decisions. Drafts remain visible.',ids:logical.map(r=>r.id)},{title:'Application responsibilities',detail:logical.length+' logical responsibilities are mapped into '+applications.length+' application components. A mapping records design intent, not implementation evidence.',ids:[...logical,...applications].map(r=>r.id)},{title:'Supporting architecture',detail:capabilities.length+' capabilities, '+realizations.length+' realizations, and '+contracts.length+' contracts supply the supporting design.',ids:[...capabilities,...realizations,...contracts,...data].map(r=>r.id)},{title:'Protection and runtime',detail:controls.length+' intended controls and '+runtime.length+' operating plans carry the obligation into operation. Evidence and open findings remain separate.',ids:[...controls,...runtime].map(r=>r.id).concat(zoneIds)}]};if(!traceCache.has(p))traceCache.set(p,new Map());traceCache.get(p).set(id,result);return result;
 }
 // An action's plateau (round 6) is part of its definition only when it names one, so the verification stamps of earlier
 // actions, which name none, are what they were.
@@ -203,7 +230,9 @@ export const dispositionCurrent=(p,d,f)=>!!f&&(d.basis==='finding'?d.stamp===f.s
 // rewritten: an index of the list as it stands, kept while its length is unchanged).
 const dispositionIndexes=new WeakMap();
 function dispositionIndex(p){const list=p.finalReview?.dispositions||[],kept=dispositionIndexes.get(list);if(kept&&kept.n===list.length)return kept.m;const m=new Map(),add=(id,e)=>{let xs=m.get(id);if(!xs)m.set(id,xs=[]);xs.push(e);};list.forEach(d=>{if(d?.scope==='cause')for(const x of d.findings||[])add(x[0],{d,stamp:x[1]});else if(d?.findingId)add(d.findingId,{d,stamp:null});});for(const xs of m.values())xs.reverse();dispositionIndexes.set(list,{n:list.length,m});return m;}
-export function latestDisposition(p,f){for(const e of dispositionIndex(p).get(f.id)||[])if(localReview(p,e.d)&&(e.d.scope==='cause'?e.stamp===f.stamp:dispositionCurrent(p,e.d,f)))return e.d;return undefined;}
+// The newest current treatment, unless it no longer holds (a waiver of a non-waivable finding, a limitation past its
+// review-by date): then the finding is open again.
+export function latestDisposition(p,f){for(const e of dispositionIndex(p).get(f.id)||[])if(localReview(p,e.d)&&(e.d.scope==='cause'?e.stamp===f.stamp:dispositionCurrent(p,e.d,f)))return treatmentVoid(f,e.d)?undefined:e.d;return undefined;}
 const treatmentFor=(p,d)=>{if(!d)return 'Needs assessment';if(d.treatment==='Carry as action'){const a=p.finalReview.actions.find(a=>a.id===d.actionId);return a&&actionReady(a)&&actionCurrent(p,a)?'Carry as action':'Action needs review';}return d.treatment;};
 export function findingTreatment(p,f){return treatmentFor(p,latestDisposition(p,f));}
 // Anti-pattern findings are review warnings, never content errors. When the readiness board only needs blockers,
@@ -225,8 +254,23 @@ export function reviewBlockerCount(p){
 // before it read the whole design, and is read so.
 export function traceStamp(p,id){return remember(p,'review:trace-stamp',id,()=>{const t=reviewTrace(p,id);if(!t)return null;const zones=new Map((p.runtime?.zones||[]).map(z=>[z.id,z]));return reviewFingerprint([t.requirement,...t.context,...t.drivers,...t.decisions,...t.logical,...t.applications,...t.capabilities,...t.realizations,...t.contracts,...t.data,...t.controls,...t.runtime,...t.parties,...t.threats,...t.paths,...t.zoneIds.map(z=>zones.get(z))].map(r=>r?[r.id,recordStamp(p,r)]:null));});}
 export const groupTraceStamp=(p,ids)=>reviewFingerprint(ids.map(id=>[id,traceStamp(p,id)]));
+// The hops of a requirement's trail (rc42, D6): the spine the review desk follows, each with the chapter that records it.
+// Read from the one trace kernel (rc.10.73.42, D7: trace-kernel.js requirementSpine, the requirement's own chain). A hop is
+// missing when the spine holds no record of it, as the desk reads a break (desk-model.js firstBreak), and broken when it
+// holds records the hop before does not reach: a component the requirement names that no responsibility on the spine is
+// allocated to, a capability no need of a component on it is met by, a realisation of no capability on it, a runtime plan
+// that runs none of it. The desk does not report a broken hop; the trace review does. A trace review records the hops it
+// read (the whole trail's counts, context included), is refused while any is missing or broken, and stops counting once the trail breaks. A hop is reached when any one
+// of its records is: a further record of the hop that names the requirement but is not reached is not reported (a limit).
+export const TRACE_HOPS=[['logical',4,'responsibility'],['applications',5,'application component'],['capabilities',6,'technology capability'],['realizations',7,'technology realisation'],['runtime',10,'runtime plan']];
+export const traceHops=(p,id)=>{const t=reviewTrace(p,id);return t?Object.fromEntries(TRACE_HOPS.map(([hop])=>[hop,t[hop].length])):null;};
+export function traceBreaks(p,id){return remember(p,'review:trace-breaks',id,()=>{const t=reviewTrace(p,id);if(!t)return [];
+ const S=memoPass(p,()=>requirementSpine(p,id)),from=(layer,...ls)=>S.layers[layer].some(x=>hopsFrom(S,x,(h,l)=>ls.includes(l)&&(l!=='need'||hopsFrom(S,h.from,(g,m)=>m==='component').length)).length);
+ const reached={logical:true,applications:from('component','responsibility'),capabilities:from('capability','need'),realizations:from('realization','capability'),runtime:from('plan','component','realization')};
+ return TRACE_HOPS.filter(([hop])=>!t.spine[hop].length||!reached[hop]).map(([hop,chapter,noun])=>({hop,chapter,state:t.spine[hop].length?'broken':'missing',text:(t.spine[hop].length?'broken: '+noun+'s not reached from the hop before':'no '+noun)+' (Chapter '+chapter+')'}));});}
+export const traceBreakWords=breaks=>breaks.map(b=>b.text).join('; ');
 const requirementIdSet=p=>remember(p,'review:requirement-ids','',()=>new Set(reviewRequirements(p).map(r=>r.id)));
-export const traceReviewCurrent=(p,t,id=t.requirementId)=>{if(!id||!requirementIdSet(p).has(id)||!localReview(p,t))return false;if(t.basis==='trail')return (t.trails?t.trails[id]:t.stamp)===traceStamp(p,id);return t.stamp===reviewSourceStamp(p);};
+export const traceReviewCurrent=(p,t,id=t.requirementId)=>{if(!id||!requirementIdSet(p).has(id)||!localReview(p,t))return false;if(t.basis==='trail')return (t.trails?t.trails[id]:t.stamp)===traceStamp(p,id)&&!traceBreaks(p,id).length;return t.stamp===reviewSourceStamp(p)&&!traceBreaks(p,id).length;};
 const traceIndexes=new WeakMap();
 function traceIndex(p){const list=p.finalReview?.traces||[],kept=traceIndexes.get(list);if(kept&&kept.n===list.length)return kept.m;const m=new Map();for(const t of list)for(const id of t?.requirementId?[t.requirementId]:Array.isArray(t?.requirementIds)?t.requirementIds:[]){let xs=m.get(id);if(!xs)m.set(id,xs=[]);xs.push(t);}for(const xs of m.values())xs.reverse();traceIndexes.set(list,{n:list.length,m});return m;}
 // The latest trace review that covers the requirement and is current, or null.
@@ -245,9 +289,10 @@ export function traceScope(p,scope){
 export const latestDesignReview=p=>[...p.finalReview.reviews].reverse().find(r=>localReview(p,r)&&r.stamp===reviewDesignStamp(p));
 export const baseline=(p,id)=>p.finalReview.baselines.find(b=>b.id===id);
 // A baseline frozen before the readings upgrade keeps the stamps of the design as it was then (readings-upgrade.js):
-// while the design is what the upgrade made it, those are its stamps too (finalReview.readingsUpgrade).
-const upgradedDesignStamp=p=>{const legacy=p.finalReview?.readingsUpgrade?.design?.[reviewSourceStamp(p)];return legacy?legacy+':'+p.finalReview.version:null;};
-const designStampIs=(p,stamp)=>stamp===reviewDesignStamp(p)||(stamp!=null&&stamp===upgradedDesignStamp(p));
+// while the design is what the upgrade made it, those are its stamps too (finalReview.readingsUpgrade). So are those of
+// one frozen under design fingerprint 1 (rc42, D14): the fingerprint upgrade keeps them in the same one table, keyed by the
+// current stamps, so that a later readings upgrade chains through them.
+const designStampIs=(p,stamp)=>{const m=p.finalReview,now=reviewSourceStamp(p),legacy=m.readingsUpgrade?.design?.[now];return stamp===now+':'+m.version||!!legacy&&stamp===legacy+':'+m.version;};
 export const baselineCurrent=(p,b)=>!!b&&designStampIs(p,b.stamp)&&b.reviewId===(latestDesignReview(p)?.id||null);
 export const latestGovernance=(p,id)=>[...p.finalReview.governance].reverse().find(g=>localReview(p,g)&&g.baselineId===id);
 export const currentBaseline=p=>[...p.finalReview.baselines].reverse().find(b=>baselineCurrent(p,b));
@@ -275,12 +320,15 @@ export const independentApproval=(b,g)=>!!(g?.actor&&reviewAuthor(b)&&g.actor!==
 export function finalFindings(p){return memoPass(p,()=>finalFindingsOf(p));}
 function finalFindingsOf(p){const fs=[],add=(code,title,detail,level='error',id='project')=>fs.push({id:code+':'+id,objectId:id,code,title,detail,level}),m=p.finalReview,n=m.narrative;
  if(!reviewIntakeCurrent(p))add('intake','Review the inherited project','Review Chapter 10 and the current cross-chapter findings.','warning');
+ // Chapter 10's handoff is outside the design fingerprint (rc42, D14): evidence or checks recorded there clear it and
+ // leave the intake current, so the intake's record of a current handoff is read again here.
+ else if(m.intake.runtimeHandoffCurrent&&!runtimeHandoffCurrent(p))add('runtime-handoff','Chapter 10 is no longer handed off','Its evidence or checks changed after the intake. Hand it off again.','warning');
  if(!n.title||!n.owner||!n.audience||!n.summary||!n.scope||!n.approach||!narrativeCurrent(p))add('narrative','Frame the solution design document','Name the document owner and audience, explain the scope and approach, and confirm the wording.');
  // Counted by cause (round 12, D-05): one change to a shared record is one review, with the records it reaches.
  const changed=changeSummary(p);if(changed.open){const causes=changeCauses(p).length;add('change-review','Review '+causes+' change'+(causes===1?'':'s')+' to '+changed.open+' affected record'+(changed.open===1?'':'s'),'Definition edits have unresolved linked reviews. Record the design assessment for each change, once for all the records it reaches, and any owned follow-up.','warning');}
  const blockers=reviewBlockerCount(p);if(blockers)add('source-findings','Assess '+blockers+' source finding'+(blockers===1?'':'s')+' to fix or treat','Repair them in their source chapters or record an explicit treatment with evidence. They remain visible in the SDD.');
  for(const r of reviewRequirements(p))if(!traceReviewFor(p,r.id))add('trace','Review the '+r.id+' architecture trail','Follow all five stages and record the traceability review.','warning',r.id);
- for(const a of m.actions){if(!actionReady(a))add('action-definition','Define '+a.id+' delivery ownership','Record the owner, due date, linked objects, and acceptance evidence.','error',a.id);if(!actionCurrent(p,a))add('action-source','Review changed inputs for '+a.id,'Revisit the action against the current project. Earlier verification stays in history.','error',a.id);if(a.status==='Blocked')add('delivery-blocked',a.id+' is blocked',a.progress||'Record the blocker and next action.','warning',a.id);if(a.status==='Verified'&&!actionComplete(p,a))add('verification',a.id+' verification needs review','The recorded verification no longer matches the action or source definition.','warning',a.id);}
+ for(const a of m.actions){if(!actionReady(a))add('action-definition','Define '+a.id+' delivery ownership','Record the owner, due date, linked objects, and acceptance evidence.','error',a.id);if(!actionCurrent(p,a))add('action-source','Review changed inputs for '+a.id,'Revisit the action against the current project. Earlier verification stays in history.','error',a.id);if(a.status==='Blocked')add('delivery-blocked',a.id+' is blocked',a.progress||'Record the blocker and next action.','warning',a.id);if(a.status==='Verified'&&!actionComplete(p,a))add('verification',a.id+' verification needs review',a.architectureObligation&&!independentVerification(a)?SECOND_VERIFIER:'The recorded verification no longer matches the action or source definition.','warning',a.id);}
  for(const o of architectureObligationsFor(p))if(o.verificationState!=='current-verified')add('architecture-obligation',o.verificationState==='review-required'?'Review evidence for '+o.id:o.verificationState==='open'?'Assign verification for '+o.id:'Review observed evidence for '+o.id,o.verificationState==='review-required'?o.verificationReasons.join(' '):o.evidence||o.action,'warning',o.id);
  for(const a of m.actions){const comparison=verificationForAction(p,a);if(comparison&&comparison.state!=='pass')add('verification-comparison',a.id+' · '+comparison.label,comparison.reasons.join(' '),comparison.state==='fail'?'error':'warning',a.id);}
  if(!latestDesignReview(p))add('design-review','Record the architecture review','Record the reviewer, evidence reference, rationale, and outcome.','warning');
@@ -303,7 +351,7 @@ function finalMilestonesOf(p){const m=p.finalReview,n=m.narrative,b=currentBasel
  {id:'governance',name:'Record governance evidence',detail:g?.outcome||'External approval remains separate',done:!!g&&['Approved','Approved with conditions'].includes(g.outcome)},
  {id:'handoff',name:'Prepare implementation handoff',detail:'Named actions and verification expectations',done:finalHandoffCurrent(p)}];}
 function date(raw){const d=text(raw,10);if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||!Number.isFinite(Date.parse(d))||new Date(d).toISOString().slice(0,10)!==d)throw Error('Use a valid action due date.');return d;}
-function saveAction(p,raw,at){
+function saveAction(p,raw,at,actor=null){
  const m=p.finalReview,old=raw.id?m.actions.find(a=>a.id===raw.id):null;
  if(raw.id&&!old)throw Error('Choose an existing delivery action.');
  if(!text(raw.title))throw Error('Name the delivery action.');
@@ -322,15 +370,21 @@ function saveAction(p,raw,at){
   if(!text(raw.acceptance))throw Error('Define the evidence and acceptance criteria for this obligation.');
   obligation={...basis.reference,basisStamp:basis.stamp};
  }
- const a={id:old?.id||'RA-'+pad(++m.counters.action),revision:(old?.revision||0)+1,title:text(raw.title,180),owner:text(raw.owner,180),due:raw.due?date(raw.due):'',acceptance:text(raw.acceptance),objectIds:unique(raw.objectIds),findingId:raw.findingId||'',plateauId:raw.plateauId===undefined?(old?.plateauId||''):actionPlateau(p,raw.plateauId),sourceStamp:obligation?basis.stamp:reviewSourceStamp(p),...(obligation?{architectureObligation:obligation}:{}),status:old?.status==='Verified'?'Planned':old?.status||'Planned',progress:old?.progress||'',verification:null,history:[...(old?.history||[]),...(old?[{at,revision:old.revision,status:old.status,verification:old.verification,title:old.title,acceptance:old.acceptance,objectIds:old.objectIds,...(old.architectureObligation?{architectureObligation:old.architectureObligation}:{})}]:[])]};
+ // Who wrote the revision being replaced: its actor, or for one saved before actors were recorded (actor undefined), its
+ // last person writer as the Worker stamped it (provenance.author). An imported action's actor is null: no writer here.
+ const was=old?.actor===undefined?personWriter(old):old.actor;
+ const a={id:old?.id||'RA-'+pad(++m.counters.action),revision:(old?.revision||0)+1,title:text(raw.title,180),owner:text(raw.owner,180),due:raw.due?date(raw.due):'',acceptance:text(raw.acceptance),objectIds:unique(raw.objectIds),findingId:raw.findingId||'',plateauId:raw.plateauId===undefined?(old?.plateauId||''):actionPlateau(p,raw.plateauId),sourceStamp:obligation?basis.stamp:reviewSourceStamp(p),...(obligation?{architectureObligation:obligation}:{}),status:old?.status==='Verified'?'Planned':old?.status||'Planned',progress:old?.progress||'',verification:null,...(actor?{actor}:{}),history:[...(old?.history||[]),...(old?[{at,revision:old.revision,...(was?{actor:was}:{}),...(old.importedActor?{importedActor:old.importedActor}:{}),status:old.status,verification:old.verification,title:old.title,acceptance:old.acceptance,objectIds:old.objectIds,...(old.architectureObligation?{architectureObligation:old.architectureObligation}:{})}]:[])]};
  const contract=normaliseVerificationContract(p,a,raw.verificationContract===undefined?old?.verificationContract:raw.verificationContract);if(contract)a.verificationContract=contract;
  if(old?.verificationContract)a.history.at(-1).verificationContract=structuredClone(old.verificationContract);
  if(old)m.actions[m.actions.indexOf(old)]=a;else m.actions.push(a);return a;
 }
 export function reviewProposal(p,key,objectId){const o=reviewObjects(p).find(o=>o.id===objectId)||reviewObjects(p)[0];if(!o)return null;const ideas={assurance:['Verify the architecture claim','Record a repeatable check, expected result, observed evidence, limitations, and an accountable reviewer.'],cutover:['Prepare controlled implementation','Define prerequisites, owned stop/go criteria, reconciliation, rollback, and the evidence required before resumption.'],drift:['Check implementation against the baseline','Compare the delivered component, contracts, access, and runtime configuration with the reviewed design; record deviations and their disposition.']};const idea=ideas[key];if(!idea)return null;return {key,objectId:o.id,reason:'Turn the '+o.ref+' design claim into an owned, verifiable delivery obligation.',record:{title:idea[0]+' · '+o.title,owner:'',due:'',acceptance:idea[1],objectIds:[o.id],findingId:''}};}
 function chapterStamps(p){return remember(p,'review:chapter-stamps','',()=>computeChapterStamps(p));}
-export function computeChapterStamps(p){return Object.fromEntries(CHAPTERS.map(c=>[c.id,reviewFingerprint(c.id===1?{brief:p.brief,artefacts:p.artefacts,relationships:p.relationships,review:p.review,handoff:p.handoff}:p[c.key])]));}
-export function baselineChanges(p,b){const now=chapterStamps(p),alias=p.finalReview?.readingsUpgrade?.chapters||{},same=c=>b.chapterStamps[c.id]===now[c.id]||(b.chapterStamps[c.id]!=null&&b.chapterStamps[c.id]===alias[c.id]?.[now[c.id]]);return CHAPTERS.filter(c=>!same(c)).map(c=>c.title).concat(!designStampIs(p,b.stamp)&&CHAPTERS.every(same)?['Review narrative, traceability, findings, or delivery plan']:[]).concat(b.reviewId!==(latestDesignReview(p)?.id||null)?['Architect review outcome']:[]);}
+// A chapter's stamp reads its design as the design fingerprint does: Chapters 9 and 10 without their overlay (rc42, D14).
+export function computeChapterStamps(p){const s=designSource(p);return Object.fromEntries(CHAPTERS.map(c=>[c.id,reviewFingerprint(c.id===1?{brief:p.brief,artefacts:p.artefacts,relationships:p.relationships,review:p.review,handoff:p.handoff}:s[c.key])]));}
+// What changed since a baseline: each chapter whose design changed, a change outside the chapters, a new review outcome,
+// and evidence recorded since, named apart from design edits (rc42, D14: known for a baseline that kept its evidence stamp).
+export function baselineChanges(p,b){const now=chapterStamps(p),alias=p.finalReview?.readingsUpgrade?.chapters||{},same=c=>{const s=b.chapterStamps[c.id],n=now[c.id];return s===n||s!=null&&s===alias[c.id]?.[n];};return CHAPTERS.filter(c=>!same(c)).map(c=>c.title).concat(!designStampIs(p,b.stamp)&&CHAPTERS.every(same)?['Review narrative, traceability, findings, or delivery plan']:[]).concat(b.reviewId!==(latestDesignReview(p)?.id||null)?['Architect review outcome']:[]).concat(b.evidenceStamp!=null&&b.evidenceStamp!==evidenceStamp(p)?['Evidence recorded since the baseline']:[]);}
 // Four eyes (a project's setting, workspace.governance): a person does not treat a finding of a record they wrote, nor
 // review a trail of records they wrote.
 const personWriter=r=>r?.provenance?.author?.kind==='person'?r.provenance.author.by:null;
@@ -352,14 +406,16 @@ function treatCause(p,raw,at,actor){
  if(!all.length)throw Error('Nothing of this cause is waiting for a treatment.');
  if(raw.stamp!==causeFindingStamp(p,all))throw Error('A finding of this cause changed, or was treated, since you opened it. Reload and review the current findings.');
  if(!CAUSE_TREATMENTS.includes(raw.treatment))throw Error('Choose one treatment for the cause: fix before review, an accepted limitation, not applicable, or raised with the owner of a silent source. Carry each finding as its own action.');
+ for(const f of all)refuseWaiver(f,raw.treatment);
  if(raw.reviewed!==true||!text(raw.rationale)||!text(raw.reviewer))throw Error('Record a treatment, rationale, reviewer, and explicit confirmation.');
  if(['Accepted design limitation','Not applicable',SOURCE_SILENT].includes(raw.treatment)&&!text(raw.reference))throw Error(raw.treatment===SOURCE_SILENT?'Say with whom the question was raised, and where (the owner of the source and the reference of the request).':'Provide the evidence or decision reference for this judgement.');
+ const by=reviewBy(raw,at);
  const out=new Map((Array.isArray(raw.exceptions)?raw.exceptions:[]).map(x=>[String(x?.findingId??x?.id??x),text(x?.reason,600)]));
  for(const [id,why] of out){if(!all.some(f=>f.id===id))throw Error('An exception names a finding outside this cause: '+id.slice(0,80)+'.');if(!why)throw Error('Give each exception its reason: it stays open.');}
  const members=all.filter(f=>!out.has(f.id));if(!members.length)throw Error('Every finding of the cause is an exception: nothing would be treated.');
  for(const f of members)fourEyesFinding(p,f,actor);
  const c=findingCause(members[0]),id='RF-'+pad(++m.counters.disposition);
- m.dispositions.push({id,at,actor,scope:'cause',cause:{key:c.key,chapter:c.chapter,kind:c.kind,level:c.level,title:c.title,count:all.length},findings:members.map(f=>[f.id,f.stamp]),exceptions:[...out].map(([findingId,reason])=>[findingId,reason]),basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),actionId:null});
+ m.dispositions.push({id,at,actor,scope:'cause',cause:{key:c.key,chapter:c.chapter,kind:c.kind,level:c.level,title:c.title,count:all.length},findings:members.map(f=>[f.id,f.stamp]),exceptions:[...out].map(([findingId,reason])=>[findingId,reason]),basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),...by,actionId:null});
  return id;
 }
 // One trace review for every trail of a group, a responsibility or named requirements (GR-GOV-05): each trail kept with
@@ -371,18 +427,22 @@ function traceGroup(p,raw,at,actor){
  const out=new Map((Array.isArray(raw.exceptions)?raw.exceptions:[]).map(x=>[String(x?.requirementId??x?.id??x),text(x?.reason,600)]));
  for(const [id,why] of out){if(!ids.includes(id))throw Error('An exception names a requirement outside this scope: '+id.slice(0,80)+'.');if(!why)throw Error('Give each exception its reason: it stays open.');}
  const members=ids.filter(id=>!out.has(id));if(!members.length)throw Error('Every requirement of the scope is an exception: nothing would be reviewed.');
+ const broken=members.map(id=>[id,traceBreaks(p,id)]).filter(([,b])=>b.length);
+ if(broken.length)throw Error('Trails in this scope have broken or missing hops: '+broken.slice(0,10).map(([id,b])=>id+': '+traceBreakWords(b)).join(' · ')+(broken.length>10?' and '+(broken.length-10)+' more':'')+'. Repair them, or name each as an exception with its reason.');
  fourEyesTrail(p,members,actor);
  const id='TRV-'+pad(++m.counters.trace);
- m.traces.push({id,at,actor,scope:{kind:raw.scope.kind,id:raw.scope.kind==='requirements'?null:String(raw.scope.id),title},requirementIds:members,trails:Object.fromEntries(members.map(r=>[r,traceStamp(p,r)])),basis:'trail',reviewer:text(raw.reviewer,180),notes:text(raw.notes),...(out.size?{exceptions:[...out].map(([requirementId,reason])=>[requirementId,reason])}:{})});
+ m.traces.push({id,at,actor,scope:{kind:raw.scope.kind,id:raw.scope.kind==='requirements'?null:String(raw.scope.id),title},requirementIds:members,trails:Object.fromEntries(members.map(r=>[r,traceStamp(p,r)])),hops:Object.fromEntries(members.map(r=>[r,traceHops(p,r)])),basis:'trail',reviewer:text(raw.reviewer,180),notes:text(raw.notes),...(out.size?{exceptions:[...out].map(([requirementId,reason])=>[requirementId,reason])}:{})});
  return id;
 }
 // author: the commit's author (worker.js), whose account kind the approval and review records keep.
 export function applyFinalReviewCommand(input,command,at=new Date().toISOString(),actor=null,{author=null}={}){const p=withFinalReview(input),m=p.finalReview,raw=command.payload||{};let changed=true,selected=null;const account=author?.account==='agent'?{account:'agent'}:{};
+ // A review takes its stamps under the current fingerprint (one written under an earlier one was upgraded when read).
+ m.designFingerprint??=DESIGN_FINGERPRINT;
  switch(command.type){
  case 'review.intake':m.intake={at,actor,stamp:reviewSourceStamp(p),runtimeHandoffCurrent:runtimeHandoffCurrent(p)};break;
  case 'review.narrative':for(const key of ['title','owner','audience','summary','scope','approach'])m.narrative[key]=text(raw[key],key==='title'||key==='owner'?180:6000);m.narrative.confirmed=raw.confirmed===true;m.narrative.sourceStamp=reviewSourceStamp(p);break;
- case 'review.action':selected=saveAction(p,raw,at).id;break;
- case 'review.proposal':{if(raw.reviewed!==true)throw Error('Review the proposed delivery action before acceptance.');const q=reviewProposal(p,raw.key,raw.objectId);if(!q)throw Error('This proposal is no longer available.');selected=saveAction(p,{...raw.record,id:null},at).id;break;}
+ case 'review.action':selected=saveAction(p,raw,at,actor).id;break;
+ case 'review.proposal':{if(raw.reviewed!==true)throw Error('Review the proposed delivery action before acceptance.');const q=reviewProposal(p,raw.key,raw.objectId);if(!q)throw Error('This proposal is no longer available.');selected=saveAction(p,{...raw.record,id:null},at,actor).id;break;}
  case 'review.delivery':{
   changed=false;const a=m.actions.find(a=>a.id===raw.id);
   if(!a||!DELIVERY_STATES.includes(raw.status))throw Error('Choose an action and delivery status.');
@@ -406,21 +466,25 @@ export function applyFinalReviewCommand(input,command,at=new Date().toISOString(
    }
   }
   if(raw.status==='Verified'&&(!actionCurrent(p,a)||!actionReady(a)||raw.reviewed!==true||!text(raw.reviewer)||!text(raw.reference)))throw Error('Verification needs a current action, reviewer, evidence reference, and explicit confirmation.');
+  // The verifier is the signed-in person, never an agent, Sol, the action's author or its owner (rc42, D15; four eyes or not).
+  if(raw.status==='Verified'){const refused=verifierRefusal(a,actor,author?.account==='agent'||author?.kind==='sol-draft'?'agent':null);if(refused)throw Error(refused);}
   a.history.push({at,status:a.status,progress:a.progress,verification:a.verification});a.status=raw.status;a.progress=text(raw.progress);
   a.verification=raw.status==='Verified'?{at,actor,reviewer:text(raw.reviewer,180),reference:text(raw.reference),stamp:reviewFingerprint(actionDefinition(a)),...extra}:null;
   m.deliveryVersion++;selected=a.id;break;
  }
  // A treatment is stamped with its finding's own inputs (round 12, GR-GOV-05: basis 'finding'); one treatment may cover a
  // whole cause (scope 'cause', GR-GOV-13); a finding the source cannot answer may be raised with its owner (GR-SRC-07).
- case 'review.disposition':{if(raw.scope==='cause'){selected=treatCause(p,raw,at,actor);break;}const f=inheritedFindings(p).find(f=>f.id===raw.findingId);if(!f||raw.stamp!==f.stamp)throw Error('The source finding changed. Review its current definition.');if(!DISPOSITIONS.includes(raw.treatment)||!text(raw.rationale)||!text(raw.reviewer)||raw.reviewed!==true)throw Error('Record a treatment, rationale, reviewer, and explicit confirmation.');if(raw.treatment==='Carry as action'){const a=m.actions.find(a=>a.id===raw.actionId);if(!a||!actionReady(a)||!actionCurrent(p,a)||a.findingId!==f.id)throw Error('Link a current, fully defined action for this specific finding.');}if(['Accepted design limitation','Not applicable'].includes(raw.treatment)&&!text(raw.reference))throw Error('Provide the evidence or decision reference for this judgement.');if(raw.treatment===SOURCE_SILENT&&!text(raw.reference))throw Error('Say with whom the question was raised, and where (the owner of the source and the reference of the request).');fourEyesFinding(p,f,actor);m.dispositions.push({id:'RF-'+pad(++m.counters.disposition),at,actor,findingId:f.id,stamp:f.stamp,basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),actionId:raw.treatment==='Carry as action'?raw.actionId:null});break;}
+ case 'review.disposition':{if(raw.scope==='cause'){selected=treatCause(p,raw,at,actor);break;}const f=inheritedFindings(p).find(f=>f.id===raw.findingId);if(!f||raw.stamp!==f.stamp)throw Error('The source finding changed. Review its current definition.');if(!DISPOSITIONS.includes(raw.treatment)||!text(raw.rationale)||!text(raw.reviewer)||raw.reviewed!==true)throw Error('Record a treatment, rationale, reviewer, and explicit confirmation.');refuseWaiver(f,raw.treatment);if(raw.treatment==='Carry as action'){const a=m.actions.find(a=>a.id===raw.actionId);if(!a||!actionReady(a)||!actionCurrent(p,a)||a.findingId!==f.id)throw Error('Link a current, fully defined action for this specific finding.');}if(['Accepted design limitation','Not applicable'].includes(raw.treatment)&&!text(raw.reference))throw Error('Provide the evidence or decision reference for this judgement.');if(raw.treatment===SOURCE_SILENT&&!text(raw.reference))throw Error('Say with whom the question was raised, and where (the owner of the source and the reference of the request).');const by=reviewBy(raw,at);fourEyesFinding(p,f,actor);m.dispositions.push({id:'RF-'+pad(++m.counters.disposition),at,actor,findingId:f.id,stamp:f.stamp,basis:'finding',treatment:raw.treatment,rationale:text(raw.rationale),reviewer:text(raw.reviewer,180),reference:text(raw.reference),...by,actionId:raw.treatment==='Carry as action'?raw.actionId:null});break;}
  // A trace review keeps the stamp of the trail it covers (round 12, GR-GOV-05); a stamp of the whole design as it is now
  // covers the trail too. One review may cover every requirement of a group or a responsibility (scope).
- case 'review.trace':{if(raw.scope&&typeof raw.scope==='object'){selected=traceGroup(p,raw,at,actor);break;}if(!reviewTrace(p,raw.requirementId)||raw.stamp!==traceStamp(p,raw.requirementId)&&raw.stamp!==reviewSourceStamp(p))throw Error('The requirement trail changed. Reopen the current trail.');if(!Array.isArray(raw.visited)||![0,1,2,3,4].every(i=>raw.visited.includes(i))||raw.reviewed!==true||!text(raw.reviewer)||!text(raw.notes))throw Error('Explore all five stages and record the reviewer and observations.');fourEyesTrail(p,[raw.requirementId],actor);m.traces.push({id:'TRV-'+pad(++m.counters.trace),at,actor,requirementId:raw.requirementId,stamp:traceStamp(p,raw.requirementId),basis:'trail',reviewer:text(raw.reviewer,180),notes:text(raw.notes)});break;}
+ case 'review.trace':{if(raw.scope&&typeof raw.scope==='object'){selected=traceGroup(p,raw,at,actor);break;}if(!reviewTrace(p,raw.requirementId)||raw.stamp!==traceStamp(p,raw.requirementId)&&raw.stamp!==reviewSourceStamp(p))throw Error('The requirement trail changed. Reopen the current trail.');if(!Array.isArray(raw.visited)||![0,1,2,3,4].every(i=>raw.visited.includes(i))||raw.reviewed!==true||!text(raw.reviewer)||!text(raw.notes))throw Error('Explore all five stages and record the reviewer and observations.');const broken=traceBreaks(p,raw.requirementId);if(broken.length)throw Error('The '+raw.requirementId+' trail has broken or missing hops: '+traceBreakWords(broken)+'. Repair them, then review it.');fourEyesTrail(p,[raw.requirementId],actor);m.traces.push({id:'TRV-'+pad(++m.counters.trace),at,actor,requirementId:raw.requirementId,stamp:traceStamp(p,raw.requirementId),hops:traceHops(p,raw.requirementId),basis:'trail',reviewer:text(raw.reviewer,180),notes:text(raw.notes)});break;}
  case 'review.objective':{const v=Number(raw.value);if(!['users','rate'].includes(raw.kind)||!Number.isFinite(v)||v<=0)throw Error('Give the objective as a positive number of concurrent users or requests a second.');if(raw.reviewed!==true||!text(raw.reviewer))throw Error('Name who sets the objective and confirm it.');const assumptions={};for(const a of CAPACITY_ASSUMPTIONS){const x=raw.assumptions?.[a.key];if(x==null||x==='')continue;if(a.options){if(a.options.some(([o])=>o===x))assumptions[a.key]=x;continue;}const n=Number(x),min=a.key==='utilisation'?1:a.unit==='%'?0:1e-6;if(Number.isFinite(n)&&n>=min&&(a.unit!=='%'||n<=100))assumptions[a.key]=n;}const perReplica={};for(const [k,x] of Object.entries(raw.perReplica||{})){const n=Number(x);if(Number.isFinite(n)&&n>0)perReplica[text(k,80)]=n;}m.capacity={kind:raw.kind,value:v,assumptions,perReplica,surge:raw.surge!==false,reviewer:text(raw.reviewer,180),actor,rationale:text(raw.rationale,2000),at};break;}
  case 'review.objective-clear':if(!m.capacity)throw Error('No review objective is saved.');m.capacity=null;break;
  // One reviewed judgement for a whole group of records (round 12, GR-GOV-04): the review plan's step, its scope stated,
  // each record kept with its fingerprint (provenance.js recordJudgement).
  case 'review.judgement':selected=recordJudgement(p,raw,at,actor,{fourEyes:fourEyesOn(p)});break;
+ // The counts are the record of the moment the checks ran (at): evidence recorded since leaves the checks current and
+ // can add findings, so what is shown (review-ui.js, the milestones, finalFindings) is counted afresh, never read here.
  case 'review.checks':changed=false;m.checks={at,actor,stamp:reviewDesignStamp(p),sourceFindings:inheritedFindings(p).length,blockers:reviewBlockers(p).length};m.handoff=null;break;
  case 'review.record':{changed=false;if(!finalChecksCurrent(p)||raw.stamp!==reviewDesignStamp(p))throw Error('Run current review checks before recording the outcome.');if(!REVIEW_OUTCOMES.includes(raw.outcome)||raw.reviewed!==true||!text(raw.reviewer)||!text(raw.reference)||!text(raw.rationale))throw Error('Record the reviewer, evidence reference, rationale, outcome, and explicit confirmation.');if(raw.outcome==='Ready for governance'&&changeSummary(p).open)throw Error('Resolve the open architecture-change reviews, or record Ready with actions / limitations.');if(raw.outcome!=='Revision required'){if(!finalMilestones(p).slice(0,4).every(m=>m.done))throw Error('Complete context, SDD framing, traceability, and finding treatment before a positive review.');const limitations=inheritedFindings(p).some(f=>f.level==='error'&&findingTreatment(p,f)!=='Not applicable');if(limitations&&raw.outcome==='Ready for governance')throw Error('Use Ready with actions / limitations while source errors remain.');}m.reviews.push({id:'FR-'+pad(++m.counters.review),at,stamp:reviewDesignStamp(p),outcome:raw.outcome,reviewer:text(raw.reviewer,180),actor,...account,reference:text(raw.reference),rationale:text(raw.rationale)});m.handoff=null;break;}
  case 'review.baseline':{changed=false;const steps=freezeSteps(p,raw,at,actor);let step=steps.next();while(!step.done)step=steps.next();selected=recordBaseline(p,step.value).id;break;}
@@ -487,20 +551,15 @@ export const openCounts=p=>openCounter?openCounter(p):null;
 // Coverage from curated links (round 12, GR-SDD-16): a requirement is traced to a layer when a record of that layer names
 // it or its requirement group, or, for application components, when the component realises a responsibility that does
 // (its realising component). The trails derived from that component (the products of its needs, the plans that run it)
-// are counted apart as inherited, never as traced.
+// are counted apart as inherited, never as traced. Read from each requirement's spine (rc.10.73.42, D7: trace-kernel.js
+// requirementSpine), so coverage counts only what the trail holds: a record of the layer with a fulfils hop from the
+// requirement; a component on its own chain; a product (implementedBy) or plan (operatedAs) reached through them.
 export function traceCoverage(p){return remember(p,'review:coverage','',()=>memoPass(p,()=>{
- const reqs=reviewRequirements(p),ids=new Set(reqs.map(r=>r.id)),named=xs=>{const s=new Set();for(const r of xs||[])for(const id of linkedRequirementIds(p,r))if(ids.has(id))s.add(id);return s;};
- const byResp=new Map();for(const r of p.logical.responsibilities)for(const id of linkedRequirementIds(p,r))if(ids.has(id)){let xs=byResp.get(r.id);if(!xs)byResp.set(r.id,xs=[]);xs.push(id);}
- const compsOf=new Map(),add=(req,c)=>{let xs=compsOf.get(req);if(!xs)compsOf.set(req,xs=new Set());xs.add(c);};
- for(const m of p.logical.mappings)for(const id of byResp.get(m.logicalId)||[])add(id,m.physicalId);
- for(const c of p.realisation.components)for(const id of linkedRequirementIds(p,c))if(ids.has(id))add(id,c.id);
- const needs=new Map();for(const n of p.technology.needs){let xs=needs.get(n.applicationId);if(!xs)needs.set(n.applicationId,xs=[]);xs.push(n.id);}
- const capOf=new Map(p.technology.mappings.map(m=>[m.needId,m.capabilityId])),realsOf=new Map();for(const m of p.technologyRealisation.mappings){let xs=realsOf.get(m.capabilityId);if(!xs)realsOf.set(m.capabilityId,xs=[]);xs.push(m.realizationId);}
- const planned=new Set(p.runtime.plans.map(r=>r.assetId)),compReals=c=>(needs.get(c)||[]).flatMap(n=>realsOf.get(capOf.get(n))||[]);
- const direct={logical:named(p.logical.responsibilities),applications:new Set(compsOf.keys()),realizations:named([...p.technologyRealisation.records,...p.technology.capabilities]),runtime:named([...p.runtime.plans,...(p.runtime.paths||[])])};
- const inherited={logical:new Set(),applications:new Set(),realizations:new Set(),runtime:new Set()};
- for(const [req,cs] of compsOf)for(const c of cs){const rs=compReals(c);if(rs.length&&!direct.realizations.has(req))inherited.realizations.add(req);if((planned.has(c)||rs.some(r=>planned.has(r)))&&!direct.runtime.has(req))inherited.runtime.add(req);}
- return {requirements:reqs.length,layers:[['logical','responsibilities'],['applications','application components'],['realizations','technology realization'],['runtime','runtime placement']].map(([key,label])=>({key,label,direct:direct[key].size,inherited:inherited[key].size}))};
+ const reqs=reviewRequirements(p),keys=['logical','applications','realizations','runtime'],direct={},inherited={};for(const k of keys)direct[k]=inherited[k]=0;
+ for(const r of reqs){const S=requirementSpine(p,r.id),via=(test,...ls)=>ls.some(l=>S.layers[l].some(x=>S.hops.get(x).some(test))),named=(...ls)=>via(h=>h.type==='fulfils'&&h.from===r.id,...ls);
+  const d={logical:named('responsibility'),applications:S.layers.component.length>0,realizations:named('realization','capability'),runtime:named('plan','path')},i={realizations:via(h=>h.type==='implementedBy','realization'),runtime:via(h=>h.type==='operatedAs','plan')};
+  for(const k of keys)if(d[k])direct[k]++;else if(i[k])inherited[k]++;}
+ return {requirements:reqs.length,layers:[['logical','responsibilities'],['applications','application components'],['realizations','technology realization'],['runtime','runtime placement']].map(([key,label])=>({key,label,direct:direct[key],inherited:inherited[key]}))};
 }));}
 export function atGlanceMarkdown(p){
  const reqs=reviewRequirements(p),cover=traceCoverage(p),sums=chapterSummaries(p),done=sums.reduce((t,c)=>t+c.done,0),total=sums.reduce((t,c)=>t+c.total,0),C=openCounts(p),m=p.finalReview,n=m.narrative||{},gaps=findingGroups(p).filter(g=>g.level==='error'&&!g.disposition).sort((a,b)=>b.items.length-a.items.length).slice(0,5),warnings=C?C.toConfirm:0;
@@ -543,7 +602,7 @@ export function* freezeSteps(p,raw,at,actor){
  if(!finalChecksCurrent(p)||raw.stamp!==reviewDesignStamp(p))throw Error('Run current checks before freezing this baseline.');
  if(!text(raw.title)||raw.reviewed!==true)throw Error('Name the baseline and acknowledge its open findings.');
  const r=latestDesignReview(p),classification=r&&r.outcome!=='Revision required'?'Architect reviewed':'Working draft';
- const b={id:nextBaselineId(m),at,actor,title:text(raw.title,180),classification,stamp:reviewDesignStamp(p),reviewId:r?.id||null,parentId:m.baselines.at(-1)?.id||null,chapterStamps:chapterStamps(p)};
+ const b={id:nextBaselineId(m),at,actor,title:text(raw.title,180),classification,stamp:reviewDesignStamp(p),reviewId:r?.id||null,parentId:m.baselines.at(-1)?.id||null,chapterStamps:chapterStamps(p),designFingerprint:fingerprintVersion,evidenceStamp:evidenceStamp(p)};
  b.source=structuredClone(reviewSource(p));yield 'source';
  b.review={changes:structuredClone(p.changes),narrative:structuredClone(m.narrative),actions:structuredClone(m.actions),dispositions:structuredClone(m.dispositions),traces:structuredClone(m.traces),roadmap:structuredClone(p.roadmap),outcome:r?structuredClone(r):null};yield 'review';
  b.findings=inheritedFindings(p);b.summary=chapterSummaries(p);yield 'findings';

@@ -121,7 +121,7 @@ export function designBasisSource(p,selected){
   return {id:'design-questions:'+id,kind:'design-questions',objectId:id,title:'What '+d.id+' asks of the design',posture:DESIGN_BASIS_POSTURE,excerpt:excerpt.slice(0,6000),truncated:excerpt.length>6000};
  }
  const r=designQuestions(p,id);if(!r)return null;
- const excerpt=JSON.stringify({ref:r.ref,kind:r.kind,chapter:r.chapter,drivers:r.drivers.map(d=>({id:d.id,title:d.title,kind:d.kind,target:d.target,priority:d.priority,confirmed:d.confirmed,attribute:d.attribute?{name:d.attribute.name,family:d.attribute.family?.name||null}:null})),questions:r.questions.map(q=>({id:q.id,title:q.title,state:q.state,chapter:q.chapter,because:q.because,toConfirm:q.toConfirm,answers:q.answers.map(a=>({kind:a.kind,ref:a.ref,title:a.title,state:a.state,chapter:a.chapter})),story:q.story,caution:q.caution})),counts:r.counts});
+ const excerpt=JSON.stringify({ref:r.ref,kind:r.kind,chapter:r.chapter,drivers:r.drivers.map(d=>({id:d.id,title:d.title,kind:d.kind,target:d.target,priority:d.priority,confirmed:d.confirmed,attribute:d.attribute?{name:d.attribute.name,family:d.attribute.family?.name||null}:null})),questions:r.questions.map(q=>({id:q.id,title:q.title,state:q.state,chapter:q.chapter,because:q.because,toConfirm:q.toConfirm,answers:q.answers.map(a=>({kind:a.kind,ref:a.ref,title:a.title,state:a.state,chapter:a.chapter})),story:q.story,pending:q.pending,caution:q.caution})),counts:r.counts});
  return {id:'design-questions:'+id,kind:'design-questions',objectId:id,title:'Design basis · '+r.ref,posture:DESIGN_BASIS_POSTURE,excerpt:excerpt.slice(0,6000),truncated:excerpt.length>6000};
 }
 // Two starters for a record on Chapters 5–7 (rc39): each drafts the question with the record's design basis in it, so Sol
@@ -130,7 +130,7 @@ export function designStarters(p,chapter,objectId){
  if(![5,6,7].includes(Number(chapter))||!objectId)return [];
  const r=designQuestions(p,objectId);if(!r||!r.drivers.length)return [];
  const d=r.drivers[0],open=r.questions.filter(q=>q.state!=='decided'),decided=r.questions.filter(q=>q.state==='decided');
- const basis='Its design basis: '+r.drivers.map(x=>x.id+' ('+x.title+(x.target?', '+x.target:'')+')').join('; ')+'. Open questions: '+(open.map(q=>q.title+' ('+q.because.join(', ')+(q.state==='draft'?', a draft answer recorded':'')+')').join('; ')||'none')+'. Decided: '+(decided.map(q=>q.story).join(' ')||'nothing yet')+'.';
+ const basis='Its design basis: '+r.drivers.map(x=>x.id+' ('+x.title+(x.target?', '+x.target:'')+')').join('; ')+'. Open questions: '+(open.map(q=>q.title+' ('+q.because.join(', ')+(q.state==='draft'?', a draft answer recorded':'')+')').join('; ')||'none')+'. Decided: '+(decided.map(q=>q.story+(q.pending?' Still needs evidence: '+q.pending.join(', ')+'.':'')).join(' ')||'nothing yet')+'.';
  return [
   ['design-why','Why this kind of component here?','Why is '+r.ref+' the kind of component it is, and what does its selection rest on? '+basis+' Explain from the recorded drivers and answers only; say which questions are still open; propose nothing as decided.','Explain the selection from its drivers'],
   ['design-tighten','What would change if '+d.id+' tightened?','If '+d.id+' ('+d.title+(d.target?', now '+d.target:'')+') tightened, which of '+r.ref+'’s design questions would need a different answer, and what would have to be re-examined? '+basis+' Trace it through the recorded basis; ask me for the new target rather than inventing one.','Follow a tighter target through the basis']
@@ -303,9 +303,9 @@ export function validateIntelligenceOutput(raw,packet){
  return result;
 }
 export function generationReceipt(run){return {groundingReview:copy(run.groundingReview),brainReceipt:copy(run.packet.brainReceipt),retrieval:copy(run.packet.retrieval),runId:run.id,provider:run.provider,model:run.model,at:run.updatedAt,request:copy(run.packet.request),context:copy(run.packet.context),basisStamp:run.packet.basisStamp,packetStamp:run.packet.stamp,sources:copy(run.packet.sources),sourceRefs:copy(run.result.sourceRefs),assumptions:copy(run.result.assumptions),questions:copy(run.result.questions),...(run.instructions?{instructions:copy(run.instructions)}:{})};}
-export function adoptIntelligence(p,raw,run,at=new Date().toISOString()){
+export function adoptIntelligence(p,raw,run,at=new Date().toISOString(),actor=null){
  if(run.status!=='completed')throw Error('Only a completed, saved response can enter review.');
- if(raw.kind==='review-finding')return adoptReviewFinding(p,raw,run,at);
+ if(raw.kind==='review-finding')return adoptReviewFinding(p,raw,run,at,actor);
  const generation=generationReceipt(run),current=generationCurrent(p,generation),requireCurrent=()=>{if(!current)throw Error('The source context changed. Generate again from the current sources before using this response.');};
  if(raw.kind==='architecture-operation'||raw.kind==='architecture-option'){
   if(!run.groundingReview?.accepted||!run.packet.architectureOperations?.canPropose)throw Error('Choose a source-checked architecture proposal from this saved response.');
@@ -494,7 +494,8 @@ export function reviewFindingBasis(p,run){
  try{receiptsCurrent=(run?.packet?.sources||[]).every(s=>s.kind==='knowledge'?receiptCurrent(s.receipt):s.kind==='architecture-intelligence'?architectureIntelligenceCurrent(p,s):['governed-claim','brain-method','catalogue-description'].includes(s.kind)?brainSourceCurrent(p,s):true);}catch{/* An unreadable receipt cannot be treated as current. */}
  return {savedStamp,currentStamp,current:!!savedStamp&&savedStamp===currentStamp&&receiptsCurrent,receiptsCurrent};
 }
-export function adoptReviewFinding(p,raw,run,at=new Date().toISOString()){
+// actor: the signed-in person who adopts the finding, recorded as the action's author (rc42, D15), as review.proposal does.
+export function adoptReviewFinding(p,raw,run,at=new Date().toISOString(),actor=null){
  if(run.mode!=='review'||run.status!=='completed')throw Error('Choose a completed review of Sol’s.');
  if(raw.reviewed!==true)throw Error('Confirm that you reviewed the finding before recording it as an action.');
  const f=(run.result?.findings||[]).find(x=>x&&x.id===raw.findingId);
@@ -504,7 +505,7 @@ export function adoptReviewFinding(p,raw,run,at=new Date().toISOString()){
  const basis=reviewFindingBasis(p,run),historicalReason=text(raw.historicalReason,2000);
  if(!basis.current&&(raw.historicalAcknowledged!==true||historicalReason.length<20))throw Error('The chapter review or its source receipts changed. Review the current chapter, or acknowledge why this historical finding still warrants an action (at least 20 characters).');
  const acceptance=`From Sol’s ${basis.current?'current':'historical'} review of Chapter ${run.request?.chapter??''} (${SEVERITY_WORDS[f.severity]||f.severity}): ${f.reason} Sol’s review run ${run.id}, finding ${f.id}; adopted as advice to act on, not as verified.${basis.current?'':' Historical basis acknowledged: '+historicalReason}`.slice(0,4000);
- const result=applyFinalReviewCommand(p,{type:'review.action',payload:{id:null,title:f.title,owner:'',due:'',acceptance,objectIds:[f.elementId],findingId:''}},at);
+ const result=applyFinalReviewCommand(p,{type:'review.action',payload:{id:null,title:f.title,owner:'',due:'',acceptance,objectIds:[f.elementId],findingId:''}},at,actor);
  const action=result.document.finalReview.actions.find(a=>a.id===result.selected);
  if(action)action.provenance={...(action.provenance||{}),solReview:{runId:run.id,findingId:f.id,elementId:f.elementId,severity:f.severity,title:f.title,reason:f.reason,promptVersion:run.instructions?.promptVersion||null,adoptedAt:at,basis:{savedStamp:basis.savedStamp,currentStamp:basis.currentStamp,receiptsCurrent:basis.receiptsCurrent,currentAtAdoption:basis.current,...(!basis.current?{historicalReason}: {})},authority:'Architect acknowledged advisory finding; no independent review or verification recorded.'}};
  return result;

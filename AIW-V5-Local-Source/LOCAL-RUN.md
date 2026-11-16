@@ -1,11 +1,11 @@
 # Run AIW V5 locally
 
-Current source package: `AIW-rc41-source.zip`, release `AIW v0.10.0-rc.10.73.41+studio.20261022`. It contains the frontend, backend, shared model, schema migrations, package lock, checks and release evidence. It does **not** contain your hosted projects, local database, dependencies, repository originals, workbook, or secrets. A Site deployment and its commit are recorded separately; possession of this ZIP does not establish that a hosted trigger or AI provider is configured.
+Current source package: `AIW-rc42-source.zip`, release `AIW v0.10.0-rc.10.73.42+integrity.20261116`. It contains the frontend, backend, shared model, schema migrations, package lock, checks and release evidence. It does **not** contain your hosted projects, local database, dependencies, repository originals, workbook, or secrets. A Site deployment and its commit are recorded separately; possession of this ZIP does not establish that a hosted trigger or AI provider is configured.
 
 ## Start
 
 1. Install **Node.js 24**. Confirm with `node --version` (it should start with `v24.`) and `npm --version`. The server refuses to start on Node.js older than 22.13, where its built-in SQLite database is unavailable; Node.js 22 works but prints an "experimental" warning.
-2. Unzip `AIW-rc41-source.zip`. Open a terminal **inside** the extracted `AIW-rc41-source` directory, where `package.json` and `server.js` are located.
+2. Unzip `AIW-rc42-source.zip`. Open a terminal **inside** the extracted `AIW-rc42-source` directory, where `package.json` and `server.js` are located.
 3. Run:
 
    ```sh

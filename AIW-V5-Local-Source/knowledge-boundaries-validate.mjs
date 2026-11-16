@@ -8,7 +8,7 @@ const load=path=>import(pathToFileURL(resolve(base,path)).href);
 const {seedProject}=await load('public/requirements-domain.js');
 const {withFinalReview}=await load('public/review-domain.js');
 const {applyKnowledgeCommand,knowledgeStamp,knowledgeImpactStamp,knowledgeFindings,organizationKnowledgeRelease,pinOrganizationKnowledge}=await load('public/knowledge-governance.js');
-const {applyTechnologyRealisationCommand,realization,realizationSources,selectionState}=await load('public/technology-realisation-domain.js');
+const {applyTechnologyRealisationCommand,realization,realizationSources,realizationCriteria,selectionState}=await load('public/technology-realisation-domain.js');
 const {architectureKnowledgeForChoice}=await load('public/architecture-knowledge.js');
 const {productComparison}=await load('public/product-comparison.js');
 const {intelligencePacket}=await load('public/intelligence-context.js');
@@ -36,7 +36,10 @@ assert.equal(canonical.matches.length,0,'Fixture must mismatch the documented ve
 
 k('link',{...review,claimId:cid,releaseId:rel,objectId:rid});
 t('plan',{id:rid,purpose:'Synthetic selected service.',owner:'Synthetic test owner',rationale:'Synthetic rationale that depends on the linked released claim.'});
-t('preference',{id:rid,optionId:oid});t('record',{id:rid,reviewed:true});
+t('preference',{id:rid,optionId:oid});
+// rc42 (D2): the preferred option is judged against each inherited driver before the selection is recorded.
+for(const c of realizationCriteria(p,rid).filter(c=>c.kind==='driver'))t('assessment',{id:rid,optionId:oid,criterionId:c.id,effect:'supports',reason:'Synthetic fixture judgement.',evidence:'Synthetic fixture.'});
+t('record',{id:rid,reviewed:true});
 const before=selectionState(p,realization(p,rid));
 const activeFixture=structuredClone(p);
 k('withdraw',{...review,id:cid,stamp:knowledgeImpactStamp(p,cid)});

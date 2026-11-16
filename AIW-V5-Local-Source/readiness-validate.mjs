@@ -32,7 +32,7 @@ const Q = sddReadiness(q);
 assert.equal(Q.chapters[0].blockers, 0, 'repaired in Chapter 1'); assert.notEqual(Q.chapters[0].state, 'gaps');
 assert.ok(Q.chapters.slice(1, 10).some((c, i) => c.blockers > R.chapters[i + 1].blockers), 'and the changed requirement asks the chapters built on it for review');
 const f = inheritedFindings(project).find(x => x.chapter === 6 && x.level === 'error');
-const t = applyFinalReviewCommand(structuredClone(project), {type: 'review.disposition', payload: {findingId: f.id, stamp: f.stamp, treatment: 'Accepted design limitation', rationale: 'Accepted for the pilot; revisit before production.', reviewer: 'Synthetic reviewer', reference: 'ADR-003', reviewed: true}}).document;
+const t = applyFinalReviewCommand(structuredClone(project), {type: 'review.disposition', payload: {findingId: f.id, stamp: f.stamp, treatment: 'Accepted design limitation', rationale: 'Accepted for the pilot; revisit before production.', reviewer: 'Synthetic reviewer', reference: 'ADR-003', reviewBy: '2099-12-31', reviewed: true}}).document;
 const T = sddReadiness(t);
 assert.equal(T.chapters[5].blockers, 3); assert.equal(T.chapters[5].treated, 1); assert.equal(T.treated, 1);
 assert.match(T.summary, /^210 findings to fix in 7 chapters stand between this design and a reviewable SDD\. 1 more is treated in Chapter 11\.$/);

@@ -30,6 +30,11 @@
 // whole chapters; they are upgraded by the same rule (a document is taken under the definition it was written at and
 // under the current one). And a Chapter 8-10 record whose reading was kept as the versions of the chapters it reads
 // (before D4) and was current now keeps its reading of the records it reads; one that was not stays as it was.
+//
+// Design fingerprint 2 (rc42, D14): the stamps of the whole design (review-domain.js reviewSourceStamp) leave out the
+// evidence recorded about it. A document whose stamps were taken under fingerprint 1 (finalReview.designFingerprint not
+// set, stamps kept) has its readings converted under fingerprint 1, then its stamps of the whole design carried over by
+// the same rule (toDesignFingerprint), and says it is at fingerprint 2.
 import {withReadingsDefinition,READINGS_DEFINITION,recordStamp,driverStamp,isFingerprint} from './source-fingerprint.js';
 import {interfaceReading,inputStamp as interfaceInputStamp} from './interfaces-domain.js';
 import {securityReading,securityInputStamp} from './security-domain.js';
@@ -41,7 +46,7 @@ import {documentClone,memoPass} from './document-memo.js';
 import {changeTargetStamp,changeFingerprint} from './changes-domain.js';
 import {appSnapshot,capabilitySnapshot,intakeStamp} from './technology-domain.js';
 import {inputSnapshot} from './technology-realisation-domain.js';
-import {reviewFingerprint,reviewSource,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade} from './review-domain.js';
+import {reviewFingerprint,designFingerprint,computeChapterStamps,inheritedFindings,legacyStampOf,actionDefinition,registerReadingsUpgrade,DESIGN_FINGERPRINT,withDesignFingerprint} from './review-domain.js';
 import {currentResponsibilityReading} from './logical-domain.js';
 import {currentComponentReading} from './realisation-domain.js';
 import {workingBasis,guideBasis} from './guidance-record.js';
@@ -51,6 +56,8 @@ import {analysisModelStamp} from './quality-analysis.js';
 import {reversalBasis} from './model-reversal.js';
 import {architectureCases,caseReviewBasis} from './architecture-case.js';
 import {digest} from './brain-integrity.js';
+import {templateEvidence} from '../shared/projects-domain.js';
+import {upgradeOwnership} from './ownership-upgrade.js';
 
 const list=v=>Array.isArray(v)?v:[],plain=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const READINGS=new Set(['sourceSnapshot','driverSnapshot']);
@@ -60,8 +67,13 @@ const keepsCopies=p=>list(p?.quality?.drivers).some(d=>isCopy(d.sourceSnapshot))
 // Whether anything in a document keeps a reading or a stamp of records (a document that keeps none is at any definition).
 const keepsReadings=p=>list(p?.quality?.drivers).length>0||list(p?.decisions?.records).length>0||list(p?.logical?.responsibilities).length>0||list(p?.realisation?.components).length>0||list(p?.technology?.needs).length>0||list(p?.technologyRealisation?.records).length>0||list(p?.changes?.events).some(e=>list(e?.items).length>0)||list(p?.interfaces?.contracts).length>0||list(p?.interfaces?.data).length>0||list(p?.security?.threats).length>0||list(p?.security?.controls).length>0||list(p?.runtime?.plans).length>0||list(p?.runtime?.paths).length>0||list(p?.coauthoring?.designTasks).length>0;
 export const readingsDefinitionOf=p=>Number.isInteger(p?.readingsDefinition)?p.readingsDefinition:1;
+const readingsDue=p=>keepsCopies(p)||readingsDefinitionOf(p)<READINGS_DEFINITION&&keepsReadings(p);
+// The design fingerprint a document's stamps were taken under (rc42, D14): the one its review names; one that names none
+// was written before versions (fingerprint 1), unless it keeps no stamp of the design, which reads alike under any.
+const keepsDesignStamps=m=>!!(m.intake||m.checks||m.narrative?.sourceStamp||['reviews','baselines','actions','traces','dispositions'].some(k=>list(m[k]).length));
+export const designFingerprintOf=p=>{const m=p?.finalReview;return !plain(m)?DESIGN_FINGERPRINT:Number.isInteger(m.designFingerprint)?m.designFingerprint:keepsDesignStamps(m)?1:DESIGN_FINGERPRINT;};
 export function needsReadingsUpgrade(p){
- return keepsCopies(p)||readingsDefinitionOf(p)<READINGS_DEFINITION&&keepsReadings(p);
+ return readingsDue(p)||designFingerprintOf(p)<DESIGN_FINGERPRINT;
 }
 // Every value of a part of the document, depth first, except the frozen baselines (finalReview.baselines). fn(value,
 // holder, key) answers what to descend into (a falsy answer: nothing).
@@ -110,7 +122,7 @@ function recordStamps(p,what){
 // keeps; review-domain.js dispositionCurrent reads each by the treatment's basis).
 const treatedFindingIds=p=>new Set(list(p.finalReview?.dispositions).flatMap(d=>d.scope==='cause'?list(d.findings).map(x=>x?.[0]):[d.findingId]).filter(id=>typeof id==='string'));
 function designStamps(p,findingIds){
- const out={source:reviewFingerprint(reviewSource(p)),chapters:computeChapterStamps(p),findings:new Map()};
+ const out={source:designFingerprint(p),chapters:computeChapterStamps(p),findings:new Map()};
  // Findings are kept per document object (review-domain.js): taken of a copy, so the document itself keeps none.
  if(findingIds.size){const copy=documentClone(p);for(const f of inheritedFindings(copy))if(findingIds.has(f.id))out.findings.set(f.id,[f.stamp,legacyStampOf(copy,f)]);}
  return out;
@@ -120,11 +132,49 @@ const caseStamps=p=>new Map(architectureCases(p).map(c=>[c.id,caseReviewBasis(p,
 
 // The upgrade itself: the document when it needs none, else an upgraded copy of it (the input is left as it was). Copies
 // become readings of whole records (definition 1, as D-04 wrote them), then readings of content (definition 2).
+// Readings are converted under the design fingerprint the document's stamps were taken at, then the fingerprint upgraded.
 export function upgradeReadings(p){
  if(!p||typeof p!=='object'||!needsReadingsUpgrade(p))return p;
+ const fingerprint=designFingerprintOf(p),q=readingsDue(p)?withDesignFingerprint(fingerprint,()=>toCurrentReadings(p)):documentClone(p);
+ return fingerprint<DESIGN_FINGERPRINT?toDesignFingerprint(q):q;
+}
+function toCurrentReadings(p){
  const copies=keepsCopies(p),whole=copies?withReadingsDefinition(1,()=>convertCopies(p)):p,from=copies?1:readingsDefinitionOf(p);
  const q=from<READINGS_DEFINITION?withReadingsDefinition(READINGS_DEFINITION,()=>toReadings(whole,from)):whole===p?documentClone(p):whole;
  q.readingsDefinition=READINGS_DEFINITION;
+ return q;
+}
+// Design fingerprint 1 → 2 (rc42, D14: the design fingerprint leaves the evidence recorded about the design out). The
+// document's design is unchanged; only what its stamps of the whole design read. Each stamp of the design, of its
+// version, and of each treated finding is taken under fingerprint 1 and under 2: a stored value equal to the first (it was
+// current) becomes the second, one that was not stays as it was, and stays not current, so no review, baseline or
+// approval turns current or stale by the upgrade. A frozen baseline is never changed (its stamps are covered by its
+// SHA-256): it is answered, while the design is unchanged, through the one alias table (finalReview.readingsUpgrade,
+// review-domain.js designStampIs and baselineChanges), keyed by the current stamps and chained through the aliases an
+// earlier readings upgrade left, as toReadings chains them, so that a later readings upgrade chains through it too. The
+// fingerprint-1 stamps the upgrade read, and the alias table it replaced, stay on record for audit
+// (finalReview.designFingerprintUpgrade).
+function toDesignFingerprint(q){
+ const m=q.finalReview;if(!m||typeof m!=='object')return q;
+ const findingIds=treatedFindingIds(q),before=withDesignFingerprint(1,()=>designStamps(q,findingIds)),version=m.version,map=new Map();
+ // A document whose own records say it is the reference and that names no template is stamped as the reference by the
+ // storage upgrade this one triggers (storage-upgrade.js, GR-DOM-15), which reads it as it read: stamped here first, so
+ // the stamps carried over are those of the document as it is stored, and the stamping never makes them stale.
+ if(!q.workspace?.template&&templateEvidence(q)==='bank-payment')q.workspace={...(q.workspace||{}),template:'bank-payment'};
+ const after=designStamps(q,findingIds);
+ record(map,before.source,after.source);record(map,before.source+':'+version,after.source+':'+version);
+ recordFindings(map,before.findings,after.findings);
+ // A verification reads its action's definition, which names the design stamp the action was defined against.
+ const verified=list(m.actions).map(a=>!!a.verification&&a.verification.stamp===reviewFingerprint(actionDefinition(a)));
+ translate(q,m,map);
+ list(m.actions).forEach((a,i)=>{if(verified[i])a.verification={...a.verification,stamp:reviewFingerprint(actionDefinition(a))};});
+ const old=m.readingsUpgrade,chapters={};for(const [id,b] of Object.entries(before.chapters))if(after.chapters[id]!==b)chapters[id]={[after.chapters[id]]:b};
+ m.designFingerprintUpgrade={from:1,design:{[after.source]:before.source},chapters,...(old?{readingsUpgrade:old}:{})};
+ if(list(m.baselines).length){
+  const aliases={};for(const [id,b] of Object.entries(before.chapters)){const legacy=old?.chapters?.[id]?.[b]??b,a=after.chapters[id];if(a!==legacy||old?.chapters?.[id])aliases[id]={[a]:legacy};}
+  m.readingsUpgrade={design:{[after.source]:old?.design?.[before.source]??before.source},chapters:aliases};
+ }
+ m.designFingerprint=DESIGN_FINGERPRINT;
  return q;
 }
 function convertCopies(p){
@@ -240,4 +290,5 @@ function toReadings(legacy,from){
  translate(q,m,map);
  return q;
 }
-registerReadingsUpgrade(upgradeReadings);
+// The read upgrade of rc.10.73.42 (D9) runs with it: the data owners Chapter 5 named that Chapter 8 does not (ownership-upgrade.js).
+registerReadingsUpgrade(p=>upgradeOwnership(upgradeReadings(p)));

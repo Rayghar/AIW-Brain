@@ -8,7 +8,7 @@
 // Pure and DOM-free; nothing here changes the project.
 import {reviewRequirements, reviewTrace} from './review-domain.js';
 import {requirementGroups, groupIndex} from './requirement-groups.js';
-import {linksRequirement} from './requirement-links.js';
+import {requirementTrace} from './trace-kernel.js';
 import {ASSESSMENT_FIELDS} from './intake-domain.js';
 import {mdText, md, plural, groupLabel} from './sdd-architecture.js';
 import {memoPass} from './document-memo.js';
@@ -72,10 +72,12 @@ export function traceabilityMatrix(p) {
     const G = groupIndex(p);
     return reviewRequirements(p).map(r => {
       const t = reviewTrace(p, r.id) || {}, row = {id: r.id, externalId: str(r.externalId), title: str(r.title), groups: G.of.get(r.id) || [], delivery: str(r.assessment?.delivery), layers: {}};
-      const respNamed = new Set((t.logical || []).filter(x => linksRequirement(p, x, r.id)).map(x => x.id));
-      const realising = new Set((p.logical?.mappings || []).filter(m => respNamed.has(m.logicalId)).map(m => m.physicalId));
+      // Named, by the trail's own hops (trace-kernel.js, rc.10.73.42 D7): a record the requirement names (or its group),
+      // and a component that realises a responsibility it names; any other record on the trail is through the design.
+      const T = requirementTrace(p, r.id), hop = (id, test) => (T?.hops.get(id) || []).some(test), names = id => hop(id, h => h.type === 'fulfils' && h.from === r.id);
+      const respNamed = new Set((t.logical || []).filter(x => names(x.id)).map(x => x.id));
       for (const [k] of MATRIX_LAYERS) {
-        const xs = t[k] || [], named = xs.filter(x => (k === 'applications' ? realising.has(x.id) || linksRequirement(p, x, r.id) : linksRequirement(p, x, r.id)));
+        const xs = t[k] || [], named = xs.filter(x => names(x.id) || (k === 'applications' && hop(x.id, h => h.type === 'realizedBy' && respNamed.has(h.from))));
         row.layers[k] = {named: named.map(x => x.ref || x.code || x.id), through: xs.filter(x => !named.includes(x)).map(x => x.ref || x.code || x.id)};
       }
       return row;

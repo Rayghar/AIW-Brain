@@ -1,6 +1,6 @@
 // One project entry to the existing Chapter 5 component library, Chapter 7 technology choices, and
 // Proposals' governed sources. The catalogue is a read-only projection of the project's options.
-import {COMPONENT_ARCHETYPES,COMPONENT_LIBRARY_KIND} from './component-library.js';
+import {COMPONENT_ARCHETYPES,archetypeWithdrawn,projectEntries} from './component-library.js';
 import {technologyCatalogue} from './technology-catalogue.js';
 import {architectureKnowledgeSnapshot} from './architecture-knowledge.js';
 import {knowledgeChoiceHTML} from './knowledge-explanation-ui.js';
@@ -60,7 +60,7 @@ function clearResourceRoute(){
 }
 function appearance(entry){
  const uses=entry.uses||[];
- return uses.some(u=>u.approved)?['External approval evidence recorded','approved']:
+ return uses.some(u=>u.approved)?[uses.find(u=>u.approved).status,'approved']:
  uses.some(u=>u.needsReview)?['Selection needs review','working']:
  uses.some(u=>u.recorded)?['Current architect selection','approved']:
  uses.some(u=>u.selected)?['Draft preference','working']:
@@ -120,15 +120,17 @@ function technology(p){
  <div class="dr-tech-layout" data-mobile-view="${mobileView}"><div class="dr-picker"><label for="dr-search">Search products and reasons</label><input id="dr-search" type="search" data-dr-search value="${esc(query)}" placeholder="Kafka, PostgreSQL, reliability…" autocomplete="off" maxlength="120">
  <div class="dr-filters"><label>Capability<select data-dr-filter="capability"><option value="">All capabilities</option><optgroup label="Product categories">${categories.map(c=>`<option value="category:${esc(c)}" ${capability==='category:'+c?'selected':''}>${esc(c)}</option>`).join('')}</optgroup>${caps.length?`<optgroup label="In this design">${caps.map(c=>`<option value="${esc(c.id)}" ${capability===c.id?'selected':''}>${esc(c.title||c.id)}</option>`).join('')}</optgroup>`:''}</select></label>
  <label>Quality driver<select data-dr-filter="driver"><option value="">All drivers</option>${drivers.map(d=>`<option value="${esc(d.id)}" ${driver===d.id?'selected':''}>${esc(d.title||d.id)}</option>`).join('')}</select></label>
- <label>Decision state<select data-dr-filter="status"><option value="">All states</option>${[['in-design','Considered in project'],['recorded','Recorded selection'],['needs-review','Needs review'],['candidate','Candidate option'],['approved','External approval recorded'],['not-considered','Not considered']].map(([id,label])=>`<option value="${id}" ${status===id?'selected':''}>${label}</option>`).join('')}</select></label></div>
+ <label>Decision state<select data-dr-filter="status"><option value="">All states</option>${[['in-design','Considered in project'],['recorded','Recorded selection'],['needs-review','Needs review'],['candidate','Candidate option'],['approved','Approval evidence attested'],['not-considered','Not considered']].map(([id,label])=>`<option value="${id}" ${status===id?'selected':''}>${label}</option>`).join('')}</select></label></div>
  <p class="dr-list-count">${visible.length} of ${entries.length} products · ${entries.filter(x=>x.uses?.length).length} appear in project options</p><div class="dr-products" role="group" aria-label="Technology products">${entries.map(e=>{const [state]=appearance(e);return `<button type="button" data-dr-product="${esc(e.id)}" aria-pressed="${e.id===selected}" ${visible.includes(e)?'':'hidden'}><span><b>${esc(e.name)}</b><small>${esc(e.category||'Technology')} · ${esc(state)}</small></span><span aria-hidden="true">›</span></button>`}).join('')}</div><p class="dr-no-match" ${visible.length?'hidden':''}>No matching product. Change a filter or add a custom option in Chapter 7.</p></div><div class="dr-detail-slot">${visible.length?productDetail(product):'<div class="dr-empty"><h3>No matching product</h3><p>Change a filter or add a custom option in Chapter 7.</p></div>'}</div></div>`;
 }
 function components(p){
- const mine=(p.workbench?.catalogue||[]).filter(x=>x.kind===COMPONENT_LIBRARY_KIND&&x.status!=='deprecated');
+ // rc42 (D4): what realisation.candidate accepts (component-library.js): the project's own entries and the archetypes it
+ // has not withdrawn; organisation entries released into it are in the Chapter 5 library browser.
+ const mine=projectEntries(p),archetypes=COMPONENT_ARCHETYPES.filter(a=>!archetypeWithdrawn(p,a.id));
  return `<div class="dr-intro"><p class="dr-eyebrow">Application component library · Chapter 5</p><h2>Reuse an application role with its obligations.</h2><p>Library entries capture component responsibilities, interfaces, data, technology needs and conditions. Proposing one puts an unsaved candidate on the Chapter 5 model for the architect to review.</p></div>
  <div class="dr-callout"><div><b>${mine.length} project entr${mine.length===1?'y':'ies'}</b><p>Organisation entries and their review status are available in the Chapter 5 library browser.</p></div>${btn('browse-components','Browse the component library','primary')}</div>
  ${mine.length?`<section class="dr-section"><h3>From this project</h3><div class="dr-card-grid">${mine.map(e=>`<article class="dr-card"><span class="dr-eyebrow">${esc(e.status||'draft')} · revision ${esc(e.revision||1)}</span><h4>${esc(e.title)}</h4><p>${esc(e.owner||'Owner not recorded')}</p>${link(chapter(5,'work',`&library=${encodeURIComponent('project:'+e.id)}`),'Propose in Chapter 5')}</article>`).join('')}</div></section>`:''}
- <section class="dr-section"><div class="dr-section-head"><h3>Catalogue archetypes</h3>${badge(`${COMPONENT_ARCHETYPES.length} descriptive roles`)}</div><div class="dr-card-grid">${COMPONENT_ARCHETYPES.map(a=>`<article class="dr-card"><span class="dr-eyebrow">${esc(a.id)}</span><h4>${esc(a.name)}</h4>${link(chapter(5,'work',`&library=${encodeURIComponent('archetype:'+a.id)}`),'Propose in Chapter 5')}</article>`).join('')}</div></section><p class="dr-muted">A component archetype or snapshot is a starting point. The architecture’s own interfaces, needs and evidence remain to be reviewed.</p>`;
+ <section class="dr-section"><div class="dr-section-head"><h3>Catalogue archetypes</h3>${badge(`${archetypes.length} descriptive roles`)}</div><div class="dr-card-grid">${archetypes.map(a=>`<article class="dr-card"><span class="dr-eyebrow">${esc(a.id)}</span><h4>${esc(a.name)}</h4>${link(chapter(5,'work',`&library=${encodeURIComponent('archetype:'+a.id)}`),'Propose in Chapter 5')}</article>`).join('')}</div></section><p class="dr-muted">A component archetype or snapshot is a starting point. The architecture’s own interfaces, needs and evidence remain to be reviewed.</p>`;
 }
 const videoTime=value=>{const n=Math.max(0,Number(value)||0),whole=Math.floor(n),fraction=n-whole,seconds=String(whole%60).padStart(2,'0')+(fraction?fraction.toFixed(4).slice(1).replace(/0+$/,''):'');return `${String(Math.floor(whole/60)).padStart(2,'0')}:${seconds}`;};
 const sceneLocator=scene=>`${scene.packId||'Source'} · ${scene.videoId} · ${scene.sceneId} · ${videoTime(scene.startSeconds)}–${videoTime(scene.endSeconds)}`;

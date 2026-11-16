@@ -17,8 +17,10 @@ import {firstById, memoOff} from './document-memo.js';
 import {driverPriority, driverKind, driverCodes} from './quality-domain.js';
 import {linkedRequirementIds} from './requirement-links.js';
 import {readDecision} from './decision-reading.js';
-import {driverScope, driverScopeIndex} from './driver-scope.js';
+import {driverScope, driverScopeIndex, driverTraceSeeds} from './driver-scope.js';
+import {seededTrace, traceRecords, hopsFrom, traceGraph} from './trace-kernel.js';
 import {toMs, toMinutes} from './target-units.js';
+import {failureDomainKey, hostingZone, statedField} from './runtime-model.js';
 
 const fmt = n => n == null ? '—' : Math.abs(n) >= 100 ? String(Math.round(n)) : String(Math.round(n * 10) / 10);
 
@@ -46,7 +48,9 @@ export function reasoningSource(p) {
   const artefacts = new Map(list(p?.artefacts).map(a => [a.id, a]));
   const controls = list(p?.security?.controls);
   const R = {p, drivers, resp, comps, caps, reals, plans, zones, decisions, contracts, connections, artefacts, controls, scopes: driverScopeIndex(p), chains: new Map()};
-  let byId = null;
+  let byId = null, graph = null;
+  // The trace kernel's graph, kept with the chains it carries (trace-kernel.js traceGraph).
+  R.graph = () => graph ??= traceGraph(p);
   R.driver = id => (memoOff() ? drivers.find(d => d.id === id) : (byId ??= firstById(drivers)).get(id)) || null;
   return R;
 }
@@ -61,9 +65,7 @@ const LISTS = {
   needsByApp: ['technology.needs', 'applicationId'], needsById: ['technology.needs', 'id'],
   techByNeed: ['technology.mappings', 'needId'], techByCap: ['technology.mappings', 'capabilityId'],
   realByCap: ['technologyRealisation.mappings', 'capabilityId'], realByReal: ['technologyRealisation.mappings', 'realizationId'],
-  placementsByPlan: ['runtime.placements', 'planId'], plansByAsset: ['plans', 'assetId'],
-  contractsByFrom: ['contracts', 'from'], contractsByTo: ['contracts', 'to'], connectionsByFrom: ['connections', 'from'],
-  decisionsByDriver: ['decisions', 'driverIds', 1]
+  placementsByPlan: ['runtime.placements', 'planId'], plansByAsset: ['plans', 'assetId'], connectionsByFrom: ['connections', 'from']
 };
 // A list: the project's (by its path) or the reasoning source's own (its plans in the order R.plans keeps them).
 const rowsOf = (R, name) => { const [a, b] = LISTS[name][0].split('.'); return b ? list(R.p?.[a]?.[b]) : a === 'plans' ? [...R.plans.values()] : R[a]; };
@@ -126,30 +128,29 @@ const productOf = r => {
 };
 export {productOf};
 
-// What carries one driver through the design.
+// What carries one driver through the design: the trace kernel's walk from the driver's scope (driver-scope.js
+// driverTraceSeeds; trace-kernel.js, rc.10.73.42 D7) — its responsibilities and components, the needs, capabilities and
+// realisations they stand on, the plans in scope that run them, the decisions that weigh the driver and the contracts its
+// components provide or use. It is the chain the trail of each requirement the driver serves holds; `trace` keeps the
+// walk, with its controls and threats.
 export function driverChain(R, id) {
   if (R.chains.has(id)) return R.chains.get(id);
   const d = R.driver(id);
   if (!d) return null;
-  // Each step reads its list through a lookup (above): the same records, in the same order, as a scan of the list.
-  const scope = driverScope(R.p, d, R.scopes);
+  const scope = driverScope(R.p, d, R.scopes), trace = seededTrace(R.p, driverTraceSeeds(R.p, d, R.graph?.()), {graph: R.graph?.()});
   const responsibilities = scope.responsibilityIds.map(x => R.resp.get(x)).filter(Boolean);
   const components = scope.componentIds.map(x => R.comps.get(x)).filter(Boolean);
   const cIds = new Set(components.map(c => c.id));
-  const needs = rowsAmong(R, 'needsByApp', cIds);
-  const nIds = new Set(needs.map(n => n.id));
-  const capIds = uniq(rowsAmong(R, 'techByNeed', nIds).map(m => m.capabilityId));
-  const capabilities = capIds.map(x => R.caps.get(x)).filter(Boolean).map(c => ({...c, essential: needs.some(n => n.criticality === 'essential' && rowsWith(R, 'techByNeed', n.id).some(m => m.capabilityId === c.id))}));
-  const realIds = uniq(rowsAmong(R, 'realByCap', capIds).map(m => m.realizationId));
-  const realisations = realIds.map(x => R.reals.get(x)).filter(Boolean).map(r => ({record: r, product: productOf(r), capabilityIds: rowsWith(R, 'realByReal', r.id).map(m => m.capabilityId)}));
-  const assetIds = new Set([...cIds, ...realIds]);
-  const plans = rowsAmong(R, 'plansByAsset', assetIds).map(r => planFacts(R, r));
-  const decisions = rowsWith(R, 'decisionsByDriver', id).map(x => ({record: x, selected: list(x.alternatives).find(a => a.id === x.selectedAlternativeId) || null,
+  const essential = new Set(traceRecords(trace, 'need').filter(n => n.criticality === 'essential').map(n => n.id));
+  const capabilities = trace.layers.capability.map(x => R.caps.get(x)).filter(Boolean).map(c => ({...c, essential: hopsFrom(trace, c.id, h => essential.has(h.from)).length > 0}));
+  const realisations = trace.layers.realization.map(x => R.reals.get(x)).filter(Boolean).map(r => ({record: r, product: productOf(r), capabilityIds: rowsWith(R, 'realByReal', r.id).map(m => m.capabilityId)}));
+  const plans = trace.layers.plan.map(x => R.plans.get(x)).filter(Boolean).map(r => planFacts(R, r));
+  const decisions = traceRecords(trace, 'decision').map(x => ({record: x, selected: list(x.alternatives).find(a => a.id === x.selectedAlternativeId) || null,
     alternatives: list(x.alternatives).map(a => ({alt: a, effect: a.assessments?.[id]?.effect || 'unknown', reason: str(a.assessments?.[id]?.reason)}))}));
-  const contracts = rowsAmong(R, ['contractsByFrom', 'contractsByTo'], cIds);
+  const contracts = traceRecords(trace, 'contract').filter(k => hopsFrom(trace, k.id, h => cIds.has(h.from)).length > 0);
   const connections = rowsAmong(R, 'connectionsByFrom', cIds).filter(c => cIds.has(c.to));
   const requirements = linkedRequirementIds(R.p, d).map(x => R.artefacts.get(x)).filter(Boolean); // named, then the members of its groups (round 12)
-  const chain = {driver: d, scope, requirements, responsibilities, components, capabilities, realisations, plans, decisions, contracts, connections};
+  const chain = {driver: d, scope, requirements, responsibilities, components, capabilities, realisations, plans, decisions, contracts, connections, trace};
   R.chains.set(id, chain);
   return chain;
 }
@@ -160,10 +161,14 @@ export function planFacts(R, plan) {
   const active = pl.filter(x => x.role === 'active'), standby = pl.filter(x => x.role === 'standby');
   const count = xs => xs.reduce((n, x) => n + (num(x.replicas) || 0), 0);
   const zonesActive = uniq(active.map(x => x.zoneId)), zonesAll = uniq(pl.map(x => x.zoneId));
+  // rc.10.73.42 (D8, C10-21): the active copies by hosting failure domain, read as Chapter 10 reads it (failureDomainKey):
+  // an access zone hosts nothing, and a zone that states no failure domain is a domain of its own, unknown (' ' + zone).
+  const domains = {};
+  for (const x of active) { const z = R.zones.get(x.zoneId); if (hostingZone(z)) { const k = failureDomainKey(z) || ' ' + z.id; domains[k] = (domains[k] || 0) + (num(x.replicas) || 0); } }
   const asset = R.comps.get(plan.assetId) || R.reals.get(plan.assetId) || null;
   return {plan, asset, assetKind: R.comps.has(plan.assetId) ? 'component' : R.reals.has(plan.assetId) ? 'realisation' : 'other',
     product: R.reals.has(plan.assetId) ? productOf(R.reals.get(plan.assetId)) : null,
-    placements: pl, active: count(active), standby: count(standby), zonesActive, zonesAll,
+    placements: pl, active: count(active), standby: count(standby), zonesActive, zonesAll, domains,
     // Round 12 (DM-08): placements whose role or copy count is not stated; they count as nothing, never as one.
     open: pl.filter(x => !['active', 'standby'].includes(x.role) || num(x.replicas) == null).length,
     minReady: num(plan.minReady), maxReplicas: num(plan.maxReplicas), recoveryMinutes: num(plan.recoveryMinutes), lossMinutes: num(plan.lossMinutes),
@@ -280,16 +285,30 @@ export function driverTradeoffs(R, d) {
 function planLabel(f) { return f.plan.ref + ' ' + f.plan.title + (f.product?.product ? ' · ' + f.product.product : ''); }
 
 export function availabilityCheck(f, budget) {
-  const where = f.zonesActive.length > 1 ? ` across ${f.zonesActive.length} zones` : f.zonesActive.length === 1 ? ' in one zone' : '';
+  const where = f.zonesActive.length > 1 ? ` across ${f.zonesActive.length} zones` : f.zonesActive.length === 1 ? ' in one zone' : '', many = `${f.active} active replicas${where}`;
   if (!f.placements.length) return {state: 'unknown', why: 'Not placed in any zone, so what an outage costs cannot be read.'};
-  if (f.active >= 2 && f.zonesActive.length > 1) return {state: 'holds', why: `${f.active} active replicas${where}: losing one replica or one zone does not stop it.`};
+  // Copies a zone or failure-domain loss stops: their recorded recovery time against the budget.
+  const lost = s => ({state: f.recoveryMinutes == null ? 'unknown' : f.recoveryMinutes <= budget ? 'holds' : 'breaks', why: `${many} ${s}${f.recoveryMinutes == null ? ' for an unrecorded time' : ` for ${fmt(f.recoveryMinutes)} min`}.`});
+  // rc.10.73.42 (D8, C10-21): copies spread over zones hold only over independent hosting failure domains: zones that share
+  // one, state none or are access zones are no independence; the copies left after losing the largest domain meet the
+  // minimum ready count (one when none is stated); and a stateful service's copies are not interchangeable, so the loss
+  // of the writer's domain waits on a promotion under its stated write authority.
+  if (f.active >= 2 && f.zonesActive.length > 1) {
+    const k = Object.keys(f.domains), d = k.filter(x => x[0] != ' '), n = Object.values(f.domains), left = n.reduce((a, b) => a + b, 0) - Math.max(...n), need = f.minReady ?? 1;
+    if (!d.length || d.length < k.length) return {state: 'unknown', why: `${many}: not every hosting zone states its failure domain.`};
+    if (d.length < 2) return lost(`share one failure domain (${d[0]}): losing it stops them`);
+    if (left < need) return lost(`leave ${left} after losing the largest failure domain, under the ${need} it needs ready`);
+    if (f.stateMode == 'Stateful service') return statedField(f.plan, 'fencing') ? lost('of a stateful service wait on a promotion when a domain is lost,') : {state: 'unknown', why: `${many} of a stateful service: no write authority is stated.`};
+    return {state: 'holds', why: `${many} in ${d.length} failure domains: losing one leaves ${left}, at least the ${need} needed.`};
+  }
   if (f.open) return {state: 'unknown', why: `${f.open === 1 ? 'A placement does' : f.open + ' placements do'} not state ${f.open === 1 ? 'its' : 'their'} role or copies, so what an outage costs cannot be read.`};
-  if (f.active >= 2) return {state: f.recoveryMinutes == null ? 'unknown' : f.recoveryMinutes <= budget ? 'holds' : 'breaks', why: `${f.active} active replicas${where} survive a replica failure, but a zone failure stops it${f.recoveryMinutes == null ? ' for an unrecorded time' : ` for ${fmt(f.recoveryMinutes)} min`}.`};
-  if (f.recoveryMinutes == null) return {state: 'unknown', why: `One active replica${where}${f.standby ? ' with a standby' : ''}: every restart or release is unavailability, and its recovery time is not recorded.`};
+  if (f.active >= 2) return lost('survive a replica failure, but a zone failure stops it');
+  const one = `One active replica${where}${f.standby ? ' with a standby' : ''}:`;
+  if (f.recoveryMinutes == null) return {state: 'unknown', why: `${one} every restart or release is unavailability, and its recovery time is not recorded.`};
   const fits = Math.floor(budget / Math.max(f.recoveryMinutes, 0.0001));
   return f.recoveryMinutes > budget
-    ? {state: 'breaks', why: `One active replica${where}${f.standby ? ' with a standby' : ''}: one ${f.recoveryStrategy === 'Unspecified' ? '' : f.recoveryStrategy.toLowerCase() + ' '}recovery (${fmt(f.recoveryMinutes)} min) is more than the whole budget (${fmt(budget)} min).`}
-    : {state: 'holds', why: `One active replica${where}${f.standby ? ' with a standby' : ''}: ${fits} recover${fits === 1 ? 'y' : 'ies'} of ${fmt(f.recoveryMinutes)} min fit the budget of ${fmt(budget)} min.`};
+    ? {state: 'breaks', why: `${one} one ${f.recoveryStrategy === 'Unspecified' ? '' : f.recoveryStrategy.toLowerCase() + ' '}recovery (${fmt(f.recoveryMinutes)} min) is more than the whole budget (${fmt(budget)} min).`}
+    : {state: 'holds', why: `${one} ${fits} recover${fits === 1 ? 'y' : 'ies'} of ${fmt(f.recoveryMinutes)} min fit the budget of ${fmt(budget)} min.`};
 }
 
 export function recoveryCheck(f, target) {
@@ -364,8 +383,10 @@ export function tuneDriver(R, id, change = {}) {
     const mechanisms = !o || (as && as.effect !== 'unknown') ? [] : productMechanisms(o,{products:productsAvailable(R.p)}).filter(t => t.attrs.includes(d.attr) && t.effect !== 'ceiling');
     const hints = mechanisms.filter(t => t.applicability.state === 'context-match');
     const hint = hints.find(t => t.effect === 'tension') || hints.find(t => t.effect === 'supports') || null;
-    const st = !o ? 'unknown' : stale ? 'revisit' : !as || as.effect === 'unknown' ? (hint?.effect === 'tension' ? 'revisit' : 'unknown') : moved || as.effect === 'tension' || as.effect === 'violates' ? 'revisit' : 'holds';
-    const why = !o ? 'No option is recorded.' : stale ? `${r.product?.product || o.title} needs re-review against ${d.id}; its recorded configuration, source scope or supporting knowledge changed. Previous judgement: "${previous.reason || previous.effect}".` : !as || as.effect === 'unknown' ? `${r.product?.product || o.title} is not yet judged against ${d.id}.${hint ? ` Its documentation suggests ${hint.effect === 'tension' ? 'a trade-off' : 'it supports it'} in the declared context: ${hint.text} Project verification remains pending.` : mechanisms.length ? ' Its documented mechanisms still need matching configuration evidence.' : ''}` : moved ? `${r.product?.product || o.title} was judged against ${before.targetValue} ${d.unit}: "${as.reason || as.effect}".` : as.effect === 'tension' || as.effect === 'violates' ? `${r.product?.product || o.title} ${as.effect === 'violates' ? 'breaks the constraint' : 'creates a trade-off for'} ${d.id}: "${as.reason}".` : `${r.product?.product || o.title} has a recorded judgement supporting ${d.id}; the judgement is separate from target verification.`;
+    // rc42 (review r2): a person's "does not apply" (Chapter 7) is its own reading, never a judgement supporting the driver.
+    const na = as?.effect === 'not-applicable';
+    const st = !o || na ? 'unknown' : stale ? 'revisit' : !as || as.effect === 'unknown' ? (hint?.effect === 'tension' ? 'revisit' : 'unknown') : moved || as.effect === 'tension' || as.effect === 'violates' ? 'revisit' : 'holds';
+    const why = !o ? 'No option is recorded.' : stale ? `${r.product?.product || o.title} needs re-review against ${d.id}; its recorded configuration, source scope or supporting knowledge changed. Previous judgement: "${previous.reason || previous.effect}".` : na ? `${r.product?.product || o.title}: ${d.id} recorded as not applying to ${r.record.ref}${as.by ? ' by ' + as.by : ''}: ${as.reason}` : !as || as.effect === 'unknown' ? `${r.product?.product || o.title} is not yet judged against ${d.id}.${hint ? ` Its documentation suggests ${hint.effect === 'tension' ? 'a trade-off' : 'it supports it'} in the declared context: ${hint.text} Project verification remains pending.` : mechanisms.length ? ' Its documented mechanisms still need matching configuration evidence.' : ''}` : moved ? `${r.product?.product || o.title} was judged against ${before.targetValue} ${d.unit}: "${as.reason || as.effect}".` : as.effect === 'tension' || as.effect === 'violates' ? `${r.product?.product || o.title} ${as.effect === 'violates' ? 'breaks the constraint' : 'creates a trade-off for'} ${d.id}: "${as.reason}".` : `${r.product?.product || o.title} has a recorded judgement supporting ${d.id}; the judgement is separate from target verification.`;
     add({kind: 'product', chapter: 7, id: r.record.id, ref: r.record.ref, title: r.record.ref + ' ' + (r.product?.product || r.record.title) + (r.product?.version ? ' ' + r.product.version : ''), state: st, was: st, why});
   }
 

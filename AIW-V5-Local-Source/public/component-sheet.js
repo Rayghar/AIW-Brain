@@ -58,7 +58,7 @@ const where = (chapter, section, object = null) => ({chapter, section: WORK[chap
 // A linked value: the text, the record's chapter and id (a Chapter 5 component is held in place by the view).
 export const to = (chapter, record, text = named(record), extra = {}) => ({text, chapter, id: record?.id || '', path: record?.id ? modelPath(chapter, record.id) : '', ...extra});
 const end = e => e?.kind === 'unknown' || !e?.record ? {text: str(e?.record?.title || e?.record?.id || 'Endpoint not found'), chapter: 8, id: '', path: '', state: 'open'} : to(e.chapter, e.record);
-const EFFECT = {supports: 'Supports · assessment', tension: 'Creates tension · assessment', violates: 'Violates · assessment', neutral: 'Neutral · assessment', unknown: 'Effect not assessed'};
+const EFFECT = {supports: 'Supports · assessment', tension: 'Creates tension · assessment', violates: 'Violates · assessment', neutral: 'Neutral · assessment', 'not-applicable': 'Does not apply · judgement', unknown: 'Effect not assessed'};
 const effectTone = effect => ['violates', 'tension'].includes(effect) ? 'attention' : 'quiet';
 const day = at => typeof at === 'string' && /^\d{4}-\d{2}-\d{2}/.test(at) ? at.slice(0, 10) : '';
 
@@ -113,7 +113,7 @@ function buildSheet(p, id) {
       decisions: item.decisions.map(x => ({link: to(3, x.record), selected: x.selected ? str(x.selected.title) : '', effect: x.selected ? EFFECT[x.selected.assessments?.[d.id]?.effect] || EFFECT.unknown : '', tone: x.selected ? effectTone(x.selected.assessments?.[d.id]?.effect) : 'quiet', sourceChanged: x.sourceChanged}))};
   });
   field('basis', 'drivers', 'Drivers reaching it', where(2, 'scenarios', null), {state: drivers.length ? 'recorded' : 'open', empty: 'Link a driver to a responsibility this component realises, or to the component itself.', rows: drivers});
-  const questions = list(dq?.questions).map(q => ({id: q.id, title: q.title, question: q.question, state: q.state, chapter: q.chapter, because: q.because.map(x => ({id: x, title: byDriver.get(x)?.title || x})), answers: q.answers.map(a => ({kind: a.kind, ref: a.ref, title: a.title, state: a.state, chapter: a.chapter})), story: q.story, caution: q.caution, toConfirm: q.toConfirm, decide: q.decide}));
+  const questions = list(dq?.questions).map(q => ({id: q.id, title: q.title, question: q.question, state: q.state, chapter: q.chapter, because: q.because.map(x => ({id: x, title: byDriver.get(x)?.title || x})), answers: q.answers.map(a => ({kind: a.kind, ref: a.ref, title: a.title, state: a.state, chapter: a.chapter})), story: q.story, pending: q.pending, caution: q.caution, toConfirm: q.toConfirm, decide: q.decide}));
   const counts = dq?.counts || {open: 0, draft: 0, decided: 0};
   field('basis', 'questions', 'Design questions', where(5, 'components', id), {state: !drivers.length ? 'open' : counts.open ? 'open' : 'recorded', rows: questions, counts,
     value: questions.length ? ['decided', 'draft', 'open'].filter(k => counts[k]).map(k => counts[k] + ' ' + k).join(' · ') : drivers.length ? 'No design question opens from its drivers.' : '',
@@ -143,11 +143,11 @@ function buildSheet(p, id) {
   field('interfaces', 'interactions', 'Interactions without a contract', where(8, 'contracts', null), {counted: false, state: flows.length ? 'open' : 'recorded', rows: flows, empty: 'Every recorded interaction of this component has a contract.'});
   section('interfaces');
 
-  // 4 · Data: owns (the definitions naming it as authority; its own list without an authority is inferred), reads, writes.
+  // 4 · Data: owns (the definitions Chapter 8 names it the authority of; rc.10.73.42, D9: its own list is data it uses and
+  // infers no ownership), reads, writes.
   const classified = d => stated(d.classification);
   const dataValue = d => to(8, d, named(d), {note: str(d.classification) || 'not classified', state: classified(d) ? 'recorded' : 'open'});
-  const authored = C.data.owned.filter(d => d.authorityId === id), listed = C.data.owned.filter(d => d.authorityId !== id);
-  field('data', 'owns', 'Owns', where(8, 'data', C.data.owned[0]?.id || null), {state: authored.length ? 'recorded' : listed.length ? 'inferred' : 'open', values: [...authored.map(dataValue), ...listed.map(d => ({...dataValue(d), note: (str(d.classification) || 'not classified') + ' · listed by the component, no authority recorded', state: 'inferred'}))], empty: 'Name this component as the authority of the data it owns.'});
+  field('data', 'owns', 'Owns', where(8, 'data', C.data.owned[0]?.id || null), {state: C.data.owned.length ? 'recorded' : 'open', values: C.data.owned.map(dataValue), empty: 'Name this component as the authority of the data it owns.'});
   field('data', 'reads', 'Reads', where(8, 'contracts', null), {state: C.data.consumed.length ? 'recorded' : str(c.inputs) ? 'open' : 'inferred', values: C.data.consumed.map(dataValue), empty: str(c.inputs) ? 'Its inputs are prose; link the data definition a contract exchanges.' : 'No contract exchange names data this component reads.'});
   field('data', 'writes', 'Writes', where(8, 'contracts', null), {state: C.data.produced.length ? 'recorded' : str(c.outputs) ? 'open' : 'inferred', values: C.data.produced.map(dataValue), empty: str(c.outputs) ? 'Its outputs are prose; link the data definition a contract exchanges.' : 'No contract exchange names data this component writes.'});
   const unclassified = C.data.owned.filter(d => !classified(d));

@@ -63,7 +63,18 @@ pass('a component\'s specification reads through every chapter: LR-001 → APP-0
     assert.ok(flows.consumed.size + flows.produced.size > 0, 'the reference component exchanges data through its contracts');
     for (const kind of ['consumed', 'produced']) for (const id of flows[kind]) assert.ok(Ca.data[kind].some(d => d.id === id), id + ': ' + kind + ', as its contracts exchange it');
   }
-  assert.ok(C.controls.every(k => list(k.targetIds).includes('api-pod')) && C.threats.every(t => list(t.targetIds).includes('api-pod')), 'controls and threats are those that name it');
+  // rc.10.73.42 (D7): its protection is what its trail reads (the trace kernel's walk from it): every control and threat
+  // that names it, and those aimed at what its specification lists — its contracts and those of what it stands on, the
+  // data it owns or they carry, its capabilities and products — with the controls the plans running them enforce and the
+  // threats those controls mitigate; nothing else.
+  {
+    const own = new Set(['api-pod', ...C.capabilities.map(c => c.id), ...C.products.map(x => x.realisation.id)]);
+    const contracts = project.interfaces.contracts.filter(k => own.has(k.from) || own.has(k.to)), mine = new Set([...own, ...contracts.map(k => k.id), ...contracts.flatMap(k => list(k.exchanges).map(x => x.dataId)), ...[...C.data.owned, ...C.data.consumed, ...C.data.produced].map(d => d.id)]);
+    const enforced = k => project.runtime.plans.some(pl => own.has(pl.assetId) && list(pl.controlIds).includes(k.id)), aimed = r => list(r.targetIds).some(t => mine.has(t));
+    assert.deepEqual(C.controls.map(k => k.id), project.security.controls.filter(k => aimed(k) || enforced(k)).map(k => k.id), 'its controls are those aimed at it or at what its specification lists, or enforced where it runs');
+    assert.deepEqual(C.threats.map(t => t.id), project.security.threats.filter(t => aimed(t) || C.controls.some(k => list(k.threatIds).includes(t.id))).map(t => t.id), 'its threats are those aimed at it or at what its specification lists, or mitigated by its controls');
+    assert.ok(project.security.controls.filter(k => list(k.targetIds).includes('api-pod')).every(k => C.controls.includes(k)) && project.security.threats.filter(t => list(t.targetIds).includes('api-pod')).every(t => C.threats.includes(t)), 'every control and threat that names it is listed');
+  }
   assert.ok(C.needs.length && C.needs.every(n => n.need.applicationId === 'api-pod'), 'its technology needs, each with the capability that supports it');
   assert.ok(S.gaps.every(g => C.gaps.includes(g)), 'specFor\'s gaps are kept');
   const bare = structuredClone(project); bare.interfaces.contracts = []; bare.security.controls = [];

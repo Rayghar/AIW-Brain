@@ -147,7 +147,10 @@ try {
   assert.equal(await count('.tn-story'), 0, 'no story until asked');
   await click('#inspector .cm-companion [data-sm="story"]');
   st = await storyIn();
-  assert.equal(st.title, 'What happens when: Settle the payment'); assert.ok(st.steps === 11 && st.gaps === 1 && /to confirm · No control is recorded for this step yet\./.test(st.text), 'the gap is named in the checks’ words: ' + st.text);
+  // rc.10.73.42 (D7): the story reads the trace kernel's chain, REQ-004's trail, whose controls are SEC-002 and SEC-003
+  // (they protect the posting and network contracts its components use), so no step is a gap any more; the gap in the
+  // checks' words is shown where a step holds nothing (trace-narrative-validate.mjs, the HTML reading).
+  assert.equal(st.title, 'What happens when: Settle the payment'); assert.ok(st.steps === 11 && st.gaps === 0 && /\bSEC-002\b[\s\S]*\bSEC-003\b/.test(st.text) && !/No control is recorded for this step yet\./.test(st.text), 'every step holds a record on the trail, its controls named: ' + st.text);
   assert.ok(await page.$('#inspector .cm-companion .cm-spec + .tn-story, #inspector .cm-companion .cm-spec ~ .tn-story'), 'told beneath the specimen');
   const href = await page.$eval('#inspector .cm-companion .tn-story .cm-link[data-cm-chapter="8"]', a => a.getAttribute('href'));
   assert.match(href, /chapter=8&tab=model&object=/, 'a Chapter 8 record links to its model: ' + href);

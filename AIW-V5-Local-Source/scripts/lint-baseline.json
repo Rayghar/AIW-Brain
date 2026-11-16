@@ -145,7 +145,7 @@
   "no-unused-vars": 5
  },
  "public/interfaces-domain.js": {
-  "no-unused-vars": 2
+  "no-unused-vars": 1
  },
  "public/journey-context.js": {
   "no-unused-vars": 1

@@ -8,7 +8,7 @@ import {esc,safeUrl} from './html-escape.js';
 import {formatNumber} from './format.js';
 import {openDialog,closeDialog} from './dialog.js';
 
-const SYM = {supports: '✓', tension: '⚠', violates: '×', neutral: '·', unknown: '?'};
+const SYM = {supports: '✓', tension: '⚠', violates: '×', neutral: '·', unknown: '?', 'not-applicable': '–'};
 
 export function choiceSummaryHTML(C) {
   if (!C) return '';

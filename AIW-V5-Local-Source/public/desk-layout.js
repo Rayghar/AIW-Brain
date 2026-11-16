@@ -98,10 +98,11 @@ export function runningBoard(DM) {
   // the components stand in one row above the parts; the Key gives the standard's full name.
   for (const r of comps) { node(r.assetId, 'physicalApp', r.asset.title, {kicker: COMPONENT, ref: r.assetRef, type: 'component', record: r.asset}); edge(r.id, r.assetId, 'realizes', 'realizes'); }
   // The requirements and the components their thread passes through (the trace of Chapter 11): the component fulfils
-  // the requirement through the responsibilities it realizes.
+  // the requirement through the responsibilities it realizes, so only a component on the requirement's own chain
+  // (desk-model.js traceRows spine) draws the line; one its drivers or decisions bear on stays on the thread as context.
   for (const t of DM.trace || []) {
     node(t.id, 'requirement', t.req?.title || t.id, {ref: t.id, type: 'requirement', record: t.req || null});
-    for (const c of t.cells?.applications || []) { node(c.id, 'physicalApp', c.label, {kicker: COMPONENT, ref: c.ref, type: 'component'}); edge(c.id, t.id, 'fulfils', 'fulfils'); }
+    for (const c of t.cells?.applications || []) if (!t.spine || t.spine.applications.some(a => a.id === c.id)) { node(c.id, 'physicalApp', c.label, {kicker: COMPONENT, ref: c.ref, type: 'component'}); edge(c.id, t.id, 'fulfils', 'fulfils'); }
   }
   for (const r of DM.rows.filter(x => x.assetKind === 'realisation')) {
     const caps = new Set((r.caps || []).map(c => c.id));

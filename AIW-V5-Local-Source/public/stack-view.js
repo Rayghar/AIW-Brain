@@ -9,7 +9,7 @@
 // Reasoning lenses, and edited only through the Chapter 7 editors and proposals.
 import {choiceForDesign, suggestionCommands} from './product-choice.js';
 import {choiceSummaryHTML, recordSuggestions} from './choice-ui.js';
-import {selectionPreparation} from './technology-realisation-domain.js';
+import {selectionPreparation, selectionGate} from './technology-realisation-domain.js';
 import {stackSource, foldStack, stackScope, optionsFor, stackInsights, describeRealisation, capTitle, optionOf, OBLIGATIONS, STATE_LABEL, PROPOSED} from './stack-model.js';
 import {stackLayout, stackHead, optionsLayout, optionsHead, SX, OX} from './stack-layout.js';
 import {FAMILIES} from './platform-model.js';
@@ -41,7 +41,7 @@ const LENSES = chapterLenses({
   operation: 'The implementation obligations, sizing and cost behind each choice.',
   reasoning: 'How far each selection has gone, and the criteria and evidence behind it.'
 });
-const EFFECT = {supports: ['✓', 'Supports'], tension: ['!', 'Trade-off'], unknown: ['?', 'Needs evidence']};
+const EFFECT = {supports: ['✓', 'Supports'], tension: ['!', 'Trade-off'], 'not-applicable': ['–', 'Does not apply'], unknown: ['?', 'Needs evidence']};
 
 let marked = new Set(), lastProposal = '', lastClick = {id: null, t: 0};
 let root = null, S = null, lastDoc = null, cbs = {}, F = null, G = null, L = null, fitPending = true, stage = null, pageSel, CH = null;
@@ -388,14 +388,16 @@ export function configurationHTML(o) {
 }
 function specimenRealisation(id) {
   const r = S.R.get(id), o = optionOf(r, r.chosen), g = ghost();
-  const preparation = selectionPreparation(project()?.technologyRealisation.records.find(x => x.id === id));
-  const nextNote = {option: 'Add a technology option, then review its fit and save a draft preference.', preference: 'Compare the options and choose a draft preference.', definition: 'Complete the realization purpose and owner before recording.', rationale: 'Explain why the preferred option fits and which trade-offs you accept.'}[preparation] || '';
+  const rec = project()?.technologyRealisation.records.find(x => x.id === id), preparation = selectionPreparation(rec);
+  // rc42 (D2): the selection is offered for recording only once each inherited driver is judged and no hard gate is pending.
+  const gate = rec && preparation === 'ready' ? selectionGate(project(), rec) : null, unjudged = gate ? [...gate.pending, ...gate.unassessed].map(c => c.id) : [];
+  const nextNote = {option: 'Add a technology option, then review its fit and save a draft preference.', preference: 'Compare the options and choose a draft preference.', definition: 'Complete the realization purpose and owner before recording.', rationale: 'Explain why the preferred option fits and which trade-offs you accept.'}[preparation] || (unjudged.length ? 'Judge ' + unjudged.join(', ') + ' with a reason before recording.' : '');
   const props = S.proposals.filter(q => q.record === id && !(g && g.objectId === id && g.key === q.key)).map(q => withSel(id, 'ghost', q.key === 'operate' ? 'Propose operating basics' : 'Propose recovery &amp; contract obligations', 'gold', `data-key="${q.key}"`)).join('');
   const opts = r.options.map(x => `<button type="button" class="cm-link" data-sel="${esc(id + '/' + x.id)}">${esc(x.title)}${x.product ? ' · ' + esc(x.product) : ''}<i> · ${esc(x.operatingModel)}${r.chosen === x.id ? ' · preferred' : ''}</i></button>`).join('');
   return `<section class="cm-spec"><h4 aria-level="3">Realisation · ${esc(r.ref)}<span class="${esc(r.state)}">${esc(STATE_LABEL[r.state])}</span></h4><p class="cm-spec-t"><b>${esc(r.title)}</b></p><p>${esc(describeRealisation(S, id))}</p><dl class="cm-dl"><div><dt>Realises</dt><dd>${r.caps.map(c => `<button type="button" class="cm-link" data-sel="${esc(c)}">${esc(S.Pf.capabilities.get(c).ref + ' ' + capTitle(S, c))}</button>`).join('') || '<em>Nothing</em>'}</dd></div><div class="${r.owner ? '' : 'miss'}"><dt>Owner</dt><dd>${esc(r.owner || 'Not named')}</dd></div><div class="${o ? '' : 'miss'}"><dt>Choice</dt><dd>${o ? esc(o.title + (o.product ? ' · ' + o.product : '') + (o.version ? ' ' + o.version : '')) : 'Not made'}</dd></div></dl>${configurationHTML(o)}<dl class="cm-dl"><div><dt>Options</dt><dd>${opts}</dd></div>${OBLIGATIONS.map(ob => `<div class="${r.plans[ob.id] ? '' : 'miss'}"><dt>${esc(ob.long)}</dt><dd>${esc(r.plans[ob.id] || 'Not written')}</dd></div>`).join('')}<div class="${r.sized ? '' : 'none'}"><dt>Sizing</dt><dd>${esc(r.sized ? r.sizing.value + ' ' + r.sizing.unit + ' — ' + r.sizing.basis : 'No sizing basis')}</dd></div><div class="${r.rationale ? '' : 'miss'}"><dt>Rationale</dt><dd>${esc(r.rationale || 'Not written')}</dd></div></dl>
   ${marked.has(id) && pending() ? `<div class="cm-note gold">${pending().objectContext({id, ref: r.ref, title: r.title})}</div>` : ''}
   ${nextNote ? `<p class="cm-muted" role="status">${esc(nextNote)}</p>` : ''}
-  <div class="cm-acts">${tact('edit-plan', `data-tr-id="${esc(id)}" data-tr-panel="0"`, icon('edit') + (preparation === 'definition' ? 'Complete purpose &amp; owner' : 'Edit realisation'), preparation === 'definition' ? 'gold' : 'primary')}${tact('edit-plan', `data-tr-id="${esc(id)}" data-tr-panel="1"`, 'Write obligations')}${tact('edit-plan', `data-tr-id="${esc(id)}" data-tr-panel="2"`, preparation === 'rationale' ? 'Explain the selection' : 'Selection basis', preparation === 'rationale' ? 'gold' : '')}<button type="button" class="cm-btn" data-sk="compare" data-id="${esc(id)}">${icon('options')}Compare options</button>${withSel(id, 'add-option', preparation === 'option' ? 'Add an option to continue' : 'Add an option', preparation === 'option' ? 'gold' : '')}${props}${preparation === 'ready' && (r.state === 'preferred' || r.state === 'stale') ? withSel(id, 'record', 'Record the selection', 'gold') : ''}${['recorded','approved'].includes(r.state) ? withSel(id, 'approval', r.state === 'approved' ? 'Review approval evidence' : 'Record approval') : ''}<a class="cm-btn" href="${esc(projectURL('/?chapter=7&tab=work&object=' + encodeURIComponent(id)))}">Open in Work</a></div></section>`;
+  <div class="cm-acts">${tact('edit-plan', `data-tr-id="${esc(id)}" data-tr-panel="0"`, icon('edit') + (preparation === 'definition' ? 'Complete purpose &amp; owner' : 'Edit realisation'), preparation === 'definition' ? 'gold' : 'primary')}${tact('edit-plan', `data-tr-id="${esc(id)}" data-tr-panel="1"`, 'Write obligations')}${tact('edit-plan', `data-tr-id="${esc(id)}" data-tr-panel="2"`, preparation === 'rationale' ? 'Explain the selection' : 'Selection basis', preparation === 'rationale' ? 'gold' : '')}<button type="button" class="cm-btn" data-sk="compare" data-id="${esc(id)}">${icon('options')}Compare options</button>${withSel(id, 'add-option', preparation === 'option' ? 'Add an option to continue' : 'Add an option', preparation === 'option' ? 'gold' : '')}${props}${preparation === 'ready' && !unjudged.length && (r.state === 'preferred' || r.state === 'stale') ? withSel(id, 'record', 'Record the selection', 'gold') : ''}${['recorded','approved'].includes(r.state) ? withSel(id, 'approval', r.state === 'approved' ? 'Review approval evidence' : 'Record approval') : ''}<a class="cm-btn" href="${esc(projectURL('/?chapter=7&tab=work&object=' + encodeURIComponent(id)))}">Open in Work</a></div></section>`;
 }
 function specimenOption(id) {
   const r = recOf(id), o = optionOf(r, id.split('/')[1]), n = k => r.criteria.filter(c => (o.assessments[c.id]?.effect || 'unknown') === k).length;

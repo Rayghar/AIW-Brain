@@ -583,7 +583,26 @@ try {
       const lit = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-lit')].map(e => e.dataset.ntEdge)), dim = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-dim')].map(e => e.dataset.ntEdge));
       return {runs: [...document.querySelectorAll('.cm-svg .nt-trunk')].map(t => { const m = JSON.parse(t.dataset.ntMembers); return {lit: t.classList.contains('nt-mk-lit'), dim: t.classList.contains('nt-mk-dim'), anyLit: m.some(id => lit.has(id)), allDim: m.every(id => dim.has(id))}; }), lifted: [...document.querySelectorAll('.cm-svg .nt-lift path.nt-mk-lit')].map(p => p.dataset.ntLift).sort(), litEdges: [...lit].sort()};
     });
-    assert.ok(runs.runs.length > 0 && runs.runs.some(x => x.lit), 'the trace travels lines drawn together in the Layers view: ' + runs.runs.filter(x => x.lit).length + ' of ' + runs.runs.length + ' runs');
+    // rc.10.73.42 (D9): the one run REQ-001's chain travelled was the instruction's second ownership edge (its Chapter 5 list,
+    // realisation.components.dataIds, drawn over the Chapter 8 authority). With one owner that line is gone, so the runs are
+    // read on REQ-001's chain, which draws no second owner, and on a chain that travels one: REQ-005, fulfilled twice by LR-005.
+    assert.ok(runs.runs.length > 0, 'the Layers view draws lines together: ' + runs.runs.length + ' runs');
+    assert.ok(!(await rp.$$eval('.cm-svg [data-nt-edge]', es => es.map(e => e.dataset.ntEdge))).some(id => id.includes('realisation.components.dataIds:owns')), 'no Chapter 5 data list is drawn as a second owner');
+    {
+      const rc5 = await browser.newContext({viewport: {width: 1440, height: 900}}), rp5 = await rc5.newPage();
+      rp5.on('pageerror', e => errors.push(e.message));
+      await rp5.goto(base + '/?chapter=4&tab=model&model=layers', {waitUntil: 'networkidle'}); await rp5.waitForSelector('.cm .cm-svg .nt-node', {timeout: 15000}); await rp5.waitForTimeout(400);
+      await rp5.click('[data-nt="menu"][data-id="trace"]'); await rp5.waitForTimeout(250);
+      await rp5.selectOption('.nt-pop [data-nt-field="trace"]', 'REQ-005'); await rp5.waitForTimeout(600);
+      const r5 = await rp5.evaluate(() => {
+        const lit = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-lit')].map(e => e.dataset.ntEdge)), dim = new Set([...document.querySelectorAll('.cm-svg .nt-edge.nt-mk-dim')].map(e => e.dataset.ntEdge));
+        return {runs: [...document.querySelectorAll('.cm-svg .nt-trunk')].map(t => { const m = JSON.parse(t.dataset.ntMembers); return {lit: t.classList.contains('nt-mk-lit'), dim: t.classList.contains('nt-mk-dim'), anyLit: m.some(id => lit.has(id)), allDim: m.every(id => dim.has(id))}; }), lifted: [...document.querySelectorAll('.cm-svg .nt-lift path.nt-mk-lit')].map(p => p.dataset.ntLift).sort(), litEdges: [...lit].sort()};
+      });
+      assert.ok(r5.runs.length > 0 && r5.runs.some(x => x.lit), 'the trace travels lines drawn together in the Layers view: ' + r5.runs.filter(x => x.lit).length + ' of ' + r5.runs.length + ' runs on the trace from REQ-005');
+      assert.ok(r5.runs.every(x => x.lit === x.anyLit && x.dim === (!x.anyLit && x.allDim)), 'on it too, a run is traced when a relationship on it is, dimmed only when every one is');
+      assert.deepEqual(r5.lifted, r5.litEdges, 'and the lift draws every traced relationship whole, and only those');
+      await rc5.close();
+    }
     assert.ok(runs.runs.every(x => x.lit === x.anyLit && x.dim === (!x.anyLit && x.allDim)), 'a run is traced when a relationship on it is, dimmed only when every one is');
     assert.deepEqual(runs.lifted, runs.litEdges, 'the lift draws every traced relationship whole, and only those');
     assert.match(t.reading, /Trace · from REQ-001/i, 'the companion names the trace');
@@ -609,14 +628,22 @@ try {
     await rp.click('[data-nt="menu"][data-id="trace"]'); await rp.selectOption('.nt-pop [data-nt-field="trace"]', 'REQ-001'); await rp.waitForTimeout(600);
     // The Diagram keeps it; Escape clears it and keeps the selection.
     await rp.click('.cm-view[data-id="diagram"]'); await rp.waitForTimeout(500);
-    t = await traced(); assert.deepEqual(t.traced, ['api'], 'the Diagram lights LR-001, REQ-001’s responsibility'); assert.equal(t.dimmed, t.nodes - 1);
+    // rc.10.73.42 (D7): the trace is the trace kernel's trail, on which REQ-001's drivers and decisions bring every
+    // responsibility of the reference (QD-003 names risk; ADR-002 and ADR-003 are named by ledger, hub and notify).
+    t = await traced(); assert.deepEqual(t.traced, ['api', 'hub', 'ledger', 'notify', 'risk'], 'the Diagram lights REQ-001’s responsibilities, LR-001 and those its drivers and decisions reach');
+    assert.deepEqual(t.traced, (await rp.$$eval('.cm-svg .nt-node', ns => ns.map(n => n.dataset.ntNode))).filter(id => T.ids.has(id)).sort(), 'exactly the chain’s records the Diagram draws'); assert.equal(t.dimmed, t.nodes - t.traced.length);
     await rp.click('.cm-svg .nt-node[data-nt-node="risk"]'); await rp.waitForTimeout(400);
     await rp.focus('.cm-stage'); await rp.keyboard.press('Escape'); await rp.waitForTimeout(400);
     t = await traced(); assert.equal(t.traced.length + t.dimmed, 0, 'Escape clears the trace'); assert.equal(t.reading, '');
     assert.equal(await rp.evaluate(() => new URL(location.href).searchParams.get('object')), 'risk', 'and only the trace: the selection stays');
     // Trace on the selected element.
     await rp.click('.cm-companion .nt-trace-act [data-nt="trace"]'); await rp.waitForTimeout(500);
-    t = await traced(); assert.deepEqual(t.traced, ['risk']); assert.match(t.reading, /from LR-002[\s\S]*REQ-002 → [\s\S]*\[no control\][\s\S]*Gaps: no control/i, 'a selected element traces too, its gaps named');
+    // rc.10.73.42 (D7): the element's trace is the kernel's reverse walk: REQ-001 reaches LR-002 through QD-003 and QD-005
+    // too, and no decision justifies LR-002 (ADR-001 and ADR-002 justify LR-001 and LR-003 to LR-005), so both gaps are named.
+    const riskTrace = traceFrom(ref, 'risk');
+    assert.deepEqual(riskTrace.gaps, ['no decision', 'no control'], 'LR-002’s trace has no decision and no control');
+    t = await traced(); assert.deepEqual(t.traced, ['risk']); assert.match(t.reading, /from LR-002[\s\S]*REQ-001, REQ-002 → [\s\S]*\[no decision\][\s\S]*\[no control\][\s\S]*Gaps: no decision, no control\./i, 'a selected element traces too, its gaps named');
+    assert.ok(t.reading.includes('Gaps: ' + riskTrace.gaps.join(', ') + '.'), 'the reading names exactly the trace’s gaps');
     await rp.keyboard.press('Escape'); await rp.waitForTimeout(300);
     // From a Matrix cell "through the design": the trace takes the cell's own chain, and the two agree.
     await go('/?chapter=4&tab=model&model=cross', '.nt-x');

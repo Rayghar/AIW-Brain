@@ -17,6 +17,7 @@ import {productMechanisms} from './product-applicability.js';
 import {productsAvailable} from './model-knowledge.js';
 import {list, str, num, uniq} from './util.js';
 import {REFERENCE_PROJECTS} from './reference-projects.js';
+import {failureDomainKey, hostingZone} from './runtime-model.js';
 
 export function fmtN(n, digits = 0) {
   if (n == null || !Number.isFinite(n)) return '—';
@@ -138,7 +139,10 @@ export function capacityPlan(R, objective) {
   const F = flowOf(R);
   const env = R.selectedEnvironmentId || [...R.plans.values()][0]?.environmentId || null;
   const zones = [...R.zones.values()].filter(z => !env || z.environmentId === env);
-  const Z = Math.max(1, zones.length);
+  // rc.10.73.42 (D8, C10-21): what a zone loss must be survived over is the distinct hosting failure domains, not the zone
+  // records: an access zone hosts nothing, zones that share a failure domain fail together, and a zone that states no
+  // failure domain shows no independence (failureDomainKey, as Chapter 10 reads it).
+  const Z = Math.max(1, uniq(zones.filter(hostingZone).map(failureDomainKey).filter(Boolean)).length);
   // No load stated (GR-RUN-04): no arrival rate, no part's demand, no cluster; the synchronous hops stay, which the
   // latency reading counts whatever the load.
   if (O.value == null) {
@@ -171,8 +175,8 @@ export function capacityPlan(R, objective) {
 
   const spare = (load, ds) => {
     if (!needsSpare(ds)) return {n: Math.max(1, load), rule: 'no availability, recovery or Critical driver: load only'};
-    if (A.survive === 'zone' && Z >= 2) { const per = ceil(load / (Z - 1)); return {n: Math.max(2, per * Z), rule: `survive one of ${Z} zones: ${fmtN(per)} in each zone, so ${Z - 1} zone${Z - 1 === 1 ? '' : 's'} still carr${Z - 1 === 1 ? 'ies' : 'y'} the load`}; }
-    return {n: Math.max(2, load + 1), rule: A.survive === 'zone' ? 'only one zone is recorded, so one spare replica' : 'survive one replica: one spare'};
+    if (A.survive === 'zone' && Z >= 2) { const per = ceil(load / (Z - 1)); return {n: Math.max(2, per * Z), rule: `survive one of ${Z} failure domains: ${fmtN(per)} in each, so ${Z - 1} still carr${Z - 1 === 1 ? 'ies' : 'y'} the load`}; }
+    return {n: Math.max(2, load + 1), rule: A.survive === 'zone' ? 'fewer than two failure domains are recorded, so one spare replica' : 'survive one replica: one spare'};
   };
   const verdictReplicas = (need, f, label = 'replicas') => {
     if (!f) return {state: 'none', why: 'No runtime plan records it.'};
@@ -246,12 +250,15 @@ export function capacityPlan(R, objective) {
   // A recorded capacity in the unit the desk asks for can be compared; any other stays for a person to read.
   const recordedIn = (r, unit) => num(r.capacityValue) != null && unit.test(str(r.capacityUnit)) ? num(r.capacityValue) : null;
   const against = (r, unit, need, what) => { const v = recordedIn(r, unit); if (v == null || need == null) return null; return v >= need ? {state: 'ok', why: `Chapter 7 records ${recordedCap(r)}: ${what(v, true)}.`} : {state: 'bad', why: `Chapter 7 records ${recordedCap(r)}: ${what(v, false)}.`}; };
+  // A row's identity, demand, plan and drivers, as every platform and data row starts; and the fix that records its capacity.
+  const rowHead = (r, band, kind, value, unit, text, plan = planOf(R, r.id), ds = carried(R, [r.id])) => ({id: r.id, band, kind, ref: r.ref, title: r.title, product: plabel(r), demand: {value, unit, text}, plan, drivers: ds.map(d => d.id)});
+  const capFix = r => ({chapter: 7, id: r.id, label: `Record ${r.ref}'s capacity in Chapter 7`});
   const platformRow = (r, band, kind, demand, unit, extra = {}) => {
     const ds = carried(R, [r.id].concat(extra.users || [])), per = num(O.perReplica[r.id]) ?? num(A.platformPerReplica), load = demand > 0 ? ceil(demand / (per * u)) : 0, sp = spare(load, ds), f = planOf(R, r.id);
     return {id: r.id, band, kind, ref: r.ref, title: r.title, product: plabel(r), demand: {value: demand, unit, text: `${fmtN(demand)} ${unit}`}, replicas: sp.n, loadReplicas: load, plan: f, drivers: ds.map(d => d.id),
       spec: [{k: 'Replicas', v: fmtN(sp.n), d: `${fmtN(load)} for the load${sp.n > load ? ` + ${fmtN(sp.n - load)} (${sp.rule})` : ''}`}, {k: 'Each replica', v: `${fmtN(per)} ${unit}`, d: num(O.perReplica[r.id]) != null ? 'set for this part on the desk' : 'planning assumption'}],
       verdict: verdictReplicas(sp.n, f), math: [extra.why || '', `${fmtN(demand)} ÷ (${fmtN(per)} × ${fmtN(u * 100)} %) → ${fmtN(load)} replicas${sp.n > load ? `; ${sp.rule} → ${fmtN(sp.n)}` : ''}`].filter(Boolean),
-      recorded: recordedCap(r), facts: factsOf(prod(r)?.product), fix: {chapter: 7, id: r.id, label: `Record ${r.ref}'s capacity in Chapter 7`}};
+      recorded: recordedCap(r), facts: factsOf(prod(r)?.product), fix: capFix(r)};
   };
   for (const r of realsBy('connectivity')) rows.push(platformRow(r, 'edge', 'gateway', lambda, 'req/s', {why: `Every request enters through it: ${lambdaMath}.`}));
   for (const r of realsBy('identity')) rows.push(platformRow(r, 'edge', 'identity', lambda, 'decisions/s', {why: `One access decision for each request that enters (assumed): ${fmtN(lambda)} a second.`}));
@@ -266,14 +273,14 @@ export function capacityPlan(R, objective) {
     const connV = maxC && conns > maxC.value ? {state: 'warn', why: `${fmtN(conns)} connections needed; ${maxC.text} ${maxC.advice}`} : null;
     const cl = ceilingFor(r, writes);
     const rv = f && f.maxReplicas != null ? (f.maxReplicas >= nodes ? {state: 'ok', why: `${f.plan.ref} allows ${fmtN(f.maxReplicas)} node${f.maxReplicas === 1 ? '' : 's'}; ${nodes} needed.`} : {state: 'bad', why: `${f.plan.ref} allows ${fmtN(f.maxReplicas)}; ${nodes} needed (primary and standby).`}) : {state: 'none', why: recordedCap(r) ? `Chapter 7 records ${recordedCap(r)}; no runtime plan records how many nodes.` : 'No capacity or node count is recorded.'};
-    rows.push({id: r.id, band: 'data', kind: 'store', ref: r.ref, title: r.title, product: plabel(r), demand: {value: reads + writes, unit: 'ops/s', text: `${fmtN(reads + writes)} ops/s`}, plan: f, drivers: ds.map(d => d.id), replicas: nodes,
+    rows.push({...rowHead(r, 'data', 'store', reads + writes, 'ops/s', `${fmtN(reads + writes)} ops/s`, f, ds), replicas: nodes,
       spec: [{k: 'Reads · writes', v: `${fmtN(reads)} · ${fmtN(writes)} a second`, d: offload ? `${fmtN(offload)} reads a second answered by the cache` : `${fmtN(num(A.readShare))} % of ${fmtN(num(A.storeOpsPerRequest))} operations a request are reads`},
         ...(cl ? [ceilingSpec(cl)] : []),
         {k: 'Connections', v: fmtN(conns), d: users.map(id => compRows.get(id)?.ref).filter(Boolean).join(', ') + ' together'},
         {k: 'Nodes', v: fmtN(nodes), d: nodes > 1 ? 'a primary and a standby: it carries an availability, recovery or Critical driver' : 'one primary'},
         {k: 'Growth', v: `${fmtN(growth, 1)} GB a day`, d: `${fmtN(writes)} writes a second × ${fmtN(num(A.recordKB))} KB`}],
       verdict: worst(cl && ceilingVerdict(cl), connV, rv), recorded: recordedCap(r), facts: factsOf(pr?.product), ceiling: cl,
-      math: [`Reached by ${users.map(id => compRows.get(id)?.ref).filter(Boolean).join(', ') || 'no component'}: each request makes ${fmtN(num(A.storeOpsPerRequest))} operations, ${fmtN(num(A.readShare))} % of them reads${offload ? `; ${fmtN(num(A.cacheHitRatio))} % of the cached parts' reads are answered by the cache` : ''}.`], fix: {chapter: 7, id: r.id, label: `Record ${r.ref}'s capacity in Chapter 7`}});
+      math: [`Reached by ${users.map(id => compRows.get(id)?.ref).filter(Boolean).join(', ') || 'no component'}: each request makes ${fmtN(num(A.storeOpsPerRequest))} operations, ${fmtN(num(A.readShare))} % of them reads${offload ? `; ${fmtN(num(A.cacheHitRatio))} % of the cached parts' reads are answered by the cache` : ''}.`], fix: capFix(r)});
   }
 
   for (const r of realsBy('messaging')) {
@@ -284,7 +291,7 @@ export function capacityPlan(R, objective) {
     const backlog = windowMin != null ? msgs * 60 * windowMin : null, size = backlog != null ? backlog * num(A.messageKB) / 1048576 : null;
     const pr = prod(r), q = factOf(pr?.product, 'clusterNodes'), ds = carried(R, [r.id, ...consumers]), nodes = needsSpare(ds) ? (q ? q.value : 2) : 1, f = planOf(R, r.id);
     const recorded = recordedCap(r), cl = ceilingFor(r, msgs);
-    rows.push({id: r.id, band: 'data', kind: 'queue', ref: r.ref, title: r.title, product: plabel(r), demand: {value: msgs, unit: 'msg/s', text: `${fmtN(msgs)} msg/s`}, plan: f, drivers: ds.map(d => d.id), replicas: nodes,
+    rows.push({...rowHead(r, 'data', 'queue', msgs, 'msg/s', `${fmtN(msgs)} msg/s`, f, ds), replicas: nodes,
       spec: [{k: 'Messages', v: `${fmtN(msgs)} a second`, d: async.map(e => `${R.comps.get(e.from)?.ref} → ${R.comps.get(e.to)?.ref}`).join(', ') || 'no asynchronous interaction recorded'},
         ...(cl ? [ceilingSpec(cl)] : []),
         {k: 'Backlog to hold', v: backlog != null ? `${fmtN(backlog)} messages` : 'not known', d: backlog != null ? `${fmtN(windowMin)} min of consumer outage (${recDrv.length ? recDrv.map(d => d.id).join(', ') : 'the consumer\'s recorded recovery'}) · ${fmtN(size, 1)} GB at ${fmtN(num(A.messageKB))} KB` : `no recovery target is recorded; it grows by ${fmtN(msgs * 60)} messages a minute of consumer outage`},
@@ -297,38 +304,38 @@ export function capacityPlan(R, objective) {
     const users = usersOf(r, 'caching'), share = num(A.readShare) / 100, hit = num(A.cacheHitRatio) / 100;
     const reads = users.reduce((n, id) => n + (compRows.get(id)?.demand.value || 0) * num(A.storeOpsPerRequest) * share * hit, 0);
     const pr = prod(r), s = factOf(pr?.product, 'sentinels'), ds = carried(R, [r.id, ...users]), nodes = needsSpare(ds) ? 2 : 1, f = planOf(R, r.id);
-    rows.push({id: r.id, band: 'data', kind: 'cache', ref: r.ref, title: r.title, product: plabel(r), demand: {value: reads, unit: 'reads/s', text: `${fmtN(reads)} reads/s`}, plan: f, drivers: ds.map(d => d.id), replicas: nodes,
+    rows.push({...rowHead(r, 'data', 'cache', reads, 'reads/s', `${fmtN(reads)} reads/s`, f, ds), replicas: nodes,
       spec: [{k: 'Reads answered', v: `${fmtN(reads)} a second`, d: users.length ? `for ${users.map(id => compRows.get(id)?.ref).join(', ')}` : 'no component records a caching need'}, {k: 'Nodes', v: fmtN(nodes), d: nodes > 1 ? 'a primary and a replica' + (s ? '; ' + s.text : '') : 'one node'}, {k: 'Memory', v: 'from the hot set', d: 'not recorded: size it from the records read most'}],
-      verdict: {state: 'none', why: users.length ? 'Its memory depends on the hot set, which is not recorded.' : 'No component stands on it, so it carries no load.'}, recorded: recordedCap(r), facts: factsOf(pr?.product), math: [], fix: {chapter: 7, id: r.id, label: `Record ${r.ref}'s capacity in Chapter 7`}});
+      verdict: {state: 'none', why: users.length ? 'Its memory depends on the hot set, which is not recorded.' : 'No component stands on it, so it carries no load.'}, recorded: recordedCap(r), facts: factsOf(pr?.product), math: [], fix: capFix(r)});
   }
 
-  const spans = [...compRows.values()].reduce((n, x) => n + x.demand.value, 0);
+  const sum = v => [...compRows.values()].reduce((n, x) => n + v(x), 0), spans = sum(x => x.demand.value);
   for (const r of realsBy('observability')) {
     const mb = spans * num(A.spanKB) / 1024;
-    rows.push({id: r.id, band: 'platform', kind: 'telemetry', ref: r.ref, title: r.title, product: plabel(r), demand: {value: spans, unit: 'spans/s', text: `${fmtN(spans)} spans/s`}, plan: planOf(R, r.id), drivers: carried(R, [r.id]).map(d => d.id),
+    rows.push({...rowHead(r, 'platform', 'telemetry', spans, 'spans/s', `${fmtN(spans)} spans/s`),
       spec: [{k: 'Ingest', v: `${fmtN(mb, 1)} MB a second`, d: `${fmtN(spans)} part-requests a second × ${fmtN(num(A.spanKB))} KB`}, {k: 'Retention', v: `${fmtN(mb * 86400 / 1024, 1)} GB a day`, d: 'before sampling or compression'}],
-      verdict: against(r, /span/i, spans, (v, ok) => ok ? `it takes the ${fmtN(spans)} spans a second the objective sends` : `short of the ${fmtN(spans)} spans a second the objective sends`) || {state: 'none', why: 'Size its storage and sampling from this ingest; nothing is recorded to compare it with.'}, recorded: recordedCap(r), estimatesConfirmed: !!r.estimatesConfirmed, ingestMB: mb, facts: factsOf(prod(r)?.product), math: ['Each part a request reaches emits one span of telemetry.'], fix: {chapter: 7, id: r.id, label: `Record ${r.ref}'s capacity in Chapter 7`}});
+      verdict: against(r, /span/i, spans, (v, ok) => ok ? `it takes the ${fmtN(spans)} spans a second the objective sends` : `short of the ${fmtN(spans)} spans a second the objective sends`) || {state: 'none', why: 'Size its storage and sampling from this ingest; nothing is recorded to compare it with.'}, recorded: recordedCap(r), estimatesConfirmed: !!r.estimatesConfirmed, ingestMB: mb, facts: factsOf(prod(r)?.product), math: ['Each part a request reaches emits one span of telemetry.'], fix: capFix(r)});
   }
   for (const r of realsBy('backup')) {
     const gb = writesTotal * 86400 * num(A.recordKB) / 1048576, loss = capsOfReal(R, r.id).map(c => num(c.lossMinutes)).filter(v => v != null);
-    rows.push({id: r.id, band: 'platform', kind: 'backup', ref: r.ref, title: r.title, product: plabel(r), demand: {value: gb, unit: 'GB/day', text: `${fmtN(gb, 1)} GB a day`}, plan: planOf(R, r.id), drivers: carried(R, [r.id]).map(d => d.id),
+    rows.push({...rowHead(r, 'platform', 'backup', gb, 'GB/day', `${fmtN(gb, 1)} GB a day`),
       spec: [{k: 'Changed data', v: `${fmtN(gb, 1)} GB a day`, d: `${fmtN(writesTotal)} writes a second × ${fmtN(num(A.recordKB))} KB`}, {k: 'Loss allowed', v: loss.length ? `${fmtN(Math.min(...loss))} min` : 'not recorded', d: loss.length ? 'the Chapter 6 recovery-point objective' : 'Chapter 6 records no recovery-point objective'}],
       verdict: loss.length ? {state: 'none', why: 'Check the backup interval and log shipping against the recovery-point objective.'} : {state: 'none', why: 'No recovery-point objective is recorded to size it against.'}, recorded: recordedCap(r), facts: factsOf(prod(r)?.product), math: [], fix: {chapter: 6, id: capsOfReal(R, r.id)[0]?.id || r.id, label: 'Record the recovery-point objective in Chapter 6'}});
   }
   for (const r of realsBy('recovery')) {
     const rec = R.drivers.filter(d => d.category === 'recoverability' && toMinutes(d.targetValue, d.unit) != null);
-    rows.push({id: r.id, band: 'platform', kind: 'recovery', ref: r.ref, title: r.title, product: plabel(r), demand: {value: null, unit: '', text: rec.length ? `within ${fmtN(Math.min(...rec.map(d => toMinutes(d.targetValue, d.unit))))} min` : 'no target'}, plan: planOf(R, r.id), drivers: carried(R, [r.id]).map(d => d.id),
+    rows.push({...rowHead(r, 'platform', 'recovery', null, '', rec.length ? `within ${fmtN(Math.min(...rec.map(d => toMinutes(d.targetValue, d.unit))))} min` : 'no target'),
       spec: [{k: 'Failover within', v: rec.length ? `${fmtN(Math.min(...rec.map(d => toMinutes(d.targetValue, d.unit))))} min` : 'not recorded', d: rec.map(d => d.id).join(', ') || 'no recovery driver'}],
       verdict: {state: 'none', why: 'A failover time is shown by a recovery drill, not by arithmetic.'}, recorded: recordedCap(r), facts: factsOf(prod(r)?.product), math: [], fix: {chapter: 10, id: r.id, label: 'Record the recovery drill in Chapter 10'}});
   }
 
   // The cluster the services run on.
-  const pods = [...compRows.values()].reduce((n, x) => n + x.replicas, 0), vcpu = [...compRows.values()].reduce((n, x) => n + x.cpu, 0), mem = [...compRows.values()].reduce((n, x) => n + x.mem, 0);
+  const pods = sum(x => x.replicas), vcpu = sum(x => x.cpu), mem = sum(x => x.mem);
   const nodeLoad = Math.max(ceil(vcpu / (num(A.nodeVcpu) * u)), ceil(mem / (num(A.nodeMemGiB) * u)), pods ? 1 : 0);
   const nodes = pods ? (A.survive === 'zone' && Z >= 2 ? ceil(nodeLoad / (Z - 1)) * Z : nodeLoad + 1) : 0;
   for (const r of realsBy('compute')) {
-    rows.push({id: r.id, band: 'platform', kind: 'cluster', ref: r.ref, title: r.title, product: plabel(r), demand: {value: pods, unit: 'pods', text: `${fmtN(pods)} pods`}, plan: planOf(R, r.id), drivers: carried(R, [r.id]).map(d => d.id), replicas: nodes,
-      spec: [{k: 'Pods', v: fmtN(pods), d: 'the services and workers above'}, {k: 'vCPU · memory', v: `${fmtN(vcpu, 1)} vCPU · ${fmtN(mem, 1)} GiB`, d: 'requested by those pods'}, {k: 'Nodes', v: fmtN(nodes), d: `${fmtN(nodeLoad)} of ${fmtN(num(A.nodeVcpu))} vCPU and ${fmtN(num(A.nodeMemGiB))} GiB at ${fmtN(u * 100)} %${nodes > nodeLoad ? A.survive === 'zone' && Z >= 2 ? `, spread so one of ${Z} zones can fail` : ' + one spare node' : ''}`}],
+    rows.push({...rowHead(r, 'platform', 'cluster', pods, 'pods', `${fmtN(pods)} pods`), replicas: nodes,
+      spec: [{k: 'Pods', v: fmtN(pods), d: 'the services and workers above'}, {k: 'vCPU · memory', v: `${fmtN(vcpu, 1)} vCPU · ${fmtN(mem, 1)} GiB`, d: 'requested by those pods'}, {k: 'Nodes', v: fmtN(nodes), d: `${fmtN(nodeLoad)} of ${fmtN(num(A.nodeVcpu))} vCPU and ${fmtN(num(A.nodeMemGiB))} GiB at ${fmtN(u * 100)} %${nodes > nodeLoad ? A.survive === 'zone' && Z >= 2 ? `, spread so one of ${Z} failure domains can fail` : ' + one spare node' : ''}`}],
       verdict: against(r, /node/i, nodes, (v, ok) => ok ? `room for the ${fmtN(nodes)} nodes the pods need` : `short of the ${fmtN(nodes)} nodes the pods need`) || {state: 'none', why: recordedCap(r) ? `Chapter 7 records ${recordedCap(r)}; compare it with ${fmtN(nodes)} nodes.` : 'No cluster size is recorded to compare with.'}, recorded: recordedCap(r), estimatesConfirmed: !!r.estimatesConfirmed, nodeLoad, facts: factsOf(prod(r)?.product),
       math: [`max(${fmtN(vcpu, 1)} ÷ (${fmtN(num(A.nodeVcpu))} × ${fmtN(u * 100)} %), ${fmtN(mem, 1)} ÷ (${fmtN(num(A.nodeMemGiB))} × ${fmtN(u * 100)} %)) → ${fmtN(nodeLoad)} nodes`], fix: {chapter: 7, id: r.id, label: `Record ${r.ref}'s cluster size in Chapter 7`}});
   }
@@ -459,6 +466,8 @@ export function scaleReadings(p, {envId = null} = {}) {
   // Storage: the data each component is authority for, from stated counts and sizes, read whether or not a rate is
   // recorded; a recorded data volume, or a record count on a driver at the desk's record size, is shared by the
   // components whose responsibilities the driver names, else by those that hold data, else by the entries.
+  // Storage sizing reads who keeps a copy: the Chapter 8 authority and the components that use the record (rc.10.73.42, D9:
+  // a sizing reading, not ownership; the one owner is the authority).
   const ownersOf = d => uniq([d.authorityId, ...[...R.comps.values()].filter(c => list(c.dataIds).includes(d.id)).map(c => c.id)].filter(id => R.comps.has(id)));
   const storage = new Map(), storageBasis = new Map(), note = (id, t) => storageBasis.set(id, [...(storageBasis.get(id) || []), t]);
   let sized = false;

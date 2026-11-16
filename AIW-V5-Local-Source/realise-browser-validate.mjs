@@ -234,15 +234,19 @@ try {
   assert.match(await page.$eval('.cm-banner .dp-banner', e => e.textContent), /Component proposal · not saved[\s\S]*Cache Capability/);
   assert.equal(await page.evaluate(() => window.aiwProjectStore.value.document.realisation.components.length), countBefore, 'proposing writes nothing');
   await click('.cm-banner .dp-banner [data-a-action="edit-ghost"]'); await page.waitForSelector('dialog[open] #a-component-form', {timeout: 8000});
-  assert.match(await page.$eval('dialog[open]', e => e.textContent), /From the catalogue archetype Cache Capability[\s\S]*Proposed with the component[\s\S]*interface contracts for Chapter 8/);
+  // rc42 (D11): the archetype's catalogue text and kit are the generator's template, so the review form says its fields
+  // are left as open questions and shows no template contract, need or text.
+  const review = await page.$eval('dialog[open]', e => e.textContent);
+  assert.match(review, /generic template text, or a kit of another kind, for its purpose, boundary, inputs, outputs, technology needs, assumptions: they are left as open questions[\s\S]*From the catalogue archetype Cache Capability/);
+  assert.doesNotMatch(review, /Proposed with the component|Identity Assertion|Policy Decision|normalized as an AIW/);
   assert.equal(await page.$eval('dialog[open] [name="reviewed"]', e => e.checked), false);
   await page.click('dialog[open] [data-a-step="2"]'); await page.waitForTimeout(200);
   await page.click('dialog[open] #a-component-form button[type="submit"]'); await page.waitForTimeout(600);
   assert.equal(await page.evaluate(() => window.aiwProjectStore.value.document.realisation.components.length), countBefore, 'nothing is saved without the review');
   await page.check('dialog[open] [name="reviewed"]'); await page.click('dialog[open] #a-component-form button[type="submit"]');
   await page.waitForFunction(n => window.aiwProjectStore.value.document.realisation.components.length === n + 1, countBefore, {timeout: 8000});
-  const made = await page.evaluate(() => { const c = window.aiwProjectStore.value.document.realisation.components.at(-1); return {origin: c.origin, status: c.status, archetype: c.library?.archetypeId, contracts: c.proposed?.contracts.length, kind: c.kind}; });
-  assert.deepEqual(made, {origin: 'archetype', status: 'candidate', archetype: 'ARCH-CACHE-CAPABILITY', contracts: 2, kind: 'store'});
+  const made = await page.evaluate(() => { const c = window.aiwProjectStore.value.document.realisation.components.at(-1); return {origin: c.origin, status: c.status, archetype: c.library?.archetypeId, contracts: c.proposed?.contracts.length, kind: c.kind, purpose: c.purpose, open: c.open?.purpose?.state}; });
+  assert.deepEqual(made, {origin: 'archetype', status: 'candidate', archetype: 'ARCH-CACHE-CAPABILITY', contracts: 0, kind: 'store', purpose: '', open: 'open-question'});
   assert.equal(await page.evaluate(() => window.aiwProjectStore.value.document.interfaces.contracts.length), 7, 'no Chapter 8 contract is written');
   await page.goto(base + '/?chapter=5&tab=work', {waitUntil: 'networkidle'}); await page.waitForSelector('[data-a-action="to-library"]', {timeout: 8000});
   assert.ok(await page.$('.a-record .chip'), 'the register shows the new component with its chip');
@@ -257,7 +261,7 @@ try {
   await page.waitForFunction(() => (window.aiwProjectStore.value.document.workbench?.catalogue || []).some(e => e.kind === 'component'), null, {timeout: 8000});
   const entry = await page.evaluate(() => { const e = window.aiwProjectStore.value.document.workbench.catalogue.find(e => e.kind === 'component'); return {status: e.status, schema: JSON.parse(e.content).schema}; });
   assert.deepEqual(entry, {status: 'draft', schema: 'aiw.component-snapshot.v1'});
-  pass('round 11: From the library lists the twenty archetypes, proposes an unsaved ghost, saves a candidate with origin archetype only once reviewed (its contracts stay proposals), and Add to the library files a draft component entry with the snapshot');
+  pass('round 11: From the library lists the twenty archetypes, proposes an unsaved ghost, saves a candidate with origin archetype only once reviewed (rc42: no template text or template contract is proposed; its fields are kept as open questions), and Add to the library files a draft component entry with the snapshot');
 
   // 10. The catalogue reading in the workbench: the archetypes with "Propose into this project", which takes the same
   //     proposal path (an unsaved ghost on the model; nothing written). The Co-design round made the former Proposals

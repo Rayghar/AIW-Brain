@@ -14,7 +14,6 @@ import {recordCardHTML} from './record-card.js';
 import {workGlanceHTML} from './work-glance.js';
 import {chapterHasRecords} from './work-frame.js';
 import {architectureModel} from './architecture-model.js';
-import {modelDossierHTML} from './model-dossier.js';
 import {savedRecordSubject} from './shell-record-subject.js';
 import {reportLoadFailure} from './load-failures.js';
 import {projectURL,projectPreferenceKey,activeProjectId,setShellScopeId} from './project-context.js';
@@ -26,7 +25,7 @@ import {esc} from './html-escape.js';
 import {pad2} from './util.js';
 import {themeControl} from './theme.js';
 import {milestoneRecheck,readinessWords,readinessHead,hasIllustrativeRecords,revealRecord,tablist,navigationDrawer,markConnection,isOffline,glossaryHTML,guidanceFooter,chipAddsFact,whereText,COACH_STEPS,coachDue,coachSeen,coachForget,coachHTML,helpMapHTML} from './shell-ux.js';
-import {inheritedFindings,DISPOSITIONS,SOURCE_SILENT} from './review-domain.js';
+import {inheritedFindings,SOURCE_SILENT,treatmentsFor,reviewByMin} from './review-domain.js';
 import {solDisclosure} from './provenance.js';
 import {TAB_PURPOSE} from './shell-ux.js';
 import {chapterChecks} from './readiness-model.js';
@@ -440,6 +439,16 @@ function workspaceAssistance(){
 // (perspective-view.js) no longer rewrites the line (rc41, W2: a second line after the frame measured its height
 // overflowed the stage).
 
+// The dossier of a record another chapter owns (model-dossier.js) loads when such a record is first inspected, not to
+// open a chapter (rc42: the chapters route holds what every chapter needs to open). The inspector says the reading is
+// loading and repaints when it arrives, only while that line still stands (a person who has moved on to a record they
+// are editing keeps their place); a load that fails is reported like every other lazy part and may be asked again.
+let dossierModule=null,dossierAsked=false;
+function foreignDossierHTML(p,id,source){
+  if(dossierModule)return dossierModule.modelDossierHTML(p,id,{chapter:source,open:true});
+  if(!dossierAsked){dossierAsked=true;import('./model-dossier.js').then(m=>{dossierModule=m;if($('#inspector [data-dossier-loading]'))refreshInspector()}).catch(e=>{dossierAsked=false;reportLoadFailure('the record’s place in the model',e);const line=$('#inspector [data-dossier-loading]');if(line)line.textContent='This record’s place in the model did not load. Its definition is in its own chapter.'});}
+  return '<p class="muted" role="status" data-dossier-loading>Loading this record’s place in the model.</p>';
+}
 // Same-tab inspection reads the canonical record without borrowing another chapter's
 // stateful editor. Own-chapter controls remain native; foreign records use the shared
 // dossier and explicit links to their owning editor.
@@ -448,7 +457,7 @@ function workspaceInspectorHTML(){
   if(!source||source===s.chapter)return withGlance(studio.inspector(getNode(id)));
   const r=findRecord(p,source,id)?.record;if(!r)return withGlance(studio.inspector(getNode(id)));
   const graph=architectureModel(p),body='<p>'+esc(r.purpose||r.description||r.context||r.statement||'Purpose needs definition.')+'</p>'+
-    '<p><a class="btn" href="'+esc(projectURL('/?chapter='+source+'&tab=work&object='+encodeURIComponent(id)))+'">Open definition in Chapter '+source+' Work</a></p>'+modelDossierHTML(p,id,{chapter:source,open:true});
+    '<p><a class="btn" href="'+esc(projectURL('/?chapter='+source+'&tab=work&object='+encodeURIComponent(id)))+'">Open definition in Chapter '+source+' Work</a></p>'+foreignDossierHTML(p,id,source);
   return recordCardHTML(p,source,id,body,{nodes:[...graph.objects.values()],edges:graph.relationships});
 }
 // The design at a glance (rc40, PLAN §4.4.4; work-glance.js): on Work, Validate and Output (rc41, W2), while no record
@@ -746,12 +755,13 @@ function treatFinding(findingId,stamp,title){
   hideTip();lastFocus=document.activeElement;s.modal='treat';
   // "Carry as action" needs a Chapter 11 action defined for this finding, so it is offered there, not here.
   // "Source silent · raised with the owner" (round 12, GR-SRC-07) names with whom the question was raised in the reference.
-  const here=DISPOSITIONS.filter(d=>d!=='Carry as action'),needsReference=t=>['Accepted design limitation','Not applicable',SOURCE_SILENT].includes(t);
-  $('#dialog-host').innerHTML=`<div class="dialog-backdrop"><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><header><span class="eyebrow">Treatment</span><button class="btn icon-only" data-action="close-modal" aria-label="Close dialog">${icon('close')}</button></header><h2 id="dialog-title">Treat this finding</h2><p><b>${esc(title||f.title)}</b><br>${esc(f.detail||'')}</p><form id="treat-form" class="treat-form"><label><span>Treatment</span><select name="treatment" required>${here.map(d=>`<option>${esc(d)}</option>`).join('')}</select></label><label><span>Reason</span><textarea name="rationale" rows="3" required maxlength="2000"></textarea></label><label><span>Reviewer</span><input name="reviewer" required maxlength="180" autocomplete="name"></label><label><span data-treat-reference>Evidence or decision reference</span><input name="reference" maxlength="400" placeholder="ADR-00n, a review note, a test or a document"></label><label class="treat-check"><input type="checkbox" name="reviewed" required>I reviewed the finding against the current design.</label><p class="treat-note">Recorded as a Chapter 11 disposition against this finding's current definition. It does not change the record the finding concerns and is not an approval. To carry it as an action, define the action in <a href="${esc(projectURL('/?chapter=11&tab=validate&validate=readiness'))}">Chapter 11</a>.</p><div class="treat-actions"><button type="button" class="btn" data-action="close-modal">Cancel</button><button type="submit" class="btn primary">Record treatment</button></div></form></section></div>`;
-  const form=$('#treat-form'),reference=form.elements.reference,sync=()=>{const t=form.elements.treatment.value;reference.required=needsReference(t);form.querySelector('[data-treat-reference]').textContent=t===SOURCE_SILENT?'Raised with (the owner of the source, and the reference of the request)':'Evidence or decision reference';};sync();
+  // A hard-constraint or invariant finding is not waivable (rc.10.73.42, D13); an accepted limitation has a review-by date.
+  const here=treatmentsFor(f).filter(d=>d!=='Carry as action'),needsReference=t=>['Accepted design limitation','Not applicable',SOURCE_SILENT].includes(t);
+  $('#dialog-host').innerHTML=`<div class="dialog-backdrop"><section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-title"><header><span class="eyebrow">Treatment</span><button class="btn icon-only" data-action="close-modal" aria-label="Close dialog">${icon('close')}</button></header><h2 id="dialog-title">Treat this finding</h2><p><b>${esc(title||f.title)}</b><br>${esc(f.detail||'')}</p><form id="treat-form" class="treat-form"><label><span>Treatment</span><select name="treatment" required>${here.map(d=>`<option>${esc(d)}</option>`).join('')}</select></label><label><span>Reason</span><textarea name="rationale" rows="3" required maxlength="2000"></textarea></label><label><span>Reviewer</span><input name="reviewer" required maxlength="180" autocomplete="name"></label><label><span data-treat-reference>Evidence or decision reference</span><input name="reference" maxlength="400" placeholder="ADR-00n, a review note, a test or a document"></label><label data-treat-review-by hidden><span>Review by (the finding reopens after this date)</span><input type="date" name="reviewBy" min="${reviewByMin()}"></label><label class="treat-check"><input type="checkbox" name="reviewed" required>I reviewed the finding against the current design.</label><p class="treat-note">Recorded as a Chapter 11 disposition against this finding's current definition. It does not change the record the finding concerns and is not an approval. To carry it as an action, define the action in <a href="${esc(projectURL('/?chapter=11&tab=validate&validate=readiness'))}">Chapter 11</a>.</p><div class="treat-actions"><button type="button" class="btn" data-action="close-modal">Cancel</button><button type="submit" class="btn primary">Record treatment</button></div></form></section></div>`;
+  const form=$('#treat-form'),reference=form.elements.reference,sync=()=>{const t=form.elements.treatment.value,limited=t==='Accepted design limitation';reference.required=needsReference(t);form.elements.reviewBy.required=limited;form.querySelector('[data-treat-review-by]').hidden=!limited;form.querySelector('[data-treat-reference]').textContent=t===SOURCE_SILENT?'Raised with (the owner of the source, and the reference of the request)':'Evidence or decision reference';};sync();
   form.elements.treatment.addEventListener('change',sync);form.elements.treatment.focus();
   form.addEventListener('submit',async ev=>{ev.preventDefault();const data=Object.fromEntries(new FormData(form)),submit=form.querySelector('[type="submit"]');submit.disabled=true;
-    try{await window.aiwProjectStore.command({type:'review.disposition',payload:{findingId:f.id,stamp:f.stamp,treatment:data.treatment,rationale:data.rationale,reviewer:data.reviewer,reference:data.reference,reviewed:form.elements.reviewed.checked===true}});closeModal();render();toast(`Treated in Chapter 11 · ${data.treatment}`);const again=[...document.querySelectorAll('.vx-treated')].find(el=>el.closest('.l-finding')?.querySelector(`[data-l-id="${cssId(f.sourceId)}"]`));(again?.closest('.l-finding')?.querySelector('button')||$('.vx-index'))?.focus?.()}
+    try{await window.aiwProjectStore.command({type:'review.disposition',payload:{findingId:f.id,stamp:f.stamp,treatment:data.treatment,rationale:data.rationale,reviewer:data.reviewer,reference:data.reference,...(data.treatment==='Accepted design limitation'?{reviewBy:data.reviewBy}:{}),reviewed:form.elements.reviewed.checked===true}});closeModal();render();toast(`Treated in Chapter 11 · ${data.treatment}`);const again=[...document.querySelectorAll('.vx-treated')].find(el=>el.closest('.l-finding')?.querySelector(`[data-l-id="${cssId(f.sourceId)}"]`));(again?.closest('.l-finding')?.querySelector('button')||$('.vx-index'))?.focus?.()}
     catch(e){submit.disabled=false;let err=form.querySelector('.treat-error');if(!err){err=document.createElement('p');err.className='treat-error';err.setAttribute('role','alert');form.prepend(err)}err.textContent=e.message}});
 }
 function closeModal(){s.modal=null;if($('#dialog-host'))$('#dialog-host').innerHTML='';lastFocus?.isConnected&&lastFocus.focus()}

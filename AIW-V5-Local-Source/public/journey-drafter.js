@@ -43,7 +43,8 @@ import {sha256} from './brain-integrity.js';
 import {withJourneyProvenance} from './chapter-guide.js';
 import {resilienceDrafts} from './security-domain.js';
 import {draftsByGroup, groupedDraftReason} from './readiness-model.js';
-import {nounPhrase} from './architecture-drafter.js';
+import {nounPhrase, DRAFT_STAGES} from './architecture-drafter.js';
+import {enterpriseAdoptionIssue, enterpriseIdentity} from './enterprise-references.js';
 // Round 12 (G, GR-UX-16): the chapters named from the one chapter-name table.
 import {CHAPTER_TITLES} from './chapter-names.js';
 
@@ -230,6 +231,21 @@ function numberIn(text, id) { const B = {byId: new Map([[id, {text}]])}, n = sta
 const cites = (n, up) => n.passage ? {passages: [n.passage], upstream: up} : {upstream: up};
 const said = (value, n) => n.passage ? stated(value, [n.passage]) : fromUpstream(value, [n.upstream]);
 const PRIORITY_OF = {Must: 'High', Should: 'Medium', Could: 'Low'};
+// Chapter 10 (rc.10.73.42, D10): the runtime parts no plan places yet, the components and then the technology
+// realizations, each with the capability it rests on (its first need's capability, or the capability it realizes).
+function runtimeParts(p) {
+  const placed = new Set(list(p.runtime?.plans).map(r => r.assetId)), caps = list(p.technology?.capabilities);
+  const capOfComp = c => { const need = list(p.technology?.needs).find(n => n.applicationId === c.id); return need ? caps.find(x => list(p.technology?.mappings).some(m => m.capabilityId === x.id && m.needId === need.id)) : null; };
+  const capOfReal = r => caps.find(x => list(p.technologyRealisation?.mappings).some(m => m.capabilityId === x.id && m.realizationId === r.id)) || null;
+  return [...list(p.realisation?.components).map(c => ({c, cap: capOfComp(c), app: true})), ...list(p.technologyRealisation?.records).map(r => ({c: r, cap: capOfReal(r), app: false}))].filter(x => !placed.has(x.c.id));
+}
+// One environment for every part placed in it, as the brief and the model rules both draft it: envOf finds the
+// environment once a record (or the person) has designed it, zoneOf its zone for the part. The first record designs the
+// environment and its zone; each later one joins it (environmentId), in its zone or a new one (zoneId).
+const joining = (envOf, zoneOf, sources, notes) => ({
+  environmentId: doc => { const e = envOf(doc); return e ? inferred(e.id, {...sources, note: `Joins ${e.ref || e.id} ${e.title}: ${notes.join}`}) : inferred('new-environment', {...sources, note: notes.design}); },
+  zoneId: doc => { const e = envOf(doc), z = e && zoneOf(doc, e); return z ? inferred(z.id, {...sources, ...(notes.zoneUp ? {upstream: notes.zoneUp} : {}), note: notes.zone}) : inferred('new-zone', {...sources, note: notes.newZone}); }
+});
 
 const RULES = {
   // Chapter 1: one record per interpreted proposal, every artefact type, each through the guided chain (its first
@@ -430,21 +446,32 @@ const RULES = {
     if (!specs.length) { const c = list(p.interfaces?.contracts).find(x => !threatened.has(x.id)); if (c) specs.push(threat(p, c, 'Unauthorised action', `Unauthorised use of ${c.title}`, `A caller without the required permission invokes ${c.title}.`, `An action on ${c.title} is taken without the authority it needs.`, 'Moderate', `${refOf(c)} is the design's exchange with the least recorded protection.`, `Authorise callers of ${c.title}`, 'Identity & access', specs.length)); }
     return specs;
   },
-  // Chapter 10: an operating plan, zone and placement per application component without one.
+  // Chapter 10 (rc.10.73.42, D10): one environment of a stage holding every part, as the grouped architecture drafter
+  // drafts it (architecture-drafter.js DRAFT_STAGES, DRF-16), never one per component: the production stage, the
+  // environment designed first. The first part's record designs the environment and its zone; each later part joins it
+  // (environmentId), in the zone of its capability's stated failure domain or the stage's own zone (zoneId). Every
+  // runtime part is placed, the components and the technology realizations that support them, so no dependency is
+  // missing by construction. What no source states stays open: the failure domain, readiness without a capability, the
+  // rollback and the runbook (D17: kept as open fields when committed, never as words a check reads as stated).
   10: p => {
-    const placed = new Set(list(p.runtime?.plans).map(r => r.assetId));
-    return list(p.realisation?.components).filter(c => !placed.has(c.id)).map((c, i) => {
-      const need = list(p.technology?.needs).find(n => n.applicationId === c.id), cap = need && list(p.technology?.capabilities).find(x => list(p.technology?.mappings).some(m => m.capabilityId === x.id && m.needId === need.id));
-      const boundary = list(p.technology?.boundaries).find(b => b.id === cap?.boundaryId), up = uniq([c.id, cap?.id, boundary?.id]);
-      return {key: 'e' + (i + 1), kind: 'guided', title: `${c.title} production design`, upstream: up, values: {
-        assetId: fromUpstream(c.id, [c.id]), title: inferred(`${c.title} production design`, {upstream: [c.id]}), stage: inferred('Production design', {upstream: [c.id], note: 'The operating environment designed first; add others as needed.'}),
-        zone: boundary ? fromUpstream(`${boundary.title} zone`, [boundary.id]) : gap(openText('Name the placement zone')),
-        failureDomain: cap && !placeholder(cap.failureDomain) ? fromUpstream(cap.failureDomain, [cap.id]) : gap(openText('Which shared failure domain does this zone belong to')),
-        replicas: inferred('1', {upstream: [c.id], note: 'The smallest count the question accepts: one instance of an application that exists. An assumption until load and failure tests say otherwise.'}),
+    const [, stage, stageTitle] = DRAFT_STAGES[0], zoneTitle = `${stageTitle} zone`;
+    // The environment of the stage, once a record (or the person) has designed it; and its zone for a failure domain.
+    const stageEnv = doc => list(doc.runtime?.environments).find(e => e.stage === stage) || null;
+    const domainOf = cap => cap && !placeholder(cap.failureDomain) ? str(cap.failureDomain) : '';
+    const zoneFor = (doc, e, domain) => list(doc.runtime?.zones).find(z => z.environmentId === e.id && (domain ? str(z.failureDomain).toLowerCase() === domain.toLowerCase() : z.title === zoneTitle)) || null;
+    return runtimeParts(p).map(({c, cap, app}, i) => {
+      const domain = domainOf(cap), up = uniq([c.id, cap?.id]);
+      return {key: 'e' + (i + 1), kind: 'guided', title: `${c.title} in ${stageTitle}`, upstream: up, values: {
+        assetId: fromUpstream(c.id, [c.id]),
+        ...joining(stageEnv, (doc, e) => zoneFor(doc, e, domain), {upstream: [c.id]}, {join: 'one environment of the stage holds every part.', design: 'No environment of the stage is designed yet; this record designs it, for every part.', zone: domain ? `The zone of its failure domain, ${domain}.` : 'The stage\'s zone: no failure domain is stated for it.', zoneUp: domain ? [cap.id] : [c.id], newZone: 'A new zone in the environment for its failure domain.'}),
+        title: inferred(stageTitle, {upstream: [c.id], note: 'One environment of the stage for every part.'}), stage: inferred(stage, {upstream: [c.id], note: 'The operating environment designed first; add others as needed.'}),
+        zone: domain ? fromUpstream(`${domain} zone`, [cap.id]) : inferred(zoneTitle, {upstream: [c.id], note: 'The stage\'s zone, until a failure domain is stated.'}),
+        failureDomain: domain ? fromUpstream(domain, [cap.id]) : gap(openText('Which shared failure domain does this zone belong to')),
+        replicas: inferred('1', {upstream: [c.id], note: `The smallest count the question accepts: one instance of ${app ? 'an application' : 'an implementation'} that exists. An assumption until load and failure tests say otherwise.`}),
         minReady: inferred('1', {upstream: [c.id], note: 'No more than the proposed replicas.'}),
-        readiness: cap ? fromUpstream(`${c.title} is ready when ${cap.title} answers for it.`, [cap.id]) : gap(openText('What demonstrates readiness to serve')),
+        readiness: app && cap ? fromUpstream(`${c.title} is ready when ${cap.title} answers for it.`, [cap.id]) : gap(openText('What demonstrates readiness to serve')),
         rollback: gap(openText('What triggers rollback and how is it checked')),
-        runbook: inferred(`Runbook for ${c.title} still to be written.`, {upstream: [c.id], note: 'The question asks for the procedure still to be written when there is none.'}),
+        runbook: gap(openText(`Which runbook operates ${c.title}`)),
         owner: ownerOf(c, c.id)}};
     });
   },
@@ -508,6 +535,8 @@ function threat(p, target, category, title, scenario, consequence, priority, pri
 // external system, and interfaces → Chapter 8 contract (event when the words say so), with the data they touch;
 // environment, node and instance → Chapter 10. An element the project already holds (same kind of record, same title
 // words) is not drafted again. A value is stated when the model's line holds its words, else inferred from that line.
+// rc.10.73.42 (D12): a business capability and a gap, and every element of the implementation-and-migration layer, are
+// drafted by no chapter: each is listed, with its note and its lines, in the import report (notMapped below).
 const elText = e => [e.name, e.description, e.technology, ...e.tags].join(' ');
 const APP_KINDS = new Set(['system', 'container', 'component']);
 const hasParts = (M, e) => list(M.children.get(e.id)).some(c => c.kind === 'container' || c.kind === 'component');
@@ -551,22 +580,30 @@ function processOrder(M) {
 // sequence and message flows as process.transition between the steps the chapter made and those elements. An element
 // made in this batch is named by a reference the applier resolves ("@ref:model:E-007"); a flow whose end is neither a
 // step nor such an element (a pool, a data object) is not drafted.
+// rc.10.73.42 (D16, C1-M1): a branch (a flow out of an exclusive or inclusive gateway that splits: two or more outgoing
+// sequence flows in the model) keeps the condition the model states; with none it is adopted with an open condition
+// (empty, an open question, open-fields.js) that PROC-GATEWAY raises until a person states it, and the gateway's default
+// flow is adopted as the default path (process.transition `default`). The one flow out of a merge is no branch: no
+// condition, no question.
+// "Follows when … completes." is only for a flow that leaves no gateway. An element of the implementation-and-migration
+// layer (an ArchiMate implementation event) is no process element, as a work package is no journey step.
 const REF = '@ref:model:';
 const EVENT_TYPES = new Set(['none', 'message', 'timer', 'error', 'signal']), GATEWAY_TYPES = new Set(['exclusive', 'parallel', 'inclusive', 'event']);
+const flowElement = e => (e.kind === 'event' || e.kind === 'gateway') && e.attrs.layer !== 'implementation';
 function processExtras(doc, M) {
   const steps = artefacts(doc, 'journey'), stepOf = el => named(steps, el.name), out = [], seen = new Set();
   const laneOf = el => { let e = M.els.get(el.parent); while (e && e.kind !== 'lane' && e.kind !== 'pool') e = M.els.get(e.parent); return e?.name || ''; };
-  const idOf = el => !el ? null : el.kind === 'task' || el.kind === 'process' ? stepOf(el)?.id || null : el.kind === 'event' || el.kind === 'gateway' ? REF + el.id : null;
+  const idOf = el => !el ? null : el.kind === 'task' || el.kind === 'process' ? stepOf(el)?.id || null : flowElement(el) ? REF + el.id : null;
   const source = x => `${M.name}${x.passages.length ? ' · ' + x.passages.join(', ') : ''}`;
   // A BPMN sub-process that became a journey step also stands in the process model as a sub-process element, so the
   // events and gateways inside it can name it (Contract T: parentId names a sub-process element).
   const subs = new Map();
-  for (const el of M.elements.filter(e => e.kind === 'event' || e.kind === 'gateway')) {
+  for (const el of M.elements.filter(flowElement)) {
     const parentEl = M.els.get(el.parent); if (!parentEl || !(parentEl.kind === 'task' || parentEl.kind === 'process') || !stepOf(parentEl) || subs.has(parentEl.id)) continue;
     const ref = REF + parentEl.id + ':sub'; subs.set(parentEl.id, ref);
     out.push({type: 'process.element', ref, payload: {kind: 'subprocess', title: clip(parentEl.name, 160), purpose: clip(parentEl.description, 1000), lane: clip(laneOf(parentEl), 100) || 'Unassigned', owner: '', source: clip(source(parentEl), 600), sourceLocator: clip(parentEl.passages.join(', '), 240), requirementIds: [], eventType: '', position: '', attachedTo: '', gatewayType: '', parentId: '', partyId: '', dataId: ''}});
   }
-  for (const el of M.elements.filter(e => e.kind === 'event' || e.kind === 'gateway')) {
+  for (const el of M.elements.filter(flowElement)) {
     const a = el.attrs, parentEl = M.els.get(el.parent);
     out.push({type: 'process.element', ref: REF + el.id, payload: {kind: el.kind, title: clip(el.name, 160), purpose: clip(el.description, 1000), lane: clip(laneOf(el), 100) || 'Unassigned', owner: '', source: clip(source(el), 600), sourceLocator: clip(el.passages.join(', '), 240), requirementIds: [], eventType: el.kind === 'event' ? (EVENT_TYPES.has(a.eventType) ? a.eventType : 'none') : '', position: el.kind === 'event' ? (['start', 'intermediate', 'end', 'boundary'].includes(a.position) ? a.position : 'intermediate') : '', attachedTo: a.attachedTo ? idOf(M.els.get(a.attachedTo)) || '' : '', gatewayType: el.kind === 'gateway' ? (GATEWAY_TYPES.has(a.gatewayType) ? a.gatewayType : 'exclusive') : '', parentId: (parentEl && subs.get(parentEl.id)) || '', partyId: '', dataId: ''}});
   }
@@ -574,8 +611,8 @@ function processExtras(doc, M) {
     const a = M.els.get(r.from), b = M.els.get(r.to), from = idOf(a), to = idOf(b);
     if (!from || !to || from === to || seen.has(from + '>' + to)) continue;
     seen.add(from + '>' + to);
-    const fromGateway = a.kind === 'gateway';
-    out.push({type: 'process.transition', payload: {from, to, label: clip(r.label || `${a.name} → ${b.name}`, 100), condition: clip(r.attrs.condition || (fromGateway ? `No condition stated in the model for ${r.label || 'this path'}.` : `Follows when ${a.name} completes.`), 600), kind: r.kind, contractId: '', owner: '', source: clip(source(r), 600), sourceLocator: clip(r.passages.join(', '), 240)}});
+    const fromGateway = a.kind === 'gateway', chooses = fromGateway && M.relationships.filter(x => x.kind === 'sequence' && x.from === a.id).length > 1 && ['exclusive', 'inclusive'].includes(GATEWAY_TYPES.has(a.attrs.gatewayType) ? a.attrs.gatewayType : 'exclusive'), condition = str(r.attrs.condition), byDefault = chooses && r.attrs.isDefault === true;
+    out.push({type: 'process.transition', payload: {from, to, label: clip(r.label || `${a.name} → ${b.name}`, 100), condition: clip(condition || (fromGateway ? '' : `Follows when ${a.name} completes.`), 600), ...(byDefault ? {default: true} : {}), ...(chooses && !condition && !byDefault ? {open: {condition: {state: 'open-question', question: clip(`What must be true for ${r.label || 'the path to ' + b.name} to be taken?`, 600), source: clip(source(r), 600)}}} : {}), kind: r.kind, contractId: '', owner: '', source: clip(source(r), 600), sourceLocator: clip(r.passages.join(', '), 240)}});
   }
   return out;
 }
@@ -587,6 +624,37 @@ export function resolveRefs(value, refs) {
   return value;
 }
 export const isRef = value => typeof value === 'string' && value.startsWith(REF);
+// The import report (rc.10.73.42, D12): what the model holds and no chapter drafts, each with the lines it came from and
+// a note for the person. A business capability (an ArchiMate Capability or BusinessFunction) is never a Chapter 6
+// technology capability: it is named against the governed identity of an Enterprise capability the project has adopted
+// under the same name, one a person could link now (enterprise-references.js), else it is an import note. A gap is a
+// transition note for Chapter 11, never a requirement. A plateau, a work package and the rest of the
+// implementation-and-migration layer are Chapter 11 work a person records. Names are compared, never guessed at: a match
+// is a suggestion, and the link is a person's reviewed shared dependency.
+const isPlateau = x => /^plateau$/i.test(str(x?.attrs.xsiType || x?.attrs.archimateType));
+const NOT_MAPPED_WORDS = {'business-capability': 'business capability', gap: 'gap'};
+function notMapped(p, M) {
+  const adopted = list(p?.workbench?.catalogue).filter(e => e?.asset?.type === 'Enterprise capability' && !enterpriseAdoptionIssue(e));
+  return M.elements.filter(e => e.kind === 'business-capability' || e.kind === 'gap' || e.attrs.layer === 'implementation').map(e => {
+    const type = str(e.attrs.xsiType || e.attrs.archimateType) || e.kind, row = {element: e.id, kind: e.kind, xsiType: type, name: e.name, passages: e.passages};
+    if (e.kind === 'business-capability') {
+      const c = adopted.find(x => titleKey(x.title) === titleKey(e.name)), identity = c ? enterpriseIdentity(c.organization.id, c.organization.entryId) : '';
+      return c ? {...row, mapping: 'enterprise-capability', identity, entryId: c.id, note: `${e.name} (${type}) is a business capability, not a Chapter 6 technology capability. It carries the name of the adopted Enterprise capability ${c.title} (${identity}): link the records that realise it to that identity as a reviewed shared dependency.`}
+        : {...row, mapping: 'import-note', note: `${e.name} (${type}) is a business capability, not a Chapter 6 technology capability, and no adopted Enterprise capability carries its name. Record it as an Enterprise capability in the organisation library for review and release, or keep this note.`};
+    }
+    if (e.kind === 'gap') {
+      const ends = uniq([...list(M.out.get(e.id)).map(r => M.els.get(r.to)), ...list(M.into.get(e.id)).map(r => M.els.get(r.from))].filter(isPlateau).map(x => x.name));
+      return {...row, mapping: 'transition-note', note: `${e.name} (${type}) is a step between plateaus${ends.length ? ' (' + ends.join(' and ') + ')' : ''}, not a requirement, and is not drafted as one. Chapter 11 records the plateaus, and the SDD's Transition section reads each gap from what a plateau introduces and retires: state it as the purpose of the plateau it leads to.`};
+    }
+    return {...row, mapping: 'import-note', note: `${e.name} (${type}) is ${isPlateau(e) ? 'a Chapter 11 plateau, recorded by a person in the Plateaus stage' : e.kind === 'task' ? 'delivery work (a Chapter 11 delivery action), not a journey step' : 'Chapter 11 work of the implementation-and-migration layer'}; it is not drafted from the model.`};
+  });
+}
+const notMappedNote = (rows, ch) => {
+  if (ch === 1 && rows.length) return `${rows.length} element${rows.length === 1 ? ' of the model is' : 's of the model are'} not drafted into a chapter: ${rows.map(x => `${x.name} (${NOT_MAPPED_WORDS[x.kind] || x.xsiType})`).join('; ')}. Each is in the import report with its note and its lines.`;
+  const caps = rows.filter(x => x.kind === 'business-capability');
+  if (ch === 6 && caps.length) return `${caps.map(x => x.name).join(', ')} ${caps.length === 1 ? 'is a business capability' : 'are business capabilities'}, not a Chapter 6 technology capability: ${caps.map(x => x.identity ? `${x.name} carries the name of the adopted Enterprise capability ${x.identity}` : `${x.name} matches no adopted Enterprise capability`).join('; ')}.`;
+  return '';
+};
 
 const MODEL_RULES = {
   // Chapter 1: the model's people, stakeholders, outcomes, steps (in flow order), constraints and requirements; the
@@ -606,7 +674,7 @@ const MODEL_RULES = {
     const linkTo = (type, el, onlyOne) => doc => { const items = artefacts(doc, type), top = best(items, elText(el)) || (onlyOne && items.length === 1 ? items[0] : null); return top ? inferred(top.id, {upstream: [top.id], note: overlap(textOf(top), elText(el)) ? `Shares the most words with ${top.id} ${top.title}.` : `The only ${type} the project holds.`}) : gap('', `No ${type} shares words with it.`); };
     for (const el of take('requirement', M.elements.filter(e => e.kind === 'requirement'))) push('requirement', el, {acceptance: gap(openText('What observable result would demonstrate this behaviour')), owner: gap(OWNER_GAP, 'The model names no owner for this requirement.'), journeyId: linkTo('journey', el, true), outcomeId: linkTo('outcome', el, true), constraintId: linkTo('constraint', el, false), assumptionId: linkTo('assumption', el, false)});
     const last = specs.filter(s => s.type === 'journey').at(-1);
-    if (last && M.elements.some(e => e.kind === 'event' || e.kind === 'gateway')) last.extras = doc => processExtras(doc, M);
+    if (last && M.elements.some(flowElement)) last.extras = doc => processExtras(doc, M);
     return specs;
   },
   // Chapter 2: a quality scenario per driver the model names.
@@ -757,7 +825,11 @@ const MODEL_RULES = {
   },
   // Chapter 10: an operating plan per component the model places: an instance in a node (Structurizr), or a node that
   // realises or is assigned the component (ArchiMate). The zone is the node, the failure domain the outermost node, the
-  // stage from the environment's name, the replicas the count the model states.
+  // stage from the environment's name, the replicas the count the model states. rc.10.73.42 (D10): one environment per
+  // environment the model draws (per stage when it names none) holds every part placed in it, joined as the brief rule
+  // joins its stage environment (joining); parts on one node share its zone. The parts the model does not place follow,
+  // each a proposal from the model's placements: a technology realization beside the component it supports, any other
+  // part in the environment's own zone. So every part is placed, and no dependency is missing by construction.
   10: (p, M, ctx) => {
     const comps = list(p.realisation?.components);
     if (!comps.length) { ctx.note = 'Chapter 10 places an application component; draft Chapter 5 first.'; return []; }
@@ -767,22 +839,46 @@ const MODEL_RULES = {
     const counted = nodes => nodes.find(n => /^\d+$/.test(str(n.attrs.instances))) || null;
     for (const inst of M.elements.filter(e => e.kind === 'instance')) { const target = M.els.get(inst.attrs.of), comp = target && named(comps, target.name), nodes = chain(inst); if (comp) placements.push({comp, el: inst, nodes, counted: counted(nodes)}); }
     for (const r of M.relationships.filter(r => ['assigned', 'realizes', 'composes'].includes(r.kind))) { const node = M.els.get(r.from), app = M.els.get(r.to); if (node?.kind !== 'node' || !app || !APP_KINDS.has(app.kind)) continue; const comp = named(comps, app.name), nodes = [node, ...chain(node)]; if (comp) placements.push({comp, el: node, nodes, counted: counted(nodes), passages: r.passages}); }
-    const seen = new Set(), specs = [];
+    const seen = new Set(), specs = [], home = new Map();
+    const envNamed = t => doc => list(doc.runtime?.environments).find(e => e.title === t) || null, zoneNamed = (t, fd) => (doc, e) => list(doc.runtime?.zones).find(z => z.environmentId === e.id && z.title === t && (!fd || str(z.failureDomain) === fd)) || null;
     for (const pl of placements) {
       if (placed.has(pl.comp.id) || seen.has(pl.comp.id)) continue;
       seen.add(pl.comp.id);
       const env = pl.nodes.find(e => e.kind === 'environment') || (pl.el.attrs.environment ? M.els.get(pl.el.attrs.environment) : null), nodes = pl.nodes.filter(e => e.kind === 'node' || e.kind === 'zone'), zone = nodes[0] || null, outer = nodes.length > 1 ? nodes.at(-1) : null;
       const stage = env ? stageOfName(env.name) : stageOfName(nodes.map(n => n.name).join(' ')), passages = uniq([...(pl.passages || []), ...pl.el.passages, ...(env?.passages || []), ...(zone?.passages || [])]), up = [pl.comp.id];
       const replicas = pl.counted && Number(pl.counted.attrs.instances) >= 1 ? String(Number(pl.counted.attrs.instances)) : '';
+      const envTitle = env ? env.name : (stage || DRAFT_STAGES[0][1]).replace(/ design$/, ''), zoneTitle = zone ? zone.name : `${envTitle} zone`, envPassages = env?.passages || passages;
+      home.set(pl.comp.id, {comp: pl.comp, envTitle, zoneTitle, fd: outer?.name, stage: stage || DRAFT_STAGES[0][1], passages, envPassages, el: pl.el.id, envEl: env?.id || pl.el.id});
       specs.push({key: 'me' + (specs.length + 1), kind: 'guided', title: `${pl.comp.title} ${env ? lower(env.name) : 'production'} design`, source: 'model', element: pl.el.id, passages, upstream: up, values: {
-        assetId: fromUpstream(pl.comp.id, up), title: inferred(`${pl.comp.title} ${env ? env.name : 'production'} design`, {upstream: up, passages}),
+        assetId: fromUpstream(pl.comp.id, up),
+        ...joining(envNamed(envTitle), zoneNamed(zoneTitle, outer?.name), {upstream: up, passages: envPassages}, {join: `one environment for every part the model places in ${envTitle}.`, design: `The model's ${envTitle} environment, designed once for every part placed in it.`, zone: `${zoneTitle}, the zone of the node the model places it on.`, newZone: `A zone for ${zoneTitle}, as the model draws it.`}),
+        title: inferred(envTitle, {upstream: up, passages: envPassages, note: env ? 'The environment the model draws.' : 'The model names no environment: one for the stage.'}),
         stage: stage ? inferred(stage, {passages: env?.passages || passages, note: `From the name "${env?.name || zone?.name}" the model gives it.`}) : gap('Production design', 'The model names no environment stage; the first holds until you choose.'),
-        zone: zone ? fromModel(M, zone.name, zone.passages) : gap(openText('Name the placement zone')),
+        zone: zone ? fromModel(M, zone.name, zone.passages) : inferred(zoneTitle, {upstream: up, passages: envPassages, note: 'The environment\'s own zone: the model draws no node for it.'}),
         failureDomain: outer ? fromModel(M, outer.name, outer.passages, {note: 'The outermost node the model places it in.'}) : gap(openText('Which shared failure domain does this zone belong to')),
         replicas: replicas ? fromModel(M, replicas, uniq([...pl.counted.passages, ...pl.el.passages]), {note: `The instance count the model states on ${pl.counted.name}; an assumption until load and failure tests say otherwise.`}) : inferred('1', {passages: pl.el.passages, note: 'One instance, as the model draws it; an assumption until load and failure tests say otherwise.'}),
         minReady: inferred('1', {upstream: up, note: 'No more than the proposed replicas.'}), readiness: gap(openText('What demonstrates readiness to serve')), rollback: gap(openText('What triggers rollback and how is it checked')),
-        runbook: inferred(`Runbook for ${pl.comp.title} still to be written.`, {upstream: up, note: 'The question asks for the procedure still to be written when there is none.'}),
+        runbook: gap(openText(`Which runbook operates ${pl.comp.title}`)),
         owner: gap(OWNER_GAP, 'The model names no owner.')}});
+    }
+    if (!specs.length) return specs;
+    // A realization supports the components whose needs map to the capability it realizes.
+    const realised = r => list(p.technologyRealisation?.mappings).filter(m => m.realizationId === r.id).map(m => m.capabilityId);
+    const supported = r => list(p.technology?.needs).filter(n => list(p.technology?.mappings).some(m => m.needId === n.id && realised(r).includes(m.capabilityId))).map(n => n.applicationId);
+    const first = home.get(specs[0].upstream[0]);
+    for (const {c, cap, app} of runtimeParts(p).filter(x => !seen.has(x.c.id))) {
+      const by = app ? null : home.get(supported(c).find(id => home.has(id))), h = by || first, up = uniq([c.id, by?.comp.id, cap?.id]), zoneTitle = by ? by.zoneTitle : `${h.envTitle} zone`, passages = by ? by.passages : h.envPassages;
+      // It names the element it was read from: the placement of the component it runs beside, or the environment it joins.
+      specs.push({key: 'me' + (specs.length + 1), kind: 'guided', title: `${c.title} in ${h.envTitle}`, source: 'model', element: by ? by.el : h.envEl, passages, upstream: up, values: {
+        assetId: fromUpstream(c.id, [c.id]),
+        ...joining(envNamed(h.envTitle), zoneNamed(zoneTitle, by?.fd), {upstream: up, passages}, {join: by ? `beside ${by.comp.title}, which the model places in it.` : 'the model places it nowhere, so it joins the environment every part shares until you place it.', design: `The model's ${h.envTitle} environment, designed once for every part placed in it.`, zone: by ? `The zone of ${by.comp.title}, the component it supports.` : 'The environment\'s own zone, until you place it.', newZone: `A zone for ${zoneTitle}.`}),
+        title: inferred(h.envTitle, {upstream: up, passages}), stage: inferred(h.stage, {upstream: up, passages}),
+        zone: inferred(zoneTitle, {upstream: up, passages, note: by ? `Beside ${by.comp.title}.` : 'The environment\'s own zone: the model draws no node for it.'}),
+        failureDomain: gap(openText('Which shared failure domain does this zone belong to')),
+        replicas: inferred('1', {upstream: up, note: `The smallest count the question accepts: one instance of ${app ? 'an application' : 'an implementation'} that exists. An assumption until load and failure tests say otherwise.`}),
+        minReady: inferred('1', {upstream: up, note: 'No more than the proposed replicas.'}),
+        readiness: app && cap ? fromUpstream(`${c.title} is ready when ${cap.title} answers for it.`, [cap.id]) : gap(openText('What demonstrates readiness to serve')),
+        rollback: gap(openText('What triggers rollback and how is it checked')), runbook: gap(openText(`Which runbook operates ${c.title}`)), owner: ownerOf(c, c.id)}});
     }
     return specs;
   }
@@ -883,7 +979,9 @@ function draftWith(input, ch, {brief = null, model = null, mode = 'deterministic
     records.push(record);
   }
   const gaps = [...records.flatMap(r => r.gaps.map(g => ({record: r.key, ...g}))), ...list(ctx.questions).map(q => ({record: null, key: q.key, question: q.question, forType: q.forType}))];
-  const draft = {chapter: ch, title: CHAPTER_TITLES[ch], mode: M && !M.empty ? 'model' : mode, basis: {stamp: guideBasis(p, ch, null), engine: BRAIN_ENGINE, policy: BRAIN_POLICY, procedure: brain.procedure ? {id: brain.procedure.id, title: brain.procedure.title, questions: brain.procedure.questions} : null}, records, gaps, citations: brain.citations, ...(ctx.note ? {note: ctx.note} : {}), ...(M && !M.empty ? {model: {sourceId: M.sourceId, name: M.name, format: M.format, elements: M.elements.length, drafted: records.filter(r => r.provenance.mode === 'model').length}} : {}), ...(!records.length ? {empty: ch === 1 ? (M && !M.empty ? 'The model and the brief yield no new Chapter 1 record.' : 'The brief yields no new Chapter 1 record.') : `Chapter ${ch} has nothing to draft from: its upstream records are drafted already or missing.`} : {})};
+  const unmapped = M && !M.empty ? notMapped(p, M) : null, said = unmapped ? notMappedNote(unmapped, ch) : '';
+  if (said) ctx.note = [ctx.note, said].filter(Boolean).join(' ');
+  const draft = {chapter: ch, title: CHAPTER_TITLES[ch], mode: M && !M.empty ? 'model' : mode, basis: {stamp: guideBasis(p, ch, null), engine: BRAIN_ENGINE, policy: BRAIN_POLICY, procedure: brain.procedure ? {id: brain.procedure.id, title: brain.procedure.title, questions: brain.procedure.questions} : null}, records, gaps, citations: brain.citations, ...(ctx.note ? {note: ctx.note} : {}), ...(M && !M.empty ? {model: {sourceId: M.sourceId, name: M.name, format: M.format, elements: M.elements.length, drafted: records.filter(r => r.provenance.mode === 'model').length, notMapped: unmapped}} : {}), ...(!records.length ? {empty: ch === 1 ? (M && !M.empty ? 'The model and the brief yield no new Chapter 1 record.' : 'The brief yields no new Chapter 1 record.') : `Chapter ${ch} has nothing to draft from: its upstream records are drafted already or missing.`} : {})};
   return {draft, document: doc};
 }
 // One chapter of proposed records for the project as it stands. Pure: the project is read, never written.

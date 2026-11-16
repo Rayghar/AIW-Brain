@@ -31,7 +31,7 @@ try{
  const source=inheritedFindings(p),errors=source.filter(f=>f.level==='error');assert(errors.length>=3);
  const accepted=errors[0],fixed=errors[1],stale=errors[2];
  for(const [f,treatment]of [[accepted,'Accepted design limitation'],[fixed,'Fix before review'],[stale,'Accepted design limitation']]){
-  p=applyFinalReviewCommand(p,{type:'review.disposition',payload:{findingId:f.id,stamp:inheritedFindings(p).find(x=>x.id===f.id).stamp,treatment,reviewer:'Synthetic reviewer',reference:'Unit fixture only',rationale:'Exercise the presentation of a recorded treatment in an isolated fixture.',reviewed:true}},undefined,'fixture-architect').document;
+  p=applyFinalReviewCommand(p,{type:'review.disposition',payload:{findingId:f.id,stamp:inheritedFindings(p).find(x=>x.id===f.id).stamp,treatment,reviewer:'Synthetic reviewer',reference:'Unit fixture only',rationale:'Exercise the presentation of a recorded treatment in an isolated fixture.',reviewBy:'2099-12-31',reviewed:true}},undefined,'fixture-architect').document;
  }
  // A stale source stamp must re-open assessment; do not infer it from existence of a disposition.
  p=structuredClone(p);p.finalReview.dispositions.find(d=>d.findingId===stale.id).stamp='obsolete-synthetic-stamp';

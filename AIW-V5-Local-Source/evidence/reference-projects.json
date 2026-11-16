@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-23T02:27:58.348Z",
+  "at": "2026-10-30T22:41:32.820Z",
   "authority": "AIW authored illustrations: each reference project is drafted by the deterministic journey rules (journey-rules-1 from the brief) from an AIW authored teaching brief. Not a customer project, not a measured system, not an architecture review, and not a confirmation, verification, governance approval or production acceptance of any record; productionAccepted stays false.",
   "rules": {
     "brief": "brief-rules-1",
@@ -114,15 +114,15 @@
           "openAnswers": 26
         },
         "10": {
-          "records": 15,
+          "records": 12,
           "detail": {
-            "environments": 5,
-            "zones": 5,
-            "plans": 5,
-            "placements": 5
+            "environments": 1,
+            "zones": 1,
+            "plans": 10,
+            "placements": 10
           },
-          "withJourney": 15,
-          "openAnswers": 25
+          "withJourney": 12,
+          "openAnswers": 13
         },
         "11": {
           "records": 1,
@@ -133,23 +133,23 @@
       "parts": {
         "alternatives": 6,
         "technologyNeeds": 5,
-        "placements": 5
+        "placements": 10
       },
       "provenance": {
-        "records": 98,
-        "withJourney": 98,
+        "records": 95,
+        "withJourney": 95,
         "passagesCited": 37,
         "passagesNotInBrief": 0
       },
       "gaps": {
-        "openAnswers": 169,
+        "openAnswers": 157,
         "briefQuestions": 6
       },
       "readiness": {
         "passing": 4,
-        "total": 193,
+        "total": 182,
         "toFix": 247,
-        "toConfirm": 375,
+        "toConfirm": 392,
         "treated": 0,
         "chapters": [
           {
@@ -176,8 +176,8 @@
           {
             "chapter": 4,
             "passing": 0,
-            "total": 72,
-            "toFix": 71,
+            "total": 69,
+            "toFix": 68,
             "toConfirm": 31
           },
           {
@@ -218,9 +218,9 @@
           {
             "chapter": 10,
             "passing": 0,
-            "total": 21,
-            "toFix": 46,
-            "toConfirm": 50
+            "total": 13,
+            "toFix": 49,
+            "toConfirm": 67
           },
           {
             "chapter": 11,
@@ -233,7 +233,7 @@
       },
       "findings": {
         "errors": 245,
-        "warnings": 281,
+        "warnings": 297,
         "sourceChange": 0,
         "key": 0
       },
@@ -247,7 +247,7 @@
       "resilience": {
         "externalContracts": 1,
         "disruptionThreats": 1,
-        "drafts": 5,
+        "drafts": 1,
         "missing": 0
       },
       "confirmed": 0,
@@ -267,10 +267,10 @@
       },
       "narrativeTitle": "Citizen service requests — Solution Design",
       "sdd": {
-        "markdownBytes": 292010,
-        "jsonBytes": 731798,
-        "htmlBytes": 320849,
-        "registersBytes": 293471
+        "markdownBytes": 312629,
+        "jsonBytes": 765207,
+        "htmlBytes": 341624,
+        "registersBytes": 297606
       }
     },
     {
@@ -378,15 +378,15 @@
           "openAnswers": 34
         },
         "10": {
-          "records": 21,
+          "records": 16,
           "detail": {
-            "environments": 7,
-            "zones": 7,
-            "plans": 7,
-            "placements": 7
+            "environments": 1,
+            "zones": 1,
+            "plans": 14,
+            "placements": 14
           },
-          "withJourney": 21,
-          "openAnswers": 35
+          "withJourney": 16,
+          "openAnswers": 17
         },
         "11": {
           "records": 1,
@@ -397,23 +397,23 @@
       "parts": {
         "alternatives": 8,
         "technologyNeeds": 7,
-        "placements": 7
+        "placements": 14
       },
       "provenance": {
-        "records": 125,
-        "withJourney": 125,
+        "records": 120,
+        "withJourney": 120,
         "passagesCited": 35,
         "passagesNotInBrief": 0
       },
       "gaps": {
-        "openAnswers": 227,
+        "openAnswers": 209,
         "briefQuestions": 7
       },
       "readiness": {
         "passing": 4,
-        "total": 244,
-        "toFix": 335,
-        "toConfirm": 489,
+        "total": 227,
+        "toFix": 333,
+        "toConfirm": 512,
         "treated": 0,
         "chapters": [
           {
@@ -440,8 +440,8 @@
           {
             "chapter": 4,
             "passing": 0,
-            "total": 94,
-            "toFix": 93,
+            "total": 89,
+            "toFix": 88,
             "toConfirm": 43
           },
           {
@@ -482,9 +482,9 @@
           {
             "chapter": 10,
             "passing": 0,
-            "total": 29,
-            "toFix": 64,
-            "toConfirm": 68
+            "total": 17,
+            "toFix": 67,
+            "toConfirm": 91
           },
           {
             "chapter": 11,
@@ -496,8 +496,8 @@
         ]
       },
       "findings": {
-        "errors": 333,
-        "warnings": 370,
+        "errors": 331,
+        "warnings": 392,
         "sourceChange": 0,
         "key": 0
       },
@@ -511,7 +511,7 @@
       "resilience": {
         "externalContracts": 1,
         "disruptionThreats": 1,
-        "drafts": 7,
+        "drafts": 1,
         "missing": 0
       },
       "confirmed": 0,
@@ -531,10 +531,10 @@
       },
       "narrativeTitle": "Warehouse fulfilment — Solution Design",
       "sdd": {
-        "markdownBytes": 314109,
-        "jsonBytes": 869314,
-        "htmlBytes": 343558,
-        "registersBytes": 386278
+        "markdownBytes": 382223,
+        "jsonBytes": 956660,
+        "htmlBytes": 413766,
+        "registersBytes": 392101
       }
     },
     {
@@ -642,15 +642,15 @@
           "openAnswers": 30
         },
         "10": {
-          "records": 18,
+          "records": 14,
           "detail": {
-            "environments": 6,
-            "zones": 6,
-            "plans": 6,
-            "placements": 6
+            "environments": 1,
+            "zones": 1,
+            "plans": 12,
+            "placements": 12
           },
-          "withJourney": 18,
-          "openAnswers": 30
+          "withJourney": 14,
+          "openAnswers": 15
         },
         "11": {
           "records": 1,
@@ -661,23 +661,23 @@
       "parts": {
         "alternatives": 8,
         "technologyNeeds": 6,
-        "placements": 6
+        "placements": 12
       },
       "provenance": {
-        "records": 112,
-        "withJourney": 112,
+        "records": 108,
+        "withJourney": 108,
         "passagesCited": 44,
         "passagesNotInBrief": 0
       },
       "gaps": {
-        "openAnswers": 202,
+        "openAnswers": 187,
         "briefQuestions": 7
       },
       "readiness": {
         "passing": 4,
-        "total": 219,
-        "toFix": 293,
-        "toConfirm": 431,
+        "total": 205,
+        "toFix": 292,
+        "toConfirm": 451,
         "treated": 0,
         "chapters": [
           {
@@ -704,8 +704,8 @@
           {
             "chapter": 4,
             "passing": 0,
-            "total": 83,
-            "toFix": 82,
+            "total": 79,
+            "toFix": 78,
             "toConfirm": 37
           },
           {
@@ -746,9 +746,9 @@
           {
             "chapter": 10,
             "passing": 0,
-            "total": 25,
-            "toFix": 55,
-            "toConfirm": 59
+            "total": 15,
+            "toFix": 58,
+            "toConfirm": 79
           },
           {
             "chapter": 11,
@@ -760,8 +760,8 @@
         ]
       },
       "findings": {
-        "errors": 291,
-        "warnings": 324,
+        "errors": 290,
+        "warnings": 343,
         "sourceChange": 0,
         "key": 0
       },
@@ -775,7 +775,7 @@
       "resilience": {
         "externalContracts": 1,
         "disruptionThreats": 1,
-        "drafts": 6,
+        "drafts": 1,
         "missing": 0
       },
       "confirmed": 0,
@@ -795,10 +795,10 @@
       },
       "narrativeTitle": "Clinic appointments — Solution Design",
       "sdd": {
-        "markdownBytes": 300885,
-        "jsonBytes": 792452,
-        "htmlBytes": 330051,
-        "registersBytes": 336287
+        "markdownBytes": 326499,
+        "jsonBytes": 832795,
+        "htmlBytes": 355853,
+        "registersBytes": 342047
       }
     },
     {
@@ -906,15 +906,15 @@
           "openAnswers": 62
         },
         "10": {
-          "records": 27,
+          "records": 20,
           "detail": {
-            "environments": 9,
-            "zones": 9,
-            "plans": 9,
-            "placements": 9
+            "environments": 1,
+            "zones": 1,
+            "plans": 18,
+            "placements": 18
           },
-          "withJourney": 27,
-          "openAnswers": 45
+          "withJourney": 20,
+          "openAnswers": 21
         },
         "11": {
           "records": 1,
@@ -925,23 +925,23 @@
       "parts": {
         "alternatives": 10,
         "technologyNeeds": 9,
-        "placements": 9
+        "placements": 18
       },
       "provenance": {
-        "records": 183,
-        "withJourney": 183,
+        "records": 176,
+        "withJourney": 176,
         "passagesCited": 46,
         "passagesNotInBrief": 0
       },
       "gaps": {
-        "openAnswers": 323,
+        "openAnswers": 299,
         "briefQuestions": 6
       },
       "readiness": {
         "passing": 5,
-        "total": 346,
-        "toFix": 483,
-        "toConfirm": 690,
+        "total": 323,
+        "toFix": 479,
+        "toConfirm": 719,
         "treated": 0,
         "chapters": [
           {
@@ -968,8 +968,8 @@
           {
             "chapter": 4,
             "passing": 0,
-            "total": 138,
-            "toFix": 137,
+            "total": 131,
+            "toFix": 130,
             "toConfirm": 55
           },
           {
@@ -1010,9 +1010,9 @@
           {
             "chapter": 10,
             "passing": 0,
-            "total": 37,
-            "toFix": 88,
-            "toConfirm": 86
+            "total": 21,
+            "toFix": 91,
+            "toConfirm": 115
           },
           {
             "chapter": 11,
@@ -1024,8 +1024,8 @@
         ]
       },
       "findings": {
-        "errors": 481,
-        "warnings": 517,
+        "errors": 477,
+        "warnings": 545,
         "sourceChange": 0,
         "key": 0
       },
@@ -1039,7 +1039,7 @@
       "resilience": {
         "externalContracts": 3,
         "disruptionThreats": 3,
-        "drafts": 9,
+        "drafts": 1,
         "missing": 0
       },
       "confirmed": 0,
@@ -1059,10 +1059,10 @@
       },
       "narrativeTitle": "Municipal parcel lockers — Solution Design",
       "sdd": {
-        "markdownBytes": 326695,
-        "jsonBytes": 1047199,
-        "htmlBytes": 357373,
-        "registersBytes": 518431
+        "markdownBytes": 409658,
+        "jsonBytes": 1153926,
+        "htmlBytes": 442468,
+        "registersBytes": 527308
       }
     },
     {
@@ -1170,15 +1170,15 @@
           "openAnswers": 48
         },
         "10": {
-          "records": 24,
+          "records": 18,
           "detail": {
-            "environments": 8,
-            "zones": 8,
-            "plans": 8,
-            "placements": 8
+            "environments": 1,
+            "zones": 1,
+            "plans": 16,
+            "placements": 16
           },
-          "withJourney": 24,
-          "openAnswers": 40
+          "withJourney": 18,
+          "openAnswers": 19
         },
         "11": {
           "records": 1,
@@ -1189,23 +1189,23 @@
       "parts": {
         "alternatives": 10,
         "technologyNeeds": 8,
-        "placements": 8
+        "placements": 16
       },
       "provenance": {
-        "records": 156,
-        "withJourney": 156,
+        "records": 150,
+        "withJourney": 150,
         "passagesCited": 35,
         "passagesNotInBrief": 0
       },
       "gaps": {
-        "openAnswers": 276,
+        "openAnswers": 255,
         "briefQuestions": 7
       },
       "readiness": {
         "passing": 4,
-        "total": 297,
-        "toFix": 412,
-        "toConfirm": 595,
+        "total": 277,
+        "toFix": 409,
+        "toConfirm": 621,
         "treated": 0,
         "chapters": [
           {
@@ -1232,8 +1232,8 @@
           {
             "chapter": 4,
             "passing": 0,
-            "total": 116,
-            "toFix": 115,
+            "total": 110,
+            "toFix": 109,
             "toConfirm": 50
           },
           {
@@ -1274,9 +1274,9 @@
           {
             "chapter": 10,
             "passing": 0,
-            "total": 33,
-            "toFix": 76,
-            "toConfirm": 77
+            "total": 19,
+            "toFix": 79,
+            "toConfirm": 103
           },
           {
             "chapter": 11,
@@ -1288,8 +1288,8 @@
         ]
       },
       "findings": {
-        "errors": 410,
-        "warnings": 447,
+        "errors": 407,
+        "warnings": 472,
         "sourceChange": 0,
         "key": 0
       },
@@ -1303,7 +1303,7 @@
       "resilience": {
         "externalContracts": 2,
         "disruptionThreats": 2,
-        "drafts": 8,
+        "drafts": 1,
         "missing": 0
       },
       "confirmed": 0,
@@ -1323,10 +1323,10 @@
       },
       "narrativeTitle": "Library reservations — Solution Design",
       "sdd": {
-        "markdownBytes": 325919,
-        "jsonBytes": 966351,
-        "htmlBytes": 356213,
-        "registersBytes": 449245
+        "markdownBytes": 403561,
+        "jsonBytes": 1065816,
+        "htmlBytes": 435964,
+        "registersBytes": 456134
       }
     }
   ]

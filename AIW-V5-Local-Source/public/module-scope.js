@@ -17,7 +17,8 @@
 //
 //   recordModules(p)        -> Map(record id -> {modules: [module ids], subs: [sub-module ids], served: [module ids]})
 //   recordAttachments(p)    -> Map(record id -> {modules, subs, by}) for the records recordModules does not place: a data
-//                              entity by the components that own it (by 'owner'), a contract by the components at its ends
+//                              entity by its Chapter 8 owner and the components that use it (by 'owner'; rc.10.73.42,
+//                              D9: a placement reading, not ownership: a Chapter 5 list is data a component uses), a contract by the components at its ends
 //                              ('ends'; both modules where two meet), a control by what it protects and a threat by what
 //                              it threatens or the controls that mitigate it ('targets'), an external party by the
 //                              components its contracts join ('contracts'); a record that touches nothing placed is absent

@@ -37,7 +37,7 @@ export const ANTI_FIX = {
   'sync-chain': {chapter: 3, verb: 'Decide in Chapter 3 whether a call can hand off asynchronously'},
   idempotency: {chapter: 8, verb: 'Record an idempotency key or duplicate policy in Chapter 8'},
   retry: {chapter: 8, verb: 'Bound the retries in Chapter 8'},
-  'shared-data': {chapter: 5, verb: 'Give the data one owner in Chapter 5'},
+  'shared-data': {chapter: 5, verb: 'Let the others reach the data through its one owner'},
   god: {chapter: 4, verb: 'Split the responsibilities in Chapter 4'},
   queue: {chapter: 7, verb: 'Record the queue\'s bound in Chapter 7'},
   observability: {chapter: 10, verb: 'Record monitoring in Chapter 10'}
@@ -91,11 +91,14 @@ export function traceRows(D) {
     const rows = runtimeHere.map(r => byPlan.get(r.id)).filter(Boolean);
     const states = rows.flatMap(r => r.vitals.map(v => v.state)).filter(s => s !== 'na');
     cells.vitals = rows.length ? [{id: 'V:' + req.id, ref: VSTATE[worstOf(states)].label, label: `${states.filter(s => s === 'bad').length} critical · ${states.filter(s => s === 'none').length} no signal across ${rows.length} running part${rows.length === 1 ? '' : 's'}`, chapter: 11, state: worstOf(states)}] : [];
-    const breaks = TRACE_COLS.filter(c => c.spine && !cells[c.id].length).map(c => c.id);
-    const firstBreak = TRACE_COLS.find(c => c.spine && !cells[c.id].length) || null;
+    // A break is read on the requirement's own chain (reviewTrace spine, rc.10.73.42 D7): what its drivers constrain and
+    // its decisions justify stays in the cells as context, but never closes a gap in it.
+    const S = t.spine, gap = c => c.spine && !(c.id === 'platform' ? S.realizations.length || S.capabilities.length : c.id === 'runtime' ? S.runtime.some(r => !D.env || r.environmentId === D.env) : S[c.id].length);
+    const breaks = TRACE_COLS.filter(gap).map(c => c.id);
+    const firstBreak = TRACE_COLS.find(gap) || null;
     // The latest current review of its trail, its own or a group's (round 12, GR-GOV-05).
     const review = traceReviewFor(p, req.id);
-    return {id: req.id, req, cells, breaks, firstBreak, reviewed: !!review, review, state: states.length ? worstOf(states) : 'na', environment: D.env, runtimeElsewhere: t.runtime.length > 0 && !runtimeHere.length};
+    return {id: req.id, req, cells, spine: S, breaks, firstBreak, reviewed: !!review, review, state: states.length ? worstOf(states) : 'na', environment: D.env, runtimeElsewhere: t.runtime.length > 0 && !runtimeHere.length};
   }).filter(Boolean);
 }
 export function describeTrace(T) {
