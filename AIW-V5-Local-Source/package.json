@@ -366,6 +366,7 @@
     "test:architecture-verification": "node architecture-verification-validate.mjs",
     "test:architecture-verification-ui": "node architecture-verification-ui-validate.mjs",
     "test:knowledge-coverage": "node knowledge-coverage-validate.mjs",
+    "test:rc44-wp1-knowledge": "node rc44-wp1-knowledge-validate.mjs",
     "test:hosted-knowledge": "node hosted-knowledge-validate.mjs",
     "test:model-reconciliation": "node model-reconciliation-validate.mjs",
     "test:enterprise-references": "node enterprise-references-validate.mjs",
