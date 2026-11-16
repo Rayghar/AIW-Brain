@@ -1,4 +1,5 @@
 import {chapterSummaries,finalFindings,finalMilestones,reviewRequirements,reviewTrace,currentBaseline,latestGovernance,independentApproval} from './review-domain.js';
+import {requirementSpine,hopsFrom} from './trace-kernel.js';
 import {releasedClaims,knowledgeState,claimReceiptCurrent} from './knowledge-governance.js';
 import {digest} from './brain-integrity.js';
 import {measurementCurrent} from './quality-analysis.js';
@@ -127,11 +128,13 @@ export function architectureCaseAssessment(p,c){
 // recorded design and evidence preconditions, never automatic approval.
 function journeyFromRequirement(p,traces,basis,testObservations){
  const record=traces[0]?.record,t=basis?.trace||{},req=basis?.record,drivers=new Set((t.drivers||[]).map(x=>x.id));
- const logicalIds=new Set((t.logical||[]).map(x=>x.id));
- const applicationIds=new Set((p.logical?.mappings||[]).filter(m=>logicalIds.has(m.logicalId)&&(t.applications||[]).some(a=>a.id===m.physicalId)).map(m=>m.physicalId));
- const needIds=new Set((p.technology?.needs||[]).filter(n=>applicationIds.has(n.applicationId)).map(n=>n.id));
- const capabilityIds=new Set((p.technology?.mappings||[]).filter(m=>needIds.has(m.needId)&&(t.capabilities||[]).some(c=>c.id===m.capabilityId)).map(m=>m.capabilityId));
- const realizationIds=new Set((p.technologyRealisation?.mappings||[]).filter(m=>capabilityIds.has(m.capabilityId)&&(t.realizations||[]).some(r=>r.id===m.realizationId)).map(m=>m.realizationId));
+ // The spine is the requirement's own chain on its trail (rc.10.73.42, D7: trace-kernel.js requirementSpine): the
+ // responsibilities it names, the components realising them, their needs, the capabilities meeting those, the products
+ // implementing them and the plans running either, each read as a hop of the kernel's walk. What its drivers constrain
+ // or its decisions justify stays on the trail as context and never completes the spine.
+ const S=basis?.trace&&req?requirementSpine(p,req.id):null,hopped=(layer,type,from)=>new Set((S?.layers[layer]||[]).filter(id=>hopsFrom(S,id,h=>h.type===type&&from.has(h.from)).length));
+ const logicalIds=new Set(S?.layers.responsibility);
+ const applicationIds=hopped('component','realizedBy',logicalIds),needIds=hopped('need','hasNeed',applicationIds),capabilityIds=hopped('capability','metBy',needIds),realizationIds=hopped('realization','implementedBy',capabilityIds);
  const assetIds=new Set([...applicationIds,...realizationIds]);
  const runtimePlans=(t.runtime||[]).filter(plan=>assetIds.has(plan.assetId)),planIds=new Set(runtimePlans.map(x=>x.id));
  const relevantDecisions=(t.decisions||[]).filter(d=>d.driverIds?.some(id=>drivers.has(id)));

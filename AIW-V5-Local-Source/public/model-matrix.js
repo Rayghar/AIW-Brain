@@ -2,9 +2,12 @@
 // other. The sets offered are the record types the chapter's connected model and the project actually hold (read from
 // the data, never a fixed list); each chapter opens on its default pair and remembers the pair chosen. A cell says how
 // the row relates to the column: the recorded relationship(s) where there is one; else the path through one
-// intermediate record (two hops), marked as such; and only where the two sets meet neither way, the shortest chain of
-// recorded relationships through the design (requirement → responsibility → component → running part). A click
-// selects the cell. A row or column with nothing recorded against the other axis is a gap and is marked as one.
+// intermediate record (two hops), marked as such; and where a pair meets neither way, the trace kernel's chain from the
+// row to the column (trace-kernel.js: requirement → driver → decision → responsibility → … → running part), for any
+// such pair on the row's trace, even where other pairs of the two sets meet directly (rc.10.73.42, D7). A click selects
+// the cell. A row or column with nothing recorded against the other axis is a gap and is marked as one: gaps are read on
+// the nearest kind the two sets share (the basis: recorded, else through one record, else through the design), so a
+// chain cell never closes a gap where the sets meet more directly.
 // Large sets are capped (the first 60 rows × 40 columns) with a note and a filter per axis. A reading of the saved
 // document: nothing here writes. An axis of requirements filters on the text every requirement search reads
 // (requirement-groups.js requirementSearchIndex), so a requirement is found by its workbook id, its domain or its group
@@ -12,10 +15,12 @@
 import {architectureModel, OBJECT_TYPES} from './architecture-model.js';
 import {layerOfType} from './notation-model.js';
 import {layerForLevel} from './chapter-names.js';
-import {perDocument} from './document-memo.js';
+import {perDocument, memoPass} from './document-memo.js';
 import {esc} from './html-escape.js';
 import {requirementSearchIndex} from './requirement-groups.js';
 import {chapterRecordSet} from './chapter-records.js';
+import {layerOf} from './trace-kernel.js';
+import {recordTrace, tracePath} from './trace-record.js';
 
 // The words for the sets the chapters' defaults name; any other record type reads its own label, in the plural.
 export const SET_LABELS = {journey: 'Journey steps', requirement: 'Requirements', quality: 'Quality drivers', decision: 'Decisions', responsibility: 'Responsibilities', component: 'Components', capability: 'Capabilities', technology: 'Products', contract: 'Contracts', data: 'Data definitions', threat: 'Threats', control: 'Controls', instance: 'Placements', runtime: 'Running parts'};
@@ -45,17 +50,17 @@ const graphOf = perDocument(p => {
   // remain available to trace paths but never masquerade as additional register records.
   for (const o of M.objects.values()) { if (!records.has(o.id)) continue; if (!byType.has(o.type)) byType.set(o.type, []); byType.get(o.type).push(o); }
   for (const list of byType.values()) list.sort((a, b) => String(a.ref).localeCompare(String(b.ref), undefined, {numeric: true}));
-  return {M, adj, byType};
+  return {M, adj, byType, rel: new Map(M.relationships.map(e => [e.id, e]))};
 });
 const refOf = (M, id) => M.objects.get(id)?.ref || id;
 
 // The model of one pair: rows, columns, and per related pair a cell {kind: 'direct' | 'via' | 'chain', items}.
 // `basis` is the nearest kind the two sets meet by; a gap is a record with no cell of that kind (so a path through
 // another record never hides a missing recorded relationship).
-export const matrixModel = perDocument((p, o) => buildMatrix(p, o), (o = {}) => (o.rows || '') + '|' + (o.cols || '') + '|' + (o.maxHops || 4));
-function buildMatrix(p, {rows, cols, maxHops = 4} = {}) {
+export const matrixModel = perDocument((p, o) => memoPass(p, () => buildMatrix(p, o)), (o = {}) => (o.rows || '') + '|' + (o.cols || ''));
+function buildMatrix(p, {rows, cols} = {}) {
   if (!p || !rows || !cols) return null;
-  const {M, adj, byType} = graphOf(p), R = byType.get(rows) || [], C = byType.get(cols) || [], colIds = new Set(C.map(o => o.id));
+  const {M, adj, byType, rel} = graphOf(p), R = byType.get(rows) || [], C = byType.get(cols) || [], colIds = new Set(C.map(o => o.id));
   const cells = new Map(), put = (k, kind, item) => { let c = cells.get(k); if (!c) cells.set(k, c = {kind, items: []}); if (c.kind === kind) c.items.push(item); return c; };
   // 1. The relationships the project records between the two.
   for (const r of R) for (const x of adj.get(r.id) || []) {
@@ -73,26 +78,23 @@ function buildMatrix(p, {rows, cols, maxHops = 4} = {}) {
       put(k, 'via', {e: null, words: 'via ' + (mid.ref || mid.id), via: [mid.id], steps: [`${refOf(M, r.id)} ${say(x.e, x.out)} ${refOf(M, mid.id)}`, `${refOf(M, mid.id)} ${say(y.e, y.out)} ${refOf(M, y.to)}`]});
     }
   }
-  // 3. Only where the two sets meet neither way: the shortest chain through the spine, up to `maxHops` relationships.
-  const chained = !cells.size && rows !== cols;
-  if (chained) for (const r of R) {
-    const prev = new Map([[r.id, null]]), q = [[r.id, 0]];
-    while (q.length) {
-      const [id, d] = q.shift(); if (d >= maxHops) continue;
-      for (const x of adj.get(id) || []) {
-        if (prev.has(x.to)) continue; const o = M.objects.get(x.to); if (!o) continue;
-        if (colIds.has(x.to)) {
-          prev.set(x.to, {id, x}); const path = []; let at = x.to; while (prev.get(at)) { const s = prev.get(at); path.unshift(s); at = s.id; }
-          const via = path.slice(0, -1).map(s => s.x.to);
-          put(r.id + '|' + x.to, 'chain', {e: null, words: 'through ' + via.map(v => refOf(M, v)).join(' → '), via, steps: path.map(s => `${refOf(M, s.id)} ${say(s.x.e, s.x.out)} ${refOf(M, s.x.to)}`)});
-          continue;
-        }
-        if (!SPINE.has(o.type) || o.type === rows || o.type === cols) continue;
-        prev.set(x.to, {id, x}); q.push([x.to, d + 1]);
-      }
+  // 3. Where a pair meets neither way: the trace kernel's chain from the row to the column, when the column is on the
+  // row's trace (trace-record.js recordTrace: a requirement's trail; any other record's chain back to the requirements
+  // it serves and on to what it reaches), each hop a typed relation (rc.10.73.42, D7: the trail, the trace path and
+  // the narrative read the same chain).
+  const traced = rows !== cols && C.some(layerOf) && R.some(layerOf);
+  if (traced) for (const r of R) {
+    const T = recordTrace(p, r.id); if (!T) continue;
+    for (const c of C) {
+      if (c.id === r.id || !T.has(c.id) || cells.has(r.id + '|' + c.id)) continue;
+      const path = tracePath(T, c.id); if (!path.length) continue;
+      const at = [r.id]; for (const s of path) at.push(s.from === at.at(-1) ? s.to : s.from);
+      const via = at.slice(1, -1), steps = path.map(s => { const e = rel.get(s.relation) || {type: s.type}, out = e.from ? e.from === s.from || (e.to !== s.from && e.from !== s.to) : true; return `${refOf(M, s.from)} ${say(e, out)} ${refOf(M, s.to)}`; });
+      put(r.id + '|' + c.id, 'chain', {e: null, words: via.length ? 'through ' + via.map(v => refOf(M, v)).join(' → ') : steps[0], via, steps});
     }
   }
   const counts = {direct: 0, via: 0, chain: 0}; for (const c of cells.values()) counts[c.kind]++;
+  const chained = rows !== cols && !!counts.chain && !counts.direct && !counts.via;
   const basis = counts.direct ? 'direct' : counts.via ? 'via' : counts.chain ? 'chain' : null;
   const search = rows === 'requirement' || cols === 'requirement' ? requirementSearchIndex(p) : null;
   const node = o => ({id: o.id, ref: o.ref || o.id, title: o.title || '', layer: layerOfType(o.type, o.record) || layerForLevel(o.level), search: (o.type === 'requirement' && search?.get(String(o.id))) || ''});
@@ -154,37 +156,25 @@ export function matrixHTML(X, {sel = null, cell = null, layers = null, sets = []
     const label = x.kind === 'direct' ? `${r.ref} ${x.items.map(i => i.words + (i.type ? ' (' + i.type + ')' : '')).join('; ')} ${c.ref}` : x.kind === 'via' ? `${r.ref} and ${c.ref}: no recorded relationship; related via ${x.items.map(i => i.words.replace(/^via /, '')).join(', ')}` : `${r.ref} and ${c.ref}: related ${x.items[0].words}`;
     return `<td class="hit ${x.kind}${on ? ' on' : ''}"><button type="button" data-nt-cell="${esc(k)}" aria-pressed="${on}" aria-label="${esc(label)}" title="${esc(label)}"><i aria-hidden="true">${MARK[x.kind]}</i><span>${esc(x.items[0].words)}${x.items.length > 1 ? ` <small>+${x.items.length - 1}</small>` : ''}</span></button></td>`;
   }).join('')}</tr>`).join('');
-  return bar + capNote + `<div class="nt-tcard"><div class="nt-table-wrap nt-x-wrap" tabindex="0" role="region" aria-label="${esc(X.rowLabel)} against ${esc(X.colLabel)}, scrolls both ways"><table class="nt-table nt-x"><caption class="cm-sr">Chapter ${esc(chapter)}: ${esc(X.rowLabel)} against ${esc(X.colLabel)}. A filled mark is a recorded relationship, a hollow mark a path through one other record${X.basis === 'chain' ? ', a dotted mark a longer chain through the design' : ''}; an empty row or column is a gap.</caption><thead>${head}</thead><tbody>${body}</tbody></table></div><p class="nt-scroll-hint" aria-hidden="true">Scroll sideways for more columns →</p></div><p class="nt-x-key"><span><i>●</i> recorded<span class="nt-long"> relationship</span></span><span><i>○</i> through one<span class="nt-long"> other</span> record</span>${X.basis === 'chain' ? '<span><i>◌</i> through the design</span>' : ''}<span class="gap">gap<span class="nt-long">: nothing recorded against the other axis</span></span></p>`;
+  return bar + capNote + `<div class="nt-tcard"><div class="nt-table-wrap nt-x-wrap" tabindex="0" role="region" aria-label="${esc(X.rowLabel)} against ${esc(X.colLabel)}, scrolls both ways"><table class="nt-table nt-x"><caption class="cm-sr">Chapter ${esc(chapter)}: ${esc(X.rowLabel)} against ${esc(X.colLabel)}. A filled mark is a recorded relationship, a hollow mark a path through one other record${X.counts.chain ? ', a dotted mark a longer chain through the design' : ''}; an empty row or column is a gap${X.counts.chain && X.basis !== 'chain' ? ', and a dotted mark alone does not close one' : ''}.</caption><thead>${head}</thead><tbody>${body}</tbody></table></div><p class="nt-scroll-hint" aria-hidden="true">Scroll sideways for more columns →</p></div><p class="nt-x-key"><span><i>●</i> recorded<span class="nt-long"> relationship</span></span><span><i>○</i> through one<span class="nt-long"> other</span> record</span>${X.counts.chain ? '<span><i>◌</i> through the design</span>' : ''}<span class="gap">gap<span class="nt-long">: nothing recorded against the other axis</span></span></p>`;
 }
-// ---------------------------------------------------------------- the trace path (round 5)
+// ---------------------------------------------------------------- the trace path (round 5; rc.10.73.42, D7)
 // The chain from one record through the design's layers: requirement → quality driver → decision → responsibility →
 // component → capability → realization → contract or data → control → placement → running part. Each step is read
-// from the Matrix of the record's type against that step's type, so the trace and the Matrix agree: the records the
-// Matrix relates to this row by the nearest kind it holds for it (recorded, else through one record, else the shortest
-// chains through the design), with the records each path passes through. A step with nothing is a gap, and is named.
+// from the trace kernel (trace-record.js recordTrace): a requirement's trail, or for any other record the records
+// whose typed hops reach it, back to the requirements it serves, and what it reaches in turn — the chain the trail, the
+// desk, the narrative and the Matrix read. The start holds its own step. A step with nothing is a gap, and is named.
 export const TRACE_ORDER = [['requirement'], ['quality'], ['decision'], ['responsibility'], ['component'], ['capability'], ['technology'], ['contract', 'data'], ['control'], ['instance'], ['runtime']];
 const STEP_WORD = {requirement: 'requirement', quality: 'quality driver', decision: 'decision', responsibility: 'responsibility', component: 'component', capability: 'capability', technology: 'realization', contract: 'contract', data: 'data definition', control: 'control', instance: 'placement', runtime: 'running part'};
-const KIND_RANK = {direct: 0, via: 1, chain: 2};
-export function traceFrom(p, id, {extra = []} = {}) {
+const STEP_LAYER = {requirement: 'requirement', quality: 'driver', decision: 'decision', responsibility: 'responsibility', component: 'component', capability: 'capability', technology: 'realization', contract: 'contract', data: 'data', control: 'control', instance: 'placement', runtime: 'plan'};
+export function traceFrom(p, id, opts = {}) { return p && id ? memoPass(p, () => traceFromOf(p, id, opts)) : null; }
+function traceFromOf(p, id, {extra = []} = {}) {
   if (!p || !id) return null;
   const {M} = graphOf(p), start = M.objects.get(id); if (!start) return null;
-  const ids = new Set([id]), order = TRACE_ORDER.some(g => g.includes(start.type)) ? TRACE_ORDER : [[start.type], ...TRACE_ORDER], steps = [];
+  const T = recordTrace(p, id), ids = new Set([id, ...(T ? T.ids : [])]), order = TRACE_ORDER.some(g => g.includes(start.type)) ? TRACE_ORDER : [[start.type], ...TRACE_ORDER], steps = [];
   for (const group of order) {
-    const found = new Map();
-    for (const t of group) {
-      if (t === start.type) { found.set(id, start); continue; }
-      const X = matrixModel(p, {rows: start.type, cols: t}); if (!X) continue;
-      const mine = X.cols.map(c => [c, X.cells.get(id + '|' + c.id)]).filter(([, x]) => x);
-      if (!mine.length) continue;
-      const rank = Math.min(...mine.map(([, x]) => KIND_RANK[x.kind])), near = mine.filter(([, x]) => KIND_RANK[x.kind] === rank);
-      const len = x => Math.min(...x.items.map(i => i.steps.length)), shortest = Math.min(...near.map(([, x]) => len(x)));
-      for (const [c, x] of near) {
-        if (x.kind === 'chain' && len(x) > shortest) continue;
-        found.set(c.id, M.objects.get(c.id)); ids.add(c.id);
-        for (const it of x.items) if (x.kind !== 'chain' || it.steps.length === shortest) for (const v of it.via) ids.add(v);
-      }
-    }
-    const records = [...found.values()].filter(Boolean).sort((a, b) => String(a.ref).localeCompare(String(b.ref), undefined, {numeric: true}));
+    const records = group.flatMap(t => t === start.type ? [start] : T && STEP_LAYER[t] ? T.layers[STEP_LAYER[t]].map(x => M.objects.get(x)).filter(o => o && o.type === t) : [])
+      .sort((a, b) => String(a.ref).localeCompare(String(b.ref), undefined, {numeric: true}));
     steps.push({types: group, word: group.map(t => STEP_WORD[t] || setLabel(t).toLowerCase()).join(' or '), records: records.map(o => ({id: o.id, ref: o.ref || o.id, title: o.title || '', type: o.type})), gap: !records.length});
   }
   for (const x of extra) if (M.objects.has(x)) ids.add(x);
@@ -197,6 +187,6 @@ export function traceFrom(p, id, {extra = []} = {}) {
 export function cellHTML(X, key) {
   const x = X?.cells.get(key); if (!x) return '';
   const [rid, cid] = key.split('|'), r = X.rows.find(o => o.id === rid), c = X.cols.find(o => o.id === cid);
-  const what = x.kind === 'direct' ? `${x.items.length === 1 ? 'A relationship' : x.items.length + ' relationships'} the project records${x.items[0].type ? ', typed ' + [...new Set(x.items.map(i => i.type))].join(', ') + ' by ArchiMate 3.1' : ''}${x.items.some(i => i.valid === false) ? '; the recorded kind is not allowed between these two types, so the standard writes an association' : ''}.` : x.kind === 'via' ? `No relationship is recorded between the two; ${x.items.length === 1 ? 'one record joins them' : x.items.length + ' records join them'}, each by two recorded relationships.` : 'No relationship is recorded between the two, nor through one record; this is the shortest chain of recorded relationships that joins them.';
+  const what = x.kind === 'direct' ? `${x.items.length === 1 ? 'A relationship' : x.items.length + ' relationships'} the project records${x.items[0].type ? ', typed ' + [...new Set(x.items.map(i => i.type))].join(', ') + ' by ArchiMate 3.1' : ''}${x.items.some(i => i.valid === false) ? '; the recorded kind is not allowed between these two types, so the standard writes an association' : ''}.` : x.kind === 'via' ? `No relationship is recorded between the two; ${x.items.length === 1 ? 'one record joins them' : x.items.length + ' records join them'}, each by two recorded relationships.` : 'No relationship is recorded between the two, nor through one record; this is the chain of typed relationships the trace follows between them.';
   return `<section class="cm-spec nt-cellspec"><h4 aria-level="3">Selected cell · ${x.kind === 'direct' ? 'recorded' : x.kind === 'via' ? 'through one record' : 'through the design'}</h4><p><b>${esc(r?.ref || rid)}</b> ${esc(r?.title || '')}</p><ul class="nt-cell-list">${x.items.slice(0, 8).map(i => `<li>${i.steps.map(esc).join(' · ')}</li>`).join('')}${x.items.length > 8 ? `<li>and ${x.items.length - 8} more</li>` : ''}</ul><p><b>${esc(c?.ref || cid)}</b> ${esc(c?.title || '')}</p><p class="cm-muted">${what}</p><p class="nt-actions"><button type="button" class="cm-btn" data-nt="trace" data-id="${esc(rid)}" data-cell="${esc(key)}" title="Light ${esc(r?.ref || rid)}’s chain through the design in the Layers view">Trace ${esc(r?.ref || rid)} through the design</button></p></section>`;
 }

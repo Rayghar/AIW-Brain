@@ -17,7 +17,8 @@ import {crc32} from 'node:zlib';
 import worker, {commandShape, commandHandler} from './worker.js';
 import {localDatabase} from './local-db.js';
 import {localFiles} from './local-files.js';
-import {SEGMENT_EVENTS, SWEEP_GRACE_MS, storedSummary, READINESS_EVERY_MS} from './project-storage.js';
+import {SEGMENT_EVENTS, SWEEP_GRACE_MS, storedSummary, READINESS_EVERY_MS, referencedKeys} from './project-storage.js';
+import {compactEvent, ARCHIVE_EVENTS, ARCHIVE_BYTES} from './journal-archive.js';
 // Every backend module is imported by this suite (B2-12), so a module that no longer loads fails the gate.
 import {APP_SECURITY_HEADERS, SIGN_IN_SECURITY_HEADERS, isCompressible} from './security-headers.js';
 import {queryRequirements} from './requirement-storage.js';
@@ -117,13 +118,14 @@ try {
   await edit(1);
   let stored = await row();
   assert.equal(stored.changes.schemaVersion, 2); assert.equal(stored.changes.segments.length, 0); assert.equal(stored.changes.head.count, 1);
-  const firstHead = stored.changes.head.key;
+  const firstHead = stored.changes.head.key, held = new Set(referencedKeys(stored));
   await edit(2);
   stored = await row();
   assert.equal(stored.changes.head.count, 2); assert.notEqual(stored.changes.head.key, firstHead, 'the head is rewritten under a new key');
   assert.deepEqual(stored.storageSweep.superseded.map((s) => s.key), [firstHead], 'the previous head is listed as superseded, not deleted yet');
   assert(await env.FILES.get(firstHead), 'and still readable for a read that holds the old reference');
-  for (let n = 3; n <= SEGMENT_EVENTS + 1; n++) await edit(n);
+  for (const key of referencedKeys(stored)) held.add(key);
+  for (let n = 3; n <= SEGMENT_EVENTS + 1; n++) { await edit(n); for (const key of referencedKeys(await row())) held.add(key); }
   stored = await row();
   assert.equal(stored.changes.segments.length, 1); assert.equal(stored.changes.segments[0].count, SEGMENT_EVENTS, 'the head sealed at ' + SEGMENT_EVENTS + ' events');
   assert.equal(stored.changes.head.count, 1); assert.equal(stored.changes.eventCount, SEGMENT_EVENTS + 1);
@@ -148,9 +150,25 @@ try {
   const aged = {...stored, storageSweep: {superseded: stored.storageSweep.superseded.map((s) => ({...s, at: new Date(Date.now() - SWEEP_GRACE_MS - 1000).toISOString()}))}};
   const due = aged.storageSweep.superseded.map((s) => s.key);
   // Every rewritten head is listed, and the sealed segment as it was before its earlier changes were archived (round 12,
-  // PS-08: the 25th superseded change moved them to the journal's archive, whose pages are referenced, never listed).
-  assert.equal(due.length, SEGMENT_EVENTS, 'every rewritten head and the sealed segment the archive compacted are listed');
-  assert.equal(stored.changes.archive.length, 1, 'one archive page'); assert(!due.includes(stored.changes.archive[0].key), 'the archive page is referenced, not superseded');
+  // PS-08: once ARCHIVE_EVENTS superseded changes, or ARCHIVE_BYTES of their text, wait, they move to the journal's
+  // archive, whose pages are referenced, never listed).
+  // rc.10.73.42 (D7): a requirement's change lists every record on its trail (the trace kernel's), so these changes are
+  // larger and a page may close on ARCHIVE_BYTES before ARCHIVE_EVENTS: the list is exactly the objects earlier rows
+  // referenced that this one does not, and the pages are exactly those the archive's rule gives for these changes.
+  const kept = referencedKeys(stored);
+  assert.deepEqual([...due].sort(), [...held].filter((key) => !kept.has(key)).sort(), 'every rewritten head and the sealed segment the archive compacted are listed, and nothing else');
+  const oldestFirst = paged.slice().reverse(), sizeOf = (e) => JSON.stringify(compactEvent(e)).length, pages = [];
+  // The save of change k + 1: the earlier changes not yet archived wait (each superseded by a later edit of the requirement).
+  for (let k = 1, from = 0; k < oldestFirst.length; k++) {
+    const waiting = oldestFirst.slice(from, k);
+    if (waiting.length < ARCHIVE_EVENTS && waiting.reduce((n, e) => n + sizeOf(e), 0) < ARCHIVE_BYTES) continue;
+    let page = [], bytes = 0;
+    for (const e of waiting) { if (page.length && (page.length >= ARCHIVE_EVENTS || bytes + sizeOf(e) > ARCHIVE_BYTES)) { pages.push(page); page = []; bytes = 0; } page.push(e); bytes += sizeOf(e); }
+    pages.push(page); from = k;
+  }
+  assert.deepEqual(stored.changes.archive.map(({count, first, last}) => ({count, first, last})), pages.map((page) => ({count: page.length, first: page[0].id, last: page.at(-1).id})), 'the archive pages are those its rule gives for these changes');
+  assert.equal(pages.reduce((n, page) => n + page.length, 0), state.document.changes.archivedCount, 'every archived change is on a page');
+  assert(stored.changes.archive.length >= 1 && stored.changes.archive.every((page) => !due.includes(page.key)), 'the archive pages are referenced, not superseded');
   for (const key of due) assert(await env.FILES.get(key), 'superseded objects are kept until the grace period passes');
   await env.DB.prepare('UPDATE projects SET document=? WHERE owner_id=? AND id=?').bind(JSON.stringify(aged), 'owner', id).run();
   await edit(SEGMENT_EVENTS + 2);
@@ -207,7 +225,9 @@ try {
   }
   await env.FILES.put(sealed, saved);
   assert.equal((await api('/api/project')).status, 200, 'restored objects read again');
-  const tampered = JSON.parse(saved); tampered.push({id: 'CHG-999', items: []});
+  // rc.10.73.42 (D7): the segment's changes may be stored with codes for the words they repeat (journal-archive.js
+  // encodeEvents) now that a requirement's change lists every record on its trail; a change added either way is tampering.
+  const tampered = JSON.parse(saved); (Array.isArray(tampered) ? tampered : tampered.events).push({id: 'CHG-999', items: []});
   await env.FILES.put(sealed, JSON.stringify(tampered));
   r = await api('/api/project');
   assert.equal(r.status, 422); assert.match(r.data.error, /does not match its saved reference/);

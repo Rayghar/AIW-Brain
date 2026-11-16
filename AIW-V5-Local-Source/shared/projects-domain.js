@@ -3,6 +3,7 @@ import {referenceBrief,referenceJourney} from './reference-journeys.js';
 import {sha256} from '../public/brain-integrity.js';
 import {seedProject} from '../public/requirements-domain.js';
 import {withFinalReview,reviewTrace} from '../public/review-domain.js';
+import {requirementSpine} from '../public/trace-kernel.js';
 import {memoPass} from '../public/document-memo.js';
 import {changedRequirementIds} from '../public/changes-domain.js';
 import {sddReadiness,nextMilestone} from '../public/readiness-model.js';
@@ -168,13 +169,16 @@ export function requirementImpact(before,after,at,requirementId,known=null){
   // Each document's trails are read in one pass (document-memo.js memoPass): a record that answers by its requirement
   // groups expands them through one group index per document, not one per record (round 12: a drafted architecture
   // links its records by group, and the save of a requirement read the index afresh for each of them).
-  const reqs=[...changed,...removed],trails=new Map([after,before].map(p=>[p,memoPass(p,()=>new Map(reqs.map(r=>[r.id,reviewTrace(p,r.id)])))]));
+  // A change reaches the requirement's own chain on its trail (rc.10.73.42, D7: reviewTrace spine, the kernel's walk
+  // without what its drivers constrain or its decisions justify, which stay on the trail as context): the design that
+  // depends on the requirement, each record with the records whose hops brought it.
+  const reqs=[...changed,...removed],trails=new Map([after,before].map(p=>[p,memoPass(p,()=>new Map(reqs.map(r=>{const t=reviewTrace(p,r.id);return [r.id,t&&{t:t.spine,via:impactVia(p,r.id)}];})))]));
   const groups=new Map();
   for(const r of reqs){
-    for(const p of [after,before]){const t=trails.get(p).get(r.id);if(!t)continue;
+    for(const p of [after,before]){const x=trails.get(p).get(r.id);if(!x)continue;const {t,via}=x;
     for(const [chapter,title,records] of [[2,CHAPTER_TITLES[2],t.drivers],[3,CHAPTER_TITLES[3],t.decisions],[4,CHAPTER_TITLES[4],t.logical],[5,CHAPTER_TITLES[5],t.applications],[6,CHAPTER_TITLES[6],t.capabilities],[7,CHAPTER_TITLES[7],t.realizations],[8,CHAPTER_TITLES[8],[...t.contracts,...t.data]],[9,CHAPTER_TITLES[9],t.controls],[10,CHAPTER_TITLES[10],t.runtime]]){
       if(!records.length)continue;const group=groups.get(chapter)||{chapter,title,objects:[]};
-      for(const o of records)if(!group.objects.some(v=>v.id===o.id))group.objects.push({id:o.id,ref:o.ref||o.id,title:o.title||o.question||o.name||o.id,via:impactVia(p,t,chapter,o)});
+      for(const o of records)if(!group.objects.some(v=>v.id===o.id))group.objects.push({id:o.id,ref:o.ref||o.id,title:o.title||o.question||o.name||o.id,via:via(o)});
       groups.set(chapter,group);
     }
     }
@@ -182,14 +186,9 @@ export function requirementImpact(before,after,at,requirementId,known=null){
   return {at,requirements:[...changed,...removed].map(r=>({id:r.id,title:r.title,removed:removed.includes(r)})),groups:[...groups.values()],message:'A requirement changed. Follow its saved relationships and review whether the dependent design still satisfies it. Earlier evidence and frozen baselines remain available.'};
 }
 
-function impactVia(p,t,chapter,o){
-  const refs=xs=>xs.map(r=>r.ref||r.id);
-  if(chapter===3)return refs(t.drivers.filter(d=>o.driverIds.includes(d.id)));
-  if(chapter===5)return refs(t.logical.filter(r=>p.logical.mappings.some(m=>m.logicalId===r.id&&m.physicalId===o.id)));
-  if(chapter===6){const needs=p.technology.mappings.filter(m=>m.capabilityId===o.id).map(m=>p.technology.needs.find(n=>n.id===m.needId));return refs(t.applications.filter(a=>needs.some(n=>n?.applicationId===a.id)));}
-  if(chapter===7)return refs(t.capabilities.filter(c=>p.technologyRealisation.mappings.some(m=>m.realizationId===o.id&&m.capabilityId===c.id)));
-  if(chapter===8&&!o.exchanges)return refs(t.contracts.filter(c=>c.exchanges.some(e=>e.dataId===o.id)));
-  if(chapter===9)return refs([...t.applications,...t.capabilities,...t.realizations,...t.contracts,...t.data].filter(r=>o.targetIds.includes(r.id)));
-  if(chapter===10)return refs([...t.applications,...t.realizations].filter(r=>r.id===o.assetId));
-  return [];
+// Why a record is on the changed requirement's own chain (rc.10.73.42, D7): the records whose typed hops brought it there
+// (trace-kernel.js requirementSpine), the requirement itself left out and a technology need read as the component that has it.
+function impactVia(p,id){
+  const T=requirementSpine(p,id),from=x=>(T?.hops.get(x)||[]).map(h=>h.from).filter(y=>y!==id);
+  return o=>[...new Set(from(o.id).flatMap(x=>T.layerOf(x)==='need'?from(x):[x]))].map(x=>T.record(x)?.ref||x);
 }

@@ -10,6 +10,7 @@ import {isBlankProject,seedingOff} from './model-scope.js';
 // A contract's end by its display reference, never its internal id.
 const participantRef=(p,id)=>{const x=participant(p,id);return x?(x.ref||x.id)+' '+x.title:'an unresolved participant';};
 import {num,list} from './util.js';
+import {planInScope,withServing} from './trace-kernel.js';
 import {groupById,groupMembers} from './requirement-groups.js';
 import {NOT_STATED,SEEDED,PROPOSED,said,authoredOrigin,authored,fitText,patchFields,patchLinks,groundLinks,patchOpen,keepConfirmations,sameRecord,has,retiredOf,proposalNote,openNotes,technologySeeds,boundarySeeds} from './technology-domain.js';
 import {citedNotes,undeliveredNotes,deliveryOf,namedRequirementStamps,trailText} from './requirement-links.js';
@@ -35,7 +36,7 @@ const fromIndex=(m,key)=>(m.get(key)||[]).slice();
 export const runtimeInput=(p,id)=>findIn(p,'runtime:inputs',()=>runtimeInputs(p),id);
 export const environments=p=>p.runtime?.environments||[],environment=(p,id)=>findIn(p,'runtime:environments',()=>environments(p),id);
 export const zones=(p,envId)=>envId?filterIn(p,'runtime:zones-by-environment',()=>p.runtime.zones,z=>z.environmentId,envId):p.runtime.zones.slice(),zone=(p,id)=>findIn(p,'runtime:zones',()=>p.runtime.zones,id);
-const inScopePlan=(p,r)=>environment(p,r.environmentId)?.assetIds.includes(r.assetId)&&runtimeInput(p,r.assetId);
+const inScopePlan=(p,r)=>planInScope(environment(p,r.environmentId),r,runtimeInput(p,r.assetId));
 export const plans=(p,envId)=>{const m=ix(p,'plans-by-environment',()=>groupBy(p.runtime.plans.filter(r=>inScopePlan(p,r)),r=>r.environmentId));if(!m)return p.runtime.plans.filter(r=>(!envId||r.environmentId===envId)&&inScopePlan(p,r));if(envId)return fromIndex(m,envId);const all=ix(p,'plans',()=>p.runtime.plans.filter(r=>inScopePlan(p,r)));return all.slice();};
 export const plan=(p,id)=>findIn(p,'runtime:plan',()=>p.runtime.plans,id),planFor=(p,envId,assetId)=>plans(p,envId).find(r=>r.assetId===assetId);
 export const placements=(p,id)=>id?filterIn(p,'runtime:placements-by-plan',()=>p.runtime.placements,l=>l.planId,id):p.runtime.placements.slice(),runtimePath=(p,id)=>findIn(p,'runtime:path',()=>p.runtime.paths,id);
@@ -65,7 +66,8 @@ export const runtimePlanStamp=(p,r)=>JSON.stringify([r.id,runtimeEnvironmentStam
 export const runtimeEvidenceCurrent=(p,e)=>{const r=plan(p,e.planId);return !!r&&e.stamp===(keptBefore(e.stamp)?JSON.stringify([r.id,environmentStampBefore(p,r.environmentId)]):runtimePlanStamp(p,r));};
 export const latestRuntimeEvidence=(p,id,kind='design')=>latestIn(p,'runtime:evidence',()=>p.runtime.evidence,e=>e.planId,id).find(e=>e.planId===id&&e.kind===kind&&runtimeEvidenceCurrent(p,e));
 export const runtimeSimulationCurrent=(p,s)=>!!s&&!s.withdrawn&&s.stamp===(keptBefore(s.stamp)?environmentStampBefore(p,s.environmentId):runtimeEnvironmentStamp(p,s.environmentId));
-export function runtimeSources(p,r){const asset=runtimeInput(p,r.assetId||r.id),s=asset?.inputKind==='Application'?componentSources(p,asset.id):asset?realizationSources(p,asset.id):{};return {asset,applications:s.applications||[],requirements:s.requirements||[],drivers:s.drivers||[],decisions:s.decisions||[],controls:controls(p).filter(c=>r.controlIds?.includes(c.id))};}
+// A plan's requirements are those whose trail holds it (rc.10.73.42, D7: trace-kernel.js servingRequirements).
+export function runtimeSources(p,r){const asset=runtimeInput(p,r.assetId||r.id),s=asset?.inputKind==='Application'?componentSources(p,asset.id):asset?realizationSources(p,asset.id):{};return withServing(p,r.id,{asset,applications:s.applications||[],drivers:s.drivers||[],decisions:s.decisions||[],controls:controls(p).filter(c=>r.controlIds?.includes(c.id))});}
 export function controlAssets(p,c){return remember(p,'runtime:control-assets',c,()=>{const capabilityIds=ix(p,'capability-ids',()=>new Set(p.technology.capabilities.map(a=>a.id))),realised=ix(p,'realisations-by-capability',()=>groupBy(p.technologyRealisation.mappings,m=>m.capabilityId));
  return unique(c.targetIds.flatMap(id=>{const i=contract(p,id),d=dataRecord(p,id);if(i)return [i.from,i.to];if(d)return [d.authorityId,...carrying(p,'runtime:contracts-by-data',()=>contracts(p),i=>i.exchanges.map(x=>x.dataId),id).flatMap(i=>[i.from,i.to])];if(capabilityIds?capabilityIds.has(id):p.technology.capabilities.some(a=>a.id===id))return (realised?realised.get(id)||[]:p.technologyRealisation.mappings.filter(m=>m.capabilityId===id)).map(m=>m.realizationId);return [id];}));}).slice();}
 export const requiredRuntimeControls=(p,envId)=>{const byAsset=ix(p,'controls-by-asset',()=>{const m=new Map(),at=new Map();controls(p).forEach((c,i)=>{at.set(c,i);for(const id of new Set(controlAssets(p,c))){let xs=m.get(id);if(!xs)m.set(id,xs=[]);xs.push(c);}});return {m,at};});

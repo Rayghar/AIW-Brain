@@ -628,14 +628,22 @@ try {
     await rp.click('[data-nt="menu"][data-id="trace"]'); await rp.selectOption('.nt-pop [data-nt-field="trace"]', 'REQ-001'); await rp.waitForTimeout(600);
     // The Diagram keeps it; Escape clears it and keeps the selection.
     await rp.click('.cm-view[data-id="diagram"]'); await rp.waitForTimeout(500);
-    t = await traced(); assert.deepEqual(t.traced, ['api'], 'the Diagram lights LR-001, REQ-001’s responsibility'); assert.equal(t.dimmed, t.nodes - 1);
+    // rc.10.73.42 (D7): the trace is the trace kernel's trail, on which REQ-001's drivers and decisions bring every
+    // responsibility of the reference (QD-003 names risk; ADR-002 and ADR-003 are named by ledger, hub and notify).
+    t = await traced(); assert.deepEqual(t.traced, ['api', 'hub', 'ledger', 'notify', 'risk'], 'the Diagram lights REQ-001’s responsibilities, LR-001 and those its drivers and decisions reach');
+    assert.deepEqual(t.traced, (await rp.$$eval('.cm-svg .nt-node', ns => ns.map(n => n.dataset.ntNode))).filter(id => T.ids.has(id)).sort(), 'exactly the chain’s records the Diagram draws'); assert.equal(t.dimmed, t.nodes - t.traced.length);
     await rp.click('.cm-svg .nt-node[data-nt-node="risk"]'); await rp.waitForTimeout(400);
     await rp.focus('.cm-stage'); await rp.keyboard.press('Escape'); await rp.waitForTimeout(400);
     t = await traced(); assert.equal(t.traced.length + t.dimmed, 0, 'Escape clears the trace'); assert.equal(t.reading, '');
     assert.equal(await rp.evaluate(() => new URL(location.href).searchParams.get('object')), 'risk', 'and only the trace: the selection stays');
     // Trace on the selected element.
     await rp.click('.cm-companion .nt-trace-act [data-nt="trace"]'); await rp.waitForTimeout(500);
-    t = await traced(); assert.deepEqual(t.traced, ['risk']); assert.match(t.reading, /from LR-002[\s\S]*REQ-002 → [\s\S]*\[no control\][\s\S]*Gaps: no control/i, 'a selected element traces too, its gaps named');
+    // rc.10.73.42 (D7): the element's trace is the kernel's reverse walk: REQ-001 reaches LR-002 through QD-003 and QD-005
+    // too, and no decision justifies LR-002 (ADR-001 and ADR-002 justify LR-001 and LR-003 to LR-005), so both gaps are named.
+    const riskTrace = traceFrom(ref, 'risk');
+    assert.deepEqual(riskTrace.gaps, ['no decision', 'no control'], 'LR-002’s trace has no decision and no control');
+    t = await traced(); assert.deepEqual(t.traced, ['risk']); assert.match(t.reading, /from LR-002[\s\S]*REQ-001, REQ-002 → [\s\S]*\[no decision\][\s\S]*\[no control\][\s\S]*Gaps: no decision, no control\./i, 'a selected element traces too, its gaps named');
+    assert.ok(t.reading.includes('Gaps: ' + riskTrace.gaps.join(', ') + '.'), 'the reading names exactly the trace’s gaps');
     await rp.keyboard.press('Escape'); await rp.waitForTimeout(300);
     // From a Matrix cell "through the design": the trace takes the cell's own chain, and the two agree.
     await go('/?chapter=4&tab=model&model=cross', '.nt-x');

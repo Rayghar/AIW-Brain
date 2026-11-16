@@ -125,7 +125,13 @@ assert.equal(JSON.stringify(base),original);assert.deepEqual(rv.reviewSource(p),
  // on REQ-003's): that trail alone is open again.
  const qd4=q.quality.drivers.find(d=>d.id==='QD-004');let u=rv.withFinalReview(applyQualityCommand(q,{type:'quality.driver',payload:{...qd4,title:qd4.title+' (restated)'}}).document);
  assert(rv.traceReviewFor(u,'REQ-001')&&rv.traceReviewFor(u,'REQ-003'),'an unrelated edit leaves the trace reviews current');
- const ledger=u.logical.responsibilities.find(r=>r.id==='ledger');u=rv.withFinalReview(applyLogicalCommand(u,{type:'logical.responsibility',payload:{...ledger,boundary:ledger.boundary+' It never posts twice.'}}).document);
+ // rc.10.73.42 (D7): the trails are the trace kernel's, on which QD-001's decisions bring ledger onto REQ-001's trail
+ // too, so a change to ledger reopens both; a record on REQ-003's trail alone (its journey step JRN-003) reopens it alone.
+ const ledger=u.logical.responsibilities.find(r=>r.id==='ledger'),both=rv.withFinalReview(applyLogicalCommand(u,{type:'logical.responsibility',payload:{...ledger,boundary:ledger.boundary+' It never posts twice.'}}).document);
+ assert(rv.reviewTrace(u,'REQ-001').logical.some(r=>r.id==='ledger')&&!rv.traceReviewFor(both,'REQ-001')&&!rv.traceReviewFor(both,'REQ-003'),'a change on two trails reopens both');
+ const step=u.artefacts.find(a=>a.id==='JRN-003');
+ assert(rv.reviewTrace(u,'REQ-003').context.some(a=>a.id==='JRN-003')&&!rv.reviewTrace(u,'REQ-001').context.some(a=>a.id==='JRN-003'),'JRN-003 is on REQ-003\'s trail alone');
+ u=rv.withFinalReview(applyCommand(u,{type:'artefact',payload:{...step,description:step.description+' It never posts twice.'}}).document);
  assert(rv.traceReviewFor(u,'REQ-001')&&!rv.traceReviewFor(u,'REQ-003'),'a change on one trail reopens that trail alone');
  // One treatment for a whole cause, with an exception; each finding keeps its own stamp.
  const cause='3|choice|error',members=rv.causeFindings(q,cause);assert.equal(members.length,3);

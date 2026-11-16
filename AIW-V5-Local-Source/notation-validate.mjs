@@ -226,9 +226,12 @@ pass(`all ${SCENES.length} scenes draw from the reference project; each chapter 
   assert.ok(checkMarks(project, 4).every(m => m.state === 'confirm') && checkMarks(project, 8).every(m => m.state === 'fix'), 'Chapter 4’s five to confirm, Chapter 8’s eleven to fix');
   const T = traceFrom(project, 'REQ-001');
   assert.equal(T.steps.length, TRACE_ORDER.length, 'one step for each layer of the chain');
-  assert.match(T.chain, /^REQ-001 → QD-002, QD-003 \+2 → ADR-001, ADR-002 \+1 → LR-001 → APP-001 → TC-001, TC-002 \+4 → TR-001, TR-002 \+4 → DAT-001, IF-001 → SEC-001 → PL-001 → RUN-001$/, 'REQ-001’s chain: ' + T.chain);
+  // rc.10.73.42 (D7): the trace is the trace kernel's trail, so REQ-001's drivers (QD-003 names risk) and its decisions
+  // (ADR-002 and ADR-003, which ledger, hub and notify name) bring every responsibility of the seed onto it; what no typed
+  // hop reaches (QD-001, QD-004, TC-004, TR-004, RUN-009, zone-b, the runtime paths) stays off it.
+  assert.match(T.chain, /^REQ-001 → QD-002, QD-003 \+2 → ADR-001, ADR-002 \+1 → LR-001, LR-002 \+3 → APP-001, APP-002 \+3 → TC-001, TC-002 \+6 → TR-001, TR-002 \+6 → DAT-001, DAT-002 \+9 → SEC-001, SEC-002 \+1 → PL-001, PL-002 \+1 → RUN-001, RUN-002 \+11$/, 'REQ-001’s chain: ' + T.chain);
   for (const id of ['REQ-001', 'api', 'api-pod', 'rest', 'instruction', 'oauth', 'run-001']) assert.ok(T.ids.has(id), id + ' is on REQ-001’s trace');
-  assert.ok(!T.ids.has('risk') && !T.ids.has('ledger'), 'what REQ-001 does not reach stays off it');
+  assert.ok(T.ids.has('risk') && T.ids.has('ledger') && ['QD-001', 'QD-004', 'tc-004', 'tr-004', 'run-009', 'zone-b', 'RP-001'].every(id => !T.ids.has(id)), 'risk and ledger are on it through its driver and decisions; what REQ-001 does not reach stays off it');
   for (const st of T.steps) for (const r of st.records) if (r.id !== 'REQ-001') { const X = matrixModel(project, {rows: 'requirement', cols: r.type}); assert.ok(X.cells.has('REQ-001|' + r.id), r.ref + ' is a cell the Matrix shows for REQ-001'); }
   const X = matrixModel(project, {rows: 'requirement', cols: 'runtime'}), cell = X.cells.get('REQ-001|run-001');
   assert.equal(cell.kind, 'chain'); assert.ok(cell.items[0].via.every(v => T.ids.has(v)), 'the Matrix’s chain through the design is on the trace: they agree');

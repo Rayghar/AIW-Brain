@@ -17,7 +17,8 @@ import {firstById, memoOff} from './document-memo.js';
 import {driverPriority, driverKind, driverCodes} from './quality-domain.js';
 import {linkedRequirementIds} from './requirement-links.js';
 import {readDecision} from './decision-reading.js';
-import {driverScope, driverScopeIndex} from './driver-scope.js';
+import {driverScope, driverScopeIndex, driverTraceSeeds} from './driver-scope.js';
+import {seededTrace, traceRecords, hopsFrom, traceGraph} from './trace-kernel.js';
 import {toMs, toMinutes} from './target-units.js';
 import {failureDomainKey, hostingZone, statedField} from './runtime-model.js';
 
@@ -47,7 +48,9 @@ export function reasoningSource(p) {
   const artefacts = new Map(list(p?.artefacts).map(a => [a.id, a]));
   const controls = list(p?.security?.controls);
   const R = {p, drivers, resp, comps, caps, reals, plans, zones, decisions, contracts, connections, artefacts, controls, scopes: driverScopeIndex(p), chains: new Map()};
-  let byId = null;
+  let byId = null, graph = null;
+  // The trace kernel's graph, kept with the chains it carries (trace-kernel.js traceGraph).
+  R.graph = () => graph ??= traceGraph(p);
   R.driver = id => (memoOff() ? drivers.find(d => d.id === id) : (byId ??= firstById(drivers)).get(id)) || null;
   return R;
 }
@@ -62,9 +65,7 @@ const LISTS = {
   needsByApp: ['technology.needs', 'applicationId'], needsById: ['technology.needs', 'id'],
   techByNeed: ['technology.mappings', 'needId'], techByCap: ['technology.mappings', 'capabilityId'],
   realByCap: ['technologyRealisation.mappings', 'capabilityId'], realByReal: ['technologyRealisation.mappings', 'realizationId'],
-  placementsByPlan: ['runtime.placements', 'planId'], plansByAsset: ['plans', 'assetId'],
-  contractsByFrom: ['contracts', 'from'], contractsByTo: ['contracts', 'to'], connectionsByFrom: ['connections', 'from'],
-  decisionsByDriver: ['decisions', 'driverIds', 1]
+  placementsByPlan: ['runtime.placements', 'planId'], plansByAsset: ['plans', 'assetId'], connectionsByFrom: ['connections', 'from']
 };
 // A list: the project's (by its path) or the reasoning source's own (its plans in the order R.plans keeps them).
 const rowsOf = (R, name) => { const [a, b] = LISTS[name][0].split('.'); return b ? list(R.p?.[a]?.[b]) : a === 'plans' ? [...R.plans.values()] : R[a]; };
@@ -127,30 +128,29 @@ const productOf = r => {
 };
 export {productOf};
 
-// What carries one driver through the design.
+// What carries one driver through the design: the trace kernel's walk from the driver's scope (driver-scope.js
+// driverTraceSeeds; trace-kernel.js, rc.10.73.42 D7) — its responsibilities and components, the needs, capabilities and
+// realisations they stand on, the plans in scope that run them, the decisions that weigh the driver and the contracts its
+// components provide or use. It is the chain the trail of each requirement the driver serves holds; `trace` keeps the
+// walk, with its controls and threats.
 export function driverChain(R, id) {
   if (R.chains.has(id)) return R.chains.get(id);
   const d = R.driver(id);
   if (!d) return null;
-  // Each step reads its list through a lookup (above): the same records, in the same order, as a scan of the list.
-  const scope = driverScope(R.p, d, R.scopes);
+  const scope = driverScope(R.p, d, R.scopes), trace = seededTrace(R.p, driverTraceSeeds(R.p, d, R.graph?.()), {graph: R.graph?.()});
   const responsibilities = scope.responsibilityIds.map(x => R.resp.get(x)).filter(Boolean);
   const components = scope.componentIds.map(x => R.comps.get(x)).filter(Boolean);
   const cIds = new Set(components.map(c => c.id));
-  const needs = rowsAmong(R, 'needsByApp', cIds);
-  const nIds = new Set(needs.map(n => n.id));
-  const capIds = uniq(rowsAmong(R, 'techByNeed', nIds).map(m => m.capabilityId));
-  const capabilities = capIds.map(x => R.caps.get(x)).filter(Boolean).map(c => ({...c, essential: needs.some(n => n.criticality === 'essential' && rowsWith(R, 'techByNeed', n.id).some(m => m.capabilityId === c.id))}));
-  const realIds = uniq(rowsAmong(R, 'realByCap', capIds).map(m => m.realizationId));
-  const realisations = realIds.map(x => R.reals.get(x)).filter(Boolean).map(r => ({record: r, product: productOf(r), capabilityIds: rowsWith(R, 'realByReal', r.id).map(m => m.capabilityId)}));
-  const assetIds = new Set([...cIds, ...realIds]);
-  const plans = rowsAmong(R, 'plansByAsset', assetIds).map(r => planFacts(R, r));
-  const decisions = rowsWith(R, 'decisionsByDriver', id).map(x => ({record: x, selected: list(x.alternatives).find(a => a.id === x.selectedAlternativeId) || null,
+  const essential = new Set(traceRecords(trace, 'need').filter(n => n.criticality === 'essential').map(n => n.id));
+  const capabilities = trace.layers.capability.map(x => R.caps.get(x)).filter(Boolean).map(c => ({...c, essential: hopsFrom(trace, c.id, h => essential.has(h.from)).length > 0}));
+  const realisations = trace.layers.realization.map(x => R.reals.get(x)).filter(Boolean).map(r => ({record: r, product: productOf(r), capabilityIds: rowsWith(R, 'realByReal', r.id).map(m => m.capabilityId)}));
+  const plans = trace.layers.plan.map(x => R.plans.get(x)).filter(Boolean).map(r => planFacts(R, r));
+  const decisions = traceRecords(trace, 'decision').map(x => ({record: x, selected: list(x.alternatives).find(a => a.id === x.selectedAlternativeId) || null,
     alternatives: list(x.alternatives).map(a => ({alt: a, effect: a.assessments?.[id]?.effect || 'unknown', reason: str(a.assessments?.[id]?.reason)}))}));
-  const contracts = rowsAmong(R, ['contractsByFrom', 'contractsByTo'], cIds);
+  const contracts = traceRecords(trace, 'contract').filter(k => hopsFrom(trace, k.id, h => cIds.has(h.from)).length > 0);
   const connections = rowsAmong(R, 'connectionsByFrom', cIds).filter(c => cIds.has(c.to));
   const requirements = linkedRequirementIds(R.p, d).map(x => R.artefacts.get(x)).filter(Boolean); // named, then the members of its groups (round 12)
-  const chain = {driver: d, scope, requirements, responsibilities, components, capabilities, realisations, plans, decisions, contracts, connections};
+  const chain = {driver: d, scope, requirements, responsibilities, components, capabilities, realisations, plans, decisions, contracts, connections, trace};
   R.chains.set(id, chain);
   return chain;
 }
