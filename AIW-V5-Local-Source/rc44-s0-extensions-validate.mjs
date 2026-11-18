@@ -12,7 +12,7 @@
 //   6 a reference document with no such record reads byte for byte as at the baseline 94dbd4f, with and without the
 //     extensions registered (rc44-s0-readings.mjs, rc44-s0-extensions-baseline.json), on three references;
 //   7 registering twice, or in another order, changes nothing (separate processes, compared);
-//   8 the client build passes every gate, with the route delta measured at the slice (audit/rc44/evidence/s0-size.json).
+//   8 the client build passes every gate, with the route delta measured at the slice (audit/rc44/build-notes/s0-size.json).
 // and: an extension only adds (it replaces no built-in type, record, collection, command, check, layer or noun); the
 // upgrade step and its sentence in the storage upgrade's activity; the document sections at their anchors (the
 // registers, the architecture edition, the ARS and a chapter's register); the needs/load pair the project store awaits;
@@ -555,11 +555,11 @@ await block('7 idempotent and order-free', () => {
 
 // ---------------------------------------------------------------- 8. the client build
 // The client is built as build.mjs builds it (client-bundle.mjs bundleClient with its defaults), so the route figure is
-// the one dist/client-size-report.json reports. The measurement at the slice is kept in audit/rc44/evidence/s0-size.json
+// the one dist/client-size-report.json reports. The measurement at the slice is kept in audit/rc44/build-notes/s0-size.json
 // (written by `node rc44-s0-extensions-validate.mjs --measure`, from the same build); the baseline figure is the build of
 // 94dbd4f. Later slices add to the route, so the suite compares its own build with the evidence only when asked
 // (AIW_S0_MEASURE=1, at the slice's own commit); the gates and the slice's recorded delta are checked always.
-const BASELINE = {commit: '94dbd4f', chapters: 3228863, projects: 506102, scripts: 148, under10k: 53, css: 901873}, EVIDENCE = 'audit/rc44/evidence/s0-size.json';
+const BASELINE = {commit: '94dbd4f', chapters: 3228863, projects: 506102, scripts: 148, under10k: 53, css: 901873}, EVIDENCE = 'audit/rc44/build-notes/s0-size.json';
 await block('8 client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
@@ -570,7 +570,7 @@ await block('8 client build', async () => {
   assert.equal(on.length, 1, 'the registry is in one chunk'); assert.ok(on[0][1].bytesInOutput <= 300, 'and small: ' + on[0][1].bytesInOutput + ' B');
   for (const o of Object.values(meta.outputs)) for (const i of Object.keys(o.inputs || {})) assert.ok(!/design-extension-boundary|design-extension-parts|design-packages|rc44-s0/.test(i), i + ' is not in the client');
   const measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css, registry: on[0][1].bytesInOutput};
-  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'S0 shared registration', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 700, scripts: 148}, caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, baseline: BASELINE, slice: measured, delta: measured.chapters - BASELINE.chapters, projectsDelta: measured.projects - BASELINE.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters}, null, 1) + '\n'); }
+  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/build-notes', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', name: 'S0 shared registration', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 700, scripts: 148}, caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, baseline: BASELINE, slice: measured, delta: measured.chapters - BASELINE.chapters, projectsDelta: measured.projects - BASELINE.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters}, null, 1) + '\n'); }
   assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-s0-extensions-validate.mjs --measure)');
   const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
   assert.deepEqual(size.baseline, BASELINE, 'against the build of 94dbd4f'); assert.equal(size.slice.scripts, 148, '148 script files'); assert.equal(size.slice.under10k, BASELINE.under10k); assert.equal(size.slice.css, BASELINE.css, 'no stylesheet rule');

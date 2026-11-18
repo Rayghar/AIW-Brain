@@ -1,0 +1,35 @@
+{
+ "schema": "aiw.rc44.slice-size.v1",
+ "name": "S0 shared registration",
+ "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
+ "allowance": {
+  "chapters": 700,
+  "scripts": 148
+ },
+ "caps": {
+  "chapters": 3233792,
+  "projects": 1242112,
+  "scripts": 148,
+  "under10k": 61,
+  "css": 902144
+ },
+ "baseline": {
+  "commit": "94dbd4f",
+  "chapters": 3228863,
+  "projects": 506102,
+  "scripts": 148,
+  "under10k": 53,
+  "css": 901873
+ },
+ "slice": {
+  "chapters": 3229549,
+  "projects": 506599,
+  "scripts": 148,
+  "under10k": 53,
+  "css": 901873,
+  "registry": 265
+ },
+ "delta": 686,
+ "projectsDelta": 497,
+ "headroomAfter": 4243
+}

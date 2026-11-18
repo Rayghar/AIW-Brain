@@ -21,7 +21,7 @@ Contract: `audit/rc44/BUILD-PLAN-2026-11-16.md` section 4. `productionAccepted` 
 | `design-extension-boundary.js` | server | The command boundary of the packages (person-only, second-person, validate, undo, track, large), the built-in type probe, the start check. |
 | `public/design-extension-parts.js` | server (in no client bundle) | The upgrade chain and its notes, the document sections, the conformance check and the clash check. |
 | `rc44-s0-extensions-validate.mjs`, `rc44-s0-readings.mjs`, `rc44-s0-extensions-baseline.json` | suite | The eight cases of the contract and five more blocks; the readings compared byte for byte; their SHA-256 at `94dbd4f`. |
-| `audit/rc44/evidence/s0-size.json` | evidence | The route measurement, written by the suite from the build. |
+| `audit/rc44/build-notes/s0-size.json` | evidence | The route measurement, written by the suite from the build. |
 
 Hooks in existing files (each a few lines, all commented "rc44, slice S0"): `public/record-graph.js` (types, the
 emitter), `public/trace-kernel.js` (layers, hops), `public/document-memo.js` `sharedList` (checks), the ten chapter
@@ -329,8 +329,10 @@ architect-a wrote NOTE-001." and by another person is recorded; `record.retire` 
    has not yet loaded the packages for.
 2. **Parts beyond the contract's table**, each asked for by a hook list of the four designs: `provenance.records`
    (wp2: adoption records read by provenance, not retired by the family), `upgradeNote` (wp3: the clause in the
-   storage upgrade's activity), `chapter-n` documents for `sections` (wp9a H12, wp3's register), `validate` asked
-   inside batches (wp3: what a draft by Sol may not state), `large` (wp3), `track` (wp2, wp3), `undo`.
+   storage upgrade's activity), `chapter-n` documents for `sections` (wp9a H12, wp3's register), `large` (wp3) and
+   `track` (wp2, wp3: the server's change trackers). `validate` is in the contract's row; here it is a function of
+   its own only for what the handler is not told inside a batch (the commit's author), and every other refusal is
+   the handler's, as in built-in commands.
 3. **A package's layers stand after the built-in ones**, where wp3 writes its layers between built-in ones
    (`… 'driver', 'service', 'workload', 'objective', 'decision' …`). Its hops are all context hops from built-in layers
    and from its own earlier layer, so they work unchanged; only the listed order differs.
@@ -365,7 +367,7 @@ route 506,102 B, 148 script files, 53 under 10 KB, stylesheet 901,873 B. The gol
 | Stylesheet | 901,873 B | 901,873 B | 902,144 B (unchanged) |
 | The registry module | — | 265 B | — |
 
-`audit/rc44/evidence/s0-size.json` holds the same figures; `node rc44-s0-extensions-validate.mjs --measure` rewrites it
+`audit/rc44/build-notes/s0-size.json` holds the same figures; `node rc44-s0-extensions-validate.mjs --measure` rewrites it
 from the build and `AIW_S0_MEASURE=1` makes the suite compare its own build with it.
 
 Lint: 162 problems, 162 baseline, 0 new. `node check-syntax.mjs` passes.
@@ -397,3 +399,10 @@ red at the baseline for this machine's speed).
 5. **Ids order the layers.** A hop comes from a layer of a package earlier by id. If wp2's `mechanism` must later be
    reached from wp9a's layers, the ids of the two packages decide whether that is a hop of wp2 or of wp9a.
 6. **Route headroom after S0 is 4,243 B.** At 600 B a package that is seven packages, not eleven.
+7. **A directory named `evidence/` is not committed in this repository**: `.git/info/exclude` of the main checkout
+   ignores every `evidence/`. The slice's measurement is therefore kept in `audit/rc44/build-notes/s0-size.json`.
+   The wp1 and wp4 designs name `audit/rc44/evidence/…` for their evidence files; written there they would stay
+   out of every commit without a word.
+8. **Source scanners read comments.** `rc42-g1-tech-approval-validate.mjs` (D3) follows every import-shaped text in
+   `public/*.js`, comments included. A comment that shows an import of a file that does not exist turns that suite
+   red (it did here, once). Write examples in comments without a quoted path.
