@@ -33,10 +33,12 @@ import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
 import {innerCommands, listAt, reviewOf} from './public/provenance.js';
+import {isRetiredCommand} from './public/canonical-command.js';
+import {inheritedFindings, findingCause} from './public/review-domain.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE, notePackages} from './public/design-extension-parts.js';
-export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal} from './public/design-extension-parts.js';
+export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, WORKBENCH_PREFIXES, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal} from './public/design-extension-parts.js';
 
 // The built-in handler of a type, as worker.js resolves it: a function, or true for a type the Worker handles itself.
 let builtInHandler = null;
@@ -44,9 +46,13 @@ export function installBuiltInCommands(resolve) { builtInHandler = typeof resolv
 const UNKNOWN = /^(?:Unknown .* action\.|Choose a supported .* action\.)$/, PROBE_AT = '2026-01-01T00:00:00.000Z';
 const probes = new Map();
 let blank = null;
-// Whether a built-in handler takes the type: asked of the handler itself, once, on a blank project it may change.
+// Whether a built-in handler takes the type: asked of the handler itself, once, on a blank project it may change. A
+// retired name the workbench still reads (canonical-command.js migrateCommand: sent alone it would reach a package,
+// inside a batch it is read as the lifecycle family's) is taken too. Until the server has installed its resolver no
+// type is free: a package's command is then unknown, never applied in a built-in command's place (assertExtensions
+// says so when the server starts).
 export function builtInType(type) {
-  if (!builtInHandler) return false;
+  if (!builtInHandler || isRetiredCommand(type)) return true;
   if (!probes.has(type)) {
     const handler = builtInHandler(type); let known = handler === true;
     if (typeof handler === 'function') {
@@ -118,10 +124,32 @@ function appliedWith(p, command) {
   if (command?.type === 'workspace.merge') out.push(...plainList(plainList(p?.workbench?.alternatives).find(a => a.id === command.payload?.id)?.commands));
   return out;
 }
-// What the packages' types refuse inside what a request carries, each asked with the commit's author before anything
-// is applied; the command sent on its own is asked by its handler above (worker.js, before the command is dispatched).
+// The commands a request keeps for later: the ones an alternative holds when it is saved or revised, which a merge
+// then applies.
+const heldBy = command => (command?.type === 'workspace.alternative' || command?.type === 'workspace.revise-alternative' ? plainList(command.payload?.commands) : []);
+// What worker.js asks before any command is applied, with the document as the request finds it and the commit's
+// author ({at, actor, author}); a refusal is thrown in words.
+// - What the packages' types refuse by their author, for every command the request carries: a reviewed batch's, and an
+//   alternative's when it is saved, when it is revised and when it is merged (ruling D6.2). The command sent on its own
+//   is asked by its handler above.
+// - The undo of a person-only or second-person step is itself a signed-in person's step (ruling D6.1): an agent
+//   account, a draft by Sol, an import and a request with no signed-in actor are refused; that it stays with the
+//   account that saved the step is the receipt's own rule (public/action-undo-domain.js).
+// - A treatment of a finding whose id two findings share is refused: a treatment is kept by finding id, so it would
+//   cover both. A package's finding under an id that is taken (a built-in finding's, another package's) is a fault of
+//   the package, which its suite catches (rc44-s0-readings.mjs assertFindingIdsUnique); this keeps it from waiving
+//   anything meanwhile.
 export function validateExtensions(p, command, context) {
-  for (const c of appliedWith(p, command)) { const refusal = extensionCommand(c?.type)?.validate?.(p, c, context); if (refusal) throw Error(String(refusal)); }
+  for (const c of [...appliedWith(p, command), ...heldBy(command)]) { const refusal = extensionCommand(c?.type)?.validate?.(p, c, context); if (refusal) throw Error(String(refusal)); }
+  if (command?.type === 'action.undo') {
+    const receipt = plainList(p?.workbench?.history).at(-1)?.undo, c = receipt && receipt.id === command.payload?.receiptId ? extensionCommand(receipt.type) : null, author = context?.author;
+    if (c && (c.person || c.second) && (!context?.actor || author?.kind !== 'person' || author.account === 'agent')) throw Error('Undoing a signed-in person\'s step is a signed-in person\'s step: an import, a draft by Sol and an agent account undo no review, acceptance or approval. The person who saved it signs in to undo it.');
+  }
+  if (command?.type === 'review.disposition' && EXTENSIONS.some(e => e.checks)) {
+    const raw = command.payload || {}, all = inheritedFindings(p), ids = raw.scope === 'cause' ? all.filter(f => findingCause(f).key === String(raw.cause || '')).map(f => f.id) : [raw.findingId];
+    const shared = ids.find(id => all.filter(f => f.id === id).length > 1);
+    if (shared) throw Error('Two findings share the id “' + shared + '”: a treatment would cover both, so none is recorded. A design package states a finding under an id that is taken; it is the package that changes.');
+  }
 }
 // The packages whose commands a commit applied are named in the document it wrote (ruling D2: workspace.packages,
 // public/design-extension-parts.js notePackages): the command of the commit and every command it applied with it.
@@ -157,6 +185,7 @@ export function extensionIssues(e) {
   return out;
 }
 export function assertExtensions() {
+  if (!builtInHandler) throw Error('The design packages cannot be checked: the built-in commands are not installed (worker.js installBuiltInCommands), so no command type is known to be free.');
   const problems = [...EXTENSIONS.flatMap(extensionIssues), ...extensionConflicts()];
   if (problems.length) throw Error('The design packages do not conform to the registration contract (audit/rc44/build-notes/s0-extensions.md):\n- ' + problems.join('\n- '));
 }

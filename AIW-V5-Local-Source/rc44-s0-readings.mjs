@@ -42,4 +42,36 @@ export function readings(p) {
 export const digests = p => Object.fromEntries(Object.entries(readings(p)).map(([k, v]) => [k, sha(v)]));
 export const referenceDigests = () => Object.fromEntries(REFERENCES.map(t => [t, digests(reference(t))]));
 
-if (process.argv[1] && import.meta.url.endsWith('/rc44-s0-readings.mjs') && process.argv[1].endsWith('rc44-s0-readings.mjs') && process.argv.includes('--capture')) console.log(JSON.stringify({capturedFrom: process.argv[process.argv.indexOf('--capture') + 1] || 'working tree', at: AT, readings: referenceDigests()}, null, 1));
+// A document whose review list (list 11, the review's own findings: 'EVIDENCE:…') is not empty, which none of the
+// references is: the Bank Payment reference with three open semantic findings, on a decision, on a component and on a
+// Chapter 1 record (the last is Chapter 1's own, not the review's). Built with baseline code only, so its readings
+// are captured from the baseline as the references' are (rc44-s0-extensions-baseline.json, `reviewList`).
+export function reviewListDocument() {
+  const p = JSON.parse(JSON.stringify(reference('bank-payment'))), finding = (id, chapter, objectId, title) => ({id, chapter, objectId, title, explanation: 'Two records read against each other.', question: 'Which holds?', status: 'open', generation: 'old', kind: 'conflict', leftRef: 'L', leftQuote: 'left', rightRef: 'R', rightQuote: 'right', sources: []});
+  p.assurance = {version: 1, counter: 0, records: [], ...p.assurance, semanticFindings: [finding('SF-001', 3, p.decisions.records[0].id, 'A hypothesis on a decision'), finding('SF-002', 5, p.realisation.components[0].id, 'A hypothesis on a component'), finding('SF-003', 1, p.artefacts[0].id, 'A hypothesis on Chapter 1')]};
+  return withFinalReview(p);
+}
+export const reviewListFindings = p => inheritedFindings(p).filter(f => String(f.id).startsWith('EVIDENCE:'));
+
+// What every package's suite asserts with its own records in a document (the lead's ruling D6.4 of 2026-11-18). A
+// package can put a record on a built-in trail in two ways the registry cannot see: a relation of a type a built-in
+// hop reads between two built-in records, and add() with a built-in type that stands on a built-in layer. So:
+// assertBuiltInTrailsUnchanged(base, withRecords): for every requirement of `base` (the document without the
+// package's records), the built-in layers of its trail and of its spine in `withRecords` hold what they hold in
+// `base`; assertFindingIdsUnique(p): no two findings of the review share an id (a treatment is kept by finding id).
+// They throw with the requirement, the layer or the id named; they answer how much they read.
+export function assertBuiltInTrailsUnchanged(base, withRecords) {
+  let layers = 0;
+  for (const r of reviewRequirements(base)) for (const [name, read] of [['trail', requirementTrace], ['spine', requirementSpine]]) {
+    const a = read(base, r.id), b = read(withRecords, r.id);
+    for (const l of Object.keys(a.layers)) { layers++; if (JSON.stringify(b.layers[l]) !== JSON.stringify(a.layers[l])) throw Error('The ' + name + ' of ' + r.id + ' moved on the built-in layer “' + l + '”: ' + JSON.stringify(a.layers[l]) + ' became ' + JSON.stringify(b.layers[l]) + '. A package\'s records join a package\'s layers only.'); }
+  }
+  return layers;
+}
+export function assertFindingIdsUnique(p) {
+  const seen = new Set(), all = inheritedFindings(p);
+  for (const f of all) { if (seen.has(f.id)) throw Error('Two findings share the id “' + f.id + '”: a treatment of one would cover the other. A package\'s finding id is its own (by convention code:record id, with a code no other package or chapter uses).'); seen.add(f.id); }
+  return all.length;
+}
+
+if (process.argv[1] && import.meta.url.endsWith('/rc44-s0-readings.mjs') && process.argv[1].endsWith('rc44-s0-readings.mjs') && process.argv.includes('--capture')) { const listed = reviewListDocument(); console.log(JSON.stringify({capturedFrom: process.argv[process.argv.indexOf('--capture') + 1] || 'working tree', at: AT, readings: referenceDigests(), reviewList: {findings: reviewListFindings(listed).map(f => f.id), readings: digests(listed)}}, null, 1)); }

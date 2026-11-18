@@ -77,7 +77,9 @@ extendTable(TRACE_LAYER_TYPES, e => e.layers, () => {
   TRACE_LAYERS = Object.keys(TRACE_LAYER_TYPES);
   TYPE_LAYER = Object.fromEntries(Object.entries(TRACE_LAYER_TYPES).reverse().map(([layer, type]) => [type, layer]));
   RANK = new Map(TRACE_LAYERS.map((l, i) => [l, i]));
-  HOPS_INTO = new Map(TRACE_LAYERS.map((l, i) => [l, (BUILT_IN_LAYERS[i] ? TRACE_HOPS : EXTENSIONS.flatMap(e => e.hops || [])).filter(h => h.layer === l)]));
+  // A built-in layer is told by its name, not by its place: a name that sorts before these as a key of the table
+  // (a numeric one) would shift every place.
+  HOPS_INTO = new Map(TRACE_LAYERS.map(l => [l, (BUILT_IN_LAYERS.includes(l) ? TRACE_HOPS : EXTENSIONS.flatMap(e => e.hops || [])).filter(h => h.layer === l)]));
   // The hop by which a requirement names a record of each layer (fulfils), for namedBy and namingRequirements.
   NAMING = new Map(TRACE_LAYERS.map(l => [l, HOPS_INTO.get(l).find(h => h.types?.includes('fulfils'))]).filter(([, h]) => h));
 });

@@ -38,5 +38,23 @@
    "sdd": "7ac081804c9f66615f24a88072042ad7e20e222c4afbfd5b5495846ce2035152",
    "ars": "a4cfb0463f1ec273aaefd8910423b819832065a53ac356ca467635e64a333bfa"
   }
+ },
+ "reviewList": {
+  "findings": [
+   "EVIDENCE:SF-001",
+   "EVIDENCE:SF-002"
+  ],
+  "readings": {
+   "graph": "5c0f2a7bfe514d8b275b071a3a4e48a00b67ace20bf9e7c8b0bd56f7642a6f1e",
+   "model": "a38df459e38651fa26828b512bc9d6ad03fda3ede81ddddd8e457404357a997f",
+   "trails": "82cca41a6c153a3928f54e278c3a97bfd92eda4add61eb1860ca4681e960b608",
+   "findings": "be69263336715178053c3fdf11cf4a95b5daf4db0cf7539600ac78950aaf34a7",
+   "stamps": "3590d9dca06adb653995acde7dbdad375ea7a8cad52abb02cb52884cc14e29aa",
+   "readiness": "549c265405f4d32614aa9eeadcc4aeff1eda3a4ccccf37f9065a79370a1db808",
+   "provenance": "4a176e91be36037040d198c25727648574b7561d22f4aafad5c731e3f89ce3d7",
+   "registers": "d9d6bc97679d161519ea7993232ee90f57d832b9bb322848ac745bda782f53aa",
+   "sdd": "6c084b39b10993f3ce4061d791e790b7c9cf1dabc6b7b0641c8c4f636fb5ba7c",
+   "ars": "6a5683b7f6af0144aca4f049df1863cc0c9f358efd0f900a93305da6023e5514"
+  }
  }
 }

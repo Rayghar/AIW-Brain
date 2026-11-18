@@ -23,7 +23,8 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
-import {REFERENCES, reference, readings, digests, AT} from './rc44-s0-readings.mjs';
+import * as R from './rc44-s0-readings.mjs';
+const {REFERENCES, reference, readings, digests, AT} = R, {reviewListDocument = () => { throw Error('rc44-s0-readings.mjs gives a document with a review list (reviewListDocument)'); }, reviewListFindings, assertBuiltInTrailsUnchanged, assertFindingIdsUnique} = R;
 import worker, {commandHandler, commandShape} from './worker.js';
 import {localDatabase} from './local-db.js';
 import {readStoredProject} from './project-storage.js';
@@ -88,6 +89,9 @@ function applySynthetic(p, command, at, actor, options) {
   if (command.type === 'synthetic.confirm') { const r = find(); r.confirmed = true; return {document: p, selected: r.id}; }
   throw Error('Unknown synthetic action.');
 }
+const STEP_UNDO = key => ({previous: (p, c) => ({id: c.payload.id, was: syn(p).find(r => r.id === c.payload.id)?.[key] ?? null}), revert(p, old) { const r = syn(p).find(x => x.id === old.id); if (!r) throw Error('The synthetic record changed.'); if (old.was) r[key] = old.was; else delete r[key]; return {document: p, selected: r.id}; }});
+// What the cases below switch on to make the second package print a forged heading or state a finding under a taken id.
+let forge = '';
 const SYNTHETIC = {
   id: 'zz-synthetic',
   objectTypes: {synthetic: {label: 'Synthetic record', chapter: 3, level: 'intent', prefix: 'SYN'}},
@@ -107,12 +111,14 @@ const SYNTHETIC = {
     ...(r.broken ? [{code: 'synthetic-broken', id: 'synthetic-broken:' + r.id, title: 'The synthetic invariant is broken', detail: r.id + ' is marked broken.', level: 'error', hard: true, objectId: r.id}] : [])
   ]), 11: p => syn(p).filter(r => r.note === 'review me').map(r => ({code: 'synthetic-review', id: 'synthetic-review:' + r.id, chapter: 3, chapterTitle: 'Architecture decisions', title: 'Review the synthetic note', detail: r.id, level: 'warning', objectId: r.id}))},
   commands: {
-    // What the type refuses by who writes the commit: a draft by Sol marks no record broken, sent on its own or in a batch.
-    'synthetic.save': {apply: applySynthetic, staged: true, validate: (p, command, {author}) => (author?.kind === 'sol-draft' && command.payload?.broken === true ? 'A draft by Sol does not mark a synthetic record broken.' : null)},
+    // What the type refuses by who writes the commit: a draft by Sol and an import mark no record broken, sent on its
+    // own, in a batch or in an alternative.
+    'synthetic.save': {apply: applySynthetic, staged: true, validate: (p, command, {author}) => (command.payload?.broken !== true || author?.kind === 'person' ? null : author?.kind === 'import' ? 'An import does not mark a synthetic record broken.' : 'A draft by Sol does not mark a synthetic record broken.')},
     'synthetic.note': {apply: applySynthetic, undo: {previous: (p, c) => ({id: c.payload.id, note: syn(p).find(r => r.id === c.payload.id)?.note ?? ''}), revert(p, was) { const r = syn(p).find(x => x.id === was.id); if (!r) throw Error('The synthetic record changed.'); r.note = was.note; p.synthetic.version++; return {document: p, selected: r.id}; }}},
     'synthetic.observe': {apply: applySynthetic},
-    'synthetic.sign': {apply: applySynthetic, person: true},
-    'synthetic.accept': {apply: applySynthetic, second: (p, c) => syn(p).find(r => r.id === c.payload?.id) || null},
+    // A person's step and a second person's step that can be undone by their receipt (should-fix 1: by a person).
+    'synthetic.sign': {apply: applySynthetic, person: true, undo: STEP_UNDO('signed')},
+    'synthetic.accept': {apply: applySynthetic, second: (p, c) => syn(p).find(r => r.id === c.payload?.id) || null, undo: STEP_UNDO('acceptance')},
     // A second person's step that answers a projection of the record (ruling D7.1): who wrote what the step covers.
     'synthetic.endorse': {apply: applySynthetic, second: (p, c) => { const r = syn(p).find(x => x.id === c.payload?.id); return r ? {id: r.id, actor: r.actor, history: r.history} : null; }},
     'synthetic.confirm': {apply: applySynthetic, person: true}
@@ -141,7 +147,9 @@ const SYNTHETIC = {
     {document: 'sdd', after: '## E. Provenance', markdown: p => (syn(p).length ? 'Synthetic records: ' + syn(p).map(r => r.id).join(', ') + '.\n\n' : '')},
     {document: 'ars', after: '## Open items', markdown: p => (syn(p).length ? 'Synthetic records bear on these requirements: ' + syn(p).length + '.\n\n' : '')},
     {document: 'chapter-3', after: '## Conflicts', markdown: p => (syn(p).length ? '### Synthetic records\n\n' + syn(p).map(r => '- ' + r.id).join('\n') + '\n\n' : '')},
-    {document: 'registers', after: '## No such heading', markdown: () => 'NEVER PRINTED\n\n'}
+    {document: 'registers', after: '## No such heading', markdown: () => 'NEVER PRINTED\n\n'},
+    // Its anchor is a heading the document does not print; the package earlier by id may print one like it (should-fix 5).
+    {document: 'registers', after: '### Forged anchor', markdown: () => 'CAPTURED BY A FORGED ANCHOR\n\n'}
   ]
 };
 // A second package, earlier by id: its own kind, layer, check and collection, so that order can matter. A hop comes
@@ -153,7 +161,12 @@ const OTHER = {
   records(p, add, rel) { for (const r of other(p)) { add(r, 'otherThing', 'runtime.otherThings.' + r.id); for (const id of list(r.requirementIds)) rel('fulfils', id, r.id, {source: 'runtime.otherThings.requirementIds'}); if (r.syntheticId) rel('describes', r.id, r.syntheticId, {source: 'runtime.otherThings.syntheticId'}); } },
   layers: {other: 'otherThing'},
   hops: [{layer: 'other', types: ['fulfils'], from: ['requirement'], dir: 'out', ctx: false}],
-  checks: {3: p => other(p).map(r => ({code: 'other-noted', id: 'other-noted:' + r.id, title: 'Note the other thing', detail: r.id, level: 'warning', objectId: r.id})), 10: p => other(p).map(r => ({code: 'other-placed', id: 'other-placed:' + r.id, title: 'Place the other thing', detail: r.id, level: 'warning', objectId: r.id}))},
+  checks: {3: p => [...other(p).map(r => ({code: 'other-noted', id: 'other-noted:' + r.id, title: 'Note the other thing', detail: r.id, level: 'warning', objectId: r.id})),
+    // switched on by a case: a finding under the id the synthetic package's finding has (should-fix 6)
+    ...(forge === 'finding' ? syn(p).filter(r => !r.componentId).map(r => ({code: 'synthetic-unbound', id: 'synthetic-unbound:' + r.id, title: 'A second finding under a taken id', detail: r.id, level: 'warning', objectId: r.id})) : [])],
+    10: p => other(p).map(r => ({code: 'other-placed', id: 'other-placed:' + r.id, title: 'Place the other thing', detail: r.id, level: 'warning', objectId: r.id}))},
+  // switched on by a case: a section that prints a heading at its anchor's level, or one a later package names as its anchor (should-fix 5)
+  sections: [{document: 'registers', after: '## Performance specification', markdown: () => (forge === 'heading' ? 'Some text.\n\n## Forged section\n\nUnder a heading at the anchor\'s level.\n\n' : forge === 'above' ? '# 7. Appendix\n\nUnder a heading above the anchor\'s level.\n\n' : forge === 'anchor' ? '### Forged anchor\n\nWhat a later package names as its anchor.\n\n' : forge === 'fenced' ? '```\n## Inside a code fence\n```\n\n' : '')}],
   lifecycle: {'runtime.otherThings': 10},
   // otherNotes: read by the provenance reader (who wrote each, the review plan), not retired through the lifecycle family.
   provenance: {nouns: {'runtime.otherThings': 'other thing', 'runtime.otherNotes': 'other note'}, paths: {}, records: {'runtime.otherNotes': 10}},
@@ -197,9 +210,11 @@ if (PROBE >= 0) {
 const golden = JSON.parse(readFileSync('rc44-s0-extensions-baseline.json', 'utf8'));
 const compare = (when, texts = null) => { for (const t of REFERENCES) { const d = texts ? Object.fromEntries(Object.entries(texts[t]).map(([k, v]) => [k, sha(v)])) : digests(reference(t)); for (const k of Object.keys(golden.readings[t])) assert.equal(d[k], golden.readings[t][k], `${t}: the ${k} reading is byte for byte the baseline's (${when})`); } };
 const before = Object.fromEntries(REFERENCES.map(t => [t, readings(reference(t))]));
+// A document whose review list (list 11) is not empty, which no reference is (should-fix 9): its ten readings too.
+const compareListed = when => { const p = reviewListDocument(), d = digests(p); assert.deepEqual(reviewListFindings(p).map(f => f.id), golden.reviewList.findings, 'the document holds the review\'s own findings (' + when + ')'); assert.ok(golden.reviewList.findings.length >= 2); for (const k of Object.keys(golden.reviewList.readings)) assert.equal(d[k], golden.reviewList.readings[k], `a document with a review list: the ${k} reading is byte for byte the baseline's (${when})`); };
 await block('6a no extension registered', () => {
   assert.equal(golden.capturedFrom, '94dbd4f');
-  compare('no extension registered', before);
+  compare('no extension registered', before); compareListed('no extension registered');
   if (X) assert.deepEqual(X.EXTENSIONS, [], 'nothing is registered until a package registers');
   pass('6a: with nothing registered, the graph, trails, findings, stamps, readiness, provenance, registers, SDD and ARS of ' + REFERENCES.join(', ') + ' are byte for byte those of 94dbd4f');
 });
@@ -239,7 +254,7 @@ await block('registration', () => {
 // ---------------------------------------------------------------- case 6, second half: registered, no record
 await block('6b registered, no record of theirs', () => {
   need();
-  compare('three extensions registered, none of their records in the document');
+  compare('three extensions registered, none of their records in the document'); compareListed('three extensions registered');
   for (const t of REFERENCES) { const now = readings(reference(t)); for (const k of Object.keys(before[t])) assert.equal(now[k], before[t][k], `${t}: ${k} is the same text with and without the extensions`); }
   const p = reference('bank-payment');
   assert.ok(!('synthetic' in p) && !('syntheticLog' in p) && !('otherThings' in p.runtime), 'no key of a package exists until its first record is written');
@@ -311,6 +326,17 @@ await block('1 record graph and trail', () => {
   assert.ok(kernel.forwardTrace(p, T0.component).has('SYN-002'));
   // The built-in layers of every trail are what they were without the records.
   for (const r of reviewRequirements(p0)) { const a = kernel.requirementTrace(p0, r.id), b = kernel.requirementTrace(p, r.id), c = kernel.requirementSpine(p0, r.id), d = kernel.requirementSpine(p, r.id); for (const l of Object.keys(a.layers)) { assert.deepEqual(b.layers[l], a.layers[l], r.id + ' ' + l); assert.deepEqual(d.layers[l], c.layers[l], r.id + ' spine ' + l); } }
+  // The same, by the helper every package's suite calls (ruling D6.4): the built-in layers and every spine are
+  // unchanged with the package's records present, and no two findings share an id. It is seen to catch both ways a
+  // package could put a record on a built-in trail: add() with a built-in type that stands on a layer, and a relation
+  // of a type a built-in hop reads between two built-in records.
+  assert.ok(assertBuiltInTrailsUnchanged(p0, p) > 0); assert.ok(assertFindingIdsUnique(p) > 0);
+  { const reqs = reviewRequirements(p0), last = p0.realisation.components.at(-1), off = reqs.find(r => !kernel.requirementSpine(p0, r.id).has(last.id));
+    X.registerExtension({id: 'ab-trespass', records(q, add, rel) { if (q.trespass === 'type') { add({id: 'CMP-FAKE', ref: 'CMP-FAKE', title: 'A package\'s record of a built-in type'}, 'component', 'trespass.records.CMP-FAKE'); rel('fulfils', reqs[0].id, 'CMP-FAKE', {source: 'trespass.records.requirementIds'}); } if (q.trespass === 'relation' && off) rel('fulfils', off.id, last.id, {source: 'trespass.records.requirementIds'}); }});
+    assert.throws(() => assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: 'type'})), /moved on the built-in layer “component”/, 'a package\'s record of a built-in type on a built-in layer is caught');
+    if (off) assert.throws(() => assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: 'relation'})), /moved on the built-in layer “component”/, 'and so is a relation a built-in hop reads between two built-in records');
+    assert.ok(assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: ''})) > 0); }
+  try { forge = 'finding'; assert.throws(() => assertFindingIdsUnique(withFinalReview(withSynthetic(p, {title: 'Unbound'}))), /Two findings share the id “C3:synthetic-unbound:SYN-003”/); } finally { forge = ''; }
   if (second) assert.ok(!kernel.requirementTrace(p, second).has('SYN-001'), 'a record reaches only the trails its hops lead from');
   assert.ok(kernel.TRACE_LAYERS.indexOf('synthetic') > kernel.TRACE_LAYERS.indexOf('path'), 'a package\'s layer stands after the built-in layers');
   assert.ok(kernel.TRACE_LAYERS.indexOf('other') < kernel.TRACE_LAYERS.indexOf('synthetic'), 'in the packages\' id order');
@@ -613,7 +639,9 @@ await block('D3 workbench keys', async () => {
   need();
   const K = boundary.WORKBENCH_KEYS; assert.ok(K && Object.isFrozen(K), 'one statement of the keys the workbench itself writes (design-extension-parts.js WORKBENCH_KEYS)');
   // every key of a document is in the statement: a top-level key, and each key of a container a package may add to
-  const hold = (p, what) => { for (const [k, v] of Object.entries(p)) { assert.ok(Object.hasOwn(K, k), what + ': the statement names the key “' + k + '”'); if (K[k] && v && typeof v === 'object' && !Array.isArray(v)) for (const b of Object.keys(v)) assert.ok(K[k].includes(b), what + ': the statement names “' + k + '.' + b + '”'); } };
+  // and every id prefix of its records is in the statement of the workbench's own prefixes (should-fix 6): 2 to 5 capitals before the hyphen of an id, a ref or a code
+  const PREFIXES = boundary.WORKBENCH_PREFIXES, prefixes = v => { if (Array.isArray(v)) v.forEach(prefixes); else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) { if ((k === 'id' || k === 'ref' || k === 'code') && typeof x === 'string') { const m = /^([A-Z]{2,5})-/.exec(x); if (m) assert.ok(PREFIXES.has(m[1]), 'the statement of prefixes names “' + m[1] + '” (' + x + ')'); } prefixes(x); } };
+  const hold = (p, what) => { prefixes(p); for (const [k, v] of Object.entries(p)) { assert.ok(Object.hasOwn(K, k), what + ': the statement names the key “' + k + '”'); if (K[k] && v && typeof v === 'object' && !Array.isArray(v)) for (const b of Object.keys(v)) assert.ok(K[k].includes(b), what + ': the statement names “' + k + '.' + b + '”'); } };
   const templates = ['blank', 'bank-payment', ...REFERENCE_PROJECTS.map(r => r.id)];
   assert.ok(templates.length >= 7, 'every template: ' + templates.join(', '));
   for (const t of templates) hold(withFinalReview(createProject({name: t, template: t}, t, AT)), 'template ' + t);
@@ -706,6 +734,78 @@ await block('D5 SDD provenance', () => {
   // a row a package states over a built-in collection is not read a second time (the hostile package states decisions.records)
   assert.deepEqual(boundary.packageCollections().map(x => x[0]).sort(), ['runtime.otherNotes', 'runtime.otherThings', 'synthetic.records']);
   pass('D5: the SDD\'s provenance reading and its open items read the packages\' collections: ' + r.total + ' records with ' + r.by.sol + ' drafted by Sol (' + r0.total + ' and ' + r0.by.sol + ' without them); a built-in collection a package names is not counted twice');
+});
+
+// ---------------------------------------------------------------- should-fix 1, 2 and 6: undo, alternatives, a finding id stated twice
+await block('SF boundary', async () => {
+  need();
+  const h = await harness(), {send, rec} = h, d = () => h.state.document, PERSONS = /Undoing a signed-in person.s step is a signed-in person.s step/;
+  try {
+    // 1. the undo of a person's step is a person's step, and stays with the account that saved the step
+    assert.equal((await send('synthetic.save', {title: 'To sign and to accept'})).status, 200); const id = h.last();
+    assert.equal((await send('synthetic.sign', {id})).status, 200); assert.equal(rec(id).signed.actor, A);
+    let receipt = d().workbench.history.at(-1).undo; assert.equal(receipt.type, 'synthetic.sign');
+    for (const [as, extra, words, why] of [[A, {authorKind: 'sol-draft'}, PERSONS, 'a draft by Sol'], [A, {authorKind: 'import'}, PERSONS, 'an import'], [AGENT, {}, /agent|Only the account/, 'an agent account'], [B, {}, /Only the account that saved this action may undo it/, 'another account']]) {
+      const r = await send('action.undo', {receiptId: receipt.id}, as, extra); assert.equal(r.status, 400, why + ' does not undo a person\'s step: ' + JSON.stringify(r.body).slice(0, 160)); assert.match(r.error, words, why); await h.read(); assert.equal(rec(id).signed?.actor, A, 'the signature stands (' + why + ')');
+    }
+    assert.equal((await send('action.undo', {receiptId: receipt.id})).status, 200, 'the person who signed undoes it'); assert.equal(rec(id).signed, undefined);
+    assert.equal((await send('synthetic.accept', {id, reviewed: true}, B)).status, 200); receipt = d().workbench.history.at(-1).undo; assert.equal(receipt.type, 'synthetic.accept');
+    { const r = await send('action.undo', {receiptId: receipt.id}, B, {authorKind: 'sol-draft'}); assert.equal(r.status, 400, 'a draft by Sol does not undo an acceptance'); assert.match(r.error, PERSONS); await h.read(); assert.equal(rec(id).acceptance?.actor, B); }
+    assert.equal((await send('action.undo', {receiptId: receipt.id}, A)).status, 400, 'nor does another person');
+    assert.equal((await send('action.undo', {receiptId: receipt.id}, B)).status, 200); assert.equal(rec(id).acceptance, undefined);
+    // an ordinary step of a package is undone as before, by a draft too (the rule is for a person's steps)
+    assert.equal((await send('synthetic.note', {id, note: 'a note'})).status, 200); receipt = d().workbench.history.at(-1).undo;
+    assert.equal((await send('action.undo', {receiptId: receipt.id}, A, {authorKind: 'sol-draft'})).status, 200);
+    // 2. validate is asked for every command an alternative carries: when it is saved, revised and merged
+    const broken = title => [{type: 'synthetic.save', payload: {title, broken: true}}], plain = [{type: 'synthetic.save', payload: {title: 'In an alternative'}}], count = () => (d().workbench?.alternatives || []).length;
+    await h.read(AGENT);
+    { const commands = broken('Marked broken by the agent account'), r = await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'Drafted', reason: 'Drafted by the agent account.'}, AGENT);
+      assert.equal(r.status, 400, 'an alternative that holds what the type refuses of its author is not saved'); assert.match(r.error, /A draft by Sol does not mark a synthetic record broken/); await h.read(); assert.equal(count(), 0); }
+    assert.equal((await send('workspace.alternative', {commands: plain, stamp: previewScenarioAlternative(d(), plain, undefined).stamp, title: 'An alternative', reason: 'A person\'s.'})).status, 200);
+    let a = d().workbench.alternatives.at(-1);
+    const revise = (commands, extra) => send('workspace.revise-alternative', {id: a.id, revision: a.revision, commands, stamp: previewScenarioAlternative(d(), commands, a.scenario).stamp, basisStamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, title: a.title, reason: 'Revised.'}, A, extra);
+    { const r = await revise(broken('Marked broken by an import'), {authorKind: 'import'}); assert.equal(r.status, 400, 'nor revised to hold it'); assert.match(r.error, /An import does not mark a synthetic record broken/); await h.read(); assert.equal(d().workbench.alternatives.at(-1).revision, a.revision); }
+    assert.equal((await revise(broken('Marked broken by a person'))).status, 200, 'a person revises it so'); a = d().workbench.alternatives.at(-1);
+    const merge = extra => send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged.'}, A, extra);
+    { const r = await merge({authorKind: 'import'}); assert.equal(r.status, 400, 'nor merged by an author the type refuses'); assert.match(r.error, /An import does not mark a synthetic record broken/); await h.read(); assert.ok(!d().synthetic.records.some(x => x.broken)); }
+    assert.equal((await merge()).status, 200); assert.equal(rec(h.last()).broken, true, 'a person merges it');
+    // 6. two findings under one id: a treatment would cover both, so none is recorded
+    assert.equal((await send('synthetic.save', {title: 'Unbound'})).status, 200); const unbound = h.last(), fid = 'C3:synthetic-unbound:' + unbound;
+    const treat = () => { const f = inheritedFindings(withFinalReview(d())).find(x => x.id === fid); return send('review.disposition', {findingId: fid, stamp: f.stamp, treatment: 'Not applicable', rationale: 'Synthetic.', reviewer: 'A reviewer', reference: 'REF-1', reviewed: true}); };
+    forge = 'finding'; await h.read(); assert.equal(inheritedFindings(withFinalReview(d())).filter(x => x.id === fid).length, 2, 'two packages state one finding id');
+    { const r = await treat(); assert.equal(r.status, 400, 'a treatment of an id two findings share is refused'); assert.match(r.error, new RegExp('Two findings share the id “' + fid + '”')); }
+    forge = ''; await h.read(); assert.equal((await treat()).status, 200, 'one finding under the id is treated as any other');
+  } finally { forge = ''; h.close(); }
+  pass('should-fix 1, 2, 6: the undo of a person-only or second-person step is refused for a draft by Sol, an import, an agent account and another account; validate is asked for every command an alternative carries when it is saved, revised and merged; a treatment of a finding id two findings share is refused');
+});
+
+// ---------------------------------------------------------------- should-fix 3, 6, 11 and ruling D7.5: the start check
+await block('SF start check', () => {
+  need();
+  const issues = e => boundary.extensionIssues(e), has = (e, re) => issues(e).some(i => re.test(i)), kind = (prefix = 'XY') => ({xy: {label: 'Xy', chapter: 2, level: 'intent', prefix}});
+  // 3. a hop onto a layer of a built-in type states `only`: without it, every such relation of an old document would bring a record
+  const overBuiltIn = only => ({id: 'xy', layers: {setting: 'environment'}, hops: [{layer: 'setting', types: ['inEnvironment'], from: ['plan'], dir: 'out', ctx: true, ...(only ? {only} : {})}]});
+  assert.ok(has(overBuiltIn(null), /the hop onto “setting” brings records of the built-in type “environment”: it states only\(relation\)/), 'a hop onto a layer of a built-in type states only: ' + issues(overBuiltIn(null)).join(' | '));
+  assert.deepEqual(issues(overBuiltIn(rel => rel.source === 'xy.records.environmentId')), []);
+  assert.deepEqual(issues({id: 'xy', objectTypes: kind(), layers: {xy: 'xy'}, hops: [{layer: 'xy', types: ['a'], from: ['requirement'], dir: 'out', ctx: true}]}), [], 'a hop onto a layer of the package\'s own type needs none');
+  // 6. an id prefix a built-in kind uses; the retired command names
+  for (const prefix of ['ADR', 'REQ', 'IF', 'CHG', 'LR', 'THR', 'ENV', 'WA']) assert.ok(has({id: 'xy', objectTypes: kind(prefix)}, new RegExp('id prefix “' + prefix + '” is the workbench.s own')), prefix + ' is a built-in kind\'s');
+  for (const prefix of ['XY', 'ADP', 'WL', 'FD', 'DN', 'SLO']) assert.deepEqual(issues({id: 'xy', objectTypes: kind(prefix)}), [], prefix + ' is free');
+  const retired = ['technology.keep-seed', 'technology.dismiss-seed', 'technology.restore-seed', 'interfaces.keep-seed', 'interfaces.dismiss-seed', 'interfaces.restore-seed', 'interfaces.remove-contract', 'runtime.keep-seed', 'runtime.dismiss-seed', 'runtime.restore-seed', 'runtime.remove-plan', 'runtime.remove-path'];
+  for (const type of retired) { assert.ok(canonical.isRetiredCommand(type)); assert.equal(boundary.builtInType(type), true, type + ' is a retired name the workbench still reads'); assert.ok(has({id: 'xy', commands: {[type]: {apply() {}}}}, /is built in/)); }
+  // before the server has said which types are built in, none is free (a package's command is then unknown, never applied)
+  { const r = spawnSync(process.execPath, ['--input-type=module', '-e', 'import * as b from "./design-extension-boundary.js"; import {registerExtension} from "./public/design-extensions.js"; registerExtension({id: "xy", commands: {"xy.save": {apply() {}}}}); let stopped = ""; try { b.assertExtensions(); } catch (e) { stopped = e.message; } console.log(JSON.stringify([b.builtInType("xy.save"), b.extensionCommand("xy.save"), b.extensionHandler("xy.save"), stopped]));'], {encoding: 'utf8'});
+    assert.equal(r.status, 0, r.stderr.slice(0, 300)); const [taken, command, handler, stopped] = JSON.parse(r.stdout.trim().split('\n').at(-1));
+    assert.deepEqual([taken, command, handler], [true, null, null], 'without the built-in resolver no type is a package\'s'); assert.match(stopped, /built-in commands are not installed/); }
+  // 11. a lifecycle collection is a list inside a container: the family keeps the container's version, review and handoff
+  assert.ok(has({id: 'xy', lifecycle: {things: 3}}, /collection “things” is a list inside a container \(container\.list\)/), 'a single-segment lifecycle path is refused');
+  assert.deepEqual(issues({id: 'xy', lifecycle: {'things.records': 3}, provenance: {records: {thingNotes: 3}}}), []);
+  // D7.5: a type that ends as a review command does to authorship.js states that it is a person's step
+  for (const end of ['review', 'handoff', 'intake']) {
+    assert.ok(isReviewCommand('xy.' + end)); assert.ok(has({id: 'xy', commands: {['xy.' + end]: {apply() {}}}}, /command “xy\.\w+” ends as a review command does \(authorship\.js\): it states person or second/), 'xy.' + end);
+    assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, person: true}}}), []); assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, second: () => null}}, provenance: {paths: {xy: ['xy.records']}}}), []);
+  }
+  pass('should-fix 3, 6, 11 and D7.5 at the start check: a hop onto a layer of a built-in type states only; an id prefix of the workbench and a retired command name are taken; no type is free before the built-in resolver is installed; a single-segment lifecycle path is refused; a type ending in .review, .handoff or .intake states person or second');
 });
 
 // ---------------------------------------------------------------- 3. checks and readiness
@@ -839,6 +939,14 @@ await block('upgrade and sections', () => {
   assert.equal(registers.replace('### Synthetic register\n\n- SYN-001 · First synthetic record\n- SYN-002 · Bound, named by no requirement\n\n', ''), assembleSDD(P), 'and nothing else moves');
   assert.equal(boundary.placeSections('registers', '# T\n\n```\n## Performance specification\n```\n', P), '# T\n\n```\n## Performance specification\n```\n', 'a heading inside a code fence is no anchor');
   assert.ok(!registers.includes('NEVER PRINTED'), 'a section whose anchor is not printed is not printed');
+  // should-fix 5: a section stays inside the section it follows, and an anchor is a heading of the document as assembled
+  try {
+    for (forge of ['heading', 'above']) assert.throws(() => boundary.placeSections('registers', assembleSDD(P), P), /mm-other: its section after “## Performance specification” prints a heading at or above its anchor.s level \(“#+ [^”]+”\)/, 'a heading at or above the anchor\'s level is refused (' + forge + ')');
+    forge = 'fenced'; assert.match(boundary.placeSections('registers', assembleSDD(P), P), /```\n## Inside a code fence\n```\n\n### Synthetic register/, 'a heading inside a code fence is text; two packages\' sections at one anchor follow each other in id order');
+    forge = 'anchor'; const forged = boundary.placeSections('registers', assembleSDD(P), P);
+    assert.match(forged, /### Forged anchor\n\nWhat a later package names as its anchor\.\n\n### Synthetic register/, 'a deeper heading inside a section is printed'); assert.ok(!forged.includes('CAPTURED BY A FORGED ANCHOR'), 'and is no anchor: a later package\'s section is placed against the document as assembled');
+  } finally { forge = ''; }
+  assert.equal(boundary.placeSections('registers', assembleSDD(P), P), registers, 'with the switch off the registers are what they were');
   const all = architectureMarkdown(P), delivery = architectureMarkdown(P, {audience: 'delivery'});
   assert.match(all.markdown, /## E\. Provenance[\s\S]*Synthetic records: SYN-001, SYN-002\./); assert.ok(!delivery.markdown.includes('Synthetic records:'), 'an edition that does not print the anchor does not print the section');
   pass('upgrade and sections: the package\'s idempotent step runs in the read upgrade chain; its sections stand at their anchors in the registers and the architecture edition');
@@ -889,6 +997,17 @@ await block('7 idempotent and order-free', () => {
   assert.ok(clashes.some(c => /collection “runtime\.otherNotes” is stated by mm-other and by zzz-duplicate: mm-other keeps it/.test(c)) && clashes.some(c => /collection “synthetic\.records” is stated by zz-synthetic and by zzz-duplicate: zz-synthetic keeps it/.test(c)));
   X.registerExtension({id: 'ab-early', objectTypes: {early: {label: 'Early', chapter: 2, level: 'intent', prefix: 'EAR'}}, layers: {early: 'early'}, hops: [{layer: 'early', types: ['binds'], from: ['synthetic'], dir: 'in', ctx: true}]});
   assert.ok(boundary.extensionConflicts().some(c => /a hop of ab-early onto “early” comes from “synthetic”, which the walk reads later/.test(c)), 'a hop from a layer of a package later by id is named');
+  // should-fix 6: an evidence key that is another package's key is a clash that names both; the package whose key it is is not blamed
+  { const victim = {id: 'zy-victim', designKeys: ['victimThings', 'runtime.victimNodes', 'victimStore']}, thief = {id: 'zz-thief', evidenceKeys: ['victimThings', 'runtime.victimNodes', 'victimStore.log', 'thiefLog']};
+    assert.deepEqual(boundary.extensionIssues(victim), []); X.registerExtension(victim); X.registerExtension(thief);
+    const clashes = boundary.extensionConflicts();
+    for (const key of ['victimThings', 'runtime.victimNodes', 'victimStore.log']) assert.ok(clashes.some(c => c.includes('evidence key “' + key + '” of zz-thief leaves a key of zy-victim out of the design: zy-victim keeps it')), key + ': ' + clashes.filter(c => /thief/.test(c)).join(' | '));
+    assert.ok(!clashes.some(c => c.includes('“thiefLog”')), 'its own key is its own'); assert.ok(!clashes.some(c => /“synthetic\.observations”|“syntheticLog”/.test(c)), 'a package\'s evidence inside its own container is no clash');
+    assert.deepEqual(boundary.extensionIssues(victim), [], 'the package whose key it is is not told its design key lies where the fingerprint does not read'); }
+  // should-fix 7: a layer whose name sorts before the built-in layers (a numeric key) moves no built-in layer's hops
+  { const r = spawnSync(process.execPath, [process.argv[1], '--probe', 'n'], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, r.stderr.slice(0, 400)); const out = JSON.parse(r.stdout.trim().split('\n').at(-1));
+    assert.equal(out.layers[0], '7', 'the probe\'s layer does sort first'); for (const t of REFERENCES) assert.equal(out.trails[t], golden.readings[t].trails, t + ': every trail is the baseline\'s with such a layer registered');
+    assert.ok(boundary.extensionIssues(NUMERIC).some(i => /layer “7” names the object type it holds/.test(i)), 'and the start check refuses the name'); }
   pass('7: five registration orders, with repeats, in separate processes give the same object types, collections, layers, nouns and the same ten readings; registering again in this process changes nothing');
 });
 

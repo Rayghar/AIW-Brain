@@ -63,24 +63,34 @@ export function notePackages(p, ids) {
 // the next heading of the same or a higher level; sections of one anchor follow each other in the packages' id order. A
 // section that answers no text is not printed, and neither is one whose anchor the document does not print (an edition
 // that leaves the anchor's part out leaves the section out). A heading inside a code fence is not a heading.
+// A package places a section inside the section it follows, and only there (the adversarial review's finding 5): its
+// text may print deeper headings, and a heading at or above its anchor's level is refused, with the package named, or
+// one section could open a second "# 7. Appendix". An anchor is a heading of the document as assembled: every section
+// is placed against the document as it was handed in, so a heading one package prints is never another's anchor.
+const fences = lines => { const out = []; let inside = false; for (const line of lines) { if (/^(```|~~~)/.test(line)) { inside = !inside; out.push(true); } else out.push(inside); } return out; };
 export function placeSections(document, markdown, p) {
-  let lines = null;
+  const texts = [];
   for (const e of EXTENSIONS) for (const s of list(e.sections)) {
     if (s?.document !== document || !fn(s.markdown)) continue;
     const text = String(s.markdown(p) || '').replace(/\n+$/, '');
-    if (!text) continue;
-    lines ??= String(markdown).split('\n');
-    const fenced = []; let inside = false;
-    for (const line of lines) { if (/^(```|~~~)/.test(line)) { inside = !inside; fenced.push(true); } else fenced.push(inside); }
-    const at = lines.findIndex((line, i) => !fenced[i] && line === s.after);
+    if (text) texts.push([e.id, s.after, text.split('\n')]);
+  }
+  if (!texts.length) return markdown;
+  const lines = String(markdown).split('\n'), fenced = fences(lines), places = new Map();
+  for (const [id, after, text] of texts) {
+    const at = lines.findIndex((line, i) => !fenced[i] && line === after);
     if (at < 0) continue;
-    const level = /^#+/.exec(s.after)?.[0].length || 1;
+    const level = /^#+/.exec(after)?.[0].length || 1, inner = fences(text), above = text.find((line, i) => !inner[i] && /^(#+) /.exec(line)?.[1].length <= level);
+    if (above !== undefined) throw Error(id + ': its section after “' + after + '” prints a heading at or above its anchor\'s level (“' + above + '”). A section stays inside the section it follows.');
     let end = lines.length;
     for (let i = at + 1; i < lines.length; i++) { const m = !fenced[i] && /^(#+) /.exec(lines[i]); if (m && m[1].length <= level) { end = i; break; } }
     while (end > at + 1 && lines[end - 1] === '') end--;
-    lines.splice(end, 0, '', ...text.split('\n'));
+    if (!places.has(end)) places.set(end, []);
+    places.get(end).push('', ...text);
   }
-  return lines ? lines.join('\n') : markdown;
+  // From the last place to the first, so that no insertion moves another's place.
+  for (const end of [...places.keys()].sort((a, b) => b - a)) lines.splice(end, 0, ...places.get(end));
+  return places.size ? lines.join('\n') : markdown;
 }
 
 // ---------------------------------------------------------------- the keys the workbench itself writes
@@ -139,6 +149,14 @@ function fingerprintReads(key) {
 }
 // The package as registered under the id, when `e` is that registration (its rows are then in the tables already).
 const registered = e => EXTENSIONS.find(x => x.id === e?.id) || null;
+// A built-in object type: in the table, and not as a registered package states it (the table keeps a package's entry itself).
+const builtInKind = type => type in OBJECT_TYPES && !EXTENSIONS.some(x => plain(x.objectTypes) && x.objectTypes[type] === OBJECT_TYPES[type]);
+// Whether two keys (a key of the document, or container.key) are one key, or one is the container of the other.
+const overKey = (a, b) => a === b || !a.includes('.') && b.split('.')[0] === a || !b.includes('.') && a.split('.')[0] === b;
+// The id prefixes of the workbench's own records and journals (2 to 5 capitals before the hyphen): one statement, as
+// WORKBENCH_KEYS is, held by the same suite case against every id, ref and code of every template and of a document
+// after the built-in command families. A package's kind takes none of them.
+export const WORKBENCH_PREFIXES = new Set('ACT ADR ALT APP ASM CON DAT DF DX ENV EXT GRP IF INT JRN LR MAP OBJ OUT PL QD REL REQ RM RP RUN SCP SEC SRC STK TB TC TD THR TM TN TO TR ZON CHG RG DES USE QS TRV WA UNDO TXT TS TRANS TI SS SPEC SOL SG SF SA RV RS RR RJ RA QC PROC PLT MIG LIB INV GV FR EV DL DC CT CD BL ASR AN AC AIW RUL'.split(' '));
 // What a package states that the contract does not allow, each as a sentence; none for a package that conforms. A row
 // that is built in, or that a package earlier by id states, is named: the shared tables leave it out (design-extensions.js
 // extendTable), so the package would silently lack it.
@@ -153,6 +171,7 @@ export function extensionIssues(e) {
   for (const [type, t] of Object.entries(plain(e.objectTypes) ? e.objectTypes : {})) {
     if (!TYPE.test(type) || !plain(t) || typeof t.label !== 'string' || !t.label || !(Number.isInteger(t.chapter) && t.chapter >= 1 && t.chapter <= 11) || !LEVELS.has(t.level) || typeof t.prefix !== 'string' || !/^[A-Z]{2,5}$/.test(t.prefix)) say('object type “' + type + '” states a label, a chapter (1 to 11), a level (' + [...LEVELS].join(', ') + ') and an id prefix of 2 to 5 capitals.');
     if (type in OBJECT_TYPES && !(mine && same(OBJECT_TYPES[type], mine.objectTypes?.[type]))) say('object type “' + type + '” is built in or another package\'s; it stays as it is.');
+    if (WORKBENCH_PREFIXES.has(t?.prefix)) say('id prefix “' + t.prefix + '” is the workbench\'s own: a package\'s record under an id a built-in record holds is left out of the record graph.');
   }
   if (e.records !== undefined && !fn(e.records)) say('records is a function (p, add, rel).');
   // layers and hops
@@ -181,6 +200,10 @@ export function extensionIssues(e) {
     if (h.dir !== 'in' && h.dir !== 'out') say(name + ' says which end the earlier record is (dir: \'out\' or \'in\').');
     if (typeof h.ctx !== 'boolean') say(name + ' says whether it is the own chain or context (ctx: false for the own chain, true for context).');
     if (h.only !== undefined && !fn(h.only)) say(name + ': only is a function of the relation.');
+    // A layer of a built-in type (wp2's `mechanism` over `pattern`): the records and relations of documents written
+    // before the package are of that type too, so the hop says which relations are the package's own (ruling D6.3).
+    const held = Object.hasOwn(layers, h.layer) ? layers[h.layer] : TRACE_LAYER_TYPES[h.layer];
+    if (typeof held === 'string' && builtInKind(held) && !fn(h.only)) say(name + ' brings records of the built-in type “' + held + '”: it states only(relation), which says which relations are the package\'s own, so that no trail of a document without the package\'s records moves.');
   }
   // checks
   if (e.checks !== undefined && !plain(e.checks)) say('checks is {chapter: p => [finding]}.');
@@ -193,6 +216,8 @@ export function extensionIssues(e) {
     if (!plain(c) || !fn(c.apply)) { say(name + ' states its handler (apply).'); continue; }
     for (const k of Object.keys(c)) if (!COMMAND_PARTS.has(k)) say(name + ': “' + k + '” is not a part of a command.');
     if (c.staged && (c.person || c.second)) say(name + ' is a person\'s step: it is never staged.');
+    // authorship.js reads any type with such an ending as a review command, whatever its package states (ruling D7.5).
+    if (/\.(?:review|handoff|intake)$/.test(type) && !c.person && !c.second) say(name + ' ends as a review command does (authorship.js): it states person or second.');
     if (c.second !== undefined && !fn(c.second)) say(name + ': second is a function (p, command) that answers the record a second person acts on.');
     // Ruling D1: the boundary reads who stands behind the record from the stored record's stamps, so it must know the collection.
     else if (c.second && ![type, type.split('.')[0]].some(k => list(plain(e.provenance?.paths) ? e.provenance.paths[k] : null).length)) say(name + ' is a second person\'s step: the package states provenance.paths for the type or its prefix (the collection of the records it acts on), so that the boundary can read who stands behind each.');
@@ -209,6 +234,8 @@ export function extensionIssues(e) {
     const row = COLLECTIONS.find(r => r[0] === path);
     if (row && !(mine && mine.lifecycle?.[path] === row[1])) say('collection “' + path + '” is built in or another package\'s; it stays as it is.');
     if (workbenchKey(path)) say('collection “' + path + '” is on a key the workbench itself writes: a package\'s records retire from the package\'s own collection.');
+    // record-lifecycle.js keeps the owning container's version, review and handoff: a list that is a key of the document has none (ruling D6.11).
+    else if (PATH.test(path) && !path.includes('.')) say('collection “' + path + '” is a list inside a container (container.list): a retirement moves the container\'s version and clears its review and handoff.');
   }
   const pv = e.provenance;
   if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths' || k === 'records') && ['nouns', 'paths', 'records'].every(k => pv[k] === undefined || plain(pv[k])))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}, records: {path: chapter}}.');
@@ -233,7 +260,8 @@ export function extensionIssues(e) {
   for (const k of list(e.evidenceKeys)) if (typeof k === 'string' && workbenchKey(k)) say('evidence key “' + k + '” is a key the workbench keeps: a package leaves only its own keys out of the design.');
   for (const k of list(e.designKeys)) if (typeof k === 'string' && PATH.test(k)) {
     if (list(e.evidenceKeys).includes(k)) say('“' + k + '” is stated as design and as evidence.');
-    else if (!fingerprintReads(k)) say('design key “' + k + '” lies where the design fingerprint does not read (review-domain.js reviewSource): it would not move the fingerprint.');
+    // (a key another package leaves out as its evidence is that package's clash, named by extensionConflicts, not this one's fault)
+    else if (!fingerprintReads(k) && !EXTENSIONS.some(x => x.id !== e.id && list(x.evidenceKeys).some(v => typeof v === 'string' && overKey(v, k)))) say('design key “' + k + '” lies where the design fingerprint does not read (review-domain.js reviewSource): it would not move the fingerprint.');
   }
   // upgrade, sections, needs and load
   if (e.upgrade !== undefined && !fn(e.upgrade)) say('upgrade is a function (p) that answers p itself when it has nothing to do.');
@@ -263,5 +291,9 @@ export function extensionConflicts() {
     for (const h of list(e.hops)) for (const l of list(h?.from)) if (TRACE_LAYERS.includes(l) && TRACE_LAYERS.includes(h.layer) && TRACE_LAYERS.indexOf(l) >= TRACE_LAYERS.indexOf(h.layer)) out.push('a hop of ' + e.id + ' onto “' + h.layer + '” comes from “' + l + '”, which the walk reads later.');
   }
   for (const [kind, key, id] of later) claim(kind, key, id);
+  // An evidence key of one package on a key another package states (its design key, its collection, or the container of
+  // either): it would leave the other's records out of the design, so the other keeps the key and the clash names both.
+  const statedKeys = e => [...list(e.designKeys), ...Object.keys(plain(e.lifecycle) ? e.lifecycle : {}), ...Object.keys(plain(e.provenance?.records) ? e.provenance.records : {})].filter(k => typeof k === 'string');
+  for (const e of EXTENSIONS) for (const k of list(e.evidenceKeys)) if (typeof k === 'string') for (const x of EXTENSIONS) if (x.id !== e.id && statedKeys(x).some(s => overKey(s, k))) out.push('evidence key “' + k + '” of ' + e.id + ' leaves a key of ' + x.id + ' out of the design: ' + x.id + ' keeps it.');
   return out;
 }
