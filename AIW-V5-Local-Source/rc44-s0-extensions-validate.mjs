@@ -104,10 +104,7 @@ const SYNTHETIC = {
   ]), 11: p => syn(p).filter(r => r.note === 'review me').map(r => ({code: 'synthetic-review', id: 'synthetic-review:' + r.id, chapter: 3, chapterTitle: 'Architecture decisions', title: 'Review the synthetic note', detail: r.id, level: 'warning', objectId: r.id}))},
   commands: {
     // What the type refuses by who writes the commit: a draft by Sol marks no record broken, sent on its own or in a batch.
-    'synthetic.save': {apply: applySynthetic, staged: true, validate: (p, command, {author}) => (author?.kind === 'sol-draft' && command.payload?.broken === true ? 'A draft by Sol does not mark a synthetic record broken.' : null), track(prior, next, command, at) {
-      const r = syn(next).find(x => x.id === (command.payload?.id || syn(next).at(-1)?.id)); if (!r) return;
-      next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, fields: [{key: 'title', label: 'Title', before: syn(prior).find(x => x.id === r.id)?.title ?? null, after: r.title}], items: []});
-    }},
+    'synthetic.save': {apply: applySynthetic, staged: true, validate: (p, command, {author}) => (author?.kind === 'sol-draft' && command.payload?.broken === true ? 'A draft by Sol does not mark a synthetic record broken.' : null)},
     'synthetic.note': {apply: applySynthetic, undo: {previous: (p, c) => ({id: c.payload.id, note: syn(p).find(r => r.id === c.payload.id)?.note ?? ''}), revert(p, was) { const r = syn(p).find(x => x.id === was.id); if (!r) throw Error('The synthetic record changed.'); r.note = was.note; p.synthetic.version++; return {document: p, selected: r.id}; }}},
     'synthetic.observe': {apply: applySynthetic},
     'synthetic.sign': {apply: applySynthetic, person: true},
@@ -115,6 +112,17 @@ const SYNTHETIC = {
     // A second person's step that answers a projection of the record (ruling D7.1): who wrote what the step covers.
     'synthetic.endorse': {apply: applySynthetic, second: (p, c) => { const r = syn(p).find(x => x.id === c.payload?.id); return r ? {id: r.id, actor: r.actor, history: r.history} : null; }},
     'synthetic.confirm': {apply: applySynthetic, person: true}
+  },
+  // The package's tracker (ruling D4): called after the built-in trackers for every command and for each inner
+  // command of a batch, a built-in one too. It writes nothing for a document without the package's records. For its
+  // own save it journals the change; for any command it keeps a tally in its own container; and when a built-in
+  // retirement leaves the design it journals that its records were read again, in the same commit.
+  track(prior, next, command, at) {
+    if (!syn(next).length) return;
+    const event = (r, fields) => next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, fields, items: []});
+    (next.synthetic.tracked ??= []).push(command.type);
+    if (command.type === 'synthetic.save') { const r = syn(next).find(x => x.id === (command.payload?.id || syn(next).at(-1)?.id)); if (r) event(r, [{key: 'title', label: 'Title', before: syn(prior).find(x => x.id === r.id)?.title ?? null, after: r.title}]); }
+    if (command.type === 'record.retire' && syn(prior).length === syn(next).length) event(syn(next)[0], [{key: 'readAgain', label: 'Read again after a retirement', before: null, after: String(command.payload?.id)}]);
   },
   lifecycle: {'synthetic.records': 3},
   provenance: {nouns: {'synthetic.records': 'synthetic record'}, paths: {synthetic: ['synthetic.records']}},
@@ -530,6 +538,44 @@ await block('D3 workbench keys', async () => {
   // a package's own key, and a new key of a chapter's container or of the knowledge workspace, stay allowed
   assert.deepEqual(boundary.extensionIssues({id: 'xy', lifecycle: {'runtime.nodes': 10, 'technology.domains': 6, 'adoptions.records': 3}, provenance: {records: {'knowledge.concepts': 11, 'workloads.models': 2}}, designKeys: ['adoptions', 'runtime.nodes', 'knowledge.concepts'], evidenceKeys: ['runtime.nodeEvidence', 'knowledge.library', 'adoptions.observations', 'workloadMigration']}), []);
   pass('D3: one statement of the keys the workbench itself writes holds every key of the ' + templates.length + ' templates and of a document after the command families that make a container; a lifecycle path, a provenance.records path or an evidence key on such a key is refused at start; a new key of a chapter container stays allowed');
+});
+
+// ---------------------------------------------------------------- D4. a package's tracker, for every commit
+await block('D4 tracker', async () => {
+  need();
+  const h = await harness(), {send} = h, d = () => h.state.document, invariant = async title => { const r = await send('interfaces.invariant', {title, condition: 'For every posting, debits equal credits.', kind: 'balance', dataIds: [d().interfaces.data[0].id], contractIds: [d().interfaces.contracts[0].id], check: 'Reconcile at the end of each day.', owner: 'Finance operations'}); assert.equal(r.status, 200, r.error); return d().interfaces.invariants.at(-1).id; };
+  try {
+    // a document without the package's records: the tracker writes nothing, whatever the command
+    const first = await invariant('Before any synthetic record');
+    assert.equal((await send('record.retire', {id: first, reason: 'No synthetic record yet.'})).status, 200);
+    assert.ok(!('synthetic' in d()), 'no key of the package exists'); assert.ok(!d().changes.events.some(e => e.source?.kind === 'synthetic'), 'and no event of its');
+    // its own command, sent on its own
+    assert.equal((await send('synthetic.save', {title: 'Tracked'})).status, 200);
+    assert.deepEqual(d().synthetic.tracked, ['synthetic.save']); assert.equal(d().changes.events.at(-1).source.kind, 'synthetic');
+    // a built-in command: the tracker is called after the built-in trackers, what it writes is in the same commit and is journalled
+    const second = await invariant('While a synthetic record exists'), revision = h.state.revision, events = d().changes.events.length;
+    assert.equal(d().synthetic.tracked.at(-1), 'interfaces.invariant', 'a built-in save reaches the package\'s tracker');
+    const retired = await send('record.retire', {id: second, reason: 'A built-in retirement the package reads.'}); assert.equal(retired.status, 200, retired.error);
+    assert.equal(h.state.revision, revision + 1, 'one commit'); assert.equal(d().synthetic.tracked.at(-1), 'record.retire', 'a built-in retirement reaches it');
+    const added = d().changes.events.slice(events), mine = added.filter(e => e.source?.kind === 'synthetic');
+    assert.equal(mine.length, 1, 'its event is in that commit\'s journal'); assert.equal(added.at(-1), mine[0], 'after what the built-in trackers wrote'); assert.equal(mine[0].fields[0].after, second);
+    assert.deepEqual([mine[0].actor, mine[0].authorKind, mine[0].reviewed], [A, 'person', true], 'stamped by the boundary with who and of what kind');
+    const activity = JSON.stringify(await (await h.api('/api/activity' + h.q)).json()); assert.ok(activity.includes(mine[0].id), 'the activity row of the commit names the change');
+    // a batch: the batch itself and each inner command, the built-in ones too
+    { const commands = [{type: 'decision.save', payload: {...d().decisions.records[0], title: d().decisions.records[0].title + ' (tracked)'}}, {type: 'synthetic.save', payload: {title: 'Tracked in a batch'}}], n = d().synthetic.tracked.length;
+      const batch = await send('workspace.apply', {commands, stamp: previewWorkingChange(d(), commands).stamp, reviewed: true, reason: 'A batch the tracker reads.'}); assert.equal(batch.status, 200, batch.error);
+      assert.deepEqual(d().synthetic.tracked.slice(n), ['workspace.apply', 'decision.save', 'synthetic.save']); }
+    // a merge, and a step of the knowledge family
+    { const commands = [{type: 'decision.save', payload: {...d().decisions.records[0], title: d().decisions.records[0].title + ' (merged)'}}];
+      assert.equal((await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'For the tracker.'})).status, 200);
+      const a = d().workbench.alternatives.at(-1), merged = await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged for the tracker.'}); assert.equal(merged.status, 200, merged.error);
+      assert.deepEqual(d().synthetic.tracked.slice(-2), ['workspace.alternative', 'workspace.merge']); }
+    assert.equal((await send('guide.start', {chapter: 1})).status, 200); assert.equal(d().synthetic.tracked.at(-1), 'guide.start');
+  } finally { h.close(); }
+  // one way: the tracker is the package's, not a command's
+  assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.save': {apply() {}, track() {}}}}).some(i => /“track” is not a part of a command/.test(i)), 'a tracker is stated once, by the package');
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', track() {}}), []); assert.ok(boundary.extensionIssues({id: 'xy', track: true}).some(i => /track is a function/.test(i)));
+  pass('D4: the package\'s tracker is called after the built-in trackers for every command (its own, a built-in save, record.retire, workspace.merge, a guide step) and for each inner command of a batch; what it writes is in the same commit, journalled and stamped; it writes nothing for a document without the package\'s records');
 });
 
 // ---------------------------------------------------------------- 3. checks and readiness

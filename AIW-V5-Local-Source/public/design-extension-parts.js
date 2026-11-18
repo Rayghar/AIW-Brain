@@ -101,9 +101,9 @@ export function packageCollections() {
 // An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
 const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
-const PARTS = new Set(['id', 'objectTypes', 'records', 'layers', 'hops', 'checks', 'commands', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
+const PARTS = new Set(['id', 'objectTypes', 'records', 'layers', 'hops', 'checks', 'commands', 'track', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
 const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
-const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'track', 'large']);
+const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'large']);
 const LEVELS = new Set(Object.values(OBJECT_TYPES).map(t => t.level));
 const DOCUMENTS = new Set(['registers', 'sdd', 'ars', ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => 'chapter-' + n)]);
 // Whether the design fingerprint reads a key as design, asked of the fingerprint itself (review-domain.js).
@@ -172,8 +172,10 @@ export function extensionIssues(e) {
     else if (c.second && ![type, type.split('.')[0]].some(k => list(plain(e.provenance?.paths) ? e.provenance.paths[k] : null).length)) say(name + ' is a second person\'s step: the package states provenance.paths for the type or its prefix (the collection of the records it acts on), so that the boundary can read who stands behind each.');
     if (c.undo !== undefined && !(plain(c.undo) && fn(c.undo.previous) && fn(c.undo.revert))) say(name + ': undo states previous(p, command) and revert(p, previous, at, actor).');
     if (c.undo && c.staged) say(name + ' is staged: a staged change is undone by its batch, not by a receipt.');
-    for (const k of ['validate', 'track']) if (c[k] !== undefined && !fn(c[k])) say(name + ': ' + k + ' is a function.');
+    if (c.validate !== undefined && !fn(c.validate)) say(name + ': validate is a function.');
   }
+  // The package's tracker (ruling D4): one for the package, called for every commit; a command states none of its own.
+  if (e.track !== undefined && !fn(e.track)) say('track is a function (prior, next, command, at): the package\'s tracker, called for every command.');
   // lifecycle and provenance
   if (e.lifecycle !== undefined && !plain(e.lifecycle)) say('lifecycle is {path: chapter}.');
   for (const [path, chapter] of Object.entries(plain(e.lifecycle) ? e.lifecycle : {})) {

@@ -115,10 +115,15 @@ export function extensionHandler(type) {
 export function validateExtensions(p, command, context) {
   for (const c of innerCommands(command)) { if (c === command) continue; const refusal = extensionCommand(c?.type)?.validate?.(p, c, context); if (refusal) throw Error(String(refusal)); }
 }
-// The change events of a package's command, and of its types inside a reviewed batch (worker.js trackCommandChanges).
+// The packages' trackers (ruling D4; worker.js trackCommandChanges calls this after the built-in trackers): each
+// package's track(prior, next, command, at), in the packages' id order, for the command of the commit, a built-in one
+// too, and then for each command it carries (a reviewed batch's, an applied impact's: provenance.js innerCommands). A
+// tracker writes nothing for a document without its package's records. What it writes into `next` is part of the same
+// commit: the events it adds to next.changes.events are journalled and stamped with who, of what kind and why, as the
+// built-in trackers' are, and listed in the commit's activity row.
 export function trackExtensions(prior, next, command, at) {
-  const inner = command?.type === 'workspace.apply' && Array.isArray(command.payload?.commands) ? command.payload.commands : [];
-  for (const c of [command, ...inner]) extensionCommand(c?.type)?.track?.(prior, next, c, at);
+  const inner = innerCommands(command);
+  for (const c of inner.includes(command) ? inner : [command, ...inner]) for (const e of EXTENSIONS) if (typeof e.track === 'function') e.track(prior, next, c, at);
 }
 // Whether a request of this type may be large (worker.js, beside LARGE_COMMAND_PREFIXES).
 export const extensionLarge = type => extensionCommand(type)?.large === true;
