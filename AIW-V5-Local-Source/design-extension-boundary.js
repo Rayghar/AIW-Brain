@@ -32,12 +32,11 @@ import {EXTENSIONS} from './public/design-extensions.js';
 import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
-import {COLLECTIONS} from './public/record-lifecycle.js';
 import {innerCommands, listAt, reviewOf} from './public/provenance.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE} from './public/design-extension-parts.js';
-export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts} from './public/design-extension-parts.js';
+export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, workbenchKey, packageCollections} from './public/design-extension-parts.js';
 
 // The built-in handler of a type, as worker.js resolves it: a function, or true for a type the Worker handles itself.
 let builtInHandler = null;
@@ -128,22 +127,13 @@ export const extensionLarge = type => extensionCommand(type)?.large === true;
 registerReviewTypes(type => { const c = extensionCommand(type); return !!c && !!(c.person || c.second); });
 registerUndoExtensions(type => { const c = extensionCommand(type); return c?.undo && !c.staged ? c.undo : null; });
 
-// The keys the workbench itself keeps, read from the documents it makes (a blank project and the reference, as a read
-// completes them) and from the built-in collections: a package leaves only its own keys out of the design
-// (evidenceKeys), never one of these, or a change to a requirement would no longer move the design fingerprint.
-let made = null;
-function builtInKey(key) {
-  made ??= ['blank', 'bank-payment'].map(template => withFinalReview(createProject({name: 'Probe', template}, 'probe', PROBE_AT)));
-  const [a, b] = String(key).split('.'), stated = path => EXTENSIONS.some(e => e.lifecycle && Object.hasOwn(e.lifecycle, path));
-  return made.some(p => (b ? !!p[a] && typeof p[a] === 'object' && b in p[a] : a in p)) || COLLECTIONS.some(([path]) => !stated(path) && (path === key || !b && path.split('.')[0] === a));
-}
-// What a package states that the contract does not allow (public/design-extension-parts.js), with the command types a
-// built-in handler takes and the built-in keys it would leave out of the design; and the check the server makes when it
-// starts: a package that does not conform stops it.
+// What a package states that the contract does not allow (public/design-extension-parts.js, which also refuses a
+// lifecycle path, a provenance.records path and an evidence key on a key the workbench itself writes: its one
+// statement of those keys, WORKBENCH_KEYS, ruling D3), with the command types a built-in handler takes; and the check
+// the server makes when it starts: a package that does not conform stops it.
 export function extensionIssues(e) {
   const out = partIssues(e), name = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/.test(String(e?.id || '')) ? e.id : 'A design package';
   for (const type of Object.keys(e?.commands && typeof e.commands === 'object' ? e.commands : {})) if (COMMAND_TYPE.test(type) && builtInType(type)) out.push(name + ': command “' + type + '” is built in; it stays the chapter\'s own.');
-  for (const key of Array.isArray(e?.evidenceKeys) ? e.evidenceKeys : []) if (typeof key === 'string' && builtInKey(key)) out.push(name + ': evidence key “' + key + '” is a key the workbench keeps: a package leaves only its own keys out of the design.');
   return out;
 }
 export function assertExtensions() {

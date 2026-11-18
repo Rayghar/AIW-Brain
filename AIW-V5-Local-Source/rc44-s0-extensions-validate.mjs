@@ -40,7 +40,9 @@ import {architectureMarkdown} from './public/sdd-architecture.js';
 import {isReviewCommand} from './authorship.js';
 import {documentCopy, isSettled} from './public/document-memo.js';
 import {createProjectStore} from './public/project-store.js';
-import {previewWorkingChange} from './public/workbench-domain.js';
+import {previewWorkingChange, previewScenarioAlternative, rebaseWorkingAlternative} from './public/workbench-domain.js';
+import {createProject} from './shared/projects-domain.js';
+import {REFERENCE_PROJECTS} from './public/reference-projects.js';
 
 // Read through the namespace, so that the file links against the baseline too and each case fails there on its own.
 const {applyCanonical, applyRecordCommand, STAGED_COMMANDS, reviewsOnItsOwn} = canonical, stagedBy = type => canonical.stagedBy(type);
@@ -491,6 +493,43 @@ await block('D1 two persons', async () => {
   assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {xy: ['xy.records']}}}), []);
   assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {'xy.accept': ['xy.records']}}}), []);
   pass('D1: a second person\'s step is refused, in words that fit any package, while no person other than the actor stands behind the record as it stands (written by an agent account, drafted by Sol, rewritten by an agent, imported, restored from elsewhere), and is taken once a second person has saved or confirmed it; a projection is read against the stored record\'s stamp; a second type states provenance.paths');
+});
+
+// ---------------------------------------------------------------- D3. the keys the workbench itself writes
+await block('D3 workbench keys', async () => {
+  need();
+  const K = boundary.WORKBENCH_KEYS; assert.ok(K && Object.isFrozen(K), 'one statement of the keys the workbench itself writes (design-extension-parts.js WORKBENCH_KEYS)');
+  // every key of a document is in the statement: a top-level key, and each key of a container a package may add to
+  const hold = (p, what) => { for (const [k, v] of Object.entries(p)) { assert.ok(Object.hasOwn(K, k), what + ': the statement names the key “' + k + '”'); if (K[k] && v && typeof v === 'object' && !Array.isArray(v)) for (const b of Object.keys(v)) assert.ok(K[k].includes(b), what + ': the statement names “' + k + '.' + b + '”'); } };
+  const templates = ['blank', 'bank-payment', ...REFERENCE_PROJECTS.map(r => r.id)];
+  assert.ok(templates.length >= 7, 'every template: ' + templates.join(', '));
+  for (const t of templates) hold(withFinalReview(createProject({name: t, template: t}, t, AT)), 'template ' + t);
+  hold(withFinalReview(createProject({name: 'From a brief', template: 'blank', brief: 'Customers pay invoices online within two seconds. The system keeps an audit trail of every payment.'}, 'from-a-brief', AT, {briefHash: 'a'.repeat(64)})), 'a blank project from a brief');
+  // and of a document after the built-in command families that make a container the first time they write
+  const h = await harness(), d = () => h.state.document, ok = async (type, payload, extra) => { const r = await h.send(type, payload, A, extra); assert.equal(r.status, 200, type + ': ' + r.error); };
+  try {
+    await ok('guide.start', {chapter: 1});
+    await ok('interfaces.invariant', {title: 'Postings balance', condition: 'For every posting, debits equal credits.', kind: 'balance', dataIds: [d().interfaces.data[0].id], contractIds: [d().interfaces.contracts[0].id], check: 'Reconcile debits and credits at the end of each day.', owner: 'Finance operations'});
+    await ok('review.action', {title: 'Rehearse the cut-over', owner: 'Delivery lead', due: '2027-12-01', acceptance: 'A rehearsal record signed by the delivery lead.', objectIds: ['REQ-001'], status: 'Planned'});
+    await ok('requirements.group', {title: 'Payment entry', kind: 'module', memberIds: ['REQ-001', 'REQ-002']});
+    await ok('lens.choose', {lensId: 'core-banking', reason: 'A bank.'});
+    await ok('record.retire', {id: d().interfaces.invariants.at(-1).id, reason: 'Retired for the key statement.'});
+    { const commands = [{type: 'decision.save', payload: {...d().decisions.records[0], title: d().decisions.records[0].title + ' (alternative)'}}];
+      await ok('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'For the key statement.'});
+      const a = d().workbench.alternatives.at(-1); await ok('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged for the key statement.'}); }
+    await h.read(); for (const key of ['guidance', 'requirementGroups', 'retired', 'workbench']) assert.ok(key in d(), 'the walk made “' + key + '”'); assert.ok(d().interfaces.invariants && d().workspace.domainLens);
+    hold(d(), 'after the built-in command families');
+  } finally { h.close(); }
+  // a path on such a key is refused at start, as a lifecycle collection and as a collection of the provenance reader
+  for (const path of ['changes.events', 'retired.records', 'finalReview.baselines', 'finalReview.dispositions', 'finalReview.actions', 'finalReview.reviews', 'workbench.history', 'workbench.alternatives', 'knowledge.claims', 'coauthoring.sources', 'assurance.records', 'security.risks', 'runtime.evidence', 'roadmap.plateaus', 'intake.datasets', 'workspace.members', 'evidence.sources', 'workspace.packages', 'artefacts', 'decisions.records', 'modelAlternatives']) {
+    assert.ok(boundary.extensionIssues({id: 'xy', lifecycle: {[path]: 3}}).some(i => i.includes('collection “' + path + '” is on a key the workbench itself writes')), path + ' is no lifecycle collection of a package');
+    assert.ok(boundary.extensionIssues({id: 'xy', provenance: {records: {[path]: 3}}}).some(i => i.includes('collection “' + path + '” is on a key the workbench itself writes')), path + ' is no collection a package states for the provenance reader');
+  }
+  // and as an evidence key: it stays in the design
+  for (const key of ['brief.interpreted', 'retired', 'modelContext', 'knowledge', 'intake', 'workspace.governance', 'workspace.packages', 'quality.drivers', 'runtime.evidence', 'finalReview.objectives', 'changes.things', 'dataOwnership', 'readingsDefinition', 'knowledge.claims', 'interfaces.specifications']) assert.ok(boundary.extensionIssues({id: 'xy', evidenceKeys: [key]}).some(i => i.includes('evidence key “' + key + '” is a key the workbench keeps')), key + ' stays in the design');
+  // a package's own key, and a new key of a chapter's container or of the knowledge workspace, stay allowed
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', lifecycle: {'runtime.nodes': 10, 'technology.domains': 6, 'adoptions.records': 3}, provenance: {records: {'knowledge.concepts': 11, 'workloads.models': 2}}, designKeys: ['adoptions', 'runtime.nodes', 'knowledge.concepts'], evidenceKeys: ['runtime.nodeEvidence', 'knowledge.library', 'adoptions.observations', 'workloadMigration']}), []);
+  pass('D3: one statement of the keys the workbench itself writes holds every key of the ' + templates.length + ' templates and of a document after the command families that make a container; a lifecycle path, a provenance.records path or an evidence key on such a key is refused at start; a new key of a chapter container stays allowed');
 });
 
 // ---------------------------------------------------------------- 3. checks and readiness

@@ -57,6 +57,46 @@ export function placeSections(document, markdown, p) {
   return lines ? lines.join('\n') : markdown;
 }
 
+// ---------------------------------------------------------------- the keys the workbench itself writes
+// One statement of them (the lead's ruling D3 of 2026-11-18), for the conformance check and for every reader that must
+// tell a package's collection from a built-in one: the keys of a project document that the workbench's own code writes.
+// A key that stands with null is the workbench's whole: no package states a path on it or under it (the journal, the
+// retired store, the review, the workbench's alternatives, the workspace, the brief, …). A key that stands with a list
+// is a container a package may add a key of its own to (a chapter's container, and the knowledge workspace): the list
+// names the keys of it the workbench writes, and only those are taken. The last three are no keys of a document: they
+// are the names the design fingerprint gives its own readings (review-domain.js reviewSource), which a package's key
+// would collide with. rc44-s0-extensions-validate.mjs (case D3) holds the statement against every key of every
+// template and of a document after the command families that make a container the first time they write; a slice
+// that makes the workbench write a new key adds it here.
+const keys = text => Object.freeze(('schemaVersion version counters intake review handoff ' + text).split(' '));
+export const WORKBENCH_KEYS = Object.freeze({
+  schemaVersion: null, id: null, name: null, contentVersion: null, counters: null, brief: null, artefacts: null, relationships: null, explorer: null, review: null, handoff: null,
+  changes: null, coauthoring: null, finalReview: null, roadmap: null, workspace: null, workbench: null, processModel: null, requirementGroups: null, retired: null, assurance: null, intake: null,
+  guidance: null, modelAlternatives: null, modelContext: null, modelIdentity: null, model: null, dataOwnership: null, readingsDefinition: null,
+  requirementsStorage: null, storageRetained: null, historyLogs: null, caseExtensions: null, interfaceExtensions: null, collaborationEvidence: null,
+  quality: keys('drivers conflicts measurements'), decisions: keys('records conflicts'),
+  logical: keys('responsibilities groups connections mappings assets scenarios'), realisation: keys('components connections scenarios'),
+  technology: keys('capabilities needs mappings dependencies boundaries applicationBoundaries knownApplications simulations asWritten'), technologyRealisation: keys('records mappings connections'),
+  interfaces: keys('contracts data lineage parties checks knownData invariants specifications schemaChecks fieldLineage'),
+  security: keys('assuranceVersion controls threats evidence risks governance simulations designTasks'), runtime: keys('evidenceVersion environments zones plans placements paths evidence simulations'),
+  knowledge: keys('counter sources suggestions claims contradictions releases pins withdrawals links history organizationReleases repositorySync guide storageKey stewardship tactics note'),
+  evidence: null, guidedDesign: null, coauthoredNarratives: null
+});
+// Whether a path (a key of the document, or container.key) is on a key the workbench itself writes.
+export function workbenchKey(path) {
+  const [a, b] = String(path).split('.');
+  return Object.hasOwn(WORKBENCH_KEYS, a) && (!b || !WORKBENCH_KEYS[a] || WORKBENCH_KEYS[a].includes(b));
+}
+// The collections the registered packages state as their own, [path, chapter, package id] in the packages' id order:
+// the lifecycle rows and then the rows stated for the provenance reader alone, each path once (the first package by
+// id keeps it) and never one on a key the workbench itself writes. What reads the packages' records beside the
+// built-in ones without a table of its own reads this (sdd-architecture.js).
+export function packageCollections() {
+  const out = [], seen = new Set();
+  for (const part of [e => e.lifecycle, e => e.provenance?.records]) for (const e of EXTENSIONS) for (const [path, chapter] of Object.entries(plain(part(e)) ? part(e) : {})) if (!seen.has(path) && !workbenchKey(path)) { seen.add(path); out.push([path, chapter, e.id]); }
+  return out;
+}
+
 // ---------------------------------------------------------------- the conformance check
 // An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
 const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
@@ -140,6 +180,7 @@ export function extensionIssues(e) {
     if (!PATH.test(path) || !(Number.isInteger(chapter) && chapter >= 1 && chapter <= 10)) say('collection “' + path + '” is a key of the document or chapter.list, with its chapter from 1 to 10.');
     const row = COLLECTIONS.find(r => r[0] === path);
     if (row && !(mine && mine.lifecycle?.[path] === row[1])) say('collection “' + path + '” is built in or another package\'s; it stays as it is.');
+    if (workbenchKey(path)) say('collection “' + path + '” is on a key the workbench itself writes: a package\'s records retire from the package\'s own collection.');
   }
   const pv = e.provenance;
   if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths' || k === 'records') && ['nouns', 'paths', 'records'].every(k => pv[k] === undefined || plain(pv[k])))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}, records: {path: chapter}}.');
@@ -147,6 +188,7 @@ export function extensionIssues(e) {
     if (!PATH.test(path) || !(Number.isInteger(chapter) && chapter >= 1 && chapter <= 11)) say('collection “' + path + '” is a key of the document or chapter.list, with its chapter from 1 to 11.');
     const row = RECORD_PATHS.find(r => r[0] === path);
     if (path === 'logical.assets' || row && !(mine && mine.provenance?.records?.[path] === row[1] && !COLLECTIONS.some(r => r[0] === path))) say('collection “' + path + '” is read by the provenance reader already (built in, a lifecycle collection or another package\'s); it stays as it is.');
+    if (workbenchKey(path)) say('collection “' + path + '” is on a key the workbench itself writes: the provenance reader reads a package\'s own collection for it.');
   }
   for (const [path, noun] of Object.entries(plain(pv?.nouns) ? pv.nouns : {})) {
     if (typeof noun !== 'string' || !noun) say('the noun of “' + path + '” is a word.');
@@ -158,6 +200,9 @@ export function extensionIssues(e) {
     if (e[part] !== undefined && !Array.isArray(e[part])) say(part + ' is a list of keys.');
     for (const k of list(e[part])) if (typeof k !== 'string' || !PATH.test(k)) say(part + ': “' + k + '” is a key of the document or chapter.key.');
   }
+  // A package leaves only its own keys out of the design: never a key the workbench itself writes, or a change to a
+  // requirement, a brief or a driver would no longer move the design fingerprint.
+  for (const k of list(e.evidenceKeys)) if (typeof k === 'string' && workbenchKey(k)) say('evidence key “' + k + '” is a key the workbench keeps: a package leaves only its own keys out of the design.');
   for (const k of list(e.designKeys)) if (typeof k === 'string' && PATH.test(k)) {
     if (list(e.evidenceKeys).includes(k)) say('“' + k + '” is stated as design and as evidence.');
     else if (!fingerprintReads(k)) say('design key “' + k + '” lies where the design fingerprint does not read (review-domain.js reviewSource): it would not move the fingerprint.');
