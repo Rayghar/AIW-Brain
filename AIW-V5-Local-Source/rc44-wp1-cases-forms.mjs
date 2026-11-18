@@ -29,7 +29,14 @@ import {intelligencePacket} from './public/intelligence-context.js';
 import {brainContext} from './public/aiw-brain.js';
 import {realizations, realizationCriteria, selectionGate, selectionState, technologyRealisationFindings} from './public/technology-realisation-domain.js';
 import {productComparison} from './public/product-comparison.js';
-import {arsGate} from './public/ars-document.js';
+import {arsGate, arsMarkdown} from './public/ars-document.js';
+import {recordGraph} from './public/record-graph.js';
+import {architectureBrain, brainSources} from './public/architecture-brain.js';
+import {reasoningPacket, validateReasoningOutput, guardReasoning, settleReasoning, adoptReasoning} from './public/brain-reasoning.js';
+import {stewardshipReading} from './public/knowledge-stewardship.js';
+import {mockAssessment, mockReview} from './mock-llm-provider.mjs';
+import {knowledgeGraph} from './public/knowledge-graph.js';
+import {knowledgeConceptCoverage} from './public/knowledge-coverage.js';
 import {neutraliseImportedAuthority} from './recovery-service.js';
 
 const AT = F.AT, clone = v => structuredClone(v);
@@ -39,6 +46,14 @@ const CONCEPT_REVIEW = {decision: 'verified', reviewer: 'Synthetic second person
 const ctx = f => ({excerpt: F.SYN_P001.slice(f.passage[0] - 1, f.passage[1]).join('\n'), lineStart: f.passage[0]});
 const today = () => new Date().toISOString().slice(0, 10);
 
+// A marker placed everywhere a form claim holds words of its own: its statement, a text of the form, its first condition
+// and its structured unit. Each holds the marker's own text, so one search finds any of them in a reading.
+const FORM_TEXT = {definition: (f, m) => { f.short += m; }, mechanism: (f, m) => { f.steps[0].text += m; }, applicability: (f, m) => { f.useWhen[0].text += m; }, selection: (f, m) => { f.alternatives[0].chooseWhen += m; }, composition: (f, m) => { f.roles[0].responsibility += m; }, calculation: (f, m) => { f.purpose += m; }, verification: (f, m) => { f.scenarios[0].given += m; }, example: (f, m) => { f.scenario += m; }, exercise: (f, m) => { f.items[0].prompt += m; }};
+function marked(payload, mark) {
+  const q = clone(payload); q.statement += ' ' + mark + '-STATEMENT'; FORM_TEXT[q.form.type](q.form, ' ' + mark + '-FORM');
+  if (q.conditions.length) q.conditions[0] += ' ' + mark + '-CONDITION'; if (q.architectureUnit) q.architectureUnit.mechanism += ' ' + mark + '-UNIT';
+  return q;
+}
 // A library project as the commands build it: a source, a draft concept, one claim per form, the forms attached; then,
 // as asked, each form verified by `reviewer`, the concept verified by `reviewer`, the claims released and activated by
 // `releaser`. Every step goes through applyConceptCommand with the commit's author stated.
@@ -47,7 +62,7 @@ async function library({forms = F.FORM_ORDER, verify = false, review = false, re
   const k = (type, payload, actor = 'importer', opts = F.person(actor)) => { const r = CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload}, AT, actor, opts); p = r.document; return r.selected; };
   const sourceId = k('source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001), 'importer', author('importer'));
   const conceptRecordId = k('concept', CONCEPT, 'importer', author('importer')), all = F.p001Forms(), claimIds = {};
-  for (const t of forms) { const payload = F.formClaim(sourceId, 'SYN-P001', all[t]); if (mark) payload.statement += ' ' + mark; claimIds[t] = k('claim', payload, 'importer', author('importer')); }
+  for (const t of forms) claimIds[t] = k('claim', mark ? marked(F.formClaim(sourceId, 'SYN-P001', all[t]), mark) : F.formClaim(sourceId, 'SYN-P001', all[t]), 'importer', author('importer'));
   k('concept', {...CONCEPT, id: conceptRecordId, forms: forms.map(t => ({type: t, claimId: claimIds[t]}))}, 'importer', author('importer'));
   if (verify) for (const t of forms) k('review', {...F.REVIEW, formChecked: true, id: claimIds[t]}, 'reviewer');
   if (review) k('concept-review', {...CONCEPT_REVIEW, id: conceptRecordId}, 'reviewer');
@@ -77,18 +92,38 @@ const BASELINE = {bank: {findings: 'e188b2ccd284a1ab6d7be71b78f989075419b7dfcdcb
 // products for each (what released knowledge says of each option against the criteria), the Chapter 7 conformance
 // findings and the gate of the requirements specification. A finding's `stamp` holds the fingerprint of the whole
 // document (knowledge included, as on rc.10.73.42, where a plain candidate source moves it too), so it is compared apart.
+// They are the 27 readings the adversarial review of this slice compared (ruling B1 of 2026-11-18), each read whole: the
+// checks (1 to 6), the gates and comparisons of a decision (7 to 10), the requirements specification as text (11), what
+// released knowledge offers every reader (12 to 16), the SDD (17), the contextual reading (18), the Brain's context, its
+// knowledge and the sources it cites (19, 20, 25), Sol's packet in three modes (21 to 23; the review asked for a mode
+// "draft", which is not one and throws on any document: "design" is read in its place), the record graph (24), the
+// reasoning packet of a decision (26) and the chapter stamps (27).
+const PROMPT = 'Explain the transactional outbox and when a relay may repeat a notice.';
+const plainJSON = v => JSON.parse(JSON.stringify(v, (_k, x) => x instanceof Map || x instanceof Set ? [...x] : x));
 function designReadings(p) {
-  const requirement = p.artefacts.find(a => a.type === 'requirement').id, packet = intelligencePacket(p, {chapter: 1, objectId: requirement, mode: 'mind', prompt: 'Explain the transactional outbox and when a relay may repeat a notice.'});
-  return {
+  const requirement = p.artefacts.find(a => a.type === 'requirement').id, packet = mode => intelligencePacket(p, {chapter: 1, objectId: requirement, mode, prompt: PROMPT}), context = brainContext(p, {id: requirement, chapter: 1});
+  return plainJSON({
     findings: rv.inheritedFindings(p).map(({stamp: _stamp, ...f}) => f), summaries: rv.chapterSummaries(p), blockers: rv.reviewBlockerCount(p), readiness: sddReadiness(p), coverage: rv.traceCoverage(p), capacity: rv.reviewCapacity(p),
     selectionGates: realizations(p).map(r => ({id: r.id, criteria: realizationCriteria(p, r.id), gate: selectionGate(p, r), state: selectionState(p, r)})), productComparisons: realizations(p).map(r => productComparison(p, r.id)),
-    realisationFindings: technologyRealisationFindings(p).map(({stamp: _stamp, ...f}) => f), specificationGate: arsGate(p),
+    realisationFindings: technologyRealisationFindings(p).map(({stamp: _stamp, ...f}) => f), specificationGate: arsGate(p), specification: arsMarkdown(p),
     released: K.releasedClaims(p), knowledgeFindings: K.knowledgeFindings(p), domain: domainKnowledge(p), structures: knowledgeStructures(p), snapshot: architectureKnowledgeSnapshot(p),
-    sdd: architectureMarkdown(p).markdown, intelligence: architectureIntelligence(p, {id: requirement}), brain: brainContext(p, {id: requirement, chapter: 1}).knowledge,
-    packetSources: packet.sources.map(s => [s.kind, s.objectId, s.ref, s.excerpt])
-  };
+    sdd: architectureMarkdown(p).markdown, intelligence: architectureIntelligence(p, {id: requirement}), brain: context.knowledge, brainContext: context,
+    packetMind: packet('mind'), packetDesign: packet('design'), packetChallenge: packet('challenge'),
+    recordGraph: recordGraph(p), brainSources: brainSources(p, architectureBrain(p, context, {query: PROMPT})), reasoning: reasoningPacket(p, {task: 'decisions', ids: ['M:8:rest']}), chapterStamps: rv.computeChapterStamps(p)
+  });
 }
-const same = (a, b, what) => { for (const key of Object.keys(a)) assert.equal(JSON.stringify(b[key]), JSON.stringify(a[key]), what + ': ' + key + ' moved'); };
+// The knowledge workspace's own lists: what a person who curates knowledge is shown there. They are expected to move.
+const workspaceReadings = p => plainJSON({graph: knowledgeGraph(p), coverage: knowledgeConceptCoverage(p, 'SYN-P001'), history: K.knowledgeMarkdown(p)});
+// Every path at which two readings differ (a list that changed length is one path).
+function moved(a, b, path = '', out = []) {
+  if (JSON.stringify(a) === JSON.stringify(b)) return out;
+  if (a && b && typeof a === 'object' && typeof b === 'object' && Array.isArray(a) === Array.isArray(b) && (!Array.isArray(a) || a.length === b.length)) for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) moved(a[k], b[k], path + '.' + k, out);
+  else out.push(path.slice(1));
+  return out;
+}
+// A design document that holds a library's knowledge anyway, as a recovery or an older library might leave it: written
+// into the document, the library mark not carried over.
+const graft = (design, library) => { const q = clone(design), {library: _mark, ...knowledge} = clone(library.knowledge); q.knowledge = knowledge; return q; };
 
 export const cases = [];
 const add = (name, run) => cases.push({name, run});
@@ -513,42 +548,58 @@ add('S1.9: a released form is checked again on every read: one tampered in the d
 });
 
 // ------------------------------------------------------------------------------------------------ 10
-add('S1.10 (inert candidates): with the nine forms of a concept saved as candidates, then verified, reviewed and released but not active, in the bank-payment reference, no check, eligibility gate of a selection, product comparison, conformance finding, readiness reading, released-knowledge reader, SDD, contextual reading or Sol packet moves, and the marker in them reaches none', async () => {
-  const {KC} = await mods(), bank = F.bankProject(), before = designReadings(bank), frozen = JSON.stringify(bank);
-  // The readings are not empty ones: the reference holds checks, nine technology selections with their criteria and a comparison for each.
+add('S1.10 (inert forms): with the nine forms of a concept held by the bank-payment reference as candidates, then verified, reviewed, released but not active, and released and active, not one of 27 readings of the design moves (the checks, the eligibility gate of each selection, the product comparisons, the conformance findings, readiness, the specification, released knowledge and every reader built on it, the SDD, the contextual reading, the Brain\'s context, Sol\'s packets, the reasoning packet, the record graph, the chapter stamps), and the marker placed in their statement, form, conditions and unit reaches none; what a released, active form does move is named in full', async () => {
+  const {KC} = await mods(), bank = F.bankProject(), before = designReadings(bank), frozen = JSON.stringify(bank), workspace = workspaceReadings(bank);
+  assert.equal(Object.keys(before).length, 27, 'the 27 readings of the review');
+  // The readings are not empty ones: the reference holds checks, nine technology selections with their criteria and a comparison for each, a specification, an SDD, sources for Sol and a record graph.
   assert(before.findings.length > 100 && before.realisationFindings.length > 10 && before.selectionGates.length === 9 && before.selectionGates.every(g => g.criteria.length) && before.productComparisons.every(c => c && c.options.length) && before.specificationGate, 'the reference offers every reading compared here');
-  // As on rc.10.73.42, any knowledge write moves the whole-document fingerprint (a plain candidate source does): shown, not hidden.
+  assert(before.specification.length > 1000 && before.sdd.length > 10000 && before.structures.records.length > 100 && before.brain.length > 0 && before.brainSources.length > 0 && Object.keys(before.chapterStamps).length >= 10 && JSON.stringify(before.recordGraph).length > 10000, 'and none of them is an empty reading');
+  for (const key of ['packetMind', 'packetDesign', 'packetChallenge', 'reasoning']) assert(before[key].sources.length > 0, key + ' holds sources');
+  // As on rc.10.73.42, any knowledge write moves the stamp of the knowledge state: the Brain's receipt names it and each
+  // of Sol's packets is stamped over that receipt. A plain candidate source through the old entry moves exactly these
+  // seven values and nothing else of the 27; it moves the whole-document fingerprint too. Shown, not hidden.
   const plain = K.applyKnowledgeCommand(bank, {type: 'knowledge.source', payload: F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)}, AT, 'importer').document;
+  const STAMPS = ['brainContext.governed.receipt.knowledgeStamp', ...['packetMind', 'packetDesign', 'packetChallenge'].flatMap(k => [k + '.brainReceipt.knowledgeStamp', k + '.stamp'])].sort();
+  assert.deepEqual(moved(before, designReadings(plain)).sort(), STAMPS, 'what a plain candidate source moves on rc.10.73.42');
   assert.notEqual(rv.designFingerprint(plain), rv.designFingerprint(bank), 'a plain candidate source moves the design fingerprint on rc.10.73.42 already');
-  same(before, designReadings(plain), 'a plain candidate source');
-  for (const [stage, options] of [['candidate', {}], ['every form verified', {verify: true}], ['concept reviewed', {verify: true, review: true}], ['released, not active', {verify: true, review: true, release: true}]]) {
-    const L = await library({...options, base: bank, mark: F.MARKER}), p = L.document, after = designReadings(p);
+  // Once a release is active the same receipt also names it, by its id and its checksum, as it names any active release.
+  const ACTIVE = ['brainContext.governed.receipt.activeReleases', ...['packetMind', 'packetDesign', 'packetChallenge'].map(k => k + '.brainReceipt.activeReleases')];
+  const MARKS = ['-STATEMENT', '-FORM', '-CONDITION', '-UNIT'].map(m => F.MARKER + m);
+  const inert = (stage, p, active) => {
+    const after = designReadings(p);
     assert.equal(p.knowledge.claims.filter(c => c.form).length, 9, stage + ': the nine forms are in the document'); assert.equal(p.knowledge.concepts.length, 1);
-    assert(JSON.stringify(p.knowledge).includes(F.MARKER));
-    same(before, after, stage);
-    assert(!JSON.stringify(after).includes(F.MARKER), stage + ': the marker reached a reading');
-    const requirement = p.artefacts.find(a => a.type === 'requirement').id;
-    assert(!JSON.stringify(intelligencePacket(p, {chapter: 1, objectId: requirement, mode: 'mind', prompt: 'Explain the transactional outbox and when a relay may repeat a notice.'})).includes(F.MARKER), stage + ': the marker reached Sol\'s packet');
-    assert.deepEqual(K.releasedClaims(p), [], stage + ': nothing is released'); assert.deepEqual(KC.releasedConcepts(p), []);
-    assert.deepEqual(KC.conceptDecisionForms(p, 'KU-0001'), []);
-    assert(KC.conceptReading(p, 'SYN-P001').forms.filter(f => f.tier === 'decision').every(f => f.content === null && f.architectureUnit === null), stage + ': the concept reading holds no decision-bearing content');
-    assert.equal(rv.designFingerprint(p) !== rv.designFingerprint(bank), true);
+    for (const m of MARKS) assert(JSON.stringify(p.knowledge).includes(m), stage + ': the document holds ' + m);
+    assert.deepEqual(moved(before, after).sort(), [...STAMPS, ...(active ? ACTIVE : [])].sort(), stage + ': a reading of the design moved');
+    for (const [key, reading] of Object.entries(after)) assert(!JSON.stringify(reading).includes(F.MARKER), stage + ': the marker reached ' + key);
+    assert.deepEqual(K.releasedClaims(p), [], stage + ': no reader of released claims is handed a form'); assert.deepEqual(K.knowledgeFindings(p), []);
+    assert.deepEqual(KC.conceptDecisionForms(p, 'KU-0001'), [], stage + ': and no design record without a pin');
+    assert.notEqual(rv.designFingerprint(p), rv.designFingerprint(bank));
+    return after;
+  };
+  const STAGES = [['candidate', {}], ['every form verified', {verify: true}], ['concept reviewed', {verify: true, review: true}], ['released, not active', {verify: true, review: true, release: true}], ['released and active', {verify: true, review: true, release: true, activate: true}]];
+  for (const [stage, options] of STAGES) {
+    // The document holds them anyway: written into it, as a recovery or an older library might leave it (ruling B2).
+    const L = await library({...options, mark: F.MARKER}), p = graft(bank, L.document), active = !!options.activate;
+    inert(stage, p, active);
+    assert.deepEqual(KC.releasedConcepts(p).length, active ? 1 : 0);
+    if (!active) assert(KC.conceptReading(p, 'SYN-P001').forms.filter(f => f.tier === 'decision').every(f => f.content === null && f.architectureUnit === null), stage + ': the concept reading holds no decision-bearing content');
   }
-  // Released and active, a form is a released claim like any other (verified by a second person, reviewed with its
-  // concept, released and activated by a person): no check, gate, conformance finding or readiness reading moves, and a
-  // receipt carries no form and scores nothing.
-  { const L = await library({verify: true, review: true, release: true, activate: true, base: bank}), p = L.document, after = designReadings(p);
-    assert.equal(K.releasedClaims(p).filter(h => h.eligible && h.claim.form).length, 9);
-    for (const key of ['findings', 'summaries', 'blockers', 'readiness', 'coverage', 'capacity', 'selectionGates', 'realisationFindings', 'specificationGate', 'knowledgeFindings']) assert.equal(JSON.stringify(after[key]), JSON.stringify(before[key]), 'released and active: ' + key + ' moved');
-    for (const h of K.releasedClaims(p)) { const receipt = K.claimReceipt(p, h.claim, h.release); assert(!('form' in receipt)); assert.equal(receipt.scoring, false); }
-    // What does move, said plainly: the applicability form carries a structured architecture unit, and a released claim
-    // with one is offered beside each product option of a comparison, as any released claim is on rc.10.73.42: its
-    // statement and its receipt, which scores nothing, and never its form. Nothing else of a comparison moves.
-    const unmatched = c => JSON.parse(JSON.stringify(c), (k, v) => k === 'matches' ? [] : v), matches = after.productComparisons.flatMap(c => c.C.options.flatMap(o => o.claims.matches));
-    assert.equal(JSON.stringify(after.productComparisons.map(unmatched)), JSON.stringify(before.productComparisons.map(unmatched)), 'released and active: a product comparison moved outside the released claims it offers');
-    assert.deepEqual(before.productComparisons.flatMap(c => c.C.options.flatMap(o => o.claims.matches)), []);
-    assert(matches.length > 0 && matches.every(m => m.claimType === 'applicability' && m.receipt.kind === 'governed-claim' && m.receipt.scoring === false), 'the released applicability claim, by its receipt');
-    assert(!/"(?:form|useWhen|avoidWhen|prerequisites|guaranteeBoundary|quote)":/.test(JSON.stringify(matches)), 'a comparison is handed the claim\'s statement and unit, never the form'); }
+  // What a released, active form does move, in full (ruling B1 and should-fix 1; the same list is in the build notes):
+  { const L = await library({verify: true, review: true, release: true, activate: true, mark: F.MARKER}), p = graft(bank, L.document), release = p.knowledge.releases[0];
+    // 1. the concept readers: the concept, its nine forms with their content, and its forms as an active release holds them;
+    const reading = KC.conceptReading(p, 'SYN-P001'); assert.deepEqual(reading.forms.map(f => [f.type, f.status, !!f.content]), F.FORM_ORDER.map(t => [t, 'released', true]));
+    assert.deepEqual(KC.releasedConcepts(p).map(c => [c.conceptId, c.release.id, c.eligible, c.forms.length]), [['SYN-P001', release.id, true, 9]]);
+    assert.deepEqual(KC.conceptTeachingForms(p, 'SYN-P001').map(f => [f.type, f.status]), [['definition', 'released'], ['mechanism', 'released'], ['example', 'released'], ['exercise', 'released']]);
+    // 2. the knowledge workspace's own lists (its graph of sources and claims and their counts, and its history text, which names the active release);
+    assert.deepEqual([...new Set(moved(workspace, workspaceReadings(p)).map(path => path.split('.').slice(0, 2).join('.')))].sort(), ['graph.counts', 'graph.edges', 'graph.nodes', 'history']);
+    assert.match(K.knowledgeMarkdown(p), new RegExp('Active project releases: ' + release.id));
+    // 3. stamps: the stamp of the knowledge state (in the Brain's receipt and under each packet's stamp), the active release's
+    //    id and checksum in that receipt, and the whole-document fingerprint with what is stamped over it.
+    assert.notEqual(K.knowledgeStamp(p), K.knowledgeStamp(bank)); assert.notEqual(rv.designFingerprint(p), rv.designFingerprint(bank)); assert.notEqual(rv.reviewSourceStamp(p), rv.reviewSourceStamp(bank));
+    assert.deepEqual(brainContext(p, {id: p.artefacts.find(a => a.type === 'requirement').id, chapter: 1}).governed.receipt.activeReleases, [{id: release.id, checksum: release.checksum}]);
+    assert(rv.inheritedFindings(p).some((f, i) => f.stamp !== rv.inheritedFindings(bank)[i].stamp), 'a finding\'s stamp holds the fingerprint');
+    // And nothing else: a claim receipt, should one be made of a form, carries no form and scores nothing.
+    for (const c of release.claims) { const receipt = K.claimReceipt(p, c, release); assert(!('form' in receipt)); assert.equal(receipt.scoring, false); } }
   assert.equal(JSON.stringify(bank), frozen, 'the reference document itself was never changed');
 });
 
@@ -671,4 +722,51 @@ add('S1.15 (review must-fix 1 and 2): a quote is measured as it is matched, with
   valid('composition', f => { f.relations[0].target = {conceptId: 'SYN-P002'}; f.relations[1].target = {alias: {scheme: 'handbook', aliasId: 'SYN-A001'}}; });
   valid('composition', f => { f.relations[1].target = {alias: {scheme: 'aiw-method', aliasId: 'delivery/transactional-outbox'}}; });
   assert.equal(JSON.stringify(L.document), frozen, 'nothing was stored by a refused request');
+});
+
+// ------------------------------------------------------------------------------------------------ 16
+add('S1.16 (ruling B1): a claim that carries a form is read only by the concept readers: the reader of released claims hands none to anyone, a form is linked to no record, the stewards\' reading of a record holds none, and an organisation release pinned in a design project offers its forms through the concept readers alone', async () => {
+  const {KC} = await mods(), L = await library({forms: ['definition', 'applicability'], verify: true, review: true, mark: F.MARKER});
+  // A plain claim beside the two forms. Forms are released apart from plain claims: every reader of released claims is
+  // handed the release as well as the claim, so a release that holds a form is the concept readers' alone.
+  const plain = L.k('claim', {sourceId: L.sourceId, lineStart: 5, lineEnd: 5, subjectId: 'Outbox', predicate: 'stores', statement: 'An outbox stores the notice with the booking.', claimType: 'definition'}, 'importer');
+  L.k('review', {...F.REVIEW, id: plain}, 'reviewer');
+  assert.throws(() => L.k('release', {...F.REVIEW, title: 'Mixed', claimIds: [plain, L.claimIds.definition, L.claimIds.applicability]}, 'releaser'), /A release holds plain claims or the forms of concepts, not both/);
+  const releaseId = L.k('release', {...F.REVIEW, title: 'Synthetic integration concepts 1', claimIds: [L.claimIds.definition, L.claimIds.applicability]}, 'releaser');
+  L.k('activate', {...F.REVIEW, id: releaseId, stamp: K.knowledgeStamp(L.document)}, 'releaser');
+  const plainRelease = L.k('release', {...F.REVIEW, title: 'One plain claim', claimIds: [plain]}, 'releaser');
+  L.k('activate', {...F.REVIEW, id: plainRelease, stamp: K.knowledgeStamp(L.document)}, 'releaser');
+  const p = L.document, requirement = p.artefacts.find(a => a.type === 'requirement').id;
+  assert.deepEqual(p.knowledge.pins, [releaseId, plainRelease], 'both releases are active');
+  assert.deepEqual(K.releasedClaims(p).map(h => [h.release.id, h.claim.id, h.eligible]), [[plainRelease, plain, true]], 'released claims: the plain claim, and no form');
+  assert(!JSON.stringify(K.releasedClaims(p)).includes(F.MARKER), 'neither as a claim nor inside a release handed to a reader');
+  // A release that holds both anyway (written into the document) reaches no reader of released claims, whatever else it holds.
+  { const q = clone(p), r = q.knowledge.releases.find(x => x.id === releaseId); r.claims.push(clone(q.knowledge.claims.find(c => c.id === plain))); r.checksum = digest({...r, checksum: undefined});
+    assert.deepEqual(K.releasedClaims(q).map(h => h.release.id), [plainRelease]); assert.deepEqual(KC.conceptReading(q, 'SYN-P001').forms.map(f => f.status), ['released', 'released']); }
+  assert.deepEqual(KC.conceptReading(p, 'SYN-P001').forms.map(f => [f.type, f.status, !!f.content]), [['definition', 'released', true], ['applicability', 'released', true]], 'the concept readers read them');
+  for (const reading of [knowledgeStructures(p), architectureKnowledgeSnapshot(p), domainKnowledge(p), architectureIntelligence(p, {id: requirement}), brainContext(p, {id: requirement, chapter: 1}), intelligencePacket(p, {chapter: 1, objectId: requirement, mode: 'mind', prompt: PROMPT})]) assert(!JSON.stringify(plainJSON(reading)).includes(F.MARKER), 'a reader built on released claims was handed a form');
+  // A form is linked to no record (a design record relies on one through an active pin: slice S3); a plain claim is linked as before.
+  assert.throws(() => L.k('link', {...F.REVIEW, claimId: L.claimIds.applicability, releaseId, objectId: requirement}, 'architect'), /Choose an eligible claim from an active release/);
+  const linkId = L.k('link', {...F.REVIEW, claimId: plain, releaseId: plainRelease, objectId: requirement}, 'architect'); assert.equal(K.claimReceiptCurrent(L.document, L.document.knowledge.links.find(l => l.id === linkId).receipt), true);
+  // And a link to a form that a document holds anyway is not current support: its record is asked to review it.
+  { const q = clone(L.document), release = q.knowledge.releases.find(x => x.id === releaseId), form = release.claims.find(c => c.form?.type === 'applicability');
+    q.knowledge.links.push({id: 'KL-9999', objectId: requirement, relationship: 'informs', reason: 'Written into the document.', reviewer: 'Nobody', actor: 'architect', at: AT, receipt: K.claimReceipt(q, form, release)});
+    assert.equal(K.claimReceiptCurrent(q, q.knowledge.links.at(-1).receipt), false); assert.deepEqual(K.knowledgeFindings(q).map(f => [f.id, f.title]), [['knowledge:KL-9999', 'Review changed architectural support']]); }
+  // The organisation's copies of the two releases, pinned in a design project: the plain claim is a released claim there, the forms are the concept readers' alone.
+  { const publish = (id, from) => ({...K.organizationKnowledgeRelease(p, from, {organizationId: 'org-synthetic', id, title: 'Synthetic organisation release ' + id, actor: 'releaser', at: AT}), signature: 'synthetic-signature'}), pin = {at: AT, actor: 'architect', reviewer: 'Synthetic second person', reason: 'The design uses the organisation\'s integration concepts.', verified: true};
+    const published = publish('org-release-1', releaseId); assert.equal(published.claims.filter(c => c.form).length, 2, 'the published release carries the forms');
+    const design = K.pinOrganizationKnowledge(K.pinOrganizationKnowledge(F.bankProject(), published, pin).document, publish('org-release-2', plainRelease), pin).document;
+    assert.deepEqual(K.releasedClaims(design).map(h => [h.release.id, h.claim.id, h.eligible, 'form' in h.claim]), [['org-release-2', plain, true, false]]);
+    assert.deepEqual(KC.releasedConcepts(design).map(c => [c.conceptId, c.release.id, c.eligible, c.forms.map(f => f.status)]), [['SYN-P001', 'org-release-1', true, ['released', 'released']]]);
+    const after = designReadings(design); for (const [key, reading] of Object.entries(after)) assert(!JSON.stringify(reading).includes(F.MARKER), 'an organisation release: the marker reached ' + key); }
+  // The stewards' reading of a record lists the project's knowledge on that record, candidates included. A form claim whose
+  // subject is the record's reference (written into the document: no command stores one, ruling B7) is not among it.
+  { const bank = F.bankProject(), packet = reasoningPacket(bank, {task: 'decisions', ids: ['M:8:rest']}), raw = mockAssessment(packet), run = {id: 'run-1', status: 'completed', provider: 'OpenAI', model: 'mock-sol', createdAt: AT, packet, result: settleReasoning(packet, guardReasoning(packet, validateReasoningOutput(raw, packet)), mockReview({candidate: raw}))};
+    const dismissed = adoptReasoning(bank, {itemId: 'M:8:rest', outcome: 'dismissed', reason: 'The channel gateway already enforces this budget.'}, run, AT).document, sa = dismissed.coauthoring.assessments.at(-1);
+    const C = await library({forms: ['definition', 'applicability'], mark: F.MARKER}), q = graft(dismissed, C.document);
+    for (const c of q.knowledge.claims) c.subjectId = 'IF-001';
+    q.knowledge.claims.push({...clone(q.knowledge.claims[0]), id: 'KC-9001', statement: 'A plain candidate claim on the interface.', form: undefined, authoredAs: undefined});
+    const reading = stewardshipReading(q, 'K:' + sa.id); assert(reading, 'the stewards\' reading exists');
+    assert.deepEqual(reading.reading.projectKnowledge, ['KC-9001 (candidate): A plain candidate claim on the interface.'], 'a plain candidate is listed as before; no form is');
+    assert(!JSON.stringify(reading).includes(F.MARKER)); assert(!JSON.stringify(reasoningPacket(q, {task: 'decisions', ids: ['K:' + sa.id]})).includes(F.MARKER), 'nor does Sol\'s packet for the stewards'); }
 });

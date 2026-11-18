@@ -64,9 +64,13 @@ export function knowledgeEligibility(p,claim,release=null){
  if(release&&(!s.pins.includes(release.id)||release.checksum!==(org?organizationReleaseChecksum(release):digest({...release,checksum:undefined}))))reasons.push('This exact release is not active for the project.');
  return {eligible:reasons.length===0,reasons};
 }
-// The project's pinned releases and the organisation releases pinned to it, each claim with its eligibility.
+// The project's pinned releases and the organisation releases pinned to it, each claim with its eligibility. A release
+// that holds a claim carrying a form (rc44, wp1) is not among them in any state: forms are released apart from plain
+// claims and only the concept readers read them (knowledge-concepts.js); a design record relies on one through an
+// active concept pin, never as a released claim. Every reader of released claims is handed the release too, so the
+// whole release is left out, not only its form claims.
 export function releasedClaims(p){
- const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)).flatMap(r=>r.claims.map(c=>({claim:c,release:r,...knowledgeEligibility(p,c,r)})));
+ const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)&&!r.claims.some(c=>c.form)).flatMap(r=>r.claims.map(c=>({claim:c,release:r,...knowledgeEligibility(p,c,r)})));
 }
 export function claimReceipt(p,claim,release){const source=sourceFor(knowledgeState(p),claim,release);return {kind:'governed-claim',claimId:claim.id,releaseId:release.id,releaseHash:release.checksum,claimHash:digest(claim),statement:claim.statement,subjectId:claim.subjectId,sourceId:source.id,sourceHash:source.hash,repository:source.repository,revision:source.revision,path:source.path,lineStart:claim.lineStart,lineEnd:claim.lineEnd,excerptHash:claim.excerptHash,conditions:copy(claim.conditions),limitations:copy(claim.limitations),...(Object.hasOwn(claim,'architectureUnit')?{architectureUnit:copy(claim.architectureUnit)}:{}),review:copy(claim.review),...(isOrganization(release)?{organizationId:release.organizationId,organizationSignature:release.signature}:{}),scoring:false};}
 export function claimReceiptCurrent(p,r){const hit=releasedClaims(p).find(x=>x.release.id===r?.releaseId&&x.claim.id===r?.claimId);return !!hit&&hit.eligible&&digest(hit.claim)===r.claimHash&&hit.release.checksum===r.releaseHash;}

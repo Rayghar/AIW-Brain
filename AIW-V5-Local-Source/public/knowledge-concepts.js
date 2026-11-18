@@ -9,7 +9,7 @@
 // released only, and to a design record only through an active concept pin. Teaching content of a candidate is returned
 // with its label. Nothing in any state other than released is for a check, a gate, a score, a draft or Sol: no module on
 // the route imports this one (rc44-wp1-cases-forms.mjs, S1.14).
-import {knowledgeState,knowledgeEligibility,releasedClaims,claimReceipt,withdrawn} from './knowledge-governance.js';
+import {knowledgeState,knowledgeEligibility,claimReceipt,withdrawn} from './knowledge-governance.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {digest} from './brain-integrity.js';
 import {FORM_TYPES,FORM_TIER,conceptFormIssues} from './concept-form.js';
@@ -18,6 +18,11 @@ import {copy,list} from './util.js';
 const order=type=>FORM_TYPES.indexOf(type);
 const formIssues=claim=>conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart});
 const sourceOf=(s,claim,release)=>release?.organizationId?list(release.sources).find(x=>x.id===claim.sourceId):s.sources.find(x=>x.id===claim.sourceId);
+// The form claims that active releases hold (the project's own and the organisation's), each with its eligibility. This
+// is the one reader of them: releasedClaims hands no form claim to anyone, whatever its state (ruling B1 of 2026-11-18),
+// so no reader of released claims (knowledge structures, the snapshot, the contextual reading, the Brain, Sol's packets,
+// a product comparison, a rationale link) receives one.
+const releasedForms=p=>{const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)).flatMap(r=>r.claims.filter(c=>c?.form).map(c=>({claim:c,release:r,...knowledgeEligibility(p,c,r)})));};
 // The identity of a concept as it stands: its id, title, kind, family and facets, and each form claim exactly as it is
 // (its review included, as claimReceipt hashes a claim). Who stewards it and when it is due are not its identity.
 export function conceptHash(concept,claims){
@@ -62,7 +67,7 @@ const byForm=(a,b)=>order(a.type)-order(b.type)||String(a.claimId).localeCompare
 // release's claims on that subject. A concept is eligible there when each form is released and it has its one definition.
 export function releasedConcepts(p){
  const s=knowledgeState(p),groups=new Map();
- for(const h of releasedClaims(p)){
+ for(const h of releasedForms(p)){
   if(!h.claim?.form||!FORM_TYPES.includes(h.claim.form.type))continue;
   const key=h.release.id+'\n'+h.claim.subjectId;if(!groups.has(key))groups.set(key,{conceptId:h.claim.subjectId,release:h.release,forms:[]});
   groups.get(key).forms.push(formEntry(p,h.claim,h.release));
@@ -73,7 +78,7 @@ export function releasedConcepts(p){
 export function conceptReading(p,conceptId){
  const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),released=releasedConcepts(p).filter(c=>c.conceptId===conceptId);
  if(!concept&&!released.length)return null;
- const hits=releasedClaims(p),forms=[];
+ const hits=releasedForms(p),forms=[];
  for(const f of list(concept?.forms)){
   const hit=hits.find(h=>!h.release.organizationId&&h.claim.id===f.claimId&&h.claim.form),claim=hit?.claim||s.claims.find(c=>c.id===f.claimId);
   if(claim?.form)forms.push(formEntry(p,claim,hit?.release||null));

@@ -160,6 +160,9 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
   // one that was imported or drafted (that one takes a third person). Release parts and versions are slice S3.
   release(p,claims,r,actor){
    const refusal=kindRefusal(author);if(refusal)throw Error(refusal);
+   // Forms are released apart from plain claims: a release that holds a form is read by the concept readers only, and
+   // every reader of released claims is handed the whole release (ruling B1).
+   if(claims.some(c=>!c.form))throw Error('A release holds plain claims or the forms of concepts, not both: release the plain claims in a release of their own.');
    const ids=new Set(claims.map(c=>c.id)),records=conceptRecords(p);
    for(const c of claims.filter(x=>x.form)){
     const concept=records.find(x=>x.conceptId===c.subjectId);
