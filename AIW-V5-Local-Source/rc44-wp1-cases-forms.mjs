@@ -138,6 +138,11 @@ add('S1.2: each of the nine shapes round-trips; an unknown field, an over-limit 
   refused('definition', f => { f.toString = 'hidden'; }, /definition has an unsupported field: toString/);
   refused('applicability', f => { f.useWhen[0] = JSON.parse(JSON.stringify(f.useWhen[0]).replace('{', '{"__proto__":{"reviewed":true},')); }, /applicability\.useWhen\[0\] has an unsupported field: __proto__/);
   for (const type of ['constructor', '__proto__', 'toString', 7, null]) assert.match(CF.conceptFormIssues({type, v: 1}, ctx(all.definition)).join(' '), /Choose a supported form type/);
+  // A value nested more deeply than any form is refused with a sentence, never by exhausting the stack (a form is read again on every read).
+  { let deep = 'x'; for (let i = 0; i < 20000; i++) deep = [deep]; const nest = {}; { let o = nest; for (let i = 0; i < 20000; i++) { o.a = {}; o = o.a; } }
+    refused('definition', f => { f.extra = deep; }, /definition\.extra(?:\[0\])+ is nested more deeply than a form holds/);
+    refused('applicability', f => { f.useWhen[0].text = nest; }, /applicability\.useWhen\[0\]\.text(?:\.a)+ is nested more deeply than a form holds/);
+    refused('applicability', f => { f.useWhen = [deep]; }, /applicability\.useWhen\[0\](?:\[0\])+ is nested more deeply than a form holds/); }
   refused('mechanism', f => { f.steps[0].at = [9, 9]; }, /mechanism\.steps\[0\] cites lines 9.9, outside the passage \(lines 10.13\)/);
   refused('mechanism', f => { f.steps[0].at = [12, 14]; }, /mechanism\.steps\[0\] cites lines 12.14, outside the passage/);
   refused('mechanism', f => { f.steps[0].at = [12, 11]; }, /mechanism\.steps\[0\] names no lines/);

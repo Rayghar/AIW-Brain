@@ -79,13 +79,16 @@ function field(path,key,spec,v,basis,basisWords,out){
   if(!ok)out.push(at+' names a concept id, an alias (scheme and id) or a label.');
  }
 }
-// A form records what its passage says: a key that claims a review, a state or a decision is refused by name, at any depth.
-function reserved(v,path,out){
- if(Array.isArray(v)){v.forEach((x,i)=>reserved(x,path+'['+i+']',out));return;}
- if(!object(v))return;
+// A form records what its passage says: a key that claims a review, a state or a decision is refused by name, at any depth
+// a form has. The deepest thing a form holds is an alias inside a target inside an item of a list (four levels), so a
+// value nested below the sixth is refused here and never walked: a form is read again on every read.
+function reserved(v,path,out,depth=0){
+ if(!Array.isArray(v)&&!object(v))return;
+ if(depth>6){out.push(path+' is nested more deeply than a form holds.');return;}
+ if(Array.isArray(v)){v.forEach((x,i)=>reserved(x,path+'['+i+']',out,depth+1));return;}
  for(const [k,x] of Object.entries(v)){
   if(RESERVED.includes(k)||k==='effect'&&x==='not-applicable')out.push(path+' must not carry "'+k+'": a form records what its passage says and reviews nothing.');
-  else reserved(x,path+'.'+k,out);
+  else reserved(x,path+'.'+k,out,depth+1);
  }
 }
 // An item of a list, or an object the form holds: its fields, its lines inside the passage and its verbatim quote.
