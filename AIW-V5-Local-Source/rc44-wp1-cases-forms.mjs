@@ -489,7 +489,7 @@ add('S1.6: decision-bearing content is returned in state released only (and to a
 
 // ------------------------------------------------------------------------------------------------ 7
 add('S1.7: the project tier refuses the 251st claim and the 101st source with the messages of rc.10.73.42; a library project accepts them; only a person marks a library, and unmarking is refused while the project exceeds the project tier', async () => {
-  const {CC} = await mods(); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.project, {sources: 100, claims: 250, concepts: 100, topics: 100}); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.library, {sources: 300, claims: 1000, concepts: 300, topics: 300});
+  const {CC} = await mods(); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.project, {sources: 100, claims: 250, concepts: 100, topics: 100, history: 2000}); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.library, {sources: 300, claims: 1000, concepts: 300, topics: 300, history: 6000});
   const send = (p, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload}, AT, actor, opts);
   // A project nobody marked, filled to the project tier with plain sources and claims (it holds no concept, topic or form: ruling B2).
   const plain = {sourceId: 'KS-0001', lineStart: 5, lineEnd: 5, subjectId: 'Outbox', predicate: 'stores', statement: 'An outbox stores the notice with the booking.', claimType: 'definition'};
@@ -1076,4 +1076,95 @@ add('S1.24 (ruling B6, should-fix 6): every statement of a decision-bearing form
   // 5. A teaching form keeps one quote for each object and item: nothing more is asked of it.
   for (const t of ['definition', 'mechanism', 'example', 'exercise']) assert.equal(issues(t, () => {}), '', t);
   assert.equal(issues('mechanism', f => { f.steps[0].text += ' Within 30 seconds.'; f.narrative += ' About 5 relays.'; }), '');
+});
+
+// ------------------------------------------------------------------------------------------------ 25
+// One tranche of a handbook as the commands write it, every step through applyConceptCommand: a person marks the library;
+// an import saves, for each concept, its source (one topic of the handbook), its topic row, the concept, nine form claims
+// and their attachment; `reviewer` verifies each form and each concept; `releaser` (a third person: the forms were
+// imported) releases the tranche and activates it. Then the correction rounds: in each, a person corrects one form of
+// every concept (a successor claim, attached in place of the earlier one), `reviewer` verifies the new form and the
+// concept again, and `releaser` releases the whole tranche as the successor of the release before and activates it.
+// `filler` lines lengthen each topic and `extend` lines each passage, to the size of a longer handbook's entries.
+async function tranche({concepts = 60, rounds = 2, filler = 0, extend = 0} = {}) {
+  const {CC} = await mods(); let p = F.blankProject('rc44-wp1-tranche'), commands = 0; const sizes = [], records = [], all = F.p001Forms();
+  const k = (type, payload, actor, opts = F.person(actor)) => { const r = CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload}, AT, actor, opts); p = r.document; commands++; return r.selected; };
+  const characters = () => { const {organizationReleases: _pinned, ...own} = p.knowledge; return JSON.stringify(own).length; }, size = stage => sizes.push([stage, characters()]);
+  const lines = [...F.SYN_P001, ...Array.from({length: filler}, (_, i) => 'Filler line ' + (i + 1) + ' of the synthetic handbook: it gives the topic the weight of a longer entry and says nothing a form reads.')], body = lines.join('\n');
+  for (const f of Object.values(all)) f.passage = [f.passage[0], Math.min(f.passage[1] + extend, lines.length)];
+  k('library', LIBRARY_MARK, 'steward');
+  for (let i = 0; i < concepts; i++) {
+    const conceptId = 'SYN-T' + String(i + 1).padStart(3, '0'), concept = {...CONCEPT, conceptId, title: 'Transactional outbox ' + (i + 1), forms: []}, imported = F.importedBy('importer');
+    const sourceId = k('source', F.sourcePayload(conceptId + ' Transactional outbox', lines), 'importer', imported), id = k('concept', concept, 'importer', imported), claimIds = {};
+    k('topic', {file: 'Synthetic_Integration_Handbook.docx', topicId: conceptId, title: 'Transactional outbox', lineStart: 1, lineEnd: lines.length, sliceSha256: sha256(body), sourceId, declaredKind: 'pattern', intendedUse: 'design-method', conceptId, reason: ''}, 'importer', imported);
+    for (const t of F.FORM_ORDER) claimIds[t] = k('claim', F.formClaim(sourceId, conceptId, all[t]), 'importer', imported);
+    k('concept', {...concept, id, forms: F.FORM_ORDER.map(t => ({type: t, claimId: claimIds[t]}))}, 'importer', imported);
+    records.push({id, concept, sourceId, claimIds});
+  }
+  size('imported');
+  for (const c of records) { for (const t of F.FORM_ORDER) k('review', {...F.REVIEW, formChecked: true, id: c.claimIds[t]}, 'reviewer'); k('concept-review', {...CONCEPT_REVIEW, id: c.id}, 'reviewer'); }
+  size('reviewed');
+  const release = supersedes => { const id = k('release', {...F.REVIEW, title: 'Synthetic tranche ' + (p.knowledge.releases.length + 1), ...(supersedes ? {supersedes} : {}), claimIds: records.flatMap(c => F.FORM_ORDER.map(t => c.claimIds[t]))}, 'releaser'); k('activate', {...F.REVIEW, id, stamp: K.knowledgeStamp(p)}, 'releaser'); return id; };
+  let releaseId = release(null); size('released');
+  for (let round = 1; round <= rounds; round++) {
+    const type = round % 2 ? 'exercise' : 'example';
+    for (const c of records) {
+      c.claimIds[type] = k('claim', F.formClaim(c.sourceId, c.concept.conceptId, all[type]), 'importer');
+      k('concept', {...c.concept, id: c.id, forms: F.FORM_ORDER.map(t => ({type: t, claimId: c.claimIds[t]}))}, 'importer');
+      k('review', {...F.REVIEW, formChecked: true, id: c.claimIds[type]}, 'reviewer'); k('concept-review', {...CONCEPT_REVIEW, id: c.id}, 'reviewer');
+    }
+    releaseId = release(releaseId); size('correction round ' + round);
+  }
+  return {document: p, commands, sizes, releaseId, topicCharacters: body.length, k};
+}
+add('S1.25 (ruling B8, should-fix 11): the history bound is part of the tier; one tranche (60 concepts, nine forms each) is written through the commands with two correction rounds and fits every bound of a library, and the characters it uses are reported against the 8,000,000 of a project\'s knowledge; a bound is reached through the commands; every caller reads the project\'s own tier', async () => {
+  const {CC} = await mods(), {prepareRepositoryPacket} = await import('./repository-packet.js'), BOUND = 8000000, report = [];
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  // 1. The tiers: a project's bounds are those of rc.10.73.42 (its 2,000 history lines among them); a library's are larger.
+  assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS, {project: {sources: 100, claims: 250, concepts: 100, topics: 100, history: 2000}, library: {sources: 300, claims: 1000, concepts: 300, topics: 300, history: 6000}});
+  assert.equal(K.KNOWLEDGE_LIMIT_TIERS, CC.KNOWLEDGE_LIMIT_TIERS, 'one definition of the tiers'); const PROJECT = K.KNOWLEDGE_LIMIT_TIERS.project, LIBRARY = K.KNOWLEDGE_LIMIT_TIERS.library;
+  // 2. A tranche through the commands (the synthetic handbook's topic is about 4,200 characters: the size of an entry of a
+  //    pattern handbook), with two correction rounds: every request is accepted, and every bound of the library holds.
+  const T = await tranche({concepts: 60, rounds: 2}), s = T.document.knowledge, used = Object.fromEntries(T.sizes);
+  assert.equal(K.knowledgeLimits(T.document), LIBRARY);
+  assert.deepEqual({commands: T.commands, history: s.history.length, sources: s.sources.length, topics: s.topics.length, concepts: s.concepts.length, claims: s.claims.length, forms: s.claims.filter(c => c.form).length, releases: s.releases.length, active: s.pins.length, released: s.releases.at(-1).claims.length},
+    {commands: 1867, history: 1867, sources: 60, topics: 60, concepts: 60, claims: 660, forms: 660, releases: 3, active: 1, released: 540});
+  for (const key of ['history', 'sources', 'topics', 'concepts', 'claims']) assert(s[key].length <= LIBRARY[key], key + ' within the library tier');
+  assert(s.claims.length > PROJECT.claims && s.history.length <= LIBRARY.history, 'more claims than a project holds, written through the commands');
+  assert(used['correction round 2'] <= BOUND, 'the tranche, its release and two successor releases fit the storage bound');
+  assert.deepEqual(Object.keys(used), ['imported', 'reviewed', 'released', 'correction round 1', 'correction round 2']); assert(T.sizes.every(([, n], i) => i === 0 || n > T.sizes[i - 1][1]));
+  report.push('60 concepts, nine forms each, topics of ' + T.topicCharacters + ' characters: ' + T.commands + ' commands of ' + LIBRARY.history + '; characters of ' + BOUND + ': ' + T.sizes.map(([stage, n]) => stage + ' ' + n).join(', '));
+  // The history is never trimmed: each command of the tranche is on it, the first as the last.
+  assert.deepEqual([s.history[0].type, s.history.at(-1).type], ['knowledge.library', 'knowledge.activate']);
+  // 3. The same tranche with topics the size of a component profile (about 12,500 characters) and passages some twenty
+  //    lines longer, measured on ten concepts written the same way. Said plainly: sixty of these fit with their first
+  //    release, and not with a successor release of the whole tranche; the largest tranche that fits is stated.
+  { const H = await tranche({concepts: 10, rounds: 2, filler: 70, extend: 22}), per = Object.fromEntries(H.sizes.map(([stage, n]) => [stage, n / 10])), fits = stage => Math.floor(BOUND / per[stage]);
+    assert(H.topicCharacters > 12000 && H.topicCharacters < 13500, 'a topic of about 12,500 characters: ' + H.topicCharacters);
+    assert(60 * per.released < BOUND, 'sixty such concepts fit with their first release'); assert(60 * per['correction round 1'] > BOUND, 'and not with a successor release of all sixty');
+    assert(fits('correction round 2') >= 35 && fits('correction round 2') < 60 && fits('correction round 1') > fits('correction round 2') && fits('released') > 60);
+    report.push('topics of ' + H.topicCharacters + ' characters and longer passages, measured on 10 concepts: characters for each concept ' + H.sizes.map(([stage, n]) => stage + ' ' + Math.round(n / 10)).join(', ') + '; the largest tranche within ' + BOUND + ' characters: ' + fits('released') + ' concepts with the first release, ' + fits('correction round 1') + ' with one successor release, ' + fits('correction round 2') + ' with two'); }
+  // 4. The history bound is reached through the commands. A project is refused its 2,001st knowledge command, as on
+  //    rc.10.73.42; a library takes it, and is refused its 6,001st.
+  { const start = F.legacyWalk(), review = {reviewed: true, reviewer: 'r', reason: 'x', distinguishingContexts: 'x'}, id = start.knowledge.contradictions[0].id;
+    const fill = (doc, to) => { let p = doc; for (let i = p.knowledge.history.length; i < to; i++) p = send(p, 'contradiction', {...review, id, status: i % 2 ? 'open' : 'context-separated'}, 'architect-a').document; return p; };
+    const almost = fill(start, PROJECT.history - 1), full = fill(almost, PROJECT.history); assert.equal(full.knowledge.history.length, 2000);
+    const FULL = {message: 'Export the knowledge history before extending this project further.'}, one = {...review, id, status: 'context-separated'};
+    assert.throws(() => send(full, 'contradiction', one, 'architect-a'), FULL); assert.throws(() => K.applyKnowledgeCommand(full, {type: 'knowledge.contradiction', payload: one}, AT, 'architect-a'), FULL, 'the old entry alike');
+    // A person marks it a library (the mark itself is refused on a full history: the bound is read before the command).
+    const library = fill(send(almost, 'library', LIBRARY_MARK, 'steward').document, PROJECT.history + 1); assert.equal(library.knowledge.history.length, 2001, 'a library writes its 2,001st line');
+    assert.equal(K.applyKnowledgeCommand(library, {type: 'knowledge.contradiction', payload: one}, AT, 'architect-a').document.knowledge.history.length, 2002, 'through the old entry too: every caller reads the project\'s tier');
+    const brim = fill(library, LIBRARY.history); assert.equal(brim.knowledge.history.length, 6000); assert.throws(() => send(brim, 'contradiction', one, 'architect-a'), FULL);
+    assert.deepEqual([brim.knowledge.history[0].type, brim.knowledge.history[1999].type, brim.knowledge.history.at(-1).type], ['knowledge.project-source', 'knowledge.library', 'knowledge.contradiction'], 'nothing was trimmed');
+    report.push('a library\'s history at its bound of ' + LIBRARY.history + ' lines holds ' + JSON.stringify(brim.knowledge.history).length + ' characters'); }
+  // 5. Should-fix 11. The callers that pass no tier of their own (repository fetch and transfer save a source through the
+  //    old entry; the repository packet states the capacity left) read the project's tier: a library is not held to a project's 100 sources there.
+  { const plain = {sourceId: 'KS-0001', lineStart: 5, lineEnd: 5, subjectId: 'Outbox', predicate: 'stores', statement: 'An outbox stores the notice with the booking.', claimType: 'definition'}, source = F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002);
+    const q = clone(send(send(F.blankProject(), 'source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001)).document, 'claim', plain).document); while (q.knowledge.sources.length < 100) q.knowledge.sources.push({...q.knowledge.sources[0], id: 'KS-F' + q.knowledge.sources.length});
+    const old = (doc, type, payload) => K.applyKnowledgeCommand(doc, {type: 'knowledge.' + type, payload}, AT, 'importer');
+    assert.throws(() => old(q, 'source', source), {message: 'This project has reached its source revision limit.'});
+    const lib = send(q, 'library', LIBRARY_MARK, 'steward').document; assert.equal(old(lib, 'source', source).document.knowledge.sources.length, 101, 'the old entry, as repository fetch and transfer call it, reads the library tier');
+    const packet = {schemaVersion: 'aiw-repository-packet-v1', storeId: '0'.repeat(8) + '-' + '0'.repeat(4) + '-' + '0'.repeat(4) + '-' + '0'.repeat(4) + '-' + '0'.repeat(12), tenantId: 'tenant', projectId: q.id, fromCursor: 0, cursor: 0, authority: 'candidate', productionAccepted: false, sources: [], claims: [], notices: [], release: {status: 'blocked', reason: 'Synthetic.'}}, scope = {tenantId: 'tenant', projectId: q.id};
+    assert.deepEqual(prepareRepositoryPacket(q, packet, scope).capacity, {remainingSources: 0, remainingClaims: 249}); assert.deepEqual(prepareRepositoryPacket(lib, packet, scope).capacity, {remainingSources: 200, remainingClaims: 999}, 'the packet reads the tier'); }
+  for (const line of report) console.log('     ' + line);
 });

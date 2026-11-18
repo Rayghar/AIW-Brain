@@ -14,7 +14,7 @@
 // agent, not the author or an editor of any revision) and by the commit's author kind (authorship.js): an agent account,
 // a draft by Sol and a request marked as an import review nothing, and neither does a request that states no author.
 // Saving a concept, a form or a topic reviews nothing: each is a candidate until that review, and reaches no check.
-import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility} from './knowledge-governance.js';
+import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility,KNOWLEDGE_LIMIT_TIERS,knowledgeLimits} from './knowledge-governance.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,conceptFormIssues,conceptFormRecord} from './concept-form.js';
@@ -23,10 +23,9 @@ import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues} fro
 import {digest} from './brain-integrity.js';
 import {list} from './util.js';
 
-// A project's bounds, and a knowledge library's (one tranche of a handbook: about sixty concepts and their forms). The
-// 30 releases and the 8,000,000 characters of a project's knowledge are the same in both; eligibility never reads the tier.
-export const KNOWLEDGE_LIMIT_TIERS=Object.freeze({project:Object.freeze({sources:100,claims:250,concepts:100,topics:100}),library:Object.freeze({sources:300,claims:1000,concepts:300,topics:300})});
-export const knowledgeLimits=p=>KNOWLEDGE_LIMIT_TIERS[knowledgeState(p).library?.enabled===true?'library':'project'];
+// A project's bounds and a knowledge library's are defined once, beside the commands they bound (knowledge-governance.js:
+// sources, claims, concepts, topics and the lines of the history), so that every caller of a knowledge command reads them.
+export {KNOWLEDGE_LIMIT_TIERS,knowledgeLimits};
 export const REVIEW_TRIGGERS=['product-version','platform-contract','contradicting-incident','new-workload','new-threat','region','quota','classification','runtime','recovery-objective'];
 const INTENDED_USES=['foundation','design-method','verification-method','reference','not-imported'],CHANGE_NOTES=['rename','semantic','split','applicability'],FORM_MAX={example:6,exercise:9};
 const TOPIC_FIELDS=['id','file','topicId','title','lineStart','lineEnd','sliceSha256','sourceId','declaredKind','intendedUse','conceptId','reason','reviewer'];

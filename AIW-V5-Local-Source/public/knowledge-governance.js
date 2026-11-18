@@ -19,6 +19,14 @@ const init=p=>p.knowledge||=(copy(knowledgeState(p)));
 const next=(s,prefix)=>prefix+'-'+String(++s.counter).padStart(4,'0');
 export const catalogueRecord=id=>catalogue().records.find(r=>r.id===id);
 export const knowledgeStamp=p=>digest(knowledgeState(p));
+// What a project's knowledge may hold, and what a knowledge library's may (rc44, wp1; knowledge.library marks one): its
+// sources, claims, concepts and topics, and the lines of its history, which is never trimmed. A project's bounds are those
+// of rc.10.73.42. A library holds one tranche of a handbook: sixty concepts of nine forms cost 1,383 commands to import,
+// review and release, and a correction round of every concept 242 more (rc44-wp1-cases-forms.mjs, S1.25). The 30
+// releases and the 8,000,000 characters are the same in both, and the characters bind first: eligibility never reads
+// the tier. Every knowledge command reads the tier of the project it is applied to, whoever calls it.
+export const KNOWLEDGE_LIMIT_TIERS=Object.freeze({project:Object.freeze({sources:100,claims:250,concepts:100,topics:100,history:2000}),library:Object.freeze({sources:300,claims:1000,concepts:300,topics:300,history:6000})});
+export const knowledgeLimits=p=>KNOWLEDGE_LIMIT_TIERS[knowledgeState(p).library?.enabled===true?'library':'project'];
 export function withdrawn(p,refs){return knowledgeState(p).withdrawals.filter(w=>refs.includes(w.targetId));}
 // ---------------------------------------------------------------- organisation knowledge releases (round 12, GR-DOM-09)
 // A project release whose every claim a second person verified can be published once to an organisation
@@ -83,7 +91,7 @@ export function pinOrganizationKnowledge(input,release,{at=new Date().toISOStrin
  const L=ORGANIZATION_KNOWLEDGE_LIMITS;if(release.claims.length>L.claims||release.sources.length>L.sources||JSON.stringify(orgContent(release)).length>L.characters)throw Error('This organisation release is larger than a project can pin ('+L.claims+' claims, '+L.sources+' sources).');
  if(release.checksum!==organizationReleaseChecksum(release))throw Error('The organisation release does not match its checksum.');
  if(!text(reason))throw Error('Say why the project uses this organisation release.');
- const p=copy(input),s=init(p);if(s.history.length>=2000)throw Error('Export the knowledge history before extending this project further.');
+ const p=copy(input),s=init(p);if(s.history.length>=knowledgeLimits(p).history)throw Error('Export the knowledge history before extending this project further.');
  s.organizationReleases=[...list(s.organizationReleases).filter(r=>r.id!==release.id),{...copy(orgContent(release)),checksum:release.checksum,signature:release.signature,assurance:{eligible:true,status:'Verified signed release',signature:release.signature},pinnedAt:at,pinnedBy:actor}];
  if(!s.pins.includes(release.id))s.pins=[...s.pins,release.id];
  s.version++;s.history.push({at,actor,type:'knowledge.organization-pin',id:release.id,reason:text(reason),reviewer:text(reviewer,180)});
@@ -162,11 +170,12 @@ function sourceInput(raw,at,actor,id){
  return {id,title:required(raw.title,'a source title',180),body,hash:sha256(body),url,repository:text(raw.repository,160),revision:required(raw.revision,'the source revision or retrieval date',100),path:required(raw.path,'a file path or document locator',500),license:text(raw.license,500),origin:'recorded-original',acquiredAt:at,actor,...sourceExtras(raw)};
 }
 // The fifth argument is what the command route's wrapper injects (rc44, wp1): `forms`, the form capability (above; it
-// also handles the concept register's own command types), and `limits`, the source and claim bounds of the project's
-// tier. Without it the bounds are a project's (100 sources, 250 claims) and no form is handled.
+// also handles the concept register's own command types). Without it no form is handled. The bounds are those of the
+// project's own tier (KNOWLEDGE_LIMIT_TIERS), read from the document, so every caller is held to the same ones: the
+// wrapper, repository fetch and transfer, repository sync and the import scripts; `limits` states them explicitly.
 export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),actor='local-review',{forms=null,limits=null}={}){
- const p=copy(input),s=init(p),r=command.payload||{},L=limits||{sources:100,claims:250};let selected='';
- if(s.history.length>=2000)throw Error('Export the knowledge history before extending this project further.');
+ const p=copy(input),s=init(p),r=command.payload||{},L=limits||knowledgeLimits(p);let selected='';
+ if(s.history.length>=L.history)throw Error('Export the knowledge history before extending this project further.');
  switch(command.type){
  case 'knowledge.project-source':{
   const original=list(p.coauthoring?.sources).find(x=>x.id===r.sourceId),v=original?.versions?.at(-1);if(!v)throw Error('Choose a saved project source.');

@@ -154,7 +154,7 @@ it; each item has its case first, seen red on `f9d9bdc`, and a WIP commit. Resum
 | 7 | B7: a concept id is not a record reference (by shape, `RECORD_REFERENCE`, or because a record of the project bears it); `calculation.modelKind` is an identifier (should-fix 9) | done | S1.21 (S1.2 adjusted) |
 | 8 | Should-fix 2 (a unit on an applicability form only), 7 (a retired concept is not reviewed), 8 (a run that executed no case fails), 10 (all fifteen pre-existing command types walked, with a baseline taken on 94dbd4f), 1 (the full list of what a released, active form moves, below and asserted) | done | S1.22, S1.23, S1.8, S1.10 |
 | 9 | B6: every statement of a decision-bearing form rests on its own quote (should-fix 6): `quotes: [{field, quote}]`, distinct; a sub-list entry is `{text, quote}`; the number rule per text and for the claim's statement, conditions and limitations | done | S1.24 (fixtures and S1.2, S1.9, S1.15, S1.20 moved to the new shape) |
-| 10 | B8: the history bound is part of the tier (should-fix 11) | | |
+| 10 | B8: the history bound is part of the tier (project 2,000, library 6,000); a tranche is written through the commands and its characters reported; every caller reads the project's own tier (should-fix 11) | done | S1.25 (S1.7 tier shape adjusted) |
 | 11 | B9, B10: text | | |
 
 What item 1 changed, for those who write forms (S4's validator runs the same rules):
