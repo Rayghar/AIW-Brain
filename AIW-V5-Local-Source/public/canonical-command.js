@@ -37,7 +37,12 @@ export const STAGED_COMMANDS=new Set([...BATCHED,'brief','artefact','relationshi
 // Sent on their own, the seven keep the path their pages always gave them (no change review before the save); the
 // workbench asks for a person's change review of a single edit only for the other staged commands, as before.
 export const BATCH_ONLY=new Set(BATCHED);
-export const reviewsOnItsOwn=type=>STAGED_COMMANDS.has(type)&&!BATCH_ONLY.has(type);
+export const reviewsOnItsOwn=type=>stagedBy(type)!==undefined&&!BATCH_ONLY.has(type);
+// Whether a type may be staged, and by whom it is applied (rc44, slice S0): false for a type staged here, which is never
+// a design package's; the command the first package by id states for it (design-extensions.js), where that command says
+// it is a design edit (staged) and is neither a person-only nor a second-person step; undefined for any other type. The
+// staged path below, a single edit's review (reviewsOnItsOwn) and the workbench's change review (workbench-ui.js) read it.
+export const stagedBy=type=>!STAGED_COMMANDS.has(type)&&[EXTENSIONS.map(e=>e.commands?.[type]).find(c=>c)].find(c=>c?.staged&&!c.person&&!c.second);
 export const LIFECYCLE_RULES=Object.freeze({...TECHNOLOGY_LIFECYCLE,...INTERFACES_LIFECYCLE,...RUNTIME_LIFECYCLE});
 export const applyRecordCommand=(input,command,at=new Date().toISOString(),actor='')=>applyRecordLifecycleCommand(input,command,at,actor,LIFECYCLE_RULES);
 // The per-chapter commands round 12 first gave AIW's proposals (D2) and retired for the one family (GR-GOV-23). Nothing
@@ -56,9 +61,8 @@ export function migrateCommand(command){
 export function applyCanonical(input,raw,at=new Date().toISOString(),actor=''){
  // A group link sent by a legacy GRP id is stored as the RG id it reads as (round 12, GR-REQ-18).
  const command=resolveGroupAliases(input,migrateCommand(raw));
- // A design package's command (rc44, slice S0: design-extensions.js) is staged when it says so and is neither a
- // person-only nor a second-person step; a type staged here is never a package's.
- const type=command?.type,x=!STAGED_COMMANDS.has(type)&&EXTENSIONS.map(e=>e.commands?.[type]).find(c=>c?.staged&&!c.person&&!c.second);
+ // A design package's staged command is applied by its own handler (stagedBy above).
+ const type=command?.type,x=stagedBy(type);
  if(x===undefined)throw Error('This action must use its chapter review workflow.');
  const handlers={process:applyProcessCommand,quality:applyQualityCommand,decision:applyDecisionCommand,logical:applyLogicalCommand,realisation:applyRealisationCommand,technology:applyTechnologyCommand,techrealisation:applyTechnologyRealisationCommand,interfaces:applyInterfacesCommand,security:applySecurityCommand,runtime:applyRuntimeCommand,record:applyRecordCommand,review:applyFinalReviewCommand};
  // One copy per command (round 12): the handler changes it in place and the review sections are completed on it in place,

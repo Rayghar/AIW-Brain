@@ -1,6 +1,6 @@
 import {architectureAnalysis} from './architecture-analysis.js';
 import {previewWorkingChange,workingBasis,libraryCurrent,scenarioComparisonCurrent} from './workbench-domain.js';
-import {STAGED_COMMANDS,reviewsOnItsOwn} from './canonical-command.js';
+import {stagedBy,reviewsOnItsOwn} from './canonical-command.js';
 import {projectURL} from './project-context.js';
 import {journeyIndex,journeyObjectURL} from './journey-context.js';
 import {esc} from './html-escape.js';
@@ -52,7 +52,7 @@ export async function reviewOrdinaryChange(p,command){
 // chapter or the review desk drafts a change for the architect to confirm. Resolves to the
 // workspace command to send, or null when cancelled or when nothing would change.
 export async function reviewDesignChanges(p,commands,{intro='',reason='',title='Review this design change'}={}){
- if(!commands.length||commands.some(c=>!STAGED_COMMANDS.has(c.type)))throw Error('Only ordinary design changes can be reviewed here.');
+ if(!commands.length||commands.some(c=>stagedBy(c.type)===undefined))throw Error('Only ordinary design changes can be reviewed here.');
  const q=previewWorkingChange(p,commands);if(!q.diff.records.length&&!q.diff.edges.length&&!q.brief)return null;
  return reviewDialog(q,commands,{intro,reason,title});
 }

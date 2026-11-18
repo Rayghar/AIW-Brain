@@ -6,7 +6,7 @@
 import {EXTENSIONS} from './design-extensions.js';
 import {OBJECT_TYPES} from './record-graph.js';
 import {COLLECTIONS} from './record-lifecycle.js';
-import {RECORD_NOUNS} from './provenance.js';
+import {RECORD_NOUNS, RECORD_PATHS} from './provenance.js';
 import {TRACE_LAYERS, TRACE_LAYER_TYPES, BUILT_IN_LAYERS} from './trace-kernel.js';
 import {reviewSource, designOf} from './review-domain.js';
 
@@ -20,11 +20,19 @@ const fn = v => typeof v === 'function';
 // chapter. readings-upgrade.js runs the chain after its own steps; storage-upgrade.js stores a row a step changes.
 export function upgradeExtensions(p) { for (const e of EXTENSIONS) if (fn(e.upgrade)) p = e.upgrade(p) || p; return p; }
 export const extensionUpgradeNeeded = p => upgradeExtensions(p) !== p;
+// What the steps did to a document as stored, in the packages' words (upgradeNote: one sentence), for the storage
+// upgrade's activity (storage-upgrade.js): only the notes of the steps that change this document, in the chain's order.
+export function extensionUpgradeNotes(p) {
+  const out = [];
+  for (const e of EXTENSIONS) if (fn(e.upgrade)) { const q = e.upgrade(p) || p; if (q !== p && typeof e.upgradeNote === 'string' && e.upgradeNote) out.push(e.upgradeNote); p = q; }
+  return out;
+}
 
 // ---------------------------------------------------------------- the document sections
 // placeSections(document, markdown, p): the sections the packages state for a document ('registers': the working
 // registers, review-domain.js exportSDD's text; 'sdd': the architecture edition, sdd-architecture.js; 'ars': the
-// requirements specification as a document of its own), each {document, after, markdown(p)}. A section stands at the end
+// requirements specification as a document of its own; 'chapter-1' to 'chapter-10': that chapter's own register, as
+// worker.js exports it), each {document, after, markdown(p)}. A section stands at the end
 // of the section its anchor opens (`after`: the heading's line, as printed), after what that section holds and before
 // the next heading of the same or a higher level; sections of one anchor follow each other in the packages' id order. A
 // section that answers no text is not printed, and neither is one whose anchor the document does not print (an edition
@@ -52,10 +60,11 @@ export function placeSections(document, markdown, p) {
 // ---------------------------------------------------------------- the conformance check
 const ID = /^[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
-const PARTS = new Set(['id', 'objectTypes', 'records', 'layers', 'hops', 'checks', 'commands', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'upgrade', 'sections', 'needs', 'load']);
+const PARTS = new Set(['id', 'objectTypes', 'records', 'layers', 'hops', 'checks', 'commands', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
+const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
 const COMMAND_PARTS = new Set(['apply', 'staged', 'person', 'second', 'validate', 'undo', 'track', 'large']);
 const LEVELS = new Set(Object.values(OBJECT_TYPES).map(t => t.level));
-const DOCUMENTS = new Set(['registers', 'sdd', 'ars']);
+const DOCUMENTS = new Set(['registers', 'sdd', 'ars', ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => 'chapter-' + n)]);
 // Whether the design fingerprint reads a key as design, asked of the fingerprint itself (review-domain.js).
 function fingerprintReads(key) {
   const [a, b] = key.split('.'), probe = {[a]: b ? {[b]: ['x']} : ['x']};
@@ -93,6 +102,7 @@ export function extensionIssues(e) {
   for (const h of list(e.hops)) {
     const name = 'the hop onto “' + h?.layer + '”';
     if (!plain(h)) { say('a hop is {layer, types, from, dir, ctx}.'); continue; }
+    for (const k of Object.keys(h)) if (!HOP_PARTS.has(k)) say(name + ': “' + k + '” is not a part of a hop.');
     if (BUILT_IN_LAYERS.includes(h.layer)) say(name + ' would bring records onto a built-in layer: a package\'s hop reaches a package\'s layer only.');
     else if (!own.includes(h.layer) && !TRACE_LAYERS.includes(h.layer)) say(name + ' names a layer nobody states.');
     if (!(h.types === null || Array.isArray(h.types) && h.types.length && h.types.every(t => typeof t === 'string' && t))) say(name + ' lists the relation types that bring a record (types: [...]).');
@@ -129,7 +139,12 @@ export function extensionIssues(e) {
     if (row && !(mine && mine.lifecycle?.[path] === row[1])) say('collection “' + path + '” is built in or another package\'s; it stays as it is.');
   }
   const pv = e.provenance;
-  if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths') && (pv.nouns === undefined || plain(pv.nouns)) && (pv.paths === undefined || plain(pv.paths)))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}}.');
+  if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths' || k === 'records') && ['nouns', 'paths', 'records'].every(k => pv[k] === undefined || plain(pv[k])))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}, records: {path: chapter}}.');
+  for (const [path, chapter] of Object.entries(plain(pv?.records) ? pv.records : {})) {
+    if (!PATH.test(path) || !(Number.isInteger(chapter) && chapter >= 1 && chapter <= 11)) say('collection “' + path + '” is a key of the document or chapter.list, with its chapter from 1 to 11.');
+    const row = RECORD_PATHS.find(r => r[0] === path);
+    if (path === 'logical.assets' || row && !(mine && mine.provenance?.records?.[path] === row[1] && !COLLECTIONS.some(r => r[0] === path))) say('collection “' + path + '” is read by the provenance reader already (built in, a lifecycle collection or another package\'s); it stays as it is.');
+  }
   for (const [path, noun] of Object.entries(plain(pv?.nouns) ? pv.nouns : {})) {
     if (typeof noun !== 'string' || !noun) say('the noun of “' + path + '” is a word.');
     if (path in RECORD_NOUNS && !(mine && mine.provenance?.nouns?.[path] === RECORD_NOUNS[path])) say('the noun of “' + path + '” is built in or another package\'s; it stays as it is.');
@@ -146,8 +161,9 @@ export function extensionIssues(e) {
   }
   // upgrade, sections, needs and load
   if (e.upgrade !== undefined && !fn(e.upgrade)) say('upgrade is a function (p) that answers p itself when it has nothing to do.');
+  if (e.upgradeNote !== undefined && !(typeof e.upgradeNote === 'string' && /\S.*\.$/.test(e.upgradeNote) && fn(e.upgrade))) say('upgradeNote is one sentence, ending in a full stop, that says what upgrade(p) did to an old document; it goes with the step.');
   if (e.sections !== undefined && !Array.isArray(e.sections)) say('sections is a list of {document, after, markdown}.');
-  for (const s of list(e.sections)) if (!plain(s) || !DOCUMENTS.has(s.document) || typeof s.after !== 'string' || !/^#{1,6} \S/.test(s.after) || !fn(s.markdown)) say('a section names its document (registers, sdd or ars), the heading line it follows (after) and markdown(p).');
+  for (const s of list(e.sections)) if (!plain(s) || !DOCUMENTS.has(s.document) || typeof s.after !== 'string' || !/^#{1,6} \S/.test(s.after) || !fn(s.markdown)) say('a section names its document (registers, sdd, ars, or chapter-1 to chapter-10 for a chapter\'s register), the heading line it follows (after) and markdown(p).');
   if (fn(e.needs) !== fn(e.load) || e.needs !== undefined && !fn(e.needs) || e.load !== undefined && !fn(e.load)) say('needs(p) and load() are stated together.');
   return out;
 }
@@ -155,17 +171,21 @@ export function extensionIssues(e) {
 // that is built in is neither's, and is named by extensionIssues). Also a hop of one package that comes from a layer the
 // walk reads later (another package's, later by id).
 export function extensionConflicts() {
-  const out = [], seen = new Map();
+  const out = [], seen = new Map(), later = [];
   // Built in: in the table, and not as any registered package states it.
   const builtIn = (table, key, part) => key in table && !EXTENSIONS.some(e => plain(e[part]) && e[part][key] === table[key]);
+  // A collection: the lifecycle family's rows first (a lifecycle collection is the provenance reader's too), then the
+  // rows stated for the provenance reader alone, so the package named as keeping a row is the one whose row stands.
+  const rows = Object.fromEntries(COLLECTIONS);
+  for (const part of [e => e.lifecycle, e => e.provenance?.records]) for (const e of EXTENSIONS) for (const k of Object.keys(plain(part(e)) ? part(e) : {})) if (!builtIn(rows, k, 'lifecycle') && k !== 'finalReview.narrative') later.push(['collection', k, e.id]);
   const claim = (kind, key, id) => { const k = kind + ' “' + key + '”', first = seen.get(k); if (first && first !== id) out.push(k + ' is stated by ' + first + ' and by ' + id + ': ' + first + ' keeps it.'); else seen.set(k, id); };
   for (const e of EXTENSIONS) {
     for (const k of Object.keys(plain(e.objectTypes) ? e.objectTypes : {})) if (!builtIn(OBJECT_TYPES, k, 'objectTypes')) claim('object type', k, e.id);
     for (const [k, t] of Object.entries(plain(e.layers) ? e.layers : {})) if (!BUILT_IN_LAYERS.includes(k)) { claim('layer', k, e.id); claim('the layer of the type', t, e.id); }
-    for (const k of Object.keys(plain(e.lifecycle) ? e.lifecycle : {})) if (!builtIn(Object.fromEntries(COLLECTIONS), k, 'lifecycle')) claim('collection', k, e.id);
     for (const k of Object.keys(plain(e.commands) ? e.commands : {})) claim('command', k, e.id);
     for (const k of Object.keys(plain(e.provenance?.nouns) ? e.provenance.nouns : {})) claim('the noun of', k, e.id);
     for (const h of list(e.hops)) for (const l of list(h?.from)) if (TRACE_LAYERS.includes(l) && TRACE_LAYERS.includes(h.layer) && TRACE_LAYERS.indexOf(l) >= TRACE_LAYERS.indexOf(h.layer)) out.push('a hop of ' + e.id + ' onto “' + h.layer + '” comes from “' + l + '”, which the walk reads later.');
   }
+  for (const [kind, key, id] of later) claim(kind, key, id);
   return out;
 }

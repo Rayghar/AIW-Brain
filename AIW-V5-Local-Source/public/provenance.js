@@ -52,12 +52,14 @@ const plural=(n,one,many=one+'s')=>count(n)+' '+(n===1?one:many);
 // (a relationship, a connection, a mapping, a dependency, a lineage) is counted apart from the records it joins.
 export const LINK_PATHS=new Set(['relationships','logical.connections','logical.mappings','realisation.connections','technology.mappings','technology.dependencies','technologyRealisation.mappings','technologyRealisation.connections','interfaces.lineage','processModel.transitions']);
 const NARRATIVE='finalReview.narrative';
-// The collections the design packages state are among them (rc44, slice S0: record-lifecycle.js COLLECTIONS holds them,
-// rebuilt at every registration before this list is); their nouns join the nouns below, and the collections their
-// commands write are read with the built-in ones (pathsOf).
+// The collections the design packages state are among them (rc44, slice S0): the ones that retire through the lifecycle
+// family (record-lifecycle.js COLLECTIONS holds them, rebuilt at every registration before this list is) and, after the
+// narrative, the ones a package states for this reader alone (provenance.records {path: chapter}); a path already read
+// is read once, as it was. Their nouns join the nouns below, and the collections their commands write are read with
+// the built-in ones (pathsOf).
 export const RECORD_PATHS=[];
 export const RECORD_NOUNS={artefacts:'Chapter 1 record','processModel.elements':'process object','processModel.transitions':'process path','processModel.claims':'process claim',relationships:'requirement relationship','requirementGroups.records':'requirement group','quality.drivers':'driver','quality.conflicts':'quality conflict','decisions.records':'decision','decisions.conflicts':'decision conflict','logical.responsibilities':'responsibility','logical.groups':'responsibility group','logical.connections':'logical connection','logical.mappings':'allocation','realisation.components':'component','realisation.connections':'component interaction','technology.capabilities':'capability','technology.needs':'technology need','technology.mappings':'support mapping','technology.dependencies':'technology dependency','technology.boundaries':'trust boundary','technologyRealisation.records':'technology realisation','technologyRealisation.mappings':'realisation mapping','technologyRealisation.connections':'realisation connection','interfaces.contracts':'contract','interfaces.data':'data definition','interfaces.parties':'external party','interfaces.lineage':'data lineage','interfaces.invariants':'invariant','security.threats':'threat','security.controls':'control','runtime.environments':'environment','runtime.zones':'zone','runtime.plans':'runtime plan','runtime.placements':'placement','runtime.paths':'runtime path','roadmap.plateaus':'plateau','roadmap.migrations':'migration record','finalReview.actions':'delivery action',[NARRATIVE]:'SDD narrative'};
-extendTable(RECORD_NOUNS,e=>e.provenance?.nouns,()=>{RECORD_PATHS.splice(0,Infinity,...COLLECTIONS.filter(([path])=>path!=='logical.assets'),[NARRATIVE,11]);});
+extendTable(RECORD_NOUNS,e=>e.provenance?.nouns,()=>{const m=new Map([...COLLECTIONS,[NARRATIVE,11]]);for(const e of EXTENSIONS)for(const k in e.provenance?.records)m.has(k)||m.set(k,e.provenance.records[k]);m.delete('logical.assets');RECORD_PATHS.splice(0,Infinity,...m);});
 export function listAt(p,path){
  if(path===NARRATIVE)return plain(p?.finalReview?.narrative)?[p.finalReview.narrative]:[];
  const [a,b]=path.split('.'),v=b?p?.[a]?.[b]:p?.[a];return Array.isArray(v)?v:[];
@@ -346,7 +348,7 @@ export function innerCommands(command){
  return [command];
 }
 // With them, the collections a design package states for the type, or for its prefix (rc44, slice S0): added, never in place of these.
-function pathsOf(type){const t=String(type||''),prefix=t.split('.')[0];return [...PATHS_BY_PREFIX[t]||PATHS_BY_PREFIX[prefix]||[],...EXTENSIONS.flatMap(e=>{const x=e.provenance?.paths||{};return Object.hasOwn(x,t)?x[t]:Object.hasOwn(x,prefix)?x[prefix]:[];})];}
+function pathsOf(type){const t=String(type||''),prefix=t.split('.')[0];return [...PATHS_BY_PREFIX[t]||PATHS_BY_PREFIX[prefix]||[],...EXTENSIONS.flatMap(e=>{const x=e.provenance?.paths||{};return [x[t],x[prefix]].find(Array.isArray)||[];})];}
 // A command's collections: by its type, and for the lifecycle family's keep (record.keep {ids, chapter?}) those of its
 // chapter (any chapter when none is named). A retire or a restore (record.retire, record.restore) moves records with
 // their own provenance (record-lifecycle.js keeps who, when and why) and writes none.

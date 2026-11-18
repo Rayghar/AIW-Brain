@@ -13,8 +13,10 @@
 //     extensions registered (rc44-s0-readings.mjs, rc44-s0-extensions-baseline.json), on three references;
 //   7 registering twice, or in another order, changes nothing (separate processes, compared);
 //   8 the client build passes every gate, with the route delta measured at the slice (audit/rc44/evidence/s0-size.json).
-// and: an extension only adds (it replaces no built-in type, collection, command, check, layer or noun); the upgrade
-// step; the document sections at their anchors; the needs/load pair the project store awaits.
+// and: an extension only adds (it replaces no built-in type, record, collection, command, check, layer or noun); the
+// upgrade step and its sentence in the storage upgrade's activity; the document sections at their anchors (the
+// registers, the architecture edition, the ARS and a chapter's register); the needs/load pair the project store awaits;
+// the command types of the four designs that will register here are free, and every built-in one is taken.
 // Run: npm run test:rc44-s0-extensions
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
@@ -23,15 +25,17 @@ import {createHash} from 'node:crypto';
 import {REFERENCES, reference, readings, digests, AT} from './rc44-s0-readings.mjs';
 import worker, {commandHandler, commandShape} from './worker.js';
 import {localDatabase} from './local-db.js';
+import {readStoredProject} from './project-storage.js';
+import {storageUpgradeNeeded, storeStorageUpgrade} from './storage-upgrade.js';
 import {withFinalReview, CHAPTERS, inheritedFindings, chapterInheritedFindings, reviewBlockers, reviewBlockerCount, treatmentsFor, DISPOSITIONS, applyFinalReviewCommand, reviewSourceStamp, evidenceStamp, assembleSDD, reviewRequirements} from './public/review-domain.js';
 import {recordGraph, OBJECT_TYPES} from './public/record-graph.js';
 import {architectureModel} from './public/architecture-model.js';
 import * as kernel from './public/trace-kernel.js';
 import {decisionFindings} from './public/decisions-domain.js';
 import {chapterChecks, sddBoard} from './public/readiness-model.js';
-import {applyCanonical, applyRecordCommand, STAGED_COMMANDS} from './public/canonical-command.js';
+import {applyCanonical, applyRecordCommand, STAGED_COMMANDS, stagedBy, reviewsOnItsOwn} from './public/canonical-command.js';
 import {COLLECTIONS, retiredRecords, retirable, referencesTo} from './public/record-lifecycle.js';
-import {eachRecord, findRecord, RECORD_NOUNS} from './public/provenance.js';
+import {eachRecord, findRecord, RECORD_NOUNS, RECORD_PATHS} from './public/provenance.js';
 import {architectureMarkdown} from './public/sdd-architecture.js';
 import {isReviewCommand} from './authorship.js';
 import {documentCopy, isSettled} from './public/document-memo.js';
@@ -101,13 +105,17 @@ const SYNTHETIC = {
   },
   lifecycle: {'synthetic.records': 3},
   provenance: {nouns: {'synthetic.records': 'synthetic record'}, paths: {synthetic: ['synthetic.records']}},
-  designKeys: ['synthetic'], evidenceKeys: ['synthetic.observations', 'syntheticLog'],
+  // Evidence is a list of records (the evidence fingerprint reads it); an object left out of the design is bookkeeping
+  // beside it, which neither fingerprint reads (as dataOwnership is).
+  designKeys: ['synthetic'], evidenceKeys: ['synthetic.observations', 'syntheticLog', 'syntheticMigration'],
   // An old document kept `legacySynthetic` titles: read once into records. Returns the document itself when there is nothing to do.
+  upgradeNote: 'Its legacy synthetic titles are kept as synthetic records.',
   upgrade(p) { if (!Array.isArray(p.legacySynthetic)) return p; const {legacySynthetic, ...q} = p; q.synthetic = {version: 1, counter: legacySynthetic.length, records: legacySynthetic.map((t, i) => ({id: 'SYN-' + String(i + 1).padStart(3, '0'), ref: 'SYN-' + String(i + 1).padStart(3, '0'), title: String(t), requirementIds: [], componentId: '', revision: 1, history: []}))}; return q; },
   sections: [
     {document: 'registers', after: '## Performance specification', markdown: p => (syn(p).length ? '### Synthetic register\n\n' + syn(p).map(r => '- ' + r.id + ' · ' + r.title).join('\n') + '\n\n' : '')},
     {document: 'sdd', after: '## E. Provenance', markdown: p => (syn(p).length ? 'Synthetic records: ' + syn(p).map(r => r.id).join(', ') + '.\n\n' : '')},
     {document: 'ars', after: '## Open items', markdown: p => (syn(p).length ? 'Synthetic records bear on these requirements: ' + syn(p).length + '.\n\n' : '')},
+    {document: 'chapter-3', after: '## Conflicts', markdown: p => (syn(p).length ? '### Synthetic records\n\n' + syn(p).map(r => '- ' + r.id).join('\n') + '\n\n' : '')},
     {document: 'registers', after: '## No such heading', markdown: () => 'NEVER PRINTED\n\n'}
   ]
 };
@@ -122,7 +130,8 @@ const OTHER = {
   hops: [{layer: 'other', types: ['fulfils'], from: ['requirement'], dir: 'out', ctx: false}],
   checks: {3: p => other(p).map(r => ({code: 'other-noted', id: 'other-noted:' + r.id, title: 'Note the other thing', detail: r.id, level: 'warning', objectId: r.id})), 10: p => other(p).map(r => ({code: 'other-placed', id: 'other-placed:' + r.id, title: 'Place the other thing', detail: r.id, level: 'warning', objectId: r.id}))},
   lifecycle: {'runtime.otherThings': 10},
-  provenance: {nouns: {'runtime.otherThings': 'other thing'}, paths: {}},
+  // otherNotes: read by the provenance reader (who wrote each, the review plan), not retired through the lifecycle family.
+  provenance: {nouns: {'runtime.otherThings': 'other thing', 'runtime.otherNotes': 'other note'}, paths: {}, records: {'runtime.otherNotes': 10}},
   designKeys: ['runtime.otherThings'], evidenceKeys: []
 };
 // A package that tries to replace what is built in: every such row is left out, by construction.
@@ -130,12 +139,14 @@ const HOSTILE = {
   id: 'aa-hostile',
   objectTypes: {component: {label: 'Hijacked', chapter: 1, level: 'context'}},
   layers: {component: 'synthetic', hostile: 'component'},
+  // It registers a record under a built-in record's id and source, to stand in its place.
+  records(p, add) { const c = p.realisation?.components?.[0]; if (c) add({id: c.id, title: 'Hijacked', ref: 'HIJ-001'}, 'synthetic', 'realisation.components[0]'); },
   hops: [{layer: 'component', types: ['binds'], from: ['requirement'], dir: 'out', ctx: false}, {layer: 'control', types: ['fulfils'], from: ['driver'], dir: 'out', ctx: false}, {layer: 'hostile', types: ['realizedBy'], from: ['responsibility'], dir: 'out', ctx: false}],
   commands: {'decision.save': {apply() { throw Error('replaced'); }, staged: true}, 'record.retire': {apply() { throw Error('replaced'); }}, 'quality.driver': {apply() { throw Error('replaced'); }, staged: true},
     // Marked staged by mistake: a person-only or second-person type is never staged.
     'hostile.sign': {apply() { throw Error('staged a person\'s step'); }, person: true, staged: true}, 'hostile.accept': {apply() { throw Error('staged a second person\'s step'); }, second: () => null, staged: true}},
   lifecycle: {'decisions.records': 9},
-  provenance: {nouns: {'decisions.records': 'hijacked decision'}, paths: {decision: ['artefacts']}}
+  provenance: {nouns: {'decisions.records': 'hijacked decision'}, paths: {decision: ['artefacts']}, records: {'decisions.records': 9, 'finalReview.narrative': 3, 'logical.assets': 4}}
 };
 const withSynthetic = (p, payload, actor = A) => applySynthetic(documentCopy(p), {type: 'synthetic.save', payload}, AT, actor).document;
 const firstTrail = p => { const reqs = reviewRequirements(p); for (const r of reqs) { const T = kernel.requirementTrace(p, r.id); if (T.layers.component?.length) return {requirement: r.id, component: T.layers.component[0], T}; } throw Error('no requirement with a component on its trail'); };
@@ -147,9 +158,9 @@ if (PROBE >= 0) {
   let p = reference('bank-payment'); const t = firstTrail(p);
   p = withSynthetic(p, {title: 'First synthetic record', requirementIds: [t.requirement], componentId: t.component});
   p = withSynthetic(p, {title: 'Second synthetic record', dependsOn: 'SYN-001', broken: true});
-  p.runtime.otherThings = [{id: 'OTH-001', ref: 'OTH-001', title: 'Other thing', requirementIds: [t.requirement], syntheticId: 'SYN-002'}];
+  p.runtime.otherThings = [{id: 'OTH-001', ref: 'OTH-001', title: 'Other thing', requirementIds: [t.requirement], syntheticId: 'SYN-002'}]; p.runtime.otherNotes = [{id: 'ON-001', ref: 'ON-001', title: 'A note', syntheticId: 'SYN-001'}];
   p = withFinalReview(p);
-  console.log(JSON.stringify({order, extensions: X.EXTENSIONS.map(e => e.id), types: Object.keys(OBJECT_TYPES), collections: COLLECTIONS, layers: kernel.TRACE_LAYERS, hops: kernel.TRACE_HOPS.length, nouns: RECORD_NOUNS, commands: ['synthetic.save', 'decision.save'].map(t => !!boundary.extensionCommand(t)), readings: digests(p), plain: digests(reference('clinic-appointments'))}));
+  console.log(JSON.stringify({order, extensions: X.EXTENSIONS.map(e => e.id), types: Object.keys(OBJECT_TYPES), collections: COLLECTIONS, layers: kernel.TRACE_LAYERS, hops: kernel.TRACE_HOPS.length, nouns: RECORD_NOUNS, paths: RECORD_PATHS, commands: ['synthetic.save', 'decision.save'].map(t => !!boundary.extensionCommand(t)), readings: digests(p), plain: digests(reference('clinic-appointments'))}));
   process.exit(0);
 }
 
@@ -169,12 +180,23 @@ await block('registration', () => {
   need();
   assert.deepEqual(boundary.extensionIssues(OTHER), [], 'the package states every part as the contract asks');
   assert.ok(boundary.extensionIssues(SYNTHETIC).some(i => /comes from “other”, which is no layer/.test(i)), 'a hop comes from a layer that exists');
-  assert.ok(boundary.extensionIssues(HOSTILE).length >= 9, 'the conformance check names what a package may not state: ' + boundary.extensionIssues(HOSTILE).join(' | '));
+  assert.ok(boundary.extensionIssues(HOSTILE).length >= 12, 'the conformance check names what a package may not state: ' + boundary.extensionIssues(HOSTILE).join(' | '));
   assert.ok(boundary.extensionIssues({id: 'xy', objectTypes: {xy: {label: 'Xy', chapter: 2, level: 'intent', prefix: 'XY'}}, layers: {xy: 'xy'}, hops: [{layer: 'xy', types: ['a'], from: ['requirement'], dir: 'out'}]}).some(i => /own chain or context/.test(i)), 'a hop says whether it is the own chain or context');
   assert.ok(boundary.extensionIssues({objectTypes: {}}).some(i => /its id/.test(i)), 'a package names itself');
   assert.ok(boundary.extensionIssues({id: 'xy', designKeys: ['workspace.things']}).some(i => /does not read/.test(i)), 'a design key lies where the fingerprint reads');
   assert.deepEqual(boundary.extensionIssues({id: 'xy', designKeys: ['things', 'runtime.things'], evidenceKeys: ['thingLog']}), []);
   assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.sign': {apply() {}, person: true, staged: true}, 'decision.accept': {apply() {}}}}).length === 2, 'a person\'s step is never staged, and a built-in type is the chapter\'s');
+  assert.ok(boundary.extensionIssues({id: 'xy', commands: {'decision.accept': {apply() {}, staged: true}}}).some(i => /command “decision\.accept” is built in/.test(i)), 'a built-in type that is not staged is not a package\'s to stage');
+  // The command types the four designs state (wp1 knowledge.*, wp2 adoption.* and selection.*, wp3 workload.*, wp9a
+  // runtime.* and technology.*) are free: the built-in handler of the prefix refuses each as unknown. Every built-in
+  // type is taken, the ones the route calls itself among them.
+  for (const type of ['knowledge.concept-pin', 'knowledge.library', 'adoption.apply', 'adoption.accept', 'selection.judge', 'workload.model', 'workload.objective-agree', 'runtime.node', 'runtime.failure-accept', 'runtime.gate-evidence', 'technology.domain', 'technology.domain-evidence']) { assert.equal(boundary.builtInType(type), false, type + ' is free for a package'); assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {[type]: {apply() {}}}}), []); }
+  for (const type of ['runtime.zone', 'runtime.simulation', 'technology.capability', 'knowledge.review', 'knowledge.fetch', 'workspace.view', 'workspace.apply', 'intelligence.adopt', 'decision.accept', 'review.disposition', 'record.retire', 'feedback.import', 'model.apply-impact', 'action.undo']) assert.equal(boundary.builtInType(type), true, type + ' is built in');
+  assert.ok(boundary.extensionIssues({id: 'xy', objectTypes: {xy: {label: 'Xy', chapter: 2, level: 'intent', prefix: 'XY'}}, layers: {xy: 'xy'}, hops: [{layer: 'xy', types: ['a'], from: ['requirement'], dir: 'out', ctx: true, step: true}]}).some(i => /“step” is not a part of a hop/.test(i)), 'a hop states only what the contract names');
+  assert.ok(boundary.extensionIssues({id: 'xy', provenance: {records: {'xy.things': 12}}}).some(i => /“xy\.things” is a key of the document or chapter\.list, with its chapter from 1 to 11/.test(i)));
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', provenance: {records: {'xy.things': 11}, nouns: {'xy.things': 'thing'}}, upgrade: p => p, upgradeNote: 'Its things are kept.', sections: [{document: 'chapter-10', after: '# Runtime plans', markdown: () => ''}]}), []);
+  assert.ok(boundary.extensionIssues({id: 'xy', upgradeNote: 'Its things are kept.'}).some(i => /upgradeNote/.test(i)), 'a note goes with a step');
+  assert.ok(boundary.extensionIssues({id: 'xy', sections: [{document: 'chapter-11', after: '# T', markdown: () => ''}]}).length === 1, 'chapter-1 to chapter-10 are the chapter registers');
   X.registerExtension(SYNTHETIC); X.registerExtension(HOSTILE); X.registerExtension(OTHER);
   assert.deepEqual(boundary.extensionIssues(SYNTHETIC), [], 'registered, with the package its hop comes from');
   assert.deepEqual(boundary.extensionIssues(OTHER), []);
@@ -205,7 +227,24 @@ await block('an extension only adds', () => {
   assert.equal(kernel.layerOf({type: 'synthetic', source: 'synthetic.records.SYN-001'}), 'synthetic', 'and a package\'s type on the package\'s layer, never on a built-in one');
   assert.ok(!kernel.TRACE_HOPS.some(h => kernel.BUILT_IN_LAYERS.includes(h.layer) && !h.from.every(l => kernel.BUILT_IN_LAYERS.includes(l)) || h.layer === 'control' && h.from.includes('driver')), 'no hop of a package brings a record onto a built-in layer');
   { const p = reference('bank-payment'); for (const r of reviewRequirements(p)) assert.equal(kernel.requirementTrace(p, r.id).layers.hostile, undefined, 'a layer stated for a built-in type holds nothing'); }
+  // The hostile package states a hop that would bring a component onto a requirement's trail by a relation of type
+  // binds. With such a relation in the graph, the trail's component layer is what it was: a built-in layer reads the
+  // built-in hops and no other.
+  { const p0 = reference('bank-payment'); let t = null;
+    for (const r of reviewRequirements(p0)) { const T = kernel.requirementTrace(p0, r.id), c = p0.realisation.components.find(x => !T.has(x.id)); if (c && T.layers.component.length) { t = {requirement: r.id, off: c.id, T}; break; } }
+    assert.ok(t, 'the reference holds a requirement with a component off its trail');
+    const q = withFinalReview({...p0, modelContext: {...p0.modelContext, relationships: [...list(p0.modelContext?.relationships), {type: 'binds', from: t.requirement, to: t.off}]}});
+    assert.deepEqual(kernel.linkedVia(q, t.requirement, 'binds'), [t.off], 'the relation is in the graph the walks read');
+    assert.ok(!kernel.requirementTrace(q, t.requirement).has(t.off), 'and no hop of a package brings its record onto a built-in layer');
+    assert.deepEqual(kernel.requirementTrace(q, t.requirement).layers.component, t.T.layers.component); }
+  // The hostile emitter registers a record under a built-in record's id and source: the built-in record stays.
+  { const p = reference('bank-payment'), c = p.realisation.components[0], o = recordGraph(p).objects.get(c.id), m = architectureModel(p).objects.get(c.id);
+    assert.equal(o.type, 'component'); assert.equal(o.record, c); assert.equal(o.title, c.title); assert.equal(m.type, 'component'); assert.equal(m.record, c); }
+  // A collection stated for the provenance reader that is built in, or a lifecycle collection, is listed once, as it was.
+  for (const path of ['decisions.records', 'finalReview.narrative', 'synthetic.records', 'runtime.otherNotes']) assert.equal(RECORD_PATHS.filter(r => r[0] === path).length, 1, path + ' is read once');
+  assert.deepEqual([RECORD_PATHS.find(r => r[0] === 'decisions.records')[1], RECORD_PATHS.find(r => r[0] === 'finalReview.narrative')[1]], [3, 11]); assert.ok(!RECORD_PATHS.some(r => r[0] === 'logical.assets'), 'the twin a component keeps in Chapter 4 is not read twice');
   assert.throws(() => boundary.assertExtensions(), /aa-hostile: object type “component” is built in/, 'the server would not start with it');
+  assert.equal(stagedBy('quality.driver'), false, 'a built-in staged type is the chapter\'s'); assert.equal(stagedBy('decision.save'), false);
   assert.notEqual(commandHandler('decision.save'), HOSTILE.commands['decision.save'].apply);
   const p = reference('bank-payment');
   assert.doesNotThrow(() => applyCanonical(p, {type: 'quality.driver', payload: {...p.quality.drivers[0]}}, AT, A), 'a built-in staged command is the chapter\'s own');
@@ -310,6 +349,18 @@ await block('2 command boundary', async () => {
     // the registers and the ARS through the export route carry the package's sections
     const registers = await (await api('/api/export' + q + '&chapter=11&annex=registers&format=md')).text(); assert.match(registers, /### Synthetic register\n\n- SYN-001/);
     const ars = await (await api('/api/export' + q + '&chapter=11&document=ars&format=md')).text(); assert.match(ars, /Synthetic records bear on these requirements: 2\./);
+    const chapter3 = await (await api('/api/export' + q + '&chapter=3&format=md')).text(); assert.match(chapter3, /## Conflicts\n[\s\S]*### Synthetic records\n\n- SYN-001\n- SYN-002\n\n## Open findings/, 'a chapter\'s register carries the section at its anchor');
+    assert.ok(!(await (await api('/api/export' + q + '&chapter=10&format=md')).text()).includes('Synthetic'), 'and only that chapter\'s');
+    // a document a package's step upgrades is stored again on its next read, and the storage upgrade's activity says what the step did
+    { const row = await env.DB.prepare('SELECT document,revision,updated_at FROM projects WHERE owner_id=? AND id=?').bind(A, pid).first(), stored = await readStoredProject(env, A, row.document);
+      assert.equal(boundary.extensionUpgradeNeeded(stored.document), false); assert.deepEqual(boundary.extensionUpgradeNotes(stored.document), []);
+      stored.document.legacySynthetic = ['Kept from an old document'];
+      assert.equal(storageUpgradeNeeded(stored), true, 'a stored row a package must upgrade is stored again'); assert.deepEqual(boundary.extensionUpgradeNotes(stored.document), [SYNTHETIC.upgradeNote]);
+      const saved = await storeStorageUpgrade(env, {owner: A, actor: A, role: 'owner'}, pid, row, stored, withFinalReview(stored.document)); assert.ok(saved, 'the upgraded document is stored');
+      const events = (await env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage');
+      assert.equal(events.length, 1); assert.ok(events[0].summary.endsWith('the previous version is kept for recovery. ' + SYNTHETIC.upgradeNote), 'the activity states the package\'s step after the storage upgrade\'s own words: ' + events[0].summary.slice(-160));
+      state = await (await api('/api/project' + q)).json(); assert.equal(state.revision, saved.revision); assert.deepEqual(state.document.synthetic.records.map(x => x.title), ['Kept from an old document'], 'and the next read answers the upgraded document'); assert.ok(!('legacySynthetic' in state.document));
+      const again = await readStoredProject(env, A, (await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(A, pid).first()).document); assert.equal(boundary.extensionUpgradeNeeded(again.document), false, 'once'); }
     // the project store awaits the package a document needs before it settles the document
     let loads = 0, settledAtNeeds = null; const realFetch = globalThis.fetch;
     const stub = {id: 'zz-synthetic-route', needs: p => { settledAtNeeds = isSettled(p); return !!p.synthetic; }, load: async () => { loads++; }};
@@ -319,7 +370,7 @@ await block('2 command boundary', async () => {
       const store = createProjectStore(); await store.load();
       assert.ok(store.value.document.synthetic, 'the store read the project that holds the records');
       assert.equal(loads, 1, 'reading a project that holds the package\'s records loads the package first'); assert.equal(settledAtNeeds, false, 'before the document is settled'); assert.equal(isSettled(store.value.document), true);
-      await store.command({type: 'synthetic.note', payload: {id: 'SYN-001', note: 'from the store'}});
+      await store.command({type: 'synthetic.note', payload: {id: store.value.document.synthetic.records[0].id, note: 'from the store'}});
       assert.equal(loads, 2, 'and a save\'s answer is checked the same way before it is settled'); assert.equal(isSettled(store.value.document), true);
     } finally { globalThis.fetch = realFetch; }
   } finally { env.DB.close(); }
@@ -328,7 +379,12 @@ await block('2 command boundary', async () => {
   const staged = applyCanonical(p, {type: 'synthetic.save', payload: {title: 'Staged'}}, AT, A); assert.equal(staged.document.synthetic.records[0].title, 'Staged'); assert.ok(!('synthetic' in p), 'the caller\'s document is not changed');
   assert.throws(() => applyCanonical(p, {type: 'synthetic.sign', payload: {id: 'SYN-001'}}, AT, A), /chapter review workflow/); assert.throws(() => applyCanonical(p, {type: 'synthetic.accept', payload: {id: 'SYN-001'}}, AT, A), /chapter review workflow/); assert.throws(() => applyCanonical(p, {type: 'synthetic.note', payload: {id: 'SYN-001'}}, AT, A), /chapter review workflow/);
   assert.throws(() => applyCanonical(p, {type: 'hostile.sign', payload: {}}, AT, A), /chapter review workflow/, 'even when its package marks it staged'); assert.throws(() => applyCanonical(p, {type: 'hostile.accept', payload: {}}, AT, A), /chapter review workflow/);
-  assert.ok(!STAGED_COMMANDS.has('synthetic.sign')); assert.ok(isReviewCommand('synthetic.sign') && isReviewCommand('synthetic.accept') && !isReviewCommand('synthetic.save'), 'authorship.js classifies the person-only types as review commands');
+  // one reading of "may be staged" for the staged path, the workbench's change review and a single edit's review
+  assert.equal(stagedBy('synthetic.save'), SYNTHETIC.commands['synthetic.save'], 'the package\'s command, where it says it is a design edit'); assert.equal(reviewsOnItsOwn('synthetic.save'), true, 'a single edit of it is reviewed as a built-in design edit is');
+  for (const type of ['synthetic.sign', 'synthetic.accept', 'synthetic.note', 'hostile.sign', 'hostile.accept', 'synthetic.nope', 'constructor', 'toString']) { assert.equal(stagedBy(type), undefined, type + ' is not staged'); assert.equal(reviewsOnItsOwn(type), false); }
+  assert.equal(reviewsOnItsOwn('quality.driver'), true); assert.equal(reviewsOnItsOwn('decision.choose'), false, 'the built-in rule is as it was');
+  assert.ok(/commands\.some\(c=>stagedBy\(c\.type\)===undefined\)/.test(readFileSync('public/workbench-ui.js', 'utf8')), 'the workbench reviews what the staged path applies');
+  assert.ok(!STAGED_COMMANDS.has('synthetic.sign')); assert.ok(!STAGED_COMMANDS.has('synthetic.save'), 'the built-in list is as it was'); assert.ok(isReviewCommand('synthetic.sign') && isReviewCommand('synthetic.accept') && !isReviewCommand('synthetic.save'), 'authorship.js classifies the person-only types as review commands');
   assert.equal(commandShape({type: 'synthetic.save', payload: {}}), null); assert.equal(commandShape({type: 'synthetic.nope'})?.code, 'unknown_command');
   pass('2: synthetic.save applies through POST /api/commands, is journalled with actor and author kind, stamped and listed in the activity; synthetic.note is undone by its receipt; synthetic.sign is refused for an agent account, a draft by Sol and an import; synthetic.accept is refused for every author and accepted for a second person; staged only when a plain design edit');
 });
@@ -380,6 +436,15 @@ await block('4 lifecycle', () => {
   // provenance reads the collection
   const seen = []; eachRecord(p, (r, chapter, path) => { if (path === 'synthetic.records') seen.push([r.id, chapter]); });
   assert.deepEqual(seen, [['SYN-001', 3], ['SYN-002', 3], ['SYN-003', 3]]); assert.equal(findRecord(p, 3, 'SYN-002').path, 'synthetic.records');
+  // a collection a package states for the provenance reader only: read there, never retired by the family, and its
+  // records stop no retirement
+  const noted = withFinalReview({...p, runtime: {...p.runtime, otherNotes: [{id: 'ON-001', ref: 'ON-001', title: 'A note on the third', syntheticId: 'SYN-003'}]}}), notes = [];
+  eachRecord(noted, (r, chapter, path, link) => { if (path === 'runtime.otherNotes') notes.push([r.id, chapter, link]); });
+  assert.deepEqual(notes, [['ON-001', 10, false]], 'the provenance reader reads it'); assert.equal(findRecord(noted, 10, 'ON-001').path, 'runtime.otherNotes'); assert.equal(RECORD_NOUNS['runtime.otherNotes'], 'other note');
+  assert.ok(!COLLECTIONS.some(([path]) => path === 'runtime.otherNotes'), 'it is no lifecycle collection');
+  assert.throws(() => applyRecordCommand(noted, {type: 'record.retire', payload: {id: 'ON-001', reason: 'Not the family\'s to retire.'}}, AT, A), /ON-001 no longer exists/);
+  assert.ok(!referencesTo(noted, 'SYN-003').some(x => /ON-001/.test(x)));
+  assert.equal(applyRecordCommand(noted, {type: 'record.retire', payload: {id: 'SYN-003', reason: 'Named only by a note.'}}, AT, A).document.synthetic.records.length, 2, 'a record only such a record names retires');
   pass('4: a synthetic record retires and restores through record.retire and record.restore with who, when and why; a named record is refused; the provenance reader lists the collection');
 });
 
@@ -395,7 +460,11 @@ await block('5 design fingerprint', () => {
   assert.equal(reviewSourceStamp(observed), reviewSourceStamp(P), 'an evidence key does not, nested in the package\'s container or beside the design');
   assert.notEqual(evidenceStamp(observed), evidenceStamp(P), 'it moves the evidence fingerprint'); assert.equal(evidenceStamp(reference('bank-payment')), e0);
   const moved = withFinalReview({...P, runtime: {...P.runtime, otherThings: [{id: 'OTH-001', title: 'Other thing'}]}}); assert.notEqual(reviewSourceStamp(moved), reviewSourceStamp(P), 'a design key inside a chapter moves it');
-  pass('5: synthetic (design) moves reviewSourceStamp; synthetic.observations and syntheticLog (evidence) leave it and move evidenceStamp');
+  // bookkeeping beside the design (an object a package leaves out of the design): neither fingerprint reads it
+  const kept = withFinalReview({...P, syntheticMigration: {definition: 1, toConfirm: [{id: 'LS-001', stamp: 'x'}]}});
+  assert.equal(reviewSourceStamp(kept), reviewSourceStamp(P), 'an object a package leaves out of the design moves no design stamp'); assert.equal(evidenceStamp(kept), evidenceStamp(P), 'and is not evidence either');
+  assert.notEqual(reviewSourceStamp(withFinalReview({...P, syntheticUnstated: {definition: 1}})), reviewSourceStamp(P), 'a key no package leaves out is design, as any key is');
+  pass('5: synthetic (design) moves reviewSourceStamp; synthetic.observations and syntheticLog (evidence lists) leave it and move evidenceStamp; syntheticMigration (an object left out) moves neither');
 });
 
 // ---------------------------------------------------------------- upgrade, sections
@@ -405,7 +474,8 @@ await block('upgrade and sections', () => {
   assert.equal(boundary.extensionUpgradeNeeded(old), true);
   const up = withFinalReview(old); assert.equal(up.synthetic?.records?.[0]?.title, 'Kept from an old document', 'the read upgrade chain runs the package\'s step'); assert.ok(!('legacySynthetic' in up));
   assert.equal(boundary.upgradeExtensions(up), up, 'idempotent: an upgraded document passes through');
-  assert.ok(readFileSync('storage-upgrade.js', 'utf8').includes('extensionUpgradeNeeded(stored.document)'), 'a stored row a package must upgrade is stored again');
+  assert.deepEqual(boundary.extensionUpgradeNotes(old), [SYNTHETIC.upgradeNote]); assert.deepEqual(boundary.extensionUpgradeNotes(up), [], 'a note is given only for a document the step changes');
+  { const fresh = reference('bank-payment'), frozen = JSON.stringify(fresh); boundary.upgradeExtensions(fresh); boundary.extensionUpgradeNeeded({...fresh, legacySynthetic: ['x']}); assert.equal(JSON.stringify(fresh), frozen, 'a step changes no document it is handed'); }
   const registers = boundary.placeSections('registers', assembleSDD(P), P), at = registers.indexOf('### Synthetic register'), perf = registers.indexOf('## Performance specification'), next = registers.indexOf('\n## ', perf + 5);
   assert.ok(perf >= 0 && at > perf && at < next, 'the section stands at the end of the section its anchor names');
   assert.equal(registers.replace('### Synthetic register\n\n- SYN-001 · First synthetic record\n- SYN-002 · Bound, named by no requirement\n\n', ''), assembleSDD(P), 'and nothing else moves');
@@ -449,9 +519,11 @@ await block('7 idempotent and order-free', () => {
   assert.deepEqual(digests(withFinalReview(withSynthetic(reference('bank-payment'), {title: 'Again'}))), d); assert.equal(Object.keys(OBJECT_TYPES).join(), types); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(JSON.stringify(COLLECTIONS), rows);
   // two packages stating one row: the first by id keeps it, and the server's start check names the clash
   assert.deepEqual(boundary.extensionConflicts(), [], 'the registered packages share no row');
-  X.registerExtension({id: 'zzz-duplicate', objectTypes: {synthetic: {label: 'Duplicate', chapter: 4, level: 'logical', prefix: 'DUP'}}, layers: {synthetic: 'duplicate'}, lifecycle: {'synthetic.records': 4}, commands: {'synthetic.save': {apply() { throw Error('duplicate'); }}}, provenance: {nouns: {'synthetic.records': 'duplicate'}, paths: {}}});
+  X.registerExtension({id: 'zzz-duplicate', objectTypes: {synthetic: {label: 'Duplicate', chapter: 4, level: 'logical', prefix: 'DUP'}}, layers: {synthetic: 'duplicate'}, lifecycle: {'synthetic.records': 4}, commands: {'synthetic.save': {apply() { throw Error('duplicate'); }}}, provenance: {nouns: {'synthetic.records': 'duplicate'}, paths: {}, records: {'synthetic.records': 9, 'runtime.otherNotes': 3}}});
   assert.equal(OBJECT_TYPES.synthetic.label, 'Synthetic record'); assert.equal(JSON.stringify(COLLECTIONS), rows); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(RECORD_NOUNS['synthetic.records'], 'synthetic record'); assert.equal(boundary.extensionCommand('synthetic.save').apply, applySynthetic);
-  const clashes = boundary.extensionConflicts(); assert.ok(clashes.length >= 4 && clashes.every(c => /zzz-duplicate/.test(c) && /zz-synthetic/.test(c)), 'each clash names both packages: ' + clashes.join(' | '));
+  const paths = JSON.stringify(RECORD_PATHS); assert.deepEqual([RECORD_PATHS.filter(r => r[0] === 'synthetic.records'), RECORD_PATHS.filter(r => r[0] === 'runtime.otherNotes')], [[['synthetic.records', 3]], [['runtime.otherNotes', 10]]], 'a collection another package states is read once, as its first package states it');
+  const clashes = boundary.extensionConflicts(); assert.ok(clashes.length >= 6 && clashes.every(c => /zzz-duplicate/.test(c) && /zz-synthetic|mm-other/.test(c)), 'each clash names both packages: ' + clashes.join(' | '));
+  assert.ok(clashes.some(c => /collection “runtime\.otherNotes” is stated by mm-other and by zzz-duplicate: mm-other keeps it/.test(c)) && clashes.some(c => /collection “synthetic\.records” is stated by zz-synthetic and by zzz-duplicate: zz-synthetic keeps it/.test(c)));
   X.registerExtension({id: 'ab-early', objectTypes: {early: {label: 'Early', chapter: 2, level: 'intent', prefix: 'EAR'}}, layers: {early: 'early'}, hops: [{layer: 'early', types: ['binds'], from: ['synthetic'], dir: 'in', ctx: true}]});
   assert.ok(boundary.extensionConflicts().some(c => /a hop of ab-early onto “early” comes from “synthetic”, which the walk reads later/.test(c)), 'a hop from a layer of a package later by id is named');
   pass('7: five registration orders, with repeats, in separate processes give the same object types, collections, layers, nouns and the same ten readings; registering again in this process changes nothing');

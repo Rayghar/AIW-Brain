@@ -563,11 +563,12 @@ async function route(request,env,ctx){
       if(url.searchParams.get('chapter')==='11')return await sddExport(project,url,filename,{env,key:parts=>exportKey(owner,projectId,row,project,parts),open:(entry,names)=>openBaseline(env,owner,projectId,entry,names),whole:()=>wholeProject(env,owner,projectId,project,stored.keys),lastSource:p=>withLastBaselineSource(env,owner,projectId,p)});
       // Round 26 (D-26-13): a chapter register comes as Markdown (format=md) or HTML (format=html; view=1 opens it in the
       // browser, as the ARS and the specifications open), its first line after the title carrying the project revision and
-      // the date; the HTML view draws the chapter's own picture (sdd-figures.js). Any other format is the whole saved
+      // the date; the HTML view draws the chapter's own picture (sdd-figures.js). A chapter's register carries the sections
+      // the design packages state for it ('chapter-n'), at their anchors (rc44, slice S0). Any other format is the whole saved
       // project as JSON, which every Output page offers once without a chapter. Nothing here changes the project.
       const format=url.searchParams.get('format')||'json',chapterN=Number(url.searchParams.get('chapter'))||(format==='md'||format==='html'?1:0);
       if(REGISTER_FILES[chapterN]&&(format==='md'||format==='html')){
-        const view=url.searchParams.get('view')==='1',md=stampDocument(registerMarkdown(project,chapterN),row.revision),name=filename+'_'+REGISTER_FILES[chapterN]+'.'+format;
+        const view=url.searchParams.get('view')==='1',md=stampDocument(placeSections('chapter-'+chapterN,registerMarkdown(project,chapterN),project),row.revision),name=filename+'_'+REGISTER_FILES[chapterN]+'.'+format;
         if(format==='md')return new Response(md,{headers:{'Content-Type':'text/markdown; charset=utf-8','Content-Disposition':'attachment; filename="'+name+'"','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
         return new Response(sddHTML(md,null,{figures:registerFigures(project,chapterN)}),{headers:{'Content-Type':'text/html; charset=utf-8','Content-Disposition':(view?'inline':'attachment')+'; filename="'+name+'"','Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; frame-ancestors 'self'; base-uri 'none'"}});
       }
