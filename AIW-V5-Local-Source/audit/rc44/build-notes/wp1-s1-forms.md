@@ -148,7 +148,7 @@ it; each item has its case first, seen red on `f9d9bdc`, and a WIP commit. Resum
 | 1 | Must-fix 1 (the quote floor is measured on the collapsed text; a verbatim diagram source has the same floor) and must-fix 2 (the number rule reads a target label; identifier fields hold identifiers) | done | S1.15 |
 | 2 | B1: a form claim is read only by the concept readers; S1.10 strengthened | done (route +38 B) | S1.10, S1.16 |
 | 3 | B2: concepts, topics and form claims in a library project only | done | S1.17 (and S1.1, S1.5 through the service, S1.7, S1.8, S1.10, S1.13 adjusted) |
-| 4 | B3: what `conceptHash` covers; only a person changes what a review covered; an upsert that changes nothing writes nothing | next | |
+| 4 | B3: what `conceptHash` covers; only a person changes what a review covered; an upsert that changes nothing writes nothing | done | S1.18 (S1.4 and S1.5 through the service adjusted) |
 | 5 | B4 and should-fix 4: the reviewer's account kind | | |
 | 6 | B5: fail closed (should-fix 3 and 5) | | |
 | 7 | B7: a concept id is not a record reference; `modelKind` is an identifier (should-fix 9) | | |

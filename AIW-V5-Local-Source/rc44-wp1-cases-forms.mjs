@@ -308,10 +308,10 @@ add('S1.4: the concept register holds one definition per concept and only its ow
   assert.throws(() => edit({reviewTriggers: ['mood']}), /review trigger/i);
   assert.throws(() => edit({successorOf: 'SYN-P404', changeNote: 'rename'}), /SYN-P404 is not in the concept register/);
   assert.throws(() => CC.applyConceptCommand(L.document, {type: 'knowledge.concept', payload: {...CONCEPT, conceptId: 'lower-case'}}, AT, 'importer', F.person('importer')), /concept identifier/i);
-  // The hash covers the identity, the facets and each form claim as it stands; the steward and review date are not identity.
-  assert.equal(concept().hash, KC.conceptHash(L.document.knowledge.concepts[0], L.document.knowledge.claims));
-  const steward = edit({steward: 'Another guild'}, 'architect'); assert.equal(KC.conceptRecords(steward)[0].hash, reviewedHash); assert.equal(KC.conceptRecords(steward)[0].state, 'reviewed', 'who stewards it is not its identity');
-  for (const change of [{title: 'Transactional outbox (renamed)'}, {kind: 'tactic'}, {family: 'Another family'}, {scope: ['component']}, {stages: [5]}, {lenses: ['integrity']}, {forms: forms.slice(0, 2)}]) {
+  // The hash covers every field of the record but its bookkeeping, and each form claim as it stands: who stewards the
+  // concept and when it is due are reviewed with it (ruling B3; the first build left them outside the hash). Case S1.18.
+  assert.equal(concept().hash, KC.conceptHash(L.document.knowledge.concepts[0], L.document.knowledge.claims, L.document.knowledge.topics));
+  for (const change of [{title: 'Transactional outbox (renamed)'}, {kind: 'tactic'}, {family: 'Another family'}, {scope: ['component']}, {stages: [5]}, {lenses: ['integrity']}, {forms: forms.slice(0, 2)}, {steward: 'Another guild'}, {reviewDue: '2028-01-01'}, {reviewTriggers: ['region']}, {notAdopted: []}]) {
     const q = edit(change, 'architect'), c = KC.conceptRecords(q)[0];
     assert.notEqual(c.hash, reviewedHash, Object.keys(change)[0] + ' moves the hash'); assert.equal(c.state, 'draft', 'an edit of ' + Object.keys(change)[0] + ' lapses the review');
     assert.equal(c.lastEditor, 'architect'); assert.equal(c.actor, 'importer', 'the author is kept'); assert.equal(c.revision, 3);
@@ -422,6 +422,9 @@ add('S1.5 through the service: POST /api/commands saves a candidate concept from
     const c = KC.conceptRecords(state.document)[0]; assert.equal(c.state, 'reviewed'); assert.equal(c.review.actor, 'reviewer');
     assert.deepEqual(state.document.knowledge.history.at(-1), {at: state.document.knowledge.history.at(-1).at, actor: 'reviewer', type: 'knowledge.concept-review', id: conceptRecordId, reason: CONCEPT_REVIEW.reason, reviewer: 'Synthetic second person'});
     assert.deepEqual(K.releasedClaims(state.document), [], 'reviewed, not released: no reader of released knowledge sees it');
+    // Only a person changes what that review covered (ruling B3): the agent that wrote the draft cannot move its review date now.
+    r = await send('knowledge.concept', {...CONCEPT, id: conceptRecordId, forms: state.document.knowledge.concepts[0].forms, steward: 'Another guild', reviewDue: '2099-12-31'}, 'bot'); assert.equal(r.status, 400); assert.match(r.data.error, /SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered/);
+    assert.equal(state.document.knowledge.concepts[0].reviewDue, '2027-11-16'); assert.equal(KC.conceptRecords(state.document)[0].state, 'reviewed');
   } finally { env.DB.close?.(); }
 });
 
@@ -834,4 +837,56 @@ add('S1.17 (ruling B2): concepts, topics and claims that carry a form are writte
   assert.deepEqual(KC.conceptReading(held, 'SYN-P001').forms.map(f => [f.type, f.status, f.content]), [['definition', 'candidate', null], ['mechanism', 'candidate', null], ['applicability', 'candidate', null]], 'and the concept reading names the forms without their content');
   { const verified = graft(F.blankProject(), (await library({forms: ['definition', 'mechanism'], verify: true, review: true})).document); assert.deepEqual(KC.conceptTeachingForms(verified, 'SYN-P001'), [], 'nor a reviewed form that is not released'); assert.equal(KC.conceptTeachingForms(send(verified, 'library', LIBRARY_MARK, 'architect').document, 'SYN-P001').length, 2); }
   { const active = graft(F.blankProject(), (await library({forms: ['definition', 'mechanism'], verify: true, review: true, release: true, activate: true})).document); assert.deepEqual(KC.conceptTeachingForms(active, 'SYN-P001').map(f => [f.type, f.status, !!f.content]), [['definition', 'released', true], ['mechanism', 'released', true]], 'released content is returned in any project'); }
+});
+
+// ------------------------------------------------------------------------------------------------ 18
+add('S1.18 (ruling B3): the concept hash covers every field of the record but its bookkeeping, and the topics mapped to it; only a person changes what a review covered: an agent account, a draft by Sol, an import and a request that states no author are refused an edit, a form and a topic mapping on a concept that is reviewed or in a release, and accepted on a draft; a person\'s edit lapses the review; an upsert that changes nothing writes nothing', async () => {
+  const {CC, KC} = await mods(), L = await library({forms: ['definition', 'mechanism'], verify: true}), LATER = '2026-11-17T10:00:00.000Z';
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor), at = AT) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, at, actor, opts);
+  const topic = {file: 'Synthetic_Integration_Handbook.docx', topicId: 'SYN-P001', title: 'Transactional outbox', lineStart: 1, lineEnd: 58, sliceSha256: sha256(F.SYN_P001.join('\n')), sourceId: L.sourceId, declaredKind: 'pattern', intendedUse: 'design-method', conceptId: 'SYN-P001', reason: ''};
+  // While the concept is a draft an import maps its topic; then a second person reviews the concept.
+  L.k('topic', topic, 'importer', F.importedBy('importer')); L.k('concept', {...CONCEPT, conceptId: 'SYN-P002', title: 'Idempotent receiver'}, 'importer', F.importedBy('importer'));
+  const draft = L.document; L.k('concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer');
+  const p = L.document, read = doc => KC.conceptRecords(doc).find(c => c.conceptId === 'SYN-P001'), reviewed = read(p), forms = p.knowledge.concepts[0].forms, payload = {...CONCEPT, id: L.conceptRecordId, forms};
+  assert.equal(reviewed.state, 'reviewed'); assert.equal(reviewed.hash, KC.conceptHash(p.knowledge.concepts[0], p.knowledge.claims, p.knowledge.topics));
+  // 1. What the hash covers: every field of the record except the bookkeeping the ruling names.
+  const BOOKKEEPING = ['at', 'actor', 'lastEditor', 'history', 'revision', 'changeNote', 'review', 'retired'], other = v => typeof v === 'string' ? v + ' (changed)' : typeof v === 'number' ? v + 1 : Array.isArray(v) ? v.slice(1) : v === null ? 'SYN-P002' : {...v, reason: 'Changed.'};
+  const fields = Object.keys(p.knowledge.concepts[0]); assert.deepEqual(fields.filter(k => !BOOKKEEPING.includes(k)).sort(), ['conceptId', 'family', 'forms', 'id', 'kind', 'lenses', 'notAdopted', 'reviewDue', 'reviewTriggers', 'scope', 'splitFrom', 'stages', 'steward', 'successorOf', 'title']);
+  for (const key of [...fields, 'retired', 'somethingNoCommandWrites']) { const q = clone(p), c = q.knowledge.concepts[0]; c[key] = key in c ? other(c[key]) : {at: AT, actor: 'architect', reviewer: 'x', reason: 'x'};
+    assert.equal(KC.conceptHash(c, q.knowledge.claims, q.knowledge.topics) !== reviewed.hash, !BOOKKEEPING.includes(key), key + (BOOKKEEPING.includes(key) ? ' is bookkeeping: outside the hash' : ' is in the hash')); }
+  // ...and the topics mapped to it, by file, topic id and slice hash.
+  const withTopic = change => { const q = clone(p); change(q.knowledge.topics); return read(q).hash !== reviewed.hash; };
+  for (const [what, change, moves] of [['the slice hash', t => { t[0].sliceSha256 = 'c'.repeat(64); }, true], ['the topic id', t => { t[0].topicId = 'SYN-P001-B'; }, true], ['the file', t => { t[0].file = 'Another.docx'; }, true], ['unmapped', t => { t[0].conceptId = null; }, true], ['mapped elsewhere', t => { t[0].conceptId = 'SYN-P002'; }, true], ['a second topic mapped to it', t => { t.push({...t[0], id: 'KT-9999', topicId: 'SYN-P001-C'}); }, true], ['a topic of another concept', t => { t.push({...t[0], id: 'KT-9998', topicId: 'SYN-P002', conceptId: 'SYN-P002'}); }, false], ['its title', t => { t[0].title = 'Retitled'; }, false], ['the order of two topics', t => { t.unshift({...t[0], id: 'KT-9997', topicId: 'SYN-P000'}); }, true]]) assert.equal(withTopic(change), moves, 'topic: ' + what);
+  { const a = clone(p), b = clone(p); a.knowledge.topics.push({...a.knowledge.topics[0], id: 'KT-9999', topicId: 'SYN-A'}); b.knowledge.topics.unshift({...b.knowledge.topics[0], id: 'KT-9999', topicId: 'SYN-A'}); assert.equal(read(a).hash, read(b).hash, 'the topic rows are sorted before they are hashed'); }
+  // 2. Only a person changes what the review covered.
+  const ONLY = /SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered/, example = F.formClaim(L.sourceId, 'SYN-P001', F.p001Forms().example);
+  const opposing = {...F.formClaim(L.sourceId, 'SYN-P001', F.p001Forms().applicability), polarity: 'prohibits'};
+  const requests = doc => [['the review date', 'concept', {...payload, forms: doc.knowledge.concepts[0].forms, reviewDue: '2099-12-31'}], ['the steward', 'concept', {...payload, forms: doc.knowledge.concepts[0].forms, steward: 'Nobody'}], ['the review triggers', 'concept', {...payload, forms: doc.knowledge.concepts[0].forms, reviewTriggers: []}], ['what was not adopted', 'concept', {...payload, forms: doc.knowledge.concepts[0].forms, notAdopted: []}], ['the title', 'concept', {...payload, forms: doc.knowledge.concepts[0].forms, title: 'Renamed'}], ['a form taken off', 'concept', {...payload, forms: doc.knowledge.concepts[0].forms.slice(0, 1)}], ['a successor link', 'concept', {...payload, forms: doc.knowledge.concepts[0].forms, successorOf: 'SYN-P002', changeNote: 'rename', reason: 'Synthetic.'}],
+    ['a form added', 'claim', example], ['an opposing candidate form', 'claim', opposing], ['the topic unmapped', 'topic', {...topic, conceptId: null, reason: 'Unmapped.'}], ['the topic mapped elsewhere', 'topic', {...topic, conceptId: 'SYN-P002'}], ['another topic mapped to it', 'topic', {...topic, topicId: 'SYN-P001-B', sourceId: null}], ['the topic\'s slice replaced', 'topic', {...topic, sourceId: null, sliceSha256: 'd'.repeat(64)}]];
+  const NON_PERSONS = [['an agent account', 'bot', F.agent('bot')], ['a draft by Sol', 'architect', F.solDraft('architect')], ['an import', 'architect', F.importedBy('architect')], ['a request that states no author', 'architect', {}]];
+  for (const [who, actor, opts] of NON_PERSONS) {
+    for (const [what, type, body] of requests(p)) assert.throws(() => send(p, type, body, actor, opts), ONLY, who + ': ' + what + ' on a reviewed concept');
+    // On a draft concept the same requests are accepted: a draft is nobody's review.
+    for (const [what, type, body] of requests(draft)) assert.doesNotThrow(() => send(draft, type, body, actor, opts), who + ': ' + what + ' on a draft concept');
+    // A change that the review did not cover is accepted on the reviewed concept too: the topic's title, the change note of an unchanged link.
+    assert.equal(send(p, 'topic', {...topic, title: 'Transactional outbox (retitled)'}, actor, opts).document.knowledge.topics[0].title, 'Transactional outbox (retitled)');
+    assert.equal(read(send(p, 'topic', {...topic, title: 'Transactional outbox (retitled)'}, actor, opts).document).state, 'reviewed');
+  }
+  assert.equal(read(p).state, 'reviewed', 'nothing lapsed the review');
+  // The same holds once the concept is in a release, even after a person's edit lapsed its review.
+  { const R = await library({forms: ['definition', 'mechanism'], verify: true, review: true, release: true}), edited = send(R.document, 'concept', {...CONCEPT, id: R.conceptRecordId, forms: R.document.knowledge.concepts[0].forms, steward: 'Another guild'}, 'architect').document;
+    assert.equal(KC.conceptRecords(edited)[0].state, 'draft'); assert.equal(KC.conceptCovered(edited, edited.knowledge.concepts[0]), true);
+    for (const [who, actor, opts] of NON_PERSONS) { assert.throws(() => send(edited, 'concept', {...CONCEPT, id: R.conceptRecordId, forms: edited.knowledge.concepts[0].forms, reviewDue: '2099-12-31'}, actor, opts), ONLY, who + ': in a release'); assert.throws(() => send(edited, 'claim', F.formClaim(R.sourceId, 'SYN-P001', F.p001Forms().example), actor, opts), ONLY); } }
+  // 3. A person's edit is accepted and lapses the review, whichever covered field it changes; so does a person's topic mapping.
+  for (const [what, type, body] of requests(p).filter(([, type]) => type !== 'claim')) { const q = send(p, type, body, 'architect').document, c = read(q); assert.notEqual(c.hash, reviewed.hash, 'a person: ' + what + ' moves the hash'); assert.equal(c.state, 'draft', 'a person: ' + what + ' lapses the review'); }
+  { const q = send(p, 'claim', example, 'architect').document; assert.equal(read(q).state, 'reviewed', 'a person\'s new form claim is a candidate until it is attached: the review stands'); assert.equal(read(send(q, 'concept', {...payload, forms: [...forms, {type: 'example', claimId: q.knowledge.claims.at(-1).id}]}, 'architect').document).state, 'draft'); }
+  // A person's opposing candidate keeps the fail-safe of rc.10.73.42: a contradiction opens and the review no longer stands until a person resolves it (ruling B9).
+  { const q = send(send(p, 'claim', F.formClaim(L.sourceId, 'SYN-P001', F.p001Forms().applicability), 'importer').document, 'claim', opposing, 'architect').document; assert.equal(q.knowledge.contradictions.filter(x => x.status === 'open').length, 1); }
+  // 4. An upsert that changes nothing writes nothing: no history line, no new time, no new actor; whoever sends it, whenever.
+  for (const [who, actor, opts] of [['a person', 'architect', F.person('architect')], ...NON_PERSONS]) {
+    assert.equal(JSON.stringify(send(p, 'concept', payload, actor, opts, LATER).document), JSON.stringify(p), who + ': the concept saved again as it is');
+    assert.equal(JSON.stringify(send(p, 'topic', topic, actor, opts, LATER).document), JSON.stringify(p), who + ': the topic saved again as it is');
+    assert.equal(send(p, 'concept', payload, actor, opts, LATER).selected, L.conceptRecordId); assert.equal(send(p, 'topic', topic, actor, opts, LATER).selected, p.knowledge.topics[0].id);
+  }
+  { const q = send(p, 'concept', {...payload, steward: 'Another guild'}, 'architect', F.person('architect'), LATER).document, c = q.knowledge.concepts[0]; assert.deepEqual([c.revision, c.lastEditor, c.history.at(-1).at, q.knowledge.history.length], [p.knowledge.concepts[0].revision + 1, 'architect', LATER, p.knowledge.history.length + 1], 'a change is written as before'); }
 });

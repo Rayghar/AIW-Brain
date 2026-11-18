@@ -18,7 +18,8 @@ import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility} from './knowl
 import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,conceptFormIssues,conceptFormRecord} from './concept-form.js';
-import {conceptRecords,conceptHash,conceptAuthors} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors,conceptCovered} from './knowledge-concepts.js';
+import {digest} from './brain-integrity.js';
 import {list} from './util.js';
 
 // A project's bounds, and a knowledge library's (one tranche of a handbook: about sixty concepts and their forms). The
@@ -44,6 +45,17 @@ function personOnly(author,actor){const refusal=!actor?'Sign in to record this.'
 // release it pins. Plain sources and claims are saved in any project, as before.
 const inLibrary=s=>s.library?.enabled===true;
 function libraryOnly(s){if(!inLibrary(s))throw Error('Concepts, topics and knowledge forms are written in a knowledge library: a person marks this project as one first (knowledge.library). Plain sources and claims are saved in any project.');}
+// Only a person changes what a review covered (ruling B3 of 2026-11-18). An agent account, a draft by Sol, an import and
+// a request that states no author write drafts: on a concept whose review stands, or which a release of this project
+// holds, they are refused whatever would change the concept's hash (a field of its record, its forms, a topic mapped to
+// or from it) and any new form claim on it (an opposing one would open a contradiction and lapse the review: B9). On a
+// draft concept the same request is accepted. A person's change is accepted and lapses the review, which is then made again.
+function onlyAPerson(p,concept,author,what){
+ const refusal=kindRefusal(author);
+ if(refusal&&conceptCovered(p,concept))throw Error(concept.conceptId+' is reviewed or in a release: only a signed-in person changes what its review covered ('+what+'). '+refusal);
+}
+// What an upsert would store, against what is stored: equal means there is nothing to write.
+const sameFields=(stored,next)=>digest(Object.fromEntries(Object.keys(next).map(k=>[k,stored[k]])))===digest(next);
 
 function conceptInput(s,r,existing){
  const conceptId=text(r.conceptId,200);
@@ -105,7 +117,13 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
   s.library={enabled:r.enabled,at,actor,reason:text(r.reason)};return 'library';
  }
  case 'knowledge.topic':{
-  libraryOnly(s);const t=topicInput(s,r);s.topics||=[];const existing=s.topics.find(x=>x.file===t.file&&x.topicId===t.topicId);
+  libraryOnly(s);const t=topicInput(s,r),existing=list(s.topics).find(x=>x.file===t.file&&x.topicId===t.topicId);
+  // Saved again as it is, a row is not written: no new time, no new actor, no history line.
+  if(existing&&sameFields(existing,t))return {selected:existing.id,unchanged:true};
+  // The topics mapped to a concept are part of what its review covered.
+  const after=[...list(s.topics).filter(x=>x!==existing),t];
+  for(const id of new Set([existing?.conceptId,t.conceptId])){const c=list(s.concepts).find(x=>x.conceptId===id);if(c&&conceptHash(c,s.claims,after)!==conceptHash(c,s.claims,s.topics))onlyAPerson(p,c,author,'the topics mapped to it');}
+  s.topics||=[];
   if(!existing&&s.topics.length>=limits.topics)throw Error('This project has reached its topic limit.');
   const row={id:existing?.id||next('KT'),...t,at,actor};
   if(existing)s.topics[s.topics.indexOf(existing)]=row;else s.topics.push(row);return row.id;
@@ -118,6 +136,9 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
    if(list(s.concepts).length>=limits.concepts)throw Error('This project has reached its concept limit.');
    s.concepts||=[];const id=next('KN');s.concepts.push({id,...c,revision:1,at,actor,lastEditor:actor,history:[{revision:1,at,actor,change:'Created'}]});return id;
   }
+  // Saved again as it is, a concept is not written: no revision, no new time, no new editor, no history line.
+  if(sameFields(existing,c))return {selected:existing.id,unchanged:true};
+  if(conceptHash({...existing,...c},s.claims,s.topics)!==conceptHash(existing,s.claims,s.topics))onlyAPerson(p,existing,author,'its record');
   if(existing.history.length>=200)throw Error(existing.conceptId+' has 200 revisions. Record a successor concept.');
   // An edit keeps the author and every earlier editor (they never review it); a review made of another hash lapses on read.
   Object.assign(existing,c,{revision:existing.revision+1,lastEditor:actor});existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});return existing.id;
@@ -133,7 +154,7 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
    // Every form verified by someone other than its author, on its exact passage, with no open contradiction: the release gate.
    for(const f of c.forms){const claim=s.claims.find(x=>x.id===f.claimId),reasons=claim?[...knowledgeEligibility(p,claim).reasons,...conceptFormIssues(claim.form,{excerpt:claim.excerpt,lineStart:claim.lineStart})]:['The claim is unavailable.'];if(reasons.length)throw Error(f.claimId+' ('+f.type+'): '+reasons.join(' '));}
   }
-  c.review={decision:r.decision,actor,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims)};return c.id;
+  c.review={decision:r.decision,actor,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics)};return c.id;
  }
  case 'knowledge.concept-retire':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(c.retired)throw Error(c.id+' is already retired.');c.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return c.id;}
  case 'knowledge.concept-restore':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(!c.retired)throw Error(c.id+' is not retired.');delete c.retired;return c.id;}
@@ -150,6 +171,7 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
    const concept=list(s.concepts).find(c=>c.conceptId===r.subjectId);
    if(!concept)throw Error(String(r.subjectId).slice(0,80)+' is not in the concept register: a form belongs to a registered concept (knowledge.concept).');
    if(concept.retired)throw Error(concept.conceptId+' is retired: restore it before adding a form.');
+   onlyAPerson({knowledge:s},concept,author,'a form of it');
    if(r.claimType!==FORM_CLAIM_TYPE[type])throw Error(article(type)+' form is '+article(FORM_CLAIM_TYPE[type]).toLowerCase()+' claim (claimType).');
    if(text(r.predicate,180)!==FORM_PREDICATE[type])throw Error(article(type)+' form is claimed as "'+FORM_PREDICATE[type]+'" (its fixed predicate).');
    if(type==='applicability'&&concept.kind!=='topic'&&!Object.hasOwn(r,'architectureUnit'))throw Error('An applicability form of '+article(concept.kind).toLowerCase()+' carries its structured architecture unit (kind, mechanism, effects, obligations).');

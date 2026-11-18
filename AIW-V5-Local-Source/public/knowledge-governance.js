@@ -278,7 +278,8 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  }
  // The concept register's own command types (rc44, wp1) are the form capability's: one entry, one history line, one
  // storage bound for every knowledge.* command.
- default:{const done=forms?forms.command({p,s,r,type:command.type,at,actor,next:prefix=>next(s,prefix)}):undefined;if(done===undefined)throw Error('Choose a supported knowledge action.');selected=done;}
+ // An upsert that changes nothing writes nothing (as knowledge.project-source above): no history line, no new version.
+ default:{const done=forms?forms.command({p,s,r,type:command.type,at,actor,next:prefix=>next(s,prefix)}):undefined;if(done===undefined)throw Error('Choose a supported knowledge action.');if(done?.unchanged)return {document:p,selected:done.selected};selected=done;}
  }
  // The pinned organisation releases count against their own limit, not the project's (GR-DOM-09).
  const {organizationReleases:_pinned,...own}=s;if(JSON.stringify(own).length>8000000)throw Error('This project knowledge collection has reached its storage limit. Export it before extending it.');

@@ -23,24 +23,37 @@ const sourceOf=(s,claim,release)=>release?.organizationId?list(release.sources).
 // so no reader of released claims (knowledge structures, the snapshot, the contextual reading, the Brain, Sol's packets,
 // a product comparison, a rationale link) receives one.
 const releasedForms=p=>{const s=knowledgeState(p);return [...s.releases,...list(s.organizationReleases)].filter(r=>s.pins.includes(r.id)).flatMap(r=>r.claims.filter(c=>c?.form).map(c=>({claim:c,release:r,...knowledgeEligibility(p,c,r)})));};
-// The identity of a concept as it stands: its id, title, kind, family and facets, and each form claim exactly as it is
-// (its review included, as claimReceipt hashes a claim). Who stewards it and when it is due are not its identity.
-export function conceptHash(concept,claims){
+// What a concept's review covers (ruling B3 of 2026-11-18): every field of its record except the bookkeeping (when and by
+// whom the record was written, its history and revision, the change note, the review itself and a retirement), each form
+// claim exactly as it stands (its review included, as claimReceipt hashes a claim), and the topics mapped to it (file,
+// topic id, slice hash), sorted. So who stewards it, when it is due, what triggers a review and what it succeeds are
+// reviewed with it, and a field no command writes moves the hash as well.
+// (`forms` is hashed below as type and claim hash; `hash` and `state` are what conceptRecords derives, never stored.)
+const BOOKKEEPING=['at','actor','lastEditor','history','revision','changeNote','review','retired'],DERIVED=['forms','hash','state'];
+const cmp=(a,b)=>a<b?-1:a>b?1:0;
+export function conceptHash(concept,claims,topics){
  const forms=list(concept.forms).map(f=>{const c=list(claims).find(x=>x.id===f.claimId);return {type:f.type,claimHash:c?digest(c):null};}).sort((a,b)=>order(a.type)-order(b.type)||String(a.claimHash).localeCompare(String(b.claimHash)));
- return digest({conceptId:concept.conceptId,title:concept.title,kind:concept.kind,family:concept.family,scope:concept.scope,stages:concept.stages,lenses:concept.lenses,forms});
+ const rows=list(topics).filter(t=>t?.conceptId===concept.conceptId).map(t=>({file:t.file,topicId:t.topicId,sliceSha256:t.sliceSha256})).sort((a,b)=>cmp(String(a.file),String(b.file))||cmp(String(a.topicId),String(b.topicId)));
+ return digest({...Object.fromEntries(Object.entries(concept).filter(([k])=>!BOOKKEEPING.includes(k)&&!DERIVED.includes(k))),forms,topics:rows});
 }
 // This project's concept register, each concept with its hash and derived state. A review stands while its hash is the
 // concept's, its reviewer wrote no revision of the concept (verifierRefusal, the one second-person check) and every form
 // claim is eligible for release: verified by someone other than its author, on its exact passage, not withdrawn.
 // Who wrote a concept, for that check: its author, every editor, and the author of each claim that is one of its forms.
 export const conceptAuthors=(c,claims)=>({id:c.id,actor:c.actor,owner:'',history:[...list(c.history),...list(c.forms).map(f=>({revision:0,actor:list(claims).find(x=>x.id===f.claimId)?.actor})).filter(h=>h.actor)]});
+function reviewStands(p,s,c,hash){
+ const r=c.review,forms=list(c.forms);
+ return r?.decision==='verified'&&!!r.actor&&r.conceptHash===hash&&!verifierRefusal(conceptAuthors(c,s.claims),r.actor)&&forms.length>0&&forms.every(f=>{const claim=s.claims.find(x=>x.id===f.claimId);return !!claim?.form&&knowledgeEligibility(p,claim).eligible&&!formIssues(claim).length;});
+}
 export function conceptRecords(p){
  const s=knowledgeState(p);
- return list(s.concepts).map(c=>{
-  const hash=conceptHash(c,s.claims),r=c.review,forms=list(c.forms);
-  const stands=r?.decision==='verified'&&!!r.actor&&r.conceptHash===hash&&!verifierRefusal(conceptAuthors(c,s.claims),r.actor)&&forms.length>0&&forms.every(f=>{const claim=s.claims.find(x=>x.id===f.claimId);return !!claim?.form&&knowledgeEligibility(p,claim).eligible&&!formIssues(claim).length;});
-  return {...c,hash,state:c.retired?'retired':stands?'reviewed':'draft'};
- });
+ return list(s.concepts).map(c=>{const hash=conceptHash(c,s.claims,s.topics);return {...c,hash,state:c.retired?'retired':reviewStands(p,s,c,hash)?'reviewed':'draft'};});
+}
+// Whether a review covers a concept now: its review stands (retired or not), or a release of this project holds one of
+// its forms. What it covers is then changed by a person only (knowledge-concept-commands.js).
+export function conceptCovered(p,concept){
+ const s=knowledgeState(p);
+ return reviewStands(p,s,concept,conceptHash(concept,s.claims,s.topics))||s.releases.some(r=>r.claims.some(c=>c?.form&&c.subjectId===concept.conceptId));
 }
 // One state and one label for a form: {claim, release} for a claim as an active release holds it, {claim} for a claim
 // of this project. A released form is checked again here, on every read (its claim's eligibility and its own shape).
