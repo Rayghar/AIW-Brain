@@ -346,7 +346,7 @@ export function innerCommands(command){
  return [command];
 }
 // With them, the collections a design package states for the type, or for its prefix (rc44, slice S0): added, never in place of these.
-function pathsOf(type){const t=String(type||''),prefix=t.split('.')[0];return [...PATHS_BY_PREFIX[t]||PATHS_BY_PREFIX[prefix]||[],...EXTENSIONS.flatMap(e=>{const x=e.provenance?.paths;return x&&(Object.hasOwn(x,t)?x[t]:Object.hasOwn(x,prefix)?x[prefix]:[]);})];}
+function pathsOf(type){const t=String(type||''),prefix=t.split('.')[0];return [...PATHS_BY_PREFIX[t]||PATHS_BY_PREFIX[prefix]||[],...EXTENSIONS.flatMap(e=>{const x=e.provenance?.paths||{};return Object.hasOwn(x,t)?x[t]:Object.hasOwn(x,prefix)?x[prefix]:[];})];}
 // A command's collections: by its type, and for the lifecycle family's keep (record.keep {ids, chapter?}) those of its
 // chapter (any chapter when none is named). A retire or a restore (record.retire, record.restore) moves records with
 // their own provenance (record-lifecycle.js keeps who, when and why) and writes none.

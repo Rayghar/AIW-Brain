@@ -132,7 +132,7 @@ export function extensionIssues(e) {
   if (pv !== undefined && !(plain(pv) && Object.keys(pv).every(k => k === 'nouns' || k === 'paths') && (pv.nouns === undefined || plain(pv.nouns)) && (pv.paths === undefined || plain(pv.paths)))) say('provenance is {nouns: {path: noun}, paths: {command type or prefix: [path]}}.');
   for (const [path, noun] of Object.entries(plain(pv?.nouns) ? pv.nouns : {})) {
     if (typeof noun !== 'string' || !noun) say('the noun of “' + path + '” is a word.');
-    if (path in RECORD_NOUNS) say('the noun of “' + path + '” is built in; it stays as it is.');
+    if (path in RECORD_NOUNS && !(mine && mine.provenance?.nouns?.[path] === RECORD_NOUNS[path])) say('the noun of “' + path + '” is built in or another package\'s; it stays as it is.');
   }
   for (const [key, paths] of Object.entries(plain(pv?.paths) ? pv.paths : {})) if (!Array.isArray(paths) || !paths.every(x => typeof x === 'string' && PATH.test(x))) say('the paths of “' + key + '” are a list of collections.');
   // design and evidence keys
