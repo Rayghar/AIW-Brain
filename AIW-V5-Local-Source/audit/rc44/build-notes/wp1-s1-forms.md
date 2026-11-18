@@ -46,7 +46,8 @@ releaser's own account) against a reviewed concept and against a released, activ
 accepted with the concept's state, hash, each form's status, its releases and what a pin hands over unchanged. 36 of
 the requests lower the standing when a person sends them; each is refused to all seven and still saved for a person,
 with today's effect. Paths found beside the three the ruling names, each closed and held by the walk:
-- `knowledge.deactivate` of the release of forms, and `knowledge.withdraw` of the release or of the source;
+- `knowledge.deactivate` of the release of forms, and `knowledge.withdraw` of the release or of the source; the same
+  two for an organisation's release of forms pinned in a design project;
 - `knowledge.activate` of a plain release recorded as the successor of the release of forms (activation unpins the
   release it supersedes);
 - a revision of a covered concept that moves no hash (its forms in another order), sent as an import from the
@@ -60,8 +61,9 @@ the "joins the walk" line.
 
 **Where I went further than a ruling, or read it in a particular way (second fix-up).**
 - **E1 is not limited to a project marked as a library.** It applies wherever the register holds a covered concept or a
-  release holds a form: a library is the only place the commands write one, and a recovered project (mark cleared, G5)
-  that holds a release of forms is protected too.
+  release holds a form: a library is the only place the commands write one, a recovered project (mark cleared, G5)
+  that holds a release of forms is protected too, and so is an organisation's release of forms in the design project
+  that pins it.
 - **E1 and the verifier's third point: a contradiction that names a form is disposed of by a signed-in person's own
   request, whatever the concept's state** (the verifier's first option). Separating the contexts makes a review stand
   again and reopening them makes it lapse; an import reviews nothing. On a concept nobody verified, a superseding
@@ -555,9 +557,9 @@ items 7 to 10.
   - *(second fix-up)* what S3's commands must keep. A pin, a release with parts and a withdrawal of a concept id each
     join the walk of case S1.29 (it fails until they do), and each asks the form capability where it would lower a
     covered concept's standing: `formsRestingOn` in `knowledge-governance.js` is the one place that says which commands
-    reach a form through what it rests on. In a design project a request marked as an import can still withdraw a
-    pinned organisation release (E1 is applied where the register or a release of the project holds the concept, and
-    to the organisation's releases of forms a project holds): S3 states whether the pin's project needs more;
+    reach a form through what it rests on. In a design project a request that is nobody's neither deactivates nor
+    withdraws a pinned organisation release of forms (S1.29). What S3 adds there is its own: retiring and refreshing a
+    pin, and the organisation's assurance, which is refreshed on load and is no knowledge command;
   - *(second fix-up, G2)* a concept review may hold `verifiedBefore {actor, at}`; recovery clears `review.actor` and
     the library mark, so a recovered concept is covered again only through a release or a review made here.
 - **S4 (ruling B10 and what the fix-up adds):**

@@ -1506,6 +1506,14 @@ add('S1.29 (ruling E1): no request that is not a person\'s lowers the standing o
   // withdrawals (repository fetch, transfer and sync), which so never reach what a concept rests on.
   { const q = clone(B.reviewed); q.knowledge.sources.find(s => s.id === X.sourceId).origin = 'repository-fetch';
     assert.throws(() => send(q, 'knowledge.claim', F.formClaim(X.sourceId, 'SYN-P001', F.p001Forms().example), 'architect'), /A knowledge form rests on a source saved in this library \(knowledge\.source\): KS-\d+ was fetched from a repository/); }
+  // The organisation's release of forms, pinned in a design project: there too a request that is nobody's neither
+  // deactivates nor withdraws it (an active pin of the design would hand over nothing); a person's is saved.
+  { const published = {...K.organizationKnowledgeRelease(R, X.formsRelease, {organizationId: 'org-synthetic', id: 'org-release-1', title: 'Synthetic organisation release', actor: 'releaser', at: AT}), signature: 'synthetic-signature'};
+    const design = K.pinOrganizationKnowledge(F.bankProject(), published, {at: AT, actor: 'architect', reviewer: 'Synthetic second person', reason: 'The design uses the organisation\'s integration concepts.', verified: true}).document;
+    const off = d => ({...F.REVIEW, id: 'org-release-1', stamp: K.knowledgeStamp(d)}), gone = d => ({...F.REVIEW, id: 'org-release-1', stamp: K.knowledgeImpactStamp(d, 'org-release-1')});
+    assert.deepEqual(KC.releasedConcepts(design).map(c => [c.conceptId, c.eligible]), [['SYN-P001', true]]);
+    for (const [who, actor, opts] of NOT_A_PERSON) { assert.throws(() => send(design, 'knowledge.deactivate', off(design), actor, opts), RESTS('the active release of KC-\\d+, a form of it'), who + ': the organisation\'s release deactivated'); assert.throws(() => send(design, 'knowledge.withdraw', gone(design), actor, opts), RESTS('the withdrawal of org-release-1, a release that holds KC-\\d+, a form of it'), who + ': the organisation\'s release withdrawn'); }
+    assert.deepEqual(KC.releasedConcepts(send(design, 'knowledge.deactivate', off(design), 'architect').document), [], 'a person deactivates it'); assert.deepEqual(KC.releasedConcepts(send(design, 'knowledge.withdraw', gone(design), 'architect').document).map(c => c.eligible), [false], 'a person withdraws it'); }
   // Through the service. A reviewed concept: the lowering request of the agent account, of a draft by Sol and of an import is refused (400) and writes nothing.
   { const S = await serviceLibrary();
     try {

@@ -166,7 +166,7 @@ function formsRestingOn(s,type,r){
   ...[...s.releases,...list(s.organizationReleases)].filter(x=>x.id===r.id).flatMap(x=>hit(held(x),c=>'the withdrawal of '+x.id+', a release that holds '+c.id+', a form of it')),
   ...list(s.organizationReleases).flatMap(o=>hit(held(o).filter(c=>[organizationRef(o,c.id),organizationRef(o,c.sourceId)].includes(r.id)),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'))];
  case 'knowledge.contradiction':{const x=s.contradictions.find(c=>c.id===r.id);return x?hit(s.claims.filter(c=>c.form&&x.claimIds.includes(c.id)),c=>'the disposition of '+x.id+', which names '+c.id+', a form of it',{contradiction:x.id}):[];}
- case 'knowledge.deactivate':return hit(held(release(r.id)),c=>'the active release of '+c.id+', a form of it');
+ case 'knowledge.deactivate':return hit(held([...s.releases,...list(s.organizationReleases)].find(x=>x.id===r.id)),c=>'the active release of '+c.id+', a form of it');
  case 'knowledge.activate':{const x=release(r.id);return hit([...held(x),...(x&&s.pins.includes(x.supersedes)?held(release(x.supersedes)):[])],c=>'the active release of '+c.id+', a form of it');}
  default:return [];
  }
