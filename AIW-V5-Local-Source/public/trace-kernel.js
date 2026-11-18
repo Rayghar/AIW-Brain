@@ -92,10 +92,12 @@ export const planInScope = (environment, plan, asset) => !!environment && Array.
 // position, the journey steps' connections to responsibilities, and the plans in scope.
 function kernelOf(p, upto = null) {
   return remember(p, 'trace-kernel', 'graph:' + (upto || ''), () => {
-    const G = recordGraph(p, upto), layer = new Map(), order = new Map();
+    const G = recordGraph(p, upto), layer = new Map(), order = new Map(), on = {};
     // Only a record of the document stands on a layer: the reference graph's illustrative nodes and declared context
     // objects ('model.context.*', record-graph.js) stay in the graph to resolve relations, never as recorded design.
-    let i = 0; for (const [id, o] of G.objects) { order.set(id, i++); const l = !o.source.startsWith('model.context.') && layerOf(o); if (l) layer.set(id, l); }
+    // `on` names the layers a record of the document stands on: no hop can bring a record onto any other, so the walk
+    // reads no hop of such a layer (rc44, slice S0: a package's hops cost a document without its records nothing).
+    let i = 0; for (const [id, o] of G.objects) { order.set(id, i++); const l = !o.source.startsWith('model.context.') && layerOf(o); if (l) on[l] = layer.set(id, l); }
     const steps = new Map(), stepped = new Map();
     for (const e of G.relationships) if (stepConnection(e)) for (const [a, b] of stepEnds(e)) {
       if (layer.get(b) !== 'responsibility' || G.objects.get(a)?.type === 'responsibility') continue;
@@ -104,7 +106,7 @@ function kernelOf(p, upto = null) {
       let ys = stepped.get(b); if (!ys) stepped.set(b, ys = []); ys.push({e, other: s});
     }
     const inScope = id => { const plan = G.objects.get(id)?.record; return planInScope(G.objects.get(plan?.environmentId)?.record, plan, ['component', 'realization'].includes(layer.get(plan?.assetId))); };
-    return {G, layer, order, steps, stepped, inScope, upto};
+    return {G, layer, order, steps, stepped, inScope, upto, on};
   });
 }
 const NONE = [];
@@ -141,7 +143,7 @@ function walk(K, seeds, until = null, spine = false) {
   // them: the driver scope walks once for every driver).
   for (let r = 0, last = until ? RANK.get(until) : TRACE_LAYERS.length - 1; r <= last; r++) {
     const layer = TRACE_LAYERS[r];
-    for (const hop of HOPS_INTO.get(layer)) if (!spine || !hop.ctx) for (const l of hop.from) for (const id of held[l] || NONE) eachEdge(K, id, hop, (e, other) => reach(layer, e, other, id));
+    if (K.on[layer]) for (const hop of HOPS_INTO.get(layer)) if (!spine || !hop.ctx) for (const l of hop.from) for (const id of held[l] || NONE) eachEdge(K, id, hop, (e, other) => reach(layer, e, other, id));
   }
   return {at, hops};
 }

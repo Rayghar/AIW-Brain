@@ -118,11 +118,10 @@ export const appliesNotices=role=>!role||['owner','editor'].includes(role);
 export function createProjectStore(){
   // The project this store holds (round 4, A): the tab's, until the store adopts another one in place.
   let current=null,status='saved',role=null,projectId=activeProjectId,switching=false;
-  let lastUndo=null;
+  let lastUndo=null,why;
   const undoAvailable=()=>status==='saved'&&lastUndo&&current?.revision===lastUndo.revision&&current?.document?.workbench?.history?.at(-1)?.undo?.id===lastUndo.id?{...lastUndo}:null;
   // why: the words of a status that needs its own (rc44, slice S0; ruling D2): a tab that is behind because its own
   // save was stored and could not be shown is refused its next save in those words, never as changed by another tab.
-  let why;
   function announce(value,reason){status=value;why=reason;if(typeof document!=='undefined'){document.dispatchEvent(new CustomEvent('aiw:save',{detail:{status}}));document.dispatchEvent(new CustomEvent('aiw:action-undo',{detail:{available:undoAvailable()}}));}}
   // Tabs of this browser tell each other when they save this project (audit F-14). A tab that falls behind says
   // so, and offers the latest version, before its next save would meet a conflict. Saves by other people still
@@ -180,7 +179,7 @@ export function createProjectStore(){
     // A package that does not load once the server has answered leaves the change saved and not yet shown: the tab is
     // behind its own save (rc44, slice S0; ruling D2), and says so.
     let saved;
-    try{const result=await ensureExtensions(saved=await save(command,project));current=result;const receipt=current.document.workbench?.history?.at(-1)?.undo;lastUndo=receipt&&!receipt.used&&receipt.revision===current.revision&&command.type!=='action.undo'?{id:receipt.id,type:receipt.type,revision:receipt.revision}:null;settleDocument(current.document);if(queued===1)announce('saved');channel?.postMessage({revision:current.revision});if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('aiw:project-command',{detail:commandChangeDetail(command,result)}));return result}
+    try{current=await ensureExtensions(saved=await save(command,project));const receipt=current.document.workbench?.history?.at(-1)?.undo;lastUndo=receipt&&!receipt.used&&receipt.revision===current.revision&&command.type!=='action.undo'?{id:receipt.id,type:receipt.type,revision:receipt.revision}:null;settleDocument(current.document);if(queued===1)announce('saved');channel?.postMessage({revision:current.revision});if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('aiw:project-command',{detail:commandChangeDetail(command,saved)}));return saved}
     catch(error){announce(saved?'behind':'error',saved&&(error.message='Saved, not shown yet. '+error.message));throw error}
   }
   const store={get value(){return current},get status(){return status},get role(){return role},

@@ -337,6 +337,13 @@ await block('1 record graph and trail', () => {
     if (off) assert.throws(() => assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: 'relation'})), /moved on the built-in layer “component”/, 'and so is a relation a built-in hop reads between two built-in records');
     assert.ok(assertBuiltInTrailsUnchanged(p0, withFinalReview({...p0, trespass: ''})) > 0); }
   try { forge = 'finding'; assert.throws(() => assertFindingIdsUnique(withFinalReview(withSynthetic(p, {title: 'Unbound'}))), /Two findings share the id “C3:synthetic-unbound:SYN-003”/); } finally { forge = ''; }
+  // should-fix 8: a package's hops cost a document nothing while it holds no record of the layer's type: the walk
+  // does not read them (the hop below counts every relation it is asked about)
+  { let asked = 0; X.registerExtension({id: 'ab-counting', objectTypes: {counted: {label: 'Counted', chapter: 2, level: 'intent', prefix: 'CNT'}}, records(q, add) { for (const r of list(q.counted)) add(r, 'counted', 'counted.' + r.id); }, layers: {counted: 'counted'}, hops: [{layer: 'counted', types: null, from: ['requirement', 'component', 'responsibility'], dir: 'out', ctx: true, only: () => { asked++; return true; }}]});
+    for (const r of reviewRequirements(p0)) { kernel.requirementTrace(p0, r.id); kernel.requirementSpine(p0, r.id); }
+    assert.equal(asked, 0, 'no hop of a package is read for a document that holds no record of its layer\'s type');
+    const q = withFinalReview({...p0, counted: [{id: 'CNT-001', ref: 'CNT-001', title: 'Counted'}]}); for (const r of reviewRequirements(q)) kernel.requirementTrace(q, r.id);
+    assert.ok(asked > 0, 'and is read once the document holds one'); assert.ok(assertBuiltInTrailsUnchanged(p0, q) > 0); }
   if (second) assert.ok(!kernel.requirementTrace(p, second).has('SYN-001'), 'a record reaches only the trails its hops lead from');
   assert.ok(kernel.TRACE_LAYERS.indexOf('synthetic') > kernel.TRACE_LAYERS.indexOf('path'), 'a package\'s layer stands after the built-in layers');
   assert.ok(kernel.TRACE_LAYERS.indexOf('other') < kernel.TRACE_LAYERS.indexOf('synthetic'), 'in the packages\' id order');
@@ -603,12 +610,17 @@ await block('D2 client', async () => {
   const names = ids => ({document: {...reference('bank-payment'), workspace: {template: 'bank-payment', createdAt: AT, packages: ids}}, revision: 1});
   // a document that names a package with no route stub is not opened as if the records were not there
   const unknown = await X.ensureExtensions(names(['p99-unknown'])).then(() => null, e => e);
-  assert.ok(unknown instanceof Error, 'ensureExtensions rejects for a package this browser has no stub of'); assert.equal(unknown.message, 'The design package p99-unknown did not load.', 'naming the package');
+  assert.ok(unknown instanceof Error, 'ensureExtensions rejects for a package this browser has no stub of'); assert.equal(unknown.message, 'Package p99-unknown did not load.', 'naming the package');
   X.registerExtension({id: 'p98-known-route', needs: () => false, load: async () => {}});
   { const known = names(['p98-known']); assert.equal(await X.ensureExtensions(known), known, 'a package whose stub is registered (<id>-route) is the browser\'s to load'); }
   let mode = 'ok';
   X.registerExtension({id: 'zz-synthetic-route', needs: p => !!p.synthetic, load: async () => {}});
-  X.registerExtension({id: 'p97-failing-route', needs: p => mode !== 'ok' && !!p.synthetic, load: async () => { throw new TypeError('Failed to fetch dynamically imported module: https://aiw.test/chunk-ABC.js'); }});
+  X.registerExtension({id: 'p97-failing-route', needs: p => mode !== 'ok' && (!!p.synthetic || !!p.failing), load: async () => { if (mode === 'throws') throw new ReferenceError('x is not defined'); throw new TypeError('Failed to fetch dynamically imported module: https://aiw.test/chunk-ABC.js'); }});
+  // should-fix 10: a package that does not load, or whose module throws while loading, is said in words, with the
+  // package named: not as the browser words a failed import, nor as the module's own error reads
+  { const failing = {document: {...reference('bank-payment'), failing: {}}, revision: 1};
+    for (mode of ['throws', 'network']) { const e = await X.ensureExtensions(failing).then(() => null, x => x); assert.ok(e instanceof Error, mode); assert.equal(e.message, 'Package p97-failing-route did not load.', 'when the module ' + (mode === 'throws' ? 'throws while loading' : 'cannot be fetched')); }
+    mode = 'ok'; assert.equal(await X.ensureExtensions(failing), failing); }
   // the store: a load that fails after the server answered "saved" is saved and not yet shown
   const h = await harness(), realFetch = globalThis.fetch;
   globalThis.fetch = (url, options = {}) => { const headers = new Headers(options.headers); headers.set('oai-authenticated-user-id', A); if (options.method === 'POST') headers.set('Origin', 'https://aiw.test'); return worker.fetch(new Request(new URL(url, 'https://aiw.test'), {...options, headers}), h.env); };
@@ -617,7 +629,7 @@ await block('D2 client', async () => {
     mode = 'network';
     const failed = await store.command({type: 'synthetic.save', payload: {title: 'Saved while the package cannot load'}}).then(() => null, e => e);
     assert.ok(failed instanceof Error, 'the caller is told'); assert.equal(store.status, 'behind', 'the store goes to behind, not to error');
-    assert.match(failed.message, /^Saved, not shown yet\. \S/, 'reported as saved and not yet shown, with the cause'); assert.equal(store.value.revision, shown, 'the tab shows what it showed');
+    assert.equal(failed.message, 'Saved, not shown yet. Package p97-failing-route did not load.', 'reported as saved and not yet shown, with the cause in words'); assert.equal(store.value.revision, shown, 'the tab shows what it showed');
     const server = await (await h.api('/api/project' + h.q)).json(); assert.equal(server.revision, shown + 1, 'the server saved it'); assert.equal(server.document.synthetic.records.at(-1).title, 'Saved while the package cannot load');
     // the next save from that tab is refused before it is sent, in the same words: nothing says another tab changed the project
     const again = await store.command({type: 'guide.start', payload: {chapter: 1}}).then(() => null, e => e);

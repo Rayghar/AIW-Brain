@@ -226,11 +226,10 @@ export const actionReady=a=>!!(a.title&&a.owner&&a.due&&a.acceptance&&a.objectId
 // 'cause', GR-GOV-13) keeps each finding with its own stamp: a change to one finding's inputs reopens that finding alone.
 // The stamp a treatment recorded before round 12 took: the whole design's, with the finding as its rule raised it, worked
 // out only when such a treatment is read (once per settled document or pass), never kept on every finding.
-const evidenceRaw=inheritedSupplement;
 export function legacyStampOf(p,f){return f?remember(p,'review:legacy-stamp',f.id,()=>{
  const m=/^C(\d+):/.exec(f.id);
  if(m){const c=CHAPTERS.find(x=>x.id===Number(m[1])),raw=c?c.checks(p).find(x=>x.id===f.sourceId):null;return raw?reviewFingerprint([reviewSourceStamp(p),c.id,raw]):null;}
- if(f.id.startsWith('EVIDENCE:')){const raw=evidenceRaw(p).find(x=>x.id===f.sourceId);return raw?reviewFingerprint([reviewSourceStamp(p),raw]):null;}
+ if(f.id.startsWith('EVIDENCE:')){const raw=inheritedSupplement(p).find(x=>x.id===f.sourceId);return raw?reviewFingerprint([reviewSourceStamp(p),raw]):null;}
  if(f.id.startsWith('ANTI:')){const raw=antiPatternFindings(p).find(x=>x.sourceId===f.sourceId);return raw?reviewFingerprint([reviewSourceStamp(p),raw]):null;}
  return null;
 }):null;}

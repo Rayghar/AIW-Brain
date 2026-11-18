@@ -48,11 +48,15 @@ export function extendTable(table,read,then){
 // once they have loaded (project-store.js, where it reads a project and where a save answers). A document says which
 // packages have written into it (workspace.packages, written by the server's boundary: the lead's ruling D2 of
 // 2026-11-18): one that names a package this browser has no route stub of (the stub of `id` is registered as
-// `id-route`) is not opened as if those records were not there: the read is refused in a sentence that names the
-// package.
+// `id-route`) is not opened as if those records were not there. That, a package that does not load and a module that
+// throws while loading (the browser's or the module's own words are not the reader's) are refused in one sentence
+// that names the package. The packages are loaded one after another, so the one named is the one that failed; a
+// stub that is not there fails as a load does (reading its id throws).
 export const ensureExtensions=async project=>{
- const d=project.document;
- for(const id of d.workspace?.packages||[])if(!E[id+'-route'])throw Error('The design package '+id+' did not load.');
- await Promise.all(EXTENSIONS.map(e=>e.needs?.(d)&&e.load()));
+ let d=project.document,id;
+ try{
+  for(id of d.workspace?.packages||[])E[id+'-route'].id;
+  for(const e of EXTENSIONS)id=e.id,e.needs?.(d)&&await e.load();
+ }catch{throw Error('Package '+id+' did not load.')}
  return project;
 };
