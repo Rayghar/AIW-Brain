@@ -148,6 +148,25 @@ function flagOverlaps(s,c,at,forms=null){
  if(held.length){if(!forms)throw Error('This claim contradicts the knowledge form '+held[0].id+': a contradiction with a form is recorded through the concept register, which asks who may record it. This entry handles no form.');forms.opposes(s,c,held);}
  for(const other of overlaps)s.contradictions.push({id:next(s,'KX'),claimIds:[other.id,c.id],status:'open',explanation:'Different polarities for the same subject and predicate. Compare applicability contexts before using either claim.',at});
 }
+// What a command would do to something a claim that carries a form rests on (rc44, wp1; ruling E1 of 2026-11-18): a
+// source of another text that supersedes the form's source; a withdrawal of the claim, of its source or of a release
+// that holds it; a disposition of a contradiction that names it; the activation or deactivation of a release that holds
+// it, and the activation of a release recorded as the successor of an active one that does. Each makes the form
+// ineligible, or changes what an active release offers of it, so each is the form capability's to allow, which asks who
+// sends it. An entry that holds none does none of them. A command that touches no form is not read here.
+function formsRestingOn(s,type,r){
+ const held=x=>list(x?.claims).filter(c=>c?.form),hit=(claims,what,more={})=>claims.map(claim=>({claim,what:what(claim),...more})),release=id=>s.releases.find(x=>x.id===id);
+ switch(type){
+ case 'knowledge.source':{const prior=r.supersedes?s.sources.find(x=>x.id===r.supersedes):null;return prior&&typeof r.body==='string'&&sha256(r.body)!==prior.hash?hit(s.claims.filter(c=>c.form&&c.sourceId===prior.id),c=>'a source that supersedes '+prior.id+', which '+c.id+', a form of it, rests on'):[];}
+ case 'knowledge.withdraw':return [...hit(s.claims.filter(c=>c.form&&c.id===r.id),c=>'the withdrawal of '+c.id+', a form of it'),...hit(s.claims.filter(c=>c.form&&c.sourceId===r.id),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'),
+  ...[...s.releases,...list(s.organizationReleases)].filter(x=>x.id===r.id).flatMap(x=>hit(held(x),c=>'the withdrawal of '+x.id+', a release that holds '+c.id+', a form of it')),
+  ...list(s.organizationReleases).flatMap(o=>hit(held(o).filter(c=>[organizationRef(o,c.id),organizationRef(o,c.sourceId)].includes(r.id)),c=>'the withdrawal of '+r.id+', which '+c.id+', a form of it, rests on'))];
+ case 'knowledge.contradiction':{const x=s.contradictions.find(c=>c.id===r.id);return x?hit(s.claims.filter(c=>c.form&&x.claimIds.includes(c.id)),c=>'the disposition of '+x.id+', which names '+c.id+', a form of it',{contradiction:x.id}):[];}
+ case 'knowledge.deactivate':return hit(held(release(r.id)),c=>'the active release of '+c.id+', a form of it');
+ case 'knowledge.activate':{const x=release(r.id);return hit([...held(x),...(x&&s.pins.includes(x.supersedes)?held(release(x.supersedes)):[])],c=>'the active release of '+c.id+', a form of it');}
+ default:return [];
+ }
+}
 // What the stewards may decide about an item in their queue (knowledge-stewardship.js).
 export const STEWARD_DECISIONS={captured:'Captured as project knowledge',holds:'The knowledge and the design stand',revisit:'Revisit the record',withdrawn:'Withdrew what the advice rested on'};
 // The original source a disagreement becomes: the project's own record of it. Line 4 is the architect's words.
@@ -184,6 +203,9 @@ function sourceInput(raw,at,actor,id){
 export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),actor='local-review',{forms=null,limits=null}={}){
  const p=copy(input),s=init(p),r=command.payload||{},L=limits||knowledgeLimits(p);let selected='';
  if(s.history.length>=L.history)throw Error('Export the knowledge history before extending this project further.');
+ // What a form rests on is superseded, withdrawn, disposed of, activated or deactivated through the form capability only.
+ const rests=formsRestingOn(s,command.type,r);
+ if(rests.length){if(!forms)throw Error('This request supersedes, withdraws, disposes of or changes the release of what the knowledge form '+rests[0].claim.id+' rests on: that is recorded through the concept register, which asks who may record it. This entry handles no form.');forms.rests(p,rests);}
  switch(command.type){
  case 'knowledge.project-source':{
   const original=list(p.coauthoring?.sources).find(x=>x.id===r.sourceId),v=original?.versions?.at(-1);if(!v)throw Error('Choose a saved project source.');

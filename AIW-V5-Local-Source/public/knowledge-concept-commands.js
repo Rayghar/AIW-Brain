@@ -148,7 +148,10 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
   }
   // Saved again as it is, a concept is not written: no revision, no new time, no new editor, no history line.
   if(sameFields(existing,c))return {selected:existing.id,unchanged:true};
-  if(conceptHash({...existing,...c},s.claims,s.topics)!==conceptHash(existing,s.claims,s.topics))onlyAPerson(p,existing,author,'its record');
+  // A request that is nobody's writes no revision of a covered concept (rulings B3 and E1): one that moves its hash
+  // changes what the review covered, and one that does not (its forms in another order, a change note) would still add
+  // its sender to the concept's editors, whom the second-person check reads, and so could make the review lapse.
+  onlyAPerson(p,existing,author,'its record');
   if(existing.history.length>=200)throw Error(existing.conceptId+' has 200 revisions. Record a successor concept.');
   // An edit keeps the author and every earlier editor (they never review it); a review made of another hash lapses on read.
   Object.assign(existing,c,{revision:existing.revision+1,lastEditor:actor});existing.history.push({revision:existing.revision,at,actor,change:text(r.reason,300)||'Edited'});return existing.id;
@@ -191,6 +194,11 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
    if(!concept)throw Error(String(r.subjectId).slice(0,80)+' is not in the concept register: a form belongs to a registered concept (knowledge.concept).');
    if(concept.retired)throw Error(concept.conceptId+' is retired: restore it before adding a form.');
    onlyAPerson({knowledge:s},concept,author,'a form of it');
+   // A form rests on a source saved in the library. A source fetched from a repository is superseded and withdrawn by
+   // the repository's own signed revisions and notices (fetch, transfer, sync), which name no author: they so never
+   // reach what a concept rests on (ruling E1).
+   const source=s.sources.find(x=>x.id===r.sourceId);
+   if(source?.origin==='repository-fetch')throw Error('A knowledge form rests on a source saved in this library (knowledge.source): '+source.id+' was fetched from a repository, which keeps its own signed revisions and withdrawals.');
    if(r.claimType!==FORM_CLAIM_TYPE[type])throw Error(article(type)+' form is '+article(FORM_CLAIM_TYPE[type]).toLowerCase()+' claim (claimType).');
    if(text(r.predicate,180)!==FORM_PREDICATE[type])throw Error(article(type)+' form is claimed as "'+FORM_PREDICATE[type]+'" (its fixed predicate).');
    // The structured unit is the typed, machine-read decision structure: only an applicability form carries one.
@@ -205,6 +213,23 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
   // request that is nobody's to make the review lapse first and change the concept afterwards. On a draft concept it
   // opens as on rc.10.73.42.
   opposes(s,c,held){for(const x of held){const concept=list(s.concepts).find(k=>k.conceptId===x.subjectId);if(concept)onlyAPerson({knowledge:s},concept,author,'a claim that contradicts '+x.id+', a form of it');}},
+  // No request that is not a person's lowers the standing of a reviewed or released concept (ruling E1 of 2026-11-18).
+  // `hits` are the form claims a command would reach through what they rest on (knowledge-governance.js formsRestingOn):
+  // a superseding source, a withdrawal, the activation or deactivation of a release. Where the form's concept is covered
+  // (verified here at some time, or in a release of the project or of the organisation), only a signed-in person sends
+  // it, with today's effect; an import brings a changed rendition as a new source and a person sends the supersession.
+  // On a concept nobody verified the request is accepted as on rc.10.73.42. A contradiction that names a form is disposed
+  // of by a signed-in person whatever the concept's state: separating the contexts makes a review stand again and
+  // reopening them makes it lapse, and an import reviews nothing.
+  rests(p,hits){
+   const refusal=kindRefusal(author);if(!refusal)return;
+   const s=knowledgeState(p);
+   for(const {claim:c,what,contradiction} of hits){
+    if(contradiction)throw Error(contradiction+' names the knowledge form '+c.id+': a contradiction with a form is disposed of by a signed-in person\'s own request. '+refusal);
+    const concept=list(s.concepts).find(k=>k.conceptId===c.subjectId);
+    if([...s.releases,...list(s.organizationReleases)].some(x=>x.claims.some(k=>k?.form&&k.subjectId===c.subjectId))||concept&&conceptCovered(p,concept))throw Error(c.subjectId+' is reviewed or in a release: only a signed-in person changes what its review covered ('+what+'). '+refusal);
+   }
+  },
   // A form's review is a person's own request; verified, by a second person, with each item checked and the form valid again.
   review(p,c,r,actor){
    libraryOnly(knowledgeState(p));const refusal=r.decision==='verified'?secondPerson({id:c.id,actor:c.actor,history:[]},actor,author):kindRefusal(author);if(refusal)throw Error(refusal);

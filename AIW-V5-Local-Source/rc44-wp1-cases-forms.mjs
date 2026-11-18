@@ -1369,3 +1369,140 @@ add('S1.28 (ruling G2): a concept that was ever reviewed, or is in a release, st
     } finally { S.close(); }
   }
 });
+
+// ------------------------------------------------------------------------------------------------ 29
+// Every knowledge.* type the product names anywhere in its code (client and server modules, the scripts): the command
+// types of the entry, and the history types of the repository and organisation routes, which are no command of it.
+const productKnowledgeTypes = () => [...new Set([['public', /\.js$/], ['.', /\.js$/], ['shared', /\.js$/], ['scripts', /\.mjs$/]].flatMap(([dir, ext]) => readdirSync(dir).filter(f => ext.test(f)).flatMap(f => readFileSync(dir + '/' + f, 'utf8').match(/'knowledge\.[a-z-]+'/g) || [])))].map(s => s.slice(1, -1)).sort();
+// The library the walk is sent against, as the commands build it: SYN-P001 with its nine forms verified, its topic mapped,
+// a second concept, suggested passages, a verified plain claim and a plain candidate on the same source, and a person's
+// opposing claim whose contradiction with the applicability form a second person separated; then the concept reviewed
+// (`reviewed`); then its forms released and active, the plain claim released, active and linked to a record, and a plain
+// release a person recorded as the successor of the release of forms and did not activate (`released`, with an active
+// concept pin written into the document: the pin's command is slice S3).
+async function walkBase() {
+  const L = await library({verify: true, base: F.legacyWalkBase()}), requirement = L.document.artefacts.find(a => a.type === 'requirement').id, imported = F.importedBy('importer');
+  const PLAIN = {sourceId: L.sourceId, lineStart: 16, lineEnd: 16, subjectId: 'Outbox', predicate: 'applies to', statement: 'Use an outbox where a booking must lead to a notice.', claimType: 'applicability', polarity: 'supports', conditions: ['A local booking must cause a publication.'], limitations: ['Receivers need their own identity record.']};
+  L.k('topic', TOPIC(L.sourceId), 'importer', imported); L.k('concept', {...CONCEPT, conceptId: 'SYN-P002', title: 'Idempotent receiver'}, 'importer', imported); L.k('suggest', {sourceId: L.sourceId}, 'importer');
+  const plain = L.k('claim', PLAIN, 'importer'), candidate = L.k('claim', {...PLAIN, lineStart: 7, lineEnd: 7, subjectId: 'Relay', statement: 'A relay publishes stored notices.'}, 'importer');
+  L.k('review', {...F.REVIEW, id: plain}, 'reviewer'); L.k('claim', OPPOSING(L.sourceId), 'architect');
+  const contradiction = L.document.knowledge.contradictions.at(-1).id; L.k('contradiction', {...DISPOSE, id: contradiction, status: 'context-separated'}, 'reviewer');
+  L.k('concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer');
+  const reviewed = L.document, formsRelease = L.k('release', {...F.REVIEW, title: 'Synthetic integration concepts 1', claimIds: F.FORM_ORDER.map(t => L.claimIds[t])}, 'releaser');
+  L.k('activate', {...F.REVIEW, id: formsRelease, stamp: K.knowledgeStamp(L.document)}, 'releaser');
+  const plainRelease = L.k('release', {...F.REVIEW, title: 'Synthetic plain claims', claimIds: [plain]}, 'releaser'); L.k('activate', {...F.REVIEW, id: plainRelease, stamp: K.knowledgeStamp(L.document)}, 'releaser');
+  const linkId = L.k('link', {...F.REVIEW, claimId: plain, releaseId: plainRelease, objectId: requirement}, 'architect');
+  const successor = L.k('release', {...F.REVIEW, title: 'Synthetic plain claims, recorded as the successor of the concepts', claimIds: [plain], supersedes: formsRelease}, 'releaser');
+  const released = clone(L.document); released.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: formsRelease, status: 'active'}];
+  return {reviewed, released, X: {PLAIN, REVIEWED: {reviewed: true, reviewer: 'Synthetic second person', reason: 'Checked the synthetic record.'}, requirement, sourceId: L.sourceId, conceptRecordId: L.conceptRecordId, claimIds: L.claimIds, plain, candidate, contradiction, formsRelease, plainRelease, successor, linkId}};
+}
+// The walk: for every type, the requests sent, each [what, the payload for a document, the stages in which a person's
+// same request lowers the standing of SYN-P001 (none: it lowers nothing in either)].
+function walkRequests(X) {
+  const BOTH = ['reviewed', 'released'], all = F.p001Forms(), edit = (d, change) => ({...CONCEPT, id: X.conceptRecordId, forms: d.knowledge.concepts[0].forms, ...change}), retire = {id: X.conceptRecordId, reason: 'Synthetic.', reviewer: 'Synthetic steward', reviewed: true};
+  const withdraw = id => d => ({...F.REVIEW, id, stamp: K.knowledgeImpactStamp(d, id)}), pin = id => d => ({...F.REVIEW, id, stamp: K.knowledgeStamp(d)}), review = (id, decision) => () => ({...F.REVIEW, formChecked: true, id, decision}), noCommand = [['sent as a command', () => ({id: X.formsRelease, connectorId: 'synthetic', path: 'README.md', supersedes: X.sourceId})]];
+  return {
+    'knowledge.project-source': [['a project source', () => ({sourceId: 'SRC-900'})]],
+    'knowledge.source': [['another source', () => F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)], ['a source that supersedes, with another text, the one the forms rest on', () => SECOND_EDITION(X.sourceId), BOTH], ['the same text again, as a superseding source', () => ({...F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001), supersedes: X.sourceId})]],
+    'knowledge.suggest': [['the passages of a source', () => ({sourceId: X.sourceId})]],
+    'knowledge.dismiss-suggestion': [['an open passage', d => ({id: d.knowledge.suggestions.find(s => s.status === 'open').id})]],
+    'knowledge.claim': [['a plain claim on another subject', () => ({...X.PLAIN, subjectId: 'Broker', statement: 'A broker confirms a notice.'})],
+      ['a claim from a suggested passage', d => { const s = d.knowledge.suggestions.filter(x => x.status === 'open')[1]; return {...X.PLAIN, suggestionId: s.id, lineStart: s.lineStart, lineEnd: s.lineEnd, predicate: 'is read as', statement: 'A passage of the synthetic handbook, interpreted.', claimType: 'benefit'}; }],
+      ['a plain claim that opposes the applicability form', () => ({...OPPOSING(X.sourceId), statement: 'An outbox is avoided where nothing is published.'}), BOTH], ['a form added', () => F.formClaim(X.sourceId, 'SYN-P001', all.example)], ['an opposing applicability form', () => ({...F.formClaim(X.sourceId, 'SYN-P001', all.applicability), polarity: 'prohibits'}), BOTH]],
+    'knowledge.capture': [['a disagreement that limits the applicability form', () => ({assessmentId: 'SA-901', subject: 'Transactional outbox', subjectId: 'SYN-P001', predicate: 'applies when', statement: 'Within this project the carrier gateway already retries a failed notice.', conditions: 'Applies to the carrier notice.', limitations: 'Says nothing of other gateways.', objectId: X.requirement, reviewer: 'Synthetic steward', reason: 'Captured from the architect\'s disagreement.'}), BOTH]],
+    'knowledge.steward': [['the stewards\' decision on a disagreement', () => ({...X.REVIEWED, key: 'dismissal:SA-902', decision: 'holds'})]],
+    'knowledge.review': [['a form rejected', review(X.claimIds.definition, 'rejected'), ['reviewed']], ['a form disputed', review(X.claimIds.applicability, 'disputed'), ['reviewed']], ['a form verified again', review(X.claimIds.mechanism, 'verified'), ['reviewed']], ['a plain candidate verified', () => ({...F.REVIEW, id: X.candidate})]],
+    'knowledge.contradiction': [['the separated contradiction with a form, reopened', () => ({...DISPOSE, id: X.contradiction, status: 'open'}), BOTH], ['separated again', () => ({...DISPOSE, id: X.contradiction, status: 'context-separated'})], ['marked resolved', () => ({...DISPOSE, id: X.contradiction, status: 'resolved'})]],
+    'knowledge.release': [['the forms', () => ({...F.REVIEW, title: 'Synthetic forms again', claimIds: Object.values(X.claimIds)})], ['a plain release recorded as the successor of the release of forms', () => ({...F.REVIEW, title: 'Synthetic successor', claimIds: [X.plain], supersedes: X.formsRelease})]],
+    'knowledge.activate': [['the release of forms', pin(X.formsRelease)], ['the plain release that supersedes the release of forms', pin(X.successor), ['released']], ['the plain release', pin(X.plainRelease)]],
+    'knowledge.deactivate': [['the release of forms', pin(X.formsRelease), ['released']], ['the plain release', pin(X.plainRelease)]],
+    'knowledge.withdraw': [['the source the forms rest on', withdraw(X.sourceId), BOTH], ['the definition', withdraw(X.claimIds.definition), BOTH], ['the applicability form', withdraw(X.claimIds.applicability), BOTH], ['the release of forms', withdraw(X.formsRelease), ['released']], ['a plain candidate', withdraw(X.candidate)], ['a method pack', withdraw('SA-PLAYBOOK')]],
+    'knowledge.unlink': [['a rationale link', () => ({...X.REVIEWED, id: X.linkId})]],
+    'knowledge.link': [['a released plain claim', () => ({...X.REVIEWED, claimId: X.plain, releaseId: X.plainRelease, objectId: X.requirement})], ['a released form', () => ({...X.REVIEWED, claimId: X.claimIds.applicability, releaseId: X.formsRelease, objectId: X.requirement})]],
+    'knowledge.library': [['unmarked', () => ({...LIBRARY_MARK, enabled: false})], ['marked again', () => LIBRARY_MARK]],
+    'knowledge.topic': [['its topic unmapped', () => ({...TOPIC(X.sourceId), conceptId: null, reason: 'Unmapped.'}), BOTH], ['another topic mapped to it', () => ({...TOPIC(X.sourceId), topicId: 'SYN-P001-B', sourceId: null}), BOTH], ['its topic retitled', () => ({...TOPIC(X.sourceId), title: 'Transactional outbox (retitled)'})]],
+    'knowledge.concept': [['its review date', d => edit(d, {reviewDue: '2099-12-31'}), BOTH], ['a form taken off', d => edit(d, {forms: d.knowledge.concepts[0].forms.slice(0, 8)}), BOTH], ['its forms in another order', d => edit(d, {forms: [...d.knowledge.concepts[0].forms].reverse()})], ['saved again as it is', d => edit(d, {})], ['another concept', () => ({...CONCEPT, conceptId: 'SYN-P003', title: 'Claim check'})]],
+    'knowledge.concept-review': [['rejected', () => ({...CONCEPT_REVIEW, id: X.conceptRecordId, decision: 'rejected'}), BOTH], ['disputed', () => ({...CONCEPT_REVIEW, id: X.conceptRecordId, decision: 'disputed'}), BOTH], ['verified again', () => ({...CONCEPT_REVIEW, id: X.conceptRecordId})]],
+    'knowledge.concept-retire': [['retired', () => retire, BOTH]],
+    'knowledge.concept-restore': [['restored', () => retire]],
+    'knowledge.fetch': noCommand, 'knowledge.organization-pin': noCommand, 'knowledge.repository-sync': noCommand, 'knowledge.repository-transfer': noCommand
+  };
+}
+add('S1.29 (ruling E1): no request that is not a person\'s lowers the standing of a reviewed or released concept. The walk: every knowledge.* command type the product names, sent by an agent account, a draft by Sol, an import, a request that states no author and one whose author names no account (and by the reviewer\'s and the releaser\'s own accounts as an import and a draft), against a reviewed concept and against a released, active one, leaves the concept\'s state, its hash, each form\'s status, its releases and what a pin hands over as they were; a person\'s same request keeps today\'s effect; a type added later joins the walk or this case fails', async () => {
+  const {CC, KC} = await mods(), B = await walkBase(), X = B.X, W = walkRequests(X);
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type, payload}, AT, actor, opts);
+  // A type the product names and the walk does not send fails the case, and so does a row for a type that no longer exists.
+  assert.deepEqual(Object.keys(W).sort(), productKnowledgeTypes(), 'every knowledge.* type the product names is a row of the walk: a command type added later joins it');
+  // The standing of the concept: its state and hash, whether it is covered, each form's status and reasons, the releases
+  // it is usable in, what its active pin hands a design record (content, unit and receipt of each form), and the teaching forms offered.
+  const standing = doc => { const c = KC.conceptRecords(doc).find(x => x.conceptId === 'SYN-P001'), reading = KC.conceptReading(doc, 'SYN-P001');
+    return JSON.stringify({state: c.state, hash: c.hash, covered: KC.conceptCovered(doc, c), forms: reading.forms.map(f => [f.type, f.claimId, f.releaseId, f.status, f.reasons, f.content === null]), releases: reading.releases, pin: KC.conceptDecisionReading(doc, 'KU-0001'), teaching: KC.conceptTeachingForms(doc, 'SYN-P001').map(f => [f.type, f.status])}); };
+  { const r = JSON.parse(standing(B.reviewed)), a = JSON.parse(standing(B.released)); assert.equal(r.state, 'reviewed'); assert.deepEqual(r.forms.map(f => f[3]), Array(9).fill('reviewed')); assert.equal(r.pin.forms.length, 0);
+    assert.equal(a.state, 'reviewed'); assert.deepEqual(a.forms.map(f => f[3]), Array(9).fill('released')); assert.deepEqual(a.releases.map(x => x.eligible), [true]); assert.deepEqual(a.pin.forms.map(f => f.type), ['applicability', 'selection', 'composition', 'calculation', 'verification']); assert.deepEqual(a.pin.reasons, []); }
+  const KINDS = [...NOT_A_PERSON, ['an import sent from the account of the concept\'s reviewer', 'reviewer', F.importedBy('reviewer')], ['a draft by Sol sent from the releaser\'s account', 'releaser', F.solDraft('releaser')]];
+  const REFUSAL = /signed-in person|a person signs in|does not verify/, tally = {sent: 0, refused: 0, accepted: 0, lowering: 0};
+  for (const [stage, doc] of [['reviewed', B.reviewed], ['released', B.released]]) {
+    const before = standing(doc);
+    for (const [type, requests] of Object.entries(W)) for (const [what, build, lowers = []] of requests) {
+      const name = stage + ': ' + type + ' (' + what + ')';
+      for (const [who, actor, opts] of KINDS) {
+        let after = null, error = null; try { after = send(doc, type, build(doc), actor, opts).document; } catch (e) { error = e; }
+        tally.sent++; tally[error ? 'refused' : 'accepted']++;
+        if (after) assert.equal(standing(after), before, name + ', sent by ' + who + ': the request was accepted and the standing of SYN-P001 is not as it was');
+        if (lowers.includes(stage)) { assert(error, name + ', sent by ' + who + ': a request that lowers the standing was accepted'); assert.match(error.message, REFUSAL, name + ', sent by ' + who); }
+      }
+      // A person's request keeps today's effect: it is saved, and the standing is lowered by it.
+      if (lowers.includes(stage)) { tally.lowering++; assert.notEqual(standing(send(doc, type, build(doc), 'architect').document), before, name + ': a person\'s request keeps its effect'); }
+    }
+    // The four types of the repository and organisation routes are no command of the entry, whoever sends them.
+    for (const type of ['knowledge.fetch', 'knowledge.organization-pin', 'knowledge.repository-sync', 'knowledge.repository-transfer']) assert.throws(() => send(doc, type, W[type][0][1](doc), 'architect'), /Choose a supported knowledge action/, type);
+  }
+  assert(tally.accepted > 100 && tally.refused > 100 && tally.lowering >= 30, JSON.stringify(tally)); console.log('     the walk: ' + JSON.stringify(tally) + ' over ' + Object.keys(W).length + ' types and ' + KINDS.length + ' kinds of request');
+  // The words of the refusals this ruling adds.
+  const RESTS = what => new RegExp('SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered \\(' + what), bot = (doc, type, payload) => () => send(doc, type, payload, 'bot', F.agent('bot')), R = B.released;
+  assert.throws(bot(R, 'knowledge.source', SECOND_EDITION(X.sourceId)), RESTS('a source that supersedes KS-\\d+, which KC-\\d+, a form of it, rests on'));
+  assert.throws(bot(R, 'knowledge.withdraw', {...F.REVIEW, id: X.sourceId, stamp: K.knowledgeImpactStamp(R, X.sourceId)}), RESTS('the withdrawal of KS-\\d+, which KC-\\d+, a form of it, rests on'));
+  assert.throws(bot(R, 'knowledge.deactivate', {...F.REVIEW, id: X.formsRelease, stamp: K.knowledgeStamp(R)}), RESTS('the active release of KC-\\d+, a form of it'));
+  assert.throws(bot(R, 'knowledge.activate', {...F.REVIEW, id: X.successor, stamp: K.knowledgeStamp(R)}), RESTS('the active release of KC-\\d+, a form of it'));
+  assert.throws(bot(R, 'knowledge.contradiction', {...DISPOSE, id: X.contradiction, status: 'open'}), /KX-\d+ names the knowledge form KC-\d+: a contradiction with a form is disposed of by a signed-in person's own request\. An agent or Sol reviews nothing/);
+  // On a concept nobody verified the same requests are accepted, as on rc.10.73.42 (a draft is nobody's review); a
+  // contradiction that names a form is disposed of by a person there too, as a form is reviewed by one.
+  { const D = await library({forms: ['definition', 'applicability'], verify: true}), d0 = D.document; assert.equal(KC.conceptCovered(d0, d0.knowledge.concepts[0]), false);
+    for (const [who, actor, opts] of NOT_A_PERSON) { assert.equal(send(d0, 'knowledge.source', SECOND_EDITION(D.sourceId), actor, opts).document.knowledge.sources.length, 2, who + ': a superseding source on a draft concept');
+      assert.equal(send(d0, 'knowledge.withdraw', {...F.REVIEW, id: D.claimIds.definition, stamp: K.knowledgeImpactStamp(d0, D.claimIds.definition)}, actor, opts).document.knowledge.withdrawals.length, 1, who + ': a withdrawal on a draft concept'); }
+    const open = send(d0, 'knowledge.claim', OPPOSING(D.sourceId), 'architect').document, id = open.knowledge.contradictions[0].id;
+    for (const [who, actor, opts] of NOT_A_PERSON) assert.throws(() => send(open, 'knowledge.contradiction', {...DISPOSE, id, status: 'context-separated'}, actor, opts), /names the knowledge form KC-\d+: a contradiction with a form is disposed of by a signed-in person's own request/, who);
+    assert.equal(send(open, 'knowledge.contradiction', {...DISPOSE, id, status: 'context-separated'}, 'reviewer').document.knowledge.contradictions[0].status, 'context-separated'); }
+  // An entry that holds no form capability knows no author: it supersedes, withdraws, disposes of and changes the release
+  // of nothing a form rests on, reviewed or draft (as it opens no contradiction with a form: S1.26).
+  const NO_FORM_ENTRY = /what the knowledge form KC-\d+ rests on.*This entry handles no form\./, old = (doc, type, payload) => () => K.applyKnowledgeCommand(doc, {type, payload}, AT, 'importer');
+  for (const doc of [B.reviewed, R]) { assert.throws(old(doc, 'knowledge.source', SECOND_EDITION(X.sourceId)), NO_FORM_ENTRY); assert.throws(old(doc, 'knowledge.withdraw', {...F.REVIEW, id: X.claimIds.definition, stamp: K.knowledgeImpactStamp(doc, X.claimIds.definition)}), NO_FORM_ENTRY); assert.throws(old(doc, 'knowledge.contradiction', {...DISPOSE, id: X.contradiction, status: 'open'}), NO_FORM_ENTRY); }
+  assert.throws(old(R, 'knowledge.deactivate', {...F.REVIEW, id: X.formsRelease, stamp: K.knowledgeStamp(R)}), NO_FORM_ENTRY); assert.throws(old(R, 'knowledge.activate', {...F.REVIEW, id: X.successor, stamp: K.knowledgeStamp(R)}), NO_FORM_ENTRY);
+  assert.equal(K.applyKnowledgeCommand(R, {type: 'knowledge.deactivate', payload: {...F.REVIEW, id: X.plainRelease, stamp: K.knowledgeStamp(R)}}, AT, 'importer').document.knowledge.pins.includes(X.plainRelease), false, 'what no form rests on is handled as before');
+  // A form rests on a source saved in the library: one fetched from a repository keeps its own signed revisions and
+  // withdrawals (repository fetch, transfer and sync), which so never reach what a concept rests on.
+  { const q = clone(B.reviewed); q.knowledge.sources.find(s => s.id === X.sourceId).origin = 'repository-fetch';
+    assert.throws(() => send(q, 'knowledge.claim', F.formClaim(X.sourceId, 'SYN-P001', F.p001Forms().example), 'architect'), /A knowledge form rests on a source saved in this library \(knowledge\.source\): KS-\d+ was fetched from a repository/); }
+  // Through the service. A reviewed concept: the lowering request of the agent account, of a draft by Sol and of an import is refused (400) and writes nothing.
+  { const S = await serviceLibrary();
+    try {
+      await S.ok('knowledge.claim', OPPOSING(S.sourceId), 'architect'); const id = S.document.knowledge.contradictions.at(-1).id; await S.ok('knowledge.contradiction', {...DISPOSE, id, status: 'context-separated'}, 'reviewer');
+      const doc = S.document, before = JSON.stringify(doc.knowledge); assert.equal(KC.conceptRecords(doc)[0].state, 'reviewed');
+      const lowering = [['knowledge.source', SECOND_EDITION(S.sourceId)], ['knowledge.withdraw', {...F.REVIEW, id: S.claimIds.definition, stamp: K.knowledgeImpactStamp(doc, S.claimIds.definition)}], ['knowledge.withdraw', {...F.REVIEW, id: S.sourceId, stamp: K.knowledgeImpactStamp(doc, S.sourceId)}], ['knowledge.contradiction', {...DISPOSE, id, status: 'open'}]];
+      for (const [who, as, extra] of [['the agent account', 'bot', {}], ['a draft by Sol', 'architect', {authorKind: 'sol-draft'}], ['an import', 'architect', {authorKind: 'import'}]]) for (const [type, payload] of lowering) {
+        const r = await S.send(type, payload, as, extra); assert.equal(r.status, 400, who + ': ' + type + ' ' + JSON.stringify(r.data).slice(0, 200)); if (who === 'an import') assert.match(r.data.error, /only a signed-in person changes what its review covered|is disposed of by a signed-in person's own request/, type); }
+      assert.equal(JSON.stringify(S.document.knowledge), before, 'nothing was written'); assert.equal(KC.conceptRecords(S.document)[0].state, 'reviewed');
+      // A person's request is saved, with today's effect.
+      await S.ok('knowledge.source', SECOND_EDITION(S.sourceId), 'architect'); assert.equal(KC.conceptRecords(S.document)[0].state, 'draft');
+    } finally { S.close(); } }
+  // A released, active concept: an import neither supersedes its source nor deactivates or withdraws its release; a pin hands over what it did.
+  { const S = await serviceLibrary({release: true});
+    try {
+      const pinned = doc => { const q = clone(doc); q.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: S.releaseId, status: 'active'}]; return JSON.stringify(KC.conceptDecisionReading(q, 'KU-0001')); }, doc = S.document, handed = pinned(doc);
+      assert.deepEqual(JSON.parse(handed).forms.map(f => f.type), ['applicability']);
+      for (const [type, payload] of [['knowledge.source', SECOND_EDITION(S.sourceId)], ['knowledge.deactivate', {...F.REVIEW, id: S.releaseId, stamp: K.knowledgeStamp(doc)}], ['knowledge.withdraw', {...F.REVIEW, id: S.releaseId, stamp: K.knowledgeImpactStamp(doc, S.releaseId)}]]) for (const [as, extra] of [['bot', {}], ['architect', {authorKind: 'sol-draft'}], ['architect', {authorKind: 'import'}]]) {
+        const r = await S.send(type, payload, as, extra); assert.equal(r.status, 400, type + ' ' + JSON.stringify(r.data).slice(0, 200)); }
+      assert.equal(pinned(S.document), handed, 'what a pin hands over is as it was');
+      await S.ok('knowledge.deactivate', {...F.REVIEW, id: S.releaseId, stamp: K.knowledgeStamp(S.document)}, 'releaser'); assert.deepEqual(JSON.parse(pinned(S.document)).forms, [], 'a person deactivates the release, and the pin then hands over nothing');
+    } finally { S.close(); } }
+});
