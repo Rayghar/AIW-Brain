@@ -37,8 +37,10 @@ const STAGES=['problem','consequence','inspect','decide','run','evidence','revis
 const RESERVED=['reviewed','confirmed','targetConfirmed','assumptionsResolved','acknowledge','sourceChecked','rightsChecked','conditionsChecked','status','decision'];
 // Field kinds: T a text the form states (it rests on a quote), N a name or label, ID an identifier or a reference to one
 // (the only text the number rule does not read, so it holds an identifier and never a sentence), E one of a closed
-// list, S a short list of texts. An alias id is an identifier too; a method alias is <topic>/<option>, hence the slash.
-const IDENTIFIER=/^[A-Za-z0-9][A-Za-z0-9._:-]*$/,ALIAS_ID=/^[A-Za-z0-9][A-Za-z0-9._:\/-]*$/;
+// list, S a short list of texts. An identifier is letters, digits and hyphens only (ruling G1 of 2026-11-18): no point
+// and no comma, so it states no decimal number. An alias id is an identifier too; a method alias is <topic>/<option>,
+// hence the slash.
+const IDENTIFIER=/^[A-Za-z0-9][A-Za-z0-9-]*$/,ALIAS_ID=/^[A-Za-z0-9][A-Za-z0-9\/-]*$/;
 const own=(o,k)=>Object.hasOwn(o,k);
 const T=(max,opt=false)=>({k:'text',max,opt}),N=(max,opt=false)=>({k:'text',max,opt,label:true}),ID=(max,opt=false)=>({k:'text',max,opt,label:true,id:true}),E=(values,opt=false)=>({k:'enum',values,opt}),S=(n,max)=>({k:'strings',n,max,opt:true});
 const INT={k:'int'},BOOL={k:'bool'},TARGET={k:'target'},LEVEL={k:'level',opt:true},ILLUSTRATIVE={k:'illustrative'},VALUE={k:'value'},WORKED={k:'worked',opt:true};
@@ -55,7 +57,11 @@ const SHAPES={
 };
 const object=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const collapse=v=>String(v).replace(/\s+/g,' ').trim();
-const numbers=v=>String(v).match(/\d+(?:[.,]\d+)*/g)||[];
+// The numbers a text states: every run of decimal digits, in any script, with the points and commas inside it (ruling
+// G1 of 2026-11-18). The text is normalised first (NFKC), so a full-width, superscript, circled or mathematical digit
+// reads as the digit it stands for; a digit of another script (Arabic-Indic, Devanagari, Thai and the rest) is read as
+// it is written. A text and its quote are read the same way.
+const numbers=v=>String(v).normalize('NFKC').match(/\p{Nd}+(?:[.,]\p{Nd}+)*/gu)||[];
 // A verbatim quote is measured as it is matched: with whitespace collapsed. 12 to `max` characters, at least eight of
 // them letters or digits, so that neither padding nor a run of punctuation passes for the passage's words.
 const quoteText=(v,max=240)=>{if(typeof v!=='string')return false;const q=collapse(v);return q.length>=12&&q.length<=max&&(q.match(/[\p{L}\p{N}]/gu)||[]).length>=8;};
@@ -72,7 +78,7 @@ function field(path,key,spec,v,basis,basisWords,out,ground=null){
  if(spec.k==='text'){
   if(typeof v!=='string'||!v.trim()){out.push(at+(typeof v==='string'?' is required.':' is a text.'));return;}
   if(v.trim().length>spec.max)out.push(at+' holds '+v.trim().length+' characters; at most '+spec.max+'.');
-  if(spec.id){if(!IDENTIFIER.test(v.trim()))out.push(at+' is an identifier (letters, digits and . _ : -, no spaces).');}
+  if(spec.id){if(!IDENTIFIER.test(v.trim()))out.push(at+' is an identifier (letters, digits and hyphens only).');}
   else if(basis)for(const n of numbers(v))if(!basis.has(n)){out.push(at+' states the number '+n+', which '+basisWords+'.');break;}
  }else if(spec.k==='enum'){if(!spec.values.includes(v))out.push(at+': choose one of '+spec.values.join(', ')+'.');}
  else if(spec.k==='int'){if(!Number.isInteger(v)||v<1||v>999)out.push(at+' is a whole number (1 or more).');}

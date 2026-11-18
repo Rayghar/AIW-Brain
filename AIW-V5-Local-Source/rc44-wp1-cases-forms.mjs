@@ -763,13 +763,16 @@ add('S1.15 (review must-fix 1 and 2): a quote is measured as it is matched, with
   refused('composition', f => { f.relations[1].target = {label: 'Unsafe dual write (3 of 4 incidents)'}; }, /composition\.relations\[1\]\.target\.label states the number 3/);
   valid('composition', f => { f.relations[1] = {verb: 'related', target: {label: 'A batch of 50 rows'}, reason: 'The handbook names it as a teaching value.', at: [32, 32], quote: 'A teaching value is 50 rows.'}; });
   // Must-fix 2 (2). An identifier is the one text the number rule does not read, so it holds an identifier and no sentence.
-  refused('composition', f => { f.roles[0].id = 'SLA 99.999 percent guaranteed'; }, /composition\.roles\[0\]\.id is an identifier \(letters, digits and \. _ : -, no spaces\)/);
+  refused('composition', f => { f.roles[0].id = 'SLA 99.999 percent guaranteed'; }, /composition\.roles\[0\]\.id is an identifier \(letters, digits and hyphens only\)/);
   refused('composition', f => { f.roles[0].sameAs = 'the same as 2 relays'; }, /composition\.roles\[0\]\.sameAs is an identifier/);
   refused('composition', f => { f.sequence[0].ownerRole = 'the outbox writer, within 5 seconds'; }, /composition\.sequence\[0\]\.ownerRole is an identifier/);
   refused('verification', f => { f.scenarios[0].id = 'crash after publish in under 30 seconds'; }, /verification\.scenarios\[0\]\.id is an identifier/);
   refused('composition', f => { f.relations[0].target = {alias: {scheme: 'external', aliasId: 'Polling relay every 5 seconds at 99.99%'}}; }, /composition\.relations\[0\]\.target names a concept id, an alias \(scheme and id\) or a label/);
   valid('verification', f => { f.scenarios[0].id = 'SYN-P001-T2'; });
-  valid('composition', f => { f.roles[0].id = 'outbox_writer.v2'; f.roles[0].sameAs = 'SYN-C001'; f.sequence[0].ownerRole = 'role:relay'; });
+  // (Ruling G1 of 2026-11-18: an identifier holds no point, underscore or colon; the first fix-up accepted 'outbox_writer.v2' and 'role:relay' here. Case S1.27.)
+  valid('composition', f => { f.roles[0].id = 'outbox-writer-v2'; f.roles[0].sameAs = 'SYN-C001'; f.sequence[0].ownerRole = 'role-relay'; });
+  refused('composition', f => { f.roles[0].id = 'outbox_writer.v2'; }, /composition\.roles\[0\]\.id is an identifier \(letters, digits and hyphens only\)/);
+  refused('composition', f => { f.sequence[0].ownerRole = 'role:relay'; }, /composition\.sequence\[0\]\.ownerRole is an identifier \(letters, digits and hyphens only\)/);
   valid('composition', f => { f.relations[0].target = {conceptId: 'SYN-P002'}; f.relations[1].target = {alias: {scheme: 'handbook', aliasId: 'SYN-A001'}}; });
   valid('composition', f => { f.relations[1].target = {alias: {scheme: 'aiw-method', aliasId: 'delivery/transactional-outbox'}}; });
   assert.equal(JSON.stringify(L.document), frozen, 'nothing was stored by a refused request');
@@ -999,8 +1002,9 @@ add('S1.21 (ruling B7, should-fix 9): a concept id is not a design record\'s ref
     assert.equal(send(bank, 'concept', CONCEPT).document.knowledge.concepts[0].conceptId, 'SYN-P001'); }
   // Should-fix 9: an evaluator kind is an identifier (wp3 and wp4 will register theirs), so it may hold digits and holds no sentence.
   const calculation = change => { const f = all.calculation, form = clone(f.content); change(form); return CF.conceptFormIssues(form, ctx(f)); };
-  for (const kind of ['mm1-queue', 'queue-model-2', 'aiw.queue:mm1', 'oldest-unsent-age']) assert.deepEqual(calculation(f => { f.modelKind = kind; }), [], kind);
-  for (const kind of ['queue model 2', 'An M/M/1 queue with 3 servers', 'mm1 queue']) assert.match(calculation(f => { f.modelKind = kind; }).join(' '), /calculation\.modelKind is an identifier \(letters, digits and \. _ : -, no spaces\)/, kind);
+  // (Ruling G1 of 2026-11-18: no point and no colon; the first fix-up accepted 'aiw.queue:mm1' here.)
+  for (const kind of ['mm1-queue', 'queue-model-2', 'aiw-queue-mm1', 'oldest-unsent-age']) assert.deepEqual(calculation(f => { f.modelKind = kind; }), [], kind);
+  for (const kind of ['queue model 2', 'An M/M/1 queue with 3 servers', 'mm1 queue', 'aiw.queue:mm1']) assert.match(calculation(f => { f.modelKind = kind; }).join(' '), /calculation\.modelKind is an identifier \(letters, digits and hyphens only\)/, kind);
   assert.match(calculation(f => { delete f.modelKind; }).join(' '), /calculation\.modelKind is required/);
 });
 
@@ -1232,4 +1236,48 @@ add('S1.26 (rulings B3 and B9): a claim that carries no form opens no contradict
   { const R = await library({forms: ['definition', 'applicability'], verify: true, review: true, release: true, activate: true}), edited = send(R.document, 'concept', {...CONCEPT, id: R.conceptRecordId, forms: R.document.knowledge.concepts[0].forms, steward: 'Another guild'}, 'architect').document;
     for (const doc of [R.document, edited]) for (const [who, actor, opts] of NON_PERSONS) assert.throws(() => send(doc, 'claim', {...opposing, sourceId: R.sourceId}, actor, opts), ONLY, who + ': in a release');
     const q = send(R.document, 'claim', {...opposing, sourceId: R.sourceId}, 'architect').document; assert.equal(open(q).length, 1); assert.deepEqual(KC.releasedConcepts(q).map(c => c.eligible), [true], 'a person\'s candidate contradiction leaves the released concept as it was, as on rc.10.73.42'); }
+});
+
+// ================================================================================================ second fix-up
+// The lead's rulings of 2026-11-18, sections E and G, after the verification of this slice.
+// ------------------------------------------------------------------------------------------------ 27
+add('S1.27 (ruling G1): the number rule reads every decimal digit, in any script, after normalisation: a target label, a decision-bearing text and the claim\'s own statement, conditions and limitations state no number in full-width, Arabic-Indic or any other digits that their quote does not hold; an identifier is letters, digits and hyphens only', async () => {
+  const {CF, CC} = await mods(), all = F.p001Forms(), L = await library({forms: []});
+  const issues = (type, change) => { const f = all[type], form = clone(f.content); change(form); return CF.conceptFormIssues(form, ctx(f)).join(' '); };
+  const claim = (type, change, actor = 'bot', opts = F.agent('bot')) => { const payload = clone(F.formClaim(L.sourceId, 'SYN-P001', all[type])); change(payload); return CC.applyConceptCommand(L.document, {type: 'knowledge.claim', payload}, AT, actor, opts); };
+  for (const t of F.FORM_ORDER) assert.equal(issues(t, () => {}), '', 'the fixture form stays valid: ' + t);
+  // 1. Digits that are not ASCII. Compatibility forms (full-width, superscript, circled, mathematical) read as the digit
+  //    they stand for; a digit of another script is read as it is written. None is in the item's quote.
+  assert.match(issues('selection', f => { f.alternatives[0].target = {label: 'Polling relay every ５ seconds at ９９.９９%'}; }), /selection\.alternatives\[0\]\.target\.label states the number 5, which its quote does not contain/, 'full-width digits in a label');
+  assert.match(issues('selection', f => { f.alternatives[0].target = {label: 'Polling relay at ９９.９９%'}; }), /target\.label states the number 99\.99, which its quote does not contain/, 'a full-width decimal number is one number');
+  assert.match(issues('selection', f => { f.alternatives[0].target = {label: 'Polling relay every ٥ seconds'}; }), /selection\.alternatives\[0\]\.target\.label states the number ٥, which its quote does not contain/, 'Arabic-Indic digits in a label');
+  const DIGITS = [['full-width', '５', '5'], ['Arabic-Indic', '٥', '٥'], ['extended Arabic-Indic', '۵', '۵'], ['Devanagari', '५', '५'], ['Bengali', '৫', '৫'], ['Thai', '๕', '๕'], ['superscript', '⁵', '5'], ['circled', '⑤', '5'], ['mathematical bold', '\u{1D7D3}', '5'], ['a vulgar fraction', '½', '1']];
+  for (const [script, digit, read] of DIGITS) {
+    assert.match(issues('applicability', f => { f.useWhen[0].text = 'Always within ' + digit + ' seconds.'; }), new RegExp('applicability\\.useWhen\\[0\\]\\.text states the number ' + read + ', which its quote does not contain'), script + ': a decision-bearing text');
+    assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish[0].text = 'That a carrier acted within ' + digit + ' days.'; }), new RegExp('doesNotEstablish\\[0\\]\\.text states the number ' + read + ', which its quote does not contain'), script + ': an entry of a sub-list');
+    assert.match(issues('calculation', f => { f.bounds += ' At most ' + digit + ' polls.'; }), new RegExp('calculation\\.bounds states the number ' + read + ', which no quote given for bounds contains'), script + ': a text of the form itself');
+    assert.match(issues('composition', f => { f.parameters[0].name = 'batch of ' + digit; }), new RegExp('composition\\.parameters\\[0\\]\\.name states the number ' + read), script + ': a name');
+    // ...and the claim's own statement, conditions and limitations, through the command, from the agent account.
+    assert.throws(() => claim('applicability', c => { c.statement += ' Use it within ' + digit + ' seconds.'; }), new RegExp('The claim\'s statement states the number ' + read + ', which no quote of the form contains'), script + ': the statement');
+    assert.throws(() => claim('applicability', c => { c.conditions = ['A local booking must cause a publication.', 'At most ' + digit + ' retries.']; }), new RegExp('The claim\'s conditions\\[1\\] states the number ' + read), script + ': a condition');
+    assert.throws(() => claim('selection', c => { c.limitations = ['Valid for ' + digit + ' regions.']; }), new RegExp('The claim\'s limitations\\[0\\] states the number ' + read), script + ': a limitation');
+  }
+  assert.throws(() => claim('selection', c => { c.form.alternatives[0].target = {label: 'Polling relay every ５ seconds at ９９.９９%'}; }), /target\.label states the number 5/, 'the verifier\'s input, through knowledge.claim from the agent account');
+  assert.throws(() => claim('applicability', c => { c.form.useWhen[0].text = 'Always within ５ seconds.'; }), /useWhen\[0\]\.text states the number 5/);
+  // A number its own quote holds is stated in either width: the quote is read the same way.
+  const with120 = f => { f.quotes[0] = {field: 'purpose', quote: 'an outage of 120 seconds gives an age of about 120 seconds'}; delete f.workedValues; };
+  assert.equal(issues('calculation', f => { with120(f); f.purpose = 'Estimate the age after an outage of １２０ seconds.'; }), '', 'the quote holds 120');
+  assert.match(issues('calculation', f => { with120(f); f.purpose = 'Estimate the age after an outage of １２１ seconds.'; }), /calculation\.purpose states the number 121, which no quote given for purpose contains/);
+  // A teaching form states numbers freely, in any script.
+  assert.equal(issues('mechanism', f => { f.steps[0].text += ' Within ５ seconds, or ٥.'; f.narrative += ' About ５ relays.'; }), '');
+  // 2. An identifier is letters, digits and hyphens: no point, no comma, no colon, no underscore, no space.
+  const IDENTIFIER = /is an identifier \(letters, digits and hyphens only\)/;
+  for (const [type, set] of [['composition', (f, v) => { f.roles[0].id = v; }], ['composition', (f, v) => { f.roles[0].sameAs = v; }], ['composition', (f, v) => { f.sequence[0].ownerRole = v; }], ['verification', (f, v) => { f.scenarios[0].id = v; }], ['calculation', (f, v) => { f.modelKind = v; }]]) {
+    for (const v of ['SLA-99.999-percent-guaranteed', 'relay:must-answer-within-5-seconds', 'answers_within_5_seconds', 'p99,9', 'outbox writer', 'ｒｅｌａｙ', 'relay-٥', '-relay']) assert.match(issues(type, f => set(f, v)), IDENTIFIER, type + ': ' + v);
+    for (const v of ['outbox-writer', 'relay', 'mm1-queue', 'queue-model-2', 'R2']) assert.equal(issues(type, f => set(f, v)), '', type + ': ' + v);
+  }
+  // An alias id is an identifier too; a method alias is <topic>/<option>, hence the slash.
+  const alias = aliasId => issues('composition', f => { f.relations[0].target = {alias: {scheme: 'external', aliasId}}; });
+  for (const v of ['SLA.99.999', 'answers:in-5', 'p99,9', 'a_b']) assert.match(alias(v), /composition\.relations\[0\]\.target names a concept id, an alias \(scheme and id\) or a label/, v);
+  for (const v of ['SYN-P002', 'PAT-TRANSACTIONAL-OUTBOX', 'delivery/transactional-outbox', 'CL-APP-005']) assert.equal(alias(v), '', v);
 });
