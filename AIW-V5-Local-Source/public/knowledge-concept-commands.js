@@ -195,6 +195,12 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
    // How it was authored: a person's, an import's, a draft by Sol or an agent account's; a request that states no author is never taken for a person's.
    return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,{...ctx,claim:{statement:r.statement,conditions:r.conditions,limitations:r.limitations}}),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind==='person'&&author.account!=='person'?'import':author.kind};
   },
+  // A claim that would open a contradiction with a form (the same subject and predicate, another polarity), whether or
+  // not it carries a form itself, makes the review of that form's concept lapse until a person resolves it. On a concept
+  // that is reviewed or in a release only a person records one (rulings B3 and B9): an opposing claim is no way for a
+  // request that is nobody's to make the review lapse first and change the concept afterwards. On a draft concept it
+  // opens as on rc.10.73.42.
+  opposes(s,c,held){for(const x of held){const concept=list(s.concepts).find(k=>k.conceptId===x.subjectId);if(concept)onlyAPerson({knowledge:s},concept,author,'a claim that contradicts '+x.id+', a form of it');}},
   // A form's review is a person's own request; verified, by a second person, with each item checked and the form valid again.
   review(p,c,r,actor){
    libraryOnly(knowledgeState(p));const refusal=r.decision==='verified'?secondPerson({id:c.id,actor:c.actor,history:[]},actor,author):kindRefusal(author);if(refusal)throw Error(refusal);

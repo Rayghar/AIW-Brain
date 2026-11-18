@@ -1173,3 +1173,51 @@ add('S1.25 (ruling B8, should-fix 11): the history bound is part of the tier; on
     assert.deepEqual(prepareRepositoryPacket(q, packet, scope).capacity, {remainingSources: 0, remainingClaims: 249}); assert.deepEqual(prepareRepositoryPacket(lib, packet, scope).capacity, {remainingSources: 200, remainingClaims: 999}, 'the packet reads the tier'); }
   for (const line of report) console.log('     ' + line);
 });
+
+// ------------------------------------------------------------------------------------------------ 26
+add('S1.26 (rulings B3 and B9): a claim that carries no form opens no contradiction with a form of a reviewed or released concept unless a signed-in person sends it: an agent account, a draft by Sol, an import and a request that states no author are refused it, on the claim command and on a capture alike, and accepted on a draft concept; an entry that holds no form capability opens none with a form at all; a person\'s opposing claim keeps the fail-safe of rc.10.73.42', async () => {
+  const {CC, KC} = await mods(), L = await library({forms: ['definition', 'applicability'], verify: true, base: F.legacyWalkBase()}), draft = L.document;
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  L.k('concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer');
+  const p = L.document, read = doc => KC.conceptRecords(doc).find(c => c.conceptId === 'SYN-P001'), open = doc => doc.knowledge.contradictions.filter(x => x.status === 'open');
+  assert.equal(read(p).state, 'reviewed'); assert.equal(p.knowledge.claims.find(c => c.id === L.claimIds.applicability).polarity, 'supports');
+  // The claim: the concept's id as its subject, the applicability form's fixed predicate, another polarity, and no form.
+  // On rc.10.73.42 that opens a contradiction with the claim it opposes; here that claim is a reviewed concept's form.
+  const opposing = {sourceId: L.sourceId, lineStart: 17, lineEnd: 17, subjectId: 'SYN-P001', predicate: 'applies when', statement: 'An outbox is avoided wherever a caller only reads.', claimType: 'applicability', polarity: 'prohibits', conditions: ['The caller only reads.'], limitations: ['Says nothing of later changes.']};
+  const capture = {assessmentId: 'SA-901', subject: 'Transactional outbox', subjectId: 'SYN-P001', predicate: 'applies when', statement: 'Within this project the carrier gateway already retries a failed notice.', conditions: 'Applies to the carrier notice.', limitations: 'Says nothing of other gateways.', objectId: p.artefacts.find(a => a.type === 'requirement').id, reviewer: 'Synthetic steward', reason: 'Captured from the architect\'s disagreement.'};
+  const ONLY = /SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered \(a claim that contradicts KC-\d+, a form of it\)/;
+  const NON_PERSONS = [['an agent account', 'bot', F.agent('bot')], ['a draft by Sol', 'architect', F.solDraft('architect')], ['an import', 'architect', F.importedBy('architect')], ['a request that states no author', 'architect', {}], ['an author that names no account', 'architect', {author: {kind: 'person', id: 'architect', reviewed: true}}]];
+  for (const [who, actor, opts] of NON_PERSONS) {
+    assert.throws(() => send(p, 'claim', opposing, actor, opts), ONLY, who + ': a plain opposing claim on a reviewed concept');
+    assert.throws(() => send(p, 'capture', capture, actor, opts), ONLY, who + ': a captured disagreement that limits a form of a reviewed concept');
+    // On a draft concept the same requests are accepted, and the contradiction opens as on rc.10.73.42: a draft is nobody's review.
+    assert.equal(open(send(draft, 'claim', opposing, actor, opts).document).length, 1, who + ': on a draft concept');
+    assert.equal(open(send(draft, 'capture', capture, actor, opts).document).length, 1, who + ': a capture on a draft concept');
+    // A plain claim that opposes no form is saved on a reviewed concept as before: the same polarity, another predicate, another subject.
+    for (const [what, body] of [['the same polarity', {...opposing, polarity: 'supports'}], ['another predicate', {...opposing, predicate: 'is avoided when'}], ['another subject', {...opposing, subjectId: 'Outbox'}], ['a neutral reading', {...opposing, polarity: 'neutral'}]]) {
+      const q = send(p, 'claim', body, actor, opts).document; assert.equal(open(q).length, 0, who + ': ' + what + ' opens nothing'); assert.equal(read(q).state, 'reviewed', who + ': ' + what + ' leaves the review standing'); }
+  }
+  assert.equal(read(p).state, 'reviewed', 'nothing lapsed the review'); assert.equal(KC.conceptCovered(p, p.knowledge.concepts[0]), true);
+  // So an opposing claim is no way for a request that is nobody's to make the review lapse first and edit the concept afterwards.
+  // (A superseding source still makes the claims on the source it replaces ineligible, whoever sends it, as on rc.10.73.42
+  // for any claim: recorded as a known limit in the build notes, for the lead to rule on.)
+  assert.throws(() => send(p, 'concept', {...CONCEPT, id: L.conceptRecordId, forms: p.knowledge.concepts[0].forms, reviewDue: '2099-12-31'}, 'bot', F.agent('bot')), /only a signed-in person changes what its review covered \(its record\)/);
+  // An entry that holds no form capability (the old entry, as the local import script calls it) knows no author: it opens
+  // no contradiction with a form at all, reviewed or draft, and saves every other plain claim as before.
+  const NO_FORM_ENTRY = /contradicts the knowledge form KC-\d+: .*This entry handles no form\./;
+  for (const doc of [p, draft]) { assert.throws(() => K.applyKnowledgeCommand(doc, {type: 'knowledge.claim', payload: opposing}, AT, 'importer'), NO_FORM_ENTRY); assert.throws(() => K.applyKnowledgeCommand(doc, {type: 'knowledge.capture', payload: capture}, AT, 'importer'), NO_FORM_ENTRY);
+    assert.equal(open(K.applyKnowledgeCommand(doc, {type: 'knowledge.claim', payload: {...opposing, polarity: 'supports'}}, AT, 'importer').document).length, 0); }
+  // Two plain claims contradict each other through either entry as on rc.10.73.42 (S1.8 holds the bytes).
+  { const one = K.applyKnowledgeCommand(p, {type: 'knowledge.claim', payload: {...opposing, subjectId: 'Outbox', polarity: 'supports'}}, AT, 'importer').document;
+    assert.equal(open(K.applyKnowledgeCommand(one, {type: 'knowledge.claim', payload: {...opposing, subjectId: 'Outbox'}}, AT, 'importer').document).length, 1); assert.equal(open(send(one, 'claim', {...opposing, subjectId: 'Outbox'}, 'bot', F.agent('bot')).document).length, 1); }
+  // A person's opposing claim keeps the fail-safe (ruling B9): the contradiction opens and the review no longer stands;
+  // once a person separates the contexts it stands again, because nothing the review covered was changed.
+  { const q = send(p, 'claim', opposing, 'architect').document; assert.equal(open(q).length, 1); assert.deepEqual(open(q)[0].claimIds, [L.claimIds.applicability, q.knowledge.claims.at(-1).id]); assert.equal(read(q).state, 'draft', 'a person\'s opposing claim lapses the review until it is resolved');
+    const settled = send(q, 'contradiction', {reviewed: true, reviewer: 'Synthetic second person', reason: 'One applies where a notice must follow, the other where nothing is published.', id: open(q)[0].id, status: 'context-separated', distinguishingContexts: 'A notice must follow; nothing is published.'}, 'reviewer').document;
+    assert.equal(read(settled).state, 'reviewed', 'the review stands again once a person separated the contexts');
+    assert.equal(open(send(p, 'capture', capture, 'architect').document).length, 1, 'a person\'s captured disagreement too'); }
+  // The same once the concept is in a release, whether or not its review still stands: the register's concept is not made a draft by a request that is nobody's.
+  { const R = await library({forms: ['definition', 'applicability'], verify: true, review: true, release: true, activate: true}), edited = send(R.document, 'concept', {...CONCEPT, id: R.conceptRecordId, forms: R.document.knowledge.concepts[0].forms, steward: 'Another guild'}, 'architect').document;
+    for (const doc of [R.document, edited]) for (const [who, actor, opts] of NON_PERSONS) assert.throws(() => send(doc, 'claim', {...opposing, sourceId: R.sourceId}, actor, opts), ONLY, who + ': in a release');
+    const q = send(R.document, 'claim', {...opposing, sourceId: R.sourceId}, 'architect').document; assert.equal(open(q).length, 1); assert.deepEqual(KC.releasedConcepts(q).map(c => c.eligible), [true], 'a person\'s candidate contradiction leaves the released concept as it was, as on rc.10.73.42'); }
+});

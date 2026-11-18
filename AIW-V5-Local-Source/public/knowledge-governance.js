@@ -138,8 +138,14 @@ function claimRecord(s,src,r,start,end,excerpt,at,actor,forms=null){
  const type=f?f.claimType:['definition','applicability','benefit','tradeoff','prerequisite','obligation','risk','anti-pattern-signal','mitigation','component-attribute','relationship'].includes(r.claimType)?r.claimType:null;if(!type)throw Error('Choose a supported claim type.');
  return {id:next(s,'KC'),subjectId:required(r.subjectId,'a concept identifier',180),predicate:required(r.predicate,'the relationship being claimed',180),statement:required(r.statement,'the interpretation'),claimType:type,polarity:['supports','limits','requires','prohibits','neutral'].includes(r.polarity)?r.polarity:'neutral',conditions:lines(r.conditions),limitations:lines(r.limitations),tags:lines(r.tags),...(Object.hasOwn(r,'architectureUnit')?{architectureUnit:architectureUnitRecord(r.architectureUnit)}:{}),...(f?{form:f.form,authoredAs:f.authoredAs}:{}),sourceId:src.id,sourceHash:src.hash,lineStart:start,lineEnd:end,excerpt,excerptHash:sha256(excerpt),createdAt:at,actor};
 }
-function flagOverlaps(s,c,at){
+// A contradiction with a claim that carries a form (rc44, wp1) makes the review of that form's concept lapse until a
+// person resolves it. So it is opened only through the entry that holds the form capability, which asks who may: on a
+// concept that is reviewed or in a release, a signed-in person (rulings B3 and B9 of 2026-11-18). An entry that holds
+// none opens no contradiction with a form. Two plain claims contradict each other as before.
+function flagOverlaps(s,c,at,forms=null){
  const overlaps=s.claims.filter(x=>x.id!==c.id&&x.subjectId===c.subjectId&&x.predicate===c.predicate&&x.polarity!==c.polarity&&[x.polarity,c.polarity].some(v=>v==='prohibits'||v==='limits'));
+ const held=overlaps.filter(x=>x.form);
+ if(held.length){if(!forms)throw Error('This claim contradicts the knowledge form '+held[0].id+': a contradiction with a form is recorded through the concept register, which asks who may record it. This entry handles no form.');forms.opposes(s,c,held);}
  for(const other of overlaps)s.contradictions.push({id:next(s,'KX'),claimIds:[other.id,c.id],status:'open',explanation:'Different polarities for the same subject and predicate. Compare applicability contexts before using either claim.',at});
 }
 // What the stewards may decide about an item in their queue (knowledge-stewardship.js).
@@ -213,7 +219,7 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
   if((c.claimType!=='definition'||c.architectureUnit)&&(!c.conditions.length||!c.limitations.length))throw Error('Record applicability conditions and limitations for this architectural claim.');
   s.claims.push(c);selected=c.id;
   if(suggestion){suggestion.status='interpreted';suggestion.claimId=c.id;suggestion.interpretedAt=at;}
-  flagOverlaps(s,c,at);break;
+  flagOverlaps(s,c,at,forms);break;
  }
  // Stewardship: an architect's disagreement with Sol becomes an original source — the project's own
  // record of it — and a candidate claim, which then takes the ordinary review, release, activation
@@ -228,7 +234,7 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
   const src={id:next(s,'KS'),title:('Disagreement with Sol · '+sa.id+' · '+(subject||sa.title)).slice(0,180),body,hash:sha256(body),url:'',repository:'',revision:String(sa.at||at).slice(0,10),path:'Sol assessment '+sa.id,license:'Project record: the architect’s own statement.',origin:'architect-dismissal',assessmentId:sa.id,acquiredAt:at,actor};
   const c=claimRecord(s,src,{...r,claimType:r.claimType||'applicability',polarity:r.polarity||'limits',predicate:r.predicate||'limits-advice'},4,4,body.split('\n')[3],at,actor);
   if(!c.conditions.length||!c.limitations.length)throw Error('Record where this knowledge applies and its limits.');
-  s.sources.push(src);s.claims.push(c);flagOverlaps(s,c,at);
+  s.sources.push(src);s.claims.push(c);flagOverlaps(s,c,at,forms);
   s.stewardship.push({id:next(s,'KD'),key,assessmentId:sa.id,decision:'captured',claimId:c.id,sourceId:src.id,objectId:text(r.objectId,100),at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)});selected=c.id;break;
  }
  case 'knowledge.steward':{

@@ -44,7 +44,7 @@ export function conceptHash(concept,claims,topics){
 export const conceptAuthors=(c,claims)=>({id:c.id,actor:c.actor,owner:'',history:[...list(c.history),...list(c.forms).map(f=>({revision:0,actor:list(claims).find(x=>x.id===f.claimId)?.actor})).filter(h=>h.actor)]});
 function reviewStands(p,s,c,hash){
  const r=c.review,forms=list(c.forms);
- return r?.decision==='verified'&&!!r.actor&&r.account==='person'&&r.conceptHash===hash&&!verifierRefusal(conceptAuthors(c,s.claims),r.actor)&&forms.length>0&&forms.every(f=>{const claim=s.claims.find(x=>x.id===f.claimId);return !!claim?.form&&knowledgeEligibility(p,claim).eligible&&!formIssues(claim).length;});
+ return r?.decision==='verified'&&!!r.actor&&r.account==='person'&&r.conceptHash===hash&&!verifierRefusal(conceptAuthors(c,s.claims),r.actor,r.account)&&forms.length>0&&forms.every(f=>{const claim=s.claims.find(x=>x.id===f.claimId);return !!claim?.form&&knowledgeEligibility(p,claim).eligible&&!formIssues(claim).length;});
 }
 export function conceptRecords(p){
  const s=knowledgeState(p);
