@@ -201,11 +201,11 @@ add('S1.2: each of the nine shapes round-trips; an unknown field, an over-limit 
   refused('verification', f => { delete f.metric.at; }, /verification\.metric names no lines of the passage/);
   refused('definition', f => { delete f.quotes; }, /definition needs a verbatim quote of the passage for each of its texts \(short\)/);
   refused('calculation', f => { f.quotes.pop(); }, /calculation needs a verbatim quote of the passage for each of its texts \(purpose, relation, bounds\)/);
-  refused('definition', f => { f.quotes = ['a durable outbox guarantees delivery']; }, /definition\.quotes\[0\] is not found in the passage/);
+  refused('definition', f => { f.quotes = [{field: 'short', quote: 'a durable outbox guarantees delivery'}]; }, /definition\.quotes\[0\] is not found in the passage/);
   // Numbers: free in a teaching form, and in a decision-bearing form only where the item's own quote holds them.
   { const f = all.mechanism, form = clone(f.content); form.steps[0].text += ' Within 30 seconds.'; assert.deepEqual(CF.conceptFormIssues(form, ctx(f)), [], 'a teaching form may state a number'); }
   refused('applicability', f => { f.useWhen[0].text += ' Within 30 seconds.'; }, /applicability\.useWhen\[0\]\.text states the number 30, which its quote does not contain/);
-  refused('calculation', f => { f.bounds += ' At most 15 minutes.'; }, /calculation\.bounds states the number 15, which no quote of the form contains/);
+  refused('calculation', f => { f.bounds += ' At most 15 minutes.'; }, /calculation\.bounds states the number 15, which no quote given for bounds contains/);
   refused('composition', f => { f.parameters[0].selectionBasis = 'Use 50 rows.'; }, /composition\.parameters\[0\]\.selectionBasis states the number 50/);
   { const f = all.calculation, form = clone(f.content); form.workedValues[0].name = 'outage of 120 seconds'; assert.deepEqual(CF.conceptFormIssues(form, ctx(f)), [], 'a number its quote holds is allowed'); }
   refused('selection', f => { f.variants[0].name = 'Polling every 30 seconds'; }, /selection\.variants\[0\]\.name states the number 30/);
@@ -570,7 +570,7 @@ add('S1.9: a released form is checked again on every read: one tampered in the d
     assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001'), [], what + ': with one form unusable, nothing of the concept is handed to a design record (ruling B5: fail closed; the first build handed over the other four)');
   }
   // The definition is the anchor: with it unusable, a design record is handed nothing of the concept.
-  { const q = careful(f => { f.quotes = ['an outbox guarantees exactly-once delivery']; }, 'definition'), pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: L.releaseId, status: 'active'}];
+  { const q = careful(f => { f.quotes = [{field: 'short', quote: 'an outbox guarantees exactly-once delivery'}]; }, 'definition'), pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: L.releaseId, status: 'active'}];
     assert.equal(status(q, 'definition').status, 'released-ineligible'); assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001'), []); assert.equal(status(q, 'applicability').status, 'released'); }
   // What an active release holds is offered as entries, never as the raw claim.
   assert(KC.releasedConcepts(p)[0].forms.every(f => !('claim' in f) && !('form' in f)));
@@ -729,15 +729,15 @@ add('S1.15 (review must-fix 1 and 2): a quote is measured as it is matched, with
   // Must-fix 1. Two letters padded with line breaks or spaces are three characters once collapsed, and "e t" is in almost any passage.
   refused('applicability', f => { f.useWhen[0] = {text: 'Use it for every system of the bank, with no exception.', at: [16, 19], quote: 'e\n\n\n\n\n\n\n\n\n\nt'}; }, /applicability\.useWhen\[0\] has no verbatim quote \(12 to 240 characters\)/);
   refused('applicability', f => { f.guaranteeBoundary.quote = 'o' + ' '.repeat(10) + 'c'; }, /applicability\.guaranteeBoundary has no verbatim quote/);
-  refused('calculation', f => { f.quotes[0] = 'e' + ' '.repeat(10) + 't'; }, /calculation\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
-  refused('definition', f => { f.quotes = ['\t\t\t\t\t\tin\t\t\t\t\t\t']; }, /definition\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
+  refused('calculation', f => { f.quotes[0].quote = 'e' + ' '.repeat(10) + 't'; }, /calculation\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
+  refused('definition', f => { f.quotes = [{field: 'short', quote: '\t\t\t\t\t\tin\t\t\t\t\t\t'}]; }, /definition\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
   // A run of punctuation grounds nothing either: a quote holds at least eight letters or digits.
-  { const excerpt = 'A link is drawn as --- --- --- --- between two boxes.', form = {type: 'definition', v: 1, short: 'A link joins two boxes.', quotes: ['--- --- --- ---']};
+  { const excerpt = 'A link is drawn as --- --- --- --- between two boxes.', form = {type: 'definition', v: 1, short: 'A link joins two boxes.', quotes: [{field: 'short', quote: '--- --- --- ---'}]};
     assert.match(CF.conceptFormIssues(form, {excerpt, lineStart: 1}).join(' '), /definition\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
-    assert.deepEqual(CF.conceptFormIssues({...form, quotes: ['A link is drawn as --- --- --- --- between']}, {excerpt, lineStart: 1}), []); }
+    assert.deepEqual(CF.conceptFormIssues({...form, quotes: [{field: 'short', quote: 'A link is drawn as --- --- --- --- between'}]}, {excerpt, lineStart: 1}), []); }
   // The upper bound is measured the same way: 240 characters of text, however it was wrapped in the source.
-  { const words = Array.from({length: 40}, (_, i) => 'word' + String.fromCharCode(97 + i % 26)).join(' '), excerpt = words.split(' ').join('\n'), form = {type: 'definition', v: 1, short: 'Forty words.', quotes: [words.split(' ').join('   \n')]};
-    assert(words.length <= 240 && form.quotes[0].length > 240); assert.deepEqual(CF.conceptFormIssues(form, {excerpt, lineStart: 1}), [], 'a quote of 240 characters once collapsed is a quote'); }
+  { const words = Array.from({length: 40}, (_, i) => 'word' + String.fromCharCode(97 + i % 26)).join(' '), excerpt = words.split(' ').join('\n'), form = {type: 'definition', v: 1, short: 'Forty words.', quotes: [{field: 'short', quote: words.split(' ').join('   \n')}]};
+    assert(words.length <= 240 && form.quotes[0].quote.length > 240); assert.deepEqual(CF.conceptFormIssues(form, {excerpt, lineStart: 1}), [], 'a quote of 240 characters once collapsed is a quote'); }
   // A diagram source is verbatim text of the passage: it has the same floor.
   refused('mechanism', f => { f.diagram = {notation: 'mermaid', source: 'S', origin: 'source-figure', at: [10, 10]}; }, /mechanism\.diagram: the diagram source is the passage's own text \(at least 12 characters/);
   refused('mechanism', f => { f.diagram = {notation: 'mermaid', source: 'e' + '\n'.repeat(12) + 'b', origin: 'source-figure', at: [10, 10]}; }, /mechanism\.diagram: the diagram source is the passage's own text/);
@@ -939,7 +939,7 @@ add('S1.20 (ruling B5, should-fix 3 and 5): a pin hands over nothing of a concep
   // One form unusable in that release (tampered, every hash recomputed around it): a concept is reviewed and released
   // whole, so a design record is handed none of it: not the roles and parameters without the use-when and avoid-when.
   const careful = (type, change) => { const q = clone(p), r = q.knowledge.releases[0], c = r.claims.find(x => x.form.type === type); change(c.form); c.review.claimHash = digest({...c, review: undefined}); r.checksum = digest({...r, checksum: undefined}); assert.equal(K.knowledgeEligibility(q, c, r).eligible, true); return q; };
-  for (const [type, change, why] of [['applicability', f => { f.useWhen[0].quote = 'a committed booking may be dropped safely'; }, /SYN-P001 is not usable as a whole in "Synthetic integration concepts 1": applicability \(KC-\d+\): The form is invalid: applicability\.useWhen\[0\]: the quote is not found/], ['verification', f => { f.scenarios[0].evidenceLevel = 'passed'; }, /verification \(KC-\d+\): The form is invalid: .*is not a level a source states of itself/], ['exercise', f => { f.items[0].level = 'expert'; }, /exercise \(KC-\d+\): The form is invalid/], ['definition', f => { f.quotes = ['an outbox guarantees exactly-once delivery']; }, /definition \(KC-\d+\): The form is invalid/]]) {
+  for (const [type, change, why] of [['applicability', f => { f.useWhen[0].quote = 'a committed booking may be dropped safely'; }, /SYN-P001 is not usable as a whole in "Synthetic integration concepts 1": applicability \(KC-\d+\): The form is invalid: applicability\.useWhen\[0\]: the quote is not found/], ['verification', f => { f.scenarios[0].evidenceLevel = 'passed'; }, /verification \(KC-\d+\): The form is invalid: .*is not a level a source states of itself/], ['exercise', f => { f.items[0].level = 'expert'; }, /exercise \(KC-\d+\): The form is invalid/], ['definition', f => { f.quotes = [{field: 'short', quote: 'an outbox guarantees exactly-once delivery'}]; }, /definition \(KC-\d+\): The form is invalid/]]) {
     const q = careful(type, change), reading = KC.conceptDecisionReading(pinned(q), 'KU-0001');
     assert.deepEqual(reading.forms, [], type + ' unusable: nothing of the concept is handed over'); assert.deepEqual(KC.conceptDecisionForms(pinned(q), 'KU-0001'), []);
     assert.equal(reading.reasons.length, 1); assert.match(reading.reasons[0], why);
@@ -1020,4 +1020,60 @@ add('S1.23 (should-fix 8): a run of this suite that executed no case fails, and 
   writeFileSync(dir + '/empty-cases.mjs', 'export const cases = [];\n'); writeFileSync(dir + '/no-export.mjs', 'export const other = 1;\n'); writeFileSync(dir + '/one-case.mjs', 'export const cases = [{name: \'T1: a synthetic case\', run() {}}];\n');
   for (const file of ['empty-cases.mjs', 'no-export.mjs']) { const r = run(['--files', './' + dir + '/one-case.mjs,./' + dir + '/' + file]); assert.equal(r.status, 1, file); assert.match(r.out, /exports no case/); assert.match(r.out, /PASS T1: a synthetic case/); }
   const one = run(['--files', './' + dir + '/one-case.mjs']); assert.equal(one.status, 0, one.out); assert.match(one.out, /PASS rc44 wp1 knowledge: 1 cases/);
+});
+
+// ------------------------------------------------------------------------------------------------ 24
+add('S1.24 (ruling B6, should-fix 6): every statement of a decision-bearing form rests on its own quote: an entry of a sub-list carries one inside its item\'s lines, a quotes entry names the text it grounds and no quote is given twice, the number rule reads each text against its own quote and reads the claim\'s own statement, conditions and limitations; a teaching form keeps one quote for each object', async () => {
+  const {CF, CC, KC} = await mods(), all = F.p001Forms(), L = await library({forms: []});
+  const issues = (type, change, context = null) => { const f = all[type], form = clone(f.content); change(form); return CF.conceptFormIssues(form, context || ctx(f)).join(' '); };
+  const claim = (type, change = () => {}, opts = F.importedBy('importer')) => { const f = all[type], payload = clone(F.formClaim(L.sourceId, 'SYN-P001', f)); change(payload); return CC.applyConceptCommand(L.document, {type: 'knowledge.claim', payload}, AT, 'importer', opts); };
+  // 1. A quotes entry names the text it grounds; each text the form states has one of its own.
+  assert.match(issues('definition', f => { f.quotes = [f.quotes[0].quote]; }), /definition\.quotes\[0\] names the text it grounds and gives its verbatim quote: \{field, quote\}/);
+  assert.match(issues('definition', f => { f.quotes[0].field = 'summary'; }), /definition\.quotes\[0\] names no text this form states \(field: short\)/);
+  assert.match(issues('definition', f => { f.quotes.push({field: 'explanation', quote: 'a receiver must tolerate repeats'}); }), /definition\.quotes\[1\] names no text this form states \(field: short\)/, 'a text the form does not state takes no quote');
+  assert.equal(issues('definition', f => { f.explanation = 'A receiver must tolerate repeats.'; f.quotes.push({field: 'explanation', quote: 'a receiver must tolerate repeats'}); }), '');
+  assert.match(issues('definition', f => { f.quotes[0].weight = 2; }), /definition\.quotes\[0\] has an unsupported field: weight/);
+  assert.match(issues('calculation', f => { f.quotes[2].field = 'purpose'; }), /calculation needs a verbatim quote of the passage for each of its texts \(purpose, relation, bounds\): none grounds bounds/, 'two quotes for one text do not ground another');
+  // Should-fix 6. One quote repeated grounds one text, not three: quotes are distinct once whitespace is collapsed.
+  assert.match(issues('calculation', f => { for (const q of f.quotes) q.quote = f.quotes[0].quote; }), /calculation\.quotes\[1\] repeats quotes\[0\]: each text rests on a quote of its own/);
+  assert.match(issues('calculation', f => { f.quotes[1].quote = 'The  oldest unsent\nnotice   age is'; }), /calculation\.quotes\[1\] repeats quotes\[0\]/);
+  assert.match(issues('example', f => { f.quotes[1].quote = f.quotes[0].quote; }), /example\.quotes\[1\] repeats quotes\[0\]/, 'in a teaching form too');
+  // 2. The number rule reads each text against its own quote, not against every quote of the form.
+  const with120 = f => { f.quotes[0] = {field: 'purpose', quote: 'an outage of 120 seconds gives an age of about 120 seconds'}; };
+  assert.equal(issues('calculation', f => { with120(f); f.purpose = 'Estimate the age after an outage of 120 seconds.'; }), '', 'a number its own quote holds');
+  assert.match(issues('calculation', f => { with120(f); f.bounds += ' At most 120 seconds.'; }), /calculation\.bounds states the number 120, which no quote given for bounds contains/, 'the quote given for another text does not lend its number');
+  assert.match(issues('calculation', f => { with120(f); f.relation += ' About 120 seconds.'; }), /calculation\.relation states the number 120, which no quote given for relation contains/);
+  // 3. An entry of a sub-list is a statement of its own: a text and a verbatim quote inside the lines of the object that holds it.
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish = ['That a carrier acted on the notice.']; }), /applicability\.guaranteeBoundary\.doesNotEstablish\[0\] is a text with its own verbatim quote: \{text, quote\}/);
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.dependsOn = [{text: 'A relay that never stops.'}]; }), /applicability\.guaranteeBoundary\.dependsOn\[0\] has no verbatim quote \(12 to 240 characters\)/);
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.dependsOn = [{text: 'A relay that never stops.', quote: 'a relay that never stops and never repeats'}]; }), /applicability\.guaranteeBoundary\.dependsOn\[0\]: the quote is not found in lines 19.19/);
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.dependsOn = [{text: 'A store that commits both together.', quote: 'a store that commits the booking and the outbox row together'}]; }), /dependsOn\[0\]: the quote is not found in lines 19.19/, 'a quote of the passage outside the object\'s own lines');
+  assert.equal(issues('applicability', f => { f.guaranteeBoundary.at = [18, 19]; f.guaranteeBoundary.dependsOn = [{text: 'A store that commits both together.', quote: 'a store that commits the booking and the outbox row together'}]; }), '');
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish[0].note = 'x'; }), /doesNotEstablish\[0\] has an unsupported field: note/);
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish[0].reviewed = true; }), /must not carry "reviewed"/);
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish = Array.from({length: 9}, () => clone(f.guaranteeBoundary.doesNotEstablish[0])); }), /doesNotEstablish is a list of at most 8 entries/);
+  // A technique's inputs, steps and outputs, with a number: each entry against its own quote, whatever the technique's quote holds.
+  { const excerpt = ['The drill stops the broker for 120 seconds and then counts repeated notices.', 'Inputs are a running relay and a broker that can be stopped.', 'First stop the broker; then wait for the outage to end; then restart the relay.', 'The output is the count of notices that were sent more than once.'].join('\n');
+    const technique = (steps, extra = {}) => ({type: 'verification', v: 1, technique: {purpose: 'Count the notices a relay repeats after an outage.', inputs: [{text: 'A running relay.', quote: 'Inputs are a running relay'}], steps, outputs: [{text: 'The count of repeated notices.', quote: 'the count of notices that were sent more than once'}], evidenceProduced: 'A count of repeated notices.', at: [1, 4], quote: 'The drill stops the broker for 120 seconds', ...extra}});
+    const run = form => CF.conceptFormIssues(form, {excerpt, lineStart: 1}).join(' ');
+    assert.equal(run(technique([{text: 'Stop the broker.', quote: 'First stop the broker'}, {text: 'Restart the relay.', quote: 'then restart the relay'}])), '');
+    assert.match(run(technique([{text: 'Stop the broker for 120 seconds.', quote: 'First stop the broker'}])), /verification\.technique\.steps\[0\]\.text states the number 120, which its quote does not contain/, 'the technique\'s own quote holds 120; the step\'s does not');
+    assert.equal(run(technique([{text: 'Stop the broker for 120 seconds.', quote: 'stops the broker for 120 seconds'}])), '');
+    assert.match(run(technique(['Stop the broker.'])), /verification\.technique\.steps\[0\] is a text with its own verbatim quote/);
+    assert.match(run(technique([{text: 'Stop the broker.', quote: 'First stop the broker'}], {at: [1, 2]})), /verification\.technique\.steps\[0\]: the quote is not found in lines 1.2/); }
+  // 4. The claim's own statement, conditions and limitations state a number only where a quote of the form holds it.
+  assert.equal(claim('applicability').document.knowledge.claims.length, 1);
+  assert.throws(() => claim('applicability', c => { c.statement += ' Use it within 30 seconds.'; }), /The claim's statement states the number 30, which no quote of the form contains/);
+  assert.throws(() => claim('applicability', c => { c.conditions = ['A local booking must cause a publication.', 'At most 5 retries.']; }), /The claim's conditions\[1\] states the number 5, which no quote of the form contains/);
+  assert.throws(() => claim('selection', c => { c.limitations = ['Valid for 99.9% of bookings.']; }), /The claim's limitations\[0\] states the number 99\.9, which no quote of the form contains/);
+  assert.throws(() => claim('applicability', c => { c.conditions = 'A local booking must cause a publication.\nAt most 5 retries.'; }), /The claim's conditions\[1\] states the number 5/, 'conditions sent as lines of one text');
+  assert.equal(claim('calculation', c => { c.statement = 'An outage of 120 seconds gives an age of about 120 seconds.'; }).document.knowledge.claims.at(-1).statement, 'An outage of 120 seconds gives an age of about 120 seconds.', 'a number a quote of the form holds');
+  assert.equal(claim('mechanism', c => { c.statement += ' It takes about 30 seconds.'; c.conditions = ['Up to 5 relays.']; }).document.knowledge.claims.at(-1).form.type, 'mechanism', 'a teaching form states numbers freely');
+  // ...and the same is asked again on every read: a statement changed in the document, its hashes recomputed around it, makes the form unusable.
+  { const A = await library({verify: true, review: true, release: true, activate: true}), q = clone(A.document), r = q.knowledge.releases[0], c = r.claims.find(x => x.form.type === 'applicability'); c.statement = 'Use it for 100% of systems.'; c.review.claimHash = digest({...c, review: undefined}); r.checksum = digest({...r, checksum: undefined});
+    assert.equal(K.knowledgeEligibility(q, c, r).eligible, true, 'the claim-level gates see nothing wrong'); const f = KC.conceptReading(q, 'SYN-P001').forms.find(x => x.type === 'applicability');
+    assert.equal(f.status, 'released-ineligible'); assert.equal(f.content, null); assert.match(f.reasons.join(' '), /The claim's statement states the number 100, which no quote of the form contains/); assert.equal(KC.releasedConcepts(q)[0].eligible, false); }
+  // 5. A teaching form keeps one quote for each object and item: nothing more is asked of it.
+  for (const t of ['definition', 'mechanism', 'example', 'exercise']) assert.equal(issues(t, () => {}), '', t);
+  assert.equal(issues('mechanism', f => { f.steps[0].text += ' Within 30 seconds.'; f.narrative += ' About 5 relays.'; }), '');
 });

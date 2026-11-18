@@ -16,7 +16,8 @@ import {FORM_TYPES,FORM_TIER,conceptFormIssues} from './concept-form.js';
 import {copy,list} from './util.js';
 
 const order=type=>FORM_TYPES.indexOf(type);
-const formIssues=claim=>conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart});
+// A form's issues as its claim stands: against the claim's passage, with the claim's own statement, conditions and limitations.
+export const formIssues=claim=>conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart,claim:{statement:claim?.statement,conditions:claim?.conditions,limitations:claim?.limitations}});
 const sourceOf=(s,claim,release)=>release?.organizationId?list(release.sources).find(x=>x.id===claim.sourceId):s.sources.find(x=>x.id===claim.sourceId);
 // The form claims that active releases hold (the project's own and the organisation's), each with its eligibility. This
 // is the one reader of them: releasedClaims hands no form claim to anyone, whatever its state (ruling B1 of 2026-11-18),

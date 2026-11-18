@@ -4,10 +4,13 @@
 // mechanism, example, exercise) and decision-bearing (applicability, selection, composition, calculation, verification).
 // A form holds strings with limits and short lists: no expressions, no code, nothing that is interpreted. Every list
 // item, and every object a form holds, names its lines inside the claim's passage (at) and a verbatim quote found in
-// those lines once whitespace is collapsed; every text the form states of itself rests on a quote of the passage. In a
-// decision-bearing form a number is stated only where the item's own quote holds it; a worked value sits only in
-// workedValues and parameters[].example, always illustrative. A quote grounds an item in the passage: it rejects what
-// the passage does not say and cannot tell whether a reading is right, which is the second person's review.
+// those lines once whitespace is collapsed; every text the form states of itself rests on a quote of the passage that
+// names it (quotes: [{field, quote}], no quote given twice). In a decision-bearing form every statement rests on its
+// own quote: an entry of a sub-list is {text, quote}, the quote inside the lines of the object that holds it, and a
+// number is stated only where the text's own quote holds it (the claim's statement, conditions and limitations: where
+// some quote of the form does). A worked value sits only in workedValues and parameters[].example, always illustrative.
+// A quote grounds an item in the passage: it rejects what the passage does not say and cannot tell whether a reading is
+// right, which is the second person's review.
 // A form reviews nothing and claims no result: it carries no status, decision or confirmation, and an evidence level
 // is what the source says of itself. Pure: no project import, no DOM, no clock.
 export const FORM_TYPES=['definition','mechanism','applicability','selection','composition','calculation','verification','example','exercise'];
@@ -60,8 +63,10 @@ const quoteText=(v,max=240)=>{if(typeof v!=='string')return false;const q=collap
 export function quoteFound(excerpt,lineStart,at,quote){
  const q=collapse(quote);return !!q&&collapse(String(excerpt).split('\n').slice(at[0]-lineStart,at[1]-lineStart+1).join(' ')).includes(q);
 }
+const QUOTE_RULE='a quote is measured with its whitespace collapsed and holds at least eight letters or digits';
 // One field of an item or of the form. `basis` holds the numbers a decision-bearing text may state (null: free).
-function field(path,key,spec,v,basis,basisWords,out){
+// `ground`, in a decision-bearing form, is where an entry of a sub-list finds its own quote: {excerpt, lineStart, at}.
+function field(path,key,spec,v,basis,basisWords,out,ground=null){
  const at=key[0]==='['?path+key:path+'.'+key;
  if(v===undefined){if(!spec.opt)out.push(spec.k==='illustrative'?path+': a worked value is illustrative (evidenceLevel "illustrative").':at+' is required.');return;}
  if(spec.k==='text'){
@@ -80,8 +85,20 @@ function field(path,key,spec,v,basis,basisWords,out){
   for(const k of Object.keys(v))if(!['value','evidenceLevel'].includes(k)&&!RESERVED.includes(k))out.push(at+' has an unsupported field: '+k+'.');
   field(at,'value',VALUE,v.value,null,'',out);if(v.evidenceLevel!=='illustrative')out.push(at+': a worked value is illustrative (evidenceLevel "illustrative").');
  }else if(spec.k==='strings'){
-  if(!Array.isArray(v)||v.length>spec.n){out.push(at+' is a list of at most '+spec.n+' texts.');return;}
-  v.forEach((x,i)=>field(at,'['+i+']',T(spec.max),x,basis,basisWords,out));
+  // A sub-list of an object. In a teaching form its entries are texts and rest on the object's one quote. In a
+  // decision-bearing form each entry is a statement of its own (ruling B6 of 2026-11-18): {text, quote}, the quote found
+  // in the lines of the object that holds it, and the text states a number only where that quote does.
+  if(!Array.isArray(v)||v.length>spec.n){out.push(at+' is a list of at most '+spec.n+(ground?' entries, each a text with its own verbatim quote ({text, quote}).':' texts.'));return;}
+  v.forEach((x,i)=>{
+   if(!ground){field(at,'['+i+']',T(spec.max),x,basis,basisWords,out);return;}
+   const p=at+'['+i+']';
+   if(!object(x)){out.push(p+' is a text with its own verbatim quote: {text, quote}.');return;}
+   for(const k of Object.keys(x))if(k!=='text'&&k!=='quote'&&!RESERVED.includes(k))out.push(p+' has an unsupported field: '+k+'.');
+   const quoted=quoteText(x.quote);
+   if(!quoted)out.push(p+' has no verbatim quote (12 to 240 characters) of its lines: '+QUOTE_RULE+'.');
+   else if(ground.at&&!quoteFound(ground.excerpt,ground.lineStart,ground.at,x.quote))out.push(p+': the quote is not found in lines '+ground.at[0]+'–'+ground.at[1]+'.');
+   field(p,'text',T(spec.max),x.text,new Set(numbers(quoted?x.quote:'')),'its quote does not contain',out);
+  });
  }else if(spec.k==='target'){
   const keys=object(v)?Object.keys(v):[],ok=keys.length===1&&(keys[0]==='conceptId'?typeof v.conceptId==='string'&&v.conceptId.length<=80&&CONCEPT_ID.test(v.conceptId):keys[0]==='label'?typeof v.label==='string'&&!!v.label.trim()&&v.label.trim().length<=160:keys[0]==='alias'&&object(v.alias)&&Object.keys(v.alias).length===2&&ALIAS_SCHEMES.includes(v.alias.scheme)&&typeof v.alias.aliasId==='string'&&v.alias.aliasId.length<=120&&ALIAS_ID.test(v.alias.aliasId));
   if(!ok)out.push(at+' names a concept id, an alias (scheme and id) or a label.');
@@ -111,14 +128,22 @@ function item(path,fields,v,{excerpt,lineStart,lines,decision,verbatim=null},out
  if(!range)out.push(path+' names no lines of the passage (at: [first line, last line]).');
  else if(at[0]<lineStart||at[1]>lineStart+lines-1)out.push(path+' cites lines '+at[0]+'–'+at[1]+', outside the passage (lines '+lineStart+'–'+(lineStart+lines-1)+').');
  else grounded=true;
- if(!verbatim&&!quoteText(quote))out.push(path+' has no verbatim quote (12 to 240 characters) of its lines: a quote is measured with its whitespace collapsed and holds at least eight letters or digits.');
+ if(!verbatim&&!quoteText(quote))out.push(path+' has no verbatim quote (12 to 240 characters) of its lines: '+QUOTE_RULE+'.');
  else if(verbatim&&typeof quote==='string'&&quote.trim()&&!quoteText(quote,fields[verbatim].max))out.push(path+': the diagram source is the passage\'s own text (at least 12 characters once whitespace is collapsed, eight of them letters or digits).');
  else if(grounded&&typeof quote==='string'&&quote.trim()&&!quoteFound(excerpt,lineStart,at,quote))out.push(path+': the '+(verbatim?'diagram source':'quote')+' is not found in lines '+at[0]+'–'+at[1]+'.');
- const basis=decision?new Set(numbers(typeof quote==='string'?quote:'')):null;
- for(const [k,spec] of Object.entries(fields))field(path,k,spec,v[k],basis,'its quote does not contain',out);
+ const basis=decision?new Set(numbers(typeof quote==='string'?quote:'')):null,ground=decision?{excerpt,lineStart,at:grounded?at:null}:null;
+ for(const [k,spec] of Object.entries(fields))field(path,k,spec,v[k],basis,'its quote does not contain',out,ground);
 }
-// Every issue of a form read against its passage: {excerpt (the claim's lines of the source), lineStart (its first line)}.
-export function conceptFormIssues(form,{excerpt,lineStart}={}){
+// Every verbatim quote a form holds, at any depth it has: its items', its sub-list entries' and its quotes entries'.
+function everyQuote(v,out=[],depth=0){
+ if(depth>6)return out;
+ if(Array.isArray(v))for(const x of v)everyQuote(x,out,depth+1);
+ else if(object(v))for(const [k,x] of Object.entries(v)){if(k==='quote'){if(typeof x==='string')out.push(x);}else everyQuote(x,out,depth+1);}
+ return out;
+}
+// Every issue of a form read against its passage: {excerpt (the claim's lines of the source), lineStart (its first line),
+// claim (optional: the claim's own statement, conditions and limitations, which the number rule reads too)}.
+export function conceptFormIssues(form,{excerpt,lineStart,claim=null}={}){
  if(!object(form))return ['A form is an object.'];
  const type=form.type,shape=typeof type==='string'&&own(SHAPES,type)?SHAPES[type]:null;if(!shape)return ['Choose a supported form type ('+FORM_TYPES.join(', ')+').'];
  if(typeof excerpt!=='string'||!excerpt.trim()||!Number.isInteger(lineStart)||lineStart<1)return ['A form is read against its passage: the lines of the source its claim cites.'];
@@ -126,14 +151,29 @@ export function conceptFormIssues(form,{excerpt,lineStart}={}){
  reserved(form,type,out);
  if(form.v!==1)out.push(type+': version 1 is the only form version (v: 1).');
  for(const k of Object.keys(form))if(!['type','v','quotes'].includes(k)&&!own(scalars,k)&&!own(lists,k)&&!own(objects,k)&&!RESERVED.includes(k))out.push(type+' has an unsupported field: '+k+'.');
- // The texts the form states of itself rest on quotes of the passage: one for each.
- const stated=Object.keys(scalars).filter(k=>scalars[k].k==='text'&&!scalars[k].label&&form[k]!==undefined),quotes=form.quotes;
- let basis=null;
- if(quotes!==undefined&&(!Array.isArray(quotes)||quotes.length>8))out.push(type+'.quotes is a list of at most 8 verbatim quotes.');
- else if((quotes?.length||0)<stated.length)out.push(type+' needs a verbatim quote of the passage for each of its texts ('+stated.join(', ')+').');
- else if(quotes)quotes.forEach((q,i)=>{if(!quoteText(q))out.push(type+'.quotes['+i+'] is a verbatim quote of 12 to 240 characters (whitespace collapsed, at least eight letters or digits).');else if(!collapse(excerpt).includes(collapse(q)))out.push(type+'.quotes['+i+'] is not found in the passage.');});
- if(decision)basis=new Set((Array.isArray(quotes)?quotes:[]).flatMap(q=>numbers(typeof q==='string'?q:'')));
- for(const [k,spec] of Object.entries(scalars))field(type,k,spec,form[k],basis,'no quote of the form contains',out);
+ // The texts the form states of itself each rest on a quote of the passage that names them ({field, quote}); no quote
+ // is given twice, so one sentence of the passage never passes for the ground of several texts.
+ const stated=Object.keys(scalars).filter(k=>scalars[k].k==='text'&&!scalars[k].label&&form[k]!==undefined),quotes=form.quotes,given=Object.fromEntries(stated.map(k=>[k,[]]));
+ if(quotes!==undefined&&(!Array.isArray(quotes)||quotes.length>8))out.push(type+'.quotes is a list of at most 8 entries, each naming a text of the form and its verbatim quote ({field, quote}).');
+ else{
+  const seen=new Map();
+  (quotes||[]).forEach((q,i)=>{
+   const p=type+'.quotes['+i+']';
+   if(!object(q)){out.push(p+' names the text it grounds and gives its verbatim quote: {field, quote}.');return;}
+   for(const k of Object.keys(q))if(k!=='field'&&k!=='quote'&&!RESERVED.includes(k))out.push(p+' has an unsupported field: '+k+'.');
+   const named=typeof q.field==='string'&&stated.includes(q.field);
+   if(!named)out.push(p+' names no text this form states (field: '+(stated.join(', ')||'none')+').');
+   if(!quoteText(q.quote)){out.push(p+' is a verbatim quote of 12 to 240 characters (whitespace collapsed, at least eight letters or digits).');return;}
+   if(!collapse(excerpt).includes(collapse(q.quote))){out.push(p+' is not found in the passage.');return;}
+   const key=collapse(q.quote);
+   if(seen.has(key)){out.push(p+' repeats quotes['+seen.get(key)+']: each text rests on a quote of its own.');return;}
+   seen.set(key,i);if(named)given[q.field].push(q.quote);
+  });
+  const missing=stated.filter(k=>!given[k].length);
+  if(missing.length)out.push(type+' needs a verbatim quote of the passage for each of its texts ('+stated.join(', ')+'): none grounds '+missing.join(', ')+'.');
+ }
+ // In a decision-bearing form each of those texts states a number only where a quote given for it holds the number.
+ for(const [k,spec] of Object.entries(scalars))field(type,k,spec,form[k],decision?new Set((given[k]||[]).flatMap(numbers)):null,'no quote given for '+k+' contains',out);
  let held=0;
  for(const [k,[max,fields]] of Object.entries(lists)){
   const v=form[k];if(v===undefined)continue;
@@ -143,6 +183,12 @@ export function conceptFormIssues(form,{excerpt,lineStart}={}){
  }
  for(const [k,fields] of Object.entries(objects)){if(form[k]===undefined)continue;held++;item(type+'.'+k,fields,form[k],{...ctx,verbatim:shape.verbatim?.[k]||null},out);}
  if(!held&&!Object.values(scalars).some(s=>s.k==='text'&&!s.opt&&!s.label)&&!stated.length)out.push(type+' holds no content.');
+ // The claim's own statement, conditions and limitations are what a reader meets first: in a decision-bearing form
+ // they state a number only where some quote of the form holds it.
+ if(decision&&object(claim)){
+  const pool=new Set(everyQuote(form).flatMap(numbers)),texts=v=>Array.isArray(v)?v:typeof v==='string'?v.split('\n'):[];
+  for(const [name,list] of [['statement',[claim.statement]],['conditions',texts(claim.conditions)],['limitations',texts(claim.limitations)]])list.forEach((t,i)=>{for(const n of numbers(typeof t==='string'?t:''))if(!pool.has(n)){out.push('The claim\'s '+name+(name==='statement'?'':'['+i+']')+' states the number '+n+', which no quote of the form contains.');break;}});
+ }
  return out;
 }
 const tidy=v=>typeof v==='string'?v.trim():Array.isArray(v)?v.map(tidy):object(v)?Object.fromEntries(Object.entries(v).filter(([,x])=>x!==undefined).map(([k,x])=>[k,tidy(x)])):v;

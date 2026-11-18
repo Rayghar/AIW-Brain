@@ -19,7 +19,7 @@ import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
 import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,conceptFormIssues,conceptFormRecord} from './concept-form.js';
 import {recordGraph} from './record-graph.js';
-import {conceptRecords,conceptHash,conceptAuthors,conceptCovered} from './knowledge-concepts.js';
+import {conceptRecords,conceptHash,conceptAuthors,conceptCovered,formIssues} from './knowledge-concepts.js';
 import {digest} from './brain-integrity.js';
 import {list} from './util.js';
 
@@ -160,7 +160,7 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
    if(r.identityChecked!==true||r.formsChecked!==true||r.crosswalkChecked!==true)throw Error('Check the identity, each form and the crosswalk before verifying the concept.');
    if(c.forms.filter(f=>f.type==='definition').length!==1)throw Error(c.conceptId+' needs its definition before it is verified.');
    // Every form verified by someone other than its author, on its exact passage, with no open contradiction: the release gate.
-   for(const f of c.forms){const claim=s.claims.find(x=>x.id===f.claimId),reasons=claim?[...knowledgeEligibility(p,claim).reasons,...conceptFormIssues(claim.form,{excerpt:claim.excerpt,lineStart:claim.lineStart})]:['The claim is unavailable.'];if(reasons.length)throw Error(f.claimId+' ('+f.type+'): '+reasons.join(' '));}
+   for(const f of c.forms){const claim=s.claims.find(x=>x.id===f.claimId),reasons=claim?[...knowledgeEligibility(p,claim).reasons,...formIssues(claim)]:['The claim is unavailable.'];if(reasons.length)throw Error(f.claimId+' ('+f.type+'): '+reasons.join(' '));}
   }
   // The review names the kind of account that made it (a person's: secondPerson refused every other); a read asks for it.
   c.review={decision:r.decision,actor,account:author.account,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics)};return c.id;
@@ -192,14 +192,14 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
    if(type!=='applicability'&&Object.hasOwn(r,'architectureUnit'))throw Error(article(type)+' form carries no structured architecture unit: only an applicability form does.');
    if(type==='applicability'&&concept.kind!=='topic'&&!Object.hasOwn(r,'architectureUnit'))throw Error('An applicability form of '+article(concept.kind).toLowerCase()+' carries its structured architecture unit (kind, mechanism, effects, obligations).');
    // How it was authored: a person's, an import's, a draft by Sol or an agent account's; a request that states no author is never taken for a person's.
-   return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,ctx),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind==='person'&&author.account!=='person'?'import':author.kind};
+   return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,{...ctx,claim:{statement:r.statement,conditions:r.conditions,limitations:r.limitations}}),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind==='person'&&author.account!=='person'?'import':author.kind};
   },
   // A form's review is a person's own request; verified, by a second person, with each item checked and the form valid again.
   review(p,c,r,actor){
    libraryOnly(knowledgeState(p));const refusal=r.decision==='verified'?secondPerson({id:c.id,actor:c.actor,history:[]},actor,author):kindRefusal(author);if(refusal)throw Error(refusal);
    if(r.decision!=='verified')return;
    if(r.formChecked!==true)throw Error('Check each item of the form against its lines before verifying it (formChecked).');
-   const issues=conceptFormIssues(c.form,{excerpt:c.excerpt,lineStart:c.lineStart});if(issues.length)throw Error(c.id+': '+issues.join(' '));
+   const issues=formIssues(c);if(issues.length)throw Error(c.id+': '+issues.join(' '));
   },
   // Forms are released with their concept: reviewed, whole, by a person who wrote none of them and who did not verify
   // one that was imported or drafted (that one takes a third person). Release parts and versions are slice S3.
