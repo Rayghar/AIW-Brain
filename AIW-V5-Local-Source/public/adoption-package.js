@@ -29,7 +29,9 @@ registerExtension({
  commands:{'adoption.reassess':step,'adoption.deviation':step,'adoption.obligation':step,'adoption.withdraw':step,'adoption.accept':{apply:applyAdoptionCommand,second:acceptanceOf}},
  track:trackAdoptionChange,
  provenance:{nouns:{'adoptions.records':'applied mechanism'},paths:{adoption:['adoptions.records']},records:{'adoptions.records':5}},
- designKeys:['adoptions'],
+ // (no designKeys row: the design fingerprint reads p.adoptions through review-domain.js reviewSource's own line, which
+ // leaves a record that is still as it was upgraded out; the registry's check of a design key writes a list where
+ // the package keeps a container, so it cannot read that line. The suite holds that a deviation moves the stamp.)
  upgrade:upgradeAdoptions,
  upgradeNote:'Guided designs that were applied are now kept as adoption records, each applied and not yet accepted by a second person.'
 });

@@ -21,20 +21,20 @@
   "registry": 400
  },
  "slice": {
-  "chapters": 3230048,
+  "chapters": 3230065,
   "projects": 507030,
   "scripts": 148,
   "under10k": 53,
   "css": 901873
  },
- "delta": 287,
- "headroomAfter": 3744,
+ "delta": 304,
+ "headroomAfter": 3727,
  "opens with records": {
   "gate": "The chapters-route gate measures opening a document that holds no package records (ruling D10).",
   "host": "public/architecture-task-ui.js",
-  "route": 3230048,
-  "added": 97349,
-  "total": 3327397,
+  "route": 3230065,
+  "added": 97324,
+  "total": 3327389,
   "files": 2,
   "before": {
    "route": 3229761,
