@@ -244,7 +244,7 @@ await block('an extension only adds', () => {
   for (const path of ['decisions.records', 'finalReview.narrative', 'synthetic.records', 'runtime.otherNotes']) assert.equal(RECORD_PATHS.filter(r => r[0] === path).length, 1, path + ' is read once');
   assert.deepEqual([RECORD_PATHS.find(r => r[0] === 'decisions.records')[1], RECORD_PATHS.find(r => r[0] === 'finalReview.narrative')[1]], [3, 11]); assert.ok(!RECORD_PATHS.some(r => r[0] === 'logical.assets'), 'the twin a component keeps in Chapter 4 is not read twice');
   assert.throws(() => boundary.assertExtensions(), /aa-hostile: object type “component” is built in/, 'the server would not start with it');
-  assert.equal(stagedBy('quality.driver'), false, 'a built-in staged type is the chapter\'s'); assert.equal(stagedBy('decision.save'), false);
+  assert.equal(stagedBy('quality.driver'), true, 'a built-in staged type is the chapter\'s, whatever a package states for it'); assert.equal(stagedBy('decision.save'), true); assert.equal(stagedBy('record.retire'), true);
   assert.notEqual(commandHandler('decision.save'), HOSTILE.commands['decision.save'].apply);
   const p = reference('bank-payment');
   assert.doesNotThrow(() => applyCanonical(p, {type: 'quality.driver', payload: {...p.quality.drivers[0]}}, AT, A), 'a built-in staged command is the chapter\'s own');
@@ -383,7 +383,7 @@ await block('2 command boundary', async () => {
   assert.equal(stagedBy('synthetic.save'), SYNTHETIC.commands['synthetic.save'], 'the package\'s command, where it says it is a design edit'); assert.equal(reviewsOnItsOwn('synthetic.save'), true, 'a single edit of it is reviewed as a built-in design edit is');
   for (const type of ['synthetic.sign', 'synthetic.accept', 'synthetic.note', 'hostile.sign', 'hostile.accept', 'synthetic.nope', 'constructor', 'toString']) { assert.equal(stagedBy(type), undefined, type + ' is not staged'); assert.equal(reviewsOnItsOwn(type), false); }
   assert.equal(reviewsOnItsOwn('quality.driver'), true); assert.equal(reviewsOnItsOwn('decision.choose'), false, 'the built-in rule is as it was');
-  assert.ok(/commands\.some\(c=>stagedBy\(c\.type\)===undefined\)/.test(readFileSync('public/workbench-ui.js', 'utf8')), 'the workbench reviews what the staged path applies');
+  assert.ok(/commands\.some\(c=>!stagedBy\(c\.type\)\)/.test(readFileSync('public/workbench-ui.js', 'utf8')), 'the workbench reviews what the staged path applies');
   assert.ok(!STAGED_COMMANDS.has('synthetic.sign')); assert.ok(!STAGED_COMMANDS.has('synthetic.save'), 'the built-in list is as it was'); assert.ok(isReviewCommand('synthetic.sign') && isReviewCommand('synthetic.accept') && !isReviewCommand('synthetic.save'), 'authorship.js classifies the person-only types as review commands');
   assert.equal(commandShape({type: 'synthetic.save', payload: {}}), null); assert.equal(commandShape({type: 'synthetic.nope'})?.code, 'unknown_command');
   pass('2: synthetic.save applies through POST /api/commands, is journalled with actor and author kind, stamped and listed in the activity; synthetic.note is undone by its receipt; synthetic.sign is refused for an agent account, a draft by Sol and an import; synthetic.accept is refused for every author and accepted for a second person; staged only when a plain design edit');
@@ -492,10 +492,11 @@ await block('needs and load', async () => {
   let loads = 0;
   X.registerExtension({id: 'zz-lazy-route', needs: p => !!p.lazyThing, load: async () => { loads++; X.registerExtension({id: 'zz-lazy', objectTypes: {lazyThing: {label: 'Lazy thing', chapter: 2, level: 'intent', prefix: 'LZ'}}}); }});
   assert.equal(OBJECT_TYPES.lazyThing, undefined, 'the route knows only whether a document needs the package and how to load it');
-  await X.ensureExtensions(reference('bank-payment')); assert.equal(loads, 0, 'a document without its records loads nothing');
-  await X.ensureExtensions({...reference('bank-payment'), lazyThing: {}}); assert.equal(loads, 1);
+  const plain = {document: reference('bank-payment'), revision: 1}, lazy = {document: {...reference('bank-payment'), lazyThing: {}}, revision: 2};
+  assert.equal(await X.ensureExtensions(plain), plain, 'it answers the project it was handed'); assert.equal(loads, 0, 'a document without its records loads nothing');
+  assert.equal(await X.ensureExtensions(lazy), lazy); assert.equal(loads, 1);
   assert.equal(OBJECT_TYPES.lazyThing?.label, 'Lazy thing', 'the loaded module registers the package');
-  await X.ensureExtensions({...reference('bank-payment'), lazyThing: {}}); assert.equal(loads, 2, 'load() is asked again for each document that needs it (a module import answers at once the second time)');
+  await X.ensureExtensions(lazy); assert.equal(loads, 2, 'load() is asked again for each document that needs it (a module import answers at once the second time)');
   assert.equal(X.EXTENSIONS.filter(e => e.id === 'zz-lazy').length, 1, 'and registering it again changes nothing');
   // the first registration under an id stands
   X.registerExtension({id: 'zz-lazy', objectTypes: {lazyThing: {label: 'Replaced', chapter: 9, level: 'protection', prefix: 'XX'}, another: {label: 'Another', chapter: 2, level: 'intent', prefix: 'AN'}}});

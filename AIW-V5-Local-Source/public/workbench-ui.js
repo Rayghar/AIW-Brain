@@ -52,7 +52,7 @@ export async function reviewOrdinaryChange(p,command){
 // chapter or the review desk drafts a change for the architect to confirm. Resolves to the
 // workspace command to send, or null when cancelled or when nothing would change.
 export async function reviewDesignChanges(p,commands,{intro='',reason='',title='Review this design change'}={}){
- if(!commands.length||commands.some(c=>stagedBy(c.type)===undefined))throw Error('Only ordinary design changes can be reviewed here.');
+ if(!commands.length||commands.some(c=>!stagedBy(c.type)))throw Error('Only ordinary design changes can be reviewed here.');
  const q=previewWorkingChange(p,commands);if(!q.diff.records.length&&!q.diff.edges.length&&!q.brief)return null;
  return reviewDialog(q,commands,{intro,reason,title});
 }

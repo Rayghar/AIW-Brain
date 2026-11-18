@@ -138,9 +138,8 @@ export function copyValue(v,key,stack){
 // design-extensions.js, checks {chapter: p => [finding]}) follow the chapter's own, in the packages' id order, so every
 // reader of a chapter's checks reads them.
 export function sharedList(doc,chapter,compute){
-  const all=()=>[...compute(),...EXTENSIONS.flatMap(e=>e.checks?.[chapter]?.(doc)||[])];
-  const cache=documentCache(doc,'list');if(!cache)return all();
-  let list=cache.get(chapter);if(!list){list=all();cache.set(chapter,list);}
+  const cache=documentCache(doc,'list');let list=cache?.get(chapter);
+  if(!list){list=[...compute(),...EXTENSIONS.flatMap(e=>e.checks?.[chapter]?.(doc)||[])];if(!cache)return list;cache.set(chapter,list);}
   return list.map(x=>x&&typeof x==='object'&&!Array.isArray(x)?{...x}:x);
 }
 // tupleSet(): a set of key tuples compared with ===, as list.some(x=>x.a===a&&x.b===b) compares them.

@@ -142,8 +142,7 @@ export function createProjectStore(){
     else try{const answer=await requestJSON('/api/access',undefined,undefined,id);access=typeof answer?.role==='string'?answer.role:null;}catch{access=null;}
     if(appliesNotices(access))try{await (await fetch(projectURL('/api/knowledge/corpus?view=notices',id),{method:'POST',credentials:'same-origin'})).arrayBuffer();}catch{/* reading continues */}
     // The design packages the document holds records of are loaded before it is drawn (rc44, slice S0: design-extensions.js).
-    const loaded=await requestJSON('/api/project',undefined,undefined,id);await ensureExtensions(loaded.document);
-    return {role:access,loaded};
+    return {role:access,loaded:await ensureExtensions(await requestJSON('/api/project',undefined,undefined,id))};
   }
   // Every save carries its own request key (audit C-27). When the response is lost on the way back, the same
   // request is sent once more with the same key: the server returns the saved outcome instead of applying the
@@ -173,7 +172,7 @@ export function createProjectStore(){
     if(expectedRevision!==undefined&&current.revision!==expectedRevision){const error=Object.assign(Error('Another save finished before Undo. Review the current record instead.'),{conflict:true});announce('error');throw error;}
     if(status==='behind')throw behindError();
     if(status!=='saving')announce('saving');
-    try{const result=await save(command,project);current=result;await ensureExtensions(result.document);const receipt=current.document.workbench?.history?.at(-1)?.undo;lastUndo=receipt&&!receipt.used&&receipt.revision===current.revision&&command.type!=='action.undo'?{id:receipt.id,type:receipt.type,revision:receipt.revision}:null;settleDocument(current.document);if(queued===1)announce('saved');channel?.postMessage({revision:current.revision});if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('aiw:project-command',{detail:commandChangeDetail(command,result)}));return result}
+    try{const result=await ensureExtensions(await save(command,project));current=result;const receipt=current.document.workbench?.history?.at(-1)?.undo;lastUndo=receipt&&!receipt.used&&receipt.revision===current.revision&&command.type!=='action.undo'?{id:receipt.id,type:receipt.type,revision:receipt.revision}:null;settleDocument(current.document);if(queued===1)announce('saved');channel?.postMessage({revision:current.revision});if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('aiw:project-command',{detail:commandChangeDetail(command,result)}));return result}
     catch(error){announce('error');throw error}
   }
   const store={get value(){return current},get status(){return status},get role(){return role},

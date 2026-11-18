@@ -27,7 +27,7 @@
 // it was reviewed.
 import {remember,memoPass} from './document-memo.js';
 import {recordStamp,valueFingerprint} from './source-fingerprint.js';
-import {COLLECTIONS,solDraftOf} from './record-lifecycle.js';
+import {COLLECTIONS,PATH_CHAPTERS,solDraftOf} from './record-lifecycle.js';
 import {list,str,clean} from './util.js';
 import {EXTENSIONS,extendTable} from './design-extensions.js';
 
@@ -54,12 +54,15 @@ export const LINK_PATHS=new Set(['relationships','logical.connections','logical.
 const NARRATIVE='finalReview.narrative';
 // The collections the design packages state are among them (rc44, slice S0): the ones that retire through the lifecycle
 // family (record-lifecycle.js COLLECTIONS holds them, rebuilt at every registration before this list is) and, after the
-// narrative, the ones a package states for this reader alone (provenance.records {path: chapter}); a path already read
-// is read once, as it was. Their nouns join the nouns below, and the collections their commands write are read with
-// the built-in ones (pathsOf).
+// narrative, the ones a package states for this reader alone (provenance.records {path: chapter}). Those are kept in a
+// table that inherits the lifecycle family's (PATH_CHAPTERS), so a path that family holds, built in or a package's, is
+// taken and is read once, as it was. Their nouns join the nouns below, and the collections their commands write are
+// read with the built-in ones (pathsOf).
+const READ_ONLY=Object.create(PATH_CHAPTERS);READ_ONLY[NARRATIVE]=11;
+extendTable(READ_ONLY,e=>e.provenance?.records);
 export const RECORD_PATHS=[];
 export const RECORD_NOUNS={artefacts:'Chapter 1 record','processModel.elements':'process object','processModel.transitions':'process path','processModel.claims':'process claim',relationships:'requirement relationship','requirementGroups.records':'requirement group','quality.drivers':'driver','quality.conflicts':'quality conflict','decisions.records':'decision','decisions.conflicts':'decision conflict','logical.responsibilities':'responsibility','logical.groups':'responsibility group','logical.connections':'logical connection','logical.mappings':'allocation','realisation.components':'component','realisation.connections':'component interaction','technology.capabilities':'capability','technology.needs':'technology need','technology.mappings':'support mapping','technology.dependencies':'technology dependency','technology.boundaries':'trust boundary','technologyRealisation.records':'technology realisation','technologyRealisation.mappings':'realisation mapping','technologyRealisation.connections':'realisation connection','interfaces.contracts':'contract','interfaces.data':'data definition','interfaces.parties':'external party','interfaces.lineage':'data lineage','interfaces.invariants':'invariant','security.threats':'threat','security.controls':'control','runtime.environments':'environment','runtime.zones':'zone','runtime.plans':'runtime plan','runtime.placements':'placement','runtime.paths':'runtime path','roadmap.plateaus':'plateau','roadmap.migrations':'migration record','finalReview.actions':'delivery action',[NARRATIVE]:'SDD narrative'};
-extendTable(RECORD_NOUNS,e=>e.provenance?.nouns,()=>{const m=new Map([...COLLECTIONS,[NARRATIVE,11]]);for(const e of EXTENSIONS)for(const k in e.provenance?.records)m.has(k)||m.set(k,e.provenance.records[k]);m.delete('logical.assets');RECORD_PATHS.splice(0,Infinity,...m);});
+extendTable(RECORD_NOUNS,e=>e.provenance?.nouns,()=>{RECORD_PATHS.splice(0,Infinity,...COLLECTIONS.filter(([path])=>path!=='logical.assets'),...Object.entries(READ_ONLY));});
 export function listAt(p,path){
  if(path===NARRATIVE)return plain(p?.finalReview?.narrative)?[p.finalReview.narrative]:[];
  const [a,b]=path.split('.'),v=b?p?.[a]?.[b]:p?.[a];return Array.isArray(v)?v:[];

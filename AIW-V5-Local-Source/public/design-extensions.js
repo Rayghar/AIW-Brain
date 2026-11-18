@@ -40,5 +40,6 @@ export function extendTable(table,read,then){
  };
  tables.push(fill);fill();
 }
-// The packages a document needs, loaded before the document is first drawn (project-store.js).
-export const ensureExtensions=p=>Promise.all(EXTENSIONS.map(e=>e.needs?.(p)&&e.load()));
+// The packages a project as read ({document, …}) needs, loaded before its document is first drawn: answers the project
+// once they have loaded (project-store.js, where it reads a project and where a save answers).
+export const ensureExtensions=async project=>(await Promise.all(EXTENSIONS.map(e=>e.needs?.(project.document)&&e.load())),project);
