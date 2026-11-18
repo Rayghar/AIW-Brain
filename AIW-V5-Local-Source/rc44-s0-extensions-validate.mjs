@@ -19,7 +19,7 @@
 // the command types of the four designs that will register here are free, and every built-in one is taken.
 // Run: npm run test:rc44-s0-extensions
 import assert from 'node:assert/strict';
-import {readFileSync, existsSync} from 'node:fs';
+import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {REFERENCES, reference, readings, digests, AT} from './rc44-s0-readings.mjs';
@@ -33,7 +33,7 @@ import {architectureModel} from './public/architecture-model.js';
 import * as kernel from './public/trace-kernel.js';
 import {decisionFindings} from './public/decisions-domain.js';
 import {chapterChecks, sddBoard} from './public/readiness-model.js';
-import {applyCanonical, applyRecordCommand, STAGED_COMMANDS, stagedBy, reviewsOnItsOwn} from './public/canonical-command.js';
+import * as canonical from './public/canonical-command.js';
 import {COLLECTIONS, retiredRecords, retirable, referencesTo} from './public/record-lifecycle.js';
 import {eachRecord, findRecord, RECORD_NOUNS, RECORD_PATHS} from './public/provenance.js';
 import {architectureMarkdown} from './public/sdd-architecture.js';
@@ -41,6 +41,8 @@ import {isReviewCommand} from './authorship.js';
 import {documentCopy, isSettled} from './public/document-memo.js';
 import {createProjectStore} from './public/project-store.js';
 
+// Read through the namespace, so that the file links against the baseline too and each case fails there on its own.
+const {applyCanonical, applyRecordCommand, STAGED_COMMANDS, reviewsOnItsOwn} = canonical, stagedBy = type => canonical.stagedBy(type);
 const PROBE = process.argv.indexOf('--probe');
 const checks = [], failed = [];
 const pass = n => { checks.push(n); if (PROBE < 0) console.log('PASS ' + n); };
@@ -531,20 +533,31 @@ await block('7 idempotent and order-free', () => {
 });
 
 // ---------------------------------------------------------------- 8. the client build
+// The client is built as build.mjs builds it (client-bundle.mjs bundleClient with its defaults), so the route figure is
+// the one dist/client-size-report.json reports. The measurement at the slice is kept in audit/rc44/evidence/s0-size.json
+// (written by `node rc44-s0-extensions-validate.mjs --measure`, from the same build); the baseline figure is the build of
+// 94dbd4f. Later slices add to the route, so the suite compares its own build with the evidence only when asked
+// (AIW_S0_MEASURE=1, at the slice's own commit); the gates and the slice's recorded delta are checked always.
+const BASELINE = {commit: '94dbd4f', chapters: 3228863, projects: 506102, scripts: 148, under10k: 53, css: 901873}, EVIDENCE = 'audit/rc44/evidence/s0-size.json';
 await block('8 client build', async () => {
   need();
   const {bundleClient, BUDGET} = await import('./client-bundle.mjs');
-  const out = '.aiw-local/rc44-s0/client', built = await bundleClient(out, {sourcemap: false});
-  assert.deepEqual(built.report.violations, [], 'the client build passes every size gate');
-  assert.equal(BUDGET.routes.chapters, 3233792, 'the chapters route cap is the one it was'); assert.equal(BUDGET.scripts, 148); assert.equal(BUDGET.tiny, 61); assert.equal(BUDGET.css, 881 * 1024);
+  const out = '.aiw-local/rc44-s0/client', built = await bundleClient(out), report = built.report;
+  assert.deepEqual(report.violations, [], 'the client build passes every size gate');
+  assert.equal(BUDGET.routes.chapters, 3233792, 'the chapters route cap is the one it was'); assert.equal(BUDGET.routes.projects, 1213 * 1024); assert.equal(BUDGET.scripts, 148); assert.equal(BUDGET.tiny, 61); assert.equal(BUDGET.css, 881 * 1024);
   const meta = JSON.parse(readFileSync(built.metafile, 'utf8')), on = Object.values(meta.outputs).flatMap(o => Object.entries(o.inputs || {})).filter(([i]) => i === 'public/design-extensions.js');
-  assert.equal(on.length, 1, 'the registry is in one chunk'); assert.ok(on[0][1].bytesInOutput <= 700, 'and small: ' + on[0][1].bytesInOutput + ' B');
+  assert.equal(on.length, 1, 'the registry is in one chunk'); assert.ok(on[0][1].bytesInOutput <= 300, 'and small: ' + on[0][1].bytesInOutput + ' B');
   for (const o of Object.values(meta.outputs)) for (const i of Object.keys(o.inputs || {})) assert.ok(!/design-extension-boundary|design-extension-parts|design-packages|rc44-s0/.test(i), i + ' is not in the client');
-  assert.ok(existsSync('audit/rc44/evidence/s0-size.json'), 'the slice\'s measurement is kept');
-  const size = JSON.parse(readFileSync('audit/rc44/evidence/s0-size.json', 'utf8'));
-  assert.equal(size.baseline.commit, '94dbd4f'); assert.equal(size.baseline.chapters, 3228863); assert.equal(size.slice.scripts, 148); assert.equal(size.baseline.scripts, 148);
-  assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); assert.ok(size.delta <= 700, 'the route delta measured at the slice is at most 700 B: ' + size.delta);
-  pass('8: the client build passes every gate with the caps unchanged; S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B');
+  const measured = {chapters: report.routes.chapters.code, projects: report.routes.projects.code, scripts: report.scripts, under10k: report.buckets.under10k, css: report.css, registry: on[0][1].bytesInOutput};
+  if (process.argv.includes('--measure')) { mkdirSync('audit/rc44/evidence', {recursive: true}); writeFileSync(EVIDENCE, JSON.stringify({schema: 'aiw.rc44.slice-size.v1', slice: 'S0 shared registration', measuredWith: 'client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)', allowance: {chapters: 700, scripts: 148}, caps: {chapters: BUDGET.routes.chapters, projects: BUDGET.routes.projects, scripts: BUDGET.scripts, under10k: BUDGET.tiny, css: BUDGET.css}, baseline: BASELINE, slice: measured, delta: measured.chapters - BASELINE.chapters, projectsDelta: measured.projects - BASELINE.projects, headroomAfter: BUDGET.routes.chapters - measured.chapters}, null, 1) + '\n'); }
+  assert.ok(existsSync(EVIDENCE), 'the slice\'s measurement is kept (node rc44-s0-extensions-validate.mjs --measure)');
+  const size = JSON.parse(readFileSync(EVIDENCE, 'utf8'));
+  assert.deepEqual(size.baseline, BASELINE, 'against the build of 94dbd4f'); assert.equal(size.slice.scripts, 148, '148 script files'); assert.equal(size.slice.under10k, BASELINE.under10k); assert.equal(size.slice.css, BASELINE.css, 'no stylesheet rule');
+  assert.equal(size.delta, size.slice.chapters - size.baseline.chapters); assert.ok(size.delta > 0 && size.delta <= 700, 'the route delta measured at the slice is at most 700 B: ' + size.delta);
+  assert.ok(size.slice.chapters <= BUDGET.routes.chapters);
+  assert.ok(measured.chapters >= size.slice.chapters - 700, 'the route as built now is the slice\'s or a later one\'s: ' + measured.chapters);
+  if (process.env.AIW_S0_MEASURE || process.argv.includes('--measure')) assert.deepEqual(measured, size.slice, 'at the slice\'s commit the build measures what the evidence says');
+  pass('8: the client build passes every gate with the caps unchanged; S0 measured ' + size.delta + ' B on the chapters route (' + size.baseline.chapters + ' → ' + size.slice.chapters + ' of ' + BUDGET.routes.chapters + '), 148 script files; the registry is ' + on[0][1].bytesInOutput + ' B; this build: ' + measured.chapters + ' B');
 });
 
 assert.deepEqual(failed, [], 'every rc44 S0 block passes');

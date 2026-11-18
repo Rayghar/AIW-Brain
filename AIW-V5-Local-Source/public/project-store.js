@@ -1,6 +1,8 @@
 import {projectURL,activeProjectId,adoptProject,isProjectId} from './project-context.js';
 import {settleDocument} from './document-memo.js';
 import {ensureExtensions} from './design-extensions.js';
+// The route stubs of the design packages (rc44, slice S0): what says, before a project is read, which package a document needs.
+import './design-package-routes.js';
 // A random request key; getRandomValues also works where randomUUID does not (plain http on a LAN).
 const requestKey=()=>[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
