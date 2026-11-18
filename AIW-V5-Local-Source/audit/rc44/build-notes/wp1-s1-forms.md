@@ -1,103 +1,305 @@
 # wp1-s1-forms: build notes (slice S1 of design/wp1-knowledge.md)
 
-Branch `rc44/wp1-s1-forms-c2` (the second session's continuation of `rc44/wp1-s1-forms`, which the usage limit cut off
-after its last WIP commit `a3420c0`), from baseline `94dbd4f`. Resumable: read this file and `git log` first.
-Suite: `npm run test:rc44-wp1-knowledge` (`rc44-wp1-knowledge-validate.mjs`; `--all`, `--only <text>`, `--print-baseline`).
+**State: the slice was built on `rc44/wp1-s1-forms-c2` (head `f9d9bdc`), reviewed adversarially, ruled on by the lead
+(`audit/rc44/RULINGS-2026-11-18.md`, section B, in the main checkout) and fixed up on `rc44/wp1-s1-forms-fix`.**
+Read the section **Fix-up** first: it changes several things the first build's sections below say. Where a sentence of
+the first build no longer holds it is corrected in place and marked *(fix-up)*.
+Baseline `94dbd4f`. Resumable: read this file and `git log` first.
+Suite: `npm run test:rc44-wp1-knowledge` (`rc44-wp1-knowledge-validate.mjs`; `--all`, `--only <text>`,
+`--files a.mjs,b.mjs`, `--print-baseline`). 26 S1 cases; it takes about two minutes (case S1.25 writes a tranche of 540
+forms and a history of 6,000 lines through the commands).
 
 ## Measurements (node build.mjs)
 
-Both columns were measured again in the second session, in this worktree: the baseline column with the four changed
-product files checked out at `94dbd4f` and the three new modules moved aside, then everything restored.
+The first two columns were measured in the second session of the first build; the third in the fix-up session, in the
+fix-up's worktree, against a build of `f9d9bdc` made in the same session (its numbers equal the second column).
 
-| | baseline 94dbd4f | this branch |
-|---|---|---|
-| chapters route code (cap 3,233,792 B) | 3,228,863 B | 3,228,863 B (**+0 B**) |
-| projects route code | 506,102 B | 506,102 B |
-| script files (gate 148) | 148 | 148 |
-| files under 10 KB / 10–50 KB / over 50 KB | 53 / 50 / 45 | 53 / 50 / 45 |
-| stylesheet | 901,873 B | 901,873 B |
-| `knowledge-governance.js` in the client | 8,105 B | 8,105 B |
-| `architecture-knowledge-unit.js` in the client | 5,327 B | 5,327 B |
-| server modules packaged | 253 | 256 (the three new modules) |
+| | baseline 94dbd4f | first build f9d9bdc | after the fix-up |
+|---|---|---|---|
+| chapters route code (cap 3,233,792 B) | 3,228,863 B | 3,228,863 B (+0 B) | 3,228,901 B (**+38 B**, all of it ruling B1; 4,891 B spare) |
+| projects route code (cap 1,242,112 B) | 506,102 B | 506,102 B | 506,129 B (+27 B) |
+| script files (gate 148) | 148 | 148 | 148 |
+| files under 10 KB / 10–50 KB / over 50 KB | 53 / 50 / 45 | 53 / 50 / 45 | 53 / 50 / 45 |
+| stylesheet | 901,873 B | 901,873 B | 901,873 B |
+| `knowledge-governance.js` in the client | 8,105 B | 8,105 B | 8,132 B (+27 B: `releasedClaims`) |
+| `knowledge-stewardship.js` in the client | 7,142 B | 7,142 B | 7,153 B (+11 B: the stewards' reading) |
+| server modules packaged | 253 | 256 (the three new modules) | 256 |
 
-None of the three new modules is in the client metafile. The suite checks this when `dist/client-metafile.json` exists (S1.14).
-The size report holds no violation on either side; no gate in `client-bundle.mjs` was touched.
+None of the three new modules is in the client metafile, and no built script holds the limit tiers. The suite checks
+both when `dist/client-metafile.json` exists (S1.14). The size report holds no violation; no gate in `client-bundle.mjs`
+was touched. B1 was granted up to 120 B of wp1's 660 B: it used 38 B, so wp1 has 622 B left for S3.
 
-## Verification (second session, 2026-11-18)
+## Fix-up (after the adversarial review and the lead's rulings of 2026-11-18)
+
+Branch `rc44/wp1-s1-forms-fix`, from `f9d9bdc`. Order of work as the lead gave it; each item has its case first, seen
+red before its change, and a WIP commit.
+
+| # | Item | State | Case |
+|---|---|---|---|
+| 1 | Must-fix 1 (the quote floor is measured on the collapsed text; a verbatim diagram source has the same floor) and must-fix 2 (the number rule reads a target label; identifier fields hold identifiers) | done | S1.15 |
+| 2 | B1: a form claim is read only by the concept readers; S1.10 strengthened | done (route +38 B) | S1.10, S1.16 |
+| 3 | B2: concepts, topics and form claims in a library project only | done | S1.17 (S1.1, S1.5 through the service, S1.7, S1.8, S1.10, S1.13 adjusted) |
+| 4 | B3: what `conceptHash` covers; only a person changes what a review covered; an upsert that changes nothing writes nothing | done | S1.18 (S1.4, S1.5 through the service adjusted) |
+| 5 | B4 and should-fix 4: a concept review records the reviewer's account kind, a read requires a person's; `kindRefusal` requires account `person` | done | S1.19 (S1.5 adjusted) |
+| 6 | B5 (should-fix 3 and 5): a pin hands over nothing of a concept that is not eligible as a whole or is retired, and the reading says why; a released concept is not restored | done | S1.20 (S1.9 adjusted) |
+| 7 | B7 (should-fix 9): a concept id is not a record reference; `calculation.modelKind` is an identifier | done | S1.21 (S1.2 adjusted) |
+| 8 | Should-fix 2 (a unit on an applicability form only), 7 (a retired concept is not reviewed), 8 (a run that executed no case fails), 10 (all fifteen pre-existing command types walked), 1 (what a released, active form moves, below and asserted) | done | S1.22, S1.23, S1.8, S1.10 |
+| 9 | B6 (should-fix 6): every statement of a decision-bearing form rests on its own quote | done | S1.24 (fixtures, S1.2, S1.9, S1.15, S1.20 moved to the new shape) |
+| 10 | B8 (should-fix 11): the history bound is part of the tier; a tranche written through the commands; every caller reads the tier | done | S1.25 (S1.7, S1.14 adjusted) |
+| 11 | B9, B10: text; the two inaccurate sentences | done | below |
+
+### What a released, active form moves (ruling B1, should-fix 1; asserted in S1.10)
+
+Measured on the bank-payment reference with the nine forms of one concept released and active, a marker placed in each
+claim's statement, in a text of each form, in its first condition and in the structured unit. Of the review's 27
+readings (findings, summaries, blocker count, readiness, trace coverage, review capacity, the eligibility gate and
+criteria of each of the nine technology selections, the nine product comparisons, the Chapter 7 findings, the
+specification gate and the specification text, `releasedClaims`, `knowledgeFindings`, domain knowledge, knowledge
+structures, the architecture knowledge snapshot, the SDD text, the contextual reading, the Brain's knowledge, the whole
+Brain context, Sol's packet in three modes, the record graph, the sources the Brain cites for a question, the reasoning
+packet of a decision, the chapter stamps) **none moves outside eleven stamp values, and the marker reaches none**. The
+review asked for a packet mode `draft`; that is not a mode (it throws on every document), so `design` is read instead.
+
+What does move:
+1. **The concept readers** (`knowledge-concepts.js`): `conceptRecords`, `conceptReading` (nine forms `released` with
+   their content), `releasedConcepts`, `conceptTeachingForms`, and `conceptDecisionForms` through an active pin.
+2. **The knowledge workspace's own lists:** `knowledgeGraph` (nodes, edges, counts of sources and claims),
+   `knowledgeMarkdown` (it names the active release), and the workspace's lists of sources, claims and releases. In
+   that graph a released, active form claim is drawn as `reviewed`, not `active` (the graph asks `releasedClaims`);
+   S5's concept view is where its state is `released`.
+3. **Stamps:**
+   - the stamp of the knowledge state, in the Brain's receipt (`brainContext().governed.receipt.knowledgeStamp`,
+     `packet.brainReceipt.knowledgeStamp`) and each packet's `stamp` over that receipt: 7 values. A plain candidate
+     source through the old entry moves exactly these on rc.10.73.42 (asserted);
+   - the active release's id and checksum in the same receipt (`…receipt.activeReleases`, 4 values), as for any
+     active release. This is the one place a design reading names a release of forms. I left it: the receipt says
+     honestly which releases were active, and it carries an id and a checksum, no content;
+   - the whole-document fingerprint (`designFingerprint`, `reviewSourceStamp`) and so each finding's `stamp`, as any
+     knowledge write does on rc.10.73.42. With B2 only a library project takes such writes through the commands.
+
+### What changed, for those who build on this slice
+
+**Forms (`public/concept-form.js`; S4's validator runs the same rules).**
+- A quote (an item's `quote`, a quotes entry, a sub-list entry's quote) is 12 to 240 characters **once whitespace is
+  collapsed**, at least eight of them letters or digits. A verbatim diagram `source` has the same floor (ceiling 4,000).
+- `quotes` is `[{field, quote}]` (at most 8): each entry names the text of the form it grounds (`short`,
+  `explanation`, `narrative`, `purpose`, `relation`, `bounds`, `scenario`, `expectedOutcome`); each stated text has at
+  least one; no quote is given twice (compared with whitespace collapsed). All nine form types.
+- In a decision-bearing form an entry of a sub-list (`guaranteeBoundary.dependsOn`, `.doesNotEstablish`,
+  `technique.inputs`, `.steps`, `.outputs`) is `{text, quote}`; the quote is found in the lines (`at`) of the object
+  that holds the list. No teaching form has a sub-list today; one would keep plain texts on the object's one quote.
+- The number rule (decision-bearing forms): an item's text against the item's quote; a sub-list entry's text against
+  its own quote; a form-level text against the quotes given for that field; a target's `{label}` against its item's
+  quote; and the claim's own `statement`, `conditions` and `limitations` against all quotes of the form (they have no
+  quote of their own). `conceptFormIssues(form, {excerpt, lineStart, claim: {statement, conditions, limitations}})`;
+  `formIssues(claim)` in `knowledge-concepts.js` passes them, at `knowledge.claim`, at review and on every read.
+- Identifier fields (`composition.roles[].id` and `.sameAs`, `sequence[].ownerRole`, `verification.scenarios[].id`,
+  `calculation.modelKind`) match `/^[A-Za-z0-9][A-Za-z0-9._:-]*$/`; an alias id in a target matches the same with `/`.
+- `CONCEPT_ID` refuses a prefix and a number (`RECORD_REFERENCE`, `/^[A-Z][A-Z0-9]*-\d+$/`: `REQ-001`, `KC-0001`).
+- Only an applicability form's claim carries `architectureUnit`.
+
+**Commands (`public/knowledge-concept-commands.js`).**
+- `knowledge.concept`, `.topic`, `.concept-review`, `.concept-retire`, `.concept-restore`, a `knowledge.claim` with a
+  form, the review of a form and the release of forms are refused unless a person marked the project as a knowledge
+  library. `knowledge.library {enabled:false}` is refused while the project holds a concept, a topic or a form claim.
+- A request that is not a person's (agent account, draft by Sol, import, no author, an author with no person's
+  account) is refused, on a concept whose review stands or which a release of the project holds: an edit that changes
+  its hash, any form claim on it, a topic upsert that changes its hash.
+- `knowledge.concept` and `knowledge.topic` saved again unchanged write nothing (the document is returned as it was;
+  the worker still writes its own revision and activity row, as it does for a repeated `knowledge.project-source`).
+- `knowledge.concept` refuses an id that a record of the project bears as its id or reference.
+- `knowledge.release` refuses a release that mixes plain claims and forms.
+- `knowledge.concept-restore` refuses a concept that a release of the project holds.
+- A concept review stores `account` (the reviewer's account kind).
+
+**Readers (`public/knowledge-concepts.js`).**
+- `conceptHash(concept, claims, topics)`: every field of the record except `at`, `actor`, `lastEditor`, `history`,
+  `revision`, `changeNote`, `review`, `retired` (so `id`, `steward`, `reviewDue`, `reviewTriggers`, `notAdopted`,
+  `successorOf`, `splitFrom` and any field no command writes are in it), the forms as type and claim hash, and the
+  topics mapped to the concept as sorted `{file, topicId, sliceSha256}`.
+- `conceptCovered(p, concept)`: its review stands, or a release of the project holds one of its forms.
+- `releasedConcepts(p)[]` gains `reasons`; `eligible` means the concept is usable as a whole (each form released,
+  exactly one definition, not retired in this project).
+- `conceptReading()` gains `releases: [{releaseId, title, eligible, reasons}]`.
+- `conceptDecisionReading(p, pinId)` → `{pinId, conceptId, releaseId, forms, reasons}`; `conceptDecisionForms` is its
+  `forms`: nothing unless the concept is eligible as a whole in the pinned release.
+- Teaching content that is not released is returned in a library project only.
+- `formIssues(claim)` is exported.
+
+**`public/knowledge-governance.js`.**
+- `releasedClaims(p)` leaves out every release that holds a form claim.
+- `KNOWLEDGE_LIMIT_TIERS` and `knowledgeLimits(p)` live here (re-exported by the command module, which freezes them):
+  project `{sources 100, claims 250, concepts 100, topics 100, history 2000}`, library `{300, 1000, 300, 300, 6000}`.
+  `applyKnowledgeCommand` and `pinOrganizationKnowledge` read the tier of the document, so the old entry, repository
+  fetch and transfer (`knowledge-service.js:60`, `repository-transfer.js:66`; they hold no literal of their own),
+  repository sync and the import scripts are held to the same bounds. `repository-packet.js` reads it for the
+  capacity it states (a packet itself still names at most a project's 100 sources and 250 claims).
+
+### Where I went further than a ruling, or read it in a particular way
+
+- **B1, a release holds plain claims or forms, never both.** Every reader of `releasedClaims` is handed
+  `{claim, release}`, and the release object holds all its claims: filtering claim by claim would still hand forms
+  over inside `release.claims` (the snapshot serialises it; S1.16 caught this). So the whole release is left out, and
+  `knowledge.release` refuses a mixed one. Design section c lets S3's `knowledge.release` add a concept's forms to a
+  set of plain claim ids: with this, a release made with `conceptIds` holds forms only. A mixed release that a
+  document holds anyway reaches no reader of released claims: its plain claims read as not active.
+- **B1, links.** `knowledge.link` reads `releasedClaims`, so a form is linked to no record now; a link to a form that
+  a document holds anyway reads 'Review changed architectural support'. S3's pin link must go through the concept readers.
+- **B2 is applied to more commands than it names:** also the review of a form, the concept review, retire, restore
+  and the release of forms. A project that holds forms anyway (recovery, an older library) reads them, inert, and
+  takes no command on them until a person marks it a library.
+- **B3:** `id` is in the hash (the ruling's list of bookkeeping does not name it). Any form claim by a non-person on a
+  covered concept is refused, although a claim alone does not move the hash until it is attached: the ruling says so,
+  and an opposing one would open a contradiction (B9).
+- **B5:** "retired" is read from this project's register, whatever release holds the concept.
+- **B6:** a sub-list entry carries its quote; the alternative the ruling allows ("or is keyed to one") is not built.
+  Quotes must be distinct among the entries of `quotes[]` (ruled); among sub-list entries and items they need not be:
+  one sentence may ground two entries, and each entry shows which.
+- **B7:** the shape rule is "a prefix and a number", not a list of the record graph's prefixes: it covers the 39
+  prefixes the two reference documents use (ACT, ADR, … REQ, … ZON), the knowledge ids, and any a later package
+  registers. Ids of another
+  shape that a record bears (`PROC-REF-START`) are refused at `knowledge.concept` by looking the record graph up.
+- **B8, "set the tier to that".** Stated plainly, because here I did not change the tier's counts:
+  - a tranche of 60 concepts and nine forms each, written through the commands with two correction rounds (in each,
+    one form of every concept is corrected by a person, verified again, the concept reviewed again and the whole
+    tranche released as a successor), costs **1,867 commands** and **6,721,578 of 8,000,000 characters** with the
+    synthetic handbook's topics (4,236 characters, the size of a pattern handbook's entry). It fits.
+  - with topics the size of a component profile (12,697 characters) and passages some twenty lines longer, measured
+    on ten concepts written the same way: 101,250 characters for each concept with the first release, 147,835 with
+    one successor release, 194,268 with two. **Sixty fit with their first release (about 6.1 million characters) and
+    not with a successor release of the whole tranche; 54 fit with one, 41 with two.** Corrections made before the
+    first release cost one claim each, not a copy of the tranche.
+  - the bound that binds is the 8,000,000 characters, and it depends on the size of the topics, which the counts
+    cannot express; so the counts stay as designed (300 sources, 1,000 claims, 300 concepts, 300 topics) and the
+    numbers above are what a steward plans a tranche by. If the lead wants the library's concept bound lowered to a
+    tranche (60, or 41), it is one number in `KNOWLEDGE_LIMIT_TIERS`.
+  - the history bound of a library is 6,000 lines: the tranche above uses 1,867; corrections up to the claims bound
+    (460 more forms, rejected and verified again) about 3,000; S2's crosswalk rows will add some hundreds. At its
+    bound the history holds about 0.8 million characters. Both bounds are reached through the commands in S1.25.
+
+### Known limits, recorded as ruled
+
+- **B9, an opposing candidate.** A non-person cannot add a form to a reviewed or released concept (B3). A person's
+  opposing candidate keeps the fail-safe of rc.10.73.42: a contradiction opens, the form claims of that subject and
+  predicate are not eligible and the concept reads `draft` until a person separates the contexts or rejects one. At
+  handbook scale that is a way for one person's import to stall a concept; it is asserted as it is in S1.18.
+- **A superseding source** sent by an import or an agent makes the claims on the superseded source ineligible, forms
+  included, as on rc.10.73.42 for any claim. It does not change a concept's hash, so B3 does not refuse it. A changed
+  rendition is S4's legitimate use of it.
+- **Reading a tranche-sized active release is slow.** `knowledgeEligibility` digests the whole release once for each
+  claim it is asked about (rc.10.73.42 behaviour). With 540 forms in one active release `releasedConcepts` took about
+  43 seconds on this machine; `conceptReading` and `conceptDecisionForms` call it. A per-release memo of the checksum
+  in `knowledgeEligibility` is about 70 B on the route. S3 or S5 must settle it before a tranche is read interactively.
+- **The structured unit of an applicability form** is not read by the number rule (the ruling names the statement,
+  conditions and limitations). Its predicates may hold thresholds; they are reviewed by the second person.
+
+## Verification (fix-up session, 2026-11-18)
+
+- **Cases first.** Each new case was run red before its change: S1.15 at the padded quote, then at the target label;
+  S1.10 at "released and active: a reading of the design moved"; S1.16 at "released claims: the plain claim, and no
+  form" (and, with the stewards' filter taken out again, at "a plain candidate is listed as before; no form is");
+  S1.17 "Missing expected exception"; S1.18 "id is in the hash"; S1.19 "the review records the reviewer's account
+  kind"; S1.20 `conceptDecisionReading is not a function` (the behaviour it replaces was asserted by S1.9: four forms
+  handed over); S1.21 "REQ-001 is not a concept id"; S1.22 at the definition form with a unit (and, with the guard
+  "a retired concept is not reviewed" removed, "Missing expected exception: verified"); S1.23 "a filter that matches
+  nothing is not a pass"; S1.24 with the fixtures in the new shape: 21 of 25 cases red; S1.25 at the tiers.
+  S1.8's walk of the fifteen types is green on `f9d9bdc` too: it completes coverage, it changes nothing.
+- **The suite:** 26 passed, 0 failed, 4 pending (S2 to S5).
+- **Old documents:** `BASELINE` of S1.8 is unchanged for the bank reference and the legacy project, and gained the
+  readings of a walk of all fifteen pre-existing command types, taken with `knowledge-governance.js` of `94dbd4f`.
+- **Related existing suites, on the final product code:** RELATED-SUMMARY
+- `node check-syntax.mjs`: 914 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+  `node build.mjs`: passes every gate (numbers above).
+- Evidence: `audit/rc44/evidence/wp1-s1-forms-fixup.json`.
+
+## Verification of the first build (second session, 2026-11-18)
 
 - **The new suite on the baseline.** With the product code of `94dbd4f` all 15 S1 cases fail: S1.1 with "a claim sent
   with a form was stored without it (the form was silently dropped)", the other 14 because `public/concept-form.js`
   does not exist. `--print-baseline` run on that code prints exactly the `BASELINE` object of S1.8.
-- **The new suite here:** 15 passed, 0 failed, 4 pending (S2 to S5).
+- **The new suite then:** 15 passed, 0 failed, 4 pending (S2 to S5).
 - **Related suites:** the 53 registered suites that import `knowledge-governance.js`, `authorship.js` or
   `recovery-service.js` (and `test:knowledge`, `test:architecture-case`), two at a time: 45 passed, 8 failed. The 8
   (`brain-ahead`, `brain-reasoning`, `chapter-reasoning`, `command-equivalence`, `contextual-intelligence-ui`,
   `design-concern`, `knowledge`, `stewardship`) are red in `audit/rc42/regression-2026-11-16.json` and were run again
-  here on the baseline's product code: each fails with the same first line (apart from a timestamp and a generated id).
+  on the baseline's product code: each fails with the same first line (apart from a timestamp and a generated id).
   `test:scale` was not run (a load suite of more than 15 minutes, red at the baseline for this machine; the lead's).
-  The four unregistered suites `architecture-knowledge-unit`, `candidate-import`, `knowledge-boundaries` and
-  `brain-synthesis-retrieval` pass.
 - **Past the baseline failure of `stewardship-validate.mjs`:** it stops at line 92 on the baseline, before its server
   cases send `knowledge.capture` and `knowledge.steward` through `/api/commands` (now the wrapper). A scratch copy with
-  that one assertion set aside (never committed) passes its 8 checks, with the same output on the baseline and here.
-- `node check-syntax.mjs`: 914 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
-  `node build.mjs`: passes every gate.
+  that one assertion set aside (never committed) passed its 8 checks, with the same output on the baseline and there.
 
 ## Done
 
 - `public/concept-form.js`: the nine form types, their tier, fixed claim type and predicate, the closed vocabularies
-  (`CONCEPT_KINDS`, `CONCEPT_SCOPES`, `RELATION_VERBS`, `EVIDENCE_LEVELS`, `ALIAS_SCHEMES`, `CONCEPT_ID`), `quoteFound`,
-  `conceptFormIssues`, `conceptFormRecord`. Pure; imports nothing.
+  (`CONCEPT_KINDS`, `CONCEPT_SCOPES`, `RELATION_VERBS`, `EVIDENCE_LEVELS`, `ALIAS_SCHEMES`, `CONCEPT_ID`,
+  `RECORD_REFERENCE`), `quoteFound`, `conceptFormIssues`, `conceptFormRecord`. Pure; imports nothing.
 - `public/knowledge-concept-commands.js`: `applyConceptCommand` (the one entry for `knowledge.*`), `formCapability`,
-  `KNOWLEDGE_LIMIT_TIERS`, `knowledgeLimits`, `REVIEW_TRIGGERS`; commands `knowledge.library`, `.topic`, `.concept`,
-  `.concept-review`, `.concept-retire`, `.concept-restore`; the rules of a form on `knowledge.claim`, `.review`, `.release`.
-- `public/knowledge-concepts.js`: `conceptHash`, `conceptAuthors`, `conceptRecords`, `formStatus`, `releasedConcepts`,
-  `conceptReading`, `conceptTeachingForms`, `conceptDecisionForms`.
-- `public/knowledge-governance.js`: the fifth argument `{forms, limits}`; a claim's `form` and `authoredAs`; the optional
-  source keys `checkedAt`, `reviewDue`, `versionScope`, `sourceFile`; `formChecked` on a form's review; the form hooks at
-  claim, review and release; the register's command types through the `default` branch. 0 bytes in the client.
-- `worker.js` (import and dispatch with `{author}`), `authorship.js` (four person-only types), `recovery-service.js`
+  `REVIEW_TRIGGERS`, the re-exported `KNOWLEDGE_LIMIT_TIERS` and `knowledgeLimits`; commands `knowledge.library`,
+  `.topic`, `.concept`, `.concept-review`, `.concept-retire`, `.concept-restore`; the rules of a form on
+  `knowledge.claim`, `.review`, `.release`.
+- `public/knowledge-concepts.js`: `conceptHash`, `conceptAuthors`, `conceptRecords`, `conceptCovered`, `formIssues`,
+  `formStatus`, `releasedConcepts`, `conceptReading`, `conceptTeachingForms`, `conceptDecisionReading`,
+  `conceptDecisionForms`.
+- `public/knowledge-governance.js`: the fifth argument `{forms, limits}`; the limit tiers; a claim's `form` and
+  `authoredAs`; the optional source keys `checkedAt`, `reviewDue`, `versionScope`, `sourceFile`; `formChecked` on a
+  form's review; the form hooks at claim, review and release; the register's command types through the `default`
+  branch; `releasedClaims` without the releases of forms. 27 bytes in the client.
+- `public/knowledge-stewardship.js` (the stewards' reading lists no form claim), `repository-packet.js` (the tier),
+  `worker.js` (import and dispatch with `{author}`), `authorship.js` (four person-only types), `recovery-service.js`
   (an imported concept review loses its actor).
-- Suite: 15 S1 cases green; S2 to S5 hold one pending case each. 22 mutations of the guards were each killed by the suite.
-- Second session: S1.10 names the gates it compares one by one (the eligibility gate, criteria and state of each of the
-  reference's nine technology selections, the product comparison of each, the Chapter 7 findings, the gate of the
-  requirements specification) beside the checks, readiness, SDD, contextual reading and Sol's packet, and asserts that
-  the reference offers each of them non-empty. It also states what a released, active form adds (open question 2).
-- Second session: a value nested more deeply than a form holds (below the sixth level; the deepest a form goes is the
-  fourth) is refused with a sentence. Before, the reserved-name scan walked it and a 20,000-level value ended in a
-  stack overflow (caught by the command route as a 400, and thrown on a read of a tampered document).
-- The design's Appendix B records were run through `conceptFormIssues` against the real renditions on this machine
-  (scratch, nothing copied): every slice and passage hash matches the design, and 15 of 17 forms are valid as written.
-  The two `example` forms are refused because they state `expectedOutcome` with no `quotes` entry (rule A.3.3).
+- Suite: 26 S1 cases green; S2 to S5 hold one pending case each. The runner fails a run that executed no case.
+- The design's Appendix B records were run through `conceptFormIssues` against the real renditions on the first
+  build's machine (scratch, nothing copied): every slice and passage hash matched the design. *(fix-up)* The appendix
+  is written in the first build's shape; with B6 its `quotes` are `[{field, quote}]` and its `doesNotEstablish`
+  entries are `{text, quote}`, and the two `example` forms still need a quote for `expectedOutcome`.
 
 ## In progress
 
-Nothing. The slice is complete on `rc44/wp1-s1-forms-c2`; its head is the final commit.
+Nothing. The fix-up is complete on `rc44/wp1-s1-forms-fix`; its head is the final commit.
 
 ## Next (for the slices that follow; none blocks S1)
 
 - **S0 registration, when it lands:** nothing of S1 is registered in `record-graph.js`, `trace-kernel.js`,
   `review-domain.js`, `record-lifecycle.js`, `provenance.js`, `canonical-command.js`, the readings upgrade or the project
-  store. Candidates for the registry: `designKeys`/`evidenceKeys` for `knowledge.concepts`, `.topics`, `.library` (see
-  the first open question), journal nouns for the six new command types, a lifecycle row for concept retire/restore.
-- **`architecture-knowledge-unit.js:6` `KINDS`** (`component`, `technique`, `composition`, `deployment-topology`): left
-  out here because it costs about 60 B on the route and nothing in S1 needs it. S3 holds the route allowance; S4's
-  component profiles (Appendix B.2 uses unit kind `component`) need it before they can be imported.
+  store. Candidates for the registry: journal nouns for the six new command types, a lifecycle row for concept
+  retire/restore, and the keys below (B10).
 - **S2:** `knowledge.crosswalk*`, `resolveConcept`, `BUILT_IN_CROSSWALK`; add its person-only types to the line in
-  `authorship.js`; `conceptReading` gains `aliases`.
-- **S3:** `knowledge.release` with `conceptIds` and `parts` (the S1 release guard in `formCapability.release` is the place:
-  it already asks for a reviewed concept, released whole, by a person who wrote no form and did not verify an imported
-  one); versions; the four pin commands (`conceptDecisionForms` already reads `knowledge.conceptPins[{id, conceptId,
-  releaseId, status}]`, and should also compare the pin's `conceptHash` and `anchor`); `refreshConceptPins` at the end
-  of every command; `knowledge.withdraw` of a concept id; "restore only an unreleased concept" and "a new review
-  replaces it while the concept is unreleased" (both need `parts`); recovery of crosswalk reviews, `parts` and pins;
-  record-graph rows through S0; `concept` states `released`, `active`, `withdrawn`.
-- **S4:** `knowledge.topic` checks the file against the rendition manifest (no manifest exists yet, so the file name is
-  recorded as given); the import script sends `authorKind: 'import'`; Appendix B's `example` forms need a quote for
-  `expectedOutcome`.
-- **S5:** the claim and review forms of the knowledge workspace gain the form fields and `formChecked`. Until then a
-  form claim can be verified through the command route only: the existing review form sends no `formChecked` and is
-  refused with the reason.
+  `authorship.js`; `conceptReading` gains `aliases`. Its commands follow B2 (a library only) and B3: the verified
+  crosswalk rows of a concept are what `crosswalkChecked` reviewed, so either they join `conceptHash` or a non-person's
+  row on a covered concept is refused; an unchanged upsert writes nothing.
+- **S3 (ruling B10 and what the fix-up adds):**
+  - the reading takes a released concept's identity (title, kind, family, facets) from the release parts, not from the
+    register: today `conceptReading` reads the mutable register record, and for an organisation release there is none;
+  - a currency state and a finding for a concept retired behind an active pin (today a pin on it hands over nothing
+    and `conceptDecisionReading` says why; nothing is raised);
+  - `KINDS` in `architecture-knowledge-unit.js:6` extended with `component`, `technique`, `composition`,
+    `deployment-topology` (about 60 B on the route) before S4 imports component profiles;
+  - `designKeys` and `evidenceKeys` for `knowledge.concepts`, `.topics` and `.library` through S0 (the design
+    fingerprint holds `p.knowledge` whole, so a library project's recorded reviews read stale on every knowledge write);
+  - `conceptHash` covers the topics mapped to a concept: release parts must carry those rows (`file`, `topicId`,
+    `sliceSha256`), or the hash cannot be recomputed where the release is pinned;
+  - a release made with `conceptIds` holds forms only; `knowledge.link` with a pin reads the concept readers;
+  - `knowledge.release` with `conceptIds` and `parts` (the guard in `formCapability.release` is the place); versions;
+    the four pin commands (`conceptDecisionReading` reads `knowledge.conceptPins[{id, conceptId, releaseId, status}]`
+    and should also compare the pin's `conceptHash` and `anchor`); `refreshConceptPins`; `knowledge.withdraw` of a
+    concept id; "a new review replaces it while the concept is unreleased"; recovery of crosswalk reviews, `parts` and
+    pins; record-graph rows through S0; `concept` states `released`, `active`, `withdrawn`;
+  - the cost of reading a large active release (above).
+- **S4 (ruling B10 and what the fix-up adds):**
+  - the import script always states author kind `import`; the review pack says that the third-person rule rests on
+    the author kind a request states (a person who sends extracted content as their own gets the two-person path);
+  - the extraction shape follows the code, not design Appendix A.2 (deviation 10): `quotes: [{field, quote}]`,
+    sub-list entries `{text, quote}`, identifiers, the quote floor, `modelKind` an identifier, a unit on the
+    applicability form only, a concept id that is no prefix-and-number;
+  - import order: map a concept's topics and attach its forms **before** its review; afterwards an import cannot
+    change it (B3). "A second run changes nothing" holds for `knowledge.concept` and `knowledge.topic`; sources and
+    claims are not upserts, so their idempotency is the script's (by tags), as designed;
+  - `knowledge.topic` checks the file against the rendition manifest (no manifest exists yet);
+  - tranche size: the numbers under B8 above.
+- **S5:** the claim and review forms of the knowledge workspace gain the form fields and `formChecked` (until then a
+  form is verified through the command route only); the concept view shows `conceptReading().releases[].reasons` and
+  `conceptDecisionReading().reasons`; candidate teaching content is shown in a library only (plan section 6 item 4);
+  the workspace graph draws a released, active form as `reviewed`.
 
 ## Deviations from the design
 
@@ -106,12 +308,12 @@ Nothing. The slice is complete on `rc44/wp1-s1-forms-c2`; its head is the final 
    `architect-dismissal`) and `knowledgeEligibility` reads it. The new object is stored as `sourceFile`.
 2. **The register's commands run inside `applyKnowledgeCommand`.** The design has the wrapper handle the new types
    itself. Here the wrapper injects them as part of the form capability and `applyKnowledgeCommand`'s `default` branch
-   calls it, so the copy of the document, the shared counter, the 2,000-entry history bound, the history line and the
+   calls it, so the copy of the document, the shared counter, the history bound of the tier, the history line and the
    8,000,000-character bound are the same lines for every `knowledge.*` command. `FORM_CAPABILITY` is therefore a
    function of the request's author, `formCapability(author, limits)` with `claim`, `review`, `release`, `command`.
 3. **The pending case files do not fail the run.** The design asks for the later case files as "a single failing case".
    A registered suite that is red by design would be read as a regression, so a pending case is listed as PENDING and
-   fails only with `--all` (or `AIW_RC44_WP1_ALL=1`).
+   fails only with `--all` (or `AIW_RC44_WP1_ALL=1`). *(fix-up)* A run in which no case was executed fails.
 4. **Stricter than designed, each on purpose:**
    - a concept is not verified by the author of one of its form claims (the design names the concept's author and last
      editor); the same check stands on every read (`conceptAuthors` through `verifierRefusal`);
@@ -123,67 +325,48 @@ Nothing. The slice is complete on `rc44/wp1-s1-forms-c2`; its head is the final 
      no author, whatever its outcome; a plain claim's review keeps the behaviour of rc.10.73.42;
    - a request that states no author stores a form as `authoredAs: 'import'`, never as a person's;
    - the seven new claim types exist for forms only: a plain claim still chooses among the eleven of rc.10.73.42;
-   - names and labels in a decision-bearing form follow the number rule (identifiers and targets do not);
-   - `conceptDecisionForms` hands over nothing when the concept's definition is not released in the pinned release;
+   - *(fix-up; the first build's sentence here was inaccurate: it said "names and labels follow the number rule
+     (identifiers and targets do not)", while a target's label was not read and an identifier could hold a sentence)*
+     in a decision-bearing form every text follows the number rule: texts, names, labels and a target's label, each
+     against its own quote; an identifier is the one text the rule does not read, and it must be an identifier;
+   - *(fix-up, B5)* `conceptDecisionForms` hands over nothing unless the concept is eligible as a whole in the pinned
+     release (the first build required only its definition and handed over the other usable forms);
    - a recovery import clears the actor of a concept review (design: S3, with the crosswalk and pin rows).
 5. **`authorship.js`:** the four S1 types are added on their own line below `REVIEW_TYPES` (not inside the literal), to
    keep the merge with S0 and wp2 S1 clean.
-6. **`KINDS` not extended** (see Next).
-7. **Limits:** `KNOWLEDGE_LIMIT_TIERS` also bounds concepts and topics (project 100 / 100, library 300 / 300); the
-   design names sources, claims and releases only. The release limit (30) is the same in both tiers and was not touched.
-8. **Scalars and quotes.** Rule A.3.3 is applied as: `quotes[]` holds at least one verbatim quote of the passage for each
-   text the form states of itself (`short`, `explanation`, `narrative`, `purpose`, `relation`, `bounds`, `scenario`,
-   `expectedOutcome`); `title` and `modelKind` are labels and need none.
-9. **`conceptReading`** returns `{conceptId, title, kind, family, scope, stages, lenses, state, forms}`. `aliases`,
-   `versions`, `pin`, `relations`, `coverage`, `maturity`, `admission` belong to S2, S3 and S4.
-
-## Fix-up (after the adversarial review and the lead's rulings of 2026-11-18)
-
-Branch `rc44/wp1-s1-forms-fix`, from `f9d9bdc` (the head of `rc44/wp1-s1-forms-c2`). The rulings are
-`audit/rc44/RULINGS-2026-11-18.md` section B (in the main checkout; not on this branch). Order of work as the lead gave
-it; each item has its case first, seen red on `f9d9bdc`, and a WIP commit. Resumable: read this section and `git log`.
-
-| # | Item | State | Case |
-|---|---|---|---|
-| 1 | Must-fix 1 (the quote floor is measured on the collapsed text; a verbatim diagram source has the same floor) and must-fix 2 (the number rule reads a target label; identifier fields hold identifiers) | done | S1.15 |
-| 2 | B1: a form claim is read only by the concept readers; S1.10 strengthened | done (route +38 B) | S1.10, S1.16 |
-| 3 | B2: concepts, topics and form claims in a library project only | done | S1.17 (and S1.1, S1.5 through the service, S1.7, S1.8, S1.10, S1.13 adjusted) |
-| 4 | B3: what `conceptHash` covers; only a person changes what a review covered; an upsert that changes nothing writes nothing | done | S1.18 (S1.4 and S1.5 through the service adjusted) |
-| 5 | B4 and should-fix 4: a concept review records the reviewer's account kind, a read requires a person's; `kindRefusal` requires account `person` | done | S1.19 (S1.5 review shape adjusted) |
-| 6 | B5: fail closed (should-fix 3 and 5): a pin hands over nothing of a concept that is not eligible as a whole or is retired, the reading says why (`conceptDecisionReading`, `releasedConcepts[].reasons`, `conceptReading().releases`); a released concept is not restored | done | S1.20 (S1.9 adjusted) |
-| 7 | B7: a concept id is not a record reference (by shape, `RECORD_REFERENCE`, or because a record of the project bears it); `calculation.modelKind` is an identifier (should-fix 9) | done | S1.21 (S1.2 adjusted) |
-| 8 | Should-fix 2 (a unit on an applicability form only), 7 (a retired concept is not reviewed), 8 (a run that executed no case fails), 10 (all fifteen pre-existing command types walked, with a baseline taken on 94dbd4f), 1 (the full list of what a released, active form moves, below and asserted) | done | S1.22, S1.23, S1.8, S1.10 |
-| 9 | B6: every statement of a decision-bearing form rests on its own quote (should-fix 6): `quotes: [{field, quote}]`, distinct; a sub-list entry is `{text, quote}`; the number rule per text and for the claim's statement, conditions and limitations | done | S1.24 (fixtures and S1.2, S1.9, S1.15, S1.20 moved to the new shape) |
-| 10 | B8: the history bound is part of the tier (project 2,000, library 6,000); a tranche is written through the commands and its characters reported; every caller reads the project's own tier (should-fix 11) | done | S1.25 (S1.7 tier shape adjusted) |
-| 11 | B9, B10: text | | |
-
-What item 1 changed, for those who write forms (S4's validator runs the same rules):
-- A quote (an item's `quote`, a `quotes[]` entry) is 12 to 240 characters **once whitespace is collapsed**, at least
-  eight of them letters or digits. A verbatim diagram `source` has the same floor (its ceiling stays 4,000).
-- An identifier field (`composition.roles[].id` and `.sameAs`, `sequence[].ownerRole`, `verification.scenarios[].id`)
-  matches `/^[A-Za-z0-9][A-Za-z0-9._:-]*$/`. An alias id in a target matches the same with `/` allowed
-  (`delivery/transactional-outbox`).
-- A target's `{label}` follows the number rule of its item.
+6. **`KINDS` not extended** (see Next, S3).
+7. **Limits:** `KNOWLEDGE_LIMIT_TIERS` also bounds concepts and topics (project 100 / 100, library 300 / 300) and,
+   *(fix-up, B8)* the history (project 2,000, library 6,000); it is defined in `knowledge-governance.js` and every
+   caller reads the tier of the document. The design names sources, claims and releases only, injected by the
+   wrapper. The release limit (30) is the same in both tiers and was not touched.
+8. **Scalars and quotes.** *(fix-up, B6)* `quotes[]` holds `{field, quote}` entries: at least one verbatim quote of
+   the passage for each text the form states of itself (`short`, `explanation`, `narrative`, `purpose`, `relation`,
+   `bounds`, `scenario`, `expectedOutcome`), none given twice; `title` is a label and `modelKind` an identifier, and
+   need none. The first build took a list of strings and counted them.
+9. **`conceptReading`** returns `{conceptId, title, kind, family, scope, stages, lenses, state, forms, releases}`.
+   `aliases`, `versions`, `pin`, `relations`, `coverage`, `maturity`, `admission` belong to S2, S3 and S4.
+10. *(fix-up, B6)* **The extraction shape of Appendix A.2 changes:** `quotes: [{field, quote}]`; in a decision-bearing
+    form each entry of `dependsOn`, `doesNotEstablish`, `technique.inputs`, `.steps`, `.outputs` is `{text, quote}`.
+    Rule A.3.4 ("every number appears inside a quote of the same item") is applied to each text against its own quote
+    and to the claim's statement, conditions and limitations. Rule A.3.9: `modelKind` is an identifier, not "any
+    bounded string". S4 follows the code.
+11. *(fix-up, B1)* **Design b.2 keeps a form "an ordinary governed claim" that every reader of released claims reads.**
+    It is a governed claim in its review, release and eligibility, and no reader of released claims receives it
+    (b.4 stands as written). A release holds forms or plain claims, not both.
+12. *(fix-up, B2)* **Design section c lets an editor, an import or a draft by Sol send `knowledge.concept` and
+    `knowledge.topic` in any project.** They are accepted in a knowledge library only.
+13. *(fix-up, B3)* **Design b.1 gives `conceptHash` seven fields and the forms.** It covers the whole record but its
+    bookkeeping, and the topics mapped to the concept.
 
 ## Open questions (for the lead)
 
 1. **The design fingerprint moves with any knowledge write, as on rc.10.73.42.** `reviewSource` (review-domain.js:50)
    holds every top-level key but seven, so `p.knowledge` is in the fingerprint: a plain candidate `knowledge.source`
-   moves it on the baseline (shown in S1.10), and so do the new records. No finding, summary, readiness reading, SDD
-   or Sol packet moves (S1.10), but a finding's `stamp` and a recorded review stamp do. In a design project that
-   imports candidates this makes a recorded review read stale. Whether `knowledge.concepts`, `.topics`, `.library`
-   (or all candidate knowledge) are design or evidence keys is for S0's `designKeys`/`evidenceKeys`. Not changed here.
-2. **A released form is a released claim.** Once verified by a second person, released and activated, a form claim is
-   read by every existing reader of `releasedClaims` (the contextual reading, Sol's grounding) without a pin, as any
-   released claim is today (design risk i.3 item 9). Those readers read the statement, conditions, limitations and the
-   structured unit; none reads `claim.form`. Measured in S1.10 on the bank-payment reference with the nine forms
-   released and active: no finding, summary, blocker count, readiness reading, trace coverage, selection gate, Chapter 7
-   finding or specification gate moves. One reading does: the product comparison of each of the nine technology
-   selections lists the released applicability claim beside each option (`C.options[].claims.matches`), because the
-   fixture's structured unit has an empty scope and so applies to every product. It is listed by its statement and its
-   receipt (`scoring:false`), never its form, and nothing else of the comparison moves. A candidate, a verified form, a
-   reviewed concept and a release that is not active add nothing there. Whether a released decision-bearing form
-   should reach these readers only through a pin is the lead's to rule; S1 changes no existing reader.
+   moves it on the baseline (shown in S1.10). *(fix-up)* With B2 a design project takes no concept, topic or form
+   through the commands, so only a library's own recorded reviews are touched; B10 gives the keys to S3 through S0.
+2. *(fix-up: ruled, B1; the first build's question "a released form is a released claim" is closed.)* No reader of
+   released claims receives a form. The one place a design reading still names a release of forms is the Brain's
+   receipt, by id and checksum (`activeReleases`); see "What a released, active form moves".
 3. **Merge with S0** (read on `rc44/s0-extensions` at `d681353`, not merged here). Three places meet:
    - `worker.js`: S0 rewrites the dispatch line and adds `installBuiltInCommands(type=>…type.startsWith('knowledge.')?applyKnowledgeCommand:…)`.
      After the merge both must name `applyConceptCommand` (same arguments: `(own, command, at, actor, {author})`), and
@@ -192,7 +375,12 @@ What item 1 changed, for those who write forms (S4's validator runs the same rul
    - `package.json`: both add one `test:` line.
    `knowledge.*` stays a built-in command family (the wrapper), not a registered package: its four person-only types
    are in `REVIEW_TYPES` here. If the lead wants them stated through S0's `commands` part instead, the line in
-   `authorship.js` moves there and nothing else changes.
+   `authorship.js` moves there and nothing else changes. *(fix-up)* The fix-up touched none of these three places.
 4. **The "third person" rule** (an imported form is released by neither its author nor its reviewer) follows the design
    and is this package's own rule; `verifierRefusal` covers the author, the comparison with the reviewer is one line
-   in `formCapability.release`.
+   in `formCapability.release`. It rests on the author kind a request states (B10, for S4's review pack).
+5. *(fix-up)* **The tier's counts against the storage bound**: see B8 above. The lead may want the library's concept
+   bound to say a tranche.
+6. *(fix-up)* **The suite now takes about two minutes**, because B8 asks for a tranche and a bound reached through the
+   commands. If that is too long for the lead's regression, the 6,000-line fill (about 30 seconds) is the part to
+   move behind a flag; I did not, because then the library's bound would be asserted by a document edit.
