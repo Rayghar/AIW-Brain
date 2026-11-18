@@ -143,7 +143,8 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
   if(existing?.retired)throw Error(existing.conceptId+' is retired: restore it before editing.');
   const c=conceptInput(p,s,r,existing);
   if(!existing){
-   if(list(s.concepts).length>=limits.concepts)throw Error('This project has reached its concept limit.');
+   // A concept is written in a library only, and a library holds one tranche (ruling E3 of 2026-11-18).
+   if(list(s.concepts).length>=limits.concepts)throw Error('This knowledge library holds '+limits.concepts+' concepts, one tranche: start another library for the next tranche.');
    s.concepts||=[];const id=next('KN');s.concepts.push({id,...c,revision:1,at,actor,lastEditor:actor,history:[{revision:1,at,actor,change:'Created'}]});return id;
   }
   // Saved again as it is, a concept is not written: no revision, no new time, no new editor, no history line.

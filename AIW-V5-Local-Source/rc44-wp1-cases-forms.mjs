@@ -500,7 +500,8 @@ add('S1.6: decision-bearing content is returned in state released only (and to a
 
 // ------------------------------------------------------------------------------------------------ 7
 add('S1.7: the project tier refuses the 251st claim and the 101st source with the messages of rc.10.73.42; a library project accepts them; only a person marks a library, and unmarking is refused while the project exceeds the project tier', async () => {
-  const {CC} = await mods(); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.project, {sources: 100, claims: 250, concepts: 100, topics: 100, history: 2000}); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.library, {sources: 300, claims: 1000, concepts: 300, topics: 300, history: 6000});
+  // (Ruling E3 of 2026-11-18: a library holds one tranche, so its concept bound is 60; it was 300, which cannot be reached. Case S1.25.)
+  const {CC} = await mods(); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.project, {sources: 100, claims: 250, concepts: 100, topics: 100, history: 2000}); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.library, {sources: 300, claims: 1000, concepts: 60, topics: 300, history: 6000});
   const send = (p, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload}, AT, actor, opts);
   // A project nobody marked, filled to the project tier with plain sources and claims (it holds no concept, topic or form: ruling B2).
   const plain = {sourceId: 'KS-0001', lineStart: 5, lineEnd: 5, subjectId: 'Outbox', predicate: 'stores', statement: 'An outbox stores the notice with the booking.', claimType: 'definition'};
@@ -1152,7 +1153,8 @@ add('S1.25 (ruling B8, should-fix 11): the history bound is part of the tier; on
   const {CC} = await mods(), {prepareRepositoryPacket} = await import('./repository-packet.js'), BOUND = 8000000, report = [];
   const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
   // 1. The tiers: a project's bounds are those of rc.10.73.42 (its 2,000 history lines among them); a library's are larger.
-  assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS, {project: {sources: 100, claims: 250, concepts: 100, topics: 100, history: 2000}, library: {sources: 300, claims: 1000, concepts: 300, topics: 300, history: 6000}});
+  //    (Ruling E3 of 2026-11-18: a library holds one tranche; its concept bound is 60, where the first fix-up left 300.)
+  assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS, {project: {sources: 100, claims: 250, concepts: 100, topics: 100, history: 2000}, library: {sources: 300, claims: 1000, concepts: 60, topics: 300, history: 6000}});
   assert.equal(K.KNOWLEDGE_LIMIT_TIERS, CC.KNOWLEDGE_LIMIT_TIERS, 'one definition of the tiers'); const PROJECT = K.KNOWLEDGE_LIMIT_TIERS.project, LIBRARY = K.KNOWLEDGE_LIMIT_TIERS.library;
   // 2. A tranche through the commands (the synthetic handbook's topic is about 4,200 characters: the size of an entry of a
   //    pattern handbook), with two correction rounds: every request is accepted, and every bound of the library holds.
@@ -1182,7 +1184,7 @@ add('S1.25 (ruling B8, should-fix 11): the history bound is part of the tier; on
     const almost = fill(start, PROJECT.history - 1), full = fill(almost, PROJECT.history); assert.equal(full.knowledge.history.length, 2000);
     const FULL = {message: 'Export the knowledge history before extending this project further.'}, one = {...review, id, status: 'context-separated'};
     assert.throws(() => send(full, 'contradiction', one, 'architect-a'), FULL); assert.throws(() => K.applyKnowledgeCommand(full, {type: 'knowledge.contradiction', payload: one}, AT, 'architect-a'), FULL, 'the old entry alike');
-    // A person marks it a library (the mark itself is refused on a full history: the bound is read before the command).
+    // A person marks it a library, one line before the project's bound (the mark alone is read against a library's bound: S1.32).
     const library = fill(send(almost, 'library', LIBRARY_MARK, 'steward').document, PROJECT.history + 1); assert.equal(library.knowledge.history.length, 2001, 'a library writes its 2,001st line');
     assert.equal(K.applyKnowledgeCommand(library, {type: 'knowledge.contradiction', payload: one}, AT, 'architect-a').document.knowledge.history.length, 2002, 'through the old entry too: every caller reads the project\'s tier');
     const brim = fill(library, LIBRARY.history); assert.equal(brim.knowledge.history.length, 6000); assert.throws(() => send(brim, 'contradiction', one, 'architect-a'), FULL);
@@ -1197,6 +1199,17 @@ add('S1.25 (ruling B8, should-fix 11): the history bound is part of the tier; on
     const lib = send(q, 'library', LIBRARY_MARK, 'steward').document; assert.equal(old(lib, 'source', source).document.knowledge.sources.length, 101, 'the old entry, as repository fetch and transfer call it, reads the library tier');
     const packet = {schemaVersion: 'aiw-repository-packet-v1', storeId: '0'.repeat(8) + '-' + '0'.repeat(4) + '-' + '0'.repeat(4) + '-' + '0'.repeat(4) + '-' + '0'.repeat(12), tenantId: 'tenant', projectId: q.id, fromCursor: 0, cursor: 0, authority: 'candidate', productionAccepted: false, sources: [], claims: [], notices: [], release: {status: 'blocked', reason: 'Synthetic.'}}, scope = {tenantId: 'tenant', projectId: q.id};
     assert.deepEqual(prepareRepositoryPacket(q, packet, scope).capacity, {remainingSources: 0, remainingClaims: 249}); assert.deepEqual(prepareRepositoryPacket(lib, packet, scope).capacity, {remainingSources: 200, remainingClaims: 999}, 'the packet reads the tier'); }
+  // 6. Ruling E3: a library holds one tranche. The tranche of part 2 is at the concept bound: its 61st concept is refused
+  //    in words that say what to do. The character bound may bind first; reached through the commands (sources of 60,000
+  //    characters saved into the same library), its refusal says the same. A project that is no library keeps the words of rc.10.73.42.
+  { const imported = F.importedBy('importer'); assert.equal(s.concepts.length, LIBRARY.concepts, 'the tranche fills the concept bound');
+    assert.throws(() => send(T.document, 'concept', {...CONCEPT, conceptId: 'SYN-T061', title: 'One concept more than a tranche'}, 'importer', imported), {message: 'This knowledge library holds 60 concepts, one tranche: start another library for the next tranche.'});
+    const filler = {...F.sourcePayload('Synthetic filler', ['x']), body: 'A line of synthetic filler that no claim reads.\n'.repeat(1300).slice(0, 60000)}, own = doc => { const {organizationReleases: _pinned, ...rest} = doc.knowledge; return JSON.stringify(rest).length; };
+    let p = T.document, saved = 0, refusal = null; while (!refusal && saved < 60) { try { p = send(p, 'source', filler, 'importer', imported).document; saved++; } catch (e) { refusal = e.message; } }
+    assert.equal(refusal, 'This knowledge library has reached its storage limit (8,000,000 characters): start another library for the next tranche.', 'after ' + saved + ' sources'); assert(saved >= 15 && own(p) <= BOUND && own(p) > BOUND - 61000, saved + ' sources, ' + own(p) + ' characters');
+    report.push('the character bound was reached through the commands with ' + saved + ' further sources of 60,000 characters (' + own(p) + ' characters); the next is refused: start another library for the next tranche');
+    const q = clone(F.legacyWalk()); q.knowledge.sources[0].body = 'x'.repeat(BOUND);
+    for (const apply of [K.applyKnowledgeCommand, CC.applyConceptCommand]) assert.throws(() => apply(q, {type: 'knowledge.source', payload: F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)}, AT, 'importer'), {message: 'This project knowledge collection has reached its storage limit. Export it before extending it.'}); }
   for (const line of report) console.log('     ' + line);
 });
 

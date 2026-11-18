@@ -25,9 +25,13 @@ export const knowledgeStamp=p=>digest(knowledgeState(p));
 // review and release, and a correction round of every concept 242 more (rc44-wp1-cases-forms.mjs, S1.25). The 30
 // releases and the 8,000,000 characters are the same in both, and the characters bind first: eligibility never reads
 // the tier. Every knowledge command reads the tier of the project it is applied to, whoever calls it.
+// A library holds one tranche (ruling E3 of 2026-11-18), so its concept bound is 60: each concept with its first
+// release costs about 100,000 characters and each successor release of the tranche about 47,000 more, so sixty
+// pattern-sized concepts fit with two correction rounds and a bound of 300 could never be reached. The next tranche
+// goes into another library, and the refusals at the concept bound and at the character bound say so.
 // (A plain literal on purpose: the client reads no tier, and its bundle drops a literal nothing reads but keeps a call.
 // The module the command route loads, knowledge-concept-commands.js, freezes it.)
-export const KNOWLEDGE_LIMIT_TIERS={project:{sources:100,claims:250,concepts:100,topics:100,history:2000},library:{sources:300,claims:1000,concepts:300,topics:300,history:6000}};
+export const KNOWLEDGE_LIMIT_TIERS={project:{sources:100,claims:250,concepts:100,topics:100,history:2000},library:{sources:300,claims:1000,concepts:60,topics:300,history:6000}};
 export const knowledgeLimits=p=>KNOWLEDGE_LIMIT_TIERS[knowledgeState(p).library?.enabled===true?'library':'project'];
 export function withdrawn(p,refs){return knowledgeState(p).withdrawals.filter(w=>refs.includes(w.targetId));}
 // ---------------------------------------------------------------- organisation knowledge releases (round 12, GR-DOM-09)
@@ -322,7 +326,8 @@ export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),
  default:{const done=forms?forms.command({p,s,r,type:command.type,at,actor,next:prefix=>next(s,prefix)}):undefined;if(done===undefined)throw Error('Choose a supported knowledge action.');if(done?.unchanged)return {document:p,selected:done.selected};selected=done;}
  }
  // The pinned organisation releases count against their own limit, not the project's (GR-DOM-09).
- const {organizationReleases:_pinned,...own}=s;if(JSON.stringify(own).length>8000000)throw Error('This project knowledge collection has reached its storage limit. Export it before extending it.');
+ // A knowledge library is told what to do at the bound (ruling E3): it holds one tranche, and the next goes into another.
+ const {organizationReleases:_pinned,...own}=s;if(JSON.stringify(own).length>8000000)throw Error(s.library?.enabled===true?'This knowledge library has reached its storage limit (8,000,000 characters): start another library for the next tranche.':'This project knowledge collection has reached its storage limit. Export it before extending it.');
  s.version++;s.history.push({at,actor,type:command.type,id:selected,reason:text(r.reason),reviewer:text(r.reviewer,180)});return {document:p,selected};
 }
 export function knowledgeFindings(p){const s=knowledgeState(p);return s.links.filter(l=>l.status!=='retired'&&!claimReceiptCurrent(p,l.receipt)).map(l=>({id:'knowledge:'+l.id,chapter:11,chapterTitle:'Knowledge support',objectId:l.objectId,level:'warning',title:'Review changed architectural support',detail:l.receipt.claimId+' no longer has eligible support in the active project release. The original rationale is retained.'}));}
