@@ -18,7 +18,8 @@ const fn = v => typeof v === 'function';
 // Each package's step in id order. A step is idempotent and hands back the document itself when it has nothing to do
 // (so "needs an upgrade" is "a step answered another document"), and works on a document as stored: it may lack any
 // chapter. readings-upgrade.js runs the chain after its own steps; storage-upgrade.js stores a row a step changes.
-export function upgradeExtensions(p) { for (const e of EXTENSIONS) if (fn(e.upgrade)) p = e.upgrade(p) || p; return p; }
+// A step that changes a document writes into it: the answer names the step's package (notePackages below, ruling D2).
+export function upgradeExtensions(p) { for (const e of EXTENSIONS) if (fn(e.upgrade)) { const q = e.upgrade(p) || p; if (q !== p) notePackages(q, [e.id]); p = q; } return p; }
 export const extensionUpgradeNeeded = p => upgradeExtensions(p) !== p;
 // What the steps did to a document as stored, in the packages' words (upgradeNote: one sentence), for the storage
 // upgrade's activity (storage-upgrade.js): only the notes of the steps that change this document, in the chain's order.
@@ -26,6 +27,31 @@ export function extensionUpgradeNotes(p) {
   const out = [];
   for (const e of EXTENSIONS) if (fn(e.upgrade)) { const q = e.upgrade(p) || p; if (q !== p && typeof e.upgradeNote === 'string' && e.upgradeNote) out.push(e.upgradeNote); p = q; }
   return out;
+}
+
+// ---------------------------------------------------------------- the packages a document names
+// A document says which packages have written into it (the lead's ruling D2 of 2026-11-18): their ids, sorted, under
+// one key, workspace.packages. The server's boundary writes a package's id there when a command of the package (sent
+// on its own, carried by a reviewed batch or applied by a merge: design-extension-boundary.js markPackages) or its
+// upgrade step (above) first writes into the document; a document no package wrote into does not gain the key.
+// Neither fingerprint reads it (review-domain.js reviewSource reads the workspace's template and nothing else of it).
+// A build that does not register a package the document names cannot read the design in full: missingPackages names
+// those, the project read names them to the reader, and every command, every export and a freeze are refused with
+// missingPackagesRefusal (worker.js). The browser asks the same of its route stubs (design-extensions.js
+// ensureExtensions: the stub of the package `id` is registered as `id-route`).
+export const PACKAGES_KEY = 'workspace.packages';
+export const documentPackages = p => list(p?.workspace?.packages).filter(id => typeof id === 'string' && id);
+export const missingPackages = p => documentPackages(p).filter(id => !EXTENSIONS.some(e => e.id === id));
+export function missingPackagesRefusal(ids) {
+  const one = ids.length === 1;
+  return 'This project holds records of ' + (one ? 'a design package' : 'design packages') + ' this build of AIW does not have (' + ids.join(', ') + '). It can be read here; a design this build cannot read in full is not changed, frozen or printed by it. Open the project with a build that has ' + (one ? 'the package' : 'those packages') + '.';
+}
+// Names the packages in a document its caller owns (the copy a command worked on, the new document a step answered):
+// the workspace is replaced, never changed in place, since such a document may share it with the one it was made from.
+export function notePackages(p, ids) {
+  const had = documentPackages(p), all = [...new Set([...had, ...ids])].sort();
+  if (all.length !== had.length) p.workspace = {...p.workspace, packages: all};
+  return p;
 }
 
 // ---------------------------------------------------------------- the document sections

@@ -4,7 +4,10 @@ import {withFinalReview} from './public/review-domain.js';
 import {json} from './http.js';
 
 export function instantiateTemplate(source,id,name,at){
- const p=structuredClone(source);p.id=id;p.name=name;p.workspace={template:'custom',createdAt:at,templateOrigin:{projectId:source.id,name:source.name,at},status:'active'};
+ // The copy holds the template's records, a design package's among them, so it names the packages the template names
+ // (rc44, slice S0; the lead's ruling D2: workspace.packages, public/design-extension-parts.js); a template that names
+ // none gives a copy without the key.
+ const p=structuredClone(source),packages=source.workspace?.packages;p.id=id;p.name=name;p.workspace={template:'custom',createdAt:at,templateOrigin:{projectId:source.id,name:source.name,at},status:'active',...(Array.isArray(packages)&&packages.length?{packages:[...packages]}:{})};
  for(const key of ['intake','assurance','guidance','knowledge','changes','modelAlternatives','coauthoring','requirementsStorage','collaborationEvidence'])delete p[key];
  // Every review, confirmation and person's declaration is reset, a retired copy's too: a contract's 'read-only, safe to
  // repeat' declaration (rc.10.73.42, D20) is a person's reviewed statement on the source project, not on this one.

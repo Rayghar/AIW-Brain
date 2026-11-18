@@ -42,6 +42,7 @@ import {documentCopy, isSettled} from './public/document-memo.js';
 import {createProjectStore} from './public/project-store.js';
 import {previewWorkingChange, previewScenarioAlternative, rebaseWorkingAlternative} from './public/workbench-domain.js';
 import {createProject} from './shared/projects-domain.js';
+import {instantiateTemplate} from './project-lifecycle.js';
 import {REFERENCE_PROJECTS} from './public/reference-projects.js';
 
 // Read through the namespace, so that the file links against the baseline too and each case fails there on its own.
@@ -501,6 +502,66 @@ await block('D1 two persons', async () => {
   assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {xy: ['xy.records']}}}), []);
   assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {'xy.accept': ['xy.records']}}}), []);
   pass('D1: a second person\'s step is refused, in words that fit any package, while no person other than the actor stands behind the record as it stands (written by an agent account, drafted by Sol, rewritten by an agent, imported, restored from elsewhere), and is taken once a second person has saved or confirmed it; a projection is read against the stored record\'s stamp; a second type states provenance.paths');
+});
+
+// ---------------------------------------------------------------- D2. a document says which packages have written into it
+await block('D2 packages a document names', async () => {
+  need();
+  assert.equal(boundary.PACKAGES_KEY, 'workspace.packages', 'the contract names the key');
+  const stamps = p => [reviewSourceStamp(p), evidenceStamp(p)], synthetic = (title = 'Written by the package') => [{type: 'synthetic.save', payload: {title}}];
+  // the boundary writes the package's id when a command of the package first writes; no other document gains the key
+  let h = await harness(), d = () => h.state.document;
+  try {
+    assert.equal((await h.send('guide.start', {chapter: 1})).status, 200); assert.ok(!('packages' in d().workspace), 'a built-in command names no package');
+    assert.equal((await h.send('synthetic.save', {title: 'First write'})).status, 200); assert.deepEqual(d().workspace.packages, ['zz-synthetic'], 'the first write of a package\'s command names the package');
+    assert.equal((await h.send('synthetic.save', {title: 'Second write'})).status, 200); assert.deepEqual(d().workspace.packages, ['zz-synthetic'], 'once');
+    // neither fingerprint reads the key
+    { const p = withFinalReview(d()), q = withFinalReview({...p, workspace: {...p.workspace, packages: ['zz-synthetic', 'another-package']}}); assert.deepEqual(stamps(q), stamps(p), 'neither the design fingerprint nor the evidence fingerprint reads the key'); }
+    // a document that names a package this build does not register: read, with the package named
+    const name = async ids => { const row = await h.env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(A, h.pid).first(), doc = JSON.parse(row.document); doc.workspace.packages = ids; await h.env.DB.prepare('UPDATE projects SET document=? WHERE owner_id=? AND id=?').bind(JSON.stringify(doc), A, h.pid).run(); };
+    assert.ok(!('missingPackages' in await h.read()), 'a document whose packages this build has is read as before');
+    await name(['p99-unknown', 'zz-synthetic']);
+    const read = await h.api('/api/project' + h.q), body = await read.json(), revision = body.revision;
+    assert.equal(read.status, 200, 'reading the project works'); assert.deepEqual(body.missingPackages, ['p99-unknown'], 'and names the missing package'); assert.equal(body.document.synthetic.records.length, 2);
+    // every command is refused in words, a built-in one too
+    const WORDS = /holds records of a design package this build of AIW does not have \(p99-unknown\)\. It can be read here; a design this build cannot read in full is not changed, frozen or printed by it\./;
+    for (const [type, payload] of [['guide.start', {chapter: 2}], ['synthetic.save', {title: 'Refused'}], ['record.retire', {id: 'SYN-001', reason: 'Refused.'}], ['workspace.apply', {commands: synthetic(), stamp: 'x', reviewed: true, reason: 'Refused.'}]]) {
+      const res = await h.api('/api/commands' + h.q, 'POST', {revision, command: {type, payload}}), answer = await res.json();
+      assert.equal(res.status, 409, type + ' is refused: ' + JSON.stringify(answer).slice(0, 200)); assert.equal(answer.code, 'missing_package'); assert.match(answer.error, WORDS); assert.deepEqual(answer.packages, ['p99-unknown']);
+    }
+    // every route that assembles a document for export: the registers, the SDD, the ARS, a chapter's register, the project whole
+    for (const query of ['&chapter=11&annex=registers&format=md', '&chapter=11&format=md', '&chapter=11&document=ars&format=md', '&chapter=3&format=md', '&chapter=3&format=html&view=1', '&chapter=2&document=ars&format=json', '']) {
+      const res = await h.api('/api/export' + h.q + query); assert.equal(res.status, 409, 'export ' + (query || '(the project whole)') + ' is refused'); assert.match((await res.json()).error, WORDS);
+    }
+    // and it is not frozen
+    { const res = await h.api('/api/baselines' + h.q + '&action=freeze', 'POST', {title: 'Refused'}); assert.equal(res.status, 409, 'a freeze is refused'); assert.match((await res.json()).error, WORDS); }
+    assert.equal((await (await h.api('/api/project' + h.q)).json()).revision, revision, 'nothing was saved');
+    // with the package named again as one this build has, the project is changed and printed as before
+    await name(['zz-synthetic']);
+    assert.equal((await h.send('synthetic.save', {title: 'Third write'})).status, 200); assert.equal((await h.api('/api/export' + h.q + '&chapter=3&format=md')).status, 200);
+  } finally { h.close(); }
+  // the first write inside a reviewed batch, and by a merge; an alternative that is only saved writes nothing into the design
+  h = await harness(); d = () => h.state.document;
+  try {
+    assert.equal((await h.send('workspace.alternative', {commands: synthetic('In an alternative'), stamp: previewScenarioAlternative(d(), synthetic('In an alternative'), undefined).stamp, title: 'An alternative', reason: 'Holds a package\'s edit.'})).status, 200);
+    assert.ok(!('packages' in d().workspace), 'a saved alternative has written no record of the package');
+    const a = d().workbench.alternatives.at(-1); assert.equal((await h.send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged.'})).status, 200);
+    assert.equal(d().synthetic.records.length, 1); assert.deepEqual(d().workspace.packages, ['zz-synthetic'], 'a merge that applies a package\'s command names the package');
+  } finally { h.close(); }
+  h = await harness(); d = () => h.state.document;
+  try {
+    await h.read(); assert.equal((await h.send('workspace.apply', {commands: synthetic('In a batch'), stamp: previewWorkingChange(d(), synthetic('In a batch')).stamp, reviewed: true, reason: 'A batch.'})).status, 200);
+    assert.deepEqual(d().workspace.packages, ['zz-synthetic'], 'a reviewed batch that carries a package\'s command names the package');
+  } finally { h.close(); }
+  // an upgrade step that writes names its package; a step with nothing to do leaves the document as it is
+  { const old = {...reference('bank-payment'), legacySynthetic: ['Kept from an old document']}, frozen = JSON.stringify(old.workspace), up = boundary.upgradeExtensions(old);
+    assert.deepEqual(up.workspace.packages, ['zz-synthetic']); assert.equal(JSON.stringify(old.workspace), frozen, 'the document handed in is not changed'); assert.equal(boundary.upgradeExtensions(up), up, 'idempotent');
+    const plain = reference('bank-payment'); assert.equal(boundary.upgradeExtensions(plain), plain); assert.ok(!('packages' in plain.workspace)); }
+  // a project made from a template keeps the list with the records
+  { const source = withFinalReview({...withSynthetic(reference('bank-payment'), {title: 'In a template'}), workspace: {template: 'bank-payment', createdAt: AT, reusableTemplate: true, packages: ['zz-synthetic']}}), copy = instantiateTemplate(source, 'project-copy', 'A copy', AT);
+    assert.equal(copy.synthetic.records.length, 1); assert.deepEqual(copy.workspace.packages, ['zz-synthetic'], 'the copy holds the records, so it names the package'); assert.ok(!('packages' in instantiateTemplate(reference('bank-payment'), 'project-plain', 'Plain', AT).workspace)); }
+  assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 7, 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
+  pass('D2 (server): the boundary names a package under workspace.packages when its command (alone, in a batch, by a merge) or its upgrade step first writes, and neither fingerprint reads the key; a document that names a package this build does not register is read with the package named, and every command, every export and a freeze are refused in words');
 });
 
 // ---------------------------------------------------------------- D3. the keys the workbench itself writes

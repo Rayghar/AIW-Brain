@@ -35,8 +35,8 @@ import {registerUndoExtensions} from './public/action-undo-domain.js';
 import {innerCommands, listAt, reviewOf} from './public/provenance.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
-import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE} from './public/design-extension-parts.js';
-export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, workbenchKey, packageCollections} from './public/design-extension-parts.js';
+import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE, notePackages} from './public/design-extension-parts.js';
+export {upgradeExtensions, extensionUpgradeNeeded, extensionUpgradeNotes, placeSections, extensionConflicts, WORKBENCH_KEYS, workbenchKey, packageCollections, PACKAGES_KEY, documentPackages, missingPackages, missingPackagesRefusal} from './public/design-extension-parts.js';
 
 // The built-in handler of a type, as worker.js resolves it: a function, or true for a type the Worker handles itself.
 let builtInHandler = null;
@@ -109,11 +109,26 @@ export function extensionHandler(type) {
     return c.apply(p, command, at, actor, options);
   };
 }
-// What the packages' types refuse inside a batch a request carries (a reviewed change, an applied alternative: the
-// commands provenance.js innerCommands reads), each asked with the commit's author before the batch is applied; the
-// command sent on its own is asked by its handler above (worker.js, before the command is dispatched).
+// The commands a request applies to the design beside itself: the ones it carries (a reviewed batch's, an applied
+// impact's: provenance.js innerCommands) and, for a merge, the commands of the alternative it names, which the merge
+// applies (workbench-domain.js).
+const plainList = v => (Array.isArray(v) ? v.filter(c => c && typeof c === 'object') : []);
+function appliedWith(p, command) {
+  const out = innerCommands(command).filter(c => c !== command);
+  if (command?.type === 'workspace.merge') out.push(...plainList(plainList(p?.workbench?.alternatives).find(a => a.id === command.payload?.id)?.commands));
+  return out;
+}
+// What the packages' types refuse inside what a request carries, each asked with the commit's author before anything
+// is applied; the command sent on its own is asked by its handler above (worker.js, before the command is dispatched).
 export function validateExtensions(p, command, context) {
-  for (const c of innerCommands(command)) { if (c === command) continue; const refusal = extensionCommand(c?.type)?.validate?.(p, c, context); if (refusal) throw Error(String(refusal)); }
+  for (const c of appliedWith(p, command)) { const refusal = extensionCommand(c?.type)?.validate?.(p, c, context); if (refusal) throw Error(String(refusal)); }
+}
+// The packages whose commands a commit applied are named in the document it wrote (ruling D2: workspace.packages,
+// public/design-extension-parts.js notePackages): the command of the commit and every command it applied with it.
+// worker.js calls it on the copy the command worked on, with the document as the request found it.
+export function markPackages(prior, next, command) {
+  const ids = [command, ...appliedWith(prior, command)].map(c => statedBy(c?.type)?.[0].id).filter(Boolean);
+  return ids.length ? notePackages(next, ids) : next;
 }
 // The packages' trackers (ruling D4; worker.js trackCommandChanges calls this after the built-in trackers): each
 // package's track(prior, next, command, at), in the packages' id order, for the command of the commit, a built-in one

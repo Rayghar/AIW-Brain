@@ -94,7 +94,7 @@ import './public/readings-upgrade.js';
 // shared machinery (public/design-extensions.js); their commands reach their handlers through the boundary below, and a
 // package that does not conform to the registration contract stops the server here, when it starts.
 import './design-packages.js';
-import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,placeSections} from './design-extension-boundary.js';
+import {installBuiltInCommands,assertExtensions,extensionCommand,extensionHandler,extensionLarge,validateExtensions,trackExtensions,placeSections,markPackages,missingPackages,missingPackagesRefusal} from './design-extension-boundary.js';
 installCatalogue(BRAIN_CATALOGUE);
 const log=(event,details)=>console.error(JSON.stringify({at:new Date().toISOString(),event,...details}));
 // Command types reach their domain module by prefix (round 2, B2-05): one registry instead of a ternary chain, and
@@ -434,6 +434,14 @@ const REGISTER_FILES={1:'Requirements',2:'Quality_Drivers',3:'Decisions',4:'Logi
 function registerMarkdown(project,chapter){switch(chapter){case 2:return exportQualityMarkdown(project);case 3:return exportDecisionsMarkdown(project);case 4:return exportLogicalMarkdown(project);case 5:return exportRealisationMarkdown(project);case 6:return exportTechnologyMarkdown(project);case 7:return exportTechnologyRealisationMarkdown(project);case 8:return exportInterfacesMarkdown(project);case 9:return exportSecurityMarkdown(project);case 10:return exportRuntimeMarkdown(project);default:return exportMarkdown(project);}}
 export function stampDocument(markdown,revision,at=new Date()){const line='Project revision '+(revision??'not recorded')+' · '+appDate(at)+' · a working snapshot of the saved records; nothing here is approved by being written down.';const lines=String(markdown??'').split('\n'),i=lines.findIndex(l=>/^# /.test(l));if(i<0)return line+'\n\n'+lines.join('\n');lines.splice(i+1,0,'',line);return lines.join('\n').replace(/\n{3,}/g,'\n\n');}
 function registerFigures(project,chapter){const scene=CHAPTER_SCENES[chapter]?.[0];if(!scene)return {figures:[],manifest:[],omitted:[]};try{return sddFigures(project,{chapters:[chapter],scenes:[scene]});}catch(e){console.warn('The register\'s picture could not be drawn.',e?.message);return {figures:[],manifest:[],omitted:[{chapter,scene,title:scene,reason:'The picture could not be drawn: '+(e?.message||'unknown')}]};}}
+// A project whose document names a design package this build does not register (rc44, slice S0; the lead's ruling D2:
+// workspace.packages, public/design-extension-parts.js) holds records this build cannot read. It is read, with the
+// missing package named; it is not changed, frozen or printed here: every command, every export, a freeze, an intake
+// and a draft by Sol are refused with these words. missingPackageRefusal answers that refusal for a document, or null;
+// refuseMissingPackages reads the stored row for the routes that do not read the project themselves (the row keeps
+// the workspace inline: project-storage.js).
+const missingPackageRefusal=document=>{const missing=missingPackages(document);return missing.length?json({error:missingPackagesRefusal(missing),code:'missing_package',packages:missing},409):null;};
+async function refuseMissingPackages(env,owner,projectId){const row=await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();if(!row)return null;let document=null;try{document=JSON.parse(row.document);}catch{return null;}return missingPackageRefusal(document);}
 async function route(request,env,ctx){
   const url=new URL(request.url);
   if(!url.pathname.startsWith('/api/'))return env.ASSETS.fetch(request);
@@ -461,6 +469,8 @@ async function route(request,env,ctx){
     // request is answered without a write and the client reads on regardless.
     if(url.pathname==='/api/knowledge/corpus'&&request.method==='POST'&&url.searchParams.get('view')==='notices'){if(!['owner','editor'].includes(identity.role))return json({status:'not-applied',reason:'Repository notices are applied by the project owner or an editor.',code:'role'},403);return await handleRepositoryCorpus(request,env,identity,projectId);}
     if(!['owner','editor'].includes(identity.role)&&request.method!=='GET')return json({error:'This project role permits reading and assigned reviews only.',code:'role'},403);
+    // An intake, a draft by Sol and a freeze change or freeze the design: none for a project this build cannot read in full.
+    if(request.method!=='GET'&&['/api/intake','/api/drafting','/api/baselines'].includes(url.pathname)){const refusal=await refuseMissingPackages(env,owner,projectId);if(refusal)return refusal;}
     if(url.pathname==='/api/intake')return await handleIntake(request,env,identity,projectId);
     // Sol's architecture draft as a job with a receipt, previewed and applied as one reviewed step (round 12, D-10).
     if(url.pathname==='/api/drafting')return await handleDrafting(request,env,identity,projectId,ctx);
@@ -503,14 +513,17 @@ async function route(request,env,ctx){
       // storage upgrade, recorded in its activity, its previous version kept for recovery); the reads after it are
       // answered from the upgraded row. A project changed meanwhile by another request is read again as it now is.
       let stored=await readStoredProject(env,owner,row.document);
-      if(storageUpgradeNeeded(stored)){
+      // A document that names a design package this build does not register (rc44, slice S0; ruling D2) is read and
+      // answered with the missing package named (missingPackages); this build stores no upgrade of it.
+      const missing=missingPackages(stored.document);
+      if(!missing.length&&storageUpgradeNeeded(stored)){
         const upgraded=withFinalReview(stored.document),saved=await storeStorageUpgrade(env,identity,projectId,row,stored,upgraded);
         if(saved){log('storage-upgrade',{owner,project:projectId,from:row.revision,to:saved.revision});return json({document:recentJournal(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,upgraded)),url),revision:saved.revision,updatedAt:saved.updatedAt});}
         row=await env.DB.prepare('SELECT document,revision,updated_at FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();
         if(!row)return json({error:'This project is unavailable for your account. Return to Projects to choose another.'},404);
         stored=await readStoredProject(env,owner,row.document);
       }
-      return json({document:recentJournal(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document))),url),revision:row.revision,updatedAt:row.updated_at});
+      return json({document:recentJournal(await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document))),url),revision:row.revision,updatedAt:row.updated_at,...(missing.length?{missingPackages:missing}:{})});
     }
     if(url.pathname==='/api/changes'&&request.method==='GET'){
       // Older journal pages, newest first, keyed by event id (round 2, B2-03): the companion of ?changes=recent.
@@ -528,6 +541,8 @@ async function route(request,env,ctx){
       // The journal's archive pages (journal-archive.js): read back whole by the annex and by every export a project can be
       // restored from, never by the SDD itself.
       const stored=await readStoredProject(env,owner,row.document),archive=stored.keys.get('__change_journal')?.archive||[];
+      // No document is assembled from a design this build cannot read in full (rc44, slice S0; ruling D2).
+      {const refusal=missingPackageRefusal(stored.document);if(refusal)return refusal;}
       const project=await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document)));
       const filename='AIW_'+project.name.replace(/[^a-zA-Z0-9_-]+/g,'_').slice(0,100);
       if(url.searchParams.get('format')==='delivery')return new Response(JSON.stringify(deliveryExchange(project),null,2),{headers:{'Content-Type':'application/json','Content-Disposition':'attachment; filename="'+filename+'_Delivery.json"','Cache-Control':'no-store'}});
@@ -632,7 +647,10 @@ async function route(request,env,ctx){
         }
       }
       if(row.revision!==input.revision)return json({error:'This project changed in another tab or session. Reload the latest project, then apply your preserved changes.',conflict:true,code:'conflict'},409);
-      const stored=await readStoredProject(env,owner,row.document);stored.document=await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document)));if(stored.document.workspace?.status==='archived')return json({error:'Restore this project before changing its design.',code:'archived'},409);let result;const at=new Date().toISOString();
+      const stored=await readStoredProject(env,owner,row.document);
+      // No command changes a design this build cannot read in full (rc44, slice S0; ruling D2): a built-in one neither.
+      {const refusal=missingPackageRefusal(stored.document);if(refusal)return refusal;}
+      stored.document=await refreshRepositoryAssurance(env,owner,await refreshOrganizationAssurance(env,owner,withFinalReview(stored.document)));if(stored.document.workspace?.status==='archived')return json({error:'Restore this project before changing its design.',code:'archived'},409);let result;const at=new Date().toISOString();
       // The document as it was, completed once (round 12): what the checks, the provenance and the trackers read, and
       // never change. The command works on its own copy of it (document-memo.js documentCopy: the journal's recorded
       // events are shared, everything else is copied), where each of these used to complete a fresh copy.
@@ -651,6 +669,9 @@ async function route(request,env,ctx){
       const frozenSources=new Map(),viewed=type==='workspace.view'?input.command.payload?.exploration?.baselineId:null,viewedEntry=typeof viewed==='string'?prior.finalReview?.baselines?.find(b=>b.id===viewed):null;
       if(viewedEntry?.frozen)frozenSources.set(viewed,(await openBaseline(env,owner,projectId,viewedEntry,['source'])).source);
       try{if(type==='knowledge.link'&&!journeyIndex(prior).nodes.has(input.command.payload?.objectId))throw Error('Choose an existing object in this project.');const own=documentCopy(prior),packaged=extensionHandler(type);validateExtensions(prior,input.command,{at,actor,author});result=packaged?packaged(own,input.command,at,actor,{author,revision:input.revision}):type==='knowledge.fetch'?await acquireRepositorySource(own,input.command.payload||{},env,actor,at):type.startsWith('knowledge.')?applyKnowledgeCommand(own,input.command,at,actor):type==='intelligence.adopt'?await adoptSavedIntelligence(env,owner,projectId,own,input.command.payload||{},at,actor):type==='workspace.view'?applyWorkbenchCommand(own,input.command,at,actor,{baselineSource:id=>frozenSources.get(id)||null}):commandHandler(type)(own,input.command,at,actor,{author,revision:input.revision});result.document=withFinalReview(result.document===prior?result.document:handOver(result.document));carryProvenance(prior,result.document,at);recordSuggestions(result.document,carriers,{actor,at,selected:result.selected??null,prior});
+        // A design package whose command this commit applied (its own, one a batch carries, one a merge applies) is
+        // named in the document it wrote (rc44, slice S0; ruling D2: workspace.packages).
+        if(result.document!==prior)markPackages(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command);
         // The records the commit wrote are stamped as its, and a brief it changed is kept as a new version of its source.
         stampAuthorship(prior,result.document,type==='evidence.model-reconcile'?{type:'workspace.apply',payload:{commands:result.appliedCommands||[]}}:input.command,result,author,at,{fourEyes:prior.workspace?.governance?.fourEyes===true});attachProvenanceBlocks(prior,result.document,input.command,result);versionBrief(prior,result.document,author,at)}catch(e){const message=publicMessage(e);return json({error:message,...(/^Unknown .* action\.$/.test(message)?{code:'unknown_command'}:{})},400)}
       let impact;
