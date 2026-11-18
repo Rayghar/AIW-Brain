@@ -247,6 +247,13 @@ Limits of what is carried:
 - **Staging of a built-in type.** The staged path cannot tell a built-in type that is not staged (`decision.accept`)
   from a package's type: the list of built-in types is the server's. A package that states such a type as staged is
   refused by the start check, not by construction. Dispatch (`POST /api/commands`) is by construction.
+- **Evidence keys.** A package leaves only its own keys out of the design. An evidence key that names a key the
+  workbench keeps (`artefacts`, `quality.drivers`, `runtime`, …) is refused by the start check, not by construction:
+  the design fingerprint has no list of built-in keys on the route.
+- **What a package's functions do is the package's.** The tables are extended by construction (a built-in row always
+  stands). `records`, `apply`, `upgrade` and `track` are code: the registry cannot stop one from writing a built-in
+  key or stating a relation between built-in records. The start check reads what a package states, not what its
+  functions do; the package's own suite and its review cover that.
 - **A package's records are not in a chapter's "N records" count** (`chapter-records.js` reads
   `RECORD_COLLECTION_PATHS`) and are not typed for recorded relationships (`recordTypes`): a connection a person draws
   to a package's record would read as a broken link.

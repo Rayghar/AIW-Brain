@@ -188,7 +188,10 @@ await block('registration', () => {
   assert.ok(boundary.extensionIssues({id: 'xy', objectTypes: {xy: {label: 'Xy', chapter: 2, level: 'intent', prefix: 'XY'}}, layers: {xy: 'xy'}, hops: [{layer: 'xy', types: ['a'], from: ['requirement'], dir: 'out'}]}).some(i => /own chain or context/.test(i)), 'a hop says whether it is the own chain or context');
   assert.ok(boundary.extensionIssues({objectTypes: {}}).some(i => /its id/.test(i)), 'a package names itself'); assert.ok(boundary.extensionIssues({id: 'constructor'}).some(i => /its id/.test(i)), 'with an id the registry can keep');
   assert.ok(boundary.extensionIssues({id: 'xy', designKeys: ['workspace.things']}).some(i => /does not read/.test(i)), 'a design key lies where the fingerprint reads');
-  assert.deepEqual(boundary.extensionIssues({id: 'xy', designKeys: ['things', 'runtime.things'], evidenceKeys: ['thingLog']}), []);
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', designKeys: ['things', 'runtime.things'], evidenceKeys: ['thingLog', 'things.observations', 'runtime.thingEvidence']}), []);
+  // a package leaves only its own keys out of the design: a key the workbench keeps is refused when the server starts
+  { const kept = ['artefacts', 'quality', 'quality.drivers', 'decisions.records', 'runtime', 'runtime.evidence', 'security.risks', 'finalReview', 'requirementGroups', 'processModel.claims', 'brief'], issues = boundary.extensionIssues({id: 'xy', evidenceKeys: kept});
+    for (const key of kept) assert.ok(issues.some(i => i.includes('evidence key “' + key + '” is a key the workbench keeps')), key + ' stays in the design'); assert.equal(issues.length, kept.length); }
   assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.sign': {apply() {}, person: true, staged: true}, 'decision.accept': {apply() {}}}}).length === 2, 'a person\'s step is never staged, and a built-in type is the chapter\'s');
   assert.ok(boundary.extensionIssues({id: 'xy', commands: {'decision.accept': {apply() {}, staged: true}}}).some(i => /command “decision\.accept” is built in/.test(i)), 'a built-in type that is not staged is not a package\'s to stage');
   // The command types the four designs state (wp1 knowledge.*, wp2 adoption.* and selection.*, wp3 workload.*, wp9a
