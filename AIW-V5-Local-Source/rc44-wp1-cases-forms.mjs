@@ -628,3 +628,47 @@ add('S1.14 (isolation): the route\'s knowledge module imports none of the new mo
   assert.match(readFileSync('worker.js', 'utf8'), /type\.startsWith\('knowledge\.'\)\?applyConceptCommand\(own,input\.command,at,actor,\{author\}\)/);
   if (existsSync('dist/client-metafile.json')) { const inputs = Object.keys(JSON.parse(readFileSync('dist/client-metafile.json', 'utf8')).inputs); for (const name of NEW) assert(!inputs.includes('public/' + name), 'the built client holds ' + name); }
 });
+
+// ================================================================================================ the fix-up round
+// Cases added after the adversarial review of this slice and the lead's rulings of 2026-11-18 (RULINGS-2026-11-18.md,
+// section B). Each failed on the slice's first head (f9d9bdc) before its change.
+// ------------------------------------------------------------------------------------------------ 15
+add('S1.15 (review must-fix 1 and 2): a quote is measured as it is matched, with whitespace collapsed, and a verbatim diagram source has the same floor; a target label follows the number rule and an identifier field holds an identifier', async () => {
+  const {CF, CC} = await mods(), all = F.p001Forms(), L = await library({forms: []}), frozen = JSON.stringify(L.document);
+  // Refused by the validator and by knowledge.claim alike, here sent by an agent account (which may send a candidate).
+  const refused = (type, change, pattern) => { const f = all[type], form = clone(f.content); change(form);
+    assert.match(CF.conceptFormIssues(form, ctx(f)).join(' '), pattern, type + ': the validator');
+    assert.throws(() => CC.applyConceptCommand(L.document, {type: 'knowledge.claim', payload: {...F.formClaim(L.sourceId, 'SYN-P001', f), form}}, AT, 'bot', F.agent('bot')), pattern, type + ': knowledge.claim'); };
+  const valid = (type, change) => { const f = all[type], form = clone(f.content); change(form); assert.deepEqual(CF.conceptFormIssues(form, ctx(f)), [], type); };
+  // Must-fix 1. Two letters padded with line breaks or spaces are three characters once collapsed, and "e t" is in almost any passage.
+  refused('applicability', f => { f.useWhen[0] = {text: 'Use it for every system of the bank, with no exception.', at: [16, 19], quote: 'e\n\n\n\n\n\n\n\n\n\nt'}; }, /applicability\.useWhen\[0\] has no verbatim quote \(12 to 240 characters\)/);
+  refused('applicability', f => { f.guaranteeBoundary.quote = 'o' + ' '.repeat(10) + 'c'; }, /applicability\.guaranteeBoundary has no verbatim quote/);
+  refused('calculation', f => { f.quotes[0] = 'e' + ' '.repeat(10) + 't'; }, /calculation\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
+  refused('definition', f => { f.quotes = ['\t\t\t\t\t\tin\t\t\t\t\t\t']; }, /definition\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
+  // A run of punctuation grounds nothing either: a quote holds at least eight letters or digits.
+  { const excerpt = 'A link is drawn as --- --- --- --- between two boxes.', form = {type: 'definition', v: 1, short: 'A link joins two boxes.', quotes: ['--- --- --- ---']};
+    assert.match(CF.conceptFormIssues(form, {excerpt, lineStart: 1}).join(' '), /definition\.quotes\[0\] is a verbatim quote of 12 to 240 characters/);
+    assert.deepEqual(CF.conceptFormIssues({...form, quotes: ['A link is drawn as --- --- --- --- between']}, {excerpt, lineStart: 1}), []); }
+  // The upper bound is measured the same way: 240 characters of text, however it was wrapped in the source.
+  { const words = Array.from({length: 40}, (_, i) => 'word' + String.fromCharCode(97 + i % 26)).join(' '), excerpt = words.split(' ').join('\n'), form = {type: 'definition', v: 1, short: 'Forty words.', quotes: [words.split(' ').join('   \n')]};
+    assert(words.length <= 240 && form.quotes[0].length > 240); assert.deepEqual(CF.conceptFormIssues(form, {excerpt, lineStart: 1}), [], 'a quote of 240 characters once collapsed is a quote'); }
+  // A diagram source is verbatim text of the passage: it has the same floor.
+  refused('mechanism', f => { f.diagram = {notation: 'mermaid', source: 'S', origin: 'source-figure', at: [10, 10]}; }, /mechanism\.diagram: the diagram source is the passage's own text \(at least 12 characters/);
+  refused('mechanism', f => { f.diagram = {notation: 'mermaid', source: 'e' + '\n'.repeat(12) + 'b', origin: 'source-figure', at: [10, 10]}; }, /mechanism\.diagram: the diagram source is the passage's own text/);
+  valid('mechanism', f => { f.diagram = {notation: 'text', source: 'the booking service writes the booking and the outbox row in one commit', origin: 'source-figure', at: [10, 10]}; });
+  // Must-fix 2 (1). A target's label is a text of a decision-bearing form: it states a number only where the item's quote holds it.
+  refused('selection', f => { f.alternatives[0].target = {label: 'Polling relay every 5 seconds at 99.99%'}; }, /selection\.alternatives\[0\]\.target\.label states the number 5, which its quote does not contain/);
+  refused('composition', f => { f.relations[1].target = {label: 'Unsafe dual write (3 of 4 incidents)'}; }, /composition\.relations\[1\]\.target\.label states the number 3/);
+  valid('composition', f => { f.relations[1] = {verb: 'related', target: {label: 'A batch of 50 rows'}, reason: 'The handbook names it as a teaching value.', at: [32, 32], quote: 'A teaching value is 50 rows.'}; });
+  // Must-fix 2 (2). An identifier is the one text the number rule does not read, so it holds an identifier and no sentence.
+  refused('composition', f => { f.roles[0].id = 'SLA 99.999 percent guaranteed'; }, /composition\.roles\[0\]\.id is an identifier \(letters, digits and \. _ : -, no spaces\)/);
+  refused('composition', f => { f.roles[0].sameAs = 'the same as 2 relays'; }, /composition\.roles\[0\]\.sameAs is an identifier/);
+  refused('composition', f => { f.sequence[0].ownerRole = 'the outbox writer, within 5 seconds'; }, /composition\.sequence\[0\]\.ownerRole is an identifier/);
+  refused('verification', f => { f.scenarios[0].id = 'crash after publish in under 30 seconds'; }, /verification\.scenarios\[0\]\.id is an identifier/);
+  refused('composition', f => { f.relations[0].target = {alias: {scheme: 'external', aliasId: 'Polling relay every 5 seconds at 99.99%'}}; }, /composition\.relations\[0\]\.target names a concept id, an alias \(scheme and id\) or a label/);
+  valid('verification', f => { f.scenarios[0].id = 'SYN-P001-T2'; });
+  valid('composition', f => { f.roles[0].id = 'outbox_writer.v2'; f.roles[0].sameAs = 'SYN-C001'; f.sequence[0].ownerRole = 'role:relay'; });
+  valid('composition', f => { f.relations[0].target = {conceptId: 'SYN-P002'}; f.relations[1].target = {alias: {scheme: 'handbook', aliasId: 'SYN-A001'}}; });
+  valid('composition', f => { f.relations[1].target = {alias: {scheme: 'aiw-method', aliasId: 'delivery/transactional-outbox'}}; });
+  assert.equal(JSON.stringify(L.document), frozen, 'nothing was stored by a refused request');
+});

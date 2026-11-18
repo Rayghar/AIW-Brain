@@ -30,7 +30,9 @@ const RECORD_KINDS=['responsibility','component','contract','data','capability',
 const STAGES=['problem','consequence','inspect','decide','run','evidence','revise','assess'];
 const RESERVED=['reviewed','confirmed','targetConfirmed','assumptionsResolved','acknowledge','sourceChecked','rightsChecked','conditionsChecked','status','decision'];
 // Field kinds: T a text the form states (it rests on a quote), N a name or label, ID an identifier or a reference to one
-// (the only text the number rule does not read), E one of a closed list, S a short list of texts.
+// (the only text the number rule does not read, so it holds an identifier and never a sentence), E one of a closed
+// list, S a short list of texts. An alias id is an identifier too; a method alias is <topic>/<option>, hence the slash.
+const IDENTIFIER=/^[A-Za-z0-9][A-Za-z0-9._:-]*$/,ALIAS_ID=/^[A-Za-z0-9][A-Za-z0-9._:\/-]*$/;
 const own=(o,k)=>Object.hasOwn(o,k);
 const T=(max,opt=false)=>({k:'text',max,opt}),N=(max,opt=false)=>({k:'text',max,opt,label:true}),ID=(max,opt=false)=>({k:'text',max,opt,label:true,id:true}),E=(values,opt=false)=>({k:'enum',values,opt}),S=(n,max)=>({k:'strings',n,max,opt:true});
 const INT={k:'int'},BOOL={k:'bool'},TARGET={k:'target'},LEVEL={k:'level',opt:true},ILLUSTRATIVE={k:'illustrative'},VALUE={k:'value'},WORKED={k:'worked',opt:true};
@@ -48,7 +50,9 @@ const SHAPES={
 const object=v=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const collapse=v=>String(v).replace(/\s+/g,' ').trim();
 const numbers=v=>String(v).match(/\d+(?:[.,]\d+)*/g)||[];
-const quoteText=v=>typeof v==='string'&&v.trim().length>=12&&v.trim().length<=240;
+// A verbatim quote is measured as it is matched: with whitespace collapsed. 12 to `max` characters, at least eight of
+// them letters or digits, so that neither padding nor a run of punctuation passes for the passage's words.
+const quoteText=(v,max=240)=>{if(typeof v!=='string')return false;const q=collapse(v);return q.length>=12&&q.length<=max&&(q.match(/[\p{L}\p{N}]/gu)||[]).length>=8;};
 // Whether the quote occurs in lines at[0]..at[1] of the source (the passage starts at lineStart), whitespace collapsed.
 export function quoteFound(excerpt,lineStart,at,quote){
  const q=collapse(quote);return !!q&&collapse(String(excerpt).split('\n').slice(at[0]-lineStart,at[1]-lineStart+1).join(' ')).includes(q);
@@ -60,7 +64,8 @@ function field(path,key,spec,v,basis,basisWords,out){
  if(spec.k==='text'){
   if(typeof v!=='string'||!v.trim()){out.push(at+(typeof v==='string'?' is required.':' is a text.'));return;}
   if(v.trim().length>spec.max)out.push(at+' holds '+v.trim().length+' characters; at most '+spec.max+'.');
-  if(basis&&!spec.id)for(const n of numbers(v))if(!basis.has(n)){out.push(at+' states the number '+n+', which '+basisWords+'.');break;}
+  if(spec.id){if(!IDENTIFIER.test(v.trim()))out.push(at+' is an identifier (letters, digits and . _ : -, no spaces).');}
+  else if(basis)for(const n of numbers(v))if(!basis.has(n)){out.push(at+' states the number '+n+', which '+basisWords+'.');break;}
  }else if(spec.k==='enum'){if(!spec.values.includes(v))out.push(at+': choose one of '+spec.values.join(', ')+'.');}
  else if(spec.k==='int'){if(!Number.isInteger(v)||v<1||v>999)out.push(at+' is a whole number (1 or more).');}
  else if(spec.k==='bool'){if(typeof v!=='boolean')out.push(at+' is true or false.');}
@@ -75,8 +80,10 @@ function field(path,key,spec,v,basis,basisWords,out){
   if(!Array.isArray(v)||v.length>spec.n){out.push(at+' is a list of at most '+spec.n+' texts.');return;}
   v.forEach((x,i)=>field(at,'['+i+']',T(spec.max),x,basis,basisWords,out));
  }else if(spec.k==='target'){
-  const keys=object(v)?Object.keys(v):[],ok=keys.length===1&&(keys[0]==='conceptId'?typeof v.conceptId==='string'&&v.conceptId.length<=80&&CONCEPT_ID.test(v.conceptId):keys[0]==='label'?typeof v.label==='string'&&!!v.label.trim()&&v.label.trim().length<=160:keys[0]==='alias'&&object(v.alias)&&Object.keys(v.alias).length===2&&ALIAS_SCHEMES.includes(v.alias.scheme)&&typeof v.alias.aliasId==='string'&&!!v.alias.aliasId.trim()&&v.alias.aliasId.trim().length<=120);
+  const keys=object(v)?Object.keys(v):[],ok=keys.length===1&&(keys[0]==='conceptId'?typeof v.conceptId==='string'&&v.conceptId.length<=80&&CONCEPT_ID.test(v.conceptId):keys[0]==='label'?typeof v.label==='string'&&!!v.label.trim()&&v.label.trim().length<=160:keys[0]==='alias'&&object(v.alias)&&Object.keys(v.alias).length===2&&ALIAS_SCHEMES.includes(v.alias.scheme)&&typeof v.alias.aliasId==='string'&&v.alias.aliasId.length<=120&&ALIAS_ID.test(v.alias.aliasId));
   if(!ok)out.push(at+' names a concept id, an alias (scheme and id) or a label.');
+  // A label is a text the form states: in a decision-bearing form it holds a number only where the item's quote does.
+  else if(basis&&keys[0]==='label')for(const n of numbers(v.label))if(!basis.has(n)){out.push(at+'.label states the number '+n+', which '+basisWords+'.');break;}
  }
 }
 // A form records what its passage says: a key that claims a review, a state or a decision is refused by name, at any depth
@@ -101,7 +108,8 @@ function item(path,fields,v,{excerpt,lineStart,lines,decision,verbatim=null},out
  if(!range)out.push(path+' names no lines of the passage (at: [first line, last line]).');
  else if(at[0]<lineStart||at[1]>lineStart+lines-1)out.push(path+' cites lines '+at[0]+'–'+at[1]+', outside the passage (lines '+lineStart+'–'+(lineStart+lines-1)+').');
  else grounded=true;
- if(!verbatim&&!quoteText(quote))out.push(path+' has no verbatim quote (12 to 240 characters) of its lines.');
+ if(!verbatim&&!quoteText(quote))out.push(path+' has no verbatim quote (12 to 240 characters) of its lines: a quote is measured with its whitespace collapsed and holds at least eight letters or digits.');
+ else if(verbatim&&typeof quote==='string'&&quote.trim()&&!quoteText(quote,fields[verbatim].max))out.push(path+': the diagram source is the passage\'s own text (at least 12 characters once whitespace is collapsed, eight of them letters or digits).');
  else if(grounded&&typeof quote==='string'&&quote.trim()&&!quoteFound(excerpt,lineStart,at,quote))out.push(path+': the '+(verbatim?'diagram source':'quote')+' is not found in lines '+at[0]+'–'+at[1]+'.');
  const basis=decision?new Set(numbers(typeof quote==='string'?quote:'')):null;
  for(const [k,spec] of Object.entries(fields))field(path,k,spec,v[k],basis,'its quote does not contain',out);
@@ -120,7 +128,7 @@ export function conceptFormIssues(form,{excerpt,lineStart}={}){
  let basis=null;
  if(quotes!==undefined&&(!Array.isArray(quotes)||quotes.length>8))out.push(type+'.quotes is a list of at most 8 verbatim quotes.');
  else if((quotes?.length||0)<stated.length)out.push(type+' needs a verbatim quote of the passage for each of its texts ('+stated.join(', ')+').');
- else if(quotes)quotes.forEach((q,i)=>{if(!quoteText(q))out.push(type+'.quotes['+i+'] is a verbatim quote of 12 to 240 characters.');else if(!collapse(excerpt).includes(collapse(q)))out.push(type+'.quotes['+i+'] is not found in the passage.');});
+ else if(quotes)quotes.forEach((q,i)=>{if(!quoteText(q))out.push(type+'.quotes['+i+'] is a verbatim quote of 12 to 240 characters (whitespace collapsed, at least eight letters or digits).');else if(!collapse(excerpt).includes(collapse(q)))out.push(type+'.quotes['+i+'] is not found in the passage.');});
  if(decision)basis=new Set((Array.isArray(quotes)?quotes:[]).flatMap(q=>numbers(typeof q==='string'?q:'')));
  for(const [k,spec] of Object.entries(scalars))field(type,k,spec,form[k],basis,'no quote of the form contains',out);
  let held=0;

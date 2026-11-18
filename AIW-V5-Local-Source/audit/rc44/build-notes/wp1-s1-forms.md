@@ -137,6 +137,34 @@ Nothing. The slice is complete on `rc44/wp1-s1-forms-c2`; its head is the final 
 9. **`conceptReading`** returns `{conceptId, title, kind, family, scope, stages, lenses, state, forms}`. `aliases`,
    `versions`, `pin`, `relations`, `coverage`, `maturity`, `admission` belong to S2, S3 and S4.
 
+## Fix-up (after the adversarial review and the lead's rulings of 2026-11-18)
+
+Branch `rc44/wp1-s1-forms-fix`, from `f9d9bdc` (the head of `rc44/wp1-s1-forms-c2`). The rulings are
+`audit/rc44/RULINGS-2026-11-18.md` section B (in the main checkout; not on this branch). Order of work as the lead gave
+it; each item has its case first, seen red on `f9d9bdc`, and a WIP commit. Resumable: read this section and `git log`.
+
+| # | Item | State | Case |
+|---|---|---|---|
+| 1 | Must-fix 1 (the quote floor is measured on the collapsed text; a verbatim diagram source has the same floor) and must-fix 2 (the number rule reads a target label; identifier fields hold identifiers) | done | S1.15 |
+| 2 | B1: a form claim is read only by the concept readers; S1.10 strengthened | next | |
+| 3 | B2: concepts, topics and form claims in a library project only | | |
+| 4 | B3: what `conceptHash` covers; only a person changes what a review covered; an upsert that changes nothing writes nothing | | |
+| 5 | B4 and should-fix 4: the reviewer's account kind | | |
+| 6 | B5: fail closed (should-fix 3 and 5) | | |
+| 7 | B7: a concept id is not a record reference; `modelKind` is an identifier (should-fix 9) | | |
+| 8 | Should-fix 2, 7, 8, 10, 1 | | |
+| 9 | B6: every statement of a decision-bearing form rests on its own quote (should-fix 6) | | |
+| 10 | B8: the history bound is part of the tier (should-fix 11) | | |
+| 11 | B9, B10: text | | |
+
+What item 1 changed, for those who write forms (S4's validator runs the same rules):
+- A quote (an item's `quote`, a `quotes[]` entry) is 12 to 240 characters **once whitespace is collapsed**, at least
+  eight of them letters or digits. A verbatim diagram `source` has the same floor (its ceiling stays 4,000).
+- An identifier field (`composition.roles[].id` and `.sameAs`, `sequence[].ownerRole`, `verification.scenarios[].id`)
+  matches `/^[A-Za-z0-9][A-Za-z0-9._:-]*$/`. An alias id in a target matches the same with `/` allowed
+  (`delivery/transactional-outbox`).
+- A target's `{label}` follows the number rule of its item.
+
 ## Open questions (for the lead)
 
 1. **The design fingerprint moves with any knowledge write, as on rc.10.73.42.** `reviewSource` (review-domain.js:50)
