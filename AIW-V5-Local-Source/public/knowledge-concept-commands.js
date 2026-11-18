@@ -36,7 +36,9 @@ const article=word=>(/^[aeiou]/.test(word)?'An ':'A ')+word;
 const subset=(v,allowed,max)=>Array.isArray(v)&&v.length<=max&&v.every(x=>allowed.includes(x))&&new Set(v).size===v.length;
 function assertReview(raw){if(raw.reviewed!==true||!text(raw.reason)||!text(raw.reviewer,180))throw Error('Review the exact change and record the reviewer and rationale.');}
 // A review, a release of forms, a library mark, a retirement: a signed-in person's own request.
-const kindRefusal=author=>!author?'A review is a signed-in person\'s own request; this one states no author.':author.account==='agent'?'An agent or Sol reviews nothing: a person signs in to do that.':author.kind==='sol-draft'?'A draft by Sol reviews nothing: a person signs in to do that.':author.kind!=='person'?'An import records what a file says and reviews nothing: a person signs in to do that.':null;
+// The author must say both: that a person wrote the request (kind) and that a person's account sent it (account). One
+// that names no account is nobody's review (the command route always states it: authorship.js commitAuthor).
+const kindRefusal=author=>!author?'A review is a signed-in person\'s own request; this one states no author.':author.account==='agent'?'An agent or Sol reviews nothing: a person signs in to do that.':author.kind==='sol-draft'?'A draft by Sol reviews nothing: a person signs in to do that.':author.kind!=='person'?'An import records what a file says and reviews nothing: a person signs in to do that.':author.account!=='person'?'A review is a signed-in person\'s own request; this one states no account of a signed-in person.':null;
 const secondPerson=(record,actor,author)=>verifierRefusal({owner:'',...record},actor,author?.account)||kindRefusal(author);
 function personOnly(author,actor){const refusal=!actor?'Sign in to record this.':kindRefusal(author);if(refusal)throw Error(refusal);}
 // Concepts, topics and forms are written, reviewed and released in a knowledge library, which a person marks (ruling B2
@@ -154,7 +156,8 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
    // Every form verified by someone other than its author, on its exact passage, with no open contradiction: the release gate.
    for(const f of c.forms){const claim=s.claims.find(x=>x.id===f.claimId),reasons=claim?[...knowledgeEligibility(p,claim).reasons,...conceptFormIssues(claim.form,{excerpt:claim.excerpt,lineStart:claim.lineStart})]:['The claim is unavailable.'];if(reasons.length)throw Error(f.claimId+' ('+f.type+'): '+reasons.join(' '));}
   }
-  c.review={decision:r.decision,actor,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics)};return c.id;
+  // The review names the kind of account that made it (a person's: secondPerson refused every other); a read asks for it.
+  c.review={decision:r.decision,actor,account:author.account,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics)};return c.id;
  }
  case 'knowledge.concept-retire':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(c.retired)throw Error(c.id+' is already retired.');c.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return c.id;}
  case 'knowledge.concept-restore':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(!c.retired)throw Error(c.id+' is not retired.');delete c.retired;return c.id;}
@@ -176,7 +179,7 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
    if(text(r.predicate,180)!==FORM_PREDICATE[type])throw Error(article(type)+' form is claimed as "'+FORM_PREDICATE[type]+'" (its fixed predicate).');
    if(type==='applicability'&&concept.kind!=='topic'&&!Object.hasOwn(r,'architectureUnit'))throw Error('An applicability form of '+article(concept.kind).toLowerCase()+' carries its structured architecture unit (kind, mechanism, effects, obligations).');
    // How it was authored: a person's, an import's, a draft by Sol or an agent account's; a request that states no author is never taken for a person's.
-   return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,ctx),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind};
+   return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,ctx),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind==='person'&&author.account!=='person'?'import':author.kind};
   },
   // A form's review is a person's own request; verified, by a second person, with each item checked and the form valid again.
   review(p,c,r,actor){

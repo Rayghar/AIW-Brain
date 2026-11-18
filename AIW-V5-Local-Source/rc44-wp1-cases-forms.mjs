@@ -377,7 +377,7 @@ add('S1.5: a concept is verified by a second signed-in person: its author, an ed
     assert(!('formChecked' in r)); assert.equal(r.decision, 'verified'); }
   // The verified concept: who, when, what was checked, and the hash it was checked at.
   const done = review('reviewer').document, c = KC.conceptRecords(done)[0];
-  assert.equal(c.state, 'reviewed'); assert.deepEqual({...c.review, conceptHash: null}, {decision: 'verified', actor: 'reviewer', reviewer: 'Synthetic second person', at: AT, reason: CONCEPT_REVIEW.reason, identityChecked: true, formsChecked: true, crosswalkChecked: true, conceptHash: null});
+  assert.equal(c.state, 'reviewed'); assert.deepEqual({...c.review, conceptHash: null}, {decision: 'verified', actor: 'reviewer', account: 'person', reviewer: 'Synthetic second person', at: AT, reason: CONCEPT_REVIEW.reason, identityChecked: true, formsChecked: true, crosswalkChecked: true, conceptHash: null});
   assert.equal(c.review.conceptHash, c.hash);
   const rejected = review('reviewer', F.person('reviewer'), L.document, {decision: 'rejected', identityChecked: false, formsChecked: false, crosswalkChecked: false}).document; assert.equal(KC.conceptRecords(rejected)[0].state, 'draft');
   // The server gate knows the new person-only types (authorship.js).
@@ -889,4 +889,29 @@ add('S1.18 (ruling B3): the concept hash covers every field of the record but it
     assert.equal(send(p, 'concept', payload, actor, opts, LATER).selected, L.conceptRecordId); assert.equal(send(p, 'topic', topic, actor, opts, LATER).selected, p.knowledge.topics[0].id);
   }
   { const q = send(p, 'concept', {...payload, steward: 'Another guild'}, 'architect', F.person('architect'), LATER).document, c = q.knowledge.concepts[0]; assert.deepEqual([c.revision, c.lastEditor, c.history.at(-1).at, q.knowledge.history.length], [p.knowledge.concepts[0].revision + 1, 'architect', LATER, p.knowledge.history.length + 1], 'a change is written as before'); }
+});
+
+// ------------------------------------------------------------------------------------------------ 19
+add('S1.19 (ruling B4, should-fix 4): a concept review records the reviewer\'s account kind and stands on a read only with a person\'s; a request whose author names no account of a person is nobody\'s review, release, library mark or retirement', async () => {
+  const {CC, KC} = await mods(), L = await library({forms: ['definition', 'mechanism'], verify: true});
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  const reviewed = send(L.document, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer').document, review = reviewed.knowledge.concepts[0].review, ids = Object.values(L.claimIds);
+  assert.equal(review.account, 'person', 'the review records the reviewer\'s account kind'); assert.deepEqual(Object.keys(review), ['decision', 'actor', 'account', 'reviewer', 'at', 'reason', 'identityChecked', 'formsChecked', 'crosswalkChecked', 'conceptHash']);
+  assert.equal(KC.conceptRecords(reviewed)[0].state, 'reviewed'); assert.equal(KC.conceptCovered(reviewed, reviewed.knowledge.concepts[0]), true);
+  // On every read the review stands only with a person's account: a review without one (as the first build wrote it), an agent's or any other does not.
+  for (const account of ['(absent)', 'agent', 'service', '', null, 'Person']) { const q = clone(reviewed), r = q.knowledge.concepts[0].review; if (account === '(absent)') delete r.account; else r.account = account;
+    assert.equal(KC.conceptRecords(q)[0].state, 'draft', 'account ' + account + ': the review does not stand'); assert.equal(KC.conceptCovered(q, q.knowledge.concepts[0]), false);
+    assert.throws(() => send(q, 'release', {...F.REVIEW, title: 'Synthetic', claimIds: ids}, 'releaser'), /SYN-P001 is not reviewed/, 'and its forms are not released'); }
+  assert.equal(send(reviewed, 'release', {...F.REVIEW, title: 'Synthetic', claimIds: ids}, 'releaser').document.knowledge.releases.length, 1);
+  // Should-fix 4: an author object that names no account is not a person's request.
+  const NO_ACCOUNT = id => ({author: {kind: 'person', id, reviewed: true}}), NOBODY = /states no account of a signed-in person/, fresh = await library({forms: ['definition', 'mechanism']});
+  assert.throws(() => send(L.document, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer', NO_ACCOUNT('reviewer')), NOBODY);
+  assert.throws(() => send(fresh.document, 'review', {...F.REVIEW, formChecked: true, id: fresh.claimIds.definition}, 'reviewer', NO_ACCOUNT('reviewer')), NOBODY);
+  assert.throws(() => send(fresh.document, 'review', {...F.REVIEW, formChecked: true, id: fresh.claimIds.definition, decision: 'rejected'}, 'reviewer', NO_ACCOUNT('reviewer')), NOBODY);
+  assert.throws(() => send(reviewed, 'release', {...F.REVIEW, title: 'Synthetic', claimIds: ids}, 'releaser', NO_ACCOUNT('releaser')), NOBODY);
+  assert.throws(() => send(F.blankProject(), 'library', LIBRARY_MARK, 'architect', NO_ACCOUNT('architect')), NOBODY);
+  for (const type of ['concept-retire', 'concept-restore']) assert.throws(() => send(L.document, type, {id: L.conceptRecordId, reason: 'Synthetic.', reviewer: 'Synthetic steward', reviewed: true}, 'architect', NO_ACCOUNT('architect')), NOBODY);
+  // Nor is it a person's change of what a review covered (ruling B3), nor a person's form: a form it saves is released by a third person, as an import's is.
+  assert.throws(() => send(reviewed, 'concept', {...CONCEPT, id: L.conceptRecordId, forms: reviewed.knowledge.concepts[0].forms, steward: 'Nobody'}, 'architect', NO_ACCOUNT('architect')), /only a signed-in person changes what its review covered/);
+  assert.equal(send(fresh.document, 'claim', F.formClaim(fresh.sourceId, 'SYN-P001', F.p001Forms().example), 'architect', NO_ACCOUNT('architect')).document.knowledge.claims.at(-1).authoredAs, 'import');
 });
