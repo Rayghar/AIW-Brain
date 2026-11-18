@@ -25,7 +25,9 @@ export const knowledgeStamp=p=>digest(knowledgeState(p));
 // review and release, and a correction round of every concept 242 more (rc44-wp1-cases-forms.mjs, S1.25). The 30
 // releases and the 8,000,000 characters are the same in both, and the characters bind first: eligibility never reads
 // the tier. Every knowledge command reads the tier of the project it is applied to, whoever calls it.
-export const KNOWLEDGE_LIMIT_TIERS=Object.freeze({project:Object.freeze({sources:100,claims:250,concepts:100,topics:100,history:2000}),library:Object.freeze({sources:300,claims:1000,concepts:300,topics:300,history:6000})});
+// (A plain literal on purpose: the client reads no tier, and its bundle drops a literal nothing reads but keeps a call.
+// The module the command route loads, knowledge-concept-commands.js, freezes it.)
+export const KNOWLEDGE_LIMIT_TIERS={project:{sources:100,claims:250,concepts:100,topics:100,history:2000},library:{sources:300,claims:1000,concepts:300,topics:300,history:6000}};
 export const knowledgeLimits=p=>KNOWLEDGE_LIMIT_TIERS[knowledgeState(p).library?.enabled===true?'library':'project'];
 export function withdrawn(p,refs){return knowledgeState(p).withdrawals.filter(w=>refs.includes(w.targetId));}
 // ---------------------------------------------------------------- organisation knowledge releases (round 12, GR-DOM-09)

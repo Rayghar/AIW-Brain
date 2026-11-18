@@ -712,7 +712,12 @@ add('S1.14 (isolation): the route\'s knowledge module imports none of the new mo
   assert.deepEqual(imports('public/concept-form.js'), [], 'concept-form.js imports nothing');
   assert(imports('worker.js').includes('knowledge-concept-commands.js') && !imports('worker.js').includes('knowledge-governance.js'), 'the worker reaches knowledge commands through the one wrapper');
   assert.match(readFileSync('worker.js', 'utf8'), /type\.startsWith\('knowledge\.'\)\?applyConceptCommand\(own,input\.command,at,actor,\{author\}\)/);
-  if (existsSync('dist/client-metafile.json')) { const inputs = Object.keys(JSON.parse(readFileSync('dist/client-metafile.json', 'utf8')).inputs); for (const name of NEW) assert(!inputs.includes('public/' + name), 'the built client holds ' + name); }
+  if (existsSync('dist/client-metafile.json')) { const meta = JSON.parse(readFileSync('dist/client-metafile.json', 'utf8')), inputs = Object.keys(meta.inputs); for (const name of NEW) assert(!inputs.includes('public/' + name), 'the built client holds ' + name);
+    // Nor does it hold the limit tiers (ruling B8 put them beside the commands in knowledge-governance.js, which is on the route:
+    // the client reads no tier, and a frozen constant there cost 188 B on the chapters route before it was made a plain literal).
+    for (const file of Object.keys(meta.outputs).filter(f => f.endsWith('.js') && existsSync(f))) assert(!/topics:300|history:6e3|history:6000/.test(readFileSync(file, 'utf8')), 'the built client holds the knowledge limit tiers: ' + file); }
+  // The tiers are frozen where the commands run.
+  { const {CC} = await mods(); assert(Object.isFrozen(CC.KNOWLEDGE_LIMIT_TIERS) && Object.isFrozen(CC.KNOWLEDGE_LIMIT_TIERS.project) && Object.isFrozen(CC.KNOWLEDGE_LIMIT_TIERS.library)); assert(!/KNOWLEDGE_LIMIT_TIERS=Object\.freeze/.test(readFileSync('public/knowledge-governance.js', 'utf8')), 'a call at the top of knowledge-governance.js stays in the client bundle'); }
 });
 
 // ================================================================================================ the fix-up round

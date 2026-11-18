@@ -25,6 +25,8 @@ import {list} from './util.js';
 
 // A project's bounds and a knowledge library's are defined once, beside the commands they bound (knowledge-governance.js:
 // sources, claims, concepts, topics and the lines of the history), so that every caller of a knowledge command reads them.
+// They are frozen here, where the commands run (the server and the suites): the route's bundle holds neither.
+for(const tier of Object.values(KNOWLEDGE_LIMIT_TIERS))Object.freeze(tier);Object.freeze(KNOWLEDGE_LIMIT_TIERS);
 export {KNOWLEDGE_LIMIT_TIERS,knowledgeLimits};
 export const REVIEW_TRIGGERS=['product-version','platform-contract','contradicting-incident','new-workload','new-threat','region','quota','classification','runtime','recovery-objective'];
 const INTENDED_USES=['foundation','design-method','verification-method','reference','not-imported'],CHANGE_NOTES=['rename','semantic','split','applicability'],FORM_MAX={example:6,exercise:9};
