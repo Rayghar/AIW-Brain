@@ -5,7 +5,8 @@
 // A form holds strings with limits and short lists: no expressions, no code, nothing that is interpreted. Every list
 // item, and every object a form holds, names its lines inside the claim's passage (at) and a verbatim quote found in
 // those lines once whitespace is collapsed; every text the form states of itself rests on a quote of the passage that
-// names it (quotes: [{field, quote}], no quote given twice). In a decision-bearing form every statement rests on its
+// names it (quotes: [{field, quote}], no quote given twice). The quotes of one form do not nest and are not shared: none
+// holds another, and no two entries rest on the same one (ruling G3). In a decision-bearing form every statement rests on its
 // own quote: an entry of a sub-list is {text, quote}, the quote inside the lines of the object that holds it, and a
 // number is stated only where the text's own quote holds it (the claim's statement, conditions and limitations: where
 // some quote of the form does). A worked value sits only in workedValues and parameters[].example, always illustrative.
@@ -147,6 +148,14 @@ function everyQuote(v,out=[],depth=0){
  else if(object(v))for(const [k,x] of Object.entries(v)){if(k==='quote'){if(typeof x==='string')out.push(x);}else everyQuote(x,out,depth+1);}
  return out;
 }
+// Every verbatim quote with the entry that rests on it, [path, quote with whitespace collapsed]: an item's or an object's
+// own, an entry's of a sub-list, a quotes entry's.
+function quotePaths(v,path,out=[],depth=0){
+ if(depth>6)return out;
+ if(Array.isArray(v))v.forEach((x,i)=>quotePaths(x,path+'['+i+']',out,depth+1));
+ else if(object(v))for(const [k,x] of Object.entries(v)){if(k==='quote'){if(typeof x==='string'&&collapse(x))out.push([path,collapse(x)]);}else quotePaths(x,path+'.'+k,out,depth+1);}
+ return out;
+}
 // Every issue of a form read against its passage: {excerpt (the claim's lines of the source), lineStart (its first line),
 // claim (optional: the claim's own statement, conditions and limitations, which the number rule reads too)}.
 export function conceptFormIssues(form,{excerpt,lineStart,claim=null}={}){
@@ -159,7 +168,7 @@ export function conceptFormIssues(form,{excerpt,lineStart,claim=null}={}){
  for(const k of Object.keys(form))if(!['type','v','quotes'].includes(k)&&!own(scalars,k)&&!own(lists,k)&&!own(objects,k)&&!RESERVED.includes(k))out.push(type+' has an unsupported field: '+k+'.');
  // The texts the form states of itself each rest on a quote of the passage that names them ({field, quote}); no quote
  // is given twice, so one sentence of the passage never passes for the ground of several texts.
- const stated=Object.keys(scalars).filter(k=>scalars[k].k==='text'&&!scalars[k].label&&form[k]!==undefined),quotes=form.quotes,given=Object.fromEntries(stated.map(k=>[k,[]]));
+ const stated=Object.keys(scalars).filter(k=>scalars[k].k==='text'&&!scalars[k].label&&form[k]!==undefined),quotes=form.quotes,given=Object.fromEntries(stated.map(k=>[k,[]])),repeated=new Set();
  if(quotes!==undefined&&(!Array.isArray(quotes)||quotes.length>8))out.push(type+'.quotes is a list of at most 8 entries, each naming a text of the form and its verbatim quote ({field, quote}).');
  else{
   const seen=new Map();
@@ -172,7 +181,7 @@ export function conceptFormIssues(form,{excerpt,lineStart,claim=null}={}){
    if(!quoteText(q.quote)){out.push(p+' is a verbatim quote of 12 to 240 characters (whitespace collapsed, at least eight letters or digits).');return;}
    if(!collapse(excerpt).includes(collapse(q.quote))){out.push(p+' is not found in the passage.');return;}
    const key=collapse(q.quote);
-   if(seen.has(key)){out.push(p+' repeats quotes['+seen.get(key)+']: each text rests on a quote of its own.');return;}
+   if(seen.has(key)){repeated.add(p);out.push(p+' repeats quotes['+seen.get(key)+']: each text rests on a quote of its own.');return;}
    seen.set(key,i);if(named)given[q.field].push(q.quote);
   });
   const missing=stated.filter(k=>!given[k].length);
@@ -189,6 +198,16 @@ export function conceptFormIssues(form,{excerpt,lineStart,claim=null}={}){
  }
  for(const [k,fields] of Object.entries(objects)){if(form[k]===undefined)continue;held++;item(type+'.'+k,fields,form[k],{...ctx,verbatim:shape.verbatim?.[k]||null},out);}
  if(!held&&!Object.values(scalars).some(s=>s.k==='text'&&!s.opt&&!s.label)&&!stated.length)out.push(type+' holds no content.');
+ // Quotes do not nest and are not shared (ruling G3 of 2026-11-18): no quote of a form contains another quote of it or is
+ // contained in one, and no two entries rest on the same quote, an object's own included (an item and a text of the form,
+ // an entry of a sub-list and the object that holds it), compared with whitespace collapsed. So one sentence of the
+ // passage never passes for the ground of several statements. Quotes that overlap without one holding the other are each
+ // a quote of their own. An entry is named once, against the first it meets (a quote given twice in quotes[]: above).
+ const rest=quotePaths(form,type).filter(([path])=>!repeated.has(path));
+ for(let j=1;j<rest.length;j++){
+  const [b,y]=rest[j],first=rest.slice(0,j).find(([,x])=>x.includes(y)||y.includes(x));
+  if(first)out.push(first[1]===y?b+' rests on the same quote as '+first[0]+': no two entries of a form rest on one quote.':b+': its quote contains, or is contained in, the quote of '+first[0]+': the quotes of a form do not nest.');
+ }
  // The claim's own statement, conditions and limitations are what a reader meets first: in a decision-bearing form
  // they state a number only where some quote of the form holds it.
  if(decision&&object(claim)){

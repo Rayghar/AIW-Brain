@@ -114,6 +114,9 @@ export const UNIT = {
   placement: [{target: 'data-owner', role: 'outbox writer', reason: 'The notice is written in the owner\'s local transaction.'}]
 };
 // The nine forms of SYN-P001, each on its own passage: {passage: [start, end], statement, conditions, limitations, content}.
+// No quote of a form holds another quote of it and no two entries rest on one quote (ruling G3 of 2026-11-18): the
+// narrative of the mechanism, the variant of the selection and the output of the calculation each took a quote of their
+// own in the second fix-up (they rested on words inside another entry's quote).
 export function p001Forms() {
   return {
     definition: {passage: [5, 7], statement: 'A transactional outbox stores the notice in the booking\'s local transaction and a relay sends it afterwards.', polarity: 'neutral',
@@ -123,7 +126,7 @@ export function p001Forms() {
         vocabulary: [{term: 'Outbox row', meaning: 'The stored notice awaiting publication.', ...q1(7, 'Outbox row: the stored notice awaiting publication.')}, {term: 'Relay', meaning: 'The worker that publishes stored notices.', ...q1(7, 'Relay: the worker that publishes stored notices.')}]}},
     mechanism: {passage: [10, 13], statement: 'The booking and its notice are committed together; a relay publishes afterwards.', conditions: ['A relay retry keeps the same notice identity.'], limitations: ['A crash between publishing and marking can repeat a notice.'],
       content: {type: 'mechanism', v: 1, narrative: 'The booking and its notice are committed together; a relay publishes afterwards and marks a row only once the broker confirms.',
-        quotes: [{field: 'narrative', quote: 'the relay marks a row as sent only after the broker confirms it'}],
+        quotes: [{field: 'narrative', quote: 'publishes each notice to the broker'}],
         steps: [{n: 1, text: 'The booking service writes the booking and the outbox row in one commit.', ...q1(10, 'writes the booking and the outbox row in one commit')},
           {n: 2, text: 'The relay claims a small batch of unsent rows and publishes each notice.', ...q1(11, 'claims a small batch of unsent rows and publishes each notice')},
           {n: 3, text: 'The relay marks a row as sent only after the broker confirms it.', ...q1(12, 'marks a row as sent only after the broker confirms it')}],
@@ -139,7 +142,7 @@ export function p001Forms() {
         alternatives: [{target: {label: 'Polling relay'}, chooseWhen: 'The store supports short claims and simple operation matters more than delay.', cost: 'Publication waits for the next poll.', ...q1(22, 'the store supports short claims and simple operation matters more than delay')},
           {target: {label: 'Log capture'}, chooseWhen: 'An approved capture platform already exists and low delay justifies its operation.', cost: 'The capture platform must be operated.', ...q1(23, 'an approved capture platform already exists')}],
         rules: [{condition: 'Nothing must survive a broker outage.', candidate: 'A direct call.', contraindication: 'Any durable obligation.', evidenceNeeded: 'A failure-injection record.', ...q1(24, 'A direct call is the candidate when nothing must survive a broker outage')}],
-        variants: [{name: 'Polling relay', chooseWhen: 'Short claims are supported.', tradeoff: 'Simple operation at the price of delay.', ...q1(22, 'simple operation matters more than delay')}]}},
+        variants: [{name: 'Polling relay', chooseWhen: 'Short claims are supported.', tradeoff: 'Simple operation at the price of delay.', ...q1(22, 'Choose the polling relay when the store supports short claims')}]}},
     composition: {passage: [27, 34], statement: 'The pattern has an outbox writer and a relay, requires an idempotent receiver and conflicts with an unsafe dual write.', polarity: 'requires', conditions: ['Receivers perform effects on delivery.'], limitations: ['Roles are the handbook\'s, not a project\'s.'],
       content: {type: 'composition', v: 1,
         roles: [{id: 'outbox-writer', name: 'Outbox writer', responsibility: 'Writes the outbox row with the booking.', recordKind: 'component', required: true, ...q1(27, 'The outbox writer belongs to the booking service and is required.')},
@@ -156,7 +159,7 @@ export function p001Forms() {
         relation: 'The age is the time now minus the commit time of the oldest unsent row.', bounds: 'Bounded by the relay polling interval plus the broker outage length.',
         quotes: [{field: 'purpose', quote: 'The oldest unsent notice age is'}, {field: 'relation', quote: 'the time now minus the commit time of the oldest unsent row'}, {field: 'bounds', quote: 'bounded by the relay polling interval plus the broker outage length'}],
         inputs: [{name: 'commit_time_oldest_unsent', unit: 'seconds', meaning: 'Commit time of the oldest unsent row.', ...q1(38, 'the commit time of the oldest unsent row, in seconds')}, {name: 'now', unit: 'seconds', meaning: 'The current time.', ...q1(38, 'the current time, in seconds')}],
-        outputs: [{text: 'The age of the oldest unsent notice.', ...q1(37, 'The oldest unsent notice age')}],
+        outputs: [{text: 'The age of the oldest unsent notice, as the result.', ...q1(39, 'The result is bounded by the relay polling interval')}],
         notConsidered: [{text: 'Clock skew between the store and the relay.', ...q1(40, 'It does not consider clock skew between the store and the relay.')}],
         workedValues: [{name: 'outage', value: 120, unit: 'seconds', evidenceLevel: 'illustrative', ...q1(41, 'an outage of 120 seconds gives an age of about 120 seconds')}]}},
     verification: {passage: [44, 48], statement: 'A crash after publishing and the age of the oldest unsent notice check the pattern.', polarity: 'neutral', conditions: ['A relay and a broker that can be correlated.'], limitations: ['The handbook proposes the test and did not run it.'],

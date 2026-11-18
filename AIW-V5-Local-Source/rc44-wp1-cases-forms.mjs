@@ -1060,8 +1060,10 @@ add('S1.24 (ruling B6, should-fix 6): every statement of a decision-bearing form
   assert.match(issues('calculation', f => { f.quotes[1].quote = 'The  oldest unsent\nnotice   age is'; }), /calculation\.quotes\[1\] repeats quotes\[0\]/);
   assert.match(issues('example', f => { f.quotes[1].quote = f.quotes[0].quote; }), /example\.quotes\[1\] repeats quotes\[0\]/, 'in a teaching form too');
   // 2. The number rule reads each text against its own quote, not against every quote of the form.
-  const with120 = f => { f.quotes[0] = {field: 'purpose', quote: 'an outage of 120 seconds gives an age of about 120 seconds'}; };
+  // (Ruling G3 of 2026-11-18: the worked value rested on the same quote and is taken off here; the first fix-up let two entries share it. Case S1.30.)
+  const with120 = f => { f.quotes[0] = {field: 'purpose', quote: 'an outage of 120 seconds gives an age of about 120 seconds'}; delete f.workedValues; };
   assert.equal(issues('calculation', f => { with120(f); f.purpose = 'Estimate the age after an outage of 120 seconds.'; }), '', 'a number its own quote holds');
+  assert.match(issues('calculation', f => { f.quotes[0] = {field: 'purpose', quote: 'an outage of 120 seconds gives an age of about 120 seconds'}; }), /calculation\.workedValues\[0\] rests on the same quote as calculation\.quotes\[0\]: no two entries of a form rest on one quote/);
   assert.match(issues('calculation', f => { with120(f); f.bounds += ' At most 120 seconds.'; }), /calculation\.bounds states the number 120, which no quote given for bounds contains/, 'the quote given for another text does not lend its number');
   assert.match(issues('calculation', f => { with120(f); f.relation += ' About 120 seconds.'; }), /calculation\.relation states the number 120, which no quote given for relation contains/);
   // 3. An entry of a sub-list is a statement of its own: a text and a verbatim quote inside the lines of the object that holds it.
@@ -1069,7 +1071,9 @@ add('S1.24 (ruling B6, should-fix 6): every statement of a decision-bearing form
   assert.match(issues('applicability', f => { f.guaranteeBoundary.dependsOn = [{text: 'A relay that never stops.'}]; }), /applicability\.guaranteeBoundary\.dependsOn\[0\] has no verbatim quote \(12 to 240 characters\)/);
   assert.match(issues('applicability', f => { f.guaranteeBoundary.dependsOn = [{text: 'A relay that never stops.', quote: 'a relay that never stops and never repeats'}]; }), /applicability\.guaranteeBoundary\.dependsOn\[0\]: the quote is not found in lines 19.19/);
   assert.match(issues('applicability', f => { f.guaranteeBoundary.dependsOn = [{text: 'A store that commits both together.', quote: 'a store that commits the booking and the outbox row together'}]; }), /dependsOn\[0\]: the quote is not found in lines 19.19/, 'a quote of the passage outside the object\'s own lines');
-  assert.equal(issues('applicability', f => { f.guaranteeBoundary.at = [18, 19]; f.guaranteeBoundary.dependsOn = [{text: 'A store that commits both together.', quote: 'a store that commits the booking and the outbox row together'}]; }), '');
+  // (Ruling G3: the prerequisite rests on that quote, so it is taken off here; with it, the entry is refused as resting on the same quote.)
+  assert.equal(issues('applicability', f => { delete f.prerequisites; f.guaranteeBoundary.at = [18, 19]; f.guaranteeBoundary.dependsOn = [{text: 'A store that commits both together.', quote: 'a store that commits the booking and the outbox row together'}]; }), '');
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.at = [18, 19]; f.guaranteeBoundary.dependsOn = [{text: 'A store that commits both together.', quote: 'a store that commits the booking and the outbox row together'}]; }), /applicability\.guaranteeBoundary\.dependsOn\[0\] rests on the same quote as applicability\.prerequisites\[0\]/);
   assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish[0].note = 'x'; }), /doesNotEstablish\[0\] has an unsupported field: note/);
   assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish[0].reviewed = true; }), /must not carry "reviewed"/);
   assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish = Array.from({length: 9}, () => clone(f.guaranteeBoundary.doesNotEstablish[0])); }), /doesNotEstablish is a list of at most 8 entries/);
@@ -1079,7 +1083,9 @@ add('S1.24 (ruling B6, should-fix 6): every statement of a decision-bearing form
     const run = form => CF.conceptFormIssues(form, {excerpt, lineStart: 1}).join(' ');
     assert.equal(run(technique([{text: 'Stop the broker.', quote: 'First stop the broker'}, {text: 'Restart the relay.', quote: 'then restart the relay'}])), '');
     assert.match(run(technique([{text: 'Stop the broker for 120 seconds.', quote: 'First stop the broker'}])), /verification\.technique\.steps\[0\]\.text states the number 120, which its quote does not contain/, 'the technique\'s own quote holds 120; the step\'s does not');
-    assert.equal(run(technique([{text: 'Stop the broker for 120 seconds.', quote: 'stops the broker for 120 seconds'}])), '');
+    // (Ruling G3: the step's quote lay inside the technique's own, 'The drill stops the broker for 120 seconds'; the technique rests on other words here.)
+    assert.equal(run(technique([{text: 'Stop the broker for 120 seconds.', quote: 'stops the broker for 120 seconds'}], {quote: 'and then counts repeated notices'})), '');
+    assert.match(run(technique([{text: 'Stop the broker for 120 seconds.', quote: 'stops the broker for 120 seconds'}])), /verification\.technique: its quote contains, or is contained in, the quote of verification\.technique\.steps\[0\]: the quotes of a form do not nest/);
     assert.match(run(technique(['Stop the broker.'])), /verification\.technique\.steps\[0\] is a text with its own verbatim quote/);
     assert.match(run(technique([{text: 'Stop the broker.', quote: 'First stop the broker'}], {at: [1, 2]})), /verification\.technique\.steps\[0\]: the quote is not found in lines 1.2/); }
   // 4. The claim's own statement, conditions and limitations state a number only where a quote of the form holds it.
@@ -1505,4 +1511,45 @@ add('S1.29 (ruling E1): no request that is not a person\'s lowers the standing o
       assert.equal(pinned(S.document), handed, 'what a pin hands over is as it was');
       await S.ok('knowledge.deactivate', {...F.REVIEW, id: S.releaseId, stamp: K.knowledgeStamp(S.document)}, 'releaser'); assert.deepEqual(JSON.parse(pinned(S.document)).forms, [], 'a person deactivates the release, and the pin then hands over nothing');
     } finally { S.close(); } }
+});
+
+// ------------------------------------------------------------------------------------------------ 30
+add('S1.30 (ruling G3): quotes do not nest and are not shared: a quote that contains another quote of the same form, or is contained in one, is refused, and no two entries of one form rest on the same quote, the object\'s own included; in a teaching form as in a decision-bearing one, at the command and on every read', async () => {
+  const {CF, CC, KC} = await mods(), all = F.p001Forms(), L = await library({forms: []});
+  const issues = (type, change) => { const f = all[type], form = clone(f.content); change(form); return CF.conceptFormIssues(form, ctx(f)).join(' '); };
+  const esc = s => s.replace(/[.[\]]/g, '\\$&'), nests = (a, b) => new RegExp('(?:' + esc(a) + ': its quote contains, or is contained in, the quote of ' + esc(b) + '|' + esc(b) + ': its quote contains, or is contained in, the quote of ' + esc(a) + '): the quotes of a form do not nest'), shares = (a, b) => new RegExp('(?:' + esc(a) + ' rests on the same quote as ' + esc(b) + '|' + esc(b) + ' rests on the same quote as ' + esc(a) + '): no two entries of a form rest on one quote');
+  for (const t of F.FORM_ORDER) assert.equal(issues(t, () => {}), '', 'the fixture form is valid: ' + t);
+  // 1. Nested. The verifier's input: a quote, the quote and one word more, and two words more, given as the grounds of three texts.
+  { const three = issues('calculation', f => { f.quotes = [{field: 'purpose', quote: 'the time now minus the commit time'}, {field: 'relation', quote: 'the time now minus the commit time of'}, {field: 'bounds', quote: 'the time now minus the commit time of the'}]; });
+    assert.match(three, nests('calculation.quotes[0]', 'calculation.quotes[1]')); assert.match(three, nests('calculation.quotes[0]', 'calculation.quotes[2]')); assert.equal(three.match(/the quotes of a form do not nest/g).length, 2, 'each entry is named once, against the first it meets'); }
+  //    An item's quote inside the quote of a text of the form, an item's inside another item's, an entry's inside its object's, and the other way round.
+  assert.match(issues('mechanism', f => { f.quotes[0].quote = 'the relay marks a row as sent only after the broker confirms it'; }), nests('mechanism.quotes[0]', 'mechanism.steps[2]'), 'a teaching form: a step\'s quote inside the narrative\'s');
+  assert.match(issues('selection', f => { f.variants[0].quote = 'simple operation matters more than delay'; }), nests('selection.alternatives[0]', 'selection.variants[0]'), 'an item\'s quote inside another item\'s');
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.quote = 'The bounded claim is that no committed booking loses its notice; it does not establish that a carrier acted on the notice.'; }), nests('applicability.guaranteeBoundary', 'applicability.guaranteeBoundary.doesNotEstablish[0]'), 'an entry\'s quote inside its object\'s');
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish[0].quote = 'is that no committed booking loses its notice; it does not establish'; }), nests('applicability.guaranteeBoundary', 'applicability.guaranteeBoundary.doesNotEstablish[0]'), 'the object\'s quote inside its entry\'s');
+  assert.match(issues('exercise', f => { f.items[1].quote = 'decide a claim batch size'; f.items[2].at = [57, 58]; f.items[2].quote = 'decide a claim batch size for a store'; }), nests('exercise.items[1]', 'exercise.items[2]'));
+  assert.match(issues('calculation', f => { f.outputs[0] = {text: 'The age of the oldest unsent notice.', at: [37, 37], quote: 'The oldest unsent notice age'}; }), nests('calculation.quotes[0]', 'calculation.outputs[0]'), 'whitespace and all: an item\'s quote inside a quotes entry\'s');
+  assert.match(issues('calculation', f => { f.outputs[0] = {text: 'The age of the oldest unsent notice.', at: [37, 37], quote: 'The   oldest unsent\n notice age'}; }), nests('calculation.quotes[0]', 'calculation.outputs[0]'), 'compared with whitespace collapsed');
+  // 2. Shared. Two items on one quote; an entry on its object's own quote; the verifier's eight entries on one quote; an item on the quote of a text of the form.
+  assert.match(issues('composition', f => { f.roles[1].at = f.roles[0].at; f.roles[1].quote = f.roles[0].quote; }), shares('composition.roles[0]', 'composition.roles[1]'));
+  assert.match(issues('composition', f => { f.sequence[1].quote = 'first  commit, then claim,\nthen publish, then mark as sent'; }), shares('composition.sequence[0]', 'composition.sequence[1]'), 'the same quote with other whitespace');
+  assert.match(issues('applicability', f => { f.guaranteeBoundary.dependsOn = [{text: 'No committed booking is lost.', quote: f.guaranteeBoundary.quote}]; }), shares('applicability.guaranteeBoundary', 'applicability.guaranteeBoundary.dependsOn[0]'), 'the object\'s own quote');
+  { const eight = issues('applicability', f => { f.guaranteeBoundary.doesNotEstablish = Array.from({length: 8}, (_, i) => ({text: 'An invented dependency, number ' + 'abcdefgh'[i] + '.', quote: 'it does not establish that a carrier acted on the notice'})); });
+    for (let i = 1; i < 8; i++) assert.match(eight, shares('applicability.guaranteeBoundary.doesNotEstablish[0]', 'applicability.guaranteeBoundary.doesNotEstablish[' + i + ']'), 'entry ' + i + ' of eight on one quote'); }
+  assert.match(issues('example', f => { f.steps[0].quote = f.quotes[0].quote; }), shares('example.quotes[0]', 'example.steps[0]'), 'a teaching form: a step on the quote of a text of the form');
+  assert.match(issues('verification', f => { f.technique = {purpose: 'Check that a repeated notice is applied once.', inputs: [{text: 'A relay that restarts.', quote: f.scenarios[0].quote}], evidenceProduced: 'A reconciled record.', at: [45, 45], quote: 'The evidence required is a crash-injection record'}; f.scenarios[0].at = [44, 45]; }), shares('verification.scenarios[0]', 'verification.technique.inputs[0]'), 'across an item and an entry of another object');
+  //    A quote given twice in quotes[] keeps its own words (S1.24) and is said once.
+  { const twice = issues('calculation', f => { f.quotes[1].quote = f.quotes[0].quote; }); assert.match(twice, /calculation\.quotes\[1\] repeats quotes\[0\]: each text rests on a quote of its own/); assert(!/rests on the same quote as/.test(twice), twice); }
+  // 3. Quotes that overlap and do not contain one another are each a quote of their own, as before.
+  assert.equal(issues('selection', f => { f.variants[0].quote = 'Choose the polling relay when the store supports short claims'; }), '');
+  assert.equal(issues('applicability', f => { f.guaranteeBoundary.at = [18, 19]; f.guaranteeBoundary.dependsOn = [{text: 'A store that commits both together.', quote: 'It needs a store that commits the booking'}]; }), '', 'it overlaps the prerequisite\'s quote and neither holds the other');
+  // 4. At the command, whoever sends it, and again on every read (in the manner of S1.9).
+  for (const opts of [F.person('importer'), F.importedBy('importer'), F.agent('bot')]) { const payload = clone(F.formClaim(L.sourceId, 'SYN-P001', all.selection)); payload.form.variants[0].quote = 'simple operation matters more than delay';
+    assert.throws(() => CC.applyConceptCommand(L.document, {type: 'knowledge.claim', payload}, AT, 'importer', opts), /the quotes of a form do not nest/); }
+  { const A = await library({verify: true, review: true, release: true, activate: true}), status = (q, type) => KC.conceptReading(q, 'SYN-P001').forms.find(f => f.type === type);
+    const careful = (type, change) => { const q = clone(A.document), r = q.knowledge.releases[0], c = r.claims.find(x => x.form.type === type); change(c.form); c.review.claimHash = digest({...c, review: undefined}); r.checksum = digest({...r, checksum: undefined}); assert.equal(K.knowledgeEligibility(q, c, r).eligible, true, 'the claim-level gates see nothing wrong'); return q; };
+    for (const [type, change, pattern] of [['selection', f => { f.variants[0].quote = 'simple operation matters more than delay'; }, /the quotes of a form do not nest/], ['applicability', f => { f.guaranteeBoundary.doesNotEstablish[0].quote = f.guaranteeBoundary.quote; }, /no two entries of a form rest on one quote/], ['mechanism', f => { f.steps[1].at = f.steps[0].at; f.steps[1].quote = f.steps[0].quote; }, /no two entries of a form rest on one quote/]]) {
+      const q = careful(type, change), f = status(q, type); assert.equal(f.status, 'released-ineligible', type); assert.equal(f.content, null); assert.match(f.reasons.join(' '), pattern); assert.equal(KC.releasedConcepts(q)[0].eligible, false);
+      const pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: A.releaseId, status: 'active'}]; assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001'), [], type + ': a pin hands over nothing'); }
+    assert.equal(status(A.document, 'selection').status, 'released'); }
 });
