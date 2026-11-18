@@ -27,6 +27,9 @@ import {architectureKnowledgeSnapshot} from './public/architecture-knowledge.js'
 import {architectureIntelligence} from './public/architecture-intelligence.js';
 import {intelligencePacket} from './public/intelligence-context.js';
 import {brainContext} from './public/aiw-brain.js';
+import {realizations, realizationCriteria, selectionGate, selectionState, technologyRealisationFindings} from './public/technology-realisation-domain.js';
+import {productComparison} from './public/product-comparison.js';
+import {arsGate} from './public/ars-document.js';
 import {neutraliseImportedAuthority} from './recovery-service.js';
 
 const AT = F.AT, clone = v => structuredClone(v);
@@ -69,12 +72,17 @@ const BASELINE = {bank: {findings: 'e188b2ccd284a1ab6d7be71b78f989075419b7dfcdcb
 
 // The readings of a design project that a candidate must never move: the checks and readiness, the eligibility of
 // knowledge, what released knowledge offers every reader, the SDD, the contextual reading, the Brain's context and
-// Sol's packet. A finding's `stamp` holds the fingerprint of the whole document (knowledge included, as on
-// rc.10.73.42, where a plain candidate source moves it too), so it is compared apart.
+// Sol's packet; and, named one by one, the gates and comparisons a decision passes: the eligibility gate of each of the
+// reference's nine technology selections (its criteria, what is pending or unassessed, its state), the comparison of
+// products for each (what released knowledge says of each option against the criteria), the Chapter 7 conformance
+// findings and the gate of the requirements specification. A finding's `stamp` holds the fingerprint of the whole
+// document (knowledge included, as on rc.10.73.42, where a plain candidate source moves it too), so it is compared apart.
 function designReadings(p) {
   const requirement = p.artefacts.find(a => a.type === 'requirement').id, packet = intelligencePacket(p, {chapter: 1, objectId: requirement, mode: 'mind', prompt: 'Explain the transactional outbox and when a relay may repeat a notice.'});
   return {
     findings: rv.inheritedFindings(p).map(({stamp: _stamp, ...f}) => f), summaries: rv.chapterSummaries(p), blockers: rv.reviewBlockerCount(p), readiness: sddReadiness(p), coverage: rv.traceCoverage(p), capacity: rv.reviewCapacity(p),
+    selectionGates: realizations(p).map(r => ({id: r.id, criteria: realizationCriteria(p, r.id), gate: selectionGate(p, r), state: selectionState(p, r)})), productComparisons: realizations(p).map(r => productComparison(p, r.id)),
+    realisationFindings: technologyRealisationFindings(p).map(({stamp: _stamp, ...f}) => f), specificationGate: arsGate(p),
     released: K.releasedClaims(p), knowledgeFindings: K.knowledgeFindings(p), domain: domainKnowledge(p), structures: knowledgeStructures(p), snapshot: architectureKnowledgeSnapshot(p),
     sdd: architectureMarkdown(p).markdown, intelligence: architectureIntelligence(p, {id: requirement}), brain: brainContext(p, {id: requirement, chapter: 1}).knowledge,
     packetSources: packet.sources.map(s => [s.kind, s.objectId, s.ref, s.excerpt])
@@ -500,8 +508,10 @@ add('S1.9: a released form is checked again on every read: one tampered in the d
 });
 
 // ------------------------------------------------------------------------------------------------ 10
-add('S1.10 (inert candidates): with the nine forms of a concept saved as candidates, then verified, reviewed and released but not active, in the bank-payment reference, no check, readiness reading, released-knowledge reader, SDD, contextual reading or Sol packet moves, and the marker in them reaches none', async () => {
+add('S1.10 (inert candidates): with the nine forms of a concept saved as candidates, then verified, reviewed and released but not active, in the bank-payment reference, no check, eligibility gate of a selection, product comparison, conformance finding, readiness reading, released-knowledge reader, SDD, contextual reading or Sol packet moves, and the marker in them reaches none', async () => {
   const {KC} = await mods(), bank = F.bankProject(), before = designReadings(bank), frozen = JSON.stringify(bank);
+  // The readings are not empty ones: the reference holds checks, nine technology selections with their criteria and a comparison for each.
+  assert(before.findings.length > 100 && before.realisationFindings.length > 10 && before.selectionGates.length === 9 && before.selectionGates.every(g => g.criteria.length) && before.productComparisons.every(c => c && c.options.length) && before.specificationGate, 'the reference offers every reading compared here');
   // As on rc.10.73.42, any knowledge write moves the whole-document fingerprint (a plain candidate source does): shown, not hidden.
   const plain = K.applyKnowledgeCommand(bank, {type: 'knowledge.source', payload: F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)}, AT, 'importer').document;
   assert.notEqual(rv.designFingerprint(plain), rv.designFingerprint(bank), 'a plain candidate source moves the design fingerprint on rc.10.73.42 already');
@@ -519,12 +529,21 @@ add('S1.10 (inert candidates): with the nine forms of a concept saved as candida
     assert(KC.conceptReading(p, 'SYN-P001').forms.filter(f => f.tier === 'decision').every(f => f.content === null && f.architectureUnit === null), stage + ': the concept reading holds no decision-bearing content');
     assert.equal(rv.designFingerprint(p) !== rv.designFingerprint(bank), true);
   }
-  // Released and active, a form is a released claim like any other (verified by a second person, released by a person):
-  // every reader still reads, no check or readiness reading moves, and a receipt carries no form and scores nothing.
+  // Released and active, a form is a released claim like any other (verified by a second person, reviewed with its
+  // concept, released and activated by a person): no check, gate, conformance finding or readiness reading moves, and a
+  // receipt carries no form and scores nothing.
   { const L = await library({verify: true, review: true, release: true, activate: true, base: bank}), p = L.document, after = designReadings(p);
     assert.equal(K.releasedClaims(p).filter(h => h.eligible && h.claim.form).length, 9);
-    for (const key of ['findings', 'summaries', 'blockers', 'readiness', 'coverage', 'capacity', 'knowledgeFindings']) assert.equal(JSON.stringify(after[key]), JSON.stringify(before[key]), 'released and active: ' + key + ' moved');
-    for (const h of K.releasedClaims(p)) { const receipt = K.claimReceipt(p, h.claim, h.release); assert(!('form' in receipt)); assert.equal(receipt.scoring, false); } }
+    for (const key of ['findings', 'summaries', 'blockers', 'readiness', 'coverage', 'capacity', 'selectionGates', 'realisationFindings', 'specificationGate', 'knowledgeFindings']) assert.equal(JSON.stringify(after[key]), JSON.stringify(before[key]), 'released and active: ' + key + ' moved');
+    for (const h of K.releasedClaims(p)) { const receipt = K.claimReceipt(p, h.claim, h.release); assert(!('form' in receipt)); assert.equal(receipt.scoring, false); }
+    // What does move, said plainly: the applicability form carries a structured architecture unit, and a released claim
+    // with one is offered beside each product option of a comparison, as any released claim is on rc.10.73.42: its
+    // statement and its receipt, which scores nothing, and never its form. Nothing else of a comparison moves.
+    const unmatched = c => JSON.parse(JSON.stringify(c), (k, v) => k === 'matches' ? [] : v), matches = after.productComparisons.flatMap(c => c.C.options.flatMap(o => o.claims.matches));
+    assert.equal(JSON.stringify(after.productComparisons.map(unmatched)), JSON.stringify(before.productComparisons.map(unmatched)), 'released and active: a product comparison moved outside the released claims it offers');
+    assert.deepEqual(before.productComparisons.flatMap(c => c.C.options.flatMap(o => o.claims.matches)), []);
+    assert(matches.length > 0 && matches.every(m => m.claimType === 'applicability' && m.receipt.kind === 'governed-claim' && m.receipt.scoring === false), 'the released applicability claim, by its receipt');
+    assert(!/"(?:form|useWhen|avoidWhen|prerequisites|guaranteeBoundary|quote)":/.test(JSON.stringify(matches)), 'a comparison is handed the claim\'s statement and unit, never the form'); }
   assert.equal(JSON.stringify(bank), frozen, 'the reference document itself was never changed');
 });
 
