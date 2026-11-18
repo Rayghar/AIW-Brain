@@ -258,6 +258,8 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
  };
 }
 export function applyConceptCommand(input,command,at=new Date().toISOString(),actor='local-review',{author=null}={}){
- const limits=knowledgeLimits(input);
+ // The mark that makes a project a library is read against a library's history bound: a library recovered here without
+ // its mark (recovery-service.js; ruling G5) may hold more history than a project, and a person marks it again.
+ const tier=knowledgeLimits(input),limits=command?.type==='knowledge.library'&&command.payload?.enabled===true?{...tier,history:KNOWLEDGE_LIMIT_TIERS.library.history}:tier;
  return applyKnowledgeCommand(input,command,at,actor,{forms:formCapability(author,limits),limits});
 }

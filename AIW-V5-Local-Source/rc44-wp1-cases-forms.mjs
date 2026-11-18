@@ -686,7 +686,11 @@ add('S1.12: a recovery import brings no concept review: the imported reviewer is
   assert(KC.conceptReading(imported, 'SYN-P001').forms.every(f => f.status === 'candidate'), 'its forms read as candidates: their reviews were made elsewhere');
   // Even with the concept review's actor forged back, the forms' own reviews do not stand here.
   const forged = clone(imported); forged.knowledge.concepts[0].review.actor = 'reviewer'; assert.equal(KC.conceptRecords(forged)[0].state, 'draft');
-  assert.throws(() => CC.applyConceptCommand(imported, {type: 'knowledge.concept-review', payload: {...CONCEPT_REVIEW, id: L.conceptRecordId}}, AT, 'reviewer', F.person('reviewer')), /\(definition\): /, 'the forms are verified here first');
+  // (Ruling G5 of 2026-11-18, case S1.32: the recovery clears the library mark too, so a person marks the project a library
+  // here first; the first build's assertion sent the review to the recovered document as it was.)
+  assert.throws(() => CC.applyConceptCommand(imported, {type: 'knowledge.concept-review', payload: {...CONCEPT_REVIEW, id: L.conceptRecordId}}, AT, 'reviewer', F.person('reviewer')), /are written in a knowledge library: a person marks this project as one first/, 'no library here yet');
+  const marked = CC.applyConceptCommand(imported, {type: 'knowledge.library', payload: LIBRARY_MARK}, AT, 'architect', F.person('architect')).document;
+  assert.throws(() => CC.applyConceptCommand(marked, {type: 'knowledge.concept-review', payload: {...CONCEPT_REVIEW, id: L.conceptRecordId}}, AT, 'reviewer', F.person('reviewer')), /\(definition\): /, 'the forms are verified here first');
 });
 
 // ------------------------------------------------------------------------------------------------ 13
@@ -1578,4 +1582,36 @@ add('S1.31 (ruling G4): a structured unit on a form that is not an applicability
     assert.equal(KC.conceptRecords(q)[0].state, 'draft', 'the review does not stand'); assert.equal(status(q, 'mechanism').status, 'candidate'); assert.equal(status(q, 'mechanism').content, null);
     assert.throws(() => send('concept-review', {...CONCEPT_REVIEW, id: B.conceptRecordId}, 'second-architect'), UNIT_ONLY); assert.throws(() => send('release', {...F.REVIEW, title: 'Synthetic', claimIds: Object.values(B.claimIds)}, 'releaser'), /SYN-P001 is not reviewed/);
     const fresh = clone(q); delete fresh.knowledge.claims.find(x => x.form?.type === 'mechanism').review; assert.throws(() => CC.applyConceptCommand(fresh, {type: 'knowledge.review', payload: {...F.REVIEW, formChecked: true, id: c.id}}, AT, 'reviewer', F.person('reviewer')), UNIT_ONLY, 'a form\'s review asks it too'); }
+});
+
+// ------------------------------------------------------------------------------------------------ 32
+add('S1.32 (ruling G5, beside S1.12): a recovery import clears the library mark: the recovered project takes no concept, topic or form until a person marks it a library again here; the imported mark is kept as history; a recovered library that holds more history than a project is marked again all the same', async () => {
+  const {KC, CC} = await mods(), L = await library({forms: ['definition', 'mechanism'], verify: true, review: true}), second = {...CONCEPT, conceptId: 'SYN-P002', title: 'Idempotent receiver'};
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  assert.deepEqual(L.document.knowledge.library, {enabled: true, at: AT, actor: 'steward', reason: LIBRARY_MARK.reason}); assert.equal(send(L.document, 'concept', second, 'bot', F.agent('bot')).document.knowledge.concepts.length, 2, 'in the library an agent account saves a draft concept');
+  const imported = neutraliseImportedAuthority(clone(L.document), AT);
+  // The mark was a person's step on the workbench the package came from: it is no mark here, and is kept as history.
+  assert.deepEqual(imported.knowledge.library, {enabled: false, at: AT, actor: null, reason: LIBRARY_MARK.reason, importedActor: 'steward', importedEnabled: true});
+  assert.equal(K.knowledgeLimits(imported), K.KNOWLEDGE_LIMIT_TIERS.project, 'the recovered project is held to a project\'s bounds');
+  const NO_LIBRARY = /are written in a knowledge library: a person marks this project as one first/;
+  for (const [who, actor, opts] of [['a person', 'architect', F.person('architect')], ...NOT_A_PERSON]) {
+    assert.throws(() => send(imported, 'concept', second, actor, opts), NO_LIBRARY, who + ': a concept'); assert.throws(() => send(imported, 'topic', TOPIC(L.sourceId), actor, opts), NO_LIBRARY, who + ': a topic');
+    assert.throws(() => send(imported, 'claim', F.formClaim(L.sourceId, 'SYN-P001', F.p001Forms().example), actor, opts), NO_LIBRARY, who + ': a form'); }
+  assert.deepEqual(KC.conceptTeachingForms(imported, 'SYN-P001'), [], 'and it shows no unreleased teaching content');
+  assert.equal(send(imported, 'source', F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)).document.knowledge.sources.length, 2, 'a plain source is saved as in any project');
+  // Only a person marks it again; then it is a library, and what it holds is reviewed again here (S1.12).
+  for (const [who, actor, opts] of NOT_A_PERSON) assert.throws(() => send(imported, 'library', LIBRARY_MARK, actor, opts), /signed-in person|a person signs in/, who + ' marks no library');
+  const again = send(imported, 'library', LIBRARY_MARK, 'architect').document; assert.deepEqual(again.knowledge.library, {enabled: true, at: AT, actor: 'architect', reason: LIBRARY_MARK.reason});
+  assert.equal(send(again, 'concept', second, 'bot', F.agent('bot')).document.knowledge.concepts.length, 2); assert.equal(KC.conceptRecords(again)[0].state, 'draft');
+  // A document that holds no mark gains none, and one that holds no knowledge gains no knowledge.
+  assert.equal('library' in neutraliseImportedAuthority(clone(F.legacyKnowledge().document), AT).knowledge, false); assert.equal('knowledge' in neutraliseImportedAuthority(clone(F.bankProject()), AT), false);
+  { const off = clone(L.document); off.knowledge.library.enabled = false; assert.deepEqual(neutraliseImportedAuthority(off, AT).knowledge.library, {enabled: false, at: AT, actor: null, reason: LIBRARY_MARK.reason, importedActor: 'steward'}, 'a mark that was off stays off and names no actor here'); }
+  // A recovered library may hold more history than a project (2,000 lines): every other command is refused it until it is
+  // marked, and the mark is read against a library's bound (6,000), so a person can mark it again.
+  { const lines = n => { const q = clone(imported); while (q.knowledge.history.length < n) q.knowledge.history.push({...q.knowledge.history[0]}); return q; }, big = lines(2500), FULL = {message: 'Export the knowledge history before extending this project further.'};
+    assert.throws(() => send(big, 'source', F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)), FULL);
+    const marked = send(big, 'library', LIBRARY_MARK, 'architect').document; assert.equal(marked.knowledge.library.enabled, true); assert.equal(marked.knowledge.history.length, 2501);
+    assert.equal(send(marked, 'source', F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)).document.knowledge.history.length, 2502);
+    assert.throws(() => send(big, 'library', LIBRARY_MARK, 'bot', F.agent('bot')), /An agent or Sol reviews nothing/); assert.throws(() => send(big, 'library', {...LIBRARY_MARK, enabled: false}, 'architect'), FULL, 'unmarking is no way past the bound');
+    assert.throws(() => send(lines(6000), 'library', LIBRARY_MARK, 'architect'), FULL, 'at a library\'s own bound the mark is refused as any command is'); }
 });

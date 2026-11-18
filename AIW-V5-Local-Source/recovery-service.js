@@ -95,6 +95,11 @@ export function neutraliseImportedAuthority(p,at,actor=p.workspace?.restoredBy??
  for(const c of p.knowledge?.claims||[])verifier(c);
  // A concept's review (rc44, wp1) is the same assertion: it stands only when a second person here records it.
  for(const c of Array.isArray(p.knowledge?.concepts)?p.knowledge.concepts:[])verifier(c);
+ // The mark that makes a project a knowledge library (rc44, wp1; ruling G5 of 2026-11-18) is a person's step made on the
+ // workbench the package came from: the recovered project is no library until a person marks it one here, and takes no
+ // concept, topic or form before. The imported mark is kept as history. A document that holds no mark gains none.
+ const library=p.knowledge?.library;
+ if(library&&typeof library==='object'){if(library.actor!=null)library.importedActor=library.actor;library.actor=null;if(library.enabled===true){library.importedEnabled=true;library.enabled=false;}}
  for(const r of p.knowledge?.releases||[])for(const c of r.claims||[])verifier(c);
  // Round 12 (GR-DOM-09): a pinned organisation knowledge release was verified on the workbench it came from; here its
  // claims stay ineligible until this workbench's organisation is found to sign exactly it (refreshOrganizationAssurance).
