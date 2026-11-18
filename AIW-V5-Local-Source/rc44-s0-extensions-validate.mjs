@@ -639,7 +639,13 @@ await block('D2 packages a document names', async () => {
     // the package's own choosing is carried: that is the package's to avoid.
     const stepped = documentCopy(source), r = stepped.synthetic.records[0]; Object.assign(r, {confirmed: true, approval: {actor: B, at: AT, account: 'person'}, review: {actor: B, at: AT}, history: [{revision: 1, actor: A, at: AT}]});
     const kept = instantiateTemplate(withFinalReview(stepped), 'project-stepped', 'Stepped', AT).synthetic.records[0];
-    assert.deepEqual([kept.approval, kept.review, kept.confirmed, kept.history], [null, null, false, []], 'a person\'s step kept under approval or review, a confirmation and the history are reset in the copy'); }
+    assert.deepEqual([kept.approval, kept.review, kept.confirmed, kept.history], [null, null, false, []], 'a person\'s step kept under approval or review, a confirmation and the history are reset in the copy');
+    // the shared helper every package with such a step calls (ruling F3): it passes for a step under review, and names a step kept under a key of the package's own
+    const own = documentCopy(source); own.synthetic.records[0].review = {actor: B, at: AT, account: 'person'};
+    R.assertTemplateCopyClearsSteps(own, d => d.synthetic?.records || []);
+    own.synthetic.records[0].acceptance = {actor: B, at: AT, account: 'person'};
+    assert.throws(() => R.assertTemplateCopyClearsSteps(own, d => d.synthetic?.records || []), /carried into a project copied from it: SYN-001\.acceptance/);
+    assert.throws(() => R.assertTemplateCopyClearsSteps(source, d => d.synthetic?.records || []), /holds no record with a step taken/, 'a helper that was handed nothing to check says so'); }
   assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 7, 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
   pass('D2 (server): the boundary names a package under workspace.packages when its command (alone, in a batch, by a merge) or its upgrade step first writes, and neither fingerprint reads the key; a document that names a package this build does not register is read with the package named, and every command, every export and a freeze are refused in words');
 });

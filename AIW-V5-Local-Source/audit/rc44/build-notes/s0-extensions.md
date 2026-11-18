@@ -115,6 +115,25 @@ suite was touched):
     reset clears `applied` and not `acceptance`. The author stamps of the template's records are carried too. See
     open question 6.
 
+## Lead follow-up after the fix-up (rulings F2 and F3, 2026-11-18)
+
+Done by the lead on `rc44/s0-lead-f`, from the fix-up's head `72204ff`. Each case was seen to fail first.
+
+- **F2, one refusal for every route that writes.** A project that names a package this build does not register is
+  refused at one place in `worker.js` for every request that is not a GET, whatever it asks, except the routes in
+  `MISSING_PACKAGE_OPEN`: commands (refused on the document that route reads anyway), renaming, archiving and restoring
+  from the archive, recovery, access and discussions, and making another project. The one writer of a project
+  (`project-storage.js` `saveStoredProject`) refuses again, for a route that is routed before that line
+  (`/api/organizations`); every final catch answers 409 with code `missing_package` (`error-message.js`). The earlier
+  check on three routes is retired. Case: block "D2 packages a document names" (fifteen routes refused, one of them a
+  route this build does not have; rename, archive, restore, access and a recovery export stay possible).
+- **F3, a step taken in another project is no step here.** `personBehind` (`design-extension-boundary.js`) does not
+  count an author stamp or a confirmation made before the project was copied from a template
+  (`workspace.templateOrigin.at`), as it does not count one made before a restore. Case: block "D1 two persons".
+  `rc44-s0-readings.mjs` gained `assertTemplateCopyClearsSteps(p, records)`: every package with a person's or a second
+  person's step calls it; it fails for a step kept under a key of the package's own.
+- Route: 898 B, unchanged (server only). 22 checks pass; syntax, lint (0 new) and the build's gates pass.
+
 ## What was built
 
 | File | Where it runs | What it is |

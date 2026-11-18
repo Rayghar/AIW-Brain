@@ -15,6 +15,7 @@ import {architectureMarkdown, provenanceReading} from './public/sdd-architecture
 import {arsMarkdown} from './public/ars-document.js';
 import {retiredRecords} from './public/record-lifecycle.js';
 import {eachRecord} from './public/provenance.js';
+import {instantiateTemplate} from './project-lifecycle.js';
 
 export const AT = '2026-10-01T09:00:00.000Z';
 export const REFERENCES = ['bank-payment', 'clinic-appointments', 'parcel-lockers'];
@@ -97,3 +98,16 @@ export function opensWithRecords(metafile, entry, dataNames = []) {
 }
 
 if (process.argv[1] && import.meta.url.endsWith('/rc44-s0-readings.mjs') && process.argv[1].endsWith('rc44-s0-readings.mjs') && process.argv.includes('--capture')) { const listed = reviewListDocument(); console.log(JSON.stringify({capturedFrom: process.argv[process.argv.indexOf('--capture') + 1] || 'working tree', at: AT, readings: referenceDigests(), reviewList: {findings: reviewListFindings(listed).map(f => f.id), readings: digests(listed)}}, null, 1)); }
+
+// A person's or a second person's step taken in a template is no step in a project copied from it (the lead's ruling
+// F3). A package keeps such a step under the record's key `review`, which the copy clears; a step kept under a key of
+// the package's own choosing would be carried into the copy as if taken there. `records` reads the package's records
+// from a document; `p` holds at least one of them with a step taken. A step is told by what the boundary hands to
+// apply and apply keeps on it: who took it (actor) and of what kind the account was (account).
+export function assertTemplateCopyClearsSteps(p, records) {
+  const step = v => !!v && typeof v === 'object' && !Array.isArray(v) && 'actor' in v && 'account' in v;
+  const source = withFinalReview({...p, workspace: {...p.workspace, reusableTemplate: true}});
+  if (!records(source).some(r => Object.values(r || {}).some(step))) throw Error('assertTemplateCopyClearsSteps: the document holds no record with a step taken');
+  for (const r of records(instantiateTemplate(source, 'template-copy', 'A copy', AT))) for (const [key, value] of Object.entries(r || {}))
+    if (step(value)) throw Error('A step taken in a template is carried into a project copied from it: ' + (r.id || '(record)') + '.' + key + ' (keep a person\'s step under the record\'s key review, which the copy clears)');
+}
