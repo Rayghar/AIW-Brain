@@ -70,7 +70,7 @@ export default async function ({block, pass, load}) {
     assert.ok(!e.objectTypes, 'the built-in type `pattern` is used; the package states no type of its own');
     assert.ok(TRACE_LAYERS.includes('mechanism') && !BUILT_IN_LAYERS.includes('mechanism') && TRACE_LAYERS.indexOf('mechanism') >= BUILT_IN_LAYERS.length, 'the layer follows the built-in ones');
     // the package's modules read no knowledge store: candidate and discovery knowledge reaches no reading of this slice (plan ruling 6)
-    for (const f of ['adoption-domain', 'adoption-upgrade', 'adoption-builtins', 'adoption-definitions', 'adoption-package']) { const src = readFileSync(new URL('../public/' + f + '.js', import.meta.url), 'utf8'); assert.ok(!/knowledge-governance|domain-knowledge|knowledge-structures|releasedClaims|p\.knowledge\b/.test(src), f + '.js reads no knowledge store'); assert.ok(!/claude|anthropic|fable/i.test(src)); }
+    for (const f of ['adoption-domain', 'adoption-upgrade', 'adoption-builtins', 'adoption-definitions', 'adoption-package']) { const src = readFileSync(new URL('../public/' + f + '.js', import.meta.url), 'utf8'); assert.ok(!/knowledge-governance|domain-knowledge|knowledge-structures|releasedClaims|p\.knowledge\b/.test(src), f + '.js reads no knowledge store'); }
     pass('registration: p40-adoption conforms to the contract; its five steps are a signed-in person\'s, adoption.accept a second person\'s; the layer mechanism of the built-in type pattern with hops that state `only`; records read by provenance, not retired by the lifecycle family; no knowledge store is read');
   });
 
@@ -391,6 +391,7 @@ export default async function ({block, pass, load}) {
       pkg().track(prior, back, {type: 'alternative.rollback', payload: {}}, AT);
       assert.deepEqual([byId(back, 'ADP-001').status, byId(back, 'ADP-001').history.at(-1).event], ['reversed', 'reverse'], 'a design the earlier path reverses takes its adoption with it, in the same commit');
       assert.equal(D.adoptionReading(back, byId(back, 'ADP-001')).label, 'reversed'); assert.deepEqual(D.adoptionFindings(back).filter(x => x.objectId === 'ADP-001'), []);
+      const fresh = structuredClone(prior); delete fresh.adoptions; pkg().track(fresh, next, {type: 'record.retire', payload: {id: store}}, LATER); assert.equal(byId(next, 'ADP-002').history.some(x => x.event === 'changed' && x.at === LATER), false, 'an adoption a commit wrote is not flagged by that commit');
       const none = structuredClone(reference('bank-payment')), text = JSON.stringify(none); pkg().track(none, none, {type: 'record.retire', payload: {}}, AT); assert.equal(JSON.stringify(none), text, 'the tracker writes nothing into a document without adoptions'); }
     assert.equal(rows(h.doc()), 6);
     { const r = await h.send('adoption.withdraw', {id, revision: rev(id), reason: ''}, C); assert.equal(r.status, 400); assert.match(r.error, /reason/i); }

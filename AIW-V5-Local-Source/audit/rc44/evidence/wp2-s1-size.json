@@ -33,8 +33,8 @@
   "gate": "The chapters-route gate measures opening a document that holds no package records (ruling D10).",
   "host": "public/architecture-task-ui.js",
   "route": 3230065,
-  "added": 97324,
-  "total": 3327389,
+  "added": 97372,
+  "total": 3327437,
   "files": 2,
   "before": {
    "route": 3229761,

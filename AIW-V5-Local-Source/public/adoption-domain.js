@@ -109,8 +109,9 @@ function read(p,a){
   deviations:deviations.map(d=>({id:d.id,target:d.target,reviewed:accepted})),acceptance:{accepted,by:accepted?a.review.actor:null,at:accepted?a.review.at:null,next},changed:{required:!!change,since:change?.at||null,causes:list(change?.causes)},
   bounds:{considered:CONSIDERED,notConsidered:NOT_CONSIDERED},findings};
 }
-// The reading of one adoption, worked out once per settled document.
-export const adoptionReading=(p,a)=>remember(p,'adoption:reading',a.id,()=>read(p,a));
+// The reading of one adoption, worked out once per settled document for a record the document holds (a record handed
+// in from elsewhere under the same id is read afresh).
+export const adoptionReading=(p,a)=>adoption(p,a?.id)===a?remember(p,'adoption:reading',a.id,()=>read(p,a)):read(p,a);
 // The findings of the applied adoptions (the package states them for Chapter 5: adoption-package.js). None for a
 // document without adoptions; draft and prepared records are proposals and withdrawn ones are history.
 export const adoptionFindings=p=>adoptionRecords(p).filter(applied).flatMap(a=>adoptionReading(p,a).findings);
@@ -207,6 +208,8 @@ export function trackAdoptionChange(prior,next,command,at){
  for(const a of live){
   const t=a.legacy?.taskId&&list(next.coauthoring?.designTasks).find(x=>x.id===a.legacy.taskId);
   if(t&&t.status!=='applied'){a.status='reversed';a.revision++;a.confirmed=false;note(a,'reverse',null,at,{note:'The applied design '+t.id+' was reversed.'});next.adoptions.version=(next.adoptions.version||0)+1;continue;}
+  // An adoption this commit wrote is not flagged by the commit that wrote it.
+  if(!adoption(prior,a.id))continue;
   const causes=[],watch=[...list(a.bindings).map(b=>['binding',b.recordId]),['requirement',a.scope?.requirementId],['driver',a.scope?.driverId],['decision',a.decisionId]];
   for(const [kind,id] of watch){
    if(!id||causes.some(c=>c.id===id))continue;
