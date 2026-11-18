@@ -78,12 +78,14 @@ export const extensionCommand = type => statedBy(type)?.[1] || null;
 // an agent account never writes as a person, and a draft by Sol and an import are stamped as what they are), or a
 // person has confirmed or kept the record as it now reads (provenance.reviewed, or a review plan judgement that kept
 // it: reviewOf). A record with no stamp has no person behind it (one a merge wrote, ruling D12), and neither has one
-// whose stamp was made before the project was restored here: that is history from elsewhere, as a restored review is.
+// whose stamp was made before the project was restored here or copied from a template: that is history from
+// elsewhere, as a restored review is.
 function personBehind(p, record, actor) {
   if (!record || typeof record !== 'object') return false;
-  const a = record.provenance?.author, restored = p?.finalReview?.imported?.at, review = reviewOf(p, record);
-  if (a?.kind === 'person' && a.by && a.by !== actor && !(restored && !(a.at > restored))) return true;
-  return !!review?.by && review.by !== actor && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'judgement' && review.outcome === 'kept');
+  // (ruling F3: a project copied from a template carries the template's stamps; they were made in another project)
+  const a = record.provenance?.author, review = reviewOf(p, record), from = [p?.finalReview?.imported?.at, p?.workspace?.templateOrigin?.at].filter(Boolean).sort().pop(), here = at => !(from && !(at > from));
+  if (a?.kind === 'person' && a.by && a.by !== actor && here(a.at)) return true;
+  return !!review?.by && review.by !== actor && here(review.at) && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'judgement' && review.outcome === 'kept');
 }
 // The stored record a second person's step acts on, by its id, in the collections the package states for the type
 // or for its prefix (provenance.paths): `second` may answer a projection, and the stamps are the stored record's.

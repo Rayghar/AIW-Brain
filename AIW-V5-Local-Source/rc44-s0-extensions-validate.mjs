@@ -546,7 +546,15 @@ await block('D1 two persons', async () => {
     const author = {kind: 'person', id: A, account: 'person', reviewed: true}, run = q => commandHandler('synthetic.accept')(documentCopy(q), {type: 'synthetic.accept', payload: {id: 'SYN-001', reviewed: true}}, AT, A, {author});
     assert.equal(run(withFinalReview(p)).document.synthetic.records[0].acceptance.actor, A, 'a person\'s stamp of this workbench stands');
     p = withFinalReview(p); p.finalReview.imported = {at: '2026-09-15T09:00:00.000Z', by: A};
-    assert.throws(() => run(p), /needs two persons/, 'a stamp from before the project was restored here is history'); }
+    assert.throws(() => run(p), /needs two persons/, 'a stamp from before the project was restored here is history');
+    // a record copied from a template: its stamp was made in another project, by people who may not work in this one (ruling F3)
+    let q = withFinalReview(withSynthetic(reference('bank-payment'), {title: 'Stamped in the template'}, B)); q.synthetic.records[0].provenance = {author: {kind: 'person', by: B, at: '2026-09-01T09:00:00.000Z'}};
+    q.workspace = {...q.workspace, templateOrigin: {projectId: 'template', name: 'Template', at: '2026-09-15T09:00:00.000Z'}};
+    assert.throws(() => run(q), /needs two persons/, 'a stamp from before the project was copied from a template is history');
+    q.synthetic.records[0].provenance = {author: {kind: 'sol-draft', by: B, at: '2026-09-01T09:00:00.000Z'}, reviewed: {by: C, at: '2026-09-02T09:00:00.000Z', how: 'confirmed'}};
+    assert.throws(() => run(q), /needs two persons/, 'a confirmation from before the copy is history too');
+    q.synthetic.records[0].provenance = {author: {kind: 'person', by: B, at: '2026-09-16T09:00:00.000Z'}};
+    assert.equal(run(q).document.synthetic.records[0].acceptance.actor, A, 'a stamp made in the copy stands'); }
   // the start check: a second person's type states the collection it acts on, so the boundary can read the stamp
   assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}}).some(i => /command “xy\.accept” is a second person.s step: the package states provenance\.paths/.test(i)), 'a second type without provenance.paths is refused at start');
   assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {xy: []}}}).some(i => /states provenance\.paths/.test(i)), 'an empty list states none');
