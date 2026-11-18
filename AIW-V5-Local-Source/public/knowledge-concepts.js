@@ -16,8 +16,14 @@ import {FORM_TYPES,FORM_TIER,conceptFormIssues} from './concept-form.js';
 import {copy,list} from './util.js';
 
 const order=type=>FORM_TYPES.indexOf(type);
-// A form's issues as its claim stands: against the claim's passage, with the claim's own statement, conditions and limitations.
-export const formIssues=claim=>conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart,claim:{statement:claim?.statement,conditions:claim?.conditions,limitations:claim?.limitations}});
+// A form's issues as its claim stands: against the claim's passage, with the claim's own statement, conditions and
+// limitations. The structured unit is the typed, machine-read decision structure, and only an applicability form
+// carries one: that is asked here, on every read, as it is at the command (ruling G4 of 2026-11-18), so a unit written
+// into a claim of any other form makes the form unusable and is handed to nobody.
+export const formIssues=claim=>{
+ const type=claim?.form?.type,issues=conceptFormIssues(claim?.form,{excerpt:claim?.excerpt,lineStart:claim?.lineStart,claim:{statement:claim?.statement,conditions:claim?.conditions,limitations:claim?.limitations}});
+ return FORM_TYPES.includes(type)&&type!=='applicability'&&Object.hasOwn(claim,'architectureUnit')?[...issues,(/^[aeiou]/.test(type)?'An ':'A ')+type+' form carries no structured architecture unit: only an applicability form does.']:issues;
+};
 const sourceOf=(s,claim,release)=>release?.organizationId?list(release.sources).find(x=>x.id===claim.sourceId):s.sources.find(x=>x.id===claim.sourceId);
 // The form claims that active releases hold (the project's own and the organisation's), each with its eligibility. This
 // is the one reader of them: releasedClaims hands no form claim to anyone, whatever its state (ruling B1 of 2026-11-18),

@@ -1553,3 +1553,29 @@ add('S1.30 (ruling G3): quotes do not nest and are not shared: a quote that cont
       const pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: A.releaseId, status: 'active'}]; assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001'), [], type + ': a pin hands over nothing'); }
     assert.equal(status(A.document, 'selection').status, 'released'); }
 });
+
+// ------------------------------------------------------------------------------------------------ 31
+add('S1.31 (ruling G4): a structured unit on a form that is not an applicability form is refused on every read, not only at the command: written into a released claim with its hashes recomputed, the form reads released-ineligible, the concept is not usable in that release and a pin hands over nothing; written into a reviewed claim, the concept reads draft and is neither reviewed nor released', async () => {
+  const {KC, CC} = await mods(), A = await library({verify: true, review: true, release: true, activate: true}), p = A.document, UNIT_ONLY = /(?:A|An) \w+ form carries no structured architecture unit: only an applicability form does/;
+  const status = (q, type) => KC.conceptReading(q, 'SYN-P001').forms.find(f => f.type === type), pinned = q => { const x = clone(q); x.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: A.releaseId, status: 'active'}]; return x; };
+  const unit = c => { c.architectureUnit = clone(F.UNIT); if (!c.conditions.length) c.conditions = ['A synthetic condition.']; if (!c.limitations.length) c.limitations = ['A synthetic limitation.']; c.review.claimHash = digest({...c, review: undefined}); };
+  // As released: the applicability form hands over its unit, and no other form holds one.
+  assert.deepEqual(KC.conceptDecisionReading(pinned(p), 'KU-0001').forms.map(f => [f.type, f.architectureUnit ? 'unit' : null]), [['applicability', 'unit'], ['selection', null], ['composition', null], ['calculation', null], ['verification', null]]);
+  for (const type of F.FORM_ORDER.filter(t => t !== 'applicability')) {
+    // In the release's copy of the claim, its claim hash and the release's checksum recomputed around it.
+    const q = clone(p), r = q.knowledge.releases[0], c = r.claims.find(x => x.form.type === type); unit(c); r.checksum = digest({...r, checksum: undefined});
+    assert.equal(K.knowledgeEligibility(q, c, r).eligible, true, type + ': the claim-level gates see nothing wrong');
+    const f = status(q, type); assert.equal(f.status, 'released-ineligible', type + ': unusable on a read'); assert.equal(f.content, null); assert.equal(f.architectureUnit, null, type + ': the unit is handed to nobody'); assert.match(f.label, /^Not usable: /); assert.match(f.reasons.join(' '), UNIT_ONLY);
+    assert.equal(KC.releasedConcepts(q)[0].eligible, false, type + ': the concept is not usable in that release'); assert.deepEqual(KC.conceptDecisionForms(pinned(q), 'KU-0001'), [], type + ': a pin hands over nothing'); assert.match(KC.conceptDecisionReading(pinned(q), 'KU-0001').reasons.join(' '), UNIT_ONLY);
+    if (KC.conceptTeachingForms(p, 'SYN-P001').some(x => x.type === type)) assert(!KC.conceptTeachingForms(q, 'SYN-P001').some(x => x.type === type), type + ': not offered as teaching content either');
+  }
+  assert.equal(status(p, 'selection').status, 'released');
+  // In a reviewed concept's own claim, the claim hash and the concept review's hash recomputed: the review does not stand,
+  // and neither a form's review, the concept's review nor a release takes it.
+  { const B = await library({forms: ['definition', 'mechanism'], verify: true, review: true}), q = clone(B.document), s = q.knowledge, c = s.claims.find(x => x.form?.type === 'mechanism'); unit(c); s.concepts[0].review.conceptHash = KC.conceptHash(s.concepts[0], s.claims, s.topics);
+    const send = (type, payload, actor) => CC.applyConceptCommand(q, {type: 'knowledge.' + type, payload}, AT, actor, F.person(actor));
+    assert.equal(KC.conceptRecords(B.document)[0].state, 'reviewed'); assert.equal(K.knowledgeEligibility(q, c).eligible, true, 'the claim-level gates see nothing wrong'); assert.match(KC.formIssues(c).join(' '), UNIT_ONLY);
+    assert.equal(KC.conceptRecords(q)[0].state, 'draft', 'the review does not stand'); assert.equal(status(q, 'mechanism').status, 'candidate'); assert.equal(status(q, 'mechanism').content, null);
+    assert.throws(() => send('concept-review', {...CONCEPT_REVIEW, id: B.conceptRecordId}, 'second-architect'), UNIT_ONLY); assert.throws(() => send('release', {...F.REVIEW, title: 'Synthetic', claimIds: Object.values(B.claimIds)}, 'releaser'), /SYN-P001 is not reviewed/);
+    const fresh = clone(q); delete fresh.knowledge.claims.find(x => x.form?.type === 'mechanism').review; assert.throws(() => CC.applyConceptCommand(fresh, {type: 'knowledge.review', payload: {...F.REVIEW, formChecked: true, id: c.id}}, AT, 'reviewer', F.person('reviewer')), UNIT_ONLY, 'a form\'s review asks it too'); }
+});
