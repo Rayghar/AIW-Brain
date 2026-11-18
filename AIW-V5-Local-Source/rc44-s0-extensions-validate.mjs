@@ -827,6 +827,10 @@ await block('D12 a record a merge wrote', async () => {
     await h.read(); assert.equal(rec(first).acceptance, undefined);
     // the person who merged is its author to the one rule, as before
     assert.match((await accept(first, A)).error, /architect-a wrote /);
+    // a save that changes nothing the record says writes no stamp (provenance.js settle stamps what a commit made or
+    // changed), so it puts no person behind the record: the step stays refused
+    assert.equal((await send('synthetic.save', {id: first, title: 'Written by a merge'})).status, 200); assert.equal(rec(first).provenance?.author, undefined, 'an unchanged save stamps no author');
+    { const r = await accept(first, B); assert.equal(r.status, 400, 'still refused after a save that changed nothing'); assert.match(r.error, NO_PERSON(first)); }
     // once a person saves it: the stamp is that person's, and a second person accepts
     assert.equal((await send('synthetic.save', {id: first, title: 'Written by a merge, saved by a person'})).status, 200); assert.deepEqual([rec(first).provenance.author.kind, rec(first).provenance.author.by], ['person', A]);
     { const r = await accept(first, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(first).acceptance.actor, B); }
