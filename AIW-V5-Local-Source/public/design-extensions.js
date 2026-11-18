@@ -45,5 +45,14 @@ export function extendTable(table,read,then){
  tables.push(fill);fill();
 }
 // The packages a project as read ({document, …}) needs, loaded before its document is first drawn: answers the project
-// once they have loaded (project-store.js, where it reads a project and where a save answers).
-export const ensureExtensions=async project=>(await Promise.all(EXTENSIONS.map(e=>e.needs?.(project.document)&&e.load())),project);
+// once they have loaded (project-store.js, where it reads a project and where a save answers). A document says which
+// packages have written into it (workspace.packages, written by the server's boundary: the lead's ruling D2 of
+// 2026-11-18): one that names a package this browser has no route stub of (the stub of `id` is registered as
+// `id-route`) is not opened as if those records were not there: the read is refused in a sentence that names the
+// package.
+export const ensureExtensions=async project=>{
+ const d=project.document;
+ for(const id of d.workspace?.packages||[])if(!E[id+'-route'])throw Error('The design package '+id+' did not load.');
+ await Promise.all(EXTENSIONS.map(e=>e.needs?.(d)&&e.load()));
+ return project;
+};

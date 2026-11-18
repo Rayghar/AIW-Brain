@@ -323,7 +323,9 @@ function showSaveStatus(status){
   label.setAttribute('role','status'); label.setAttribute('aria-live','polite');
   if(status==='behind'){
     busyClock(saveLabel,'',false);
-    updateSaveState('A newer version was saved in another tab.',label);
+    // A tab is behind when another tab saved, and also when its own save was stored and could not be shown (rc44, slice
+    // S0; ruling D2): the header says what holds for both, and the store's refusal of the next save says which.
+    updateSaveState('A newer version of this project is saved.',label);
     const action=document.createElement('button');action.type='button';action.className='text-button';action.dataset.loadLatest='';action.textContent='Load latest';label.append(action);
     return;
   }

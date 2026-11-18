@@ -564,6 +564,43 @@ await block('D2 packages a document names', async () => {
   pass('D2 (server): the boundary names a package under workspace.packages when its command (alone, in a batch, by a merge) or its upgrade step first writes, and neither fingerprint reads the key; a document that names a package this build does not register is read with the package named, and every command, every export and a freeze are refused in words');
 });
 
+// ---------------------------------------------------------------- D2, in the browser: the route stubs and the store
+await block('D2 client', async () => {
+  need();
+  const names = ids => ({document: {...reference('bank-payment'), workspace: {template: 'bank-payment', createdAt: AT, packages: ids}}, revision: 1});
+  // a document that names a package with no route stub is not opened as if the records were not there
+  const unknown = await X.ensureExtensions(names(['p99-unknown'])).then(() => null, e => e);
+  assert.ok(unknown instanceof Error, 'ensureExtensions rejects for a package this browser has no stub of'); assert.equal(unknown.message, 'The design package p99-unknown did not load.', 'naming the package');
+  X.registerExtension({id: 'p98-known-route', needs: () => false, load: async () => {}});
+  { const known = names(['p98-known']); assert.equal(await X.ensureExtensions(known), known, 'a package whose stub is registered (<id>-route) is the browser\'s to load'); }
+  let mode = 'ok';
+  X.registerExtension({id: 'zz-synthetic-route', needs: p => !!p.synthetic, load: async () => {}});
+  X.registerExtension({id: 'p97-failing-route', needs: p => mode !== 'ok' && !!p.synthetic, load: async () => { throw new TypeError('Failed to fetch dynamically imported module: https://aiw.test/chunk-ABC.js'); }});
+  // the store: a load that fails after the server answered "saved" is saved and not yet shown
+  const h = await harness(), realFetch = globalThis.fetch;
+  globalThis.fetch = (url, options = {}) => { const headers = new Headers(options.headers); headers.set('oai-authenticated-user-id', A); if (options.method === 'POST') headers.set('Origin', 'https://aiw.test'); return worker.fetch(new Request(new URL(url, 'https://aiw.test'), {...options, headers}), h.env); };
+  try {
+    const store = createProjectStore(); await store.load(); const shown = store.value.revision;
+    mode = 'network';
+    const failed = await store.command({type: 'synthetic.save', payload: {title: 'Saved while the package cannot load'}}).then(() => null, e => e);
+    assert.ok(failed instanceof Error, 'the caller is told'); assert.equal(store.status, 'behind', 'the store goes to behind, not to error');
+    assert.match(failed.message, /^Saved, not shown yet\. \S/, 'reported as saved and not yet shown, with the cause'); assert.equal(store.value.revision, shown, 'the tab shows what it showed');
+    const server = await (await h.api('/api/project' + h.q)).json(); assert.equal(server.revision, shown + 1, 'the server saved it'); assert.equal(server.document.synthetic.records.at(-1).title, 'Saved while the package cannot load');
+    // the next save from that tab is refused before it is sent, in the same words: nothing says another tab changed the project
+    const again = await store.command({type: 'guide.start', payload: {chapter: 1}}).then(() => null, e => e);
+    assert.ok(again?.behind && again.conflict, 'refused as behind'); assert.match(again.message, /^Saved, not shown yet\./); for (const e of [failed, again]) assert.ok(!/another tab|another session/.test(e.message), 'never says another tab changed the project: ' + e.message);
+    assert.equal((await (await h.api('/api/project' + h.q)).json()).revision, shown + 1, 'nothing was sent');
+    // loading the latest project shows it; a save by another tab then says so, as before
+    mode = 'ok'; await store.load(); assert.equal(store.status, 'saved'); assert.equal(store.value.revision, shown + 1);
+    const otherTab = new BroadcastChannel('aiw-project:' + h.pid); otherTab.postMessage({revision: 99}); for (let i = 0; i < 50 && store.status !== 'behind'; i++) await new Promise(r => setTimeout(r, 5)); otherTab.close();
+    assert.equal(store.status, 'behind'); assert.match((await store.command({type: 'guide.start', payload: {chapter: 1}}).then(() => null, e => e)).message, /newer version .* another tab\. Load the latest project/, 'the words for another tab are kept for another tab');
+  } finally { mode = 'ok'; globalThis.fetch = realFetch; h.close(); }
+  // the header of a tab that is behind says what holds in both cases, and keeps the short label the phone shows
+  { const ux = readFileSync('public/workspace-ux.js', 'utf8'), said = /if\(status==='behind'\)\{[\s\S]*?updateSaveState\('([^']+)',label\)/.exec(ux)?.[1] || '';
+    assert.equal(said, 'A newer version of this project is saved.', 'the header does not say another tab saved it'); assert.match(said, /newer version/i, 'dialog.js updateSaveState shortens it to “New version” as before'); }
+  pass('D2 (client): ensureExtensions rejects, naming the package, for a document that names a package with no route stub; a load that fails after a saved answer leaves the store behind, reported as saved and not yet shown, and nothing says another tab changed the project');
+});
+
 // ---------------------------------------------------------------- D3. the keys the workbench itself writes
 await block('D3 workbench keys', async () => {
   need();
@@ -776,7 +813,7 @@ await block('needs and load', async () => {
   // the first registration under an id stands
   X.registerExtension({id: 'zz-lazy', objectTypes: {lazyThing: {label: 'Replaced', chapter: 9, level: 'protection', prefix: 'XX'}, another: {label: 'Another', chapter: 2, level: 'intent', prefix: 'AN'}}});
   assert.equal(OBJECT_TYPES.lazyThing.label, 'Lazy thing'); assert.equal(OBJECT_TYPES.another, undefined, 'a second registration under an id adds and replaces nothing');
-  const src = readFileSync('public/project-store.js', 'utf8'); assert.ok((src.match(/await ensureExtensions\(await /g) || []).length === 2, 'the project store awaits it where it reads a project and where a save answers');
+  const src = readFileSync('public/project-store.js', 'utf8'); assert.ok((src.match(/await ensureExtensions\((?:saved=)?await /g) || []).length === 2, 'the project store awaits it where it reads a project and where a save answers');
   // the browser's list of packages (the route stubs) is read by the project store, and never by the entry script, whose own dynamic imports are measured as the route
   assert.ok(src.includes("import './design-package-routes.js';")); assert.ok(!readFileSync('public/entry.js', 'utf8').includes('design-package-routes'));
   assert.ok(!/^\s*(?:import|registerExtension)\b/m.test(readFileSync('public/design-package-routes.js', 'utf8')) && !/^\s*import\b/m.test(readFileSync('design-packages.js', 'utf8')), 'no package exists at this slice: neither list names one');

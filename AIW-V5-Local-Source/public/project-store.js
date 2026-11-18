@@ -120,7 +120,10 @@ export function createProjectStore(){
   let current=null,status='saved',role=null,projectId=activeProjectId,switching=false;
   let lastUndo=null;
   const undoAvailable=()=>status==='saved'&&lastUndo&&current?.revision===lastUndo.revision&&current?.document?.workbench?.history?.at(-1)?.undo?.id===lastUndo.id?{...lastUndo}:null;
-  function announce(value){status=value;if(typeof document!=='undefined'){document.dispatchEvent(new CustomEvent('aiw:save',{detail:{status}}));document.dispatchEvent(new CustomEvent('aiw:action-undo',{detail:{available:undoAvailable()}}));}}
+  // why: the words of a status that needs its own (rc44, slice S0; ruling D2): a tab that is behind because its own
+  // save was stored and could not be shown is refused its next save in those words, never as changed by another tab.
+  let why;
+  function announce(value,reason){status=value;why=reason;if(typeof document!=='undefined'){document.dispatchEvent(new CustomEvent('aiw:save',{detail:{status}}));document.dispatchEvent(new CustomEvent('aiw:action-undo',{detail:{available:undoAvailable()}}));}}
   // Tabs of this browser tell each other when they save this project (audit F-14). A tab that falls behind says
   // so, and offers the latest version, before its next save would meet a conflict. Saves by other people still
   // meet the revision check on the server. The channel is the held project's: a project opened in place listens on its own.
@@ -165,7 +168,7 @@ export function createProjectStore(){
   // reads "saving" from the moment a command is queued until the last queued command has an answer, and never
   // while a person is still reviewing.
   let queue=Promise.resolve(),queued=0;
-  const behindError=()=>{const error=new Error('A newer version of this project was saved in another tab. Load the latest project, then save again.');error.conflict=true;error.behind=true;return error;};
+  const behindError=()=>{const error=new Error(why||'A newer version of this project was saved in another tab. Load the latest project, then save again.');error.conflict=true;error.behind=true;return error;};
   // A command is sent to the project it was made in, against that project's revision; one made in another project
   // than the store now holds is refused (defence in depth: the store adopts another project only with nothing queued).
   const otherProjectError=()=>{const error=new Error('This change was made in another project. Nothing was saved; your input is still here.');error.conflict=true;return error;};
@@ -174,8 +177,11 @@ export function createProjectStore(){
     if(expectedRevision!==undefined&&current.revision!==expectedRevision){const error=Object.assign(Error('Another save finished before Undo. Review the current record instead.'),{conflict:true});announce('error');throw error;}
     if(status==='behind')throw behindError();
     if(status!=='saving')announce('saving');
-    try{const result=await ensureExtensions(await save(command,project));current=result;const receipt=current.document.workbench?.history?.at(-1)?.undo;lastUndo=receipt&&!receipt.used&&receipt.revision===current.revision&&command.type!=='action.undo'?{id:receipt.id,type:receipt.type,revision:receipt.revision}:null;settleDocument(current.document);if(queued===1)announce('saved');channel?.postMessage({revision:current.revision});if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('aiw:project-command',{detail:commandChangeDetail(command,result)}));return result}
-    catch(error){announce('error');throw error}
+    // A package that does not load once the server has answered leaves the change saved and not yet shown: the tab is
+    // behind its own save (rc44, slice S0; ruling D2), and says so.
+    let saved;
+    try{const result=await ensureExtensions(saved=await save(command,project));current=result;const receipt=current.document.workbench?.history?.at(-1)?.undo;lastUndo=receipt&&!receipt.used&&receipt.revision===current.revision&&command.type!=='action.undo'?{id:receipt.id,type:receipt.type,revision:receipt.revision}:null;settleDocument(current.document);if(queued===1)announce('saved');channel?.postMessage({revision:current.revision});if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('aiw:project-command',{detail:commandChangeDetail(command,result)}));return result}
+    catch(error){announce(saved?'behind':'error',saved&&(error.message='Saved, not shown yet. '+error.message));throw error}
   }
   const store={get value(){return current},get status(){return status},get role(){return role},
     // A load that answers after another project was adopted is not this store's any more and is dropped.
