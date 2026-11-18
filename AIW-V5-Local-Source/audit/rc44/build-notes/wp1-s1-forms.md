@@ -1,12 +1,14 @@
 # wp1-s1-forms: build notes (slice S1 of design/wp1-knowledge.md)
 
 **State: the slice was built on `rc44/wp1-s1-forms-c2` (head `f9d9bdc`), reviewed adversarially, ruled on by the lead
-(`audit/rc44/RULINGS-2026-11-18.md`, section B, in the main checkout) and fixed up on `rc44/wp1-s1-forms-fix`.**
+(`audit/rc44/RULINGS-2026-11-18.md`, section B, in the main checkout) and fixed up on `rc44/wp1-s1-forms-fix` (a
+session that was cut off before its final commit) and `rc44/wp1-s1-forms-fix-c2` (the session that checked every item
+again, closed one gap and made the final commit).**
 Read the section **Fix-up** first: it changes several things the first build's sections below say. Where a sentence of
 the first build no longer holds it is corrected in place and marked *(fix-up)*.
 Baseline `94dbd4f`. Resumable: read this file and `git log` first.
 Suite: `npm run test:rc44-wp1-knowledge` (`rc44-wp1-knowledge-validate.mjs`; `--all`, `--only <text>`,
-`--files a.mjs,b.mjs`, `--print-baseline`). 26 S1 cases; it takes about two minutes (case S1.25 writes a tranche of 540
+`--files a.mjs,b.mjs`, `--print-baseline`). 27 S1 cases; it takes about two minutes (case S1.25 writes a tranche of 540
 forms and a history of 6,000 lines through the commands).
 
 ## Measurements (node build.mjs)
@@ -31,8 +33,13 @@ was touched. B1 was granted up to 120 B of wp1's 660 B: it used 38 B, so wp1 has
 
 ## Fix-up (after the adversarial review and the lead's rulings of 2026-11-18)
 
-Branch `rc44/wp1-s1-forms-fix`, from `f9d9bdc`. Order of work as the lead gave it; each item has its case first, seen
-red before its change, and a WIP commit.
+Branch `rc44/wp1-s1-forms-fix`, from `f9d9bdc`, continued on `rc44/wp1-s1-forms-fix-c2`. Order of work as the lead gave
+it; each item has its case first, seen red before its change, and a WIP commit.
+
+The first fix-up session committed items 1 to 10 and was cut off before its final commit. The second session took
+none of it on trust: it ran the suite on that head (26 passed), ran each item's case as committed with the item on the
+product code of the commit before it (each is red there, with the line given under Verification), read each item's
+code against its ruling, probed the rulings from outside the suite, and found one gap, which is item 12.
 
 | # | Item | State | Case |
 |---|---|---|---|
@@ -46,7 +53,20 @@ red before its change, and a WIP commit.
 | 8 | Should-fix 2 (a unit on an applicability form only), 7 (a retired concept is not reviewed), 8 (a run that executed no case fails), 10 (all fifteen pre-existing command types walked), 1 (what a released, active form moves, below and asserted) | done | S1.22, S1.23, S1.8, S1.10 |
 | 9 | B6 (should-fix 6): every statement of a decision-bearing form rests on its own quote | done | S1.24 (fixtures, S1.2, S1.9, S1.15, S1.20 moved to the new shape) |
 | 10 | B8 (should-fix 11): the history bound is part of the tier; a tranche written through the commands; every caller reads the tier | done | S1.25 (S1.7, S1.14 adjusted) |
-| 11 | B9, B10: text; the two inaccurate sentences | done | below |
+| 11 | B9, B10: text; the two inaccurate sentences; the package id | done | below (Known limits, Next, deviation 4, S1.8) |
+| 12 | Found by the second session (rulings B3 and B9): a claim that carries **no** form, on a concept's id under a form's fixed predicate with another polarity, opened a contradiction with that form, whoever sent it. An agent account, a draft by Sol, an import and a request with no author could so make a reviewed concept's review lapse; the concept was then no longer covered and the same sender could edit it. Ruling B9 takes it as given that a non-person cannot add an opposing candidate to a reviewed concept | done | S1.26 |
+
+Item 11 in one place: B9 is under "Known limits"; B10 is under "Next" for S3 and S4, with what the fix-up adds for S2;
+the sentence of deviation 4 that the reviewer found inaccurate is corrected in place; the first build's report said the
+wrapper writes what the old entry writes "for every pre-existing command" while S1.8 walked six of the fifteen types,
+and S1.8 now walks all fifteen, so the sentence holds as written; this package's id is `p10-knowledge` (ruling A2 as
+amended by D8), named under "Next" where wp1 first registers through S0.
+
+Where I disagree with a ruling: nowhere in substance. Two rulings are read in a particular way and one is not met to
+the letter, each said plainly below: B1's "every reading is asserted not to move" (four of the 27 readings carry stamp
+values that any knowledge write moves on rc.10.73.42, and the Brain's receipt names an active release of forms by id
+and checksum); B8's "set the tier to that" (the counts were left as designed and the measured tranche sizes are
+stated); and B3 (a superseding source, under Known limits, is not refused and should be ruled on).
 
 ### What a released, active form moves (ruling B1, should-fix 1; asserted in S1.10)
 
@@ -105,6 +125,13 @@ What does move:
 - A request that is not a person's (agent account, draft by Sol, import, no author, an author with no person's
   account) is refused, on a concept whose review stands or which a release of the project holds: an edit that changes
   its hash, any form claim on it, a topic upsert that changes its hash.
+- *(item 12)* A claim that would open a contradiction with a claim that carries a form (the same subject and predicate,
+  another polarity, one of them `prohibits` or `limits`: `flagOverlaps`, as on rc.10.73.42) is asked of the form
+  capability, whether or not the new claim carries a form itself and whether it comes by `knowledge.claim` or
+  `knowledge.capture`: on a concept that is reviewed or in a release only a person records it; on a draft concept it
+  opens as before. `formCapability(...)` gains `opposes(s, claim, held)`. An entry that holds no form capability
+  (`applyKnowledgeCommand` called directly) opens no contradiction with a form at all and refuses the claim in words.
+  Two plain claims contradict each other through either entry as before (S1.8 holds the bytes).
 - `knowledge.concept` and `knowledge.topic` saved again unchanged write nothing (the document is returned as it was;
   the worker still writes its own revision and activity row, as it does for a repeated `knowledge.project-source`).
 - `knowledge.concept` refuses an id that a record of the project bears as its id or reference.
@@ -179,13 +206,34 @@ What does move:
 
 ### Known limits, recorded as ruled
 
-- **B9, an opposing candidate.** A non-person cannot add a form to a reviewed or released concept (B3). A person's
-  opposing candidate keeps the fail-safe of rc.10.73.42: a contradiction opens, the form claims of that subject and
-  predicate are not eligible and the concept reads `draft` until a person separates the contexts or rejects one. At
-  handbook scale that is a way for one person's import to stall a concept; it is asserted as it is in S1.18.
-- **A superseding source** sent by an import or an agent makes the claims on the superseded source ineligible, forms
-  included, as on rc.10.73.42 for any claim. It does not change a concept's hash, so B3 does not refuse it. A changed
-  rendition is S4's legitimate use of it.
+- **B9, an opposing candidate.** A non-person cannot add a form to a reviewed or released concept (B3), nor a claim
+  without a form that contradicts one of its forms (item 12, S1.26). A person's opposing candidate, with or without a
+  form, keeps the fail-safe of rc.10.73.42: a contradiction opens, the form claims of that subject and predicate are
+  not eligible and the concept reads `draft` until a person separates the contexts or rejects one; once the contexts
+  are separated the review stands again, because nothing it covered was changed. At handbook scale that is a way for
+  one person's request to stall a concept; it is asserted as it is in S1.18 and S1.26.
+- **A superseding source is not refused, and it should be ruled on.** `knowledge.source` with `supersedes` and another
+  body makes every claim on the superseded source ineligible, forms included, whoever sends it: an agent account and an
+  import too, as on rc.10.73.42 for any claim. It does not change a concept's hash, so B3 as ruled does not refuse it.
+  Measured by a probe in the second fix-up session, through `applyConceptCommand`:
+  - on a concept that is reviewed and not yet released, the review no longer stands, the concept is no longer covered,
+    and the same agent account or import then edits it (`reviewDue` set to 2099-12-31 was accepted). Nothing unreviewed
+    is released by that (the concept is a draft and needs its second person again), but it is the two steps that item
+    12 closed for an opposing claim;
+  - on a concept that is released and active, its forms read `released-ineligible`, the concept is not eligible as a
+    whole and a pin hands over nothing (fail closed); the register's concept reads `draft`; it stays covered, so its
+    record is still a person's to change. An organisation's copy pinned in a design project is not touched (the rule
+    reads the project's own sources).
+  A changed rendition is S4's legitimate use of the command, and a changed source that stops the use of what rests on
+  it is the fail-safe of rc.10.73.42. Whether, for a source that a covered concept's form cites, the superseding
+  revision must be a person's request is a choice between that fail-safe and B3's rule; I did not make it.
+- **A contradiction's disposition is as on rc.10.73.42.** `knowledge.contradiction` is refused for an agent account and
+  a draft by Sol at the server gate (its payload claims a review) and is accepted from a person's request marked as an
+  import, also when the contradiction names a form claim; set to `open` by a person it makes the released claims it
+  names ineligible (`affectsReleased`). The stricter rule of a form's review (a person's own request) is not applied
+  to it.
+- **A form claim's own review stores no account kind** (it has the shape of a claim review of rc.10.73.42 plus
+  `formChecked`); ruling B4 is on the concept's review, which covers each form claim with its review by hash.
 - **Reading a tranche-sized active release is slow.** `knowledgeEligibility` digests the whole release once for each
   claim it is asked about (rc.10.73.42 behaviour). With 540 forms in one active release `releasedConcepts` took about
   43 seconds on this machine; `conceptReading` and `conceptDecisionForms` call it. A per-release memo of the checksum
@@ -262,11 +310,25 @@ Nothing. The fix-up is complete on `rc44/wp1-s1-forms-fix`; its head is the fina
 - **S0 registration, when it lands:** nothing of S1 is registered in `record-graph.js`, `trace-kernel.js`,
   `review-domain.js`, `record-lifecycle.js`, `provenance.js`, `canonical-command.js`, the readings upgrade or the project
   store. Candidates for the registry: journal nouns for the six new command types, a lifecycle row for concept
-  retire/restore, and the keys below (B10).
+  retire/restore, and the keys below (B10). **This package's id is `p10-knowledge`** (ruling A2 as amended by D8); a
+  route stub, should wp1 ever need one, is `p10-knowledge-route`. By ruling B10 the first slice of wp1 that
+  registers through S0 is S3 (`designKeys`, `evidenceKeys`, the record-graph rows of a pin). Ruling D2 has the
+  boundary write a package's id into a document when a command or an upgrade step of that package first writes;
+  `knowledge.*` is a built-in command family today (open question 3), so S3 must settle with the lead whether a
+  document that holds concepts names `p10-knowledge` and what a build without the package does with it. Under ruling
+  D7 a `second` step answers a projection `{id, actor, history, owner?}`:
+  `conceptAuthors(concept, claims)` is that projection for a concept's review (the concept's author, every editor and
+  the author of each form claim), and a read hands the stored actor and account kind to `verifierRefusal` and requires
+  a person's.
+- **Opens with records (ruling D10):** a document that holds concepts, topics or forms loads nothing more than one that
+  holds none. S1 has no client code (none of its three modules is in the client), so the figure equals the chapters
+  route's. It first differs in S5, whose concept view lives in the knowledge workspace's lazy entry.
 - **S2:** `knowledge.crosswalk*`, `resolveConcept`, `BUILT_IN_CROSSWALK`; add its person-only types to the line in
   `authorship.js`; `conceptReading` gains `aliases`. Its commands follow B2 (a library only) and B3: the verified
   crosswalk rows of a concept are what `crosswalkChecked` reviewed, so either they join `conceptHash` or a non-person's
-  row on a covered concept is refused; an unchanged upsert writes nothing.
+  row on a covered concept is refused; an unchanged upsert writes nothing. Its reviews store the reviewer's account
+  kind, as the concept review does (B4), and its person-only steps ask `kindRefusal` (an author that names a person's
+  account).
 - **S3 (ruling B10 and what the fix-up adds):**
   - the reading takes a released concept's identity (title, kind, family, facets) from the release parts, not from the
     register: today `conceptReading` reads the mutable register record, and for an organisation release there is none;
@@ -292,8 +354,13 @@ Nothing. The fix-up is complete on `rc44/wp1-s1-forms-fix`; its head is the fina
     sub-list entries `{text, quote}`, identifiers, the quote floor, `modelKind` an identifier, a unit on the
     applicability form only, a concept id that is no prefix-and-number;
   - import order: map a concept's topics and attach its forms **before** its review; afterwards an import cannot
-    change it (B3). "A second run changes nothing" holds for `knowledge.concept` and `knowledge.topic`; sources and
-    claims are not upserts, so their idempotency is the script's (by tags), as designed;
+    change it (B3), nor send a claim, with or without a form, that contradicts one of its forms (item 12): a second
+    handbook's opposing reading of a reviewed concept is a person's to record. "A second run changes nothing" holds
+    for `knowledge.concept` and `knowledge.topic`; sources and claims are not upserts, so their idempotency is the
+    script's (by tags), as designed;
+  - a changed rendition sent as a superseding source stops the use of every form on the source it replaces, in the
+    library, at once and whoever sends it (Known limits): the script should say so before it sends one, and the lead
+    may rule that it is a person's step for a source a reviewed concept cites;
   - `knowledge.topic` checks the file against the rendition manifest (no manifest exists yet);
   - tranche size: the numbers under B8 above.
 - **S5:** the claim and review forms of the knowledge workspace gain the form fields and `formChecked` (until then a
