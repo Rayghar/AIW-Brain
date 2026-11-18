@@ -160,7 +160,12 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
   c.review={decision:r.decision,actor,account:author.account,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics)};return c.id;
  }
  case 'knowledge.concept-retire':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(c.retired)throw Error(c.id+' is already retired.');c.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return c.id;}
- case 'knowledge.concept-restore':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(!c.retired)throw Error(c.id+' is not retired.');delete c.retired;return c.id;}
+ // Only an unreleased concept is restored: a retirement of a released one stands, and a successor concept follows it.
+ case 'knowledge.concept-restore':{
+  libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(!c.retired)throw Error(c.id+' is not retired.');
+  const held=s.releases.find(x=>x.claims.some(k=>k.form&&k.subjectId===c.conceptId));if(held)throw Error(c.conceptId+' is in the release "'+held.title+'": a released concept is not restored. Record a successor concept (successorOf).');
+  delete c.retired;return c.id;
+ }
  default:return undefined;
  }
 }

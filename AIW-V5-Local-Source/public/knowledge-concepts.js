@@ -80,7 +80,8 @@ function formEntry(p,claim,release){
 }
 const byForm=(a,b)=>order(a.type)-order(b.type)||String(a.claimId).localeCompare(String(b.claimId));
 // Every concept an active release holds (the project's own and the organisation's), by release: its form claims are the
-// release's claims on that subject. A concept is eligible there when each form is released and it has its one definition.
+// release's claims on that subject. A concept is reviewed and released whole, so it is eligible there only whole: each of
+// its forms released, exactly one definition among them, and the concept not retired in this project. `reasons` says why not.
 export function releasedConcepts(p){
  const s=knowledgeState(p),groups=new Map();
  for(const h of releasedForms(p)){
@@ -88,9 +89,19 @@ export function releasedConcepts(p){
   const key=h.release.id+'\n'+h.claim.subjectId;if(!groups.has(key))groups.set(key,{conceptId:h.claim.subjectId,release:h.release,forms:[]});
   groups.get(key).forms.push(formEntry(p,h.claim,h.release));
  }
- return [...groups.values()].map(g=>({conceptId:g.conceptId,release:g.release,concept:g.release.organizationId?null:list(s.concepts).find(c=>c.conceptId===g.conceptId)||null,eligible:g.forms.every(f=>f.status==='released')&&g.forms.filter(f=>f.type==='definition').length===1,forms:g.forms.sort(byForm)}));
+ return [...groups.values()].map(g=>{
+  const record=list(s.concepts).find(c=>c.conceptId===g.conceptId)||null,forms=g.forms.sort(byForm),definitions=forms.filter(f=>f.type==='definition').length,reasons=[];
+  if(record?.retired)reasons.push(g.conceptId+' is retired in this project: '+record.retired.reason);
+  else{
+   const unusable=forms.filter(f=>f.status!=='released').map(f=>f.type+' ('+f.claimId+'): '+f.reasons.join(' '));
+   if(definitions!==1)unusable.push(definitions?'the release holds '+definitions+' definitions of '+g.conceptId:'the release holds no definition of '+g.conceptId);
+   if(unusable.length)reasons.push(g.conceptId+' is not usable as a whole in "'+g.release.title+'": '+unusable.join('; '));
+  }
+  return {conceptId:g.conceptId,release:g.release,concept:g.release.organizationId?null:record,eligible:!reasons.length,reasons,forms};
+ });
 }
-// What a concept reads as here: the register's concept with each of its forms, and the forms active releases hold.
+// What a concept reads as here: the register's concept with each of its forms, the forms active releases hold, and for
+// each of those releases whether the concept is usable there as a whole, with the reasons when it is not.
 export function conceptReading(p,conceptId){
  const s=knowledgeState(p),concept=conceptRecords(p).find(c=>c.conceptId===conceptId),released=releasedConcepts(p).filter(c=>c.conceptId===conceptId);
  if(!concept&&!released.length)return null;
@@ -101,19 +112,23 @@ export function conceptReading(p,conceptId){
  }
  for(const c of released)for(const f of c.forms)if(!forms.some(x=>x.claimId===f.claimId&&x.releaseId===f.releaseId))forms.push(f);
  const head=concept||{conceptId,title:conceptId,kind:null,family:'',scope:[],stages:[],lenses:[]};
- return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm)};
+ return {conceptId,title:head.title,kind:head.kind,family:head.family,scope:copy(head.scope),stages:copy(head.stages),lenses:copy(head.lenses),state:concept?concept.state:'released',forms:forms.sort(byForm),releases:released.map(c=>({releaseId:c.release.id,title:c.release.title,eligible:c.eligible,reasons:c.reasons}))};
 }
 // The teaching forms a concept offers here, each with its state and label: released, reviewed, or a candidate nobody reviewed yet.
 export function conceptTeachingForms(p,conceptId){
  return list(conceptReading(p,conceptId)?.forms).filter(f=>f.tier==='teaching'&&f.content).map(f=>({type:f.type,status:f.status,label:f.label,content:f.content,receipt:f.receipt}));
 }
-// The decision-bearing forms a design record may rely on: those of the concept version its active pin names, in state
-// released. Anything else is nothing: no pin, a pin that moved or was retired, a release that is not active, a candidate.
+// The decision-bearing forms a design record may rely on: those of the concept version its active pin names, when the
+// concept is usable as a whole in that release (ruling B5 of 2026-11-18: fail closed). Anything else is nothing, and
+// `reasons` says why: no active pin, a release that is not active or does not hold the concept, a form of the concept
+// that is not usable there (so no part of the concept is), a concept retired in this project.
 // (The pin is written by knowledge.concept-pin, slice S3; until then no command creates one.)
-export function conceptDecisionForms(p,pinId){
- const pin=list(knowledgeState(p).conceptPins).find(x=>x?.id===pinId&&x.status==='active');if(!pin)return [];
- const held=releasedConcepts(p).find(c=>c.conceptId===pin.conceptId&&c.release.id===pin.releaseId);
- // The definition is the concept's anchor: without it released there, nothing of the concept is relied on.
- if(!held?.forms.some(f=>f.type==='definition'&&f.status==='released'))return [];
- return list(held.forms).filter(f=>f.tier==='decision'&&f.status==='released').map(f=>({type:f.type,content:f.content,architectureUnit:f.architectureUnit,receipt:f.receipt}));
+export function conceptDecisionReading(p,pinId){
+ const pin=list(knowledgeState(p).conceptPins).find(x=>x?.id===pinId&&x.status==='active');
+ if(!pin)return {pinId:pinId??null,conceptId:null,releaseId:null,forms:[],reasons:[String(pinId).slice(0,40)+' is not an active concept pin of this project.']};
+ const held=releasedConcepts(p).find(c=>c.conceptId===pin.conceptId&&c.release.id===pin.releaseId),at={pinId:pin.id,conceptId:pin.conceptId,releaseId:pin.releaseId};
+ if(!held)return {...at,forms:[],reasons:[pin.releaseId+' is not an active release that holds '+pin.conceptId+' in this project.']};
+ if(!held.eligible)return {...at,forms:[],reasons:held.reasons};
+ return {...at,forms:held.forms.filter(f=>f.tier==='decision').map(f=>({type:f.type,content:f.content,architectureUnit:f.architectureUnit,receipt:f.receipt})),reasons:[]};
 }
+export const conceptDecisionForms=(p,pinId)=>conceptDecisionReading(p,pinId).forms;

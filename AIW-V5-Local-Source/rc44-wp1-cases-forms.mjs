@@ -556,7 +556,7 @@ add('S1.9: a released form is checked again on every read: one tampered in the d
     assert.equal(status(q, 'selection').status, 'released', 'the other forms are untouched');
     assert.equal(KC.releasedConcepts(q)[0].eligible, false, what + ': the concept in that release is not eligible');
     const pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: L.releaseId, status: 'active'}];
-    assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001').map(x => x.type), ['selection', 'composition', 'calculation', 'verification'], what + ': the tampered form is not handed to a design record');
+    assert.deepEqual(KC.conceptDecisionForms(pin, 'KU-0001'), [], what + ': with one form unusable, nothing of the concept is handed to a design record (ruling B5: fail closed; the first build handed over the other four)');
   }
   // The definition is the anchor: with it unusable, a design record is handed nothing of the concept.
   { const q = careful(f => { f.quotes = ['an outbox guarantees exactly-once delivery']; }, 'definition'), pin = clone(q); pin.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: L.releaseId, status: 'active'}];
@@ -914,4 +914,39 @@ add('S1.19 (ruling B4, should-fix 4): a concept review records the reviewer\'s a
   // Nor is it a person's change of what a review covered (ruling B3), nor a person's form: a form it saves is released by a third person, as an import's is.
   assert.throws(() => send(reviewed, 'concept', {...CONCEPT, id: L.conceptRecordId, forms: reviewed.knowledge.concepts[0].forms, steward: 'Nobody'}, 'architect', NO_ACCOUNT('architect')), /only a signed-in person changes what its review covered/);
   assert.equal(send(fresh.document, 'claim', F.formClaim(fresh.sourceId, 'SYN-P001', F.p001Forms().example), 'architect', NO_ACCOUNT('architect')).document.knowledge.claims.at(-1).authoredAs, 'import');
+});
+
+// ------------------------------------------------------------------------------------------------ 20
+add('S1.20 (ruling B5, should-fix 3 and 5): a pin hands over nothing of a concept that is not eligible as a whole in its release, or that is retired, and the reading says why; a concept that is in a release is not restored', async () => {
+  const {KC, CC} = await mods(), L = await library({verify: true, review: true, release: true, activate: true}), p = L.document, DECISION = ['applicability', 'selection', 'composition', 'calculation', 'verification'];
+  const send = (doc, type, payload, actor = 'architect', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  const pinned = (doc, pin = {}) => { const q = clone(doc); q.knowledge.conceptPins = [{id: 'KU-0001', conceptId: 'SYN-P001', releaseId: L.releaseId, status: 'active', ...pin}]; return q; };
+  // Whole and eligible: the five decision-bearing forms, and no reason.
+  const whole = KC.conceptDecisionReading(pinned(p), 'KU-0001');
+  assert.deepEqual([whole.pinId, whole.conceptId, whole.releaseId, whole.forms.map(f => f.type), whole.reasons], ['KU-0001', 'SYN-P001', L.releaseId, DECISION, []]); assert.deepEqual(KC.conceptDecisionForms(pinned(p), 'KU-0001'), whole.forms);
+  assert.deepEqual(KC.releasedConcepts(p).map(c => [c.eligible, c.reasons]), [[true, []]]); assert.deepEqual(KC.conceptReading(p, 'SYN-P001').releases, [{releaseId: L.releaseId, title: 'Synthetic integration concepts 1', eligible: true, reasons: []}]);
+  // One form unusable in that release (tampered, every hash recomputed around it): a concept is reviewed and released
+  // whole, so a design record is handed none of it: not the roles and parameters without the use-when and avoid-when.
+  const careful = (type, change) => { const q = clone(p), r = q.knowledge.releases[0], c = r.claims.find(x => x.form.type === type); change(c.form); c.review.claimHash = digest({...c, review: undefined}); r.checksum = digest({...r, checksum: undefined}); assert.equal(K.knowledgeEligibility(q, c, r).eligible, true); return q; };
+  for (const [type, change, why] of [['applicability', f => { f.useWhen[0].quote = 'a committed booking may be dropped safely'; }, /SYN-P001 is not usable as a whole in "Synthetic integration concepts 1": applicability \(KC-\d+\): The form is invalid: applicability\.useWhen\[0\]: the quote is not found/], ['verification', f => { f.scenarios[0].evidenceLevel = 'passed'; }, /verification \(KC-\d+\): The form is invalid: .*is not a level a source states of itself/], ['exercise', f => { f.items[0].level = 'expert'; }, /exercise \(KC-\d+\): The form is invalid/], ['definition', f => { f.quotes = ['an outbox guarantees exactly-once delivery']; }, /definition \(KC-\d+\): The form is invalid/]]) {
+    const q = careful(type, change), reading = KC.conceptDecisionReading(pinned(q), 'KU-0001');
+    assert.deepEqual(reading.forms, [], type + ' unusable: nothing of the concept is handed over'); assert.deepEqual(KC.conceptDecisionForms(pinned(q), 'KU-0001'), []);
+    assert.equal(reading.reasons.length, 1); assert.match(reading.reasons[0], why);
+    assert.deepEqual(KC.releasedConcepts(q).map(c => c.eligible), [false]); assert.match(KC.releasedConcepts(q)[0].reasons.join(' '), why); assert.match(KC.conceptReading(q, 'SYN-P001').releases[0].reasons.join(' '), why);
+    assert.equal(KC.conceptReading(q, 'SYN-P001').forms.filter(f => f.status === 'released').length, 8, 'each other form still reads released on its own'); }
+  // A release that holds the concept without its definition is not the concept whole either.
+  { const q = clone(p), r = q.knowledge.releases[0]; r.claims = r.claims.filter(c => c.form.type !== 'definition'); r.checksum = digest({...r, checksum: undefined});
+    const reading = KC.conceptDecisionReading(pinned(q), 'KU-0001'); assert.deepEqual(reading.forms, []); assert.match(reading.reasons[0], /the release holds no definition of SYN-P001/); }
+  // Retired: nothing is handed over, and the reading says so. (A finding for a concept retired behind an active pin is slice S3.)
+  const retire = {id: L.conceptRecordId, reason: 'Superseded in the synthetic handbook.', reviewer: 'Synthetic steward', reviewed: true}, retired = send(p, 'concept-retire', retire).document;
+  { const reading = KC.conceptDecisionReading(pinned(retired), 'KU-0001'); assert.deepEqual(reading.forms, []); assert.deepEqual(reading.reasons, ['SYN-P001 is retired in this project: Superseded in the synthetic handbook.']);
+    assert.equal(KC.conceptReading(retired, 'SYN-P001').state, 'retired'); assert.deepEqual(KC.releasedConcepts(retired).map(c => [c.eligible, c.reasons]), [[false, ['SYN-P001 is retired in this project: Superseded in the synthetic handbook.']]]); }
+  // A concept that is in a release is not restored (the design's rule for this command): active or not, a successor concept follows it.
+  assert.throws(() => send(retired, 'concept-restore', retire), /SYN-P001 is in the release "Synthetic integration concepts 1": a released concept is not restored\. Record a successor concept/);
+  { const R = await library({forms: ['definition'], verify: true, review: true, release: true}); assert.deepEqual(R.document.knowledge.pins, []); assert.throws(() => send(send(R.document, 'concept-retire', {...retire, id: R.conceptRecordId}).document, 'concept-restore', {...retire, id: R.conceptRecordId}), /a released concept is not restored/); }
+  { const U = await library({forms: ['definition'], verify: true, review: true}), back = send(send(U.document, 'concept-retire', {...retire, id: U.conceptRecordId}).document, 'concept-restore', {...retire, id: U.conceptRecordId}).document; assert.equal(KC.conceptRecords(back)[0].state, 'reviewed', 'an unreleased concept is restored as before'); }
+  // Every other empty answer says why as well.
+  assert.match(KC.conceptDecisionReading(p, 'KU-0001').reasons[0], /KU-0001 is not an active concept pin/); assert.match(KC.conceptDecisionReading(pinned(p, {status: 'moved'}), 'KU-0001').reasons[0], /not an active concept pin/);
+  assert.match(KC.conceptDecisionReading(pinned(p, {releaseId: 'KR-9999'}), 'KU-0001').reasons[0], /KR-9999 is not an active release that holds SYN-P001/);
+  assert.match(KC.conceptDecisionReading(pinned(p, {conceptId: 'SYN-P002'}), 'KU-0001').reasons[0], /is not an active release that holds SYN-P002/);
 });

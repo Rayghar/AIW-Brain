@@ -150,7 +150,7 @@ it; each item has its case first, seen red on `f9d9bdc`, and a WIP commit. Resum
 | 3 | B2: concepts, topics and form claims in a library project only | done | S1.17 (and S1.1, S1.5 through the service, S1.7, S1.8, S1.10, S1.13 adjusted) |
 | 4 | B3: what `conceptHash` covers; only a person changes what a review covered; an upsert that changes nothing writes nothing | done | S1.18 (S1.4 and S1.5 through the service adjusted) |
 | 5 | B4 and should-fix 4: a concept review records the reviewer's account kind, a read requires a person's; `kindRefusal` requires account `person` | done | S1.19 (S1.5 review shape adjusted) |
-| 6 | B5: fail closed (should-fix 3 and 5) | | |
+| 6 | B5: fail closed (should-fix 3 and 5): a pin hands over nothing of a concept that is not eligible as a whole or is retired, the reading says why (`conceptDecisionReading`, `releasedConcepts[].reasons`, `conceptReading().releases`); a released concept is not restored | done | S1.20 (S1.9 adjusted) |
 | 7 | B7: a concept id is not a record reference; `modelKind` is an identifier (should-fix 9) | | |
 | 8 | Should-fix 2, 7, 8, 10, 1 | | |
 | 9 | B6: every statement of a decision-bearing form rests on its own quote (should-fix 6) | | |
