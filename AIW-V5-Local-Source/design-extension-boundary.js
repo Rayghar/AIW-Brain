@@ -1,6 +1,6 @@
 // The command boundary of the design packages (rc44, slice S0), a server module. A package states its command types
 // with registerExtension (public/design-extensions.js: commands {type: {apply, staged, person, second, validate, undo,
-// track, large}}); worker.js dispatches a type a package states through this module, and everything around the handler
+// large}}, and one tracker, track); worker.js dispatches a type a package states through this module, and everything around the handler
 // is the boundary every command has: the shape and size checks, the commit's author (authorship.js), the revision
 // check, provenance and authorship stamps, the change trackers, the journal with actor, author kind and reason, the
 // undo receipt, the activity row and the idempotency receipt. This module adds what a command type says of itself:
@@ -20,12 +20,13 @@
 //            for the command itself and for each command of the type a request carries in a batch (validateExtensions),
 //            with the document as the request finds it; what depends on the document as earlier commands of a batch
 //            leave it is refused by apply, which throws, as every built-in handler does;
-//   track    (prior, next, command, at) adds the change events of the command (and of the same type inside a reviewed
-//            batch), as the built-in trackers do; the boundary stamps them with who, of what kind and why;
 //   undo     {previous(p, command), revert(p, previous, at, actor)}: the latest saved action is undone by its receipt
 //            (public/action-undo-domain.js), by the account that saved it, while nothing else has changed;
 //   staged   a plain design edit that a reviewed batch may carry (public/canonical-command.js); never with person or second;
 //   large    the request may carry up to 500 KB, as the built-in prefixes that say so.
+// and what a package says of itself: track(prior, next, command, at), its one tracker (the lead's ruling D4 of
+// 2026-11-18), called after the built-in trackers for every command and for each command a batch carries
+// (trackExtensions below); a command type states no tracker of its own.
 // A package only adds: a type a built-in handler takes is never a package's. The built-in handlers are asked once per
 // type (builtInType): a type they refuse as unknown ("Unknown … action.") is free for a package.
 import {EXTENSIONS} from './public/design-extensions.js';

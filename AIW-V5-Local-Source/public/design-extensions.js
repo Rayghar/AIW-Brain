@@ -8,8 +8,9 @@
 //   records(p, add, rel)                                        record-graph.js recordRelations (the one emitter)
 //   layers {layer: type}, hops [{layer, types, from, dir, ctx}] trace-kernel.js
 //   checks {chapter: p => [finding]}                            document-memo.js sharedList (each chapter's findings; 11: the review's own)
-//   commands {type: {apply, staged, person, second, validate, undo, track, large}}
+//   commands {type: {apply, staged, person, second, validate, undo, large}}
 //                                                               the server's boundary (design-extension-boundary.js); canonical-command.js stagedBy
+//   track(prior, next, command, at)                             the server's boundary: the package's tracker, called for every commit
 //   lifecycle {path: chapter}                                   record-lifecycle.js COLLECTIONS (and so provenance.js RECORD_PATHS)
 //   provenance {nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}
 //                                                               provenance.js RECORD_NOUNS, pathsOf, RECORD_PATHS

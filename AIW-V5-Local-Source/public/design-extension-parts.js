@@ -153,10 +153,12 @@ const registered = e => EXTENSIONS.find(x => x.id === e?.id) || null;
 const builtInKind = type => type in OBJECT_TYPES && !EXTENSIONS.some(x => plain(x.objectTypes) && x.objectTypes[type] === OBJECT_TYPES[type]);
 // Whether two keys (a key of the document, or container.key) are one key, or one is the container of the other.
 const overKey = (a, b) => a === b || !a.includes('.') && b.split('.')[0] === a || !b.includes('.') && a.split('.')[0] === b;
-// The id prefixes of the workbench's own records and journals (2 to 5 capitals before the hyphen): one statement, as
-// WORKBENCH_KEYS is, held by the same suite case against every id, ref and code of every template and of a document
-// after the built-in command families. A package's kind takes none of them.
-export const WORKBENCH_PREFIXES = new Set('ACT ADR ALT APP ASM CON DAT DF DX ENV EXT GRP IF INT JRN LR MAP OBJ OUT PL QD REL REQ RM RP RUN SCP SEC SRC STK TB TC TD THR TM TN TO TR ZON CHG RG DES USE QS TRV WA UNDO TXT TS TRANS TI SS SPEC SOL SG SF SA RV RS RR RJ RA QC PROC PLT MIG LIB INV GV FR EV DL DC CT CD BL ASR AN AC AIW RUL'.split(' '));
+// The id prefixes of the workbench's own records, journals and codes (2 to 5 capitals before the hyphen): one
+// statement, as WORKBENCH_KEYS is, held by the same suite case against every id, ref and code of every template and of
+// a document after the built-in command families, and against the product source (every prefix it writes as a quoted
+// literal, and the prefix of every Chapter 1 artefact type: a business rule's BR, a review treatment's RF and a
+// Chapter 4 connection's code LC are in no template). A package's kind takes none of them.
+export const WORKBENCH_PREFIXES = new Set('ACT ADR ALT APP ASM BR CON DAT DF DX ENV EXT GRP IF INT JRN LC LR MAP OBJ OUT PL QD REL REQ RF RM RP RUN SCP SEC SRC STK TB TC TD THR TM TN TO TR ZON CHG RG DES USE QS TRV WA UNDO TXT TS TRANS TI SS SPEC SOL SG SF SA RV RS RR RJ RA QC PROC PLT MIG LIB INV GV FR EV DL DC CT CD BL ASR AN AC AIW'.split(' '));
 // What a package states that the contract does not allow, each as a sentence; none for a package that conforms. A row
 // that is built in, or that a package earlier by id states, is named: the shared tables leave it out (design-extensions.js
 // extendTable), so the package would silently lack it.
@@ -183,6 +185,10 @@ export function extensionIssues(e) {
     const holder = Object.entries(TRACE_LAYER_TYPES).find(([, t]) => t === type)?.[0];
     if (holder && holder !== layer) say('layer “' + layer + '” holds the type “' + type + '”, which stands on the layer “' + holder + '”: a type stands on one layer.');
     if (!(type in OBJECT_TYPES) && !(type in (plain(e.objectTypes) ? e.objectTypes : {}))) say('layer “' + layer + '” holds “' + type + '”, which is no object type.');
+    // trace-kernel.js: a Chapter 1 record that is no requirement stands on the context layer whatever its type, and the
+    // walk reads no hop of a layer no record of the document stands on. A layer over such a type would hold its records
+    // in one document and miss them in the next.
+    else if (builtInKind(type) && OBJECT_TYPES[type].chapter === 1) say('layer “' + layer + '” holds the built-in type “' + type + '”, which Chapter 1 records have: a Chapter 1 record stands on the context layer, and on no other.');
   }
   if (e.hops !== undefined && !Array.isArray(e.hops)) say('hops is a list of {layer, types, from, dir, ctx}.');
   for (const h of list(e.hops)) {

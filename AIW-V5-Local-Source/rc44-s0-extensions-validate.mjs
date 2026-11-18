@@ -20,7 +20,7 @@
 // the command types of the four designs that will register here are free, and every built-in one is taken.
 // Run: npm run test:rc44-s0-extensions
 import assert from 'node:assert/strict';
-import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
+import {readFileSync, existsSync, writeFileSync, mkdirSync, readdirSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import * as R from './rc44-s0-readings.mjs';
@@ -48,6 +48,7 @@ import {previewWorkingChange, previewScenarioAlternative, rebaseWorkingAlternati
 import {createProject} from './shared/projects-domain.js';
 import {instantiateTemplate} from './project-lifecycle.js';
 import {REFERENCE_PROJECTS} from './public/reference-projects.js';
+import {TYPES as ARTEFACT_TYPES} from './public/requirements-domain.js';
 
 // Read through the namespace, so that the file links against the baseline too and each case fails there on its own.
 const {applyCanonical, applyRecordCommand, STAGED_COMMANDS, reviewsOnItsOwn} = canonical, stagedBy = type => canonical.stagedBy(type);
@@ -678,6 +679,16 @@ await block('D3 workbench keys', async () => {
     await h.read(); for (const key of ['guidance', 'requirementGroups', 'retired', 'workbench']) assert.ok(key in d(), 'the walk made “' + key + '”'); assert.ok(d().interfaces.invariants && d().workspace.domainLens);
     hold(d(), 'after the built-in command families');
   } finally { h.close(); }
+  // and against the product source, for the kinds no template holds and no command above writes (a business rule, a
+  // review treatment, a Chapter 4 connection's code): every id prefix the source writes as a quoted literal ('ADR-',
+  // `CHG-${…}`), and the prefix of every Chapter 1 artefact type. A literal that is no id prefix would only keep a
+  // package from a prefix it does not need.
+  { const named = new Map(), sources = [...readdirSync('public').map(f => 'public/' + f), ...readdirSync('.'), ...readdirSync('shared').map(f => 'shared/' + f)].filter(f => f.endsWith('.js'));
+    for (const f of sources) for (const m of readFileSync(f, 'utf8').matchAll(/['"`]([A-Z]{2,5})-(?:['"`]|\$\{)/g)) named.set(m[1], f);
+    for (const t of ARTEFACT_TYPES) if (/^[A-Z]{2,5}$/.test(t.prefix)) named.set(t.prefix, 'public/requirements-domain.js TYPES');
+    assert.ok(sources.length > 400 && named.size >= 80, 'the product source is read: ' + sources.length + ' modules, ' + named.size + ' prefixes');
+    for (const [prefix, where] of named) assert.ok(PREFIXES.has(prefix), 'the statement of prefixes names “' + prefix + '” (' + where + ')');
+    for (const prefix of ['BR', 'LC', 'RF']) assert.ok(boundary.extensionIssues({id: 'xy', objectTypes: {xy: {label: 'Xy', chapter: 2, level: 'intent', prefix}}}).some(i => i.includes('id prefix “' + prefix + '” is the workbench\'s own')), prefix + ' is the workbench\'s (a business rule, a Chapter 4 connection\'s code, a review treatment)'); }
   // a path on such a key is refused at start, as a lifecycle collection and as a collection of the provenance reader
   for (const path of ['changes.events', 'retired.records', 'finalReview.baselines', 'finalReview.dispositions', 'finalReview.actions', 'finalReview.reviews', 'workbench.history', 'workbench.alternatives', 'knowledge.claims', 'coauthoring.sources', 'assurance.records', 'security.risks', 'runtime.evidence', 'roadmap.plateaus', 'intake.datasets', 'workspace.members', 'evidence.sources', 'workspace.packages', 'artefacts', 'decisions.records', 'modelAlternatives']) {
     assert.ok(boundary.extensionIssues({id: 'xy', lifecycle: {[path]: 3}}).some(i => i.includes('collection “' + path + '” is on a key the workbench itself writes')), path + ' is no lifecycle collection of a package');
@@ -687,7 +698,7 @@ await block('D3 workbench keys', async () => {
   for (const key of ['brief.interpreted', 'retired', 'modelContext', 'knowledge', 'intake', 'workspace.governance', 'workspace.packages', 'quality.drivers', 'runtime.evidence', 'finalReview.objectives', 'changes.things', 'dataOwnership', 'readingsDefinition', 'knowledge.claims', 'interfaces.specifications']) assert.ok(boundary.extensionIssues({id: 'xy', evidenceKeys: [key]}).some(i => i.includes('evidence key “' + key + '” is a key the workbench keeps')), key + ' stays in the design');
   // a package's own key, and a new key of a chapter's container or of the knowledge workspace, stay allowed
   assert.deepEqual(boundary.extensionIssues({id: 'xy', lifecycle: {'runtime.nodes': 10, 'technology.domains': 6, 'adoptions.records': 3}, provenance: {records: {'knowledge.concepts': 11, 'workloads.models': 2}}, designKeys: ['adoptions', 'runtime.nodes', 'knowledge.concepts'], evidenceKeys: ['runtime.nodeEvidence', 'knowledge.library', 'adoptions.observations', 'workloadMigration']}), []);
-  pass('D3: one statement of the keys the workbench itself writes holds every key of the ' + templates.length + ' templates and of a document after the command families that make a container; a lifecycle path, a provenance.records path or an evidence key on such a key is refused at start; a new key of a chapter container stays allowed');
+  pass('D3: one statement of the keys the workbench itself writes holds every key of the ' + templates.length + ' templates and of a document after the command families that make a container, and the statement of id prefixes holds every prefix the product source writes; a lifecycle path, a provenance.records path or an evidence key on such a key is refused at start; a new key of a chapter container stays allowed');
 });
 
 // ---------------------------------------------------------------- D4. a package's tracker, for every commit
@@ -845,6 +856,13 @@ await block('SF start check', () => {
   { const r = spawnSync(process.execPath, ['--input-type=module', '-e', 'import * as b from "./design-extension-boundary.js"; import {registerExtension} from "./public/design-extensions.js"; registerExtension({id: "xy", commands: {"xy.save": {apply() {}}}}); let stopped = ""; try { b.assertExtensions(); } catch (e) { stopped = e.message; } console.log(JSON.stringify([b.builtInType("xy.save"), b.extensionCommand("xy.save"), b.extensionHandler("xy.save"), stopped]));'], {encoding: 'utf8'});
     assert.equal(r.status, 0, r.stderr.slice(0, 300)); const [taken, command, handler, stopped] = JSON.parse(r.stdout.trim().split('\n').at(-1));
     assert.deepEqual([taken, command, handler], [true, null, null], 'without the built-in resolver no type is a package\'s'); assert.match(stopped, /built-in commands are not installed/); }
+  // 8. the walk reads no hop of a layer no record of the document stands on, and a Chapter 1 record stands on the
+  // context layer whatever its type: so a package's layer holds no built-in type of Chapter 1 (its records would be
+  // brought by a hop in one document and skipped in another). A built-in type of a later chapter that stands on no
+  // built-in layer stays allowed (wp2's `mechanism` over `pattern`).
+  { const over = type => ({id: 'xy', layers: {held: type}, hops: [{layer: 'held', types: ['binds'], from: ['component'], dir: 'in', ctx: true, only: rel => rel.source === 'xy.records.bindings'}]});
+    for (const type of ['actor', 'outcome', 'journey', 'constraint', 'assumption', 'context', 'system']) assert.ok(has(over(type), new RegExp('layer “held” holds the built-in type “' + type + '”, which Chapter 1 records have: a Chapter 1 record stands on the context layer')), 'a layer over the Chapter 1 type ' + type + ' is refused: ' + issues(over(type)).join(' | '));
+    assert.deepEqual(issues(over('pattern')), [], 'a layer over a built-in type of a later chapter that stands on no built-in layer is allowed'); }
   // 11. a lifecycle collection is a list inside a container: the family keeps the container's version, review and handoff
   assert.ok(has({id: 'xy', lifecycle: {things: 3}}, /collection “things” is a list inside a container \(container\.list\)/), 'a single-segment lifecycle path is refused');
   assert.deepEqual(issues({id: 'xy', lifecycle: {'things.records': 3}, provenance: {records: {thingNotes: 3}}}), []);
@@ -853,7 +871,7 @@ await block('SF start check', () => {
     assert.ok(isReviewCommand('xy.' + end)); assert.ok(has({id: 'xy', commands: {['xy.' + end]: {apply() {}}}}, /command “xy\.\w+” ends as a review command does \(authorship\.js\): it states person or second/), 'xy.' + end);
     assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, person: true}}}), []); assert.deepEqual(issues({id: 'xy', commands: {['xy.' + end]: {apply() {}, second: () => null}}, provenance: {paths: {xy: ['xy.records']}}}), []);
   }
-  pass('should-fix 3, 6, 11 and D7.5 at the start check: a hop onto a layer of a built-in type states only; an id prefix of the workbench and a retired command name are taken; no type is free before the built-in resolver is installed; a single-segment lifecycle path is refused; a type ending in .review, .handoff or .intake states person or second');
+  pass('should-fix 3, 6, 11 and D7.5 at the start check: a hop onto a layer of a built-in type states only; an id prefix of the workbench and a retired command name are taken; no type is free before the built-in resolver is installed; a single-segment lifecycle path is refused; a layer over a built-in type of Chapter 1 is refused; a type ending in .review, .handoff or .intake states person or second');
 });
 
 // ---------------------------------------------------------------- 3. checks and readiness
