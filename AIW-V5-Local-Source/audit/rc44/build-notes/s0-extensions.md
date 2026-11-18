@@ -691,6 +691,7 @@ Baseline built from an archive of `94dbd4f` (`node build.mjs`): chapters route 3
 | Projects route (code) | 506,102 B | 506,599 B (+497) | 506,802 B (+700) | 1,242,112 B (unchanged) |
 | Script files | 148 | 148 | 148 | 148 (unchanged) |
 | Files under 10 KB | 53 | 53 | 53 | 61 (unchanged) |
+| Files from 10 to 50 KB, over 50 KB | — | 50, 45 | 50, 45 | — |
 | Stylesheet | 901,873 B | 901,873 B | 901,873 B | 902,144 B (unchanged) |
 | The registry module | — | 265 B | 400 B | — |
 
@@ -711,12 +712,28 @@ compare its own build with it.
 
 ## Suites
 
-`rc44-s0-extensions-validate.mjs`: 22 blocks, all green. On the baseline tree only block 6a passes ("the registration
-point exists" fails the rest). On the builder's head `5c5aef9` the suite as it now stands passes six blocks (6a, 6b,
-only adds, 4, 5, needs and load) and fails sixteen, each on a case of the fix-up.
+`rc44-s0-extensions-validate.mjs`: 22 blocks, all green, also with `AIW_S0_MEASURE=1` (its own build is what the
+size evidence says). On the baseline tree only block 6a passes ("the registration point exists" fails the rest). On
+the builder's head `5c5aef9` the suite as it now stands passes six blocks (6a, 6b, only adds, 4, 5, needs and load)
+and fails sixteen, each on a case of the fix-up.
 
-The existing suites that import or exercise the changed modules, the lint and the build are listed with their results
-in the slice's result. `test:scale` was not run (15 minutes, red at the baseline for this machine's speed).
+After the fix-up, on the head as built (2026-11-18, two suites at a time, the machine shared):
+- **193 existing suites** (every suite of `package.json` whose file imports `worker.js`, `review-domain.js`,
+  `record-graph.js`, `trace-kernel.js`, `sdd-architecture.js`, `project-store.js`, `project-lifecycle.js`,
+  `workspace-ux.js` or a registry module, but for four browser suites and `scale`; with the 84 the reviewer ran):
+  178 green. 15 red,
+  each run again alone and failing with the line recorded for the baseline in
+  `audit/rc42/regression-2026-11-16.json`: `architecture-ui`, `brain-ahead`, `brain-companion`, `brain-reasoning`,
+  `chapter-reasoning`, `command-equivalence`, `composition-ui`, `design-concern`, `intelligence`, `intelligence-ui`,
+  `knowledge`, `round27-model`, `security-task-ui`, `sol-disclosure`, `stewardship`. `requirements` failed once in
+  the batch on a timer of a tooltip (`innerWidth is not defined`, a file this slice does not touch; the record marks
+  it failed at the baseline and passed later) and passes alone.
+- **Browser, against the built client:** `studio-dialog-browser` (a tab behind another tab's save), `action-undo-ui`,
+  `lifecycle-browser`, `sdd-authoring-browser`: green.
+- `node check-syntax.mjs` passes (911 modules). Lint: 162 problems, baseline 162, 0 new. `node build.mjs` builds with
+  no size violation.
+- `test:scale` was not run (15 minutes, red at the baseline for this machine's speed), and no full regression (the
+  lead runs it).
 
 ## Open questions (for the lead)
 
