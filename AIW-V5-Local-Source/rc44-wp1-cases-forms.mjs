@@ -85,10 +85,14 @@ export function oldDocumentReadings() {
   const sdd = d => sha256(architectureMarkdown(d).markdown.split(today()).join('DATE'));
   return {
     bank: {findings: sha256(JSON.stringify(rv.inheritedFindings(bank))), findingCount: rv.inheritedFindings(bank).length, chapterStamps: sha256(JSON.stringify(rv.computeChapterStamps(bank))), fingerprint: rv.designFingerprint(bank), sourceStamp: rv.reviewSourceStamp(bank), summaries: sha256(JSON.stringify(rv.chapterSummaries(bank))), sdd: sdd(bank), hasKnowledgeKey: 'knowledge' in bank},
-    legacy: {knowledge: sha256(JSON.stringify(p.knowledge)), released: sha256(JSON.stringify(K.releasedClaims(p))), releasedCount: K.releasedClaims(p).filter(x => x.eligible).length, checksum: p.knowledge.releases[0].checksum, stamp: K.knowledgeStamp(p), findings: sha256(JSON.stringify(K.knowledgeFindings(p))), withdrawnFindings: sha256(JSON.stringify(K.knowledgeFindings(w))), withdrawnCount: K.knowledgeFindings(w).length, withdrawnKnowledge: sha256(JSON.stringify(w.knowledge))}
+    legacy: {knowledge: sha256(JSON.stringify(p.knowledge)), released: sha256(JSON.stringify(K.releasedClaims(p))), releasedCount: K.releasedClaims(p).filter(x => x.eligible).length, checksum: p.knowledge.releases[0].checksum, stamp: K.knowledgeStamp(p), findings: sha256(JSON.stringify(K.knowledgeFindings(p))), withdrawnFindings: sha256(JSON.stringify(K.knowledgeFindings(w))), withdrawnCount: K.knowledgeFindings(w).length, withdrawnKnowledge: sha256(JSON.stringify(w.knowledge))},
+    // The fifteen command types that existed before rc44, each sent through the old entry (rc44-wp1-knowledge-fixtures.mjs legacyWalk).
+    walk: (walked => ({knowledge: sha256(JSON.stringify(walked.knowledge)), released: sha256(JSON.stringify(K.releasedClaims(walked))), releasedCount: K.releasedClaims(walked).filter(x => x.eligible).length, findings: sha256(JSON.stringify(K.knowledgeFindings(walked))), stamp: K.knowledgeStamp(walked), types: new Set(walked.knowledge.history.map(h => h.type)).size}))(F.legacyWalk())
   };
 }
-const BASELINE = {bank: {findings: 'e188b2ccd284a1ab6d7be71b78f989075419b7dfcdcb3a8fdba5509041a6212a', findingCount: 558, chapterStamps: '644600e67df72b09cf78265450199b1645f6f83d13bf52fe699dca8e5c3a7ad2', fingerprint: '61b50cbbcca55207', sourceStamp: '61b50cbbcca55207', summaries: 'dc5268f93d9c7ca3558b9a2d33cf1927db1f8e169288c4130c828ffce2521dd3', sdd: '5e6779324f55d1cd27c938f40f5584779c3d6901f91eccc18ae538f3725372a8', hasKnowledgeKey: false}, legacy: {knowledge: '07138e2668709052750ada4e3dd0eca5eb4fcc73f410292d013da764204e18ec', released: '7f18d3ddfed6a21b3fb185624209d20f14829617685494f0b9c10fa43ebb73bf', releasedCount: 2, checksum: '8471646dd848bbd34a59c6b438d354953ff016c92aed10aba6d44b734e912e84', stamp: '2d6d7243e37f8333b65a26149345954f02ee48b06e5985f0672f4e4aff0b2d01', findings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945', withdrawnFindings: 'a935821fd3ed19de9a35185d894c328c7d40588b0c64acb2017f697ee9b154e1', withdrawnCount: 1, withdrawnKnowledge: '1383330f720ae764489709941c85894a7353d910a26463e1d480c8579a9ced3a'}};
+const BASELINE = {bank: {findings: 'e188b2ccd284a1ab6d7be71b78f989075419b7dfcdcb3a8fdba5509041a6212a', findingCount: 558, chapterStamps: '644600e67df72b09cf78265450199b1645f6f83d13bf52fe699dca8e5c3a7ad2', fingerprint: '61b50cbbcca55207', sourceStamp: '61b50cbbcca55207', summaries: 'dc5268f93d9c7ca3558b9a2d33cf1927db1f8e169288c4130c828ffce2521dd3', sdd: '5e6779324f55d1cd27c938f40f5584779c3d6901f91eccc18ae538f3725372a8', hasKnowledgeKey: false}, legacy: {knowledge: '07138e2668709052750ada4e3dd0eca5eb4fcc73f410292d013da764204e18ec', released: '7f18d3ddfed6a21b3fb185624209d20f14829617685494f0b9c10fa43ebb73bf', releasedCount: 2, checksum: '8471646dd848bbd34a59c6b438d354953ff016c92aed10aba6d44b734e912e84', stamp: '2d6d7243e37f8333b65a26149345954f02ee48b06e5985f0672f4e4aff0b2d01', findings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945', withdrawnFindings: 'a935821fd3ed19de9a35185d894c328c7d40588b0c64acb2017f697ee9b154e1', withdrawnCount: 1, withdrawnKnowledge: '1383330f720ae764489709941c85894a7353d910a26463e1d480c8579a9ced3a'},
+  // Added in the fix-up round (should-fix 10): taken with the product code of 94dbd4f, as the two above were.
+  walk: {knowledge: '1d941af67eaa8415252be34a6a21046ec8add8213891f53a7a0c1845721e15d1', released: '2541d47f48665273032b64800a97b9b6a789dccfcc57c3fb6aa88976cb7074d4', releasedCount: 4, findings: '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945', stamp: '64f34fa0187c90c8c9001cf974c0ee5c6c3e8bc8d669268899c2be77f48064d6', types: 15}};
 
 // The readings of a design project that a candidate must never move: the checks and readiness, the eligibility of
 // knowledge, what released knowledge offers every reader, the SDD, the contextual reading, the Brain's context and
@@ -520,6 +524,12 @@ add('S1.8: a document with none of the new records reads as on rc.10.73.42: the 
   // The wrapper writes what the old entry writes for every command that existed, byte for byte, with and without an author.
   const base = F.blankProject('rc44-wp1-legacy'), old = F.legacyKnowledge(K.applyKnowledgeCommand, base).document;
   for (const opts of [undefined, F.person('architect-a')]) { const wrapped = F.legacyKnowledge((p, c, at, actor) => CC.applyConceptCommand(p, c, at, actor, opts), base).document; assert.equal(JSON.stringify(wrapped), JSON.stringify(old)); }
+  // And so for each of the fifteen command types that existed (should-fix 10; the walk above sends six of them): project-source,
+  // source, suggest, dismiss-suggestion, claim, capture, steward, review, contradiction, release, activate, deactivate, withdraw, unlink, link.
+  { const walkBase = F.legacyWalkBase(), walked = F.legacyWalk(K.applyKnowledgeCommand, walkBase);
+    assert.deepEqual([...new Set(walked.knowledge.history.map(h => h.type))].sort(), [...F.LEGACY_TYPES].sort(), 'the walk sends each of the fifteen types'); assert.equal(F.LEGACY_TYPES.length, 15);
+    for (const opts of [undefined, F.person('architect-a')]) assert.equal(JSON.stringify(F.legacyWalk((p, c, at, actor) => CC.applyConceptCommand(p, c, at, actor, opts), walkBase)), JSON.stringify(walked), 'the wrapper writes what the old entry writes for all fifteen types');
+    for (const key of ['library', 'topics', 'concepts', 'crosswalk', 'conceptPins', 'previews']) assert(!(key in walked.knowledge)); assert(walked.knowledge.claims.every(c => !('form' in c) && !('authoredAs' in c))); }
   for (const key of ['library', 'topics', 'concepts', 'crosswalk', 'conceptPins', 'previews']) assert(!(key in old.knowledge), 'no ' + key + ' key until it is first written');
   assert(old.knowledge.claims.every(c => !('form' in c) && !('authoredAs' in c)) && old.knowledge.sources.every(s => !('checkedAt' in s) && !('sourceFile' in s)) && old.knowledge.claims.every(c => !('formChecked' in c.review)));
   // Reading changes nothing, and the new readers find nothing in an old document.
@@ -975,4 +985,39 @@ add('S1.21 (ruling B7, should-fix 9): a concept id is not a design record\'s ref
   for (const kind of ['mm1-queue', 'queue-model-2', 'aiw.queue:mm1', 'oldest-unsent-age']) assert.deepEqual(calculation(f => { f.modelKind = kind; }), [], kind);
   for (const kind of ['queue model 2', 'An M/M/1 queue with 3 servers', 'mm1 queue']) assert.match(calculation(f => { f.modelKind = kind; }).join(' '), /calculation\.modelKind is an identifier \(letters, digits and \. _ : -, no spaces\)/, kind);
   assert.match(calculation(f => { delete f.modelKind; }).join(' '), /calculation\.modelKind is required/);
+});
+
+// ------------------------------------------------------------------------------------------------ 22
+add('S1.22 (should-fix 2 and 7): only an applicability form carries a structured architecture unit; a retired concept is not reviewed', async () => {
+  const {CC, CF, KC} = await mods(), L = await library({forms: ['definition', 'mechanism'], verify: true}), all = F.p001Forms();
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  // Should-fix 2. The unit is the typed, machine-read decision structure: a teaching form, or any other form, does not carry one.
+  for (const type of CF.FORM_TYPES.filter(t => t !== 'applicability')) for (const opts of [F.person('importer'), F.importedBy('importer'), F.agent('bot')])
+    assert.throws(() => send(L.document, 'claim', {...F.formClaim(L.sourceId, 'SYN-P001', all[type]), architectureUnit: F.UNIT}, 'importer', opts), new RegExp('(?:A|An) ' + type + ' form carries no structured architecture unit: only an applicability form does'), type);
+  assert.equal(send(L.document, 'claim', F.formClaim(L.sourceId, 'SYN-P001', all.applicability)).document.knowledge.claims.at(-1).architectureUnit.kind, 'pattern');
+  { const claims = (await library()).document.knowledge.claims; assert.deepEqual(claims.filter(c => 'architectureUnit' in c).map(c => c.form.type), ['applicability'], 'of the nine fixture forms only the applicability form holds a unit'); }
+  // A plain claim carries its unit as on rc.10.73.42.
+  assert.equal(send(L.document, 'claim', {sourceId: L.sourceId, lineStart: 16, lineEnd: 16, subjectId: 'Outbox', predicate: 'applies to', statement: 'Use an outbox where a booking must lead to a notice.', claimType: 'applicability', polarity: 'supports', conditions: ['A local booking must cause a publication.'], limitations: ['Receivers need their own identity record.'], architectureUnit: F.UNIT}).document.knowledge.claims.at(-1).architectureUnit.kind, 'pattern');
+  // Should-fix 7. A retired concept is not reviewed: not verified, and not rejected or disputed either; restored, it is.
+  const retire = {id: L.conceptRecordId, reason: 'Superseded in the synthetic handbook.', reviewer: 'Synthetic steward', reviewed: true}, retired = send(L.document, 'concept-retire', retire, 'architect').document;
+  for (const decision of ['verified', 'rejected', 'disputed']) assert.throws(() => send(retired, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId, decision}, 'reviewer'), /SYN-P001 is retired: restore it before reviewing/, decision);
+  assert.equal(retired.knowledge.concepts[0].review, undefined); assert.equal(KC.conceptRecords(retired)[0].state, 'retired');
+  const restored = send(retired, 'concept-restore', retire, 'architect').document; assert.equal(KC.conceptRecords(send(restored, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer').document)[0].state, 'reviewed');
+  // A concept reviewed and then retired reads retired, and its review, still on the record, is no review of a usable concept.
+  { const reviewed = send(L.document, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer').document, then = send(reviewed, 'concept-retire', retire, 'architect').document; assert.equal(KC.conceptRecords(then)[0].state, 'retired');
+    assert.throws(() => send(then, 'release', {...F.REVIEW, title: 'Synthetic', claimIds: Object.values(L.claimIds)}, 'releaser'), /SYN-P001 is not reviewed/, 'and its forms are not released'); }
+});
+
+// ------------------------------------------------------------------------------------------------ 23
+add('S1.23 (should-fix 8): a run of this suite that executed no case fails, and so does a case file that exports no case', async () => {
+  const {spawnSync} = await import('node:child_process'), {mkdirSync, writeFileSync} = await import('node:fs');
+  const run = args => { const r = spawnSync(process.execPath, ['rc44-wp1-knowledge-validate.mjs', ...args], {encoding: 'utf8', env: {...process.env, AIW_RC44_WP1_ALL: ''}}); return {status: r.status, out: r.stdout + r.stderr}; };
+  const nothing = run(['--only', 'NO-CASE-HAS-THIS-NAME']); assert.equal(nothing.status, 1, 'a filter that matches nothing is not a pass'); assert.match(nothing.out, /No case was executed/); assert(!/PASS rc44 wp1 knowledge/.test(nothing.out));
+  // A pending case alone is not an executed case.
+  const pending = run(['--only', 'S2: not yet implemented']); assert.equal(pending.status, 1); assert.match(pending.out, /PENDING S2/); assert.match(pending.out, /No case was executed/);
+  // A case file that exports no case fails the run, whatever the other files do.
+  const dir = '.aiw-local/scratch/wp1-suite'; mkdirSync(dir, {recursive: true});
+  writeFileSync(dir + '/empty-cases.mjs', 'export const cases = [];\n'); writeFileSync(dir + '/no-export.mjs', 'export const other = 1;\n'); writeFileSync(dir + '/one-case.mjs', 'export const cases = [{name: \'T1: a synthetic case\', run() {}}];\n');
+  for (const file of ['empty-cases.mjs', 'no-export.mjs']) { const r = run(['--files', './' + dir + '/one-case.mjs,./' + dir + '/' + file]); assert.equal(r.status, 1, file); assert.match(r.out, /exports no case/); assert.match(r.out, /PASS T1: a synthetic case/); }
+  const one = run(['--files', './' + dir + '/one-case.mjs']); assert.equal(one.status, 0, one.out); assert.match(one.out, /PASS rc44 wp1 knowledge: 1 cases/);
 });

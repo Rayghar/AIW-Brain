@@ -188,6 +188,8 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
    onlyAPerson({knowledge:s},concept,author,'a form of it');
    if(r.claimType!==FORM_CLAIM_TYPE[type])throw Error(article(type)+' form is '+article(FORM_CLAIM_TYPE[type]).toLowerCase()+' claim (claimType).');
    if(text(r.predicate,180)!==FORM_PREDICATE[type])throw Error(article(type)+' form is claimed as "'+FORM_PREDICATE[type]+'" (its fixed predicate).');
+   // The structured unit is the typed, machine-read decision structure: only an applicability form carries one.
+   if(type!=='applicability'&&Object.hasOwn(r,'architectureUnit'))throw Error(article(type)+' form carries no structured architecture unit: only an applicability form does.');
    if(type==='applicability'&&concept.kind!=='topic'&&!Object.hasOwn(r,'architectureUnit'))throw Error('An applicability form of '+article(concept.kind).toLowerCase()+' carries its structured architecture unit (kind, mechanism, effects, obligations).');
    // How it was authored: a person's, an import's, a draft by Sol or an agent account's; a request that states no author is never taken for a person's.
    return {claimType:FORM_CLAIM_TYPE[type],form:conceptFormRecord(r.form,ctx),authoredAs:!author?'import':author.account==='agent'?'agent':author.kind==='person'&&author.account!=='person'?'import':author.kind};

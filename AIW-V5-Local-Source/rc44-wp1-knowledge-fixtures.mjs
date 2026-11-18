@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {applyCommand} from './public/requirements-domain.js';
-import {applyKnowledgeCommand, knowledgeStamp} from './public/knowledge-governance.js';
+import {applyKnowledgeCommand, knowledgeStamp, knowledgeImpactStamp} from './public/knowledge-governance.js';
 
 export const AT = '2026-11-16T09:00:00.000Z';
 export const ACCOUNTS = {importer: 'importer', reviewer: 'reviewer', releaser: 'releaser', architect: 'architect', second: 'second-architect', bot: 'bot'};
@@ -190,6 +190,41 @@ export const REVIEW = {reviewed: true, reviewer: 'Synthetic second person', reas
 // A blank project with one requirement (REQ-001), so a rationale link has a record to name.
 export const blankProject = (id = 'rc44-wp1-library') => applyCommand(withFinalReview(createProject({name: 'Northquay knowledge library', template: 'blank'}, id)), {type: 'artefact', payload: {type: 'requirement', title: 'Tell carriers a parcel was booked', description: 'Each booking leads to one partner notice.', owner: 'Booking team', acceptance: 'A notice is recorded for each booking.', source: 'Synthetic workshop'}}).document;
 export const bankProject = () => withFinalReview(createProject({name: 'Bank', template: 'bank-payment'}, 'bank-payment'));
+
+// The fifteen knowledge command types that existed before rc44, each sent once or more through `apply` on a project
+// that holds a saved project source and two disagreements with Sol's advice (written into the document, as the
+// workbench records them): project-source, source, suggest, dismiss-suggestion, claim (plain, from a suggestion, and an
+// opposing one), capture, steward, review, contradiction, release, activate, link, unlink, deactivate, withdraw.
+export const LEGACY_TYPES = ['project-source', 'source', 'suggest', 'dismiss-suggestion', 'claim', 'capture', 'steward', 'review', 'contradiction', 'release', 'activate', 'deactivate', 'withdraw', 'unlink', 'link'].map(t => 'knowledge.' + t);
+export function legacyWalkBase() {
+  const p = structuredClone(blankProject('rc44-wp1-legacy-walk')), assessment = (id, reason) => ({id, itemId: 'M:1:' + p.artefacts.find(a => a.type === 'requirement').id, outcome: 'dismissed', title: 'Tell carriers a parcel was booked', chapter: 1, verdict: 'refine', headline: 'Send the notice inside the booking call.', reason, at: AT, model: 'synthetic', runId: 'run-1', sources: []});
+  p.coauthoring = {...p.coauthoring, sources: [...(p.coauthoring?.sources || []), {id: 'SRC-900', versions: [{revision: 1, title: 'Synthetic carrier agreement', excerpt: 'A carrier must be told of each booking within the agreed notice window.', location: 'synthetic/agreement.txt'}]}], assessments: [assessment('SA-901', 'The carrier gateway already retries a failed notice.'), assessment('SA-902', 'The booking call has no time budget for a broker call.')]};
+  return p;
+}
+export function legacyWalk(apply = applyKnowledgeCommand, base = legacyWalkBase()) {
+  let p = base; const k = (type, payload, actor = 'architect-a') => { const r = apply(p, {type: 'knowledge.' + type, payload}, AT, actor); p = r.document; return r.selected; };
+  const requirement = p.artefacts.find(a => a.type === 'requirement').id, review = {reviewed: true, reviewer: 'Synthetic second person', reason: 'Checked the synthetic passage, its permitted use and its conditions.'};
+  const projectSource = k('project-source', {sourceId: 'SRC-900'}); k('project-source', {sourceId: 'SRC-900'});
+  const sourceId = k('source', sourcePayload('SYN-P001 Transactional outbox', SYN_P001));
+  k('suggest', {sourceId}); const open = p.knowledge.suggestions.filter(s => s.status === 'open');
+  k('dismiss-suggestion', {id: open[0].id});
+  const fromSuggestion = k('claim', {sourceId, suggestionId: open[1].id, lineStart: open[1].lineStart, lineEnd: open[1].lineEnd, subjectId: 'Outbox', predicate: 'is read as', statement: 'A passage of the synthetic handbook, interpreted.', claimType: 'benefit', conditions: ['A synthetic condition.'], limitations: ['A synthetic limitation.']});
+  const supports = k('claim', {sourceId, lineStart: 16, lineEnd: 16, subjectId: 'Outbox', predicate: 'applies to', statement: 'Use an outbox where a booking must lead to a notice.', claimType: 'applicability', polarity: 'supports', conditions: ['A local booking must cause a publication.'], limitations: ['Receivers need their own identity record.']});
+  const opposing = k('claim', {sourceId, lineStart: 17, lineEnd: 17, subjectId: 'Outbox', predicate: 'applies to', statement: 'Avoid an outbox where nothing is published afterwards.', claimType: 'applicability', polarity: 'prohibits', conditions: ['The caller only reads.'], limitations: ['Says nothing of later changes.']});
+  const fromProjectSource = k('claim', {sourceId: projectSource, lineStart: 1, lineEnd: 1, subjectId: 'Carrier notice', predicate: 'requires', statement: 'A carrier is told of each booking within the agreed window.', claimType: 'obligation', conditions: ['The agreement applies.'], limitations: ['The window is the agreement\'s.']});
+  const captured = k('capture', {assessmentId: 'SA-901', subject: 'Carrier notice', subjectId: 'Carrier notice', statement: 'Within this project the carrier gateway retries a failed notice.', conditions: 'Applies to the carrier notice.', limitations: 'Says nothing of other gateways.', objectId: requirement, reviewer: 'Synthetic steward', reason: 'Captured from the architect\'s disagreement.'});
+  k('steward', {...review, key: 'dismissal:SA-902', decision: 'holds'});
+  k('contradiction', {...review, id: p.knowledge.contradictions[0].id, status: 'context-separated', distinguishingContexts: 'One applies where a notice must follow, the other where nothing is published.'});
+  for (const id of [fromSuggestion, supports, opposing, fromProjectSource, captured]) k('review', {...review, id, decision: 'verified', sourceChecked: true, rightsChecked: true, conditionsChecked: true}, 'architect-b');
+  const releaseId = k('release', {...review, title: 'Synthetic legacy release', claimIds: [fromSuggestion, supports, opposing, fromProjectSource, captured]});
+  k('activate', {...review, id: releaseId, stamp: knowledgeStamp(p)});
+  const linkId = k('link', {...review, claimId: supports, releaseId, objectId: requirement}); k('link', {...review, claimId: captured, releaseId, objectId: requirement});
+  k('unlink', {...review, id: linkId});
+  k('deactivate', {...review, id: releaseId, stamp: knowledgeStamp(p)});
+  k('activate', {...review, id: releaseId, stamp: knowledgeStamp(p)});
+  k('withdraw', {...review, id: fromProjectSource, stamp: knowledgeImpactStamp(p, fromProjectSource)});
+  return p;
+}
 
 // A project whose knowledge was written by the commands that existed before rc44 only (a source, a structured claim, a
 // plain claim, a four-eyes review, a release, its activation and a link): the old document of the byte-identity cases.

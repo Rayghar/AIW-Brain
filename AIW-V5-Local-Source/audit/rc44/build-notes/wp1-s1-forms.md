@@ -152,7 +152,7 @@ it; each item has its case first, seen red on `f9d9bdc`, and a WIP commit. Resum
 | 5 | B4 and should-fix 4: a concept review records the reviewer's account kind, a read requires a person's; `kindRefusal` requires account `person` | done | S1.19 (S1.5 review shape adjusted) |
 | 6 | B5: fail closed (should-fix 3 and 5): a pin hands over nothing of a concept that is not eligible as a whole or is retired, the reading says why (`conceptDecisionReading`, `releasedConcepts[].reasons`, `conceptReading().releases`); a released concept is not restored | done | S1.20 (S1.9 adjusted) |
 | 7 | B7: a concept id is not a record reference (by shape, `RECORD_REFERENCE`, or because a record of the project bears it); `calculation.modelKind` is an identifier (should-fix 9) | done | S1.21 (S1.2 adjusted) |
-| 8 | Should-fix 2, 7, 8, 10, 1 | | |
+| 8 | Should-fix 2 (a unit on an applicability form only), 7 (a retired concept is not reviewed), 8 (a run that executed no case fails), 10 (all fifteen pre-existing command types walked, with a baseline taken on 94dbd4f), 1 (the full list of what a released, active form moves, below and asserted) | done | S1.22, S1.23, S1.8, S1.10 |
 | 9 | B6: every statement of a decision-bearing form rests on its own quote (should-fix 6) | | |
 | 10 | B8: the history bound is part of the tier (should-fix 11) | | |
 | 11 | B9, B10: text | | |
