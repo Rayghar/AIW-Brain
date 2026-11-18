@@ -128,6 +128,8 @@ export function extensionIssues(e) {
     for (const k of Object.keys(c)) if (!COMMAND_PARTS.has(k)) say(name + ': “' + k + '” is not a part of a command.');
     if (c.staged && (c.person || c.second)) say(name + ' is a person\'s step: it is never staged.');
     if (c.second !== undefined && !fn(c.second)) say(name + ': second is a function (p, command) that answers the record a second person acts on.');
+    // Ruling D1: the boundary reads who stands behind the record from the stored record's stamps, so it must know the collection.
+    else if (c.second && ![type, type.split('.')[0]].some(k => list(plain(e.provenance?.paths) ? e.provenance.paths[k] : null).length)) say(name + ' is a second person\'s step: the package states provenance.paths for the type or its prefix (the collection of the records it acts on), so that the boundary can read who stands behind each.');
     if (c.undo !== undefined && !(plain(c.undo) && fn(c.undo.previous) && fn(c.undo.revert))) say(name + ': undo states previous(p, command) and revert(p, previous, at, actor).');
     if (c.undo && c.staged) say(name + ' is staged: a staged change is undone by its batch, not by a receipt.');
     for (const k of ['validate', 'track']) if (c[k] !== undefined && !fn(c[k])) say(name + ': ' + k + ' is a function.');

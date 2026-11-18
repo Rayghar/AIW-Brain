@@ -47,10 +47,11 @@ const {applyCanonical, applyRecordCommand, STAGED_COMMANDS, reviewsOnItsOwn} = c
 const PROBE = process.argv.indexOf('--probe');
 const checks = [], failed = [];
 const pass = n => { checks.push(n); if (PROBE < 0) console.log('PASS ' + n); };
-const block = async (name, fn) => { try { await fn(); } catch (e) { failed.push(name); console.log('FAIL ' + name + ': ' + (e?.stack || e?.message || e).split('\n').slice(0, process.env.AIW_S0_VERBOSE ? 40 : 4).join(' | ')); } };
+const ONLY = process.env.AIW_S0_ONLY ? process.env.AIW_S0_ONLY.split(',') : null; // while working on one block: AIW_S0_ONLY=registration,D1
+const block = async (name, fn) => { if (ONLY && !ONLY.some(x => name.startsWith(x))) return; try { await fn(); } catch (e) { failed.push(name); console.log('FAIL ' + name + ': ' + (e?.stack || e?.message || e).split('\n').slice(0, process.env.AIW_S0_VERBOSE ? 40 : 4).join(' | ')); } };
 const sha = text => createHash('sha256').update(text).digest('hex');
 const list = v => (Array.isArray(v) ? v : []);
-const A = 'architect-a', B = 'architect-b', AGENT = 'sol-drafter';
+const A = 'architect-a', B = 'architect-b', C = 'architect-c', AGENT = 'sol-drafter';
 
 let X = null, boundary = null, loadError = '';
 try { X = await import('./public/design-extensions.js'); boundary = await import('./design-extension-boundary.js'); } catch (e) { loadError = e.message; }
@@ -61,7 +62,7 @@ const need = () => assert.ok(X && boundary, 'the registration point exists (publ
 // {version, counter, records, observations}. A record names the requirements it answers, the component it binds and,
 // optionally, another synthetic record. Its evidence (observations, and the log beside the design) is not design.
 const syn = p => p.synthetic?.records || [];
-function applySynthetic(p, command, at, actor) {
+function applySynthetic(p, command, at, actor, options) {
   const raw = command.payload || {}, s = p.synthetic ??= {version: 0, counter: 0, records: []};
   const find = () => { const r = s.records.find(x => x.id === raw.id); if (!r) throw Error('Choose a synthetic record.'); return r; };
   if (command.type === 'synthetic.save') {
@@ -75,7 +76,10 @@ function applySynthetic(p, command, at, actor) {
   if (command.type === 'synthetic.note') { const r = find(); r.note = String(raw.note || ''); s.version++; return {document: p, selected: r.id}; }
   if (command.type === 'synthetic.observe') { find(); (s.observations ??= []).push({id: raw.id, text: String(raw.text || ''), at}); (p.syntheticLog ??= []).push({id: raw.id, at}); return {document: p, selected: raw.id}; }
   if (command.type === 'synthetic.sign') { const r = find(); r.signed = {actor, at}; return {document: p, selected: r.id}; }
-  if (command.type === 'synthetic.accept') { const r = find(); if (raw.reviewed !== true) throw Error('Confirm the acceptance.'); r.acceptance = {actor, at}; return {document: p, selected: r.id}; }
+  // The step keeps who took it and with what kind of account, as the boundary hands them to apply (ruling D7.1).
+  if (command.type === 'synthetic.accept') { const r = find(); if (raw.reviewed !== true) throw Error('Confirm the acceptance.'); r.acceptance = {actor, at, account: options?.author?.account ?? null}; return {document: p, selected: r.id}; }
+  if (command.type === 'synthetic.endorse') { const r = find(); r.endorsement = {actor, at, account: options?.author?.account ?? null}; return {document: p, selected: r.id}; }
+  if (command.type === 'synthetic.confirm') { const r = find(); r.confirmed = true; return {document: p, selected: r.id}; }
   throw Error('Unknown synthetic action.');
 }
 const SYNTHETIC = {
@@ -105,7 +109,10 @@ const SYNTHETIC = {
     'synthetic.note': {apply: applySynthetic, undo: {previous: (p, c) => ({id: c.payload.id, note: syn(p).find(r => r.id === c.payload.id)?.note ?? ''}), revert(p, was) { const r = syn(p).find(x => x.id === was.id); if (!r) throw Error('The synthetic record changed.'); r.note = was.note; p.synthetic.version++; return {document: p, selected: r.id}; }}},
     'synthetic.observe': {apply: applySynthetic},
     'synthetic.sign': {apply: applySynthetic, person: true},
-    'synthetic.accept': {apply: applySynthetic, second: (p, c) => syn(p).find(r => r.id === c.payload?.id) || null}
+    'synthetic.accept': {apply: applySynthetic, second: (p, c) => syn(p).find(r => r.id === c.payload?.id) || null},
+    // A second person's step that answers a projection of the record (ruling D7.1): who wrote what the step covers.
+    'synthetic.endorse': {apply: applySynthetic, second: (p, c) => { const r = syn(p).find(x => x.id === c.payload?.id); return r ? {id: r.id, actor: r.actor, history: r.history} : null; }},
+    'synthetic.confirm': {apply: applySynthetic, person: true}
   },
   lifecycle: {'synthetic.records': 3},
   provenance: {nouns: {'synthetic.records': 'synthetic record'}, paths: {synthetic: ['synthetic.records']}},
@@ -409,6 +416,81 @@ await block('2 command boundary', async () => {
   assert.ok(!STAGED_COMMANDS.has('synthetic.sign')); assert.ok(!STAGED_COMMANDS.has('synthetic.save'), 'the built-in list is as it was'); assert.ok(isReviewCommand('synthetic.sign') && isReviewCommand('synthetic.accept') && !isReviewCommand('synthetic.save'), 'authorship.js classifies the person-only types as review commands');
   assert.equal(commandShape({type: 'synthetic.save', payload: {}}), null); assert.equal(commandShape({type: 'synthetic.nope'})?.code, 'unknown_command');
   pass('2: synthetic.save applies through POST /api/commands, is journalled with actor and author kind, stamped and listed in the activity; synthetic.note is undone by its receipt; synthetic.sign is refused for an agent account, a draft by Sol and an import; synthetic.accept is refused for every author and accepted for a second person; staged only when a plain design edit');
+});
+
+// ---------------------------------------------------------------- the routes, for the cases below
+// A server with the reference project and four accounts (three persons and an agent account).
+async function harness() {
+  const files = new Map(), FILES = {async put(k, v) { files.set(k, v); }, async get(k) { return files.has(k) ? {text: async () => files.get(k)} : null; }, async delete(k) { files.delete(k); }};
+  const env = {DB: localDatabase(':memory:'), FILES, ASSETS: {fetch: () => new Response('asset')}, AIW_AGENT_ACTORS: AGENT};
+  const api = (path, method = 'GET', body = null, owner = A) => { const headers = new Headers({'oai-authenticated-user-id': owner}); if (body) { headers.set('Content-Type', 'application/json'); headers.set('Origin', 'https://aiw.test'); } return worker.fetch(new Request('https://aiw.test' + path, {method, headers, ...(body ? {body: JSON.stringify(body)} : {})}), env); };
+  const h = {env, api, files, state: await (await api('/api/project')).json()};
+  h.pid = h.state.document.id; h.q = '?project=' + encodeURIComponent(h.pid);
+  for (const actorId of [B, C, AGENT]) assert.equal((await api('/api/access' + h.q, 'POST', {actorId, role: 'editor'})).status, 200);
+  h.read = async (as = A) => (h.state = await (await api('/api/project' + h.q, 'GET', null, as)).json());
+  h.send = async (type, payload, as = A, extra = {}) => { const cur = await h.read(as), res = await api('/api/commands' + h.q, 'POST', {revision: cur.revision, command: {type, payload}, ...extra}, as), body = await res.json(); if (res.status === 200) h.state = body; return {status: res.status, body, error: body.error || ''}; };
+  h.rec = id => h.state.document.synthetic.records.find(x => x.id === id);
+  h.last = () => h.state.document.synthetic.records.at(-1).id;
+  h.close = () => env.DB.close();
+  return h;
+}
+
+// ---------------------------------------------------------------- D1. a second person's step needs two persons
+await block('D1 two persons', async () => {
+  need();
+  const h = await harness(), {send, rec} = h, accept = (id, as, type = 'synthetic.accept') => send(type, {id, reviewed: true}, as);
+  const refused = async (id, as, why, type) => {
+    const r = await accept(id, as, type); assert.equal(r.status, 400, why + ': ' + JSON.stringify(r.body).slice(0, 200));
+    assert.match(r.error, /A second person.s step needs two persons/, why); assert.match(r.error, new RegExp('A second signed-in person saves or confirms ' + id + ' first\\.'), 'the refusal says what must happen first');
+    assert.ok(!/synthetic|action|verif/i.test(r.error), 'in words that fit any package: ' + r.error); assert.equal(rec(id).acceptance, undefined, 'nothing is accepted by a refused request');
+  };
+  try {
+    // written only by an agent account: one person accepting it is one person, not two
+    assert.equal((await send('synthetic.save', {title: 'Written by the agent account'}, AGENT)).status, 200); const agentOnly = h.last();
+    assert.deepEqual([rec(agentOnly).actor, rec(agentOnly).provenance.author.kind], [AGENT, 'sol-draft']);
+    await refused(agentOnly, A, 'a record only an agent account wrote');
+    // a draft by Sol sent from a person's session, not reviewed
+    assert.equal((await send('synthetic.save', {title: 'Drafted by Sol in a person\'s session'}, B, {authorKind: 'sol-draft'})).status, 200); const solDraft = h.last();
+    assert.equal(rec(solDraft).provenance.author.kind, 'sol-draft');
+    await refused(solDraft, A, 'a draft by Sol nobody reviewed');
+    // written by a person, then rewritten by the agent account: no person stands behind the record as it stands
+    assert.equal((await send('synthetic.save', {title: 'Written by a person'})).status, 200); const rewritten = h.last();
+    assert.equal((await send('synthetic.save', {id: rewritten, title: 'Rewritten by the agent account'}, AGENT)).status, 200);
+    assert.equal(rec(rewritten).provenance.author.kind, 'sol-draft');
+    await refused(rewritten, B, 'a person\'s record an agent account rewrote');
+    // an import
+    assert.equal((await send('synthetic.save', {title: 'Imported'}, B, {authorKind: 'import'})).status, 200); const imported = h.last();
+    await refused(imported, A, 'an imported record');
+    await refused(imported, A, 'a projection of the record: the stamp is read from the collection the package states', 'synthetic.endorse');
+    // once a second person has saved it
+    assert.equal((await send('synthetic.save', {id: agentOnly, title: 'Saved by a second person'}, B)).status, 200);
+    assert.deepEqual([rec(agentOnly).provenance.author.kind, rec(agentOnly).provenance.author.by], ['person', B]);
+    { const r = await accept(agentOnly, A); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.deepEqual([rec(agentOnly).acceptance.actor, rec(agentOnly).acceptance.account], [A, 'person'], 'the boundary hands the author\'s account kind to apply, which keeps it on the step'); }
+    { const r = await accept(agentOnly, C, 'synthetic.endorse'); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(agentOnly).endorsement.actor, C); }
+    // once a second person has confirmed it; the one who confirmed is one person
+    assert.equal((await send('synthetic.confirm', {id: solDraft}, C)).status, 200);
+    assert.deepEqual([rec(solDraft).provenance.author.kind, rec(solDraft).provenance.reviewed?.by, rec(solDraft).provenance.reviewed?.how], ['sol-draft', C, 'confirmed']);
+    await refused(solDraft, C, 'the person who confirmed it is one person');
+    { const r = await accept(solDraft, A); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(solDraft).acceptance.actor, A); }
+    // a confirmation holds for the record as it was confirmed: rewritten by the agent account, it is gone
+    assert.equal((await send('synthetic.confirm', {id: imported}, C)).status, 200);
+    assert.equal((await send('synthetic.save', {id: imported, title: 'Imported, confirmed, then rewritten'}, AGENT)).status, 200);
+    await refused(imported, A, 'a confirmation of what the record no longer says');
+    // the author is still refused first, by the one rule (verifierRefusal)
+    assert.match((await accept(agentOnly, B)).error, /architect-b wrote /);
+  } finally { h.close(); }
+  // a record restored from elsewhere: its stamp is history there, not a person behind it on this workbench
+  { let p = withSynthetic(reference('bank-payment'), {title: 'Stamped elsewhere'}, B); p.synthetic.records[0].provenance = {author: {kind: 'person', by: B, at: '2026-09-01T09:00:00.000Z'}};
+    const author = {kind: 'person', id: A, account: 'person', reviewed: true}, run = q => commandHandler('synthetic.accept')(documentCopy(q), {type: 'synthetic.accept', payload: {id: 'SYN-001', reviewed: true}}, AT, A, {author});
+    assert.equal(run(withFinalReview(p)).document.synthetic.records[0].acceptance.actor, A, 'a person\'s stamp of this workbench stands');
+    p = withFinalReview(p); p.finalReview.imported = {at: '2026-09-15T09:00:00.000Z', by: A};
+    assert.throws(() => run(p), /needs two persons/, 'a stamp from before the project was restored here is history'); }
+  // the start check: a second person's type states the collection it acts on, so the boundary can read the stamp
+  assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}}).some(i => /command “xy\.accept” is a second person.s step: the package states provenance\.paths/.test(i)), 'a second type without provenance.paths is refused at start');
+  assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {xy: []}}}).some(i => /states provenance\.paths/.test(i)), 'an empty list states none');
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {xy: ['xy.records']}}}), []);
+  assert.deepEqual(boundary.extensionIssues({id: 'xy', commands: {'xy.accept': {apply() {}, second: () => null}}, provenance: {paths: {'xy.accept': ['xy.records']}}}), []);
+  pass('D1: a second person\'s step is refused, in words that fit any package, while no person other than the actor stands behind the record as it stands (written by an agent account, drafted by Sol, rewritten by an agent, imported, restored from elsewhere), and is taken once a second person has saved or confirmed it; a projection is read against the stored record\'s stamp; a second type states provenance.paths');
 });
 
 // ---------------------------------------------------------------- 3. checks and readiness

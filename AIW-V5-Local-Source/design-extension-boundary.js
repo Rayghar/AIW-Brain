@@ -6,10 +6,14 @@
 // undo receipt, the activity row and the idempotency receipt. This module adds what a command type says of itself:
 //   person   a person's step: a draft by Sol and an agent account are refused before the project is read
 //            (authorship.js isReviewCommand, refuseUnreviewable), and an import is refused here;
-//   second   a second person's step: person-only, and second(p, command) answers the record (or records) acted on,
-//            each {id, actor, history: [{revision, actor}], owner?}: verifierRefusal (public/architecture-obligations.js),
-//            the one second-person rule, refuses whoever wrote any revision of it, an agent, a request with no
-//            signed-in actor and a record that names no author;
+//   second   a second person's step: person-only, and second(p, command) answers the record (or records) acted on, or
+//            a projection of it the package builds, each {id, actor, history: [{revision, actor}], owner?}:
+//            verifierRefusal (public/architecture-obligations.js), the one second-person rule, refuses whoever wrote
+//            any revision of it, its owner, an agent, a request with no signed-in actor and a record that names no
+//            author. Then two persons are asked for (the lead's ruling D1 of 2026-11-18): a person other than the actor
+//            stands behind the record as it stands (personBehind below), read from the stored record's own stamps in
+//            the collection the package states for the type (provenance.paths), or the step is refused with what must
+//            happen first;
 //   validate (p, command, {at, actor, author}) answers a refusal in words, or nothing: what the type refuses by who
 //            writes the commit (its author: a person, an import, a draft by Sol; an agent account), which the handler
 //            is not told when its command is applied inside a reviewed batch. It is asked before anything is applied,
@@ -29,7 +33,7 @@ import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
 import {COLLECTIONS} from './public/record-lifecycle.js';
-import {innerCommands} from './public/provenance.js';
+import {innerCommands, listAt, reviewOf} from './public/provenance.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE} from './public/design-extension-parts.js';
@@ -55,17 +59,37 @@ export function builtInType(type) {
   }
   return probes.get(type);
 }
-// The command a package states for a type, of the first package by id that states it; null for a type no package
-// states and for one a built-in handler takes.
-export function extensionCommand(type) {
+// The command a package states for a type, of the first package by id that states it, with that package ([package,
+// command]); null for a type no package states and for one a built-in handler takes.
+function statedBy(type) {
   if (typeof type !== 'string' || !COMMAND_TYPE.test(type)) return null;
-  for (const e of EXTENSIONS) { const c = e.commands; if (c && Object.hasOwn(c, type) && typeof c[type]?.apply === 'function') return builtInType(type) ? null : c[type]; }
+  for (const e of EXTENSIONS) { const c = e.commands; if (c && Object.hasOwn(c, type) && typeof c[type]?.apply === 'function') return builtInType(type) ? null : [e, c[type]]; }
+  return null;
+}
+export const extensionCommand = type => statedBy(type)?.[1] || null;
+// Whether a person other than the actor stands behind a record as it stands (ruling D1): the server's stamp of the
+// commit that last wrote what the record says is a person's (provenance.author, public/provenance.js stampAuthorship:
+// an agent account never writes as a person, and a draft by Sol and an import are stamped as what they are), or a
+// person has confirmed or kept the record as it now reads (provenance.reviewed, or a review plan judgement that kept
+// it: reviewOf). A record with no stamp has no person behind it (one a merge wrote, ruling D12), and neither has one
+// whose stamp was made before the project was restored here: that is history from elsewhere, as a restored review is.
+function personBehind(p, record, actor) {
+  if (!record || typeof record !== 'object') return false;
+  const a = record.provenance?.author, restored = p?.finalReview?.imported?.at, review = reviewOf(p, record);
+  if (a?.kind === 'person' && a.by && a.by !== actor && !(restored && !(a.at > restored))) return true;
+  return !!review?.by && review.by !== actor && (review.how === 'confirmed' || review.how === 'kept' || review.how === 'judgement' && review.outcome === 'kept');
+}
+// The stored record a second person's step acts on, by its id, in the collections the package states for the type
+// or for its prefix (provenance.paths): `second` may answer a projection, and the stamps are the stored record's.
+function storedRecord(p, e, type, id) {
+  const paths = e.provenance?.paths || {};
+  for (const path of [paths[type], paths[type.split('.')[0]]].find(Array.isArray) || []) { const r = listAt(p, path).find(x => x?.id === id); if (r) return r; }
   return null;
 }
 // The handler worker.js calls for a package's type, (document, command, at, actor, {author, revision}) as every
 // handler is called, or null. It refuses what the type says of itself, then applies.
 export function extensionHandler(type) {
-  const c = extensionCommand(type);
+  const [e, c] = statedBy(type) || [];
   if (!c) return null;
   return (p, command, at, actor, options = {}) => {
     const author = options.author || null;
@@ -76,7 +100,10 @@ export function extensionHandler(type) {
     if (c.second) {
       const subject = c.second(p, command), records = (Array.isArray(subject) ? subject : [subject]).filter(r => r && typeof r === 'object');
       if (!records.length) throw Error(type + ' names no record a second person could act on.');
-      for (const r of records) { const refusal = verifierRefusal(r, actor, author.account); if (refusal) throw Error(refusal); }
+      for (const r of records) {
+        const refusal = verifierRefusal(r, actor, author.account); if (refusal) throw Error(refusal);
+        if (!personBehind(p, storedRecord(p, e, type, r.id), actor)) throw Error('A second person\'s step needs two persons: no person other than ' + actor + ' stands behind ' + r.id + ' as it stands (it was written by an agent account, drafted by Sol, imported or restored, or it names no author). A second signed-in person saves or confirms ' + r.id + ' first.');
+      }
     }
     const refusal = c.validate?.(p, command, {at, actor, author});
     if (refusal) throw Error(String(refusal));
