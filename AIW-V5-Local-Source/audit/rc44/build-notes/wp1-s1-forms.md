@@ -290,12 +290,14 @@ What does move:
   `conceptDecisionForms`.
 - `public/knowledge-governance.js`: the fifth argument `{forms, limits}`; the limit tiers; a claim's `form` and
   `authoredAs`; the optional source keys `checkedAt`, `reviewDue`, `versionScope`, `sourceFile`; `formChecked` on a
-  form's review; the form hooks at claim, review and release; the register's command types through the `default`
-  branch; `releasedClaims` without the releases of forms. 27 bytes in the client.
-- `public/knowledge-stewardship.js` (the stewards' reading lists no form claim), `repository-packet.js` (the tier),
+  form's review; the form hooks at claim, review and release, and *(fix-up, item 12)* where a claim would contradict
+  a form (`flagOverlaps`); the register's command types through the `default` branch; `releasedClaims` without the
+  releases of forms. 27 bytes in the client.
+- `public/knowledge-stewardship.js` (the stewards' reading lists no form claim), `public/architecture-brain.js`
+  *(fix-up, second session)* (the Brain's receipt names no release of forms), `repository-packet.js` (the tier),
   `worker.js` (import and dispatch with `{author}`), `authorship.js` (four person-only types), `recovery-service.js`
   (an imported concept review loses its actor).
-- Suite: 26 S1 cases green; S2 to S5 hold one pending case each. The runner fails a run that executed no case.
+- Suite: 27 S1 cases green; S2 to S5 hold one pending case each. The runner fails a run that executed no case.
 - The design's Appendix B records were run through `conceptFormIssues` against the real renditions on the first
   build's machine (scratch, nothing copied): every slice and passage hash matched the design. *(fix-up)* The appendix
   is written in the first build's shape; with B6 its `quotes` are `[{field, quote}]` and its `doesNotEstablish`
@@ -377,7 +379,8 @@ Nothing. The fix-up is complete on `rc44/wp1-s1-forms-fix`; its head is the fina
    itself. Here the wrapper injects them as part of the form capability and `applyKnowledgeCommand`'s `default` branch
    calls it, so the copy of the document, the shared counter, the history bound of the tier, the history line and the
    8,000,000-character bound are the same lines for every `knowledge.*` command. `FORM_CAPABILITY` is therefore a
-   function of the request's author, `formCapability(author, limits)` with `claim`, `review`, `release`, `command`.
+   function of the request's author, `formCapability(author, limits)` with `claim`, `review`, `release`, `command`
+   and, *(fix-up, item 12)* `opposes`.
 3. **The pending case files do not fail the run.** The design asks for the later case files as "a single failing case".
    A registered suite that is red by design would be read as a regression, so a pending case is listed as PENDING and
    fails only with `--all` (or `AIW_RC44_WP1_ALL=1`). *(fix-up)* A run in which no case was executed fails.

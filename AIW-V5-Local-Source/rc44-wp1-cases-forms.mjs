@@ -430,6 +430,17 @@ add('S1.5 through the service: POST /api/commands saves a candidate concept from
     // Only a person changes what that review covered (ruling B3): the agent that wrote the draft cannot move its review date now.
     r = await send('knowledge.concept', {...CONCEPT, id: conceptRecordId, forms: state.document.knowledge.concepts[0].forms, steward: 'Another guild', reviewDue: '2099-12-31'}, 'bot'); assert.equal(r.status, 400); assert.match(r.data.error, /SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered/);
     assert.equal(state.document.knowledge.concepts[0].reviewDue, '2027-11-16'); assert.equal(KC.conceptRecords(state.document)[0].state, 'reviewed');
+    // Nor does it make that review lapse with a claim that carries no form (rulings B3 and B9, case S1.26): the concept's
+    // id as its subject, the applicability form's fixed predicate, another polarity. An import is refused it as well.
+    const opposing = {sourceId, lineStart: 17, lineEnd: 17, subjectId: 'SYN-P001', predicate: 'applies when', statement: 'An outbox is avoided wherever a caller only reads.', claimType: 'applicability', polarity: 'prohibits', conditions: ['The caller only reads.'], limitations: ['Says nothing of later changes.']};
+    const NOBODY = /SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered \(a claim that contradicts KC-\d+, a form of it\)/;
+    r = await send('knowledge.claim', opposing, 'bot'); assert.equal(r.status, 400, 'an agent account opens no contradiction with a form of a reviewed concept'); assert.match(r.data.error, NOBODY);
+    r = await send('knowledge.claim', opposing, 'reviewer', {authorKind: 'import'}); assert.equal(r.status, 400, 'nor does an import'); assert.match(r.data.error, NOBODY);
+    assert.deepEqual(state.document.knowledge.contradictions, []); assert.equal(KC.conceptRecords(state.document)[0].state, 'reviewed');
+    // A claim of the agent that opposes no form is saved as before, and a person's opposing claim opens the contradiction (the fail-safe of rc.10.73.42).
+    await ok('knowledge.claim', {...opposing, polarity: 'supports'}, 'bot'); assert.equal(KC.conceptRecords(state.document)[0].state, 'reviewed');
+    const plainId = state.document.knowledge.claims.at(-1).id, opposingId = await ok('knowledge.claim', opposing, 'importer');
+    assert.deepEqual(state.document.knowledge.contradictions.map(x => [x.status, x.claimIds]), [['open', [ids.applicability, opposingId]], ['open', [plainId, opposingId]]], 'with the form it opposes, and with the agent\'s plain claim of the other polarity'); assert.equal(KC.conceptRecords(state.document)[0].state, 'draft');
   } finally { env.DB.close?.(); }
 });
 
@@ -595,14 +606,14 @@ add('S1.10 (inert forms): with the nine forms of a concept held by the bank-paym
   const STAMPS = ['brainContext.governed.receipt.knowledgeStamp', ...['packetMind', 'packetDesign', 'packetChallenge'].flatMap(k => [k + '.brainReceipt.knowledgeStamp', k + '.stamp'])].sort();
   assert.deepEqual(moved(before, designReadings(plain)).sort(), STAMPS, 'what a plain candidate source moves on rc.10.73.42');
   assert.notEqual(rv.designFingerprint(plain), rv.designFingerprint(bank), 'a plain candidate source moves the design fingerprint on rc.10.73.42 already');
-  // Once a release is active the same receipt also names it, by its id and its checksum, as it names any active release.
-  const ACTIVE = ['brainContext.governed.receipt.activeReleases', ...['packetMind', 'packetDesign', 'packetChallenge'].map(k => k + '.brainReceipt.activeReleases')];
+  // At every stage, released and active included, the nine forms move those seven values and no other: the Brain's
+  // receipt lists the active releases the Brain reads, and a release of forms is not one of them (ruling B1).
   const MARKS = ['-STATEMENT', '-FORM', '-CONDITION', '-UNIT'].map(m => F.MARKER + m);
-  const inert = (stage, p, active) => {
+  const inert = (stage, p) => {
     const after = designReadings(p);
     assert.equal(p.knowledge.claims.filter(c => c.form).length, 9, stage + ': the nine forms are in the document'); assert.equal(p.knowledge.concepts.length, 1);
     for (const m of MARKS) assert(JSON.stringify(p.knowledge).includes(m), stage + ': the document holds ' + m);
-    assert.deepEqual(moved(before, after).sort(), [...STAMPS, ...(active ? ACTIVE : [])].sort(), stage + ': a reading of the design moved');
+    assert.deepEqual(moved(before, after).sort(), STAMPS, stage + ': a reading of the design moved');
     for (const [key, reading] of Object.entries(after)) assert(!JSON.stringify(reading).includes(F.MARKER), stage + ': the marker reached ' + key);
     assert.deepEqual(K.releasedClaims(p), [], stage + ': no reader of released claims is handed a form'); assert.deepEqual(K.knowledgeFindings(p), []);
     assert.deepEqual(KC.conceptDecisionForms(p, 'KU-0001'), [], stage + ': and no design record without a pin');
@@ -613,12 +624,12 @@ add('S1.10 (inert forms): with the nine forms of a concept held by the bank-paym
   for (const [stage, options] of STAGES) {
     // The document holds them anyway: written into it, as a recovery or an older library might leave it (ruling B2).
     const L = await library({...options, mark: F.MARKER}), p = graft(bank, L.document), active = !!options.activate;
-    inert(stage, p, active);
+    inert(stage, p); assert.equal(p.knowledge.pins.length, active ? 1 : 0, stage + ': the release of forms is ' + (active ? '' : 'not ') + 'active');
     assert.deepEqual(KC.releasedConcepts(p).length, active ? 1 : 0);
     if (!active) assert(KC.conceptReading(p, 'SYN-P001').forms.filter(f => f.tier === 'decision').every(f => f.content === null && f.architectureUnit === null), stage + ': the concept reading holds no decision-bearing content');
   }
   // The same where a person marked the design project itself as a knowledge library and the commands wrote the forms there.
-  for (const [stage, options] of [STAGES[0], STAGES[4]]) { const p = (await library({...options, base: bank, mark: F.MARKER})).document; assert.equal(p.knowledge.library.enabled, true); inert(stage + ', written by the commands into a design project marked as a library', p, !!options.activate); }
+  for (const [stage, options] of [STAGES[0], STAGES[4]]) { const p = (await library({...options, base: bank, mark: F.MARKER})).document; assert.equal(p.knowledge.library.enabled, true); inert(stage + ', written by the commands into a design project marked as a library', p); }
   // What a released, active form does move, in full (ruling B1 and should-fix 1; the same list is in the build notes):
   { const L = await library({verify: true, review: true, release: true, activate: true, mark: F.MARKER}), p = graft(bank, L.document), release = p.knowledge.releases[0];
     // 1. the concept readers: the concept, its nine forms with their content, and its forms as an active release holds them;
@@ -628,10 +639,10 @@ add('S1.10 (inert forms): with the nine forms of a concept held by the bank-paym
     // 2. the knowledge workspace's own lists (its graph of sources and claims and their counts, and its history text, which names the active release);
     assert.deepEqual([...new Set(moved(workspace, workspaceReadings(p)).map(path => path.split('.').slice(0, 2).join('.')))].sort(), ['graph.counts', 'graph.edges', 'graph.nodes', 'history']);
     assert.match(K.knowledgeMarkdown(p), new RegExp('Active project releases: ' + release.id));
-    // 3. stamps: the stamp of the knowledge state (in the Brain's receipt and under each packet's stamp), the active release's
-    //    id and checksum in that receipt, and the whole-document fingerprint with what is stamped over it.
+    // 3. stamps: the stamp of the knowledge state (in the Brain's receipt and under each packet's stamp) and the
+    //    whole-document fingerprint with what is stamped over it. The Brain's receipt names no release of forms.
     assert.notEqual(K.knowledgeStamp(p), K.knowledgeStamp(bank)); assert.notEqual(rv.designFingerprint(p), rv.designFingerprint(bank)); assert.notEqual(rv.reviewSourceStamp(p), rv.reviewSourceStamp(bank));
-    assert.deepEqual(brainContext(p, {id: p.artefacts.find(a => a.type === 'requirement').id, chapter: 1}).governed.receipt.activeReleases, [{id: release.id, checksum: release.checksum}]);
+    assert.deepEqual(p.knowledge.pins, [release.id]); assert.deepEqual(brainContext(p, {id: p.artefacts.find(a => a.type === 'requirement').id, chapter: 1}).governed.receipt.activeReleases, [], 'the Brain\'s receipt lists the releases the Brain reads: a release of forms is none of them');
     assert(rv.inheritedFindings(p).some((f, i) => f.stamp !== rv.inheritedFindings(bank)[i].stamp), 'a finding\'s stamp holds the fingerprint');
     // And nothing else: a claim receipt, should one be made of a form, carries no form and scores nothing.
     for (const c of release.claims) { const receipt = K.claimReceipt(p, c, release); assert(!('form' in receipt)); assert.equal(receipt.scoring, false); } }
@@ -778,6 +789,7 @@ add('S1.16 (ruling B1): a claim that carries a form is read only by the concept 
   L.k('activate', {...F.REVIEW, id: plainRelease, stamp: K.knowledgeStamp(L.document)}, 'releaser');
   const p = L.document, requirement = p.artefacts.find(a => a.type === 'requirement').id;
   assert.deepEqual(p.knowledge.pins, [releaseId, plainRelease], 'both releases are active');
+  assert.deepEqual(brainContext(p, {id: requirement, chapter: 1}).governed.receipt.activeReleases, [{id: plainRelease, checksum: p.knowledge.releases.find(r => r.id === plainRelease).checksum}], 'the Brain\'s receipt names the release of plain claims, which it reads, and not the release of forms');
   assert.deepEqual(K.releasedClaims(p).map(h => [h.release.id, h.claim.id, h.eligible]), [[plainRelease, plain, true]], 'released claims: the plain claim, and no form');
   assert(!JSON.stringify(K.releasedClaims(p)).includes(F.MARKER), 'neither as a claim nor inside a release handed to a reader');
   // A release that holds both anyway (written into the document) reaches no reader of released claims, whatever else it holds.
