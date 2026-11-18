@@ -10,7 +10,12 @@
 //            each {id, actor, history: [{revision, actor}], owner?}: verifierRefusal (public/architecture-obligations.js),
 //            the one second-person rule, refuses whoever wrote any revision of it, an agent, a request with no
 //            signed-in actor and a record that names no author;
-//   validate (p, command, {at, actor, author}) answers a refusal in words, or nothing; apply may also throw;
+//   validate (p, command, {at, actor, author}) answers a refusal in words, or nothing: what the type refuses by who
+//            writes the commit (its author: a person, an import, a draft by Sol; an agent account), which the handler
+//            is not told when its command is applied inside a reviewed batch. It is asked before anything is applied,
+//            for the command itself and for each command of the type a request carries in a batch (validateExtensions),
+//            with the document as the request finds it; what depends on the document as earlier commands of a batch
+//            leave it is refused by apply, which throws, as every built-in handler does;
 //   track    (prior, next, command, at) adds the change events of the command (and of the same type inside a reviewed
 //            batch), as the built-in trackers do; the boundary stamps them with who, of what kind and why;
 //   undo     {previous(p, command), revert(p, previous, at, actor)}: the latest saved action is undone by its receipt
@@ -23,6 +28,7 @@ import {EXTENSIONS} from './public/design-extensions.js';
 import {verifierRefusal} from './public/architecture-obligations.js';
 import {registerReviewTypes} from './authorship.js';
 import {registerUndoExtensions} from './public/action-undo-domain.js';
+import {innerCommands} from './public/provenance.js';
 import {createProject} from './shared/projects-domain.js';
 import {withFinalReview} from './public/review-domain.js';
 import {extensionIssues as partIssues, extensionConflicts, COMMAND_TYPE} from './public/design-extension-parts.js';
@@ -76,6 +82,12 @@ export function extensionHandler(type) {
     return c.apply(p, command, at, actor, options);
   };
 }
+// What the packages' types refuse inside a batch a request carries (a reviewed change, an applied alternative: the
+// commands provenance.js innerCommands reads), each asked with the commit's author before the batch is applied; the
+// command sent on its own is asked by its handler above (worker.js, before the command is dispatched).
+export function validateExtensions(p, command, context) {
+  for (const c of innerCommands(command)) { if (c === command) continue; const refusal = extensionCommand(c?.type)?.validate?.(p, c, context); if (refusal) throw Error(String(refusal)); }
+}
 // The change events of a package's command, and of its types inside a reviewed batch (worker.js trackCommandChanges).
 export function trackExtensions(prior, next, command, at) {
   const inner = command?.type === 'workspace.apply' && Array.isArray(command.payload?.commands) ? command.payload.commands : [];
@@ -91,7 +103,7 @@ registerUndoExtensions(type => { const c = extensionCommand(type); return c?.und
 // What a package states that the contract does not allow (public/design-extension-parts.js), with the command types a
 // built-in handler takes; and the check the server makes when it starts: a package that does not conform stops it.
 export function extensionIssues(e) {
-  const out = partIssues(e), name = /^[a-z][a-z0-9-]{1,60}$/.test(String(e?.id || '')) ? e.id : 'A design package';
+  const out = partIssues(e), name = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/.test(String(e?.id || '')) ? e.id : 'A design package';
   for (const type of Object.keys(e?.commands && typeof e.commands === 'object' ? e.commands : {})) if (COMMAND_TYPE.test(type) && builtInType(type)) out.push(name + ': command “' + type + '” is built in; it stays the chapter\'s own.');
   return out;
 }

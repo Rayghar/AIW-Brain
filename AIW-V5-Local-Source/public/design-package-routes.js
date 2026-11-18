@@ -3,11 +3,14 @@
 // whether a document holds the package's records (needs) and how the browser loads the package (load), so that the
 // project store has it loaded before such a document is first drawn (design-extensions.js ensureExtensions). The stub
 // has an id of its own, apart from the package's (which the lazily loaded module registers when it arrives):
-//   registerExtension({id:'example-route',needs:p=>!!p.example,load:()=>import('./example.js')});
-// with `import {registerExtension} from './design-extensions.js';` above the first such line. The line is on the route:
-// it is the package's own route bytes. `needs` reads only the document and is cheap (it is asked at every read and
-// every save); `load` is the one dynamic import of the package's lazy entry (or of the existing lazy entry that hosts
-// it). project-store.js imports this file and nothing else does: it must stay out of the entry script (entry.js), whose
-// own dynamic imports are measured as the route (client-bundle.mjs sizeReport), or the package would be counted there.
+//   registerExtension({id: 'example-route', needs: p => !!p.example, load: () => import(<the package's lazy entry>)});
+// with registerExtension imported from design-extensions.js above the first such line. The line is on the route: it is
+// the package's own route bytes. `needs` reads only the document and is cheap (it is asked at every read and every
+// save); `load` is the one dynamic import of the lazy entry that holds the package: an existing lazy entry that imports
+// the package statically (measured at S0: about 0.2 KB on the route for the first package, no new script file), or an
+// entry of its own (measured: 0.8 to 1.2 KB on the route in chunk glue and two more script files, because the shared
+// chunks split again). project-store.js imports this file and nothing else does: it must stay out of the entry script
+// (entry.js), whose own dynamic imports are measured as the route (client-bundle.mjs sizeReport), or the package
+// would be counted there.
 //
 // No package exists yet. A slice that adds one adds its line below, and nothing else in the shared machinery.

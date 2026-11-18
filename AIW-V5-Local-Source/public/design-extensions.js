@@ -2,24 +2,28 @@
 // A package tells the shared machinery what it adds with registerExtension({id, …parts}); the record graph, the trace
 // kernel, the chapter checks, the command boundary, the lifecycle, the provenance reader, the design fingerprint, the
 // read upgrade, the SDD and ARS assembly and the project store read it from here. It imports nothing and holds no
-// project state. The parts (each optional; audit/rc44/build-notes/s0-extensions.md states the contract in full):
-//   objectTypes {type: {label, chapter, level, prefix}}       record-graph.js OBJECT_TYPES
-//   records(p, add, rel)                                       record-graph.js recordRelations (the one emitter)
+// project state. The parts (each optional; audit/rc44/build-notes/s0-extensions.md states the contract in full, under
+// "Contract for packages", with a worked example):
+//   objectTypes {type: {label, chapter, level, prefix}}        record-graph.js OBJECT_TYPES
+//   records(p, add, rel)                                        record-graph.js recordRelations (the one emitter)
 //   layers {layer: type}, hops [{layer, types, from, dir, ctx}] trace-kernel.js
-//   checks {chapter: p => [finding]}                           document-memo.js sharedList (each chapter's findings); 11: the review's
-//   commands {type: {apply, staged, person, second, validate, undo, track, large}}  canonical-command.js, the server's boundary
-//   lifecycle {path: chapter}                                  record-lifecycle.js COLLECTIONS, provenance.js RECORD_PATHS
-//   provenance {nouns: {path: noun}, paths: {type or prefix: [path]}}     provenance.js
-//   designKeys [key], evidenceKeys [key]                       review-domain.js designOf
-//   upgrade(p)                                                 readings-upgrade.js (server)
-//   sections [{document, after, markdown(p)}]                  the registers and ARS exports, sdd-architecture.js (server)
-//   needs(p), load()                                           project-store.js (ensureExtensions)
+//   checks {chapter: p => [finding]}                            document-memo.js sharedList (each chapter's findings; 11: the review's own)
+//   commands {type: {apply, staged, person, second, validate, undo, track, large}}
+//                                                               the server's boundary (design-extension-boundary.js); canonical-command.js stagedBy
+//   lifecycle {path: chapter}                                   record-lifecycle.js COLLECTIONS (and so provenance.js RECORD_PATHS)
+//   provenance {nouns: {path: noun}, paths: {type or prefix: [path]}, records: {path: chapter}}
+//                                                               provenance.js RECORD_NOUNS, pathsOf, RECORD_PATHS
+//   designKeys [key], evidenceKeys [key]                        review-domain.js designOf
+//   upgrade(p), upgradeNote                                     readings-upgrade.js, storage-upgrade.js (server)
+//   sections [{document, after, markdown(p)}]                   the registers, ARS and chapter register exports, sdd-architecture.js (server)
+//   needs(p), load()                                            project-store.js (ensureExtensions), from design-package-routes.js
 // Rules. Registering is by id: the first registration under an id stands, and registering it again changes nothing (a
 // package's route stub {id, needs, load} has an id of its own, apart from the lazily loaded module it loads). Readers
 // read the packages in id order, so the order of registration never shows. A package only adds: a type, a collection,
 // a noun, a command type or a layer that is built in, or that a package earlier by id states, is left as it is
-// (extendTable), and with none of a package's records in a document every reading is what it was. The server registers every package when it starts (design-packages.js) and checks it there
-// (design-extension-boundary.js extensionIssues); the browser registers a package when its module loads.
+// (extendTable), and with none of a package's records in a document every reading is what it was. The server registers
+// every package when it starts (design-packages.js) and checks each there against this contract
+// (design-extension-boundary.js assertExtensions); the browser registers a package when its module loads.
 const E={},tables=[];
 // The registered packages, in id order.
 export let EXTENSIONS=[];

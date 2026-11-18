@@ -40,6 +40,7 @@ import {architectureMarkdown} from './public/sdd-architecture.js';
 import {isReviewCommand} from './authorship.js';
 import {documentCopy, isSettled} from './public/document-memo.js';
 import {createProjectStore} from './public/project-store.js';
+import {previewWorkingChange} from './public/workbench-domain.js';
 
 // Read through the namespace, so that the file links against the baseline too and each case fails there on its own.
 const {applyCanonical, applyRecordCommand, STAGED_COMMANDS, reviewsOnItsOwn} = canonical, stagedBy = type => canonical.stagedBy(type);
@@ -96,7 +97,8 @@ const SYNTHETIC = {
     ...(r.broken ? [{code: 'synthetic-broken', id: 'synthetic-broken:' + r.id, title: 'The synthetic invariant is broken', detail: r.id + ' is marked broken.', level: 'error', hard: true, objectId: r.id}] : [])
   ]), 11: p => syn(p).filter(r => r.note === 'review me').map(r => ({code: 'synthetic-review', id: 'synthetic-review:' + r.id, chapter: 3, chapterTitle: 'Architecture decisions', title: 'Review the synthetic note', detail: r.id, level: 'warning', objectId: r.id}))},
   commands: {
-    'synthetic.save': {apply: applySynthetic, staged: true, track(prior, next, command, at) {
+    // What the type refuses by who writes the commit: a draft by Sol marks no record broken, sent on its own or in a batch.
+    'synthetic.save': {apply: applySynthetic, staged: true, validate: (p, command, {author}) => (author?.kind === 'sol-draft' && command.payload?.broken === true ? 'A draft by Sol does not mark a synthetic record broken.' : null), track(prior, next, command, at) {
       const r = syn(next).find(x => x.id === (command.payload?.id || syn(next).at(-1)?.id)); if (!r) return;
       next.changes.events.push({id: 'CHG-' + String(++next.changes.counter).padStart(3, '0'), source: {chapter: 3, id: r.id, ref: r.id, kind: 'synthetic', title: r.title}, title: r.title, at, fields: [{key: 'title', label: 'Title', before: syn(prior).find(x => x.id === r.id)?.title ?? null, after: r.title}], items: []});
     }},
@@ -184,7 +186,7 @@ await block('registration', () => {
   assert.ok(boundary.extensionIssues(SYNTHETIC).some(i => /comes from “other”, which is no layer/.test(i)), 'a hop comes from a layer that exists');
   assert.ok(boundary.extensionIssues(HOSTILE).length >= 12, 'the conformance check names what a package may not state: ' + boundary.extensionIssues(HOSTILE).join(' | '));
   assert.ok(boundary.extensionIssues({id: 'xy', objectTypes: {xy: {label: 'Xy', chapter: 2, level: 'intent', prefix: 'XY'}}, layers: {xy: 'xy'}, hops: [{layer: 'xy', types: ['a'], from: ['requirement'], dir: 'out'}]}).some(i => /own chain or context/.test(i)), 'a hop says whether it is the own chain or context');
-  assert.ok(boundary.extensionIssues({objectTypes: {}}).some(i => /its id/.test(i)), 'a package names itself');
+  assert.ok(boundary.extensionIssues({objectTypes: {}}).some(i => /its id/.test(i)), 'a package names itself'); assert.ok(boundary.extensionIssues({id: 'constructor'}).some(i => /its id/.test(i)), 'with an id the registry can keep');
   assert.ok(boundary.extensionIssues({id: 'xy', designKeys: ['workspace.things']}).some(i => /does not read/.test(i)), 'a design key lies where the fingerprint reads');
   assert.deepEqual(boundary.extensionIssues({id: 'xy', designKeys: ['things', 'runtime.things'], evidenceKeys: ['thingLog']}), []);
   assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.sign': {apply() {}, person: true, staged: true}, 'decision.accept': {apply() {}}}}).length === 2, 'a person\'s step is never staged, and a built-in type is the chapter\'s');
@@ -321,6 +323,21 @@ await block('2 command boundary', async () => {
     // a draft by Sol and an agent account send a design edit unreviewed, and claim no review
     const drafted = await send('synthetic.save', {title: 'Drafted by Sol'}, AGENT); assert.equal(drafted.status, 200, JSON.stringify(drafted.body).slice(0, 300));
     assert.equal(state.document.synthetic.records.at(-1).provenance.author.kind, 'sol-draft'); assert.equal(state.document.changes.events.at(-1).reviewed, false);
+    // a reviewed batch carries the package's design edit: applied by the same handler, journalled once per record, stamped
+    { const commands = [{type: 'synthetic.save', payload: {title: 'Saved in a reviewed batch', broken: true}}], preview = previewWorkingChange(state.document, commands);
+      const batch = await send('workspace.apply', {commands, stamp: preview.stamp, reviewed: true, reason: 'A synthetic edit reviewed as a batch.'}); assert.equal(batch.status, 200, JSON.stringify(batch.body).slice(0, 300));
+      const made = state.document.synthetic.records.at(-1); assert.deepEqual([made.title, made.broken, made.provenance?.author?.kind], ['Saved in a reviewed batch', true, 'person']);
+      assert.equal(state.document.changes.events.at(-1).source.id, made.id, 'the package\'s tracker reads its command inside the batch');
+      // what the type refuses by its author is refused on its own and inside a batch, before anything is applied
+      const alone = await send('synthetic.save', {title: 'Broken by Sol', broken: true}, AGENT); assert.equal(alone.status, 400); assert.match(alone.body.error, /A draft by Sol does not mark a synthetic record broken/);
+      const drafted = [{type: 'synthetic.save', payload: {title: 'Broken by Sol in a batch', broken: true}}], count = state.document.synthetic.records.length;
+      state = await (await api('/api/project' + q, 'GET', null, AGENT)).json();
+      const inBatch = await send('workspace.apply', {commands: drafted, stamp: previewWorkingChange(state.document, drafted).stamp, reviewed: false, reason: 'Drafted by Sol.'}, AGENT); assert.equal(inBatch.status, 400); assert.match(inBatch.body.error, /A draft by Sol does not mark a synthetic record broken/);
+      state = await (await api('/api/project' + q)).json(); assert.equal(state.document.synthetic.records.length, count, 'nothing of the refused batch is kept');
+      // the same batch without what the type refuses is Sol's draft, applied unreviewed: the refusal above was the package's alone
+      const plainDraft = [{type: 'synthetic.save', payload: {title: 'Drafted by Sol in a batch'}}]; state = await (await api('/api/project' + q, 'GET', null, AGENT)).json();
+      const draftedBatch = await send('workspace.apply', {commands: plainDraft, stamp: previewWorkingChange(state.document, plainDraft).stamp, reviewed: false, reason: 'Drafted by Sol.'}, AGENT); assert.equal(draftedBatch.status, 200, JSON.stringify(draftedBatch.body).slice(0, 300));
+      assert.equal(state.document.synthetic.records.at(-1).provenance.author.kind, 'sol-draft'); }
     // undone
     assert.equal((await send('synthetic.note', {id: 'SYN-001', note: 'first'})).status, 200);
     const noted = await send('synthetic.note', {id: 'SYN-001', note: 'second'}); assert.equal(noted.status, 200); assert.equal(r().note, 'second');
@@ -350,8 +367,8 @@ await block('2 command boundary', async () => {
     assert.equal((await send('record.restore', {id: 'SYN-002'})).status, 200); assert.ok(state.document.synthetic.records.some(x => x.id === 'SYN-002'));
     // the registers and the ARS through the export route carry the package's sections
     const registers = await (await api('/api/export' + q + '&chapter=11&annex=registers&format=md')).text(); assert.match(registers, /### Synthetic register\n\n- SYN-001/);
-    const ars = await (await api('/api/export' + q + '&chapter=11&document=ars&format=md')).text(); assert.match(ars, /Synthetic records bear on these requirements: 2\./);
-    const chapter3 = await (await api('/api/export' + q + '&chapter=3&format=md')).text(); assert.match(chapter3, /## Conflicts\n[\s\S]*### Synthetic records\n\n- SYN-001\n- SYN-002\n\n## Open findings/, 'a chapter\'s register carries the section at its anchor');
+    const ars = await (await api('/api/export' + q + '&chapter=11&document=ars&format=md')).text(); assert.match(ars, /Synthetic records bear on these requirements: 4\./);
+    const chapter3 = await (await api('/api/export' + q + '&chapter=3&format=md')).text(); assert.match(chapter3, /## Conflicts\n[\s\S]*### Synthetic records\n\n- SYN-001\n- SYN-002\n- SYN-003\n- SYN-004\n\n## Open findings/, 'a chapter\'s register carries the section at its anchor');
     assert.ok(!(await (await api('/api/export' + q + '&chapter=10&format=md')).text()).includes('Synthetic'), 'and only that chapter\'s');
     // a document a package's step upgrades is stored again on its next read, and the storage upgrade's activity says what the step did
     { const row = await env.DB.prepare('SELECT document,revision,updated_at FROM projects WHERE owner_id=? AND id=?').bind(A, pid).first(), stored = await readStoredProject(env, A, row.document);
@@ -520,15 +537,16 @@ await block('7 idempotent and order-free', () => {
   for (const k of Object.keys(golden.readings['clinic-appointments'])) assert.equal(out.plain[k], golden.readings['clinic-appointments'][k]);
   assert.notEqual(out.readings.graph, golden.readings['bank-payment'].graph, 'the probe\'s document does hold the packages\' records');
   // the same object again, in this process: nothing moves
-  const p = withFinalReview(withSynthetic(reference('bank-payment'), {title: 'Again'})), d = digests(p), types = Object.keys(OBJECT_TYPES).join(), layers = kernel.TRACE_LAYERS.join(), rows = JSON.stringify(COLLECTIONS);
+  const p = withFinalReview(withSynthetic(reference('bank-payment'), {title: 'Again'})), d = digests(p), types = Object.keys(OBJECT_TYPES).join(), layers = kernel.TRACE_LAYERS.join(), rows = JSON.stringify(COLLECTIONS), paths = JSON.stringify(RECORD_PATHS);
   X.registerExtension(SYNTHETIC); X.registerExtension(OTHER); X.registerExtension({...SYNTHETIC});
   assert.deepEqual(digests(withFinalReview(withSynthetic(reference('bank-payment'), {title: 'Again'}))), d); assert.equal(Object.keys(OBJECT_TYPES).join(), types); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(JSON.stringify(COLLECTIONS), rows);
   // two packages stating one row: the first by id keeps it, and the server's start check names the clash
   assert.deepEqual(boundary.extensionConflicts(), [], 'the registered packages share no row');
-  X.registerExtension({id: 'zzz-duplicate', objectTypes: {synthetic: {label: 'Duplicate', chapter: 4, level: 'logical', prefix: 'DUP'}}, layers: {synthetic: 'duplicate'}, lifecycle: {'synthetic.records': 4}, commands: {'synthetic.save': {apply() { throw Error('duplicate'); }}}, provenance: {nouns: {'synthetic.records': 'duplicate'}, paths: {}, records: {'synthetic.records': 9, 'runtime.otherNotes': 3}}});
+  X.registerExtension({id: 'zzz-duplicate', objectTypes: {synthetic: {label: 'Duplicate', chapter: 4, level: 'logical', prefix: 'DUP'}, twin: {label: 'Twin', chapter: 4, level: 'logical', prefix: 'SYN'}}, layers: {synthetic: 'duplicate'}, lifecycle: {'synthetic.records': 4}, commands: {'synthetic.save': {apply() { throw Error('duplicate'); }}}, provenance: {nouns: {'synthetic.records': 'duplicate'}, paths: {}, records: {'synthetic.records': 9, 'runtime.otherNotes': 3}}});
   assert.equal(OBJECT_TYPES.synthetic.label, 'Synthetic record'); assert.equal(JSON.stringify(COLLECTIONS), rows); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(RECORD_NOUNS['synthetic.records'], 'synthetic record'); assert.equal(boundary.extensionCommand('synthetic.save').apply, applySynthetic);
-  const paths = JSON.stringify(RECORD_PATHS); assert.deepEqual([RECORD_PATHS.filter(r => r[0] === 'synthetic.records'), RECORD_PATHS.filter(r => r[0] === 'runtime.otherNotes')], [[['synthetic.records', 3]], [['runtime.otherNotes', 10]]], 'a collection another package states is read once, as its first package states it');
-  const clashes = boundary.extensionConflicts(); assert.ok(clashes.length >= 6 && clashes.every(c => /zzz-duplicate/.test(c) && /zz-synthetic|mm-other/.test(c)), 'each clash names both packages: ' + clashes.join(' | '));
+  assert.equal(JSON.stringify(RECORD_PATHS), paths, 'the provenance reader reads what it read'); assert.deepEqual([RECORD_PATHS.filter(r => r[0] === 'synthetic.records'), RECORD_PATHS.filter(r => r[0] === 'runtime.otherNotes')], [[['synthetic.records', 3]], [['runtime.otherNotes', 10]]], 'a collection another package states is read once, as its first package states it');
+  const clashes = boundary.extensionConflicts(); assert.ok(clashes.length >= 7 && clashes.every(c => /zzz-duplicate/.test(c) && /zz-synthetic|mm-other/.test(c)), 'each clash names both packages: ' + clashes.join(' | '));
+  assert.ok(clashes.some(c => /id prefix “SYN” is stated by zz-synthetic and by zzz-duplicate/.test(c)), 'two kinds of record never share an id prefix');
   assert.ok(clashes.some(c => /collection “runtime\.otherNotes” is stated by mm-other and by zzz-duplicate: mm-other keeps it/.test(c)) && clashes.some(c => /collection “synthetic\.records” is stated by zz-synthetic and by zzz-duplicate: zz-synthetic keeps it/.test(c)));
   X.registerExtension({id: 'ab-early', objectTypes: {early: {label: 'Early', chapter: 2, level: 'intent', prefix: 'EAR'}}, layers: {early: 'early'}, hops: [{layer: 'early', types: ['binds'], from: ['synthetic'], dir: 'in', ctx: true}]});
   assert.ok(boundary.extensionConflicts().some(c => /a hop of ab-early onto “early” comes from “synthetic”, which the walk reads later/.test(c)), 'a hop from a layer of a package later by id is named');

@@ -58,7 +58,8 @@ export function placeSections(document, markdown, p) {
 }
 
 // ---------------------------------------------------------------- the conformance check
-const ID = /^[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
+// An id is a key of the registry's own table, so the one lower-case name every object carries is no id.
+const ID = /^(?!constructor$)[a-z][a-z0-9-]{1,60}$/, TYPE = /^[A-Za-z][A-Za-z0-9]{0,40}$/, PATH = /^[a-z][A-Za-z]{0,40}(\.[a-z][A-Za-z]{0,40})?$/;
 export const COMMAND_TYPE = /^[a-z][A-Za-z0-9-]{0,60}\.[A-Za-z][A-Za-z0-9-]{0,60}$/;
 const PARTS = new Set(['id', 'objectTypes', 'records', 'layers', 'hops', 'checks', 'commands', 'lifecycle', 'provenance', 'designKeys', 'evidenceKeys', 'upgrade', 'upgradeNote', 'sections', 'needs', 'load']);
 const HOP_PARTS = new Set(['layer', 'types', 'from', 'dir', 'ctx', 'only']);
@@ -180,7 +181,7 @@ export function extensionConflicts() {
   for (const part of [e => e.lifecycle, e => e.provenance?.records]) for (const e of EXTENSIONS) for (const k of Object.keys(plain(part(e)) ? part(e) : {})) if (!builtIn(rows, k, 'lifecycle') && k !== 'finalReview.narrative') later.push(['collection', k, e.id]);
   const claim = (kind, key, id) => { const k = kind + ' “' + key + '”', first = seen.get(k); if (first && first !== id) out.push(k + ' is stated by ' + first + ' and by ' + id + ': ' + first + ' keeps it.'); else seen.set(k, id); };
   for (const e of EXTENSIONS) {
-    for (const k of Object.keys(plain(e.objectTypes) ? e.objectTypes : {})) if (!builtIn(OBJECT_TYPES, k, 'objectTypes')) claim('object type', k, e.id);
+    for (const [k, t] of Object.entries(plain(e.objectTypes) ? e.objectTypes : {})) if (!builtIn(OBJECT_TYPES, k, 'objectTypes')) { claim('object type', k, e.id); if (typeof t?.prefix === 'string') claim('id prefix', t.prefix, e.id); }
     for (const [k, t] of Object.entries(plain(e.layers) ? e.layers : {})) if (!BUILT_IN_LAYERS.includes(k)) { claim('layer', k, e.id); claim('the layer of the type', t, e.id); }
     for (const k of Object.keys(plain(e.commands) ? e.commands : {})) claim('command', k, e.id);
     for (const k of Object.keys(plain(e.provenance?.nouns) ? e.provenance.nouns : {})) claim('the noun of', k, e.id);
