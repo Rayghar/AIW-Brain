@@ -1615,3 +1615,19 @@ add('S1.32 (ruling G5, beside S1.12): a recovery import clears the library mark:
     assert.throws(() => send(big, 'library', LIBRARY_MARK, 'bot', F.agent('bot')), /An agent or Sol reviews nothing/); assert.throws(() => send(big, 'library', {...LIBRARY_MARK, enabled: false}, 'architect'), FULL, 'unmarking is no way past the bound');
     assert.throws(() => send(lines(6000), 'library', LIBRARY_MARK, 'architect'), FULL, 'at a library\'s own bound the mark is refused as any command is'); }
 });
+
+// ------------------------------------------------------------------------------------------------ 33
+add('S1.33 (ruling G6): a limits object that names no history bound takes the tier\'s, and so does every bound it does not name as a whole number', async () => {
+  const start = F.legacyWalk(), id = start.knowledge.contradictions[0].id, one = {type: 'knowledge.contradiction', payload: {reviewed: true, reviewer: 'r', reason: 'x', distinguishingContexts: 'x', id, status: 'context-separated'}}, FULL = {message: 'Export the knowledge history before extending this project further.'};
+  const full = clone(start); while (full.knowledge.history.length < 2000) full.knowledge.history.push({...full.knowledge.history[0]});
+  const old = (doc, command, limits) => K.applyKnowledgeCommand(doc, command, AT, 'architect-a', limits === undefined ? undefined : {limits});
+  assert.throws(() => old(full, one), FULL, 'no limits object: the tier\'s bound, as before');
+  // The shape of the first build's default (sources and claims only), an empty object, and a bound that is no whole number.
+  for (const limits of [{sources: 100, claims: 250}, {}, {history: undefined}, {history: null}, {history: '5000'}, {history: NaN}, {history: Infinity}, {history: 2000.5}]) assert.throws(() => old(full, one, limits), FULL, 'limits ' + JSON.stringify(limits) + ' (' + String(limits.history) + ')');
+  // A bound the caller names is the caller's, smaller or larger.
+  assert.throws(() => old(start, one, {history: start.knowledge.history.length}), FULL); assert.equal(old(full, one, {history: 2001}).document.knowledge.history.length, 2001);
+  // The other bounds alike: a caller that names only the history is held to the tier's sources and claims.
+  { const q = clone(start), s = q.knowledge, source = {type: 'knowledge.source', payload: F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)}; while (s.sources.length < 100) s.sources.push({...s.sources[0], id: 'KS-F' + s.sources.length});
+    assert.throws(() => old(q, source, {history: 5000}), {message: 'This project has reached its source revision limit.'}); assert.throws(() => old(q, source, {history: 5000, sources: null}), {message: 'This project has reached its source revision limit.'});
+    assert.equal(old(q, source, {sources: 101}).document.knowledge.sources.length, 101); }
+});

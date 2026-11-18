@@ -199,9 +199,10 @@ function sourceInput(raw,at,actor,id){
 // The fifth argument is what the command route's wrapper injects (rc44, wp1): `forms`, the form capability (above; it
 // also handles the concept register's own command types). Without it no form is handled. The bounds are those of the
 // project's own tier (KNOWLEDGE_LIMIT_TIERS), read from the document, so every caller is held to the same ones: the
-// wrapper, repository fetch and transfer, repository sync and the import scripts; `limits` states them explicitly.
+// wrapper, repository fetch and transfer, repository sync and the import scripts; `limits` states them explicitly, and
+// a bound it does not name as a whole number is the tier's (ruling G6 of 2026-11-18): no caller is left without one.
 export function applyKnowledgeCommand(input,command,at=new Date().toISOString(),actor='local-review',{forms=null,limits=null}={}){
- const p=copy(input),s=init(p),r=command.payload||{},L=limits||knowledgeLimits(p);let selected='';
+ const p=copy(input),s=init(p),r=command.payload||{},tier=knowledgeLimits(p),L=limits?Object.fromEntries(Object.keys(tier).map(k=>[k,Number.isInteger(limits[k])?limits[k]:tier[k]])):tier;let selected='';
  if(s.history.length>=L.history)throw Error('Export the knowledge history before extending this project further.');
  // What a form rests on is superseded, withdrawn, disposed of, activated or deactivated through the form capability only.
  const rests=formsRestingOn(s,command.type,r);
