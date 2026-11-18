@@ -13,4 +13,7 @@
 // (entry.js), whose own dynamic imports are measured as the route (client-bundle.mjs sizeReport), or the package
 // would be counted there.
 //
-// No package exists yet. A slice that adds one adds its line below, and nothing else in the shared machinery.
+// A slice that adds a package adds its line below, and nothing else in the shared machinery.
+import {registerExtension} from './design-extensions.js';
+// p40-adoption (wp2): held in the lazy entry of the comparison tools (ruling D7.6), which imports adoption-package.js.
+registerExtension({id:'p40-adoption-route',needs:p=>!!p.adoptions,load:()=>import('./architecture-task-ui.js')});

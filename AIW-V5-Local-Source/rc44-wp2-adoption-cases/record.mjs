@@ -21,7 +21,9 @@ import assert from 'node:assert/strict';
 import {readFileSync, existsSync, writeFileSync, mkdirSync} from 'node:fs';
 import worker, {commandHandler} from '../worker.js';
 import * as R from '../rc44-s0-readings.mjs';
-import {bankPaymentApplied, server, A, B, C, AGENT, APPLIED_AT} from '../rc44-wp2-fixtures.mjs';
+import {bankPaymentApplied, beforeAdoptions, server, A, B, C, AGENT, APPLIED_AT} from '../rc44-wp2-fixtures.mjs';
+import {readStoredProject, saveStoredProject} from '../project-storage.js';
+import {storageUpgradeNeeded} from '../storage-upgrade.js';
 import {withFinalReview, CHAPTERS, inheritedFindings, reviewSourceStamp, reviewDesignStamp, evidenceStamp, traceStamp, reviewSource, reviewRequirements} from '../public/review-domain.js';
 import {architectureObligationsFor, architectureObligationBasis, architectureEvidenceSources, verifierRefusal} from '../public/architecture-obligations.js';
 import {linkedAction, verificationPayload, reviewCommand, obligationAt} from '../architecture-obligation-fixtures.mjs';
@@ -45,9 +47,13 @@ const chapter5 = p => CHAPTERS.find(c => c.id === 5).checks(p), own = fs => fs.f
 const person = id => ({kind: 'person', id, account: 'person'});
 
 export default async function ({block, pass, load}) {
-  const D = await load('../public/adoption-domain.js'), U = await load('../public/adoption-upgrade.js'), BI = await load('../public/adoption-builtins.js'), DEF = await load('../public/adoption-definitions.js');
+  const at = name => new URL('../public/' + name + '.js', import.meta.url).href;
+  const D = await load(at('adoption-domain')), U = await load(at('adoption-upgrade')), BI = await load(at('adoption-builtins')), DEF = await load(at('adoption-definitions'));
   const pkg = () => { const e = EXTENSIONS.find(x => x.id === PACKAGE); assert.ok(e, 'the package ' + PACKAGE + ' is registered by the server (design-packages.js)'); return e; };
-  const upgraded = () => { pkg(); return withFinalReview(U.upgradeAdoptions(bankPaymentApplied())); };
+  // The readings upgrade runs wherever a document is read on the server (withFinalReview), the package's step with it:
+  // a document is read as it was written with {upgrade: false}, and upgraded here by the step itself.
+  const asWritten = d => withFinalReview(d, {upgrade: false});
+  const upgraded = () => { pkg(); return asWritten(U.upgradeAdoptions(bankPaymentApplied())); };
 
   // ------------------------------------------------------------ registration
   await block('registration', async () => {
@@ -134,10 +140,11 @@ export default async function ({block, pass, load}) {
     const duty = architectureObligationsFor(before).find(o => o.id === 'DES-002:dependency-deadline'); assert.ok(duty);
     before = reviewCommand(before, 'action', linkedAction(before, duty)); const actionId = before.finalReview.actions.at(-1).id;
     before = reviewCommand(before, 'delivery', verificationPayload(before, actionId, evidence));
-    before = withFinalReview(before);
     const ref = duty.reference, read = d => architectureObligationsFor(d).find(o => o.id === duty.id);
-    assert.equal(read(before).verificationState, 'current-verified', 'the fixture holds a verified obligation: ' + JSON.stringify(read(before).verificationReasons));
-    const after = withFinalReview(U.upgradeAdoptions(before)); assert.equal(records(after).length, 3);
+    // (the handlers above read the document they are handed, which upgrades it: take the document as it was written)
+    before = asWritten(beforeAdoptions(before)); assert.ok(!('adoptions' in before));
+    const after = asWritten(U.upgradeAdoptions(before)); assert.equal(records(after).length, 3);
+    assert.equal(read(before).verificationState, 'current-verified', 'the document written before holds a verified obligation: ' + JSON.stringify(read(before).verificationReasons));
     // rule 3: no verification is lost
     assert.equal(architectureObligationBasis(after, ref).stamp, architectureObligationBasis(before, ref).stamp, 'the obligation basis stamp is byte-identical'); assert.ok(architectureObligationBasis(after, ref).stamp);
     assert.equal(read(after).verificationState, 'current-verified');
@@ -167,7 +174,7 @@ export default async function ({block, pass, load}) {
     assert.equal(D.adoptionReading(after, byId(after, 'ADP-002')).obligations.find(o => o.id === duty.id).state, 'current-verified', 'the adoption reads the obligation\'s state from the one obligation reading');
     // an interpretation that is not current reads as today's reason does
     const stale = structuredClone(before); stale.coauthoring.designTasks[0].methodReceipt.sources.evaluationRevision = 1; stale.coauthoring.designTasks[0].applied.methodReceipt.sources.evaluationRevision = 1;
-    const s = withFinalReview(U.upgradeAdoptions(withFinalReview(stale))); assert.deepEqual(D.adoptionReading(s, byId(s, 'ADP-001')).definition, {state: 'interpretation-changed', reasons: ['The architecture method interpretation needs review.']});
+    const s = asWritten(U.upgradeAdoptions(asWritten(stale))); assert.deepEqual(D.adoptionReading(s, byId(s, 'ADP-001')).definition, {state: 'interpretation-changed', reasons: ['The architecture method interpretation needs review.']});
     // what the upgrade moves among the ten readings, and what it leaves
     const a = readings(after), b = readings(before), moved = Object.keys(a).filter(k => a[k] !== b[k]);
     assert.deepEqual(moved, ['graph', 'model', 'trails', 'findings', 'readiness', 'provenance', 'registers', 'sdd'], 'the upgrade moves these readings and leaves the stamps and the ARS');
@@ -206,18 +213,31 @@ export default async function ({block, pass, load}) {
   const reassess = (id, as) => h.ok('adoption.reassess', {id, revision: rev(id), reviewed: true, reason: 'Read against the model as it stands.'}, as);
   await block('storage upgrade', async () => {
     pkg(); h = await server(worker);
-    const journal = async () => (await h.read()).document.changes?.events?.length || 0;
-    // the tasks are applied through the commands a project used; each read after an apply stores the upgrade
+    // A design applied on this build through the commands a project used is an adoption from its own commit: the read
+    // upgrades run wherever the server reads a document, the commit's own copy included.
     const doc = await h.apply();
-    assert.deepEqual(records(doc).map(a => [a.id, a.origin, a.status]), [['ADP-001', 'upgrade', 'applied'], ['ADP-002', 'upgrade', 'applied'], ['ADP-003', 'upgrade', 'applied']]);
+    assert.deepEqual(records(doc).map(a => [a.id, a.origin, a.status, a.legacy.taskId]), [['ADP-001', 'upgrade', 'applied', 'DES-001'], ['ADP-002', 'upgrade', 'applied', 'DES-002'], ['ADP-003', 'upgrade', 'applied', 'DES-003']]);
     assert.deepEqual(doc.workspace.packages, [PACKAGE], 'the document names the package that wrote into it (ruling D2)');
-    const revision = h.state.revision, events = await journal(); await h.read(B); await h.read(A);
-    assert.equal(h.state.revision, revision, 'the upgrade is stored once: a second read stores nothing'); assert.equal(await journal(), events);
-    assert.ok(!list(h.doc().changes?.events).some(e => /adoption/i.test(JSON.stringify([e.source, e.summary, e.title]))), 'the upgrade is no design change: the journal holds no event of it');
-    const activity = JSON.stringify(await h.activity()); assert.ok(activity.includes(pkg().upgradeNote), 'the activity of the storage upgrade says what the step did: ' + pkg().upgradeNote);
-    assert.ok(/recovery point|storage upgrade|upgraded/i.test(activity), 'recorded as a storage upgrade');
+    // e.3 rule 4: a row stored before the adoption record existed is stored again at its next read, once, as a storage upgrade
+    const {env, pid} = h, row = () => env.DB.prepare('SELECT document,revision,updated_at FROM projects WHERE owner_id=? AND id=?').bind(A, pid).first();
+    const first = await row(), stored = await readStoredProject(env, A, first.document), old = beforeAdoptions(stored.document);
+    assert.ok(!('adoptions' in old) && !old.workspace.packages && old.coauthoring.designTasks.every(t => t.status === 'applied' && !t.adoptionId));
+    assert.ok((await saveStoredProject(env, A, pid, old, first.revision, LATER, stored.keys)).meta?.changes, 'the row is written as a build before the package kept it');
+    const before = await row(), kept = await readStoredProject(env, A, before.document);
+    assert.ok(!('adoptions' in kept.document)); assert.equal(storageUpgradeNeeded(kept), true, 'a stored row with applied tasks and no adoptions is stored again');
+    const journal = list(kept.document.changes?.events).length, points = () => [...h.files.keys()].filter(k => k.startsWith('upgrades/')).length, pointsBefore = points();
+    const read = await h.read(B);
+    assert.equal(read.revision, before.revision + 1, 'the first read stores the upgrade'); assert.deepEqual(records(read.document).map(a => [a.id, a.origin, a.status]), [['ADP-001', 'upgrade', 'applied'], ['ADP-002', 'upgrade', 'applied'], ['ADP-003', 'upgrade', 'applied']]);
+    assert.deepEqual(read.document.workspace.packages, [PACKAGE]); assert.deepEqual(read.document.coauthoring.designTasks.map(t => t.adoptionId), ['ADP-001', 'ADP-002', 'ADP-003']);
+    assert.equal(points(), pointsBefore + 1, 'with a recovery point that keeps the row as it was');
+    const point = JSON.parse([...h.files.entries()].filter(([k]) => k.startsWith('upgrades/')).at(-1)[1]); assert.equal(point.revision, before.revision); assert.equal(point.document, before.document);
+    const events = (await env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage');
+    assert.equal(events.length, 1, 'recorded once in the activity, as a storage upgrade'); assert.ok(events[0].summary.endsWith(' ' + pkg().upgradeNote), 'whose words end with what the step did: ' + events[0].summary.slice(-140));
+    assert.equal(list(read.document.changes?.events).length, journal, 'and not as a design change: the journal holds no event of it');
+    await h.read(A); await h.read(B); assert.equal(h.state.revision, read.revision, 'a later read stores nothing'); assert.equal(points(), pointsBefore + 1);
+    assert.equal((await env.DB.prepare('SELECT document FROM project_activity WHERE owner_id=? AND project_id=?').bind(A, pid).all()).results.map(r => JSON.parse(r.document)).filter(e => e.kind === 'storage').length, 1);
     h.ready = true;
-    pass('e.3 rule 4: applied through the commands a project used, the tasks become adoptions at the next read, stored once as a storage upgrade with its sentence in the activity and no event in the design journal; the document names p40-adoption');
+    pass('e.3 rule 4: a row stored before the adoption record is stored again at its first read, once, as a storage upgrade with a recovery point that keeps the row as it was and with the step\'s sentence in the activity; the design journal holds no event of it; the document names p40-adoption. A design applied on this build through the earlier commands is an adoption from its own commit');
   });
 
   await block('accept', async () => {
@@ -345,7 +365,7 @@ export default async function ({block, pass, load}) {
     assert.ok(inheritedFindings(withFinalReview(structuredClone(doc))).some(f => String(f.id).endsWith('adoption-role-broken:' + id)), 'the review inherits it');
     assert.deepEqual(g.roles.find(r => r.roleId === 'store'), {roleId: 'store', required: true, state: 'broken', recordIds: [store], issues: ['retired']});
     assert.ok(g.changed.required && g.changed.causes.some(c => c.kind === 'binding' && c.id === store && c.detail === 'retired'), 'the tracker recorded the cause in the commit: ' + JSON.stringify(g.changed)); assert.equal(g.accepted, false);
-    const marker = a.history.at(-1); assert.deepEqual([marker.event, marker.actor], ['changed', C]);
+    const marker = a.history.at(-1); assert.deepEqual([marker.event, marker.actor, marker.revision], ['changed', null, 1], 'the marker is the tracker\'s: who sent the commit is in the journal');
     assert.ok(!recordGraph(withFinalReview(structuredClone(doc))).relationships.some(e => e.from === id && e.to === store), 'no relation is stated to a record that left');
     { const r = await accept(id, B); assert.equal(r.status, 400); }
     // the other adoptions, which do not bind the store, are not flagged

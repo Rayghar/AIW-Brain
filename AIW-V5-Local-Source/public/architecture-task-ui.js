@@ -16,6 +16,9 @@ import {esc,safeUrl} from './html-escape.js';
 import {copy} from './util.js';
 import {arcField as field,arcSelect as select,recordOptions as options} from './studio-kit.js';
 import {timeHTML} from './format.js';
+// The design package of applied mechanisms is held in this lazy entry (rc44, wp2 slice S1; the lead's ruling D7.6):
+// it registers when this module arrives, and its route stub loads this entry for a document that holds adoptions.
+import './adoption-package.js';
 
 const B=(action,label,cls='',attrs='')=>`<button type="button" class="btn ${cls}" data-arc-action="${action}" ${attrs}>${label}</button>`;
 let projectId='',taskId='',answers={},revision=0,mode='conditions',optionId='request-reply',dirty=false,busy=false,error='',reqId='',driverId='',hooks=null,pending=null,sourceReviewer='',sourceReason='',sourceConfirmed=false;let entryTopic='interaction',entrySelection='',readCase='normal',measurementDraft={},measurementDirty=false;

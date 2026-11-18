@@ -42,11 +42,22 @@ let applied = null;
 export function bankPaymentApplied() {
   if (!applied) {
     let d = structuredClone(reference('bank-payment'));
-    const send = (type, payload) => { const r = (type.startsWith('alternative.') ? applyAlternativeCommand : applyArchitectureCommand)(d, {type, payload}, APPLIED_AT); d = withFinalReview(r.document); return r; };
+    const send = (type, payload) => { const r = (type.startsWith('alternative.') ? applyAlternativeCommand : applyArchitectureCommand)(d, {type, payload}, APPLIED_AT); d = withFinalReview(r.document, {upgrade: false}); return r; };
     for (const task of APPLIED) { const before = d.coauthoring?.designTasks?.length || 0; applySync(() => d, send, task); assert.equal(d.coauthoring.designTasks.length, before + 1); assert.equal(lastTask(d).status, 'applied'); }
     applied = JSON.stringify(d);
   }
-  return withFinalReview(JSON.parse(applied));
+  return withFinalReview(beforeAdoptions(JSON.parse(applied)), {upgrade: false});
+}
+// A document as it was written before the adoption record existed. Where the package is registered (the server, and
+// this suite once worker.js is imported) every read of a document runs the read upgrades, the package's step among
+// them, and the handlers read the document they are handed; so a document built here through the handlers may hold
+// adoptions already. This takes out what that step writes (the adoptions, each task's adoptionId, the package's name),
+// which the suite asserts is all it writes.
+export function beforeAdoptions(d) {
+  const x = structuredClone(d); delete x.adoptions;
+  for (const t of x.coauthoring?.designTasks || []) delete t.adoptionId;
+  if (x.workspace?.packages) { x.workspace.packages = x.workspace.packages.filter(id => id !== 'p40-adoption'); if (!x.workspace.packages.length) delete x.workspace.packages; }
+  return x;
 }
 // The same four commands without the promises (the pure handlers answer at once).
 function applySync(read, send, {topic, optionId, requirementId, driverId, answers}) {
