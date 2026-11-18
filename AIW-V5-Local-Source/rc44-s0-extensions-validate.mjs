@@ -796,6 +796,37 @@ await block('SF boundary', async () => {
   pass('should-fix 1, 2, 6: the undo of a person-only or second-person step is refused for a draft by Sol, an import, an agent account and another account; validate is asked for every command an alternative carries when it is saved, revised and merged; a treatment of a finding id two findings share is refused');
 });
 
+// ---------------------------------------------------------------- D12. a record a merge wrote carries no author stamp
+// So it is at the baseline for built-in records, and a package's records inherit it (stamping what a merge writes is a
+// slice of its own, the lead's, in wave 2: it moves the provenance counts of existing documents). Until then, under
+// ruling D1, no person stands behind such a record: a second person's step on it is refused until a person saves or
+// confirms it. When the merge stamps its records this case changes with it: the first refusal below goes.
+await block('D12 a record a merge wrote', async () => {
+  need();
+  const h = await harness(), {send, rec} = h, d = () => h.state.document, accept = (id, as) => send('synthetic.accept', {id, reviewed: true}, as), NO_PERSON = id => new RegExp('needs two persons: no person other than \\S+ stands behind ' + id + ' as it stands .*names no author\\)\\. A second signed-in person saves or confirms ' + id + ' first\\.');
+  try {
+    // two records written by one merge that a person reviewed
+    const commands = [{type: 'synthetic.save', payload: {title: 'Written by a merge'}}, {type: 'synthetic.save', payload: {title: 'Written by the same merge'}}];
+    assert.equal((await send('workspace.alternative', {commands, stamp: previewScenarioAlternative(d(), commands, undefined).stamp, title: 'An alternative', reason: 'Two records of a package.'})).status, 200);
+    const a = d().workbench.alternatives.at(-1); assert.equal((await send('workspace.merge', {id: a.id, stamp: rebaseWorkingAlternative(d(), a).stamp, reviewed: true, reason: 'Merged by a person.'})).status, 200);
+    const [first, second] = d().synthetic.records.slice(-2).map(r => r.id);
+    assert.deepEqual([rec(first).actor, rec(first).provenance?.author, rec(second).provenance?.author], [A, undefined, undefined], 'the merge wrote them for the person who merged, and stamped no author (so at the baseline)');
+    // a second person's step is refused: nobody stands behind the record by the server's stamp
+    for (const as of [B, C]) { const r = await accept(first, as); assert.equal(r.status, 400, 'refused while the record carries no author stamp'); assert.match(r.error, NO_PERSON(first)); }
+    await h.read(); assert.equal(rec(first).acceptance, undefined);
+    // the person who merged is its author to the one rule, as before
+    assert.match((await accept(first, A)).error, /architect-a wrote /);
+    // once a person saves it: the stamp is that person's, and a second person accepts
+    assert.equal((await send('synthetic.save', {id: first, title: 'Written by a merge, saved by a person'})).status, 200); assert.deepEqual([rec(first).provenance.author.kind, rec(first).provenance.author.by], ['person', A]);
+    { const r = await accept(first, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(first).acceptance.actor, B); }
+    // or once a person confirms it: the one who confirmed is one person, a second accepts
+    assert.equal((await send('synthetic.confirm', {id: second}, C)).status, 200); assert.equal(rec(second).provenance.reviewed.by, C);
+    { const r = await accept(second, C); assert.equal(r.status, 400); assert.match(r.error, NO_PERSON(second)); }
+    { const r = await accept(second, B); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(second).acceptance.actor, B); }
+  } finally { h.close(); }
+  pass('D12: a record a merge wrote carries no author stamp, so a second person\'s step on it is refused, in words, until a person saves or confirms it; the merge\'s own stamping is unchanged (another slice)');
+});
+
 // ---------------------------------------------------------------- should-fix 3, 6, 11 and ruling D7.5: the start check
 await block('SF start check', () => {
   need();
