@@ -8,6 +8,8 @@
 
 This file supersedes sections 5 and 8 of `UPGRADE-PLAN-2026-11-16.md` where they say work waits for the RC43 source. Everything else in that plan stands.
 
+**Amended 2026-11-18** by `RULINGS-2026-11-18.md`: section 2 items 2 and 3 (allowances after S0) and section 4 test 3 (`hard` means no waiver, not no disposition).
+
 ## 1. What exists at this checkpoint
 
 | Item | State |
