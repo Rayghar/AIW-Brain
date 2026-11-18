@@ -86,7 +86,9 @@ function applySynthetic(p, command, at, actor, options) {
   if (command.type === 'synthetic.sign') { const r = find(); r.signed = {actor, at}; return {document: p, selected: r.id}; }
   // The step keeps who took it and with what kind of account, as the boundary hands them to apply (ruling D7.1).
   if (command.type === 'synthetic.accept') { const r = find(); if (raw.reviewed !== true) throw Error('Confirm the acceptance.'); r.acceptance = {actor, at, account: options?.author?.account ?? null}; return {document: p, selected: r.id}; }
-  if (command.type === 'synthetic.endorse') { const r = find(); r.endorsement = {actor, at, account: options?.author?.account ?? null}; return {document: p, selected: r.id}; }
+  // Kept where the contract tells a package to keep a person's step: under the record's key `review`, which a project
+  // made from a template resets and which is bookkeeping to the authorship stamps.
+  if (command.type === 'synthetic.endorse') { const r = find(); r.review = {actor, at, account: options?.author?.account ?? null}; return {document: p, selected: r.id}; }
   if (command.type === 'synthetic.confirm') { const r = find(); r.confirmed = true; return {document: p, selected: r.id}; }
   throw Error('Unknown synthetic action.');
 }
@@ -523,7 +525,10 @@ await block('D1 two persons', async () => {
     assert.equal((await send('synthetic.save', {id: agentOnly, title: 'Saved by a second person'}, B)).status, 200);
     assert.deepEqual([rec(agentOnly).provenance.author.kind, rec(agentOnly).provenance.author.by], ['person', B]);
     { const r = await accept(agentOnly, A); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.deepEqual([rec(agentOnly).acceptance.actor, rec(agentOnly).acceptance.account], [A, 'person'], 'the boundary hands the author\'s account kind to apply, which keeps it on the step'); }
-    { const r = await accept(agentOnly, C, 'synthetic.endorse'); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.equal(rec(agentOnly).endorsement.actor, C); }
+    // (the acceptance above is kept under a key of the package's own, which is content to the stamps: the commit that took it is the record's author now)
+    assert.equal(rec(agentOnly).provenance.author.by, A);
+    { const r = await accept(agentOnly, C, 'synthetic.endorse'); assert.equal(r.status, 200, JSON.stringify(r.body).slice(0, 300)); assert.deepEqual([rec(agentOnly).review.actor, rec(agentOnly).review.account], [C, 'person']);
+      assert.equal(rec(agentOnly).provenance.author.by, A, 'a step kept under the record\'s key review leaves the stamp of who wrote the record as it was'); }
     // once a second person has confirmed it; the one who confirmed is one person
     assert.equal((await send('synthetic.confirm', {id: solDraft}, C)).status, 200);
     assert.deepEqual([rec(solDraft).provenance.author.kind, rec(solDraft).provenance.reviewed?.by, rec(solDraft).provenance.reviewed?.how], ['sol-draft', C, 'confirmed']);
@@ -605,7 +610,14 @@ await block('D2 packages a document names', async () => {
     const plain = reference('bank-payment'); assert.equal(boundary.upgradeExtensions(plain), plain); assert.ok(!('packages' in plain.workspace)); }
   // a project made from a template keeps the list with the records
   { const source = withFinalReview({...withSynthetic(reference('bank-payment'), {title: 'In a template'}), workspace: {template: 'bank-payment', createdAt: AT, reusableTemplate: true, packages: ['zz-synthetic']}}), copy = instantiateTemplate(source, 'project-copy', 'A copy', AT);
-    assert.equal(copy.synthetic.records.length, 1); assert.deepEqual(copy.workspace.packages, ['zz-synthetic'], 'the copy holds the records, so it names the package'); assert.ok(!('packages' in instantiateTemplate(reference('bank-payment'), 'project-plain', 'Plain', AT).workspace)); }
+    assert.equal(copy.synthetic.records.length, 1); assert.deepEqual(copy.workspace.packages, ['zz-synthetic'], 'the copy holds the records, so it names the package'); assert.ok(!('packages' in instantiateTemplate(reference('bank-payment'), 'project-plain', 'Plain', AT).workspace));
+    // What a person decided on the template's record is not a decision on the copy. The template reset clears it by
+    // key name (project-lifecycle.js), for a package's record as for a built-in one: so the contract tells a package to
+    // keep a person's step under the record's key `review`, which the reset knows (as it knows `approval`). A key of
+    // the package's own choosing is carried: that is the package's to avoid.
+    const stepped = documentCopy(source), r = stepped.synthetic.records[0]; Object.assign(r, {confirmed: true, approval: {actor: B, at: AT, account: 'person'}, review: {actor: B, at: AT}, history: [{revision: 1, actor: A, at: AT}]});
+    const kept = instantiateTemplate(withFinalReview(stepped), 'project-stepped', 'Stepped', AT).synthetic.records[0];
+    assert.deepEqual([kept.approval, kept.review, kept.confirmed, kept.history], [null, null, false, []], 'a person\'s step kept under approval or review, a confirmation and the history are reset in the copy'); }
   assert.deepEqual(boundary.missingPackages({workspace: {packages: ['zz-synthetic', 'mm-other']}}), []); assert.deepEqual(boundary.missingPackages({workspace: {packages: ['p40-adoption', 7, 'zz-synthetic']}}), ['p40-adoption']); assert.deepEqual(boundary.missingPackages({}), []);
   pass('D2 (server): the boundary names a package under workspace.packages when its command (alone, in a batch, by a merge) or its upgrade step first writes, and neither fingerprint reads the key; a document that names a package this build does not register is read with the package named, and every command, every export and a freeze are refused in words');
 });

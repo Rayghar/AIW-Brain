@@ -85,11 +85,11 @@ suite was touched):
 - I have no objection to the other rulings.
 
 **What later slices must know.**
-1. *A second person's step needs a stamped person behind the record.* Records written by `workspace.merge` (D12), by
-   an upgrade step, by a template copy or by a restore carry no stamp of this workbench. A package with a `second`
-   type gives a person a way to confirm such a record: a person's command that sets `confirmed: true` on it, in a
-   collection of the type's `provenance.paths` (the boundary then stamps who confirmed). Without one, the only way is
-   an edit that changes what the record says.
+1. *A second person's step needs a stamped person behind the record.* Records written by `workspace.merge` (D12) or
+   by an upgrade step carry no author stamp, and a stamp made before the project was restored here does not count. A
+   package with a `second` type gives a person a way to confirm such a record: a person's command that sets
+   `confirmed: true` on it, in a collection of the type's `provenance.paths` (the boundary then stamps who
+   confirmed). Without one, the only way is an edit that changes what the record says.
 2. *Ids are the lead's (D8) and are in documents (D2).* An id is fixed for good once its first slice is merged. The
    list `workspace.packages` only grows: a document that once held a package's records names the package for good.
 3. *A slice that makes the workbench write a new key or mint a new id prefix adds it to `WORKBENCH_KEYS` or
@@ -105,6 +105,15 @@ suite was touched):
    clash and the start check accepts the prefix; the two read alike in a citation. wp9a decides whether to keep it.
 9. *A provenance block on a package's command* (`payload.provenance` with `source`, `citations` or `basis`) is refused
    by `attachProvenanceBlocks`, whose table of types is built in. A package that needs it asks the lead.
+10. *A project made from a template resets a person's steps by key name* (`project-lifecycle.js`
+    `instantiateTemplate`), in a package's record as in a built-in one: `review`, `handoff`, `intake`, `recorded`,
+    `applied`, `sourceReview`, `generation`, `selection`, `approval` and `readOnlyDeclaration` become `null`;
+    `confirmed`, `reviewed` and the like become `false`; the lists `history`, `evidence`, `simulations`, `checks`,
+    `governance` and `reviews` are emptied. **A person's step a package keeps under a key of its own choosing
+    (`acceptance`, `signedOff`) is carried into the copy as if it had been taken there.** Keep it under the record's
+    key `review` (see `second` in the contract). wp2's design keeps an adoption's `applied` and `acceptance`: the
+    reset clears `applied` and not `acceptance`. The author stamps of the template's records are carried too. See
+    open question 6.
 
 ## What was built
 
@@ -344,8 +353,14 @@ are taken. Until the server has installed its resolver no type is free. The type
   package checks a stored step the same way and writes no other rule: `apply` stores on the step the actor and the
   author's account kind the boundary hands it (`{actor, at, account: author.account}`), and the reader calls
   `verifierRefusal(projection, step.actor, step.account)` on the same projection and requires `step.account ===
-  'person'`. The sentence of the refusal stays `verifierRefusal`'s in S0; a package's own surface says who may take
-  the step in its own words, and if the server's sentence misleads on an accept step, wp9b generalises it once for all
+  'person'`. **The step is kept under the record's key `review`**, for two reasons. A project made from a template
+  resets that key (and `approval`) and no key of a package's own choosing, so a step kept elsewhere would stand in
+  the copy without anyone having taken it there. And `review` is bookkeeping to the stamps: a step written there does
+  not change who the record's author is. Any other key, `approval` included, is content to them: the commit that
+  takes the step would be stamped as the record's author, and an earlier confirmation's stamp would be cleared.
+
+  The sentence of the first refusal stays `verifierRefusal`'s in S0; a package's own surface says who may take the
+  step in its own words, and if the server's sentence misleads on an accept step, wp9b generalises it once for all
   packages (ruling A5).
 - `validate(p, command, {at, actor, author})` answers a refusal in words, or nothing. It is for what the type refuses
   **by who writes the commit** (wp3: a draft by Sol states no figure). The server asks it before anything is applied,
@@ -361,7 +376,7 @@ are taken. Until the server has installed its resolver no type is free. The type
 
 **`track(prior, next, command, at)`.** The package's one tracker (ruling D4); a command type states none of its own.
 The server calls it after the built-in trackers for **every** command of every project — a built-in one too
-(`record.retire`, `decision.save`, `workspace.merge`, a knowledge step) — and then for each command the commit carries
+(`record.retire`, `decision.save`, `workspace.merge`, a guide step) — and then for each command the commit carries
 (a reviewed batch's, an applied impact's). `prior` is the document as the request found it and is not changed; `next`
 is the commit's own copy. **It writes nothing for a document without the package's records**, and returns at once
 there. What it writes into `next` is part of the same commit: the events it adds to `next.changes.events` are
@@ -549,7 +564,7 @@ document, call `assertBuiltInTrailsUnchanged(base, withRecords)` and `assertFind
 
 This package was run against the registry as it stands here (conformance, save through `POST /api/commands`, the
 trail, the finding, the author refused, an agent's record refused until a person confirms it, a second person
-accepted, the stored step read back, retire); it is not in the repository.
+accepted, the stored step read back, a template copy, retire); it is not in the repository.
 
 ```js
 // public/example-notes.js — registered by a line in design-packages.js (server) and held in an existing lazy entry (browser)
@@ -570,11 +585,12 @@ function applyNote(p, command, at, actor, options) {
   // A person confirms the note as it reads: the boundary stamps who confirmed (provenance.reviewed).
   if (command.type === 'note.confirm') { const r = find(); r.confirmed = true; s.version++; return {document: p, selected: r.id}; }
   // The step keeps who took it and with what kind of account, as the boundary hands them to apply.
-  if (command.type === 'note.accept') { const r = find(); r.acceptance = {actor, at, revision: r.revision, account: options?.author?.account ?? null}; s.version++; return {document: p, selected: r.id}; }
+  // It is kept under `review`: a project made from a template resets that key, and the stamps of who wrote the note stay.
+  if (command.type === 'note.accept') { const r = find(); r.review = {actor, at, revision: r.revision, account: options?.author?.account ?? null}; s.version++; return {document: p, selected: r.id}; }
   throw Error('Unknown note action.');
 }
 // At read time: the stored acceptance is a person's, of the current revision, and independent by the one rule.
-export const noteAccepted = r => !!r.acceptance && r.acceptance.revision === r.revision && r.acceptance.account === 'person' && !verifierRefusal(r, r.acceptance.actor, r.acceptance.account);
+export const noteAccepted = r => !!r.review && r.review.revision === r.revision && r.review.account === 'person' && !verifierRefusal(r, r.review.actor, r.review.account);
 registerExtension({
   id: 'example-notes',
   objectTypes: {note: {label: 'Design note', chapter: 3, level: 'intent', prefix: 'NOTE'}},
@@ -612,8 +628,9 @@ holds it; `linkedVia(p, 'NOTE-001', 'annotates')` is its component; Chapter 3's 
 the document names `example-notes` under `workspace.packages`; `note.accept` by its author answers "A second signed-in
 person, who did not write or own the action, verifies it. architect-a wrote NOTE-001."; `note.accept` on a note only
 an agent account wrote answers "A second person's step needs two persons: …" until a person confirms the note; by
-another person it is recorded with `account: 'person'`, `noteAccepted` reads it and the finding is gone;
-`record.retire` retires the note.
+another person it is recorded with `account: 'person'`, `noteAccepted` reads it, the finding is gone and the note's
+author stamp is still its writer's; in a project made from this one as a template the acceptance is gone and the
+finding is back; `record.retire` retires the note.
 
 ## Deviations from the contract, the rulings and the designs
 
@@ -719,3 +736,8 @@ the `evidence/` folder: A7; comments and source scanners: A8). What is open now:
 4. **`workspace.packages` only grows.** A document whose package records are all retired still names the package and
    cannot be changed by a build without it. Is a way to un-name a package wanted, and whose step is it?
 5. **`FD`** (see "What later slices must know", 8): wp9a's failure-domain ids beside the functional drivers' codes.
+6. **A project made from a template** resets a person's steps by key name ("What later slices must know", 10). The
+   contract tells a package to keep its step under `review`; nothing stops a package from keeping it elsewhere, and
+   then an acceptance travels into the copy. Should the reset clear by construction whatever a `person` or `second`
+   command writes (a registration row), and should the author stamps of a template's records count as "a person
+   behind the record" in the copy (they do today, for built-in records too)?
