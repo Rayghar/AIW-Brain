@@ -15,15 +15,14 @@
 import {recordGraph} from './record-graph.js';
 import {remember} from './document-memo.js';
 import {stepOfNode} from './model-scope.js';
-import {EXTENSIONS, extendTable, watchExtensions} from './design-extensions.js';
+import {EXTENSIONS, extendTable} from './design-extensions.js';
 
-export const BUILT_IN_LAYERS = ['requirement', 'context', 'driver', 'decision', 'responsibility', 'component', 'need', 'capability', 'realization', 'contract', 'data', 'plan', 'placement', 'zone', 'control', 'threat', 'party', 'path'];
+export const BUILT_IN_LAYERS = 'requirement context driver decision responsibility component need capability realization contract data plan placement zone control threat party path'.split(' ');
 // The model's object type each layer holds; a Chapter 1 record that is not a requirement is context, which holds no
 // type of its own (0). The layers the design packages state ({layer: type}) follow the built-in ones, in the packages'
 // id order (rc44, slice S0: design-extensions.js); the tables below are rebuilt when a package registers.
 export const TRACE_LAYER_TYPES = Object.fromEntries(BUILT_IN_LAYERS.map(l => [l, {context: 0, driver: 'quality', realization: 'technology', plan: 'runtime', placement: 'instance'}[l] ?? l]));
-extendTable(TRACE_LAYER_TYPES, e => e.layers);
-export let TRACE_LAYERS, TRACE_HOPS;
+export let TRACE_LAYERS;
 let TYPE_LAYER, RANK, HOPS_INTO, NAMING;
 const chapterOne = o => !!o?.source?.startsWith('artefacts[');
 export const layerOf = o => !o ? null : chapterOne(o) && o.type !== 'requirement' ? 'context' : TYPE_LAYER[o.type] || null;
@@ -51,7 +50,7 @@ const stepEnds = e => STEP_KINDS.has(e.attributes?.kind) ? [[e.from, e.to], [e.t
 const hop = (layer, types, from, more) => ({layer, types: types && types.split(' '), from: from.split(' '), dir: 'out', ...more});
 const named = layer => hop(layer, 'fulfils', 'requirement', {skip: 'artefacts.modelRef'}), CTX = {ctx: 1}, IN = {dir: 'in'};
 // Each layer reads its hops in this order (HOPS_INTO): the requirement's naming first, then the design's own relations.
-const HOPS = [
+export const TRACE_HOPS = [
   hop('context', '', 'requirement', {dir: 'both', only: e => e.source === 'relationships'}),
   ...'driver decision responsibility component need capability realization contract data plan control threat party path'.split(' ').map(named),
   hop('decision', 'constrains', 'driver'),
@@ -70,15 +69,15 @@ const HOPS = [
   hop('control', 'protects', PROTECTED, IN), hop('control', 'enforces', 'plan'),
   hop('threat', 'threatens', PROTECTED, IN), hop('threat', 'mitigates', 'control')
 ];
-// A type stands on the first layer that holds it, so a package's layer never takes a built-in layer's records; a
-// package's hop ({layer, types: [...], from: [...], dir: 'out' | 'in', ctx: whether it is context and not the own
-// chain}) brings records onto a package's layer only, never onto a built-in one.
-watchExtensions(() => {
+// A type stands on the first layer that holds it, so a package's layer never takes a built-in layer's records. A
+// built-in layer reads the built-in hops above and no other; a package's layer reads the hops the packages state
+// ({layer, types: [...], from: [...], dir: 'out' | 'in', ctx: whether it is context and not the own chain}), in the
+// packages' id order, so a package's hop never brings a record onto a built-in layer.
+extendTable(TRACE_LAYER_TYPES, e => e.layers, () => {
   TRACE_LAYERS = Object.keys(TRACE_LAYER_TYPES);
   TYPE_LAYER = Object.fromEntries(Object.entries(TRACE_LAYER_TYPES).reverse().map(([layer, type]) => [type, layer]));
-  TRACE_HOPS = [...HOPS, ...EXTENSIONS.flatMap(e => e.hops || []).filter(h => TRACE_LAYERS.indexOf(h.layer) >= BUILT_IN_LAYERS.length)];
   RANK = new Map(TRACE_LAYERS.map((l, i) => [l, i]));
-  HOPS_INTO = new Map(TRACE_LAYERS.map(l => [l, TRACE_HOPS.filter(h => h.layer === l)]));
+  HOPS_INTO = new Map(TRACE_LAYERS.map((l, i) => [l, (BUILT_IN_LAYERS[i] ? TRACE_HOPS : EXTENSIONS.flatMap(e => e.hops || [])).filter(h => h.layer === l)]));
   // The hop by which a requirement names a record of each layer (fulfils), for namedBy and namingRequirements.
   NAMING = new Map(TRACE_LAYERS.map(l => [l, HOPS_INTO.get(l).find(h => h.types?.includes('fulfils'))]).filter(([, h]) => h));
 });

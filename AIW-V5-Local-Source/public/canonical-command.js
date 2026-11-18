@@ -58,8 +58,8 @@ export function applyCanonical(input,raw,at=new Date().toISOString(),actor=''){
  const command=resolveGroupAliases(input,migrateCommand(raw));
  // A design package's command (rc44, slice S0: design-extensions.js) is staged when it says so and is neither a
  // person-only nor a second-person step; a type staged here is never a package's.
- const type=command?.type,own_=STAGED_COMMANDS.has(type),x=!own_&&EXTENSIONS.map(e=>e.commands?.[type]).find(Boolean);
- if(!own_&&!(x?.staged&&!x.person&&!x.second))throw Error('This action must use its chapter review workflow.');
+ const type=command?.type,x=!STAGED_COMMANDS.has(type)&&EXTENSIONS.map(e=>e.commands?.[type]).find(c=>c?.staged&&!c.person&&!c.second);
+ if(x===undefined)throw Error('This action must use its chapter review workflow.');
  const handlers={process:applyProcessCommand,quality:applyQualityCommand,decision:applyDecisionCommand,logical:applyLogicalCommand,realisation:applyRealisationCommand,technology:applyTechnologyCommand,techrealisation:applyTechnologyRealisationCommand,interfaces:applyInterfacesCommand,security:applySecurityCommand,runtime:applyRuntimeCommand,record:applyRecordCommand,review:applyFinalReviewCommand};
  // One copy per command (round 12): the handler changes it in place and the review sections are completed on it in place,
  // where the handler and withFinalReview each copied it again after a structured clone; the journal's recorded events are

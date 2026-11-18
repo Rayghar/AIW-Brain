@@ -204,7 +204,7 @@ export function recordRelations(p,{add,rel,objects,root,issues=[],upto=null}){
  for(const e of list(p.modelContext?.relationships))rel(e.type,e.from,e.to,e);
  // The records and typed relations each design package states from the document, in the packages' id order (rc44, slice
  // S0). `add` keeps the first record of an id and `rel` never replaces a relation, so a package only adds.
- for(const e of EXTENSIONS)e.records?.(p,add,rel,objects);
+ for(const e of EXTENSIONS)e.records?.(p,add,rel);
 }
 
 // The records in registration order, as the connected model (architecture-model.js) and the record graph register them

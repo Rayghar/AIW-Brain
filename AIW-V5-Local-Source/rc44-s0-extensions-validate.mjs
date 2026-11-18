@@ -31,7 +31,7 @@ import {decisionFindings} from './public/decisions-domain.js';
 import {chapterChecks, sddBoard} from './public/readiness-model.js';
 import {applyCanonical, applyRecordCommand, STAGED_COMMANDS} from './public/canonical-command.js';
 import {COLLECTIONS, retiredRecords, retirable, referencesTo} from './public/record-lifecycle.js';
-import {eachRecord, findRecord, RECORD_NOUNS, recordNoun, stampAuthorship} from './public/provenance.js';
+import {eachRecord, findRecord, RECORD_NOUNS} from './public/provenance.js';
 import {architectureMarkdown} from './public/sdd-architecture.js';
 import {isReviewCommand} from './authorship.js';
 import {documentCopy, isSettled} from './public/document-memo.js';
@@ -149,7 +149,7 @@ if (PROBE >= 0) {
   p = withSynthetic(p, {title: 'Second synthetic record', dependsOn: 'SYN-001', broken: true});
   p.runtime.otherThings = [{id: 'OTH-001', ref: 'OTH-001', title: 'Other thing', requirementIds: [t.requirement], syntheticId: 'SYN-002'}];
   p = withFinalReview(p);
-  console.log(JSON.stringify({order, extensions: X.EXTENSIONS.map(e => e.id), types: Object.keys(OBJECT_TYPES), collections: COLLECTIONS, layers: kernel.TRACE_LAYERS, hops: kernel.TRACE_HOPS.length, nouns: ['synthetic.records', 'runtime.otherThings', 'decisions.records'].map(recordNoun), commands: ['synthetic.save', 'decision.save'].map(t => !!boundary.extensionCommand(t)), readings: digests(p), plain: digests(reference('clinic-appointments'))}));
+  console.log(JSON.stringify({order, extensions: X.EXTENSIONS.map(e => e.id), types: Object.keys(OBJECT_TYPES), collections: COLLECTIONS, layers: kernel.TRACE_LAYERS, hops: kernel.TRACE_HOPS.length, nouns: RECORD_NOUNS, commands: ['synthetic.save', 'decision.save'].map(t => !!boundary.extensionCommand(t)), readings: digests(p), plain: digests(reference('clinic-appointments'))}));
   process.exit(0);
 }
 
@@ -199,7 +199,7 @@ await block('an extension only adds', () => {
   assert.equal(OBJECT_TYPES.component.label, 'Application component'); assert.equal(OBJECT_TYPES.component.chapter, 5);
   assert.deepEqual(OBJECT_TYPES.synthetic, SYNTHETIC.objectTypes.synthetic);
   assert.equal(COLLECTIONS.filter(([path]) => path === 'decisions.records').length, 1, 'a built-in collection is listed once'); assert.equal(COLLECTIONS.find(([path]) => path === 'decisions.records')[1], 3);
-  assert.equal(recordNoun('decisions.records'), 'decision'); assert.equal(RECORD_NOUNS['synthetic.records'], undefined, 'the built-in nouns are as they were'); assert.equal(recordNoun('synthetic.records'), 'synthetic record'); assert.equal(recordNoun('nowhere.things'), 'record');
+  assert.equal(RECORD_NOUNS['decisions.records'], 'decision'); assert.equal(RECORD_NOUNS['synthetic.records'], 'synthetic record'); assert.equal(RECORD_NOUNS['runtime.otherThings'], 'other thing');
   assert.equal(kernel.TRACE_LAYERS.filter(l => l === 'component').length, 1); assert.deepEqual(kernel.TRACE_LAYERS.slice(0, kernel.BUILT_IN_LAYERS.length), kernel.BUILT_IN_LAYERS);
   assert.equal(kernel.layerOf({type: 'component', source: 'realisation.components[0]'}), 'component', 'a built-in type stands on its built-in layer, whatever layer a package states for it');
   assert.equal(kernel.layerOf({type: 'synthetic', source: 'synthetic.records.SYN-001'}), 'synthetic', 'and a package\'s type on the package\'s layer, never on a built-in one');
@@ -312,7 +312,8 @@ await block('2 command boundary', async () => {
     const ars = await (await api('/api/export' + q + '&chapter=11&document=ars&format=md')).text(); assert.match(ars, /Synthetic records bear on these requirements: 2\./);
     // the project store awaits the package a document needs before it settles the document
     let loads = 0, settledAtNeeds = null; const realFetch = globalThis.fetch;
-    X.registerExtension({id: 'zz-synthetic', needs: p => { settledAtNeeds = isSettled(p); return !!p.synthetic; }, load: async () => { loads++; }});
+    const stub = {id: 'zz-synthetic-route', needs: p => { settledAtNeeds = isSettled(p); return !!p.synthetic; }, load: async () => { loads++; }};
+    assert.deepEqual(boundary.extensionIssues(stub), []); X.registerExtension(stub);
     globalThis.fetch = (url, options = {}) => { const headers = new Headers(options.headers); headers.set('oai-authenticated-user-id', A); if (options.method === 'POST') headers.set('Origin', 'https://aiw.test'); return worker.fetch(new Request(new URL(url, 'https://aiw.test'), {...options, headers}), env); };
     try {
       const store = createProjectStore(); await store.load();
@@ -419,14 +420,18 @@ await block('upgrade and sections', () => {
 await block('needs and load', async () => {
   need();
   let loads = 0;
-  X.registerExtension({id: 'zz-lazy', needs: p => !!p.lazyThing, load: async () => { loads++; X.registerExtension({id: 'zz-lazy', objectTypes: {lazyThing: {label: 'Lazy thing', chapter: 2, level: 'intent', prefix: 'LZ'}}}); }});
+  X.registerExtension({id: 'zz-lazy-route', needs: p => !!p.lazyThing, load: async () => { loads++; X.registerExtension({id: 'zz-lazy', objectTypes: {lazyThing: {label: 'Lazy thing', chapter: 2, level: 'intent', prefix: 'LZ'}}}); }});
   assert.equal(OBJECT_TYPES.lazyThing, undefined, 'the route knows only whether a document needs the package and how to load it');
   await X.ensureExtensions(reference('bank-payment')); assert.equal(loads, 0, 'a document without its records loads nothing');
   await X.ensureExtensions({...reference('bank-payment'), lazyThing: {}}); assert.equal(loads, 1);
-  assert.equal(OBJECT_TYPES.lazyThing?.label, 'Lazy thing', 'the loaded module registers the rest under the same id');
-  assert.equal(X.EXTENSIONS.filter(e => e.id === 'zz-lazy').length, 1); assert.equal(typeof X.EXTENSIONS.find(e => e.id === 'zz-lazy').needs, 'function', 'and the pair is kept');
+  assert.equal(OBJECT_TYPES.lazyThing?.label, 'Lazy thing', 'the loaded module registers the package');
+  await X.ensureExtensions({...reference('bank-payment'), lazyThing: {}}); assert.equal(loads, 2, 'load() is asked again for each document that needs it (a module import answers at once the second time)');
+  assert.equal(X.EXTENSIONS.filter(e => e.id === 'zz-lazy').length, 1, 'and registering it again changes nothing');
+  // the first registration under an id stands
+  X.registerExtension({id: 'zz-lazy', objectTypes: {lazyThing: {label: 'Replaced', chapter: 9, level: 'protection', prefix: 'XX'}, another: {label: 'Another', chapter: 2, level: 'intent', prefix: 'AN'}}});
+  assert.equal(OBJECT_TYPES.lazyThing.label, 'Lazy thing'); assert.equal(OBJECT_TYPES.another, undefined, 'a second registration under an id adds and replaces nothing');
   const src = readFileSync('public/project-store.js', 'utf8'); assert.ok((src.match(/ensureExtensions\(/g) || []).length >= 2, 'the project store awaits it where it reads a project and where a save answers');
-  pass('needs and load: ensureExtensions loads a package only for a document that holds its records, and the loaded module completes the registration under the same id');
+  pass('needs and load: ensureExtensions loads a package only for a document that holds its records; the first registration under an id stands');
 });
 
 // ---------------------------------------------------------------- 7. twice, and in another order
@@ -445,7 +450,7 @@ await block('7 idempotent and order-free', () => {
   // two packages stating one row: the first by id keeps it, and the server's start check names the clash
   assert.deepEqual(boundary.extensionConflicts(), [], 'the registered packages share no row');
   X.registerExtension({id: 'zzz-duplicate', objectTypes: {synthetic: {label: 'Duplicate', chapter: 4, level: 'logical', prefix: 'DUP'}}, layers: {synthetic: 'duplicate'}, lifecycle: {'synthetic.records': 4}, commands: {'synthetic.save': {apply() { throw Error('duplicate'); }}}, provenance: {nouns: {'synthetic.records': 'duplicate'}, paths: {}}});
-  assert.equal(OBJECT_TYPES.synthetic.label, 'Synthetic record'); assert.equal(JSON.stringify(COLLECTIONS), rows); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(recordNoun('synthetic.records'), 'synthetic record'); assert.equal(boundary.extensionCommand('synthetic.save').apply, applySynthetic);
+  assert.equal(OBJECT_TYPES.synthetic.label, 'Synthetic record'); assert.equal(JSON.stringify(COLLECTIONS), rows); assert.equal(kernel.TRACE_LAYERS.join(), layers); assert.equal(RECORD_NOUNS['synthetic.records'], 'synthetic record'); assert.equal(boundary.extensionCommand('synthetic.save').apply, applySynthetic);
   const clashes = boundary.extensionConflicts(); assert.ok(clashes.length >= 4 && clashes.every(c => /zzz-duplicate/.test(c) && /zz-synthetic/.test(c)), 'each clash names both packages: ' + clashes.join(' | '));
   X.registerExtension({id: 'ab-early', objectTypes: {early: {label: 'Early', chapter: 2, level: 'intent', prefix: 'EAR'}}, layers: {early: 'early'}, hops: [{layer: 'early', types: ['binds'], from: ['synthetic'], dir: 'in', ctx: true}]});
   assert.ok(boundary.extensionConflicts().some(c => /a hop of ab-early onto “early” comes from “synthetic”, which the walk reads later/.test(c)), 'a hop from a layer of a package later by id is named');

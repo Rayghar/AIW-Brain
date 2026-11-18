@@ -17,7 +17,7 @@
 // (planCommand), with the stamp of what the reviewer is shown, so the plan itself stays cheap at any size. Nothing here
 // records anything: the commands keep their own gates, and a person records every judgement.
 import {memoPass,remember} from './document-memo.js';
-import {eachRecord,authorOf,reviewOf,judgementMembers,judgementStamp,scopeWords,lowerFirst,recordNoun,AUTHOR_WORDS} from './provenance.js';
+import {eachRecord,authorOf,reviewOf,judgementMembers,judgementStamp,scopeWords,lowerFirst,RECORD_NOUNS,AUTHOR_WORDS} from './provenance.js';
 import {changeCauses,causeStamp,changeEvents} from './changes-domain.js';
 import {CHAPTER_TITLES} from './chapter-names.js';
 import {inheritedFindings,findingTreatment,findingCause,causeFindings,causeFindingStamp,reviewRequirements,traceReviewFor,traceScope,groupTraceStamp} from './review-domain.js';
@@ -52,7 +52,7 @@ function planOf(p){
  });
  for(const g of groups.values()){
   const scope={kind:'author',author:g.kind,chapter:g.chapter,path:g.path};
-  steps.push({id:'records:'+g.kind+':'+g.chapter+':'+g.path,kind:'records',chapter:g.chapter,count:g.n,severity:g.kind==='sol-draft'?'bad':'warn',title:'Review '+plural(g.n,recordNoun(g.path))+' '+lowerFirst(AUTHOR_WORDS[g.kind]),scope:scopeWords(scope,g.n),commandType:'review.judgement',target:{scope}});
+  steps.push({id:'records:'+g.kind+':'+g.chapter+':'+g.path,kind:'records',chapter:g.chapter,count:g.n,severity:g.kind==='sol-draft'?'bad':'warn',title:'Review '+plural(g.n,RECORD_NOUNS[g.path]||'record')+' '+lowerFirst(AUTHOR_WORDS[g.kind]),scope:scopeWords(scope,g.n),commandType:'review.judgement',target:{scope}});
   tally(g.chapter,'records',g.n);
  }
  // 2. Imported requirements to confirm: one bulk confirmation per requirement group (those in none, together).

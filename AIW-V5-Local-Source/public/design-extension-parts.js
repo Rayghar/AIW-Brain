@@ -78,7 +78,7 @@ export function extensionIssues(e) {
     if (!TYPE.test(type) || !plain(t) || typeof t.label !== 'string' || !t.label || !(Number.isInteger(t.chapter) && t.chapter >= 1 && t.chapter <= 11) || !LEVELS.has(t.level) || typeof t.prefix !== 'string' || !/^[A-Z]{2,5}$/.test(t.prefix)) say('object type “' + type + '” states a label, a chapter (1 to 11), a level (' + [...LEVELS].join(', ') + ') and an id prefix of 2 to 5 capitals.');
     if (type in OBJECT_TYPES && !(mine && same(OBJECT_TYPES[type], mine.objectTypes?.[type]))) say('object type “' + type + '” is built in or another package\'s; it stays as it is.');
   }
-  if (e.records !== undefined && !fn(e.records)) say('records is a function (p, add, rel, objects).');
+  if (e.records !== undefined && !fn(e.records)) say('records is a function (p, add, rel).');
   // layers and hops
   if (e.layers !== undefined && !plain(e.layers)) say('layers is {layer: object type}.');
   const layers = plain(e.layers) ? e.layers : {}, own = Object.keys(layers);

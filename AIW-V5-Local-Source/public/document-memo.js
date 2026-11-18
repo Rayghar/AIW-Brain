@@ -4,7 +4,7 @@
 // the copies that command appliers, review previews and proposals build and then change, and everything on
 // the server — is never settled, so its values are always computed afresh and behave exactly as before.
 // No DOM, no window: domain modules may use it.
-import {extensionChecks} from './design-extensions.js';
+import {EXTENSIONS} from './design-extensions.js';
 const settled=new WeakSet(),caches=new WeakMap(),passing=new Map();
 export function settleDocument(doc){if(doc&&typeof doc==='object')settled.add(doc);return doc;}
 export const isSettled=doc=>!!doc&&typeof doc==='object'&&settled.has(doc);
@@ -132,12 +132,13 @@ export function copyValue(v,key,stack){
   stack.pop();
   return out;
 }
-// sharedList(doc, chapter, compute): a chapter's findings (a list of plain records, named by the chapter's number) worked
-// out once per settled document or pass; every caller gets a fresh array of fresh copies, so no caller can change what
-// another reads. The findings the design packages state for the chapter follow the chapter's own (rc44, slice S0:
-// design-extensions.js extensionChecks), so every reader of a chapter's checks reads them.
+// sharedList(doc, chapter, compute): a chapter's findings (a list of plain records, named by the chapter's number; 11 is
+// the review's own list) worked out once per settled document or pass; every caller gets a fresh array of fresh copies,
+// so no caller can change what another reads. The findings the design packages state for the chapter (rc44, slice S0:
+// design-extensions.js, checks {chapter: p => [finding]}) follow the chapter's own, in the packages' id order, so every
+// reader of a chapter's checks reads them.
 export function sharedList(doc,chapter,compute){
-  const all=()=>[...compute(),...extensionChecks(doc,chapter)];
+  const all=()=>[...compute(),...EXTENSIONS.flatMap(e=>e.checks?.[chapter]?.(doc)||[])];
   const cache=documentCache(doc,'list');if(!cache)return all();
   let list=cache.get(chapter);if(!list){list=all();cache.set(chapter,list);}
   return list.map(x=>x&&typeof x==='object'&&!Array.isArray(x)?{...x}:x);

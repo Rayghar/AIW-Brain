@@ -29,7 +29,7 @@ import {remember,memoPass} from './document-memo.js';
 import {recordStamp,valueFingerprint} from './source-fingerprint.js';
 import {COLLECTIONS,solDraftOf} from './record-lifecycle.js';
 import {list,str,clean} from './util.js';
-import {EXTENSIONS,watchExtensions} from './design-extensions.js';
+import {EXTENSIONS,extendTable} from './design-extensions.js';
 
 // ---------------------------------------------------------------- the vocabulary
 export const AUTHOR_KINDS=Object.freeze(['person','import','sol-draft','seeded','guidance']);
@@ -53,17 +53,16 @@ const plural=(n,one,many=one+'s')=>count(n)+' '+(n===1?one:many);
 export const LINK_PATHS=new Set(['relationships','logical.connections','logical.mappings','realisation.connections','technology.mappings','technology.dependencies','technologyRealisation.mappings','technologyRealisation.connections','interfaces.lineage','processModel.transitions']);
 const NARRATIVE='finalReview.narrative';
 // The collections the design packages state are among them (rc44, slice S0: record-lifecycle.js COLLECTIONS holds them,
-// rebuilt at every registration before this list is); their nouns and command paths are read where they are asked for.
+// rebuilt at every registration before this list is); their nouns join the nouns below, and the collections their
+// commands write are read with the built-in ones (pathsOf).
 export const RECORD_PATHS=[];
-watchExtensions(()=>{RECORD_PATHS.splice(0,Infinity,...COLLECTIONS.filter(([path])=>path!=='logical.assets'),[NARRATIVE,11]);});
-export const RECORD_NOUNS=Object.freeze({artefacts:'Chapter 1 record','processModel.elements':'process object','processModel.transitions':'process path','processModel.claims':'process claim',relationships:'requirement relationship','requirementGroups.records':'requirement group','quality.drivers':'driver','quality.conflicts':'quality conflict','decisions.records':'decision','decisions.conflicts':'decision conflict','logical.responsibilities':'responsibility','logical.groups':'responsibility group','logical.connections':'logical connection','logical.mappings':'allocation','realisation.components':'component','realisation.connections':'component interaction','technology.capabilities':'capability','technology.needs':'technology need','technology.mappings':'support mapping','technology.dependencies':'technology dependency','technology.boundaries':'trust boundary','technologyRealisation.records':'technology realisation','technologyRealisation.mappings':'realisation mapping','technologyRealisation.connections':'realisation connection','interfaces.contracts':'contract','interfaces.data':'data definition','interfaces.parties':'external party','interfaces.lineage':'data lineage','interfaces.invariants':'invariant','security.threats':'threat','security.controls':'control','runtime.environments':'environment','runtime.zones':'zone','runtime.plans':'runtime plan','runtime.placements':'placement','runtime.paths':'runtime path','roadmap.plateaus':'plateau','roadmap.migrations':'migration record','finalReview.actions':'delivery action',[NARRATIVE]:'SDD narrative'});
+export const RECORD_NOUNS={artefacts:'Chapter 1 record','processModel.elements':'process object','processModel.transitions':'process path','processModel.claims':'process claim',relationships:'requirement relationship','requirementGroups.records':'requirement group','quality.drivers':'driver','quality.conflicts':'quality conflict','decisions.records':'decision','decisions.conflicts':'decision conflict','logical.responsibilities':'responsibility','logical.groups':'responsibility group','logical.connections':'logical connection','logical.mappings':'allocation','realisation.components':'component','realisation.connections':'component interaction','technology.capabilities':'capability','technology.needs':'technology need','technology.mappings':'support mapping','technology.dependencies':'technology dependency','technology.boundaries':'trust boundary','technologyRealisation.records':'technology realisation','technologyRealisation.mappings':'realisation mapping','technologyRealisation.connections':'realisation connection','interfaces.contracts':'contract','interfaces.data':'data definition','interfaces.parties':'external party','interfaces.lineage':'data lineage','interfaces.invariants':'invariant','security.threats':'threat','security.controls':'control','runtime.environments':'environment','runtime.zones':'zone','runtime.plans':'runtime plan','runtime.placements':'placement','runtime.paths':'runtime path','roadmap.plateaus':'plateau','roadmap.migrations':'migration record','finalReview.actions':'delivery action',[NARRATIVE]:'SDD narrative'};
+extendTable(RECORD_NOUNS,e=>e.provenance?.nouns,()=>{RECORD_PATHS.splice(0,Infinity,...COLLECTIONS.filter(([path])=>path!=='logical.assets'),[NARRATIVE,11]);});
 export function listAt(p,path){
  if(path===NARRATIVE)return plain(p?.finalReview?.narrative)?[p.finalReview.narrative]:[];
  const [a,b]=path.split('.'),v=b?p?.[a]?.[b]:p?.[a];return Array.isArray(v)?v:[];
 }
 export const chapterOfPath=path=>RECORD_PATHS.find(r=>r[0]===path)?.[1]||null;
-// A collection's noun: the built-in one, else the one a design package states for its collection, else "record".
-export const recordNoun=path=>RECORD_NOUNS[path]||EXTENSIONS.map(e=>e.provenance?.nouns?.[path]).find(Boolean)||'record';
 export const recordKey=(chapter,id)=>chapter+':'+id;
 // fn(record, chapter, path, isLink) for every record.
 export function eachRecord(p,fn){for(const [path,chapter] of RECORD_PATHS){const link=LINK_PATHS.has(path);for(const r of listAt(p,path))if(plain(r))fn(r,chapter,path,link);}}
@@ -481,7 +480,7 @@ export function judgementMembers(p,scope){
  }
  if(scope.kind!=='author'||!AUTHOR_KINDS.includes(scope.author))throw Error('A judgement covers the records of one author kind, or named records.');
  const chapter=scope.chapter==null||scope.chapter===''?null:Number(scope.chapter),path=scope.path?String(scope.path):null,group=scope.group?String(scope.group):null;
- if(path&&!chapterOfPath(path))throw Error('Choose a kind of record this workbench keeps.');
+ if(path&&!RECORD_PATHS.some(r=>r[0]===path))throw Error('Choose a kind of record this workbench keeps.');
  eachRecord(p,(r,ch,pth)=>{
   if(chapter!=null&&ch!==chapter||path&&pth!==path)return;
   if(group&&!list(r.requirementGroupIds).includes(group))return;
@@ -494,7 +493,7 @@ export function judgementMembers(p,scope){
 export const judgementStamp=(p,members)=>valueFingerprint(members.map(m=>[m.chapter,m.id,recordStamp(p,m.record)]));
 export function scopeWords(scope,n){
  if(scope?.kind==='records')return plural(n,'named record');
- const noun=scope?.path?recordNoun(scope.path):'record';
+ const noun=scope?.path?RECORD_NOUNS[scope.path]||'record':'record';
  return plural(n,noun)+' '+lowerFirst(AUTHOR_WORDS[scope?.author]||'')+(scope?.chapter?' in Chapter '+scope.chapter:'')+(scope?.group?' linked to '+scope.group:'')+', not yet reviewed';
 }
 // Records one judgement (review.judgement, through review-domain.js): the scope's records as they read now, less the
