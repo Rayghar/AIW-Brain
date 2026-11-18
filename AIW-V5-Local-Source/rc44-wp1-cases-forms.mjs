@@ -1281,3 +1281,91 @@ add('S1.27 (ruling G1): the number rule reads every decimal digit, in any script
   for (const v of ['SLA.99.999', 'answers:in-5', 'p99,9', 'a_b']) assert.match(alias(v), /composition\.relations\[0\]\.target names a concept id, an alias \(scheme and id\) or a label/, v);
   for (const v of ['SYN-P002', 'PAT-TRANSACTIONAL-OUTBOX', 'delivery/transactional-outbox', 'CL-APP-005']) assert.equal(alias(v), '', v);
 });
+
+// ------------------------------------------------------------------------------------------------ 28
+// A knowledge library behind the real boundary (worker.js, POST /api/commands): `importer` owns the project and marks
+// it; the agent account `bot` saves the source, the concept and its forms; `reviewer` verifies each form and the concept;
+// with `release`, `releaser` releases the forms and activates the release. `send` returns the response, `ok` asserts 200.
+const TOPIC = sourceId => ({file: 'Synthetic_Integration_Handbook.docx', topicId: 'SYN-P001', title: 'Transactional outbox', lineStart: 1, lineEnd: 58, sliceSha256: sha256(F.SYN_P001.join('\n')), sourceId, declaredKind: 'pattern', intendedUse: 'design-method', conceptId: 'SYN-P001', reason: ''});
+const OPPOSING = sourceId => ({sourceId, lineStart: 17, lineEnd: 17, subjectId: 'SYN-P001', predicate: 'applies when', statement: 'An outbox is avoided wherever a caller only reads.', claimType: 'applicability', polarity: 'prohibits', conditions: ['The caller only reads.'], limitations: ['Says nothing of later changes.']});
+const DISPOSE = {reviewed: true, reviewer: 'Synthetic second person', reason: 'One applies where a notice must follow, the other where nothing is published.', distinguishingContexts: 'A notice must follow; nothing is published.'};
+const SECOND_EDITION = sourceId => ({...F.sourcePayload('SYN-P001 Transactional outbox, second edition', [...F.SYN_P001, 'A line the second edition adds.']), supersedes: sourceId});
+async function serviceLibrary({forms = ['definition', 'applicability'], release = false} = {}) {
+  const {default: worker} = await import('./worker.js'), {localDatabase} = await import('./local-db.js');
+  const files = new Map(), env = {AIW_AGENT_ACTORS: 'bot', DB: localDatabase(':memory:'), FILES: {async put(k, v) { files.set(k, v); }, async get(k) { return files.has(k) ? {text: async () => files.get(k)} : null; }, async delete(k) { files.delete(k); }}, ASSETS: {fetch: () => new Response('asset')}};
+  const api = async (path, body, as = 'importer') => { const r = await worker.fetch(new Request('https://aiw.test' + path, {method: body ? 'POST' : 'GET', headers: {'oai-authenticated-user-id': as, Origin: 'https://aiw.test', ...(body ? {'Content-Type': 'application/json'} : {})}, ...(body ? {body: JSON.stringify(body)} : {})}), env); let data = null; try { data = await r.json(); } catch { data = null; } return {status: r.status, data}; };
+  const created = await api('/api/projects', {name: 'Northquay knowledge library', template: 'blank'}); assert(created.status < 300, JSON.stringify(created.data)); const projectId = created.data.document.id;
+  for (const actor of ['reviewer', 'releaser', 'architect', 'bot']) await env.DB.prepare('INSERT INTO project_access(owner_id,project_id,actor_id,role,created_at) VALUES(?,?,?,?,?)').bind('importer', projectId, actor, 'editor', AT).run();
+  let state = created.data; const send = async (type, payload, as = 'importer', extra = {}) => { const r = await api('/api/commands?project=' + projectId, {revision: state.revision, command: {type, payload}, ...extra}, as); if (r.status === 200) state = r.data; return r; };
+  const ok = async (...args) => { const r = await send(...args); assert.equal(r.status, 200, JSON.stringify(r.data)); return r.data.selected; };
+  await ok('knowledge.library', LIBRARY_MARK, 'importer');
+  const sourceId = await ok('knowledge.source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001), 'bot'), all = F.p001Forms(), conceptRecordId = await ok('knowledge.concept', CONCEPT, 'bot'), claimIds = {};
+  for (const t of forms) claimIds[t] = await ok('knowledge.claim', F.formClaim(sourceId, 'SYN-P001', all[t]), 'bot');
+  await ok('knowledge.concept', {...CONCEPT, id: conceptRecordId, forms: forms.map(t => ({type: t, claimId: claimIds[t]}))}, 'bot');
+  for (const t of forms) await ok('knowledge.review', {...F.REVIEW, formChecked: true, id: claimIds[t]}, 'reviewer');
+  await ok('knowledge.concept-review', {...CONCEPT_REVIEW, id: conceptRecordId}, 'reviewer');
+  let releaseId = null;
+  if (release) { releaseId = await ok('knowledge.release', {...F.REVIEW, title: 'Synthetic integration concepts 1', claimIds: forms.map(t => claimIds[t])}, 'releaser'); await ok('knowledge.activate', {...F.REVIEW, id: releaseId, stamp: K.knowledgeStamp(state.document)}, 'releaser'); }
+  return {send, ok, sourceId, conceptRecordId, claimIds, releaseId, get document() { return state.document; }, close: () => env.DB.close?.()};
+}
+// The kinds of request that are not a signed-in person's own (authorship.js commitAuthor), as the entry is handed them.
+const NOT_A_PERSON = [['an agent account', 'bot', F.agent('bot')], ['a draft by Sol', 'architect', F.solDraft('architect')], ['an import', 'architect', F.importedBy('architect')], ['a request that states no author', 'architect', {}], ['an author that names no account', 'architect', {author: {kind: 'person', id: 'architect', reviewed: true}}]];
+add('S1.28 (ruling G2): a concept that was ever reviewed, or is in a release, stays covered whether or not its review stands now: after a superseding source, a withdrawn form claim, a reopened contradiction, a person\'s edit and a later dispute or rejection, the edit, the form claim, the opposing claim and the topic mapping of an agent account, a draft by Sol, an import and a request that states no author are still refused, at the entry and through POST /api/commands; a concept that was rejected and never verified stays a draft for them', async () => {
+  const {CC, KC} = await mods(), L = await library({forms: ['definition', 'applicability'], verify: true}), all = F.p001Forms();
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  const topic = TOPIC(L.sourceId), opposing = OPPOSING(L.sourceId);
+  L.k('topic', topic, 'importer', F.importedBy('importer')); L.k('concept', {...CONCEPT, conceptId: 'SYN-P002', title: 'Idempotent receiver'}, 'importer', F.importedBy('importer'));
+  const draft = L.document; L.k('concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer');
+  const p = L.document, read = doc => KC.conceptRecords(doc).find(c => c.conceptId === 'SYN-P001'), covered = doc => KC.conceptCovered(doc, doc.knowledge.concepts[0]), edit = (doc, change) => ({...CONCEPT, id: L.conceptRecordId, forms: doc.knowledge.concepts[0].forms, ...change});
+  assert.equal(read(p).state, 'reviewed'); assert.equal(covered(p), true); assert.equal(covered(draft), false);
+  // What a person may do to a reviewed concept, each with today's effect: the concept reads draft afterwards.
+  const LAPSES = [
+    ['a superseding source', doc => send(doc, 'source', SECOND_EDITION(L.sourceId), 'architect').document],
+    ['a withdrawn form claim', doc => send(doc, 'withdraw', {...F.REVIEW, id: L.claimIds.definition, stamp: K.knowledgeImpactStamp(doc, L.claimIds.definition)}, 'architect').document],
+    ['a reopened contradiction', doc => { const a = send(doc, 'claim', opposing, 'architect').document, id = a.knowledge.contradictions.at(-1).id, apart = send(a, 'contradiction', {...DISPOSE, id, status: 'context-separated'}, 'reviewer').document; assert.equal(read(apart).state, 'reviewed', 'separated: the review stands again'); return send(apart, 'contradiction', {...DISPOSE, id, status: 'open'}, 'architect').document; }],
+    ['a person\'s opposing claim', doc => send(doc, 'claim', opposing, 'architect').document],
+    ['a person\'s edit', doc => send(doc, 'concept', edit(doc, {steward: 'Another guild'}), 'architect').document],
+    ['a later dispute', doc => send(doc, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId, decision: 'disputed'}, 'releaser').document],
+    ['a later rejection, after a dispute', doc => send(send(doc, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId, decision: 'disputed'}, 'releaser').document, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId, decision: 'rejected'}, 'second-architect').document]];
+  const ONLY = /SYN-P001 is reviewed or in a release: only a signed-in person changes what its review covered/;
+  const requests = doc => [['the review date', 'concept', edit(doc, {reviewDue: '2099-12-31'})], ['a form taken off', 'concept', edit(doc, {forms: doc.knowledge.concepts[0].forms.slice(0, 1)})], ['a form added', 'claim', F.formClaim(L.sourceId, 'SYN-P001', all.example)], ['an opposing claim', 'claim', {...opposing, statement: 'An outbox is avoided where nothing is published.'}], ['the topic unmapped', 'topic', {...topic, conceptId: null, reason: 'Unmapped.'}], ['another topic mapped to it', 'topic', {...topic, topicId: 'SYN-P001-B', sourceId: null}]];
+  for (const [lapse, apply] of LAPSES) {
+    const q = apply(p); assert.equal(read(q).state, 'draft', lapse + ': a person\'s request keeps its effect, the review no longer stands'); assert.equal(covered(q), true, lapse + ': the concept stays covered');
+    for (const [who, actor, opts] of NOT_A_PERSON) for (const [what, type, body] of requests(q)) assert.throws(() => send(q, type, body, actor, opts), ONLY, lapse + ', then ' + who + ': ' + what);
+    // A person still changes it, and a second person reviews it again.
+    assert.equal(send(q, 'concept', edit(q, {reviewDue: '2099-12-31'}), 'architect').document.knowledge.concepts[0].reviewDue, '2099-12-31', lapse + ': a person edits');
+  }
+  // A dispute or a rejection keeps who verified the concept before; a new verification needs no such note.
+  { const disputed = LAPSES[5][1](p), r = disputed.knowledge.concepts[0].review; assert.equal(r.decision, 'disputed'); assert.deepEqual(r.verifiedBefore, {actor: 'reviewer', at: AT});
+    const rejected = LAPSES[6][1](p).knowledge.concepts[0].review; assert.equal(rejected.decision, 'rejected'); assert.equal(rejected.actor, 'second-architect'); assert.deepEqual(rejected.verifiedBefore, {actor: 'reviewer', at: AT}, 'carried through a second such review');
+    const again = send(disputed, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer').document; assert.equal('verifiedBefore' in again.knowledge.concepts[0].review, false); assert.equal(read(again).state, 'reviewed');
+    assert.equal('verifiedBefore' in p.knowledge.concepts[0].review, false, 'a first verification holds no such key'); }
+  // Never verified: a concept a person rejected or disputed stays a draft, and a request that is nobody's corrects it.
+  for (const decision of ['rejected', 'disputed']) { const q = send(draft, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId, decision}, 'reviewer').document; assert.equal(covered(q), false, decision + ', never verified'); assert.equal('verifiedBefore' in q.knowledge.concepts[0].review, false);
+    for (const [who, actor, opts] of NOT_A_PERSON) assert.equal(send(q, 'concept', edit(q, {reviewDue: '2099-12-31'}), actor, opts).document.knowledge.concepts[0].reviewDue, '2099-12-31', who + ' corrects a ' + decision + ' draft'); }
+  // A review made on another workbench is no review here (S1.12): the recovered concept is a draft, until a release holds it.
+  { const recovered = neutraliseImportedAuthority(clone(p), AT); assert.equal(covered(recovered), false, 'an imported review covers nothing here'); }
+  // In a release: covered whatever became of the release and of the review.
+  { const R = await library({forms: ['definition', 'applicability'], verify: true, review: true, release: true, activate: true}), r = R.document;
+    const gone = send(send(r, 'withdraw', {...F.REVIEW, id: R.releaseId, stamp: K.knowledgeImpactStamp(r, R.releaseId)}, 'releaser').document, 'concept-review', {...CONCEPT_REVIEW, id: R.conceptRecordId, decision: 'disputed'}, 'second-architect').document;
+    assert.equal(KC.conceptRecords(gone)[0].state, 'draft'); assert.equal(KC.conceptCovered(gone, gone.knowledge.concepts[0]), true);
+    for (const [who, actor, opts] of NOT_A_PERSON) assert.throws(() => send(gone, 'concept', {...CONCEPT, id: R.conceptRecordId, forms: gone.knowledge.concepts[0].forms, reviewDue: '2099-12-31'}, actor, opts), ONLY, who + ': its release withdrawn and its review disputed'); }
+  // Through the service, one project for each way: the person's request is saved (200), and afterwards the agent account,
+  // a draft by Sol and an import are each refused the edit, the form claim, the opposing claim and the topic mapping (400).
+  const SERVICE = [
+    ['a superseding source', async S => { await S.ok('knowledge.source', SECOND_EDITION(S.sourceId), 'architect'); }],
+    ['a withdrawn form claim', async S => { await S.ok('knowledge.withdraw', {...F.REVIEW, id: S.claimIds.definition, stamp: K.knowledgeImpactStamp(S.document, S.claimIds.definition)}, 'architect'); }],
+    ['a reopened contradiction', async S => { await S.ok('knowledge.claim', OPPOSING(S.sourceId), 'architect'); const id = S.document.knowledge.contradictions.at(-1).id; await S.ok('knowledge.contradiction', {...DISPOSE, id, status: 'context-separated'}, 'reviewer'); assert.equal(KC.conceptRecords(S.document)[0].state, 'reviewed'); await S.ok('knowledge.contradiction', {...DISPOSE, id, status: 'open'}, 'architect'); }]];
+  for (const [lapse, apply] of SERVICE) {
+    const S = await serviceLibrary();
+    try {
+      assert.equal(KC.conceptRecords(S.document)[0].state, 'reviewed'); await apply(S);
+      const doc = S.document, before = JSON.stringify(doc.knowledge); assert.equal(KC.conceptRecords(doc)[0].state, 'draft', lapse + ' through the service: the review no longer stands'); assert.equal(KC.conceptCovered(doc, doc.knowledge.concepts[0]), true);
+      const body = {edit: ['knowledge.concept', {...CONCEPT, id: S.conceptRecordId, forms: doc.knowledge.concepts[0].forms, reviewDue: '2099-12-31'}], form: ['knowledge.claim', F.formClaim(S.sourceId, 'SYN-P001', all.example)], opposing: ['knowledge.claim', {...OPPOSING(S.sourceId), statement: 'An outbox is avoided where nothing is published.'}], topic: ['knowledge.topic', TOPIC(S.sourceId)]};
+      for (const [who, as, extra] of [['the agent account', 'bot', {}], ['a draft by Sol', 'architect', {authorKind: 'sol-draft'}], ['an import', 'architect', {authorKind: 'import'}]]) for (const [what, [type, payload]] of Object.entries(body)) {
+        const r = await S.send(type, payload, as, extra); assert.equal(r.status, 400, lapse + ', then ' + who + ': ' + what + ' ' + JSON.stringify(r.data).slice(0, 200)); assert.match(r.data.error, ONLY, lapse + ', then ' + who + ': ' + what); }
+      assert.equal(JSON.stringify(S.document.knowledge), before, 'nothing was written');
+      await S.ok('knowledge.concept', body.edit[1], 'architect'); assert.equal(S.document.knowledge.concepts[0].reviewDue, '2099-12-31', 'a person edits it');
+    } finally { S.close(); }
+  }
+});

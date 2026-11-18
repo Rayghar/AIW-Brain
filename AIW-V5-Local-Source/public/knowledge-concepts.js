@@ -50,11 +50,16 @@ export function conceptRecords(p){
  const s=knowledgeState(p);
  return list(s.concepts).map(c=>{const hash=conceptHash(c,s.claims,s.topics);return {...c,hash,state:c.retired?'retired':reviewStands(p,s,c,hash)?'reviewed':'draft'};});
 }
-// Whether a review covers a concept now: its review stands (retired or not), or a release of this project holds one of
-// its forms. What it covers is then changed by a person only (knowledge-concept-commands.js).
+// Whether a concept is covered (rulings B3 and G2 of 2026-11-18): a second person verified it here at some time, or a
+// release of this project holds one of its forms. It stays covered whether or not that review stands now (a superseded
+// source, a withdrawn form, an open contradiction, a person's edit), and through a later dispute or rejection, which keeps
+// who verified it before (review.verifiedBefore). What a covered concept holds and rests on is changed by a person only
+// (knowledge-concept-commands.js), so no chain of requests frees it for a request that is nobody's. A review that names
+// no person's account was never one (ruling B4), and a review made on another workbench names no reviewer here
+// (recovery-service.js): neither covers anything.
 export function conceptCovered(p,concept){
- const s=knowledgeState(p);
- return reviewStands(p,s,concept,conceptHash(concept,s.claims,s.topics))||s.releases.some(r=>r.claims.some(c=>c?.form&&c.subjectId===concept.conceptId));
+ const s=knowledgeState(p),r=concept.review;
+ return !!r?.actor&&r.account==='person'&&(r.decision==='verified'||!!r.verifiedBefore)||s.releases.some(x=>x.claims.some(c=>c?.form&&c.subjectId===concept.conceptId));
 }
 // One state and one label for a form: {claim, release} for a claim as an active release holds it, {claim} for a claim
 // of this project. A released form is checked again here, on every read (its claim's eligibility and its own shape).

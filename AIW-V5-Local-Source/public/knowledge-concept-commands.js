@@ -50,10 +50,11 @@ function personOnly(author,actor){const refusal=!actor?'Sign in to record this.'
 const inLibrary=s=>s.library?.enabled===true;
 function libraryOnly(s){if(!inLibrary(s))throw Error('Concepts, topics and knowledge forms are written in a knowledge library: a person marks this project as one first (knowledge.library). Plain sources and claims are saved in any project.');}
 // Only a person changes what a review covered (ruling B3 of 2026-11-18). An agent account, a draft by Sol, an import and
-// a request that states no author write drafts: on a concept whose review stands, or which a release of this project
-// holds, they are refused whatever would change the concept's hash (a field of its record, its forms, a topic mapped to
-// or from it) and any new form claim on it (an opposing one would open a contradiction and lapse the review: B9). On a
-// draft concept the same request is accepted. A person's change is accepted and lapses the review, which is then made again.
+// a request that states no author write drafts: on a concept a second person verified here at some time, or which a
+// release of this project holds (conceptCovered; ruling G2: whether or not that review stands now), they are refused
+// whatever would change the concept's hash (a field of its record, its forms, a topic mapped to or from it) and any new
+// form claim on it (an opposing one would open a contradiction and lapse the review: B9). On a concept nobody verified
+// the same request is accepted. A person's change is accepted and lapses the review, which is then made again.
 function onlyAPerson(p,concept,author,what){
  const refusal=kindRefusal(author);
  if(refusal&&conceptCovered(p,concept))throw Error(concept.conceptId+' is reviewed or in a release: only a signed-in person changes what its review covered ('+what+'). '+refusal);
@@ -164,7 +165,10 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
    for(const f of c.forms){const claim=s.claims.find(x=>x.id===f.claimId),reasons=claim?[...knowledgeEligibility(p,claim).reasons,...formIssues(claim)]:['The claim is unavailable.'];if(reasons.length)throw Error(f.claimId+' ('+f.type+'): '+reasons.join(' '));}
   }
   // The review names the kind of account that made it (a person's: secondPerson refused every other); a read asks for it.
-  c.review={decision:r.decision,actor,account:author.account,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics)};return c.id;
+  // A dispute or a rejection of a concept that was verified here keeps who verified it and when (ruling G2 of
+  // 2026-11-18): the concept stays covered, and only a person changes it. The key exists only then.
+  const before=c.review?.decision==='verified'&&c.review.actor&&c.review.account==='person'?{actor:c.review.actor,at:c.review.at}:c.review?.verifiedBefore;
+  c.review={decision:r.decision,actor,account:author.account,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims,s.topics),...(r.decision!=='verified'&&before?{verifiedBefore:before}:{})};return c.id;
  }
  case 'knowledge.concept-retire':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(c.retired)throw Error(c.id+' is already retired.');c.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return c.id;}
  // Only an unreleased concept is restored: a retirement of a released one stands, and a successor concept follows it.
