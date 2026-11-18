@@ -73,8 +73,8 @@ import {componentKindName} from './realisation-domain.js';
 import {contentReading, skeletonBanner, SDD_FORMAT, formatMarker, openMarkerLine, plain, markerQuestion, isOpenMarker} from './sdd-content.js';
 import {list, str, refList as sharedRefList} from './util.js';
 // Who wrote each record and whether a person confirmed it: workstream D3's provenance reader, the one every page reads.
-import {sddAuthor, confirmedByPerson, provenanceBlocksMarkdown} from './provenance.js';
-import {placeSections} from './design-extension-parts.js';
+import {sddAuthor, confirmedByPerson, provenanceBlocksMarkdown, listAt, RECORD_NOUNS} from './provenance.js';
+import {placeSections, packageCollections} from './design-extension-parts.js';
 
 // ---------------------------------------------------------------- Markdown text
 // No list prints more than LIST_MAX items inline (SDD-SPEC principle 4); the rest are counted with a pointer.
@@ -139,6 +139,11 @@ const COLLECTIONS = [
   [10, 'environment', p => list(p.runtime?.environments)], [10, 'zone', p => list(p.runtime?.zones)], [10, 'runtime plan', p => list(p.runtime?.plans)], [10, 'runtime path', p => list(p.runtime?.paths)],
   [11, 'plateau', p => list(p.roadmap?.plateaus)], [11, 'migration record', p => list(p.roadmap?.migrations)], [11, 'delivery action', p => list(p.finalReview?.actions)], [11, 'document', p => { const n = p.finalReview?.narrative; return n && (solDraftOf(n) || ['summary', 'scope', 'approach', 'owner', 'audience'].some(k => str(n[k]))) ? [n] : []; }]
 ];
+// With them, the collections the design packages state as their own (rc44, slice S0, the lead's ruling D5:
+// design-extension-parts.js packageCollections, the lifecycle rows and the rows stated for the provenance reader), each
+// under its package's noun: who wrote the records, and the open items, read a package's records as they read these. A
+// document that holds no such record reads as it did.
+const collections = () => [...COLLECTIONS, ...packageCollections().map(([path, chapter]) => [chapter, RECORD_NOUNS[path] || 'record', p => listAt(p, path)])];
 const chapterTitle = n => CHAPTERS.find(c => c.id === n)?.title || (n === 11 ? 'Review & realize' : 'Chapter ' + n);
 
 // ---------------------------------------------------------------- provenance (who and what wrote the records)
@@ -158,7 +163,7 @@ export function provenanceReading(p) {
     // architecture contract, with its provider and model; the drafting rules, worded with the model or not.
     const engines = {model: 0, assisted: 0, rules: 0}, models = new Map();
     let total = 0, confirmed = 0;
-    for (const [chapter, , read] of COLLECTIONS) for (const r of read(p)) {
+    for (const [chapter, , read] of collections()) for (const r of read(p)) {
       const a = sddAuthor(r), ok = confirmedByPerson(p, r, chapter); total++; by[a]++; if (ok) { confirmed++; reviewed[a]++; }
       if (a === 'sol') { const d = solDraftOf(r), e = d?.engine; if (e === 'model') { engines.model++; const m = [str(d.provider), str(d.model)].filter(Boolean).join(' · '); if (m) models.set(m, (models.get(m) || 0) + 1); } else if (e === 'model-assisted') engines.assisted++; else if (e === 'rules') engines.rules++; }
       const c = chapters.get(chapter) || {chapter, title: chapterTitle(chapter), total: 0, sol: 0, import: 0, rules: 0, person: 0, reference: 0, proposal: 0, confirmed: 0};
@@ -1663,10 +1668,10 @@ function appendixB(B) {
   // The fields the records keep in an open state that the body did not record: a field the body recorded is listed
   // once, under the body's label, and a field of a kind the body labels is listed under that label for every record
   // (D-24-06). A driver is named by its code, as everywhere in the document.
-  for (const [chapter, kind, read] of COLLECTIONS) if (kind !== 'document') for (const r of read(p)) for (const [f, e] of Object.entries(r?.open && typeof r.open === 'object' ? r.open : {})) if (e?.state && !O.has(chapter, r.id, f)) O.add(chapter, kind, O.labelOf(chapter, kind, f) || f.replace(/([A-Z])/g, ' $1').toLowerCase(), kind === 'driver' ? codeOf(p, r.id) : refOf(r), {state: e.state, question: e.question || '', field: f, id: r.id});
+  for (const [chapter, kind, read] of collections()) if (kind !== 'document') for (const r of read(p)) for (const [f, e] of Object.entries(r?.open && typeof r.open === 'object' ? r.open : {})) if (e?.state && !O.has(chapter, r.id, f)) O.add(chapter, kind, O.labelOf(chapter, kind, f) || f.replace(/([A-Z])/g, ' $1').toLowerCase(), kind === 'driver' ? codeOf(p, r.id) : refOf(r), {state: e.state, question: e.question || '', field: f, id: r.id});
   // Sol's drafts that no person has kept or saved yet (record-lifecycle.js solDraftOf), apart from AIW's seeded proposals.
   const drafted = new Set();
-  for (const [chapter, kind, read] of COLLECTIONS) for (const r of read(p)) if (solDraftOf(r) && isProposed(r)) { drafted.add(r.id); O.add(chapter, kind, 'Drafted by Sol, to keep, change or retire', refOf(r) || (kind === 'document' ? 'SDD narrative' : kind), {state: 'proposal'}); }
+  for (const [chapter, kind, read] of collections()) for (const r of read(p)) if (solDraftOf(r) && isProposed(r)) { drafted.add(r.id); O.add(chapter, kind, 'Drafted by Sol, to keep, change or retire', refOf(r) || (kind === 'document' ? 'SDD narrative' : kind), {state: 'proposal'}); }
   const props = seededRecords(p).filter(x => !drafted.has(x.id));
   for (const x of props) O.add(x.chapter, x.kind, 'Proposals by AIW to keep, complete or dismiss', x.ref || x.id, {state: 'proposal'});
   const items = [...O.items.values()].sort((a, b) => a.chapter - b.chapter || b.refs.length - a.refs.length || a.label.localeCompare(b.label));

@@ -36,7 +36,7 @@ import {chapterChecks, sddBoard} from './public/readiness-model.js';
 import * as canonical from './public/canonical-command.js';
 import {COLLECTIONS, retiredRecords, retirable, referencesTo} from './public/record-lifecycle.js';
 import {eachRecord, findRecord, RECORD_NOUNS, RECORD_PATHS} from './public/provenance.js';
-import {architectureMarkdown} from './public/sdd-architecture.js';
+import {architectureMarkdown, provenanceReading} from './public/sdd-architecture.js';
 import {isReviewCommand} from './authorship.js';
 import {documentCopy, isSettled} from './public/document-memo.js';
 import {createProjectStore} from './public/project-store.js';
@@ -576,6 +576,31 @@ await block('D4 tracker', async () => {
   assert.ok(boundary.extensionIssues({id: 'xy', commands: {'xy.save': {apply() {}, track() {}}}}).some(i => /“track” is not a part of a command/.test(i)), 'a tracker is stated once, by the package');
   assert.deepEqual(boundary.extensionIssues({id: 'xy', track() {}}), []); assert.ok(boundary.extensionIssues({id: 'xy', track: true}).some(i => /track is a function/.test(i)));
   pass('D4: the package\'s tracker is called after the built-in trackers for every command (its own, a built-in save, record.retire, workspace.merge, a guide step) and for each inner command of a batch; what it writes is in the same commit, journalled and stamped; it writes nothing for a document without the package\'s records');
+});
+
+// ---------------------------------------------------------------- D5. the SDD's reading of who wrote the records
+await block('D5 SDD provenance', () => {
+  need();
+  const p0 = reference('bank-payment'), r0 = provenanceReading(p0), base = architectureMarkdown(p0).markdown;
+  // five records of a package, drafted by Sol and still proposals, and one a person wrote in a collection stated for the provenance reader alone
+  let p = documentCopy(p0);
+  p.synthetic = {version: 1, counter: 5, records: [1, 2, 3, 4, 5].map(n => ({id: 'SYN-00' + n, ref: 'SYN-00' + n, title: 'Drafted by Sol ' + n, requirementIds: [], componentId: 'none', revision: 1, state: 'proposed', provenance: {draft: {by: 'sol', engine: 'rules'}}}))};
+  p.runtime.otherNotes = [{id: 'ON-001', ref: 'ON-001', title: 'A note a person wrote', provenance: {author: {kind: 'person', by: A, at: AT}}}];
+  p = withFinalReview(p);
+  const seen = []; eachRecord(p, (r, chapter, path) => { if (path === 'synthetic.records' || path === 'runtime.otherNotes') seen.push(r.id); }); assert.equal(seen.length, 6, 'the provenance reader reads all six');
+  const r = provenanceReading(p), chapter = (x, n) => x.chapters.find(c => c.chapter === n);
+  assert.equal(r.total, r0.total + 6, 'the SDD counts the packages\' records'); assert.equal(r.by.sol, r0.by.sol + 5, 'the five Sol drafted'); assert.equal(r.by.person, r0.by.person + 1);
+  assert.equal(r.engines.rules, r0.engines.rules + 5); assert.equal(chapter(r, 3).sol, (chapter(r0, 3)?.sol || 0) + 5); assert.equal(chapter(r, 10).total, chapter(r0, 10).total + 1);
+  assert.match(r.line, /5 records drafted by Sol, not reviewed by a person/, 'the cover line says so: ' + r.line); assert.ok(!/drafted by Sol/.test(r0.line));
+  const text = architectureMarkdown(p).markdown, open = text.slice(text.indexOf('## B. Open items'), text.indexOf('## C. '));
+  assert.notEqual(text, base, 'the architecture edition says so too');
+  assert.match(open, /\*\*Drafted by Sol, to keep, change or retire\*\* \(synthetic record, awaiting a person\): 5 records, SYN-001–SYN-005\. Resolve in Chapter 3/, 'the open items list the drafts a person has yet to keep, change or retire, under the package\'s noun');
+  assert.ok(!base.slice(base.indexOf('## B. Open items'), base.indexOf('## C. ')).includes('Drafted by Sol, to keep'), 'a document without such records prints as before (6b holds the whole text)');
+  // a field a package's record keeps open is an open item under the package's noun
+  { const q = documentCopy(p); q.synthetic.records[0] = {...q.synthetic.records[0], state: 'authored', provenance: undefined, open: {window: {state: 'open-question', question: 'Which window applies?'}}}; const t = architectureMarkdown(withFinalReview(q)).markdown; assert.match(t.slice(t.indexOf('## B. Open items'), t.indexOf('## C. ')), /SYN-001/, 'an open field of a package\'s record is listed'); }
+  // a row a package states over a built-in collection is not read a second time (the hostile package states decisions.records)
+  assert.deepEqual(boundary.packageCollections().map(x => x[0]).sort(), ['runtime.otherNotes', 'runtime.otherThings', 'synthetic.records']);
+  pass('D5: the SDD\'s provenance reading and its open items read the packages\' collections: ' + r.total + ' records with ' + r.by.sol + ' drafted by Sol (' + r0.total + ' and ' + r0.by.sol + ' without them); a built-in collection a package names is not counted twice');
 });
 
 // ---------------------------------------------------------------- 3. checks and readiness
