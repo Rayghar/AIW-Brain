@@ -22,9 +22,17 @@ export function integrityError(message, key = null) {
 export const isIntegrityError = (error) => error?.code === INTEGRITY;
 export const isInternalError = (error) => !error || INTERNAL.some((Type) => error instanceof Type);
 
+// A project that names a design package this build does not register (rc44, slice S0; the lead's rulings D2 and F2)
+// is not written by it: the one writer of a project (project-storage.js saveStoredProject) throws this, and every
+// final catch answers it as 409 with code "missing_package" and the packages named.
+export const MISSING_PACKAGE = 'missing_package';
+export const missingPackageError = (message, packages) => Object.assign(Error(message), {code: MISSING_PACKAGE, packages});
+export const isMissingPackage = (error) => error?.code === MISSING_PACKAGE;
+
 // One answer for a service's final catch: an integrity fault is 422 with code "integrity" and one JSON log line
 // naming the key; anything else is the person-readable message (or the general one for a fault) at `status`.
 export function errorResponse(error, status = 400, context = {}) {
+  if (isMissingPackage(error)) return new Response(JSON.stringify({error: error.message, code: MISSING_PACKAGE, packages: error.packages}), {status: 409, headers: JSON_HEADERS});
   if (isIntegrityError(error)) {
     console.error(JSON.stringify({at: new Date().toISOString(), event: 'integrity-fault', ...context, key: error.key || null, message: error.message}));
     return new Response(JSON.stringify({error: error.message, code: INTEGRITY}), {status: 422, headers: JSON_HEADERS});

@@ -1,5 +1,5 @@
 import {prepareRepositoryPacket} from './repository-packet.js';
-import {publicMessage,isIntegrityError,isInternalError} from './error-message.js';
+import {publicMessage,isIntegrityError,isInternalError,isMissingPackage} from './error-message.js';
 import {handleRepositorySync,repositorySyncRequest,refreshRepositoryAssurance} from './repository-sync.js';
 import {handleOperations} from './operation-service.js';
 import {handleRecovery} from './recovery-service.js';
@@ -442,6 +442,7 @@ function registerFigures(project,chapter){const scene=CHAPTER_SCENES[chapter]?.[
 // the workspace inline: project-storage.js).
 const missingPackageRefusal=document=>{const missing=missingPackages(document);return missing.length?json({error:missingPackagesRefusal(missing),code:'missing_package',packages:missing},409):null;};
 async function refuseMissingPackages(env,owner,projectId){const row=await env.DB.prepare('SELECT document FROM projects WHERE owner_id=? AND id=?').bind(owner,projectId).first();if(!row)return null;let document=null;try{document=JSON.parse(row.document);}catch{return null;}return missingPackageRefusal(document);}
+const MISSING_PACKAGE_OPEN=new Set(['/api/commands','/api/lifecycle','/api/recovery','/api/access','/api/discussions','/api/projects']);
 async function route(request,env,ctx){
   const url=new URL(request.url);
   if(!url.pathname.startsWith('/api/'))return env.ASSETS.fetch(request);
@@ -459,6 +460,11 @@ async function route(request,env,ctx){
     const identity=await projectIdentity(env,actor,projectId);owner=identity.owner;
     // An agent or service account is never a person (round 12, GR-GOV-12): its account kind travels with its identity.
     identity.account=accountKind(env,actor);
+    // rc44, slice S0 (the lead's rulings D2 and F2): a project that names a design package this build does not register
+    // is read and not changed here. Every route that writes is refused at this one place, whatever it is asked, except
+    // the ones in MISSING_PACKAGE_OPEN: commands (refused below, on the document the route reads anyway), and the steps
+    // that leave the design as it is. saveStoredProject refuses again, for a route that is routed before this line.
+    if(request.method!=='GET'&&!MISSING_PACKAGE_OPEN.has(url.pathname)){const refusal=await refuseMissingPackages(env,owner,projectId);if(refusal)return refusal;}
     if(['/api/connections','/api/jobs','/api/operations'].includes(url.pathname))return await handleOperations(request,env,identity,projectId,ctx);
     if(url.pathname==='/api/recovery')return await handleRecovery(request,env,identity,projectId);
     if(['/api/discussions','/api/activity','/api/graph'].includes(url.pathname))return await handleObjects(request,env,identity,projectId);
@@ -469,8 +475,6 @@ async function route(request,env,ctx){
     // request is answered without a write and the client reads on regardless.
     if(url.pathname==='/api/knowledge/corpus'&&request.method==='POST'&&url.searchParams.get('view')==='notices'){if(!['owner','editor'].includes(identity.role))return json({status:'not-applied',reason:'Repository notices are applied by the project owner or an editor.',code:'role'},403);return await handleRepositoryCorpus(request,env,identity,projectId);}
     if(!['owner','editor'].includes(identity.role)&&request.method!=='GET')return json({error:'This project role permits reading and assigned reviews only.',code:'role'},403);
-    // An intake, a draft by Sol and a freeze change or freeze the design: none for a project this build cannot read in full.
-    if(request.method!=='GET'&&['/api/intake','/api/drafting','/api/baselines'].includes(url.pathname)){const refusal=await refuseMissingPackages(env,owner,projectId);if(refusal)return refusal;}
     if(url.pathname==='/api/intake')return await handleIntake(request,env,identity,projectId);
     // Sol's architecture draft as a job with a receipt, previewed and applied as one reviewed step (round 12, D-10).
     if(url.pathname==='/api/drafting')return await handleDrafting(request,env,identity,projectId,ctx);
@@ -705,6 +709,7 @@ async function route(request,env,ctx){
     // Integrity faults are permanent and precise (round 2, B2-06); programming faults are faults; only an adapter that
     // could not be reached is the transient outage the client may retry.
     const base={owner,project:projectId,route:url.pathname,method:request.method,message:String(e?.message||e)};
+    if(isMissingPackage(e))return json({error:e.message,code:'missing_package',packages:e.packages},409);
     if(isIntegrityError(e)){log('integrity-fault',{...base,key:e.key||null});return json({error:e.message,code:'integrity'},422);}
     if(isInternalError(e)){log('fault',{...base,stack:typeof e?.stack==='string'?e.stack.split('\n').slice(0,6).join(' | '):null});return json({error:'This action could not be completed. Your input is kept; reload the project and try again.',code:'fault'},500);}
     log('storage-unavailable',base);return json({error:'We could not reach project storage. Your input is still here; please retry.',code:'storage_unavailable'},503);

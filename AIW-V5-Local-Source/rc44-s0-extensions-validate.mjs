@@ -595,6 +595,20 @@ await block('D2 packages a document names', async () => {
     // and it is not frozen
     { const res = await h.api('/api/baselines' + h.q + '&action=freeze', 'POST', {title: 'Refused'}); assert.equal(res.status, 409, 'a freeze is refused'); assert.match((await res.json()).error, WORDS); }
     assert.equal((await (await h.api('/api/project' + h.q)).json()).revision, revision, 'nothing was saved');
+    // ruling F2: one refusal for every route that can change the design or the knowledge of such a project, whatever it is asked
+    for (const [path, body] of [['/api/operations' + h.q, {action: 'policy', policy: {}}], ['/api/jobs' + h.q, {kind: 'sync'}], ['/api/connections' + h.q, {name: 'Refused'}], ['/api/reviews' + h.q, {title: 'Refused'}], ['/api/attachments' + h.q, {name: 'refused.txt'}],
+      ['/api/knowledge/corpus' + h.q + '&view=notices', {}], ['/api/knowledge/corpus' + h.q, {action: 'fetch'}], ['/api/knowledge/repository-sync' + h.q, {}], ['/api/knowledge/repository-transfer' + h.q, {}], ['/api/knowledge/repository-packet' + h.q, {}],
+      ['/api/intake' + h.q, {}], ['/api/drafting' + h.q, {}], ['/api/intelligence/reasoning' + h.q, {}], ['/api/graph' + h.q, {}], ['/api/unknown-route-of-a-later-build' + h.q, {}]]) {
+      const res = await h.api(path, 'POST', body), answer = await res.json();
+      assert.equal(res.status, 409, 'POST ' + path + ' is refused: ' + res.status + ' ' + JSON.stringify(answer).slice(0, 160)); assert.equal(answer.code, 'missing_package', path); assert.match(answer.error, WORDS, path); assert.deepEqual(answer.packages, ['p99-unknown'], path);
+    }
+    assert.equal((await (await h.api('/api/project' + h.q)).json()).revision, revision, 'nothing was saved by any of them');
+    // what stays possible: reading (above), renaming, archiving and restoring from the archive, a recovery export, access
+    { const life = async action => { const cur = await (await h.api('/api/project' + h.q)).json(), res = await h.api('/api/lifecycle' + h.q, 'POST', {revision: cur.revision, ...action}); assert.equal(res.status, 200, JSON.stringify(action) + ' stays possible: ' + JSON.stringify(await res.clone().json()).slice(0, 160)); };
+      await life({action: 'rename', name: 'Renamed while a package is missing'}); await life({action: 'archive'}); await life({action: 'restore'});
+      assert.notEqual((await h.api('/api/access' + h.q, 'POST', {actorId: 'architect-d', role: 'viewer'})).status, 409, 'access stays possible');
+      assert.notEqual((await h.api('/api/recovery' + h.q + '&action=export', 'POST', {})).status, 409, 'a recovery export stays possible');
+      const after = await (await h.api('/api/project' + h.q)).json(); assert.deepEqual(after.missingPackages, ['p99-unknown'], 'and the project still names what this build lacks'); }
     // with the package named again as one this build has, the project is changed and printed as before
     await name(['zz-synthetic']);
     assert.equal((await h.send('synthetic.save', {title: 'Third write'})).status, 200); assert.equal((await h.api('/api/export' + h.q + '&chapter=3&format=md')).status, 200);
