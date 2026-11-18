@@ -1,0 +1,47 @@
+{
+ "schema": "aiw.rc44.slice-size.v1",
+ "name": "wp2 S1 the adoption record",
+ "measuredWith": "client-bundle.mjs bundleClient, as node build.mjs builds the client (dist/client-size-report.json: routes.chapters.code)",
+ "allowance": {
+  "chapters": 600,
+  "of": "all of wp2 (ruling A4)",
+  "scripts": 148
+ },
+ "caps": {
+  "chapters": 3233792,
+  "scripts": 148
+ },
+ "before": {
+  "name": "S0 shared registration (audit/rc44/build-notes/s0-size.json)",
+  "chapters": 3229761,
+  "projects": 506802,
+  "scripts": 148,
+  "under10k": 53,
+  "css": 901873,
+  "registry": 400
+ },
+ "slice": {
+  "chapters": 3230048,
+  "projects": 507030,
+  "scripts": 148,
+  "under10k": 53,
+  "css": 901873
+ },
+ "delta": 287,
+ "headroomAfter": 3744,
+ "opens with records": {
+  "gate": "The chapters-route gate measures opening a document that holds no package records (ruling D10).",
+  "host": "public/architecture-task-ui.js",
+  "route": 3230048,
+  "added": 97349,
+  "total": 3327397,
+  "files": 2,
+  "before": {
+   "route": 3229761,
+   "added": 79189,
+   "total": 3308950,
+   "files": 2,
+   "note": "the lazy entry wp2's design names for its surface, as it is before any package is held in it"
+  }
+ }
+}

@@ -16,4 +16,4 @@
 // A slice that adds a package adds its line below, and nothing else in the shared machinery.
 import {registerExtension} from './design-extensions.js';
 // p40-adoption (wp2): held in the lazy entry of the comparison tools (ruling D7.6), which imports adoption-package.js.
-registerExtension({id:'p40-adoption-route',needs:p=>!!p.adoptions,load:()=>import('./architecture-task-ui.js')});
+registerExtension({id:'p40-adoption-route',needs:p=>p.adoptions,load:()=>import('./architecture-task-ui.js')});

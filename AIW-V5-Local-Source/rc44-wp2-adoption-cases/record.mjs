@@ -241,7 +241,7 @@ export default async function ({block, pass, load}) {
   });
 
   await block('accept', async () => {
-    need(); const id = 'ADP-001';
+    need(); const id = 'ADP-001', design = () => reviewSourceStamp(withFinalReview(structuredClone(h.doc()))), stamp = design();
     // ruling F4: no person has stood behind an upgraded adoption (it carries no author stamp, and its applier is a typed name)
     { const r = await accept(id, B); assert.equal(r.status, 400, JSON.stringify(r.body).slice(0, 300)); assert.match(r.error, /ADP-001 names no author/, 'the one rule refuses a record that names no author: ' + r.error); assert.ok(!adp(id).review); }
     assert.match(D.adoptionReading(h.doc(), adp(id)).acceptance.next, /signed-in person confirms it .*adoption\.reassess.*second person accepts/i, 'the package says in its own words which step comes first');
@@ -275,6 +275,7 @@ export default async function ({block, pass, load}) {
       const d = structuredClone(h.doc()), x = byId(d, id); edit(x); assert.equal(D.adoptionAccepted(d, x), false, 'not accepted when the stored step names ' + why);
     }
     assert.equal(verifierRefusal(D.acceptanceSubject(a), a.review.actor, a.review.account), null);
+    assert.equal(design(), stamp, 'confirming and accepting an adoption that reads as it was upgraded changes nothing the design says: the design fingerprint is where it was');
     // it is not undone, and a second acceptance is refused
     { const r = await accept(id, C); assert.equal(r.status, 400); assert.match(r.error, /already accepted/i); }
     pass('accept: an upgraded adoption no person has stood behind is refused by the one rule until a signed-in person confirms it with adoption.reassess (ruling F4: the person-only step that confirms; an agent account and a draft by Sol confirm nothing); then adoption.accept is refused for the confirmer, an agent account, a draft by Sol and no actor, and taken for a second person; the step is kept under review with the account kind, the status and the stamps stay; the reader requires a person\'s step that the one rule finds independent');
@@ -286,8 +287,9 @@ export default async function ({block, pass, load}) {
     { const r = await h.send('adoption.deviation', {id, revision: rev(id), target: {kind: 'role', id: 'no-such-role'}, statement: 'x', reason: 'y'}, C); assert.equal(r.status, 400); assert.match(r.error, /not .*this definition|Choose/i); }
     { const r = await h.send('adoption.deviation', {id, revision: rev(id), target: {kind: 'role', id: 'relay'}, statement: 'The relay runs inside the Payment service process.', reason: ''}, C); assert.equal(r.status, 400); assert.match(r.error, /reason/i); }
     { const r = await h.send('adoption.deviation', {id, revision: rev(id), target: {kind: 'role', id: 'relay'}, statement: 'x'.repeat(2001), reason: 'y'}, C); assert.equal(r.status, 400, 'a text past its bound is refused, never cut'); }
+    const design = () => reviewSourceStamp(withFinalReview(structuredClone(h.doc()))), stamp = design();
     await h.ok('adoption.deviation', {id, revision: rev(id), target: {kind: 'role', id: 'relay'}, statement: 'The relay runs inside the Payment service process.', reason: 'One deployment unit is all the team operates.'}, C);
-    let a = adp(id);
+    let a = adp(id); assert.notEqual(design(), stamp, 'a deviation is a design change: the adoption joins the design source and the design fingerprint moves');
     assert.deepEqual(a.deviations.map(d => [d.id, d.target, d.by, d.statement]), [['ADP-001:DEV-01', {kind: 'role', id: 'relay'}, C, 'The relay runs inside the Payment service process.']]); assert.equal(a.revision, 2);
     // the acceptance lapses
     assert.equal(D.adoptionAccepted(h.doc(), a), false, 'an acceptance lapses when a deviation is added'); assert.equal(a.review.actor, B, 'the lapsed step stays on record'); assert.equal(a.status, 'applied');
@@ -378,6 +380,18 @@ export default async function ({block, pass, load}) {
 
   await block('withdraw', async () => {
     need(); const id = 'ADP-002', rows = d => architectureObligationsFor(withFinalReview(structuredClone(d))).filter(o => o.taskId === 'DES-002').length;
+    // the tracker, called as the server calls it, on the outbox (ADP-001): its store is retired; and a design the earlier path reverses
+    { const prior = withFinalReview(structuredClone(h.doc())), next = structuredClone(h.doc()), a = byId(next, 'ADP-001'), store = a.bindings.find(b => b.roleId === 'store').recordId, c = next.realisation.components.find(x => x.id === store);
+      next.realisation.components = next.realisation.components.filter(x => x !== c); if (next.logical.assets) next.logical.assets = next.logical.assets.filter(x => x.id !== store); (next.retired ??= {records: []}).records.push({id: store, path: 'realisation.components', chapter: 5, record: c, at: AT, actor: C, reason: 'Replaced.'});
+      pkg().track(prior, next, {type: 'record.retire', payload: {id: store}}, AT); pkg().track(prior, next, {type: 'record.retire', payload: {id: store}}, AT);
+      const g = D.adoptionReading(next, a), f = g.findings.find(x => x.code === 'adoption-role-broken');
+      assert.ok(f && f.detail.includes('ADP-001') && f.detail.includes(a.title) && f.detail.includes('“store”') && f.detail.includes('DES-001:effect-1'), 'retire the store an applied outbox design bound: a finding names the applied mechanism: ' + f?.detail);
+      assert.deepEqual(g.changed.causes.filter(x => x.id === store), [{kind: 'binding', id: store, detail: 'retired'}], 'the tracker is idempotent within a commit');
+      const back = structuredClone(h.doc()), t = back.coauthoring.designTasks.find(x => x.id === 'DES-001'); t.status = 'dismissed';
+      pkg().track(prior, back, {type: 'alternative.rollback', payload: {}}, AT);
+      assert.deepEqual([byId(back, 'ADP-001').status, byId(back, 'ADP-001').history.at(-1).event], ['reversed', 'reverse'], 'a design the earlier path reverses takes its adoption with it, in the same commit');
+      assert.equal(D.adoptionReading(back, byId(back, 'ADP-001')).label, 'reversed'); assert.deepEqual(D.adoptionFindings(back).filter(x => x.objectId === 'ADP-001'), []);
+      const none = structuredClone(reference('bank-payment')), text = JSON.stringify(none); pkg().track(none, none, {type: 'record.retire', payload: {}}, AT); assert.equal(JSON.stringify(none), text, 'the tracker writes nothing into a document without adoptions'); }
     assert.equal(rows(h.doc()), 6);
     { const r = await h.send('adoption.withdraw', {id, revision: rev(id), reason: ''}, C); assert.equal(r.status, 400); assert.match(r.error, /reason/i); }
     { const r = await h.send('adoption.withdraw', {id, revision: rev(id), reason: 'Withdrawn.'}, AGENT); assert.equal(r.status, 400); }
@@ -390,9 +404,8 @@ export default async function ({block, pass, load}) {
     const p = withFinalReview(structuredClone(doc)); assert.ok(!own(chapter5(p)).some(f => f.objectId === id), 'a withdrawn adoption raises nothing'); assert.ok(!recordGraph(p).objects.has(id) && !recordGraph(p).objects.has('DES-002'), 'and is on no trail');
     assert.ok(doc.realisation.components.some(c => c.id === 'core-adapter'), 'the records it bound stay');
     for (const type of ['adoption.accept', 'adoption.reassess', 'adoption.deviation', 'adoption.withdraw']) { const r = await h.send(type, {id, revision: rev(id), reviewed: true, reason: 'x', deviationIds: [], target: {kind: 'role', id: 'caller'}, statement: 'x'}, B); assert.equal(r.status, 400, type + ' on a withdrawn adoption'); assert.match(r.error, /withdrawn/); }
-    // a design the legacy path reverses takes its adoption with it, in the same commit (the tracker)
     h.close(); h = null;
-    pass('withdraw: a signed-in person withdraws an adoption with a reason; the record stays with its history, the records it bound stay, the task it was upgraded from no longer stands as applied and its obligations are listed by no reader; a withdrawn adoption takes no further step');
+    pass('withdraw: a signed-in person withdraws an adoption with a reason; the record stays with its history, the records it bound stay, the task it was upgraded from no longer stands as applied and its obligations are listed by no reader; a withdrawn adoption takes no further step. The tracker as the server calls it: retiring the store the applied outbox bound names the mechanism; a design the earlier path reverses takes its adoption with it; nothing is written into a document without adoptions');
   });
 
   // ------------------------------------------------------------ size (rulings A3, A4, D7.6, D10)
