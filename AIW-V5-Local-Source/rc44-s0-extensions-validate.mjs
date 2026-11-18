@@ -6,7 +6,8 @@
 //   1 the record in the graph with its relations, on the requirement's trail and in linkedVia;
 //   2 the command through the boundary: applied, journalled, stamped, undone, refused for an agent account when
 //     person-only and for the author when second-person;
-//   3 the finding in the chapter's checks and in readiness; a hard finding takes no treatment;
+//   3 the finding in the chapter's checks and in readiness; a hard finding takes no waiver (the lead's rulings A1
+//     and D11 of 2026-11-18, which correct the contract's "takes no disposition");
 //   4 retire and restore through the one lifecycle family;
 //   5 the design key moves the design fingerprint, the evidence key does not;
 //   6 a reference document with no such record reads byte for byte as at the baseline 94dbd4f, with and without the
@@ -27,7 +28,9 @@ import worker, {commandHandler, commandShape} from './worker.js';
 import {localDatabase} from './local-db.js';
 import {readStoredProject} from './project-storage.js';
 import {storageUpgradeNeeded, storeStorageUpgrade} from './storage-upgrade.js';
-import {withFinalReview, CHAPTERS, inheritedFindings, chapterInheritedFindings, reviewBlockers, reviewBlockerCount, treatmentsFor, DISPOSITIONS, applyFinalReviewCommand, reviewSourceStamp, evidenceStamp, assembleSDD, reviewRequirements} from './public/review-domain.js';
+import {withFinalReview, CHAPTERS, inheritedFindings, chapterInheritedFindings, reviewBlockers, reviewBlockerCount, treatmentsFor, DISPOSITIONS, applyFinalReviewCommand, reviewSourceStamp, evidenceStamp, assembleSDD, reviewRequirements, nonWaivable, NON_WAIVABLE, WAIVERS, findingTreatment, findingCause, causeFindings, causeFindingStamp} from './public/review-domain.js';
+import {applyQualityCommand} from './public/quality-domain.js';
+import {applyDecisionCommand} from './public/decisions-domain.js';
 import {recordGraph, OBJECT_TYPES} from './public/record-graph.js';
 import {architectureModel} from './public/architecture-model.js';
 import * as kernel from './public/trace-kernel.js';
@@ -170,13 +173,17 @@ const HOSTILE = {
   lifecycle: {'decisions.records': 9},
   provenance: {nouns: {'decisions.records': 'hijacked decision'}, paths: {decision: ['artefacts']}, records: {'decisions.records': 9, 'finalReview.narrative': 3, 'logical.assets': 4}}
 };
+// A package whose layer has a numeric name: as a key of an object table it sorts before every built-in layer.
+const NUMERIC = {id: 'aa-numeric', objectTypes: {numeric: {label: 'Numeric', chapter: 2, level: 'intent', prefix: 'NUM'}}, layers: {7: 'numeric'}, hops: [{layer: '7', types: ['fulfils'], from: ['requirement'], dir: 'out', ctx: false}]};
 const withSynthetic = (p, payload, actor = A) => applySynthetic(documentCopy(p), {type: 'synthetic.save', payload}, AT, actor).document;
 const firstTrail = p => { const reqs = reviewRequirements(p); for (const r of reqs) { const T = kernel.requirementTrace(p, r.id); if (T.layers.component?.length) return {requirement: r.id, component: T.layers.component[0], T}; } throw Error('no requirement with a component on its trail'); };
 
 // ---------------------------------------------------------------- probe mode (case 7): one registration order per process
 if (PROBE >= 0) {
   const order = process.argv[PROBE + 1] || '';
-  for (const ch of order) X.registerExtension({h: HOSTILE, o: OTHER, s: SYNTHETIC}[ch]);
+  for (const ch of order) X.registerExtension({h: HOSTILE, o: OTHER, s: SYNTHETIC, n: NUMERIC}[ch]);
+  // A package the start check would refuse, registered alone: what the references' trails read with it (should-fix 7).
+  if (order === 'n') { console.log(JSON.stringify({layers: kernel.TRACE_LAYERS, trails: Object.fromEntries(REFERENCES.map(t => [t, digests(reference(t)).trails]))})); process.exit(0); }
   let p = reference('bank-payment'); const t = firstTrail(p);
   p = withSynthetic(p, {title: 'First synthetic record', requirementIds: [t.requirement], componentId: t.component});
   p = withSynthetic(p, {title: 'Second synthetic record', dependsOn: 'SYN-001', broken: true});
@@ -717,9 +724,48 @@ await block('3 checks and readiness', () => {
   const base = chapterChecks(P, 3); assert.equal(C.toFix, base.toFix + 1, 'the hard error is one more finding to fix'); assert.equal(C.toConfirm, base.toConfirm + 1);
   assert.equal(sddBoard(p).chapters.find(c => c.chapter === 3).toFix, C.toFix);
   assert.ok(reviewBlockers(p).some(f => f.id === hard.id)); assert.equal(reviewBlockerCount(p), reviewBlockerCount(P) + 1);
-  // a hard finding takes no treatment at all; an ordinary one takes any
-  assert.deepEqual(treatmentsFor(hard), []); assert.deepEqual(treatmentsFor(soft), DISPOSITIONS);
-  for (const treatment of DISPOSITIONS) assert.throws(() => applyFinalReviewCommand(p, {type: 'review.disposition', payload: {findingId: hard.id, stamp: hard.stamp, treatment, rationale: 'Synthetic.', reviewer: 'A reviewer', reference: 'REF-1', reviewBy: '2099-01-01', reviewed: true}}, AT, A), /takes no treatment/, treatment + ' is refused for a hard finding');
+  // A hard finding takes no waiver (the lead's rulings A1 and D11, which correct the contract's test 3; replaced here,
+  // old -> new: "treatmentsFor(hard) is empty and review.disposition refuses every treatment with /takes no treatment/"
+  // -> the block below). `hard` is the rc.10.73.42 non-waivable class and nothing stricter: it is read inside
+  // nonWaivable(), the class's one reader, and NON_WAIVABLE stays the frozen table of built-in codes.
+  assert.equal(nonWaivable(hard), true); assert.equal(nonWaivable(soft), null); assert.equal(nonWaivable({...hard, level: 'warning'}), null, 'only as an error, as the class is');
+  assert.ok(Object.isFrozen(NON_WAIVABLE)); assert.deepEqual(Object.keys(NON_WAIVABLE), ['hard-constraint', 'invariant'], 'the table of built-in codes is as it was');
+  { // beside a built-in non-waivable finding of the same document: the Chapter 3 break of a hard constraint, as rc42-g3a builds it
+    let q = applyQualityCommand(p, {type: 'quality.driver', payload: {kind: 'constraint', title: 'Runs in the bank\'s own data centres', description: 'Hosting is on premises.', impact: 'Rules out a public cloud runtime.', constraintIds: ['CON-001'], priority: 'High'}}, AT).document;
+    const con = q.quality.drivers.at(-1).id, adr = () => q.decisions.records.find(x => x.id === 'ADR-001');
+    q = applyDecisionCommand(q, {type: 'decision.save', payload: {id: 'ADR-001', driverIds: [...adr().driverIds, con]}}, AT).document;
+    q = applyDecisionCommand(q, {type: 'decision.alternative', payload: {id: 'ADR-001', alternativeId: 'ALT-002', assessments: {...adr().alternatives.find(a => a.id === 'ALT-002').assessments, [con]: {effect: 'violates', reason: 'Needs a public cloud region.', evidence: 'Hosting assessment.'}}}}, AT).document;
+    q = withFinalReview(applyDecisionCommand(q, {type: 'decision.choose', payload: {id: 'ADR-001', alternativeId: 'ALT-002'}}, AT).document);
+    const find = (doc, id) => inheritedFindings(doc).find(f => f.id === id), builtIn = find(q, 'C3:breaks:ADR-001'), mine = find(q, hard.id);
+    assert.ok(mine && builtIn && nonWaivable(builtIn) === 'hard-constraint', 'the document holds a built-in non-waivable finding beside the package\'s');
+    const treat = (f, extra = {}) => ({findingId: f.id, stamp: f.stamp, treatment: 'Accepted design limitation', rationale: 'Synthetic.', reviewer: 'A reviewer', reference: 'REF-1', reviewed: true, ...extra});
+    const review = (doc, payload, type = 'review.disposition') => withFinalReview(applyFinalReviewCommand(doc, {type, payload}, AT, A).document);
+    // the dialog offers the other treatments and no waiver: the built-in non-waivable finding's treatments
+    assert.deepEqual(treatmentsFor(mine), treatmentsFor(builtIn)); assert.deepEqual(treatmentsFor(mine), ['Fix before review', 'Carry as action']); assert.deepEqual(treatmentsFor(mine), DISPOSITIONS.filter(t => !WAIVERS.includes(t))); assert.deepEqual(treatmentsFor(soft), DISPOSITIONS);
+    // the three waivers are refused in words that fit any package, for the finding and for its cause
+    const WORDS = 'Error: “The synthetic invariant is broken” cannot be waived: change the design. Until then, fix it before review or carry it as an action.';
+    assert.equal(WAIVERS.length, 3);
+    for (const treatment of WAIVERS) {
+      assert.throws(() => review(q, treat(mine, {treatment, reviewBy: '2099-12-31'})), e => String(e) === WORDS, treatment + ' is refused for a hard finding, in words that fit any package');
+      const key = findingCause(mine).key, all = causeFindings(q, key);
+      assert.throws(() => review(q, {scope: 'cause', cause: key, stamp: causeFindingStamp(q, all), treatment, rationale: 'One treatment for the cause.', reviewer: 'A reviewer', reference: 'REF-1', reviewBy: '2099-12-31', reviewed: true}), e => String(e) === WORDS, treatment + ': a treatment of its cause cannot waive it either');
+    }
+    // the built-in class's own words are what they were
+    assert.throws(() => review(q, treat(builtIn, {reviewBy: '2099-12-31'})), /^Error: “[^”]+” breaks a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change\. It cannot be waived; until then, fix it before review or carry it as an action\.$/);
+    // and it blocks exactly as the built-in non-waivable finding does, step for step
+    const state = (doc, f) => [findingTreatment(doc, find(doc, f.id)), reviewBlockers(doc).some(x => x.id === f.id)];
+    assert.deepEqual(state(q, mine), ['Needs assessment', true]); assert.deepEqual(state(q, mine), state(q, builtIn));
+    let fix = review(q, treat(mine, {treatment: 'Fix before review'})); fix = review(fix, treat(find(fix, builtIn.id), {treatment: 'Fix before review'}));
+    assert.deepEqual(state(fix, mine), ['Fix before review', true], 'fix before review is recorded and keeps it a blocker'); assert.deepEqual(state(fix, mine), state(fix, builtIn));
+    const carry = (doc, f) => { const c = review(doc, {title: 'Change the design: ' + f.id, owner: 'Lead architect', due: '2027-12-01', acceptance: 'The finding is gone.', objectIds: ['api'], findingId: f.id}, 'review.action'); return review(c, treat(find(c, f.id), {treatment: 'Carry as action', actionId: c.finalReview.actions.at(-1).id})); };
+    const carried = carry(carry(q, mine), builtIn);
+    assert.equal(state(carried, mine)[0], 'Carry as action', 'carried as an owned action'); assert.deepEqual(state(carried, mine), state(carried, builtIn), 'it reads and blocks as the built-in one carried as an action does');
+    // a waiver kept from before the finding was hard is no treatment, for both
+    const legacy = documentCopy(q); for (const f of [mine, builtIn]) legacy.finalReview.dispositions.push({id: 'RF-90' + legacy.finalReview.dispositions.length, at: AT, actor: A, findingId: f.id, stamp: f.stamp, basis: 'finding', treatment: 'Not applicable', rationale: 'Recorded before.', reviewer: 'Earlier reviewer', reference: 'Earlier record', actionId: null});
+    const L = withFinalReview(legacy); assert.deepEqual(state(L, mine), ['Needs assessment', true], 'a waiver in the record is read as no treatment'); assert.deepEqual(state(L, mine), state(L, builtIn));
+    // until the design changes
+    assert.ok(!find(withFinalReview(withSynthetic(q, {id: 'SYN-003', title: 'Unbound, no longer broken', broken: false})), hard.id), 'changing the design resolves it');
+  }
   const treated = applyFinalReviewCommand(p, {type: 'review.disposition', payload: {findingId: soft.id, stamp: soft.stamp, treatment: 'Not applicable', rationale: 'Synthetic.', reviewer: 'A reviewer', reference: 'REF-1', reviewed: true}}, AT, A).document;
   assert.equal(treated.finalReview.dispositions.length, 1, 'an ordinary finding of a package is treated as any other');
   assert.ok(reviewBlockers(treated).some(f => f.id === hard.id), 'and the hard one still blocks');
@@ -727,7 +773,7 @@ await block('3 checks and readiness', () => {
   const q = withFinalReview({...p, runtime: {...p.runtime, otherThings: [{id: 'OTH-001', ref: 'OTH-001', title: 'Other thing', syntheticId: 'SYN-001'}]}});
   assert.ok(CHAPTERS[9].checks(q).some(f => f.id === 'other-placed:OTH-001')); assert.ok(!CHAPTERS[9].checks(q).some(f => f.code?.startsWith('synthetic')));
   assert.deepEqual(CHAPTERS[2].checks(q).map(f => f.id).slice(-3), ['other-noted:OTH-001', 'synthetic-unbound:SYN-003', 'synthetic-broken:SYN-003'], 'two packages\' findings of one chapter are listed in the order of their ids');
-  pass('3: the package\'s findings are in decisionFindings, the review\'s chapter checks, the inherited findings and readiness; the hard one is an error no treatment is offered for and review.disposition refuses every treatment of');
+  pass('3: the package\'s findings are in decisionFindings, the review\'s chapter checks, the inherited findings and readiness; the hard one is in the non-waivable class: the three waivers are refused in words that fit any package, the dialog offers the built-in non-waivable finding\'s treatments, and it blocks as that one does until the design changes or it is carried as an action');
 });
 
 // ---------------------------------------------------------------- 4. lifecycle and provenance

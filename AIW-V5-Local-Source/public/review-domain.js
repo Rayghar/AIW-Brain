@@ -126,11 +126,13 @@ export const DISPOSITIONS=['Fix before review','Carry as action','Accepted desig
 export const NON_WAIVABLE=Object.freeze({'hard-constraint':'C3:breaks C7:hard-constraint',invariant:'C8:posting-guard C8:invariant-link C9:dual-control-same C9:dual-control-uncovered C9:dual-control-roles C10:state-protection C10:standby C10:backup-zone'});
 const LIMIT='Accepted design limitation';
 export const WAIVERS=Object.freeze([LIMIT,'Not applicable',SOURCE_SILENT]);
-export const nonWaivable=f=>f?.level==='error'&&Object.keys(NON_WAIVABLE).find(k=>NON_WAIVABLE[k].split(' ').includes(String(f.id).split(':')[0]+':'+f.code))||null;
-// A finding a design package marks hard (rc44, slice S0) takes no treatment at all: the design changes.
-function refuseWaiver(f,treatment){if(f.hard)throw Error('A hard finding takes no treatment: change the design.');const kind=nonWaivable(f);if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” breaks '+(kind==='invariant'?'an invariant: change the design':'a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change')+'. It cannot be waived; until then, fix it before review or carry it as an action.');}
+// An error a design package marks hard is in the class too (rc44, slice S0; the lead's rulings A1 and D11 of
+// 2026-11-18): it is read here, the class's one reader, which answers the kind of a built-in code, true for a
+// package's hard error and null for any other finding. Its refusal is worded to fit any package.
+export const nonWaivable=f=>f?.level==='error'&&(f.hard||Object.keys(NON_WAIVABLE).find(k=>NON_WAIVABLE[k].split(' ').includes(String(f.id).split(':')[0]+':'+f.code)))||null;
+function refuseWaiver(f,treatment){const kind=nonWaivable(f);if(kind&&WAIVERS.includes(treatment))throw Error('“'+f.title+'” '+(f.hard?'cannot be waived: change the design. Until':'breaks '+(kind==='invariant'?'an invariant: change the design':'a hard constraint: change the design, or its Chapter 1 constraint and Chapter 2 driver by a reviewed change')+'. It cannot be waived; until')+' then, fix it before review or carry it as an action.');}
 // The treatments a dialog offers for a finding (review-ui.js, app.js).
-export const treatmentsFor=f=>f.hard?[]:DISPOSITIONS.filter(d=>!(nonWaivable(f)&&WAIVERS.includes(d)));
+export const treatmentsFor=f=>DISPOSITIONS.filter(d=>!(nonWaivable(f)&&WAIVERS.includes(d)));
 // An accepted limitation is reviewed by a date (rc.10.73.42, D13): it is recorded with a review-by date after the day it
 // is recorded (a dialog's earliest day: reviewByMin), and once that date has passed, or for a limitation recorded before
 // with none or with no valid date, its finding is open again.

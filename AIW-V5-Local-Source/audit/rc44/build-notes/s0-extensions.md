@@ -11,6 +11,16 @@ Contract: `audit/rc44/BUILD-PLAN-2026-11-16.md` section 4. `productionAccepted` 
 - **In progress:** nothing.
 - **Next (for the lead):** adversarial review, then merge. Section "Open questions" lists what the lead must rule on.
 
+## Fix-up (after the adversarial review; rulings of 2026-11-18, section D)
+
+Branch `rc44/s0-extensions-fix-c2` (continues `rc44/s0-extensions-fix`, which held no commit of its own), from the
+builder's head `5c5aef9`. Each new case was seen to fail on `5c5aef9` (the suite as it stands run against an archive
+of that commit), then made to pass. State, kept current while working:
+
+- **Done:** must-fix 1 (case D1), 3 (D3), 4 (D4), 5 (D5), 2 (D2 server, D2 client).
+- **In progress:** item 2 (ruling A1 as D11 puts it in code).
+- **Next:** the thirteen should-fix items (D6, D7), the D12 case, the contract text, the final commit.
+
 ## What was built
 
 | File | Where it runs | What it is |
