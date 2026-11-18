@@ -58,7 +58,10 @@ export function formStatus(p,{claim,release=null}){
 }
 function formEntry(p,claim,release){
  const s=knowledgeState(p),st=formStatus(p,{claim,release}),type=claim.form.type,tier=FORM_TIER[type],source=sourceOf(s,claim,release),released=st.state==='released';
- const shown=released||tier==='teaching'&&(st.state==='reviewed'||st.fresh===true);
+ // Released content is returned in any project. Teaching content that is not released (a candidate nobody reviewed
+ // yet, a reviewed form awaiting release) is shown, labelled, in a knowledge library only (ruling B2; build plan
+ // section 6 item 4, until the owner decides whether it may be shown inside design projects).
+ const shown=released||s.library?.enabled===true&&tier==='teaching'&&(st.state==='reviewed'||st.fresh===true);
  return {type,tier,claimId:claim.id,releaseId:release?.id||null,status:st.state,label:st.label,reasons:st.reasons,content:shown?copy(claim.form):null,architectureUnit:released&&claim.architectureUnit?copy(claim.architectureUnit):null,receipt:released?claimReceipt(p,claim,release):null,
   source:{file:source?.sourceFile?.file||source?.path||null,lineStart:claim.lineStart,lineEnd:claim.lineEnd,passageSha256:claim.excerptHash,checkedAt:source?.checkedAt||null,versionScope:source?.versionScope||null}};
 }

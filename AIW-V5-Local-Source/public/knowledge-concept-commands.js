@@ -38,6 +38,12 @@ function assertReview(raw){if(raw.reviewed!==true||!text(raw.reason)||!text(raw.
 const kindRefusal=author=>!author?'A review is a signed-in person\'s own request; this one states no author.':author.account==='agent'?'An agent or Sol reviews nothing: a person signs in to do that.':author.kind==='sol-draft'?'A draft by Sol reviews nothing: a person signs in to do that.':author.kind!=='person'?'An import records what a file says and reviews nothing: a person signs in to do that.':null;
 const secondPerson=(record,actor,author)=>verifierRefusal({owner:'',...record},actor,author?.account)||kindRefusal(author);
 function personOnly(author,actor){const refusal=!actor?'Sign in to record this.':kindRefusal(author);if(refusal)throw Error(refusal);}
+// Concepts, topics and forms are written, reviewed and released in a knowledge library, which a person marks (ruling B2
+// of 2026-11-18): a design project takes none of them through any command, so its fingerprint, its findings' stamps and
+// its recorded reviews never move for a candidate. A design project reads released forms from the organisation's
+// release it pins. Plain sources and claims are saved in any project, as before.
+const inLibrary=s=>s.library?.enabled===true;
+function libraryOnly(s){if(!inLibrary(s))throw Error('Concepts, topics and knowledge forms are written in a knowledge library: a person marks this project as one first (knowledge.library). Plain sources and claims are saved in any project.');}
 
 function conceptInput(s,r,existing){
  const conceptId=text(r.conceptId,200);
@@ -94,17 +100,18 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
  case 'knowledge.library':{
   personOnly(author,actor);assertReview(r);if(typeof r.enabled!=='boolean')throw Error('Say whether this project is a knowledge library (enabled: true or false).');
   const L=KNOWLEDGE_LIMIT_TIERS.project;
+  if(!r.enabled&&(list(s.concepts).length||list(s.topics).length||s.claims.some(c=>c.form)))throw Error('This project holds concepts, topics or knowledge forms: it stays a knowledge library.');
   if(!r.enabled&&(s.sources.length>L.sources||s.claims.length>L.claims||list(s.concepts).length>L.concepts||list(s.topics).length>L.topics))throw Error('This project holds more than a project may ('+L.sources+' sources, '+L.claims+' claims, '+L.concepts+' concepts, '+L.topics+' topics): it stays a knowledge library.');
   s.library={enabled:r.enabled,at,actor,reason:text(r.reason)};return 'library';
  }
  case 'knowledge.topic':{
-  const t=topicInput(s,r);s.topics||=[];const existing=s.topics.find(x=>x.file===t.file&&x.topicId===t.topicId);
+  libraryOnly(s);const t=topicInput(s,r);s.topics||=[];const existing=s.topics.find(x=>x.file===t.file&&x.topicId===t.topicId);
   if(!existing&&s.topics.length>=limits.topics)throw Error('This project has reached its topic limit.');
   const row={id:existing?.id||next('KT'),...t,at,actor};
   if(existing)s.topics[s.topics.indexOf(existing)]=row;else s.topics.push(row);return row.id;
  }
  case 'knowledge.concept':{
-  const existing=r.id===undefined?null:concept();
+  libraryOnly(s);const existing=r.id===undefined?null:concept();
   if(existing?.retired)throw Error(existing.conceptId+' is retired: restore it before editing.');
   const c=conceptInput(s,r,existing);
   if(!existing){
@@ -117,7 +124,7 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
  }
  case 'knowledge.concept-review':{
   // Verified by someone who wrote neither the concept (its author, any editor) nor any of its forms.
-  assertReview(r);const c=concept(),refusal=secondPerson(conceptAuthors(c,s.claims),actor,author);if(refusal)throw Error(refusal);
+  libraryOnly(s);assertReview(r);const c=concept(),refusal=secondPerson(conceptAuthors(c,s.claims),actor,author);if(refusal)throw Error(refusal);
   if(!['verified','rejected','disputed'].includes(r.decision))throw Error('Record a review outcome.');
   if(c.retired)throw Error(c.conceptId+' is retired: restore it before reviewing.');
   if(r.decision==='verified'){
@@ -128,8 +135,8 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
   }
   c.review={decision:r.decision,actor,reviewer:text(r.reviewer,180),at,reason:text(r.reason),identityChecked:r.identityChecked===true,formsChecked:r.formsChecked===true,crosswalkChecked:r.crosswalkChecked===true,conceptHash:conceptHash(c,s.claims)};return c.id;
  }
- case 'knowledge.concept-retire':{personOnly(author,actor);assertReview(r);const c=concept();if(c.retired)throw Error(c.id+' is already retired.');c.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return c.id;}
- case 'knowledge.concept-restore':{personOnly(author,actor);assertReview(r);const c=concept();if(!c.retired)throw Error(c.id+' is not retired.');delete c.retired;return c.id;}
+ case 'knowledge.concept-retire':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(c.retired)throw Error(c.id+' is already retired.');c.retired={at,actor,reviewer:text(r.reviewer,180),reason:text(r.reason)};return c.id;}
+ case 'knowledge.concept-restore':{libraryOnly(s);personOnly(author,actor);assertReview(r);const c=concept();if(!c.retired)throw Error(c.id+' is not retired.');delete c.retired;return c.id;}
  default:return undefined;
  }
 }
@@ -139,7 +146,7 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
  return {
   // A form is stored on a registered concept, under its fixed claim type and predicate, valid against its passage.
   claim(s,r,ctx){
-   const type=r.form?.type;if(!FORM_TYPES.includes(type))throw Error(conceptFormIssues(r.form,ctx).join(' '));
+   libraryOnly(s);const type=r.form?.type;if(!FORM_TYPES.includes(type))throw Error(conceptFormIssues(r.form,ctx).join(' '));
    const concept=list(s.concepts).find(c=>c.conceptId===r.subjectId);
    if(!concept)throw Error(String(r.subjectId).slice(0,80)+' is not in the concept register: a form belongs to a registered concept (knowledge.concept).');
    if(concept.retired)throw Error(concept.conceptId+' is retired: restore it before adding a form.');
@@ -151,7 +158,7 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
   },
   // A form's review is a person's own request; verified, by a second person, with each item checked and the form valid again.
   review(p,c,r,actor){
-   const refusal=r.decision==='verified'?secondPerson({id:c.id,actor:c.actor,history:[]},actor,author):kindRefusal(author);if(refusal)throw Error(refusal);
+   libraryOnly(knowledgeState(p));const refusal=r.decision==='verified'?secondPerson({id:c.id,actor:c.actor,history:[]},actor,author):kindRefusal(author);if(refusal)throw Error(refusal);
    if(r.decision!=='verified')return;
    if(r.formChecked!==true)throw Error('Check each item of the form against its lines before verifying it (formChecked).');
    const issues=conceptFormIssues(c.form,{excerpt:c.excerpt,lineStart:c.lineStart});if(issues.length)throw Error(c.id+': '+issues.join(' '));
@@ -159,7 +166,7 @@ export function formCapability(author=null,limits=KNOWLEDGE_LIMIT_TIERS.project)
   // Forms are released with their concept: reviewed, whole, by a person who wrote none of them and who did not verify
   // one that was imported or drafted (that one takes a third person). Release parts and versions are slice S3.
   release(p,claims,r,actor){
-   const refusal=kindRefusal(author);if(refusal)throw Error(refusal);
+   libraryOnly(knowledgeState(p));const refusal=kindRefusal(author);if(refusal)throw Error(refusal);
    // Forms are released apart from plain claims: a release that holds a form is read by the concept readers only, and
    // every reader of released claims is handed the whole release (ruling B1).
    if(claims.some(c=>!c.form))throw Error('A release holds plain claims or the forms of concepts, not both: release the plain claims in a release of their own.');

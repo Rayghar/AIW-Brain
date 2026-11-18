@@ -54,12 +54,17 @@ function marked(payload, mark) {
   if (q.conditions.length) q.conditions[0] += ' ' + mark + '-CONDITION'; if (q.architectureUnit) q.architectureUnit.mechanism += ' ' + mark + '-UNIT';
   return q;
 }
-// A library project as the commands build it: a source, a draft concept, one claim per form, the forms attached; then,
-// as asked, each form verified by `reviewer`, the concept verified by `reviewer`, the claims released and activated by
-// `releaser`. Every step goes through applyConceptCommand with the commit's author stated.
+// What a person records to mark a project as a knowledge library (knowledge.library): concepts, topics and forms are
+// written in a library only (ruling B2 of 2026-11-18).
+const LIBRARY_MARK = {enabled: true, reason: 'This project authors one tranche of the synthetic handbook.', reviewer: 'Synthetic steward', reviewed: true};
+// A library project as the commands build it: marked as a library by a person (`steward`), then a source, a draft
+// concept, one claim per form, the forms attached; then, as asked, each form verified by `reviewer`, the concept
+// verified by `reviewer`, the claims released and activated by `releaser`. Every step goes through applyConceptCommand
+// with the commit's author stated.
 async function library({forms = F.FORM_ORDER, verify = false, review = false, release = false, activate = false, base = null, author = F.person, mark = ''} = {}) {
   const {CC} = await mods(); let p = base || F.blankProject();
   const k = (type, payload, actor = 'importer', opts = F.person(actor)) => { const r = CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload}, AT, actor, opts); p = r.document; return r.selected; };
+  if (p.knowledge?.library?.enabled !== true) k('library', LIBRARY_MARK, 'steward');
   const sourceId = k('source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001), 'importer', author('importer'));
   const conceptRecordId = k('concept', CONCEPT, 'importer', author('importer')), all = F.p001Forms(), claimIds = {};
   for (const t of forms) claimIds[t] = k('claim', mark ? marked(F.formClaim(sourceId, 'SYN-P001', all[t]), mark) : F.formClaim(sourceId, 'SYN-P001', all[t]), 'importer', author('importer'));
@@ -139,6 +144,8 @@ add('S1.1 (fails on rc.10.73.42): a claim sent with a form is stored with its fo
   assert.equal(stored, null, 'without the form capability a form claim is refused, never stored');
   assert(CC, 'public/knowledge-concept-commands.js exists');
   const q = (type, body, opts = F.importedBy('importer')) => { const r = CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload: body}, AT, 'importer', opts); p = r.document; return r.selected; };
+  // Forms are written in a knowledge library (ruling B2): the project is marked as one by a person first.
+  assert.throws(() => q('claim', payload), /are written in a knowledge library/); q('library', LIBRARY_MARK, F.person('importer'));
   q('concept', CONCEPT); const id = q('claim', payload), c = p.knowledge.claims.find(x => x.id === id);
   assert.deepEqual(c.form, f.content, 'stored with its form');
   assert.equal(c.authoredAs, 'import', 'and with how it was authored');
@@ -389,6 +396,10 @@ add('S1.5 through the service: POST /api/commands saves a candidate concept from
     let state = created.data; const send = async (type, payload, as = 'importer', extra = {}) => { const r = await api('/api/commands?project=' + projectId, {revision: state.revision, command: {type, payload}, ...extra}, as); if (r.status === 200) state = r.data; return r; };
     const ok = async (...args) => { const r = await send(...args); assert.equal(r.status, 200, JSON.stringify(r.data)); return r.data.selected; };
     const sourceId = await ok('knowledge.source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001), 'bot'), all = F.p001Forms();
+    // A concept is written in a knowledge library (ruling B2): the agent's concept is refused until a person marks the project, which the agent cannot do.
+    { const refused = await send('knowledge.concept', CONCEPT, 'bot'); assert.equal(refused.status, 400); assert.match(refused.data.error, /are written in a knowledge library: a person marks this project as one first/);
+      const marking = await send('knowledge.library', LIBRARY_MARK, 'bot'); assert.equal(marking.status, 400); assert.equal(marking.data.code, 'authorship'); }
+    await ok('knowledge.library', LIBRARY_MARK, 'importer'); assert.equal(state.document.knowledge.library.actor, 'importer');
     const conceptRecordId = await ok('knowledge.concept', CONCEPT, 'bot'), ids = {};
     for (const t of ['definition', 'applicability']) ids[t] = await ok('knowledge.claim', F.formClaim(sourceId, 'SYN-P001', all[t]), 'bot');
     await ok('knowledge.concept', {...CONCEPT, id: conceptRecordId, forms: Object.entries(ids).map(([type, claimId]) => ({type, claimId}))}, 'bot');
@@ -471,25 +482,30 @@ add('S1.6: decision-bearing content is returned in state released only (and to a
 // ------------------------------------------------------------------------------------------------ 7
 add('S1.7: the project tier refuses the 251st claim and the 101st source with the messages of rc.10.73.42; a library project accepts them; only a person marks a library, and unmarking is refused while the project exceeds the project tier', async () => {
   const {CC} = await mods(); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.project, {sources: 100, claims: 250, concepts: 100, topics: 100}); assert.deepEqual(CC.KNOWLEDGE_LIMIT_TIERS.library, {sources: 300, claims: 1000, concepts: 300, topics: 300});
-  const fill = p => { const q = clone(p), s = q.knowledge, claim = s.claims[0], source = s.sources[0]; while (s.claims.length < 250) s.claims.push({...claim, id: 'KC-F' + s.claims.length}); while (s.sources.length < 100) s.sources.push({...source, id: 'KS-F' + s.sources.length}); return q; };
-  const L = await library({forms: ['definition']}), full = fill(L.document), claim = F.formClaim(L.sourceId, 'SYN-P001', F.p001Forms().mechanism), source = F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002);
   const send = (p, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(p, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  // A project nobody marked, filled to the project tier with plain sources and claims (it holds no concept, topic or form: ruling B2).
+  const plain = {sourceId: 'KS-0001', lineStart: 5, lineEnd: 5, subjectId: 'Outbox', predicate: 'stores', statement: 'An outbox stores the notice with the booking.', claimType: 'definition'};
+  const start = send(send(F.blankProject(), 'source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001)).document, 'claim', plain).document;
+  const fill = p => { const q = clone(p), s = q.knowledge, claim = s.claims[0], source = s.sources[0]; while (s.claims.length < 250) s.claims.push({...claim, id: 'KC-F' + s.claims.length}); while (s.sources.length < 100) s.sources.push({...source, id: 'KS-F' + s.sources.length}); return q; };
+  const full = fill(start), claim = {...plain, statement: 'One claim more than a project holds.'}, source = F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002);
   assert.throws(() => send(full, 'claim', claim), {message: 'This project has reached its claim limit.'});
   assert.throws(() => send(full, 'source', source), {message: 'This project has reached its source revision limit.'});
   assert.throws(() => K.applyKnowledgeCommand(full, {type: 'knowledge.source', payload: source}, AT, 'importer'), {message: 'This project has reached its source revision limit.'}, 'the old entry keeps the project tier');
-  const mark = {enabled: true, reason: 'This project authors one tranche of the synthetic handbook.', reviewer: 'Synthetic steward', reviewed: true};
+  const mark = LIBRARY_MARK;
   assert.throws(() => send(full, 'library', mark, 'bot', F.agent('bot')), /An agent or Sol|agent|person/i);
   assert.throws(() => send(full, 'library', mark, 'architect', F.solDraft('architect')), /A draft by Sol reviews nothing/);
   assert.throws(() => send(full, 'library', mark, 'architect', F.importedBy('architect')), /An import records what a file says and reviews nothing/);
   assert.throws(() => send(full, 'library', {...mark, reason: ''}, 'architect'), /Review the exact change/);
   assert.throws(() => send(full, 'library', {...mark, reviewed: false}, 'architect'), /Review the exact change/);
+  assert.throws(() => send(full, 'library', {...mark, enabled: 'yes'}, 'architect'), /enabled: true or false/);
   const lib = send(full, 'library', mark, 'architect').document; assert.deepEqual(lib.knowledge.library, {enabled: true, at: AT, actor: 'architect', reason: mark.reason});
   const more = send(send(lib, 'claim', claim).document, 'source', source).document; assert.equal(more.knowledge.claims.length, 251); assert.equal(more.knowledge.sources.length, 101);
   assert.throws(() => send(more, 'library', {...mark, enabled: false}, 'architect'), /holds more than a project may \(100 sources, 250 claims/);
   const back = send(lib, 'library', {...mark, enabled: false}, 'architect').document; assert.equal(back.knowledge.library.enabled, false);
   assert.throws(() => send(back, 'claim', claim), {message: 'This project has reached its claim limit.'});
-  // Eligibility does not depend on the tier: a library's candidate is as ineligible as any.
+  // Eligibility does not depend on the tier: a library's candidate, plain or a form, is as ineligible as any.
   assert.equal(K.knowledgeEligibility(more, more.knowledge.claims.at(-1)).eligible, false);
+  { const form = send(send(more, 'concept', CONCEPT).document, 'claim', F.formClaim('KS-0001', 'SYN-P001', F.p001Forms().mechanism)).document; assert.equal(form.knowledge.claims.length, 252); assert.equal(K.knowledgeEligibility(form, form.knowledge.claims.at(-1)).eligible, false); }
 });
 
 // ------------------------------------------------------------------------------------------------ 8
@@ -507,10 +523,13 @@ add('S1.8: a document with none of the new records reads as on rc.10.73.42: the 
   assert.deepEqual(KC.conceptRecords(bank), []); assert.deepEqual(KC.releasedConcepts(old), []); assert.equal(KC.conceptReading(old, 'PAT-REPLICATED-QUEUE'), null); assert.deepEqual(KC.conceptDecisionForms(old, 'KU-0001'), []);
   assert.equal(JSON.stringify(bank), frozen); assert(!('knowledge' in bank), 'a read creates no knowledge key');
   // A new key appears when it is first written, and only that key.
-  const first = CC.applyConceptCommand(old, {type: 'knowledge.concept', payload: CONCEPT}, AT, 'importer', F.person('importer')).document;
-  assert.deepEqual(Object.keys(first.knowledge).filter(k => !(k in old.knowledge)), ['concepts']);
-  const topic = CC.applyConceptCommand(first, {type: 'knowledge.topic', payload: {file: 'Synthetic_Integration_Handbook.docx', topicId: 'SYN-P001', title: 'Transactional outbox', lineStart: 1, lineEnd: 58, sliceSha256: sha256(F.SYN_P001.join('\n')), sourceId: null, declaredKind: 'pattern', intendedUse: 'design-method', conceptId: 'SYN-P001', reason: ''}}, AT, 'importer', F.importedBy('importer')).document;
-  assert.deepEqual(Object.keys(topic.knowledge).filter(k => !(k in old.knowledge)), ['concepts', 'topics']);
+  const library = CC.applyConceptCommand(old, {type: 'knowledge.library', payload: LIBRARY_MARK}, AT, 'steward', F.person('steward')).document;
+  assert.deepEqual(Object.keys(library.knowledge).filter(k => !(k in old.knowledge)), ['library']);
+  assert.equal(JSON.stringify(K.releasedClaims(library)), JSON.stringify(K.releasedClaims(old)), 'marking a library changes no reading of the old knowledge');
+  const first = CC.applyConceptCommand(library, {type: 'knowledge.concept', payload: CONCEPT}, AT, 'importer', F.person('importer')).document;
+  assert.deepEqual(Object.keys(first.knowledge).filter(k => !(k in old.knowledge)), ['library', 'concepts']);
+  const topic = CC.applyConceptCommand(first,{type: 'knowledge.topic', payload: {file: 'Synthetic_Integration_Handbook.docx', topicId: 'SYN-P001', title: 'Transactional outbox', lineStart: 1, lineEnd: 58, sliceSha256: sha256(F.SYN_P001.join('\n')), sourceId: null, declaredKind: 'pattern', intendedUse: 'design-method', conceptId: 'SYN-P001', reason: ''}}, AT, 'importer', F.importedBy('importer')).document;
+  assert.deepEqual(Object.keys(topic.knowledge).filter(k => !(k in old.knowledge)), ['library', 'concepts', 'topics']);
   assert.equal(JSON.stringify(K.releasedClaims(topic)), JSON.stringify(K.releasedClaims(old)), 'and the released claims of the old knowledge are what they were');
 });
 
@@ -584,6 +603,8 @@ add('S1.10 (inert forms): with the nine forms of a concept held by the bank-paym
     assert.deepEqual(KC.releasedConcepts(p).length, active ? 1 : 0);
     if (!active) assert(KC.conceptReading(p, 'SYN-P001').forms.filter(f => f.tier === 'decision').every(f => f.content === null && f.architectureUnit === null), stage + ': the concept reading holds no decision-bearing content');
   }
+  // The same where a person marked the design project itself as a knowledge library and the commands wrote the forms there.
+  for (const [stage, options] of [STAGES[0], STAGES[4]]) { const p = (await library({...options, base: bank, mark: F.MARKER})).document; assert.equal(p.knowledge.library.enabled, true); inert(stage + ', written by the commands into a design project marked as a library', p, !!options.activate); }
   // What a released, active form does move, in full (ruling B1 and should-fix 1; the same list is in the build notes):
   { const L = await library({verify: true, review: true, release: true, activate: true, mark: F.MARKER}), p = graft(bank, L.document), release = p.knowledge.releases[0];
     // 1. the concept readers: the concept, its nine forms with their content, and its forms as an active release holds them;
@@ -655,7 +676,7 @@ add('S1.13: a source may carry when it was checked, when it is due, its version 
   assert.deepEqual([src.checkedAt, src.reviewDue, src.versionScope, src.sourceFile], [extras.checkedAt, extras.reviewDue, extras.versionScope, file]);
   assert.equal(src.origin, 'recorded-original', 'the origin of a source keeps its meaning (how it was acquired)'); assert.equal(src.hash, sha256(F.SYN_P001.join('\n')));
   assert.throws(() => K.applyKnowledgeCommand(F.blankProject(), {type: 'knowledge.source', payload: F.sourcePayload('SYN-P001', F.SYN_P001, {sourceFile: {...file, fileSha256: 'short'}})}, AT, 'importer'), /SHA-256/, 'validated on the old entry too');
-  p = send('concept', CONCEPT).document;
+  p = send('library', LIBRARY_MARK, 'steward', F.person('steward')).document; p = send('concept', CONCEPT).document;
   const topic = {file: file.file, topicId: 'SYN-P001', title: 'Transactional outbox', lineStart: 1, lineEnd: 58, sliceSha256: src.hash, sourceId: s.selected, declaredKind: 'pattern', intendedUse: 'design-method', conceptId: 'SYN-P001', reason: ''};
   for (const [change, pattern] of [[{sliceSha256: 'c'.repeat(64)}, /does not match the source/], [{sourceId: 'KS-9999'}, /saved source/], [{intendedUse: 'decoration'}, /intended use/], [{conceptId: 'SYN-P404'}, /SYN-P404 is not in the concept register/], [{conceptId: null}, /Say why/], [{intendedUse: 'not-imported'}, /Say why/], [{lineEnd: 0}, /lines/], [{file: ''}, /file/], [{topicId: ''}, /topic/], [{surprise: true}, /unsupported field: surprise/]])
     assert.throws(() => send('topic', {...topic, ...change}), pattern);
@@ -769,4 +790,48 @@ add('S1.16 (ruling B1): a claim that carries a form is read only by the concept 
     const reading = stewardshipReading(q, 'K:' + sa.id); assert(reading, 'the stewards\' reading exists');
     assert.deepEqual(reading.reading.projectKnowledge, ['KC-9001 (candidate): A plain candidate claim on the interface.'], 'a plain candidate is listed as before; no form is');
     assert(!JSON.stringify(reading).includes(F.MARKER)); assert(!JSON.stringify(reasoningPacket(q, {task: 'decisions', ids: ['K:' + sa.id]})).includes(F.MARKER), 'nor does Sol\'s packet for the stewards'); }
+});
+
+// ------------------------------------------------------------------------------------------------ 17
+add('S1.17 (ruling B2): concepts, topics and claims that carry a form are written in a knowledge library only, which a person marks; a library that holds one of them cannot be unmarked; outside a library the readers return released content only', async () => {
+  const {CC, KC} = await mods(), NOT_A_LIBRARY = /are written in a knowledge library: a person marks this project as one first/;
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  const topic = {file: 'Synthetic_Integration_Handbook.docx', topicId: 'SYN-X001', title: 'Front matter', lineStart: 1, lineEnd: 3, sliceSha256: sha256(F.SYN_P001.slice(0, 3).join('\n')), sourceId: null, declaredKind: 'front matter', intendedUse: 'not-imported', conceptId: null, reason: 'Front matter holds no concept.'};
+  // A project nobody marked: a plain source and a plain claim save as on rc.10.73.42; a concept and a topic are refused, whoever sends them.
+  const design = send(F.blankProject(), 'source', F.sourcePayload('SYN-P001 Transactional outbox', F.SYN_P001)).document, sourceId = design.knowledge.sources[0].id;
+  const plain = {sourceId, lineStart: 5, lineEnd: 5, subjectId: 'Outbox', predicate: 'stores', statement: 'An outbox stores the notice with the booking.', claimType: 'definition'};
+  assert.equal(send(design, 'claim', plain).document.knowledge.claims.length, 1, 'a plain claim is saved in any project');
+  for (const opts of [F.person('importer'), F.importedBy('importer'), F.solDraft('importer'), F.agent('bot')]) { assert.throws(() => send(design, 'concept', CONCEPT, 'importer', opts), NOT_A_LIBRARY); assert.throws(() => send(design, 'topic', topic, 'importer', opts), NOT_A_LIBRARY); }
+  // Nor does a project that holds a concept and its forms anyway (written into the document) take another form, an edit, a review or a retirement.
+  const L = await library({forms: ['definition', 'mechanism', 'applicability']}), held = graft(F.blankProject(), L.document), forms = held.knowledge.concepts[0].forms, retire = {id: L.conceptRecordId, reason: 'Synthetic.', reviewer: 'Synthetic steward', reviewed: true};
+  assert.equal(held.knowledge.library, undefined); assert.equal(held.knowledge.claims.filter(c => c.form).length, 3);
+  assert.throws(() => send(held, 'claim', F.formClaim(L.sourceId, 'SYN-P001', F.p001Forms().example)), NOT_A_LIBRARY);
+  assert.throws(() => send(held, 'concept', {...CONCEPT, id: L.conceptRecordId, forms, title: 'Edited outside a library'}), NOT_A_LIBRARY);
+  assert.throws(() => send(held, 'review', {...F.REVIEW, formChecked: true, id: L.claimIds.definition}, 'reviewer'), NOT_A_LIBRARY);
+  assert.throws(() => send(held, 'concept-review', {...CONCEPT_REVIEW, id: L.conceptRecordId}, 'reviewer'), NOT_A_LIBRARY);
+  assert.throws(() => send(held, 'concept-retire', retire, 'architect'), NOT_A_LIBRARY); assert.throws(() => send(held, 'concept-restore', retire, 'architect'), NOT_A_LIBRARY);
+  { const reviewed = graft(F.blankProject(), (await library({forms: ['definition'], verify: true, review: true})).document); assert.throws(() => send(reviewed, 'release', {...F.REVIEW, title: 'Outside a library', claimIds: [reviewed.knowledge.claims[0].id]}, 'releaser'), NOT_A_LIBRARY); }
+  assert.equal(send(held, 'claim', plain).document.knowledge.claims.length, 4, 'a plain claim is still saved there');
+  // Marking is a person's step; once marked, the same requests are accepted.
+  for (const opts of [F.agent('bot'), F.solDraft('architect'), F.importedBy('architect')]) assert.throws(() => send(held, 'library', LIBRARY_MARK, 'architect', opts), /reviews nothing|agent/i);
+  const marked = send(held, 'library', LIBRARY_MARK, 'architect').document;
+  assert.equal(send(marked, 'claim', F.formClaim(L.sourceId, 'SYN-P001', F.p001Forms().example)).document.knowledge.claims.at(-1).form.type, 'example');
+  assert.equal(send(marked, 'topic', topic).document.knowledge.topics.length, 1);
+  // A library that holds a concept, a topic or a form claim stays one: each alone is enough.
+  const STAYS = /holds concepts, topics or knowledge forms: it stays a knowledge library/, unmark = {...LIBRARY_MARK, enabled: false};
+  assert.throws(() => send(marked, 'library', unmark, 'architect'), STAYS);
+  const empty = send(F.blankProject(), 'library', LIBRARY_MARK, 'architect').document;
+  assert.throws(() => send(send(empty, 'topic', topic).document, 'library', unmark, 'architect'), STAYS, 'a topic alone');
+  assert.throws(() => send(send(empty, 'concept', CONCEPT).document, 'library', unmark, 'architect'), STAYS, 'a concept alone');
+  { const only = clone(marked); delete only.knowledge.concepts; assert.throws(() => send(only, 'library', unmark, 'architect'), STAYS, 'a form claim alone'); }
+  // A library that holds only plain sources and claims is unmarked by a person, and is then a project again.
+  { const back = send(send(send(empty, 'source', F.sourcePayload('SYN-P002 Idempotent receiver', F.SYN_P002)).document, 'claim', {...plain, sourceId: 'KS-0001', lineStart: 4, lineEnd: 4}).document, 'library', unmark, 'architect').document;
+    assert.equal(back.knowledge.library.enabled, false); assert.throws(() => send(back, 'concept', CONCEPT), NOT_A_LIBRARY); }
+  // What a person is shown of unreleased content (build plan section 6 item 4, until the owner decides): in the library,
+  // a candidate's teaching content with its label; in any other project nothing but released content.
+  assert.deepEqual(KC.conceptTeachingForms(L.document, 'SYN-P001').map(f => [f.type, f.status, f.label.slice(0, 24)]), [['definition', 'candidate', 'Candidate · not reviewed'], ['mechanism', 'candidate', 'Candidate · not reviewed']]);
+  assert.deepEqual(KC.conceptTeachingForms(held, 'SYN-P001'), [], 'outside a library a candidate offers no content');
+  assert.deepEqual(KC.conceptReading(held, 'SYN-P001').forms.map(f => [f.type, f.status, f.content]), [['definition', 'candidate', null], ['mechanism', 'candidate', null], ['applicability', 'candidate', null]], 'and the concept reading names the forms without their content');
+  { const verified = graft(F.blankProject(), (await library({forms: ['definition', 'mechanism'], verify: true, review: true})).document); assert.deepEqual(KC.conceptTeachingForms(verified, 'SYN-P001'), [], 'nor a reviewed form that is not released'); assert.equal(KC.conceptTeachingForms(send(verified, 'library', LIBRARY_MARK, 'architect').document, 'SYN-P001').length, 2); }
+  { const active = graft(F.blankProject(), (await library({forms: ['definition', 'mechanism'], verify: true, review: true, release: true, activate: true})).document); assert.deepEqual(KC.conceptTeachingForms(active, 'SYN-P001').map(f => [f.type, f.status, !!f.content]), [['definition', 'released', true], ['mechanism', 'released', true]], 'released content is returned in any project'); }
 });
