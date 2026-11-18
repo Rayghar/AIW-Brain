@@ -1,9 +1,13 @@
 # wp1-s1-forms: build notes (slice S1 of design/wp1-knowledge.md)
 
-Branch `rc44/wp1-s1-forms`, from baseline `94dbd4f`. Resumable: read this file and `git log` first.
+Branch `rc44/wp1-s1-forms-c2` (the second session's continuation of `rc44/wp1-s1-forms`, which the usage limit cut off
+after its last WIP commit `a3420c0`), from baseline `94dbd4f`. Resumable: read this file and `git log` first.
 Suite: `npm run test:rc44-wp1-knowledge` (`rc44-wp1-knowledge-validate.mjs`; `--all`, `--only <text>`, `--print-baseline`).
 
 ## Measurements (node build.mjs)
+
+Both columns were measured again in the second session, in this worktree: the baseline column with the four changed
+product files checked out at `94dbd4f` and the three new modules moved aside, then everything restored.
 
 | | baseline 94dbd4f | this branch |
 |---|---|---|
@@ -17,6 +21,27 @@ Suite: `npm run test:rc44-wp1-knowledge` (`rc44-wp1-knowledge-validate.mjs`; `--
 | server modules packaged | 253 | 256 (the three new modules) |
 
 None of the three new modules is in the client metafile. The suite checks this when `dist/client-metafile.json` exists (S1.14).
+The size report holds no violation on either side; no gate in `client-bundle.mjs` was touched.
+
+## Verification (second session, 2026-11-18)
+
+- **The new suite on the baseline.** With the product code of `94dbd4f` all 15 S1 cases fail: S1.1 with "a claim sent
+  with a form was stored without it (the form was silently dropped)", the other 14 because `public/concept-form.js`
+  does not exist. `--print-baseline` run on that code prints exactly the `BASELINE` object of S1.8.
+- **The new suite here:** 15 passed, 0 failed, 4 pending (S2 to S5).
+- **Related suites:** the 53 registered suites that import `knowledge-governance.js`, `authorship.js` or
+  `recovery-service.js` (and `test:knowledge`, `test:architecture-case`), two at a time: 45 passed, 8 failed. The 8
+  (`brain-ahead`, `brain-reasoning`, `chapter-reasoning`, `command-equivalence`, `contextual-intelligence-ui`,
+  `design-concern`, `knowledge`, `stewardship`) are red in `audit/rc42/regression-2026-11-16.json` and were run again
+  here on the baseline's product code: each fails with the same first line (apart from a timestamp and a generated id).
+  `test:scale` was not run (a load suite of more than 15 minutes, red at the baseline for this machine; the lead's).
+  The four unregistered suites `architecture-knowledge-unit`, `candidate-import`, `knowledge-boundaries` and
+  `brain-synthesis-retrieval` pass.
+- **Past the baseline failure of `stewardship-validate.mjs`:** it stops at line 92 on the baseline, before its server
+  cases send `knowledge.capture` and `knowledge.steward` through `/api/commands` (now the wrapper). A scratch copy with
+  that one assertion set aside (never committed) passes its 8 checks, with the same output on the baseline and here.
+- `node check-syntax.mjs`: 914 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+  `node build.mjs`: passes every gate.
 
 ## Done
 
@@ -34,13 +59,20 @@ None of the three new modules is in the client metafile. The suite checks this w
 - `worker.js` (import and dispatch with `{author}`), `authorship.js` (four person-only types), `recovery-service.js`
   (an imported concept review loses its actor).
 - Suite: 15 S1 cases green; S2 to S5 hold one pending case each. 22 mutations of the guards were each killed by the suite.
+- Second session: S1.10 names the gates it compares one by one (the eligibility gate, criteria and state of each of the
+  reference's nine technology selections, the product comparison of each, the Chapter 7 findings, the gate of the
+  requirements specification) beside the checks, readiness, SDD, contextual reading and Sol's packet, and asserts that
+  the reference offers each of them non-empty. It also states what a released, active form adds (open question 2).
+- Second session: a value nested more deeply than a form holds (below the sixth level; the deepest a form goes is the
+  fourth) is refused with a sentence. Before, the reserved-name scan walked it and a 20,000-level value ended in a
+  stack overflow (caught by the command route as a 400, and thrown on a read of a tampered document).
 - The design's Appendix B records were run through `conceptFormIssues` against the real renditions on this machine
   (scratch, nothing copied): every slice and passage hash matches the design, and 15 of 17 forms are valid as written.
   The two `example` forms are refused because they state `expectedOutcome` with no `quotes` entry (rule A.3.3).
 
 ## In progress
 
-Nothing. The slice is complete; see the final commit.
+Nothing. The slice is complete on `rc44/wp1-s1-forms-c2`; its head is the final commit.
 
 ## Next (for the slices that follow; none blocks S1)
 
@@ -116,8 +148,23 @@ Nothing. The slice is complete; see the final commit.
 2. **A released form is a released claim.** Once verified by a second person, released and activated, a form claim is
    read by every existing reader of `releasedClaims` (the contextual reading, Sol's grounding) without a pin, as any
    released claim is today (design risk i.3 item 9). Those readers read the statement, conditions, limitations and the
-   structured unit; none reads `claim.form`.
-3. **Merge with S0:** `worker.js` line 638 (the dispatch) and `authorship.js` near line 39 are edited here.
+   structured unit; none reads `claim.form`. Measured in S1.10 on the bank-payment reference with the nine forms
+   released and active: no finding, summary, blocker count, readiness reading, trace coverage, selection gate, Chapter 7
+   finding or specification gate moves. One reading does: the product comparison of each of the nine technology
+   selections lists the released applicability claim beside each option (`C.options[].claims.matches`), because the
+   fixture's structured unit has an empty scope and so applies to every product. It is listed by its statement and its
+   receipt (`scoring:false`), never its form, and nothing else of the comparison moves. A candidate, a verified form, a
+   reviewed concept and a release that is not active add nothing there. Whether a released decision-bearing form
+   should reach these readers only through a pin is the lead's to rule; S1 changes no existing reader.
+3. **Merge with S0** (read on `rc44/s0-extensions` at `d681353`, not merged here). Three places meet:
+   - `worker.js`: S0 rewrites the dispatch line and adds `installBuiltInCommands(type=>…type.startsWith('knowledge.')?applyKnowledgeCommand:…)`.
+     After the merge both must name `applyConceptCommand` (same arguments: `(own, command, at, actor, {author})`), and
+     `worker.js` must not import `knowledge-governance.js` for commands: S1.14 asserts the dispatch text and that import.
+   - `authorship.js`: S0 replaces the `isReviewCommand` line two lines below the line added here; keep both.
+   - `package.json`: both add one `test:` line.
+   `knowledge.*` stays a built-in command family (the wrapper), not a registered package: its four person-only types
+   are in `REVIEW_TYPES` here. If the lead wants them stated through S0's `commands` part instead, the line in
+   `authorship.js` moves there and nothing else changes.
 4. **The "third person" rule** (an imported form is released by neither its author nor its reviewer) follows the design
    and is this package's own rule; `verifierRefusal` covers the author, the comparison with the reviewer is one line
    in `formCapability.release`.
