@@ -302,12 +302,16 @@ What the first fix-up session recorded is kept below it; what the second session
   `*-validate.mjs` that imports `knowledge-governance.js`, `knowledge-stewardship.js`, `repository-packet.js`,
   `authorship.js` or `recovery-service.js` and thirteen named others, and twenty-four more that exercise a reader built
   on released claims: the Brain, product comparison, the architecture case, Sol's packets; browser, layout, screens
-  and scale suites not run). Run with item 12 in and before the receipt was changed: 73 passed, 11 failed. Nine of
-  the eleven are registered suites that are red in `audit/rc42/regression-2026-11-16.json`, each with the first
-  failure line that record holds (`brain-ahead`, `brain-reasoning`, `chapter-reasoning`, `command-equivalence`,
-  `contextual-intelligence-ui`, `design-concern`, `knowledge`, `stewardship`, `sol-disclosure`); the other two have no
-  `test:` script (`repository-packet-validate.mjs` is a tool that needs a packet file this machine does not hold;
-  `sol-comparison-validate.mjs` fails on a sentence of Sol's request that holds no knowledge).
+  and scale suites not run). Run twice, with item 12 in and again on the final product code after the receipt was
+  changed, with the same result: **73 passed, 11 failed, none newly red.** Nine of the eleven are registered suites
+  that are red in `audit/rc42/regression-2026-11-16.json`, each with the first failure line that record holds
+  (`brain-ahead`, `brain-reasoning`, `chapter-reasoning`, `command-equivalence`, `contextual-intelligence-ui`,
+  `design-concern`, `knowledge`, `stewardship`, `sol-disclosure`); the other two have no `test:` script
+  (`repository-packet-validate.mjs` is a tool that needs a packet file this machine does not hold;
+  `sol-comparison-validate.mjs` fails on a sentence of Sol's request that holds no knowledge). Each of the eleven was
+  run again on commit `94dbd4f` exported whole: it fails there too, with the same output once times, generated ids,
+  source positions and the tree's path are set aside (for `contextual-intelligence-ui` the same lines with one line
+  at another place: the two runs recorded standard output and standard error differently).
 - `node check-syntax.mjs`: 914 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
   `node build.mjs`: passes every gate (numbers under Measurements). `client-bundle.mjs` and `build.mjs` are not in the
   diff against `94dbd4f`, and no `*-validate.mjs` that exists on `94dbd4f` is.
@@ -369,10 +373,9 @@ What the first fix-up session recorded is kept below it; what the second session
 
 ## In progress
 
-The second fix-up session is closing on `rc44/wp1-s1-forms-fix-c2`: the code and its cases are committed; the related
-suites are being run once more on the final product code (the receipt was changed after the run recorded above), and
-the final commit follows that run. If this sentence is still here, that session was cut off before its final commit:
-run the related suites and the suite again, state the figures under Verification and in the evidence file, and commit.
+Nothing. The fix-up is complete on `rc44/wp1-s1-forms-fix-c2`; its head is the final commit. Nothing was pushed and
+nothing was merged. For the lead to rule on: the superseding source (Known limits), the receipt (Where I went further
+than a ruling), the tier's counts (B8 in the same section, open question 5).
 
 ## Next (for the slices that follow; none blocks S1)
 

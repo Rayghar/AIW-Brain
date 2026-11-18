@@ -2,7 +2,7 @@
  "schema": "aiw.rc44.slice-evidence/1",
  "slice": "wp1-s1-forms, fix-up after the adversarial review and the rulings of 2026-11-18 (section B)",
  "date": "2026-11-18",
- "branch": "rc44/wp1-s1-forms-fix",
+ "branch": "rc44/wp1-s1-forms-fix-c2 (continues rc44/wp1-s1-forms-fix, whose session was cut off before its final commit)",
  "from": "f9d9bdc9b8c8df891e0a201c27e8ed20363ae9fb",
  "baseline": "94dbd4f",
  "release": "AIW v0.10.0-rc.10.73.42 (upgrade rc44 in progress)",
@@ -18,11 +18,12 @@
  "suite": {
   "script": "test:rc44-wp1-knowledge",
   "suite": "rc44-wp1-knowledge",
-  "passed": 26,
+  "passed": 27,
   "failed": 0,
   "pending": 4,
   "failures": [],
-  "seconds": 102
+  "seconds": 118,
+  "note": "run after node build.mjs, so that S1.14 also read the built client"
  },
  "clientSize": {
   "gates": {
@@ -43,6 +44,20 @@
    "scripts": 148,
    "tiny": 61
   },
+  "measured": "second session, node build.mjs on three trees: commit 94dbd4f exported whole, the slice's first head f9d9bdc, and this branch",
+  "baseline": {
+   "chaptersRouteCode": 3228863,
+   "projectsRouteCode": 506102,
+   "scripts": 148,
+   "buckets": {
+    "under10k": 53,
+    "from10to50k": 50,
+    "over50k": 45
+   },
+   "stylesheet": 901873,
+   "total": 8877207,
+   "violations": []
+  },
   "firstBuild": {
    "chaptersRouteCode": 3228863,
    "projectsRouteCode": 506102,
@@ -57,7 +72,7 @@
    "violations": []
   },
   "afterFixUp": {
-   "chaptersRouteCode": 3228901,
+   "chaptersRouteCode": 3228928,
    "projectsRouteCode": 506129,
    "scripts": 148,
    "buckets": {
@@ -66,15 +81,31 @@
     "over50k": 45
    },
    "stylesheet": 901873,
-   "total": 8877245,
+   "total": 8877272,
    "violations": []
   },
-  "chaptersRouteDelta": 38,
+  "chaptersRouteDelta": 65,
+  "projectsRouteDelta": 27,
   "grantedToB1": 120,
   "wp1Allowance": 660,
+  "wp1AllowanceLeft": 595,
+  "spareOnChaptersRoute": 4864,
+  "opensWithRecords": {
+   "chaptersRouteCode": 3228928,
+   "note": "ruling D10: a document that holds concepts, topics or forms loads no lazy entry more than one that holds none; S1 has no client code"
+  },
+  "usedByB1": {
+   "bytes": 65,
+   "where": {
+    "knowledge-governance.js (releasedClaims)": 27,
+    "knowledge-stewardship.js (the stewards' reading)": 11,
+    "architecture-brain.js (the receipt's active releases)": 27
+   }
+  },
   "inClient": {
    "knowledge-governance.js": 8132,
    "knowledge-stewardship.js": 7153,
+   "architecture-brain.js": 15245,
    "concept-form.js": 0,
    "knowledge-concepts.js": 0,
    "knowledge-concept-commands.js": 0
@@ -124,9 +155,9 @@
   "historyAtLibraryBoundCharacters": 793316
  },
  "relatedSuites": {
-  "how": "every existing *-validate.mjs that imports knowledge-governance.js, knowledge-stewardship.js, repository-packet.js, authorship.js or recovery-service.js, and thirteen named others, two at a time, on the final product code; browser, layout, screens and scale suites not run",
-  "run": 60,
-  "passed": 51,
+  "how": "second session: the sixty suites of the first fix-up session (every existing *-validate.mjs that imports knowledge-governance.js, knowledge-stewardship.js, repository-packet.js, authorship.js or recovery-service.js, and thirteen named others) and twenty-four more that exercise a reader built on released claims (the Brain, product comparison, the architecture case, Sol's packets), two at a time, on the final product code; browser, layout, screens and scale suites not run",
+  "run": 84,
+  "passed": 73,
   "failed": [
    "brain-ahead-validate.mjs",
    "brain-reasoning-validate.mjs",
@@ -136,315 +167,445 @@
    "design-concern-validate.mjs",
    "knowledge-validate.mjs",
    "repository-packet-validate.mjs",
+   "sol-comparison-validate.mjs",
+   "sol-disclosure-validate.mjs",
    "stewardship-validate.mjs"
   ],
   "failedCompare": {
    "brain-ahead-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\\| Capacity \\| Critical \\|/. Input:",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /\\| Capacity \\| Critical \\|/. Input:"
    },
    "brain-reasoning-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+    "failureOnBaseline": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time."
    },
    "chapter-reasoning-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time.",
+    "failureOnBaseline": "Error: These decisions do not fit in one request. Ask Sol about fewer at a time."
    },
    "command-equivalence-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "AssertionError [ERR_ASSERTION]: a working choice made: the saved document is the one the route saved before round 12 · $.workbench.history[1]: {\"at\":\"2026-11-18T12:51:11.127Z\",\"actor\":\"command-equivalence\",\"commands\":[],\"changed\":[\"ADR-002\"",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: a working choice made: the saved document is the one the route saved before round 12 · $.workbench.history[1]: {\"at\":\"2026-11-18T13:02:46.869Z\",\"actor\":\"command-equivalence\",\"commands\":[],\"changed\":[\"ADR-002\""
    },
    "contextual-intelligence-ui-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": false,
+    "failureHere": "AssertionError [ERR_ASSERTION]: Existing saved architecture comparison is active",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: Existing saved architecture comparison is active",
+    "firstDifference": {
+     "line": 3,
+     "here": "This guidance changed with the design or its sources. Review the current question before continuing. ",
+     "baseline": "PASS: native source actions resolve exact receipts; forged, stale, off-context and detached actions cannot navigate"
+    },
+    "sameLinesOrderSetAside": true,
+    "note": "the two outputs hold the same lines; one line the suite prints on its standard output stands at another place, because the run on the head recorded output as it arrived and the run on the baseline recorded standard output before standard error"
    },
    "design-concern-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:"
    },
    "knowledge-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
-   },
-   "stewardship-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
-    "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "AssertionError [ERR_ASSERTION]: The upstream inventory dependency can time out.",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: The upstream inventory dependency can time out."
    },
    "repository-packet-validate.mjs": {
-    "exitOnBaselineProductCode": 1,
     "exitHere": 1,
-    "normalisedOutputIdentical": true
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "",
+    "failureOnBaseline": ""
+   },
+   "sol-comparison-validate.mjs": {
+    "exitHere": 1,
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /2 other linked criteria lack a detailed scenario reading in this packet/. Input:",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /2 other linked criteria lack a detailed scenario reading in this packet/. Input:"
+   },
+   "sol-disclosure-validate.mjs": {
+    "exitHere": 1,
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "AssertionError [ERR_ASSERTION]: {\"error\":\"The desk no longer holds F:capacity:run-001, F:capacity:run-008. Read the desk again before asking Sol.\"}",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: {\"error\":\"The desk no longer holds F:capacity:run-001, F:capacity:run-008. Read the desk again before asking Sol.\"}"
+   },
+   "stewardship-validate.mjs": {
+    "exitHere": 1,
+    "exitOnBaseline": 1,
+    "normalisedOutputIdentical": true,
+    "failureHere": "AssertionError [ERR_ASSERTION]: F:latency:QD-003: knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match",
+    "failureOnBaseline": "AssertionError [ERR_ASSERTION]: F:latency:QD-003: knowledge captured from a disagreement is read with the record it is linked to, not wherever its words match"
    }
   },
-  "note": "The failing suites were run again with the six changed existing product files at 94dbd4f: each gives the same normalised output as on this branch. Eight are red in audit/rc42/regression-2026-11-16.json; repository-packet-validate.mjs is a verify: tool that needs a packet file (AIW_PACKET_PATH) this machine does not hold. stewardship-validate.mjs, run from a scratch copy with its baseline failure at line 92 set aside, passes with identical output on both sides.",
+  "note": "Each failing suite was run again on commit 94dbd4f exported whole and the two outputs compared with times, generated ids, source positions and the tree's path set aside.",
   "seconds": {
-   "architecture-case-validate.mjs": 5,
-   "architecture-evaluation-validate.mjs": 5,
-   "architecture-intelligence-validate.mjs": 10,
+   "architecture-case-ui-validate.mjs": 1,
+   "architecture-case-validate.mjs": 4,
+   "architecture-design-validate.mjs": 4,
+   "architecture-drafting-validate.mjs": 4,
+   "architecture-evaluation-validate.mjs": 4,
+   "architecture-grounding-validate.mjs": 1,
+   "architecture-intelligence-validate.mjs": 8,
+   "architecture-job-validate.mjs": 1,
    "architecture-knowledge-unit-validate.mjs": 1,
-   "architecture-obligation-validate.mjs": 5,
+   "architecture-modules-validate.mjs": 60,
+   "architecture-obligation-validate.mjs": 4,
+   "architecture-operations-validate.mjs": 4,
+   "architecture-service-validate.mjs": 3,
    "brain-ahead-validate.mjs": 1,
-   "brain-chain-validate.mjs": 6,
-   "brain-integration-validate.mjs": 6,
-   "brain-reasoning-validate.mjs": 5,
-   "brain-synthesis-retrieval-validate.mjs": 21,
+   "brain-chain-validate.mjs": 4,
+   "brain-integration-validate.mjs": 4,
+   "brain-reasoning-validate.mjs": 3,
+   "brain-synthesis-retrieval-validate.mjs": 16,
    "brain-tradeoffs-validate.mjs": 2,
+   "brain-validate.mjs": 4,
    "caller-resilience-validate.mjs": 2,
    "candidate-import-validate.mjs": 1,
-   "chapter-reasoning-validate.mjs": 10,
-   "command-equivalence-validate.mjs": 3,
-   "composition-validate.mjs": 26,
-   "connected-design-projections-validate.mjs": 15,
-   "contextual-intelligence-ui-validate.mjs": 9,
+   "chapter-reasoning-validate.mjs": 7,
+   "command-equivalence-validate.mjs": 2,
+   "composition-validate.mjs": 19,
+   "connected-design-projections-validate.mjs": 12,
+   "contextual-intelligence-ui-validate.mjs": 6,
    "decision-reading-validate.mjs": 17,
    "design-concern-validate.mjs": 2,
-   "domain-lens-validate.mjs": 21,
-   "drafter-groups-validate.mjs": 185,
+   "domain-lens-validate.mjs": 25,
+   "drafter-groups-validate.mjs": 211,
    "driver-applicability-validate.mjs": 1,
-   "embedded-intelligence-validate.mjs": 10,
+   "driver-led-journey-validate.mjs": 35,
+   "embedded-intelligence-validate.mjs": 11,
    "execution-composition-validate.mjs": 3,
-   "execution-journey-validate.mjs": 4,
+   "execution-journey-validate.mjs": 5,
+   "focused-case-validate.mjs": 1,
    "hosted-knowledge-validate.mjs": 1,
-   "intake-validate.mjs": 42,
+   "intake-validate.mjs": 51,
    "knowledge-boundaries-validate.mjs": 2,
    "knowledge-coverage-validate.mjs": 1,
    "knowledge-design-validate.mjs": 4,
    "knowledge-ingestion-validate.mjs": 1,
    "knowledge-repository-validate.mjs": 1,
-   "knowledge-retrieval-validate.mjs": 9,
+   "knowledge-retrieval-validate.mjs": 10,
    "knowledge-second-brain-validate.mjs": 1,
    "knowledge-structure-validate.mjs": 1,
    "knowledge-validate.mjs": 1,
-   "module-model-validate.mjs": 70,
+   "module-model-validate.mjs": 81,
    "operations-validate.mjs": 4,
    "outcome-contract-validate.mjs": 2,
-   "outcome-design-journey-validate.mjs": 24,
-   "payment-knowledge-pilot-validate.mjs": 12,
+   "outcome-design-journey-validate.mjs": 22,
+   "pattern-dna-validate.mjs": 0,
+   "payment-case-journey-validate.mjs": 3,
+   "payment-knowledge-pilot-validate.mjs": 11,
+   "persistence-validate.mjs": 4,
+   "product-choice-validate.mjs": 2,
    "provenance-validate.mjs": 3,
-   "rc42-g1-tech-approval-validate.mjs": 9,
+   "provider-quota-validate.mjs": 15,
+   "rc42-g1-tech-approval-validate.mjs": 7,
    "rc42-g2-library-validate.mjs": 3,
-   "rc42-g3a-risk-and-limits-validate.mjs": 4,
-   "rc42-g3b-trace-and-delivery-validate.mjs": 7,
-   "rc42-g4-trace-kernel-validate.mjs": 11,
-   "rc42-g7-data-contracts-validate.mjs": 5,
-   "read-outcome-validate.mjs": 17,
-   "recovery-authority-validate.mjs": 24,
-   "recovery-size-validate.mjs": 389,
+   "rc42-g3a-risk-and-limits-validate.mjs": 3,
+   "rc42-g3b-trace-and-delivery-validate.mjs": 6,
+   "rc42-g4-trace-kernel-validate.mjs": 10,
+   "rc42-g7-data-contracts-validate.mjs": 4,
+   "read-design-validate.mjs": 3,
+   "read-outcome-validate.mjs": 19,
+   "recovery-authority-validate.mjs": 25,
+   "recovery-size-validate.mjs": 395,
    "repository-packet-validate.mjs": 0,
    "repository-service-validate.mjs": 1,
    "repository-sync-validate.mjs": 1,
    "repository-transfer-validate.mjs": 1,
-   "service-routes-validate.mjs": 4,
-   "stewardship-validate.mjs": 4,
+   "service-routes-validate.mjs": 3,
+   "sol-architecture-validate.mjs": 9,
+   "sol-comparison-validate.mjs": 1,
+   "sol-disclosure-validate.mjs": 14,
+   "sol-live-check-validate.mjs": 26,
+   "sol-open-fields-validate.mjs": 7,
+   "sol-sdd-validate.mjs": 1,
+   "stewardship-validate.mjs": 3,
    "technology-realisation-validate.mjs": 9,
+   "tradeoff-validate.mjs": 4,
    "ui-modules-validate.mjs": 2
   }
  },
  "guardMutations": {
-  "tried": 38,
-  "killed": 38,
-  "survived": 0,
-  "list": [
-   {
-    "file": "public/knowledge-concepts.js",
-    "heldBy": "S1.19",
-    "failedWith": "account (absent): the review does not stand"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.17",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.17",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.18",
-    "failedWith": "Missing expected exception: an agent account: a form added on a reviewed concept"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.18",
-    "failedWith": "Missing expected exception: an agent account: the review date on a reviewed concept"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.18",
-    "failedWith": "a person: the concept saved again as it is"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.18",
-    "failedWith": "a person: the topic saved again as it is"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.19",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.20",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.16",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.22",
-    "failedWith": "definition"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.21",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.21",
-    "failedWith": "REQ-001"
-   },
-   {
-    "file": "public/knowledge-concepts.js",
-    "heldBy": "S1.17",
-    "failedWith": "outside a library a candidate offers no content"
-   },
-   {
-    "file": "public/knowledge-concepts.js",
-    "heldBy": "S1.20",
-    "failedWith": "applicability unusable: nothing of the concept is handed over"
-   },
-   {
-    "file": "public/knowledge-concepts.js",
-    "heldBy": "S1.20",
-    "failedWith": "Expected values to be strictly deep-equal:"
-   },
-   {
-    "file": "public/knowledge-governance.js",
-    "heldBy": "S1.16",
-    "failedWith": "released claims: the plain claim, and no form"
-   },
-   {
-    "file": "public/knowledge-governance.js",
-    "heldBy": "S1.18",
-    "failedWith": "a person: the concept saved again as it is"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.24",
-    "failedWith": "The input did not match the regular expression /calculation\\.quotes\\[1\\] repeats quotes\\[0\\]: each text rests on a quote"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.24",
-    "failedWith": "The input did not match the regular expression /applicability\\.guaranteeBoundary\\.dependsOn\\[0\\]: the quote is not found"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.24",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.24",
-    "failedWith": "the quote given for another text does not lend its number"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.15",
-    "failedWith": "composition: the validator"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.15",
-    "failedWith": "selection: the validator"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.15",
-    "failedWith": "a quote of 240 characters once collapsed is a quote"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.15",
-    "failedWith": "The input did not match the regular expression /definition\\.quotes\\[0\\] is a verbatim quote of 12 to 240 characters/. In"
-   },
-   {
-    "file": "public/knowledge-stewardship.js",
-    "heldBy": "S1.16",
-    "failedWith": "a plain candidate is listed as before; no form is"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.17",
-    "failedWith": "Missing expected exception."
-   },
-   {
-    "file": "public/knowledge-concepts.js",
-    "heldBy": "S1.18",
-    "failedWith": "topic: the slice hash"
-   },
-   {
-    "file": "public/knowledge-concepts.js",
-    "heldBy": "S1.18",
-    "failedWith": "steward is in the hash"
-   },
-   {
-    "file": "rc44-wp1-knowledge-validate.mjs",
-    "heldBy": "S1.23",
-    "failedWith": "a filter that matches nothing is not a pass"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.17",
-    "failedWith": "The input did not match the regular expression /are written in a knowledge library: a person marks this project as one f"
-   },
-   {
-    "file": "public/knowledge-concepts.js",
-    "heldBy": "S1.20",
-    "failedWith": "Expected values to be strictly deep-equal:"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.19",
-    "failedWith": "the review records the reviewer's account kind"
-   },
-   {
-    "file": "public/concept-form.js",
-    "heldBy": "S1.21",
-    "failedWith": "REQ-001 is not a concept id"
-   },
-   {
-    "file": "public/knowledge-concept-commands.js",
-    "heldBy": "S1.18",
-    "failedWith": "Missing expected exception: an agent account: the topic unmapped on a reviewed concept"
-   },
-   {
-    "file": "public/knowledge-governance.js",
-    "heldBy": "S1.25",
-    "failedWith": "Export the knowledge history before extending this project further."
-   },
-   {
-    "file": "repository-packet.js",
-    "heldBy": "S1.25",
-    "failedWith": "the packet reads the tier"
-   }
-  ]
+  "firstSession": {
+   "tried": 38,
+   "killed": 38,
+   "survived": 0,
+   "list": [
+    {
+     "file": "public/knowledge-concepts.js",
+     "heldBy": "S1.19",
+     "failedWith": "account (absent): the review does not stand"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.17",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.17",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.18",
+     "failedWith": "Missing expected exception: an agent account: a form added on a reviewed concept"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.18",
+     "failedWith": "Missing expected exception: an agent account: the review date on a reviewed concept"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.18",
+     "failedWith": "a person: the concept saved again as it is"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.18",
+     "failedWith": "a person: the topic saved again as it is"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.19",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.20",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.16",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.22",
+     "failedWith": "definition"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.21",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.21",
+     "failedWith": "REQ-001"
+    },
+    {
+     "file": "public/knowledge-concepts.js",
+     "heldBy": "S1.17",
+     "failedWith": "outside a library a candidate offers no content"
+    },
+    {
+     "file": "public/knowledge-concepts.js",
+     "heldBy": "S1.20",
+     "failedWith": "applicability unusable: nothing of the concept is handed over"
+    },
+    {
+     "file": "public/knowledge-concepts.js",
+     "heldBy": "S1.20",
+     "failedWith": "Expected values to be strictly deep-equal:"
+    },
+    {
+     "file": "public/knowledge-governance.js",
+     "heldBy": "S1.16",
+     "failedWith": "released claims: the plain claim, and no form"
+    },
+    {
+     "file": "public/knowledge-governance.js",
+     "heldBy": "S1.18",
+     "failedWith": "a person: the concept saved again as it is"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.24",
+     "failedWith": "The input did not match the regular expression /calculation\\.quotes\\[1\\] repeats quotes\\[0\\]: each text rests on a quote"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.24",
+     "failedWith": "The input did not match the regular expression /applicability\\.guaranteeBoundary\\.dependsOn\\[0\\]: the quote is not found"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.24",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.24",
+     "failedWith": "the quote given for another text does not lend its number"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.15",
+     "failedWith": "composition: the validator"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.15",
+     "failedWith": "selection: the validator"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.15",
+     "failedWith": "a quote of 240 characters once collapsed is a quote"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.15",
+     "failedWith": "The input did not match the regular expression /definition\\.quotes\\[0\\] is a verbatim quote of 12 to 240 characters/. In"
+    },
+    {
+     "file": "public/knowledge-stewardship.js",
+     "heldBy": "S1.16",
+     "failedWith": "a plain candidate is listed as before; no form is"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.17",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-concepts.js",
+     "heldBy": "S1.18",
+     "failedWith": "topic: the slice hash"
+    },
+    {
+     "file": "public/knowledge-concepts.js",
+     "heldBy": "S1.18",
+     "failedWith": "steward is in the hash"
+    },
+    {
+     "file": "rc44-wp1-knowledge-validate.mjs",
+     "heldBy": "S1.23",
+     "failedWith": "a filter that matches nothing is not a pass"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.17",
+     "failedWith": "The input did not match the regular expression /are written in a knowledge library: a person marks this project as one f"
+    },
+    {
+     "file": "public/knowledge-concepts.js",
+     "heldBy": "S1.20",
+     "failedWith": "Expected values to be strictly deep-equal:"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.19",
+     "failedWith": "the review records the reviewer's account kind"
+    },
+    {
+     "file": "public/concept-form.js",
+     "heldBy": "S1.21",
+     "failedWith": "REQ-001 is not a concept id"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "heldBy": "S1.18",
+     "failedWith": "Missing expected exception: an agent account: the topic unmapped on a reviewed concept"
+    },
+    {
+     "file": "public/knowledge-governance.js",
+     "heldBy": "S1.25",
+     "failedWith": "Export the knowledge history before extending this project further."
+    },
+    {
+     "file": "repository-packet.js",
+     "heldBy": "S1.25",
+     "failedWith": "the packet reads the tier"
+    }
+   ],
+   "note": "as the first fix-up session recorded them; not run again by the second"
+  },
+  "secondSession": {
+   "tried": 9,
+   "killed": 9,
+   "survived": 0,
+   "list": [
+    {
+     "file": "public/knowledge-governance.js",
+     "mutation": "the form capability is not asked about a contradiction with a form",
+     "heldBy": "S1.26",
+     "failedWith": "Missing expected exception: an agent account: a plain opposing claim on a reviewed concept"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "mutation": "opposes asks nobody",
+     "heldBy": "S1.26",
+     "failedWith": "Missing expected exception: an agent account: a plain opposing claim on a reviewed concept"
+    },
+    {
+     "file": "public/knowledge-governance.js",
+     "mutation": "an entry with no form capability opens the contradiction",
+     "heldBy": "S1.26",
+     "failedWith": "Missing expected exception."
+    },
+    {
+     "file": "public/knowledge-governance.js",
+     "mutation": "the capture command does not hand the capability on",
+     "heldBy": "S1.26",
+     "failedWith": "Missing expected exception: an agent account: a captured disagreement that limits a form of a reviewed concept"
+    },
+    {
+     "file": "public/knowledge-concepts.js",
+     "mutation": "the read-time check ignores the stored account kind",
+     "heldBy": "S1.19",
+     "failedWith": "account (absent): the review does not stand"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "mutation": "a retired concept is reviewed",
+     "heldBy": "S1.22",
+     "failedWith": "Missing expected exception: verified"
+    },
+    {
+     "file": "public/knowledge-governance.js",
+     "mutation": "releasedClaims hands over a release that holds a form",
+     "heldBy": "S1.16",
+     "failedWith": "released claims: the plain claim, and no form"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "mutation": "a covered concept is changed by anyone",
+     "heldBy": "S1.18, S1.26, S1.5 through the service",
+     "failedWith": "Missing expected exception: an agent account: the review date on a reviewed concept"
+    },
+    {
+     "file": "public/knowledge-concept-commands.js",
+     "mutation": "opposes asks nobody, seen through POST /api/commands",
+     "heldBy": "S1.5 through the service",
+     "failedWith": "an agent account opens no contradiction with a form of a reviewed concept"
+    }
+   ],
+   "note": "run in a scratch copy of the tree"
+  }
  },
  "checks": {
   "syntax": "914 modules pass (node check-syntax.mjs)",
@@ -454,5 +615,46 @@
    "new": 0
   },
   "build": "node build.mjs passes every gate; violations: []"
+ },
+ "sessions": [
+  "first fix-up session: items 1 to 10, each committed as work in progress (rc44/wp1-s1-forms-fix)",
+  "second fix-up session: every item checked again against its case and its code, item 12 added, the figures below measured again, the final commit (rc44/wp1-s1-forms-fix-c2)"
+ ],
+ "redBeforeTheChange": {
+  "how": "second session: for each item, the suite files as committed with the item, on the product files of the commit before it (scratch copy of the tree; nothing committed)",
+  "cases": {
+   "S1.15 (item 1)": "applicability: the validator",
+   "S1.10 (item 2)": "released and active: a reading of the design moved",
+   "S1.16 (item 2)": "Missing expected exception.",
+   "S1.17 (item 3)": "Missing expected exception.",
+   "S1.18 (item 4)": "id is in the hash",
+   "S1.19 (item 5)": "the review records the reviewer's account kind",
+   "S1.20 (item 6)": "KC.conceptDecisionReading is not a function",
+   "S1.21 (item 7)": "REQ-001 is not a concept id",
+   "S1.22 (item 8)": "definition",
+   "S1.23 (item 8; the runner of the commit before)": "a filter that matches nothing is not a pass",
+   "S1.24 (item 9)": "The input did not match the regular expression /definition\\.quotes\\[0\\] names the text it grounds and gives its verbatim quote: \\{field, quote\\}/",
+   "S1.25 (item 10)": "Expected values to be strictly deep-equal (the tiers)",
+   "S1.26 (item 12)": "Missing expected exception: an agent account: a plain opposing claim on a reviewed concept",
+   "S1.5 through the service (item 12)": "an agent account opens no contradiction with a form of a reviewed concept",
+   "S1.10 (item 2, the Brain's receipt)": "released and active: a reading of the design moved",
+   "S1.16 (item 2, the Brain's receipt)": "the Brain's receipt names the release of plain claims, which it reads, and not the release of forms"
+  },
+  "greenBefore": {
+   "S1.8, the walk of the fifteen pre-existing command types (item 8, should-fix 10)": "passes on the commit before: it completes coverage and changes nothing"
+  }
+ },
+ "oldDocuments": {
+  "how": "node rc44-wp1-knowledge-validate.mjs --print-baseline on the product files of 94dbd4f (the six changed files at the baseline, the three new modules moved aside) and on the head",
+  "identical": true,
+  "note": "S1.8 asserts the same object as BASELINE, the walk of the fifteen pre-existing command types included"
+ },
+ "probes": {
+  "note": "second session, outside the suite, through applyConceptCommand; recorded in the build notes under Known limits",
+  "supersedingSource": {
+   "reviewedNotReleased": "accepted from an agent account and from an import: the concept reads draft and is no longer covered; the same sender then edits it (reviewDue 2099-12-31 accepted)",
+   "releasedAndActive": "accepted from an agent account and from an import: the released concept is not eligible as a whole and a pin hands over nothing; the register's concept reads draft and stays covered, so an edit is still refused",
+   "changedByThisSlice": false
+  }
  }
 }
