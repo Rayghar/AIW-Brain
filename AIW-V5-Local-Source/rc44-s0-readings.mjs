@@ -74,4 +74,26 @@ export function assertFindingIdsUnique(p) {
   return all.length;
 }
 
+// "Opens with records" (the lead's ruling D10 of 2026-11-18). The chapters-route gate (client-bundle.mjs sizeReport,
+// routes.chapters.code) measures opening a document that holds no package records. A document that holds a package's
+// records also loads, before it is first drawn, the lazy entry that holds the package (ruling A3). Each package
+// reports that figure in its notes and its size evidence: the code of the chapters route and of the lazy entry's own
+// static closure together, each script counted once. opensWithRecords(metafile, entry, dataNames) reads it from the
+// build's metafile (bundleClient(...).metafile, parsed): `entry` is the source of the lazy entry the package's route
+// stub loads ('public/architecture-task-ui.js'), `dataNames` the data modules the gate sets apart from code
+// (Object.keys(BUDGET.data) of client-bundle.mjs). It answers {route, added, total, files}: the route as the gate
+// counts it, what the lazy entry adds to it, their sum, and how many scripts the entry adds.
+export function opensWithRecords(metafile, entry, dataNames = []) {
+  const outputs = metafile.outputs, scripts = Object.keys(outputs).filter(f => f.endsWith('.js'));
+  const isData = input => dataNames.some(name => input.endsWith('public/' + name + '.js'));
+  const code = f => (outputs[f]?.bytes || 0) - Object.entries(outputs[f]?.inputs || {}).reduce((n, [i, x]) => n + (isData(i) ? x.bytesInOutput : 0), 0);
+  const closure = starts => { const seen = new Set(), walk = f => { if (seen.has(f) || !outputs[f]) return; seen.add(f); for (const i of outputs[f].imports || []) if (!i.external && i.kind === 'import-statement') walk(i.path); }; starts.forEach(walk); return seen; };
+  const main = scripts.find(f => outputs[f].entryPoint === 'public/entry.js'), held = scripts.find(f => outputs[f].entryPoint === entry);
+  if (!main || !held) throw Error('The build holds no ' + (main ? 'lazy entry ' + entry : 'entry script') + '.');
+  // The chapters route as the gate reads it: the entry script and every dynamic import of it but the Projects page.
+  const route = closure([main, ...(outputs[main].imports || []).filter(i => i.kind === 'dynamic-import' && outputs[i.path]?.entryPoint !== 'public/projects.js').map(i => i.path)]);
+  const more = [...closure([held])].filter(f => !route.has(f)), sum = files => [...files].reduce((n, f) => n + code(f), 0);
+  return {route: sum(route), added: sum(more), total: sum(route) + sum(more), files: more.length};
+}
+
 if (process.argv[1] && import.meta.url.endsWith('/rc44-s0-readings.mjs') && process.argv[1].endsWith('rc44-s0-readings.mjs') && process.argv.includes('--capture')) { const listed = reviewListDocument(); console.log(JSON.stringify({capturedFrom: process.argv[process.argv.indexOf('--capture') + 1] || 'working tree', at: AT, readings: referenceDigests(), reviewList: {findings: reviewListFindings(listed).map(f => f.id), readings: digests(listed)}}, null, 1)); }
