@@ -118,6 +118,29 @@ all 8,877,272 B, unchanged; the budget object of the size report identical; no v
 the client 8,132 B before and after (the command function is not in the client); none of the three new modules is in
 the client metafile. wp1 has used 65 B of its 660 B, all of it ruling B1, as before this round.
 
+**Verification (second fix-up), all on the code of the final commit.** Evidence, read from the logs by a script:
+`audit/rc44/evidence/wp1-s1-forms-fixup2.json`.
+- The slice's suite after `node build.mjs`: 34 passed, 0 failed, 4 pending (S2 to S5). At the branch start: 27 passed.
+- Each new case was seen red before its change, with the line in the table above; S1.7 and S1.25 red on the tier's
+  shape before E3; the organisation's release in S1.29 red before its line (`Missing expected exception: an agent
+  account: the organisation's release deactivated`).
+- Guard mutations, each alone on the product code and restored: the five cases of `formsRestingOn` (withdraw,
+  contradiction, deactivate, activate, the body comparison of a superseding source), the revision rule of
+  `knowledge.concept`, the repository rule and the contradiction rule of the capability: eight, each killed by S1.29.
+- Related existing suites, three at a time: the 53 `*-validate.mjs` files that import or name a file or a command
+  this round changed (`knowledge-governance.js`, `recovery-service.js`, the slice's three modules, a `knowledge.*`
+  command), without the browser suites and `scale`. 45 pass. 8 fail, and each fails the same way on commit `94dbd4f`
+  exported whole (identical output once paths, times and source positions are set aside): `brain-ahead`,
+  `brain-reasoning`, `chapter-reasoning`, `composition-ui`, `contextual-intelligence-ui`, `design-concern`,
+  `stewardship` (all seven red in `audit/rc42/regression-2026-11-16.json` with the same line) and
+  `repository-packet-validate.mjs` (no `test:` script; it needs an argument). `recovery-size` passed in 397 s,
+  `recovery-authority`, `rc42-g2-library`, `repository-sync`, `repository-transfer` and `repository-service` pass.
+- `node check-syntax.mjs`: 914 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+- `node build.mjs`: exit 0, no violation, sizes above.
+- Not run: browser suites, `test:scale`, the full regression (the lead's).
+- No existing suite of `94dbd4f` was touched; the only suite files changed are this slice's own
+  (`rc44-wp1-cases-forms.mjs`, `rc44-wp1-knowledge-fixtures.mjs`).
+
 ## Measurements (node build.mjs)
 
 All three columns were measured again in the second fix-up session, each with `node build.mjs` on its own tree: commit
