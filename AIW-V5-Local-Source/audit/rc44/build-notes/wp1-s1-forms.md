@@ -13,23 +13,29 @@ forms and a history of 6,000 lines through the commands).
 
 ## Measurements (node build.mjs)
 
-The first two columns were measured in the second session of the first build; the third in the fix-up session, in the
-fix-up's worktree, against a build of `f9d9bdc` made in the same session (its numbers equal the second column).
+All three columns were measured again in the second fix-up session, each with `node build.mjs` on its own tree: commit
+`94dbd4f` exported whole, the slice's first head `f9d9bdc`, and this branch. The first two equal what the first build
+and the review measured. (The first fix-up session measured 3,228,901 B, +38 B, before the Brain's receipt was changed.)
 
 | | baseline 94dbd4f | first build f9d9bdc | after the fix-up |
 |---|---|---|---|
-| chapters route code (cap 3,233,792 B) | 3,228,863 B | 3,228,863 B (+0 B) | 3,228,901 B (**+38 B**, all of it ruling B1; 4,891 B spare) |
+| chapters route code (cap 3,233,792 B) | 3,228,863 B | 3,228,863 B (+0 B) | 3,228,928 B (**+65 B**, all of it ruling B1; 4,864 B spare) |
 | projects route code (cap 1,242,112 B) | 506,102 B | 506,102 B | 506,129 B (+27 B) |
 | script files (gate 148) | 148 | 148 | 148 |
 | files under 10 KB / 10–50 KB / over 50 KB | 53 / 50 / 45 | 53 / 50 / 45 | 53 / 50 / 45 |
 | stylesheet | 901,873 B | 901,873 B | 901,873 B |
+| client in all | 8,877,207 B | 8,877,207 B | 8,877,272 B |
 | `knowledge-governance.js` in the client | 8,105 B | 8,105 B | 8,132 B (+27 B: `releasedClaims`) |
 | `knowledge-stewardship.js` in the client | 7,142 B | 7,142 B | 7,153 B (+11 B: the stewards' reading) |
+| `architecture-brain.js` in the client | 15,218 B | 15,218 B | 15,245 B (+27 B: the receipt's active releases) |
 | server modules packaged | 253 | 256 (the three new modules) | 256 |
+| opens with records (ruling D10) | – | as the chapters route | as the chapters route: S1 has no client code |
 
 None of the three new modules is in the client metafile, and no built script holds the limit tiers. The suite checks
 both when `dist/client-metafile.json` exists (S1.14). The size report holds no violation; no gate in `client-bundle.mjs`
-was touched. B1 was granted up to 120 B of wp1's 660 B: it used 38 B, so wp1 has 622 B left for S3.
+was touched. B1 was granted up to 120 B of wp1's 660 B: it used 65 B, so wp1 has 595 B left for S3. Everything else
+of the fix-up is off the route: item 12 changed `knowledge-governance.js` inside the command function, which the
+client does not hold (8,132 B before and after it).
 
 ## Fix-up (after the adversarial review and the lead's rulings of 2026-11-18)
 
@@ -39,12 +45,13 @@ it; each item has its case first, seen red before its change, and a WIP commit.
 The first fix-up session committed items 1 to 10 and was cut off before its final commit. The second session took
 none of it on trust: it ran the suite on that head (26 passed), ran each item's case as committed with the item on the
 product code of the commit before it (each is red there, with the line given under Verification), read each item's
-code against its ruling, probed the rulings from outside the suite, and found one gap, which is item 12.
+code against its ruling, probed the rulings from outside the suite, found one gap, which is item 12, and finished
+item 2 where the first session had left a design reading that names a release of forms (the Brain's receipt).
 
 | # | Item | State | Case |
 |---|---|---|---|
 | 1 | Must-fix 1 (the quote floor is measured on the collapsed text; a verbatim diagram source has the same floor) and must-fix 2 (the number rule reads a target label; identifier fields hold identifiers) | done | S1.15 |
-| 2 | B1: a form claim is read only by the concept readers; S1.10 strengthened | done (route +38 B) | S1.10, S1.16 |
+| 2 | B1: a form claim is read only by the concept readers; S1.10 strengthened. Second session: the Brain's receipt names no release of forms, so in the 27 readings a released, active form moves exactly what a plain candidate source moves on rc.10.73.42 | done (route +65 B: 38 B in the first session, 27 B in the second) | S1.10, S1.16 |
 | 3 | B2: concepts, topics and form claims in a library project only | done | S1.17 (S1.1, S1.5 through the service, S1.7, S1.8, S1.10, S1.13 adjusted) |
 | 4 | B3: what `conceptHash` covers; only a person changes what a review covered; an upsert that changes nothing writes nothing | done | S1.18 (S1.4, S1.5 through the service adjusted) |
 | 5 | B4 and should-fix 4: a concept review records the reviewer's account kind, a read requires a person's; `kindRefusal` requires account `person` | done | S1.19 (S1.5 adjusted) |
@@ -62,11 +69,11 @@ wrapper writes what the old entry writes "for every pre-existing command" while 
 and S1.8 now walks all fifteen, so the sentence holds as written; this package's id is `p10-knowledge` (ruling A2 as
 amended by D8), named under "Next" where wp1 first registers through S0.
 
-Where I disagree with a ruling: nowhere in substance. Two rulings are read in a particular way and one is not met to
-the letter, each said plainly below: B1's "every reading is asserted not to move" (four of the 27 readings carry stamp
-values that any knowledge write moves on rc.10.73.42, and the Brain's receipt names an active release of forms by id
-and checksum); B8's "set the tier to that" (the counts were left as designed and the measured tranche sizes are
-stated); and B3 (a superseding source, under Known limits, is not refused and should be ruled on).
+Where I disagree with a ruling: nowhere in substance. Two rulings are read in a particular way and one question is
+left for the lead, each said plainly below: B1's "every reading is asserted not to move" (four of the 27 readings
+carry seven stamp values that any knowledge write moves on rc.10.73.42; nothing else of them moves); B8's "set the
+tier to that" (the counts were left as designed and the measured tranche sizes are stated); and, beside B3, a
+superseding source (under Known limits), which is not refused and should be ruled on.
 
 ### What a released, active form moves (ruling B1, should-fix 1; asserted in S1.10)
 
@@ -77,8 +84,10 @@ criteria of each of the nine technology selections, the nine product comparisons
 specification gate and the specification text, `releasedClaims`, `knowledgeFindings`, domain knowledge, knowledge
 structures, the architecture knowledge snapshot, the SDD text, the contextual reading, the Brain's knowledge, the whole
 Brain context, Sol's packet in three modes, the record graph, the sources the Brain cites for a question, the reasoning
-packet of a decision, the chapter stamps) **none moves outside eleven stamp values, and the marker reaches none**. The
-review asked for a packet mode `draft`; that is not a mode (it throws on every document), so `design` is read instead.
+packet of a decision, the chapter stamps) **none moves outside seven stamp values, and the marker reaches none**. Those
+seven are exactly what a plain candidate source, saved through the old entry, moves on rc.10.73.42; the case asserts
+both, at each of the five stages. The review asked for a packet mode `draft`; that is not a mode (it throws on every
+document), so `design` is read instead.
 
 What does move:
 1. **The concept readers** (`knowledge-concepts.js`): `conceptRecords`, `conceptReading` (nine forms `released` with
@@ -91,9 +100,11 @@ What does move:
    - the stamp of the knowledge state, in the Brain's receipt (`brainContext().governed.receipt.knowledgeStamp`,
      `packet.brainReceipt.knowledgeStamp`) and each packet's `stamp` over that receipt: 7 values. A plain candidate
      source through the old entry moves exactly these on rc.10.73.42 (asserted);
-   - the active release's id and checksum in the same receipt (`…receipt.activeReleases`, 4 values), as for any
-     active release. This is the one place a design reading names a release of forms. I left it: the receipt says
-     honestly which releases were active, and it carries an id and a checksum, no content;
+   - *(second session)* not the receipt's list of active releases. The first fix-up session left the release's id and
+     checksum there (`…receipt.activeReleases`, 4 values): the one place where a design reading named a release of
+     forms. The receipt now lists the active releases the Brain reads, and a release of forms is none of them
+     (`architecture-brain.js`, 27 B); a release of plain claims is named as before (S1.16). Nothing but the receipt
+     reads that list;
    - the whole-document fingerprint (`designFingerprint`, `reviewSourceStamp`) and so each finding's `stamp`, as any
      knowledge write does on rc.10.73.42. With B2 only a library project takes such writes through the commands.
 
@@ -172,6 +183,18 @@ What does move:
   document holds anyway reaches no reader of released claims: its plain claims read as not active.
 - **B1, links.** `knowledge.link` reads `releasedClaims`, so a form is linked to no record now; a link to a form that
   a document holds anyway reads 'Review changed architectural support'. S3's pin link must go through the concept readers.
+- **B1, the Brain's receipt** *(second session)*. The ruling names the readers that receive no form claim; the
+  receipt received none, but it named the release of forms among the active releases, and the Brain's context and
+  Sol's packets carry the receipt. It now lists the active releases the Brain reads. That is a third place of
+  exclusion (after `releasedClaims` and the stewards' reading) and 27 B of the 120 B the ruling grants; if the lead
+  would rather have the receipt name every active release, it is one condition in `architecture-brain.js` and two
+  assertions (S1.10, S1.16) to turn back.
+- **B3 and B9, an opposing claim without a form** *(second session, item 12)*. B3 names "adding a form claim"; the
+  refusal is applied to any claim that would open a contradiction with a form of a covered concept, form or not, and
+  to `knowledge.capture`, because all of them reach the one function that opens contradictions. An entry without the
+  form capability cannot ask who is sending, so it opens no contradiction with a form at all, on a draft concept
+  either: that is stricter than "on a draft concept the same request is accepted" for the one caller it concerns, the
+  local mode of an import script that calls `applyKnowledgeCommand` directly.
 - **B2 is applied to more commands than it names:** also the review of a form, the concept review, retire, restore
   and the release of forms. A project that holds forms anyway (recovery, an older library) reads them, inert, and
   takes no command on them until a person marks it a library.
@@ -241,8 +264,56 @@ What does move:
 - **The structured unit of an applicability form** is not read by the number rule (the ruling names the statement,
   conditions and limitations). Its predicates may hold thresholds; they are reviewed by the second person.
 
-## Verification (fix-up session, 2026-11-18)
+## Verification (the two fix-up sessions, 2026-11-18)
 
+What the first fix-up session recorded is kept below it; what the second session saw itself comes first.
+
+**Second session (the one that made the final commit).**
+- **The first session's head** (`fcc502f`): the suite gave 26 passed, 0 failed, 4 pending.
+- **Cases first, checked again.** For each item the suite files as committed with the item were run on the product
+  files of the commit before it, in a scratch copy of the tree. Each case is red there:
+  S1.15 "applicability: the validator"; S1.10 "released and active: a reading of the design moved"; S1.16 "Missing
+  expected exception."; S1.17 "Missing expected exception."; S1.18 "id is in the hash"; S1.19 "the review records the
+  reviewer's account kind"; S1.20 "KC.conceptDecisionReading is not a function"; S1.21 "REQ-001 is not a concept id";
+  S1.22 "definition" (the definition form with a unit); S1.24 "The input did not match … quotes[0] names the text it
+  grounds"; S1.25 "Expected values to be strictly deep-equal" (the tiers). S1.23 is red with the runner of the commit
+  before ("a filter that matches nothing is not a pass"): its change is in the runner. S1.8's walk of the fifteen
+  types passes before and after: it completes coverage and changes nothing.
+- **This session's own cases, red before their change:** S1.26 "Missing expected exception: an agent account: a plain
+  opposing claim on a reviewed concept"; "S1.5 through the service", with the same request sent through
+  `POST /api/commands`, "an agent account opens no contradiction with a form of a reviewed concept"; S1.10 "released
+  and active: a reading of the design moved" and S1.16 "the Brain's receipt names the release of plain claims, which
+  it reads, and not the release of forms" before the receipt was changed.
+- **The suite on the final code, after `node build.mjs`** (so that S1.14 read the built client): 27 passed, 0 failed,
+  4 pending (S2 to S5), 118 seconds.
+- **Old documents:** `--print-baseline` run on the product files of `94dbd4f` (the six changed files at the baseline,
+  the three new modules moved aside) prints byte for byte what it prints on this branch, and S1.8 asserts that object,
+  the walk of the fifteen pre-existing command types included.
+- **Guard mutations, in a scratch copy:** nine tried, nine killed. The capability not asked about a contradiction with
+  a form; `opposes` asking nobody (in S1.26 and through the service); an entry with no capability opening the
+  contradiction; `knowledge.capture` not handing the capability on; the read-time check ignoring the stored account
+  kind (S1.19); a retired concept reviewed (S1.22); `releasedClaims` handing over a release that holds a form (S1.16);
+  a covered concept changed by anyone (S1.18, S1.26, the service case). The first session's 38 were not run again.
+- **`stewardship-validate.mjs` past its baseline failure** (it stops at its line 92 on this machine, on the baseline
+  too, before its server cases send `knowledge.capture` and `knowledge.steward` through `/api/commands`): a scratch
+  copy with that one assertion set aside, never committed, passes its 8 checks on this branch and on commit `94dbd4f`
+  with identical output.
+- **Related existing suites, two at a time** (84: the sixty of the first session, which are every existing
+  `*-validate.mjs` that imports `knowledge-governance.js`, `knowledge-stewardship.js`, `repository-packet.js`,
+  `authorship.js` or `recovery-service.js` and thirteen named others, and twenty-four more that exercise a reader built
+  on released claims: the Brain, product comparison, the architecture case, Sol's packets; browser, layout, screens
+  and scale suites not run). Run with item 12 in and before the receipt was changed: 73 passed, 11 failed. Nine of
+  the eleven are registered suites that are red in `audit/rc42/regression-2026-11-16.json`, each with the first
+  failure line that record holds (`brain-ahead`, `brain-reasoning`, `chapter-reasoning`, `command-equivalence`,
+  `contextual-intelligence-ui`, `design-concern`, `knowledge`, `stewardship`, `sol-disclosure`); the other two have no
+  `test:` script (`repository-packet-validate.mjs` is a tool that needs a packet file this machine does not hold;
+  `sol-comparison-validate.mjs` fails on a sentence of Sol's request that holds no knowledge).
+- `node check-syntax.mjs`: 914 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
+  `node build.mjs`: passes every gate (numbers under Measurements). `client-bundle.mjs` and `build.mjs` are not in the
+  diff against `94dbd4f`, and no `*-validate.mjs` that exists on `94dbd4f` is.
+- Evidence: `audit/rc44/evidence/wp1-s1-forms-fixup.json`.
+
+**First session, as it recorded it** (not run again unless said above).
 - **Cases first.** Each new case was run red before its change: S1.15 at the padded quote, then at the target label;
   S1.10 at "released and active: a reading of the design moved"; S1.16 at "released claims: the plain claim, and no
   form" (and, with the stewards' filter taken out again, at "a plain candidate is listed as before; no form is");
@@ -251,14 +322,7 @@ What does move:
   handed over); S1.21 "REQ-001 is not a concept id"; S1.22 at the definition form with a unit (and, with the guard
   "a retired concept is not reviewed" removed, "Missing expected exception: verified"); S1.23 "a filter that matches
   nothing is not a pass"; S1.24 with the fixtures in the new shape: 21 of 25 cases red; S1.25 at the tiers.
-  S1.8's walk of the fifteen types is green on `f9d9bdc` too: it completes coverage, it changes nothing.
-- **The suite:** 26 passed, 0 failed, 4 pending (S2 to S5).
-- **Old documents:** `BASELINE` of S1.8 is unchanged for the bank reference and the legacy project, and gained the
-  readings of a walk of all fifteen pre-existing command types, taken with `knowledge-governance.js` of `94dbd4f`.
-- **Related existing suites, on the final product code:** RELATED-SUMMARY
-- `node check-syntax.mjs`: 914 modules pass. `node scripts/lint.mjs --summary`: 162 problems, baseline 162, new 0.
-  `node build.mjs`: passes every gate (numbers above).
-- Evidence: `audit/rc44/evidence/wp1-s1-forms-fixup.json`.
+- **Guard mutations:** 38 tried, 38 killed (listed in the evidence file).
 
 ## Verification of the first build (second session, 2026-11-18)
 
@@ -305,7 +369,10 @@ What does move:
 
 ## In progress
 
-Nothing. The fix-up is complete on `rc44/wp1-s1-forms-fix`; its head is the final commit.
+The second fix-up session is closing on `rc44/wp1-s1-forms-fix-c2`: the code and its cases are committed; the related
+suites are being run once more on the final product code (the receipt was changed after the run recorded above), and
+the final commit follows that run. If this sentence is still here, that session was cut off before its final commit:
+run the related suites and the suite again, state the figures under Verification and in the evidence file, and commit.
 
 ## Next (for the slices that follow; none blocks S1)
 
@@ -435,8 +502,8 @@ Nothing. The fix-up is complete on `rc44/wp1-s1-forms-fix`; its head is the fina
    moves it on the baseline (shown in S1.10). *(fix-up)* With B2 a design project takes no concept, topic or form
    through the commands, so only a library's own recorded reviews are touched; B10 gives the keys to S3 through S0.
 2. *(fix-up: ruled, B1; the first build's question "a released form is a released claim" is closed.)* No reader of
-   released claims receives a form. The one place a design reading still names a release of forms is the Brain's
-   receipt, by id and checksum (`activeReleases`); see "What a released, active form moves".
+   released claims receives a form, and *(second session)* the Brain's receipt no longer names a release of forms;
+   see "What a released, active form moves".
 3. **Merge with S0** (read on `rc44/s0-extensions` at `d681353`, not merged here). Three places meet:
    - `worker.js`: S0 rewrites the dispatch line and adds `installBuiltInCommands(type=>…type.startsWith('knowledge.')?applyKnowledgeCommand:…)`.
      After the merge both must name `applyConceptCommand` (same arguments: `(own, command, at, actor, {author})`), and
