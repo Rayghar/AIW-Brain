@@ -205,7 +205,8 @@ add('S1.2: each of the nine shapes round-trips; an unknown field, an over-limit 
   refused('composition', f => { f.parameters[0].selectionBasis = 'Use 50 rows.'; }, /composition\.parameters\[0\]\.selectionBasis states the number 50/);
   { const f = all.calculation, form = clone(f.content); form.workedValues[0].name = 'outage of 120 seconds'; assert.deepEqual(CF.conceptFormIssues(form, ctx(f)), [], 'a number its quote holds is allowed'); }
   refused('selection', f => { f.variants[0].name = 'Polling every 30 seconds'; }, /selection\.variants\[0\]\.name states the number 30/);
-  refused('calculation', f => { f.modelKind = 'queue-model-2'; }, /calculation\.modelKind states the number 2/);
+  // The model kind of a calculation is an identifier (ruling B7 and should-fix 9; the first build read it as a label and refused 'queue-model-2' for its digit): free text is refused, an identifier may hold digits. Case S1.21.
+  refused('calculation', f => { f.modelKind = 'queue model 2'; }, /calculation\.modelKind is an identifier/);
   { const f = all.verification, form = clone(f.content); form.scenarios[0].id = 'SYN-P001-T2'; assert.deepEqual(CF.conceptFormIssues(form, ctx(f)), [], 'an identifier is not a stated number'); }
   refused('calculation', f => { f.workedValues[0].evidenceLevel = 'proposed'; }, /calculation\.workedValues\[0\]: a worked value is illustrative/);
   refused('composition', f => { delete f.parameters[0].example.evidenceLevel; }, /composition\.parameters\[0\]\.example: a worked value is illustrative/);
@@ -949,4 +950,29 @@ add('S1.20 (ruling B5, should-fix 3 and 5): a pin hands over nothing of a concep
   assert.match(KC.conceptDecisionReading(p, 'KU-0001').reasons[0], /KU-0001 is not an active concept pin/); assert.match(KC.conceptDecisionReading(pinned(p, {status: 'moved'}), 'KU-0001').reasons[0], /not an active concept pin/);
   assert.match(KC.conceptDecisionReading(pinned(p, {releaseId: 'KR-9999'}), 'KU-0001').reasons[0], /KR-9999 is not an active release that holds SYN-P001/);
   assert.match(KC.conceptDecisionReading(pinned(p, {conceptId: 'SYN-P002'}), 'KU-0001').reasons[0], /is not an active release that holds SYN-P002/);
+});
+
+// ------------------------------------------------------------------------------------------------ 21
+add('S1.21 (ruling B7, should-fix 9): a concept id is not a design record\'s reference, by its shape or because a record of the project bears it; the model kind of a calculation is an identifier', async () => {
+  const {CF, CC} = await mods(), L = await library({forms: []}), all = F.p001Forms();
+  const send = (doc, type, payload, actor = 'importer', opts = F.person(actor)) => CC.applyConceptCommand(doc, {type: 'knowledge.' + type, payload}, AT, actor, opts);
+  // A prefix and a number is how every chapter numbers its records (REQ-001, IF-001, ADR-001, QD-003, CON-001) and how knowledge numbers its own (KC-0001).
+  for (const id of ['REQ-001', 'IF-001', 'ADR-001', 'QD-3', 'CON-001', 'TR-003', 'KC-0001', 'X9-42']) {
+    assert.equal(CF.CONCEPT_ID.test(id), false, id + ' is not a concept id');
+    for (const opts of [F.person('importer'), F.importedBy('importer'), F.agent('bot')]) assert.throws(() => send(L.document, 'concept', {...CONCEPT, conceptId: id}, 'importer', opts), new RegExp(id + ' has the shape of a design record\'s reference \\(a prefix and a number, such as REQ-001\\)'), id);
+  }
+  for (const id of ['SYN-P001', 'PAT-TRANSACTIONAL-OUTBOX', 'CON-COMP-OUTBOX-RELAY', 'CON-PATTERN-OUTBOX', 'AAP-P030', 'CL-MSG-004', 'STYLE-MODULAR-MONOLITH', 'REQ-001-A', 'P-STRANGLER']) assert.equal(CF.CONCEPT_ID.test(id), true, id + ' is a concept id');
+  assert.equal(send(L.document, 'concept', {...CONCEPT, conceptId: 'CL-MSG-004', title: 'Outbox relay'}).document.knowledge.concepts.length, 2);
+  // A form names no record as a concept either.
+  { const f = all.composition, form = clone(f.content); form.relations[0].target = {conceptId: 'REQ-001'}; assert.match(CF.conceptFormIssues(form, ctx(f)).join(' '), /composition\.relations\[0\]\.target names a concept id, an alias \(scheme and id\) or a label/); }
+  // Whatever its shape, the id or reference a record of this project bears is not a concept's: here in the bank-payment reference, marked as a library by a person.
+  { const bank = send(F.bankProject(), 'library', LIBRARY_MARK, 'steward').document, graph = recordGraph(bank), taken = [...graph.objects.values()].find(o => CF.CONCEPT_ID.test(o.id));
+    assert(taken, 'the reference holds a record whose id has the shape of a concept id'); assert.match(taken.id, /^PROC-/);
+    assert.throws(() => send(bank, 'concept', {...CONCEPT, conceptId: taken.id}), new RegExp(taken.id + ' is the reference of a record of this project'));
+    assert.equal(send(bank, 'concept', CONCEPT).document.knowledge.concepts[0].conceptId, 'SYN-P001'); }
+  // Should-fix 9: an evaluator kind is an identifier (wp3 and wp4 will register theirs), so it may hold digits and holds no sentence.
+  const calculation = change => { const f = all.calculation, form = clone(f.content); change(form); return CF.conceptFormIssues(form, ctx(f)); };
+  for (const kind of ['mm1-queue', 'queue-model-2', 'aiw.queue:mm1', 'oldest-unsent-age']) assert.deepEqual(calculation(f => { f.modelKind = kind; }), [], kind);
+  for (const kind of ['queue model 2', 'An M/M/1 queue with 3 servers', 'mm1 queue']) assert.match(calculation(f => { f.modelKind = kind; }).join(' '), /calculation\.modelKind is an identifier \(letters, digits and \. _ : -, no spaces\)/, kind);
+  assert.match(calculation(f => { delete f.modelKind; }).join(' '), /calculation\.modelKind is required/);
 });

@@ -24,7 +24,10 @@ export const RELATION_VERBS=['requires','requires-when','complements','alternati
 // What a source says of its own statement. A project's results (executed, observed, passed) are evidence records, never a form's.
 export const EVIDENCE_LEVELS=['illustrative','proposed','reported-executed-by-source'];
 export const ALIAS_SCHEMES=['akr','playbook','aiw-method','handbook','lens','external'];
-export const CONCEPT_ID=/^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+){1,7}$/;
+// A concept id: capitals and digits in two to eight hyphenated parts. A prefix and a number (REQ-001, IF-001, ADR-001,
+// KC-0001) is how design records and knowledge records are numbered, and is never a concept's id (RECORD_REFERENCE).
+export const RECORD_REFERENCE=/^[A-Z][A-Z0-9]*-\d+$/;
+export const CONCEPT_ID=/^(?![A-Z][A-Z0-9]*-\d+$)[A-Z][A-Z0-9]*(?:-[A-Z0-9]+){1,7}$/;
 const INVARIANT_KINDS=['identity','authority','time','ordering','publication','lifecycle','other'];
 const RECORD_KINDS=['responsibility','component','contract','data','capability','realization','plan','control','party'];
 const STAGES=['problem','consequence','inspect','decide','run','evidence','revise','assess'];
@@ -42,7 +45,7 @@ const SHAPES={
  applicability:{lists:{useWhen:[12,{text:T(800)}],avoidWhen:[12,{text:T(800)}],prerequisites:[12,{text:T(800)}]},objects:{guaranteeBoundary:{boundedClaim:T(800),dependsOn:S(8,400),doesNotEstablish:S(8,400)}}},
  selection:{lists:{alternatives:[12,{target:TARGET,chooseWhen:T(800),cost:T(800)}],rules:[12,{condition:T(800),candidate:T(400),contraindication:T(800),evidenceNeeded:T(800)}],variants:[12,{name:N(160),chooseWhen:T(800),tradeoff:T(800)}]}},
  composition:{lists:{roles:[16,{id:ID(60),name:N(160),responsibility:T(800),recordKind:E(RECORD_KINDS),required:BOOL,sameAs:ID(120,true)}],relations:[24,{verb:E(RELATION_VERBS),target:TARGET,when:T(400,true),reason:T(800)}],invariants:[12,{kind:E(INVARIANT_KINDS),statement:T(800)}],parameters:[24,{name:N(120),type:N(40),unit:N(40,true),meaning:T(800),selectionBasis:T(800),wrongChoice:T(800,true),required:BOOL,example:WORKED}],ports:[16,{name:N(160),direction:N(40),contract:T(800)}],sequence:[24,{step:INT,ownerRole:ID(120),text:T(800),exitEvidence:T(400,true),onFailure:T(400,true)}]}},
- calculation:{scalars:{modelKind:N(60),purpose:T(800),relation:T(1200),bounds:T(800,true)},lists:{inputs:[16,{name:N(120),unit:N(40),meaning:T(800)}],outputs:[8,{text:T(400)}],notConsidered:[12,{text:T(400)}],workedValues:[16,{name:N(120),value:VALUE,unit:N(40),evidenceLevel:ILLUSTRATIVE}]}},
+ calculation:{scalars:{modelKind:ID(60),purpose:T(800),relation:T(1200),bounds:T(800,true)},lists:{inputs:[16,{name:N(120),unit:N(40),meaning:T(800)}],outputs:[8,{text:T(400)}],notConsidered:[12,{text:T(400)}],workedValues:[16,{name:N(120),value:VALUE,unit:N(40),evidenceLevel:ILLUSTRATIVE}]}},
  verification:{lists:{scenarios:[16,{id:ID(80),given:T(800),when:T(800),then:T(800),evidenceRequired:T(800),evidenceLevel:LEVEL}],failureModes:[16,{failure:T(800),behaviour:T(800,true),signal:T(400,true),response:T(800),evidence:T(800,true)}],signals:[12,{name:N(120),unit:N(40),interpretation:T(800)}]},objects:{metric:{name:N(120),unit:N(40),boundary:T(400,true),population:T(400,true),aggregation:T(400,true),window:T(400,true),thresholdBasis:T(400,true),coverage:T(400,true),missingData:T(400,true),ownerAction:T(400,true)},technique:{purpose:T(800),inputs:S(12,400),steps:S(16,800),outputs:S(12,400),evidenceProduced:T(800)}}},
  example:{scalars:{title:N(160),scenario:T(1200,true),expectedOutcome:T(600),evidenceLevel:LEVEL,numbersAre:E(['teaching-assumptions'])},lists:{steps:[16,{text:T(800)}]}},
  exercise:{lists:{items:[9,{level:E(['beginner','intermediate','advanced']),prompt:T(1200),stage:E(STAGES,true)}]}}

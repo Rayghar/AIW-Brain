@@ -17,7 +17,8 @@
 import {applyKnowledgeCommand,knowledgeState,knowledgeEligibility} from './knowledge-governance.js';
 import {verifierRefusal} from './architecture-obligations.js';
 import {QUALITY_TYPES} from './quality-domain.js';
-import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,conceptFormIssues,conceptFormRecord} from './concept-form.js';
+import {FORM_TYPES,FORM_CLAIM_TYPE,FORM_PREDICATE,CONCEPT_KINDS,CONCEPT_SCOPES,CONCEPT_ID,RECORD_REFERENCE,conceptFormIssues,conceptFormRecord} from './concept-form.js';
+import {recordGraph} from './record-graph.js';
 import {conceptRecords,conceptHash,conceptAuthors,conceptCovered} from './knowledge-concepts.js';
 import {digest} from './brain-integrity.js';
 import {list} from './util.js';
@@ -59,11 +60,16 @@ function onlyAPerson(p,concept,author,what){
 // What an upsert would store, against what is stored: equal means there is nothing to write.
 const sameFields=(stored,next)=>digest(Object.fromEntries(Object.keys(next).map(k=>[k,stored[k]])))===digest(next);
 
-function conceptInput(s,r,existing){
+function conceptInput(p,s,r,existing){
  const conceptId=text(r.conceptId,200);
+ // A concept id is not a design record's reference (ruling B7 of 2026-11-18): neither by its shape, a prefix and a
+ // number, nor because a record of this project bears it as its id or reference. Readers that look knowledge up by a
+ // record's reference (the stewards' reading) can then never meet a concept there.
+ if(RECORD_REFERENCE.test(conceptId))throw Error(conceptId.slice(0,80)+' has the shape of a design record\'s reference (a prefix and a number, such as REQ-001): a concept takes an identifier of its own, such as PAT-TRANSACTIONAL-OUTBOX.');
  if(!CONCEPT_ID.test(conceptId)||conceptId.length>80)throw Error('Record the concept identifier: capitals and digits in two to eight hyphenated parts, such as PAT-TRANSACTIONAL-OUTBOX (at most 80 characters).');
  if(existing&&existing.conceptId!==conceptId)throw Error('A concept keeps its identifier: record a successor concept for a rename (successorOf).');
  if(!existing&&list(s.concepts).some(c=>c.conceptId===conceptId))throw Error(conceptId+' is already in the concept register.');
+ if(!existing)for(const o of recordGraph(p).objects.values())if(o.id===conceptId||o.ref===conceptId)throw Error(conceptId+' is the reference of a record of this project ('+String(o.title).slice(0,80)+'): a concept takes an identifier of its own.');
  if(!CONCEPT_KINDS.includes(r.kind))throw Error('Choose a concept kind ('+CONCEPT_KINDS.join(', ')+').');
  const scope=r.scope??[],stages=r.stages??[],lenses=r.lenses??[],triggers=r.reviewTriggers??[],lensIds=QUALITY_TYPES.map(t=>t.id);
  if(!subset(scope,CONCEPT_SCOPES,7))throw Error('Choose the concept\'s scope from '+CONCEPT_SCOPES.join(', ')+'.');
@@ -133,7 +139,7 @@ function conceptCommand({p,s,r,type,at,actor,next},author,limits){
  case 'knowledge.concept':{
   libraryOnly(s);const existing=r.id===undefined?null:concept();
   if(existing?.retired)throw Error(existing.conceptId+' is retired: restore it before editing.');
-  const c=conceptInput(s,r,existing);
+  const c=conceptInput(p,s,r,existing);
   if(!existing){
    if(list(s.concepts).length>=limits.concepts)throw Error('This project has reached its concept limit.');
    s.concepts||=[];const id=next('KN');s.concepts.push({id,...c,revision:1,at,actor,lastEditor:actor,history:[{revision:1,at,actor,change:'Created'}]});return id;
