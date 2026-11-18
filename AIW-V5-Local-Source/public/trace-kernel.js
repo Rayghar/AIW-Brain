@@ -92,11 +92,13 @@ export const planInScope = (environment, plan, asset) => !!environment && Array.
 // position, the journey steps' connections to responsibilities, and the plans in scope.
 function kernelOf(p, upto = null) {
   return remember(p, 'trace-kernel', 'graph:' + (upto || ''), () => {
-    const G = recordGraph(p, upto), layer = new Map(), order = new Map(), on = {};
+    const G = recordGraph(p, upto), layer = new Map(), order = new Map(), on = {context: 1};
     // Only a record of the document stands on a layer: the reference graph's illustrative nodes and declared context
     // objects ('model.context.*', record-graph.js) stay in the graph to resolve relations, never as recorded design.
-    // `on` names the layers a record of the document stands on: no hop can bring a record onto any other, so the walk
-    // reads no hop of such a layer (rc44, slice S0: a package's hops cost a document without its records nothing).
+    // `on` names the layers a record of the document stands on. A hop brings a record only onto the layer of its type,
+    // so the walk reads no hop of any other layer (rc44, slice S0: a package's hops cost a document without its
+    // records nothing). The context is always read: it takes any Chapter 1 record, a requirement too, which stands
+    // on the requirement layer.
     let i = 0; for (const [id, o] of G.objects) { order.set(id, i++); const l = !o.source.startsWith('model.context.') && layerOf(o); if (l) on[l] = layer.set(id, l); }
     const steps = new Map(), stepped = new Map();
     for (const e of G.relationships) if (stepConnection(e)) for (const [a, b] of stepEnds(e)) {

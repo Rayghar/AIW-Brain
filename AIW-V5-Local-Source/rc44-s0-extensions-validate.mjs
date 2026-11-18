@@ -350,6 +350,11 @@ await block('1 record graph and trail', () => {
   // a hop from the layer of the package earlier by id
   const third = reviewRequirements(p0).find(r => !kernel.requirementTrace(p, r.id).has('SYN-002'))?.id;
   if (third) { const q = withFinalReview({...p, runtime: {...p.runtime, otherThings: [{id: 'OTH-001', ref: 'OTH-001', title: 'Other thing', requirementIds: [third], syntheticId: 'SYN-002'}]}}), Q = kernel.requirementTrace(q, third); assert.deepEqual(Q.layers.other, ['OTH-001']); assert.deepEqual(Q.layers.synthetic, ['SYN-002'], 'the other thing brings the record it describes'); assert.equal(kernel.requirementSpine(q, third).layers.synthetic, undefined, 'as context, not on the own chain'); assert.deepEqual(kernel.requirementSpine(q, third).layers.other, ['OTH-001']); }
+  // The context layer is read whatever stands on it: a requirement linked to the one traced is its context (it stands
+  // on the requirement layer), also in a document whose Chapter 1 holds requirements only.
+  { const reqs = p0.artefacts.filter(a => a.type === 'requirement'), only = withFinalReview({...p0, artefacts: reqs, relationships: [{...p0.relationships[0], id: 'REL-900', from: reqs[0].id, to: reqs[1].id}]});
+    assert.ok(![...recordGraph(only).objects.values()].some(o => o.source.startsWith('artefacts[') && o.type !== 'requirement'), 'the document holds no Chapter 1 record but requirements');
+    assert.deepEqual(kernel.requirementTrace(only, reqs[0].id).layers.context, [reqs[1].id], 'the linked requirement is on the context layer'); assert.deepEqual(kernel.requirementTrace(only, reqs[1].id).layers.context, [reqs[0].id]); }
   pass('1: SYN-001 is in the record graph and the connected model with fulfils and binds, on the trail and the spine of ' + T0.requirement + ', in linkedVia both ways, namedBy and servingRequirements; a context hop is on the trail and not on the spine; every built-in layer is unchanged');
 });
 
@@ -610,7 +615,7 @@ await block('D2 client', async () => {
   const names = ids => ({document: {...reference('bank-payment'), workspace: {template: 'bank-payment', createdAt: AT, packages: ids}}, revision: 1});
   // a document that names a package with no route stub is not opened as if the records were not there
   const unknown = await X.ensureExtensions(names(['p99-unknown'])).then(() => null, e => e);
-  assert.ok(unknown instanceof Error, 'ensureExtensions rejects for a package this browser has no stub of'); assert.equal(unknown.message, 'Package p99-unknown did not load.', 'naming the package');
+  assert.ok(unknown instanceof Error, 'ensureExtensions rejects for a package this browser has no stub of'); assert.equal(unknown.message, 'Design package p99-unknown did not load.', 'naming the package');
   X.registerExtension({id: 'p98-known-route', needs: () => false, load: async () => {}});
   { const known = names(['p98-known']); assert.equal(await X.ensureExtensions(known), known, 'a package whose stub is registered (<id>-route) is the browser\'s to load'); }
   let mode = 'ok';
@@ -619,7 +624,7 @@ await block('D2 client', async () => {
   // should-fix 10: a package that does not load, or whose module throws while loading, is said in words, with the
   // package named: not as the browser words a failed import, nor as the module's own error reads
   { const failing = {document: {...reference('bank-payment'), failing: {}}, revision: 1};
-    for (mode of ['throws', 'network']) { const e = await X.ensureExtensions(failing).then(() => null, x => x); assert.ok(e instanceof Error, mode); assert.equal(e.message, 'Package p97-failing-route did not load.', 'when the module ' + (mode === 'throws' ? 'throws while loading' : 'cannot be fetched')); }
+    for (mode of ['throws', 'network']) { const e = await X.ensureExtensions(failing).then(() => null, x => x); assert.ok(e instanceof Error, mode); assert.equal(e.message, 'Design package p97-failing-route did not load.', 'when the module ' + (mode === 'throws' ? 'throws while loading' : 'cannot be fetched')); }
     mode = 'ok'; assert.equal(await X.ensureExtensions(failing), failing); }
   // the store: a load that fails after the server answered "saved" is saved and not yet shown
   const h = await harness(), realFetch = globalThis.fetch;
@@ -629,7 +634,7 @@ await block('D2 client', async () => {
     mode = 'network';
     const failed = await store.command({type: 'synthetic.save', payload: {title: 'Saved while the package cannot load'}}).then(() => null, e => e);
     assert.ok(failed instanceof Error, 'the caller is told'); assert.equal(store.status, 'behind', 'the store goes to behind, not to error');
-    assert.equal(failed.message, 'Saved, not shown yet. Package p97-failing-route did not load.', 'reported as saved and not yet shown, with the cause in words'); assert.equal(store.value.revision, shown, 'the tab shows what it showed');
+    assert.equal(failed.message, 'Saved, not shown yet. Design package p97-failing-route did not load.', 'reported as saved and not yet shown, with the cause in words'); assert.equal(store.value.revision, shown, 'the tab shows what it showed');
     const server = await (await h.api('/api/project' + h.q)).json(); assert.equal(server.revision, shown + 1, 'the server saved it'); assert.equal(server.document.synthetic.records.at(-1).title, 'Saved while the package cannot load');
     // the next save from that tab is refused before it is sent, in the same words: nothing says another tab changed the project
     const again = await store.command({type: 'guide.start', payload: {chapter: 1}}).then(() => null, e => e);
@@ -642,7 +647,7 @@ await block('D2 client', async () => {
   } finally { mode = 'ok'; globalThis.fetch = realFetch; h.close(); }
   // the header of a tab that is behind says what holds in both cases, and keeps the short label the phone shows
   { const ux = readFileSync('public/workspace-ux.js', 'utf8'), said = /if\(status==='behind'\)\{[\s\S]*?updateSaveState\('([^']+)',label\)/.exec(ux)?.[1] || '';
-    assert.equal(said, 'A newer version of this project is saved.', 'the header does not say another tab saved it'); assert.match(said, /newer version/i, 'dialog.js updateSaveState shortens it to “New version” as before'); }
+    assert.equal(said, 'A newer version is saved.', 'the header does not say another tab saved it'); assert.match(said, /newer version/i, 'dialog.js updateSaveState shortens it to “New version” as before'); }
   pass('D2 (client): ensureExtensions rejects, naming the package, for a document that names a package with no route stub; a load that fails after a saved answer leaves the store behind, reported as saved and not yet shown, and nothing says another tab changed the project');
 });
 

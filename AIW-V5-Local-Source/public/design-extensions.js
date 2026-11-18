@@ -57,6 +57,6 @@ export const ensureExtensions=async project=>{
  try{
   for(id of d.workspace?.packages||[])E[id+'-route'].id;
   for(const e of EXTENSIONS)id=e.id,e.needs?.(d)&&await e.load();
- }catch{throw Error('Package '+id+' did not load.')}
+ }catch{throw Error('Design package '+id+' did not load.')}
  return project;
 };
