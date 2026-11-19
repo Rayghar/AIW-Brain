@@ -115,6 +115,42 @@ suite was touched):
     reset clears `applied` and not `acceptance`. The author stamps of the template's records are carried too. See
     open question 6.
 
+## Second round after the verifier (2026-11-19, by the lead)
+
+The verifier of the fix-up (`72204ff`) answered "not yet": everything ruled was in the product and nothing was
+weakened but the registry's own size bound (ruling F5), and hostile inputs still got through. Its report:
+`/home/user/hb-review/rc44-build/s0-extensions.verify.json`. Each point below was closed on `rc44/s0-lead-f`, a case
+first and seen to fail.
+
+- **A second person's step trusted a stamp the boundary did not keep current** (must be fixed). A person's record
+  that an agent account or a draft by Sol changed kept the person's stamp when the change came by a type whose prefix
+  states no `provenance.paths`, or by a command that names no record. Now the boundary restamps every record of a
+  package's own collections that a commit changed, whatever the command says of itself (`provenance.js`
+  `stampChanged`, `design-extension-boundary.js` `stampExtensions`, called by `worker.js` after `stampAuthorship`). A
+  record a commit made is left to `stampAuthorship`; one with no stamp has no person behind it. Case: block "D1 two
+  persons" (three probes).
+- **Keys named after what every object carries** (`constructor`, `toString`, `constructor.name`, …) moved the
+  fingerprints of every old document. No part of a package states one. Case: block "SF start check".
+- **The walk's skip cost a built-in layer a record.** A Chapter 1 record whose type a built-in layer holds stands on
+  the context layer and is still brought onto the layer of its type; with no other record on that layer the walk
+  skipped it. The kernel now names the layer of the record's type too (`trace-kernel.js`, 22 B on the route). Case:
+  block "1 record graph and trail", against what rc.10.73.42 reads.
+- **The case for a numeric layer name did not hold its fix.** The probe now reads a document in which a requirement
+  names a runtime path; with the old index test put back the block fails (checked once, then restored).
+- **A package's tracker or handler could state who wrote a journal event.** The boundary removes `actor`,
+  `authorKind`, `reviewed`, `account`, `session` and `reason` from every event a package's tracker, or a package's
+  command sent on its own, adds; the server's stamp is the only one. Case: block "D4 tracker". Left open, with task
+  D12: an event a package's *staged* handler adds inside a reviewed batch.
+- **Three small gaps.** Every form of a heading counts in a section (setext, indented, a tab, HTML): block "upgrade and
+  sections". A package's noun is not `document` nor a noun the workbench reads one of its own collections under: block
+  "SF start check". A list of packages that is not a list of names reads as a list this build cannot read and is
+  refused as a missing package is (`UNREADABLE_PACKAGES`): block "D2 packages a document names". Replaced there, old ->
+  new: `missingPackages({workspace: {packages: ['p40-adoption', 7, 'zz-synthetic']}})` equals `['p40-adoption']` ->
+  the same list without the `7` equals `['p40-adoption']`, and the list with the `7` is unreadable (stricter).
+- **A rename stored a read upgrade.** A project that names a missing package is renamed, archived and restored as it
+  is stored (`project-lifecycle.js`). Case: block "D2 packages a document names", on a stored design of the fingerprint
+  before this one.
+
 ## Lead follow-up after the fix-up (rulings F2 and F3, 2026-11-18)
 
 Done by the lead on `rc44/s0-lead-f`, from the fix-up's head `72204ff`. Each case was seen to fail first.

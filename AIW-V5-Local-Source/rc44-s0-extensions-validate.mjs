@@ -204,7 +204,10 @@ if (PROBE >= 0) {
   const order = process.argv[PROBE + 1] || '';
   for (const ch of order) X.registerExtension({h: HOSTILE, o: OTHER, s: SYNTHETIC, n: NUMERIC}[ch]);
   // A package the start check would refuse, registered alone: what the references' trails read with it (should-fix 7).
-  if (order === 'n') { console.log(JSON.stringify({layers: kernel.TRACE_LAYERS, trails: Object.fromEntries(REFERENCES.map(t => [t, digests(reference(t)).trails]))})); process.exit(0); }
+  // The references name no runtime path from a requirement, so their trails would not show a shifted last layer (the
+  // verifier's second round): the probe also reads a document in which a requirement names a path.
+  if (order === 'n') { const q = JSON.parse(JSON.stringify(reference('bank-payment'))), req = q.artefacts.find(a => a.type === 'requirement'); q.runtime.paths[0].requirementIds = [req.id];
+    console.log(JSON.stringify({layers: kernel.TRACE_LAYERS, trails: Object.fromEntries(REFERENCES.map(t => [t, digests(reference(t)).trails])), path: kernel.requirementTrace(withFinalReview(q), req.id).layers.path, pathId: q.runtime.paths[0].id})); process.exit(0); }
   let p = reference('bank-payment'); const t = firstTrail(p);
   p = withSynthetic(p, {title: 'First synthetic record', requirementIds: [t.requirement], componentId: t.component});
   p = withSynthetic(p, {title: 'Second synthetic record', dependsOn: 'SYN-001', broken: true});
@@ -635,7 +638,14 @@ await block('D2 packages a document names', async () => {
     assert.equal((await (await h.api('/api/project' + h.q)).json()).revision, revision, 'nothing was saved by any of them');
     // what stays possible: reading (above), renaming, archiving and restoring from the archive, a recovery export, access
     { const life = async action => { const cur = await (await h.api('/api/project' + h.q)).json(), res = await h.api('/api/lifecycle' + h.q, 'POST', {revision: cur.revision, ...action}); assert.equal(res.status, 200, JSON.stringify(action) + ' stays possible: ' + JSON.stringify(await res.clone().json()).slice(0, 160)); };
+      // a rename, an archive and a restore change the name, the status and their own log, and nothing else: no upgrade of a design this build cannot read in full is stored (the verifier's second round)
+      const raw = async () => { const stored = JSON.parse((await h.env.DB.prepare('SELECT document FROM projects WHERE id=?').bind(h.pid).first()).document), {lifecycle, status, ...workspace} = stored.workspace || {}; delete stored.name; return JSON.stringify({...stored, workspace}); };
+      // (the stored design is made one the read upgrade would change: its readings are of the design fingerprint before this one)
+      { const row = await h.env.DB.prepare('SELECT document FROM projects WHERE id=?').bind(h.pid).first(), stored = JSON.parse(row.document); assert.ok(stored.finalReview.designFingerprint > 1); stored.finalReview.designFingerprint -= 1;
+        await h.env.DB.prepare('UPDATE projects SET document=? WHERE id=?').bind(JSON.stringify(stored), h.pid).run(); }
+      const before = await raw();
       await life({action: 'rename', name: 'Renamed while a package is missing'}); await life({action: 'archive'}); await life({action: 'restore'});
+      assert.equal(await raw(), before, 'the stored design is byte for byte what it was');
       assert.notEqual((await h.api('/api/access' + h.q, 'POST', {actorId: 'architect-d', role: 'viewer'})).status, 409, 'access stays possible');
       assert.notEqual((await h.api('/api/recovery' + h.q + '&action=export', 'POST', {})).status, 409, 'a recovery export stays possible');
       const after = await (await h.api('/api/project' + h.q)).json(); assert.deepEqual(after.missingPackages, ['p99-unknown'], 'and the project still names what this build lacks'); }
@@ -1173,7 +1183,7 @@ await block('7 idempotent and order-free', () => {
     assert.deepEqual(boundary.extensionIssues(victim), [], 'the package whose key it is is not told its design key lies where the fingerprint does not read'); }
   // should-fix 7: a layer whose name sorts before the built-in layers (a numeric key) moves no built-in layer's hops
   { const r = spawnSync(process.execPath, [process.argv[1], '--probe', 'n'], {encoding: 'utf8', maxBuffer: 1 << 26}); assert.equal(r.status, 0, r.stderr.slice(0, 400)); const out = JSON.parse(r.stdout.trim().split('\n').at(-1));
-    assert.equal(out.layers[0], '7', 'the probe\'s layer does sort first'); for (const t of REFERENCES) assert.equal(out.trails[t], golden.readings[t].trails, t + ': every trail is the baseline\'s with such a layer registered');
+    assert.equal(out.layers[0], '7', 'the probe\'s layer does sort first'); assert.deepEqual(out.path, [out.pathId], 'a path a requirement names is on the last built-in layer with such a layer registered'); for (const t of REFERENCES) assert.equal(out.trails[t], golden.readings[t].trails, t + ': every trail is the baseline\'s with such a layer registered');
     assert.ok(boundary.extensionIssues(NUMERIC).some(i => /layer “7” names the object type it holds/.test(i)), 'and the start check refuses the name'); }
   pass('7: five registration orders, with repeats, in separate processes give the same object types, collections, layers, nouns and the same ten readings; registering again in this process changes nothing');
 });
